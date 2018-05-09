@@ -2,8 +2,8 @@ package com.wavesplatform.lang
 
 import cats.kernel.Monoid
 import com.wavesplatform.lang.Common.multiplierFunction
+import com.wavesplatform.lang.v1.compiler.CompilerContext
 import com.wavesplatform.lang.v1.compiler.Terms._
-import com.wavesplatform.lang.v1.TypeChecker.TypeCheckerContext
 import com.wavesplatform.lang.v1.ctx.impl.PureContext
 import com.wavesplatform.lang.v1.ctx.{Context, PredefFunction, PredefType}
 import com.wavesplatform.lang.v1.ctx.impl.PureContext.none
@@ -32,5 +32,5 @@ package object typechecker {
     )
   )
 
-  val typeCheckerContext = TypeCheckerContext.fromContext(ctx)
+  val typeCheckerContext = CompilerContext.fromExecutionContext(ctx)
 }
