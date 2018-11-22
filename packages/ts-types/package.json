@@ -1,0 +1,5 @@
+{
+  "name": "@waves/ts-types",
+  "version": "0.0.1",
+  "types": "index.ts"
+}
