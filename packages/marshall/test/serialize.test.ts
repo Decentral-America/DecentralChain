@@ -1,4 +1,6 @@
-import { LONG, SHORT, BYTE, BYTES, STRING, INT, BOOL, OPTION, COUNT, LEN, BASE58_STRING, BASE64_STRING, one, zero } from '../src/serializePrimitives'
+import { LONG, SHORT, BYTE, BYTES, STRING, INT, BOOL, OPTION, COUNT, LEN, BASE58_STRING, BASE64_STRING, one, zero } from '../src/serializePrimitives';
+import { serialize} from "../src";
+import {exampleTxs} from "./exampleTxs";
 
 const string = 'TestString'
 const bytes = [84, 101, 115, 116, 83, 116, 114, 105, 110, 103]
@@ -64,3 +66,59 @@ describe('Basic serialization', ()=> {
   })
 })
 
+describe('Transaction serialization', ()=> {
+  it('alias', () => {
+    const tx = exampleTxs[10]
+    console.log(serialize(tx))
+  })
+
+  it('burn', () => {
+    expect(BYTE(1)).toEqual(Uint8Array.from([1]))
+  })
+
+  it('BYTES', () => {
+    expect(BYTES([34, 192])).toEqual(Uint8Array.from([34, 192]))
+  })
+
+  it('STRING', () => {
+    expect(STRING(string)).toEqual(Uint8Array.from(bytes))
+  })
+
+  it('INT', () => {
+    expect(INT(1)).toEqual(Uint8Array.from([0, 0, 0, 1]))
+    expect(INT(65535)).toEqual(Uint8Array.from([0, 0, 255, 255]))
+    expect(INT(2**32 -1 )).toEqual(Uint8Array.from([255, 255, 255, 255]))
+  })
+
+  it('SHORT', () => {
+    expect(SHORT(1)).toEqual(Uint8Array.from([0, 1]))
+    expect(SHORT(2**16-1)).toEqual(Uint8Array.from([255, 255]))
+    expect(SHORT(2**16)).toEqual(Uint8Array.from([0, 0]))
+  })
+
+  it('BOOL', () => {
+    expect(BOOL(false)).toEqual(zero)
+    expect(BOOL(true)).toEqual(one)
+  })
+
+  it('OPTION', () => {
+    expect(OPTION(BOOL)(null)).toEqual(Uint8Array.from([0]))
+    expect(OPTION(BOOL)(false)).toEqual(Uint8Array.from([1, 0]))
+  })
+
+  it('COUNT', () => {
+    expect(COUNT(BYTE)((x: boolean) => BOOL(x))([true, false, true])).toEqual(Uint8Array.from([3, 1, 0, 1]))
+  })
+
+  it('LEN', () => {
+    expect(LEN(BYTE)(BYTES)([1, 2, 3, 4])).toEqual(Uint8Array.from([4, 1, 2, 3, 4]))
+  })
+
+  it('BASE58_STRING', () => {
+    expect(BASE58_STRING(base58)).toEqual(Uint8Array.from(bytes))
+  })
+
+  it('BASE64_STRING', () => {
+    expect(BASE64_STRING(base64)).toEqual(Uint8Array.from(bytes))
+  })
+})

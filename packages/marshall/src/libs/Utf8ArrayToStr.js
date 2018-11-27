@@ -11,7 +11,7 @@
 /**
  * @return {string}
  */
-export function Utf8ArrayToStr(array) {
+function Utf8ArrayToStr(array) {
     var out, i, len, c;
     var char2, char3;
 
@@ -44,3 +44,4 @@ export function Utf8ArrayToStr(array) {
 
     return out;
 }
+exports = Utf8ArrayToStr;

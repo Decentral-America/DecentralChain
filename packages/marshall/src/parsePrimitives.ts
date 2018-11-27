@@ -1,5 +1,5 @@
 import * as Long from "long";
-import {Utf8ArrayToStr} from './libs/Utf8ArrayToStr'
+import Utf8ArrayToStr from './libs/Utf8ArrayToStr'
 import base58 from './libs/base58';
 import {fromByteArray} from 'base64-js';
 

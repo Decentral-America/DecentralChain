@@ -1,13 +1,13 @@
 import {schemasByTypeMap, serializerFromSchema, parserFromSchema, parseHeader, ILongFactory,} from "./txSchemas";
 
-export function serialize<LONG = string | number>(tx: any, longFactory: ILongFactory<LONG>): Uint8Array {
+export function serialize<LONG = string | number>(tx: any, longFactory?: ILongFactory<LONG>): Uint8Array {
   const {type, version} = tx;
   const schema = getSchema(type, version);
 
   return serializerFromSchema(schema, longFactory)(tx);
 }
 
-export function parse<LONG = string>(bytes: Uint8Array, longFactory: ILongFactory<LONG>) {
+export function parse<LONG = string>(bytes: Uint8Array, longFactory?: ILongFactory<LONG>) {
   const {type, version} = parseHeader(bytes);
   const schema = getSchema(type, version);
 

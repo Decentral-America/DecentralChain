@@ -1,1 +1,1 @@
-export declare function Utf8ArrayToStr(arr: number[] | Uint8Array): string;
+export default function Utf8ArrayToStr(arr: number[] | Uint8Array): string;
