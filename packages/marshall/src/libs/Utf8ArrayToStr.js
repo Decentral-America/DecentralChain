@@ -44,4 +44,4 @@ function Utf8ArrayToStr(array) {
 
     return out;
 }
-exports = Utf8ArrayToStr;
+exports.Utf8ArrayToStr = Utf8ArrayToStr;

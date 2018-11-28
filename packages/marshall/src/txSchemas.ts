@@ -13,11 +13,10 @@ import {
 } from './serializePrimitives';
 import {
   byteNewAliasToString, byteToAddressOrAlias,
-  byteToBase58, byteToBoolean, byteToData,
-  byteToLong,
-  byteToNumber, byteToScript,
+  byteToBase58, P_BOOLEAN, byteToData,
+  byteToScript,
   byteToStringWithLength, byteToTransfers,
-  getNumberFromBytes, P_OPTION, TParser
+ P_LONG, P_OPTION, P_SHORT, TParser, P_BYTE
 } from './parsePrimitives'
 import {concat} from './libs/utils'
 
@@ -50,8 +49,8 @@ const typeMap: any = {
 }
 
 export const parseHeader = (bytes: Uint8Array): { type: number, version: number } => ({
-  type: getNumberFromBytes(bytes, 1),
-  version: getNumberFromBytes(bytes, 1, 1)
+  type: P_BYTE(bytes).value,
+  version: P_BYTE(bytes, 1).value
 })
 
 
@@ -73,7 +72,7 @@ const txFields = {
   amount: {
     name: 'amount',
     toBytes: LONG,
-    fromBytes: byteToLong(8)
+    fromBytes: P_LONG
   },
   assetDescription: {
     name: 'description',
@@ -98,7 +97,7 @@ const txFields = {
   chainId: {
     name: 'chainId',
     toBytes: BYTE,
-    fromBytes: byteToNumber(1)
+    fromBytes: P_BYTE
   },
   data: {
     name: 'data',
@@ -109,12 +108,12 @@ const txFields = {
   decimals: {
     name: 'decimals',
     toBytes: BYTE,
-    fromBytes: byteToNumber(1),
+    fromBytes: P_BYTE,
   },
   fee: {
     name: 'fee',
     toBytes: LONG,
-    fromBytes: byteToLong(8)
+    fromBytes: P_LONG
   },
   leaseAssetId: {
     name: 'leaseAssetId',
@@ -134,12 +133,12 @@ const txFields = {
   quantity: {
     name: 'quantity',
     toBytes: LONG,
-    fromBytes: byteToLong(8)
+    fromBytes: P_LONG
   },
   reissuable: {
     name: 'reissuable',
     toBytes: BOOL,
-    fromBytes: byteToBoolean
+    fromBytes: P_BOOLEAN
   },
   recipient: {
     name: 'recipient',
@@ -159,7 +158,7 @@ const txFields = {
   timestamp: {
     name: 'timestamp',
     toBytes: LONG,
-    fromBytes: byteToNumber(8)
+    fromBytes: P_LONG
   },
   transfers: {
     name: 'transfers',
@@ -169,12 +168,12 @@ const txFields = {
   type: {
     name: 'type',
     toBytes: BYTE,
-    fromBytes: byteToNumber(1)
+    fromBytes: P_BYTE
   },
   version: {
     name: 'version',
     toBytes: BYTE,
-    fromBytes: byteToNumber(1)
+    fromBytes: P_BYTE
   }
 }
 
@@ -348,6 +347,16 @@ export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = str
   ...bodySchema.map(field => field.toBytes === <any>LONG && lf ? field.toBytes(lf.toString(tx[field.name]) as any) : field.toBytes(tx[field.name])),
   ...proofsSchema.map(field => field.toBytes(tx[field.name])),
 );
+
+// export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) =>{
+//   const allFields = headerSchema.concat(bodySchema).concat(proofsSchema);
+//   let result = Uint8Array.from([])
+//   allFields.forEach(({name, toBytes}) => {
+//     const value = toBytes(tx[name]);
+//     result = concat(result, value)
+//   })
+//   return result
+// };
 
 export const parserFromSchema = <T, R extends IFieldProcessor<T>, LONG = string>(bodySchema: R, lf?: ILongFactory<LONG>) => (bytes: Uint8Array) => {
   const allFields = headerSchema.concat(bodySchema).concat(proofsSchema);

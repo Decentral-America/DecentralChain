@@ -1,5 +1,5 @@
 import * as Long from "long";
-import Utf8ArrayToStr from './libs/Utf8ArrayToStr'
+import {Utf8ArrayToStr} from './libs/Utf8ArrayToStr'
 import base58 from './libs/base58';
 import {fromByteArray} from 'base64-js';
 
@@ -9,6 +9,7 @@ export const enum DATA_TRANSACTION_FIELD_TYPES {
   BINARY,
   STRING
 }
+
 export const ALIAS_VERSION: number = 2;
 
 
@@ -30,23 +31,23 @@ const getDataTxFieldTypeByCode = (fieldTypeCode: any) => {
   }
 };
 
+type Option<T> = T | null | undefined
 
-export type TParser<T> = (value: Uint8Array, start: number) => {value: T, shift: number}
+export type TParser<T> = (bytes: Uint8Array, start?: number) => { value: T, shift: number }
 
-export const P_OPTION = <T>(p: TParser<T>) => (value: Uint8Array, start = 0) =>
-  value[start] === 0 ? {value: undefined, shift: 1} : p(value, start + 1);
+export const P_OPTION = <T>(p: TParser<T>): TParser<Option<T>> => (bytes: Uint8Array, start = 0) =>
+  bytes[start] === 0 ? {value: undefined, shift: 1} : p(bytes, start + 1);
 
-export const byteToLong = (shift: number) => (bytes: Uint8Array, start: number) => {
-  const value = Long.fromBytesBE(Array.from(bytes.slice(start, start + shift)), true);
-  return {value, shift};
-};
+export const P_BYTE: TParser<number> = (bytes, start = 0) => ({value: bytes[start], shift: 1});
 
-export const byteToNumber = (shift: number) => (bytes: Uint8Array, start: number) => {
-  const result = byteToLong(shift)(bytes, start);
-  return {shift, value: result.value.toNumber()};
-};
+export const P_SHORT: TParser<number> = (bytes, start = 0) => ({value: 16 * bytes[start] + bytes[start + 1], shift: 2});
 
-export const byteToBoolean = (bytes: Uint8Array, start: number) => {
+export const P_LONG: TParser<Long> =  (bytes, start = 0) => ({
+  value: Long.fromBytesBE(Array.from(bytes.slice(start, start + 8)), true),
+  shift: 8
+});
+
+export const P_BOOLEAN = (bytes: Uint8Array, start: number) => {
   const value = !!bytes[start];
   return {value, shift: 1};
 };
@@ -57,27 +58,27 @@ const byteToString = (shift: number) => (bytes: Uint8Array, start: number) => {
 };
 
 export const byteToStringWithLength = (bytes: Uint8Array, start: number) => {
-  const lengthInfo = byteToNumber(LENGTH_SIZE)(bytes, start);
+  const lengthInfo = P_SHORT(bytes, start)//byteToNumber(LENGTH_SIZE)(bytes, start);
   const {value} = byteToString(lengthInfo.value)(bytes, start + LENGTH_SIZE);
   return {shift: lengthInfo.value + LENGTH_SIZE, value};
 };
 
-export const byteToBase58 = (bytes: Uint8Array, start: number, length?: number) => { // TODO!
+export const byteToBase58 = (bytes: Uint8Array, start: number = 0, length?: number) => { // TODO!
   const shift = length || 32;
   const value = base58.encode(bytes.slice(start, start + shift));
   return {value, shift};
 };
 
-export const byteToAssetId = (bytes: Uint8Array, start: number) => {
-  const shift = 33;
-  //Todo what if assetId starts with 0 byte?
-  const isWaves = !bytes[start];
-  if (isWaves) {
-    return {shift: 1, value: 'WAVES'};
-  }
-  const {value} = byteToBase58(bytes, start + 1);
-  return {shift, value};
-};
+// export const byteToAssetId = (bytes: Uint8Array, start: number) => {
+//   const shift = 33;
+//   //Todo what if assetId starts with 0 byte?
+//   const isWaves = !bytes[start];
+//   if (isWaves) {
+//     return {shift: 1, value: 'WAVES'};
+//   }
+//   const {value} = byteToBase58(bytes, start + 1);
+//   return {shift, value};
+// };
 
 export const byteToAddressOrAlias = (bytes: Uint8Array, start: number) => {
   if (bytes[start] === ALIAS_VERSION) {
@@ -89,20 +90,20 @@ export const byteToAddressOrAlias = (bytes: Uint8Array, start: number) => {
 };
 
 export const byteNewAliasToString = (bytes: Uint8Array, start: number) => {
-  const shift = byteToNumber(LENGTH_SIZE)(bytes, start).value + LENGTH_SIZE;
-  const {value} = byteToStringWithLength(bytes, start + 4);
+  const shift = P_SHORT(bytes, start).value + LENGTH_SIZE;
+  const {value} = byteToStringWithLength(bytes, start);
   return {shift, value};
 };
 
 export const byteToTransfers = (bytes: Uint8Array, start: number) => {
-  const count = byteToNumber(LENGTH_SIZE)(bytes, start).value;
+  const count = P_SHORT(bytes, start).value;
   const transfers = [];
   let shift = LENGTH_SIZE;
 
   for (let i = 0; i < count; i++) {
     const recipientData = byteToAddressOrAlias(bytes, start + shift);
     shift += recipientData.shift;
-    const amountData = byteToLong(LONG_BYTES_SIZE)(bytes, start + shift);
+    const amountData = P_LONG(bytes, start + shift);
     shift += amountData.shift;
 
     transfers.push({
@@ -121,7 +122,7 @@ export const byteToScript = (bytes: Uint8Array, start: number) => {
     return {shift: VERSION_LENGTH, value: 'base64:'};
   }
 
-  const lengthInfo = byteToNumber(LENGTH_SIZE)(bytes, start + VERSION_LENGTH);
+  const lengthInfo = P_SHORT(bytes, start + VERSION_LENGTH);
   const from = start + VERSION_LENGTH + lengthInfo.shift;
   const to = start + VERSION_LENGTH + lengthInfo.shift + lengthInfo.value;
   const value = `base64:${fromByteArray(bytes.slice(from, to))}`;
@@ -130,40 +131,40 @@ export const byteToScript = (bytes: Uint8Array, start: number) => {
 };
 
 export const byteToData = (bytes: Uint8Array, start: number) => {
-  const count = getNumberFromBytes(bytes, LENGTH_SIZE, start);
+  const count = P_SHORT(bytes, start).value;
   const fields = [];
   let shift = LENGTH_SIZE;
 
   for (let i = 0; i < count; i++) {
 
-    const keyLength = getNumberFromBytes(bytes, LENGTH_SIZE, start + shift);
+    const keyLength = P_SHORT(bytes, start + shift).value;
     shift += LENGTH_SIZE;
     const key = byteToString(keyLength)(bytes, start + shift).value;
     shift += keyLength;
 
-    const fieldTypeCode = getNumberFromBytes(bytes, 1, start + shift);
+    const fieldTypeCode = P_BYTE(bytes, start + shift).value;
     shift += 1;
     const type = getDataTxFieldTypeByCode(fieldTypeCode);
     let value;
 
     switch (fieldTypeCode) {
       case DATA_TRANSACTION_FIELD_TYPES.INTEGER:
-        value = byteToLong(LONG_BYTES_SIZE)(bytes, start + shift).value;
+        value = P_LONG(bytes, start + shift).value;
         shift += LONG_BYTES_SIZE;
         break;
       case DATA_TRANSACTION_FIELD_TYPES.BOOLEAN:
-        const booleanData = byteToBoolean(bytes, start + shift);
+        const booleanData = P_BOOLEAN(bytes, start + shift);
         value = booleanData.value;
         shift += booleanData.shift;
         break;
       case DATA_TRANSACTION_FIELD_TYPES.BINARY:
-        const binaryLength = getNumberFromBytes(bytes, LENGTH_SIZE, start + shift);
+        const binaryLength = P_SHORT(bytes, start + shift).value;
         shift += LENGTH_SIZE;
         value = `base64:${fromByteArray(bytes.slice(start + shift, start + shift + binaryLength))}`;
         shift += binaryLength;
         break;
       case DATA_TRANSACTION_FIELD_TYPES.STRING:
-        const length = getNumberFromBytes(bytes, LENGTH_SIZE, start + shift);
+        const length = P_SHORT(bytes, start + shift).value;
         shift += LENGTH_SIZE;
         value = byteToString(length)(bytes, start + shift).value;
         shift += length;
@@ -176,6 +177,6 @@ export const byteToData = (bytes: Uint8Array, start: number) => {
   return {value: fields, shift};
 };
 
-export const getNumberFromBytes = (bytes: Uint8Array, length: number, start = 0) => {
-  return byteToNumber(length)(bytes, start).value;
-};
+// export const getNumberFromBytes = (bytes: Uint8Array, length: number, start = 0) => {
+//   return byteToNumber(length)(bytes, start).value;
+// };
