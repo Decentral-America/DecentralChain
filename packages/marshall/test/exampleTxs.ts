@@ -6,14 +6,15 @@ export const issueTx = {
   fee: 100000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421434,
-  chainId: 'W',
+  chainId: 87,
   proofs:
     ['TVMCuJAb52AqLZnJHsZoWhjmULk27hzbzy7n3LsrwivdsCQ6gQpn8TtVwYuYhAZVcCLkbm4yznGCgrV96spafcp'],
   id: '3TZ1AWMeVskdy96rNo9AiyegimGyDyXr55MbDTQX4ZXM',
   assetId: 'test',
   quantity: 10000,
   name: 'test',
-  description: 'tratata'
+  description: 'tratata',
+  script: null
 }
 
 export const transferTx = {
@@ -25,21 +26,22 @@ export const transferTx = {
   proofs:
     ['22J76sGhLRo3S5pkqGjCi9fijpEeGGRmnv7canxeon2n2MNx1HhvKaBz2gYTdpJQohmUusRKR3yoCAHptRnJ1Fwe'],
   id: 'EG3WvPWWEU5DdJ7xfB3Y5TRJNzMpt6urgKoP7docipvW',
-  recipient: 'aaaa',
-  amount: 10000
+  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
+  amount: 10000,
+  attachment: ''
 }
 
 export const reissueTx = {
   type: 5,
   version: 2,
-  chainId: 'W',
+  chainId: 87,
   fee: 100000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421477,
   proofs:
     ['mJ3F7io67rPTqQ6ATvcqNVau7CUvunB6iucxX5LcYJuxWkmoWnY59Yo4NtmCn53v5KhuhJVAZ9eqaznFCvJ1s1E'],
   id: '3b5sU6YiYS1B3NrSR3der4hwxN4nqc6xpmNPiKXgeAhm',
-  assetId: 'test',
+  assetId: 'HWrQzacRTf3iWYpcRXdCGd6vF9VU5fL6Psy1ypfJYoM6',
   quantity: 10000,
   reissuable: false
 }
@@ -47,14 +49,14 @@ export const reissueTx = {
 export const burnTx = {
   type: 6,
   version: 2,
-  chainId: 'W',
+  chainId: 87,
   fee: 100000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421523,
   proofs:
     ['3JYfajBS1KJFSu3cdkF3f3JpH9kGVPR1R1YEgV7LHCHJyQXa82k7SMu9rqwpMvAqCXoQeJa5rEQPF9NY9rnufUan'],
   id: '6X7Fe82PcVeU9qMtscBA2fBzrSf96PtAwrynViR3zRjP',
-  assetId: 'test',
+  assetId: 'HWrQzacRTf3iWYpcRXdCGd6vF9VU5fL6Psy1ypfJYoM6',
   quantity: 10000
 }
 
@@ -67,7 +69,7 @@ export const leaseTx = {
   proofs:
     ['26qYvpvh4fedfwbDB93VJDjhUsPQiHqnZuveFr5UtBpAwnStPjS95MgA92c72SRJdU3mPsHJc6SQAraVsu2SPMRc'],
   id: '5xhvoX9caefDAiiRgUzZQSUHyKfjW5Wx2v2Vr8QR9e4d',
-  recipient: 'sssss',
+  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
   amount: 10000
 }
 
@@ -77,11 +79,11 @@ export const cancelLeaseTx = {
   fee: 100000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421556,
-  chainId: 'W',
+  chainId: 87,
   proofs:
     ['5yytwFhmSJhPoRViBKt8AjYkBLxHYxgrs9mSPs3khT4iFLzqbkyyAYu7qbPsJ4iut8BKFFADX2J6hfVwxNFkHTjo'],
   id: '656pBWMAPfVMu1gbSZ5dd5WTRQzWNo2phfJsD2rDBKfh',
-  leaseId: 'test'
+  leaseId: '5xhvoX9caefDAiiRgUzZQSUHyKfjW5Wx2v2Vr8QR9e4d'
 }
 
 export const aliasTx = {
@@ -106,8 +108,8 @@ export const massTransferTx = {
     ['2Un2WpTiFBdhhh7nXd99ci3gAqonuz4xBkWrDS1MJ5fUo9AW12aiYXi3KvnRrmt3C7HqE3BrokzAnYAckd3ggu7D'],
   id: '7mEAv8DgVgo9xgg4nSMNBeFjuKUsnnqanQgqFw2VEKmG',
   transfers:
-    [{recipient: 'aaa', amount: 10000},
-      {recipient: 'aab', amount: 10000}]
+    [{recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: 10000},
+      {recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: 10000}]
 }
 
 export const dataTx = {
@@ -131,7 +133,7 @@ export const setScriptTx = {
   fee: 1000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421635,
-  chainId: 'W',
+  chainId: 87,
   proofs:
     ['35x1Rphm1mr24ELJgpLP6dK3wMW7cG6nWsFUcMF3RvxKr3UjEuo4NfYnQf6MEanD7bxBdKDuYxbBJZYQQ495ax3w'],
   id: 'J8SBGZzSLybdsgpFjDNxVwB8mixkZoEJkgHya3EiXXPc',
@@ -144,12 +146,12 @@ export const setAssetScriptTx = {
   fee: 1000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421652,
-  chainId: 'W',
+  chainId: 87,
   proofs:
     ['4ffQFcfv9NG8GtNB5c1yamFvEFoixvgYBHPmfwSAkZeVRiCwZvB2HWWiMcbiujGhWGxXnho37bWqELnQ6DBPCaj4'],
   id: '4ERUXALAziaWJ1Acsmpnfjgtv1ixHSWXRp5dBR837o4e',
   script: 'base64:AQa3b8tH',
-  assetId: ''
+  assetId: '5xhvoX9caefDAiiRgUzZQSUHyKfjW5Wx2v2Vr8QR9e4d'
 }
 
 export const exampleTxs = {

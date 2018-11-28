@@ -63,7 +63,7 @@ const createProcessor = <T, R extends IFieldProcessor<T>>(fields: R[]) => ({
   }
 })
 
-const txFields = {
+const txFields: Record<string, IFieldProcessor<any>> = {
   alias: {
     name: 'alias',
     toBytes: LEN(SHORT)(STRING),
@@ -76,7 +76,7 @@ const txFields = {
   },
   assetDescription: {
     name: 'description',
-    tyBytes: LEN(SHORT)(STRING),
+    toBytes: LEN(SHORT)(STRING),
     fromBytes: byteToStringWithLength
   },
   assetId: {
@@ -86,7 +86,7 @@ const txFields = {
   },
   assetName: {
     name: 'name',
-    tyBytes: LEN(SHORT)(STRING),
+    toBytes: LEN(SHORT)(STRING),
     fromBytes: byteToStringWithLength
   },
   attachment: {
@@ -341,22 +341,22 @@ export interface ILongFactory<LONG> {
   toString(value: LONG): string
 }
 
-export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) => concat(
-  ...headerSchema.map(field => field.toBytes(tx[field.name])),
-  // Compiler thinks that toBytes newer equals LONG based on types
-  ...bodySchema.map(field => field.toBytes === <any>LONG && lf ? field.toBytes(lf.toString(tx[field.name]) as any) : field.toBytes(tx[field.name])),
-  ...proofsSchema.map(field => field.toBytes(tx[field.name])),
-);
+// export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) => concat(
+//   ...headerSchema.map(field => field.toBytes(tx[field.name])),
+//   // Compiler thinks that toBytes newer equals LONG based on types
+//   ...bodySchema.map(field => field.toBytes === <any>LONG && lf ? field.toBytes(lf.toString(tx[field.name]) as any) : field.toBytes(tx[field.name])),
+//   ...proofsSchema.map(field => field.toBytes(tx[field.name])),
+// );
 
-// export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) =>{
-//   const allFields = headerSchema.concat(bodySchema).concat(proofsSchema);
-//   let result = Uint8Array.from([])
-//   allFields.forEach(({name, toBytes}) => {
-//     const value = toBytes(tx[name]);
-//     result = concat(result, value)
-//   })
-//   return result
-// };
+export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) =>{
+  const allFields = headerSchema.concat(bodySchema).concat(proofsSchema);
+  let result = Uint8Array.from([])
+  allFields.forEach(({name, toBytes}) => {
+    const value = toBytes(tx[name]);
+    result = concat(result, value)
+  })
+  return result
+};
 
 export const parserFromSchema = <T, R extends IFieldProcessor<T>, LONG = string>(bodySchema: R, lf?: ILongFactory<LONG>) => (bytes: Uint8Array) => {
   const allFields = headerSchema.concat(bodySchema).concat(proofsSchema);

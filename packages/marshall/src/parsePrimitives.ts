@@ -47,7 +47,7 @@ export const P_LONG: TParser<Long> =  (bytes, start = 0) => ({
   shift: 8
 });
 
-export const P_BOOLEAN = (bytes: Uint8Array, start: number) => {
+export const P_BOOLEAN = (bytes: Uint8Array, start: number = 0) => {
   const value = !!bytes[start];
   return {value, shift: 1};
 };
@@ -57,7 +57,7 @@ const byteToString = (shift: number) => (bytes: Uint8Array, start: number) => {
   return {shift, value};
 };
 
-export const byteToStringWithLength = (bytes: Uint8Array, start: number) => {
+export const byteToStringWithLength = (bytes: Uint8Array, start: number = 0) => {
   const lengthInfo = P_SHORT(bytes, start)//byteToNumber(LENGTH_SIZE)(bytes, start);
   const {value} = byteToString(lengthInfo.value)(bytes, start + LENGTH_SIZE);
   return {shift: lengthInfo.value + LENGTH_SIZE, value};
@@ -80,7 +80,7 @@ export const byteToBase58 = (bytes: Uint8Array, start: number = 0, length?: numb
 //   return {shift, value};
 // };
 
-export const byteToAddressOrAlias = (bytes: Uint8Array, start: number) => {
+export const byteToAddressOrAlias = (bytes: Uint8Array, start: number = 0) => {
   if (bytes[start] === ALIAS_VERSION) {
     const aliasData = byteToStringWithLength(bytes, start + 2);
     return {shift: aliasData.shift + 2, value: aliasData.value};
@@ -89,13 +89,13 @@ export const byteToAddressOrAlias = (bytes: Uint8Array, start: number) => {
   }
 };
 
-export const byteNewAliasToString = (bytes: Uint8Array, start: number) => {
+export const byteNewAliasToString = (bytes: Uint8Array, start: number = 0) => {
   const shift = P_SHORT(bytes, start).value + LENGTH_SIZE;
   const {value} = byteToStringWithLength(bytes, start);
   return {shift, value};
 };
 
-export const byteToTransfers = (bytes: Uint8Array, start: number) => {
+export const byteToTransfers = (bytes: Uint8Array, start: number = 0) => {
   const count = P_SHORT(bytes, start).value;
   const transfers = [];
   let shift = LENGTH_SIZE;
@@ -115,11 +115,11 @@ export const byteToTransfers = (bytes: Uint8Array, start: number) => {
   return {shift, value: transfers};
 };
 
-export const byteToScript = (bytes: Uint8Array, start: number) => {
+export const byteToScript = (bytes: Uint8Array, start: number = 0) => {
   const VERSION_LENGTH = 1;
 
   if (bytes[start] === 0) {
-    return {shift: VERSION_LENGTH, value: 'base64:'};
+    return {shift: VERSION_LENGTH, value: null};
   }
 
   const lengthInfo = P_SHORT(bytes, start + VERSION_LENGTH);
@@ -130,7 +130,7 @@ export const byteToScript = (bytes: Uint8Array, start: number) => {
   return {value, shift: to - start};
 };
 
-export const byteToData = (bytes: Uint8Array, start: number) => {
+export const byteToData = (bytes: Uint8Array, start: number = 0) => {
   const count = P_SHORT(bytes, start).value;
   const fields = [];
   let shift = LENGTH_SIZE;
