@@ -1,10 +1,7 @@
-import * as Long from 'long';
 import {
   BASE58_STRING,
-  BASE64_STRING,
   BOOL,
   BYTE,
-  BYTES, COUNT,
   LEN,
   LONG,
   OPTION, SCRIPT,
@@ -13,12 +10,11 @@ import {
 } from './serializePrimitives';
 import {
   byteNewAliasToString, byteToAddressOrAlias,
-  byteToBase58, P_BOOLEAN, byteToData,
+  byteToBase58, P_BOOLEAN,
   byteToScript,
-  byteToStringWithLength, byteToTransfers,
-  P_LONG, P_OPTION, P_SHORT, TParser, P_BYTE
+  byteToStringWithLength,
+  P_LONG, P_OPTION, TParser, P_BYTE
 } from './parsePrimitives'
-import {concat, range} from './libs/utils'
 
 //Todo: import this enum from ts-types package
 export enum TRANSACTION_TYPE {
@@ -46,9 +42,9 @@ export enum DATA_FIELD_TYPE {
   BINARY = 'binary'
 }
 
-type TSchema = TObject | TArray | TAnyOf | TDataTxField | TPrimitive;
+export type TSchema = TObject | TArray | TAnyOf | TDataTxField | TPrimitive;
 
-type TObject = {
+export type TObject = {
   name: string;
   type: 'object';
   schema: TSchema[];
@@ -59,14 +55,14 @@ export type TArray = {
   items: TSchema
 }
 
-type TAnyOf = {
+export type TAnyOf = {
   name: string;
   type: 'anyOf';
   discriminant: string;
   items: Map<string, TObject | TAnyOf>;
 }
 
-type TPrimitive = {
+export type TPrimitive = {
   name: string;
   type?: 'primitive';
   toBytes: (...args: any) => any;
@@ -79,12 +75,6 @@ export type TDataTxField = {
   type: 'dataTxField';
   items: Map<DATA_FIELD_TYPE, TSchema>;
 }
-
-
-export const parseHeader = (bytes: Uint8Array): { type: number, version: number } => ({
-  type: P_BYTE(bytes).value,
-  version: P_BYTE(bytes, 1).value
-})
 
 
 export namespace txFields {
@@ -213,11 +203,6 @@ export namespace txFields {
     items: dataTxField
   };
 }
-// const txFields = {
-//
-// }
-
-const proofsSchema: IFieldProcessor<any>[] = [];
 
 const aliasSchemaV2 = {
   name: 'aliasSchemaV2',
@@ -385,8 +370,6 @@ const transferSchemaV2 = {
   ]
 };
 
-const OrderSchema = []
-
 /**
  * Maps transaction types to schemas object. Schemas are written by keys. 0 - no version, n - version n
  */
@@ -430,14 +413,6 @@ export const schemasByTypeMap = {
   }
 };
 
-interface IFieldProcessor<T> {
-  name: string;
-  array?: boolean
-  schema?: IFieldProcessor<any>[]
-  toBytes?: TSerializer<T>;
-  fromBytes?: TParser<T>;
-}
-
 
 export interface ILongFactory<LONG> {
   fromString(value: string): LONG;
@@ -446,129 +421,5 @@ export interface ILongFactory<LONG> {
 }
 
 
-export const serializerFromSchema = <LONG = string | number>(schema: TSchema, lf?: ILongFactory<LONG>): TSerializer<any> => (obj: any) => {
-  let result = Uint8Array.from([]);
-
-  let serializer: TSerializer<any>,
-    itemBytes: Uint8Array;
-
-  if (schema.type === 'array') {
-    serializer = serializerFromSchema(schema.items, lf);
-    itemBytes = concat(...obj.map((item: any) => serializer((item))));
-    result = concat(result, SHORT(obj.length), itemBytes);
-  }
-  else if (schema.type === 'object') {
-    schema.schema.forEach(field => {
-      serializer = serializerFromSchema(field, lf);
-      itemBytes = serializer(obj[field.name]);
-      result = concat(result, itemBytes);
-    });
-  }
-  else if (schema.type === 'anyOf') {
-    const type = obj[schema.discriminant];
-    const typeSchema = schema.items.get(type);
-    if (typeSchema == null) {
-      throw new Error(`Serializer Error: Unknown anyOf type: ${schema.discriminant}.${type}`)
-    }
-    const typeCode = [...schema.items.values()].findIndex(schema => schema === typeSchema);
-    serializer = serializerFromSchema(typeSchema, lf);
-    itemBytes = serializer(obj);
-    result = concat(result, BYTE(typeCode), itemBytes);
-  }
-  else if (schema.type === 'primitive' || schema.type === undefined) {
-    result = concat(result, schema.toBytes(obj));
-  }
-  else if (schema.type === 'dataTxField') {
-    const keyBytes = txFields.stringField('').toBytes(obj.key);
-    const type = obj.type;
-    const typeSchema = schema.items.get(type);
-    if (typeSchema == null) {
-      throw new Error(`Serializer Error: Unknown dataTxField type: ${type}`)
-    }
-    const typeCode = [...schema.items.values()].findIndex(schema => schema === typeSchema);
-    serializer = serializerFromSchema(typeSchema, lf);
-    itemBytes = serializer(obj.value);
-    result = concat(result, keyBytes, BYTE(typeCode), itemBytes)
-  } else {
-    throw new Error(`Serializer Error: Unknown schema type: ${schema!.type}`)
-  }
-
-  return result
-};
-
-//export const concatParsers = (parsers:TParser<any>[]) => (bytes: Uint8Array)
-
-export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFactory<LONG>): TParser<any> => (bytes: Uint8Array, start = 0) => {
-  let cursor: number = start;
-
-  if (schema.type === 'array') {
-    const result: any[] = [];
-    const {value: len, shift} = P_SHORT(bytes, start);
-    cursor += shift;
-
-    range(0, len).forEach(_ => {
-      const parser = parserFromSchema(schema.items, lf);
-      const {value, shift} = parser(bytes, cursor);
-      result.push(value);
-      cursor += shift;
-    });
-
-    return {value: result, shift: cursor - start}
-  }
-  else if (schema.type === 'object') {
-    const result: any = {};
-    schema.schema.forEach(field => {
-      const parser = parserFromSchema(field, lf);
-      const {value, shift} = parser(bytes, cursor);
-      cursor += shift;
-      if (value !== undefined) {
-        result[field.name] = value
-      }
-    });
-
-    return {value: result, shift: cursor - start}
-  }
-  else if (schema.type === 'anyOf') {
-    let {value: anyOfIndex, shift} = P_BYTE(bytes, cursor);
-    cursor += shift;
-    const item = Array.from(schema.items.values())[anyOfIndex];
-    const parser = parserFromSchema(item, lf);
-    const result = parser(bytes, cursor);
-    //cursor += result.shift;
-    return result
-  }
-  else if (schema.type === 'dataTxField') {
-    const key = byteToStringWithLength(bytes, cursor);
-    cursor += key.shift
-    let dataType = P_BYTE(bytes, cursor);
-    cursor += dataType.shift;
-    const itemRecord = [...schema.items].find((_,i) => i === dataType.value);
-    if (!itemRecord){
-      throw new Error(`Parser Error: Unknown dataTxField type: ${dataType.value}`)
-    }
-    const parser = parserFromSchema(itemRecord![1], lf);
-    const result = parser(bytes, cursor);
-    //cursor += result.shift;
-    return {
-      value: {
-        value:result.value,
-        key: key.value,
-        type: itemRecord[0]
-      },
-      shift: result.shift + key.shift + dataType.shift}
-  }
-  else if (schema.type === 'primitive' || schema.type === undefined) {
-    const parser = schema.fromBytes;
-    let {value, shift} = parser(bytes, start);
-
-    //Capture LONG Parser and convert strings desired instance if longFactory is present
-    if (parser === P_LONG && lf) {
-      value = lf.fromString(value)
-    }
-    return {value, shift: shift}
-  } else {
-    throw new Error(`Parser Error: Unknown schema type: ${schema!.type}`)
-  }
-};
 
 

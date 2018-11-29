@@ -1,4 +1,6 @@
-import {schemasByTypeMap, serializerFromSchema, parserFromSchema, parseHeader, ILongFactory,} from "./txSchemas";
+import {schemasByTypeMap, ILongFactory,} from "./txSchemas";
+import {serializerFromSchema} from "./serialize";
+import {parseHeader, parserFromSchema} from "./parse";
 
 export function serialize<LONG = string | number>(tx: any, longFactory?: ILongFactory<LONG>): Uint8Array {
   const {type, version} = tx;

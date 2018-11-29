@@ -1,6 +1,4 @@
 import { LONG, SHORT, BYTE, BYTES, STRING, INT, BOOL, OPTION, COUNT, LEN, BASE58_STRING, BASE64_STRING, one, zero } from '../src/serializePrimitives';
-import { serialize, parse} from "../src";
-import {exampleTxs} from "./exampleTxs";
 
 const string = 'TestString'
 const bytes = [84, 101, 115, 116, 83, 116, 114, 105, 110, 103]
@@ -64,14 +62,4 @@ describe('Basic serialization', ()=> {
   it('BASE64_STRING', () => {
     expect(BASE64_STRING(base64)).toEqual(Uint8Array.from(bytes))
   })
-})
-
-describe('Tx serialize/parse', ()=> {
-  Object.entries(exampleTxs).forEach(([type, tx]) => {
-    it(`Type: ${type}`, () => {
-      const bytes = serialize(tx)
-      const parsed = parse<number>(bytes, {toString: (x)=>String(x),fromString:(x)=>parseInt(x)})
-      expect(tx).toMatchObject(parsed)
-    })
-  });
 })
