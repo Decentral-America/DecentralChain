@@ -46,42 +46,40 @@ export enum DATA_FIELD_TYPE {
   BINARY = 'binary'
 }
 
-type TSchema = TObject | TArray | TAnyOf | TPrimitive
+type TSchema = TObject | TArray | TAnyOf | TDataTxField | TPrimitive;
+
 type TObject = {
   name: string;
   type: 'object';
   schema: TSchema[];
 }
-type TArray = {
+export type TArray = {
   name: string;
   type: 'array';
   items: TSchema
 }
+
 type TAnyOf = {
   name: string;
   type: 'anyOf';
   discriminant: string;
   items: Map<string, TObject | TAnyOf>;
 }
+
 type TPrimitive = {
   name: string;
-  type: 'primitive' | undefined;
+  type?: 'primitive';
   toBytes: (...args: any) => any;
   fromBytes: (...args: any) => any;
 }
-type WithName = {
-  name: string
+
+//Data tx field serializes differently. It has type AFTER key field!!!
+export type TDataTxField = {
+  name: string;
+  type: 'dataTxField';
+  items: Map<DATA_FIELD_TYPE, TSchema>;
 }
 
-
-const typeMap: any = {
-  integer: ['integer', 0, LONG],
-  number: ['integer', 0, LONG],
-  boolean: ['boolean', 1, BYTE],
-  string: ['string', 3, LEN(SHORT)(STRING)],
-  binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s.slice(7))], // Slice base64: part
-  _: ['binary', 2, LEN(SHORT)(BYTES)],
-}
 
 export const parseHeader = (bytes: Uint8Array): { type: number, version: number } => ({
   type: P_BYTE(bytes).value,
@@ -90,104 +88,99 @@ export const parseHeader = (bytes: Uint8Array): { type: number, version: number 
 
 
 export namespace txFields {
+
+  //Field constructors
+  export const longField = (name: string) => ({
+    name,
+    toBytes: LONG,
+    fromBytes: P_LONG
+  });
+
+  export const byteField = (name: string) => ({
+    name,
+    toBytes: BYTE,
+    fromBytes: P_BYTE
+  });
+
+  export const booleanField = (name: string) => ({
+    name,
+    toBytes: BOOL,
+    fromBytes: P_BOOLEAN
+  });
+
+  export const stringField = (name: string) => ({
+    name,
+    toBytes: LEN(SHORT)(STRING),
+    fromBytes: byteToStringWithLength
+  });
+
+  // Primitive fields
   export const alias = {
     name: 'alias',
     toBytes: LEN(SHORT)(STRING),
     fromBytes: byteNewAliasToString
   };
-  export const amount = {
-    name: 'amount',
-    toBytes: LONG,
-    fromBytes: P_LONG
-  }
-  export const assetDescription = {
-    name: 'description',
-    toBytes: LEN(SHORT)(STRING),
-    fromBytes: byteToStringWithLength
-  }
+  export const amount = longField('amount');
+
+  export const assetDescription = stringField('description');
+
   export const assetId = {
     name: 'assetId',
     toBytes: BASE58_STRING,
     fromBytes: byteToBase58
-  }
-  export const assetName = {
-    name: 'name',
-    toBytes: LEN(SHORT)(STRING),
-    fromBytes: byteToStringWithLength
-  }
-  export const attachment = {
-    name: 'attachment',
-    toBytes: LEN(SHORT)(STRING),
-    fromBytes: byteToStringWithLength
-  }
-  export const chainId = {
-    name: 'chainId',
-    toBytes: BYTE,
-    fromBytes: P_BYTE
-  }
-  export const data = {
-    name: 'data',
-    //Todo: Rewrite,using only node data types
-    toBytes: COUNT(SHORT)((x: any) => concat(LEN(SHORT)(STRING)(x.key), [typeMap[x.type][1]], typeMap[x.type][2](x.value))),
-    fromBytes: byteToData
-  }
-  export const decimals = {
-    name: 'decimals',
-    toBytes: BYTE,
-    fromBytes: P_BYTE,
-  }
-  export const fee = {
-    name: 'fee',
-    toBytes: LONG,
-    fromBytes: P_LONG
-  }
+  };
+  export const assetName = stringField('name');
+
+  export const attachment = stringField('attachment');
+
+  export const chainId = byteField('chainId');
+
+  export const decimals = byteField('decimals');
+
+  export const fee = longField('fee');
+
   export const leaseAssetId = {
     name: 'leaseAssetId',
     toBytes: OPTION(BASE58_STRING),
     fromBytes: P_OPTION(byteToBase58)
-  }
+  };
   export const leaseId = {
     name: 'leaseId',
     toBytes: BASE58_STRING,
     fromBytes: byteToBase58
-  }
+  };
   export const optionalAssetId = {
     name: 'assetId',
     toBytes: OPTION(BASE58_STRING),
     fromBytes: P_OPTION(byteToBase58)
-  }
-  export const quantity = {
-    name: 'quantity',
-    toBytes: LONG,
-    fromBytes: P_LONG
-  }
-  export const reissuable = {
-    name: 'reissuable',
-    toBytes: BOOL,
-    fromBytes: P_BOOLEAN
-  }
+  };
+  export const quantity = longField('quantity');
+
+  export const reissuable = booleanField('reissuable');
+
   export const recipient = {
     name: 'recipient',
     toBytes: BASE58_STRING,
     fromBytes: byteToAddressOrAlias
-  }
+  };
   export const script = {
     name: 'script',
     toBytes: SCRIPT,
     fromBytes: byteToScript
-  }
+  };
   export const senderPublicKey = {
     name: 'senderPublicKey',
     toBytes: BASE58_STRING,
     fromBytes: byteToBase58,
-  }
+  };
 
-  export const timestamp = {
-    name: 'timestamp',
-    toBytes: LONG,
-    fromBytes: P_LONG
-  }
+  export const timestamp = longField('timestamp');
 
+  export const type = byteField('type');
+
+  export const version = byteField('version');
+
+  // Complex fields
   export const transfer = {
     name: 'transfer',
     type: 'object',
@@ -195,26 +188,30 @@ export namespace txFields {
       recipient,
       amount
     ]
-  }
+  };
 
   export const transfers = {
     name: 'transfers',
     type: 'array',
     items: transfer
-  }
+  };
 
-  export const type = {
-    name: 'type',
-    toBytes: BYTE,
-    fromBytes: P_BYTE
-  }
-  export const version = {
-    name: 'version',
-    toBytes: BYTE,
-    fromBytes: P_BYTE
-  }
+  export const dataTxField: TDataTxField = {
+    name: 'dataTxField',
+    type: 'dataTxField',
+    items: new Map<DATA_FIELD_TYPE, TSchema>([
+      [DATA_FIELD_TYPE.INTEGER, longField('value')],
+      [DATA_FIELD_TYPE.BOOLEAN, booleanField('value')],
+      [DATA_FIELD_TYPE.STRING, stringField('value')],
+      [DATA_FIELD_TYPE.BINARY, stringField('value')]
+    ])
+  };
 
-
+  export const data: TArray = {
+    name: 'data',
+    type: 'array',
+    items: dataTxField
+  };
 }
 // const txFields = {
 //
@@ -448,17 +445,6 @@ export interface ILongFactory<LONG> {
   toString(value: LONG): string
 }
 
-export const defaultLongFactory: ILongFactory<string | number> = {
-  fromString: v => v,
-  toString: v => v.toString()
-}
-
-// export const serializerFromSchema = <T, R extends IFieldProcessor<T>, LONG = string | number>(bodySchema: R[], lf?: ILongFactory<LONG>) => (tx: any) => concat(
-//   ...headerSchema.map(field => field.toBytes(tx[field.name])),
-//   // Compiler thinks that toBytes newer equals LONG based on types
-//   ...bodySchema.map(field => field.toBytes === <any>LONG && lf ? field.toBytes(lf.toString(tx[field.name]) as any) : field.toBytes(tx[field.name])),
-//   ...proofsSchema.map(field => field.toBytes(tx[field.name])),
-// );
 
 export const serializerFromSchema = <LONG = string | number>(schema: TSchema, lf?: ILongFactory<LONG>): TSerializer<any> => (obj: any) => {
   let result = Uint8Array.from([]);
@@ -470,24 +456,39 @@ export const serializerFromSchema = <LONG = string | number>(schema: TSchema, lf
     serializer = serializerFromSchema(schema.items, lf);
     itemBytes = concat(...obj.map((item: any) => serializer((item))));
     result = concat(result, SHORT(obj.length), itemBytes);
-  } else if (schema.type === 'object') {
+  }
+  else if (schema.type === 'object') {
     schema.schema.forEach(field => {
       serializer = serializerFromSchema(field, lf);
       itemBytes = serializer(obj[field.name]);
       result = concat(result, itemBytes);
     });
-  } else if (schema.type === 'anyOf') {
-    const item = obj[schema.name];
-    const type = item[schema.discriminant];
+  }
+  else if (schema.type === 'anyOf') {
+    const type = obj[schema.discriminant];
     const typeSchema = schema.items.get(type);
     if (typeSchema == null) {
       throw new Error(`Serializer Error: Unknown anyOf type: ${schema.discriminant}.${type}`)
     }
+    const typeCode = [...schema.items.values()].findIndex(schema => schema === typeSchema);
     serializer = serializerFromSchema(typeSchema, lf);
-    itemBytes = serializer(item);
-    result = concat(result, itemBytes);
-  } else if (schema.type === 'primitive' || schema.type === undefined) {
+    itemBytes = serializer(obj);
+    result = concat(result, BYTE(typeCode), itemBytes);
+  }
+  else if (schema.type === 'primitive' || schema.type === undefined) {
     result = concat(result, schema.toBytes(obj));
+  }
+  else if (schema.type === 'dataTxField') {
+    const keyBytes = txFields.stringField('').toBytes(obj.key);
+    const type = obj.type;
+    const typeSchema = schema.items.get(type);
+    if (typeSchema == null) {
+      throw new Error(`Serializer Error: Unknown dataTxField type: ${type}`)
+    }
+    const typeCode = [...schema.items.values()].findIndex(schema => schema === typeSchema);
+    serializer = serializerFromSchema(typeSchema, lf);
+    itemBytes = serializer(obj.value);
+    result = concat(result, keyBytes, BYTE(typeCode), itemBytes)
   } else {
     throw new Error(`Serializer Error: Unknown schema type: ${schema!.type}`)
   }
@@ -509,23 +510,23 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
       const parser = parserFromSchema(schema.items, lf);
       const {value, shift} = parser(bytes, cursor);
       result.push(value);
-      cursor = shift;
+      cursor += shift;
     });
 
-    return {value: result, shift: cursor}
+    return {value: result, shift: cursor - start}
   }
   else if (schema.type === 'object') {
     const result: any = {};
     schema.schema.forEach(field => {
       const parser = parserFromSchema(field, lf);
       const {value, shift} = parser(bytes, cursor);
-      cursor = shift;
-      if (value !== undefined){
+      cursor += shift;
+      if (value !== undefined) {
         result[field.name] = value
       }
     });
 
-    return {value: result, shift: cursor}
+    return {value: result, shift: cursor - start}
   }
   else if (schema.type === 'anyOf') {
     let {value: anyOfIndex, shift} = P_BYTE(bytes, cursor);
@@ -533,17 +534,38 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     const item = Array.from(schema.items.values())[anyOfIndex];
     const parser = parserFromSchema(item, lf);
     const result = parser(bytes, cursor);
-    cursor += result.shift;
+    //cursor += result.shift;
     return result
-  } else if (schema.type === 'primitive' || schema.type === undefined) {
+  }
+  else if (schema.type === 'dataTxField') {
+    const key = byteToStringWithLength(bytes, cursor);
+    cursor += key.shift
+    let dataType = P_BYTE(bytes, cursor);
+    cursor += dataType.shift;
+    const itemRecord = [...schema.items].find((_,i) => i === dataType.value);
+    if (!itemRecord){
+      throw new Error(`Parser Error: Unknown dataTxField type: ${dataType.value}`)
+    }
+    const parser = parserFromSchema(itemRecord![1], lf);
+    const result = parser(bytes, cursor);
+    //cursor += result.shift;
+    return {
+      value: {
+        value:result.value,
+        key: key.value,
+        type: itemRecord[0]
+      },
+      shift: result.shift + key.shift + dataType.shift}
+  }
+  else if (schema.type === 'primitive' || schema.type === undefined) {
     const parser = schema.fromBytes;
     let {value, shift} = parser(bytes, start);
 
     //Capture LONG Parser and convert strings desired instance if longFactory is present
-    if (parser === P_LONG && lf){
+    if (parser === P_LONG && lf) {
       value = lf.fromString(value)
     }
-    return {value, shift: start + shift}
+    return {value, shift: shift}
   } else {
     throw new Error(`Parser Error: Unknown schema type: ${schema!.type}`)
   }
