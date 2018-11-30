@@ -2,6 +2,7 @@ import {BYTE, SHORT, TSerializer} from "./serializePrimitives";
 import {concat} from "./libs/utils";
 import {ILongFactory, TSchema, txFields} from "./txSchemas";
 
+// FixMe: currently longfactory does nothing. Maybe we should remove ot Altogether
 export const serializerFromSchema = <LONG = string | number>(schema: TSchema, lf?: ILongFactory<LONG>): TSerializer<any> => (obj: any) => {
   let result = Uint8Array.from([]);
 

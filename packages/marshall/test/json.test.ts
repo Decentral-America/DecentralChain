@@ -1,5 +1,6 @@
-import {parseJSON} from "../src/toAndFromJSON";
+import {parse, parseJSON, serialize, stringify} from "../src";
 import Long = require("long");
+import {exampleTxs} from "./exampleTxs";
 
 describe('Basic serialization', ()=> {
   const txJson = `{"type":12,"version":1,"senderPublicKey":"7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh",
@@ -17,4 +18,16 @@ describe('Basic serialization', ()=> {
     const parsed = parseJSON(txJson, {toString:(x:any)=>x, fromString: x=> Long.fromString(x)});
     expect(parsed.data[3].value).toBeInstanceOf(Long)
   })
+
+
+});
+
+describe('All tx json to and from', ()=>{
+  Object.entries(exampleTxs).forEach(([type, tx]) => {
+    it(`Type: ${type}. toJSON, fromJSON`, () => {
+      const str = stringify(tx);
+      const parsed = parseJSON(str)
+      expect(tx).toMatchObject(parsed)
+    })
+  });
 });

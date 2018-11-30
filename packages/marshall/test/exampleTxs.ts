@@ -124,10 +124,10 @@ export const dataTx = {
     ['5AMn7DEwZ6VvDLkJNdP5EW1PPJQKeWjy8qp5HoCGWaWWEPYdr1Ewkqor6NfLPDrGQdHd5DFUoE7CtwSrfAUMKLAY'],
   id: 'F7fkrYuJAsJfJRucwty7dcBoMS95xBufxBi7AXqCFgXg',
   data: [
-    {type: 'binary', key: 'a', value: 'base64:AQIDBA=='},
-    {type: 'binary',key:'b', value: 'base64:YXNkYQ=='},
-    {type: 'boolean', key: 'c', value: true},
-    {type: 'integer', key: 'd', value: 1000}
+    {type: 'binary', key: 'aspen', value: 'base64:AQIDBA=='},
+    {type: 'binary',key:'brittany', value: 'base64:YXNkYQ=='},
+    {type: 'boolean', key: 'charlie', value: true},
+    {type: 'integer', key: 'douglas', value: 1000}
   ]
 }
 

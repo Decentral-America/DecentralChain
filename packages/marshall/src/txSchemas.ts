@@ -6,14 +6,14 @@ import {
   LONG,
   OPTION, SCRIPT,
   SHORT,
-  STRING, TSerializer
+  STRING
 } from './serializePrimitives';
 import {
   byteNewAliasToString, byteToAddressOrAlias,
   byteToBase58, P_BOOLEAN,
   byteToScript,
   byteToStringWithLength,
-  P_LONG, P_OPTION, TParser, P_BYTE
+  P_LONG, P_OPTION, P_BYTE
 } from './parsePrimitives'
 
 //Todo: import this enum from ts-types package
@@ -66,7 +66,7 @@ export type TPrimitive = {
   name: string;
   type?: 'primitive';
   toBytes: (...args: any) => any;
-  fromBytes: (...args: any) => any;
+  fromBytes: (bytes: Uint8Array) => any;
 }
 
 //Data tx field serializes differently. It has type AFTER key field!!!
@@ -417,7 +417,7 @@ export const schemasByTypeMap = {
 export interface ILongFactory<LONG> {
   fromString(value: string): LONG;
 
-  toString(value: LONG): string
+  toString?: (value: LONG) => string
 }
 
 
