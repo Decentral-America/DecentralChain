@@ -222,6 +222,35 @@ export namespace txFields {
   };
 }
 
+export const orderSchemaV0: TObject = {
+  name: 'orderSchemaV0',
+  type: 'object',
+  schema: [
+    txFields.senderPublicKey,
+    {...txFields.senderPublicKey, name: 'matcherPublicKey'},
+    {
+      name: 'assetPair',
+      type: 'object',
+      schema: [
+        txFields.optionalBase58field('amountAsset'),
+        txFields.optionalBase58field('priceAsset')
+      ]
+    },
+    {
+      name: 'orderType',
+      toBytes: (type: string) => BYTE(type === 'sell' ? 1 : 0),
+      fromBytes: (bytes: Uint8Array, start = 0) => P_BYTE(bytes, start).value === 1 ?
+        {value: 'sell', shift: 1} :
+        {value: 'buy', shift: 1}
+    },
+    txFields.longField('price'),
+    txFields.longField('amount'),
+    txFields.timestamp,
+    txFields.longField('expiration'),
+    txFields.longField('matcherFee')
+  ]
+};
+
 const aliasSchemaV2 = {
   name: 'aliasSchemaV2',
   type: 'object',
@@ -276,6 +305,22 @@ const dataSchemaV1 = {
     txFields.fee
   ]
 };
+
+const exchangeSchemaV0 = {
+  name: 'exchangeSchemaV0',
+  type: 'object',
+  schema: [
+    txFields.type,
+    {...orderSchemaV0, name: 'order1', withLength: true},
+    {...orderSchemaV0, name: 'order2', withLength: true},
+    txFields.longField('price'),
+    txFields.longField('amount'),
+    txFields.longField('buyMatcherFee'),
+    txFields.longField('sellMatcherFee'),
+    txFields.longField('fee'),
+    txFields.longField('timestamp'),
+  ]
+}
 
 const issueSchemaV2 = {
   name: 'issueSchemaV2',
@@ -400,34 +445,7 @@ const transferSchemaV2 = {
   ]
 };
 
-export const orderSchemaV1: TObject = {
-  name: 'orderSchemav1',
-  type: 'object',
-  schema: [
-    txFields.senderPublicKey,
-    {...txFields.senderPublicKey, name: 'matcherPublicKey'},
-    {
-      name: 'assetPair',
-      type: 'object',
-      schema: [
-        txFields.optionalBase58field('amountAsset'),
-        txFields.optionalBase58field('priceAsset')
-      ]
-    },
-    {
-      name: 'orderType',
-      toBytes: (type: string) => BYTE(type === 'sell' ? 1 : 0),
-      fromBytes: (bytes: Uint8Array, start = 0) => P_BYTE(bytes, start).value === 1 ?
-        {value: 'sell', shift: 1} :
-        {value: 'buy', shift: 1}
-    },
-    txFields.longField('price'),
-    txFields.longField('amount'),
-    txFields.timestamp,
-    txFields.longField('expiration'),
-    txFields.longField('matcherFee')
-  ]
-};
+
 /**
  * Maps transaction types to schemas object. Schemas are written by keys. 0 - no version, n - version n
  */
@@ -446,7 +464,9 @@ export const schemasByTypeMap = {
   [TRANSACTION_TYPE.BURN]: {
     2: burnSchemaV2
   },
-  [TRANSACTION_TYPE.EXCHANGE]: {},
+  [TRANSACTION_TYPE.EXCHANGE]: {
+    0: exchangeSchemaV0
+  },
   [TRANSACTION_TYPE.LEASE]: {
     2: leaseSchemaV2
   },

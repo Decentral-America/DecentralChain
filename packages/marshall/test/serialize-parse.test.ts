@@ -3,7 +3,7 @@ import {exampleTxs, order} from "./exampleTxs";
 import Long = require("long");
 import BigNumber from "bignumber.js";
 import {serializerFromSchema} from "../src/serialize";
-import {orderSchemaV1} from "../src/txSchemas";
+import {orderSchemaV0} from "../src/txSchemas";
 import {parserFromSchema} from "../src/parse";
 
 
@@ -17,8 +17,8 @@ describe('Tx serializeTx/parseTx', ()=> {
   });
 
   it('Should correctly serialize order', ()=>{
-    const bytes = serializerFromSchema(orderSchemaV1)(order);
-    const parsed = parserFromSchema<number>(orderSchemaV1, {toString: (x)=>String(x),fromString:(x)=>parseInt(x)})(bytes).value;
+    const bytes = serializerFromSchema(orderSchemaV0)(order);
+    const parsed = parserFromSchema<number>(orderSchemaV0, {toString: (x)=>String(x),fromString:(x)=>parseInt(x)})(bytes).value;
     expect(order).toMatchObject(parsed)
   });
 

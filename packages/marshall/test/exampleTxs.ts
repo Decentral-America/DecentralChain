@@ -72,6 +72,54 @@ export const leaseTx = {
   amount: 10000
 }
 
+export const exchangeTxV0 = {
+  "type": 7,
+  "id": "EKcZxn3aL2bxRCtwaps6C1cFLmvrKraatRd7a32DuQWn",
+  "sender": "3PJaDyprvekvPXPuAtxrapacuDJopgJRaU3",
+  "senderPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+  "fee": 300000,
+  "timestamp": 1534164407812,
+  "signature": "p6zQ8xDnD9VpxW83shqevxFor3mynHGakfwU3EgWz1CJpV2K3PbhLQeaEE3gsVQFo3W4XjmgEDDmJDVhgddKHx3",
+  "order1": {
+    "id": "3JyBBBYpkocXzVmoXNbvtzKe611iCdgPkbv7Zntiwq1U",
+    "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
+    "senderPublicKey": "8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd",
+    "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+    "assetPair": {
+      "amountAsset": "B1u2TBpTYHWCuMuKLnbQfLvdLJ3zjgPiy3iMS2TSYugZ",
+      "priceAsset": "Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck"
+    },
+    "orderType": "buy",
+    "price": 144300,
+    "amount": 24000684,
+    "timestamp": 1534150214000,
+    "expiration": 1534236614000,
+    "matcherFee": 300000,
+    "signature": "XUTCpGgGP2vQBdfRtTCAorW7hEwet1rpJjydTSneKgTzTfx4H477pbmKNcKkPw1rtt3Qaa3KTKZj77kr8dpvtLF"
+  },
+  "order2": {
+    "id": "GHNi7oxRFAonHUDidupMTNRsCz2A7e3LyHRWW6L6cRxf",
+    "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
+    "senderPublicKey": "8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd",
+    "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+    "assetPair": {
+      "amountAsset": "B1u2TBpTYHWCuMuKLnbQfLvdLJ3zjgPiy3iMS2TSYugZ",
+      "priceAsset": "Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck"
+    },
+    "orderType": "sell",
+    "price": 144300,
+    "amount": 9500884,
+    "timestamp": 1534164407000,
+    "expiration": 1534250807000,
+    "matcherFee": 300000,
+    "signature": "Q6dwZPfghTF7T3Q1pwHpRwF4Mro4CdygnZjQr8rDSKfYph1rnQR3yoA3pXNytw4wTVBCeqPqapP17WMFr5nee5D"
+  },
+  "price": 144300,
+  "amount": 2000802,
+  "buyMatcherFee": 25009,
+  "sellMatcherFee": 63177
+}
+
 export const cancelLeaseTx = {
   type: 9,
   version: 2,
@@ -174,8 +222,10 @@ export const setAssetScriptTx = {
 export const order = {
   orderType: 'buy',
   assetPair:
-    { amountAsset: undefined,
-      priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS' },
+    {
+      amountAsset: undefined,
+      priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS'
+    },
   price: 10,
   amount: 100000000,
   timestamp: 1544102345137,
@@ -184,14 +234,16 @@ export const order = {
   matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
   senderPublicKey: 'G62H1XE5rnaCgCCURV5pWwQHzWezZB7VkkVgqthdKgkj',
   proofs:
-    [ 'eebXEov2fRr3Bqr1iXtUcAJ8qZsUMomKpU6qbb3eETqTzZtkBR5UmQ7Jda23jXwrufEusgR1eoKDGQgBD2UGLQ6' ],
-  id: '2gP6g5z5fYQ7NoLZXEDijxymFQBToDSJDPm6UyNZ2H2R' }
+    ['eebXEov2fRr3Bqr1iXtUcAJ8qZsUMomKpU6qbb3eETqTzZtkBR5UmQ7Jda23jXwrufEusgR1eoKDGQgBD2UGLQ6'],
+  id: '2gP6g5z5fYQ7NoLZXEDijxymFQBToDSJDPm6UyNZ2H2R'
+}
 
 export const exampleTxs = {
   3: issueTx,
   4: transferTx,
   5: reissueTx,
   6: burnTx,
+  7: exchangeTxV0,
   8: leaseTx,
   9: cancelLeaseTx,
   10: aliasTx,
@@ -201,4 +253,5 @@ export const exampleTxs = {
   14: sponsorshipTx,
   15: setAssetScriptTx
 }
-  
+
+
