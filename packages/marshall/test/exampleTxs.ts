@@ -222,7 +222,7 @@ export const setAssetScriptTx = {
 export const contractInvocationTx = {
   "type": 16,
   "id": "AujdgmwxSt8Gk9dPBDUm7mDAyc4vP1SWoVNgUHFvS9hu",
-  "sender": "3N5GRqzDBhjVXnCn44baHcz2GoZy5qLxtTh",
+  chainId: 87,
   "senderPublicKey": "FM5ojNqW7e9cZ9zhPYGkpSP1Pcd8Z3e3MNKYVS5pGJ8Z",
   "fee": 100000,
   "timestamp": 1526910778245,

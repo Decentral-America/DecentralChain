@@ -35,11 +35,25 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     return {value: result, shift: cursor - start}
   }
   else if (schema.type === 'anyOf') {
-    let {value: anyOfIndex, shift} = P_BYTE(bytes, cursor);
-    cursor += shift;
-    const item = Array.from(schema.items.values())[anyOfIndex];
+    const typeInfo = P_BYTE(bytes, cursor);
+    cursor += typeInfo.shift;
+
+    const item = Array.from(schema.items.values())[typeInfo.value];
     const parser = parserFromSchema(item, lf);
-    return parser(bytes, cursor);
+    const {value, shift} = parser(bytes, cursor);
+    cursor += shift;
+
+    const discriminatorField = schema.discriminatorField || 'type';
+    const discriminatorValue = [...schema.items.keys()][typeInfo.value];
+    const valueField = schema.valueField || 'value';
+
+    return  {
+      value: {
+        [discriminatorField]: discriminatorValue,
+        [valueField]: value,
+      },
+      shift: cursor - start
+    }
   }
   else if (schema.type === 'dataTxField') {
     const key = byteToStringWithLength(bytes, cursor);
