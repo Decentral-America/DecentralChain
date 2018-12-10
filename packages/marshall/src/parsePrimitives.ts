@@ -20,7 +20,7 @@ export const P_OPTION = <T>(p: TParser<T>): TParser<Option<T>> => (bytes: Uint8A
 
 export const P_BYTE: TParser<number> = (bytes, start = 0) => ({value: bytes[start], shift: 1});
 
-export const P_SHORT: TParser<number> = (bytes, start = 0) => ({value: 16 * bytes[start] + bytes[start + 1], shift: 2});
+export const P_SHORT: TParser<number> = (bytes, start = 0) => ({value: 256 * bytes[start] + bytes[start + 1], shift: 2});
 
 export const P_LONG: TParser<string> = (bytes, start = 0) => ({
   value: Long.fromBytesBE(Array.from(bytes.slice(start, start + 8)), true).toString(),

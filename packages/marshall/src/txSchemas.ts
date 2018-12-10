@@ -13,7 +13,7 @@ import {
   byteToBase58, P_BOOLEAN,
   byteToScript,
   byteToStringWithLength,
-  P_LONG, P_OPTION, P_BYTE, P_SHORT, byteToBase58WithLength
+  P_LONG, P_OPTION, P_BYTE, byteToBase58WithLength
 } from './parsePrimitives'
 
 //Todo: import this enums from ts-types package

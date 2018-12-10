@@ -43,9 +43,8 @@ export namespace json {
 }
 
 
-
 export function convert<T = string, R = string>(tx: any, toLf?: ILongFactory<T>, fromLf?: ILongFactory<R>) {
-  return binary.parseTx(binary.serializeTx(tx, fromLf), toLf)
+  return {...binary.parseTx(binary.serializeTx(tx, fromLf), toLf), proofs: tx.proofs}
 }
 
 export function getSchema(type: number, version?: number) {
