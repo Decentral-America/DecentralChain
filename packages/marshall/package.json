@@ -1,5 +1,5 @@
 {
-  "name": "@waves/tx-parse-serialize",
+  "name": "@waves/parse-serialize",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
