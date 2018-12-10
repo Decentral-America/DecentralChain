@@ -58,7 +58,7 @@ export const P_BASE58_VAR = (lenParser: TParser<number>) => (bytes: Uint8Array, 
 
 export const P_BASE64 = (lenParser: TParser<number>) => (bytes: Uint8Array, start: number = 0) => {
   const lengthInfo = lenParser(bytes, start);
-  const value = `base64:${ Base64.fromByteArray(bytes.slice(start + lengthInfo.shift, start + lengthInfo.shift + lengthInfo.value))}}`;
+  const value = `base64:${ Base64.fromByteArray(bytes.slice(start + lengthInfo.shift, start + lengthInfo.shift + lengthInfo.value))}`;
   return {shift: lengthInfo.value + lengthInfo.shift, value};
 };
 

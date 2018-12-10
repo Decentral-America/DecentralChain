@@ -219,6 +219,25 @@ export const setAssetScriptTx = {
   assetId: '5xhvoX9caefDAiiRgUzZQSUHyKfjW5Wx2v2Vr8QR9e4d'
 }
 
+export const contractInvocationTx = {
+  "type": 16,
+  "id": "AujdgmwxSt8Gk9dPBDUm7mDAyc4vP1SWoVNgUHFvS9hu",
+  "sender": "3N5GRqzDBhjVXnCn44baHcz2GoZy5qLxtTh",
+  "senderPublicKey": "FM5ojNqW7e9cZ9zhPYGkpSP1Pcd8Z3e3MNKYVS5pGJ8Z",
+  "fee": 100000,
+  "timestamp": 1526910778245,
+  "proofs": ["CC1jQ4qkuVfMvB2Kpg2Go6QKXJxUFC8UUswUxBsxwisrR8N5s3Yc8zA6dhjTwfWKfdouSTAnRXCxTXb3T6pJq3T"],
+  "version": 1,
+  "contractAddress": "3N5GRqzDBhjVXnCn44baHcz2GoZy5qLxtTh",
+  "function": "foo",
+  "args": [
+    {
+      "key": "",
+      "type": "binary",
+      "value": "base64:YWxpY2U="
+    }
+  ]
+}
 export const order = {
   orderType: 'buy',
   assetPair:
@@ -251,7 +270,8 @@ export const exampleTxs = {
   12: dataTx,
   13: setScriptTx,
   14: sponsorshipTx,
-  15: setAssetScriptTx
+  15: setAssetScriptTx,
+  16: contractInvocationTx
 }
 
 

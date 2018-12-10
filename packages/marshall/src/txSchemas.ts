@@ -1,7 +1,7 @@
 import {
   BASE58_STRING, BASE64_STRING,
   BOOL,
-  BYTE, empty, INT,
+  BYTE, INT,
   LEN,
   LONG,
   OPTION, SCRIPT,
@@ -9,11 +9,9 @@ import {
   STRING
 } from './serializePrimitives';
 import {
-  byteNewAliasToString, byteToAddressOrAlias,
-  byteToBase58, P_BOOLEAN,
+  byteNewAliasToString, byteToAddressOrAlias, P_BOOLEAN,
   byteToScript,
-  byteToStringWithLength,
-  P_LONG, P_OPTION, P_BYTE, byteToBase58WithLength, P_BASE58_FIXED, P_BASE58_VAR, P_SHORT, P_STRING_VAR, P_BASE64, P_INT
+  P_LONG, P_OPTION, P_BYTE, P_BASE58_FIXED, P_BASE58_VAR, P_SHORT, P_STRING_VAR, P_BASE64, P_INT
 } from './parsePrimitives'
 
 //Todo: import this enums from ts-types package
@@ -120,7 +118,7 @@ export namespace txFields {
 
   export const base64field = (name: string) => ({
     name,
-    toBytes: BASE64_STRING,
+    toBytes: LEN(SHORT)(BASE64_STRING),
     fromBytes: P_BASE64(P_SHORT)
   })
 
