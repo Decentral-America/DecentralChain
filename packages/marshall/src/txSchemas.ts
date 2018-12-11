@@ -46,7 +46,7 @@ export type TSchema = TObject | TArray | TAnyOf | TDataTxField | TPrimitive;
 export type TObject = {
   name: string;
   type: 'object';
-  //For some reason object sometimes are needed to be serialized with length. Like WTF?
+  //Objects sometimes are needed to be serialized with length
   withLength?: boolean;
   schema: TSchema[];
 }
