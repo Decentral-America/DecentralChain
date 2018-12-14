@@ -119,7 +119,7 @@ export namespace api {
 
     export interface IExchangeTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
         type: TRANSACTION_TYPE.EXCHANGE;
-        senderPublicKey: string;
+        sender: string;
         price: LONG;
         amount: LONG;
         buyMatcherFee: LONG;
