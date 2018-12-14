@@ -59,7 +59,7 @@ export interface IDataTransactionEntryBinary {
 }
 
 export interface IExchangeTransactionOrder<LONG> extends IWithId, IWithSender, IWithProofs {
-    senderPublicKey: string;
+    sender: string;
     matcherPublicKey: string;
     assetPair: {
         amountAsset: string;
