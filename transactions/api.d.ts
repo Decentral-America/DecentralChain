@@ -5,6 +5,7 @@ import {
     IWithProofs,
     IWithSender, IWithVersion,
     TDataTransactionEntry,
+    IExchangeTransactionOrder,
     TRANSACTION_TYPE
 } from '..';
 
@@ -21,7 +22,8 @@ export namespace api {
         IMassTransferTransaction<LONG> |
         IDataTransaction<LONG> |
         ISetScriptTransaction<LONG> |
-        ISponsorship<LONG>
+        ISponsorship<LONG> |
+        IExchangeTransaction<LONG>;
 
     export type TTransactionMap<LONG> = {
         [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
@@ -34,7 +36,8 @@ export namespace api {
         [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransaction<LONG>,
         [TRANSACTION_TYPE.DATA]: IDataTransaction<LONG>,
         [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransaction<LONG>,
-        [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>
+        [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>,
+        [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransaction<LONG>
     };
 
     export interface IIssueTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
@@ -112,6 +115,17 @@ export namespace api {
         chainId: number;
         assetId: string;
         minSponsoredAssetFee: LONG;
+    }
+
+    export interface IExchangeTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+        type: TRANSACTION_TYPE.EXCHANGE;
+        senderPublicKey: string;
+        price: LONG;
+        amount: LONG;
+        buyMatcherFee: LONG;
+        sellMatcherFee: LONG;
+        order1: IExchangeTransactionOrder<LONG>;
+        order2: IExchangeTransactionOrder<LONG>;
     }
 
 }
