@@ -123,7 +123,7 @@ export function getAssetIdFromKey(key: string): string | null {
     }
     const id = (key.match(/<(.+)?>/) || [])[1];
 
-    return id || null;
+    return id && ORACLE_ASSET_FIELD_PATTERN.STATUS.replace(PATTERNS.ASSET_ID, `<${id}>`) === key ? id : null;
 }
 
 export function isString(some: string | null): some is string {

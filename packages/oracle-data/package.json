@@ -10,7 +10,7 @@
     "url": "https://github.com/wavesplatform/oracle-data"
   },
   "scripts": {
-    "build": "tsc && webpack",
+    "build": "tsc && NODE_ENV=production webpack --env.production --env.platform=web",
     "postpublish": "git push",
     "postversion": "npm publish",
     "test": "jest",

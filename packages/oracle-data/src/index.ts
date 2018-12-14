@@ -39,3 +39,6 @@ export function getDifferenceByFields(previous: Array<TDataTxField>, next: Array
 function toFields(some: TDataOrFields): Array<TDataTxField> {
     return Array.isArray(some) ? some : getFields(some);
 }
+
+export * from './interface';
+export * from './constants';
