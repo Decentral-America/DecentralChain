@@ -16,16 +16,17 @@ export interface IWithSender {
 }
 
 export interface IWithVersion {
-    version: number;
+    version?: number;
 }
 
 export interface IWithProofs {
+    signature?: string;
     /**
-     * Transaction signatures
+     * Transaction proofs
      * @minItems 0
      * @maxItems 8
      */
-    proofs: string[]
+    proofs?: string[]
 }
 
 export interface IMassTransferItem<LONG> {
@@ -57,6 +58,21 @@ export interface IDataTransactionEntryBinary {
     value: Uint8Array;
 }
 
+export interface IExchangeTransactionOrder<LONG> extends IWithId, IWithSender, IWithProofs {
+    senderPublicKey: string;
+    matcherPublicKey: string;
+    assetPair: {
+        amountAsset: string;
+        priceAsset: string;
+    },
+    orderType: string;
+    price: LONG;
+    amount: LONG;
+    timestamp: number;
+    expiration: number;
+    matcherFee: LONG;
+}
+
 export type TDataTransactionEntry<LONG> =
     IDataTransactionEntryInteger<LONG> |
     IDataTransactionEntryBoolean |
@@ -67,7 +83,6 @@ export interface ITransaction<LONG> {
     timestamp: number;
     fee: LONG;
 }
-
 
 export type TTransaction<LONG> =
     IIssueTransaction<LONG> |
@@ -80,7 +95,8 @@ export type TTransaction<LONG> =
     IMassTransferTransaction<LONG> |
     IDataTransaction<LONG> |
     ISetScriptTransaction<LONG> |
-    ISponsorship<LONG>
+    ISponsorship<LONG> |
+    IExchangeTransaction<LONG>;
 
 export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
@@ -93,7 +109,8 @@ export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransaction<LONG>,
     [TRANSACTION_TYPE.DATA]: IDataTransaction<LONG>,
     [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransaction<LONG>,
-    [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>
+    [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>,
+    [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransaction<LONG>,
 };
 
 export interface IIssueTransaction<LONG> extends ITransaction<LONG> {
@@ -155,6 +172,10 @@ export interface IMassTransferTransaction<LONG> extends ITransaction<LONG> {
 export interface IDataTransaction<LONG> extends ITransaction<LONG> {
     type: TRANSACTION_TYPE.DATA;
     data: Array<TDataTransactionEntry<LONG>>;
+}
+
+export interface IExchangeTransaction<LONG> extends ITransaction<LONG> {
+    type: TRANSACTION_TYPE.EXCHANGE;
 }
 
 export interface ISetScriptTransaction<LONG> extends ITransaction<LONG> {
