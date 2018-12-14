@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "removeComments": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "strict": true,
+    "outDir": "dist",
+    "lib": ["es6", "es7", "dom", "es5", "es2017.object"],
+    "baseUrl": "src",
+    "paths": {
+      "app/*": ["./app/*"]
+    }
+  },
+  "exclude": ["build", "node_modules", "test"]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@waves/oracle-data",
+  "version": "0.0.0",
+  "dependencies": {},
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "GIT",
+    "url": "https://github.com/wavesplatform/oracle-data"
+  },
+  "scripts": {
+    "build": "tsc && webpack",
+    "postpublish": "git push",
+    "postversion": "npm publish",
+    "test": "jest",
+    "prepare": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.2",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "testEnvironment": "jest-environment-node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.+(ts|tsx|js)"
+    ]
+  }
+}
