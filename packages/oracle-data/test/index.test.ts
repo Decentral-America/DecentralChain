@@ -14,7 +14,6 @@ const PROVIDER_DATA = {
     name: 'Provider name',
     link: 'https://some.provider.com',
     email: 'provider@mail.ru',
-    logo: 'some-logo',
     description: {
         en: 'Some en description!'
     }
@@ -95,7 +94,6 @@ const PROVIDER_FIELDS: Array<TDataTxField> = [
     { key: DATA_PROVIDER_KEYS.NAME, type: DATA_ENTRY_TYPES.STRING, value: PROVIDER_DATA.name },
     { key: DATA_PROVIDER_KEYS.LINK, type: DATA_ENTRY_TYPES.STRING, value: PROVIDER_DATA.link },
     { key: DATA_PROVIDER_KEYS.EMAIL, type: DATA_ENTRY_TYPES.STRING, value: PROVIDER_DATA.email },
-    { key: DATA_PROVIDER_KEYS.LOGO, type: DATA_ENTRY_TYPES.STRING, value: PROVIDER_DATA.logo },
     { key: DATA_PROVIDER_KEYS.LANG_LIST, type: DATA_ENTRY_TYPES.STRING, value: 'en' },
     {
         key: 'data_provider_description_<en>',

@@ -5,7 +5,6 @@ export interface IProviderData {
     name: string;
     link: string;
     email: string;
-    logo: string;
     version: DATA_PROVIDER_VERSIONS;
     description: Record<string, string>;
 }

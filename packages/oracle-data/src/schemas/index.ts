@@ -24,7 +24,6 @@ export const DATA_PROVIDER_VERSION_MAP = {
         processField(DATA_PROVIDER_KEYS.NAME, 'name', DATA_ENTRY_TYPES.STRING),
         processField(DATA_PROVIDER_KEYS.LINK, 'link', DATA_ENTRY_TYPES.STRING),
         processField(DATA_PROVIDER_KEYS.EMAIL, 'email', DATA_ENTRY_TYPES.STRING),
-        processField(DATA_PROVIDER_KEYS.LOGO, 'logo', DATA_ENTRY_TYPES.STRING),
         processDescription()
     )
 };
@@ -39,7 +38,6 @@ export const ASSETS_VERSION_MAP = {
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION), 'version', DATA_ENTRY_TYPES.INTEGER),
                     addAssetId(id),
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.STATUS), 'status', DATA_ENTRY_TYPES.INTEGER),
-                    processField(replacer(ORACLE_ASSET_FIELD_PATTERN.LOGO), 'logo', DATA_ENTRY_TYPES.STRING, false),
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.LINK), 'link', DATA_ENTRY_TYPES.STRING, false),
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.TICKER), 'ticker', DATA_ENTRY_TYPES.STRING, false),
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.EMAIL), 'email', DATA_ENTRY_TYPES.STRING, false),
@@ -67,7 +65,6 @@ export const DATA_TO_FIELDS = {
         toField('name', DATA_PROVIDER_KEYS.NAME, DATA_ENTRY_TYPES.STRING),
         toField('link', DATA_PROVIDER_KEYS.LINK, DATA_ENTRY_TYPES.STRING),
         toField('email', DATA_PROVIDER_KEYS.EMAIL, DATA_ENTRY_TYPES.STRING),
-        toField('logo', DATA_PROVIDER_KEYS.LOGO, DATA_ENTRY_TYPES.STRING),
         descriptionToField()
     ),
     ASSET: toFields(
