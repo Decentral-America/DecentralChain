@@ -64,7 +64,7 @@ export interface IBinaryDataTXField extends IBaseDataTx {
 
 export type TDataTxField = IStringDataTXField | IIntegerDataTXField | IBooleanDataTXField | IBinaryDataTXField;
 
-export type TSuspicious = STATUS_LIST.SCAM | STATUS_LIST.SUSPICIOUS;
+export type TSuspicious = STATUS_LIST.SCAM | STATUS_LIST.SUSPICIOUS | STATUS_LIST.NOT_VERIFY;
 export type TScamAsset = Partial<IProviderAsset> & { status: TSuspicious, id: string, version: DATA_PROVIDER_VERSIONS };
 export type TProviderAsset = TScamAsset | IProviderAsset;
 export type TDataOrFields = IProviderData | TProviderAsset | Array<TDataTxField>;

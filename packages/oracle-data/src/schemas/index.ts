@@ -10,7 +10,8 @@ import { addAssetId, processDescription, processField, schema } from '../respons
 import {
     addAssetVersion,
     addVersion,
-    descriptionToField, replaceKey,
+    descriptionToField,
+    replaceKey,
     toAssetDescription,
     toAssetField,
     toField,
@@ -34,6 +35,7 @@ export const ASSETS_VERSION_MAP = {
         switch (status) {
             case STATUS_LIST.SCAM:
             case STATUS_LIST.SUSPICIOUS:
+            case STATUS_LIST.NOT_VERIFY:
                 return schema<TProviderAsset>(
                     processField(replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION), 'version', DATA_ENTRY_TYPES.INTEGER),
                     addAssetId(id),
