@@ -45,7 +45,11 @@ export namespace json {
   }
 
   export function stringifyTx(tx: any): string {
-    const txWithStrings = convert(tx);
+    let txWithStrings = convert(tx);
+    //TODO: remove this when contract invocation tx is fixed
+    if (tx.type === 16){
+      txWithStrings = tx
+    }
     return txToJson(txWithStrings)
   }
 }
