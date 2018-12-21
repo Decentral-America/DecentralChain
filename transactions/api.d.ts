@@ -3,7 +3,9 @@ import {
     ITransaction,
     IWithId,
     IWithProofs,
-    IWithSender, IWithVersion,
+    IWithSignature,
+    IWithSender, 
+    IWithVersion,
     TDataTransactionEntry,
     IExchangeTransactionOrder,
     TRANSACTION_TYPE
@@ -107,7 +109,7 @@ export namespace api {
     export interface ISetScriptTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
         type: TRANSACTION_TYPE.SET_SCRIPT;
         chainId: number;
-        script: string | null //base64
+        script: string | null; //base64
     }
 
     export interface ISponsorship<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
@@ -124,8 +126,11 @@ export namespace api {
         amount: LONG;
         buyMatcherFee: LONG;
         sellMatcherFee: LONG;
-        order1: IExchangeTransactionOrder<LONG>;
-        order2: IExchangeTransactionOrder<LONG>;
+        order1: TExchangeTransacationOrder<LONG>;
+        order2: TExchangeTransacationOrder<LONG>;
     }
 
+    export type TExchangeTransactionOrderV1<LONG> = IExchangeTransactionOrder<LONG> & IWithId & IWithSender & IWithSignature;
+    export type TExchangeTransactionOrderV2<LONG> = IExchangeTransactionOrder<LONG> & IWithId & IWithSender & IWithProofs & IWithVersion;
+    export type TExchangeTransacationOrder<LONG> = TExchangeTransactionOrderV1<LONG> | TExchangeTransactionOrderV2<LONG>;
 }

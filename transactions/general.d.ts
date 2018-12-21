@@ -16,17 +16,20 @@ export interface IWithSender {
 }
 
 export interface IWithVersion {
-    version?: number;
+    version: number;
+}
+
+export interface IWithSignature {
+    signature: string;
 }
 
 export interface IWithProofs {
-    signature?: string;
     /**
      * Transaction proofs
      * @minItems 0
      * @maxItems 8
      */
-    proofs?: string[]
+    proofs: string[]
 }
 
 export interface IMassTransferItem<LONG> {
@@ -58,8 +61,7 @@ export interface IDataTransactionEntryBinary {
     value: Uint8Array;
 }
 
-export interface IExchangeTransactionOrder<LONG> extends IWithId, IWithSender, IWithProofs {
-    sender: string;
+export interface IExchangeTransactionOrder<LONG> {
     matcherPublicKey: string;
     assetPair: {
         amountAsset: string;

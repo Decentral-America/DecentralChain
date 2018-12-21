@@ -1,14 +1,23 @@
 import {
     IAliasTransaction,
-    IBurnTransaction, ICancelLeaseTransaction, IDataTransaction,
-    IIssueTransaction, ILeaseTransaction,
-    IMassTransferItem, IMassTransferTransaction, IReissueTransaction, ISetScriptTransaction, ISponsorship,
-    ITransaction, ITransferTransaction,
+    IBurnTransaction,
+    ICancelLeaseTransaction,
+    IDataTransaction,
+    IIssueTransaction,
+    ILeaseTransaction,
+    IMassTransferItem,
+    IMassTransferTransaction,
+    IReissueTransaction,
+    ISetScriptTransaction,
+    ISponsorship,
+    ITransaction,
+    ITransferTransaction,
     IWithChainId,
     IWithId,
     IWithProofs,
     IWithSender,
-    IWithVersion, TDataTransactionEntry,
+    IWithVersion,
+    TDataTransactionEntry,
     TRANSACTION_TYPE
 } from '..';
 
@@ -116,6 +125,20 @@ export namespace sign {
         chainId: number;
         assetId: string;
         minSponsoredAssetFee: LONG;
+    }
+
+    export interface IExchangeTransactionOrder<LONG> extends Partial<IWithId>, Partial<IWithProofs>, Partial<IWithSender>, Partial<IWithVersion> {
+        matcherPublicKey: string;
+        assetPair: {
+            amountAsset: string;
+            priceAsset: string;
+        },
+        orderType: string;
+        price: LONG;
+        amount: LONG;
+        timestamp?: number;
+        expiration?: number;
+        matcherFee?: LONG;
     }
 
 }
