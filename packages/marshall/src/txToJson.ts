@@ -30,6 +30,9 @@ const isLongProp = (fullPath: string[], fullSchema: TSchema, targetObject: any):
     }
 
     if (schema.type === 'anyOf'){
+      if (path[0] !== schema.discriminatorField || 'type'){
+        return false
+      }
       const obj = resolvePath(fullPath.slice(0, fullPath.length -1), targetObject);
       return go( path.slice(1), schema.items.get(obj[schema.discriminatorField || 'type']))
     }
