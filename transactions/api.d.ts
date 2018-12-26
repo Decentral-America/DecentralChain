@@ -4,7 +4,7 @@ import {
     IWithId,
     IWithProofs,
     IWithSignature,
-    IWithSender, 
+    IWithSender,
     IWithVersion,
     TDataTransactionEntry,
     IExchangeTransactionOrder,
@@ -13,36 +13,39 @@ import {
 
 export namespace api {
 
+    export type TProofsOrSignature = IWithProofs & IWithVersion | IWithSignature;
+    export type TBaseAPITransaction<LONG> = ITransaction<LONG> & IWithId & IWithSender & TProofsOrSignature;
+
     export type TTransaction<LONG> =
-        IIssueTransaction<LONG> |
-        ITransferTransaction<LONG> |
-        IReissueTransaction<LONG> |
-        IBurnTransaction<LONG> |
-        ILeaseTransaction<LONG> |
-        ICancelLeaseTransaction<LONG> |
-        IAliasTransaction<LONG> |
-        IMassTransferTransaction<LONG> |
-        IDataTransaction<LONG> |
-        ISetScriptTransaction<LONG> |
-        ISponsorship<LONG> |
-        IExchangeTransaction<LONG>;
+        TIssueTransaction<LONG> |
+        TTransferTransaction<LONG> |
+        TReissueTransaction<LONG> |
+        TBurnTransaction<LONG> |
+        TLeaseTransaction<LONG> |
+        TCancelLeaseTransaction<LONG> |
+        TAliasTransaction<LONG> |
+        TMassTransferTransaction<LONG> |
+        TDataTransaction<LONG> |
+        TSetScriptTransaction<LONG> |
+        TSponsorship<LONG> |
+        TExchangeTransaction<LONG>;
 
     export type TTransactionMap<LONG> = {
-        [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
-        [TRANSACTION_TYPE.TRANSFER]: ITransferTransaction<LONG>,
-        [TRANSACTION_TYPE.REISSUE]: IReissueTransaction<LONG>,
-        [TRANSACTION_TYPE.BURN]: IBurnTransaction<LONG>,
-        [TRANSACTION_TYPE.LEASE]: ILeaseTransaction<LONG>,
-        [TRANSACTION_TYPE.CANCEL_LEASE]: ICancelLeaseTransaction<LONG>,
-        [TRANSACTION_TYPE.ALIAS]: IAliasTransaction<LONG>,
-        [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransaction<LONG>,
-        [TRANSACTION_TYPE.DATA]: IDataTransaction<LONG>,
-        [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransaction<LONG>,
-        [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>,
-        [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransaction<LONG>
+        [TRANSACTION_TYPE.ISSUE]: TIssueTransaction<LONG>,
+        [TRANSACTION_TYPE.TRANSFER]: TTransferTransaction<LONG>,
+        [TRANSACTION_TYPE.REISSUE]: TReissueTransaction<LONG>,
+        [TRANSACTION_TYPE.BURN]: TBurnTransaction<LONG>,
+        [TRANSACTION_TYPE.LEASE]: TLeaseTransaction<LONG>,
+        [TRANSACTION_TYPE.CANCEL_LEASE]: TCancelLeaseTransaction<LONG>,
+        [TRANSACTION_TYPE.ALIAS]: TAliasTransaction<LONG>,
+        [TRANSACTION_TYPE.MASS_TRANSFER]: TMassTransferTransaction<LONG>,
+        [TRANSACTION_TYPE.DATA]: TDataTransaction<LONG>,
+        [TRANSACTION_TYPE.SET_SCRIPT]: TSetScriptTransaction<LONG>,
+        [TRANSACTION_TYPE.SPONSORSHIP]: TSponsorship<LONG>,
+        [TRANSACTION_TYPE.EXCHANGE]: TExchangeTransaction<LONG>
     };
 
-    export interface IIssueTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TIssueTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.ISSUE
         chainId: number;
         name: string;
@@ -51,9 +54,9 @@ export namespace api {
         quantity: LONG;
         reissuable: boolean;
         script?: string;
-    }
+    };
 
-    export interface ITransferTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TTransferTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.TRANSFER;
         recipient: string;
         amount: LONG;
@@ -62,7 +65,7 @@ export namespace api {
         attachment: string;
     }
 
-    export interface IReissueTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TReissueTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.REISSUE;
         chainId: number;
         assetId: string;
@@ -70,56 +73,56 @@ export namespace api {
         reissuable: boolean;
     }
 
-    export interface IBurnTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TBurnTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.BURN;
         chainId: number;
         assetId: string;
         quantity: LONG;
     }
 
-    export interface ILeaseTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TLeaseTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.LEASE;
         amount: LONG;
         recipient: string;
     }
 
-    export interface ICancelLeaseTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TCancelLeaseTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.CANCEL_LEASE;
         chainId: number;
         leaseId: string;
     }
 
-    export interface IAliasTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TAliasTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.ALIAS;
         alias: string;
     }
 
-    export interface IMassTransferTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TMassTransferTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.MASS_TRANSFER;
         transfers: IMassTransferItem<LONG>;
         assetId: string;
         attachment: string;
     }
 
-    export interface IDataTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TDataTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.DATA;
         data: Array<TDataTransactionEntry<LONG>>;
     }
 
-    export interface ISetScriptTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TSetScriptTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.SET_SCRIPT;
         chainId: number;
         script: string | null; //base64
     }
 
-    export interface ISponsorship<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TSponsorship<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.SPONSORSHIP;
         chainId: number;
         assetId: string;
         minSponsoredAssetFee: LONG;
     }
 
-    export interface IExchangeTransaction<LONG> extends ITransaction<LONG>, IWithId, IWithProofs, IWithSender, IWithVersion {
+    export type TExchangeTransaction<LONG> = TBaseAPITransaction<LONG> & {
         type: TRANSACTION_TYPE.EXCHANGE;
         sender: string;
         price: LONG;
@@ -130,7 +133,18 @@ export namespace api {
         order2: TExchangeTransacationOrder<LONG>;
     }
 
-    export type TExchangeTransactionOrderV1<LONG> = IExchangeTransactionOrder<LONG> & IWithId & IWithSender & IWithSignature;
-    export type TExchangeTransactionOrderV2<LONG> = IExchangeTransactionOrder<LONG> & IWithId & IWithSender & IWithProofs & IWithVersion;
-    export type TExchangeTransacationOrder<LONG> = TExchangeTransactionOrderV1<LONG> | TExchangeTransactionOrderV2<LONG>;
+    export type TExchangeTransactionOrderV1<LONG> =
+        IExchangeTransactionOrder<LONG>
+        & IWithId
+        & IWithSender
+        & IWithSignature;
+    export type TExchangeTransactionOrderV2<LONG> =
+        IExchangeTransactionOrder<LONG>
+        & IWithId
+        & IWithSender
+        & IWithProofs
+        & IWithVersion;
+    export type TExchangeTransacationOrder<LONG> =
+        TExchangeTransactionOrderV1<LONG>
+        | TExchangeTransactionOrderV2<LONG>;
 }
