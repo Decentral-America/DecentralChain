@@ -129,22 +129,13 @@ export namespace api {
         amount: LONG;
         buyMatcherFee: LONG;
         sellMatcherFee: LONG;
-        order1: TExchangeTransacationOrder<LONG>;
-        order2: TExchangeTransacationOrder<LONG>;
+        order1: TExchangeTransactionOrder<LONG>;
+        order2: TExchangeTransactionOrder<LONG>;
     }
 
-    export type TExchangeTransactionOrderV1<LONG> =
+    export type TExchangeTransactionOrder<LONG> =
         IExchangeTransactionOrder<LONG>
         & IWithId
         & IWithSender
-        & IWithSignature;
-    export type TExchangeTransactionOrderV2<LONG> =
-        IExchangeTransactionOrder<LONG>
-        & IWithId
-        & IWithSender
-        & IWithProofs
-        & IWithVersion;
-    export type TExchangeTransacationOrder<LONG> =
-        TExchangeTransactionOrderV1<LONG>
-        | TExchangeTransactionOrderV2<LONG>;
+        & TProofsOrSignature;
 }
