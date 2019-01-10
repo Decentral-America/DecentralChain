@@ -1,6 +1,7 @@
-import {getSchema} from "./index";
-import {TObject, TSchema} from "./txSchemas";
+import {getTransactionSchema, ILongFactory} from "./schemas";
+import {TSchema} from "./schemaTypes";
 import {LONG} from "./serializePrimitives";
+import {convertLongFields} from "./index";
 
 function resolvePath(path: string[], obj: any): any{
   if (path.length === 0) return obj
@@ -49,7 +50,7 @@ export function txToJson(tx: any): string {
   const stack: any[] = [];
 
   const {type, version} = tx;
-  const schema = getSchema(type, version);
+  const schema = getTransactionSchema(type, version);
 
   function stringifyValue(value: any): string | undefined {
 
@@ -148,4 +149,21 @@ export function txToJson(tx: any): string {
   }
 
   return stringifyValue(tx) || ''
+}
+
+export function parseTx<LONG = string>(str: string, lf?: ILongFactory<LONG>) {
+  const safeStr = str.replace(/(".+?"[ \t\n]*:[ \t\n]*)(\d{15,})/gm, '$1"$2"');
+  let tx = JSON.parse(safeStr);
+
+  //ToDo: rewrite. Now simply serializes and then parses with long  factory to get right long types
+  return lf ? convertLongFields(tx, lf) : tx
+}
+
+export function stringifyTx(tx: any): string {
+  let txWithStrings = convertLongFields(tx);
+  //TODO: remove this when contract invocation tx is fixed
+  if (tx.type === 16) {
+    txWithStrings = tx
+  }
+  return txToJson(txWithStrings)
 }

@@ -1,6 +1,7 @@
 import {byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, TParser} from "./parsePrimitives";
 import {range} from "./libs/utils";
-import {ILongFactory, TSchema} from "./txSchemas";
+import {getTransactionSchema, ILongFactory, orderSchemaV2} from "./schemas";
+import {TSchema} from "./schemaTypes";
 
 export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFactory<LONG>): TParser<any> => (bytes: Uint8Array, start = 0) => {
   let cursor: number = start;
@@ -100,3 +101,21 @@ export const parseHeader = (bytes: Uint8Array): { type: number, version: number 
   type: P_BYTE(bytes).value,
   version: P_BYTE(bytes, 1).value
 });
+
+/**
+ * This function cannot parse transactions without version
+ */
+export function parseTx<LONG = string>(bytes: Uint8Array, longFactory?: ILongFactory<LONG>) {
+  const {type, version} = parseHeader(bytes);
+  const schema = getTransactionSchema(type, version);
+
+  return parserFromSchema(schema, longFactory)(bytes).value;
+}
+
+
+/**
+ * This function cannot parse OrderV1, which doesn't have version field
+ */
+export function parseOrder<LONG = string>(bytes: Uint8Array, longFactory?: ILongFactory<LONG>) {
+  return parserFromSchema(orderSchemaV2, longFactory)(bytes).value;
+}

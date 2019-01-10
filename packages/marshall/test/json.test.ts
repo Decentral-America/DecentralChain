@@ -14,7 +14,7 @@ describe('Basic serialization', ()=> {
     console.log()
   });
 
-  it('Should convert numbers using factory', () => {
+  it('Should convertLongFields numbers using factory', () => {
     const parsed = json.parseTx(txJson, {toString:(x:any)=>x, fromString: x=> Long.fromString(x)});
     expect(parsed.data[3].value).toBeInstanceOf(Long)
   })

@@ -21,7 +21,7 @@ var utf8ArrayToStr = (function () {
       } else if (String.fromCodePoint) {
         codePt = ((byte1 & 0x07) << 18) | ((array[i++] & 0x3F) << 12) | ((array[i++] & 0x3F) << 6) | (array[i++] & 0x3F);
       } else {
-        codePt = 63;    // Cannot convert four byte code points, so use "?" instead
+        codePt = 63;    // Cannot convertLongFields four byte code points, so use "?" instead
         i += 3;
       }
 

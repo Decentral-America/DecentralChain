@@ -13,6 +13,8 @@ import {
   byteToScript,
   P_LONG, P_OPTION, P_BYTE, P_BASE58_FIXED, P_BASE58_VAR, P_SHORT, P_STRING_VAR, P_BASE64, P_INT
 } from './parsePrimitives'
+import {TObject, TSchema, DATA_FIELD_TYPE, TDataTxField, TAnyOf, TArray, TPrimitive} from './schemaTypes'
+
 
 //Todo: import this enums from ts-types package
 export enum TRANSACTION_TYPE {
@@ -33,56 +35,6 @@ export enum TRANSACTION_TYPE {
   SET_ASSET_SCRIPT = 15,
   CONTRACT_INVOCATION = 16
 }
-
-export enum DATA_FIELD_TYPE {
-  INTEGER = 'integer',
-  BOOLEAN = 'boolean',
-  STRING = 'string',
-  BINARY = 'binary'
-}
-
-export type TSchema = TObject | TArray | TAnyOf | TDataTxField | TPrimitive;
-
-export type TObject = {
-  name: string;
-  type: 'object';
-  //Objects sometimes are needed to be serialized with length
-  withLength?: boolean;
-  optional?: boolean;
-  schema: TSchema[];
-}
-export type TArray = {
-  name: string;
-  type: 'array';
-  items: TSchema;
-  toBytes?: any;
-  fromBytes?: any;
-}
-
-export type TAnyOf = {
-  name: string;
-  type: 'anyOf';
-  toBytes?: any;
-  fromBytes?: any;
-  discriminatorField?: string;
-  valueField?: string;
-  items: Map<string, TSchema>;
-}
-
-export type TPrimitive = {
-  name: string;
-  type?: 'primitive';
-  toBytes: (...args: any) => any;
-  fromBytes: (bytes: Uint8Array, start?: number) => any;
-}
-
-//Data tx field serializes differently. It has type AFTER key field!!!
-export type TDataTxField = {
-  name: string;
-  type: 'dataTxField';
-  items: Map<DATA_FIELD_TYPE, TSchema>;
-}
-
 
 export namespace txFields {
   //Field constructors
@@ -332,7 +284,7 @@ export const orderSchemaV2: TObject = {
   ]
 };
 
-const aliasSchemaV2 = {
+export const aliasSchemaV2 = {
   name: 'aliasSchemaV2',
   type: 'object',
   schema: [
@@ -345,7 +297,7 @@ const aliasSchemaV2 = {
   ]
 };
 
-const burnSchemaV2 = {
+export const burnSchemaV2 = {
   name: 'burnSchemaV2',
   type: 'object',
   schema: [
@@ -360,7 +312,7 @@ const burnSchemaV2 = {
   ]
 };
 
-const cancelLeaseSchemaV2 = {
+export const cancelLeaseSchemaV2 = {
   name: 'cancelLeaseSchemaV2',
   type: 'object',
   schema: [
@@ -374,7 +326,7 @@ const cancelLeaseSchemaV2 = {
   ]
 };
 
-const contractInvocationSchemaV1 = {
+export const contractInvocationSchemaV1 = {
   name: 'contractInvocationSchemaV1',
   type: 'object',
   schema: [
@@ -395,7 +347,7 @@ const contractInvocationSchemaV1 = {
 }
 
 
-const dataSchemaV1 = {
+export const dataSchemaV1 = {
   name: 'dataSchemaV1',
   type: 'object',
   schema: [
@@ -408,7 +360,7 @@ const dataSchemaV1 = {
   ]
 };
 
-const exchangeSchemaV0 = {
+export const exchangeSchemaV0 = {
   name: 'exchangeSchemaV0',
   type: 'object',
   schema: [
@@ -424,7 +376,7 @@ const exchangeSchemaV0 = {
   ]
 }
 
-const issueSchemaV2 = {
+export const issueSchemaV2 = {
   name: 'issueSchemaV2',
   type: 'object',
   schema: [
@@ -443,7 +395,7 @@ const issueSchemaV2 = {
   ]
 };
 
-const leaseSchemaV2 = {
+export const leaseSchemaV2 = {
   name: 'issueSchemaV2',
   type: 'object',
   schema: [
@@ -458,7 +410,7 @@ const leaseSchemaV2 = {
   ]
 };
 
-const massTransferSchemaV1 = {
+export const massTransferSchemaV1 = {
   name: 'massTransferSchemaV1',
   type: 'object',
   schema: [
@@ -473,7 +425,7 @@ const massTransferSchemaV1 = {
   ]
 };
 
-const reissueSchemaV2 = {
+export const reissueSchemaV2 = {
   name: 'reissueSchemaV2',
   type: 'object',
   schema: [
@@ -489,7 +441,7 @@ const reissueSchemaV2 = {
   ]
 };
 
-const setAssetScriptSchemaV1 = {
+export const setAssetScriptSchemaV1 = {
   name: 'setAssetScriptSchemaV1',
   type: 'object',
   schema: [
@@ -504,7 +456,7 @@ const setAssetScriptSchemaV1 = {
   ]
 };
 
-const setScriptSchemaV1 = {
+export const setScriptSchemaV1 = {
   name: 'setScriptSchemaV1',
   type: 'object',
   schema: [
@@ -518,7 +470,7 @@ const setScriptSchemaV1 = {
   ]
 };
 
-const sponsorshipSchemaV1 = {
+export const sponsorshipSchemaV1 = {
   name: 'sponsorshipSchemaV1',
   type: 'object',
   schema: [
@@ -531,7 +483,7 @@ const sponsorshipSchemaV1 = {
   ]
 };
 
-const transferSchemaV2 = {
+export const transferSchemaV2 = {
   name: 'transferSchemaV2',
   type: 'object',
   schema: [
@@ -606,6 +558,18 @@ export interface ILongFactory<LONG> {
   toString?: (value: LONG) => string
 }
 
+export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number) {
+  const schemas = (<any>schemasByTypeMap)[type];
+  if (typeof schemas !== 'object') {
+    throw new Error(`Incorrect tx type: ${type}`)
+  }
 
+  const schema = schemas[version || 0];
+  if (typeof schema !== 'object') {
+    throw new Error(`Incorrect tx version: ${version}`)
+  }
+
+  return schema
+}
 
 

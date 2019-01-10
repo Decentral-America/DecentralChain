@@ -3,7 +3,7 @@ import {exampleTxs, orderV0, orderV2} from "./exampleTxs";
 import Long = require("long");
 import BigNumber from "bignumber.js";
 import {parserFromSchema} from "../src/parse";
-import {orderSchemaV0} from "../src/txSchemas";
+import {orderSchemaV0} from "../src/schemas";
 
 describe('Tx serialize/parse', ()=> {
   Object.entries(exampleTxs).forEach(([type, tx]) => {
@@ -33,7 +33,7 @@ describe('Tx serialize/parse', ()=> {
     expect(tx).toMatchObject(parsed)
   });
 
-  it('Should convert LONGjs', ()=>{
+  it('Should convertLongFields LONGjs', ()=>{
     const tx = exampleTxs[12];
     const bytes = binary.serializeTx(tx);
 
@@ -48,7 +48,7 @@ describe('Tx serialize/parse', ()=> {
     expect(parsed.timestamp).toBeInstanceOf(Long)
   });
 
-  it('Should convert to bignumber.js', ()=>{
+  it('Should convertLongFields to bignumber.js', ()=>{
     const tx = exampleTxs[12];
     const bytes = binary.serializeTx(tx);
 

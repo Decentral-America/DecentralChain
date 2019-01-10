@@ -1,15 +1,18 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "@waves/marshall",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/index.ts",
   "scripts": {
     "test": "jest",
     "prepublishOnly": "tsc"
   },
   "author": "Wavesplatform",
   "contributors": [
-    "siemarell"
+    {
+      "name": "Sergey B",
+      "email": "siemarell@gmail.com"
+    }
   ],
   "license": "MIT",
   "devDependencies": {
