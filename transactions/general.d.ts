@@ -98,7 +98,8 @@ export type TTransaction<LONG> =
     IDataTransaction<LONG> |
     ISetScriptTransaction<LONG> |
     ISponsorship<LONG> |
-    IExchangeTransaction<LONG>;
+    IExchangeTransaction<LONG> |
+    ISetAssetScript<LONG>;
 
 export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
@@ -113,6 +114,7 @@ export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransaction<LONG>,
     [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorship<LONG>,
     [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransaction<LONG>,
+    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: ISetAssetScript<LONG>
 };
 
 export interface IIssueTransaction<LONG> extends ITransaction<LONG> {
@@ -130,9 +132,9 @@ export interface ITransferTransaction<LONG> extends ITransaction<LONG> {
     type: TRANSACTION_TYPE.TRANSFER;
     recipient: string;
     amount: LONG;
-    feeAssetId?: string;
-    assetId?: string;
-    attachment?: string;
+    feeAssetId: string | null;
+    assetId: string | null;
+    attachment: string;
 }
 
 export interface IReissueTransaction<LONG> extends ITransaction<LONG> {
@@ -189,4 +191,10 @@ export interface ISponsorship<LONG> extends ITransaction<LONG> {
     type: TRANSACTION_TYPE.SPONSORSHIP;
     assetId: string;
     minSponsoredAssetFee: LONG;
+}
+
+export interface ISetAssetScript<LONG> extends ITransaction<LONG>, IWithVersion, IWithChainId {
+    type: TRANSACTION_TYPE.SET_ASSET_SCRIPT;
+    assetId: string;
+    script: string;
 }
