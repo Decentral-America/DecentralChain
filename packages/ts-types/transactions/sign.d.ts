@@ -1,25 +1,13 @@
 import {
-    IAliasTransaction,
-    IBurnTransaction,
-    ICancelLeaseTransaction,
-    IDataTransaction,
-    IIssueTransaction,
-    ILeaseTransaction,
     IMassTransferItem,
-    IMassTransferTransaction,
-    IReissueTransaction,
-    ISetScriptTransaction,
-    ISponsorship,
     ITransaction,
-    ITransferTransaction,
-    IWithChainId,
     IWithId,
     IWithProofs,
     IWithSender,
     IWithVersion,
     TDataTransactionEntry,
     TRANSACTION_TYPE
-} from '..';
+} from '../src';
 
 export namespace sign {
 
