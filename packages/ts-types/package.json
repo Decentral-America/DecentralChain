@@ -4,6 +4,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "tsc",
+    "postversion": "npm publish",
+    "postpublish": "git push",
     "prepare": "tsc"
   },
   "devDependencies": {
