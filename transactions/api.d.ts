@@ -9,7 +9,7 @@ import {
     TDataTransactionEntry,
     IExchangeTransactionOrder,
     TRANSACTION_TYPE
-} from '..';
+} from '../src';
 
 export namespace api {
 

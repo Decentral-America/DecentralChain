@@ -1,6 +1,6 @@
 export * from './sign';
 export * from './api';
-import { DATA_FIELD_TYPE, TRANSACTION_TYPE } from '..';
+import { DATA_FIELD_TYPE, TRANSACTION_TYPE } from '../src';
 
 
 export type TDataEntryFieldType = 'integer' | 'boolean' | 'string' | 'binary';

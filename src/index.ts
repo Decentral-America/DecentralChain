@@ -1,4 +1,4 @@
-export * from './transactions/general';
+export * from '../transactions/general';
 
 
 export const TRANSACTION_TYPE = {
