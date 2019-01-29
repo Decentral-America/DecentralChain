@@ -35,15 +35,23 @@ export const serializerFromSchema = <LONG = string | number>(schema: TSchema, lf
     return objBytes
   }
   else if (schema.type === 'anyOf') {
-    const type = obj[schema.discriminatorField || 'type'];
-    const typeSchema = schema.items.get(type);
-    if (typeSchema == null) {
-      throw new Error(`Serializer Error: Unknown anyOf type: ${schema.discriminatorField}.${type}`)
+    const type = obj[schema.discriminatorField];
+    const anyOfItem = schema.itemByKey(type);
+
+    if (anyOfItem == null) {
+      throw new Error(`Serializer Error: Unknown anyOf type: ${type}`)
     }
-    const typeCode = [...schema.items.values()].findIndex(schema => schema === typeSchema);
-    serializer = serializerFromSchema(typeSchema, lf);
-    itemBytes = serializer(obj[schema.valueField || 'value']);
-    return concat((schema.toBytes || BYTE)(typeCode), itemBytes);
+
+    serializer = serializerFromSchema(anyOfItem.schema, lf);
+
+    // If object should be serialized as is. E.g.  {type: 20, signature, '100500'}
+    if (schema.valueField == null){
+      return serializer(obj)
+    // Otherwise we serialize field and write discriminator. Eg. {type: 'integer', value: 10000}
+    }else {
+      itemBytes = serializer(obj[schema.valueField]);
+      return concat((schema.toBytes || BYTE)(anyOfItem.key), itemBytes);
+    }
   }
   else if (schema.type === 'primitive' || schema.type === undefined) {
     return schema.toBytes(obj);

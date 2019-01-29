@@ -46,11 +46,15 @@ export type TDataTxItem = {
   items: Map<DATA_FIELD_TYPE, TSchema>;
 }
 
-export class AnyOf implements IAnyOf{
+export function anyOf(items: [number, TSchema, string?][], options?:any): IAnyOf {
+  return new AnyOfClass(items, options)
+}
+
+class AnyOfClass implements IAnyOf{
   public type: "anyOf" = "anyOf";
   public toBytes?: any;
   public fromBytes?: any;
-  public discriminatorField = 'value';
+  public discriminatorField = 'type';
   public valueField?: string; // defaults to whole object
 
 
@@ -60,7 +64,7 @@ export class AnyOf implements IAnyOf{
   }
 
   public itemByKey(k: string): TAnyOfItem | undefined{
-    if (this._items[0] && this._items.length === 3){
+    if (this._items[0] && this._items[0].length === 3){
       const row =  this._items.find(([key, schema, stringKey]) => stringKey === k);
       return row && {
         schema: row[1],
@@ -76,7 +80,7 @@ export class AnyOf implements IAnyOf{
     return row && {
       schema: row[1],
       key: row[0],
-      strKey: row[0].toString(10)
+      strKey: row[2] || row[0].toString(10)
     }
   }
 }

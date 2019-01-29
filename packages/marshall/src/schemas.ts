@@ -22,7 +22,7 @@ import {
   TArray,
   TPrimitive,
   TObjectField,
-  AnyOf
+  anyOf
 } from './schemaTypes'
 
 
@@ -175,29 +175,13 @@ export namespace txFields {
     items: dataTxItem
   }];
 
-  const functionArgument = new AnyOf([
+  const functionArgument = anyOf([
     [0, {toBytes: LONG, fromBytes: P_LONG}, 'integer'],
     [1, {toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT)}, 'binary'],
     [2, {toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT)}, 'string'],
     [6, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'true'],
     [7, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'false'],
-  ]);
-  // const functionArgument: IAnyOf = {
-  //   type: 'anyOf',
-  //   discriminatorField: 'type',
-  //   // toBytes: INT,
-  //   // fromBytes: P_INT,
-  //   items: new Map<string, TSchema>([
-  //     ['integer', longField('value')[1]],
-  //     ['binary', { toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT)}],
-  //     ['string', { toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT)}],
-  //     [(Symbol('placeholder')) as any, {} as any],
-  //     [(Symbol('placeholder')) as any, {} as any],
-  //     [(Symbol('placeholder')) as any, {} as any],
-  //     ['true', {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}],
-  //     ['false', {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}],
-  //   ])
-  // };
+  ], {valueField:'value'});
 
 
   export const functionCall: TObjectField = ['call', {
@@ -364,11 +348,11 @@ export const exchangeSchemaV2: TSchema = {
   type: 'object',
   schema: [
     txFields.type,
-    ['order1', new AnyOf([
+    ['order1', anyOf([
       [1, {type: 'object', schema: [txFields.byteConstant(1)], ...orderSchemaV0.schema}],
       [2, orderSchemaV2]
     ], {discriminatorField: 'version'})],
-    ['order2', new AnyOf([
+    ['order2', anyOf([
       [1, {type: 'object', schema: [txFields.byteConstant(1)], ...orderSchemaV0.schema}],
       [2, orderSchemaV2]
     ], {discriminatorField: 'version'})],
