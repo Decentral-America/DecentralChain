@@ -18,9 +18,6 @@ import {
   TSchema,
   DATA_FIELD_TYPE,
   TDataTxItem,
-  IAnyOf,
-  TArray,
-  TPrimitive,
   TObjectField,
   anyOf
 } from './schemaTypes'
