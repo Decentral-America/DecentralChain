@@ -1,5 +1,5 @@
 import { binary } from "../src";
-import {exampleTxs, orderV0, orderV2} from "./exampleTxs";
+import {exampleBytesStr, exampleTxs, exchangeV2BytesStr, orderV0, orderV2} from "./exampleTxs";
 import Long = require("long");
 import BigNumber from "bignumber.js";
 import {parserFromSchema} from "../src/parse";
@@ -61,5 +61,12 @@ describe('Tx serialize/parse', ()=> {
     expect(parsed.fee).toBeInstanceOf(BigNumber);
     expect(parsed.data[3].value).toBeInstanceOf(BigNumber);
     expect(parsed.timestamp).toBeInstanceOf(BigNumber)
+  })
+
+  it('Should correctly serialize exchangeV2', () => {
+    const tx = exampleTxs[70];
+    const bytesStr = exampleBytesStr[70]
+    const bytes = binary.serializeTx(tx).toString()
+    expect(bytesStr).toEqual(bytes.toString())
   })
 })
