@@ -76,13 +76,13 @@ export const exchangeTxV0 = {
   "type": 7,
   "id": "EKcZxn3aL2bxRCtwaps6C1cFLmvrKraatRd7a32DuQWn",
   "sender": "3PJaDyprvekvPXPuAtxrapacuDJopgJRaU3",
-  "senderPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+ // "senderPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy", // exchange tx gets senderPublicKey from Order
   "fee": 300000,
   "timestamp": 1534164407812,
   "signature": "p6zQ8xDnD9VpxW83shqevxFor3mynHGakfwU3EgWz1CJpV2K3PbhLQeaEE3gsVQFo3W4XjmgEDDmJDVhgddKHx3",
   "order1": {
-    "id": "3JyBBBYpkocXzVmoXNbvtzKe611iCdgPkbv7Zntiwq1U",
-    "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
+   // "id": "3JyBBBYpkocXzVmoXNbvtzKe611iCdgPkbv7Zntiwq1U",
+   // "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
     "senderPublicKey": "8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd",
     "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
     "assetPair": {
@@ -98,8 +98,8 @@ export const exchangeTxV0 = {
     "signature": "XUTCpGgGP2vQBdfRtTCAorW7hEwet1rpJjydTSneKgTzTfx4H477pbmKNcKkPw1rtt3Qaa3KTKZj77kr8dpvtLF"
   },
   "order2": {
-    "id": "GHNi7oxRFAonHUDidupMTNRsCz2A7e3LyHRWW6L6cRxf",
-    "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
+   // "id": "GHNi7oxRFAonHUDidupMTNRsCz2A7e3LyHRWW6L6cRxf",
+   // "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
     "senderPublicKey": "8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd",
     "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
     "assetPair": {
@@ -125,14 +125,14 @@ export const exchangeTxV2 = {
   "type": 7,
   "id": "5KUDbPKjAoNHTMyae9zJZpFjYFAbeSQMQ9rzgkDEEUx6",
   "sender": "3N22UCTvst8N1i1XDvGHzyqdgmZgwDKbp44",
-  "senderPublicKey": "Fvk5DXmfyWVZqQVBowUBMwYtRAHDtdyZNNeRrwSjt6KP",
+  //"senderPublicKey": "Fvk5DXmfyWVZqQVBowUBMwYtRAHDtdyZNNeRrwSjt6KP", // exchange tx gets senderPublicKey from Order
   "fee": 1,
   "timestamp": 1526992336241,
   "proofs": ["5NxNhjMrrH5EWjSFnVnPbanpThic6fnNL48APVAkwq19y2FpQp4tNSqoAZgboC2ykUfqQs9suwBQj6wERmsWWNqa"],
   "order1": {
     "version": 2,
-    "id": "EcndU4vU3SJ58KZAXJPKACvMhijTzgRjLTsuWxSWaQUK",
-    "sender": "3MthkhReCHXeaPZcWXcT3fa6ey1XWptLtwj",
+   // "id": "EcndU4vU3SJ58KZAXJPKACvMhijTzgRjLTsuWxSWaQUK",
+   // "sender": "3MthkhReCHXeaPZcWXcT3fa6ey1XWptLtwj",
     "senderPublicKey": "BqeJY8CP3PeUDaByz57iRekVUGtLxoow4XxPvXfHynaZ",
     "matcherPublicKey": "Fvk5DXmfyWVZqQVBowUBMwYtRAHDtdyZNNeRrwSjt6KP",
     "assetPair": {"amountAsset": null, "priceAsset": "9ZDWzK53XT5bixkmMwTJi2YzgxCqn5dUajXFcT2HcFDy"},
@@ -142,13 +142,13 @@ export const exchangeTxV2 = {
     "timestamp": 1526992336241,
     "expiration": 1529584336241,
     "matcherFee": 1,
-    "signature": "2bkuGwECMFGyFqgoHV4q7GRRWBqYmBFWpYRkzgYANR4nN2twgrNaouRiZBqiK2RJzuo9NooB9iRiuZ4hypBbUQs",
+    //"signature": "2bkuGwECMFGyFqgoHV4q7GRRWBqYmBFWpYRkzgYANR4nN2twgrNaouRiZBqiK2RJzuo9NooB9iRiuZ4hypBbUQs",
     "proofs": ["2bkuGwECMFGyFqgoHV4q7GRRWBqYmBFWpYRkzgYANR4nN2twgrNaouRiZBqiK2RJzuo9NooB9iRiuZ4hypBbUQs"]
   },
   "order2": {
     //"version": 1,
-    "id": "DS9HPBGRMJcquTb3sAGAJzi73jjMnFFSWWHfzzKK32Q7",
-    "sender": "3MswjKzUBKCD6i1w4vCosQSbC8XzzdBx1mG",
+   // "id": "DS9HPBGRMJcquTb3sAGAJzi73jjMnFFSWWHfzzKK32Q7",
+    //"sender": "3MswjKzUBKCD6i1w4vCosQSbC8XzzdBx1mG",
     "senderPublicKey": "7E9Za8v8aT6EyU1sX91CVK7tWUeAetnNYDxzKZsyjyKV",
     "matcherPublicKey": "Fvk5DXmfyWVZqQVBowUBMwYtRAHDtdyZNNeRrwSjt6KP",
     "assetPair": {"amountAsset": null, "priceAsset": "9ZDWzK53XT5bixkmMwTJi2YzgxCqn5dUajXFcT2HcFDy"},
@@ -159,7 +159,7 @@ export const exchangeTxV2 = {
     "expiration": 1529584336241,
     "matcherFee": 2,
     "signature": "2R6JfmNjEnbXAA6nt8YuCzSf1effDS4Wkz8owpCD9BdCNn864SnambTuwgLRYzzeP5CAsKHEviYKAJ2157vdr5Zq",
-    "proofs": ["2R6JfmNjEnbXAA6nt8YuCzSf1effDS4Wkz8owpCD9BdCNn864SnambTuwgLRYzzeP5CAsKHEviYKAJ2157vdr5Zq"]
+    //"proofs": ["2R6JfmNjEnbXAA6nt8YuCzSf1effDS4Wkz8owpCD9BdCNn864SnambTuwgLRYzzeP5CAsKHEviYKAJ2157vdr5Zq"]
   },
   "price": 5000000000,
   "amount": 2,
@@ -277,7 +277,7 @@ export const contractInvocationTx = {
     "function": "foo",
     "args": [
       {
-        "key": "",
+        //"key": "",
         "type": "binary",
         "value": "base64:YWxpY2U="
       }
@@ -300,7 +300,7 @@ export const orderV0 = {
   orderType: 'buy',
   assetPair:
     {
-      amountAsset: undefined,
+      amountAsset: null,
       priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS'
     },
   price: 10,
@@ -320,7 +320,7 @@ export const orderV2 = {
   version: 2,
   assetPair:
     {
-      amountAsset: undefined,
+      amountAsset: null,
       priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS'
     },
   price: 10,
@@ -356,4 +356,8 @@ export const exampleBytesStr = {
   70: exchangeV2BytesStr
 }
 
+export const exampleOrders ={
+  0: orderV0,
+  2: orderV2
+}
 

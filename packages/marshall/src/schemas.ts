@@ -481,6 +481,7 @@ export const sponsorshipSchemaV1: TSchema = {
   schema: [
     txFields.type,
     txFields.version,
+    txFields.senderPublicKey,
     txFields.assetId,
     txFields.longField('minSponsoredAssetFee'),
     txFields.fee,
@@ -557,13 +558,7 @@ export const schemasByTypeMap = {
 };
 
 
-export interface ILongFactory<LONG> {
-  fromString(value: string): LONG;
-
-  toString?: (value: LONG) => string
-}
-
-export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number) {
+export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): TSchema {
   const schemas = (<any>schemasByTypeMap)[type];
   if (typeof schemas !== 'object') {
     throw new Error(`Incorrect tx type: ${type}`)
