@@ -1,6 +1,6 @@
 import {json} from "../src/";
 import Long = require("long");
-import {exampleTxs} from "./exampleTxs";
+import {exampleOrders, exampleTxs} from "./exampleTxs";
 
 describe('Basic serialization', ()=> {
   const txJson = `{"type":12,"version":1,"senderPublicKey":"7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh",
@@ -15,11 +15,20 @@ describe('Basic serialization', ()=> {
   });
 
   it('Should convertLongFields numbers using factory', () => {
-    const parsed = json.parseTx(txJson, {toString:(x:any)=>x, fromString: x=> Long.fromString(x)});
+    const parsed = json.parseTx(txJson, Long.fromString);
     expect(parsed.data[3].value).toBeInstanceOf(Long)
   })
 
+});
 
+describe('Orders json to and from', () => {
+  Object.entries(exampleOrders).forEach(([version, ord]) => {
+    it(`Order version: ${version}. toJSON, fromJSON`, () => {
+      const str = json.stringifyOrder(ord);
+      const parsed = json.parseOrder(str)
+      expect(parsed).toMatchObject(ord)
+    })
+  });
 });
 
 describe('All tx json to and from', ()=>{
@@ -27,7 +36,7 @@ describe('All tx json to and from', ()=>{
     it(`Type: ${type}. toJSON, fromJSON`, () => {
       const str = json.stringifyTx(tx);
       const parsed = json.parseTx(str)
-      expect(tx).toMatchObject(parsed)
+      expect(parsed).toMatchObject(tx)
     })
   });
 });

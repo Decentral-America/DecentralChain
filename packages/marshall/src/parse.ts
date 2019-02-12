@@ -1,9 +1,16 @@
 import {byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, TParser} from "./parsePrimitives";
 import {range} from "./libs/utils";
-import {getTransactionSchema, ILongFactory, orderSchemaV2} from "./schemas";
+import {getTransactionSchema, orderSchemaV2} from "./schemas";
 import {TSchema} from "./schemaTypes";
 
-export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFactory<LONG>): TParser<any> => (bytes: Uint8Array, start = 0) => {
+export type TToLongConverter<LONG> = (val: string) => LONG;
+
+/**
+ * Creates Uint8Array parser from object schema. If toLongConverter is provided it will be used for all LONG primitives found in schema
+ * @param schema
+ * @param toLongConverter
+ */
+export const parserFromSchema = <LONG = string>(schema: TSchema, toLongConverter?: TToLongConverter<LONG>): TParser<any> => (bytes: Uint8Array, start = 0) => {
   let cursor: number = start;
 
   if (schema.type === 'array') {
@@ -12,7 +19,7 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     cursor += shift;
 
     range(0, len).forEach(_ => {
-      const parser = parserFromSchema(schema.items, lf);
+      const parser = parserFromSchema(schema.items, toLongConverter);
       const {value, shift} = parser(bytes, cursor);
       result.push(value);
       cursor += shift;
@@ -31,16 +38,22 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     if (schema.withLength) {
       const lenInfo = schema.withLength.fromBytes(bytes, cursor);
       cursor += lenInfo.shift;
-    };
+    }
+    ;
 
     const result: any = {};
     schema.schema.forEach(field => {
       const [name, schema] = field;
-      const parser = parserFromSchema(schema, lf);
+      const parser = parserFromSchema(schema, toLongConverter);
       const {value, shift} = parser(bytes, cursor);
       cursor += shift;
       if (value !== undefined) {
-        result[name] = value
+        // Name as array means than we need to save result to many object fields
+        if (Array.isArray(name)) {
+          Object.assign(result, value)
+        } else {
+          result[name] = value
+        }
       }
     });
 
@@ -51,7 +64,7 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
 
     // Не увеличивать курсор, если объект пишется целиком с дискриминатором или дискриминатор не на 0 позиции.
     // Стоит убрать запись и чтение дискриминаторов из anyOf и вынес
-    if (schema.valueField && schema.discriminatorBytePos === 0){
+    if (schema.valueField && schema.discriminatorBytePos === 0) {
       cursor += typeInfo.shift;
     }
 
@@ -59,7 +72,7 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     if (item == null) {
       throw new Error(`Failed to get schema for item with bytecode: ${typeInfo.value}`)
     }
-    const parser = parserFromSchema(item.schema, lf);
+    const parser = parserFromSchema(item.schema, toLongConverter);
     const {value, shift} = parser(bytes, cursor);
     cursor += shift;
 
@@ -81,7 +94,7 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     if (!itemRecord) {
       throw new Error(`Parser Error: Unknown dataTxField type: ${dataType.value}`)
     }
-    const parser = parserFromSchema(itemRecord![1], lf);
+    const parser = parserFromSchema(itemRecord![1], toLongConverter);
     const result = parser(bytes, cursor);
     //cursor += result.shift;
     return {
@@ -98,8 +111,8 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
     let {value, shift} = parser(bytes, start);
 
     //Capture LONG Parser and convert strings desired instance if longFactory is present
-    if (parser === P_LONG && lf) {
-      value = lf.fromString(value)
+    if (parser === P_LONG && toLongConverter) {
+      value = toLongConverter(value)
     }
     return {value, shift: shift}
   } else {
@@ -107,25 +120,38 @@ export const parserFromSchema = <LONG = string>(schema: TSchema, lf?: ILongFacto
   }
 };
 
-export const parseHeader = (bytes: Uint8Array): { type: number, version: number } => ({
-  type: P_BYTE(bytes).value,
-  version: P_BYTE(bytes, 1).value
-});
+export const parseHeader = (bytes: Uint8Array): { type: number, version: number } => {
+  let shift = 0;
+  let typeInfo = P_BYTE(bytes, shift);
+  shift += typeInfo.shift;
+
+  // ExchangeTransactionV2 have leading 0 in bodybytes
+  if (typeInfo.value === 0) {
+    typeInfo = P_BYTE(bytes, shift)
+    shift += typeInfo.shift
+  }
+  let versionInfo =  P_BYTE(bytes, shift);
+
+  return {
+    type: typeInfo.value,
+    version: versionInfo.value
+  }
+};
 
 /**
  * This function cannot parse transactions without version
  */
-export function parseTx<LONG = string>(bytes: Uint8Array, longFactory?: ILongFactory<LONG>) {
+export function parseTx<LONG = string>(bytes: Uint8Array, toLongConverter?: TToLongConverter<LONG>) {
   const {type, version} = parseHeader(bytes);
   const schema = getTransactionSchema(type, version);
 
-  return parserFromSchema(schema, longFactory)(bytes).value;
+  return parserFromSchema(schema, toLongConverter)(bytes).value;
 }
 
 
 /**
  * This function cannot parse OrderV1, which doesn't have version field
  */
-export function parseOrder<LONG = string>(bytes: Uint8Array, longFactory?: ILongFactory<LONG>) {
-  return parserFromSchema(orderSchemaV2, longFactory)(bytes).value;
+export function parseOrder<LONG = string>(bytes: Uint8Array, toLongConverter?: TToLongConverter<LONG>) {
+  return parserFromSchema(orderSchemaV2, toLongConverter)(bytes).value;
 }

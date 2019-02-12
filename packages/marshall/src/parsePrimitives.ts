@@ -12,7 +12,7 @@ type Option<T> = T | null | undefined
 export type TParser<T> = (bytes: Uint8Array, start?: number) => { value: T, shift: number }
 
 export const P_OPTION = <T>(p: TParser<T>): TParser<Option<T>> => (bytes: Uint8Array, start = 0) => {
-  if (bytes[start] === 0) return {value: undefined, shift: 1};
+  if (bytes[start] === 0) return {value: null, shift: 1};
   const result = p(bytes, start + 1);
   return {value: result.value, shift: result.shift + 1}
 };

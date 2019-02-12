@@ -1,54 +1,55 @@
 import * as create from "parse-json-bignumber/dist/parse-json-bignumber";
+
 const {parse, stringify} = create();
-import {getTransactionSchema, ILongFactory} from "./schemas";
+import {getTransactionSchema, orderSchemaV0, orderSchemaV2} from "./schemas";
 import {TSchema} from "./schemaTypes";
 import {LONG} from "./serializePrimitives";
-import {convertLongFields} from "./index";
+import {convertLongFields, convertTxLongFields} from "./index";
+import {TToLongConverter} from "./parse";
+import {TFromLongConverter} from "./serialize";
 
-
-function resolvePath(path: string[], obj: any): any{
+function resolvePath(path: string[], obj: any): any {
   if (path.length === 0) return obj
   if (typeof obj !== 'object') return undefined
 
   return resolvePath(path.slice(1), obj[path[0]])
 }
 
-const isLongProp = (fullPath: string[], fullSchema: TSchema, targetObject: any): any => {
+const isLongProp = (fullPath: string[], fullSchema: TSchema | undefined, targetObject: any): any => {
 
-  function go(path: string[], schema?:TSchema): boolean{
+  function go(path: string[], schema?: TSchema): boolean {
     if (schema == null) return false
 
     if (path.length === 0 && (schema.type === 'primitive' || schema.type === undefined)) return schema.toBytes === LONG;
 
-    if (schema.type === 'object'){
-      const field =  schema.schema.find(([name,_]) => name === path[0]);
-      return go(path.slice(1), field && field[1]) ;
+    if (schema.type === 'object') {
+      const field = schema.schema.find(([name, _]) => name === path[0]);
+      return go(path.slice(1), field && field[1]);
     }
 
     if (schema.type === 'array') {
       return go(path.slice(1), schema.items)
     }
 
-    if (schema.type === 'dataTxField'){
-      if(path[0] !== 'value') return false
-      const dataObj = resolvePath(fullPath.slice(0, fullPath.length -1), targetObject);
+    if (schema.type === 'dataTxField') {
+      if (path[0] !== 'value') return false;
+      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject);
       const dataSchema = schema.items.get(dataObj.type)
-      return go( path.slice(1), dataSchema)
+      return go(path.slice(1), dataSchema)
     }
 
-    if (schema.type === 'anyOf'){
+    if (schema.type === 'anyOf') {
 
       // Find object and get it's schema
-      const obj = resolvePath(fullPath.slice(0, fullPath.length -1), targetObject);
+      const obj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject);
       const objType = obj[schema.discriminatorField];
       const objSchema = schema.itemByKey(objType);
       if (!objSchema) return false
 
 
-
-      if (schema.valueField != null){
+      if (schema.valueField != null) {
         return go(path.slice(1), objSchema.schema)
-      }else {
+      } else {
         return go(path, objSchema.schema)
       }
 
@@ -56,22 +57,25 @@ const isLongProp = (fullPath: string[], fullSchema: TSchema, targetObject: any):
 
     return false
   }
+
   return go(fullPath, fullSchema)
 
 }
 
-
-export function txToJson(tx: any): string {
+/**
+ * Converts object to JSON string using binary schema. For every string found, it checks if given string is LONG property.
+ * If true - function writes this string as number
+ * @param obj
+ * @param schema
+ */
+export function stringifyWithSchema(obj: any, schema?: TSchema): string {
   const path: string[] = [];
   const stack: any[] = [];
-
-  const {type, version} = tx;
-  const schema = getTransactionSchema(type, version);
 
   function stringifyValue(value: any): string | undefined {
 
     if (typeof value === 'string') {
-      if (isLongProp(path, schema, tx)) {
+      if (isLongProp(path, schema, obj)) {
         return value
       }
     }
@@ -164,17 +168,52 @@ export function txToJson(tx: any): string {
       && typeof value !== 'function'
   }
 
-  return stringifyValue(tx) || ''
+  return stringifyValue(obj) || ''
 }
 
-export function parseTx<LONG = string>(str: string, lf?: ILongFactory<LONG>) {
-  let tx = parse(str);
-
-  //ToDo: rewrite. Now simply serializes and then parses with long  factory to get right long types
-  return lf ? convertLongFields(tx, lf) : tx
+/**
+ * Safe parse json string to TX. Converts unsafe numbers to strings. Converts all LONG fields with converter if provided
+ * @param str
+ * @param toLongConverter
+ */
+export function parseTx<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
+  const tx = parse(str);
+  return toLongConverter ? convertTxLongFields(tx, toLongConverter) : tx
 }
 
-export function stringifyTx(tx: any): string {
-  let txWithStrings = convertLongFields(tx);
-  return txToJson(txWithStrings)
+/**
+ * Converts transaction to JSON string.
+ * If transaction contains custom LONG instances and this instances doesn't have toString method, you can provide converter as second param
+ * @param tx
+ * @param fromLongConverter
+ */
+export function stringifyTx<LONG>(tx: any, fromLongConverter?: TFromLongConverter<LONG>): string {
+  const {type, version} = tx;
+  const schema = getTransactionSchema(type, version);
+  const txWithStrings = convertLongFields(tx, schema, undefined, fromLongConverter);
+  return stringifyWithSchema(txWithStrings, schema)
 }
+
+/**
+ * Safe parse json string to order. Converts unsafe numbers to strings. Converts all LONG fields with converter if provided
+ * @param str
+ * @param toLongConverter
+ */
+export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
+  const ord = parse(str);
+  const schema = ord.version === 2 ? orderSchemaV2 : orderSchemaV0;
+  return toLongConverter ? convertLongFields(ord, schema, toLongConverter) : ord
+}
+
+/**
+ * Converts order to JSON string
+ * If order contains custom LONG instances and this instances doesn't have toString method, you can provide converter as second param
+ * @param ord
+ * @param fromLongConverter
+ */
+export function stringifyOrder<LONG>(ord: any, fromLongConverter?: TFromLongConverter<LONG>): string {
+  const schema = ord.version === 2 ? orderSchemaV2 : orderSchemaV0
+  const ordWithStrings = convertLongFields(ord, schema, undefined, fromLongConverter);
+  return stringifyWithSchema(ordWithStrings, schema)
+}
+

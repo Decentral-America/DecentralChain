@@ -120,7 +120,7 @@ export namespace txFields {
   export const reissuable = booleanField('reissuable');
 
   export const recipient: TObjectField = ['recipient', {
-    toBytes: BASE58_STRING,
+    toBytes: BASE58_STRING, //ToDo: add alias
     fromBytes: byteToAddressOrAlias
   }];
 
@@ -262,7 +262,15 @@ export const aliasSchemaV2: TSchema = {
     txFields.type,
     txFields.version,
     txFields.senderPublicKey,
-    txFields.alias,
+    [['alias', 'chainId'], {
+      type: 'object',
+      withLength: shortConverter,
+      schema: [
+        txFields.byteConstant(2), // Alias version
+        txFields.chainId, //
+        txFields.alias, // Alias text
+      ]
+    }],
     txFields.fee,
     txFields.timestamp
   ]
@@ -375,6 +383,7 @@ const anyOrder =  anyOf([
 export const exchangeSchemaV2: TSchema = {
   type: 'object',
   schema: [
+    txFields.byteConstant(0),
     txFields.type,
     txFields.version,
     ['order1', anyOrder],
@@ -481,6 +490,7 @@ export const sponsorshipSchemaV1: TSchema = {
   schema: [
     txFields.type,
     txFields.version,
+    txFields.senderPublicKey,
     txFields.assetId,
     txFields.longField('minSponsoredAssetFee'),
     txFields.fee,
@@ -557,13 +567,7 @@ export const schemasByTypeMap = {
 };
 
 
-export interface ILongFactory<LONG> {
-  fromString(value: string): LONG;
-
-  toString?: (value: LONG) => string
-}
-
-export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number) {
+export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): TSchema {
   const schemas = (<any>schemasByTypeMap)[type];
   if (typeof schemas !== 'object') {
     throw new Error(`Incorrect tx type: ${type}`)
