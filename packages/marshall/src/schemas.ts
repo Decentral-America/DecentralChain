@@ -40,7 +40,7 @@ export enum TRANSACTION_TYPE {
   SET_SCRIPT = 13,
   SPONSORSHIP = 14,
   SET_ASSET_SCRIPT = 15,
-  CONTRACT_INVOCATION = 16
+  INVOKE_SCRIPT = 16
 }
 
 const shortConverter = {
@@ -303,7 +303,7 @@ export const cancelLeaseSchemaV2: TSchema = {
   ]
 };
 
-export const contractInvocationSchemaV1: TSchema = {
+export const invokeScriptSchemaV1: TSchema = {
   type: 'object',
   schema: [
     txFields.type,
@@ -561,8 +561,8 @@ export const schemasByTypeMap = {
   [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: {
     1: setAssetScriptSchemaV1
   },
-  [TRANSACTION_TYPE.CONTRACT_INVOCATION]: {
-    1: contractInvocationSchemaV1
+  [TRANSACTION_TYPE.INVOKE_SCRIPT]: {
+    1: invokeScriptSchemaV1
   }
 };
 

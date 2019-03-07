@@ -273,7 +273,8 @@ export const setAssetScriptTx = {
   assetId: '5xhvoX9caefDAiiRgUzZQSUHyKfjW5Wx2v2Vr8QR9e4d'
 }
 
-export const contractInvocationTx = {
+
+export const invokeScriptTx = {
   "type": 16,
   "version": 1,
   "senderPublicKey": "DguumUPw2zHh91WpaGWMsGvkJY1gFKJhjEBMBrV4NSG4",
@@ -282,7 +283,6 @@ export const contractInvocationTx = {
     "function": "foo",
     "args": [
       {
-        //"key": "",
         "type": "binary",
         "value": "base64:YWxpY2U="
       }
@@ -354,7 +354,7 @@ export const exampleTxs = {
   13: setScriptTx,
   14: sponsorshipTx,
   15: setAssetScriptTx,
-  16: contractInvocationTx,
+  16: invokeScriptTx,
 }
 
 export const exampleBytesStr = {
