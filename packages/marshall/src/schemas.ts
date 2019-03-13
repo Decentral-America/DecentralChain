@@ -7,7 +7,7 @@ import {
   OPTION, SCRIPT,
   SHORT,
   STRING
-} from './serializePrimitives';
+} from './serializePrimitives'
 import {
   byteNewAliasToString, byteToAddressOrAlias, P_BOOLEAN,
   byteToScript,
@@ -40,107 +40,107 @@ export enum TRANSACTION_TYPE {
   SET_SCRIPT = 13,
   SPONSORSHIP = 14,
   SET_ASSET_SCRIPT = 15,
-  INVOKE_SCRIPT = 16
+  INVOKE_SCRIPT = 16,
 }
 
 const shortConverter = {
   toBytes: SHORT,
-  fromBytes: P_SHORT
-};
+  fromBytes: P_SHORT,
+}
 
 const intConverter = {
   toBytes: INT,
-  fromBytes: P_INT
+  fromBytes: P_INT,
 }
 export namespace txFields {
   //Field constructors
-  export const longField = (name: string): TObjectField => ([name, {toBytes: LONG, fromBytes: P_LONG}]);
+  export const longField = (name: string): TObjectField => ([name, {toBytes: LONG, fromBytes: P_LONG}])
 
-  export const byteField = (name: string): TObjectField => ([name, {toBytes: BYTE, fromBytes: P_BYTE}]);
+  export const byteField = (name: string): TObjectField => ([name, {toBytes: BYTE, fromBytes: P_BYTE}])
 
-  export const booleanField = (name: string): TObjectField => ([name, {toBytes: BOOL, fromBytes: P_BOOLEAN}]);
+  export const booleanField = (name: string): TObjectField => ([name, {toBytes: BOOL, fromBytes: P_BOOLEAN}])
 
   export const stringField = (name: string): TObjectField => ([name, {
     toBytes: LEN(SHORT)(STRING),
-    fromBytes: P_STRING_VAR(P_SHORT)
-  }]);
+    fromBytes: P_STRING_VAR(P_SHORT),
+  }])
 
   export const base58field32 = (name: string): TObjectField => ([name, {
     toBytes: BASE58_STRING,
-    fromBytes: P_BASE58_FIXED(32)
-  }]);
+    fromBytes: P_BASE58_FIXED(32),
+  }])
 
   export const base58Option32 = (name: string): TObjectField => ([name, {
     toBytes: OPTION(BASE58_STRING),
-    fromBytes: P_OPTION(P_BASE58_FIXED(32))
-  }]);
+    fromBytes: P_OPTION(P_BASE58_FIXED(32)),
+  }])
 
   export const base64field = (name: string): TObjectField => ([name, {
     toBytes: LEN(SHORT)(BASE64_STRING),
-    fromBytes: P_BASE64(P_SHORT)
+    fromBytes: P_BASE64(P_SHORT),
   }])
 
   export const byteConstant = (byte: number): TObjectField => (['noname', {
     toBytes: () => Uint8Array.from([byte]),
-    fromBytes: () => ({value: undefined, shift: 1})
-  }]);
+    fromBytes: () => ({value: undefined, shift: 1}),
+  }])
 
   // Primitive fields
   export const alias: TObjectField = ['alias', {
     toBytes: LEN(SHORT)(STRING),
-    fromBytes: byteNewAliasToString
-  }];
+    fromBytes: byteNewAliasToString,
+  }]
 
-  export const amount = longField('amount');
+  export const amount = longField('amount')
 
-  export const assetDescription = stringField('description');
+  export const assetDescription = stringField('description')
 
-  export const assetId = base58field32('assetId');
-  export const assetName = stringField('name');
+  export const assetId = base58field32('assetId')
+  export const assetName = stringField('name')
 
   export const attachment: TObjectField = ['attachment', {
     toBytes: LEN(SHORT)(BASE58_STRING),
-    fromBytes: P_BASE58_VAR(P_SHORT)
+    fromBytes: P_BASE58_VAR(P_SHORT),
   }]
 
-  export const chainId = byteField('chainId');
+  export const chainId = byteField('chainId')
 
-  export const decimals = byteField('decimals');
+  export const decimals = byteField('decimals')
 
-  export const fee = longField('fee');
+  export const fee = longField('fee')
 
-  export const leaseAssetId = base58Option32('leaseAssetId');
+  export const leaseAssetId = base58Option32('leaseAssetId')
 
-  export const leaseId = base58field32('leaseId');
+  export const leaseId = base58field32('leaseId')
 
-  export const optionalAssetId = base58Option32('assetId');
+  export const optionalAssetId = base58Option32('assetId')
 
-  export const quantity = longField('quantity');
+  export const quantity = longField('quantity')
 
-  export const reissuable = booleanField('reissuable');
+  export const reissuable = booleanField('reissuable')
 
   export const recipient: TObjectField = ['recipient', {
     toBytes: BASE58_STRING, //ToDo: add alias
-    fromBytes: byteToAddressOrAlias
-  }];
+    fromBytes: byteToAddressOrAlias,
+  }]
 
   export const script: TObjectField = ['script', {
     toBytes: SCRIPT,
-    fromBytes: byteToScript
-  }];
+    fromBytes: byteToScript,
+  }]
 
-  export const senderPublicKey = base58field32('senderPublicKey');
+  export const senderPublicKey = base58field32('senderPublicKey')
 
   export const signature: TObjectField = ['signature', {
     toBytes: BASE58_STRING,
-    fromBytes: P_BASE58_FIXED(64)
-  }];
+    fromBytes: P_BASE58_FIXED(64),
+  }]
 
-  export const timestamp = longField('timestamp');
+  export const timestamp = longField('timestamp')
 
-  export const type = byteField('type');
+  export const type = byteField('type')
 
-  export const version = byteField('version');
+  export const version = byteField('version')
 
   // Complex fields
 
@@ -148,22 +148,22 @@ export namespace txFields {
     type: 'array',
     items: {
       toBytes: LEN(SHORT)(BASE58_STRING),
-      fromBytes: P_BASE58_VAR(P_SHORT)
-    }
-  }];
+      fromBytes: P_BASE58_VAR(P_SHORT),
+    },
+  }]
 
   const transfer: TObject = {
     type: 'object',
     schema: [
       recipient,
-      amount
-    ]
-  };
+      amount,
+    ],
+  }
 
   export const transfers: TObjectField = ['transfers', {
     type: 'array',
-    items: transfer
-  }];
+    items: transfer,
+  }]
 
   const dataTxItem: TDataTxItem = {
     type: 'dataTxField',
@@ -171,14 +171,14 @@ export namespace txFields {
       [DATA_FIELD_TYPE.INTEGER, {toBytes: LONG, fromBytes: P_LONG}],
       [DATA_FIELD_TYPE.BOOLEAN, {toBytes: BOOL, fromBytes: P_BOOLEAN}],
       [DATA_FIELD_TYPE.BINARY, {toBytes: LEN(SHORT)(BASE64_STRING), fromBytes: P_BASE64(P_SHORT)}],
-      [DATA_FIELD_TYPE.STRING, {toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT)}]
-    ])
-  };
+      [DATA_FIELD_TYPE.STRING, {toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT)}],
+    ]),
+  }
 
   export const data: TObjectField = ['data', {
     type: 'array',
-    items: dataTxItem
-  }];
+    items: dataTxItem,
+  }]
 
   const functionArgument = anyOf([
     [0, {toBytes: LONG, fromBytes: P_LONG}, 'integer'],
@@ -186,7 +186,7 @@ export namespace txFields {
     [2, {toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT)}, 'string'],
     [6, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'true'],
     [7, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'false'],
-  ], {valueField:'value'});
+  ], {valueField:'value'})
 
 
   export const functionCall: TObjectField = ['call', {
@@ -197,15 +197,15 @@ export namespace txFields {
       byteConstant(1),
       ['function', {
         toBytes: LEN(INT)(STRING),
-        fromBytes: P_STRING_VAR(P_INT)
+        fromBytes: P_STRING_VAR(P_INT),
       }],
       ['args', {
         type: 'array',
         toBytes: INT,
         fromBytes: P_INT,
-        items: functionArgument
-      }]
-    ]
+        items: functionArgument,
+      }],
+    ],
   }]
 
   export const payment: TObjectField = ['payment', {
@@ -216,9 +216,9 @@ export namespace txFields {
       amount,
       ['assetId', {
         toBytes: OPTION(LEN(SHORT)(BASE58_STRING)),
-        fromBytes: P_OPTION(P_BASE58_VAR(P_SHORT))
-      }]
-    ]
+        fromBytes: P_OPTION(P_BASE58_VAR(P_SHORT)),
+      }],
+    ],
   }]
 }
 
@@ -231,30 +231,30 @@ export const orderSchemaV0: TObject = {
       type: 'object',
       schema: [
         txFields.base58Option32('amountAsset'),
-        txFields.base58Option32('priceAsset')
-      ]
+        txFields.base58Option32('priceAsset'),
+      ],
     }],
     ['orderType', {
       toBytes: (type: string) => BYTE(type === 'sell' ? 1 : 0),
       fromBytes: (bytes: Uint8Array, start = 0) => P_BYTE(bytes, start).value === 1 ?
         {value: 'sell', shift: 1} :
-        {value: 'buy', shift: 1}
+        {value: 'buy', shift: 1},
     }],
     txFields.longField('price'),
     txFields.longField('amount'),
     txFields.timestamp,
     txFields.longField('expiration'),
-    txFields.longField('matcherFee')
-  ]
-};
+    txFields.longField('matcherFee'),
+  ],
+}
 
 export const orderSchemaV2: TSchema = {
   type: 'object',
   schema: [
     txFields.version,
-    ...orderSchemaV0.schema
-  ]
-};
+    ...orderSchemaV0.schema,
+  ],
+}
 
 export const aliasSchemaV2: TSchema = {
   type: 'object',
@@ -269,12 +269,12 @@ export const aliasSchemaV2: TSchema = {
         txFields.byteConstant(2), // Alias version
         txFields.chainId, //
         txFields.alias, // Alias text
-      ]
+      ],
     }],
     txFields.fee,
-    txFields.timestamp
-  ]
-};
+    txFields.timestamp,
+  ],
+}
 
 export const burnSchemaV2: TSchema = {
   type: 'object',
@@ -286,9 +286,9 @@ export const burnSchemaV2: TSchema = {
     txFields.assetId,
     txFields.quantity,
     txFields.fee,
-    txFields.timestamp
-  ]
-};
+    txFields.timestamp,
+  ],
+}
 
 export const cancelLeaseSchemaV2: TSchema = {
   type: 'object',
@@ -299,9 +299,9 @@ export const cancelLeaseSchemaV2: TSchema = {
     txFields.senderPublicKey,
     txFields.fee,
     txFields.timestamp,
-    txFields.leaseId
-  ]
-};
+    txFields.leaseId,
+  ],
+}
 
 export const invokeScriptSchemaV1: TSchema = {
   type: 'object',
@@ -318,7 +318,7 @@ export const invokeScriptSchemaV1: TSchema = {
     txFields.payment,
     txFields.fee,
     txFields.timestamp,
-  ]
+  ],
 }
 
 
@@ -330,27 +330,27 @@ export const dataSchemaV1: TSchema = {
     txFields.senderPublicKey,
     txFields.data,
     txFields.timestamp,
-    txFields.fee
-  ]
-};
+    txFields.fee,
+  ],
+}
 
 export const proofsSchemaV0: TSchema = {
   type: 'object',
   schema: [
     ['signature', {
       toBytes: BASE58_STRING,
-      fromBytes: P_BASE58_FIXED(64)
-    }]
-  ]
-};
+      fromBytes: P_BASE58_FIXED(64),
+    }],
+  ],
+}
 
 export const proofsSchemaV1: TSchema = {
   type: 'object',
   schema: [
     txFields.byteConstant( 1), // proofs version
-    txFields.proofs
-  ]
-};
+    txFields.proofs,
+  ],
+}
 
 export const exchangeSchemaV0: TSchema = {
   type: 'object',
@@ -359,12 +359,12 @@ export const exchangeSchemaV0: TSchema = {
     ['order1', {
       type: 'object',
       withLength: intConverter,
-      schema: [...orderSchemaV0.schema, txFields.signature]
+      schema: [...orderSchemaV0.schema, txFields.signature],
     }],
     ['order2', {
       type: 'object',
       withLength: intConverter,
-      schema: [...orderSchemaV0.schema, txFields.signature]
+      schema: [...orderSchemaV0.schema, txFields.signature],
     }],
     txFields.longField('price'),
     txFields.longField('amount'),
@@ -372,12 +372,12 @@ export const exchangeSchemaV0: TSchema = {
     txFields.longField('sellMatcherFee'),
     txFields.longField('fee'),
     txFields.longField('timestamp'),
-  ]
+  ],
 }
 
 const anyOrder =  anyOf([
   [1, {type: 'object', withLength: intConverter, schema: [txFields.byteConstant(1), ...orderSchemaV0.schema, ...proofsSchemaV0.schema]}],
-  [2, {type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema]}]
+  [2, {type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema]}],
 ], {discriminatorField: 'version', discriminatorBytePos: 4})
 
 export const exchangeSchemaV2: TSchema = {
@@ -394,7 +394,7 @@ export const exchangeSchemaV2: TSchema = {
     txFields.longField('sellMatcherFee'),
     txFields.longField('fee'),
     txFields.longField('timestamp'),
-  ]
+  ],
 }
 
 export const issueSchemaV2: TSchema = {
@@ -411,9 +411,9 @@ export const issueSchemaV2: TSchema = {
     txFields.reissuable,
     txFields.fee,
     txFields.timestamp,
-    txFields.script
-  ]
-};
+    txFields.script,
+  ],
+}
 
 export const leaseSchemaV2: TSchema = {
   type: 'object',
@@ -425,9 +425,9 @@ export const leaseSchemaV2: TSchema = {
     txFields.recipient,
     txFields.amount,
     txFields.fee,
-    txFields.timestamp
-  ]
-};
+    txFields.timestamp,
+  ],
+}
 
 export const massTransferSchemaV1: TSchema = {
   type: 'object',
@@ -439,9 +439,9 @@ export const massTransferSchemaV1: TSchema = {
     txFields.transfers,
     txFields.timestamp,
     txFields.fee,
-    txFields.attachment
-  ]
-};
+    txFields.attachment,
+  ],
+}
 
 export const reissueSchemaV2: TSchema = {
   type: 'object',
@@ -455,8 +455,8 @@ export const reissueSchemaV2: TSchema = {
     txFields.reissuable,
     txFields.fee,
     txFields.timestamp,
-  ]
-};
+  ],
+}
 
 export const setAssetScriptSchemaV1: TSchema = {
   type: 'object',
@@ -468,9 +468,9 @@ export const setAssetScriptSchemaV1: TSchema = {
     txFields.assetId,
     txFields.fee,
     txFields.timestamp,
-    txFields.script
-  ]
-};
+    txFields.script,
+  ],
+}
 
 export const setScriptSchemaV1: TSchema = {
   type: 'object',
@@ -481,9 +481,9 @@ export const setScriptSchemaV1: TSchema = {
     txFields.senderPublicKey,
     txFields.script,
     txFields.fee,
-    txFields.timestamp
-  ]
-};
+    txFields.timestamp,
+  ],
+}
 
 export const sponsorshipSchemaV1: TSchema = {
   type: 'object',
@@ -494,9 +494,9 @@ export const sponsorshipSchemaV1: TSchema = {
     txFields.assetId,
     txFields.longField('minSponsoredAssetFee'),
     txFields.fee,
-    txFields.timestamp
-  ]
-};
+    txFields.timestamp,
+  ],
+}
 
 export const transferSchemaV2: TSchema = {
   type: 'object',
@@ -510,9 +510,9 @@ export const transferSchemaV2: TSchema = {
     txFields.amount,
     txFields.fee,
     txFields.recipient,
-    txFields.attachment
-  ]
-};
+    txFields.attachment,
+  ],
+}
 
 
 /**
@@ -522,58 +522,58 @@ export const schemasByTypeMap = {
   [TRANSACTION_TYPE.GENESIS]: {},
   [TRANSACTION_TYPE.PAYMENT]: {},
   [TRANSACTION_TYPE.ISSUE]: {
-    2: issueSchemaV2
+    2: issueSchemaV2,
   },
   [TRANSACTION_TYPE.TRANSFER]: {
-    2: transferSchemaV2
+    2: transferSchemaV2,
   },
   [TRANSACTION_TYPE.REISSUE]: {
-    2: reissueSchemaV2
+    2: reissueSchemaV2,
   },
   [TRANSACTION_TYPE.BURN]: {
-    2: burnSchemaV2
+    2: burnSchemaV2,
   },
   [TRANSACTION_TYPE.EXCHANGE]: {
     0: exchangeSchemaV0,
-    2: exchangeSchemaV2
+    2: exchangeSchemaV2,
   },
   [TRANSACTION_TYPE.LEASE]: {
-    2: leaseSchemaV2
+    2: leaseSchemaV2,
   },
   [TRANSACTION_TYPE.CANCEL_LEASE]: {
-    2: cancelLeaseSchemaV2
+    2: cancelLeaseSchemaV2,
   },
   [TRANSACTION_TYPE.ALIAS]: {
-    2: aliasSchemaV2
+    2: aliasSchemaV2,
   },
   [TRANSACTION_TYPE.MASS_TRANSFER]: {
-    1: massTransferSchemaV1
+    1: massTransferSchemaV1,
   },
   [TRANSACTION_TYPE.DATA]: {
-    1: dataSchemaV1
+    1: dataSchemaV1,
   },
   [TRANSACTION_TYPE.SET_SCRIPT]: {
-    1: setScriptSchemaV1
+    1: setScriptSchemaV1,
   },
   [TRANSACTION_TYPE.SPONSORSHIP]: {
-    1: sponsorshipSchemaV1
+    1: sponsorshipSchemaV1,
   },
   [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: {
-    1: setAssetScriptSchemaV1
+    1: setAssetScriptSchemaV1,
   },
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: {
-    1: invokeScriptSchemaV1
-  }
-};
+    1: invokeScriptSchemaV1,
+  },
+}
 
 
 export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): TSchema {
-  const schemas = (<any>schemasByTypeMap)[type];
+  const schemas = (<any>schemasByTypeMap)[type]
   if (typeof schemas !== 'object') {
     throw new Error(`Incorrect tx type: ${type}`)
   }
 
-  const schema = schemas[version || 0];
+  const schema = schemas[version || 0]
   if (typeof schema !== 'object') {
     throw new Error(`Incorrect tx version: ${version}`)
   }

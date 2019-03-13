@@ -1,11 +1,11 @@
-import {getTransactionSchema} from "./schemas";
-import {serializeOrder, serializerFromSchema, serializeTx, TFromLongConverter} from "./serialize";
-import {parseOrder, parserFromSchema, parseTx, TToLongConverter} from "./parse";
-import * as json from "./jsonMethods";
+import {getTransactionSchema} from './schemas'
+import {serializeOrder, serializerFromSchema, serializeTx, TFromLongConverter} from './serialize'
+import {parseOrder, parserFromSchema, parseTx, TToLongConverter} from './parse'
+import * as json from './jsonMethods'
 import * as serializePrimitives from './serializePrimitives'
 import * as parsePrimitives from './parsePrimitives'
 import * as schemas from './schemas'
-import {TSchema} from "./schemaTypes";
+import {TSchema} from './schemaTypes'
 
 const binary = {
   serializerFromSchema,
@@ -13,8 +13,8 @@ const binary = {
   serializeOrder,
   parserFromSchema,
   parseTx,
-  parseOrder
-};
+  parseOrder,
+}
 
 export {
   TFromLongConverter,
@@ -38,14 +38,14 @@ export {
  */
 function convertLongFields<T = string, R = string>(obj: any, schema: TSchema, toConverter?: TToLongConverter<T>, fromConverter?: TFromLongConverter<R>){
   //ToDo: rewrite. Now simply serializes and then parses with long  factory to get right long types
-  const ser =  serializerFromSchema(schema, fromConverter);
-  const par = parserFromSchema(schema, toConverter);
-  const converted = par(ser(obj)).value;
+  const ser =  serializerFromSchema(schema, fromConverter)
+  const par = parserFromSchema(schema, toConverter)
+  const converted = par(ser(obj)).value
   return { ...obj, ...converted}
 }
 
 function convertTxLongFields<T = string, R = string>(tx: any, toConverter?: TToLongConverter<T>, fromConverter?: TFromLongConverter<R>) {
-  const {type, version} = tx;
-  const schema = getTransactionSchema(type, version);
+  const {type, version} = tx
+  const schema = getTransactionSchema(type, version)
   return convertLongFields(tx, schema, toConverter, fromConverter)
 }
