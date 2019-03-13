@@ -54,11 +54,11 @@ const intConverter = {
 }
 export namespace txFields {
   //Field constructors
-  export const longField = (name: string): TObjectField => ([name, {toBytes: LONG, fromBytes: P_LONG}])
+  export const longField = (name: string): TObjectField => ([name, { toBytes: LONG, fromBytes: P_LONG }])
 
-  export const byteField = (name: string): TObjectField => ([name, {toBytes: BYTE, fromBytes: P_BYTE}])
+  export const byteField = (name: string): TObjectField => ([name, { toBytes: BYTE, fromBytes: P_BYTE }])
 
-  export const booleanField = (name: string): TObjectField => ([name, {toBytes: BOOL, fromBytes: P_BOOLEAN}])
+  export const booleanField = (name: string): TObjectField => ([name, { toBytes: BOOL, fromBytes: P_BOOLEAN }])
 
   export const stringField = (name: string): TObjectField => ([name, {
     toBytes: LEN(SHORT)(STRING),
@@ -82,7 +82,7 @@ export namespace txFields {
 
   export const byteConstant = (byte: number): TObjectField => (['noname', {
     toBytes: () => Uint8Array.from([byte]),
-    fromBytes: () => ({value: undefined, shift: 1}),
+    fromBytes: () => ({ value: undefined, shift: 1 }),
   }])
 
   // Primitive fields
@@ -168,10 +168,10 @@ export namespace txFields {
   const dataTxItem: TDataTxItem = {
     type: 'dataTxField',
     items: new Map<DATA_FIELD_TYPE, TSchema>([
-      [DATA_FIELD_TYPE.INTEGER, {toBytes: LONG, fromBytes: P_LONG}],
-      [DATA_FIELD_TYPE.BOOLEAN, {toBytes: BOOL, fromBytes: P_BOOLEAN}],
-      [DATA_FIELD_TYPE.BINARY, {toBytes: LEN(SHORT)(BASE64_STRING), fromBytes: P_BASE64(P_SHORT)}],
-      [DATA_FIELD_TYPE.STRING, {toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT)}],
+      [DATA_FIELD_TYPE.INTEGER, { toBytes: LONG, fromBytes: P_LONG }],
+      [DATA_FIELD_TYPE.BOOLEAN, { toBytes: BOOL, fromBytes: P_BOOLEAN }],
+      [DATA_FIELD_TYPE.BINARY, { toBytes: LEN(SHORT)(BASE64_STRING), fromBytes: P_BASE64(P_SHORT) }],
+      [DATA_FIELD_TYPE.STRING, { toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT) }],
     ]),
   }
 
@@ -181,12 +181,12 @@ export namespace txFields {
   }]
 
   const functionArgument = anyOf([
-    [0, {toBytes: LONG, fromBytes: P_LONG}, 'integer'],
-    [1, {toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT)}, 'binary'],
-    [2, {toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT)}, 'string'],
-    [6, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'true'],
-    [7, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'false'],
-  ], {valueField:'value'})
+    [0, { toBytes: LONG, fromBytes: P_LONG }, 'integer'],
+    [1, { toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT) }, 'binary'],
+    [2, { toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT) }, 'string'],
+    [6, { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: true, shift: 0 }) }, 'true'],
+    [7, { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: true, shift: 0 }) }, 'false'],
+  ], { valueField: 'value' })
 
 
   export const functionCall: TObjectField = ['call', {
@@ -208,9 +208,7 @@ export namespace txFields {
     ],
   }]
 
-  export const payment: TObjectField = ['payment', {
-    optional: true,
-    withLength: shortConverter,
+  export const payment: TObject = {
     type: 'object',
     schema: [
       amount,
@@ -219,6 +217,11 @@ export namespace txFields {
         fromBytes: P_OPTION(P_BASE58_VAR(P_SHORT)),
       }],
     ],
+  }
+
+  export const payments: TObjectField = ['transfers', {
+    type: 'array',
+    items: payment,
   }]
 }
 
@@ -237,8 +240,8 @@ export const orderSchemaV0: TObject = {
     ['orderType', {
       toBytes: (type: string) => BYTE(type === 'sell' ? 1 : 0),
       fromBytes: (bytes: Uint8Array, start = 0) => P_BYTE(bytes, start).value === 1 ?
-        {value: 'sell', shift: 1} :
-        {value: 'buy', shift: 1},
+        { value: 'sell', shift: 1 } :
+        { value: 'buy', shift: 1 },
     }],
     txFields.longField('price'),
     txFields.longField('amount'),
@@ -315,8 +318,9 @@ export const invokeScriptSchemaV1: TSchema = {
       fromBytes: P_BASE58_FIXED(26),
     }],
     txFields.functionCall,
-    txFields.payment,
+    txFields.payments,
     txFields.fee,
+    txFields.optionalAssetId,
     txFields.timestamp,
   ],
 }
@@ -347,7 +351,7 @@ export const proofsSchemaV0: TSchema = {
 export const proofsSchemaV1: TSchema = {
   type: 'object',
   schema: [
-    txFields.byteConstant( 1), // proofs version
+    txFields.byteConstant(1), // proofs version
     txFields.proofs,
   ],
 }
@@ -375,10 +379,10 @@ export const exchangeSchemaV0: TSchema = {
   ],
 }
 
-const anyOrder =  anyOf([
-  [1, {type: 'object', withLength: intConverter, schema: [txFields.byteConstant(1), ...orderSchemaV0.schema, ...proofsSchemaV0.schema]}],
-  [2, {type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema]}],
-], {discriminatorField: 'version', discriminatorBytePos: 4})
+const anyOrder = anyOf([
+  [1, { type: 'object', withLength: intConverter, schema: [txFields.byteConstant(1), ...orderSchemaV0.schema, ...proofsSchemaV0.schema] }],
+  [2, { type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema] }],
+], { discriminatorField: 'version', discriminatorBytePos: 4 })
 
 export const exchangeSchemaV2: TSchema = {
   type: 'object',
