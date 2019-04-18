@@ -19,9 +19,9 @@ export const TRANSACTION_TYPE = {
     SET_ASSET_SCRIPT: 15 as 15
 };
 
-export enum DATA_FIELD_TYPE {
-    INTEGER = 'integer',
-    BOOLEAN = 'boolean',
-    STRING = 'string',
-    BINARY = 'binary'
-}
+export const DATA_FIELD_TYPE = {
+    INTEGER: 'integer' as 'integer',
+    BOOLEAN: 'boolean' as 'boolean',
+    STRING: 'string' as 'string',
+    BINARY: 'binary' as 'binary'
+};
