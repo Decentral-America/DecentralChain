@@ -1,6 +1,5 @@
 export * from '../transactions/general';
 
-
 export const TRANSACTION_TYPE = {
     GENESIS: 1 as 1,
     PAYMENT: 2 as 2,
@@ -25,3 +24,6 @@ export const DATA_FIELD_TYPE = {
     STRING: 'string' as 'string',
     BINARY: 'binary' as 'binary'
 };
+
+export type TTransactionType = typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE];
+export type TDataEntyType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
