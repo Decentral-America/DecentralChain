@@ -1,37 +1,13 @@
-export * from './sign';
-export * from './api';
-import { DATA_FIELD_TYPE, TRANSACTION_TYPE } from '../src';
+import { DATA_FIELD_TYPE, TRANSACTION_TYPE, TTransactionType } from '../src';
 
-export type TValues<T extends object> = T[keyof T];
-export type TDataEntryFieldType = TValues<typeof DATA_FIELD_TYPE>;
 
-export interface IWithId {
-    id: string;
-}
+export type TOrderType = 'buy' | 'sell';
+export type TBase64Script = string;
+export type TBase58Bytes = string;
+export type TProofs = Array<string>;
 
-export interface IWithChainId {
-    chainId: number;
-}
-
-export interface IWithSender {
-    senderPublicKey: string;
-}
-
-export interface IWithVersion {
-    version: number;
-}
-
-export interface IWithSignature {
-    signature: string;
-}
-
-export interface IWithProofs {
-    /**
-     * Transaction proofs
-     * @minItems 0
-     * @maxItems 8
-     */
-    proofs: string[]
+interface _IWithProofs {
+    proofs: TProofs;
 }
 
 export interface IMassTransferItem<LONG> {
@@ -65,11 +41,12 @@ export interface IDataTransactionEntryBinary {
 
 export interface IExchangeTransactionOrder<LONG> {
     matcherPublicKey: string;
+    version: number;
     assetPair: {
         amountAsset: string;
         priceAsset: string;
     },
-    orderType: 'buy' | 'sell';
+    orderType: TOrderType;
     price: LONG;
     amount: LONG;
     timestamp: number;
@@ -84,7 +61,7 @@ export type TDataTransactionEntry<LONG> =
     IDataTransactionEntryString |
     IDataTransactionEntryBinary;
 
-export interface ITransaction<LONG, TYPE extends number = number> {
+export interface ITransaction<LONG, TYPE extends TTransactionType = TTransactionType> {
     type: TYPE;
     senderPublicKey: string;
     version: number;
@@ -107,6 +84,21 @@ export type TTransaction<LONG> =
     IExchangeTransaction<LONG> |
     ISetAssetScriptTransaction<LONG>;
 
+// export type TTransactionWithId<LONG> = // TODO! 
+//     IIssueTransaction<LONG> |
+//     ITransferTransaction<LONG> |
+//     IReissueTransaction<LONG> |
+//     IBurnTransaction<LONG> |
+//     ILeaseTransaction<LONG> |
+//     ICancelLeaseTransaction<LONG> |
+//     IAliasTransaction<LONG> |
+//     IMassTransferTransaction<LONG> |
+//     IDataTransaction<LONG> |
+//     ISetScriptTransaction<LONG> |
+//     ISponsorshipTransaction<LONG> |
+//     IExchangeTransaction<LONG> |
+//     ISetAssetScriptTransaction<LONG>;
+
 export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
     [TRANSACTION_TYPE.TRANSFER]: ITransferTransaction<LONG>,
@@ -123,90 +115,78 @@ export type TTransactionMap<LONG> = {
     [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: ISetAssetScriptTransaction<LONG>
 };
 
-export interface IIssueTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.ISSUE;
+export interface IIssueTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.ISSUE> {
     name: string;
     description: string;
     decimals: number;
     quantity: LONG;
     reissuable: boolean;
     chainId: number;
-    script?: string | null;
+    script?: TBase64Script | null;
 }
 
-export interface ITransferTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.TRANSFER;
+export interface ITransferTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.TRANSFER> {
     recipient: string;
     amount: LONG;
     feeAssetId: string | null;
     assetId: string | null;
-    attachment: string;
+    attachment: TBase58Bytes;
 }
 
-export interface IReissueTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.REISSUE;
+export interface IReissueTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.REISSUE> {
     assetId: string;
     quantity: LONG;
     reissuable: boolean;
 }
 
-export interface IBurnTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.BURN;
+export interface IBurnTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.BURN> {
     assetId: string;
     quantity: LONG;
 }
 
-export interface ILeaseTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.LEASE;
+export interface ILeaseTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.LEASE> {
     amount: LONG;
     recipient: string;
 }
 
-export interface ICancelLeaseTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.CANCEL_LEASE;
+export interface ICancelLeaseTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.CANCEL_LEASE> {
     leaseId: string;
 }
 
-export interface IAliasTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.ALIAS;
+export interface IAliasTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.ALIAS> {
     alias: string;
 }
 
-export interface IMassTransferTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.MASS_TRANSFER;
+export interface IMassTransferTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.MASS_TRANSFER> {
     transfers: Array<IMassTransferItem<LONG>>;
     assetId?: string;
-    attachment?: string;
+    attachment?: TBase58Bytes;
 }
 
-export interface IDataTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.DATA;
+export interface IDataTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.DATA> {
     data: Array<TDataTransactionEntry<LONG>>;
 }
 
-export interface IExchangeTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.EXCHANGE;
-    buyOrder: IExchangeTransactionOrder<LONG> & IWithProofs;
-    sellOrder: IExchangeTransactionOrder<LONG> & IWithProofs;
+export interface IExchangeTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.EXCHANGE> {
+    buyOrder: IExchangeTransactionOrder<LONG> & _IWithProofs;
+    sellOrder: IExchangeTransactionOrder<LONG> & _IWithProofs;
     price: LONG;
     amount: LONG;
     buyMatcherFee: LONG;
     sellMatcherFee: LONG;
 }
 
-export interface ISetScriptTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.SET_SCRIPT;
-    script: string | null; //base64
+export interface ISetScriptTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.SET_SCRIPT> {
+    script: TBase64Script | null;
 }
 
-export interface ISponsorshipTransaction<LONG> extends ITransaction<LONG> {
-    type: typeof TRANSACTION_TYPE.SPONSORSHIP;
+export interface ISponsorshipTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.SPONSORSHIP> {
     assetId: string;
     minSponsoredAssetFee: LONG;
 }
 
-export interface ISetAssetScriptTransaction<LONG> extends ITransaction<LONG>, IWithChainId {
-    type: typeof TRANSACTION_TYPE.SET_ASSET_SCRIPT;
+export interface ISetAssetScriptTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.SET_ASSET_SCRIPT> {
+    chainId: number;
     assetId: string;
-    script: string;
+    script: TBase64Script;
 }
