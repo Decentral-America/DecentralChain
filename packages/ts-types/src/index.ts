@@ -1,4 +1,4 @@
-export * from '../transactions/general';
+export * from '../transactions';
 
 export const TRANSACTION_TYPE = {
     GENESIS: 1 as 1,
