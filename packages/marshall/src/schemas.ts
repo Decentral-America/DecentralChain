@@ -191,6 +191,7 @@ export namespace txFields {
 
   export const functionCall: TObjectField = ['call', {
     type: 'object',
+    optional: true,
     schema: [
       // special bytes to indicate function call. Used in Serde serializer
       byteConstant(9),
@@ -213,10 +214,7 @@ export namespace txFields {
     withLength: shortConverter,
     schema: [
       amount,
-      ['assetId', {
-        toBytes: OPTION(LEN(SHORT)(BASE58_STRING)),
-        fromBytes: P_OPTION(P_BASE58_VAR(P_SHORT)),
-      }],
+      optionalAssetId
     ],
   }
 
