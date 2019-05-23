@@ -142,11 +142,13 @@ export interface IReissueTransaction<LONG> extends ITransaction<LONG, typeof TRA
     assetId: string;
     quantity: LONG;
     reissuable: boolean;
+    chainId: number;
 }
 
 export interface IBurnTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.BURN> {
     assetId: string;
     quantity: LONG;
+    chainId: number;
 }
 
 export interface ILeaseTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.LEASE> {
@@ -156,6 +158,7 @@ export interface ILeaseTransaction<LONG> extends ITransaction<LONG, typeof TRANS
 
 export interface ICancelLeaseTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.CANCEL_LEASE> {
     leaseId: string;
+    chainId: number;
 }
 
 export interface IAliasTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.ALIAS> {
@@ -183,6 +186,7 @@ export interface IExchangeTransaction<LONG> extends ITransaction<LONG, typeof TR
 
 export interface ISetScriptTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.SET_SCRIPT> {
     script: TBase64Script | null;
+    chainId: number;
 }
 
 export interface ISponsorshipTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.SPONSORSHIP> {
@@ -198,7 +202,7 @@ export interface ISetAssetScriptTransaction<LONG> extends ITransaction<LONG, typ
 
 export interface IInvokeScriptTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.INVOKE_SCRIPT> {
     chainId: number;
-    dappAddress: string;
+    dApp: string;
     call: IInvokeScriptCall<LONG>;
     feeAssetId: string | null;
     payment: Array<IInvokeScriptPayment<LONG>>;
