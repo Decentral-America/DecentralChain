@@ -30,7 +30,7 @@ export interface IInvokeScriptCallBoolArgument {
 }
 
 export interface IInvokeScriptCallIntArgument<LONG> {
-    type: 'boolean';
+    type: 'integer';
     value: LONG;
 }
 
