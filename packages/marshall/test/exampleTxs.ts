@@ -72,54 +72,55 @@ export const leaseTx = {
   amount: 10000,
 }
 
-export const exchangeTxV0 = {
-  'type': 7,
-  'id': 'EKcZxn3aL2bxRCtwaps6C1cFLmvrKraatRd7a32DuQWn',
-  'sender': '3PJaDyprvekvPXPuAtxrapacuDJopgJRaU3',
-  // "senderPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy", // exchange tx gets senderPublicKey from Order
-  'fee': 300000,
-  'timestamp': 1534164407812,
-  'signature': 'p6zQ8xDnD9VpxW83shqevxFor3mynHGakfwU3EgWz1CJpV2K3PbhLQeaEE3gsVQFo3W4XjmgEDDmJDVhgddKHx3',
-  'order1': {
-    // "id": "3JyBBBYpkocXzVmoXNbvtzKe611iCdgPkbv7Zntiwq1U",
-    // "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
-    'senderPublicKey': '8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd',
-    'matcherPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
-    'assetPair': {
-      'amountAsset': 'B1u2TBpTYHWCuMuKLnbQfLvdLJ3zjgPiy3iMS2TSYugZ',
-      'priceAsset': 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck',
-    },
-    'orderType': 'buy',
-    'price': 144300,
-    'amount': 24000684,
-    'timestamp': 1534150214000,
-    'expiration': 1534236614000,
-    'matcherFee': 300000,
-    'signature': 'XUTCpGgGP2vQBdfRtTCAorW7hEwet1rpJjydTSneKgTzTfx4H477pbmKNcKkPw1rtt3Qaa3KTKZj77kr8dpvtLF',
+export const exchangeTxV1 = {
+  "type": 7,
+  "id": "2yJZ6Uf6i3RnYdk268WkdJyUR3up9bUxjad1jrTCAiCr",
+ // "sender": "3PJaDyprvekvPXPuAtxrapacuDJopgJRaU3",
+ // "senderPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+  "fee": 300000,
+  "timestamp": 1512075551784,
+  "signature": "5CNVuHcLak6GjTWvVo3t92y1ZDKeRHdSgedHP5VTg65fC8fAN2RrxDhWNmTP3QktvSQUGi7Z3WjUtVztmHnp7Afk",
+  "proofs": ["5CNVuHcLak6GjTWvVo3t92y1ZDKeRHdSgedHP5VTg65fC8fAN2RrxDhWNmTP3QktvSQUGi7Z3WjUtVztmHnp7Afk"],
+  //"version": 1,
+  "order1": {
+    //"version": 1,
+    //"id": "HFe1UL2xF9q7T1vcxhSk5h6L53sQcM9eevvjtASe1Szs",
+    //"sender": "3PMajJ6WC4XR3RMr4raWainaKQpfRZLGHsV",
+    "senderPublicKey": "3FQtBZWd2PYSRyehzDNEr1YQC29Vd5pCYqiN4nRhnxQK",
+    "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+    "assetPair": {"amountAsset": "474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu", "priceAsset": null},
+    "orderType": "buy",
+    "amount": 1230364480,
+    "price": 8971734818,
+    "timestamp": 1512075437685,
+    "expiration": 1512161837685,
+    "matcherFee": 300000,
+    "signature": "4kh4HmFLCJnJuUfoCFir6G8GSiUcogVpMFEmUjpqutXqhpKFu5ECzxqQ3Kd1TxvtSN5aG35M76nrfvP7bt7UQ1k1",
+    //"proofs": ["4kh4HmFLCJnJuUfoCFir6G8GSiUcogVpMFEmUjpqutXqhpKFu5ECzxqQ3Kd1TxvtSN5aG35M76nrfvP7bt7UQ1k1"]
   },
-  'order2': {
-    // "id": "GHNi7oxRFAonHUDidupMTNRsCz2A7e3LyHRWW6L6cRxf",
-    // "sender": "3P5gZCoxgjb9Twwe9qwHMyq8QMBXEQ26XKm",
-    'senderPublicKey': '8SiRTwwpXsms52XCDYUPJx9qaUK5cLonvjtrKB51k6Xd',
-    'matcherPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
-    'assetPair': {
-      'amountAsset': 'B1u2TBpTYHWCuMuKLnbQfLvdLJ3zjgPiy3iMS2TSYugZ',
-      'priceAsset': 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck',
-    },
-    'orderType': 'sell',
-    'price': 144300,
-    'amount': 9500884,
-    'timestamp': 1534164407000,
-    'expiration': 1534250807000,
-    'matcherFee': 300000,
-    'signature': 'Q6dwZPfghTF7T3Q1pwHpRwF4Mro4CdygnZjQr8rDSKfYph1rnQR3yoA3pXNytw4wTVBCeqPqapP17WMFr5nee5D',
+  "order2": {
+    //"version": 1,
+    //"id": "EBxTpRwrRPpSgEaH1Lco8B9wZwXYbxUHfggP1tPiSEfW",
+   // "sender": "3P5XQcyuAs3Fs4FcBXUrKPSQmfY6Zvse36L",
+    "senderPublicKey": "BwgywtnxBGBW53fRqa11K4KLcJkR4BMeu9o3jSB2KCGM",
+    "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+    "assetPair": {"amountAsset": "474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu", "priceAsset": null},
+    "orderType": "sell",
+    "amount": 49816000,
+    "price": 8971734818,
+    "timestamp": 1512075546319,
+    "expiration": 1513803546319,
+    "matcherFee": 300000,
+    "signature": "2pY4uNy5yHWquYLyBWPCrBiMhNNELAoFTJtWuaXkdb2nMDgDnZUx85ierKAbDtjiE5isv3jTd5udNvm7tfqrDagY",
+   // "proofs": ["2pY4uNy5yHWquYLyBWPCrBiMhNNELAoFTJtWuaXkdb2nMDgDnZUx85ierKAbDtjiE5isv3jTd5udNvm7tfqrDagY"]
   },
-  'price': 144300,
-  'amount': 2000802,
-  'buyMatcherFee': 25009,
-  'sellMatcherFee': 63177,
+  "amount": 49816000,
+  "price": 8971734818,
+  "buyMatcherFee": 12146,
+  "sellMatcherFee": 300000,
+ // "height": 774422
 }
-
+export const exchangeV1BytesStr = "7,0,0,0,203,0,0,0,203,33,104,130,87,194,237,236,142,53,151,229,133,52,22,214,191,157,209,20,65,3,46,130,213,5,200,8,32,200,236,2,76,100,67,66,229,220,167,247,104,120,126,0,88,2,74,88,11,204,242,151,223,79,118,68,41,219,211,62,165,189,241,223,2,1,46,32,195,246,234,138,159,137,81,187,191,232,136,17,19,54,236,126,216,194,66,3,114,101,13,88,205,115,38,66,101,130,0,0,0,0,0,2,22,193,207,34,0,0,0,0,73,85,223,64,0,0,1,96,14,184,38,117,0,0,1,96,19,222,130,117,0,0,0,0,0,4,147,224,187,186,103,72,228,224,208,47,169,202,70,206,63,145,220,74,10,154,143,218,246,36,229,240,23,148,122,236,238,198,238,220,43,255,143,77,74,8,240,66,21,128,170,241,81,78,187,157,43,225,102,39,248,22,3,17,110,155,65,229,18,210,223,134,162,151,112,200,113,221,208,223,116,205,127,63,7,98,22,186,141,79,8,50,214,195,138,140,161,116,152,178,189,94,227,102,100,67,66,229,220,167,247,104,120,126,0,88,2,74,88,11,204,242,151,223,79,118,68,41,219,211,62,165,189,241,223,2,1,46,32,195,246,234,138,159,137,81,187,191,232,136,17,19,54,236,126,216,194,66,3,114,101,13,88,205,115,38,66,101,130,0,1,0,0,0,2,22,193,207,34,0,0,0,0,2,248,33,192,0,0,1,96,14,185,206,207,0,0,1,96,117,184,254,207,0,0,0,0,0,4,147,224,91,2,138,239,237,138,164,98,237,219,161,223,52,228,94,148,1,132,138,51,119,190,121,124,21,38,144,34,211,222,79,8,201,12,10,118,144,19,91,237,185,1,159,33,155,42,6,240,38,5,115,61,80,232,107,4,35,104,100,110,137,240,1,137,0,0,0,2,22,193,207,34,0,0,0,0,2,248,33,192,0,0,0,0,0,0,47,114,0,0,0,0,0,4,147,224,0,0,0,0,0,4,147,224,0,0,1,96,14,185,228,40"
 export const exchangeTxV2 = {
   'version': 2,
   'type': 7,
@@ -347,7 +348,7 @@ export const exampleTxs = {
   4: transferTx,
   5: reissueTx,
   6: burnTx,
-  7: exchangeTxV0,
+  7: exchangeTxV1,
   70: exchangeTxV2,
   8: leaseTx,
   9: cancelLeaseTx,
@@ -361,6 +362,7 @@ export const exampleTxs = {
 }
 
 export const exampleBytesStr = {
+  7: exchangeV1BytesStr,
   70: exchangeV2BytesStr,
   10: aliasV2BytesStr,
 }

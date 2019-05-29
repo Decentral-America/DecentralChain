@@ -22,6 +22,7 @@ import {
   TObjectField,
   anyOf
 } from './schemaTypes'
+import {serializerFromSchema} from './serialize'
 
 
 //Todo: import this enums from ts-types package
@@ -55,11 +56,11 @@ const intConverter = {
 }
 export namespace txFields {
   //Field constructors
-  export const longField = (name: string): TObjectField => ([name, { toBytes: LONG, fromBytes: P_LONG }])
+  export const longField = (name: string): TObjectField => ([name, {toBytes: LONG, fromBytes: P_LONG}])
 
-  export const byteField = (name: string): TObjectField => ([name, { toBytes: BYTE, fromBytes: P_BYTE }])
+  export const byteField = (name: string): TObjectField => ([name, {toBytes: BYTE, fromBytes: P_BYTE}])
 
-  export const booleanField = (name: string): TObjectField => ([name, { toBytes: BOOL, fromBytes: P_BOOLEAN }])
+  export const booleanField = (name: string): TObjectField => ([name, {toBytes: BOOL, fromBytes: P_BOOLEAN}])
 
   export const stringField = (name: string): TObjectField => ([name, {
     toBytes: LEN(SHORT)(STRING),
@@ -83,7 +84,7 @@ export namespace txFields {
 
   export const byteConstant = (byte: number): TObjectField => (['noname', {
     toBytes: () => Uint8Array.from([byte]),
-    fromBytes: () => ({ value: undefined, shift: 1 }),
+    fromBytes: () => ({value: undefined, shift: 1}),
   }])
 
   // Primitive fields
@@ -169,10 +170,10 @@ export namespace txFields {
   const dataTxItem: TDataTxItem = {
     type: 'dataTxField',
     items: new Map<DATA_FIELD_TYPE, TSchema>([
-      [DATA_FIELD_TYPE.INTEGER, { toBytes: LONG, fromBytes: P_LONG }],
-      [DATA_FIELD_TYPE.BOOLEAN, { toBytes: BOOL, fromBytes: P_BOOLEAN }],
-      [DATA_FIELD_TYPE.BINARY, { toBytes: LEN(SHORT)(BASE64_STRING), fromBytes: P_BASE64(P_SHORT) }],
-      [DATA_FIELD_TYPE.STRING, { toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT) }],
+      [DATA_FIELD_TYPE.INTEGER, {toBytes: LONG, fromBytes: P_LONG}],
+      [DATA_FIELD_TYPE.BOOLEAN, {toBytes: BOOL, fromBytes: P_BOOLEAN}],
+      [DATA_FIELD_TYPE.BINARY, {toBytes: LEN(SHORT)(BASE64_STRING), fromBytes: P_BASE64(P_SHORT)}],
+      [DATA_FIELD_TYPE.STRING, {toBytes: LEN(SHORT)(STRING), fromBytes: P_STRING_VAR(P_SHORT)}],
     ]),
   }
 
@@ -182,12 +183,12 @@ export namespace txFields {
   }]
 
   const functionArgument = anyOf([
-    [0, { toBytes: LONG, fromBytes: P_LONG }, 'integer'],
-    [1, { toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT) }, 'binary'],
-    [2, { toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT) }, 'string'],
-    [6, { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: true, shift: 0 }) }, 'boolean'],
-    [7, { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: false, shift: 0 }) }, 'boolean'],
-  ], { valueField: 'value' })
+    [0, {toBytes: LONG, fromBytes: P_LONG}, 'integer'],
+    [1, {toBytes: LEN(INT)(BASE64_STRING), fromBytes: P_BASE64(P_INT)}, 'binary'],
+    [2, {toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT)}, 'string'],
+    [6, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: true, shift: 0})}, 'boolean'],
+    [7, {toBytes: () => Uint8Array.from([]), fromBytes: () => ({value: false, shift: 0})}, 'boolean'],
+  ], {valueField: 'value'})
 
 
   export const functionCall: TObjectField = ['call', {
@@ -240,8 +241,8 @@ export const orderSchemaV0: TObject = {
     ['orderType', {
       toBytes: (type: string) => BYTE(type === 'sell' ? 1 : 0),
       fromBytes: (bytes: Uint8Array, start = 0) => P_BYTE(bytes, start).value === 1 ?
-        { value: 'sell', shift: 1 } :
-        { value: 'buy', shift: 1 },
+        {value: 'sell', shift: 1} :
+        {value: 'buy', shift: 1},
     }],
     txFields.longField('price'),
     txFields.longField('amount'),
@@ -353,20 +354,28 @@ export const proofsSchemaV1: TSchema = {
   ],
 }
 
-export const exchangeSchemaV0: TSchema = {
+
+const orderSchemaV0WithSignature: TObject = {
+  type: 'object',
+  schema: [...orderSchemaV0.schema, txFields.signature],
+}
+//ExchangeV0 needs both orders length to be present before actual order bytes.
+// That's why there are two separate rules for oder1 and order2 fields. First one serializes order and writes length.
+// Seconds serializes and writes whole order. When deserialize, second rule overwrites order fields in js object
+export const exchangeSchemaV1: TSchema = {
   type: 'object',
   schema: [
     txFields.type,
     ['order1', {
-      type: 'object',
-      withLength: intConverter,
-      schema: [...orderSchemaV0.schema, txFields.signature],
+      fromBytes: () => ({value: undefined, shift: 4}),
+      toBytes: (order: any) => INT(serializerFromSchema(orderSchemaV0WithSignature)(order).length)
     }],
     ['order2', {
-      type: 'object',
-      withLength: intConverter,
-      schema: [...orderSchemaV0.schema, txFields.signature],
+      fromBytes: () => ({value: undefined, shift: 4}),
+      toBytes: (order: any) => INT(serializerFromSchema(orderSchemaV0WithSignature)(order).length)
     }],
+    ['order1', orderSchemaV0WithSignature],
+    ['order2', orderSchemaV0WithSignature],
     txFields.longField('price'),
     txFields.longField('amount'),
     txFields.longField('buyMatcherFee'),
@@ -377,9 +386,13 @@ export const exchangeSchemaV0: TSchema = {
 }
 
 const anyOrder = anyOf([
-  [1, { type: 'object', withLength: intConverter, schema: [txFields.byteConstant(1), ...orderSchemaV0.schema, ...proofsSchemaV0.schema] }],
-  [2, { type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema] }],
-], { discriminatorField: 'version', discriminatorBytePos: 4 })
+  [1, {
+    type: 'object',
+    withLength: intConverter,
+    schema: [txFields.byteConstant(1), ...orderSchemaV0.schema, ...proofsSchemaV0.schema]
+  }],
+  [2, {type: 'object', withLength: intConverter, schema: [...orderSchemaV2.schema, ...proofsSchemaV1.schema]}],
+], {discriminatorField: 'version', discriminatorBytePos: 4})
 
 export const exchangeSchemaV2: TSchema = {
   type: 'object',
@@ -517,7 +530,7 @@ export const transferSchemaV2: TSchema = {
 
 
 /**
- * Maps transaction types to schemas object. Schemas are written by keys. 0 - no version, n - version n
+ * Maps transaction types to schemas object. Schemas are written by keys. 1 equals no version or version 1
  */
 export const schemasByTypeMap = {
   [TRANSACTION_TYPE.GENESIS]: {},
@@ -535,7 +548,7 @@ export const schemasByTypeMap = {
     2: burnSchemaV2,
   },
   [TRANSACTION_TYPE.EXCHANGE]: {
-    0: exchangeSchemaV0,
+    1: exchangeSchemaV1,
     2: exchangeSchemaV2,
   },
   [TRANSACTION_TYPE.LEASE]: {
@@ -574,7 +587,7 @@ export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): 
     throw new Error(`Incorrect tx type: ${type}`)
   }
 
-  const schema = schemas[version || 0]
+  const schema = schemas[version || 1]
   if (typeof schema !== 'object') {
     throw new Error(`Incorrect tx version: ${version}`)
   }
