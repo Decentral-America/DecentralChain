@@ -84,6 +84,7 @@ export interface IExchangeTransactionOrder<LONG> {
     timestamp: number;
     expiration: number;
     matcherFee: LONG;
+    matcherFeeAssetId: string;
     senderPublicKey: string;
 }
 
