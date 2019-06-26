@@ -1,0 +1,25 @@
+{
+  "name": "@waves/waveskeeper-types",
+  "version": "0.0.1",
+  "description": "Interfaces for Waves Keeper",
+  "types": "./index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wavesplatform/waveskeeper-types.git"
+  },
+  "keywords": [
+    "types",
+    "waves",
+    "keeper"
+  ],
+  "author": "kanishcheva@phystech.edu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wavesplatform/waveskeeper-types/issues"
+  },
+  "homepage": "https://github.com/wavesplatform/waveskeeper-types#readme",
+  "dependencies": {}
+}
