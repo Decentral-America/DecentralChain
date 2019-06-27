@@ -4,6 +4,9 @@
   "description": "Interfaces for Waves Keeper",
   "types": "globals.d.ts",
   "main": "",
+  "files": [
+    "globals.d.ts"
+  ],
   "typeScriptVersion": "2.0",
   "repository": {
     "type": "git",
