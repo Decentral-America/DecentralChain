@@ -463,23 +463,10 @@ declare namespace WavesKeeper {
         /**
          * mass of objects
          */
-        data: Array<IDataTxData>;
+        data: Array<TData>;
     }
 
-    interface IDataTxData {
-        /**
-         * "binary"/string/"integer"/"boolean" - type
-         */
-        type: 'binary' | 'string' | 'integer' | 'boolean';
-        /**
-         * field name
-         */
-        key: string;
-        /**
-         * string/number/boolean depends on the type
-         */
-        value: string | number | boolean;
-    }
+    type TData = TCallArgs & {key: string};
 
     type TDataTxData = ISignData<12, IDataTx>;
 
@@ -520,15 +507,15 @@ declare namespace WavesKeeper {
         /**
          * address script account
          */
-        dappAddress: string;
+        dApp: string;
         /**
          * array MoneyLike (at now can use only 1 payment)
          */
         payment?: Array<TMoney>;
-        call: TCall;
+        call?: ICall;
     }
 
-    type TCall = {
+    interface ICall {
         /**
          * function name
          */
@@ -536,18 +523,32 @@ declare namespace WavesKeeper {
         /**
          * array
          */
-        args: Array<TCallArg>;
+        args: Array<TCallArgs>;
     }
 
-    type TCallArg = {
+    type TCallArgs = TCallArgsInteger | TCallArgsBoolean | TCallArgsBinary | TCallArgsString;
+
+    type TCallArgsInteger = {
+        type: 'integer';
+        value: number | string;
+    }
+
+    type TCallArgsBoolean = {
+        type: 'boolean';
+        value: boolean;
+    }
+
+    type TCallArgsBinary = {
+        type: 'binary';
         /**
-         * type
+         * base64
          */
-        type: 'binary' | 'string' | 'integer' | 'boolean';
-        /**
-         * value for type
-         */
-        value: string | number | boolean;
+        value: string;
+    }
+
+    type TCallArgsString = {
+        type: 'string';
+        value: string;
     }
 
     type TScriptInvocationTxData = ISignData<16, IScriptInvocationTx>;
