@@ -115,7 +115,7 @@ declare namespace WavesKeeper {
          * update – subscribe to updates of the state
          * @param cb
          */
-        on(event: string, cb: (state: IPublicStateResponse) => any): object;
+        on(event: 'update', cb: (state: IPublicStateResponse) => any): object;
 
     }
 
