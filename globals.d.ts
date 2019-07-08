@@ -20,9 +20,8 @@ declare namespace WavesKeeper {
 
         /**
          * If a website is trusted, Waves Keeper public data are returned.
-         * @param data
          */
-        publicState(data: IPublicStateData): Promise<IPublicStateResponse>;
+        publicState(): Promise<IPublicStateResponse>;
 
         /**
          * Waves Keeper's method for cancelling an order to the matcher.
@@ -110,6 +109,7 @@ declare namespace WavesKeeper {
 
         /**
          * Allows subscribing to Waves Keeper events.
+         * If a website is not trusted, events won't show.
          * @param event
          * Supports events:
          * update – subscribe to updates of the state
@@ -171,33 +171,6 @@ declare namespace WavesKeeper {
          * the name of an application that requested a signature
          */
         name: string;
-    }
-
-    interface IPublicStateData {
-        /**
-         * boolean keeper initialized
-         */
-        initialized?: boolean;
-        /**
-         * boolean keeper in wait mode
-         */
-        locked?: boolean;
-        /**
-         * current account, if the user allowed access to the website, or null
-         */
-        account?: string | null;
-        /**
-         * current Waves network, node and matcher addresses
-         */
-        network?: string;
-        /**
-         * signature request statuses
-         */
-        messages?: string;
-        /**
-         * available transaction versions for each type
-         */
-        txVersion?: number;
     }
 
     interface IPublicStateResponse {
@@ -388,14 +361,17 @@ declare namespace WavesKeeper {
          */
         recipient: string;
         /**
-         * [,140 bytes] string or byte Array – additional info in text
+         * [,140 bytes] string or byte Array – additional info in text (optional field)
          */
-        attachment: string | Uint8Array | Array<number>;
+        attachment?: string | Uint8Array | Array<number>;
     }
 
     type TTransferTxData = ISignData<4, ITransferTx>;
 
     interface IReissueTx extends ITransactionBase {
+        /**
+         * asset ID
+         */
         assetId: string;
         /**
          * [0 - (JLM)] number/string/MoneyLike - quantity
@@ -410,6 +386,9 @@ declare namespace WavesKeeper {
     type TReissueTxData = ISignData<5, IReissueTx>;
 
     interface IBurnTx extends ITransactionBase {
+        /**
+         * asset ID
+         */
         assetId: string;
         /**
          * [0 - (JLM)] number/string/MoneyLike - quantity,
@@ -461,9 +440,9 @@ declare namespace WavesKeeper {
          */
         transfers: Array<ITransfer>;
         /**
-         * [,140 bytes в base58] string – additional info
+         * [,140 bytes в base58] string – additional info (optional field)
          */
-        attachment: string;
+        attachment?: string;
     }
 
     interface ITransfer {
@@ -544,8 +523,8 @@ declare namespace WavesKeeper {
         /**
          * array MoneyLike (at now can use only 1 payment)
          */
-        call: TCall;
         payment?: Array<TMoney>;
+        call: TCall;
     }
 
     type TCall = {
@@ -553,11 +532,20 @@ declare namespace WavesKeeper {
          * function name
          */
         function: string;
+        /**
+         * array
+         */
         args: Array<TCallArg>;
     }
 
     type TCallArg = {
+        /**
+         * type
+         */
         type: 'binary' | 'string' | 'integer' | 'boolean';
+        /**
+         * value for type
+         */
         value: string | number | boolean;
     }
 
@@ -581,13 +569,21 @@ declare namespace WavesKeeper {
 
     interface IMoneyTokens {
         assetId: string;
-        tokens: number;
+        tokens: number | string;
     }
 
     interface IMoneyCoins {
         assetId: string;
-        coins: number;
+        coins: number | string;
     }
 
-    type TMoney = IMoneyTokens | IMoneyCoins;
+    interface IMoneyAmount {
+        assetId: string;
+        /**
+         * coins alias
+         */
+        amount: number | string;
+    }
+
+    type TMoney = IMoneyTokens | IMoneyCoins | IMoneyAmount;
 }
