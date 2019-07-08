@@ -72,9 +72,10 @@ declare namespace WavesKeeper {
          * and for users' convenience, up to seven transactions at ones could be signed.
          * Only certain types of transactions are permitted:
          * issue, transfer, reissue, burn, create alias, mass transfer, data
-         * @param data
+         * @param tx
+         * @param name
          */
-        signTransactionPackage(data: ISignTransactionPackageData): Promise<Array<string>>;
+        signTransactionPackage(tx: TSignTransactionPackageData, name?: string): Promise<Array<string>>;
 
         /**
          * Send message to keeper.
@@ -551,10 +552,14 @@ declare namespace WavesKeeper {
 
     type TScriptInvocationTxData = ISignData<16, IScriptInvocationTx>;
 
-    interface ISignTransactionPackageData {
-        name: string;
-        tx: Array<TIssueTxData | TTransferTxData | TReissueTxData | TBurnTxData | TCreateAliasTxData | TMassTransferTxData | TDataTxData>;
-    }
+    type TSignTransactionPackageData = Array<
+        TIssueTxData |
+        TTransferTxData |
+        TReissueTxData |
+        TBurnTxData |
+        TCreateAliasTxData |
+        TMassTransferTxData |
+        TDataTxData>;
 
     interface INotificationData {
         /**
