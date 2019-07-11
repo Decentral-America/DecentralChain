@@ -5,7 +5,7 @@ export type TOrderType = 'buy' | 'sell';
 
 
 export interface IInvokeScriptCall<LONG> {
-    function: string
+    function: string;
     args: Array<TInvokeScriptCallArgument<LONG>>;
 }
 

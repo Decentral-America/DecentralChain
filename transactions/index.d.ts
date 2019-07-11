@@ -203,9 +203,9 @@ export interface ISetAssetScriptTransaction<LONG> extends ITransaction<LONG, typ
 export interface IInvokeScriptTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.INVOKE_SCRIPT> {
     chainId: number;
     dApp: string;
-    call: IInvokeScriptCall<LONG>;
+    call: IInvokeScriptCall<LONG> | null | undefined;
     feeAssetId: string | null;
-    payment: Array<IInvokeScriptPayment<LONG>>;
+    payment: Array<IInvokeScriptPayment<LONG>> | null | undefined;
 }
 
 export interface IIssueTransactionWithId<LONG> extends IIssueTransaction<LONG>, IWithId {
