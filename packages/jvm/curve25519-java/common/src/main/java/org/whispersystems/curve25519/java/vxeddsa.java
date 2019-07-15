@@ -12,6 +12,13 @@ public class vxeddsa {
     final int  MSTART = 2048;
     final int  MSGMAXLEN = 1048576;
 
+    final byte[] B_bytes = {
+            0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+    };
+
 //#include <string.h>
 //#include "gen_eddsa.h"
 //          #include "gen_labelset.h"
@@ -98,16 +105,8 @@ public class vxeddsa {
         sc_reduce.sc_reduce(hash);
         ge_scalarmult_base(&R_point, hash);
         ge_p3_tobytes(R_bytes, &R_point);
-        memcpy(r_scalar, hash, SCALARLEN);
-
-        zeroize(hash, HASHLEN);
-        zeroize(bufstart, prefix_len);
+        System.arraycopy(hash, 0, r_scalar, 0, SCALARLEN);
         return 0;
-
-        err:
-        zeroize(hash, HASHLEN);
-        zeroize(M_buf, M_start);
-        return -1;
     }
 
     /* if is_labelset_empty(labelset):
@@ -120,17 +119,16 @@ public class vxeddsa {
               byte[] extra, int extra_len,
               byte[] R_bytes,
               byte[] K_bytes,
-                              byte[] M_buf, int M_start, int M_len)
+              byte[] M_buf, int M_start, int M_len)
     {
-        byte hash[HASHLEN];
+        byte[] hash = new byte[HASHLEN];
         byte[] bufstart = null;
         byte[] bufptr = null;
         byte[] bufend = null;
         int prefix_len = 0;
 
-        if (h_scalar == null)
-    return -1;
-        memset(h_scalar, 0, SCALARLEN);
+        if (h_scalar == null) return -1;
+        h_scalar = new byte[SCALARLEN];
 
         if (labelset_validate(labelset, labelset_len) != 0)
     return -1;
@@ -150,8 +148,8 @@ public class vxeddsa {
       return -1;
             if (extra != null || extra_len != 0)
       return -1;
-            memcpy(M_buf + M_start - (2*POINTLEN),  R_bytes, POINTLEN);
-            memcpy(M_buf + M_start - (1*POINTLEN),  K_bytes, POINTLEN);
+            System.arraycopy(R_bytes, 0, M_buf, M_start - (2*POINTLEN), POINTLEN);
+            System.arraycopy(K_bytes, 0, M_buf, M_start - (1*POINTLEN), POINTLEN);
             prefix_len = 2*POINTLEN;
         } else {
             prefix_len = 3*POINTLEN + 2*labelset_len + extra_len;
@@ -176,11 +174,8 @@ public class vxeddsa {
 
         sha512provider.calculateDigest(hash, M_buf + M_start - prefix_len, prefix_len + M_len);
         sc_reduce.sc_reduce(hash);
-        memcpy(h_scalar, hash, SCALARLEN);
+        System.arraycopy(hash, 0, h_scalar, 0, SCALARLEN);
         return 0;
-
-        err:
-        return -1;
     }
 
     /* return r + kh (mod q) */
@@ -188,7 +183,6 @@ public class vxeddsa {
     byte[] r_scalar, byte[] k_scalar, byte[] h_scalar)
     {
         sc_muladd.sc_muladd(out_scalar, h_scalar, k_scalar, r_scalar);
-//        zeroize_stack();
         return 0;
     }
 
@@ -233,7 +227,7 @@ public class vxeddsa {
 
 
     int generalized_eddsa_25519_sign(
-            byte[] signature_out,
+                  byte[] signature_out,
                   byte[] eddsa_25519_pubkey_bytes,
                   byte[] eddsa_25519_privkey_scalar,
                   byte[] msg,
@@ -250,54 +244,32 @@ public class vxeddsa {
         byte[] s_scalar = new byte[SCALARLEN];
         byte[] M_buf = new byte[msg_len + MSTART];
 
-        if (signature_out == null)
-    return -1;
-        memset(signature_out, 0, SIGNATURELEN);
+        if (signature_out == null) return -1;
 
-        if (eddsa_25519_pubkey_bytes == null)
-    return -1;
-        if (eddsa_25519_privkey_scalar == null)
-    return -1;
-        if (msg == null)
-    return -1;
-        if (customization_label == null && customization_label_len != 0)
-    return -1;
-        if (customization_label_len > LABELMAXLEN)
-    return -1;
-        if (msg_len > MSGMAXLEN)
-    return -1;
-
-        memcpy(M_buf + MSTART, msg, msg_len);
+        if (eddsa_25519_pubkey_bytes == null) return -1;
+        if (eddsa_25519_privkey_scalar == null) return -1;
+        if (msg == null) return -1;
+        if (customization_label == null && customization_label_len != 0) return -1;
+        if (customization_label_len > LABELMAXLEN) return -1;
+        if (msg_len > MSGMAXLEN) return -1;
+        System.arraycopy(msg, 0, M_buf, MSTART, msg_len);
 
         if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
-            customization_label, customization_label_len) != 0)
-    return -1;
+            customization_label, customization_label_len) != 0) return -1;
 
         if (generalized_commit(R_bytes, r_scalar, labelset, labelset_len, null, 0,
                 eddsa_25519_pubkey_bytes, eddsa_25519_privkey_scalar,
-                random, M_buf, MSTART, msg_len) != 0)
-    return -1;
+                random, M_buf, MSTART, msg_len) != 0) return -1;
 
         if (generalized_challenge(h_scalar, labelset, labelset_len, null, 0,
-                R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0)
-    return -1;
+                R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
 
-        if (generalized_prove(s_scalar, r_scalar, eddsa_25519_privkey_scalar, h_scalar) != 0)
-    return -1;
+        if (generalized_prove(s_scalar, r_scalar, eddsa_25519_privkey_scalar, h_scalar) != 0) return -1;
 
-        memcpy(signature_out, R_bytes, POINTLEN);
-        memcpy(signature_out + POINTLEN, s_scalar, SCALARLEN);
+        System.arraycopy(R_bytes, 0, signature_out, 0, POINTLEN);
+        System.arraycopy(s_scalar, 0, signature_out, POINTLEN, SCALARLEN);
 
-        zeroize(r_scalar, SCALARLEN);
-//        zeroize_stack();
-        free(M_buf);
         return 0;
-
-        err:
-        zeroize(r_scalar, SCALARLEN);
-//        zeroize_stack();
-        free(M_buf);
-        return -1;
     }
 
     int generalized_eddsa_25519_verify(
@@ -308,60 +280,41 @@ public class vxeddsa {
                   byte[] customization_label,
                   int customization_label_len)
     {
-        byte labelset[LABELSETMAXLEN];
+        byte[] labelset = new byte[LABELSETMAXLEN];
         int labelset_len = 0;
-  byte[] R_bytes = null;
-  byte[] s_scalar = null;
+        byte[] R_bytes = null;
+        byte[] s_scalar = null;
         byte[] h_scalar = new byte[SCALARLEN];
         byte[] M_buf = new byte[msg_len + MSTART];
         byte[] R_calc_bytes = new byte[POINTLEN];
 
-        if (signature == null)
-    return -1;
-        if (eddsa_25519_pubkey_bytes == null)
-    return -1;
-        if (msg == null)
-    return -1;
-        if (customization_label == null && customization_label_len != 0)
-    return -1;
-        if (customization_label_len > LABELMAXLEN)
-    return -1;
-        if (msg_len > MSGMAXLEN)
-    return -1;
-
-        memcpy(M_buf + MSTART, msg, msg_len);
+        if (signature == null) return -1;
+        if (eddsa_25519_pubkey_bytes == null) return -1;
+        if (msg == null) return -1;
+        if (customization_label == null && customization_label_len != 0) return -1;
+        if (customization_label_len > LABELMAXLEN) return -1;
+        if (msg_len > MSGMAXLEN) return -1;
+        System.arraycopy(msg, 0, M_buf, MSTART, msg_len);
 
         if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
-            customization_label, customization_label_len) != 0)
-    return -1;
+            customization_label, customization_label_len) != 0) return -1;
 
         R_bytes = signature;
         s_scalar = signature + POINTLEN;
 
-        if (!point_isreduced(eddsa_25519_pubkey_bytes))
-    return -1;
-        if (!point_isreduced(R_bytes))
-    return -1;
-        if (!sc_isreduced(s_scalar))
-    return -1;
+        if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
+        if (!point_isreduced(R_bytes)) return -1;
+        if (!sc_isreduced(s_scalar)) return -1;
 
         if (generalized_challenge(h_scalar, labelset, labelset_len,
-                null, 0, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0)
-    return -1;
+                null, 0, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
 
         if (generalized_solve_commitment(R_calc_bytes, null, null,
-                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0)
-    return -1;
+                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) return -1;
 
-        if (crypto_verify_32.crypto_verify_32(R_bytes, R_calc_bytes) != 0)
-    return -1;
+        if (crypto_verify_32.crypto_verify_32(R_bytes, R_calc_bytes) != 0) return -1;
 
-        free(M_buf);
         return 0;
-
-        err:
-        free(M_buf);
-        return -1;
     }
 
 }
