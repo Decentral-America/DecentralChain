@@ -63,19 +63,14 @@ public class vxeddsa {
         byte[] bufend = null;
         int prefix_len = 0;
 
-        if (labelset_validate(labelset, labelset_len) != 0) return -1;
+//       todo if (labelset_validate(labelset, labelset_len) != 0) return -1;
         if (R_bytes == null || r_scalar == null ||
                 K_bytes == null || k_scalar == null ||
-                Z == null || M_buf == null)
-    return -1;
-        if (extra == null && extra_len != 0)
-    return -1;
-        if (extra != null && extra_len == 0)
-    return -1;
-        if (extra != null && labelset_is_empty(labelset, labelset_len))
-    return -1;
-        if (HASHLEN != 64)
-    return -1;
+                Z == null || M_buf == null) return -1;
+        if (extra == null && extra_len != 0) return -1;
+        if (extra != null && extra_len == 0) return -1;
+//       todo if (extra != null && labelset_is_empty(labelset, labelset_len)) return -1;
+        if (HASHLEN != 64) return -1;
 
         prefix_len = 0;
         prefix_len += POINTLEN + labelset_len + RANDLEN;
@@ -83,8 +78,7 @@ public class vxeddsa {
         prefix_len += SCALARLEN;
         prefix_len += ((BLOCKLEN - (prefix_len % BLOCKLEN)) % BLOCKLEN);
         prefix_len += labelset_len + POINTLEN + extra_len;
-        if (prefix_len > M_start)
-    return -1;
+        if (prefix_len > M_start) return -1;
 
         bufstart = M_buf + M_start - prefix_len;
         bufptr = bufstart;
@@ -98,13 +92,12 @@ public class vxeddsa {
         bufptr = buffer_add(bufptr, bufend, labelset, labelset_len);
         bufptr = buffer_add(bufptr, bufend, K_bytes, POINTLEN);
         bufptr = buffer_add(bufptr, bufend, extra, extra_len);
-        if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len)
-    return -1;
+        if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len) return -1;
 
         sha512provider.calculateDigest(hash, M_buf + M_start - prefix_len, prefix_len + M_len);
         sc_reduce.sc_reduce(hash);
-        ge_scalarmult_base(&R_point, hash);
-        ge_p3_tobytes(R_bytes, &R_point);
+        ge_scalarmult_base.ge_scalarmult_base(&R_point, hash);
+        ge_p3_tobytes.ge_p3_tobytes(R_bytes, &R_point);
         System.arraycopy(hash, 0, r_scalar, 0, SCALARLEN);
         return 0;
     }
@@ -130,31 +123,21 @@ public class vxeddsa {
         if (h_scalar == null) return -1;
         h_scalar = new byte[SCALARLEN];
 
-        if (labelset_validate(labelset, labelset_len) != 0)
-    return -1;
-        if (R_bytes == null || K_bytes == null || M_buf == null)
-    return -1;
-        if (extra == null && extra_len != 0)
-    return -1;
-        if (extra != null && extra_len == 0)
-    return -1;
-        if (extra != null && labelset_is_empty(labelset, labelset_len))
-    return -1;
-        if (HASHLEN != 64)
-    return -1;
+//       todo if (labelset_validate(labelset, labelset_len) != 0) return -1;
+        if (R_bytes == null || K_bytes == null || M_buf == null) return -1;
+        if (extra == null && extra_len != 0) return -1;
+        if (extra != null && extra_len == 0) return -1;
+//       todo if (extra != null && labelset_is_empty(labelset, labelset_len)) return -1;
 
         if (labelset_is_empty(labelset, labelset_len)) {
-            if (2*POINTLEN > M_start)
-      return -1;
-            if (extra != null || extra_len != 0)
-      return -1;
+            if (2*POINTLEN > M_start) return -1;
+            if (extra != null || extra_len != 0) return -1;
             System.arraycopy(R_bytes, 0, M_buf, M_start - (2*POINTLEN), POINTLEN);
             System.arraycopy(K_bytes, 0, M_buf, M_start - (1*POINTLEN), POINTLEN);
             prefix_len = 2*POINTLEN;
         } else {
             prefix_len = 3*POINTLEN + 2*labelset_len + extra_len;
-            if (prefix_len > M_start)
-      return -1;
+            if (prefix_len > M_start) return -1;
 
             bufstart = M_buf + M_start - prefix_len;
             bufptr = bufstart;
@@ -166,10 +149,8 @@ public class vxeddsa {
             bufptr = buffer_add(bufptr, bufend, K_bytes, POINTLEN);
             bufptr = buffer_add(bufptr, bufend, extra, extra_len);
 
-            if (bufptr == null)
-      return -1;
-            if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len)
-      return -1;
+            if (bufptr == null) return -1;
+            if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len) return -1;
         }
 
         sha512provider.calculateDigest(hash, M_buf + M_start - prefix_len, prefix_len + M_len);
@@ -199,8 +180,7 @@ public class vxeddsa {
         ge_p3 hK;
         ge_p3 R_calc_point_p3;
 
-        if (ge_frombytes.ge_frombytes_negate_vartime(Kneg_point, K_bytes) != 0)
-        return -1;
+        if (ge_frombytes.ge_frombytes_negate_vartime(Kneg_point, K_bytes) != 0) return -1;
 
         if (B_point == null) {
             ge_double_scalarmult.ge_double_scalarmult_vartime (R_calc_point_p2, h_scalar, Kneg_point, s_scalar);
@@ -273,6 +253,7 @@ public class vxeddsa {
     }
 
     int generalized_eddsa_25519_verify(
+                  Sha512 sha512provider,
                   byte[] signature,
                   byte[] eddsa_25519_pubkey_bytes,
                   byte[] msg,
@@ -296,17 +277,17 @@ public class vxeddsa {
         if (msg_len > MSGMAXLEN) return -1;
         System.arraycopy(msg, 0, M_buf, MSTART, msg_len);
 
-        if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
-            customization_label, customization_label_len) != 0) return -1;
+//       todo if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
+//            customization_label, customization_label_len) != 0) return -1;
 
-        R_bytes = signature;
-        s_scalar = signature + POINTLEN;
+        System.arraycopy(signature, 0, R_bytes, 0, 32);
+        System.arraycopy(signature, POINTLEN, s_scalar, 0, 32);
 
-        if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
-        if (!point_isreduced(R_bytes)) return -1;
-        if (!sc_isreduced(s_scalar)) return -1;
+//       todo if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
+//       todo if (!point_isreduced(R_bytes)) return -1;
+//       todo if (!sc_isreduced(s_scalar)) return -1;
 
-        if (generalized_challenge(h_scalar, labelset, labelset_len,
+        if (generalized_challenge(sha512provider, h_scalar, labelset, labelset_len,
                 null, 0, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
 
         if (generalized_solve_commitment(R_calc_bytes, null, null,
