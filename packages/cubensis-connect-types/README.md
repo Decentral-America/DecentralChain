@@ -2,12 +2,11 @@
 
 `npm install @waves/waveskeeper-types`
 
-### Usage
-
-
-```typescript
-///<reference path="./node_modules/@waves/waveskeeper-types/globals.d.ts"/>
-
-WavesKeeper.auth({data: '123'});
+Include to tsconfig.json this line:
 
 ```
+...
+"typeRoots": ["./node_modules/@waves/waveskeeper-types", ...]
+...
+```
+
