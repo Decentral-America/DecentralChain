@@ -205,26 +205,101 @@ public class vxeddsa {
         return 0;
     }
 
+    static int generalized_calculate_Bv(ge_p3 Bv_point,
+                              byte[] labelset, int labelset_len,
+                              byte[] K_bytes,
+                                        byte[] M_buf, int M_start, int M_len)
+    {
+        byte[] bufptr;
+        int prefix_len = 0;
 
-    int generalized_eddsa_25519_sign(
-                  byte[] signature_out,
+        if (labelset_validate(labelset, labelset_len) != 0)
+            return -1;
+        if (Bv_point == null || K_bytes == null || M_buf == null)
+            return -1;
+
+        prefix_len = 2*POINTLEN + labelset_len;
+        if (prefix_len > M_start)
+            return -1;
+
+        bufptr = M_buf + M_start - prefix_len;
+        bufptr = buffer_add(bufptr, M_buf + M_start, B_bytes, POINTLEN);
+        bufptr = buffer_add(bufptr, M_buf + M_start, labelset, labelset_len);
+        bufptr = buffer_add(bufptr, M_buf + M_start, K_bytes, POINTLEN);
+        if (bufptr == null || bufptr != M_buf + M_start)
+            return -1;
+
+        hash_to_point(Bv_point, M_buf + M_start - prefix_len, prefix_len + M_len);
+        if (ge_isneutral(Bv_point))
+            return -1;
+        return 0;
+    }
+
+    static int generalized_calculate_vrf_output(byte[] vrf_output,
+                                     byte[] labelset, long labelset_len,
+                                     const ge_p3* cKv_point)
+    {
+        byte[] buf[BUFLEN];
+        byte[] bufptr = buf;
+        byte[] bufend = buf + BUFLEN;
+        byte[] cKv_bytes[POINTLEN];
+        byte[] hash[HASHLEN];
+
+        if (vrf_output == null)
+            return -1;
+        memset(vrf_output, 0, VRFOUTPUTLEN);
+
+        if (labelset_len + 2*POINTLEN > BUFLEN)
+            return -1;
+        if (labelset_validate(labelset, labelset_len) != 0)
+            return -1;
+        if (cKv_point == null)
+            return -1;
+        if (VRFOUTPUTLEN > HASHLEN)
+            return -1;
+
+        ge_p3_tobytes(cKv_bytes, cKv_point);
+
+        bufptr = buffer_add(bufptr, bufend, B_bytes, POINTLEN);
+        bufptr = buffer_add(bufptr, bufend, labelset, labelset_len);
+        bufptr = buffer_add(bufptr, bufend, cKv_bytes, POINTLEN);
+        if (bufptr == null)
+            return -1;
+        if (bufptr - buf > BUFLEN)
+            return -1;
+        crypto_hash_sha512(hash, buf, bufptr - buf);
+        memcpy(vrf_output, hash, VRFOUTPUTLEN);
+        return 0;
+    }
+
+    int generalized_veddsa_25519_sign(
+            byte[] signature_out,
                   byte[] eddsa_25519_pubkey_bytes,
                   byte[] eddsa_25519_privkey_scalar,
                   byte[] msg,
-                  int msg_len,
+                  long msg_len,
                   byte[] random,
                   byte[] customization_label,
-                  int customization_label_len)
+                  long customization_label_len)
     {
-        byte[] labelset = new byte[LABELSETMAXLEN];
+        byte[] labelset[LABELSETMAXLEN];
         int labelset_len = 0;
-        byte[] R_bytes = new byte[POINTLEN];
-        byte[] r_scalar = new byte[SCALARLEN];
-        byte[] h_scalar = new byte[SCALARLEN];
-        byte[] s_scalar = new byte[SCALARLEN];
-        byte[] M_buf = new byte[msg_len + MSTART];
+        ge_p3 Bv_point;
+        ge_p3 Kv_point;
+        ge_p3 Rv_point;
+        byte[] Bv_bytes[POINTLEN];
+        byte[] Kv_bytes[POINTLEN];
+        byte[] Rv_bytes[POINTLEN];
+        byte[] R_bytes[POINTLEN];
+        byte[] r_scalar[SCALARLEN];
+        byte[] h_scalar[SCALARLEN];
+        byte[] s_scalar[SCALARLEN];
+        byte[] extra[3*POINTLEN];
+        byte[] M_buf = null;
+        char* protocol_name = "VEdDSA_25519_SHA512_Elligator2";
 
         if (signature_out == null) return -1;
+        memset(signature_out, 0, VRFSIGNATURELEN);
 
         if (eddsa_25519_pubkey_bytes == null) return -1;
         if (eddsa_25519_privkey_scalar == null) return -1;
@@ -232,42 +307,97 @@ public class vxeddsa {
         if (customization_label == null && customization_label_len != 0) return -1;
         if (customization_label_len > LABELMAXLEN) return -1;
         if (msg_len > MSGMAXLEN) return -1;
-        System.arraycopy(msg, 0, M_buf, MSTART, msg_len);
 
-        if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
+        if ((M_buf = malloc(msg_len + MSTART)) == 0) { 
+            return -1;
+        }
+        memcpy(M_buf + MSTART, msg, msg_len);
+
+        //  labelset = new_labelset(protocol_name, customization_label)
+        if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN,
+            protocol_name, strlen(protocol_name),
             customization_label, customization_label_len) != 0) return -1;
 
-        if (generalized_commit(R_bytes, r_scalar, labelset, labelset_len, null, 0,
+        //  labelset1 = add_label(labels, "1")
+        //  Bv = hash(hash(labelset1 || K) || M)
+        //  Kv = k * Bv
+        labelset_add(labelset, &labelset_len, LABELSETMAXLEN, "1", 1);
+        if (generalized_calculate_Bv(&Bv_point, labelset, labelset_len,
+            eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
+        ge_scalarmult(&Kv_point, eddsa_25519_privkey_scalar, &Bv_point);
+        ge_p3_tobytes(Bv_bytes, &Bv_point);
+        ge_p3_tobytes(Kv_bytes, &Kv_point);
+
+        //  labelset2 = add_label(labels, "2")
+        //  R, r = commit(labelset2, (Bv || Kv), (K,k), Z, M)
+        labelset[labelset_len-1] = '2';
+        memcpy(extra, Bv_bytes, POINTLEN);
+        memcpy(extra + POINTLEN, Kv_bytes, POINTLEN);
+        if (generalized_commit(R_bytes, r_scalar,
+                labelset, labelset_len,
+                extra, 2*POINTLEN,
                 eddsa_25519_pubkey_bytes, eddsa_25519_privkey_scalar,
                 random, M_buf, MSTART, msg_len) != 0) return -1;
 
-        if (generalized_challenge(h_scalar, labelset, labelset_len, null, 0,
-                R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
+        //  Rv = r * Bv
+        ge_scalarmult(&Rv_point, r_scalar, &Bv_point);
+        ge_p3_tobytes(Rv_bytes, &Rv_point);
 
+        //  labelset3 = add_label(labels, "3")
+        //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
+        labelset[labelset_len-1] = '3';
+        memcpy(extra + 2*POINTLEN, Rv_bytes, POINTLEN);
+        if (generalized_challenge(h_scalar,
+                labelset, labelset_len,
+                extra, 3*POINTLEN,
+                R_bytes, eddsa_25519_pubkey_bytes,
+                M_buf, MSTART, msg_len) != 0) return -1;
+
+        //  s = prove(r, k, h)
         if (generalized_prove(s_scalar, r_scalar, eddsa_25519_privkey_scalar, h_scalar) != 0) return -1;
 
-        System.arraycopy(R_bytes, 0, signature_out, 0, POINTLEN);
-        System.arraycopy(s_scalar, 0, signature_out, POINTLEN, SCALARLEN);
+        //  return (Kv || h || s)
+        memcpy(signature_out, Kv_bytes, POINTLEN);
+        memcpy(signature_out + POINTLEN, h_scalar, SCALARLEN);
+        memcpy(signature_out + POINTLEN + SCALARLEN, s_scalar, SCALARLEN);
 
+        zeroize(r_scalar, SCALARLEN);
+        zeroize_stack();
+        free(M_buf);
         return 0;
+
+        err:
+        zeroize(r_scalar, SCALARLEN);
+        zeroize_stack();
+        free(M_buf);
+        return -1;
     }
 
-    int generalized_eddsa_25519_verify(
-                  Sha512 sha512provider,
+    int generalized_veddsa_25519_verify(
+            byte[] vrf_out,
                   byte[] signature,
                   byte[] eddsa_25519_pubkey_bytes,
                   byte[] msg,
-                  int msg_len,
+                  long msg_len,
                   byte[] customization_label,
-                  int customization_label_len)
+                  long customization_label_len)
     {
-        byte[] labelset = new byte[LABELSETMAXLEN];
+        byte[] labelset[LABELSETMAXLEN];
         int labelset_len = 0;
-        byte[] R_bytes = null;
-        byte[] s_scalar = null;
-        byte[] h_scalar = new byte[SCALARLEN];
-        byte[] M_buf = new byte[msg_len + MSTART];
-        byte[] R_calc_bytes = new byte[POINTLEN];
+        byte[] Kv_bytes;
+        byte[] h_scalar;
+        byte[] s_scalar;
+        ge_p3 Bv_point, K_point, Kv_point, cK_point, cKv_point;
+        byte[] Bv_bytes[POINTLEN];
+        byte[] R_calc_bytes[POINTLEN];
+        byte[] Rv_calc_bytes[POINTLEN];
+        byte[] h_calc_scalar[SCALARLEN];
+        byte[] extra[3*POINTLEN];
+        byte[] M_buf = null;
+        String protocol_name = "VEdDSA_25519_SHA512_Elligator2";
+
+        if (vrf_out == null) return -1;
+        memset(vrf_out, 0, VRFOUTPUTLEN);
 
         if (signature == null) return -1;
         if (eddsa_25519_pubkey_bytes == null) return -1;
@@ -275,27 +405,64 @@ public class vxeddsa {
         if (customization_label == null && customization_label_len != 0) return -1;
         if (customization_label_len > LABELMAXLEN) return -1;
         if (msg_len > MSGMAXLEN) return -1;
-        System.arraycopy(msg, 0, M_buf, MSTART, msg_len);
 
-//       todo if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN, null, 0,
-//            customization_label, customization_label_len) != 0) return -1;
+        if ((M_buf = malloc(msg_len + MSTART)) == 0) { return -1;
+        }
+        memcpy(M_buf + MSTART, msg, msg_len);
 
-        System.arraycopy(signature, 0, R_bytes, 0, 32);
-        System.arraycopy(signature, POINTLEN, s_scalar, 0, 32);
+        Kv_bytes = signature;
+        h_scalar = signature + POINTLEN;
+        s_scalar = signature + POINTLEN + SCALARLEN;
 
-//       todo if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
-//       todo if (!point_isreduced(R_bytes)) return -1;
-//       todo if (!sc_isreduced(s_scalar)) return -1;
+        if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
+        if (!point_isreduced(Kv_bytes)) return -1;
+        if (!sc_isreduced(h_scalar)) return -1;
+        if (!sc_isreduced(s_scalar)) return -1;
 
-        if (generalized_challenge(sha512provider, h_scalar, labelset, labelset_len,
-                null, 0, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
+        //  labelset = new_labelset(protocol_name, customization_label)
+        if (labelset_new(labelset, &labelset_len, LABELSETMAXLEN,
+            protocol_name, strlen(protocol_name),
+            customization_label, customization_label_len) != 0) return -1;
 
-        if (generalized_solve_commitment(R_calc_bytes, null, null,
-                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) return -1;
+        //  labelset1 = add_label(labels, "1")
+        //  Bv = hash(hash(labelset1 || K) || M)
+        labelset_add(labelset, &labelset_len, LABELSETMAXLEN, "1", 1);
+        if (generalized_calculate_Bv(&Bv_point, labelset, labelset_len,
+            eddsa_25519_pubkey_bytes, M_buf, MSTART, msg_len) != 0) return -1;
+        ge_p3_tobytes(Bv_bytes, &Bv_point);
 
-        if (crypto_verify_32.crypto_verify_32(R_bytes, R_calc_bytes) != 0) return -1;
+        //  R = solve_commitment(B, s, K, h)
+        if (generalized_solve_commitment(R_calc_bytes, &K_point, null,
+            s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) return -1;
+
+        //  Rv = solve_commitment(Bv, s, Kv, h)
+        if (generalized_solve_commitment(Rv_calc_bytes, &Kv_point, &Bv_point,
+            s_scalar, Kv_bytes, h_scalar) != 0) return -1;
+
+        ge_scalarmult_cofactor.ge_scalarmult_cofactor(&cK_point, &K_point);
+        ge_scalarmult_cofactor.ge_scalarmult_cofactor(&cKv_point, &Kv_point);
+        if (ge_isneutral(&cK_point) || ge_isneutral(&cKv_point) || ge_isneutral(&Bv_point)) return -1;
+
+        //  labelset3 = add_label(labels, "3")
+        //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
+        labelset[labelset_len-1] = '3';
+        memcpy(extra, Bv_bytes, POINTLEN);
+        memcpy(extra + POINTLEN, Kv_bytes, POINTLEN);
+        memcpy(extra + 2*POINTLEN, Rv_calc_bytes, POINTLEN);
+        if (generalized_challenge(h_calc_scalar,
+                labelset, labelset_len,
+                extra, 3*POINTLEN,
+                R_calc_bytes, eddsa_25519_pubkey_bytes,
+                M_buf, MSTART, msg_len) != 0) return -1;
+
+        // if bytes_equal(h, h')
+        if (crypto_verify_32(h_scalar, h_calc_scalar) != 0) return -1;
+
+        //  labelset4 = add_label(labels, "4")
+        //  v = hash(labelset4 || c*Kv)
+        labelset[labelset_len-1] = '4';
+        if (generalized_calculate_vrf_output(vrf_out, labelset, labelset_len, &cKv_point) != 0) return -1;
 
         return 0;
     }
-
 }
