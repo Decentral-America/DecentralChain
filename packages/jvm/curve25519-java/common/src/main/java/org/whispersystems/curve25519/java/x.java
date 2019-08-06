@@ -55,28 +55,6 @@ public class x {
         return 0;
     }
 
-    public static int generalized_xeddsa_25519_sign(byte[] signature_out,
-                                                    byte[] x25519_privkey_scalar,
-                                                    byte[] msg, int msg_len,
-                                                    byte[] random,
-                                                    byte[] customization_label,
-                                                    int customization_label_len) {
-        byte[] K_bytes = new byte[POINTLEN];
-        byte[] k_scalar = new byte[SCALARLEN];
-        int retval = -1;
-
-        if (calculate_25519_keypair(K_bytes, k_scalar, x25519_privkey_scalar) != 0)
-            return -1;
-
-        retval = veddsa.generalized_veddsa_25519_sign(signature_out,
-                K_bytes, k_scalar,
-                msg, msg_len, random,
-                customization_label, customization_label_len);
-
-        Arrays.fill(k_scalar, (byte)0);
-        return retval;
-    }
-
     public static int generalized_xveddsa_25519_sign(
             byte[] signature_out,
             byte[] x25519_privkey_scalar,
