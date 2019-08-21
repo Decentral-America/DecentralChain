@@ -8,11 +8,6 @@ public class x {
         int[] u = new int[10];
         int[] y = new int[10];
 
-        int[] mont_x_minus_one = new int[10];
-        int[] mont_x_plus_one = new int[10];
-        int[] inv_mont_x_plus_one = new int[10];
-        int[] one = new int[10];
-
   /* Convert the X25519 public key into an Ed25519 public key.
 
      y = (u - 1) / (u + 1)

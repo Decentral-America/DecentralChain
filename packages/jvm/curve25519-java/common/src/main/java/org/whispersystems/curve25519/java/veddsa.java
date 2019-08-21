@@ -50,7 +50,6 @@ public class veddsa {
         return offset == labelset.length;
     }
 
-    // todo !
     public static int legendre_is_nonsquare(int[] in)
     {
         int[] temp = new int[10];
@@ -191,7 +190,7 @@ public class veddsa {
         ge_p3 R_point = new ge_p3();
         byte[] hash = new byte[32];
 
-//       todo if (labelset_validate(labelset, labelset_len) != 0) return -1;
+        if (!labelset_validate(labelset)) return false;
         if (R_bytes == null || r_scalar == null ||
                 K_bytes == null || k_scalar == null ||
                 Z == null || M_buf == null) return false;
@@ -247,7 +246,7 @@ public class veddsa {
         if (h_scalar == null) return -1;
         h_scalar = new byte[SCALARLEN];
 
-//       todo if (labelset_validate(labelset, labelset_len) != 0) return -1;
+       if (!labelset_validate(labelset)) return -1;
         if (R_bytes == null || K_bytes == null) return -1;
         if (extra == null && extra.length != 0) return -1;
         if (extra != null && extra.length == 0) return -1;
@@ -338,14 +337,11 @@ public class veddsa {
         byteBuffer.put(labelset);
         byteBuffer.put(K_bytes);
 
-        // todo hash_to_point
-        // todo copy
         byte[] in = new byte[prefix_len + M_len];
         System.arraycopy(in, 0, M_buf, M_start - prefix_len, prefix_len + M_len);
         hash_to_point(sha512provider, Bv_point, in);
-        // todo ge_isneutral
-//        if (ge_isneutral.ge_isneutral(Bv_point))
-//            return -1;
+        if (ge_isneutral.ge_isneutral(Bv_point))
+            return false;
         return true;
     }
 
@@ -468,14 +464,7 @@ public class veddsa {
 
     public static byte[] labelset_new(String protocol_name,
                                    byte[] customization_label) {
-//        unsigned char* bufptr;
-
-//        *labelset_len = 0;
         if (LABELSETMAXLEN < 3 + protocol_name.length() + customization_label.length)
-            throw new IllegalArgumentException();
-        if (protocol_name == null)
-            throw new IllegalArgumentException();
-        if (customization_label == null)
             throw new IllegalArgumentException();
         if (protocol_name.length() > LABELMAXLEN)
             throw new IllegalArgumentException();
@@ -483,22 +472,13 @@ public class veddsa {
             throw new IllegalArgumentException();
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(LABELSETMAXLEN);
-
-//        bufptr = labelset;
-//        *bufptr++ = 2;
         byteBuffer.put((byte)2);
-//        *bufptr++ = protocol_name_len;
         byteBuffer.put((byte)protocol_name.length());
-//        bufptr = buffer_add(bufptr, labelset + labelset_maxlen, protocol_name, protocol_name_len);
         byteBuffer.put(protocol_name.getBytes());
-//        if (bufptr != NULL && bufptr < labelset + labelset_maxlen)
-//            *bufptr++ = customization_label_len;
-        // todo ?!
         if (byteBuffer.position() < LABELSETMAXLEN) {
             byteBuffer.put((byte)customization_label.length);
         }
 
-//        bufptr = buffer_add(bufptr, labelset + labelset_maxlen, customization_label, customization_label_len);
         byteBuffer.put(customization_label);
 
         if (byteBuffer.position() == 3 + protocol_name.length() + customization_label.length) {
@@ -577,11 +557,10 @@ public class veddsa {
         byte[] s_scalar = new byte[SCALARLEN];
         System.arraycopy(signature, POINTLEN + SCALARLEN, s_scalar, 0, SCALARLEN);
 
-        // todo isreduced
-//        if (!point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
-//        if (!point_isreduced(Kv_bytes)) return -1;
-//        if (!sc_isreduced(h_scalar)) return -1;
-//        if (!sc_isreduced(s_scalar)) return -1;
+        if (!point_isreduced.point_isreduced(eddsa_25519_pubkey_bytes)) return false;
+        if (!point_isreduced.point_isreduced(Kv_bytes)) return false;
+        if (!sc_isreduced.sc_isreduced(h_scalar)) return false;
+        if (!sc_isreduced.sc_isreduced(s_scalar)) return false;
 
         //  labelset = new_labelset(protocol_name, customization_label)
 
@@ -603,8 +582,7 @@ public class veddsa {
 
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cK_point, K_point);
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cKv_point, Kv_point);
-        // todo ge_isneutral
-//        if (ge_isneutral(cK_point) || ge_isneutral(cKv_point) || ge_isneutral(Bv_point)) return -1;
+        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) return false;
 
         //  labelset3 = add_label(labels, "3")
         //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
