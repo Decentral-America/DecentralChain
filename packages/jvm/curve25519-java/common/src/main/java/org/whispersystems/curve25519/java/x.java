@@ -20,15 +20,13 @@ public class x {
      NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
   */
 
-// todo       if (!fe_isreduced(x25519_pubkey_bytes))
-//            return -1;
+        if (!fe_isreduced.fe_isreduced(x25519_pubkey_bytes))
+            return -1;
 
         fe_frombytes.fe_frombytes(u, x25519_pubkey_bytes);
-        fe_1.fe_1(one);
-        fe_sub.fe_sub(mont_x_minus_one, u, one);
-        fe_add.fe_add(mont_x_plus_one, u, one);
-        fe_invert.fe_invert(inv_mont_x_plus_one, mont_x_plus_one);
-        fe_mul.fe_mul(y, mont_x_minus_one, inv_mont_x_plus_one);
+
+        fe_montx_to_edy.fe_montx_to_edy(y, u);
+
         fe_tobytes.fe_tobytes(ed_pubkey_bytes, y);
         return 0;
     }
@@ -55,7 +53,8 @@ public class x {
         return 0;
     }
 
-    public static int generalized_xveddsa_25519_sign(
+    public static boolean generalized_xveddsa_25519_sign(
+            Sha512 sha512provider,
             byte[] signature_out,
             byte[] x25519_privkey_scalar,
             byte[] msg,
@@ -65,19 +64,19 @@ public class x {
             int customization_label_len) {
         byte[] K_bytes = new byte[POINTLEN];
         byte[] k_scalar = new byte[SCALARLEN];
-        int retval = -1;
 
         if (calculate_25519_keypair(K_bytes, k_scalar, x25519_privkey_scalar) != 0)
-            return -1;
+            return false;
 
-        retval = veddsa.generalized_veddsa_25519_sign(signature_out, K_bytes, k_scalar,
+        boolean retval = veddsa.generalized_veddsa_25519_sign(sha512provider, signature_out, K_bytes, k_scalar,
                 msg, msg_len, random,
                 customization_label, customization_label_len);
         Arrays.fill(k_scalar, (byte) 0);
         return retval;
     }
 
-    public static int generalized_xveddsa_25519_verify(
+    public static boolean generalized_xveddsa_25519_verify(
+            Sha512 sha512provider,
             byte[] vrf_out,
             byte[] signature,
             byte[] x25519_pubkey_bytes,
@@ -88,9 +87,9 @@ public class x {
         byte[] K_bytes = new byte[POINTLEN];
 
         if (convert_25519_pubkey(K_bytes, x25519_pubkey_bytes) != 0)
-            return -1;
+            return false;
 
-        return veddsa.generalized_veddsa_25519_verify(vrf_out, signature, K_bytes, msg, msg_len,
+        return veddsa.generalized_veddsa_25519_verify(sha512provider, vrf_out, signature, K_bytes, msg, msg_len,
                 customization_label, customization_label_len);
     }
 
