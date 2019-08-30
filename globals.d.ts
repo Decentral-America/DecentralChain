@@ -118,6 +118,12 @@ declare namespace WavesKeeper {
          */
         on(event: 'update', cb: (state: IPublicStateResponse) => any): object;
 
+        /**
+         * On initialize window.WavesKeeper has not api methods.
+         * You can use WavesKeeper.initialPromise for waiting end initializing api
+         */
+        initialPromise() : Promise<any>;
+
     }
 
     interface IAuthData {
