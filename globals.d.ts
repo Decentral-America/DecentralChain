@@ -566,7 +566,8 @@ declare namespace WavesKeeper {
         TBurnTxData |
         TCreateAliasTxData |
         TMassTransferTxData |
-        TDataTxData>;
+        TDataTxData |
+        TScriptInvocationTxData>;
 
     interface INotificationData {
         /**
