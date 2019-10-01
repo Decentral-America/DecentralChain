@@ -96,9 +96,11 @@ public abstract class Curve25519ProviderTest extends TestCase {
     byte[] privkey = HexBin.decode("38611D253BEA85A203805343B74A936D3B13B9E3121453E9740B6B827E337E5D");
     byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
     byte[] vrf  = HexBin.decode("45DC7B816B01B36CFA1645DCAE8AC9BC8E523CD86D007D19953F03E7D54554A0");
+    byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
 
     byte[] sig_out = provider.calculateVrfSignature(new byte[32], privkey, msg);
     byte[] calc_vrf = provider.verifyVrfSignature(pubkey, msg, sig_out);
     assertTrue(Arrays.equals(vrf, calc_vrf));
+    assertTrue(Arrays.equals(signature, sig_out));
   }
 }
