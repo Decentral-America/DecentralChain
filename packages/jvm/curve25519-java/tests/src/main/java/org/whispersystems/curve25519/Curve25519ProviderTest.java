@@ -1,6 +1,9 @@
 package org.whispersystems.curve25519;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import junit.framework.TestCase;
+
+import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -86,4 +89,69 @@ public abstract class Curve25519ProviderTest extends TestCase {
       System.arraycopy(sig_out, 0, privkey, 0, 32);
     }
   }
+
+  public void testVRFSignVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = new byte[100];
+    byte[] privkey = new byte[32];
+
+    privkey[0] = 123;
+
+    for (int count=0; count < 1000; count++) {
+      byte[] random = new byte[64];
+      privkey = provider.generatePrivateKey(privkey);
+      byte[] pubkey  = provider.generatePublicKey (privkey);
+      byte[] sig_out = provider.calculateVrfSignature(random, privkey, msg);
+      byte[] vrf1 = provider.verifyVrfSignature(pubkey, msg, sig_out);
+      // todo check msg change!
+      byte[] vrf2 = provider.verifyVrfSignature(pubkey, msg, sig_out);
+      assertTrue(Arrays.equals(vrf1, vrf2));
+
+      System.arraycopy(sig_out, 0, privkey, 0, 32);
+    }
+  }
+
+  public void testVRFSignVerify2() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = new byte[15];
+    byte[] privkey = new byte[32];
+    byte[] pubkey  = new byte[32];
+    byte[] random  = new byte[32];
+    byte[] vrf  = new byte[32];
+
+    System.arraycopy(HexBin.decode("38611D253BEA85A203805343B74A936D3B13B9E3121453E9740B6B827E337E5D"), 0, privkey, 0, 32);
+    System.arraycopy(HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920"), 0, pubkey, 0, 32);
+    System.arraycopy(HexBin.decode("5468697320697320756E697175652E"), 0, msg, 0, 15);
+    System.arraycopy(HexBin.decode("45DC7B816B01B36CFA1645DCAE8AC9BC8E523CD86D007D19953F03E7D54554A0"), 0, vrf, 0, 32);
+
+    byte[] sig_out = provider.calculateVrfSignature(random, privkey, msg);
+    byte[] vrf2 = provider.verifyVrfSignature(pubkey, msg, sig_out);
+    assertTrue(Arrays.equals(vrf2, vrf));
+  }
+
+  // todo just create test
+  // todo just verify test
+//  public void testVRFVerify() throws NoSuchProviderException {
+//    Curve25519Provider provider = createProvider();
+//
+//    byte[] msg     = new byte[100];
+//    byte[] sig_out = new byte[64];
+//    byte[] privkey = new byte[32];
+//    byte[] pubkey  = new byte[32];
+//    byte[] random  = new byte[64];
+//
+//    privkey[0] = 123;
+//
+//    for (int count=0; count < 1000; count++) {
+//      privkey = provider.generatePrivateKey(privkey);
+//      pubkey  = provider.generatePublicKey (privkey);
+//      sig_out = provider.calculateSignature(random, privkey, msg);
+//
+//      assertTrue(provider.verifySignature(pubkey, msg, sig_out));
+//
+//      System.arraycopy(sig_out, 0, privkey, 0, 32);
+//    }
+//  }
 }

@@ -37,8 +37,7 @@ public class x {
         ge_p3_tobytes.ge_p3_tobytes(K_bytes, ed_pubkey_point);
 
         /* Force Edwards sign bit to zero */
-        byte sign_bit = (byte) (K_bytes[31] & 0x80);
-//       todo is the same? sign_bit = (K_bytes[31] & 0x80) >> 7;
+        int sign_bit = (byte) (K_bytes[31] & 0x80) >> 7;
         System.arraycopy(x25519_privkey_scalar, 0, k_scalar, 0, 32);
         sc_neg.sc_neg(kneg, k_scalar);
         sc_cmov.sc_cmov(k_scalar, kneg, sign_bit);
@@ -48,15 +47,13 @@ public class x {
         return 0;
     }
 
+    // todo return signature_out from the method itself
     public static boolean generalized_xveddsa_25519_sign(
             Sha512 sha512provider,
             byte[] signature_out,
             byte[] x25519_privkey_scalar,
             byte[] msg,
-            int msg_len,
-            byte[] random,
-            byte[] customization_label,
-            int customization_label_len) {
+            byte[] random) {
         byte[] K_bytes = new byte[POINTLEN];
         byte[] k_scalar = new byte[SCALARLEN];
 
@@ -64,28 +61,23 @@ public class x {
             return false;
 
         boolean retval = veddsa.generalized_veddsa_25519_sign(sha512provider, signature_out, K_bytes, k_scalar,
-                msg, msg_len, random,
-                customization_label, customization_label_len);
+                msg, random, new byte[]{});
         Arrays.fill(k_scalar, (byte) 0);
         return retval;
     }
 
-    public static boolean generalized_xveddsa_25519_verify(
+    public static byte[] generalized_xveddsa_25519_verify(
             Sha512 sha512provider,
-            byte[] vrf_out,
             byte[] signature,
             byte[] x25519_pubkey_bytes,
-            byte[] msg,
-            int msg_len,
-            byte[] customization_label,
-            int customization_label_len) {
+            byte[] msg) {
         byte[] K_bytes = new byte[POINTLEN];
 
         if (convert_25519_pubkey(K_bytes, x25519_pubkey_bytes) != 0)
-            return false;
+            throw new IllegalArgumentException();
 
-        return veddsa.generalized_veddsa_25519_verify(sha512provider, vrf_out, signature, K_bytes, msg, msg_len,
-                customization_label, customization_label_len);
+        return veddsa.generalized_veddsa_25519_verify(sha512provider, signature, K_bytes, msg,
+                new byte[]{});
     }
 
 }
