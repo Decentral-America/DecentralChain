@@ -4,6 +4,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -89,18 +90,101 @@ public abstract class Curve25519ProviderTest extends TestCase {
       System.arraycopy(sig_out, 0, privkey, 0, 32);
     }
   }
-  public void testVRFSignVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+
+  public void testVRFSign() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
     byte[] msg     = HexBin.decode("5468697320697320756E697175652E");
     byte[] privkey = HexBin.decode("38611D253BEA85A203805343B74A936D3B13B9E3121453E9740B6B827E337E5D");
+    byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
+
+    byte[] sig_out = provider.calculateVrfSignature(new byte[32], privkey, msg);
+    assertTrue(Arrays.equals(signature, sig_out));
+  }
+
+  public void testVRFVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = HexBin.decode("5468697320697320756E697175652E");
     byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
     byte[] vrf  = HexBin.decode("45DC7B816B01B36CFA1645DCAE8AC9BC8E523CD86D007D19953F03E7D54554A0");
     byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
 
-    byte[] sig_out = provider.calculateVrfSignature(new byte[32], privkey, msg);
-    byte[] calc_vrf = provider.verifyVrfSignature(pubkey, msg, sig_out);
+    byte[] calc_vrf = provider.verifyVrfSignature(pubkey, msg, signature );
     assertTrue(Arrays.equals(vrf, calc_vrf));
-    assertTrue(Arrays.equals(signature, sig_out));
+  }
+
+  public void testVRFFailedVerifyByMessage() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = HexBin.decode("5468697320697320756E697175652E");
+    byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
+    byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
+
+    msg[4] ^= 0x01;
+
+    try {
+      provider.verifyVrfSignature(pubkey, msg, signature );
+    } catch(IllegalStateException ignored) {}
+  }
+
+  public void testVRFFailedVerifyByPublicKey() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = HexBin.decode("5468697320697320756E697175652E");
+    byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
+    byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
+
+    pubkey[4] ^= 0x01;
+
+    try {
+      provider.verifyVrfSignature(pubkey, msg, signature );
+    } catch(IllegalStateException ignored) {}
+  }
+
+  public void testVRFFailedVerifyBySignature() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = HexBin.decode("5468697320697320756E697175652E");
+    byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
+    byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
+
+    signature[4] ^= 0x01;
+
+    try {
+      provider.verifyVrfSignature(pubkey, msg, signature );
+    } catch(IllegalStateException ignored) {}
+  }
+
+  public void testVRFUniqueSignatures() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = new byte[100];
+    byte[] privkey = new byte[32];
+
+    privkey[0] = 123;
+
+    privkey = provider.generatePrivateKey(privkey);
+    byte[] pubkey = provider.generatePublicKey (privkey);
+    Random r = new Random();
+
+    for (int count=0; count < 1000; count++) {
+      r.nextBytes(msg);
+      byte[] random = new byte[64];
+      r.nextBytes(random);
+      byte[] sig_out = provider.calculateVrfSignature(random, privkey, msg);
+      byte[] sig_out2 = provider.calculateVrfSignature(random, privkey, msg);
+      r.nextBytes(random);
+      byte[] sig_out3 = provider.calculateVrfSignature(random, privkey, msg);
+
+      assertTrue(Arrays.equals(sig_out, sig_out2));
+      assertFalse(Arrays.equals(sig_out, sig_out3));
+
+      byte[] vrf1 = provider.verifyVrfSignature(pubkey, msg, sig_out);
+      byte[] vrf2 = provider.verifyVrfSignature(pubkey, msg, sig_out);
+
+      assertTrue(Arrays.equals(vrf1, vrf2));
+      assertFalse(provider.verifySignature(pubkey, msg, sig_out));
+    }
   }
 }
