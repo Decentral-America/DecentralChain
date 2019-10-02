@@ -114,6 +114,20 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertTrue(Arrays.equals(vrf, calc_vrf));
   }
 
+  public void testVRFSignVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+    Curve25519Provider provider = createProvider();
+
+    byte[] msg     = HexBin.decode("CE0827E6381654D3FFBE22F546E00199B5761C1E541108E56D5A66213A1569E969A02B1D27D91553B69984010F25331A13EA62BA53B6F5B86DA11F8C22ABBF11D6839E11626D0FEF191BD2D5251D371F57C53240F7CD2B435BE6213C7C8F36D47F3DE23A");
+    byte[] privkey = HexBin.decode("C80827E6381654D3FFBE22F546E00199B5761C1E541108E56D5A66213A156969");
+    byte[] publickey = provider.generatePublicKey(privkey);
+    byte[] random = HexBin.decode("B33734A591BAB70644D731530B67E8734C157DD72B796B7FA3D7FF6885D4C122");
+    byte[] vrf = HexBin.decode("5669EC30C0F39E2696BB048B574236DEFA325D307116D6A89612958793192FF5");
+
+    byte[] sig_out = provider.calculateVrfSignature(random, privkey, msg);
+    byte[] calc_vrf = provider.verifyVrfSignature(publickey, msg, sig_out);
+    assertTrue(Arrays.equals(calc_vrf, vrf));
+  }
+
   public void testVRFFailedVerifyByMessage() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -158,20 +172,20 @@ public abstract class Curve25519ProviderTest extends TestCase {
 
   public void testVRFUniqueSignatures() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
+    Random r = new Random(1244);
 
     byte[] msg     = new byte[100];
-    byte[] privkey = new byte[32];
-
-    privkey[0] = 123;
-
-    privkey = provider.generatePrivateKey(privkey);
-    byte[] pubkey = provider.generatePublicKey (privkey);
-    Random r = new Random();
+    byte[] privkey;
+    byte[] pubkey;
+    byte[] random = new byte[64];
 
     for (int count=0; count < 1000; count++) {
-      r.nextBytes(msg);
-      byte[] random = new byte[64];
       r.nextBytes(random);
+      r.nextBytes(msg);
+
+      privkey = provider.generatePrivateKey(msg);
+      pubkey = provider.generatePublicKey(privkey);
+
       byte[] sig_out = provider.calculateVrfSignature(random, privkey, msg);
       byte[] sig_out2 = provider.calculateVrfSignature(random, privkey, msg);
       r.nextBytes(random);

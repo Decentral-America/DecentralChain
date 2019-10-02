@@ -37,7 +37,7 @@ public class x {
         ge_p3_tobytes.ge_p3_tobytes(K_bytes, ed_pubkey_point);
 
         /* Force Edwards sign bit to zero */
-        int sign_bit = (byte) (K_bytes[31] & 0x80) >> 7;
+        byte sign_bit = (byte) ((K_bytes[31] & 0x80) >> 7);
         System.arraycopy(x25519_privkey_scalar, 0, k_scalar, 0, 32);
         sc_neg.sc_neg(kneg, k_scalar);
         sc_cmov.sc_cmov(k_scalar, kneg, sign_bit);

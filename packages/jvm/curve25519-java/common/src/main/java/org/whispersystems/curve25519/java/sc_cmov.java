@@ -8,7 +8,7 @@ public class sc_cmov {
     Preconditions: b in {0,1}.
     */
 
-    public static void sc_cmov(byte[] f, byte[] g, int b) {
+    public static void sc_cmov(byte[] f, byte[] g, byte b) {
         int count = 32;
         byte[] x = new byte[32];
         for (count = 0; count < 32; count++)
