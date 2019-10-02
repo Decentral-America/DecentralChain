@@ -3,27 +3,36 @@ package org.whispersystems.curve25519;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @BenchmarkMode(Mode.AverageTime)
 @Threads(4)
 @Fork(1)
-@Warmup(iterations = 5)
+@Warmup(iterations = 10)
 @Measurement(iterations = 5)
 public class JavaCurve25519ProviderBenchmark {
     @State(Scope.Thread)
     public static class BenchmarkState {
         public JavaCurve25519Provider provider = new JavaCurve25519Provider();
-        public byte[] privateKey = provider.generatePrivateKey();
-        public byte[] publicKey = provider.generatePublicKey(privateKey);
-        public byte[] notSoRandom = new byte[]{
-                0, 21, 123, 15, 23, 35, 25, 35, 21, 4, 12, 52, 62, 12, 7, 124, 16, 78, 37, 123, 56, 73, 1, 6, 8, 9, 23, 52, 35, 5, 2, 53,
-                0, 21, 123, 15, 23, 35, 25, 35, 21, 4, 12, 52, 62, 12, 7, 124, 16, 78, 37, 123, 56, 73, 1, 6, 8, 9, 23, 52, 35, 5, 2, 53
-        };
-        public byte[] message = new byte[]{0, 1, 2, 3, 4, 5, 6};
-        public byte[] signature = provider.calculateSignature(notSoRandom, privateKey, message);
-        public byte[] vrfSignature = provider.calculateVrfSignature(notSoRandom, privateKey, message);
+        public byte[] privateKey;
+        public byte[] publicKey;
+        public byte[] random = new byte[64];
+        public byte[] message = new byte[256];
+        public byte[] signature;
+        public byte[] vrfSignature;
+
+        @Setup(Level.Iteration)
+        public void doSetup() {
+            Random r = new Random();
+            r.nextBytes(random);
+            r.nextBytes(message);
+            privateKey = provider.generatePrivateKey(random);
+            publicKey = provider.generatePublicKey(privateKey);
+            signature = provider.calculateSignature(random, privateKey, message);
+            vrfSignature = provider.calculateVrfSignature(random, privateKey, message);
+        }
     }
 
     @Benchmark
@@ -33,7 +42,7 @@ public class JavaCurve25519ProviderBenchmark {
 
     @Benchmark
     public void generatePrivateKeyWithRandom(Blackhole blackhole, BenchmarkState bs) {
-        blackhole.consume(bs.provider.generatePrivateKey(bs.notSoRandom));
+        blackhole.consume(bs.provider.generatePrivateKey(bs.random));
     }
 
     @Benchmark
@@ -43,7 +52,7 @@ public class JavaCurve25519ProviderBenchmark {
 
     @Benchmark
     public void calculateSignature(Blackhole blackhole, BenchmarkState bs) {
-        blackhole.consume(bs.provider.calculateSignature(bs.notSoRandom, bs.privateKey, bs.message));
+        blackhole.consume(bs.provider.calculateSignature(bs.random, bs.privateKey, bs.message));
     }
 
     @Benchmark
@@ -53,7 +62,7 @@ public class JavaCurve25519ProviderBenchmark {
 
     @Benchmark
     public void calculateVRFSignature(Blackhole blackhole, BenchmarkState bs) {
-        blackhole.consume(bs.provider.calculateVrfSignature(bs.notSoRandom, bs.privateKey, bs.message));
+        blackhole.consume(bs.provider.calculateVrfSignature(bs.random, bs.privateKey, bs.message));
     }
 
     @Benchmark
