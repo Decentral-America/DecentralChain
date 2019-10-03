@@ -490,7 +490,7 @@ public class veddsa {
         if (customization_label.length > LABELMAXLEN)
             throw new IllegalArgumentException();
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(LABELSETMAXLEN);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(3 + protocol_name.getBytes().length + customization_label.length);
         byteBuffer.put((byte)2);
         byteBuffer.put((byte)protocol_name.getBytes().length);
         byteBuffer.put(protocol_name.getBytes());
@@ -501,10 +501,7 @@ public class veddsa {
         byteBuffer.put(customization_label);
 
         if (byteBuffer.position() == 3 + protocol_name.length() + customization_label.length) {
-            byte[] bytesArray = new byte[byteBuffer.position()];
-            byteBuffer.rewind();
-            byteBuffer.get(bytesArray, 0, bytesArray.length);
-            return bytesArray;
+            return byteBuffer.array();
         } else {
             throw new IllegalStateException();
         }
@@ -578,7 +575,7 @@ public class veddsa {
         if (!sc_isreduced.sc_isreduced(s_scalar)) return -1;
 
         //  labelset = new_labelset(protocol_name, customization_label)
-        byte [] labelset = labelset_new(protocol_name, customization_label);
+        byte[] labelset = labelset_new(protocol_name, customization_label);
 
         //  labelset1 = add_label(labels, "1")
         //  Bv = hash(hash(labelset1 || K) || M)
