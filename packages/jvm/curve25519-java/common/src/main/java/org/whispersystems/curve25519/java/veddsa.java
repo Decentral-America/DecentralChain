@@ -373,13 +373,13 @@ public class veddsa {
 
         ge_p3_tobytes.ge_p3_tobytes(cKv_bytes, cKv_point);
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2 * POINTLEN + labelset.length);
+        int buf_len = 2 * POINTLEN + labelset.length;
+        byte[] buf = new byte[buf_len];
+        System.arraycopy(B_bytes, 0, buf, 0, POINTLEN);
+        System.arraycopy(labelset, 0, buf, POINTLEN, labelset.length);
+        System.arraycopy(cKv_bytes, 0, buf, POINTLEN + labelset.length, POINTLEN);
 
-        byteBuffer.put(B_bytes);
-        byteBuffer.put(labelset);
-        byteBuffer.put(cKv_bytes);
-
-        sha512provider.calculateDigest(hash, byteBuffer.array(), byteBuffer.position());
+        sha512provider.calculateDigest(hash, buf, buf_len);
         System.arraycopy(hash, 0, vrf_output, 0, VRFOUTPUTLEN);
         return 0;
     }
