@@ -4,16 +4,14 @@ public class x {
     public static final int SCALARLEN = 32;
     public static final int POINTLEN = 32;
 
+    /**
+     * Convert the X25519 public key into an Ed25519 public key.
+     * y = (u - 1) / (u + 1)
+     * NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
+    **/
     public static int convert_25519_pubkey(byte[] ed_pubkey_bytes, byte[] x25519_pubkey_bytes) {
         int[] u = new int[10];
         int[] y = new int[10];
-
-  /* Convert the X25519 public key into an Ed25519 public key.
-
-     y = (u - 1) / (u + 1)
-
-     NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
-  */
 
         if (!fe_isreduced.fe_isreduced(x25519_pubkey_bytes))
             return -1;
@@ -26,7 +24,6 @@ public class x {
         return 0;
     }
 
-    // todo find the same
     public static int calculate_25519_keypair(byte[] K_bytes, byte[] k_scalar,
                                               byte[] x25519_privkey_scalar) {
         byte[] kneg = new byte[SCALARLEN];
@@ -47,7 +44,6 @@ public class x {
         return 0;
     }
 
-    // todo return signature_out from the method itself
     public static boolean generalized_xveddsa_25519_sign(
             Sha512 sha512provider,
             byte[] signature_out,
@@ -56,7 +52,6 @@ public class x {
             byte[] random) {
         byte[] K_bytes = new byte[POINTLEN];
         byte[] k_scalar = new byte[SCALARLEN];
-
         if (calculate_25519_keypair(K_bytes, k_scalar, x25519_privkey_scalar) != 0)
             return false;
 
