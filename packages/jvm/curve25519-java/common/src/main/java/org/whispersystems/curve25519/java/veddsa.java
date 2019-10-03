@@ -480,10 +480,12 @@ public class veddsa {
         if (customization_label.length > LABELMAXLEN)
             throw new IllegalArgumentException();
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(3 + protocol_name.getBytes().length + customization_label.length);
+        byte[] protocol_name_bytes = protocol_name.getBytes();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(3 + protocol_name_bytes.length + customization_label.length);
         byteBuffer.put((byte)2);
-        byteBuffer.put((byte)protocol_name.getBytes().length);
-        byteBuffer.put(protocol_name.getBytes());
+        byteBuffer.put((byte)protocol_name_bytes.length);
+        byteBuffer.put(protocol_name_bytes);
         if (byteBuffer.position() < LABELSETMAXLEN) {
             byteBuffer.put((byte)customization_label.length);
         }
