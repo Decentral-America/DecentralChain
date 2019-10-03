@@ -4,11 +4,11 @@ public class x {
     public static final int SCALARLEN = 32;
     public static final int POINTLEN = 32;
 
-    /**
+    /*
      * Convert the X25519 public key into an Ed25519 public key.
      * y = (u - 1) / (u + 1)
      * NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
-    **/
+    */
     public static int convert_25519_pubkey(byte[] ed_pubkey_bytes, byte[] x25519_pubkey_bytes) {
         int[] u = new int[10];
         int[] y = new int[10];
