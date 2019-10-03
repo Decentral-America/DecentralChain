@@ -10,7 +10,6 @@ public class veddsa {
     final static int POINTLEN = 32;
     final static int SCALARLEN = 32;
     final static int RANDLEN = 32;
-//    final static int SIGNATURELEN = 64;
     final static int MSTART = 2048;
     final static int MSGMAXLEN = 1048576;
     final static int BUFLEN = 1024;
@@ -360,20 +359,22 @@ public class veddsa {
         return true;
     }
 
-    public static byte[] generalized_calculate_vrf_output(Sha512 sha512provider,
+    public static int generalized_calculate_vrf_output(Sha512 sha512provider,
+                                                       byte[] vrf_output,
                                                        byte[] labelset,
                                                        ge_p3 cKv_point) {
         byte[] cKv_bytes = new byte[POINTLEN];
         byte[] hash = new byte[HASHLEN];
 
+        if (vrf_output == null) return -1;
+        Arrays.fill(vrf_output, (byte) 0);
+
         if (labelset.length + 2 * POINTLEN > BUFLEN)
-            throw new IllegalArgumentException();
+            return -1;
         if (!labelset_validate(labelset))
-            throw new IllegalArgumentException();
+            return -1;
         if (cKv_point == null)
-            throw new IllegalArgumentException();
-        if (VRFOUTPUTLEN > HASHLEN)
-            throw new IllegalArgumentException();
+            return -1;
 
         ge_p3_tobytes.ge_p3_tobytes(cKv_bytes, cKv_point);
 
@@ -384,9 +385,8 @@ public class veddsa {
         byteBuffer.put(cKv_bytes);
 
         sha512provider.calculateDigest(hash, byteBuffer.array(), byteBuffer.position());
-        byte[] vrf_output = new byte[VRFOUTPUTLEN];
         System.arraycopy(hash, 0, vrf_output, 0, VRFOUTPUTLEN);
-        return vrf_output;
+        return 0;
     }
 
     public static boolean generalized_veddsa_25519_sign(
@@ -543,8 +543,9 @@ public class veddsa {
         return bb.array();
     }
 
-    public static byte[] generalized_veddsa_25519_verify(
+    public static int generalized_veddsa_25519_verify(
             Sha512 sha512provider,
+            byte[] vrf_output,
             byte[] signature,
             byte[] eddsa_25519_pubkey_bytes,
             byte[] msg,
@@ -560,54 +561,50 @@ public class veddsa {
         byte[] Rv_calc_bytes = new byte[POINTLEN];
         byte[] h_calc_scalar = new byte[SCALARLEN];
         byte[] extra = new byte[3 * POINTLEN];
-        byte[] M_buf = new byte[msg.length + MSTART];
         String protocol_name = "VEdDSA_25519_SHA512_Elligator2";
 
-        if (signature == null) throw new IllegalArgumentException();
-        if (eddsa_25519_pubkey_bytes == null) throw new IllegalArgumentException();
-        if (msg == null) throw new IllegalArgumentException();
-        if (customization_label == null && customization_label.length != 0) throw new IllegalArgumentException();
-        if (customization_label.length > LABELMAXLEN) throw new IllegalArgumentException();
-        if (msg.length > MSGMAXLEN) throw new IllegalArgumentException();
+        if (signature == null) return -1;
+        if (eddsa_25519_pubkey_bytes == null) return -1;
+        if (msg == null) return -1;
+        if (customization_label == null && customization_label.length != 0) return -1;
+        if (customization_label.length > LABELMAXLEN) return -1;
+        if (msg.length > MSGMAXLEN) return -1;
 
+        byte[] M_buf = new byte[msg.length + MSTART];
         System.arraycopy(msg, 0, M_buf, MSTART, msg.length);
 
-//        Kv_bytes = signature;
         byte[] Kv_bytes = new byte[POINTLEN];
         System.arraycopy(signature, 0, Kv_bytes, 0, POINTLEN);
-//        h_scalar = signature + POINTLEN;
         byte[] h_scalar = new byte[SCALARLEN];
         System.arraycopy(signature, POINTLEN, h_scalar, 0, SCALARLEN);
-//        s_scalar = signature + POINTLEN + SCALARLEN;
         byte[] s_scalar = new byte[SCALARLEN];
         System.arraycopy(signature, POINTLEN + SCALARLEN, s_scalar, 0, SCALARLEN);
 
-        if (!point_isreduced.point_isreduced(eddsa_25519_pubkey_bytes)) throw new IllegalArgumentException();
-        if (!point_isreduced.point_isreduced(Kv_bytes)) throw new IllegalArgumentException();
-        if (!sc_isreduced.sc_isreduced(h_scalar)) throw new IllegalArgumentException();
-        if (!sc_isreduced.sc_isreduced(s_scalar)) throw new IllegalArgumentException();
+        if (!point_isreduced.point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
+        if (!point_isreduced.point_isreduced(Kv_bytes)) return -1;
+        if (!sc_isreduced.sc_isreduced(h_scalar)) return -1;
+        if (!sc_isreduced.sc_isreduced(s_scalar)) return -1;
 
         //  labelset = new_labelset(protocol_name, customization_label)
-
         byte [] labelset = labelset_new(protocol_name, customization_label);
 
         //  labelset1 = add_label(labels, "1")
         //  Bv = hash(hash(labelset1 || K) || M)
         labelset = labelset_add(labelset, "1");
-        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) throw new IllegalStateException();
+        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return -1;
         ge_p3_tobytes.ge_p3_tobytes(Bv_bytes, Bv_point);
 
         //  R = solve_commitment(B, s, K, h)
         if (generalized_solve_commitment(R_calc_bytes, K_point, null,
-                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) throw new IllegalStateException();
+                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) return -1;
 
         //  Rv = solve_commitment(Bv, s, Kv, h)
         if (generalized_solve_commitment(Rv_calc_bytes, Kv_point, Bv_point,
-                s_scalar, Kv_bytes, h_scalar) != 0) throw new IllegalStateException();
+                s_scalar, Kv_bytes, h_scalar) != 0) return -1;
 
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cK_point, K_point);
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cKv_point, Kv_point);
-        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) throw new IllegalStateException();
+        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) return -1;
 
         //  labelset3 = add_label(labels, "3")
         //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
@@ -615,21 +612,18 @@ public class veddsa {
         System.arraycopy(Bv_bytes, 0, extra, 0, POINTLEN);
         System.arraycopy(Kv_bytes, 0, extra, POINTLEN, POINTLEN);
         System.arraycopy(Rv_calc_bytes, 0, extra, 2 * POINTLEN, POINTLEN);
-        // todo try catch?
         if (generalized_challenge(sha512provider, h_calc_scalar,
                 labelset,
                 extra,
-                R_calc_bytes, eddsa_25519_pubkey_bytes, msg) != 0) throw new IllegalStateException();
+                R_calc_bytes, eddsa_25519_pubkey_bytes, msg) != 0) return -1;
 
-        // todo try catch?
         // if bytes_equal(h, h')
-        if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) throw new IllegalStateException();
+        if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) return -1;
 
         //  labelset4 = add_label(labels, "4")
         //  v = hash(labelset4 || c*Kv)
         labelset[labelset.length - 1] = '4';
 
-        // todo try catch?
-        return generalized_calculate_vrf_output(sha512provider, labelset, cKv_point);
+        return generalized_calculate_vrf_output(sha512provider, vrf_output, labelset, cKv_point);
     }
 }

@@ -90,7 +90,11 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
   public byte[] verifyVrfSignature(byte[] publicKey, byte[] message, byte[] signature)
       throws VrfSignatureVerificationFailedException
   {
-    return x.generalized_xveddsa_25519_verify(sha512provider, signature, publicKey, message);
+    byte[] result = new byte[96];
+    if (x.generalized_xveddsa_25519_verify(sha512provider, result, signature, publicKey, message) != 0) {
+      throw new VrfSignatureVerificationFailedException();
+    }
+    return result;
   }
 
   public byte[] getRandom(int length) {

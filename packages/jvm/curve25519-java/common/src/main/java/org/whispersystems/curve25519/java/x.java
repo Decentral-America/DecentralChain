@@ -66,17 +66,18 @@ public class x {
         return retval;
     }
 
-    public static byte[] generalized_xveddsa_25519_verify(
+    public static int generalized_xveddsa_25519_verify(
             Sha512 sha512provider,
+            byte[] vrf_output,
             byte[] signature,
             byte[] x25519_pubkey_bytes,
             byte[] msg) {
         byte[] K_bytes = new byte[POINTLEN];
 
         if (convert_25519_pubkey(K_bytes, x25519_pubkey_bytes) != 0)
-            throw new IllegalArgumentException();
+            return -1;
 
-        return veddsa.generalized_veddsa_25519_verify(sha512provider, signature, K_bytes, msg,
+        return veddsa.generalized_veddsa_25519_verify(sha512provider, vrf_output, signature, K_bytes, msg,
                 new byte[]{});
     }
 
