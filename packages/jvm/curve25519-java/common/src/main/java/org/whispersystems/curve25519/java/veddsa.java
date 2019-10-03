@@ -334,29 +334,24 @@ public class veddsa {
     public static boolean generalized_calculate_Bv(Sha512 sha512provider, ge_p3 Bv_point,
                                                byte[] labelset, byte[] K_bytes,
                                                byte[] M_buf, int M_start, int M_len) {
-        byte[] bufptr;
-        int prefix_len = 0;
-
         if (!labelset_validate(labelset))
             return false;
         if (Bv_point == null || K_bytes == null || M_buf == null)
             return false;
 
-        prefix_len = 2 * POINTLEN + labelset.length;
+        int prefix_len = 2 * POINTLEN + labelset.length;
         if (prefix_len > M_start)
-            throw new IllegalArgumentException();
+            return false;
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2 * POINTLEN + labelset.length + M_len);
-        byteBuffer.put(B_bytes);
-        byteBuffer.put(labelset);
-        byteBuffer.put(K_bytes);
+        int startIndex = M_start - prefix_len;
+        System.arraycopy(B_bytes, 0, M_buf, startIndex, POINTLEN);
+        System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
+        System.arraycopy(K_bytes, 0, M_buf, startIndex + POINTLEN + labelset.length, POINTLEN);
 
-        byte[] in = byteBuffer.array();
+        byte[] in = java.util.Arrays.copyOfRange(M_buf, startIndex, M_start + M_len);
         System.arraycopy(M_buf, M_start, in, in.length - M_len, M_len);
         hash_to_point(sha512provider, Bv_point, in);
-        if (ge_isneutral.ge_isneutral(Bv_point))
-            return false;
-        return true;
+        return !ge_isneutral.ge_isneutral(Bv_point);
     }
 
     public static int generalized_calculate_vrf_output(Sha512 sha512provider,
@@ -429,7 +424,6 @@ public class veddsa {
             return false;
         }
 
-        // memcpy(M_buf + MSTART, msg, msg_len);
         System.arraycopy(msg, 0, M_buf, MSTART, msg.length);
 
         //  labelset = new_labelset(protocol_name, customization_label)
