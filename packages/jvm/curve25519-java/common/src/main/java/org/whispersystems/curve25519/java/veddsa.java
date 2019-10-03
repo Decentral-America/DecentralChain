@@ -248,7 +248,7 @@ public class veddsa {
                                             byte[] extra,
                                             byte[] R_bytes,
                                             byte[] K_bytes,
-                                            byte[] msg) {
+                                            byte[] M_buf, int M_start, int M_len) {
 
         byte[] hash = new byte[HASHLEN];
 
@@ -260,29 +260,27 @@ public class veddsa {
         if (extra != null && extra.length == 0) return -1;
         if (extra != null && labelset_is_empty(labelset)) return -1;
 
-        ByteBuffer byteBuffer;
+        int prefix_len;
 
         if (labelset_is_empty(labelset)) {
             if (2 * POINTLEN > MSTART) return -1;
-            if (extra != null || extra.length != 0) return -1;
-            int prefix_len = 2 * POINTLEN;
-            byteBuffer = ByteBuffer.allocate(msg.length + prefix_len);
-            byteBuffer.put(R_bytes);
-            byteBuffer.put(K_bytes);
+            prefix_len = 2 * POINTLEN;
+            int startIndex = M_start - prefix_len;
+            System.arraycopy(R_bytes, 0, M_buf, startIndex, POINTLEN);
+            System.arraycopy(K_bytes, 0, M_buf, startIndex + POINTLEN, POINTLEN);
         } else {
-            int prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
-            byteBuffer = ByteBuffer.allocate(msg.length + prefix_len);
-            byteBuffer.put(B_bytes);
-            byteBuffer.put(labelset);
-            byteBuffer.put(R_bytes);
-            byteBuffer.put(labelset);
-            byteBuffer.put(K_bytes);
-            byteBuffer.put(extra);
+            prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
+            int startIndex = M_start - prefix_len;
+            System.arraycopy(B_bytes, 0, M_buf, startIndex, POINTLEN);
+            System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
+            System.arraycopy(R_bytes, 0, M_buf, startIndex + POINTLEN + labelset.length, POINTLEN);
+            System.arraycopy(labelset, 0, M_buf, startIndex + 2 * POINTLEN + labelset.length, labelset.length);
+            System.arraycopy(K_bytes, 0, M_buf, startIndex + 2 * POINTLEN + 2 * labelset.length, POINTLEN);
+            System.arraycopy(extra, 0, M_buf, startIndex + 3 * POINTLEN + 2 * labelset.length, extra.length);
         }
 
-        byteBuffer.put(msg);
-
-        sha512provider.calculateDigest(hash, byteBuffer.array(), byteBuffer.position());
+        byte[] in = java.util.Arrays.copyOfRange(M_buf, M_start - prefix_len, M_start + M_len);
+        sha512provider.calculateDigest(hash, in, in.length);
         sc_reduce.sc_reduce(hash);
         System.arraycopy(hash, 0, h_scalar, 0, SCALARLEN);
         return 0;
@@ -464,7 +462,7 @@ public class veddsa {
 //        memcpy(extra + 2*POINTLEN, Rv_bytes, POINTLEN);
         System.arraycopy(Rv_bytes, 0, extra, 2 * POINTLEN, POINTLEN);
         if (generalized_challenge(sha512provider, h_scalar,
-                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, msg) != 0) {
+                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length) != 0) {
             return false;
         }
 
@@ -609,7 +607,7 @@ public class veddsa {
         if (generalized_challenge(sha512provider, h_calc_scalar,
                 labelset,
                 extra,
-                R_calc_bytes, eddsa_25519_pubkey_bytes, msg) != 0) return -1;
+                R_calc_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length) != 0) return -1;
 
         // if bytes_equal(h, h')
         if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) return -1;
