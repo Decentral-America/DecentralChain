@@ -1,10 +1,6 @@
 package org.whispersystems.curve25519.java;
 
-import java.nio.ByteBuffer;
-
 public class veddsa {
-    final static int LABELSETMAXLEN = 512;
-    final static int LABELMAXLEN = 128;
     final static int BLOCKLEN = 128; /* SHA512 */
     final static int HASHLEN = 64;  /* SHA512 */
     final static int POINTLEN = 32;
@@ -21,28 +17,6 @@ public class veddsa {
             0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
             0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
     };
-
-    private static boolean labelset_is_empty(byte[] bb) {
-        return bb.length == 3;
-    }
-
-    private static boolean labelset_validate(byte[] labelset)
-    {
-        if (labelset == null)
-            return false;
-        if (labelset.length < 3 || labelset.length > LABELSETMAXLEN)
-            return false;
-
-        int num_labels = labelset[0];
-        int offset = 1;
-        for (int count = 0; count < num_labels; count++) {
-            int label_len = labelset[offset];
-            offset += 1 + label_len;
-            if (offset > labelset.length)
-                return false;
-        }
-        return offset == labelset.length;
-    }
 
     public static int legendre_is_nonsquare(int[] in)
     {
@@ -66,12 +40,12 @@ public class veddsa {
     public static void elligator(int[] u, int[] r)
     {
         /* r = input
-         * x = -A/(1+2r^2)                # 2 is nonsquare
-         * e = (x^3 + Ax^2 + x)^((q-1)/2) # legendre symbol
-         * if e == 1 (square) or e == 0 (because x == 0 and 2r^2 + 1 == 0)
-         *   u = x
+         * gen_x = -A/(1+2r^2)                # 2 is nonsquare
+         * e = (gen_x^3 + Ax^2 + gen_x)^((q-1)/2) # legendre symbol
+         * if e == 1 (square) or e == 0 (because gen_x == 0 and 2r^2 + 1 == 0)
+         *   u = gen_x
          * if e == -1 (nonsquare)
-         *   u = -x - A
+         *   u = -gen_x - A
          */
         int[] A = new int[10], one = new int[10], twor2 = new int[10], twor2plus1 = new int[10], twor2plus1inv = new int[10];
         int[] x = new int[10], e = new int[10], Atemp = new int[10], uneg = new int[10];
@@ -85,16 +59,16 @@ public class veddsa {
         fe_add.fe_add(twor2plus1, twor2, one);        /* 1+2r^2 */
         fe_invert.fe_invert(twor2plus1inv, twor2plus1);  /* 1/(1+2r^2) */
         fe_mul.fe_mul(x, twor2plus1inv, A);           /* A/(1+2r^2) */
-        fe_neg.fe_neg(x, x);                          /* x = -A/(1+2r^2) */
+        fe_neg.fe_neg(x, x);                          /* gen_x = -A/(1+2r^2) */
 
-        fe_mont_rhs(e, x);                     /* e = x^3 + Ax^2 + x */
+        fe_mont_rhs(e, x);                     /* e = gen_x^3 + Ax^2 + gen_x */
         nonsquare = legendre_is_nonsquare(e);
 
         fe_0.fe_0(Atemp);
         fe_cmov.fe_cmov(Atemp, A, nonsquare);          /* 0, or A if nonsquare */
-        fe_add.fe_add(u, x, Atemp);                   /* x, or x+A if nonsquare */
-        fe_neg.fe_neg(uneg, u);                       /* -x, or -x-A if nonsquare */
-        fe_cmov.fe_cmov(u, uneg, nonsquare);           /* x, or -x-A if nonsquare */
+        fe_add.fe_add(u, x, Atemp);                   /* gen_x, or gen_x+A if nonsquare */
+        fe_neg.fe_neg(uneg, u);                       /* -gen_x, or -gen_x-A if nonsquare */
+        fe_cmov.fe_cmov(u, uneg, nonsquare);           /* gen_x, or -gen_x-A if nonsquare */
     }
 
     public static void fe_mont_rhs(int[] v2, int[] u) {
@@ -128,18 +102,18 @@ public class veddsa {
 
         /* given u, recover edwards y */
         /* given u, recover v */
-        /* given u and v, recover edwards x */
+        /* given u and v, recover edwards gen_x */
 
         fe_montx_to_edy.fe_montx_to_edy(y, u);       /* y = (u - 1) / (u + 1) */
 
         fe_mont_rhs(v2, u);          /* v^2 = u(u^2 + Au + 1) */
         fe_sqrt.fe_sqrt(v, v2);              /* v = sqrt(v^2) */
 
-        fe_mul.fe_mul(x, u, A);             /* x = u * sqrt(-(A+2)) */
+        fe_mul.fe_mul(x, u, A);             /* gen_x = u * sqrt(-(A+2)) */
         fe_invert.fe_invert(iv, v);            /* 1/v */
-        fe_mul.fe_mul(x, x, iv);            /* x = (u/v) * sqrt(-(A+2)) */
+        fe_mul.fe_mul(x, x, iv);            /* gen_x = (u/v) * sqrt(-(A+2)) */
 
-        fe_neg.fe_neg(nx, x);               /* negate x to match sign bit */
+        fe_neg.fe_neg(nx, x);               /* negate gen_x to match sign bit */
         fe_cmov.fe_cmov(x, nx, fe_isnegative.fe_isnegative(x) ^ ed_sign_bit);
 
         fe_copy.fe_copy(p.X, x);
@@ -174,7 +148,7 @@ public class veddsa {
        k: private key (scalar)
        Z: 32-bytes random
        M: buffer containing message, message starts at M_start, continues for M_len
-       r = hash(B || labelset || Z || pad1 || k || pad2 || labelset || K || extra || M) (mod q)
+       r = hash(B || gen_labelset || Z || pad1 || k || pad2 || gen_labelset || K || extra || M) (mod q)
     */
     public static boolean generalized_commit(Sha512 sha512provider, byte[] R_bytes, byte[] r_scalar,
                                          byte[] labelset,
@@ -185,7 +159,7 @@ public class veddsa {
         ge_p3 R_point = new ge_p3();
         byte[] hash = new byte[64];
 
-        if (!labelset_validate(labelset)) {
+        if (!gen_labelset.labelset_validate(labelset)) {
             return false;
         }
         if (R_bytes == null || r_scalar == null ||
@@ -196,7 +170,7 @@ public class veddsa {
         if (extra == null || extra.length == 0) {
             return false;
         }
-        if (labelset_is_empty(labelset)) {
+        if (gen_labelset.labelset_is_empty(labelset)) {
             return false;
         }
 
@@ -234,10 +208,10 @@ public class veddsa {
 
 
 
-    /* if is_labelset_empty(labelset):
+    /* if is_labelset_empty(gen_labelset):
            return hash(R || K || M) (mod q)
        else:
-           return hash(B || labelset || R || labelset || K || extra || M) (mod q)
+           return hash(B || gen_labelset || R || gen_labelset || K || extra || M) (mod q)
     */
     public static int generalized_challenge(Sha512 sha512provider, byte[] h_scalar,
                                             byte[] labelset,
@@ -250,13 +224,13 @@ public class veddsa {
 
         if (h_scalar == null) return -1;
 
-        if (!labelset_validate(labelset)) return -1;
+        if (!gen_labelset.labelset_validate(labelset)) return -1;
         if (R_bytes == null || K_bytes == null) return -1;
-        if (extra != null && labelset_is_empty(labelset)) return -1;
+        if (extra != null && gen_labelset.labelset_is_empty(labelset)) return -1;
 
         int prefix_len;
 
-        if (labelset_is_empty(labelset)) {
+        if (gen_labelset.labelset_is_empty(labelset)) {
             if (2 * POINTLEN > MSTART) return -1;
             prefix_len = 2 * POINTLEN;
             int startIndex = M_start - prefix_len;
@@ -326,7 +300,7 @@ public class veddsa {
     public static boolean generalized_calculate_Bv(Sha512 sha512provider, ge_p3 Bv_point,
                                                byte[] labelset, byte[] K_bytes,
                                                byte[] M_buf, int M_start, int M_len) {
-        if (!labelset_validate(labelset))
+        if (!gen_labelset.labelset_validate(labelset))
             return false;
         if (Bv_point == null || K_bytes == null || M_buf == null)
             return false;
@@ -358,7 +332,7 @@ public class veddsa {
 
         if (labelset.length + 2 * POINTLEN > BUFLEN)
             return -1;
-        if (!labelset_validate(labelset))
+        if (!gen_labelset.labelset_validate(labelset))
             return -1;
         if (cKv_point == null)
             return -1;
@@ -393,7 +367,7 @@ public class veddsa {
         if (eddsa_25519_privkey_scalar == null) {
             return false;
         }
-        if (customization_label == null || customization_label.length > LABELMAXLEN) {
+        if (customization_label == null || customization_label.length > gen_labelset.LABELMAXLEN) {
             return false;
         }
         if (msg == null || msg.length > MSGMAXLEN) {
@@ -417,12 +391,12 @@ public class veddsa {
 
         System.arraycopy(msg, 0, M_buf, MSTART, msg.length);
 
-        byte[] labelset = labelset_new(protocol_name, customization_label);
+        byte[] labelset = gen_labelset.labelset_new(protocol_name, customization_label);
 
         //  labelset1 = add_label(labels, "1")
         //  Bv = hash(hash(labelset1 || K) || M)
         //  Kv = k * Bv
-        labelset = labelset_add(labelset, "1");
+        labelset = gen_labelset.labelset_add(labelset, "1");
         generalized_calculate_Bv(sha512provider, Bv_point, labelset,
                 eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length);
         ge_scalarmult.ge_scalarmult(Kv_point, eddsa_25519_privkey_scalar, Bv_point);
@@ -471,54 +445,6 @@ public class veddsa {
         return true;
     }
 
-    public static byte[] labelset_new(String protocol_name,
-                                   byte[] customization_label) {
-        if (LABELSETMAXLEN < 3 + protocol_name.length() + customization_label.length)
-            throw new IllegalArgumentException();
-        if (protocol_name.length() > LABELMAXLEN)
-            throw new IllegalArgumentException();
-        if (customization_label.length > LABELMAXLEN)
-            throw new IllegalArgumentException();
-
-        byte[] protocol_name_bytes = protocol_name.getBytes();
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(3 + protocol_name_bytes.length + customization_label.length);
-        byteBuffer.put((byte)2);
-        byteBuffer.put((byte)protocol_name_bytes.length);
-        byteBuffer.put(protocol_name_bytes);
-        if (byteBuffer.position() < LABELSETMAXLEN) {
-            byteBuffer.put((byte)customization_label.length);
-        }
-
-        byteBuffer.put(customization_label);
-
-        assert byteBuffer.position() == 3 + protocol_name.length() + customization_label.length;
-
-        return byteBuffer.array();
-    }
-
-    public static byte[] labelset_add(byte[] labelset, String label)
-    {
-        if (labelset.length > LABELSETMAXLEN)
-            throw new IllegalStateException();
-        if (labelset.length >= LABELMAXLEN || labelset.length + label.length() + 1 > LABELSETMAXLEN)
-            throw new IllegalStateException();
-        if (labelset.length < 3 || LABELSETMAXLEN < 4)
-        throw new IllegalStateException();
-        if (label.length() > LABELMAXLEN)
-            throw new IllegalStateException();
-
-        ByteBuffer bb = ByteBuffer.allocate(labelset.length + label.length() + 1);
-        bb.put((byte)(labelset[0]+1));
-        bb.put(labelset, 1, labelset.length - 1);
-        bb.put((byte)label.getBytes().length);
-        bb.put(label.getBytes());
-
-        assert bb.position() < LABELSETMAXLEN;
-
-        return bb.array();
-    }
-
     public static int generalized_veddsa_25519_verify(
             Sha512 sha512provider,
             byte[] vrf_output,
@@ -530,7 +456,7 @@ public class veddsa {
         if (eddsa_25519_pubkey_bytes == null) return -1;
         if (msg == null) return -1;
         if (customization_label == null) return -1;
-        if (customization_label.length > LABELMAXLEN) return -1;
+        if (customization_label.length > gen_labelset.LABELMAXLEN) return -1;
         if (msg.length > MSGMAXLEN) return -1;
 
         ge_p3 Bv_point = new ge_p3();
@@ -561,12 +487,12 @@ public class veddsa {
         if (!sc_isreduced.sc_isreduced(h_scalar)) return -1;
         if (!sc_isreduced.sc_isreduced(s_scalar)) return -1;
 
-        //  labelset = new_labelset(protocol_name, customization_label)
-        byte[] labelset = labelset_new(protocol_name, customization_label);
+        //  gen_labelset = new_labelset(protocol_name, customization_label)
+        byte[] labelset = gen_labelset.labelset_new(protocol_name, customization_label);
 
         //  labelset1 = add_label(labels, "1")
         //  Bv = hash(hash(labelset1 || K) || M)
-        labelset = labelset_add(labelset, "1");
+        labelset = gen_labelset.labelset_add(labelset, "1");
         if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return -1;
         ge_p3_tobytes.ge_p3_tobytes(Bv_bytes, Bv_point);
 

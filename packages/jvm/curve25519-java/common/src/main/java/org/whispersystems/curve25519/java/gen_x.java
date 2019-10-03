@@ -1,6 +1,6 @@
 package org.whispersystems.curve25519.java;
 
-public class x {
+public class gen_x {
     public static final int SCALARLEN = 32;
     public static final int POINTLEN = 32;
 
