@@ -13,7 +13,7 @@ public class sc_cmov {
         byte[] x = new byte[32];
         for (count = 0; count < 32; count++)
             x[count] = (byte) (f[count] ^ g[count]);
-        b = -b;
+        b = (byte)-b;
         for (count = 0; count < 32; count++)
             x[count] &= b;
         for (count = 0; count < 32; count++)
