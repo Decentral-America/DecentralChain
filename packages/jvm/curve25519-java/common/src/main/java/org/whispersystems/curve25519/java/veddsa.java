@@ -11,136 +11,6 @@ public class veddsa {
     final static int BUFLEN = 1024;
     final static int VRFOUTPUTLEN = 32;
 
-    final static byte[] B_bytes = {
-            0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-            0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-    };
-
-    public static int legendre_is_nonsquare(int[] in)
-    {
-        int[] temp = new int[10];
-        byte[] bytes = new byte[32];
-        fe_pow22523.fe_pow22523(temp, in);  /* temp = in^((q-5)/8) */
-        fe_sq.fe_sq(temp, temp);      /*        in^((q-5)/4) */
-        fe_sq.fe_sq(temp, temp);      /*        in^((q-5)/2) */
-        fe_mul.fe_mul(temp, temp, in); /*        in^((q-3)/2) */
-        fe_mul.fe_mul(temp, temp, in); /*        in^((q-1)/2) */
-
-        /* temp is now the Legendre symbol:
-         * 1  = square
-         * 0  = input is zero
-         * -1 = nonsquare
-         */
-        fe_tobytes.fe_tobytes(bytes, temp);
-        return 1 & bytes[31];
-    }
-
-    public static void elligator(int[] u, int[] r)
-    {
-        /* r = input
-         * gen_x = -A/(1+2r^2)                # 2 is nonsquare
-         * e = (gen_x^3 + Ax^2 + gen_x)^((q-1)/2) # legendre symbol
-         * if e == 1 (square) or e == 0 (because gen_x == 0 and 2r^2 + 1 == 0)
-         *   u = gen_x
-         * if e == -1 (nonsquare)
-         *   u = -gen_x - A
-         */
-        int[] A = new int[10], one = new int[10], twor2 = new int[10], twor2plus1 = new int[10], twor2plus1inv = new int[10];
-        int[] x = new int[10], e = new int[10], Atemp = new int[10], uneg = new int[10];
-        int nonsquare;
-
-        fe_1.fe_1(one);
-        fe_0.fe_0(A);
-        A[0] = 486662;                         /* A = 486662 */
-
-        fe_sq2.fe_sq2(twor2, r);                      /* 2r^2 */
-        fe_add.fe_add(twor2plus1, twor2, one);        /* 1+2r^2 */
-        fe_invert.fe_invert(twor2plus1inv, twor2plus1);  /* 1/(1+2r^2) */
-        fe_mul.fe_mul(x, twor2plus1inv, A);           /* A/(1+2r^2) */
-        fe_neg.fe_neg(x, x);                          /* gen_x = -A/(1+2r^2) */
-
-        fe_mont_rhs(e, x);                     /* e = gen_x^3 + Ax^2 + gen_x */
-        nonsquare = legendre_is_nonsquare(e);
-
-        fe_0.fe_0(Atemp);
-        fe_cmov.fe_cmov(Atemp, A, nonsquare);          /* 0, or A if nonsquare */
-        fe_add.fe_add(u, x, Atemp);                   /* gen_x, or gen_x+A if nonsquare */
-        fe_neg.fe_neg(uneg, u);                       /* -gen_x, or -gen_x-A if nonsquare */
-        fe_cmov.fe_cmov(u, uneg, nonsquare);           /* gen_x, or -gen_x-A if nonsquare */
-    }
-
-    public static void fe_mont_rhs(int[] v2, int[] u) {
-        int[] A = new int[10], one= new int[10];
-        int[] u2= new int[10], Au= new int[10], inner= new int[10];
-
-        fe_1.fe_1(one);
-        fe_0.fe_0(A);
-        A[0] = 486662;                     /* A = 486662 */
-
-        fe_sq.fe_sq(u2, u);                      /* u^2 */
-        fe_mul.fe_mul(Au, A, u);                  /* Au */
-        fe_add.fe_add(inner, u2, Au);             /* u^2 + Au */
-        fe_add.fe_add(inner, inner, one);         /* u^2 + Au + 1 */
-        fe_mul.fe_mul(v2, u, inner);              /* u(u^2 + Au + 1) */
-    }
-
-    /* sqrt(-(A+2)) */
-    private static byte[] A_bytes = {
-        0x06, 0x7e, 0x45, (byte)0xff, (byte)0xaa, 0x04, 0x6e, (byte)0xcc,
-            (byte)0x82, 0x1a, 0x7d, 0x4b, (byte)0xd1, (byte)0xd3, (byte)0xa1, (byte)0xc5,
-                0x7e, 0x4f, (byte)0xfc, 0x03, (byte)0xdc, 0x08, 0x7b, (byte)0xd2,
-            (byte)0xbb, 0x06, (byte)0xa0, 0x60, (byte)0xf4, (byte)0xed, 0x26, 0x0f
-    };
-
-    public static void ge_montx_to_p3(ge_p3 p, int[] u, byte ed_sign_bit)
-    {
-        int[] x = new int[10], y = new int[10], A = new int[10], v = new int[10], v2 = new int[10], iv = new int[10], nx = new int[10];
-
-        fe_frombytes.fe_frombytes(A, A_bytes);
-
-        /* given u, recover edwards y */
-        /* given u, recover v */
-        /* given u and v, recover edwards gen_x */
-
-        fe_montx_to_edy.fe_montx_to_edy(y, u);       /* y = (u - 1) / (u + 1) */
-
-        fe_mont_rhs(v2, u);          /* v^2 = u(u^2 + Au + 1) */
-        fe_sqrt.fe_sqrt(v, v2);              /* v = sqrt(v^2) */
-
-        fe_mul.fe_mul(x, u, A);             /* gen_x = u * sqrt(-(A+2)) */
-        fe_invert.fe_invert(iv, v);            /* 1/v */
-        fe_mul.fe_mul(x, x, iv);            /* gen_x = (u/v) * sqrt(-(A+2)) */
-
-        fe_neg.fe_neg(nx, x);               /* negate gen_x to match sign bit */
-        fe_cmov.fe_cmov(x, nx, fe_isnegative.fe_isnegative(x) ^ ed_sign_bit);
-
-        fe_copy.fe_copy(p.X, x);
-        fe_copy.fe_copy(p.Y, y);
-        fe_1.fe_1(p.Z);
-        fe_mul.fe_mul(p.T, p.X, p.Y);
-    }
-
-
-    private static void hash_to_point(Sha512 sha512provider, ge_p3 p, byte[] in)
-    {
-        byte[] hash = new byte[64];
-        int[] h = new int[10], u = new int[10];
-        ge_p3 p3 = new ge_p3();
-
-        sha512provider.calculateDigest(hash, in, in.length);
-
-        /* take the high bit as Edwards sign bit */
-        byte sign_bit = (byte)((hash[31] & 0x80) >> 7);
-        hash[31] &= 0x7F;
-        fe_frombytes.fe_frombytes(h, hash);
-        elligator(u, h);
-
-        ge_montx_to_p3(p3, u, sign_bit);
-        ge_scalarmult_cofactor.ge_scalarmult_cofactor(p, p3);
-    }
-
     /* B: base point 
      * R: commitment (point), 
        r: private nonce (scalar)
@@ -188,7 +58,7 @@ public class veddsa {
 
         int startIndex = M_start - prefix_len;
 
-        System.arraycopy(B_bytes, 0, M_buf, startIndex, POINTLEN);
+        System.arraycopy(gen_labelset.B_bytes, 0, M_buf, startIndex, POINTLEN);
         System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
         System.arraycopy(Z, 0, M_buf, startIndex + POINTLEN + labelset.length, RANDLEN);
         System.arraycopy(k_scalar, 0, M_buf, startIndex + POINTLEN + labelset.length + pad_len1 + RANDLEN, POINTLEN);
@@ -239,7 +109,7 @@ public class veddsa {
         } else {
             prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
             int startIndex = M_start - prefix_len;
-            System.arraycopy(B_bytes, 0, M_buf, startIndex, POINTLEN);
+            System.arraycopy(gen_labelset.B_bytes, 0, M_buf, startIndex, POINTLEN);
             System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
             System.arraycopy(R_bytes, 0, M_buf, startIndex + POINTLEN + labelset.length, POINTLEN);
             System.arraycopy(labelset, 0, M_buf, startIndex + 2 * POINTLEN + labelset.length, labelset.length);
@@ -310,13 +180,13 @@ public class veddsa {
             return false;
 
         int startIndex = M_start - prefix_len;
-        System.arraycopy(B_bytes, 0, M_buf, startIndex, POINTLEN);
+        System.arraycopy(gen_labelset.B_bytes, 0, M_buf, startIndex, POINTLEN);
         System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
         System.arraycopy(K_bytes, 0, M_buf, startIndex + POINTLEN + labelset.length, POINTLEN);
 
         byte[] in = java.util.Arrays.copyOfRange(M_buf, startIndex, M_start + M_len);
         System.arraycopy(M_buf, M_start, in, in.length - M_len, M_len);
-        hash_to_point(sha512provider, Bv_point, in);
+        elligator.hash_to_point(sha512provider, Bv_point, in);
         return !ge_isneutral.ge_isneutral(Bv_point);
     }
 
@@ -340,7 +210,7 @@ public class veddsa {
         ge_p3_tobytes.ge_p3_tobytes(cKv_bytes, cKv_point);
 
         byte[] buf = new byte[2 * POINTLEN + labelset.length];
-        System.arraycopy(B_bytes, 0, buf, 0, POINTLEN);
+        System.arraycopy(gen_labelset.B_bytes, 0, buf, 0, POINTLEN);
         System.arraycopy(labelset, 0, buf, POINTLEN, labelset.length);
         System.arraycopy(cKv_bytes, 0, buf, POINTLEN + labelset.length, POINTLEN);
 
