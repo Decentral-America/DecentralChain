@@ -20,6 +20,7 @@ public class JavaCurve25519ProviderBenchmark {
         public byte[] publicKey;
         public byte[] random = new byte[64];
         public byte[] message = new byte[256];
+        public byte[] editedMessage = new byte[256];
         public byte[] signature;
         public byte[] vrfSignature;
 
@@ -28,6 +29,9 @@ public class JavaCurve25519ProviderBenchmark {
             Random r = new Random();
             r.nextBytes(random);
             r.nextBytes(message);
+            System.arraycopy(message, 0, editedMessage, 0, 256);
+            // invert 1 byte
+            editedMessage[0] ^= 0xff;
             privateKey = provider.generatePrivateKey(random);
             publicKey = provider.generatePublicKey(privateKey);
             signature = provider.calculateSignature(random, privateKey, message);
@@ -56,8 +60,13 @@ public class JavaCurve25519ProviderBenchmark {
     }
 
     @Benchmark
-    public void verifySignature(Blackhole blackhole, BenchmarkState bs) {
+    public void verifyValidSignature(Blackhole blackhole, BenchmarkState bs) {
         blackhole.consume(bs.provider.verifySignature(bs.publicKey, bs.message, bs.signature));
+    }
+
+    @Benchmark
+    public void verifyInvalidSignature(Blackhole blackhole, BenchmarkState bs) {
+        blackhole.consume(bs.provider.verifySignature(bs.publicKey, bs.editedMessage, bs.signature));
     }
 
     @Benchmark
@@ -66,7 +75,14 @@ public class JavaCurve25519ProviderBenchmark {
     }
 
     @Benchmark
-    public void verifyVrfSignature(Blackhole blackhole, BenchmarkState bs) throws VrfSignatureVerificationFailedException {
+    public void verifyValidVrfSignature(Blackhole blackhole, BenchmarkState bs) throws VrfSignatureVerificationFailedException {
         blackhole.consume(bs.provider.verifyVrfSignature(bs.publicKey, bs.message, bs.vrfSignature));
+    }
+
+    @Benchmark
+    public void verifyInvalidVrfSignature(Blackhole blackhole, BenchmarkState bs) {
+        try {
+            blackhole.consume(bs.provider.verifyVrfSignature(bs.publicKey, bs.editedMessage, bs.vrfSignature));
+        } catch (VrfSignatureVerificationFailedException ignored) {}
     }
 }
