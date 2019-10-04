@@ -135,11 +135,11 @@ public abstract class Curve25519ProviderTest extends TestCase {
     byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
     byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
 
-    msg[4] ^= 0x01;
+    msg[4] ^= 0xff;
 
     try {
       provider.verifyVrfSignature(pubkey, msg, signature );
-    } catch(IllegalStateException ignored) {}
+    } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
   public void testVRFFailedVerifyByPublicKey() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
@@ -149,11 +149,11 @@ public abstract class Curve25519ProviderTest extends TestCase {
     byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
     byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
 
-    pubkey[4] ^= 0x01;
+    pubkey[4] ^= 0xff;
 
     try {
       provider.verifyVrfSignature(pubkey, msg, signature );
-    } catch(IllegalStateException ignored) {}
+    } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
   public void testVRFFailedVerifyBySignature() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
@@ -163,11 +163,11 @@ public abstract class Curve25519ProviderTest extends TestCase {
     byte[] pubkey  = HexBin.decode("21F7345F56D9602F1523298F4F6FCECB14DDE2D5B9A9B48BCA8242681492B920");
     byte[] signature  = HexBin.decode("5D501685D744424DE3EF5CA49ECDDD880FA7421C975CDF94BAE48CA16EC0899737721200EED1A8B0D2D6852826A1EAB78B0DF27F35B3F3E89C96E7AE3DAAA30F037297547886E554AFFC81DE54B575768FB30493C537ECDD5A87577DEB7D8E03");
 
-    signature[4] ^= 0x01;
+    signature[4] ^= 0xff;
 
     try {
       provider.verifyVrfSignature(pubkey, msg, signature );
-    } catch(IllegalStateException ignored) {}
+    } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
   public void testVRFUniqueSignatures() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
