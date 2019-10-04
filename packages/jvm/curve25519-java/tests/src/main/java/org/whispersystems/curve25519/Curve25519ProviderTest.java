@@ -138,7 +138,8 @@ public abstract class Curve25519ProviderTest extends TestCase {
     msg[4] ^= 0xff;
 
     try {
-      provider.verifyVrfSignature(pubkey, msg, signature );
+      provider.verifyVrfSignature(pubkey, msg, signature);
+      fail();
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
@@ -152,7 +153,8 @@ public abstract class Curve25519ProviderTest extends TestCase {
     pubkey[4] ^= 0xff;
 
     try {
-      provider.verifyVrfSignature(pubkey, msg, signature );
+      provider.verifyVrfSignature(pubkey, msg, signature);
+      fail();
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
@@ -166,7 +168,8 @@ public abstract class Curve25519ProviderTest extends TestCase {
     signature[4] ^= 0xff;
 
     try {
-      provider.verifyVrfSignature(pubkey, msg, signature );
+      provider.verifyVrfSignature(pubkey, msg, signature);
+      fail();
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
