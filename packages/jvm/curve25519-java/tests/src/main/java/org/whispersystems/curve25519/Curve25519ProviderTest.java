@@ -170,7 +170,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
-  public void testVRFUniqueSignatures() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
+  public void testVRFIntegrationTest() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
     Random r = new Random(1244);
 
@@ -199,6 +199,27 @@ public abstract class Curve25519ProviderTest extends TestCase {
 
       assertTrue(Arrays.equals(vrf1, vrf2));
       assertFalse(provider.verifySignature(pubkey, msg, sig_out));
+
+      try {
+        byte[] wrongPubkey = pubkey.clone();
+        wrongPubkey[3] ^= 0xff;
+        provider.verifyVrfSignature(wrongPubkey, msg, sig_out);
+        fail();
+      } catch (VrfSignatureVerificationFailedException ignored) {}
+
+      try {
+        byte[] wrongMsg = msg.clone();
+        wrongMsg[3] ^= 0xff;
+        provider.verifyVrfSignature(pubkey, wrongMsg, sig_out);
+        fail();
+      } catch (VrfSignatureVerificationFailedException ignored) {}
+
+      try {
+        byte[] wrongSignature = sig_out.clone();
+        wrongSignature[3] ^= 0xff;
+        provider.verifyVrfSignature(pubkey, msg, wrongSignature);
+        fail();
+      } catch (VrfSignatureVerificationFailedException ignored) {}
     }
   }
 }
