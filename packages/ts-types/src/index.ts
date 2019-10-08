@@ -1,5 +1,5 @@
-export * from '../transactions/general';
-
+export * from '../transactions';
+export * from './parts'
 
 export const TRANSACTION_TYPE = {
     GENESIS: 1 as 1,
@@ -16,12 +16,16 @@ export const TRANSACTION_TYPE = {
     DATA: 12 as 12,
     SET_SCRIPT: 13 as 13,
     SPONSORSHIP: 14 as 14,
-    SET_ASSET_SCRIPT: 15 as 15
+    SET_ASSET_SCRIPT: 15 as 15,
+    INVOKE_SCRIPT: 16 as 16
 };
 
-export enum DATA_FIELD_TYPE {
-    INTEGER = 'integer',
-    BOOLEAN = 'boolean',
-    STRING = 'string',
-    BINARY = 'binary'
-}
+export const DATA_FIELD_TYPE = {
+    INTEGER: 'integer' as 'integer',
+    BOOLEAN: 'boolean' as 'boolean',
+    STRING: 'string' as 'string',
+    BINARY: 'binary' as 'binary'
+};
+
+export type TTransactionType = typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE];
+export type TDataEntyType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
