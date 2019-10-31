@@ -27,12 +27,12 @@ export const BOOL: TSerializer<boolean> = (value: boolean) => BYTE(value ? 1 : 0
 export const BYTES: TSerializer<Uint8Array | number[]> = (value: Uint8Array | number[]) => Uint8Array.from(value)
 
 export const SHORT: TSerializer<number> = (value: number) => {
-  const b = new BigNumber(value).toBytes()
+  const b = new BigNumber(Math.floor(value)).toBytes()
   return Uint8Array.from(Array.from({length:2}, (_, i) => b[i - 2 + b.length] || 0))
 }
 
 export const INT: TSerializer<number> = (value: number) => {
-  const b = new BigNumber(value).toBytes()
+  const b = new BigNumber(Math.floor(value)).toBytes()
   return Uint8Array.from(Array.from({length:4}, (_, i) => b[i - 4 + b.length] || 0))
 }
 
@@ -59,7 +59,7 @@ export const LONG: TSerializer<number | string> = (value: number | string) => {
     if (value > 2 ** 53 - 1) {
       throw new Error(`${value} is too big to be precisely represented as js number. Use string instead`)
     }
-    b = new BigNumber(value).toBytes()
+    b = new BigNumber(Math.floor(value)).toBytes()
   } else {
     b = new BigNumber(value).toBytes()
   }
