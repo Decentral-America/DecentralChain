@@ -78,6 +78,21 @@ declare namespace WavesKeeper {
         signTransactionPackage(tx: TSignTransactionPackageData, name?: string): Promise<Array<string>>;
 
         /**
+         * Waves Keeper's method for signing custom data. Can be used for different services
+         * Adds prefix to data to make it impossible to sign transaction data in this method
+         * Signs byteArray. Prefix = [255, 255, 255, 1]
+         * @param data
+         */
+        signCustomData(data: TSignCustomDataParamsV1): Promise<TSignCustomDataResponseV1>
+        /**
+         * Waves Keeper's method for signing custom data. Can be used for different services
+         * Adds prefix to data to make it impossible to sign transaction data in this method
+         * Signs typed data array. Prefix = [255, 255, 255, 2]
+         * @param data
+         */
+        signCustomData(data: TSignCustomDataParamsV2): Promise<TSignCustomDataResponseV2>
+
+        /**
          * Send message to keeper.
          * You can send message only 1 time in 30 sec for trusted sites with send permission
          * @param data
@@ -119,6 +134,25 @@ declare namespace WavesKeeper {
         on(event: 'update', cb: (state: IPublicStateResponse) => any): object;
 
     }
+
+    type TTypedData = TBinaryData | TBooleanData | TIntegerData | TStringData
+    type TBinaryData = { type: 'binary', key: string, value: string}
+    type TBooleanData = { type: 'boolean', key: string, value: boolean}
+    type TIntegerData = { type: 'integer', key: string, value: number}
+    type TStringData = { type: 'string', key: string, value: string}
+    type TSignCustomDataParamsV1 = {
+        version: 1
+        /**
+         * base64 encoded byteArray
+         */
+        binary: string
+    }
+    type TSignCustomDataResponseV1 = TSignCustomDataParamsV1 & { signature: string, publicKey: string}
+    type TSignCustomDataParamsV2 = {
+        version: 2
+        data: TTypedData[]
+    }
+    type TSignCustomDataResponseV2 = TSignCustomDataParamsV2 & { signature: string, publicKey: string}
 
     interface IAuthData {
         /**
