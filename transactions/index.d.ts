@@ -1,9 +1,10 @@
-import { TRANSACTION_TYPE, TTransactionType } from '../src';
+import { IWithProofs, TRANSACTION_TYPE, TTransactionType, TTransferTransactionAttachment } from '../src';
 import {
-    IExchangeTransactionOrder, IInvokeScriptCall, IInvokeScriptPayment,
+    IExchangeTransactionOrder,
+    IInvokeScriptCall,
+    IInvokeScriptPayment,
     IMassTransferItem,
     IWithId,
-    IWithProofs,
     TDataTransactionEntry
 } from '../src/parts';
 
@@ -19,106 +20,79 @@ export interface ITransaction<LONG, TYPE extends TTransactionType = TTransaction
     version: number;
     timestamp: number;
     fee: LONG;
+    proofs: TProofs;
 }
 
-export type TTransaction<LONG> =
-    IIssueTransaction<LONG> |
-    ITransferTransaction<LONG> |
-    IReissueTransaction<LONG> |
-    IBurnTransaction<LONG> |
-    ILeaseTransaction<LONG> |
-    ICancelLeaseTransaction<LONG> |
-    IAliasTransaction<LONG> |
-    IMassTransferTransaction<LONG> |
-    IDataTransaction<LONG> |
-    ISetScriptTransaction<LONG> |
-    ISponsorshipTransaction<LONG> |
-    IExchangeTransaction<LONG> |
-    ISetAssetScriptTransaction<LONG> |
-    IInvokeScriptTransaction<LONG>;
+export type TTransaction<LONG = string | number> =
+    TIssueTransaction<LONG> |
+    TTransferTransaction<LONG> |
+    TReissueTransaction<LONG> |
+    TBurnTransaction<LONG> |
+    TLeaseTransaction<LONG> |
+    TCancelLeaseTransaction<LONG> |
+    TAliasTransaction<LONG> |
+    TMassTransferTransaction<LONG> |
+    TDataTransaction<LONG> |
+    TSetScriptTransaction<LONG> |
+    TSponsorshipTransaction<LONG> |
+    TExchangeTransaction<LONG> |
+    TSetAssetScriptTransaction<LONG> |
+    TInvokeScriptTransaction<LONG>|
+    TUpdateAssetInfoTransaction<LONG>;
 
-export type TTransactionMap<LONG> = {
-    [TRANSACTION_TYPE.ISSUE]: IIssueTransaction<LONG>,
-    [TRANSACTION_TYPE.TRANSFER]: ITransferTransaction<LONG>,
-    [TRANSACTION_TYPE.REISSUE]: IReissueTransaction<LONG>,
-    [TRANSACTION_TYPE.BURN]: IBurnTransaction<LONG>,
-    [TRANSACTION_TYPE.LEASE]: ILeaseTransaction<LONG>,
-    [TRANSACTION_TYPE.CANCEL_LEASE]: ICancelLeaseTransaction<LONG>,
-    [TRANSACTION_TYPE.ALIAS]: IAliasTransaction<LONG>,
-    [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransaction<LONG>,
-    [TRANSACTION_TYPE.DATA]: IDataTransaction<LONG>,
-    [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransaction<LONG>,
-    [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorshipTransaction<LONG>,
-    [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransaction<LONG>,
-    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: ISetAssetScriptTransaction<LONG>,
-    [TRANSACTION_TYPE.INVOKE_SCRIPT]: IInvokeScriptTransaction<LONG>
+export type TTransactionMap = {
+    [TRANSACTION_TYPE.ISSUE]: TIssueTransaction,
+    [TRANSACTION_TYPE.TRANSFER]: TTransferTransaction,
+    [TRANSACTION_TYPE.REISSUE]: TReissueTransaction,
+    [TRANSACTION_TYPE.BURN]: TBurnTransaction,
+    [TRANSACTION_TYPE.LEASE]: TLeaseTransaction,
+    [TRANSACTION_TYPE.CANCEL_LEASE]: TCancelLeaseTransaction,
+    [TRANSACTION_TYPE.ALIAS]: TAliasTransaction,
+    [TRANSACTION_TYPE.MASS_TRANSFER]: TMassTransferTransaction,
+    [TRANSACTION_TYPE.DATA]: TDataTransaction,
+    [TRANSACTION_TYPE.SET_SCRIPT]: TSetScriptTransaction,
+    [TRANSACTION_TYPE.SPONSORSHIP]: TSponsorshipTransaction,
+    [TRANSACTION_TYPE.EXCHANGE]: TExchangeTransaction,
+    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: TSetAssetScriptTransaction,
+    [TRANSACTION_TYPE.INVOKE_SCRIPT]: TInvokeScriptTransaction,
+    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: TUpdateAssetInfoTransaction,
 };
 
 export type TTransactionWithId<LONG> =
-    IIssueTransactionWithId<LONG> |
-    ITransferTransactionWithId<LONG> |
-    IReissueTransactionWithId<LONG> |
-    IBurnTransactionWithId<LONG> |
-    ILeaseTransactionWithId<LONG> |
-    ICancelLeaseTransactionWithId<LONG> |
-    IAliasTransactionWithId<LONG> |
-    IMassTransferTransactionWithId<LONG> |
-    IDataTransactionWithId<LONG> |
-    ISetScriptTransactionWithId<LONG> |
-    ISponsorshipTransactionWithId<LONG> |
-    IExchangeTransactionWithId<LONG> |
-    ISetAssetScriptTransactionWithId<LONG> |
-    IInvokeScriptTransactionWithId<LONG>;
+    TIssueTransactionWithId<LONG> |
+    TTransferTransactionWithId<LONG> |
+    TReissueTransactionWithId<LONG> |
+    TBurnTransactionWithId<LONG> |
+    TLeaseTransactionWithId<LONG> |
+    TCancelLeaseTransactionWithId<LONG> |
+    TAliasTransactionWithId<LONG> |
+    TMassTransferTransactionWithId<LONG> |
+    TDataTransactionWithId<LONG> |
+    TSetScriptTransactionWithId<LONG> |
+    TSponsorshipTransactionWithId<LONG> |
+    TExchangeTransactionWithId<LONG> |
+    TSetAssetScriptTransactionWithId<LONG> |
+    TInvokeScriptTransactionWithId<LONG>|
+    TUpdateAssetInfoTransactionWithId<LONG>;
 
 export type TTransactionWithIdMap<LONG> = {
-    [TRANSACTION_TYPE.ISSUE]: IIssueTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.TRANSFER]: ITransferTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.REISSUE]: IReissueTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.BURN]: IBurnTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.LEASE]: ILeaseTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.CANCEL_LEASE]: ICancelLeaseTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.ALIAS]: IAliasTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.DATA]: IDataTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorshipTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: ISetAssetScriptTransactionWithId<LONG>,
-    [TRANSACTION_TYPE.INVOKE_SCRIPT]: IInvokeScriptTransactionWithId<LONG>
+    [TRANSACTION_TYPE.ISSUE]: TIssueTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.TRANSFER]: TTransferTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.REISSUE]: TReissueTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.BURN]: TBurnTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.LEASE]: TLeaseTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.CANCEL_LEASE]: TCancelLeaseTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.ALIAS]: TAliasTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.MASS_TRANSFER]: TMassTransferTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.DATA]: TDataTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.SET_SCRIPT]: TSetScriptTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.SPONSORSHIP]: TSponsorshipTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.EXCHANGE]: TExchangeTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: TSetAssetScriptTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.INVOKE_SCRIPT]: TInvokeScriptTransactionWithId<LONG>,
+    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: TUpdateAssetInfoTransaction<LONG>,
 }
 
-export type TTransactionWithProofs<LONG> =
-    IIssueTransactionWithProofs<LONG> |
-    ITransferTransactionWithProofs<LONG> |
-    IReissueTransactionWithProofs<LONG> |
-    IBurnTransactionWithProofs<LONG> |
-    ILeaseTransactionWithProofs<LONG> |
-    ICancelLeaseTransactionWithProofs<LONG> |
-    IAliasTransactionWithProofs<LONG> |
-    IMassTransferTransactionWithProofs<LONG> |
-    IDataTransactionWithProofs<LONG> |
-    ISetScriptTransactionWithProofs<LONG> |
-    ISponsorshipTransactionWithProofs<LONG> |
-    IExchangeTransactionWithProofs<LONG> |
-    ISetAssetScriptTransactionWithProofs<LONG> |
-    IInvokeScriptTransactionWithProofs<LONG>;
-
-export type TTransactionWithProofsMap<LONG> = {
-    [TRANSACTION_TYPE.ISSUE]: IIssueTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.TRANSFER]: ITransferTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.REISSUE]: IReissueTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.BURN]: IBurnTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.LEASE]: ILeaseTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.CANCEL_LEASE]: ICancelLeaseTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.ALIAS]: IAliasTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.MASS_TRANSFER]: IMassTransferTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.DATA]: IDataTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.SET_SCRIPT]: ISetScriptTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorshipTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.EXCHANGE]: IExchangeTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: ISetAssetScriptTransactionWithProofs<LONG>,
-    [TRANSACTION_TYPE.INVOKE_SCRIPT]: IInvokeScriptTransactionWithProofs<LONG>
-}
 
 export interface IIssueTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.ISSUE> {
     name: string;
@@ -135,7 +109,7 @@ export interface ITransferTransaction<LONG> extends ITransaction<LONG, typeof TR
     amount: LONG;
     feeAssetId: string | null;
     assetId: string | null;
-    attachment: TBase58Bytes;
+    attachment: TBase58Bytes | TTransferTransactionAttachment;
 }
 
 export interface IReissueTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.REISSUE> {
@@ -168,7 +142,7 @@ export interface IAliasTransaction<LONG> extends ITransaction<LONG, typeof TRANS
 export interface IMassTransferTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.MASS_TRANSFER> {
     transfers: Array<IMassTransferItem<LONG>>;
     assetId?: string;
-    attachment?: TBase58Bytes;
+    attachment?: TBase58Bytes | TTransferTransactionAttachment;
 }
 
 export interface IDataTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.DATA> {
@@ -208,86 +182,323 @@ export interface IInvokeScriptTransaction<LONG> extends ITransaction<LONG, typeo
     payment: Array<IInvokeScriptPayment<LONG>> | null | undefined;
 }
 
-export interface IIssueTransactionWithId<LONG> extends IIssueTransaction<LONG>, IWithId {
+export interface IUpdateAssetInfoTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO> {
+    type: typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO
+    assetId: string
+    name: string
+    description: string
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface ITransferTransactionWithId<LONG> extends ITransferTransaction<LONG>, IWithId {
+//---------------------------------------------------------------------------------------------------------------------
+
+//IssueTransaction
+export interface IIssueTransactionV1<LONG> extends IIssueTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IReissueTransactionWithId<LONG> extends IReissueTransaction<LONG>, IWithId {
+export interface IIssueTransactionV2<LONG> extends IIssueTransaction<LONG> {
+    version: 2
 }
 
-export interface IBurnTransactionWithId<LONG> extends IBurnTransaction<LONG>, IWithId {
+export interface IIssueTransactionV3<LONG> extends IIssueTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface ILeaseTransactionWithId<LONG> extends ILeaseTransaction<LONG>, IWithId {
+
+//TransferTransaction
+export interface ITransferTransactionV1<LONG> extends ITransferTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface ICancelLeaseTransactionWithId<LONG> extends ICancelLeaseTransaction<LONG>, IWithId {
+export interface ITransferTransactionV2<LONG> extends ITransferTransaction<LONG> {
+    version: 2
 }
 
-export interface IAliasTransactionWithId<LONG> extends IAliasTransaction<LONG>, IWithId {
+export interface ITransferTransactionV3<LONG> extends ITransferTransaction<LONG> {
+    version: 3
+    chainId: number
+    attachment: TTransferTransactionAttachment
 }
 
-export interface IMassTransferTransactionWithId<LONG> extends IMassTransferTransaction<LONG>, IWithId {
+
+//LeaseTransaction
+export interface ILeaseTransactionV1<LONG> extends ILeaseTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IDataTransactionWithId<LONG> extends IDataTransaction<LONG>, IWithId {
+export interface ILeaseTransactionV2<LONG> extends ILeaseTransaction<LONG> {
+    version: 2
 }
 
-export interface ISetScriptTransactionWithId<LONG> extends ISetScriptTransaction<LONG>, IWithId {
+export interface ILeaseTransactionV3<LONG> extends ILeaseTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface ISponsorshipTransactionWithId<LONG> extends ISponsorshipTransaction<LONG>, IWithId {
+
+//BurnTransaction
+export interface IBurnTransactionV1<LONG> extends IBurnTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IExchangeTransactionWithId<LONG> extends IExchangeTransaction<LONG>, IWithId {
+export interface IBurnTransactionV2<LONG> extends IBurnTransaction<LONG> {
+    version: 2
 }
 
-export interface ISetAssetScriptTransactionWithId<LONG> extends ISetAssetScriptTransaction<LONG>, IWithId {
+export interface IBurnTransactionV3<LONG> extends IBurnTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface IInvokeScriptTransactionWithId<LONG> extends IInvokeScriptTransaction<LONG>, IWithId {
+
+//IReissueTransaction
+export interface IReissueTransactionV1<LONG> extends IReissueTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IIssueTransactionWithProofs<LONG> extends IIssueTransaction<LONG>, IWithProofs {
+export interface IReissueTransactionV2<LONG> extends IReissueTransaction<LONG> {
+    version: 2
 }
 
-export interface ITransferTransactionWithProofs<LONG> extends ITransferTransaction<LONG>, IWithProofs {
+export interface IReissueTransactionV3<LONG> extends IReissueTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface IReissueTransactionWithProofs<LONG> extends IReissueTransaction<LONG>, IWithProofs {
+
+//ICancelLeaseTransaction
+export interface ICancelLeaseTransactionV1<LONG> extends ICancelLeaseTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IBurnTransactionWithProofs<LONG> extends IBurnTransaction<LONG>, IWithProofs {
+export interface ICancelLeaseTransactionV2<LONG> extends ICancelLeaseTransaction<LONG> {
+    version: 2
 }
 
-export interface ILeaseTransactionWithProofs<LONG> extends ILeaseTransaction<LONG>, IWithProofs {
+export interface ICancelLeaseTransactionV3<LONG> extends ICancelLeaseTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface ICancelLeaseTransactionWithProofs<LONG> extends ICancelLeaseTransaction<LONG>, IWithProofs {
+
+//IAliasTransaction
+export interface IAliasTransactionV1<LONG> extends IAliasTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IAliasTransactionWithProofs<LONG> extends IAliasTransaction<LONG>, IWithProofs {
+export interface IAliasTransactionV2<LONG> extends IAliasTransaction<LONG> {
+    version: 2
 }
 
-export interface IMassTransferTransactionWithProofs<LONG> extends IMassTransferTransaction<LONG>, IWithProofs {
+export interface IAliasTransactionV3<LONG> extends IAliasTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface IDataTransactionWithProofs<LONG> extends IDataTransaction<LONG>, IWithProofs {
+
+//IMassTransferTransaction
+export interface IMassTransferTransactionV1<LONG> extends IMassTransferTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface ISetScriptTransactionWithProofs<LONG> extends ISetScriptTransaction<LONG>, IWithProofs {
+export interface IMassTransferTransactionV2<LONG> extends IMassTransferTransaction<LONG> {
+    version: 2
+    chainId: number
+    feeAssetId?: string | null
+    attachment: TTransferTransactionAttachment
 }
 
-export interface ISponsorshipTransactionWithProofs<LONG> extends ISponsorshipTransaction<LONG>, IWithProofs {
+
+//IDataTransaction
+export interface IDataTransactionV1<LONG> extends IDataTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IExchangeTransactionWithProofs<LONG> extends IExchangeTransaction<LONG>, IWithProofs {
+export interface IDataTransactionV2<LONG> extends IDataTransaction<LONG> {
+    version: 2
+    chainId: number
+    feeAssetId?: string | null
 }
 
-export interface ISetAssetScriptTransactionWithProofs<LONG> extends ISetAssetScriptTransaction<LONG>, IWithProofs {
+
+//ISetScriptTransaction
+export interface ISetScriptTransactionV1<LONG> extends ISetScriptTransaction<LONG> {
+    version: 1
+    signature: string
 }
 
-export interface IInvokeScriptTransactionWithProofs<LONG> extends IInvokeScriptTransaction<LONG>, IWithProofs {
+export interface ISetScriptTransactionV2<LONG> extends ISetScriptTransaction<LONG> {
+    version: 2
+    chainId: number
+    feeAssetId?: string | null
 }
+
+
+//ISponsorshipTransaction
+export interface ISponsorshipTransactionV1<LONG> extends ISponsorshipTransaction<LONG> {
+    version: 1
+    signature: string
+}
+
+export interface ISponsorshipTransactionV2<LONG> extends ISponsorshipTransaction<LONG> {
+    version: 2
+    chainId: number
+    feeAssetId?: string | null
+}
+
+
+//IExchangeTransaction
+export interface IExchangeTransactionV1<LONG> extends IExchangeTransaction<LONG> {
+    version: 1
+    signature: string
+}
+
+export interface IExchangeTransactionV2<LONG> extends IExchangeTransaction<LONG> {
+    version: 2
+}
+
+export interface IExchangeTransactionV3<LONG = string | number> extends IExchangeTransaction<LONG> {
+    version: 3
+    chainId: number
+    feeAssetId?: string | null
+}
+
+
+//ISetAssetScriptTransaction
+export interface ISetAssetScriptTransactionV1<LONG> extends ISetAssetScriptTransaction<LONG> {
+    version: 1
+    signature: string
+}
+
+export interface ISetAssetScriptTransactionV2<LONG> extends ISetAssetScriptTransaction<LONG> {
+    version: 2
+    chainId: number
+    feeAssetId?: string | null
+}
+
+
+//IInvokeScriptTransaction
+export interface IInvokeScriptTransactionV1<LONG> extends IInvokeScriptTransaction<LONG> {
+    version: 1
+    signature: string
+}
+
+export interface IInvokeScriptTransactionV2<LONG> extends IInvokeScriptTransaction<LONG> {
+    version: 2
+    chainId: number
+}
+
+
+//IUpdateAssetInfoTransaction
+export interface IUpdateAssetInfoTransactionV1<LONG> extends IUpdateAssetInfoTransaction<LONG> {
+    version: 1
+}
+
+
+export type TIssueTransaction<LONG = string | number> =
+    IIssueTransactionV1<LONG>
+    | IIssueTransactionV2<LONG>
+    | IIssueTransactionV3<LONG>;
+
+export type TTransferTransaction<LONG = string | number> =
+    ITransferTransactionV1<LONG>
+    | ITransferTransactionV2<LONG>
+    | ITransferTransactionV3<LONG>;
+
+export type TLeaseTransaction<LONG = string | number> =
+    ILeaseTransactionV1<LONG>
+    | ILeaseTransactionV2<LONG>
+    | ILeaseTransactionV3<LONG>;
+
+export type TBurnTransaction<LONG = string | number> =
+    IBurnTransactionV1<LONG>
+    | IBurnTransactionV2<LONG>
+    | IBurnTransactionV3<LONG>;
+
+export type TReissueTransaction<LONG = string | number> =
+    IReissueTransactionV1<LONG>
+    | IReissueTransactionV2<LONG>
+    | IReissueTransactionV3<LONG>;
+
+export type TCancelLeaseTransaction<LONG = string | number> =
+    ICancelLeaseTransactionV1<LONG>
+    | ICancelLeaseTransactionV2<LONG>
+    | ICancelLeaseTransactionV3<LONG> ;
+
+export type TAliasTransaction<LONG = string | number> =
+    IAliasTransactionV1<LONG>
+    | IAliasTransactionV2<LONG>
+    | IAliasTransactionV3<LONG>;
+
+export type TMassTransferTransaction<LONG = string | number> =
+    IMassTransferTransactionV1<LONG>
+    | IMassTransferTransactionV2<LONG>
+
+export type TDataTransaction<LONG = string | number> =
+    IDataTransactionV1<LONG>
+    | IDataTransactionV2<LONG>
+
+export type TSetScriptTransaction<LONG = string | number> =
+    ISetScriptTransactionV1<LONG>
+    | ISetScriptTransactionV2<LONG>
+
+export type TSponsorshipTransaction<LONG = string | number> =
+    ISponsorshipTransactionV1<LONG>
+    | ISponsorshipTransactionV2<LONG>
+
+export type TExchangeTransaction<LONG = string | number> =
+    IExchangeTransactionV1<LONG>
+    | IExchangeTransactionV2<LONG>
+    | IExchangeTransactionV3<LONG>;
+
+export type TSetAssetScriptTransaction<LONG = string | number> =
+    ISetAssetScriptTransactionV1<LONG>
+    | ISetAssetScriptTransactionV2<LONG>
+
+export type TInvokeScriptTransaction<LONG = string | number> =
+    IInvokeScriptTransactionV1<LONG>
+    | IInvokeScriptTransactionV2<LONG>
+
+export type TUpdateAssetInfoTransaction<LONG = string | number> = IUpdateAssetInfoTransactionV1<LONG>
+
+
+//---------------------------------------------------------------------------------------------------------------------
+
+
+export type TIssueTransactionWithId<LONG = string | number> = TIssueTransaction<LONG> & IWithId
+export type TTransferTransactionWithId<LONG = string | number> = TTransferTransaction<LONG> & IWithId
+export type TReissueTransactionWithId<LONG = string | number> = TReissueTransaction<LONG> & IWithId
+export type TBurnTransactionWithId<LONG = string | number> = TBurnTransaction<LONG> & IWithId
+export type TLeaseTransactionWithId<LONG = string | number> = TLeaseTransaction<LONG> & IWithId
+export type TCancelLeaseTransactionWithId<LONG = string | number> = TCancelLeaseTransaction<LONG> & IWithId
+export type TAliasTransactionWithId<LONG = string | number> = TAliasTransaction<LONG> & IWithId
+export type TMassTransferTransactionWithId<LONG = string | number> = TMassTransferTransaction<LONG> & IWithId
+export type TDataTransactionWithId<LONG = string | number> = TDataTransaction<LONG> & IWithId
+export type TSetScriptTransactionWithId<LONG = string | number> = TSetScriptTransaction<LONG> & IWithId
+export type TSponsorshipTransactionWithId<LONG = string | number> = TSponsorshipTransaction<LONG> & IWithId
+export type TExchangeTransactionWithId<LONG = string | number> = TExchangeTransaction<LONG> & IWithId
+export type TSetAssetScriptTransactionWithId<LONG = string | number> = TSetAssetScriptTransaction<LONG> & IWithId
+export type TInvokeScriptTransactionWithId<LONG = string | number> = TInvokeScriptTransaction<LONG> & IWithId
+export type TUpdateAssetInfoTransactionWithId<LONG = string | number> = TUpdateAssetInfoTransaction<LONG> & IWithId
+
+//---------------------------------------------------------------------------------------------------------------------
+
+

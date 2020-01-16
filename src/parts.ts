@@ -42,7 +42,7 @@ export interface IWithId {
     id: string;
 }
 
-export interface IMassTransferItem<LONG> {
+export interface IMassTransferItem<LONG = string | number> {
     recipient: string
     amount: LONG;
 }
@@ -71,6 +71,23 @@ export interface IDataTransactionEntryBinary {
     value: Uint8Array;
 }
 
+export interface ITransferTransactionEntryInteger<LONG = string | number> {
+    type: typeof DATA_FIELD_TYPE.INTEGER
+    value: LONG
+}
+export interface ITransferTransactionEntryBoolean {
+    type: typeof DATA_FIELD_TYPE.BOOLEAN
+    value: boolean
+}
+export interface ITransferTransactionEntryString {
+    type: typeof DATA_FIELD_TYPE.STRING
+    value: string
+}
+export interface ITransferTransactionEntryBinary {
+    type: typeof DATA_FIELD_TYPE.BINARY
+    value: string
+}
+
 export interface IExchangeTransactionOrder<LONG> {
     matcherPublicKey: string;
     version: number;
@@ -91,8 +108,25 @@ export interface IExchangeTransactionOrder<LONG> {
 export interface IExchangeTransactionOrderWithProofs<LONG> extends IExchangeTransactionOrder<LONG>, IWithProofs {
 }
 
-export type TDataTransactionEntry<LONG> =
+export type TDataTransactionEntry<LONG= string | number> =
     IDataTransactionEntryInteger<LONG> |
     IDataTransactionEntryBoolean |
     IDataTransactionEntryString |
     IDataTransactionEntryBinary;
+
+export type TDataTransactionTypelessDataEntry  = {
+    key: string
+    value: string | number | boolean | Uint8Array | number[]
+}
+
+export type TDataTransactionDeleteRequest = {
+    type?: null
+    value?: null
+    key: string
+}
+
+export type TTransferTransactionAttachment =
+    ITransferTransactionEntryInteger |
+    ITransferTransactionEntryBoolean |
+    ITransferTransactionEntryString |
+    ITransferTransactionEntryBinary;

@@ -17,7 +17,9 @@ export const TRANSACTION_TYPE = {
     SET_SCRIPT: 13 as 13,
     SPONSORSHIP: 14 as 14,
     SET_ASSET_SCRIPT: 15 as 15,
-    INVOKE_SCRIPT: 16 as 16
+    INVOKE_SCRIPT: 16 as 16,
+    UPDATE_ASSET_INFO: 17 as 17
+
 };
 
 export const DATA_FIELD_TYPE = {
