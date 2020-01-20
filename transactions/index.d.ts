@@ -14,7 +14,7 @@ export type TBase58Bytes = string;
 export type TProofs = Array<string>;
 
 
-export interface ITransaction<LONG, TYPE extends TTransactionType = TTransactionType> {
+export interface ITransaction<LONG = string | number, TYPE extends TTransactionType = TTransactionType> {
     type: TYPE;
     senderPublicKey: string;
     version: number;
@@ -40,22 +40,22 @@ export type TTransaction<LONG = string | number> =
     TInvokeScriptTransaction<LONG>|
     TUpdateAssetInfoTransaction<LONG>;
 
-export type TTransactionMap = {
-    [TRANSACTION_TYPE.ISSUE]: TIssueTransaction,
-    [TRANSACTION_TYPE.TRANSFER]: TTransferTransaction,
-    [TRANSACTION_TYPE.REISSUE]: TReissueTransaction,
-    [TRANSACTION_TYPE.BURN]: TBurnTransaction,
-    [TRANSACTION_TYPE.LEASE]: TLeaseTransaction,
-    [TRANSACTION_TYPE.CANCEL_LEASE]: TCancelLeaseTransaction,
-    [TRANSACTION_TYPE.ALIAS]: TAliasTransaction,
-    [TRANSACTION_TYPE.MASS_TRANSFER]: TMassTransferTransaction,
-    [TRANSACTION_TYPE.DATA]: TDataTransaction,
-    [TRANSACTION_TYPE.SET_SCRIPT]: TSetScriptTransaction,
-    [TRANSACTION_TYPE.SPONSORSHIP]: TSponsorshipTransaction,
-    [TRANSACTION_TYPE.EXCHANGE]: TExchangeTransaction,
-    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: TSetAssetScriptTransaction,
-    [TRANSACTION_TYPE.INVOKE_SCRIPT]: TInvokeScriptTransaction,
-    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: TUpdateAssetInfoTransaction,
+export type TTransactionMap<LONG = string | number> = {
+    [TRANSACTION_TYPE.ISSUE]: TIssueTransaction<LONG>,
+    [TRANSACTION_TYPE.TRANSFER]: TTransferTransaction<LONG>,
+    [TRANSACTION_TYPE.REISSUE]: TReissueTransaction<LONG>,
+    [TRANSACTION_TYPE.BURN]: TBurnTransaction<LONG>,
+    [TRANSACTION_TYPE.LEASE]: TLeaseTransaction<LONG>,
+    [TRANSACTION_TYPE.CANCEL_LEASE]: TCancelLeaseTransaction<LONG>,
+    [TRANSACTION_TYPE.ALIAS]: TAliasTransaction<LONG>,
+    [TRANSACTION_TYPE.MASS_TRANSFER]: TMassTransferTransaction<LONG>,
+    [TRANSACTION_TYPE.DATA]: TDataTransaction<LONG>,
+    [TRANSACTION_TYPE.SET_SCRIPT]: TSetScriptTransaction<LONG>,
+    [TRANSACTION_TYPE.SPONSORSHIP]: TSponsorshipTransaction<LONG>,
+    [TRANSACTION_TYPE.EXCHANGE]: TExchangeTransaction<LONG>,
+    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: TSetAssetScriptTransaction<LONG>,
+    [TRANSACTION_TYPE.INVOKE_SCRIPT]: TInvokeScriptTransaction<LONG>,
+    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: TUpdateAssetInfoTransaction<LONG>,
 };
 
 export type TTransactionWithId<LONG> =
@@ -150,8 +150,8 @@ export interface IDataTransaction<LONG> extends ITransaction<LONG, typeof TRANSA
 }
 
 export interface IExchangeTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.EXCHANGE> {
-    buyOrder: IExchangeTransactionOrder<LONG> & IWithProofs;
-    sellOrder: IExchangeTransactionOrder<LONG> & IWithProofs;
+    order1: IExchangeTransactionOrder<LONG> & IWithProofs;
+    order2: IExchangeTransactionOrder<LONG> & IWithProofs;
     price: LONG;
     amount: LONG;
     buyMatcherFee: LONG;

@@ -3,13 +3,14 @@ import { DATA_FIELD_TYPE, TProofs } from './index';
 
 export type TOrderType = 'buy' | 'sell';
 
+export type TBase64string = string
 
 export interface IInvokeScriptCall<LONG> {
     function: string;
     args: Array<TInvokeScriptCallArgument<LONG>>;
 }
 
-export interface IInvokeScriptPayment<LONG> {
+export interface IInvokeScriptPayment<LONG = string | number> {
     assetId: string;
     amount: LONG;
 }
@@ -68,7 +69,7 @@ export interface IDataTransactionEntryString {
 export interface IDataTransactionEntryBinary {
     key: string;
     type: typeof DATA_FIELD_TYPE.BINARY;
-    value: Uint8Array;
+    value: TBase64string;
 }
 
 export interface ITransferTransactionEntryInteger<LONG = string | number> {

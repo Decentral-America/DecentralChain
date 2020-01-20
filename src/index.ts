@@ -30,4 +30,4 @@ export const DATA_FIELD_TYPE = {
 };
 
 export type TTransactionType = typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE];
-export type TDataEntyType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
+export type TDataFiledType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
