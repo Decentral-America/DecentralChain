@@ -23,6 +23,20 @@ export interface ITransaction<LONG = string | number, TYPE extends TTransactionT
     proofs: TProofs;
 }
 
+
+export interface IWithApiMixin extends IWithId {
+    sender: string;
+    height?: number;
+}
+
+type TExtendMap<MAP, EXTEND> = {
+    [Key in keyof MAP]: MAP[Key] & EXTEND;
+}
+
+export type TTransactionFromAPI<LONG> = TTransaction<LONG> & IWithApiMixin;
+
+export type TTransactionFromAPIMap<LONG> = TExtendMap<TTransactionMap<LONG>, IWithApiMixin>;
+
 export type TTransaction<LONG = string | number> =
     TIssueTransaction<LONG> |
     TTransferTransaction<LONG> |
