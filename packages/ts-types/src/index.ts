@@ -1,5 +1,6 @@
 export * from '../transactions';
 export * from './parts'
+export { IWithApiMixin } from "../transactions/IWithApiMixin";
 
 export const TRANSACTION_TYPE = {
     GENESIS: 1 as 1,
