@@ -50,6 +50,7 @@ export type TTransaction<LONG = TLong> =
     | TSetAssetScriptTransaction<LONG>
     | TInvokeScriptTransaction<LONG>
     | TUpdateAssetInfoTransaction<LONG>;
+    // TODO add Genesis and Payment types
 
 export type TTransactionMap<LONG = TLong> = {
     [TRANSACTION_TYPE.ISSUE]: TIssueTransaction<LONG>;
