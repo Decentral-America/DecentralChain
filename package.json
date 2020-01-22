@@ -10,6 +10,6 @@
     "prepare": "tsc"
   },
   "devDependencies": {
-    "typescript": "^3.2.4"
+    "typescript": "^3.7.5"
   }
 }

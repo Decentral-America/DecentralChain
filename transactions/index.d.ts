@@ -1,17 +1,14 @@
 import {
+    IExchangeTransactionOrder,
+    IInvokeScriptCall,
+    IInvokeScriptPayment,
+    IMassTransferItem, IWithId,
     IWithProofs,
+    TDataTransactionEntry,
     TRANSACTION_TYPE,
     TTransactionType,
     TTransferTransactionAttachment,
 } from '../src';
-import {
-    IExchangeTransactionOrder,
-    IInvokeScriptCall,
-    IInvokeScriptPayment,
-    IMassTransferItem,
-    IWithId,
-    TDataTransactionEntry,
-} from '../src/parts';
 
 export type TBase64Script = string;
 export type TBase58Bytes = string;
@@ -19,10 +16,8 @@ export type TProofs = Array<string>;
 export type TLong = string | number;
 export type TAssetDecimals = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
-export interface ITransaction<
-    LONG = TLong,
-    TYPE extends TTransactionType = TTransactionType
-> {
+export interface ITransaction<LONG = TLong,
+    TYPE extends TTransactionType = TTransactionType> {
     type: TYPE;
     senderPublicKey: string;
     timestamp: number;
@@ -35,6 +30,8 @@ export interface IWithApiMixin extends IWithId {
 }
 
 export type TTransaction<LONG = TLong> =
+    | IGenesisTransaction<LONG>
+    | IPaymentTransaction<LONG>
     | TIssueTransaction<LONG>
     | TTransferTransaction<LONG>
     | TReissueTransaction<LONG>
@@ -50,9 +47,10 @@ export type TTransaction<LONG = TLong> =
     | TSetAssetScriptTransaction<LONG>
     | TInvokeScriptTransaction<LONG>
     | TUpdateAssetInfoTransaction<LONG>;
-    // TODO add Genesis and Payment types
 
 export type TTransactionMap<LONG = TLong> = {
+    [TRANSACTION_TYPE.GENESIS]: TGenesisTransaction<LONG>;
+    [TRANSACTION_TYPE.PAYMENT]: TPaymentTransaction<LONG>;
     [TRANSACTION_TYPE.ISSUE]: TIssueTransaction<LONG>;
     [TRANSACTION_TYPE.TRANSFER]: TTransferTransaction<LONG>;
     [TRANSACTION_TYPE.REISSUE]: TReissueTransaction<LONG>;
@@ -88,6 +86,21 @@ export type TTransactionVersionsMap<LONG = TLong> = {
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: TUpdateAssetInfoTransactionMap<LONG>;
 };
 
+export interface IGenesisTransaction<LONG = TLong>
+    extends Omit<ITransaction<LONG, typeof TRANSACTION_TYPE.GENESIS>, 'senderPublicKey'> {
+    signature: string
+    recipient: string
+    amount: LONG
+}
+
+export interface IPaymentTransaction<LONG = TLong>
+    extends ITransaction<LONG, typeof TRANSACTION_TYPE.PAYMENT> {
+    sender: string
+    recipient: string
+    amount: LONG
+    signature: string
+}
+
 export interface IIssueTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.ISSUE> {
     name: string;
@@ -95,7 +108,7 @@ export interface IIssueTransaction<LONG = TLong>
     decimals: TAssetDecimals;
     quantity: LONG;
     reissuable: boolean;
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
     script: TBase64Script | null;
 }
 
@@ -105,7 +118,7 @@ export interface ITransferTransaction<LONG = TLong>
     amount: LONG;
     feeAssetId: string | null;
     assetId: string | null;
-    attachment: TBase58Bytes | TTransferTransactionAttachment;
+    // attachment: TBase58Bytes | TTransferTransactionAttachment;
 }
 
 export interface IReissueTransaction<LONG = TLong>
@@ -113,14 +126,14 @@ export interface IReissueTransaction<LONG = TLong>
     assetId: string;
     quantity: LONG;
     reissuable: boolean;
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
 }
 
 export interface IBurnTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.BURN> {
     assetId: string;
     quantity: LONG;
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
 }
 
 export interface ILeaseTransaction<LONG = TLong>
@@ -132,7 +145,7 @@ export interface ILeaseTransaction<LONG = TLong>
 export interface ICancelLeaseTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.CANCEL_LEASE> {
     leaseId: string;
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
 }
 
 export interface IAliasTransaction<LONG = TLong>
@@ -142,7 +155,7 @@ export interface IAliasTransaction<LONG = TLong>
 
 export interface IMassTransferTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.MASS_TRANSFER> {
-    transfers: Array<IMassTransferItem<LONG>;
+    transfers: Array<IMassTransferItem<LONG>>;
     assetId: string | null;
 }
 
@@ -164,7 +177,7 @@ export interface IExchangeTransaction<LONG>
 export interface ISetScriptTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.SET_SCRIPT> {
     script: TBase64Script | null;
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
 }
 
 export interface ISponsorshipTransaction<LONG = TLong>
@@ -175,7 +188,7 @@ export interface ISponsorshipTransaction<LONG = TLong>
 
 export interface ISetAssetScriptTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.SET_ASSET_SCRIPT> {
-    chainId: number; // TODO Check all versions has chainId?
+    chainId: number;
     assetId: string;
     script: TBase64Script;
 }
@@ -201,14 +214,15 @@ export interface IUpdateAssetInfoTransaction<LONG = TLong>
 
 //---------------------------------------------------------------------------------------------------------------------
 
+
 //IssueTransaction
 export interface IIssueTransactionV1<LONG = TLong> extends IIssueTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IIssueTransactionV2<LONG = TLong> extends IIssueTransaction<LONG> {
     version: 2;
+    chainId: number;
 }
 
 export interface IIssueTransactionV3<LONG = TLong> extends IIssueTransaction<LONG> {
@@ -228,7 +242,6 @@ export interface ITransferTransactionV1<LONG>
     extends ITransferTransaction<LONG> {
     version: 1;
     attachment: TBase58Bytes;
-    // TODO Fix signature
 }
 
 export interface ITransferTransactionV2<LONG>
@@ -253,7 +266,6 @@ export type TTransferTransactionMap<LONG = TLong> = {
 //LeaseTransaction
 export interface ILeaseTransactionV1<LONG> extends ILeaseTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface ILeaseTransactionV2<LONG> extends ILeaseTransaction<LONG> {
@@ -275,11 +287,11 @@ export type TLeaseTransactionMap<LONG = TLong> = {
 //BurnTransaction
 export interface IBurnTransactionV1<LONG> extends IBurnTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IBurnTransactionV2<LONG> extends IBurnTransaction<LONG> {
     version: 2;
+    chainId: number;
 }
 
 export interface IBurnTransactionV3<LONG> extends IBurnTransaction<LONG> {
@@ -297,11 +309,11 @@ export type TBurnTransactionMap<LONG = TLong> = {
 //IReissueTransaction
 export interface IReissueTransactionV1<LONG> extends IReissueTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IReissueTransactionV2<LONG> extends IReissueTransaction<LONG> {
     version: 2;
+    chainId: number;
 }
 
 export interface IReissueTransactionV3<LONG> extends IReissueTransaction<LONG> {
@@ -320,12 +332,12 @@ export type TReissueTransactionMap<LONG = TLong> = {
 export interface ICancelLeaseTransactionV1<LONG>
     extends ICancelLeaseTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface ICancelLeaseTransactionV2<LONG>
     extends ICancelLeaseTransaction<LONG> {
     version: 2;
+    chainId: number;
 }
 
 export interface ICancelLeaseTransactionV3<LONG>
@@ -344,7 +356,6 @@ export type TCancelLeaseTransactionMap<LONG = TLong> = {
 //IAliasTransaction
 export interface IAliasTransactionV1<LONG> extends IAliasTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IAliasTransactionV2<LONG> extends IAliasTransaction<LONG> {
@@ -368,7 +379,6 @@ export interface IMassTransferTransactionV1<LONG>
     extends IMassTransferTransaction<LONG> {
     version: 1;
     attachment: TBase58Bytes;
-     // TODO Fix signature
 }
 
 export interface IMassTransferTransactionV2<LONG>
@@ -387,7 +397,6 @@ export type TMassTransferTransactionMap<LONG = TLong> = {
 //IDataTransaction
 export interface IDataTransactionV1<LONG> extends IDataTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IDataTransactionV2<LONG> extends IDataTransaction<LONG> {
@@ -405,7 +414,6 @@ export type TDataTransactionMap<LONG = TLong> = {
 export interface ISetScriptTransactionV1<LONG>
     extends ISetScriptTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface ISetScriptTransactionV2<LONG>
@@ -424,7 +432,6 @@ export type TSetScriptTransactionMap<LONG = TLong> = {
 export interface ISponsorshipTransactionV1<LONG>
     extends ISponsorshipTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface ISponsorshipTransactionV2<LONG>
@@ -443,7 +450,6 @@ export type TSponsorshipTransactionMap<LONG = TLong> = {
 export interface IExchangeTransactionV1<LONG>
     extends IExchangeTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IExchangeTransactionV2<LONG>
@@ -469,7 +475,6 @@ export type TExchangeTransactionMap<LONG = TLong> = {
 export interface ISetAssetScriptTransactionV1<LONG>
     extends ISetAssetScriptTransaction<LONG> {
     version: 1;
-    // TODO Fix signature ??????????????
 }
 
 export interface ISetAssetScriptTransactionV2<LONG>
@@ -488,7 +493,6 @@ export type TSetAssetScriptTransactionMap<LONG = TLong> = {
 export interface IInvokeScriptTransactionV1<LONG>
     extends IInvokeScriptTransaction<LONG> {
     version: 1;
-     // TODO Fix signature
 }
 
 export interface IInvokeScriptTransactionV2<LONG>
@@ -506,11 +510,16 @@ export type TInvokeScriptTransactionMap<LONG = TLong> = {
 export interface IUpdateAssetInfoTransactionV1<LONG>
     extends IUpdateAssetInfoTransaction<LONG> {
     version: 1;
+    chainId: number;
 }
 
 export type TUpdateAssetInfoTransactionMap<LONG = TLong> = {
     1: IUpdateAssetInfoTransactionV1<LONG>;
 }
+
+export type TGenesisTransaction<LONG = TLong> = IGenesisTransaction<LONG>
+
+export type TPaymentTransaction<LONG = TLong> = IPaymentTransaction<LONG>
 
 export type TIssueTransaction<LONG = TLong> =
     | IIssueTransactionV1<LONG>
@@ -576,23 +585,23 @@ export type TInvokeScriptTransaction<LONG = TLong> =
     | IInvokeScriptTransactionV1<LONG>
     | IInvokeScriptTransactionV2<LONG>;
 
-export type TUpdateAssetInfoTransaction<
-    LONG = TLong
-> = IUpdateAssetInfoTransactionV1<LONG>;
+export type TUpdateAssetInfoTransaction<LONG = TLong> = IUpdateAssetInfoTransactionV1<LONG>;
 
+//
 type TWithSignatureMap = {
+    [TRANSACTION_TYPE.GENESIS]: 1;
+    [TRANSACTION_TYPE.PAYMENT]: 1;
     [TRANSACTION_TYPE.ISSUE]: 1;
     [TRANSACTION_TYPE.TRANSFER]: 1;
     [TRANSACTION_TYPE.REISSUE]: 1;
     [TRANSACTION_TYPE.BURN]: 1;
+    [TRANSACTION_TYPE.EXCHANGE]: 1;
     [TRANSACTION_TYPE.LEASE]: 1;
     [TRANSACTION_TYPE.CANCEL_LEASE]: 1;
     [TRANSACTION_TYPE.ALIAS]: 1;
-    [TRANSACTION_TYPE.MASS_TRANSFER]: 1;
-    [TRANSACTION_TYPE.DATA]: 1;
-    [TRANSACTION_TYPE.SET_SCRIPT]: 1;
-    [TRANSACTION_TYPE.SPONSORSHIP]: 1;
-    [TRANSACTION_TYPE.EXCHANGE]: 1;
 }
 
-export type TSignedTransaction<TX extends TTransaction<unknown>> = {} /// ???
+export type TSignedTransaction<TX extends TTransaction<unknown>> = TX &
+    (TX['type'] extends keyof TWithSignatureMap ?
+        TWithSignatureMap[TX['type']] extends number ? { signature: string; } : { proofs: Array<string> }
+        : { proofs: Array<string> });
