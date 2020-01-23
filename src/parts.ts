@@ -76,14 +76,17 @@ export interface ITransferTransactionEntryInteger<LONG = string | number> {
     type: typeof DATA_FIELD_TYPE.INTEGER
     value: LONG
 }
+
 export interface ITransferTransactionEntryBoolean {
     type: typeof DATA_FIELD_TYPE.BOOLEAN
     value: boolean
 }
+
 export interface ITransferTransactionEntryString {
     type: typeof DATA_FIELD_TYPE.STRING
     value: string
 }
+
 export interface ITransferTransactionEntryBinary {
     type: typeof DATA_FIELD_TYPE.BINARY
     value: string
@@ -106,16 +109,45 @@ export interface IExchangeTransactionOrder<LONG> {
     senderPublicKey: string;
 }
 
+export interface IOrder<LONG> {
+    matcherPublicKey: string;
+    version: number;
+    assetPair: {
+        amountAsset: string;
+        priceAsset: string;
+    },
+    orderType: TOrderType;
+    price: LONG;
+    amount: LONG;
+    timestamp: number;
+    expiration: number;
+    matcherFee: LONG;
+    matcherFeeAssetId: string;
+    senderPublicKey: string;
+}
+
+export interface IOrderV1<LONG> extends IOrder<LONG> {
+    //небыло пруфов быра сигнатура
+}
+
+export interface IOrderV2<LONG> extends IOrder<LONG> {
+    //вместо подписи пруфы
+}
+
+export interface IOrderV3<LONG> extends IOrder<LONG> {
+    //В третьей версии добавилось поле matcherFeeAssetId
+}
+
 export interface IExchangeTransactionOrderWithProofs<LONG> extends IExchangeTransactionOrder<LONG>, IWithProofs {
 }
 
-export type TDataTransactionEntry<LONG= string | number> =
+export type TDataTransactionEntry<LONG = string | number> =
     IDataTransactionEntryInteger<LONG> |
     IDataTransactionEntryBoolean |
     IDataTransactionEntryString |
     IDataTransactionEntryBinary;
 
-export type TDataTransactionTypelessDataEntry  = {
+export type TDataTransactionTypelessDataEntry = {
     key: string
     value: string | number | boolean | Uint8Array | number[]
 }
