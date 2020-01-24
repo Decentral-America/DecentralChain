@@ -1,11 +1,10 @@
 import {
-    IExchangeTransactionOrder,
     IInvokeScriptCall,
     IInvokeScriptPayment,
     IMassTransferItem,
     IWithId,
-    IWithProofs,
     TDataTransactionEntry,
+    TExchangeTransactionOrder,
     TRANSACTION_TYPE,
     TTransactionType,
     TTransferTransactionAttachment,
@@ -29,6 +28,17 @@ export interface IWithApiMixin extends IWithId {
     sender: string;
     height: number;
 }
+
+// type TExtendMap<MAP, EXTEND> = {
+//     [Key in keyof MAP]: MAP[Key] & EXTEND;
+// }
+//
+// export type TTransactionFromAPI<LONG = TLong> = TTransaction<LONG> & IWithApiMixin
+//
+// export type TTransactionFromAPIMap<LONG> = {
+//     [Key in keyof TTransactionMap<LONG>]: TTransactionMap<LONG>[Key] & IWithApiMixin
+// };
+
 
 export type TTransaction<LONG = TLong> =
     | IGenesisTransaction<LONG>
@@ -167,8 +177,8 @@ export interface IDataTransaction<LONG = TLong>
 
 export interface IExchangeTransaction<LONG>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.EXCHANGE> {
-    order1: IExchangeTransactionOrder<LONG> & IWithProofs; // TODO add versions map
-    order2: IExchangeTransactionOrder<LONG> & IWithProofs; // TODO add versions map
+    order1: TExchangeTransactionOrder
+    order2: TExchangeTransactionOrder
     price: LONG;
     amount: LONG;
     buyMatcherFee: LONG;
@@ -602,7 +612,9 @@ type TWithSignatureMap = {
     [TRANSACTION_TYPE.ALIAS]: 1;
 }
 
-export type TSignedTransaction<TX extends TTransaction<unknown>> = TX &
-    (TX['type'] extends keyof TWithSignatureMap ?
-        TWithSignatureMap[TX['type']] extends number ? { signature: string; } : { proofs: Array<string> }
-        : { proofs: Array<string> });
+export type TSignedTransaction<TX extends TTransaction<unknown>> = TX & (
+    TX extends { version: 1 }
+        ? TX['type'] extends keyof TWithSignatureMap ? { signature: string } : { proofs: Array<string> }
+        : { proofs: Array<string> }
+    )
+declare const s: TSignedTransaction<IIssueTransactionV3>;
