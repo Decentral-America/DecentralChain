@@ -216,7 +216,7 @@ export interface IUpdateAssetInfoTransaction<LONG = TLong>
     feeAssetId: string | null;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 //IssueTransaction
 export interface IIssueTransactionV1<LONG = TLong>
