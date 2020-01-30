@@ -29,16 +29,6 @@ export interface IWithApiMixin extends IWithId {
     height: number;
 }
 
-// type TExtendMap<MAP, EXTEND> = {
-//     [Key in keyof MAP]: MAP[Key] & EXTEND;
-// }
-//
-// export type TTransactionFromAPI<LONG = TLong> = TTransaction<LONG> & IWithApiMixin
-//
-// export type TTransactionFromAPIMap<LONG> = {
-//     [Key in keyof TTransactionMap<LONG>]: TTransactionMap<LONG>[Key] & IWithApiMixin
-// };
-
 
 export type TTransaction<LONG = TLong> =
     | IGenesisTransaction<LONG>
@@ -529,8 +519,7 @@ export type TUpdateAssetInfoTransactionMap<LONG = TLong> = {
 }
 
 //GenesisTransaction
-export interface IGenesisTransactionV1<LONG>
-    extends IGenesisTransaction<LONG> {
+export interface IGenesisTransactionV1<LONG> extends IGenesisTransaction<LONG> {
     version: 1;
 }
 
@@ -551,9 +540,11 @@ export type TPaymentTransactionMap<LONG = TLong> = {
 
 //------------------------------------------------------------------------------------------
 //Transaction types
-export type TGenesisTransaction<LONG = TLong> = IGenesisTransactionV1<LONG>
+export type TGenesisTransaction<LONG = TLong> =
+    | IGenesisTransactionV1<LONG>
 
-export type TPaymentTransaction<LONG = TLong> = IPaymentTransactionV1<LONG>
+export type TPaymentTransaction<LONG = TLong> =
+    | IPaymentTransactionV1<LONG>
 
 export type TIssueTransaction<LONG = TLong> =
     | IIssueTransactionV1<LONG>
@@ -619,7 +610,8 @@ export type TInvokeScriptTransaction<LONG = TLong> =
     | IInvokeScriptTransactionV1<LONG>
     | IInvokeScriptTransactionV2<LONG>;
 
-export type TUpdateAssetInfoTransaction<LONG = TLong> = IUpdateAssetInfoTransactionV1<LONG>;
+export type TUpdateAssetInfoTransaction<LONG = TLong> =
+    | IUpdateAssetInfoTransactionV1<LONG>;
 
 //
 type TWithSignatureMap = {
@@ -637,7 +629,7 @@ type TWithSignatureMap = {
 
 export type TSignedTransaction<TX extends TTransaction<unknown>> = TX & (
     TX extends { version: 1 }
-        ? TX['type'] extends keyof TWithSignatureMap ? { signature: string } : { proofs: Array<string> }
-        : { proofs: Array<string> }
+        ? TX['type'] extends keyof TWithSignatureMap ? { signature: string } : { proofs: TProofs }
+        : { proofs: TProofs }
     )
 declare const s: TSignedTransaction<IIssueTransactionV3>;
