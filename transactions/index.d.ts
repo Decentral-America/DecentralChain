@@ -16,8 +16,10 @@ export type TProofs = Array<string>;
 export type TLong = string | number;
 export type TAssetDecimals = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
-export interface ITransaction<LONG = TLong,
-    TYPE extends TTransactionType = TTransactionType> {
+export interface ITransaction<
+    LONG = TLong,
+    TYPE extends TTransactionType = TTransactionType
+> {
     type: TYPE;
     senderPublicKey: string;
     timestamp: number;
@@ -28,7 +30,6 @@ export interface IWithApiMixin extends IWithId {
     sender: string;
     height: number;
 }
-
 
 export type TTransaction<LONG = TLong> =
     | IGenesisTransaction<LONG>
@@ -90,16 +91,19 @@ export type TTransactionVersionsMap<LONG = TLong> = {
 };
 
 export interface IGenesisTransaction<LONG = TLong>
-    extends Omit<ITransaction<LONG, typeof TRANSACTION_TYPE.GENESIS>, 'senderPublicKey'> {
-    recipient: string
-    amount: LONG
+    extends Omit<
+        ITransaction<LONG, typeof TRANSACTION_TYPE.GENESIS>,
+        'senderPublicKey'
+    > {
+    recipient: string;
+    amount: LONG;
 }
 
 export interface IPaymentTransaction<LONG = TLong>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.PAYMENT> {
-    sender: string
-    recipient: string
-    amount: LONG
+    sender: string;
+    recipient: string;
+    amount: LONG;
 }
 
 export interface IIssueTransaction<LONG = TLong>
@@ -167,8 +171,8 @@ export interface IDataTransaction<LONG = TLong>
 
 export interface IExchangeTransaction<LONG>
     extends ITransaction<LONG, typeof TRANSACTION_TYPE.EXCHANGE> {
-    order1: TExchangeTransactionOrder
-    order2: TExchangeTransactionOrder
+    order1: TExchangeTransactionOrder;
+    order2: TExchangeTransactionOrder;
     price: LONG;
     amount: LONG;
     buyMatcherFee: LONG;
@@ -215,18 +219,20 @@ export interface IUpdateAssetInfoTransaction<LONG = TLong>
 
 //---------------------------------------------------------------------------------------------------------------------
 
-
 //IssueTransaction
-export interface IIssueTransactionV1<LONG = TLong> extends IIssueTransaction<LONG> {
+export interface IIssueTransactionV1<LONG = TLong>
+    extends IIssueTransaction<LONG> {
     version: 1;
 }
 
-export interface IIssueTransactionV2<LONG = TLong> extends IIssueTransaction<LONG> {
+export interface IIssueTransactionV2<LONG = TLong>
+    extends IIssueTransaction<LONG> {
     version: 2;
     chainId: number;
 }
 
-export interface IIssueTransactionV3<LONG = TLong> extends IIssueTransaction<LONG> {
+export interface IIssueTransactionV3<LONG = TLong>
+    extends IIssueTransaction<LONG> {
     version: 3;
     chainId: number;
     feeAssetId: string | null;
@@ -262,7 +268,7 @@ export type TTransferTransactionMap<LONG = TLong> = {
     1: ITransferTransactionV1<LONG>;
     2: ITransferTransactionV2<LONG>;
     3: ITransferTransactionV3<LONG>;
-}
+};
 
 //LeaseTransaction
 export interface ILeaseTransactionV1<LONG> extends ILeaseTransaction<LONG> {
@@ -283,7 +289,7 @@ export type TLeaseTransactionMap<LONG = TLong> = {
     1: ILeaseTransactionV1<LONG>;
     2: ILeaseTransactionV2<LONG>;
     3: ILeaseTransactionV3<LONG>;
-}
+};
 
 //BurnTransaction
 export interface IBurnTransactionV1<LONG> extends IBurnTransaction<LONG> {
@@ -305,7 +311,7 @@ export type TBurnTransactionMap<LONG = TLong> = {
     1: IBurnTransactionV1<LONG>;
     2: IBurnTransactionV2<LONG>;
     3: IBurnTransactionV3<LONG>;
-}
+};
 
 //IReissueTransaction
 export interface IReissueTransactionV1<LONG> extends IReissueTransaction<LONG> {
@@ -327,7 +333,7 @@ export type TReissueTransactionMap<LONG = TLong> = {
     1: IReissueTransactionV1<LONG>;
     2: IReissueTransactionV2<LONG>;
     3: IReissueTransactionV3<LONG>;
-}
+};
 
 //ICancelLeaseTransaction
 export interface ICancelLeaseTransactionV1<LONG>
@@ -352,7 +358,7 @@ export type TCancelLeaseTransactionMap<LONG = TLong> = {
     1: ICancelLeaseTransactionV1<LONG>;
     2: ICancelLeaseTransactionV2<LONG>;
     3: ICancelLeaseTransactionV3<LONG>;
-}
+};
 
 //IAliasTransaction
 export interface IAliasTransactionV1<LONG> extends IAliasTransaction<LONG> {
@@ -373,7 +379,7 @@ export type TAliasTransactionMap<LONG = TLong> = {
     1: IAliasTransactionV1<LONG>;
     2: IAliasTransactionV2<LONG>;
     3: IAliasTransactionV3<LONG>;
-}
+};
 
 //IMassTransferTransaction
 export interface IMassTransferTransactionV1<LONG>
@@ -393,7 +399,7 @@ export interface IMassTransferTransactionV2<LONG>
 export type TMassTransferTransactionMap<LONG = TLong> = {
     1: IMassTransferTransactionV1<LONG>;
     2: IMassTransferTransactionV2<LONG>;
-}
+};
 
 //IDataTransaction
 export interface IDataTransactionV1<LONG> extends IDataTransaction<LONG> {
@@ -409,7 +415,7 @@ export interface IDataTransactionV2<LONG> extends IDataTransaction<LONG> {
 export type TDataTransactionMap<LONG = TLong> = {
     1: IDataTransactionV1<LONG>;
     2: IDataTransactionV2<LONG>;
-}
+};
 
 //ISetScriptTransaction
 export interface ISetScriptTransactionV1<LONG>
@@ -427,7 +433,7 @@ export interface ISetScriptTransactionV2<LONG>
 export type TSetScriptTransactionMap<LONG = TLong> = {
     1: ISetScriptTransactionV1<LONG>;
     2: ISetScriptTransactionV2<LONG>;
-}
+};
 
 //ISponsorshipTransaction
 export interface ISponsorshipTransactionV1<LONG>
@@ -445,7 +451,7 @@ export interface ISponsorshipTransactionV2<LONG>
 export type TSponsorshipTransactionMap<LONG = TLong> = {
     1: ISponsorshipTransactionV1<LONG>;
     2: ISponsorshipTransactionV2<LONG>;
-}
+};
 
 //IExchangeTransaction // TODO maybe create map by version for check orders version?
 export interface IExchangeTransactionV1<LONG>
@@ -469,8 +475,7 @@ export type TExchangeTransactionMap<LONG = TLong> = {
     1: IExchangeTransactionV1<LONG>;
     2: IExchangeTransactionV2<LONG>;
     3: IExchangeTransactionV3<LONG>;
-}
-
+};
 
 //ISetAssetScriptTransaction
 export interface ISetAssetScriptTransactionV1<LONG>
@@ -488,7 +493,7 @@ export interface ISetAssetScriptTransactionV2<LONG>
 export type TSetAssetScriptTransactionMap<LONG = TLong> = {
     1: ISetAssetScriptTransactionV1<LONG>;
     2: ISetAssetScriptTransactionV2<LONG>;
-}
+};
 
 //IInvokeScriptTransaction
 export interface IInvokeScriptTransactionV1<LONG>
@@ -505,7 +510,7 @@ export interface IInvokeScriptTransactionV2<LONG>
 export type TInvokeScriptTransactionMap<LONG = TLong> = {
     1: IInvokeScriptTransactionV1<LONG>;
     2: IInvokeScriptTransactionV2<LONG>;
-}
+};
 
 //IUpdateAssetInfoTransaction
 export interface IUpdateAssetInfoTransactionV1<LONG>
@@ -516,7 +521,7 @@ export interface IUpdateAssetInfoTransactionV1<LONG>
 
 export type TUpdateAssetInfoTransactionMap<LONG = TLong> = {
     1: IUpdateAssetInfoTransactionV1<LONG>;
-}
+};
 
 //GenesisTransaction
 export interface IGenesisTransactionV1<LONG> extends IGenesisTransaction<LONG> {
@@ -525,26 +530,22 @@ export interface IGenesisTransactionV1<LONG> extends IGenesisTransaction<LONG> {
 
 export type TGenesisTransactionMap<LONG = TLong> = {
     1: IGenesisTransactionV1<LONG>;
-}
-
+};
 
 //PaymentTransaction
-export interface IPaymentTransactionV1<LONG>
-    extends IPaymentTransaction<LONG> {
+export interface IPaymentTransactionV1<LONG> extends IPaymentTransaction<LONG> {
     version: 1;
 }
 
 export type TPaymentTransactionMap<LONG = TLong> = {
     1: IPaymentTransactionV1<LONG>;
-}
+};
 
 //------------------------------------------------------------------------------------------
 //Transaction types
-export type TGenesisTransaction<LONG = TLong> =
-    | IGenesisTransactionV1<LONG>
+export type TGenesisTransaction<LONG = TLong> = IGenesisTransactionV1<LONG>;
 
-export type TPaymentTransaction<LONG = TLong> =
-    | IPaymentTransactionV1<LONG>
+export type TPaymentTransaction<LONG = TLong> = IPaymentTransactionV1<LONG>;
 
 export type TIssueTransaction<LONG = TLong> =
     | IIssueTransactionV1<LONG>
@@ -610,8 +611,9 @@ export type TInvokeScriptTransaction<LONG = TLong> =
     | IInvokeScriptTransactionV1<LONG>
     | IInvokeScriptTransactionV2<LONG>;
 
-export type TUpdateAssetInfoTransaction<LONG = TLong> =
-    | IUpdateAssetInfoTransactionV1<LONG>;
+export type TUpdateAssetInfoTransaction<
+    LONG = TLong
+> = IUpdateAssetInfoTransactionV1<LONG>;
 
 //
 type TWithSignatureMap = {
@@ -625,11 +627,12 @@ type TWithSignatureMap = {
     [TRANSACTION_TYPE.LEASE]: 1;
     [TRANSACTION_TYPE.CANCEL_LEASE]: 1;
     [TRANSACTION_TYPE.ALIAS]: 1;
-}
+};
 
-export type TSignedTransaction<TX extends TTransaction<unknown>> = TX & (
-    TX extends { version: 1 }
-        ? TX['type'] extends keyof TWithSignatureMap ? { signature: string } : { proofs: TProofs }
-        : { proofs: TProofs }
-    )
+export type TSignedTransaction<TX extends TTransaction<unknown>> = TX &
+    (TX extends { version: 1 }
+        ? TX['type'] extends keyof TWithSignatureMap
+            ? { signature: string }
+            : { proofs: TProofs }
+        : { proofs: TProofs });
 declare const s: TSignedTransaction<IIssueTransactionV3>;

@@ -1,6 +1,6 @@
 export * from '../transactions';
-export * from './parts'
-export { IWithApiMixin } from "../transactions";
+export * from './parts';
+export { IWithApiMixin } from '../transactions';
 
 export const TRANSACTION_TYPE = {
     GENESIS: 1 as 1,
@@ -19,15 +19,14 @@ export const TRANSACTION_TYPE = {
     SPONSORSHIP: 14 as 14,
     SET_ASSET_SCRIPT: 15 as 15,
     INVOKE_SCRIPT: 16 as 16,
-    UPDATE_ASSET_INFO: 17 as 17
-
+    UPDATE_ASSET_INFO: 17 as 17,
 };
 
 export const DATA_FIELD_TYPE = {
     INTEGER: 'integer' as 'integer',
     BOOLEAN: 'boolean' as 'boolean',
     STRING: 'string' as 'string',
-    BINARY: 'binary' as 'binary'
+    BINARY: 'binary' as 'binary',
 };
 
 export type TTransactionType = typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE];
