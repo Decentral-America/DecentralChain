@@ -123,7 +123,6 @@ export interface ITransferTransaction<LONG = TLong>
     amount: LONG;
     feeAssetId: string | null;
     assetId: string | null;
-    // attachment: TBase58Bytes | TTransferTransactionAttachment;
 }
 
 export interface IReissueTransaction<LONG = TLong>
