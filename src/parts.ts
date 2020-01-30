@@ -1,16 +1,16 @@
-import { DATA_FIELD_TYPE, TProofs } from './index';
+import { DATA_FIELD_TYPE, TExchangeTransaction, TLong, TProofs } from './index';
 
 
-export type TOrderType = 'buy' | 'sell';
+export type TExchangeTransactionOrderType = 'buy' | 'sell';
 
-export type TBase64string = string
+export type TBase64string = string;
 
 export interface IInvokeScriptCall<LONG> {
     function: string;
     args: Array<TInvokeScriptCallArgument<LONG>>;
 }
 
-export interface IInvokeScriptPayment<LONG = string | number> {
+export interface IInvokeScriptPayment<LONG = TLong> {
     assetId: string;
     amount: LONG;
 }
@@ -43,7 +43,7 @@ export interface IWithId {
     id: string;
 }
 
-export interface IMassTransferItem<LONG = string | number> {
+export interface IMassTransferItem<LONG = TLong> {
     recipient: string
     amount: LONG;
 }
@@ -72,7 +72,7 @@ export interface IDataTransactionEntryBinary {
     value: TBase64string;
 }
 
-export interface ITransferTransactionEntryInteger<LONG = string | number> {
+export interface ITransferTransactionEntryInteger<LONG = TLong> {
     type: typeof DATA_FIELD_TYPE.INTEGER
     value: LONG
 }
@@ -99,62 +99,69 @@ export interface IExchangeTransactionOrder<LONG> {
         amountAsset: string;
         priceAsset: string;
     },
-    orderType: TOrderType;
+    orderType: TExchangeTransactionOrderType;
     price: LONG;
     amount: LONG;
     timestamp: number;
     expiration: number;
     matcherFee: LONG;
-    matcherFeeAssetId: string;
     senderPublicKey: string;
 }
 
-export interface IOrder<LONG> {
-    matcherPublicKey: string;
-    version: number;
-    assetPair: {
-        amountAsset: string;
-        priceAsset: string;
-    },
-    orderType: TOrderType;
-    price: LONG;
-    amount: LONG;
-    timestamp: number;
-    expiration: number;
-    matcherFee: LONG;
+export interface IExchangeTransactionOrderV1<LONG = TLong> extends IExchangeTransactionOrder<LONG> {
+    version: 1
+}
+
+export interface IExchangeTransactionOrderV2<LONG = TLong> extends IExchangeTransactionOrder<LONG> {
+    version: 2
+}
+
+export interface IExchangeTransactionOrderV3<LONG = TLong> extends IExchangeTransactionOrder<LONG> {
+    version: 3
     matcherFeeAssetId: string;
-    senderPublicKey: string;
 }
 
-export interface IOrderV1<LONG> extends IOrder<LONG> {
-    //небыло пруфов быра сигнатура
+export interface IExchangeTransactionOrderV4<LONG = TLong> extends IExchangeTransactionOrder<LONG> {
+    version: 4
+    matcherFeeAssetId: string;
 }
 
-export interface IOrderV2<LONG> extends IOrder<LONG> {
-    //вместо подписи пруфы
+export type TSignedIExchangeTransactionOrder<ORDER extends TExchangeTransactionOrder<unknown>> = ORDER &
+    (ORDER extends { version: 1 } ? { signature: string; } : { proofs: Array<string> })
+
+
+export type TExchangeTransactionOrder<LONG = TLong> =
+    IExchangeTransactionOrderV1<LONG>
+    | IExchangeTransactionOrderV2<LONG>
+    | IExchangeTransactionOrderV3<LONG>
+    | IExchangeTransactionOrderV4<LONG>
+
+
+export type TExchangeTransactionOrderByTx<TX extends TExchangeTransaction> =
+    TX extends { version: 1 }
+        ? TExchangeTransactionOrderMap[1]
+        : (TX extends { version: 2 } ? TExchangeTransactionOrderMap[1 | 2 | 3] : TExchangeTransactionOrder)
+
+
+export type TExchangeTransactionOrderMap<LONG = TLong> = {
+    1: IExchangeTransactionOrderV1<LONG>;
+    2: IExchangeTransactionOrderV2<LONG>;
+    3: IExchangeTransactionOrderV3<LONG>;
+    4: IExchangeTransactionOrderV4<LONG>;
 }
 
-export interface IOrderV3<LONG> extends IOrder<LONG> {
-    //В третьей версии добавилось поле matcherFeeAssetId
-}
-
-export interface IExchangeTransactionOrderWithProofs<LONG> extends IExchangeTransactionOrder<LONG>, IWithProofs {
-}
-
-export type TDataTransactionEntry<LONG = string | number> =
+export type TDataTransactionEntry<LONG = TLong> =
     IDataTransactionEntryInteger<LONG> |
     IDataTransactionEntryBoolean |
     IDataTransactionEntryString |
     IDataTransactionEntryBinary;
 
-export type TDataTransactionTypelessDataEntry = {
-    key: string
-    value: string | number | boolean | Uint8Array | number[]
-}
+// export type TDataTransactionTypelessDataEntry = {
+//     key: string
+//     value: string | number //| boolean | Uint8Array | number[]
+// }
 
 export type TDataTransactionDeleteRequest = {
-    type?: null
-    value?: null
     key: string
 }
 
