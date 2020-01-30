@@ -80,6 +80,8 @@ export type TTransactionMap<LONG = TLong> = {
 };
 
 export type TTransactionVersionsMap<LONG = TLong> = {
+    [TRANSACTION_TYPE.GENESIS]: TGenesisTransactionMap<LONG>;
+    [TRANSACTION_TYPE.PAYMENT]: TPaymentTransactionMap<LONG>;
     [TRANSACTION_TYPE.ISSUE]: TReissueTransactionMap<LONG>;
     [TRANSACTION_TYPE.TRANSFER]: TTransferTransactionMap<LONG>;
     [TRANSACTION_TYPE.REISSUE]: TReissueTransactionMap<LONG>;
@@ -99,7 +101,6 @@ export type TTransactionVersionsMap<LONG = TLong> = {
 
 export interface IGenesisTransaction<LONG = TLong>
     extends Omit<ITransaction<LONG, typeof TRANSACTION_TYPE.GENESIS>, 'senderPublicKey'> {
-    signature: string
     recipient: string
     amount: LONG
 }
@@ -109,7 +110,6 @@ export interface IPaymentTransaction<LONG = TLong>
     sender: string
     recipient: string
     amount: LONG
-    signature: string
 }
 
 export interface IIssueTransaction<LONG = TLong>
@@ -528,9 +528,32 @@ export type TUpdateAssetInfoTransactionMap<LONG = TLong> = {
     1: IUpdateAssetInfoTransactionV1<LONG>;
 }
 
-export type TGenesisTransaction<LONG = TLong> = IGenesisTransaction<LONG>
+//GenesisTransaction
+export interface IGenesisTransactionV1<LONG>
+    extends IGenesisTransaction<LONG> {
+    version: 1;
+}
 
-export type TPaymentTransaction<LONG = TLong> = IPaymentTransaction<LONG>
+export type TGenesisTransactionMap<LONG = TLong> = {
+    1: IGenesisTransactionV1<LONG>;
+}
+
+
+//PaymentTransaction
+export interface IPaymentTransactionV1<LONG>
+    extends IPaymentTransaction<LONG> {
+    version: 1;
+}
+
+export type TPaymentTransactionMap<LONG = TLong> = {
+    1: IPaymentTransactionV1<LONG>;
+}
+
+//------------------------------------------------------------------------------------------
+//Transaction types
+export type TGenesisTransaction<LONG = TLong> = IGenesisTransactionV1<LONG>
+
+export type TPaymentTransaction<LONG = TLong> = IPaymentTransactionV1<LONG>
 
 export type TIssueTransaction<LONG = TLong> =
     | IIssueTransactionV1<LONG>
