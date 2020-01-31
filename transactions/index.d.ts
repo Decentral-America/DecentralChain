@@ -32,8 +32,8 @@ export interface IWithApiMixin extends IWithId {
 }
 
 export type TTransaction<LONG = TLong> =
-    | IGenesisTransaction<LONG>
-    | IPaymentTransaction<LONG>
+    | TGenesisTransaction<LONG>
+    | TPaymentTransaction<LONG>
     | TIssueTransaction<LONG>
     | TTransferTransaction<LONG>
     | TReissueTransaction<LONG>
@@ -217,6 +217,24 @@ export interface IUpdateAssetInfoTransaction<LONG = TLong>
 }
 
 //--------------------------------------------------------------------------------------------------------------------
+
+//GenesisTransaction
+export interface IGenesisTransactionV1<LONG> extends IGenesisTransaction<LONG> {
+    version: 1;
+}
+
+export type TGenesisTransactionMap<LONG = TLong> = {
+    1: IGenesisTransactionV1<LONG>;
+};
+
+//PaymentTransaction
+export interface IPaymentTransactionV1<LONG> extends IPaymentTransaction<LONG> {
+    version: 1;
+}
+
+export type TPaymentTransactionMap<LONG = TLong> = {
+    1: IPaymentTransactionV1<LONG>;
+};
 
 //IssueTransaction
 export interface IIssueTransactionV1<LONG = TLong>
@@ -522,23 +540,6 @@ export type TUpdateAssetInfoTransactionMap<LONG = TLong> = {
     1: IUpdateAssetInfoTransactionV1<LONG>;
 };
 
-//GenesisTransaction
-export interface IGenesisTransactionV1<LONG> extends IGenesisTransaction<LONG> {
-    version: 1;
-}
-
-export type TGenesisTransactionMap<LONG = TLong> = {
-    1: IGenesisTransactionV1<LONG>;
-};
-
-//PaymentTransaction
-export interface IPaymentTransactionV1<LONG> extends IPaymentTransaction<LONG> {
-    version: 1;
-}
-
-export type TPaymentTransactionMap<LONG = TLong> = {
-    1: IPaymentTransactionV1<LONG>;
-};
 
 //------------------------------------------------------------------------------------------
 //Transaction types
