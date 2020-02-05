@@ -167,8 +167,8 @@ export interface IAliasTransaction<LONG> extends ITransaction<LONG, typeof TRANS
 
 export interface IMassTransferTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.MASS_TRANSFER> {
     transfers: Array<IMassTransferItem<LONG>>;
-    assetId?: string;
-    attachment?: TBase58Bytes;
+    assetId: string | null;
+    attachment: TBase58Bytes;
 }
 
 export interface IDataTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.DATA> {
