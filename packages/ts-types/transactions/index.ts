@@ -371,7 +371,7 @@ export interface IBurnTransactionV2<LONG> extends IBurnTransaction<LONG> {
 export interface IBurnTransactionV3<LONG> extends IBurnTransaction<LONG> {
     version: 3;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TBurnTransactionMap<LONG = TLong> = {
@@ -418,7 +418,7 @@ export interface ICancelLeaseTransactionV3<LONG>
     extends ICancelLeaseTransaction<LONG> {
     version: 3;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TCancelLeaseTransactionMap<LONG = TLong> = {
@@ -439,7 +439,7 @@ export interface IAliasTransactionV2<LONG> extends IAliasTransaction<LONG> {
 export interface IAliasTransactionV3<LONG> extends IAliasTransaction<LONG> {
     version: 3;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TAliasTransactionMap<LONG = TLong> = {
@@ -459,7 +459,7 @@ export interface IMassTransferTransactionV2<LONG>
     extends IMassTransferTransaction<LONG> {
     version: 2;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
     attachment: TTransferTransactionAttachment;
 }
 
@@ -512,7 +512,7 @@ export interface ISponsorshipTransactionV2<LONG>
     extends ISponsorshipTransaction<LONG> {
     version: 2;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TSponsorshipTransactionMap<LONG = TLong> = {
@@ -535,7 +535,7 @@ export interface IExchangeTransactionV3<LONG = TLong>
     extends IExchangeTransaction<LONG> {
     version: 3;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TExchangeTransactionMap<LONG = TLong> = {
@@ -554,7 +554,7 @@ export interface ISetAssetScriptTransactionV2<LONG>
     extends ISetAssetScriptTransaction<LONG> {
     version: 2;
     chainId: number;
-    feeAssetId?: string | null;
+    feeAssetId: string | null;
 }
 
 export type TSetAssetScriptTransactionMap<LONG = TLong> = {
