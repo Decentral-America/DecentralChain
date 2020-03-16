@@ -41,11 +41,11 @@ public class gen_labelset {
     public static byte[] labelset_new(String protocol_name,
                                       byte[] customization_label) {
         if (LABELSETMAXLEN < 3 + protocol_name.length() + customization_label.length)
-            throw new IllegalArgumentException();
+            throw new LabelSetException();
         if (protocol_name.length() > LABELMAXLEN)
-            throw new IllegalArgumentException();
+            throw new LabelSetException();
         if (customization_label.length > LABELMAXLEN)
-            throw new IllegalArgumentException();
+            throw new LabelSetException();
 
         byte[] protocol_name_bytes = protocol_name.getBytes();
 
@@ -67,13 +67,13 @@ public class gen_labelset {
     public static byte[] labelset_add(byte[] labelset, String label)
     {
         if (labelset.length > LABELSETMAXLEN)
-            throw new IllegalStateException();
+            throw new LabelSetException();
         if (labelset.length >= LABELMAXLEN || labelset.length + label.length() + 1 > LABELSETMAXLEN)
-            throw new IllegalStateException();
+            throw new LabelSetException();
         if (labelset.length < 3 || LABELSETMAXLEN < 4)
-            throw new IllegalStateException();
+            throw new LabelSetException();
         if (label.length() > LABELMAXLEN)
-            throw new IllegalStateException();
+            throw new LabelSetException();
 
         ByteBuffer bb = ByteBuffer.allocate(labelset.length + label.length() + 1);
         bb.put((byte)(labelset[0]+1));

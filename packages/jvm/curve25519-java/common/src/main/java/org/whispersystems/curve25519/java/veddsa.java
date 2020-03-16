@@ -261,12 +261,18 @@ public class veddsa {
 
         System.arraycopy(msg, 0, M_buf, MSTART, msg.length);
 
-        byte[] labelset = gen_labelset.labelset_new(protocol_name, customization_label);
+        byte[] labelset;
 
-        //  labelset1 = add_label(labels, "1")
-        //  Bv = hash(hash(labelset1 || K) || M)
-        //  Kv = k * Bv
-        labelset = gen_labelset.labelset_add(labelset, "1");
+        try {
+            labelset = gen_labelset.labelset_new(protocol_name, customization_label);
+
+            //  labelset1 = add_label(labels, "1")
+            //  Bv = hash(hash(labelset1 || K) || M)
+            //  Kv = k * Bv
+            labelset = gen_labelset.labelset_add(labelset, "1");
+        } catch (LabelSetException e) {
+            return false;
+        }
         generalized_calculate_Bv(sha512provider, Bv_point, labelset,
                 eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length);
         ge_scalarmult.ge_scalarmult(Kv_point, eddsa_25519_privkey_scalar, Bv_point);
@@ -357,12 +363,19 @@ public class veddsa {
         if (!sc_isreduced.sc_isreduced(h_scalar)) return -1;
         if (!sc_isreduced.sc_isreduced(s_scalar)) return -1;
 
-        //  gen_labelset = new_labelset(protocol_name, customization_label)
-        byte[] labelset = gen_labelset.labelset_new(protocol_name, customization_label);
+        byte[] labelset;
 
-        //  labelset1 = add_label(labels, "1")
-        //  Bv = hash(hash(labelset1 || K) || M)
-        labelset = gen_labelset.labelset_add(labelset, "1");
+        try {
+            //  gen_labelset = new_labelset(protocol_name, customization_label)
+            labelset = gen_labelset.labelset_new(protocol_name, customization_label);
+
+            //  labelset1 = add_label(labels, "1")
+            //  Bv = hash(hash(labelset1 || K) || M)
+            labelset = gen_labelset.labelset_add(labelset, "1");
+        } catch (LabelSetException e) {
+            return -1;
+        }
+
         if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return -1;
         ge_p3_tobytes.ge_p3_tobytes(Bv_bytes, Bv_point);
 
