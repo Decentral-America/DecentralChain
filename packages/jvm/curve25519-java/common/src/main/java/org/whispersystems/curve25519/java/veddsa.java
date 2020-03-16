@@ -135,12 +135,8 @@ public class veddsa {
                                                    ge_p3 B_point, byte[] s_scalar,
                                                    byte[] K_bytes, byte[] h_scalar) {
         ge_p3 Kneg_point = new ge_p3();
-        ge_p2 R_calc_point_p2 = new ge_p2();
 
-        ge_p3 sB = new ge_p3();
-        ge_p3 hK = new ge_p3();
-        ge_p3 R_calc_point_p3 = new ge_p3();
-
+        // check that they eddsa_25519_pubkey_bytes and Kv_bytes are on the curve
         if (ge_frombytes.ge_frombytes_negate_vartime(Kneg_point, K_bytes) != 0) {
             return -1;
         }
@@ -267,7 +263,7 @@ public class veddsa {
             labelset = gen_labelset.labelset_new(protocol_name, customization_label);
 
             //  labelset1 = add_label(labels, "1")
-            //  Bv = hash(hash(labelset1 || K) || M)
+            //  Bv = hash(B || labelset1 || K || M)
             //  Kv = k * Bv
             labelset = gen_labelset.labelset_add(labelset, "1");
         } catch (LabelSetException e) {
@@ -370,7 +366,7 @@ public class veddsa {
             labelset = gen_labelset.labelset_new(protocol_name, customization_label);
 
             //  labelset1 = add_label(labels, "1")
-            //  Bv = hash(hash(labelset1 || K) || M)
+            //  Bv = hash(B || labelset1 || K || M)
             labelset = gen_labelset.labelset_add(labelset, "1");
         } catch (LabelSetException e) {
             return -1;
