@@ -134,6 +134,18 @@ public class veddsa {
     public static int generalized_solve_commitment(byte[] R_bytes_out, ge_p3 K_point_out,
                                                    ge_p3 B_point, byte[] s_scalar,
                                                    byte[] K_bytes, byte[] h_scalar) {
+        if (R_bytes_out == null || R_bytes_out.length != POINTLEN) {
+            return -1;
+        }
+        if (s_scalar == null || s_scalar.length != SCALARLEN) {
+            return -1;
+        }
+        if (K_bytes == null || K_bytes.length != POINTLEN) {
+            return -1;
+        }
+        if (h_scalar == null || h_scalar.length != SCALARLEN) {
+            return -1;
+        }
         ge_p3 Kneg_point = new ge_p3();
 
         // check that they eddsa_25519_pubkey_bytes and Kv_bytes are on the curve
@@ -142,9 +154,14 @@ public class veddsa {
         }
 
         if (B_point == null) {
+            ge_p2 R_calc_point_p2 = new ge_p2();
             ge_double_scalarmult.ge_double_scalarmult_vartime(R_calc_point_p2, h_scalar, Kneg_point, s_scalar);
             ge_tobytes.ge_tobytes(R_bytes_out, R_calc_point_p2);
         } else {
+            ge_p3 sB = new ge_p3();
+            ge_p3 hK = new ge_p3();
+            ge_p3 R_calc_point_p3 = new ge_p3();
+
             // s * Bv
             ge_scalarmult.ge_scalarmult(sB, s_scalar, B_point);
 
