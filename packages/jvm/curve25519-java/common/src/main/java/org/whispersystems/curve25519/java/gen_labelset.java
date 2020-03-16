@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class gen_labelset {
     final static int LABELSETMAXLEN = 512;
-    final static int LABELMAXLEN = 128;
+    final static int LABELMAXLEN = Byte.MAX_VALUE;
 
     final static byte[] B_bytes = {
             0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
