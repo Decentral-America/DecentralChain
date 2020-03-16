@@ -27,10 +27,12 @@ public class gen_labelset {
         int num_labels = labelset[0];
         int offset = 1;
         for (int count = 0; count < num_labels; count++) {
-            int label_len = labelset[offset];
-            offset += 1 + label_len;
-            if (offset > labelset.length)
+            if (offset >= labelset.length)
                 return false;
+            int label_len = labelset[offset];
+            if (label_len < 0)
+                return false;
+            offset += 1 + label_len;
         }
         return offset == labelset.length;
     }
