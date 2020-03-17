@@ -67,17 +67,22 @@ public class veddsa {
             return false;
         }
 
-        int startIndex = M_start - prefix_len;
+        int index = M_start - prefix_len;
+        System.arraycopy(gen_labelset.B_bytes, 0, M_buf, index, POINTLEN);
+        index += POINTLEN;
+        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
+        index += labelset.length;
+        System.arraycopy(Z, 0, M_buf, index, RANDLEN);
+        index += RANDLEN + pad_len1;
+        System.arraycopy(k_scalar, 0, M_buf, index, POINTLEN);
+        index += POINTLEN + pad_len2;
+        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
+        index += labelset.length;
+        System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
+        index += POINTLEN;
+        System.arraycopy(extra, 0, M_buf, index, extra_len);
 
-        System.arraycopy(gen_labelset.B_bytes, 0, M_buf, startIndex, POINTLEN);
-        System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
-        System.arraycopy(Z, 0, M_buf, startIndex + POINTLEN + labelset.length, RANDLEN);
-        System.arraycopy(k_scalar, 0, M_buf, startIndex + POINTLEN + labelset.length + pad_len1 + RANDLEN, POINTLEN);
-        System.arraycopy(labelset, 0, M_buf, startIndex + 2 * POINTLEN + labelset.length + pad_len1 + RANDLEN + pad_len2, labelset.length);
-        System.arraycopy(K_bytes, 0, M_buf, startIndex + 2 * POINTLEN + 2 * labelset.length + pad_len1 + RANDLEN + pad_len2, POINTLEN);
-        System.arraycopy(extra, 0, M_buf, startIndex + 3 * POINTLEN + 2 * labelset.length + pad_len1 + RANDLEN + pad_len2, extra_len);
-
-        byte[] in = java.util.Arrays.copyOfRange(M_buf, startIndex, M_start + M_len);
+        byte[] in = java.util.Arrays.copyOfRange(M_buf, M_start - prefix_len, M_start + M_len);
         sha512provider.calculateDigest(hash, in, in.length);
 
         sc_reduce.sc_reduce(hash);
@@ -115,18 +120,24 @@ public class veddsa {
         if (gen_labelset.labelset_is_empty(labelset)) {
             if (2 * POINTLEN > MSTART) return -1;
             prefix_len = 2 * POINTLEN;
-            int startIndex = M_start - prefix_len;
-            System.arraycopy(R_bytes, 0, M_buf, startIndex, POINTLEN);
-            System.arraycopy(K_bytes, 0, M_buf, startIndex + POINTLEN, POINTLEN);
+            int index = M_start - prefix_len;
+            System.arraycopy(R_bytes, 0, M_buf, index, POINTLEN);
+            index += POINTLEN;
+            System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
         } else {
             prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
-            int startIndex = M_start - prefix_len;
-            System.arraycopy(gen_labelset.B_bytes, 0, M_buf, startIndex, POINTLEN);
-            System.arraycopy(labelset, 0, M_buf, startIndex + POINTLEN, labelset.length);
-            System.arraycopy(R_bytes, 0, M_buf, startIndex + POINTLEN + labelset.length, POINTLEN);
-            System.arraycopy(labelset, 0, M_buf, startIndex + 2 * POINTLEN + labelset.length, labelset.length);
-            System.arraycopy(K_bytes, 0, M_buf, startIndex + 2 * POINTLEN + 2 * labelset.length, POINTLEN);
-            System.arraycopy(extra, 0, M_buf, startIndex + 3 * POINTLEN + 2 * labelset.length, extra.length);
+            int index = M_start - prefix_len;
+            System.arraycopy(gen_labelset.B_bytes, 0, M_buf, index, POINTLEN);
+            index += POINTLEN;
+            System.arraycopy(labelset, 0, M_buf, index, labelset.length);
+            index += labelset.length;
+            System.arraycopy(R_bytes, 0, M_buf, index, POINTLEN);
+            index += POINTLEN;
+            System.arraycopy(labelset, 0, M_buf, index, labelset.length);
+            index += labelset.length;
+            System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
+            index += POINTLEN;
+            System.arraycopy(extra, 0, M_buf, index, extra.length);
         }
 
         byte[] in = java.util.Arrays.copyOfRange(M_buf, M_start - prefix_len, M_start + M_len);
