@@ -37,15 +37,13 @@ public class ge_scalarmult {
         cmov(t, minust, bnegative);
     }
 
-/*
-h = a * B
-where a = a[0]+256*a[1]+...+256^31 a[31]
-B is the Ed25519 base point (x,4/5) with x positive.
+    /*
+    h = a*A, where A is the input
+    where a = a[0]+256*a[1]+...+256^31 a[31]
 
-Preconditions:
-  a[31] <= 127
-*/
-
+    Preconditions:
+      a[31] <= 127
+    */
     public static void ge_scalarmult(ge_p3 h, byte[] a, ge_p3 A) {
         byte[] e = new byte[64];
         byte carry;
