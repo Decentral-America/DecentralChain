@@ -32,9 +32,19 @@ public class veddsa {
         if (!gen_labelset.labelset_validate(labelset)) {
             return false;
         }
-        if (R_bytes == null || r_scalar == null ||
-                K_bytes == null || k_scalar == null ||
-                Z == null) {
+        if (R_bytes == null || R_bytes.length != POINTLEN) {
+            return false;
+        }
+        if (r_scalar == null || r_scalar.length != SCALARLEN) {
+            return false;
+        }
+        if (K_bytes == null || K_bytes.length != POINTLEN) {
+            return false;
+        }
+        if (k_scalar == null || k_scalar.length != SCALARLEN) {
+            return false;
+        }
+        if (Z == null || Z.length != POINTLEN) {
             return false;
         }
         if (extra == null || extra.length == 0) {
