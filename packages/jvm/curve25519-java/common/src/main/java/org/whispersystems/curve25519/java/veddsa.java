@@ -28,7 +28,7 @@ public class veddsa {
                                          byte[] Z,
                                          byte[] M_buf, int M_start, int M_len) {
         ge_p3 R_point = new ge_p3();
-        byte[] hash = new byte[64];
+        byte[] hash = new byte[HASHLEN];
 
         if (!gen_labelset.labelset_validate(labelset)) {
             return false;
