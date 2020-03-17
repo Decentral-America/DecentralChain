@@ -102,10 +102,11 @@ public class veddsa {
 
         byte[] hash = new byte[HASHLEN];
 
-        if (h_scalar == null) return -1;
+        if (h_scalar == null || h_scalar.length != SCALARLEN) return -1;
+        if (R_bytes == null || R_bytes.length != POINTLEN) return -1;
+        if (K_bytes == null || K_bytes.length != POINTLEN) return -1;
 
         if (!gen_labelset.labelset_validate(labelset)) return -1;
-        if (R_bytes == null || K_bytes == null) return -1;
         if (extra != null && gen_labelset.labelset_is_empty(labelset)) return -1;
 
         int prefix_len;
