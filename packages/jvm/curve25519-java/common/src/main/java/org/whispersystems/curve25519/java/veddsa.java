@@ -451,7 +451,7 @@ public class veddsa {
                 R_calc_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return false;
 
         // if bytes_equal(h, h')
-        if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) return false;
+        if (!java.util.Arrays.equals(h_scalar, h_calc_scalar)) return false;
 
         //  labelset4 = add_label(labels, "4")
         //  v = hash(labelset4 || c*Kv)
