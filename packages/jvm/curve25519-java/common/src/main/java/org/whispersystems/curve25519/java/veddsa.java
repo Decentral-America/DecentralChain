@@ -25,7 +25,7 @@ public class veddsa {
                                          byte[] labelset,
                                          byte[] extra, int extra_len,
                                          byte[] K_bytes, byte[] k_scalar,
-                                         byte[] Z, byte[] msg,
+                                         byte[] Z,
                                          byte[] M_buf, int M_start, int M_len) {
         ge_p3 R_point = new ge_p3();
         byte[] hash = new byte[64];
@@ -138,6 +138,18 @@ public class veddsa {
 
     /* return r + kh (mod q) */
     public static int generalized_prove(byte[] out_scalar, byte[] r_scalar, byte[] k_scalar, byte[] h_scalar) {
+        if (out_scalar == null || out_scalar.length != SCALARLEN) {
+            return -1;
+        }
+        if (r_scalar == null || r_scalar.length != SCALARLEN) {
+            return -1;
+        }
+        if (k_scalar == null || k_scalar.length != SCALARLEN) {
+            return -1;
+        }
+        if (h_scalar == null || h_scalar.length != SCALARLEN) {
+            return -1;
+        }
         sc_muladd.sc_muladd(out_scalar, h_scalar, k_scalar, r_scalar);
         return 0;
     }
@@ -315,7 +327,7 @@ public class veddsa {
                 labelset,
                 extra, 2 * POINTLEN,
                 eddsa_25519_pubkey_bytes, eddsa_25519_privkey_scalar,
-                random, msg, M_buf, MSTART, msg.length)) {
+                random, M_buf, MSTART, msg.length)) {
             return false;
         }
 
