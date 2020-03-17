@@ -99,7 +99,7 @@ public class veddsa {
        else:
            return hash(B || gen_labelset || R || gen_labelset || K || extra || M) (mod q)
     */
-    public static int generalized_challenge(Sha512 sha512provider, byte[] h_scalar,
+    public static boolean generalized_challenge(Sha512 sha512provider, byte[] h_scalar,
                                             byte[] labelset,
                                             byte[] extra,
                                             byte[] R_bytes,
@@ -108,11 +108,11 @@ public class veddsa {
 
         byte[] hash = new byte[HASHLEN];
 
-        if (h_scalar == null || h_scalar.length != SCALARLEN) return -1;
-        if (R_bytes == null || R_bytes.length != POINTLEN) return -1;
-        if (K_bytes == null || K_bytes.length != POINTLEN) return -1;
+        if (h_scalar == null || h_scalar.length != SCALARLEN) return false;
+        if (R_bytes == null || R_bytes.length != POINTLEN) return false;
+        if (K_bytes == null || K_bytes.length != POINTLEN) return false;
 
-        if (!gen_labelset.labelset_validate(labelset)) return -1;
+        if (!gen_labelset.labelset_validate(labelset)) return false;
 
         int prefix_len;
 
@@ -123,7 +123,7 @@ public class veddsa {
             index += POINTLEN;
             System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
         } else {
-            if (extra == null) return -1;
+            if (extra == null) return false;
             prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
             int index = M_start - prefix_len;
             System.arraycopy(gen_labelset.B_bytes, 0, M_buf, index, POINTLEN);
@@ -143,48 +143,48 @@ public class veddsa {
         sha512provider.calculateDigest(hash, in, in.length);
         sc_reduce.sc_reduce(hash);
         System.arraycopy(hash, 0, h_scalar, 0, SCALARLEN);
-        return 0;
+        return true;
     }
 
     /* return r + kh (mod q) */
-    public static int generalized_prove(byte[] out_scalar, byte[] r_scalar, byte[] k_scalar, byte[] h_scalar) {
+    public static boolean generalized_prove(byte[] out_scalar, byte[] r_scalar, byte[] k_scalar, byte[] h_scalar) {
         if (out_scalar == null || out_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         if (r_scalar == null || r_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         if (k_scalar == null || k_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         if (h_scalar == null || h_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         sc_muladd.sc_muladd(out_scalar, h_scalar, k_scalar, r_scalar);
-        return 0;
+        return true;
     }
 
     /* R = s*B - h*K */
-    public static int generalized_solve_commitment(byte[] R_bytes_out, ge_p3 K_point_out,
+    public static boolean generalized_solve_commitment(byte[] R_bytes_out, ge_p3 K_point_out,
                                                    ge_p3 B_point, byte[] s_scalar,
                                                    byte[] K_bytes, byte[] h_scalar) {
         if (R_bytes_out == null || R_bytes_out.length != POINTLEN) {
-            return -1;
+            return false;
         }
         if (s_scalar == null || s_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         if (K_bytes == null || K_bytes.length != POINTLEN) {
-            return -1;
+            return false;
         }
         if (h_scalar == null || h_scalar.length != SCALARLEN) {
-            return -1;
+            return false;
         }
         ge_p3 Kneg_point = new ge_p3();
 
         // check that they eddsa_25519_pubkey_bytes and Kv_bytes are on the curve
         if (ge_frombytes.ge_frombytes_negate_vartime(Kneg_point, K_bytes) != 0) {
-            return -1;
+            return false;
         }
 
         if (B_point == null) {
@@ -211,7 +211,7 @@ public class veddsa {
             ge_neg.ge_neg(K_point_out, Kneg_point);
         }
 
-        return 0;
+        return true;
     }
 
     public static boolean generalized_calculate_Bv(Sha512 sha512provider, ge_p3 Bv_point,
@@ -237,7 +237,7 @@ public class veddsa {
         return !ge_isneutral.ge_isneutral(Bv_point);
     }
 
-    public static int generalized_calculate_vrf_output(Sha512 sha512provider,
+    public static boolean generalized_calculate_vrf_output(Sha512 sha512provider,
                                                        byte[] vrf_output,
                                                        byte[] labelset,
                                                        ge_p3 cKv_point) {
@@ -245,16 +245,16 @@ public class veddsa {
         byte[] hash = new byte[HASHLEN];
 
         if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) {
-            return -1;
+            return false;
         }
         Arrays.fill(vrf_output, (byte) 0);
 
         if (labelset.length + 2 * POINTLEN > BUFLEN)
-            return -1;
+            return false;
         if (!gen_labelset.labelset_validate(labelset))
-            return -1;
+            return false;
         if (cKv_point == null)
-            return -1;
+            return false;
 
         ge_p3_tobytes.ge_p3_tobytes(cKv_bytes, cKv_point);
 
@@ -265,7 +265,7 @@ public class veddsa {
 
         sha512provider.calculateDigest(hash, buf, buf.length);
         System.arraycopy(hash, 0, vrf_output, 0, VRFOUTPUTLEN);
-        return 0;
+        return true;
     }
 
     public static boolean generalized_veddsa_25519_sign(
@@ -350,13 +350,13 @@ public class veddsa {
         labelset[labelset.length - 1] = '3';
 //        memcpy(extra + 2*POINTLEN, Rv_bytes, POINTLEN);
         System.arraycopy(Rv_bytes, 0, extra, 2 * POINTLEN, POINTLEN);
-        if (generalized_challenge(sha512provider, h_scalar,
-                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length) != 0) {
+        if (!generalized_challenge(sha512provider, h_scalar,
+                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) {
             return false;
         }
 
         //  s = prove(r, k, h)
-        if (generalized_prove(s_scalar, r_scalar, eddsa_25519_privkey_scalar, h_scalar) != 0) {
+        if (!generalized_prove(s_scalar, r_scalar, eddsa_25519_privkey_scalar, h_scalar)) {
             return false;
         }
 
@@ -370,18 +370,18 @@ public class veddsa {
         return true;
     }
 
-    public static int generalized_veddsa_25519_verify(
+    public static boolean generalized_veddsa_25519_verify(
             Sha512 sha512provider,
             byte[] vrf_output,
             byte[] signature,
             byte[] eddsa_25519_pubkey_bytes,
             byte[] msg,
             byte[] customization_label) {
-        if (signature == null || signature.length != POINTLEN + 2 * SCALARLEN) return -1;
-        if (eddsa_25519_pubkey_bytes == null || eddsa_25519_pubkey_bytes.length != POINTLEN) return -1;
-        if (msg == null || msg.length > MSGMAXLEN) return -1;
-        if (customization_label == null || customization_label.length > gen_labelset.LABELMAXLEN) return -1;
-        if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) return -1;
+        if (signature == null || signature.length != POINTLEN + 2 * SCALARLEN) return false;
+        if (eddsa_25519_pubkey_bytes == null || eddsa_25519_pubkey_bytes.length != POINTLEN) return false;
+        if (msg == null || msg.length > MSGMAXLEN) return false;
+        if (customization_label == null || customization_label.length > gen_labelset.LABELMAXLEN) return false;
+        if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) return false;
 
         ge_p3 Bv_point = new ge_p3();
         ge_p3 K_point = new ge_p3();
@@ -406,10 +406,10 @@ public class veddsa {
         byte[] s_scalar = new byte[SCALARLEN];
         System.arraycopy(signature, POINTLEN + SCALARLEN, s_scalar, 0, SCALARLEN);
 
-        if (!point_isreduced.point_isreduced(eddsa_25519_pubkey_bytes)) return -1;
-        if (!point_isreduced.point_isreduced(Kv_bytes)) return -1;
-        if (!sc_isreduced.sc_isreduced(h_scalar)) return -1;
-        if (!sc_isreduced.sc_isreduced(s_scalar)) return -1;
+        if (!point_isreduced.point_isreduced(eddsa_25519_pubkey_bytes)) return false;
+        if (!point_isreduced.point_isreduced(Kv_bytes)) return false;
+        if (!sc_isreduced.sc_isreduced(h_scalar)) return false;
+        if (!sc_isreduced.sc_isreduced(s_scalar)) return false;
 
         byte[] labelset;
 
@@ -421,23 +421,23 @@ public class veddsa {
             //  Bv = hash(B || labelset1 || K || M)
             labelset = gen_labelset.labelset_add(labelset, "1");
         } catch (LabelSetException e) {
-            return -1;
+            return false;
         }
 
-        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return -1;
+        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return false;
         ge_p3_tobytes.ge_p3_tobytes(Bv_bytes, Bv_point);
 
         //  R = solve_commitment(B, s, K, h)
-        if (generalized_solve_commitment(R_calc_bytes, K_point, null,
-                s_scalar, eddsa_25519_pubkey_bytes, h_scalar) != 0) return -1;
+        if (!generalized_solve_commitment(R_calc_bytes, K_point, null,
+                s_scalar, eddsa_25519_pubkey_bytes, h_scalar)) return false;
 
         //  Rv = solve_commitment(Bv, s, Kv, h)
-        if (generalized_solve_commitment(Rv_calc_bytes, Kv_point, Bv_point,
-                s_scalar, Kv_bytes, h_scalar) != 0) return -1;
+        if (!generalized_solve_commitment(Rv_calc_bytes, Kv_point, Bv_point,
+                s_scalar, Kv_bytes, h_scalar)) return false;
 
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cK_point, K_point);
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cKv_point, Kv_point);
-        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) return -1;
+        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) return false;
 
         //  labelset3 = add_label(labels, "3")
         //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
@@ -445,13 +445,13 @@ public class veddsa {
         System.arraycopy(Bv_bytes, 0, extra, 0, POINTLEN);
         System.arraycopy(Kv_bytes, 0, extra, POINTLEN, POINTLEN);
         System.arraycopy(Rv_calc_bytes, 0, extra, 2 * POINTLEN, POINTLEN);
-        if (generalized_challenge(sha512provider, h_calc_scalar,
+        if (!generalized_challenge(sha512provider, h_calc_scalar,
                 labelset,
                 extra,
-                R_calc_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length) != 0) return -1;
+                R_calc_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return false;
 
         // if bytes_equal(h, h')
-        if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) return -1;
+        if (crypto_verify_32.crypto_verify_32(h_scalar, h_calc_scalar) != 0) return false;
 
         //  labelset4 = add_label(labels, "4")
         //  v = hash(labelset4 || c*Kv)
