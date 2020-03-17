@@ -174,7 +174,7 @@ public static long[] fe_mul1(int[] f,int[] g)
   long f9g8_19 = f9   * (long) g8_19;
   long f9g9_38 = f9_2 * (long) g9_19;
 
-  long h[] = new long[10];
+    long[] h = new long[10];
   h[0] = f0g0+f1g9_38+f2g8_19+f3g7_38+f4g6_19+f5g5_38+f6g4_19+f7g3_38+f8g2_19+f9g1_38;
   h[1] = f0g1+f1g0   +f2g9_19+f3g8_19+f4g7_19+f5g6_19+f6g5_19+f7g4_19+f8g3_19+f9g2_19;
   h[2] = f0g2+f1g1_2 +f2g0   +f3g9_38+f4g8_19+f5g7_38+f6g6_19+f7g5_38+f8g4_19+f9g3_38;

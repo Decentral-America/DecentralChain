@@ -74,9 +74,9 @@ public abstract class Curve25519ProviderTest extends TestCase {
     Curve25519Provider provider = createProvider();
 
     byte[] msg     = new byte[100];
-    byte[] sig_out = new byte[64];
+    byte[] sig_out;
     byte[] privkey = new byte[32];
-    byte[] pubkey  = new byte[32];
+    byte[] pubkey;
     byte[] random  = new byte[64];
 
     privkey[0] = 123;

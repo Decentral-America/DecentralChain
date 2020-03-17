@@ -9,7 +9,7 @@ public class fe_frombytes {
 public static long load_3(byte[] in, int index)
 {
   long result;
-  result = ((long) in[index + 0]) & 0xFF;
+  result = ((long) in[index]) & 0xFF;
   result |= (((long) in[index + 1]) << 8) & 0xFF00;
   result |= (((long) in[index + 2]) << 16) & 0xFF0000;
   return result;
@@ -18,7 +18,7 @@ public static long load_3(byte[] in, int index)
 public static long load_4(byte[] in, int index)
 {
   long result;
-  result = (((long) in[index + 0]) & 0xFF);
+  result = (((long) in[index]) & 0xFF);
   result |= ((((long) in[index + 1]) << 8) & 0xFF00);
   result |= ((((long) in[index + 2]) << 16) & 0xFF0000);
   result |= ((((long) in[index + 3]) << 24) & 0xFF000000L);

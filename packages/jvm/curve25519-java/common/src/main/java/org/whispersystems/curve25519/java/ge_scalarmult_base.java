@@ -7,10 +7,7 @@ public class ge_scalarmult_base {
 
 static int equal(byte b,byte c)
 {
-  int ub = b;
-  int uc = c;
-  int x = ub ^ uc; /* 0: yes; 1..255: no */
-  int y = x; /* 0: yes; 1..255: no */
+  int y = (int) b ^ (int) c; /* 0: yes; 1..255: no */
   y -= 1; /* 4294967295: yes; 0..254: no */
   y >>>= 31; /* 1: yes; 0: no */
   return y;
@@ -32,9 +29,9 @@ static void cmov(ge_precomp t,ge_precomp u,int b)
 
 static void select(ge_precomp t,int pos,byte b)
 {
-  ge_precomp base[][] =  (pos <= 7 ? ge_precomp_base_0_7.base :
-                           (pos <= 15 ? ge_precomp_base_8_15.base :
-                             (pos <= 23 ? ge_precomp_base_16_23.base : ge_precomp_base_24_31.base)));
+  ge_precomp[][] base = (pos <= 7 ? ge_precomp_base_0_7.base :
+          (pos <= 15 ? ge_precomp_base_8_15.base :
+                  (pos <= 23 ? ge_precomp_base_16_23.base : ge_precomp_base_24_31.base)));
 
   ge_precomp minust = new ge_precomp();
   int bnegative = negative(b);
@@ -74,7 +71,7 @@ public static void ge_scalarmult_base(ge_p3 h,byte[] a)
   int i;
 
   for (i = 0;i < 32;++i) {
-    e[2 * i + 0] = (byte)((a[i] >>> 0) & 15);
+    e[2 * i] = (byte)((a[i]) & 15);
     e[2 * i + 1] = (byte)((a[i] >>> 4) & 15);
   }
   /* each e[i] is between 0 and 15 */

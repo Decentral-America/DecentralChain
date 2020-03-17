@@ -65,7 +65,7 @@ public static void fe_invert(int[] out,int[] z)
 /* qhasm: z2 = z1^2^1 */
 /* asm 1: fe_sq.fe_sq(>z2=fe#1,<z1=fe#11); for (i = 1;i < 1;++i) fe_sq.fe_sq(>z2=fe#1,>z2=fe#1); */
 /* asm 2: fe_sq.fe_sq(>z2=t0,<z1=z); for (i = 1;i < 1;++i) fe_sq.fe_sq(>z2=t0,>z2=t0); */
-fe_sq.fe_sq(t0,z); for (i = 1;i < 1;++i) fe_sq.fe_sq(t0,t0);
+fe_sq.fe_sq(t0,z);
 
 /* qhasm: z8 = z2^2^2 */
 /* asm 1: fe_sq.fe_sq(>z8=fe#2,<z2=fe#1); for (i = 1;i < 2;++i) fe_sq.fe_sq(>z8=fe#2,>z8=fe#2); */
@@ -85,7 +85,7 @@ fe_mul.fe_mul(t0,t0,t1);
 /* qhasm: z22 = z11^2^1 */
 /* asm 1: fe_sq.fe_sq(>z22=fe#3,<z11=fe#1); for (i = 1;i < 1;++i) fe_sq.fe_sq(>z22=fe#3,>z22=fe#3); */
 /* asm 2: fe_sq.fe_sq(>z22=t2,<z11=t0); for (i = 1;i < 1;++i) fe_sq.fe_sq(>z22=t2,>z22=t2); */
-fe_sq.fe_sq(t2,t0); for (i = 1;i < 1;++i) fe_sq.fe_sq(t2,t2);
+fe_sq.fe_sq(t2,t0);
 
 /* qhasm: z_5_0 = z9*z22 */
 /* asm 1: fe_mul.fe_mul(>z_5_0=fe#2,<z9=fe#2,<z22=fe#3); */
@@ -174,7 +174,6 @@ fe_mul.fe_mul(out,t1,t0);
 
 /* qhasm: return */
 
-  return;
 }
 
 

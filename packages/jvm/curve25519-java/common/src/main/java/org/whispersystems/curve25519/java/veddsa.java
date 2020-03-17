@@ -113,18 +113,17 @@ public class veddsa {
         if (K_bytes == null || K_bytes.length != POINTLEN) return -1;
 
         if (!gen_labelset.labelset_validate(labelset)) return -1;
-        if (extra != null && gen_labelset.labelset_is_empty(labelset)) return -1;
 
         int prefix_len;
 
         if (gen_labelset.labelset_is_empty(labelset)) {
-            if (2 * POINTLEN > MSTART) return -1;
             prefix_len = 2 * POINTLEN;
             int index = M_start - prefix_len;
             System.arraycopy(R_bytes, 0, M_buf, index, POINTLEN);
             index += POINTLEN;
             System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
         } else {
+            if (extra == null) return -1;
             prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
             int index = M_start - prefix_len;
             System.arraycopy(gen_labelset.B_bytes, 0, M_buf, index, POINTLEN);

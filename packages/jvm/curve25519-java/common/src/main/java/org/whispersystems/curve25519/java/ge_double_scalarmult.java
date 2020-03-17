@@ -38,7 +38,7 @@ static public void slide(byte[] r,byte[] a)
 
 }
 
-static ge_precomp Bi[];
+    static ge_precomp[] Bi;
 
 static {
     Bi = new ge_precomp[8];
@@ -95,7 +95,7 @@ public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] 
 {
   byte[] aslide = new byte[256];
   byte[] bslide = new byte[256];
-  ge_cached Ai[] = new ge_cached[8]; /* A,3A,5A,7A,9A,11A,13A,15A */
+    ge_cached[] Ai = new ge_cached[8]; /* A,3A,5A,7A,9A,11A,13A,15A */
   for (int count=0; count < 8; count++)
     Ai[count] = new ge_cached();
   ge_p1p1 t = new ge_p1p1();

@@ -24,7 +24,7 @@ static int crypto_sign_modified (
   byte[] nonce = new byte[64];
   byte[] hram = new byte[64];
   ge_p3 R = new ge_p3();
-  int count=0;
+  int count;
 
   System.arraycopy(m, 0, sm, 64, (int)mlen); 
   System.arraycopy(sk, 0, sm, 32, 32); 

@@ -58,7 +58,7 @@ public class ge_scalarmult {
         int i;
 
         for (i = 0; i < 32; ++i) {
-            e[2 * i + 0] = (byte) ((a[i] >>> 0) & 15);
+            e[2 * i] = (byte) ((a[i]) & 15);
             e[2 * i + 1] = (byte) ((a[i] >>> 4) & 15);
         }
         /* each e[i] is between 0 and 15 */
