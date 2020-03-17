@@ -234,7 +234,7 @@ public class veddsa {
         byte[] in = java.util.Arrays.copyOfRange(M_buf, startIndex, M_start + M_len);
         System.arraycopy(M_buf, M_start, in, in.length - M_len, M_len);
         elligator.hash_to_point(sha512provider, Bv_point, in);
-        return !ge_isneutral.ge_isneutral(Bv_point);
+        return true;
     }
 
     public static boolean generalized_calculate_vrf_output(Sha512 sha512provider,
