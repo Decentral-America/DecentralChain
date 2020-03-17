@@ -240,7 +240,7 @@ public class veddsa {
             byte[] msg,
             byte[] random,
             byte[] customization_label) {
-        if (signature_out == null) {
+        if (signature_out == null || signature_out.length != POINTLEN+2*SCALARLEN) {
             return false;
         }
 
