@@ -210,7 +210,9 @@ public class veddsa {
         byte[] cKv_bytes = new byte[POINTLEN];
         byte[] hash = new byte[HASHLEN];
 
-        if (vrf_output == null) return -1;
+        if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) {
+            return -1;
+        }
         Arrays.fill(vrf_output, (byte) 0);
 
         if (labelset.length + 2 * POINTLEN > BUFLEN)
@@ -341,12 +343,11 @@ public class veddsa {
             byte[] eddsa_25519_pubkey_bytes,
             byte[] msg,
             byte[] customization_label) {
-        if (signature == null) return -1;
-        if (eddsa_25519_pubkey_bytes == null) return -1;
-        if (msg == null) return -1;
-        if (customization_label == null) return -1;
-        if (customization_label.length > gen_labelset.LABELMAXLEN) return -1;
-        if (msg.length > MSGMAXLEN) return -1;
+        if (signature == null || signature.length != POINTLEN + 2 * SCALARLEN) return -1;
+        if (eddsa_25519_pubkey_bytes == null || eddsa_25519_pubkey_bytes.length != POINTLEN) return -1;
+        if (msg == null || msg.length > MSGMAXLEN) return -1;
+        if (customization_label == null || customization_label.length > gen_labelset.LABELMAXLEN) return -1;
+        if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) return -1;
 
         ge_p3 Bv_point = new ge_p3();
         ge_p3 K_point = new ge_p3();
