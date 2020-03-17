@@ -3,13 +3,13 @@ package org.whispersystems.curve25519.java;
 import java.nio.ByteBuffer;
 
 public class gen_labelset {
-    final static int LABELSETMAXLEN = 512;
-    final static int LABELMAXLEN = Byte.MAX_VALUE;
+    static final int LABELSETMAXLEN = 512;
+    static final int LABELMAXLEN = Byte.MAX_VALUE;
 
     /**
      *  the byte string representing the base point of Ed25519
      */
-    final static byte[] B_bytes = {
+    static final byte[] B_bytes = {
             0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
             0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
             0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,

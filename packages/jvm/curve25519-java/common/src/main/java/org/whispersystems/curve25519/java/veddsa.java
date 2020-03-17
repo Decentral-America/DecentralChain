@@ -1,15 +1,16 @@
 package org.whispersystems.curve25519.java;
 
+import static org.whispersystems.curve25519.java.gen_x.POINTLEN;
+import static org.whispersystems.curve25519.java.gen_x.SCALARLEN;
+
 public class veddsa {
-    final static int BLOCKLEN = 128; /* SHA512 */
-    final static int HASHLEN = 64;  /* SHA512 */
-    final static int POINTLEN = 32;
-    final static int SCALARLEN = 32;
-    final static int RANDLEN = 32;
-    final static int MSTART = 2048;
-    final static int MSGMAXLEN = 1048576;
-    final static int BUFLEN = 1024;
-    final static int VRFOUTPUTLEN = 32;
+    static final int BLOCKLEN = 128; /* SHA512 */
+    static final int HASHLEN = 64;  /* SHA512 */
+    static final int RANDLEN = 32;
+    static final int MSTART = 2048;
+    static final int MSGMAXLEN = 1048576;
+    static final int BUFLEN = 1024;
+    static final int VRFOUTPUTLEN = 32;
 
     /* B: base point 
      * R: commitment (point), 
