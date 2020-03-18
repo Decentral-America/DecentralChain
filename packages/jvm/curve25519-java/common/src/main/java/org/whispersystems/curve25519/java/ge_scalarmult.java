@@ -14,22 +14,22 @@ public class ge_scalarmult {
 
     static void select(ge_cached t, ge_cached[] pre, byte b) {
         ge_cached minust = new ge_cached();
-        int bnegative = negative(b);
-        int babs = b - (((-bnegative) & b) << 1);
+        byte bnegative = negative(b);
+        byte babs = (byte)(b - (((-bnegative) & b) << 1));
 
         fe_1.fe_1(t.YplusX);
         fe_1.fe_1(t.YminusX);
         fe_1.fe_1(t.Z);
         fe_0.fe_0(t.T2d);
 
-        cmov(t, pre[0], equal((byte) babs, (byte) 1));
-        cmov(t, pre[1], equal((byte) babs, (byte) 2));
-        cmov(t, pre[2], equal((byte) babs, (byte) 3));
-        cmov(t, pre[3], equal((byte) babs, (byte) 4));
-        cmov(t, pre[4], equal((byte) babs, (byte) 5));
-        cmov(t, pre[5], equal((byte) babs, (byte) 6));
-        cmov(t, pre[6], equal((byte) babs, (byte) 7));
-        cmov(t, pre[7], equal((byte) babs, (byte) 8));
+        cmov(t, pre[0], equal(babs, (byte) 1));
+        cmov(t, pre[1], equal(babs, (byte) 2));
+        cmov(t, pre[2], equal(babs, (byte) 3));
+        cmov(t, pre[3], equal(babs, (byte) 4));
+        cmov(t, pre[4], equal(babs, (byte) 5));
+        cmov(t, pre[5], equal(babs, (byte) 6));
+        cmov(t, pre[6], equal(babs, (byte) 7));
+        cmov(t, pre[7], equal(babs, (byte) 8));
         fe_copy.fe_copy(minust.YplusX, t.YminusX);
         fe_copy.fe_copy(minust.YminusX, t.YplusX);
         fe_copy.fe_copy(minust.Z, t.Z);

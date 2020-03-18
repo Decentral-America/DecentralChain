@@ -13,7 +13,7 @@ static int equal(byte b,byte c)
   return y;
 }
 
-static int negative(byte b)
+static byte negative(byte b)
 {
   return (byte)((b>>7)&1);
 }
@@ -32,18 +32,18 @@ static void select(ge_precomp t,int pos,byte b)
                   (pos <= 23 ? ge_precomp_base_16_23.base : ge_precomp_base_24_31.base)));
 
   ge_precomp minust = new ge_precomp();
-  int bnegative = negative(b);
-  int babs = b - (((-bnegative) & b) << 1);
+  byte bnegative = negative(b);
+  byte babs = (byte)(b - (((-bnegative) & b) << 1));
 
   ge_precomp_0.ge_precomp_0(t);
-  cmov(t,base[pos][0],equal((byte)babs,(byte)1));
-  cmov(t,base[pos][1],equal((byte)babs,(byte)2));
-  cmov(t,base[pos][2],equal((byte)babs,(byte)3));
-  cmov(t,base[pos][3],equal((byte)babs,(byte)4));
-  cmov(t,base[pos][4],equal((byte)babs,(byte)5));
-  cmov(t,base[pos][5],equal((byte)babs,(byte)6));
-  cmov(t,base[pos][6],equal((byte)babs,(byte)7));
-  cmov(t,base[pos][7],equal((byte)babs,(byte)8));
+  cmov(t,base[pos][0],equal(babs,(byte)1));
+  cmov(t,base[pos][1],equal(babs,(byte)2));
+  cmov(t,base[pos][2],equal(babs,(byte)3));
+  cmov(t,base[pos][3],equal(babs,(byte)4));
+  cmov(t,base[pos][4],equal(babs,(byte)5));
+  cmov(t,base[pos][5],equal(babs,(byte)6));
+  cmov(t,base[pos][6],equal(babs,(byte)7));
+  cmov(t,base[pos][7],equal(babs,(byte)8));
   fe_copy.fe_copy(minust.yplusx,t.yminusx);
   fe_copy.fe_copy(minust.yminusx,t.yplusx);
   fe_neg.fe_neg(minust.xy2d,t.xy2d);
