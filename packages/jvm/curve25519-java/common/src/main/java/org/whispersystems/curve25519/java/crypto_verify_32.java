@@ -6,13 +6,13 @@ public class crypto_verify_32 {
      * const time equality check of x and y byte arrays of length 32
      * @param x first byte array
      * @param y second byte array
-     * @return 0 if equals, other value if not
+     * @return 0 if equals, 1 if not
      */
     public static int crypto_verify_32(byte[] x, byte[] y) {
         int differentbits = 0;
         for (int count = 0; count < 32; count++) {
             differentbits |= (x[count] ^ y[count]);
         }
-        return differentbits;
+        return 1 ^ (1 & (((differentbits & 0xff) - 1) >> 8));
     }
 }
