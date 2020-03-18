@@ -15,9 +15,7 @@ static int equal(byte b,byte c)
 
 static int negative(byte b)
 {
-  long x = b; /* 18446744073709551361..18446744073709551615: yes; 0..255: no */
-  x >>>= 63; /* 1: yes; 0: no */
-  return (int)x;
+  return (byte)((b>>7)&1);
 }
 
 static void cmov(ge_precomp t,ge_precomp u,int b)
