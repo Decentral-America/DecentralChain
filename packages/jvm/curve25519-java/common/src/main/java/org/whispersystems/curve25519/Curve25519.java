@@ -129,6 +129,10 @@ public class Curve25519 {
       throw new IllegalArgumentException("Invalid private key!");
     }
 
+    if (message == null) {
+      throw new IllegalArgumentException("message is null");
+    }
+
     byte[] random = provider.getRandom(32);
     return provider.calculateVrfSignature(random, privateKey, message);
   }
