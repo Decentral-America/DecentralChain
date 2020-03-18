@@ -35,7 +35,7 @@ public class gen_x {
 
         /* Force Edwards sign bit to zero */
         byte sign_bit = (byte) ((K_bytes[31] & 0x80) >> 7);
-        System.arraycopy(x25519_privkey_scalar, 0, k_scalar, 0, 32);
+        System.arraycopy(x25519_privkey_scalar, 0, k_scalar, 0, SCALARLEN);
         sc_neg.sc_neg(kneg, k_scalar);
         sc_cmov.sc_cmov(k_scalar, kneg, sign_bit);
         K_bytes[31] &= 0x7F;
