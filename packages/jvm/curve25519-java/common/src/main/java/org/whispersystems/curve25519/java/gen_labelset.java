@@ -56,9 +56,7 @@ public class gen_labelset {
         byteBuffer.put((byte)2);
         byteBuffer.put((byte)protocol_name_bytes.length);
         byteBuffer.put(protocol_name_bytes);
-        if (byteBuffer.position() < LABELSETMAXLEN) {
-            byteBuffer.put((byte)customization_label.length);
-        }
+        byteBuffer.put((byte)customization_label.length);
 
         byteBuffer.put(customization_label);
 
@@ -69,11 +67,9 @@ public class gen_labelset {
 
     public static byte[] labelset_add(byte[] labelset, String label)
     {
-        if (labelset.length > LABELSETMAXLEN)
-            throw new LabelSetException();
         if (labelset.length >= LABELMAXLEN || labelset.length + label.length() + 1 > LABELSETMAXLEN)
             throw new LabelSetException();
-        if (labelset.length < 3 || LABELSETMAXLEN < 4)
+        if (labelset.length < 3)
             throw new LabelSetException();
         if (label.length() > LABELMAXLEN)
             throw new LabelSetException();
