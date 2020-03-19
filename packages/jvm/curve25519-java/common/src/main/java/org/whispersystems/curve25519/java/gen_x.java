@@ -10,13 +10,12 @@ public class gen_x {
      * NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
     */
     public static boolean convert_25519_pubkey(byte[] ed_pubkey_bytes, byte[] x25519_pubkey_bytes) {
-        int[] u = new int[10];
-        int[] y = new int[10];
+        int[] u = fe_isreduced.fe_isreduced(x25519_pubkey_bytes);
 
-        if (!fe_isreduced.fe_isreduced(x25519_pubkey_bytes))
+        if (u == null)
             return false;
 
-        fe_frombytes.fe_frombytes(u, x25519_pubkey_bytes);
+        int[] y = new int[10];
 
         fe_montx_to_edy.fe_montx_to_edy(y, u);
 
