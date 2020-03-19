@@ -39,8 +39,6 @@ public class gen_x {
         sc_neg.sc_neg(kneg, k_scalar);
         sc_cmov.sc_cmov(k_scalar, kneg, sign_bit);
         K_bytes[31] &= 0x7F;
-
-        Arrays.fill(kneg, (byte) 0);
     }
 
     public static boolean generalized_xveddsa_25519_sign(
@@ -55,7 +53,6 @@ public class gen_x {
 
         boolean retval = veddsa.generalized_veddsa_25519_sign(sha512provider, signature_out, K_bytes, k_scalar,
                 msg, random, new byte[]{});
-        Arrays.fill(k_scalar, (byte) 0);
         return retval;
     }
 

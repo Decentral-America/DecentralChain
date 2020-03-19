@@ -247,7 +247,6 @@ public class veddsa {
         if (vrf_output == null || vrf_output.length != VRFOUTPUTLEN) {
             return false;
         }
-        Arrays.fill(vrf_output, (byte) 0);
 
         if (labelset.length + 2 * POINTLEN > BUFLEN)
             return false;
@@ -364,8 +363,6 @@ public class veddsa {
         System.arraycopy(Kv_bytes, 0, signature_out, 0, POINTLEN);
         System.arraycopy(h_scalar, 0, signature_out, POINTLEN, SCALARLEN);
         System.arraycopy(s_scalar, 0, signature_out, POINTLEN + SCALARLEN, SCALARLEN);
-
-        Arrays.fill(r_scalar, (byte) 0);
 
         return true;
     }
