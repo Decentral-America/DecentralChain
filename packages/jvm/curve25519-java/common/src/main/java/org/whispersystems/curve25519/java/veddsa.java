@@ -1,6 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
 
 import static org.whispersystems.curve25519.java.gen_x.POINTLEN;
 import static org.whispersystems.curve25519.java.gen_x.SCALARLEN;
@@ -53,8 +54,8 @@ public class veddsa {
 
     }
 
-    /* B: base point 
-     * R: commitment (point), 
+    /* B: base point
+     * R: commitment (point),
        r: private nonce (scalar)
        K: encoded public key
        k: private key (scalar)
@@ -67,7 +68,7 @@ public class veddsa {
                                          byte[] extra, int extra_len,
                                          byte[] K_bytes, byte[] k_scalar,
                                          byte[] Z,
-                                         byte[] M_buf, int M_start, int M_len) {
+                                         byte[] message) {
         ge_p3 R_point = new ge_p3();
         byte[] hash = new byte[HASHLEN];
 
@@ -96,29 +97,21 @@ public class veddsa {
         prefix_len += pad_len1;
         prefix_len += SCALARLEN;
         int pad_len2 = ((BLOCKLEN - (prefix_len % BLOCKLEN)) % BLOCKLEN);
-        prefix_len += pad_len2;
-        prefix_len += labelset.length + POINTLEN + extra_len;
-        if (prefix_len > M_start) {
-            return false;
-        }
 
-        int index = M_start - prefix_len;
-        System.arraycopy(B_bytes, 0, M_buf, index, POINTLEN);
-        index += POINTLEN;
-        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
-        index += labelset.length;
-        System.arraycopy(Z, 0, M_buf, index, RANDLEN);
-        index += RANDLEN + pad_len1;
-        System.arraycopy(k_scalar, 0, M_buf, index, POINTLEN);
-        index += POINTLEN + pad_len2;
-        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
-        index += labelset.length;
-        System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
-        index += POINTLEN;
-        System.arraycopy(extra, 0, M_buf, index, extra_len);
+        MessageDigest md = sha512provider.initDigest();
 
-        byte[] in = java.util.Arrays.copyOfRange(M_buf, M_start - prefix_len, M_start + M_len);
-        sha512provider.calculateDigest(hash, in, in.length);
+        sha512provider.updateDigest(md, B_bytes, POINTLEN);
+        sha512provider.updateDigest(md, labelset, labelset.length);
+        sha512provider.updateDigest(md, Z, RANDLEN);
+        sha512provider.updateDigest(md, new byte[pad_len1], pad_len1);
+        sha512provider.updateDigest(md, k_scalar, SCALARLEN);
+        sha512provider.updateDigest(md, new byte[pad_len2], pad_len2);
+        sha512provider.updateDigest(md, labelset, labelset.length);
+        sha512provider.updateDigest(md, K_bytes, POINTLEN);
+        sha512provider.updateDigest(md, extra, extra_len);
+        sha512provider.updateDigest(md, message, message.length);
+
+        sha512provider.finishDigest(hash, md);
 
         sc_reduce.sc_reduce(hash);
         ge_scalarmult_base.ge_scalarmult_base(R_point, hash);
@@ -139,7 +132,7 @@ public class veddsa {
                                             byte[] extra,
                                             byte[] R_bytes,
                                             byte[] K_bytes,
-                                            byte[] M_buf, int M_start, int M_len) {
+                                            byte[] message) {
 
         byte[] hash = new byte[HASHLEN];
 
@@ -147,25 +140,18 @@ public class veddsa {
         if (R_bytes == null || R_bytes.length != POINTLEN) return false;
         if (K_bytes == null || K_bytes.length != POINTLEN) return false;
 
-        int prefix_len;
-
         if (extra == null) return false;
-        prefix_len = 3 * POINTLEN + 2 * labelset.length + extra.length;
-        int index = M_start - prefix_len;
-        System.arraycopy(B_bytes, 0, M_buf, index, POINTLEN);
-        index += POINTLEN;
-        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
-        index += labelset.length;
-        System.arraycopy(R_bytes, 0, M_buf, index, POINTLEN);
-        index += POINTLEN;
-        System.arraycopy(labelset, 0, M_buf, index, labelset.length);
-        index += labelset.length;
-        System.arraycopy(K_bytes, 0, M_buf, index, POINTLEN);
-        index += POINTLEN;
-        System.arraycopy(extra, 0, M_buf, index, extra.length);
+        MessageDigest md = sha512provider.initDigest();
 
-        byte[] in = java.util.Arrays.copyOfRange(M_buf, M_start - prefix_len, M_start + M_len);
-        sha512provider.calculateDigest(hash, in, in.length);
+        sha512provider.updateDigest(md, B_bytes, POINTLEN);
+        sha512provider.updateDigest(md, labelset, labelset.length);
+        sha512provider.updateDigest(md, R_bytes, POINTLEN);
+        sha512provider.updateDigest(md, labelset, labelset.length);
+        sha512provider.updateDigest(md, K_bytes, POINTLEN);
+        sha512provider.updateDigest(md, extra, extra.length);
+        sha512provider.updateDigest(md, message, message.length);
+
+        sha512provider.finishDigest(hash, md);
         sc_reduce.sc_reduce(hash);
         System.arraycopy(hash, 0, h_scalar, 0, SCALARLEN);
         return true;
@@ -278,12 +264,14 @@ public class veddsa {
 
         ge_p3_tobytes.ge_p3_tobytes(cKv_bytes, cKv_point);
 
-        byte[] buf = new byte[2 * POINTLEN + labelset.length];
-        System.arraycopy(B_bytes, 0, buf, 0, POINTLEN);
-        System.arraycopy(labelset, 0, buf, POINTLEN, labelset.length);
-        System.arraycopy(cKv_bytes, 0, buf, POINTLEN + labelset.length, POINTLEN);
+        MessageDigest md = sha512provider.initDigest();
 
-        sha512provider.calculateDigest(hash, buf, buf.length);
+        sha512provider.updateDigest(md, B_bytes, POINTLEN);
+        sha512provider.updateDigest(md, labelset, labelset.length);
+        sha512provider.updateDigest(md, cKv_bytes, cKv_bytes.length);
+
+        sha512provider.finishDigest(hash, md);
+
         System.arraycopy(hash, 0, vrf_output, 0, VRFOUTPUTLEN);
         return true;
     }
@@ -354,7 +342,7 @@ public class veddsa {
                 labelset,
                 extra, 2 * POINTLEN,
                 eddsa_25519_pubkey_bytes, eddsa_25519_privkey_scalar,
-                random, M_buf, MSTART, msg.length)) {
+                random, msg)) {
             return false;
         }
 
@@ -367,7 +355,7 @@ public class veddsa {
         System.arraycopy(Rv_bytes, 0, extra, 2 * POINTLEN, POINTLEN);
         //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)
         if (!generalized_challenge(sha512provider, h_scalar,
-                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) {
+                labelset, extra, R_bytes, eddsa_25519_pubkey_bytes, msg)) {
             return false;
         }
 
@@ -457,7 +445,7 @@ public class veddsa {
         if (!generalized_challenge(sha512provider, h_calc_scalar,
                 labelset,
                 extra,
-                R_calc_bytes, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return false;
+                R_calc_bytes, eddsa_25519_pubkey_bytes, msg)) return false;
 
         // if bytes_equal(h, h')
         if (!java.util.Arrays.equals(h_scalar, h_calc_scalar)) return false;
