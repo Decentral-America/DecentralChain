@@ -7,14 +7,21 @@ pure Java when a native library is not available. There is also a J2ME build var
 
 ### JVM
 
-Just use `mvn build`
+Just use Gradle, for example `gradle jar` or `gradle uploadArchives`
 
 ### Native
+
+Call it from the root of project:
 
 ```
 mkdir jni/build
 cd jni/build
-cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .```
+cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
+```
+
+### Benchmark tests
+
+To run it call ```gradle jmh```
 
 ## Using
 
