@@ -82,3 +82,5 @@ boolean    validSignature = cipher.verifySignature(publicKey, message, signature
 Copyright 2015 Open Whisper Systems
 
 Licensed under the GPLv3: http://www.gnu.org/licenses/gpl-3.0.html
+
+Updated by Waves Platform in 2019-2020
