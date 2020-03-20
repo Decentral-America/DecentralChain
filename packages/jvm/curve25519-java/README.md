@@ -7,7 +7,7 @@ pure Java when a native library is not available. There is also a J2ME build var
 
 ### JVM
 
-Just use Gradle, for example `gradle jar` or `gradle uploadArchives`
+Just use Gradle, for example `gradle compileJava` or `gradle jar` to build jar.
 
 ### Native
 
