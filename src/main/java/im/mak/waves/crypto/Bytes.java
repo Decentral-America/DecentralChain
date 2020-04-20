@@ -30,6 +30,16 @@ public abstract class Bytes {
     }
 
     /**
+     * Creates a byte array from a single bytes.
+     *
+     * @param bytes single bytes
+     * @return array of bytes
+     */
+    public static byte[] of(byte... bytes) {
+        return bytes.clone();
+    }
+
+    /**
      * Checks that all byte arrays are equal.
      *
      * @param compared byte arrays

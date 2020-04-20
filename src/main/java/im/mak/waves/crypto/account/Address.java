@@ -158,24 +158,46 @@ public class Address {
             throw new IllegalArgumentException("Address has wrong length. " +
                     "Expected: " + 26 + " bytes, actual: " + addressBytes.length + " bytes");
         if (addressBytes[0] != 1)
-            throw new IllegalArgumentException("Address has unknown address version " + addressBytes[0]);
+            throw new IllegalArgumentException("Address has unknown version " + addressBytes[0]);
 
         byte[][] parts = Bytes.chunk(addressBytes, 22, 4);
-        byte[] checkSum = Hash.secureHash(parts[0]);
-        if (!Bytes.equal(parts[1], checkSum))
-            throw new IllegalArgumentException("Address has wrong checksum");
+        byte[] checkSumPrefix = Bytes.chunk(Hash.secureHash(parts[0]), 4)[0];
+        if (!Bytes.equal(parts[1], checkSumPrefix))
+            throw new IllegalArgumentException(String.format(
+                    "Address has wrong checksum base58:%s instead of base58:%s",
+                    Base58.encode(parts[1]),
+                    Base58.encode(checkSumPrefix)
+            ));
 
         this.bytes = addressBytes;
         this.encoded = Base58.encode(this.bytes);
     }
 
     /**
-     * Get blockchain network id of the address.
+     * Extract blockchain network id from the address.
      *
      * @return network id
      */
     public byte chainId() {
         return this.bytes[1];
+    }
+
+    /**
+     * Extract part of the public key hash from the address.
+     *
+     * @return public key hash
+     */
+    public byte[] publicKeyHash() {
+        return Bytes.chunk(this.bytes(), 2, 20)[1];
+    }
+
+    /**
+     * Extract checksum from the address.
+     *
+     * @return checksum
+     */
+    public byte[] checksum() {
+        return Bytes.chunk(this.bytes(), 22)[1];
     }
 
     /**

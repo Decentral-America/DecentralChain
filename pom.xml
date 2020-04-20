@@ -6,7 +6,7 @@
 
     <groupId>im.mak</groupId>
     <artifactId>waves-crypto-java</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
 
     <name>Waves Crypto for Java</name>
     <description>Tools to work with cryptographic primitives used in the Waves blockchain</description>
