@@ -1,41 +1,27 @@
 # curve25519-java
 
 A Java Curve25519 implementation that is backed by native code when available, and
-pure Java when a native library is not available. There is also a J2ME build variant.
+pure Java when a native library is not available.
 
-## Installing
+## Building
 
-To use on Android:
+### JVM
 
-```
-dependencies {
-  compile 'org.whispersystems:curve25519-android:(latest version number here)'
-}
-```
+Just use Gradle, for example `gradle compileJava` or `gradle jar` to build jar.
 
-To use from pure Java:
+### Native
+
+Call it from the root of project:
 
 ```
-<dependency>
-  <groupId>org.whispersystems</groupId>
-  <artifactId>curve25519-java</artifactId>
-  <version>(latest version number here)</version>
-</dependency>
+mkdir jni/build
+cd jni/build
+cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
 ```
 
-To use from J2ME:
+### Benchmark tests
 
-```
-<dependency>
-  <groupId>org.whispersystems</groupId>
-  <artifactId>curve25519-j2me</artifactId>
-  <version>(latest version number here)</version>
-</dependency>
-```
-
-
-The Android artifact is an AAR that contains an NDK-backed native implementation, while
-the Java artifact is a JAR that only contains the pure-Java Curve25519 provider.
+To run it call ```gradle jmh```
 
 ## Using
 
@@ -96,3 +82,5 @@ boolean    validSignature = cipher.verifySignature(publicKey, message, signature
 Copyright 2015 Open Whisper Systems
 
 Licensed under the GPLv3: http://www.gnu.org/licenses/gpl-3.0.html
+
+Updated by Waves Platform in 2019-2020
