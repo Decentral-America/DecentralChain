@@ -3,11 +3,11 @@ package org.whispersystems.curve25519.java;
 public class ge_isneutral {
     /**
      * Checks that the point is neutral
+     *
      * @param p point
      * @return true if p is the neutral point, false otherwise
      */
-    public static boolean ge_isneutral(ge_p3 p)
-    {
+    public static boolean ge_isneutral(ge_p3 p) {
         int[] zero = new int[10];
         fe_0.fe_0(zero);
 

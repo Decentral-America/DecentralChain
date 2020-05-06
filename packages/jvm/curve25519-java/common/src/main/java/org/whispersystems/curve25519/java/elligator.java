@@ -1,8 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 public class elligator {
-    public static int legendre_is_nonsquare(int[] in)
-    {
+    public static int legendre_is_nonsquare(int[] in) {
         int[] temp = new int[10];
         byte[] bytes = new byte[32];
         fe_pow22523.fe_pow22523(temp, in);  /* temp = in^((q-5)/8) */
@@ -20,8 +19,7 @@ public class elligator {
         return 1 & bytes[31];
     }
 
-    public static void elligator(int[] u, int[] r)
-    {
+    public static void elligator(int[] u, int[] r) {
         /* r = input
          * gen_x = -A/(1+2r^2)                # 2 is nonsquare
          * e = (gen_x^3 + Ax^2 + gen_x)^((q-1)/2) # legendre symbol
@@ -54,8 +52,7 @@ public class elligator {
         fe_cmov.fe_cmov(u, uneg, nonsquare);           /* gen_x, or -gen_x-A if nonsquare */
     }
 
-    public static void hash_to_point(Sha512 sha512provider, ge_p3 p, byte[] in)
-    {
+    public static void hash_to_point(Sha512 sha512provider, ge_p3 p, byte[] in) {
         byte[] hash = new byte[64];
         int[] h = new int[10], u = new int[10];
         ge_p3 p3 = new ge_p3();
@@ -63,7 +60,7 @@ public class elligator {
         sha512provider.calculateDigest(hash, in, in.length);
 
         /* take the high bit as Edwards sign bit */
-        byte sign_bit = (byte)((hash[31] & 0x80) >> 7);
+        byte sign_bit = (byte) ((hash[31] & 0x80) >> 7);
         hash[31] &= 0x7F;
         fe_frombytes.fe_frombytes(h, hash);
         elligator(u, h);

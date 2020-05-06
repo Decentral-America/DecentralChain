@@ -1,8 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 public class fe_montx_to_edy {
-    public static void fe_montx_to_edy(int[] y, int[] u)
-    {
+    public static void fe_montx_to_edy(int[] y, int[] u) {
       /*
          y = (u - 1) / (u + 1)
 

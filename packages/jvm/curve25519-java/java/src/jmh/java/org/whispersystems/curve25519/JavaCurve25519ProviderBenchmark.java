@@ -83,6 +83,7 @@ public class JavaCurve25519ProviderBenchmark {
     public void verifyInvalidVrfSignature(Blackhole blackhole, BenchmarkState bs) {
         try {
             blackhole.consume(bs.provider.verifyVrfSignature(bs.publicKey, bs.editedMessage, bs.vrfSignature));
-        } catch (VrfSignatureVerificationFailedException ignored) {}
+        } catch (VrfSignatureVerificationFailedException ignored) {
+        }
     }
 }

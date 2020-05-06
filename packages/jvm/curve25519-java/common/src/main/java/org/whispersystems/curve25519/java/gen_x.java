@@ -8,7 +8,7 @@ public class gen_x {
      * Convert the X25519 public key into an Ed25519 public key.
      * y = (u - 1) / (u + 1)
      * NOTE: u=-1 is converted to y=0 since fe_invert is mod-exp
-    */
+     */
     public static boolean convert_25519_pubkey(byte[] ed_pubkey_bytes, byte[] x25519_pubkey_bytes) {
         int[] u = fe_isreduced.fe_isreduced(x25519_pubkey_bytes);
 
@@ -24,7 +24,7 @@ public class gen_x {
     }
 
     public static void calculate_25519_keypair(byte[] K_bytes, byte[] k_scalar,
-                                              byte[] x25519_privkey_scalar) {
+                                               byte[] x25519_privkey_scalar) {
         byte[] kneg = new byte[SCALARLEN];
         ge_p3 ed_pubkey_point = new ge_p3(); /* Ed25519 pubkey point */
 

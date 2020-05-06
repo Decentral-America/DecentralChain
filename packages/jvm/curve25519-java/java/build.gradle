@@ -5,8 +5,8 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 archivesBaseName = "curve25519-java"
-version          = version_number
-group            = group_info
+version = version_number
+group = group_info
 
 repositories {
     mavenCentral()

@@ -4,6 +4,7 @@ public class crypto_verify_32 {
 
     /**
      * const time equality check of x and y byte arrays of length 32
+     *
      * @param x first byte array
      * @param y second byte array
      * @return 0 if equals, 1 if not

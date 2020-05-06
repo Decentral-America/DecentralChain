@@ -1,8 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 public class fe_isreduced {
-    public static int[] fe_isreduced(byte[] s)
-    {
+    public static int[] fe_isreduced(byte[] s) {
         int[] f = new int[10];
         byte[] strict = new byte[32];
 

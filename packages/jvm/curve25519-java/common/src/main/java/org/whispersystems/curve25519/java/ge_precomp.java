@@ -12,8 +12,8 @@ public class ge_precomp {
         yminusx = new int[10];
         xy2d = new int[10];
     }
-    
-    public ge_precomp(int[] new_yplusx, int[] new_yminusx, 
+
+    public ge_precomp(int[] new_yplusx, int[] new_yminusx,
                       int[] new_xy2d) {
         yplusx = new_yplusx;
         yminusx = new_yminusx;

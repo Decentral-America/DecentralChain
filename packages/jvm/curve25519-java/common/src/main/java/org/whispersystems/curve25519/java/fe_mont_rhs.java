@@ -2,8 +2,8 @@ package org.whispersystems.curve25519.java;
 
 public class fe_mont_rhs {
     public static void fe_mont_rhs(int[] v2, int[] u) {
-        int[] A = new int[10], one= new int[10];
-        int[] u2= new int[10], Au= new int[10], inner= new int[10];
+        int[] A = new int[10], one = new int[10];
+        int[] u2 = new int[10], Au = new int[10], inner = new int[10];
 
         fe_1.fe_1(one);
         fe_0.fe_0(A);

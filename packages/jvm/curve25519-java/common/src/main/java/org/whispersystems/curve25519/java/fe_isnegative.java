@@ -12,12 +12,11 @@ Preconditions:
    |f| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
 */
 
-public static int fe_isnegative(int[] f)
-{
-  byte[] s = new byte[32];
-  fe_tobytes.fe_tobytes(s,f);
-  return s[0] & 1;
-}
+    public static int fe_isnegative(int[] f) {
+        byte[] s = new byte[32];
+        fe_tobytes.fe_tobytes(s, f);
+        return s[0] & 1;
+    }
 
 
 }

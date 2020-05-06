@@ -15,7 +15,7 @@ public class ge_scalarmult {
     static void select(ge_cached t, ge_cached[] pre, byte b) {
         ge_cached minust = new ge_cached();
         byte bnegative = negative(b);
-        byte babs = (byte)(b - (((-bnegative) & b) << 1));
+        byte babs = (byte) (b - (((-bnegative) & b) << 1));
 
         fe_1.fe_1(t.YplusX);
         fe_1.fe_1(t.YminusX);

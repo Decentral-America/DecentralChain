@@ -18,7 +18,7 @@ public class veddsa {
     static final int LABELMAXLEN = Byte.MAX_VALUE;
 
     /**
-     *  the byte string representing the base point of Ed25519
+     * the byte string representing the base point of Ed25519
      */
     public static final byte[] B_bytes = {
             0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
@@ -28,7 +28,7 @@ public class veddsa {
     };
 
     private static byte[] labelset_new(String protocol_name,
-                                      byte[] customization_label, byte label) {
+                                       byte[] customization_label, byte label) {
         if (LABELSETMAXLEN < 3 + protocol_name.length() + customization_label.length + 2)
             return null;
         if (protocol_name.length() > LABELMAXLEN)
@@ -39,13 +39,13 @@ public class veddsa {
         byte[] protocol_name_bytes = protocol_name.getBytes();
 
         ByteBuffer bb = ByteBuffer.allocate(3 + protocol_name_bytes.length + customization_label.length + 2);
-        bb.put((byte)3);
-        bb.put((byte)protocol_name_bytes.length);
+        bb.put((byte) 3);
+        bb.put((byte) protocol_name_bytes.length);
         bb.put(protocol_name_bytes);
-        bb.put((byte)customization_label.length);
+        bb.put((byte) customization_label.length);
         bb.put(customization_label);
         assert bb.position() == 3 + protocol_name.length() + customization_label.length;
-        bb.put((byte)1);
+        bb.put((byte) 1);
         bb.put(label);
 
         assert bb.position() < LABELSETMAXLEN;
@@ -64,11 +64,11 @@ public class veddsa {
        r = hash(B || gen_labelset || Z || pad1 || k || pad2 || gen_labelset || K || extra || M) (mod q)
     */
     private static boolean generalized_commit(Sha512 sha512provider, byte[] R_bytes, byte[] r_scalar,
-                                         byte[] labelset,
-                                         byte[] extra, int extra_len,
-                                         byte[] K_bytes, byte[] k_scalar,
-                                         byte[] Z,
-                                         byte[] message) {
+                                              byte[] labelset,
+                                              byte[] extra, int extra_len,
+                                              byte[] K_bytes, byte[] k_scalar,
+                                              byte[] Z,
+                                              byte[] message) {
         ge_p3 R_point = new ge_p3();
         byte[] hash = new byte[HASHLEN];
 
@@ -121,18 +121,17 @@ public class veddsa {
     }
 
 
-
     /* if is_labelset_empty(gen_labelset):
            return hash(R || K || M) (mod q)
        else:
            return hash(B || gen_labelset || R || gen_labelset || K || extra || M) (mod q)
     */
     private static boolean generalized_challenge(Sha512 sha512provider, byte[] h_scalar,
-                                            byte[] labelset,
-                                            byte[] extra,
-                                            byte[] R_bytes,
-                                            byte[] K_bytes,
-                                            byte[] message) {
+                                                 byte[] labelset,
+                                                 byte[] extra,
+                                                 byte[] R_bytes,
+                                                 byte[] K_bytes,
+                                                 byte[] message) {
 
         byte[] hash = new byte[HASHLEN];
 
@@ -177,8 +176,8 @@ public class veddsa {
 
     /* R = s*B - h*K */
     private static boolean generalized_solve_commitment(byte[] R_bytes_out, ge_p3 K_point_out,
-                                                   ge_p3 B_point, byte[] s_scalar,
-                                                   byte[] K_bytes, byte[] h_scalar) {
+                                                        ge_p3 B_point, byte[] s_scalar,
+                                                        byte[] K_bytes, byte[] h_scalar) {
         if (R_bytes_out == null || R_bytes_out.length != POINTLEN) {
             return false;
         }
@@ -192,6 +191,7 @@ public class veddsa {
             return false;
         }
         ge_p3 Kneg_point = new ge_p3();
+        ge_p2 R_calc_point_p2 = new ge_p2();
 
         // check that they eddsa_25519_pubkey_bytes and Kv_bytes are on the curve
         if (ge_frombytes.ge_frombytes_negate_vartime(Kneg_point, K_bytes) != 0) {
@@ -230,9 +230,9 @@ public class veddsa {
     }
 
     private static boolean generalized_calculate_vrf_output(Sha512 sha512provider,
-                                                       byte[] vrf_output,
-                                                       byte[] labelset,
-                                                       ge_p3 cKv_point) {
+                                                            byte[] vrf_output,
+                                                            byte[] labelset,
+                                                            ge_p3 cKv_point) {
         byte[] cKv_bytes = new byte[POINTLEN];
         byte[] hash = new byte[HASHLEN];
 
@@ -267,7 +267,7 @@ public class veddsa {
             byte[] msg,
             byte[] random,
             byte[] customization_label) {
-        if (signature_out == null || signature_out.length != POINTLEN+2*SCALARLEN) {
+        if (signature_out == null || signature_out.length != POINTLEN + 2 * SCALARLEN) {
             return false;
         }
 
@@ -302,7 +302,7 @@ public class veddsa {
         System.arraycopy(msg, 0, M_buf, MSTART, msg.length);
 
         //  labelset1 = add_label(labels, "1")
-        byte[] labelset = labelset_new(protocol_name, customization_label, (byte)'1');
+        byte[] labelset = labelset_new(protocol_name, customization_label, (byte) '1');
 
         if (labelset == null) {
             return false;
@@ -404,7 +404,8 @@ public class veddsa {
         }
 
         //  Bv = hash(B || labelset1 || K || M)
-        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length)) return false;
+        if (!generalized_calculate_Bv(sha512provider, Bv_point, labelset, eddsa_25519_pubkey_bytes, M_buf, MSTART, msg.length))
+            return false;
         ge_p3_tobytes.ge_p3_tobytes(Bv_bytes, Bv_point);
 
         //  R = solve_commitment(B, s, K, h)
@@ -417,7 +418,8 @@ public class veddsa {
 
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cK_point, K_point);
         ge_scalarmult_cofactor.ge_scalarmult_cofactor(cKv_point, Kv_point);
-        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point)) return false;
+        if (ge_isneutral.ge_isneutral(cK_point) || ge_isneutral.ge_isneutral(cKv_point) || ge_isneutral.ge_isneutral(Bv_point))
+            return false;
 
         //  labelset3 = add_label(labels, "3")
         //  h = challenge(labelset3, (Bv || Kv || Rv), R, K, M)

@@ -4,8 +4,7 @@ public class ge_scalarmult_cofactor {
     /*
     return 8 * p
     */
-    public static void ge_scalarmult_cofactor(ge_p3 q, ge_p3 p)
-    {
+    public static void ge_scalarmult_cofactor(ge_p3 q, ge_p3 p) {
         ge_p1p1 p1p1 = new ge_p1p1();
         ge_p2 p2 = new ge_p2();
 

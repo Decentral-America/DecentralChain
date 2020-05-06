@@ -1,8 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 public class ge_p3_add {
-    public static void ge_p3_add(ge_p3 r, ge_p3 p, ge_p3 q)
-    {
+    public static void ge_p3_add(ge_p3 r, ge_p3 p, ge_p3 q) {
         ge_cached p_cached = new ge_cached();
         ge_p1p1 r_p1p1 = new ge_p1p1();
 
