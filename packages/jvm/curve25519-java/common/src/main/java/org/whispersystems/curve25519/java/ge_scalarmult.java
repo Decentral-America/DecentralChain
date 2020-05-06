@@ -14,22 +14,22 @@ public class ge_scalarmult {
 
     static void select(ge_cached t, ge_cached[] pre, byte b) {
         ge_cached minust = new ge_cached();
-        int bnegative = negative(b);
-        int babs = b - (((-bnegative) & b) << 1);
+        byte bnegative = negative(b);
+        byte babs = (byte)(b - (((-bnegative) & b) << 1));
 
         fe_1.fe_1(t.YplusX);
         fe_1.fe_1(t.YminusX);
         fe_1.fe_1(t.Z);
         fe_0.fe_0(t.T2d);
 
-        cmov(t, pre[0], equal((byte) babs, (byte) 1));
-        cmov(t, pre[1], equal((byte) babs, (byte) 2));
-        cmov(t, pre[2], equal((byte) babs, (byte) 3));
-        cmov(t, pre[3], equal((byte) babs, (byte) 4));
-        cmov(t, pre[4], equal((byte) babs, (byte) 5));
-        cmov(t, pre[5], equal((byte) babs, (byte) 6));
-        cmov(t, pre[6], equal((byte) babs, (byte) 7));
-        cmov(t, pre[7], equal((byte) babs, (byte) 8));
+        cmov(t, pre[0], equal(babs, (byte) 1));
+        cmov(t, pre[1], equal(babs, (byte) 2));
+        cmov(t, pre[2], equal(babs, (byte) 3));
+        cmov(t, pre[3], equal(babs, (byte) 4));
+        cmov(t, pre[4], equal(babs, (byte) 5));
+        cmov(t, pre[5], equal(babs, (byte) 6));
+        cmov(t, pre[6], equal(babs, (byte) 7));
+        cmov(t, pre[7], equal(babs, (byte) 8));
         fe_copy.fe_copy(minust.YplusX, t.YminusX);
         fe_copy.fe_copy(minust.YminusX, t.YplusX);
         fe_copy.fe_copy(minust.Z, t.Z);
@@ -37,15 +37,13 @@ public class ge_scalarmult {
         cmov(t, minust, bnegative);
     }
 
-/*
-h = a * B
-where a = a[0]+256*a[1]+...+256^31 a[31]
-B is the Ed25519 base point (x,4/5) with x positive.
+    /*
+    h = a*A, where A is the input
+    where a = a[0]+256*a[1]+...+256^31 a[31]
 
-Preconditions:
-  a[31] <= 127
-*/
-
+    Preconditions:
+      a[31] <= 127
+    */
     public static void ge_scalarmult(ge_p3 h, byte[] a, ge_p3 A) {
         byte[] e = new byte[64];
         byte carry;
@@ -60,7 +58,7 @@ Preconditions:
         int i;
 
         for (i = 0; i < 32; ++i) {
-            e[2 * i + 0] = (byte) ((a[i] >>> 0) & 15);
+            e[2 * i] = (byte) ((a[i]) & 15);
             e[2 * i + 1] = (byte) ((a[i] >>> 4) & 15);
         }
         /* each e[i] is between 0 and 15 */

@@ -2,8 +2,8 @@ package org.whispersystems.curve25519.java;
 
 public class ge_precomp_base_8_15 {
 
-  /* base[i][j] = (j+1)*256^i*B */
-  static ge_precomp base[][];
+    /* base[i][j] = (j+1)*256^i*B */
+    static ge_precomp[][] base;
 
   static {
 //CONVERT #include "base.h"

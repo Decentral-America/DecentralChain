@@ -7,20 +7,15 @@ public class ge_scalarmult_base {
 
 static int equal(byte b,byte c)
 {
-  int ub = b;
-  int uc = c;
-  int x = ub ^ uc; /* 0: yes; 1..255: no */
-  int y = x; /* 0: yes; 1..255: no */
+  int y = (int) b ^ (int) c; /* 0: yes; 1..255: no */
   y -= 1; /* 4294967295: yes; 0..254: no */
   y >>>= 31; /* 1: yes; 0: no */
   return y;
 }
 
-static int negative(byte b)
+static byte negative(byte b)
 {
-  long x = b; /* 18446744073709551361..18446744073709551615: yes; 0..255: no */
-  x >>>= 63; /* 1: yes; 0: no */
-  return (int)x;
+  return (byte)((b>>7)&1);
 }
 
 static void cmov(ge_precomp t,ge_precomp u,int b)
@@ -32,23 +27,23 @@ static void cmov(ge_precomp t,ge_precomp u,int b)
 
 static void select(ge_precomp t,int pos,byte b)
 {
-  ge_precomp base[][] =  (pos <= 7 ? ge_precomp_base_0_7.base :
-                           (pos <= 15 ? ge_precomp_base_8_15.base :
-                             (pos <= 23 ? ge_precomp_base_16_23.base : ge_precomp_base_24_31.base)));
+  ge_precomp[][] base = (pos <= 7 ? ge_precomp_base_0_7.base :
+          (pos <= 15 ? ge_precomp_base_8_15.base :
+                  (pos <= 23 ? ge_precomp_base_16_23.base : ge_precomp_base_24_31.base)));
 
   ge_precomp minust = new ge_precomp();
-  int bnegative = negative(b);
-  int babs = b - (((-bnegative) & b) << 1);
+  byte bnegative = negative(b);
+  byte babs = (byte)(b - (((-bnegative) & b) << 1));
 
   ge_precomp_0.ge_precomp_0(t);
-  cmov(t,base[pos][0],equal((byte)babs,(byte)1));
-  cmov(t,base[pos][1],equal((byte)babs,(byte)2));
-  cmov(t,base[pos][2],equal((byte)babs,(byte)3));
-  cmov(t,base[pos][3],equal((byte)babs,(byte)4));
-  cmov(t,base[pos][4],equal((byte)babs,(byte)5));
-  cmov(t,base[pos][5],equal((byte)babs,(byte)6));
-  cmov(t,base[pos][6],equal((byte)babs,(byte)7));
-  cmov(t,base[pos][7],equal((byte)babs,(byte)8));
+  cmov(t,base[pos][0],equal(babs,(byte)1));
+  cmov(t,base[pos][1],equal(babs,(byte)2));
+  cmov(t,base[pos][2],equal(babs,(byte)3));
+  cmov(t,base[pos][3],equal(babs,(byte)4));
+  cmov(t,base[pos][4],equal(babs,(byte)5));
+  cmov(t,base[pos][5],equal(babs,(byte)6));
+  cmov(t,base[pos][6],equal(babs,(byte)7));
+  cmov(t,base[pos][7],equal(babs,(byte)8));
   fe_copy.fe_copy(minust.yplusx,t.yminusx);
   fe_copy.fe_copy(minust.yminusx,t.yplusx);
   fe_neg.fe_neg(minust.xy2d,t.xy2d);
@@ -74,7 +69,7 @@ public static void ge_scalarmult_base(ge_p3 h,byte[] a)
   int i;
 
   for (i = 0;i < 32;++i) {
-    e[2 * i + 0] = (byte)((a[i] >>> 0) & 15);
+    e[2 * i] = (byte)((a[i]) & 15);
     e[2 * i + 1] = (byte)((a[i] >>> 4) & 15);
   }
   /* each e[i] is between 0 and 15 */

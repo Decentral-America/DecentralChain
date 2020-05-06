@@ -48,16 +48,16 @@ public static void fe_sub(int[] h,int[] f,int[] g)
   int h7 = f7 - g7;
   int h8 = f8 - g8;
   int h9 = f9 - g9;
-  h[0] = (int)h0;
-  h[1] = (int)h1;
-  h[2] = (int)h2;
-  h[3] = (int)h3;
-  h[4] = (int)h4;
-  h[5] = (int)h5;
-  h[6] = (int)h6;
-  h[7] = (int)h7;
-  h[8] = (int)h8;
-  h[9] = (int)h9;
+  h[0] = h0;
+  h[1] = h1;
+  h[2] = h2;
+  h[3] = h3;
+  h[4] = h4;
+  h[5] = h5;
+  h[6] = h6;
+  h[7] = h7;
+  h[8] = h8;
+  h[9] = h9;
 }
 
 

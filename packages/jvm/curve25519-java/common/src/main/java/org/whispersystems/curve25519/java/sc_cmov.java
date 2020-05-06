@@ -9,7 +9,7 @@ public class sc_cmov {
     */
 
     public static void sc_cmov(byte[] f, byte[] g, byte b) {
-        int count = 32;
+        int count;
         byte[] x = new byte[32];
         for (count = 0; count < 32; count++)
             x[count] = (byte) (f[count] ^ g[count]);

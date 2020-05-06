@@ -53,7 +53,7 @@ public static void fe_tobytes(byte[] s,int[] h)
   int carry8;
   int carry9;
 
-  q = (19 * h9 + (((int) 1) << 24)) >> 25;
+  q = (19 * h9 + (1 << 24)) >> 25;
   q = (h0 + q) >> 26;
   q = (h1 + q) >> 25;
   q = (h2 + q) >> 26;
@@ -88,7 +88,7 @@ public static void fe_tobytes(byte[] s,int[] h)
   Goal: Output h0+...+2^230 h9.
   */
 
-  s[0] = (byte)(h0 >> 0);
+  s[0] = (byte)(h0);
   s[1] = (byte)(h0 >> 8);
   s[2] = (byte)(h0 >> 16);
   s[3] = (byte)((h0 >> 24) | (h1 << 2));
@@ -104,7 +104,7 @@ public static void fe_tobytes(byte[] s,int[] h)
   s[13] = (byte)(h4 >> 2);
   s[14] = (byte)(h4 >> 10);
   s[15] = (byte)(h4 >> 18);
-  s[16] = (byte)(h5 >> 0);
+  s[16] = (byte)(h5);
   s[17] = (byte)(h5 >> 8);
   s[18] = (byte)(h5 >> 16);
   s[19] = (byte)((h5 >> 24) | (h6 << 1));

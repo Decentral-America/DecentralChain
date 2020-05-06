@@ -42,7 +42,7 @@ public class curve_sigs {
       ge_p3 ed_pubkey_point = new ge_p3(); /* Ed25519 pubkey point */
       byte[] ed_pubkey = new byte[32]; /* Ed25519 encoded pubkey */
       byte[] sigbuf = new byte[msg_len + 128]; /* working buffer */
-      byte sign_bit = 0;
+      byte sign_bit;
 
       /* Convert the Curve25519 privkey to an Ed25519 public key */
       ge_scalarmult_base.ge_scalarmult_base(ed_pubkey_point, curve25519_privkey);
@@ -99,7 +99,7 @@ public class curve_sigs {
       System.arraycopy(signature, 0, verifybuf, 0, 64);
       verifybuf[63] &= 0x7F;
 
-      System.arraycopy(msg, 0, verifybuf, 64, (int)msg_len);
+      System.arraycopy(msg, 0, verifybuf, 64, msg_len);
 
       /* Then perform a normal Ed25519 verification, return 0 on success */
       /* The below call has a strange API: */

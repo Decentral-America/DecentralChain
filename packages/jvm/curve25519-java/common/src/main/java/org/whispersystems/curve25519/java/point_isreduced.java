@@ -3,11 +3,11 @@ package org.whispersystems.curve25519.java;
 public class point_isreduced {
     public static boolean point_isreduced(byte[] p)
     {
-        byte[] strict = new byte[32];
-
-        System.arraycopy(p, 0, strict, 0, 32);
-        strict[31] &= 0x7F; /* mask off sign bit */
-        return fe_isreduced.fe_isreduced(strict);
+        byte prevp31Value = p[31];
+        p[31] &= 0x7F; /* mask off sign bit */
+        int[] result = fe_isreduced.fe_isreduced(p);
+        p[31] = prevp31Value;
+        return result != null;
     }
 
 }
