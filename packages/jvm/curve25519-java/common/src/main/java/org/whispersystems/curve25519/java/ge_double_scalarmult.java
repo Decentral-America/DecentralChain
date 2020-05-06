@@ -91,7 +91,7 @@ and b = b[0]+256*b[1]+...+256^31 b[31].
 B is the Ed25519 base point (x,4/5) with x positive.
 */
 
-public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] b)
+public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] b, ge_p3 B)
 {
   byte[] aslide = new byte[256];
   byte[] bslide = new byte[256];
@@ -101,6 +101,12 @@ public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] 
   ge_p1p1 t = new ge_p1p1();
   ge_p3 u = new ge_p3();
   ge_p3 A2 = new ge_p3();
+
+  ge_cached Bi_noconst[] = new ge_cached[8]; /* B,3B,5B,7B,9B,11B,13B,15B */
+  for (int count=0; count < 8; count++)
+    Bi_noconst[count] = new ge_cached();
+
+  ge_p3 B2 = new ge_p3();
   int i;
 
   slide(aslide,a);
@@ -115,6 +121,19 @@ public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] 
   ge_add.ge_add(t,A2,Ai[4]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Ai[5],u);
   ge_add.ge_add(t,A2,Ai[5]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Ai[6],u);
   ge_add.ge_add(t,A2,Ai[6]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Ai[7],u);
+
+  if(B != null){
+    ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[0],B);
+    ge_p3_dbl.ge_p3_dbl(t,B); ge_p1p1_to_p3.ge_p1p1_to_p3(B2,t);
+    ge_add.ge_add(t,B2,Bi_noconst[0]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[1],u);
+    ge_add.ge_add(t,B2,Bi_noconst[1]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[2],u);
+    ge_add.ge_add(t,B2,Bi_noconst[2]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[3],u);
+    ge_add.ge_add(t,B2,Bi_noconst[3]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[4],u);
+    ge_add.ge_add(t,B2,Bi_noconst[4]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[5],u);
+    ge_add.ge_add(t,B2,Bi_noconst[5]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[6],u);
+    ge_add.ge_add(t,B2,Bi_noconst[6]); ge_p1p1_to_p3.ge_p1p1_to_p3(u,t); ge_p3_to_cached.ge_p3_to_cached(Bi_noconst[7],u);
+  }
+
 
   ge_p2_0.ge_p2_0(r);
 
@@ -135,10 +154,15 @@ public static void ge_double_scalarmult_vartime(ge_p2 r,byte[] a,ge_p3 A,byte[] 
 
     if (bslide[i] > 0) {
       ge_p1p1_to_p3.ge_p1p1_to_p3(u,t);
-      ge_madd.ge_madd(t,u,Bi[bslide[i]/2]);
+
+      if(B == null) ge_madd.ge_madd(t,u,Bi[bslide[i]/2]);
+      else ge_add.ge_add(t,u,Bi_noconst[bslide[i]/2]);
+
     } else if (bslide[i] < 0) {
       ge_p1p1_to_p3.ge_p1p1_to_p3(u,t);
-      ge_msub.ge_msub(t,u,Bi[(-bslide[i])/2]);
+
+      if(B == null) ge_msub.ge_msub(t,u,Bi[(-bslide[i])/2]);
+      else ge_sub.ge_sub(t,u,Bi_noconst[-bslide[i]/2]);
     }
 
     ge_p1p1_to_p2.ge_p1p1_to_p2(r,t);

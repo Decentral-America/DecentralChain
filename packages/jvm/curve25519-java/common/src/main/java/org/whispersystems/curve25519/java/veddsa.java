@@ -145,20 +145,8 @@ public class veddsa {
             return -1;
         }
 
-        if (B_point == null) {
-            ge_double_scalarmult.ge_double_scalarmult_vartime(R_calc_point_p2, h_scalar, Kneg_point, s_scalar);
-            ge_tobytes.ge_tobytes(R_bytes_out, R_calc_point_p2);
-        } else {
-            // s * Bv
-            ge_scalarmult.ge_scalarmult(sB, s_scalar, B_point);
-
-            // h * -K
-            ge_scalarmult.ge_scalarmult(hK, h_scalar, Kneg_point);
-
-            // R = sB - hK
-            ge_p3_add.ge_p3_add(R_calc_point_p3, sB, hK);
-            ge_p3_tobytes.ge_p3_tobytes(R_bytes_out, R_calc_point_p3);
-        }
+        ge_double_scalarmult.ge_double_scalarmult_vartime(R_calc_point_p2, h_scalar, Kneg_point, s_scalar, B_point);
+        ge_tobytes.ge_tobytes(R_bytes_out, R_calc_point_p2);
 
         if (K_point_out != null) {
             ge_neg.ge_neg(K_point_out, Kneg_point);

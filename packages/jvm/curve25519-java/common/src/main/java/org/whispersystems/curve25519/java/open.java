@@ -40,7 +40,7 @@ public static int crypto_sign_open(
   sha512provider.calculateDigest(h,m,smlen);
   sc_reduce.sc_reduce(h);
 
-  ge_double_scalarmult.ge_double_scalarmult_vartime(R,h,A,scopy);
+  ge_double_scalarmult.ge_double_scalarmult_vartime(R,h,A,scopy,null);
   ge_tobytes.ge_tobytes(rcheck,R);
   if (crypto_verify_32.crypto_verify_32(rcheck,rcopy) == 0) {
     System.arraycopy(m, 64, m, 0, (int)(smlen - 64));
