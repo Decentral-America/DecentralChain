@@ -1,4 +1,4 @@
 subprojects {
     ext.version_number = "0.6.3"
-    ext.group_info     = "com.wavesplatform"
+    ext.group_info = "com.wavesplatform"
 }
