@@ -17,7 +17,7 @@ import java.util.List;
 import static im.mak.waves.crypto.Bytes.concat;
 import static im.mak.waves.crypto.Bytes.of;
 
-public class LegacyBinarySerializer {
+public abstract class LegacyBinarySerializer {
 
     public static byte[] bodyBytes(Transaction tx) {
         byte[] result = Bytes.empty();

@@ -16,6 +16,12 @@ public class Recipient {
         this.alias = alias;
     }
 
+    public static Recipient as(String addressOrAlias) {
+        return Address.isValid(addressOrAlias)
+                ? as(Address.as(addressOrAlias))
+                : as(Alias.as(addressOrAlias));
+    }
+
     public static Recipient as(Address address) {
         return new Recipient(address);
     }

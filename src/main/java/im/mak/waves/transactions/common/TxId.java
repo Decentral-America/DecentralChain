@@ -6,20 +6,20 @@ public class TxId extends Base58Encoded {
 
     public static final int BYTE_LENGTH = 32;
 
-    public static TxId id(byte[] id) {
-        return new TxId(id);
-    }
-
-    public static TxId id(String id) {
-        return new TxId(id);
-    }
-
     public TxId(byte[] id) {
         super(id);
     }
 
     public TxId(String id) {
         super(id);
+    }
+
+    public static TxId id(byte[] id) {
+        return new TxId(id);
+    }
+
+    public static TxId id(String id) {
+        return new TxId(id);
     }
 
     @Override

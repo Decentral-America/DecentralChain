@@ -5,10 +5,6 @@ import java.util.List;
 
 public class Function {
 
-    public static Function defaultFunction() {
-        return new Function(null);
-    }
-
     private String name;
     private List<Arg> args;
 
@@ -19,6 +15,10 @@ public class Function {
     public Function(String name, List<Arg> args) {
         this.name = name;
         this.args = args;
+    }
+
+    public static Function defaultFunction() {
+        return new Function(null);
     }
 
     public String name() {

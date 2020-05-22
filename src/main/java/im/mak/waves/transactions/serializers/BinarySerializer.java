@@ -1,6 +1,5 @@
 package im.mak.waves.transactions.serializers;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.crypto.account.PublicKey;
@@ -11,11 +10,10 @@ import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import static im.mak.waves.transactions.serializers.ProtobufConverter.recipientFromProto;
 
-public class BinarySerializer {
+public abstract class BinarySerializer {
 
     public static byte[] bodyBytes(Transaction tx) {
         int protobufVersion = 0;

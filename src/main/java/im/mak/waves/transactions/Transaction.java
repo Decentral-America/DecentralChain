@@ -5,9 +5,10 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WithBody;
 import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WithBody;
 import im.mak.waves.transactions.serializers.BinarySerializer;
+import im.mak.waves.transactions.serializers.JsonSerializer;
 import im.mak.waves.transactions.serializers.ProtobufConverter;
 
 import java.io.IOException;
@@ -27,12 +28,6 @@ public abstract class Transaction implements WithBody {
     private final List<Proof> proofs;
     private byte[] bodyBytes;
 
-    public static Transaction fromBytes(byte[] bytes) throws IOException {
-        return BinarySerializer.fromBytes(bytes);
-    }
-
-    //todo method to calculate fee/size coefficient (and fee by the target coefficient)
-
     protected Transaction(int type, int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
         this.type = type;
         this.version = version;
@@ -42,6 +37,20 @@ public abstract class Transaction implements WithBody {
         this.feeAsset = feeAsset;
         this.timestamp = timestamp;
         this.proofs = proofs == null ? Proof.emptyList() : new ArrayList<>(proofs);
+    }
+
+    public static Transaction fromBytes(byte[] bytes) throws IOException {
+        return BinarySerializer.fromBytes(bytes);
+    }
+
+    public static Transaction fromJson(String json) throws IOException {
+        return JsonSerializer.fromJson(json);
+    }
+
+    //todo method to calculate fee/size coefficient (and fee by the target coefficient)
+
+    public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction protobufTx) {
+        return ProtobufConverter.fromProtobuf(protobufTx);
     }
 
     public int type() {
@@ -92,9 +101,21 @@ public abstract class Transaction implements WithBody {
         return ProtobufConverter.toProtobuf(this);
     }
 
+    public String toPrettyJson() {
+        return JsonSerializer.toPrettyJson(this);
+    }
+
+    public String toJson() {
+        return JsonSerializer.toJson(this);
+    }
+
+    //TODO support java 8 and 11
     //TODO implement clone in crypto lib and in all getters and constructors
     //TODO this+children: hashCode, equals, toString
     //TODO basic validations in builder/constructor
+    //TODO check access to everything
+
+    //todo boolean equals(String json)
 
     @Override
     public boolean equals(Object o) {

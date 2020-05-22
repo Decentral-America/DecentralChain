@@ -12,7 +12,11 @@ import im.mak.waves.transactions.common.Recipient;
 
 import java.util.stream.Collectors;
 
-public class ProtobufConverter {
+public abstract class ProtobufConverter {
+
+    public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction protobufTx) {
+        return null; //todo
+    }
 
     public static TransactionOuterClass.Transaction toUnsignedProtobuf(Transaction tx) {
         TransactionOuterClass.Transaction.Builder protoBuilder = TransactionOuterClass.Transaction.newBuilder()

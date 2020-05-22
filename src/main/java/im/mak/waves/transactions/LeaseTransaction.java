@@ -1,12 +1,9 @@
 package im.mak.waves.transactions;
 
-import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
-import im.mak.waves.transactions.serializers.BinarySerializer;
-import im.mak.waves.transactions.serializers.ProtobufConverter;
 
 import java.io.IOException;
 import java.util.List;

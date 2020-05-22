@@ -10,6 +10,7 @@ public interface WithBody {
     }
 
     byte[] bodyBytes();
+
     byte[] toBytes() throws InvalidProtocolBufferException;
 
 }
