@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.LeaseCancelTransaction;
-import im.mak.waves.transactions.LeaseTransaction;
-import im.mak.waves.transactions.Transaction;
-import im.mak.waves.transactions.TransferTransaction;
+import im.mak.waves.crypto.base.Base64;
+import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
@@ -42,43 +40,43 @@ public abstract class JsonSerializer {
                 proofs.add(Proof.as(jProofs.get(i).asText()));
         }
 
-        if (type == TransferTransaction.TYPE) {
+        if (type == IssueTransaction.TYPE) {
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new IssueTransaction(sender, jsonNode.get("name").asText(), jsonNode.get("description").asText(),
+                    jsonNode.get("quantity").asLong(), jsonNode.get("decimals").asInt(), jsonNode.get("reissuable").asBoolean(),
+                    Base64.decode(jsonNode.get("script").asText()), chainId, fee, timestamp, version, proofs);
+        } if (type == TransferTransaction.TYPE) {
             Recipient recipient = Recipient.as(jsonNode.get("recipient").asText());
             if (version < 3)
                 chainId = recipient.chainId();
             Asset asset = jsonNode.has("assetId") ? Asset.id(jsonNode.get("assetId").asText(null)) : Asset.WAVES;
             //fixme not typed, NODE-2145
             String attachment = jsonNode.has("attachment") ? jsonNode.get("attachment").asText("") : "";
-            Transaction tx = new TransferTransaction(sender, recipient, jsonNode.get("amount").asLong(), asset,
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new TransferTransaction(sender, recipient, jsonNode.get("amount").asLong(), asset,
                     attachment, chainId, fee, feeAssetId, timestamp, version, proofs);
-            if (version == 1 && jsonNode.has("signature")) {
-                tx.proofs().clear();
-                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
-            }
-            return tx;
         } else if (type == LeaseTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
             Recipient recipient = Recipient.as(jsonNode.get("recipient").asText());
             if (version < 3)
                 chainId = recipient.chainId();
-            Transaction tx = new LeaseTransaction(
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new LeaseTransaction(
                     sender, recipient, jsonNode.get("amount").asLong(), chainId, fee, timestamp, version, proofs);
-            if (version == 1 && jsonNode.has("signature")) {
-                tx.proofs().clear();
-                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
-            }
-            return tx;
         } else if (type == LeaseCancelTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseCancelTransaction");
-            Transaction tx = new LeaseCancelTransaction(
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new LeaseCancelTransaction(
                     sender, TxId.id(jsonNode.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
-            if (version == 1 && jsonNode.has("signature")) {
-                tx.proofs().clear();
-                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
-            }
-            return tx;
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -97,7 +95,22 @@ public abstract class JsonSerializer {
         tx.proofs().forEach(p -> proofs.add(p.toString()));
 
         String signature = null;
-        if (tx instanceof LeaseTransaction) {
+        if (tx instanceof IssueTransaction) {
+            IssueTransaction itx = (IssueTransaction) tx;
+            obj.put("name", itx.name());
+            obj.put("description", itx.description());
+            obj.put("quantity", itx.quantity());
+            obj.put("decimals", itx.decimals());
+            obj.put("reissuable", itx.isReissuable());
+            obj.put("script", itx.compiledScript().length > 0 ? Base64.encode(itx.compiledScript()) : null);
+            if (itx.version() == 1) {
+                obj.remove("chainId");
+                signature = itx.proofs().get(0).toString();
+            }
+        } else if (tx instanceof TransferTransaction) {
+            TransferTransaction ttx = (TransferTransaction) tx;
+            //fixme transfer, NODE-2145
+        } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
             obj.put("recipient", ltx.recipient().toString());
             obj.put("amount", ltx.amount());

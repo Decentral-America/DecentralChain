@@ -56,8 +56,8 @@ public class LeaseTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LeaseTransaction that = (LeaseTransaction) o;
-        return amount == that.amount &&
-                recipient.equals(that.recipient);
+        return this.amount == that.amount
+                && this.recipient.equals(that.recipient);
     }
 
     @Override

@@ -5,10 +5,7 @@ import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.crypto.account.Address;
-import im.mak.waves.transactions.LeaseCancelTransaction;
-import im.mak.waves.transactions.LeaseTransaction;
-import im.mak.waves.transactions.Transaction;
-import im.mak.waves.transactions.TransferTransaction;
+import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.Alias;
 import im.mak.waves.transactions.common.Recipient;
 
@@ -32,7 +29,17 @@ public abstract class ProtobufConverter {
                         .build())
                 .setTimestamp(tx.timestamp());
 
-        if (tx instanceof TransferTransaction) {
+        if (tx instanceof IssueTransaction) {
+            IssueTransaction itx = (IssueTransaction) tx;
+            protoBuilder.setIssue(TransactionOuterClass.IssueTransactionData.newBuilder()
+                    .setNameBytes(ByteString.copyFrom(itx.nameBytes()))
+                    .setDescriptionBytes(ByteString.copyFrom(itx.descriptionBytes()))
+                    .setAmount(itx.quantity())
+                    .setDecimals(itx.decimals())
+                    .setReissuable(itx.isReissuable())
+                    .setScript(ByteString.copyFrom(itx.compiledScript()))
+                    .build());
+        } else if (tx instanceof TransferTransaction) {
             TransferTransaction ttx = (TransferTransaction) tx;
             protoBuilder.setTransfer(TransactionOuterClass.TransferTransactionData.newBuilder()
                     .setRecipient(recipientToProto(ttx.recipient()))
