@@ -24,6 +24,10 @@ public class Asset extends Base58Encoded {
         return new Asset(id);
     }
 
+    public boolean isWaves() {
+        return Bytes.equal(this.bytes(), Bytes.empty());
+    }
+
     @Override
     protected byte[] validateAndGet(byte[] value) throws IllegalArgumentException {
         if (value.length == 0)

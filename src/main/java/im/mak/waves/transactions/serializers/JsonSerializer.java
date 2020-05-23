@@ -8,6 +8,7 @@ import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.LeaseCancelTransaction;
 import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
+import im.mak.waves.transactions.TransferTransaction;
 import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public abstract class JsonSerializer {
         PublicKey sender = PublicKey.as(jsonNode.get("senderPublicKey").asText());
         //todo validate sender address if exists? configurable? jsonNode.get("sender").asText(sender.address())
         long fee = jsonNode.get("fee").asLong();
-        String feeAssetId = jsonNode.get("feeAssetId").asText(null);
+        Asset feeAssetId = Asset.id(jsonNode.get("feeAssetId").asText(null));
         long timestamp = jsonNode.get("timestamp").asLong();
         //todo validate id if exists? configurable?
         //todo what if some field doesn't exist? Default values, e.g. for proofs
@@ -41,19 +42,43 @@ public abstract class JsonSerializer {
                 proofs.add(Proof.as(jProofs.get(i).asText()));
         }
 
-        if (type == LeaseTransaction.TYPE) {
-            if (feeAssetId != null)
+        if (type == TransferTransaction.TYPE) {
+            Recipient recipient = Recipient.as(jsonNode.get("recipient").asText());
+            if (version < 3)
+                chainId = recipient.chainId();
+            Asset asset = jsonNode.has("assetId") ? Asset.id(jsonNode.get("assetId").asText(null)) : Asset.WAVES;
+            //fixme not typed, NODE-2145
+            String attachment = jsonNode.has("attachment") ? jsonNode.get("attachment").asText("") : "";
+            Transaction tx = new TransferTransaction(sender, recipient, jsonNode.get("amount").asLong(), asset,
+                    attachment, chainId, fee, feeAssetId, timestamp, version, proofs);
+            if (version == 1 && jsonNode.has("signature")) {
+                tx.proofs().clear();
+                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
+            }
+            return tx;
+        } else if (type == LeaseTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
             Recipient recipient = Recipient.as(jsonNode.get("recipient").asText());
             if (version < 3)
                 chainId = recipient.chainId();
-            return new LeaseTransaction(
+            Transaction tx = new LeaseTransaction(
                     sender, recipient, jsonNode.get("amount").asLong(), chainId, fee, timestamp, version, proofs);
+            if (version == 1 && jsonNode.has("signature")) {
+                tx.proofs().clear();
+                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
+            }
+            return tx;
         } else if (type == LeaseCancelTransaction.TYPE) {
-            if (feeAssetId != null)
+            if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseCancelTransaction");
-            return new LeaseCancelTransaction(
+            Transaction tx = new LeaseCancelTransaction(
                     sender, TxId.id(jsonNode.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
+            if (version == 1 && jsonNode.has("signature")) {
+                tx.proofs().clear();
+                tx.proofs().add(Proof.as(jsonNode.get("signature").asText()));
+            }
+            return tx;
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);

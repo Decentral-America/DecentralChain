@@ -1,11 +1,13 @@
 package im.mak.waves.transactions.serializers;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.LeaseCancelTransaction;
 import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
+import im.mak.waves.transactions.TransferTransaction;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.TxId;
@@ -18,7 +20,8 @@ public abstract class BinarySerializer {
 
     public static byte[] bodyBytes(Transaction tx) {
         int protobufVersion = 0;
-        if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
+        if (tx instanceof TransferTransaction) protobufVersion = TransferTransaction.LATEST_VERSION;
+        else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         //todo other types
 
@@ -31,7 +34,8 @@ public abstract class BinarySerializer {
 
     public static byte[] toBytes(Transaction tx) {
         int protobufVersion = 0;
-        if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
+        if (tx instanceof TransferTransaction) protobufVersion = TransferTransaction.LATEST_VERSION;
+        else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         //todo other types
 
@@ -55,7 +59,23 @@ public abstract class BinarySerializer {
         TransactionOuterClass.Transaction tx = signed.getTransaction();
 
         //todo other types
-        if (tx.hasLease()) {
+        if (tx.hasTransfer()) {
+            TransactionOuterClass.TransferTransactionData transfer = tx.getTransfer();
+            AmountOuterClass.Amount amount = transfer.getAmount();
+            TransferTransaction ttx = TransferTransaction
+                    .with(recipientFromProto(transfer.getRecipient(), (byte) tx.getChainId()), amount.getAmount())
+                    .asset(Asset.id(amount.getAssetId().toByteArray()))
+                    .attachment(transfer.getAttachment().getStringValue()) //fixme not typed, NODE-2145
+                    .version(tx.getVersion())
+                    .chainId((byte) tx.getChainId())
+                    .sender(PublicKey.as(tx.getSenderPublicKey().toByteArray()))
+                    .fee(tx.getFee().getAmount())
+                    .feeAsset(Asset.id(tx.getFee().getAssetId().toByteArray()))
+                    .timestamp(tx.getTimestamp())
+                    .get();
+            signed.getProofsList().forEach(p -> ttx.proofs().add(Proof.as(p.toByteArray())));
+            return ttx;
+        } else if (tx.hasLease()) {
             TransactionOuterClass.LeaseTransactionData lease = tx.getLease();
             LeaseTransaction ltx = LeaseTransaction
                     .with(recipientFromProto(lease.getRecipient(), (byte) tx.getChainId()), lease.getAmount())

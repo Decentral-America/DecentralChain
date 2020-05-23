@@ -8,6 +8,7 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.transactions.LeaseCancelTransaction;
 import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
+import im.mak.waves.transactions.TransferTransaction;
 import im.mak.waves.transactions.common.Alias;
 import im.mak.waves.transactions.common.Recipient;
 
@@ -31,7 +32,19 @@ public abstract class ProtobufConverter {
                         .build())
                 .setTimestamp(tx.timestamp());
 
-        if (tx instanceof LeaseTransaction) {
+        if (tx instanceof TransferTransaction) {
+            TransferTransaction ttx = (TransferTransaction) tx;
+            protoBuilder.setTransfer(TransactionOuterClass.TransferTransactionData.newBuilder()
+                    .setRecipient(recipientToProto(ttx.recipient()))
+                    .setAmount(AmountOuterClass.Amount.newBuilder()
+                            .setAmount(ttx.amount())
+                            .setAssetId(ByteString.copyFrom(ttx.asset().bytes()))
+                            .build())
+                    .setAttachment(TransactionOuterClass.Attachment.newBuilder()
+                            .setStringValue(ttx.attachment())
+                            .build())
+                    .build());
+        } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
             protoBuilder.setLease(TransactionOuterClass.LeaseTransactionData.newBuilder()
                     .setRecipient(recipientToProto(ltx.recipient()))
