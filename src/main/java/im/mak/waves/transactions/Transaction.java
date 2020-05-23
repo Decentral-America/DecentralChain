@@ -111,9 +111,10 @@ public abstract class Transaction implements WithBody {
 
     //TODO support java 8 and 11
     //TODO implement clone in crypto lib and in all getters and constructors
-    //TODO this+children: hashCode, equals, toString
     //TODO basic validations in builder/constructor
     //TODO check access to everything
+    //TODO check all ") throws {", "throw new" and "catch". Maybe wrap to own exceptions with message patterns?
+    //TODO simplified method to check kind of tx version (with signature, with proofs, protobuf)
 
     //todo boolean equals(String json)
 

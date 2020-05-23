@@ -5,6 +5,7 @@ import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.crypto.account.Address;
+import im.mak.waves.transactions.LeaseCancelTransaction;
 import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
 import im.mak.waves.transactions.common.Alias;
@@ -32,13 +33,14 @@ public abstract class ProtobufConverter {
 
         if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
-            RecipientOuterClass.Recipient recipient = ltx.recipient().isAlias()
-                    ? RecipientOuterClass.Recipient.newBuilder().setAlias(ltx.recipient().alias().value()).build()
-                    : RecipientOuterClass.Recipient.newBuilder().setPublicKeyHash(ByteString.copyFrom(
-                    ltx.recipient().address().publicKeyHash())).build();
             protoBuilder.setLease(TransactionOuterClass.LeaseTransactionData.newBuilder()
-                    .setRecipient(recipient)
+                    .setRecipient(recipientToProto(ltx.recipient()))
                     .setAmount(ltx.amount())
+                    .build());
+        } else if (tx instanceof LeaseCancelTransaction) {
+            LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
+            protoBuilder.setLeaseCancel(TransactionOuterClass.LeaseCancelTransactionData.newBuilder()
+                    .setLeaseId(ByteString.copyFrom(lctx.leaseId().bytes()))
                     .build());
         } //todo other types
 

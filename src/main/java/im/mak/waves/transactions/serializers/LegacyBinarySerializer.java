@@ -4,11 +4,10 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Bytes.ByteReader;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.LeaseCancelTransaction;
 import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
-import im.mak.waves.transactions.common.Alias;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Recipient;
+import im.mak.waves.transactions.common.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public abstract class LegacyBinarySerializer {
             if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 if (ltx.version() > 2)
-                    throw new RuntimeException("not legacy"); //todo what an exception is better?
+                    throw new RuntimeException("not legacy");
 
                 boolean withProofs = ltx.version() == 2;
 
@@ -39,6 +38,21 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.fromLong(ltx.amount()));
                 stream.write(Bytes.fromLong(ltx.fee()));
                 stream.write(Bytes.fromLong(ltx.timestamp()));
+            } else if (tx instanceof LeaseCancelTransaction) {
+                LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
+                if (lctx.version() > 2)
+                    throw new RuntimeException("not legacy");
+
+                boolean withProofs = lctx.version() == 2;
+
+                stream.write(Bytes.of((byte) lctx.type()));
+                if (withProofs)
+                    stream.write(Bytes.of((byte) lctx.version(), lctx.chainId()));
+
+                stream.write(lctx.sender().bytes());
+                stream.write(Bytes.fromLong(lctx.fee()));
+                stream.write(Bytes.fromLong(lctx.timestamp()));
+                stream.write(lctx.leaseId().bytes());
             } //todo other types
 
             result = stream.toByteArray();
@@ -50,7 +64,6 @@ public abstract class LegacyBinarySerializer {
     }
 
     public static byte[] bytes(Transaction tx) {
-        byte[] result = Bytes.empty();
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
@@ -59,13 +72,20 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.of((byte) 0));
                 stream.write(ltx.bodyBytes());
                 stream.write(proofsToBytes(ltx.proofs(), withProofs));
-
-                result = stream.toByteArray();
+            } else if (tx instanceof LeaseCancelTransaction) {
+                LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
+                boolean withProofs = lctx.version() == 2;
+                if (withProofs)
+                    stream.write(Bytes.of((byte) 0));
+                stream.write(lctx.bodyBytes());
+                stream.write(proofsToBytes(lctx.proofs(), withProofs));
             } //todo other types
+
+            return stream.toByteArray();
         } catch (IOException e) {
             e.printStackTrace(); //todo
         }
-        return result;
+        return null; //todo exception
     }
 
     public static Transaction fromBytes(byte[] bytes) throws IOException {
@@ -83,6 +103,8 @@ public abstract class LegacyBinarySerializer {
         if (type == 1) throw new IOException("Genesis transactions are not supported"); //todo
         else if (type == 2) throw new IOException("Payment transactions are not supported"); //todo
         else if (type == LeaseTransaction.TYPE) transaction = lease(reader, version, withProofs);
+        else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
+        //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
         if (reader.hasNext())
@@ -93,11 +115,11 @@ public abstract class LegacyBinarySerializer {
         return transaction;
     }
 
-    private static LeaseTransaction lease(ByteReader data, int version, boolean withProofs) throws IOException {
-        if (withProofs && data.read() != 0)
+    protected static LeaseTransaction lease(ByteReader data, int version, boolean withProofs) throws IOException {
+        if (version == 2 && data.read() != 0)
             throw new IOException("Reserved field must be 0");
 
-        PublicKey sender = PublicKey.as(data.read(32)); //todo PublicKey.LENGTH
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         Recipient recipient = readRecipient(data);
         long amount = data.readLong();
         long fee = data.readLong();
@@ -109,7 +131,20 @@ public abstract class LegacyBinarySerializer {
         return tx;
     }
 
-    private static Recipient readRecipient(ByteReader data) throws IOException {
+    protected static LeaseCancelTransaction leaseCancel(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = version == 2 ? data.read() : Waves.chainId;
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        TxId leaseId = TxId.id(data.read(TxId.BYTE_LENGTH));
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        LeaseCancelTransaction tx = new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version);
+        proofs.forEach(p -> tx.proofs().add(p)); //todo `Proofs extends List` or move proofs to builder
+        return tx;
+    }
+
+    protected static Recipient readRecipient(ByteReader data) throws IOException {
         byte recipientType = data.read(); //todo Recipient.from(bytes) or Alias.from(bytes)
         if (recipientType == 1)
             return Recipient.as(Address.as(concat(of(recipientType), data.read(25)))); //todo Address.LENGTH
@@ -118,7 +153,7 @@ public abstract class LegacyBinarySerializer {
         } else throw new IOException("Unknown recipient type");
     }
 
-    private static byte[] recipientToBytes(Recipient recipient) {
+    protected static byte[] recipientToBytes(Recipient recipient) {
         if (recipient.isAlias())
             return Bytes.concat(
                     Bytes.of((byte) 2, recipient.chainId()),
@@ -127,7 +162,7 @@ public abstract class LegacyBinarySerializer {
             return recipient.address().bytes();
     }
 
-    private static List<Proof> readProofs(ByteReader data, boolean withProofs) throws IOException {
+    protected static List<Proof> readProofs(ByteReader data, boolean withProofs) throws IOException {
         if (withProofs) {
             byte version = data.read(); //todo Proofs.VERSION = 1
             if (version != 1)
@@ -144,7 +179,7 @@ public abstract class LegacyBinarySerializer {
         }
     }
 
-    private static byte[] proofsToBytes(List<Proof> proofs, boolean withProofs) {
+    protected static byte[] proofsToBytes(List<Proof> proofs, boolean withProofs) {
         if (withProofs) {
             byte[] proofsVersion = Bytes.of((byte) 1);
             byte[] proofsBytes = Bytes.fromShort((short) proofs.size());

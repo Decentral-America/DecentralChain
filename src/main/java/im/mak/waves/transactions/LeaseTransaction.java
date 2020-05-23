@@ -34,6 +34,10 @@ public class LeaseTransaction extends Transaction {
         return (LeaseTransaction) Transaction.fromBytes(bytes);
     }
 
+    public static LeaseTransaction fromJson(String json) throws IOException {
+        return (LeaseTransaction) Transaction.fromJson(json);
+    }
+
     public static LeaseTransactionBuilder with(Recipient recipient, long amount) {
         return new LeaseTransactionBuilder(recipient, amount);
     }
@@ -49,7 +53,8 @@ public class LeaseTransaction extends Transaction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!super.equals(o) || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         LeaseTransaction that = (LeaseTransaction) o;
         return amount == that.amount &&
                 recipient.equals(that.recipient);
@@ -57,7 +62,7 @@ public class LeaseTransaction extends Transaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(recipient, amount);
+        return Objects.hash(super.hashCode(), recipient, amount);
     }
 
     public static class LeaseTransactionBuilder

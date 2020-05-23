@@ -2,7 +2,7 @@ package im.mak.waves.transactions;
 
 import org.junit.jupiter.api.Test;
 
-public class TestTransferTransaction {
+public class TransferTransactionTest {
 
     @Test
     void bytes() {

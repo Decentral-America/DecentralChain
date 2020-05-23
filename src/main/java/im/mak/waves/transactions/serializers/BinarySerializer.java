@@ -8,6 +8,7 @@ import im.mak.waves.transactions.LeaseTransaction;
 import im.mak.waves.transactions.Transaction;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.TxId;
 
 import java.io.IOException;
 
@@ -67,7 +68,20 @@ public abstract class BinarySerializer {
                     .get();
             signed.getProofsList().forEach(p -> ltx.proofs().add(Proof.as(p.toByteArray())));
             return ltx;
-        } else throw new InvalidProtocolBufferException("Can't recognize transaction type"); //todo
+        } else if (tx.hasLeaseCancel()) {
+            TransactionOuterClass.LeaseCancelTransactionData leaseCancel = tx.getLeaseCancel();
+            LeaseCancelTransaction lctx = LeaseCancelTransaction
+                    .with(TxId.id(leaseCancel.getLeaseId().toByteArray()))
+                    .version(tx.getVersion())
+                    .chainId((byte) tx.getChainId())
+                    .sender(PublicKey.as(tx.getSenderPublicKey().toByteArray()))
+                    .fee(tx.getFee().getAmount())
+                    .feeAsset(Asset.id(tx.getFee().getAssetId().toByteArray()))
+                    .timestamp(tx.getTimestamp())
+                    .get();
+            signed.getProofsList().forEach(p -> lctx.proofs().add(Proof.as(p.toByteArray())));
+            return lctx;
+        } else throw new InvalidProtocolBufferException("Can't recognize transaction type");
     }
 
 }
