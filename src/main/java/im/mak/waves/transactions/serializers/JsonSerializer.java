@@ -69,6 +69,14 @@ public abstract class JsonSerializer {
             return new ReissueTransaction(sender, Asset.id(jsonNode.get("assetId").asText()),
                     jsonNode.get("quantity").asLong(), jsonNode.get("reissuable").asBoolean(),
                     chainId, fee, timestamp, version, proofs);
+        } else if (type == BurnTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for BurnTransaction");
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new BurnTransaction(sender, Asset.id(jsonNode.get("assetId").asText()),
+                    jsonNode.get("quantity").asLong(), chainId, fee, timestamp, version, proofs);
         } else if (type == LeaseTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
@@ -130,6 +138,14 @@ public abstract class JsonSerializer {
             if (rtx.version() == 1) {
                 jsObject.remove("chainId");
                 signature = rtx.proofs().get(0).toString();
+            }
+        } else if (tx instanceof BurnTransaction) {
+            BurnTransaction btx = (BurnTransaction) tx;
+            jsObject.put("assetId", btx.asset().toString())
+                    .put("quantity", btx.amount());
+            if (btx.version() == 1) {
+                jsObject.remove("chainId");
+                signature = btx.proofs().get(0).toString();
             }
         } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;

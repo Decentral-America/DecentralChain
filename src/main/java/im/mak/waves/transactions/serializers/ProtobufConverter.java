@@ -60,6 +60,14 @@ public abstract class ProtobufConverter {
                             .build())
                     .setReissuable(rtx.isReissuable())
                     .build());
+        } else if (tx instanceof BurnTransaction) {
+            BurnTransaction btx = (BurnTransaction) tx;
+            protoBuilder.setBurn(TransactionOuterClass.BurnTransactionData.newBuilder()
+                    .setAssetAmount(AmountOuterClass.Amount.newBuilder()
+                            .setAssetId(ByteString.copyFrom(btx.asset().bytes()))
+                            .setAmount(btx.amount())
+                            .build())
+                    .build());
         } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
             protoBuilder.setLease(TransactionOuterClass.LeaseTransactionData.newBuilder()

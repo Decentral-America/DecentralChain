@@ -90,6 +90,22 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.fromBoolean(rtx.isReissuable()));
                 stream.write(Bytes.fromLong(rtx.fee()));
                 stream.write(Bytes.fromLong(rtx.timestamp()));
+            } else if (tx instanceof BurnTransaction) {
+                BurnTransaction btx = (BurnTransaction) tx;
+                if (btx.version() > 2)
+                    throw new RuntimeException("not legacy");
+
+                boolean withProofs = btx.version() == 2;
+
+                stream.write(Bytes.of((byte) btx.type()));
+                if (withProofs)
+                    stream.write(Bytes.of((byte) btx.version(), (byte) 0));
+
+                stream.write(btx.sender().bytes());
+                stream.write(btx.asset().bytes());
+                stream.write(Bytes.fromLong(btx.amount()));
+                stream.write(Bytes.fromLong(btx.fee()));
+                stream.write(Bytes.fromLong(btx.timestamp()));
             } else if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 if (ltx.version() > 2)
@@ -154,6 +170,13 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.of((byte) 0));
                 stream.write(rtx.bodyBytes());
                 stream.write(proofsToBytes(rtx.proofs(), withProofs));
+            } else if (tx instanceof BurnTransaction) {
+                BurnTransaction btx = (BurnTransaction) tx;
+                boolean withProofs = btx.version() == 2;
+                if (withProofs)
+                    stream.write(Bytes.of((byte) 0));
+                stream.write(btx.bodyBytes());
+                stream.write(proofsToBytes(btx.proofs(), withProofs));
             } else if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 boolean withProofs = ltx.version() == 2;
@@ -194,6 +217,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == IssueTransaction.TYPE) transaction = issue(reader, version, withProofs);
         else if (type == TransferTransaction.TYPE) transaction = transfer(reader, version, withProofs);
         else if (type == ReissueTransaction.TYPE) transaction = reissue(reader, version, withProofs);
+        else if (type == BurnTransaction.TYPE) transaction = burn(reader, version, withProofs);
         else if (type == LeaseTransaction.TYPE) transaction = lease(reader, version, withProofs);
         else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
         //todo other types
@@ -251,6 +275,18 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = readProofs(data, withProofs);
 
         return new ReissueTransaction(sender, asset, amount, reissuable, chainId, fee, timestamp, version, proofs);
+    }
+
+    protected static BurnTransaction burn(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = version == 2 ? data.read() : Waves.chainId;
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        Asset asset = Asset.id(data.read(TxId.BYTE_LENGTH));
+        long amount = data.readLong();
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new BurnTransaction(sender, asset, amount, chainId, fee, timestamp, version, proofs);
     }
 
     protected static LeaseTransaction lease(ByteReader data, int version, boolean withProofs) throws IOException {
