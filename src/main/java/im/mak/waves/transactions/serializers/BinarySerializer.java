@@ -28,6 +28,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
+        else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -47,6 +48,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
+        else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -164,6 +166,17 @@ public abstract class BinarySerializer {
                         else if (descriptor == 13) return new StringEntry(e.getKey(), e.getStringValue());
                         else return new DeleteEntry(e.getKey());
                     }).collect(toList()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasSetScript()) {
+            TransactionOuterClass.SetScriptTransactionData setScript = pbTx.getSetScript();
+            tx = SetScriptTransaction
+                    .with(setScript.getScript().toByteArray())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

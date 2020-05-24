@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
@@ -127,6 +128,12 @@ public abstract class JsonSerializer {
                     data.add(new StringEntry(key, entry.get("value").asText()));
             }
             return new DataTransaction(sender, data, chainId, fee, timestamp, version, proofs);
+        } else if (type == SetScriptTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for DataTransaction");
+
+            byte[] script = jsonNode.get("script").isNull() ? Bytes.empty() : Base64.decode(jsonNode.get("script").asText());
+            return new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -219,6 +226,11 @@ public abstract class JsonSerializer {
             });
             if (dtx.version() == 1)
                 jsObject.remove("chainId");
+        } else if (tx instanceof SetScriptTransaction) {
+            SetScriptTransaction ssTx = (SetScriptTransaction) tx;
+            if (ssTx.compiledScript().length > 0)
+                jsObject.put("script", Base64.encode(ssTx.compiledScript()));
+            else jsObject.putNull("script");
         } //todo other types
 
         jsObject.put("fee", tx.fee())

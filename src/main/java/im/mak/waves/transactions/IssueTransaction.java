@@ -96,6 +96,10 @@ public class IssueTransaction extends Transaction {
         return isReissuable;
     }
 
+    public String compiledBase64Script() {
+        return Base64.encode(compiledScript);
+    }
+
     public byte[] compiledScript() {
         return compiledScript;
     }
@@ -111,7 +115,7 @@ public class IssueTransaction extends Transaction {
                 && this.quantity == that.quantity
                 && this.decimals == that.decimals
                 && this.isReissuable == that.isReissuable
-                && this.compiledScript == that.compiledScript;
+                && Bytes.equal(this.compiledScript, that.compiledScript);
     }
 
     @Override

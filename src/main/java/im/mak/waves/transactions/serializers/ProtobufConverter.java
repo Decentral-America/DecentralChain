@@ -82,9 +82,9 @@ public abstract class ProtobufConverter {
                     .setLeaseId(ByteString.copyFrom(lctx.leaseId().bytes()))
                     .build());
         } else if (tx instanceof CreateAliasTransaction) {
-            CreateAliasTransaction catx = (CreateAliasTransaction) tx;
+            CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
-                    .setAliasBytes(ByteString.copyFrom(catx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
+                    .setAliasBytes(ByteString.copyFrom(caTx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
                     .build());
         } else if (tx instanceof DataTransaction) {
             DataTransaction dtx = (DataTransaction) tx;
@@ -98,6 +98,11 @@ public abstract class ProtobufConverter {
                         else if (e.type() == EntryType.STRING) builder.setStringValue(((StringEntry)e).value()).build();
                         return builder.build();
                     }).collect(toList()))
+                    .build());
+        } else if (tx instanceof SetScriptTransaction) {
+            SetScriptTransaction ssTx = (SetScriptTransaction) tx;
+            protoBuilder.setSetScript(TransactionOuterClass.SetScriptTransactionData.newBuilder()
+                    .setScript(ByteString.copyFrom(ssTx.compiledScript()))
                     .build());
         } //todo other types
 

@@ -125,35 +125,35 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.fromLong(ltx.fee()));
                 stream.write(Bytes.fromLong(ltx.timestamp()));
             } else if (tx instanceof LeaseCancelTransaction) {
-                LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
-                if (lctx.version() > 2)
+                LeaseCancelTransaction lcTx = (LeaseCancelTransaction) tx;
+                if (lcTx.version() > 2)
                     throw new RuntimeException("not legacy");
 
-                boolean withProofs = lctx.version() == 2;
+                boolean withProofs = lcTx.version() == 2;
 
-                stream.write(Bytes.of((byte) lctx.type()));
+                stream.write(Bytes.of((byte) lcTx.type()));
                 if (withProofs)
-                    stream.write(Bytes.of((byte) lctx.version(), lctx.chainId()));
+                    stream.write(Bytes.of((byte) lcTx.version(), lcTx.chainId()));
 
-                stream.write(lctx.sender().bytes());
-                stream.write(Bytes.fromLong(lctx.fee()));
-                stream.write(Bytes.fromLong(lctx.timestamp()));
-                stream.write(lctx.leaseId().bytes());
+                stream.write(lcTx.sender().bytes());
+                stream.write(Bytes.fromLong(lcTx.fee()));
+                stream.write(Bytes.fromLong(lcTx.timestamp()));
+                stream.write(lcTx.leaseId().bytes());
             } else if (tx instanceof CreateAliasTransaction) {
-                CreateAliasTransaction catx = (CreateAliasTransaction) tx;
-                if (catx.version() > 2)
+                CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
+                if (caTx.version() > 2)
                     throw new RuntimeException("not legacy");
 
-                boolean withProofs = catx.version() == 2;
+                boolean withProofs = caTx.version() == 2;
 
-                stream.write(Bytes.of((byte) catx.type()));
+                stream.write(Bytes.of((byte) caTx.type()));
                 if (withProofs)
-                    stream.write(Bytes.of((byte) catx.version()));
+                    stream.write(Bytes.of((byte) caTx.version()));
 
-                stream.write(catx.sender().bytes());
-                stream.write(Bytes.toSizedByteArray(catx.alias().getBytes(UTF_8)));
-                stream.write(Bytes.fromLong(catx.fee()));
-                stream.write(Bytes.fromLong(catx.timestamp()));
+                stream.write(caTx.sender().bytes());
+                stream.write(Bytes.toSizedByteArray(caTx.alias().getBytes(UTF_8)));
+                stream.write(Bytes.fromLong(caTx.fee()));
+                stream.write(Bytes.fromLong(caTx.timestamp()));
             } else if (tx instanceof DataTransaction) {
                 DataTransaction dtx = (DataTransaction) tx;
                 if (dtx.version() > 1)
@@ -182,6 +182,22 @@ public abstract class LegacyBinarySerializer {
                 }
                 stream.write(Bytes.fromLong(dtx.fee()));
                 stream.write(Bytes.fromLong(dtx.timestamp()));
+            } else if (tx instanceof SetScriptTransaction) {
+                SetScriptTransaction ssTx = (SetScriptTransaction) tx;
+                if (ssTx.version() > 1)
+                    throw new RuntimeException("not legacy");
+
+                stream.write(Bytes.of((byte) ssTx.type()));
+                stream.write(Bytes.of((byte) ssTx.version()));
+                stream.write(Bytes.of(ssTx.chainId()));
+
+                stream.write(ssTx.sender().bytes());
+                if (ssTx.compiledScript().length > 0) {
+                    stream.write(Bytes.of((byte) 1));
+                    stream.write(Bytes.toSizedByteArray(ssTx.compiledScript()));
+                } else stream.write(Bytes.of((byte) 0));
+                stream.write(Bytes.fromLong(ssTx.fee()));
+                stream.write(Bytes.fromLong(ssTx.timestamp()));
             } //todo other types
 
             result = stream.toByteArray();
@@ -230,24 +246,29 @@ public abstract class LegacyBinarySerializer {
                 stream.write(ltx.bodyBytes());
                 stream.write(proofsToBytes(ltx.proofs(), withProofs));
             } else if (tx instanceof LeaseCancelTransaction) {
-                LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
-                boolean withProofs = lctx.version() == 2;
+                LeaseCancelTransaction lcTx = (LeaseCancelTransaction) tx;
+                boolean withProofs = lcTx.version() == 2;
                 if (withProofs)
                     stream.write(Bytes.of((byte) 0));
-                stream.write(lctx.bodyBytes());
-                stream.write(proofsToBytes(lctx.proofs(), withProofs));
+                stream.write(lcTx.bodyBytes());
+                stream.write(proofsToBytes(lcTx.proofs(), withProofs));
             } else if (tx instanceof CreateAliasTransaction) {
-                CreateAliasTransaction catx = (CreateAliasTransaction) tx;
-                boolean withProofs = catx.version() == 2;
+                CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
+                boolean withProofs = caTx.version() == 2;
                 if (withProofs)
                     stream.write(Bytes.of((byte) 0));
-                stream.write(catx.bodyBytes());
-                stream.write(proofsToBytes(catx.proofs(), withProofs));
+                stream.write(caTx.bodyBytes());
+                stream.write(proofsToBytes(caTx.proofs(), withProofs));
             } else if (tx instanceof DataTransaction) {
                 DataTransaction dtx = (DataTransaction) tx;
                 stream.write(Bytes.of((byte) 0));
                 stream.write(dtx.bodyBytes());
                 stream.write(proofsToBytes(dtx.proofs(), true));
+            } else if (tx instanceof SetScriptTransaction) {
+                SetScriptTransaction caTx = (SetScriptTransaction) tx;
+                stream.write(Bytes.of((byte) 0));
+                stream.write(caTx.bodyBytes());
+                stream.write(proofsToBytes(caTx.proofs(), true));
             } //todo other types
 
             return stream.toByteArray();
@@ -279,6 +300,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
         else if (type == CreateAliasTransaction.TYPE) transaction = createAlias(reader, version, withProofs);
         else if (type == DataTransaction.TYPE) transaction = data(reader, version, withProofs);
+        else if (type == SetScriptTransaction.TYPE) transaction = setScript(reader, version, withProofs);
         //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
@@ -401,6 +423,18 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = readProofs(data, withProofs);
 
         return new DataTransaction(sender, entries, Waves.chainId, fee, timestamp, version, proofs);
+    }
+
+    protected static SetScriptTransaction setScript(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = data.read();
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        boolean hasScript = data.readBoolean();
+        byte[] script = hasScript ? data.readArray() : Bytes.empty();
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
     }
 
     protected static Recipient readRecipient(ByteReader data) throws IOException {
