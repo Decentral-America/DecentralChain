@@ -8,11 +8,13 @@ import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.components.*;
 
 import java.io.IOException;
 
 import static im.mak.waves.transactions.serializers.ProtobufConverter.recipientFromProto;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 public abstract class BinarySerializer {
 
@@ -25,6 +27,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
+        else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -43,6 +46,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
+        else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -142,6 +146,24 @@ public abstract class BinarySerializer {
             TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
             tx = CreateAliasTransaction
                     .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //ask is there non utf8 aliases?
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasDataTransaction()) {
+            TransactionOuterClass.DataTransactionData data = pbTx.getDataTransaction();
+            tx = DataTransaction
+                    .with(data.getDataList().stream().map(e -> {
+                        int descriptor = e.getDescriptorForType().getIndex();
+                        if (descriptor == 10) return new IntegerEntry(e.getKey(), e.getIntValue());
+                        else if (descriptor == 11) return new BooleanEntry(e.getKey(), e.getBoolValue());
+                        else if (descriptor == 12) return new BinaryEntry(e.getKey(), e.getBinaryValue().toByteArray());
+                        else if (descriptor == 13) return new StringEntry(e.getKey(), e.getStringValue());
+                        else return new DeleteEntry(e.getKey());
+                    }).collect(toList()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

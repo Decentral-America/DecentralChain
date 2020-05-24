@@ -8,6 +8,7 @@ import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
+import im.mak.waves.transactions.components.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,6 +105,28 @@ public abstract class JsonSerializer {
                 proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
             return new CreateAliasTransaction(
                     sender, jsonNode.get("alias").asText(), chainId, fee, timestamp, version, proofs);
+        } else if (type == DataTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for DataTransaction");
+
+            JsonNode jsData = jsonNode.get("data");
+            List<DataEntry> data = new ArrayList<>();
+            for (int i = 0; i < jsData.size(); i++) {
+                JsonNode entry = jsData.get(i);
+                String key = entry.get("key").asText();
+                String entryType = entry.get("type").asText();
+                if (entryType.isEmpty())
+                    data.add(new DeleteEntry(key));
+                else if (entryType.equals("binary"))
+                    data.add(new BinaryEntry(key, Base64.decode(entry.get("value").asText())));
+                else if (entryType.equals("boolean"))
+                    data.add(new BooleanEntry(key, entry.get("value").asBoolean()));
+                else if (entryType.equals("integer"))
+                    data.add(new IntegerEntry(key, entry.get("value").asLong()));
+                else if (entryType.equals("string"))
+                    data.add(new StringEntry(key, entry.get("value").asText()));
+            }
+            return new DataTransaction(sender, data, chainId, fee, timestamp, version, proofs);
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -175,9 +198,27 @@ public abstract class JsonSerializer {
             jsObject.put("alias", catx.alias());
             if (catx.version() == 1)
                 signature = catx.proofs().get(0).toString();
-            if (catx.version() < 3) {
+            if (catx.version() < 3)
                 jsObject.remove("chainId");
-            }
+        } else if (tx instanceof DataTransaction) {
+            DataTransaction dtx = (DataTransaction) tx;
+            ArrayNode data = jsObject.putArray("data");
+            dtx.data().forEach(e -> {
+                ObjectNode entry = JSON_MAPPER.createObjectNode().put("key", e.key());
+                if (e.type() == EntryType.BINARY)
+                    entry.put("type", "binary").put("value", Base64.encode(((BinaryEntry)e).value()));
+                else if (e.type() == EntryType.BOOLEAN)
+                    entry.put("type", "boolean").put("value", ((BooleanEntry)e).value());
+                else if (e.type() == EntryType.INTEGER)
+                    entry.put("type", "integer").put("value", ((IntegerEntry)e).value());
+                else if (e.type() == EntryType.STRING)
+                    entry.put("type", "string").put("value", ((StringEntry)e).value());
+                else if (e.type() == EntryType.DELETE)
+                    entry.putNull("type").putNull("value");
+                data.add(entry);
+            });
+            if (dtx.version() == 1)
+                jsObject.remove("chainId");
         } //todo other types
 
         jsObject.put("fee", tx.fee())

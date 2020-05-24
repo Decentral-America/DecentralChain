@@ -8,10 +8,10 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.Alias;
 import im.mak.waves.transactions.common.Recipient;
-
-import java.util.stream.Collectors;
+import im.mak.waves.transactions.components.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 public abstract class ProtobufConverter {
 
@@ -86,6 +86,19 @@ public abstract class ProtobufConverter {
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
                     .setAliasBytes(ByteString.copyFrom(catx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
                     .build());
+        } else if (tx instanceof DataTransaction) {
+            DataTransaction dtx = (DataTransaction) tx;
+            protoBuilder.setDataTransaction(TransactionOuterClass.DataTransactionData.newBuilder()
+                    .addAllData(dtx.data().stream().map(e -> {
+                        TransactionOuterClass.DataTransactionData.DataEntry.Builder builder =
+                                TransactionOuterClass.DataTransactionData.DataEntry.newBuilder().setKey(e.key());
+                        if (e.type() == EntryType.BINARY) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value())).build();
+                        else if (e.type() == EntryType.BOOLEAN) builder.setBoolValue(((BooleanEntry)e).value()).build();
+                        else if (e.type() == EntryType.INTEGER) builder.setIntValue(((IntegerEntry)e).value()).build();
+                        else if (e.type() == EntryType.STRING) builder.setStringValue(((StringEntry)e).value()).build();
+                        return builder.build();
+                    }).collect(toList()))
+                    .build());
         } //todo other types
 
         return protoBuilder.build();
@@ -97,7 +110,7 @@ public abstract class ProtobufConverter {
                 .addAllProofs(tx.proofs()
                         .stream()
                         .map(p -> ByteString.copyFrom(p.bytes()))
-                        .collect(Collectors.toList()))
+                        .collect(toList()))
                 .build();
     }
 

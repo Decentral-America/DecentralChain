@@ -6,9 +6,11 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
+import im.mak.waves.transactions.components.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static im.mak.waves.crypto.Bytes.concat;
@@ -152,6 +154,34 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.toSizedByteArray(catx.alias().getBytes(UTF_8)));
                 stream.write(Bytes.fromLong(catx.fee()));
                 stream.write(Bytes.fromLong(catx.timestamp()));
+            } else if (tx instanceof DataTransaction) {
+                DataTransaction dtx = (DataTransaction) tx;
+                if (dtx.version() > 1)
+                    throw new RuntimeException("not legacy");
+
+                stream.write(Bytes.of((byte) dtx.type()));
+                stream.write(Bytes.of((byte) dtx.version()));
+
+                stream.write(dtx.sender().bytes());
+                stream.write(Bytes.fromShort((short)dtx.data().size()));
+                for (DataEntry e : dtx.data()) {
+                    stream.write(Bytes.toSizedByteArray(e.key().getBytes(UTF_8)));
+                    if (e.type() == EntryType.INTEGER) {
+                        stream.write(Bytes.of((byte) 0));
+                        stream.write(Bytes.fromLong(((IntegerEntry)e).value()));
+                    } else if (e.type() == EntryType.BOOLEAN) {
+                        stream.write(Bytes.of((byte) 1));
+                        stream.write(Bytes.fromBoolean(((BooleanEntry)e).value()));
+                    } else if (e.type() == EntryType.BINARY) {
+                        stream.write(Bytes.of((byte) 2));
+                        stream.write(Bytes.toSizedByteArray(((BinaryEntry)e).value()));
+                    } else if (e.type() == EntryType.STRING) {
+                        stream.write(Bytes.of((byte) 3));
+                        stream.write(Bytes.toSizedByteArray(((StringEntry)e).value().getBytes(UTF_8)));
+                    }
+                }
+                stream.write(Bytes.fromLong(dtx.fee()));
+                stream.write(Bytes.fromLong(dtx.timestamp()));
             } //todo other types
 
             result = stream.toByteArray();
@@ -213,6 +243,11 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.of((byte) 0));
                 stream.write(catx.bodyBytes());
                 stream.write(proofsToBytes(catx.proofs(), withProofs));
+            } else if (tx instanceof DataTransaction) {
+                DataTransaction dtx = (DataTransaction) tx;
+                stream.write(Bytes.of((byte) 0));
+                stream.write(dtx.bodyBytes());
+                stream.write(proofsToBytes(dtx.proofs(), true));
             } //todo other types
 
             return stream.toByteArray();
@@ -229,7 +264,7 @@ public abstract class LegacyBinarySerializer {
         int index = withProofs ? 1 : 0;
 
         int type = bytes[index];
-        int version = withProofs ? bytes[index + 1] : 1;
+        int version = withProofs ? bytes[index + 1] : 1; //todo what if not a legacy?
         byte[] data = Bytes.chunk(bytes, withProofs ? 3 : 1)[1];
 
         Transaction transaction;
@@ -243,6 +278,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == LeaseTransaction.TYPE) transaction = lease(reader, version, withProofs);
         else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
         else if (type == CreateAliasTransaction.TYPE) transaction = createAlias(reader, version, withProofs);
+        else if (type == DataTransaction.TYPE) transaction = data(reader, version, withProofs);
         //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
@@ -345,6 +381,26 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = readProofs(data, withProofs);
 
         return new CreateAliasTransaction(sender, new String(alias, UTF_8), Waves.chainId, fee, timestamp, version, proofs);
+    }
+
+    protected static DataTransaction data(ByteReader data, int version, boolean withProofs) throws IOException {
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        short entriesCount = data.readShort();
+        List<DataEntry> entries = new ArrayList<>();
+        for (int i = 0; i < entriesCount; i++) {
+            String key = new String(data.read(data.readShort()), UTF_8); //ask can be non utf8 bytes?
+            byte type = data.read();
+            if (type == 0) entries.add(new IntegerEntry(key, data.readLong()));
+            else if (type == 1) entries.add(new BooleanEntry(key, data.readBoolean()));
+            else if (type == 2) entries.add(new BinaryEntry(key, data.readArray()));
+            else if (type == 3) entries.add(new StringEntry(key, new String(data.readArray(), UTF_8)));
+            else throw new IOException("Unknown type code " + type + " of data item #" + i);
+        }
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new DataTransaction(sender, entries, Waves.chainId, fee, timestamp, version, proofs);
     }
 
     protected static Recipient readRecipient(ByteReader data) throws IOException {

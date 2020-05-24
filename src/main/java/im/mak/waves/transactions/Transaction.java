@@ -153,7 +153,7 @@ public abstract class Transaction implements WithBody {
             return (BUILDER) this;
         }
 
-        //todo hide from public
+        //todo hide from public and constructors
         public BUILDER version(int version) {
             this.version = version;
             return builder();
