@@ -31,6 +31,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
         else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
+        else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -53,6 +54,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
         else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
+        else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -203,6 +205,17 @@ public abstract class BinarySerializer {
             TransactionOuterClass.SetAssetScriptTransactionData setAssetScript = pbTx.getSetAssetScript();
             tx = SetAssetScriptTransaction
                     .with(Asset.id(setAssetScript.getAssetId().toByteArray()), setAssetScript.getScript().toByteArray())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasUpdateAssetInfo()) {
+            TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
+            tx = UpdateAssetInfoTransaction
+                    .with(Asset.id(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

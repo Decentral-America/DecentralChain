@@ -118,6 +118,13 @@ public abstract class ProtobufConverter {
                     .setAssetId(ByteString.copyFrom(sasTx.asset().bytes()))
                     .setScript(ByteString.copyFrom(sasTx.compiledScript()))
                     .build());
+        } else if (tx instanceof UpdateAssetInfoTransaction) {
+            UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
+            protoBuilder.setUpdateAssetInfo(TransactionOuterClass.UpdateAssetInfoTransactionData.newBuilder()
+                    .setAssetId(ByteString.copyFrom(uaiTx.asset().bytes()))
+                    .setName(uaiTx.name())
+                    .setDescription(uaiTx.description())
+                    .build());
         } //todo other types
 
         return protoBuilder.build();
