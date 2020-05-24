@@ -12,6 +12,7 @@ import im.mak.waves.transactions.common.TxId;
 import java.io.IOException;
 
 import static im.mak.waves.transactions.serializers.ProtobufConverter.recipientFromProto;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class BinarySerializer {
 
@@ -23,6 +24,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof BurnTransaction) protobufVersion = BurnTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
+        else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -40,6 +42,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof BurnTransaction) protobufVersion = BurnTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
+        else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -128,6 +131,17 @@ public abstract class BinarySerializer {
             TransactionOuterClass.LeaseCancelTransactionData leaseCancel = pbTx.getLeaseCancel();
             tx = LeaseCancelTransaction
                     .with(TxId.id(leaseCancel.getLeaseId().toByteArray()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasCreateAlias()) {
+            TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
+            tx = CreateAliasTransaction
+                    .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //ask is there non utf8 aliases?
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

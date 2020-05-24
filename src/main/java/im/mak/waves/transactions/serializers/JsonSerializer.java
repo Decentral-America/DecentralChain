@@ -96,6 +96,14 @@ public abstract class JsonSerializer {
                 proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
             return new LeaseCancelTransaction(
                     sender, TxId.id(jsonNode.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
+        } else if (type == CreateAliasTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for CreateAliasTransaction");
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new CreateAliasTransaction(
+                    sender, jsonNode.get("alias").asText(), chainId, fee, timestamp, version, proofs);
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -161,6 +169,14 @@ public abstract class JsonSerializer {
             if (lctx.version() == 1) {
                 jsObject.remove("chainId");
                 signature = lctx.proofs().get(0).toString();
+            }
+        } else if (tx instanceof CreateAliasTransaction) {
+            CreateAliasTransaction catx = (CreateAliasTransaction) tx;
+            jsObject.put("alias", catx.alias());
+            if (catx.version() == 1)
+                signature = catx.proofs().get(0).toString();
+            if (catx.version() < 3) {
+                jsObject.remove("chainId");
             }
         } //todo other types
 

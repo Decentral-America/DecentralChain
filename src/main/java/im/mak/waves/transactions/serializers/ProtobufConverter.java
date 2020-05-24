@@ -11,6 +11,8 @@ import im.mak.waves.transactions.common.Recipient;
 
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public abstract class ProtobufConverter {
 
     public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction protobufTx) {
@@ -78,6 +80,11 @@ public abstract class ProtobufConverter {
             LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
             protoBuilder.setLeaseCancel(TransactionOuterClass.LeaseCancelTransactionData.newBuilder()
                     .setLeaseId(ByteString.copyFrom(lctx.leaseId().bytes()))
+                    .build());
+        } else if (tx instanceof CreateAliasTransaction) {
+            CreateAliasTransaction catx = (CreateAliasTransaction) tx;
+            protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
+                    .setAliasBytes(ByteString.copyFrom(catx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
                     .build());
         } //todo other types
 
