@@ -51,6 +51,15 @@ public abstract class ProtobufConverter {
                             .setStringValue(ttx.attachment())
                             .build())
                     .build());
+        } else if (tx instanceof ReissueTransaction) {
+            ReissueTransaction rtx = (ReissueTransaction) tx;
+            protoBuilder.setReissue(TransactionOuterClass.ReissueTransactionData.newBuilder()
+                    .setAssetAmount(AmountOuterClass.Amount.newBuilder()
+                            .setAssetId(ByteString.copyFrom(rtx.asset().bytes()))
+                            .setAmount(rtx.amount())
+                            .build())
+                    .setReissuable(rtx.isReissuable())
+                    .build());
         } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
             protoBuilder.setLease(TransactionOuterClass.LeaseTransactionData.newBuilder()

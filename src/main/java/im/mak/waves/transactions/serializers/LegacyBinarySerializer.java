@@ -73,7 +73,24 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.fromLong(ttx.fee()));
                 stream.write(Bytes.fromLong(ttx.timestamp()));
                 stream.write(Bytes.toSizedByteArray(ttx.attachment().getBytes(UTF_8)));
-            } if (tx instanceof LeaseTransaction) {
+            } else if (tx instanceof ReissueTransaction) {
+                ReissueTransaction rtx = (ReissueTransaction) tx;
+                if (rtx.version() > 2)
+                    throw new RuntimeException("not legacy");
+
+                boolean withProofs = rtx.version() == 2;
+
+                stream.write(Bytes.of((byte) rtx.type()));
+                if (withProofs)
+                    stream.write(Bytes.of((byte) rtx.version(), (byte) 0));
+
+                stream.write(rtx.sender().bytes());
+                stream.write(rtx.asset().bytes());
+                stream.write(Bytes.fromLong(rtx.amount()));
+                stream.write(Bytes.fromBoolean(rtx.isReissuable()));
+                stream.write(Bytes.fromLong(rtx.fee()));
+                stream.write(Bytes.fromLong(rtx.timestamp()));
+            } else if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 if (ltx.version() > 2)
                     throw new RuntimeException("not legacy");
@@ -130,6 +147,13 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.of((byte) 0));
                 stream.write(ttx.bodyBytes());
                 stream.write(proofsToBytes(ttx.proofs(), withProofs));
+            } else if (tx instanceof ReissueTransaction) {
+                ReissueTransaction rtx = (ReissueTransaction) tx;
+                boolean withProofs = rtx.version() == 2;
+                if (withProofs)
+                    stream.write(Bytes.of((byte) 0));
+                stream.write(rtx.bodyBytes());
+                stream.write(proofsToBytes(rtx.proofs(), withProofs));
             } else if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 boolean withProofs = ltx.version() == 2;
@@ -169,6 +193,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == 2) throw new IOException("Payment transactions are not supported"); //todo
         else if (type == IssueTransaction.TYPE) transaction = issue(reader, version, withProofs);
         else if (type == TransferTransaction.TYPE) transaction = transfer(reader, version, withProofs);
+        else if (type == ReissueTransaction.TYPE) transaction = reissue(reader, version, withProofs);
         else if (type == LeaseTransaction.TYPE) transaction = lease(reader, version, withProofs);
         else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
         //todo other types
@@ -212,9 +237,20 @@ public abstract class LegacyBinarySerializer {
         byte[] attachment = data.readArray(); //fixme not typed, NODE-2145
         List<Proof> proofs = readProofs(data, withProofs);
 
-        TransferTransaction tx = new TransferTransaction(sender, recipient, amount, asset, new String(attachment), recipient.chainId(), fee, feeAsset, timestamp, version);
-        proofs.forEach(p -> tx.proofs().add(p)); //todo `Proofs extends List` or move proofs to builder
-        return tx;
+        return new TransferTransaction(sender, recipient, amount, asset, new String(attachment), recipient.chainId(), fee, feeAsset, timestamp, version, proofs);
+    }
+
+    protected static ReissueTransaction reissue(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = version == 2 ? data.read() : Waves.chainId;
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        Asset asset = Asset.id(data.read(TxId.BYTE_LENGTH));
+        long amount = data.readLong();
+        boolean reissuable = data.readBoolean();
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new ReissueTransaction(sender, asset, amount, reissuable, chainId, fee, timestamp, version, proofs);
     }
 
     protected static LeaseTransaction lease(ByteReader data, int version, boolean withProofs) throws IOException {
@@ -228,9 +264,7 @@ public abstract class LegacyBinarySerializer {
         long timestamp = data.readLong();
         List<Proof> proofs = readProofs(data, withProofs);
 
-        LeaseTransaction tx = new LeaseTransaction(sender, recipient, amount, recipient.chainId(), fee, timestamp, version);
-        proofs.forEach(p -> tx.proofs().add(p)); //todo `Proofs extends List` or move proofs to builder
-        return tx;
+        return new LeaseTransaction(sender, recipient, amount, recipient.chainId(), fee, timestamp, version, proofs);
     }
 
     protected static LeaseCancelTransaction leaseCancel(ByteReader data, int version, boolean withProofs) throws IOException {
@@ -241,9 +275,7 @@ public abstract class LegacyBinarySerializer {
         TxId leaseId = TxId.id(data.read(TxId.BYTE_LENGTH));
         List<Proof> proofs = readProofs(data, withProofs);
 
-        LeaseCancelTransaction tx = new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version);
-        proofs.forEach(p -> tx.proofs().add(p)); //todo `Proofs extends List` or move proofs to builder
-        return tx;
+        return new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version, proofs);
     }
 
     protected static Recipient readRecipient(ByteReader data) throws IOException {

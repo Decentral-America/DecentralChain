@@ -19,6 +19,7 @@ public abstract class BinarySerializer {
         int protobufVersion = 0;
         if (tx instanceof IssueTransaction) protobufVersion = IssueTransaction.LATEST_VERSION;
         else if (tx instanceof TransferTransaction) protobufVersion = TransferTransaction.LATEST_VERSION;
+        else if (tx instanceof ReissueTransaction) protobufVersion = ReissueTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         //todo other types
@@ -34,6 +35,7 @@ public abstract class BinarySerializer {
         int protobufVersion = 0;
         if (tx instanceof IssueTransaction) protobufVersion = IssueTransaction.LATEST_VERSION;
         else if (tx instanceof TransferTransaction) protobufVersion = TransferTransaction.LATEST_VERSION;
+        else if (tx instanceof ReissueTransaction) protobufVersion = ReissueTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
         else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
         //todo other types
@@ -79,6 +81,18 @@ public abstract class BinarySerializer {
                     .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()), amount.getAmount())
                     .asset(Asset.id(amount.getAssetId().toByteArray()))
                     .attachment(transfer.getAttachment().getStringValue()) //fixme not typed, NODE-2145
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasReissue()) {
+            TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
+            tx = ReissueTransaction
+                    .with(Asset.id(reissue.getAssetAmount().getAssetId().toByteArray()), reissue.getAssetAmount().getAmount())
+                    .reissuable(reissue.getReissuable())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

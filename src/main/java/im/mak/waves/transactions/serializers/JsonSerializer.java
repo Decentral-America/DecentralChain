@@ -41,6 +41,8 @@ public abstract class JsonSerializer {
         }
 
         if (type == IssueTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for ReissueTransaction");
             if (version == 1 && jsonNode.has("signature"))
                 proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
             return new IssueTransaction(sender, jsonNode.get("name").asText(), jsonNode.get("description").asText(),
@@ -58,6 +60,15 @@ public abstract class JsonSerializer {
                 proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
             return new TransferTransaction(sender, recipient, jsonNode.get("amount").asLong(), asset,
                     attachment, chainId, fee, feeAssetId, timestamp, version, proofs);
+        } else if (type == ReissueTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for ReissueTransaction");
+
+            if (version == 1 && jsonNode.has("signature"))
+                proofs = Proof.list(Proof.as(jsonNode.get("signature").asText()));
+            return new ReissueTransaction(sender, Asset.id(jsonNode.get("assetId").asText()),
+                    jsonNode.get("quantity").asLong(), jsonNode.get("reissuable").asBoolean(),
+                    chainId, fee, timestamp, version, proofs);
         } else if (type == LeaseTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
@@ -82,8 +93,8 @@ public abstract class JsonSerializer {
         throw new IOException("Can't parse json of transaction with type " + type);
     }
 
-    public static ObjectNode toJsonObject(Transaction tx) {
-        ObjectNode obj = JSON_MAPPER.createObjectNode()
+    public static ObjectNode toJsonObject(Transaction tx) { //todo configurable long->string
+        ObjectNode jsObject = JSON_MAPPER.createObjectNode()
                 .put("id", tx.id().toString()) //todo serialize id? configurable and true by default?
                 .put("type", tx.type())
                 .put("version", tx.version())
@@ -97,45 +108,55 @@ public abstract class JsonSerializer {
         String signature = null;
         if (tx instanceof IssueTransaction) {
             IssueTransaction itx = (IssueTransaction) tx;
-            obj.put("name", itx.name());
-            obj.put("description", itx.description());
-            obj.put("quantity", itx.quantity());
-            obj.put("decimals", itx.decimals());
-            obj.put("reissuable", itx.isReissuable());
-            obj.put("script", itx.compiledScript().length > 0 ? Base64.encode(itx.compiledScript()) : null);
+            jsObject.put("name", itx.name())
+                    .put("description", itx.description())
+                    .put("quantity", itx.quantity())
+                    .put("decimals", itx.decimals())
+                    .put("reissuable", itx.isReissuable())
+                    .put("script",
+                            itx.compiledScript().length > 0 ? Base64.encode(itx.compiledScript()) : null);
             if (itx.version() == 1) {
-                obj.remove("chainId");
+                jsObject.remove("chainId");
                 signature = itx.proofs().get(0).toString();
             }
         } else if (tx instanceof TransferTransaction) {
             TransferTransaction ttx = (TransferTransaction) tx;
             //fixme transfer, NODE-2145
+        } else if (tx instanceof ReissueTransaction) {
+            ReissueTransaction rtx = (ReissueTransaction) tx;
+            jsObject.put("assetId", rtx.asset().toString())
+                    .put("quantity", rtx.amount())
+                    .put("reissuable", rtx.isReissuable());
+            if (rtx.version() == 1) {
+                jsObject.remove("chainId");
+                signature = rtx.proofs().get(0).toString();
+            }
         } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
-            obj.put("recipient", ltx.recipient().toString());
-            obj.put("amount", ltx.amount());
+            jsObject.put("recipient", ltx.recipient().toString())
+                    .put("amount", ltx.amount());
             if (ltx.version() == 1)
                 signature = ltx.proofs().get(0).toString();
             if (ltx.version() < 3)
-                obj.remove("chainId");
+                jsObject.remove("chainId");
         } else if (tx instanceof LeaseCancelTransaction) {
             LeaseCancelTransaction lctx = (LeaseCancelTransaction) tx;
-            obj.put("leaseId", lctx.leaseId().toString());
+            jsObject.put("leaseId", lctx.leaseId().toString());
             if (lctx.version() == 1) {
-                obj.remove("chainId");
+                jsObject.remove("chainId");
                 signature = lctx.proofs().get(0).toString();
             }
         } //todo other types
 
-        obj.put("fee", tx.fee())
+        jsObject.put("fee", tx.fee())
                 .put("feeAssetId", tx.feeAsset() == Asset.WAVES ? null : tx.feeAsset().toString())
                 .put("timestamp", tx.timestamp());
 
         if (signature != null)
-            obj.put("signature", signature);
-        obj.set("proofs", proofs); //todo configurable for v1, true by default
+            jsObject.put("signature", signature);
+        jsObject.set("proofs", proofs); //todo configurable for v1, true by default
 
-        return obj;
+        return jsObject;
     }
 
     public static String toPrettyJson(Transaction tx) {
