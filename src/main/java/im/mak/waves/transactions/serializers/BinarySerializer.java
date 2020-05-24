@@ -29,6 +29,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
         else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
+        else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -49,6 +50,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
         else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
         else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
+        else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -177,6 +179,17 @@ public abstract class BinarySerializer {
             TransactionOuterClass.SetScriptTransactionData setScript = pbTx.getSetScript();
             tx = SetScriptTransaction
                     .with(setScript.getScript().toByteArray())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasSponsorFee()) {
+            TransactionOuterClass.SponsorFeeTransactionData sponsor = pbTx.getSponsorFee();
+            tx = SponsorFeeTransaction
+                    .with(Asset.id(sponsor.getMinFee().getAssetId().toByteArray()), sponsor.getMinFee().getAmount())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

@@ -134,6 +134,12 @@ public abstract class JsonSerializer {
 
             byte[] script = jsonNode.get("script").isNull() ? Bytes.empty() : Base64.decode(jsonNode.get("script").asText());
             return new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
+        } else if (type == SponsorFeeTransaction.TYPE) {
+            if (!feeAssetId.isWaves())
+                throw new IOException("feeAssetId field must be null for SponsorFeeTransaction");
+
+            return new SponsorFeeTransaction(sender, Asset.id(jsonNode.get("assetId").asText()),
+                    jsonNode.get("minSponsoredAssetFee").asLong(), chainId, fee, timestamp, version, proofs);
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -231,6 +237,10 @@ public abstract class JsonSerializer {
             if (ssTx.compiledScript().length > 0)
                 jsObject.put("script", Base64.encode(ssTx.compiledScript()));
             else jsObject.putNull("script");
+        } else if (tx instanceof SponsorFeeTransaction) {
+            SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
+            jsObject.put("assetId", sfTx.asset().toString())
+                    .put("minSponsoredAssetFee", sfTx.minSponsoredFee());
         } //todo other types
 
         jsObject.put("fee", tx.fee())
