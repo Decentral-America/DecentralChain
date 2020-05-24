@@ -212,6 +212,23 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.fromLong(sfTx.minSponsoredFee()));
                 stream.write(Bytes.fromLong(sfTx.fee()));
                 stream.write(Bytes.fromLong(sfTx.timestamp()));
+            } else if (tx instanceof SetAssetScriptTransaction) {
+                SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
+                if (sasTx.version() > 1)
+                    throw new RuntimeException("not legacy");
+
+                stream.write(Bytes.of((byte) sasTx.type()));
+                stream.write(Bytes.of((byte) sasTx.version()));
+                stream.write(Bytes.of(sasTx.chainId()));
+
+                stream.write(sasTx.sender().bytes());
+                stream.write(sasTx.asset().bytes());
+                if (sasTx.compiledScript().length > 0) {
+                    stream.write(Bytes.of((byte) 1));
+                    stream.write(Bytes.toSizedByteArray(sasTx.compiledScript()));
+                } else stream.write(Bytes.of((byte) 0));
+                stream.write(Bytes.fromLong(sasTx.fee()));
+                stream.write(Bytes.fromLong(sasTx.timestamp()));
             } //todo other types
 
             result = stream.toByteArray();
@@ -288,6 +305,11 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.of((byte) 0));
                 stream.write(sfTx.bodyBytes());
                 stream.write(proofsToBytes(sfTx.proofs(), true));
+            } else if (tx instanceof SetAssetScriptTransaction) {
+                SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
+                stream.write(Bytes.of((byte) 0));
+                stream.write(sasTx.bodyBytes());
+                stream.write(proofsToBytes(sasTx.proofs(), true));
             } //todo other types
 
             return stream.toByteArray();
@@ -321,6 +343,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == DataTransaction.TYPE) transaction = data(reader, version, withProofs);
         else if (type == SetScriptTransaction.TYPE) transaction = setScript(reader, version, withProofs);
         else if (type == SponsorFeeTransaction.TYPE) transaction = sponsorFee(reader, version, withProofs);
+        else if (type == SetAssetScriptTransaction.TYPE) transaction = setAssetScript(reader, version, withProofs);
         //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
@@ -467,6 +490,19 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = readProofs(data, withProofs);
 
         return new SponsorFeeTransaction(sender, asset, minSponsoredFee, chainId, fee, timestamp, version, proofs);
+    }
+
+    protected static SetAssetScriptTransaction setAssetScript(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = data.read();
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        Asset asset = Asset.id(data.read(Asset.BYTE_LENGTH));
+        boolean hasScript = data.readBoolean();
+        byte[] script = hasScript ? data.readArray() : Bytes.empty();
+        long fee = data.readLong();
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new SetAssetScriptTransaction(sender, asset, script, chainId, fee, timestamp, version, proofs);
     }
 
     protected static Recipient readRecipient(ByteReader data) throws IOException {

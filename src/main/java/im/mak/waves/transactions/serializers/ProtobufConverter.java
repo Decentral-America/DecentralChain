@@ -112,6 +112,12 @@ public abstract class ProtobufConverter {
                             .setAmount(sfTx.minSponsoredFee())
                             .build())
                     .build());
+        } else if (tx instanceof SetAssetScriptTransaction) {
+            SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
+            protoBuilder.setSetAssetScript(TransactionOuterClass.SetAssetScriptTransactionData.newBuilder()
+                    .setAssetId(ByteString.copyFrom(sasTx.asset().bytes()))
+                    .setScript(ByteString.copyFrom(sasTx.compiledScript()))
+                    .build());
         } //todo other types
 
         return protoBuilder.build();

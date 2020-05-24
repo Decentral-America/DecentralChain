@@ -14,18 +14,20 @@ public class ReissueTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
 
-    private final Asset assetId;
+    private final Asset asset;
     private final long amount;
     private final boolean reissuable;
 
-    public ReissueTransaction(PublicKey sender, Asset assetId, long amount, boolean reissuable, byte chainId, long fee, long timestamp, int version) {
-        this(sender, assetId, amount, reissuable, chainId, fee, timestamp, version, Proof.emptyList());
+    public ReissueTransaction(PublicKey sender, Asset asset, long amount, boolean reissuable, byte chainId, long fee, long timestamp, int version) {
+        this(sender, asset, amount, reissuable, chainId, fee, timestamp, version, Proof.emptyList());
     }
 
-    public ReissueTransaction(PublicKey sender, Asset assetId, long amount, boolean reissuable, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
+    public ReissueTransaction(PublicKey sender, Asset asset, long amount, boolean reissuable, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+        if (asset.isWaves())
+            throw new IllegalArgumentException("Can't be Waves");
 
-        this.assetId = assetId;
+        this.asset = asset;
         this.amount = amount;
         this.reissuable = reissuable;
     }
@@ -38,12 +40,12 @@ public class ReissueTransaction extends Transaction {
         return (ReissueTransaction) Transaction.fromJson(json);
     }
 
-    public static ReissueTransactionBuilder with(Asset assetId, long amount) {
-        return new ReissueTransactionBuilder(assetId, amount);
+    public static ReissueTransactionBuilder with(Asset asset, long amount) {
+        return new ReissueTransactionBuilder(asset, amount);
     }
 
     public Asset asset() {
-        return assetId;
+        return asset;
     }
 
     public long amount() {
@@ -60,25 +62,25 @@ public class ReissueTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ReissueTransaction that = (ReissueTransaction) o;
-        return this.assetId.equals(that.assetId)
+        return this.asset.equals(that.asset)
                 && this.amount == that.amount
                 && this.reissuable == that.reissuable;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), assetId, amount, reissuable);
+        return Objects.hash(super.hashCode(), asset, amount, reissuable);
     }
 
     public static class ReissueTransactionBuilder
             extends TransactionBuilder<ReissueTransactionBuilder, ReissueTransaction> {
-        private final Asset assetId;
+        private final Asset asset;
         private final long amount;
         private boolean reissuable;
 
-        protected ReissueTransactionBuilder(Asset assetId, long amount) {
+        protected ReissueTransactionBuilder(Asset asset, long amount) {
             super(LATEST_VERSION, MIN_FEE);
-            this.assetId = assetId;
+            this.asset = asset;
             this.amount = amount;
             this.reissuable = true;
         }
@@ -89,7 +91,7 @@ public class ReissueTransaction extends Transaction {
         }
 
         protected ReissueTransaction _build() {
-            return new ReissueTransaction(sender, assetId, amount, reissuable, chainId, fee, timestamp, version);
+            return new ReissueTransaction(sender, asset, amount, reissuable, chainId, fee, timestamp, version);
         }
     }
 
