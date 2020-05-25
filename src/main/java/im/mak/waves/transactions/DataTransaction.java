@@ -3,10 +3,11 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.components.*;
+import im.mak.waves.transactions.components.data.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class DataTransaction extends Transaction {
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
 
-        this.data = data == null ? new ArrayList<>() : data;
+        this.data = data == null ? Collections.emptyList() : data;
     }
 
     public static DataTransaction fromBytes(byte[] bytes) throws IOException {

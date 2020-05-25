@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components;
+package im.mak.waves.transactions.components.data;
 
 public class IntegerEntry extends DataEntry {
 

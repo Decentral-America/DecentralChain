@@ -8,7 +8,7 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.Alias;
 import im.mak.waves.transactions.common.Recipient;
-import im.mak.waves.transactions.components.*;
+import im.mak.waves.transactions.components.data.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
@@ -125,6 +125,17 @@ public abstract class ProtobufConverter {
                     .setName(uaiTx.name())
                     .setDescription(uaiTx.description())
                     .build());
+        } else if (tx instanceof InvokeScriptTransaction) {
+            InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
+            TransactionOuterClass.InvokeScriptTransactionData.Builder invoke =
+                    TransactionOuterClass.InvokeScriptTransactionData.newBuilder();
+            invoke.setDApp(recipientToProto(isTx.dApp()));
+            invoke.setFunctionCall(ByteString.copyFrom(LegacyBinarySerializer.functionCallToBytes(isTx.function())));
+            isTx.payments().forEach(p -> invoke.addPayments(AmountOuterClass.Amount.newBuilder()
+                    .setAmount(p.value())
+                    .setAssetId(ByteString.copyFrom(p.asset().bytes()))
+                    .build()));
+            protoBuilder.setInvokeScript(invoke.build());
         } //todo other types
 
         return protoBuilder.build();

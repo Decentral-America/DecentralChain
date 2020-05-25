@@ -6,10 +6,12 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.components.*;
+import im.mak.waves.transactions.components.data.*;
+import im.mak.waves.transactions.components.invoke.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,6 +231,32 @@ public abstract class LegacyBinarySerializer {
                 } else stream.write(Bytes.of((byte) 0));
                 stream.write(Bytes.fromLong(sasTx.fee()));
                 stream.write(Bytes.fromLong(sasTx.timestamp()));
+            } else if (tx instanceof InvokeScriptTransaction) {
+                InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
+                if (isTx.version() > 1)
+                    throw new RuntimeException("not legacy");
+
+                stream.write(Bytes.of((byte) isTx.type()));
+                stream.write(Bytes.of((byte) isTx.version()));
+                stream.write(Bytes.of(isTx.chainId()));
+
+                stream.write(isTx.sender().bytes());
+                stream.write(recipientToBytes(isTx.dApp()));
+                stream.write(functionCallToBytes(isTx.function()));
+
+                stream.write(Bytes.fromLong(isTx.payments().size()));
+                for (Amount payment : isTx.payments()) {
+                    stream.write(Bytes.fromLong(payment.value()));
+                    stream.write(Bytes.fromBoolean(!payment.asset().isWaves()));
+                    if (!payment.asset().isWaves())
+                        stream.write(payment.asset().bytes());
+                }
+
+                stream.write(Bytes.fromLong(isTx.fee()));
+                stream.write(Bytes.fromBoolean(!isTx.feeAsset().isWaves()));
+                if (!isTx.feeAsset().isWaves())
+                    stream.write(isTx.feeAsset().bytes());
+                stream.write(Bytes.fromLong(isTx.timestamp()));
             } //todo other types
 
             result = stream.toByteArray();
@@ -310,6 +338,11 @@ public abstract class LegacyBinarySerializer {
                 stream.write(Bytes.of((byte) 0));
                 stream.write(sasTx.bodyBytes());
                 stream.write(proofsToBytes(sasTx.proofs(), true));
+            } else if (tx instanceof InvokeScriptTransaction) {
+                InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
+                stream.write(Bytes.of((byte) 0));
+                stream.write(isTx.bodyBytes());
+                stream.write(proofsToBytes(isTx.proofs(), true));
             } //todo other types
 
             return stream.toByteArray();
@@ -344,6 +377,7 @@ public abstract class LegacyBinarySerializer {
         else if (type == SetScriptTransaction.TYPE) transaction = setScript(reader, version, withProofs);
         else if (type == SponsorFeeTransaction.TYPE) transaction = sponsorFee(reader, version, withProofs);
         else if (type == SetAssetScriptTransaction.TYPE) transaction = setAssetScript(reader, version, withProofs);
+        else if (type == InvokeScriptTransaction.TYPE) transaction = invokeScript(reader, version, withProofs);
         //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
@@ -505,6 +539,26 @@ public abstract class LegacyBinarySerializer {
         return new SetAssetScriptTransaction(sender, asset, script, chainId, fee, timestamp, version, proofs);
     }
 
+    protected static InvokeScriptTransaction invokeScript(ByteReader data, int version, boolean withProofs) throws IOException {
+        byte chainId = data.read();
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        Recipient dApp = readRecipient(data);
+        Function functionCall = functionCallFromBytes(data);
+        long paymentsCount = data.readLong();
+        List<Amount> payments = new ArrayList<>();
+        for (int i = 0; i < paymentsCount; i++) {
+            long amount = data.readLong();
+            Asset asset = data.readBoolean() ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
+            payments.add(Amount.of(amount, asset));
+        }
+        long fee = data.readLong();
+        Asset feeAsset = data.readBoolean() ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
+        long timestamp = data.readLong();
+        List<Proof> proofs = readProofs(data, withProofs);
+
+        return new InvokeScriptTransaction(sender, dApp, functionCall, payments, chainId, fee, feeAsset, timestamp, version, proofs);
+    }
+
     protected static Recipient readRecipient(ByteReader data) throws IOException {
         byte recipientType = data.read(); //todo Recipient.from(bytes) or Alias.from(bytes)
         if (recipientType == 1)
@@ -552,6 +606,56 @@ public abstract class LegacyBinarySerializer {
                 throw new IllegalArgumentException("Transaction of this type and version must have only 1 proof");
             return proofs.get(0).bytes();
         }
+    }
+
+    protected static Function functionCallFromBytes(ByteReader data) throws IOException {
+        if (data.readBoolean()) {
+            if (data.read() != 9) throw new IOException("FunctionCall Id must be equal 9");
+            if (data.read() != 1) throw new IOException("Function type Id must be equal 1");
+            String name = new String(data.readArray(), UTF_8);
+            int argsCount = data.readInt();
+            List<Arg> args = new ArrayList<>();
+            for (int i = 0; i < argsCount; i++) {
+                byte argType = data.read();
+                if (argType == 0) args.add(IntegerArg.as(data.readLong()));
+                else if (argType == 1) args.add(BinaryArg.as(data.readArray()));
+                else if (argType == 2) args.add(StringArg.as(new String(data.readArray(), UTF_8)));
+                else if (argType == 6) args.add(BooleanArg.as(true));
+                else if (argType == 7) args.add(BooleanArg.as(false));
+                //todo else if (argType == 11) args.add(ListArg.as(...));
+                else throw new IOException("Unknown arg type " + argType);
+            }
+            return Function.as(name, args);
+        } else return Function.asDefault();
+    }
+
+    protected static byte[] functionCallToBytes(Function functionCall) {
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            stream.write(Bytes.of((byte)(functionCall.isDefault() ? 0 : 1)));
+            stream.write(Bytes.of((byte) 9, (byte) 1));
+            stream.write(Bytes.toSizedByteArray(functionCall.name().getBytes(UTF_8)));
+            stream.write(Bytes.fromInt(functionCall.args().size()));
+            for (Arg arg : functionCall.args()) {
+                if (arg.type() == ArgType.INTEGER) {
+                    stream.write(Bytes.of((byte) 0));
+                    stream.write(Bytes.fromLong(((IntegerArg)arg).value()));
+                } else if (arg.type() == ArgType.BINARY) {
+                    stream.write(Bytes.of((byte) 1));
+                    stream.write(Bytes.toSizedByteArray(((BinaryArg)arg).value()));
+                } else if (arg.type() == ArgType.STRING) {
+                    stream.write(Bytes.of((byte) 2));
+                    stream.write(Bytes.toSizedByteArray(((StringArg)arg).value().getBytes(UTF_8)));
+                } else if (arg.type() == ArgType.BOOLEAN) {
+                    if (((BooleanArg)arg).value())
+                        stream.write(Bytes.of((byte) 6));
+                    else stream.write(Bytes.of((byte) 7));
+                } /*else if (arg.type() == ArgType.LIST) {} //todo*/
+            }
+            return stream.toByteArray();
+        } catch (IOException ioe) {
+            ioe.printStackTrace(); //todo
+        }
+        return null; //todo throw ne IOException
     }
 
 }

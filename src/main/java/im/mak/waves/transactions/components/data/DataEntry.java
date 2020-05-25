@@ -1,12 +1,10 @@
-package im.mak.waves.transactions.components;
+package im.mak.waves.transactions.components.data;
 
 import im.mak.waves.crypto.base.Base64;
 
 import java.util.Objects;
 
 public abstract class DataEntry {
-
-    //TODO static
 
     private final String key;
     private final EntryType type;

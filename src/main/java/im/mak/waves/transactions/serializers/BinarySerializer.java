@@ -3,14 +3,15 @@ package im.mak.waves.transactions.serializers;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import im.mak.waves.crypto.Bytes.ByteReader;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
-import im.mak.waves.transactions.components.*;
+import im.mak.waves.transactions.common.*;
+import im.mak.waves.transactions.components.data.*;
+import im.mak.waves.transactions.components.invoke.Function;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 
 import static im.mak.waves.transactions.serializers.ProtobufConverter.recipientFromProto;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -32,6 +33,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
         else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
+        else if (tx instanceof InvokeScriptTransaction) protobufVersion = InvokeScriptTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -55,6 +57,7 @@ public abstract class BinarySerializer {
         else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
         else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
         else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
+        else if (tx instanceof InvokeScriptTransaction) protobufVersion = InvokeScriptTransaction.LATEST_VERSION;
         //todo other types
 
         if (tx.version() == protobufVersion) {
@@ -216,6 +219,22 @@ public abstract class BinarySerializer {
             TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
             tx = UpdateAssetInfoTransaction
                     .with(Asset.id(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasInvokeScript()) {
+            TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
+            Function functionCall = LegacyBinarySerializer
+                    .functionCallFromBytes(new ByteReader(invoke.getFunctionCall().toByteArray()));
+            tx = InvokeScriptTransaction
+                    .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
+                    .payments(invoke.getPaymentsList().stream().map(p ->
+                        Amount.of(p.getAmount(), Asset.id(p.getAssetId().toByteArray())))
+                            .collect(toList()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))

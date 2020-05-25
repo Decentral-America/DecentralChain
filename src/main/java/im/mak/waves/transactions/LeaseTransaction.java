@@ -19,6 +19,7 @@ public class LeaseTransaction extends Transaction {
     private final Recipient recipient;
     private final long amount;
 
+    //todo third shortest constructor LeaseTransaction(PublicKey sender, Recipient recipient, long amount)
     public LeaseTransaction(PublicKey sender, Recipient recipient, long amount, byte chainId, long fee, long timestamp, int version) {
         this(sender, recipient, amount, chainId, fee, timestamp, version, Proof.emptyList());
     }

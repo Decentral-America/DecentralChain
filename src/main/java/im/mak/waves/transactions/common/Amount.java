@@ -1,27 +1,57 @@
 package im.mak.waves.transactions.common;
 
-import im.mak.waves.crypto.base.Base58;
+import java.util.Objects;
 
-public class Amount { //TODO use in transactions
+public class Amount { //TODO use in all transactions
 
     private final long value;
-    private final Base58 assetId;
+    private final Asset asset;
 
-    public Amount(long value, Base58 assetId) {
+    public Amount(long value, Asset asset) {
         this.value = value;
-        this.assetId = assetId;
+        this.asset = asset == null ? Asset.WAVES : asset;
     }
 
-    public static Amount of(long value, Base58 assetId) {
-        return new Amount(value, assetId);
+    public Amount(long value) {
+        this(value, Asset.WAVES);
+    }
+
+    public static Amount of(long value, Asset asset) {
+        return new Amount(value, asset);
+    }
+
+    public static Amount of(long value) {
+        return new Amount(value);
     }
 
     public long value() {
         return this.value;
     }
 
-    public Base58 assetId() {
-        return this.assetId;
+    public Asset asset() {
+        return this.asset;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Amount that = (Amount) o;
+        return this.value == that.value
+                && this.asset.equals(that.asset);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, asset);
+    }
+
+    @Override
+    public String toString() {
+        return "Amount{" +
+                "value=" + value +
+                ", asset=" + asset +
+                '}';
     }
 
 }

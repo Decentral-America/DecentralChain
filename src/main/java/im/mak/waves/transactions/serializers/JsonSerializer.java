@@ -9,7 +9,8 @@ import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.components.*;
+import im.mak.waves.transactions.components.data.*;
+import im.mak.waves.transactions.components.invoke.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,19 +143,48 @@ public abstract class JsonSerializer {
                     jsonNode.get("minSponsoredAssetFee").asLong(), chainId, fee, timestamp, version, proofs);
         } else if (type == SetAssetScriptTransaction.TYPE) {
             if (!feeAssetId.isWaves())
-                throw new IOException("feeAssetId field must be null for DataTransaction");
+                throw new IOException("feeAssetId field must be null for SetAssetScriptTransaction");
 
             Asset asset = Asset.id(jsonNode.get("assetId").asText());
             byte[] script = jsonNode.get("script").isNull() ? Bytes.empty() : Base64.decode(jsonNode.get("script").asText());
             return new SetAssetScriptTransaction(sender, asset, script, chainId, fee, timestamp, version, proofs);
         } else if (type == UpdateAssetInfoTransaction.TYPE) {
             if (!feeAssetId.isWaves())
-                throw new IOException("feeAssetId field must be null for DataTransaction");
+                throw new IOException("feeAssetId field must be null for UpdateAssetInfoTransaction");
 
             Asset asset = Asset.id(jsonNode.get("assetId").asText());
             String name = jsonNode.get("name").asText();
             String description = jsonNode.get("description").asText();
             return new UpdateAssetInfoTransaction(sender, asset, name, description, chainId, fee, timestamp, version, proofs);
+        } else if (type == InvokeScriptTransaction.TYPE) {
+            Recipient dApp = Recipient.as(jsonNode.get("dApp").asText());
+            Function function = Function.asDefault();
+            if (jsonNode.has("call") && !jsonNode.get("call").isNull()) {
+                JsonNode call = jsonNode.get("call");
+                List<Arg> args = new ArrayList<>();
+                if (call.has("args")) {
+                    JsonNode jsArgs = call.get("args");
+                    for (int i = 0; i < jsArgs.size(); i++) {
+                        JsonNode arg = jsArgs.get(i);
+                        String argType = arg.get("type").asText();
+                        if (argType.equals("binary"))
+                            args.add(BinaryArg.as(arg.get("value").asText()));
+                        else if (argType.equals("boolean"))
+                            args.add(BooleanArg.as(arg.get("value").asBoolean()));
+                        else if (argType.equals("integer"))
+                            args.add(IntegerArg.as(arg.get("value").asLong()));
+                        else if (argType.equals("string"))
+                            args.add(StringArg.as(arg.get("value").asText()));
+                        else throw new IOException("Unknown arg type " + argType);
+                    }
+                }
+                function = Function.as(call.get("name").asText(), args);
+            }
+            List<Amount> payments = new ArrayList<>();
+            if (jsonNode.has("payments"))
+                jsonNode.get("payments").forEach(p ->
+                        payments.add(Amount.of(p.get("amount").asLong(), Asset.id(p.get("assetId").asText()))));
+            return new InvokeScriptTransaction(sender, dApp, function, payments, chainId, fee, feeAssetId, timestamp, version, proofs);
         } //todo other types
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -267,6 +297,34 @@ public abstract class JsonSerializer {
             jsObject.put("assetId", uaiTx.asset().toString())
                     .put("name", uaiTx.name())
                     .put("description", uaiTx.description());
+        } else if (tx instanceof InvokeScriptTransaction) {
+            InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
+            if (isTx.function().isDefault())
+                jsObject.putNull("call");
+            else {
+                ObjectNode call = jsObject.putObject("call");
+                call.put("function", isTx.function().name());
+                ArrayNode args = call.putArray("args");
+                isTx.function().args().forEach(a -> {
+                    ObjectNode arg = args.addObject();
+                    if (a.type() == ArgType.BINARY)
+                        arg.put("type", "binary").put("value", ((BinaryArg)a).valueEncoded());
+                    else if (a.type() == ArgType.BOOLEAN)
+                        arg.put("type", "boolean").put("value", ((BooleanArg)a).value());
+                    else if (a.type() == ArgType.INTEGER)
+                        arg.put("type", "integer").put("value", ((IntegerArg)a).value());
+                    else if (a.type() == ArgType.STRING)
+                        arg.put("type", "string").put("value", ((StringArg)a).value());
+                });
+            }
+            ArrayNode payments = jsObject.putArray("payments");
+            isTx.payments().forEach(p -> {
+                ObjectNode payment = payments.addObject();
+                payment.put("amount", p.value());
+                if (p.asset().isWaves())
+                    payment.putNull("assetId");
+                else payment.put("assetId", p.asset().toString());
+            });
         } //todo other types
 
         jsObject.put("fee", tx.fee())

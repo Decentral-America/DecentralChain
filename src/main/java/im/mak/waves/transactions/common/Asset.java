@@ -38,4 +38,8 @@ public class Asset extends Base58Encoded {
                     + "' byte length " + value.length + ". Must be " + BYTE_LENGTH + " or 0 for WAVES");
     }
 
+    @Override
+    public String toString() {
+        return isWaves() ? "WAVES" : super.toString();
+    }
 }
