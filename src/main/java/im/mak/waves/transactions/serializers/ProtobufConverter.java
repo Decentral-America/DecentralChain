@@ -1,22 +1,261 @@
 package im.mak.waves.transactions.serializers;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.wavesplatform.protobuf.AmountOuterClass;
+import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.Address;
+import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
-import im.mak.waves.transactions.common.Alias;
-import im.mak.waves.transactions.common.Recipient;
+import im.mak.waves.transactions.common.*;
+import im.mak.waves.transactions.components.Order;
+import im.mak.waves.transactions.components.OrderType;
 import im.mak.waves.transactions.components.data.*;
+import im.mak.waves.transactions.components.invoke.Function;
+
+import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
 public abstract class ProtobufConverter {
 
-    public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction protobufTx) {
-        return null; //todo
+    public static Order fromProtobuf(OrderOuterClass.Order pbOrder) throws IOException {
+        OrderType type;
+        if (pbOrder.getOrderSide() == OrderOuterClass.Order.Side.BUY)
+            type = OrderType.BUY;
+        else if (pbOrder.getOrderSide() == OrderOuterClass.Order.Side.SELL)
+            type = OrderType.SELL;
+        else throw new IOException("Unknown order type \"" + pbOrder.getOrderSide() + "\"");
+
+        return Order
+                .with(type,
+                        Amount.of(pbOrder.getAmount(), Asset.id(pbOrder.getAssetPair().getAmountAssetId().toByteArray())),
+                        Amount.of(pbOrder.getPrice(), Asset.id(pbOrder.getAssetPair().getPriceAssetId().toByteArray())),
+                        PublicKey.as(pbOrder.getMatcherPublicKey().toByteArray()))
+                .version(pbOrder.getVersion())
+                .chainId((byte) pbOrder.getChainId())
+                .sender(PublicKey.as(pbOrder.getSenderPublicKey().toByteArray()))
+                .fee(pbOrder.getMatcherFee().getAmount())
+                .feeAsset(Asset.id(pbOrder.getMatcherFee().getAssetId().toByteArray()))
+                .timestamp(pbOrder.getTimestamp())
+                .expiration(pbOrder.getExpiration())
+                .get();
+    }
+
+    public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction pbSignedTx) throws IOException {
+        Transaction tx;
+        TransactionOuterClass.Transaction pbTx = pbSignedTx.getTransaction();
+        //todo other types
+        if (pbTx.hasIssue()) {
+            TransactionOuterClass.IssueTransactionData issue = pbTx.getIssue();
+            tx = IssueTransaction
+                    .with(issue.getNameBytes().toByteArray(), issue.getAmount(), issue.getDecimals())
+                    .description(issue.getDescriptionBytes().toByteArray())
+                    .isReissuable(issue.getReissuable())
+                    .compiledScript(issue.getScript().toByteArray())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasTransfer()) {
+            TransactionOuterClass.TransferTransactionData transfer = pbTx.getTransfer();
+            AmountOuterClass.Amount amount = transfer.getAmount();
+            tx = TransferTransaction
+                    .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()), amount.getAmount())
+                    .asset(Asset.id(amount.getAssetId().toByteArray()))
+                    .attachment(transfer.getAttachment().getStringValue()) //fixme not typed, NODE-2145
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasReissue()) {
+            TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
+            tx = ReissueTransaction
+                    .with(Asset.id(reissue.getAssetAmount().getAssetId().toByteArray()), reissue.getAssetAmount().getAmount())
+                    .reissuable(reissue.getReissuable())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasBurn()) {
+            TransactionOuterClass.BurnTransactionData burn = pbTx.getBurn();
+            tx = BurnTransaction
+                    .with(Asset.id(burn.getAssetAmount().getAssetId().toByteArray()), burn.getAssetAmount().getAmount())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasExchange()) {
+            TransactionOuterClass.ExchangeTransactionData exchange = pbTx.getExchange();
+            tx = ExchangeTransaction
+                    .with(fromProtobuf(exchange.getOrders(0)), fromProtobuf(exchange.getOrders(1)))
+                    .amount(exchange.getAmount())
+                    .price(exchange.getPrice())
+                    .buyMatcherFee(exchange.getBuyMatcherFee())
+                    .sellMatcherFee(exchange.getSellMatcherFee())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasLease()) {
+            TransactionOuterClass.LeaseTransactionData lease = pbTx.getLease();
+            tx = LeaseTransaction
+                    .with(recipientFromProto(lease.getRecipient(), (byte) pbTx.getChainId()), lease.getAmount())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasLeaseCancel()) {
+            TransactionOuterClass.LeaseCancelTransactionData leaseCancel = pbTx.getLeaseCancel();
+            tx = LeaseCancelTransaction
+                    .with(TxId.id(leaseCancel.getLeaseId().toByteArray()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasCreateAlias()) {
+            TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
+            tx = CreateAliasTransaction
+                    .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //ask is there non utf8 aliases?
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasDataTransaction()) {
+            TransactionOuterClass.DataTransactionData data = pbTx.getDataTransaction();
+            tx = DataTransaction
+                    .with(data.getDataList().stream().map(e -> {
+                        int descriptor = e.getDescriptorForType().getIndex();
+                        if (descriptor == 10) return new IntegerEntry(e.getKey(), e.getIntValue());
+                        else if (descriptor == 11) return new BooleanEntry(e.getKey(), e.getBoolValue());
+                        else if (descriptor == 12) return new BinaryEntry(e.getKey(), e.getBinaryValue().toByteArray());
+                        else if (descriptor == 13) return new StringEntry(e.getKey(), e.getStringValue());
+                        else return new DeleteEntry(e.getKey());
+                    }).collect(toList()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasSetScript()) {
+            TransactionOuterClass.SetScriptTransactionData setScript = pbTx.getSetScript();
+            tx = SetScriptTransaction
+                    .with(setScript.getScript().toByteArray())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasSponsorFee()) {
+            TransactionOuterClass.SponsorFeeTransactionData sponsor = pbTx.getSponsorFee();
+            tx = SponsorFeeTransaction
+                    .with(Asset.id(sponsor.getMinFee().getAssetId().toByteArray()), sponsor.getMinFee().getAmount())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasSetAssetScript()) {
+            TransactionOuterClass.SetAssetScriptTransactionData setAssetScript = pbTx.getSetAssetScript();
+            tx = SetAssetScriptTransaction
+                    .with(Asset.id(setAssetScript.getAssetId().toByteArray()), setAssetScript.getScript().toByteArray())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasUpdateAssetInfo()) {
+            TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
+            tx = UpdateAssetInfoTransaction
+                    .with(Asset.id(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasInvokeScript()) {
+            TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
+            Function functionCall = LegacyBinarySerializer
+                    .functionCallFromBytes(new Bytes.ByteReader(invoke.getFunctionCall().toByteArray()));
+            tx = InvokeScriptTransaction
+                    .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
+                    .payments(invoke.getPaymentsList().stream().map(p ->
+                            Amount.of(p.getAmount(), Asset.id(p.getAssetId().toByteArray())))
+                            .collect(toList()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else throw new InvalidProtocolBufferException("Can't recognize transaction type");
+
+        pbSignedTx.getProofsList().forEach(p -> tx.proofs().add(Proof.as(p.toByteArray())));
+        return tx;
+    }
+
+    public static OrderOuterClass.Order toUnsignedProtobuf(Order order) {
+        OrderOuterClass.Order.Builder builder = OrderOuterClass.Order.newBuilder();
+        if (order.type() == OrderType.BUY)
+            builder.setOrderSide(OrderOuterClass.Order.Side.BUY);
+        else if (order.type() == OrderType.SELL)
+            builder.setOrderSide(OrderOuterClass.Order.Side.SELL);
+        builder.setVersion(order.version())
+                .setChainId(order.chainId())
+                .setSenderPublicKey(ByteString.copyFrom(order.sender().bytes()))
+                .setAssetPair(OrderOuterClass.AssetPair.newBuilder()
+                        .setAmountAssetId(ByteString.copyFrom(order.amount().asset().bytes()))
+                        .setPriceAssetId(ByteString.copyFrom(order.price().asset().bytes()))
+                        .build())
+                .setAmount(order.amount().value())
+                .setPrice(order.price().value())
+                .setMatcherPublicKey(ByteString.copyFrom(order.matcher().bytes()))
+                .setMatcherFee(AmountOuterClass.Amount.newBuilder()
+                        .setAmount(order.fee())
+                        .setAssetId(ByteString.copyFrom(order.feeAsset().bytes()))
+                        .build())
+                .setTimestamp(order.timestamp())
+                .setExpiration(order.expiration());
+        return builder.build(); //ask bodyBytes are just without proofs?
     }
 
     public static TransactionOuterClass.Transaction toUnsignedProtobuf(Transaction tx) {
@@ -69,6 +308,18 @@ public abstract class ProtobufConverter {
                             .setAssetId(ByteString.copyFrom(btx.asset().bytes()))
                             .setAmount(btx.amount())
                             .build())
+                    .build());
+        } else if (tx instanceof ExchangeTransaction) {
+            ExchangeTransaction etx = (ExchangeTransaction) tx;
+            OrderOuterClass.Order order1 = toProtobuf(etx.isDirectionBuySell() ? etx.buyOrder() : etx.sellOrder());
+            OrderOuterClass.Order order2 = toProtobuf(etx.isDirectionBuySell() ? etx.sellOrder() : etx.buyOrder());
+            protoBuilder.setExchange(TransactionOuterClass.ExchangeTransactionData.newBuilder()
+                    .setOrders(0, order1)
+                    .setOrders(1, order2)
+                    .setAmount(etx.amount())
+                    .setPrice(etx.price())
+                    .setBuyMatcherFee(etx.buyMatcherFee())
+                    .setSellMatcherFee(etx.sellMatcherFee())
                     .build());
         } else if (tx instanceof LeaseTransaction) {
             LeaseTransaction ltx = (LeaseTransaction) tx;
@@ -139,6 +390,15 @@ public abstract class ProtobufConverter {
         } //todo other types
 
         return protoBuilder.build();
+    }
+
+    public static OrderOuterClass.Order toProtobuf(Order order) {
+        return OrderOuterClass.Order.newBuilder(toUnsignedProtobuf(order))
+                .addAllProofs(order.proofs()
+                        .stream()
+                        .map(p -> ByteString.copyFrom(p.bytes()))
+                        .collect(toList()))
+                .build();
     }
 
     public static TransactionOuterClass.SignedTransaction toProtobuf(Transaction tx) {

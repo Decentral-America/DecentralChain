@@ -8,10 +8,7 @@ import im.mak.waves.transactions.common.Recipient;
 import im.mak.waves.transactions.components.invoke.Function;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class InvokeScriptTransaction extends Transaction {
 
@@ -31,10 +28,12 @@ public class InvokeScriptTransaction extends Transaction {
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments,
                                    byte chainId, long fee, Asset feeAsset, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, feeAsset, timestamp, proofs);
+        if (dApp == null)
+            throw new IllegalArgumentException("dApp can't be null");
 
         this.dApp = dApp;
-        this.function = function;
-        this.payments = payments;
+        this.function = function == null ? Function.asDefault() : function;
+        this.payments = payments == null ? Collections.emptyList() : payments;
     }
 
     public static InvokeScriptTransaction fromBytes(byte[] bytes) throws IOException {
