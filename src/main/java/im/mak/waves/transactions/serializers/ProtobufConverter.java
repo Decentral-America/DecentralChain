@@ -68,9 +68,9 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.TransferTransactionData transfer = pbTx.getTransfer();
             AmountOuterClass.Amount amount = transfer.getAmount();
             tx = TransferTransaction
-                    .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()), amount.getAmount())
-                    .asset(Asset.id(amount.getAssetId().toByteArray()))
-                    .attachment(transfer.getAttachment().getStringValue()) //fixme not typed, NODE-2145
+                    .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()),
+                            Amount.of(amount.getAmount(), Asset.id(amount.getAssetId().toByteArray())))
+                    .attachment(transfer.getAttachment().getBinaryValue().toByteArray())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -285,11 +285,11 @@ public abstract class ProtobufConverter {
             protoBuilder.setTransfer(TransactionOuterClass.TransferTransactionData.newBuilder()
                     .setRecipient(recipientToProto(ttx.recipient()))
                     .setAmount(AmountOuterClass.Amount.newBuilder()
-                            .setAmount(ttx.amount())
-                            .setAssetId(ByteString.copyFrom(ttx.asset().bytes()))
+                            .setAmount(ttx.amount().value())
+                            .setAssetId(ByteString.copyFrom(ttx.amount().asset().bytes()))
                             .build())
                     .setAttachment(TransactionOuterClass.Attachment.newBuilder()
-                            .setStringValue(ttx.attachment())
+                            .setBinaryValue(ByteString.copyFrom(ttx.attachmentBytes()))
                             .build())
                     .build());
         } else if (tx instanceof ReissueTransaction) {

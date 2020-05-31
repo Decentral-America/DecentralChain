@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JsonSerializer { //todo don't work with "signature" field
+public abstract class JsonSerializer {
 
     //todo use modules http://tutorials.jenkov.com/java-json/jackson-objectmapper.html#custom-serializer
     public static final ObjectMapper JSON_MAPPER = new ObjectMapper();
@@ -92,13 +93,12 @@ public abstract class JsonSerializer { //todo don't work with "signature" field
             Recipient recipient = Recipient.as(json.get("recipient").asText());
             if (version < 3)
                 chainId = recipient.chainId();
-            Asset asset = json.has("assetId") ? Asset.id(json.get("assetId").asText(null)) : Asset.WAVES;
-            //fixme not typed, NODE-2145
-            String attachment = json.has("attachment") ? json.get("attachment").asText("") : "";
+            Asset asset = json.has("assetId") ? Asset.id(json.get("assetId").asText()) : Asset.WAVES;
+            byte[] attachment = json.has("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
 
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
-            return new TransferTransaction(sender, recipient, json.get("amount").asLong(), asset,
+            return new TransferTransaction(sender, recipient, Amount.of(json.get("amount").asLong(), asset),
                     attachment, chainId, fee, feeAssetId, timestamp, version, proofs);
         } else if (type == ReissueTransaction.TYPE) {
             if (!feeAssetId.isWaves())
@@ -297,10 +297,13 @@ public abstract class JsonSerializer { //todo don't work with "signature" field
                 }
             } else if (tx instanceof TransferTransaction) {
                 TransferTransaction ttx = (TransferTransaction) tx;
-                //fixme transfer, NODE-2145
+                jsObject.put("recipient", ttx.recipient().toString())
+                        .put("amount", ttx.amount().value())
+                        .put("assetId", assetToJson(ttx.amount().asset()))
+                        .put("attachment", ttx.attachment().length() > 0 ? Base58.encode(ttx.attachmentBytes()) : null);
             } else if (tx instanceof ReissueTransaction) {
                 ReissueTransaction rtx = (ReissueTransaction) tx;
-                jsObject.put("assetId", rtx.asset().toString())
+                jsObject.put("assetId", assetToJson(rtx.asset()))
                         .put("quantity", rtx.amount())
                         .put("reissuable", rtx.isReissuable());
                 if (rtx.version() == 1) {
@@ -309,7 +312,7 @@ public abstract class JsonSerializer { //todo don't work with "signature" field
                 }
             } else if (tx instanceof BurnTransaction) {
                 BurnTransaction btx = (BurnTransaction) tx;
-                jsObject.put("assetId", btx.asset().toString())
+                jsObject.put("assetId", assetToJson(btx.asset()))
                         .put("quantity", btx.amount());
                 if (btx.version() == 1) {
                     jsObject.remove("chainId");
@@ -375,17 +378,17 @@ public abstract class JsonSerializer { //todo don't work with "signature" field
                 else jsObject.putNull("script");
             } else if (tx instanceof SponsorFeeTransaction) {
                 SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
-                jsObject.put("assetId", sfTx.asset().toString())
+                jsObject.put("assetId", assetToJson(sfTx.asset()))
                         .put("minSponsoredAssetFee", sfTx.minSponsoredFee());
             } else if (tx instanceof SetAssetScriptTransaction) {
                 SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
-                jsObject.put("assetId", sasTx.asset().toString());
+                jsObject.put("assetId", assetToJson(sasTx.asset()));
                 if (sasTx.compiledScript().length > 0)
                     jsObject.put("script", Base64.encode(sasTx.compiledScript()));
                 else jsObject.putNull("script");
             } else if (tx instanceof UpdateAssetInfoTransaction) {
                 UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
-                jsObject.put("assetId", uaiTx.asset().toString())
+                jsObject.put("assetId", assetToJson(uaiTx.asset()))
                         .put("name", uaiTx.name())
                         .put("description", uaiTx.description());
             } else if (tx instanceof InvokeScriptTransaction) {

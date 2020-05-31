@@ -156,11 +156,11 @@ public abstract class LegacyBinarySerializer {
                         stream.write(Bytes.of((byte) ttx.version()));
 
                     stream.write(ttx.sender().bytes());
-                    if (ttx.asset().isWaves()) {
+                    if (ttx.amount().asset().isWaves()) {
                         stream.write(Bytes.of((byte) 0));
                     } else {
                         stream.write(Bytes.of((byte) 1));
-                        stream.write(ttx.asset().bytes());
+                        stream.write(ttx.amount().asset().bytes());
                     }
                     if (ttx.feeAsset().isWaves()) {
                         stream.write(Bytes.of((byte) 0));
@@ -169,7 +169,7 @@ public abstract class LegacyBinarySerializer {
                         stream.write(ttx.feeAsset().bytes());
                     }
                     stream.write(recipientToBytes(ttx.recipient()));
-                    stream.write(Bytes.fromLong(ttx.amount()));
+                    stream.write(Bytes.fromLong(ttx.amount().value()));
                     stream.write(Bytes.fromLong(ttx.fee()));
                     stream.write(Bytes.fromLong(ttx.timestamp()));
                     stream.write(Bytes.toSizedByteArray(ttx.attachment().getBytes(UTF_8)));
@@ -522,10 +522,11 @@ public abstract class LegacyBinarySerializer {
         long amount = data.readLong();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        byte[] attachment = data.readArray(); //fixme not typed, NODE-2145
+        byte[] attachment = data.readArray();
         List<Proof> proofs = readProofs(data, withProofs);
 
-        return new TransferTransaction(sender, recipient, amount, asset, new String(attachment), recipient.chainId(), fee, feeAsset, timestamp, version, proofs);
+        return new TransferTransaction(sender, recipient, Amount.of(amount, asset), attachment, recipient.chainId(),
+                fee, feeAsset, timestamp, version, proofs);
     }
 
     protected static ReissueTransaction reissue(ByteReader data, int version, boolean withProofs) throws IOException {

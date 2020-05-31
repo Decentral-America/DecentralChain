@@ -1,6 +1,8 @@
 package im.mak.waves.transactions;
 
+import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
@@ -8,6 +10,8 @@ import im.mak.waves.transactions.common.Recipient;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class TransferTransaction extends Transaction {
 
@@ -17,20 +21,18 @@ public class TransferTransaction extends Transaction {
     public static final long MIN_FEE = 100_000;
 
     private final Recipient recipient;
-    private final long amount;
-    private final Asset asset;
-    private final String attachment;
+    private final Amount amount;
+    private final byte[] attachment;
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, long amount, Asset asset, String attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version) {
-        this(sender, recipient, amount, asset, attachment, chainId, fee, feeAsset, timestamp, version, Proof.emptyList());
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version) {
+        this(sender, recipient, amount, attachment, chainId, fee, feeAsset, timestamp, version, Proof.emptyList());
     }
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, long amount, Asset asset, String attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version, List<Proof> proofs) {
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, feeAsset, timestamp, proofs);
 
         this.recipient = recipient;
-        this.amount = amount;
-        this.asset = asset;
+        this.amount = amount == null ? Amount.of(0, Asset.WAVES) : amount;
         this.attachment = attachment;
     }
 
@@ -42,7 +44,7 @@ public class TransferTransaction extends Transaction {
         return (TransferTransaction) Transaction.fromJson(json);
     }
 
-    public static TransferTransactionBuilder with(Recipient recipient, long amount) {
+    public static TransferTransactionBuilder with(Recipient recipient, Amount amount) {
         return new TransferTransactionBuilder(recipient, amount);
     }
 
@@ -50,15 +52,15 @@ public class TransferTransaction extends Transaction {
         return recipient;
     }
 
-    public long amount() {
+    public Amount amount() {
         return amount;
     }
 
-    public Asset asset() {
-        return asset;
+    public String attachment() {
+        return new String(attachment, UTF_8);
     }
 
-    public String attachment() {
+    public byte[] attachmentBytes() {
         return attachment;
     }
 
@@ -70,42 +72,38 @@ public class TransferTransaction extends Transaction {
         TransferTransaction that = (TransferTransaction) o;
         return this.amount == that.amount
                 && this.recipient.equals(that.recipient)
-                && this.asset.equals(that.asset)
-                && this.attachment.equals(that.attachment);
+                && Bytes.equal(this.attachment, that.attachment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), recipient, amount, asset, attachment);
+        return Objects.hash(super.hashCode(), recipient, amount, attachment);
     }
 
     public static class TransferTransactionBuilder
             extends TransactionBuilder<TransferTransactionBuilder, TransferTransaction> {
         private final Recipient recipient;
-        private final long amount;
-        private Asset asset;
-        private String attachment;
+        private final Amount amount;
+        private byte[] attachment;
 
-        protected TransferTransactionBuilder(Recipient recipient, long amount) {
+        protected TransferTransactionBuilder(Recipient recipient, Amount amount) {
             super(LATEST_VERSION, MIN_FEE);
             this.recipient = recipient;
             this.amount = amount;
-            this.asset = Asset.WAVES;
-            this.attachment = "";
+            this.attachment = Bytes.empty();
         }
 
-        public TransferTransactionBuilder asset(Asset asset) {
-            this.asset = asset;
-            return this;
-        }
-
-        public TransferTransactionBuilder attachment(String attachment) {
+        public TransferTransactionBuilder attachment(byte[] attachment) {
             this.attachment = attachment;
             return this;
         }
 
+        public TransferTransactionBuilder attachment(String attachment) {
+            return attachment(attachment.getBytes(UTF_8));
+        }
+
         protected TransferTransaction _build() {
-            return new TransferTransaction(sender, recipient, amount, asset, attachment, chainId, fee, feeAsset, timestamp, version);
+            return new TransferTransaction(sender, recipient, amount, attachment, chainId, fee, feeAsset, timestamp, version);
         }
     }
 

@@ -43,10 +43,10 @@ public class TransferTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void transferTransaction(int version, Recipient recipient, Asset asset, String attachment, Asset feeAsset, TxId expectedId, List<Proof> proofs,
+    void transferTransaction(int version, Recipient recipient, Asset asset, byte[] attachment, Asset feeAsset, TxId expectedId, List<Proof> proofs,
                           byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         TransferTransaction builtTx = TransferTransaction
-                .with(recipient, amount)
+                .with(recipient, Amount.of(amount, Asset.WAVES))
                 .chainId(Waves.chainId)
                 .fee(TransferTransaction.MIN_FEE)
                 .timestamp(timestamp)
@@ -61,7 +61,8 @@ public class TransferTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        TransferTransaction constructedTx = new TransferTransaction(sender, recipient, amount, asset, attachment, Waves.chainId, fee, feeAsset, timestamp, version, proofs);
+        TransferTransaction constructedTx = new TransferTransaction(sender, recipient, Amount.of(amount, asset),
+                attachment, Waves.chainId, fee, feeAsset, timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
