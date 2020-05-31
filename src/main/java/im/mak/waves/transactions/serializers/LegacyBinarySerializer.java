@@ -8,6 +8,7 @@ import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.components.Order;
 import im.mak.waves.transactions.components.OrderType;
+import im.mak.waves.transactions.components.Transfer;
 import im.mak.waves.transactions.components.data.*;
 import im.mak.waves.transactions.components.invoke.*;
 
@@ -70,12 +71,12 @@ public abstract class LegacyBinarySerializer {
         else if (type == LeaseTransaction.TYPE) transaction = lease(reader, version, withProofs);
         else if (type == LeaseCancelTransaction.TYPE) transaction = leaseCancel(reader, version, withProofs);
         else if (type == CreateAliasTransaction.TYPE) transaction = createAlias(reader, version, withProofs);
+        else if (type == MassTransferTransaction.TYPE) transaction = massTransfer(reader, version, withProofs);
         else if (type == DataTransaction.TYPE) transaction = data(reader, version, withProofs);
         else if (type == SetScriptTransaction.TYPE) transaction = setScript(reader, version, withProofs);
         else if (type == SponsorFeeTransaction.TYPE) transaction = sponsorFee(reader, version, withProofs);
         else if (type == SetAssetScriptTransaction.TYPE) transaction = setAssetScript(reader, version, withProofs);
         else if (type == InvokeScriptTransaction.TYPE) transaction = invokeScript(reader, version, withProofs);
-            //todo other types
         else throw new IOException("Unknown transaction type " + type);
 
         if (reader.hasNext())
@@ -284,6 +285,30 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.toSizedByteArray(caTx.alias().getBytes(UTF_8)));
                     stream.write(Bytes.fromLong(caTx.fee()));
                     stream.write(Bytes.fromLong(caTx.timestamp()));
+                } else if (tx instanceof MassTransferTransaction) {
+                    MassTransferTransaction mtTx = (MassTransferTransaction) tx;
+                    if (mtTx.version() > 1)
+                        throw new IllegalArgumentException("not a legacy");
+
+                    stream.write(Bytes.of((byte) mtTx.type()));
+                    stream.write(Bytes.of((byte) mtTx.version()));
+
+                    stream.write(mtTx.sender().bytes());
+                    if (mtTx.asset().isWaves()) {
+                        stream.write(Bytes.of((byte) 0));
+                    } else {
+                        stream.write(Bytes.of((byte) 1));
+                        stream.write(mtTx.asset().bytes());
+                    }
+                    stream.write(Bytes.fromShort((short) mtTx.transfers().size()));
+                    stream.write(Bytes.fromLong(mtTx.total()));
+                    for (Transfer transfer : mtTx.transfers()) {
+                        stream.write(recipientToBytes(transfer.recipient()));
+                        stream.write(Bytes.fromLong(transfer.amount()));
+                    }
+                    stream.write(Bytes.fromLong(mtTx.timestamp()));
+                    stream.write(Bytes.fromLong(mtTx.fee()));
+                    stream.write(Bytes.toSizedByteArray(mtTx.attachment().getBytes(UTF_8)));
                 } else if (tx instanceof DataTransaction) {
                     DataTransaction dtx = (DataTransaction) tx;
                     if (dtx.version() > 1)
@@ -385,7 +410,7 @@ public abstract class LegacyBinarySerializer {
                     if (!isTx.feeAsset().isWaves())
                         stream.write(isTx.feeAsset().bytes());
                     stream.write(Bytes.fromLong(isTx.timestamp()));
-                } //todo other types
+                }
             }
 
             result = stream.toByteArray();
@@ -460,6 +485,11 @@ public abstract class LegacyBinarySerializer {
                         stream.write(Bytes.of((byte) 0));
                     stream.write(caTx.bodyBytes());
                     stream.write(proofsToBytes(caTx.proofs(), withProofs));
+                } else if (tx instanceof MassTransferTransaction) {
+                    MassTransferTransaction mtTx = (MassTransferTransaction) tx;
+                    stream.write(Bytes.of((byte) 0));
+                    stream.write(mtTx.bodyBytes());
+                    stream.write(proofsToBytes(mtTx.proofs(), true));
                 } else if (tx instanceof DataTransaction) {
                     DataTransaction dtx = (DataTransaction) tx;
                     stream.write(Bytes.of((byte) 0));
@@ -485,7 +515,7 @@ public abstract class LegacyBinarySerializer {
                     stream.write(Bytes.of((byte) 0));
                     stream.write(isTx.bodyBytes());
                     stream.write(proofsToBytes(isTx.proofs(), true));
-                } //todo other types
+                }
             }
 
             return stream.toByteArray();
@@ -614,6 +644,33 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = readProofs(data, withProofs);
 
         return new CreateAliasTransaction(sender, new String(alias, UTF_8), Waves.chainId, fee, timestamp, version, proofs);
+    }
+
+    protected static MassTransferTransaction massTransfer(ByteReader data, int version, boolean withProofs) throws IOException {
+        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
+        boolean isAsset = data.readBoolean();
+        Asset asset = isAsset ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
+        short transfersCount = data.readShort();
+        long totalAmount = data.readLong();
+        List<Transfer> transfers = new ArrayList<>();
+        for (int i = 0; i < transfersCount; i++) {
+            Recipient recipient = readRecipient(data);
+            long amount = data.readLong();
+            transfers.add(Transfer.to(recipient, amount));
+        }
+        long timestamp = data.readLong();
+        long fee = data.readLong();
+        byte[] attachment = data.readArray();
+        List<Proof> proofs = readProofs(data, withProofs);
+        byte chainId = transfersCount > 0 ? transfers.get(0).recipient().chainId() : Waves.chainId;
+
+        MassTransferTransaction tx = new MassTransferTransaction(
+                sender, transfers, asset, attachment, chainId, fee, timestamp, version, proofs);
+        if (totalAmount != tx.total())
+            throw new IOException("Calculated total amount " + tx.total()
+                    + " is not equal to " + totalAmount + " of deserialized MassTransfer transaction");
+
+        return tx;
     }
 
     protected static DataTransaction data(ByteReader data, int version, boolean withProofs) throws IOException {

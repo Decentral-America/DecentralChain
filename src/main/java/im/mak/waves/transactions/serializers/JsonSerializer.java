@@ -12,6 +12,7 @@ import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.components.Order;
 import im.mak.waves.transactions.components.OrderType;
+import im.mak.waves.transactions.components.Transfer;
 import im.mak.waves.transactions.components.data.*;
 import im.mak.waves.transactions.components.invoke.*;
 
@@ -156,6 +157,22 @@ public abstract class JsonSerializer {
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new CreateAliasTransaction(
                     sender, json.get("alias").asText(), chainId, fee, timestamp, version, proofs);
+        } if (type == MassTransferTransaction.TYPE) {
+            JsonNode jsTransfers = json.get("transfer");
+            List<Transfer> transfers = new ArrayList<>();
+            for (JsonNode jsTransfer : jsTransfers) {
+                Recipient recipient = Recipient.as(jsTransfer.get("recipient").asText());
+                long amount = json.get("amount").asLong();
+                transfers.add(Transfer.to(recipient, amount));
+            }
+            Asset asset = Asset.id(json.get("assetId").asText());
+            byte[] attachment = json.has("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
+            if (version == 1 && transfers.size() > 0)
+                chainId = transfers.get(0).recipient().chainId();
+
+            if (version == 1 && json.has("signature"))
+                proofs = Proof.list(Proof.as(json.get("signature").asText()));
+            return new MassTransferTransaction(sender, transfers, asset, attachment, chainId, fee, timestamp, version, proofs);
         } else if (type == DataTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
@@ -234,7 +251,7 @@ public abstract class JsonSerializer {
                 json.get("payments").forEach(p ->
                         payments.add(Amount.of(p.get("amount").asLong(), Asset.id(p.get("assetId").asText()))));
             return new InvokeScriptTransaction(sender, dApp, function, payments, chainId, fee, feeAssetId, timestamp, version, proofs);
-        } //todo other types
+        }
 
         throw new IOException("Can't parse json of transaction with type " + type);
     }
@@ -352,6 +369,16 @@ public abstract class JsonSerializer {
                     signature = catx.proofs().get(0).toString();
                 if (catx.version() < 3)
                     jsObject.remove("chainId");
+            } else if (tx instanceof MassTransferTransaction) {
+                MassTransferTransaction mtTx = (MassTransferTransaction) tx;
+                jsObject.put("assetId", assetToJson(mtTx.asset()))
+                        .put("attachment", mtTx.attachment().length() > 0 ? Base58.encode(mtTx.attachmentBytes()) : null);
+                ArrayNode jsTransfers = jsObject.putArray("transfers");
+                for (Transfer transfer : mtTx.transfers()) {
+                    jsTransfers.addObject()
+                            .put("recipient", transfer.recipient().toString())
+                            .put("amount", transfer.amount());
+                }
             } else if (tx instanceof DataTransaction) {
                 DataTransaction dtx = (DataTransaction) tx;
                 ArrayNode data = jsObject.putArray("data");
@@ -417,7 +444,7 @@ public abstract class JsonSerializer {
                     payment.put("amount", p.value()).
                             put("assetId", assetToJson(p.asset()));
                 });
-            } //todo other types
+            }
 
             jsObject.put("fee", tx.fee())
                     .put("feeAssetId", assetToJson(tx.feeAsset()))

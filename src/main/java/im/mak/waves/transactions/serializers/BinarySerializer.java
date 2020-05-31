@@ -56,13 +56,13 @@ public abstract class BinarySerializer {
             else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
             else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
             else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
+            else if (tx instanceof MassTransferTransaction) protobufVersion = MassTransferTransaction.LATEST_VERSION;
             else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
             else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
             else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
             else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
             else if (tx instanceof InvokeScriptTransaction) protobufVersion = InvokeScriptTransaction.LATEST_VERSION;
             else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
-            //todo other types
 
             if (tx.version() == protobufVersion) {
                 return ProtobufConverter.toUnsignedProtobuf(tx).toByteArray();
@@ -88,13 +88,13 @@ public abstract class BinarySerializer {
             else if (tx instanceof LeaseTransaction) protobufVersion = LeaseTransaction.LATEST_VERSION;
             else if (tx instanceof LeaseCancelTransaction) protobufVersion = LeaseCancelTransaction.LATEST_VERSION;
             else if (tx instanceof CreateAliasTransaction) protobufVersion = CreateAliasTransaction.LATEST_VERSION;
+            else if (tx instanceof MassTransferTransaction) protobufVersion = MassTransferTransaction.LATEST_VERSION;
             else if (tx instanceof DataTransaction) protobufVersion = DataTransaction.LATEST_VERSION;
             else if (tx instanceof SetScriptTransaction) protobufVersion = SetScriptTransaction.LATEST_VERSION;
             else if (tx instanceof SponsorFeeTransaction) protobufVersion = SponsorFeeTransaction.LATEST_VERSION;
             else if (tx instanceof SetAssetScriptTransaction) protobufVersion = SetAssetScriptTransaction.LATEST_VERSION;
             else if (tx instanceof InvokeScriptTransaction) protobufVersion = InvokeScriptTransaction.LATEST_VERSION;
             else if (tx instanceof UpdateAssetInfoTransaction) protobufVersion = UpdateAssetInfoTransaction.LATEST_VERSION;
-            //todo other types
 
             if (tx.version() == protobufVersion) {
                 return tx.toProtobuf().toByteArray();

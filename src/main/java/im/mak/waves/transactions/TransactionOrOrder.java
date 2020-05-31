@@ -85,6 +85,8 @@ public abstract class TransactionOrOrder {
     //TODO check access to everything
     //TODO check all ") throws {", "throw new" and "catch". Maybe wrap to own exceptions with message patterns?
     //TODO simplified method to check kind of tx version (with signature, with proofs, protobuf)
+    //TODO immutable lists
+    //TODO calculate fee (data, massTransfer)
 
     //todo boolean equals(String json)
 

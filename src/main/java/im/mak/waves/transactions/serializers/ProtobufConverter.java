@@ -13,10 +13,12 @@ import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.components.Order;
 import im.mak.waves.transactions.components.OrderType;
+import im.mak.waves.transactions.components.Transfer;
 import im.mak.waves.transactions.components.data.*;
 import im.mak.waves.transactions.components.invoke.Function;
 
 import java.io.IOException;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
@@ -49,7 +51,7 @@ public abstract class ProtobufConverter {
     public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction pbSignedTx) throws IOException {
         Transaction tx;
         TransactionOuterClass.Transaction pbTx = pbSignedTx.getTransaction();
-        //todo other types
+
         if (pbTx.hasIssue()) {
             TransactionOuterClass.IssueTransactionData issue = pbTx.getIssue();
             tx = IssueTransaction
@@ -142,6 +144,23 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
             tx = CreateAliasTransaction
                     .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //ask is there non utf8 aliases?
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasMassTransfer()) {
+            TransactionOuterClass.MassTransferTransactionData massTransfer = pbTx.getMassTransfer();
+            List<Transfer> transfers = massTransfer.getTransfersList()
+                    .stream()
+                    .map(t -> Transfer.to(recipientFromProto(t.getRecipient(), (byte) pbTx.getChainId()), t.getAmount()))
+                    .collect(toList());
+            tx = MassTransferTransaction
+                    .with(transfers)
+                    .asset(Asset.id(massTransfer.getAssetId().toByteArray()))
+                    .attachment(massTransfer.getAttachment().getBinaryValue().toByteArray())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -337,6 +356,19 @@ public abstract class ProtobufConverter {
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
                     .setAliasBytes(ByteString.copyFrom(caTx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
                     .build());
+        } else if (tx instanceof MassTransferTransaction) {
+            MassTransferTransaction mtTx = (MassTransferTransaction) tx;
+            protoBuilder.setMassTransfer(TransactionOuterClass.MassTransferTransactionData.newBuilder()
+                    .addAllTransfers(mtTx.transfers().stream().map(t ->
+                        TransactionOuterClass.MassTransferTransactionData.Transfer.newBuilder()
+                                .setRecipient(recipientToProto(t.recipient()))
+                                .setAmount(t.amount())
+                                .build()
+                    ).collect(toList()))
+                    .setAssetId(ByteString.copyFrom(mtTx.asset().bytes()))
+                    .setAttachment(TransactionOuterClass.Attachment.newBuilder()
+                            .setBinaryValue(ByteString.copyFrom(mtTx.attachmentBytes())).build())
+                    .build());
         } else if (tx instanceof DataTransaction) {
             DataTransaction dtx = (DataTransaction) tx;
             protoBuilder.setDataTransaction(TransactionOuterClass.DataTransactionData.newBuilder()
@@ -387,7 +419,7 @@ public abstract class ProtobufConverter {
                     .setAssetId(ByteString.copyFrom(p.asset().bytes()))
                     .build()));
             protoBuilder.setInvokeScript(invoke.build());
-        } //todo other types
+        }
 
         return protoBuilder.build();
     }
