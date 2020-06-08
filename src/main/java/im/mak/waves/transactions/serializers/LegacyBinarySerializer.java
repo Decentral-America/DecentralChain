@@ -1,8 +1,6 @@
 package im.mak.waves.transactions.serializers;
 
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.Bytes.ByteReader;
-import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
@@ -17,8 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static im.mak.waves.crypto.Bytes.concat;
-import static im.mak.waves.crypto.Bytes.of;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class LegacyBinarySerializer {
@@ -27,7 +23,7 @@ public abstract class LegacyBinarySerializer {
         if (bytes.length < 1) //todo or more?
             throw new IOException("Byte array in too short to parse as an order");
 
-        ByteReader data = new ByteReader(bytes);
+        BytesReader data = new BytesReader(bytes);
         int version = versioned ? data.read() : 1;
         if (versioned && version > 3)
             throw new IOException("not a legacy");
@@ -43,7 +39,11 @@ public abstract class LegacyBinarySerializer {
         long expiration = data.readLong();
         long fee = data.readLong();
         Asset feeAsset = version == 3 && data.readBoolean() ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
-        List<Proof> proofs = readProofs(data, version > 1);
+        List<Proof> proofs;
+        if (version == 1)
+            proofs = data.readSignature();
+        else
+            proofs = data.readProofs();
 
         return new Order(sender, type, Amount.of(amount, amountAsset), Amount.of(price, priceAsset), matcher,
                 Waves.chainId, fee, feeAsset, timestamp, expiration, version, proofs);
@@ -60,11 +60,24 @@ public abstract class LegacyBinarySerializer {
         byte[] data = Bytes.chunk(bytes, withProofs ? 3 : 1)[1];
 
         Transaction transaction;
-        ByteReader reader = new ByteReader(data);
+        List<Proof> proofs = Proof.emptyList();
+        BytesReader reader = new BytesReader(data);
+
         if (type == 1) throw new IOException("Genesis transactions are not supported"); //todo
         else if (type == 2) throw new IOException("Payment transactions are not supported"); //todo
         else if (type == IssueTransaction.TYPE) transaction = issue(reader, version, withProofs);
-        else if (type == TransferTransaction.TYPE) transaction = transfer(reader, version, withProofs);
+        else if (type == TransferTransaction.TYPE) {
+            if (version == 1) {
+                proofs = reader.readSignature();
+                byte typeInBody = reader.read();
+                if (typeInBody != type)
+                    throw new IOException("Expected transaction type " + type + " but " + typeInBody + " found");
+            }
+            transaction = transfer(reader, version);
+            if (version == 2)
+                proofs = reader.readProofs();
+            transaction.proofs().addAll(proofs);
+        }
         else if (type == ReissueTransaction.TYPE) transaction = reissue(reader, version, withProofs);
         else if (type == BurnTransaction.TYPE) transaction = burn(reader, version, withProofs);
         else if (type == ExchangeTransaction.TYPE) transaction = exchange(reader, version, withProofs);
@@ -150,10 +163,8 @@ public abstract class LegacyBinarySerializer {
                     if (ttx.version() > 2)
                         throw new IllegalArgumentException("not a legacy");
 
-                    boolean withProofs = ttx.version() == 2;
-
                     stream.write(Bytes.of((byte) ttx.type()));
-                    if (withProofs)
+                    if (ttx.version() == 2)
                         stream.write(Bytes.of((byte) ttx.version()));
 
                     stream.write(ttx.sender().bytes());
@@ -169,11 +180,11 @@ public abstract class LegacyBinarySerializer {
                         stream.write(Bytes.of((byte) 1));
                         stream.write(ttx.feeAsset().bytes());
                     }
-                    stream.write(recipientToBytes(ttx.recipient()));
+                    stream.write(Bytes.fromLong(ttx.timestamp()));
                     stream.write(Bytes.fromLong(ttx.amount().value()));
                     stream.write(Bytes.fromLong(ttx.fee()));
-                    stream.write(Bytes.fromLong(ttx.timestamp()));
-                    stream.write(Bytes.toSizedByteArray(ttx.attachment().getBytes(UTF_8)));
+                    stream.write(recipientToBytes(ttx.recipient()));
+                    stream.write(Bytes.toSizedByteArray(ttx.attachmentBytes()));
                 } else if (tx instanceof ReissueTransaction) {
                     ReissueTransaction rtx = (ReissueTransaction) tx;
                     if (rtx.version() > 2)
@@ -438,11 +449,15 @@ public abstract class LegacyBinarySerializer {
                     stream.write(proofsToBytes(itx.proofs(), withProofs));
                 } else if (tx instanceof TransferTransaction) {
                     TransferTransaction ttx = (TransferTransaction) tx;
-                    boolean withProofs = ttx.version() == 2;
-                    if (withProofs)
+                    if (ttx.version() == 1) {
+                        stream.write(Bytes.of((byte) ttx.type()));
+                        stream.write(proofsToBytes(ttx.proofs(), false));
+                        stream.write(ttx.bodyBytes());
+                    } else {
                         stream.write(Bytes.of((byte) 0));
-                    stream.write(ttx.bodyBytes());
-                    stream.write(proofsToBytes(ttx.proofs(), withProofs));
+                        stream.write(ttx.bodyBytes());
+                        stream.write(proofsToBytes(ttx.proofs(), true));
+                    }
                 } else if (tx instanceof ReissueTransaction) {
                     ReissueTransaction rtx = (ReissueTransaction) tx;
                     boolean withProofs = rtx.version() == 2;
@@ -525,7 +540,7 @@ public abstract class LegacyBinarySerializer {
         return null; //todo exception
     }
 
-    protected static IssueTransaction issue(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static IssueTransaction issue(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = version == 2 ? data.read() : Waves.chainId;
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         byte[] name = data.readArray();
@@ -536,30 +551,32 @@ public abstract class LegacyBinarySerializer {
         long fee = data.readLong();
         long timestamp = data.readLong();
         byte[] script = (version == 2 && data.read() == 1) ? data.readArray() : null;
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, script, chainId, fee,
                 timestamp, version, proofs);
     }
 
-    protected static TransferTransaction transfer(ByteReader data, int version, boolean withProofs) throws IOException {
-        PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
-        boolean isAsset = data.readBoolean();
-        Asset asset = isAsset ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
-        boolean isFeeAsset = data.readBoolean();
-        Asset feeAsset = isFeeAsset ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
-        Recipient recipient = readRecipient(data);
+    protected static TransferTransaction transfer(BytesReader data, int version) throws IOException {
+        PublicKey sender = data.readPublicKey();
+        Asset asset = data.readAssetOrWaves();
+        Asset feeAsset = data.readAssetOrWaves();
+        long timestamp = data.readLong();
         long amount = data.readLong();
         long fee = data.readLong();
-        long timestamp = data.readLong();
+        Recipient recipient = data.readRecipient();
         byte[] attachment = data.readArray();
-        List<Proof> proofs = readProofs(data, withProofs);
 
         return new TransferTransaction(sender, recipient, Amount.of(amount, asset), attachment, recipient.chainId(),
-                fee, feeAsset, timestamp, version, proofs);
+                fee, feeAsset, timestamp, version);
     }
 
-    protected static ReissueTransaction reissue(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static ReissueTransaction reissue(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = version == 2 ? data.read() : Waves.chainId;
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         Asset asset = Asset.id(data.read(TxId.BYTE_LENGTH));
@@ -567,24 +584,34 @@ public abstract class LegacyBinarySerializer {
         boolean reissuable = data.readBoolean();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new ReissueTransaction(sender, asset, amount, reissuable, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static BurnTransaction burn(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static BurnTransaction burn(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = version == 2 ? data.read() : Waves.chainId;
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         Asset asset = Asset.id(data.read(TxId.BYTE_LENGTH));
         long amount = data.readLong();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new BurnTransaction(sender, asset, amount, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static ExchangeTransaction exchange(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static ExchangeTransaction exchange(BytesReader data, int version, boolean withProofs) throws IOException {
         Order order1, order2;
         int order1Size = data.readInt();
         if (version == 1) {
@@ -605,48 +632,67 @@ public abstract class LegacyBinarySerializer {
         long fee = data.readLong();
         long timestamp = data.readLong();
 
-        List<Proof> proofs = readProofs(data, withProofs);
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new ExchangeTransaction(order1.sender(), order1, order2, amount, price, buyMatcherFee, sellMatcherFee,
                 Waves.chainId, fee, timestamp, version, proofs);
     }
 
-    protected static LeaseTransaction lease(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static LeaseTransaction lease(BytesReader data, int version, boolean withProofs) throws IOException {
         if (version == 2 && data.read() != 0)
             throw new IOException("Reserved field must be 0");
 
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
-        Recipient recipient = readRecipient(data);
+        Recipient recipient = data.readRecipient();
         long amount = data.readLong();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new LeaseTransaction(sender, recipient, amount, recipient.chainId(), fee, timestamp, version, proofs);
     }
 
-    protected static LeaseCancelTransaction leaseCancel(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static LeaseCancelTransaction leaseCancel(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = version == 2 ? data.read() : Waves.chainId;
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         long fee = data.readLong();
         long timestamp = data.readLong();
         TxId leaseId = TxId.id(data.read(TxId.BYTE_LENGTH));
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static CreateAliasTransaction createAlias(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static CreateAliasTransaction createAlias(BytesReader data, int version, boolean withProofs) throws IOException {
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         byte[] alias = data.readArray();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new CreateAliasTransaction(sender, new String(alias, UTF_8), Waves.chainId, fee, timestamp, version, proofs);
     }
 
-    protected static MassTransferTransaction massTransfer(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static MassTransferTransaction massTransfer(BytesReader data, int version, boolean withProofs) throws IOException {
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         boolean isAsset = data.readBoolean();
         Asset asset = isAsset ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
@@ -654,14 +700,20 @@ public abstract class LegacyBinarySerializer {
         long totalAmount = data.readLong();
         List<Transfer> transfers = new ArrayList<>();
         for (int i = 0; i < transfersCount; i++) {
-            Recipient recipient = readRecipient(data);
+            Recipient recipient = data.readRecipient();
             long amount = data.readLong();
             transfers.add(Transfer.to(recipient, amount));
         }
         long timestamp = data.readLong();
         long fee = data.readLong();
         byte[] attachment = data.readArray();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
+
         byte chainId = transfersCount > 0 ? transfers.get(0).recipient().chainId() : Waves.chainId;
 
         MassTransferTransaction tx = new MassTransferTransaction(
@@ -673,7 +725,7 @@ public abstract class LegacyBinarySerializer {
         return tx;
     }
 
-    protected static DataTransaction data(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static DataTransaction data(BytesReader data, int version, boolean withProofs) throws IOException {
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         short entriesCount = data.readShort();
         List<DataEntry> entries = new ArrayList<>();
@@ -688,36 +740,51 @@ public abstract class LegacyBinarySerializer {
         }
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new DataTransaction(sender, entries, Waves.chainId, fee, timestamp, version, proofs);
     }
 
-    protected static SetScriptTransaction setScript(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static SetScriptTransaction setScript(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = data.read();
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         boolean hasScript = data.readBoolean();
         byte[] script = hasScript ? data.readArray() : Bytes.empty();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static SponsorFeeTransaction sponsorFee(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static SponsorFeeTransaction sponsorFee(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = data.read();
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         Asset asset = Asset.id(data.read(TxId.BYTE_LENGTH));
         long minSponsoredFee = data.readLong();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new SponsorFeeTransaction(sender, asset, minSponsoredFee, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static SetAssetScriptTransaction setAssetScript(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static SetAssetScriptTransaction setAssetScript(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = data.read();
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
         Asset asset = Asset.id(data.read(Asset.BYTE_LENGTH));
@@ -725,16 +792,21 @@ public abstract class LegacyBinarySerializer {
         byte[] script = hasScript ? data.readArray() : Bytes.empty();
         long fee = data.readLong();
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new SetAssetScriptTransaction(sender, asset, script, chainId, fee, timestamp, version, proofs);
     }
 
-    protected static InvokeScriptTransaction invokeScript(ByteReader data, int version, boolean withProofs) throws IOException {
+    protected static InvokeScriptTransaction invokeScript(BytesReader data, int version, boolean withProofs) throws IOException {
         byte chainId = data.read();
         PublicKey sender = PublicKey.as(data.read(PublicKey.BYTES_LENGTH));
-        Recipient dApp = readRecipient(data);
-        Function functionCall = functionCallFromBytes(data);
+        Recipient dApp = data.readRecipient();
+        Function functionCall = data.readFunctionCall();
         long paymentsCount = data.readLong();
         List<Amount> payments = new ArrayList<>();
         for (int i = 0; i < paymentsCount; i++) {
@@ -745,18 +817,14 @@ public abstract class LegacyBinarySerializer {
         long fee = data.readLong();
         Asset feeAsset = data.readBoolean() ? Asset.id(data.read(Asset.BYTE_LENGTH)) : Asset.WAVES;
         long timestamp = data.readLong();
-        List<Proof> proofs = readProofs(data, withProofs);
+
+        List<Proof> proofs;
+        if (withProofs)
+            proofs = data.readProofs();
+        else
+            proofs = data.readSignature();
 
         return new InvokeScriptTransaction(sender, dApp, functionCall, payments, chainId, fee, feeAsset, timestamp, version, proofs);
-    }
-
-    protected static Recipient readRecipient(ByteReader data) throws IOException {
-        byte recipientType = data.read(); //todo Recipient.from(bytes) or Alias.from(bytes)
-        if (recipientType == 1)
-            return Recipient.as(Address.as(concat(of(recipientType), data.read(25)))); //todo Address.LENGTH
-        else if (recipientType == 2) {
-            return Recipient.as(Alias.as(data.read(), new String(data.readArray()))); //todo Alias.as(bytes)
-        } else throw new IOException("Unknown recipient type");
     }
 
     protected static byte[] recipientToBytes(Recipient recipient) {
@@ -766,23 +834,6 @@ public abstract class LegacyBinarySerializer {
                     Bytes.toSizedByteArray(recipient.alias().value().getBytes()));
         else
             return recipient.address().bytes();
-    }
-
-    protected static List<Proof> readProofs(ByteReader data, boolean withProofs) throws IOException {
-        if (withProofs) {
-            byte version = data.read(); //todo Proofs.VERSION = 1
-            if (version != 1)
-                throw new IOException("Wrong proofs version " + version + " but " + 1 + " expected");
-
-            List<Proof> result = Proof.emptyList();
-            short proofsCount = data.readShort();
-            for (short i = 0; i < proofsCount; i++)
-                result.add(Proof.as(data.readArray()));
-
-            return result;
-        } else {
-            return Proof.list(Proof.as(data.read(64)));
-        }
     }
 
     protected static byte[] proofsToBytes(List<Proof> proofs, boolean withProofs) {
@@ -797,27 +848,6 @@ public abstract class LegacyBinarySerializer {
                 throw new IllegalArgumentException("Transaction of this type and version must have only 1 proof");
             return proofs.get(0).bytes();
         }
-    }
-
-    protected static Function functionCallFromBytes(ByteReader data) throws IOException {
-        if (data.readBoolean()) {
-            if (data.read() != 9) throw new IOException("FunctionCall Id must be equal 9");
-            if (data.read() != 1) throw new IOException("Function type Id must be equal 1");
-            String name = new String(data.readArray(), UTF_8);
-            int argsCount = data.readInt();
-            List<Arg> args = new ArrayList<>();
-            for (int i = 0; i < argsCount; i++) {
-                byte argType = data.read();
-                if (argType == 0) args.add(IntegerArg.as(data.readLong()));
-                else if (argType == 1) args.add(BinaryArg.as(data.readArray()));
-                else if (argType == 2) args.add(StringArg.as(new String(data.readArray(), UTF_8)));
-                else if (argType == 6) args.add(BooleanArg.as(true));
-                else if (argType == 7) args.add(BooleanArg.as(false));
-                //todo else if (argType == 11) args.add(ListArg.as(...));
-                else throw new IOException("Unknown arg type " + argType);
-            }
-            return Function.as(name, args);
-        } else return Function.asDefault();
     }
 
     protected static byte[] functionCallToBytes(Function functionCall) {

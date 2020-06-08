@@ -232,8 +232,7 @@ public abstract class ProtobufConverter {
                     .get();
         } else if (pbTx.hasInvokeScript()) {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
-            Function functionCall = LegacyBinarySerializer
-                    .functionCallFromBytes(new Bytes.ByteReader(invoke.getFunctionCall().toByteArray()));
+            Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
             tx = InvokeScriptTransaction
                     .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
                     .payments(invoke.getPaymentsList().stream().map(p ->

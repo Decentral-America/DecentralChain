@@ -70,7 +70,7 @@ public class TransferTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransferTransaction that = (TransferTransaction) o;
-        return this.amount == that.amount
+        return this.amount.equals(that.amount)
                 && this.recipient.equals(that.recipient)
                 && Bytes.equal(this.attachment, that.attachment);
     }
