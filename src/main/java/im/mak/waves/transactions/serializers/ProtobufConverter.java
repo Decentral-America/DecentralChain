@@ -54,18 +54,20 @@ public abstract class ProtobufConverter {
 
         if (pbTx.hasIssue()) {
             TransactionOuterClass.IssueTransactionData issue = pbTx.getIssue();
-            tx = IssueTransaction
-                    .with(issue.getNameBytes().toByteArray(), issue.getAmount(), issue.getDecimals())
-                    .description(issue.getDescriptionBytes().toByteArray())
-                    .isReissuable(issue.getReissuable())
-                    .compiledScript(issue.getScript().toByteArray())
-                    .version(pbTx.getVersion())
-                    .chainId((byte) pbTx.getChainId())
-                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
-                    .timestamp(pbTx.getTimestamp())
-                    .get();
+            tx = new IssueTransaction(
+                    PublicKey.as(pbTx.getSenderPublicKey().toByteArray()),
+                    issue.getNameBytes().toByteArray(),
+                    issue.getDescriptionBytes().toByteArray(),
+                    issue.getAmount(),
+                    issue.getDecimals(),
+                    issue.getReissuable(),
+                    issue.getScript().toByteArray(),
+                    (byte) pbTx.getChainId(),
+                    Amount.of(pbTx.getFee().getAmount(), Asset.id(pbTx.getFee().getAssetId().toByteArray())),
+                    pbTx.getTimestamp(),
+                    pbTx.getVersion(),
+                    Proof.emptyList()
+            );
         } else if (pbTx.hasTransfer()) {
             TransactionOuterClass.TransferTransactionData transfer = pbTx.getTransfer();
             AmountOuterClass.Amount amount = transfer.getAmount();

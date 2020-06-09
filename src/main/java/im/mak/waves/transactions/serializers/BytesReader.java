@@ -73,7 +73,7 @@ public class BytesReader {
         return Bytes.toLong(read(8));
     }
 
-    public byte[] readArray() {
+    public byte[] readSizedArray() {
         short arrayLength = readShort();
         return read(arrayLength);
     }
@@ -87,7 +87,7 @@ public class BytesReader {
         if (recipientType == 1)
             return Recipient.as(Address.as(concat(of(recipientType), read(25)))); //todo Address.LENGTH
         else if (recipientType == 2) {
-            return Recipient.as(Alias.as(read(), new String(readArray()))); //todo Alias.as(bytes)
+            return Recipient.as(Alias.as(read(), new String(readSizedArray()))); //todo Alias.as(bytes)
         } else throw new IOException("Unknown recipient type");
     }
 
@@ -104,14 +104,14 @@ public class BytesReader {
         if (readBoolean()) {
             if (read() != 9) throw new IOException("FunctionCall Id must be equal 9");
             if (read() != 1) throw new IOException("Function type Id must be equal 1");
-            String name = new String(readArray(), UTF_8);
+            String name = new String(readSizedArray(), UTF_8);
             int argsCount = readInt();
             List<Arg> args = new ArrayList<>();
             for (int i = 0; i < argsCount; i++) {
                 byte argType = read();
                 if (argType == 0) args.add(IntegerArg.as(readLong()));
-                else if (argType == 1) args.add(BinaryArg.as(readArray()));
-                else if (argType == 2) args.add(StringArg.as(new String(readArray(), UTF_8)));
+                else if (argType == 1) args.add(BinaryArg.as(readSizedArray()));
+                else if (argType == 2) args.add(StringArg.as(new String(readSizedArray(), UTF_8)));
                 else if (argType == 6) args.add(BooleanArg.as(true));
                 else if (argType == 7) args.add(BooleanArg.as(false));
                     //todo else if (argType == 11) args.add(ListArg.as(...));
@@ -133,7 +133,7 @@ public class BytesReader {
         List<Proof> result = Proof.emptyList();
         short proofsCount = readShort();
         for (short i = 0; i < proofsCount; i++)
-            result.add(Proof.as(readArray()));
+            result.add(Proof.as(readSizedArray()));
 
         return result;
     }

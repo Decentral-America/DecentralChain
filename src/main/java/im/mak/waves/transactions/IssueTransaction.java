@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 
 import java.io.IOException;
@@ -27,22 +27,23 @@ public class IssueTransaction extends Transaction {
     private final byte[] compiledScript;
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, long fee, long timestamp, int version) {
+                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp, int version) {
         this(sender, name, description, quantity, decimals, isReissuable, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
     }
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, long fee, long timestamp,
+                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp,
                             int version, List<Proof> proofs) {
         this(sender, name == null ? Bytes.empty() : name.getBytes(UTF_8),
                 description == null ? Bytes.empty() : description.getBytes(UTF_8), quantity, decimals, isReissuable,
                 compiledScript, chainId, fee, timestamp, version, proofs);
     }
 
+    @Deprecated
     public IssueTransaction(PublicKey sender, byte[] name, byte[] description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, long fee, long timestamp,
+                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp,
                             int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+        super(TYPE, version, chainId, sender, fee.value(), fee.asset(), timestamp, proofs);
 
         this.name = name == null ? Bytes.empty() : name;
         this.description = description == null ? Bytes.empty() : description;
@@ -61,10 +62,6 @@ public class IssueTransaction extends Transaction {
     }
 
     public static IssueTransaction.IssueTransactionBuilder with(String name, long quantity, int decimals) {
-        return new IssueTransaction.IssueTransactionBuilder(name, quantity, decimals);
-    }
-
-    public static IssueTransaction.IssueTransactionBuilder with(byte[] name, long quantity, int decimals) {
         return new IssueTransaction.IssueTransactionBuilder(name, quantity, decimals);
     }
 
@@ -133,12 +130,8 @@ public class IssueTransaction extends Transaction {
         private byte[] compiledScript;
 
         protected IssueTransactionBuilder(String name, long quantity, int decimals) {
-            this(name == null ? Bytes.empty() : name.getBytes(UTF_8), quantity, decimals);
-        }
-
-        protected IssueTransactionBuilder(byte[] name, long quantity, int decimals) {
             super(LATEST_VERSION, MIN_FEE);
-            this.name = name;
+            this.name = name == null ? Bytes.empty() : name.getBytes(UTF_8);
             this.quantity = quantity;
             this.decimals = decimals;
             this.description = Bytes.empty();
@@ -148,11 +141,6 @@ public class IssueTransaction extends Transaction {
 
         public IssueTransactionBuilder description(String description) {
             this.description = description.getBytes(UTF_8);
-            return this;
-        }
-
-        public IssueTransactionBuilder description(byte[] description) {
-            this.description = description;
             return this;
         }
 
@@ -172,7 +160,7 @@ public class IssueTransaction extends Transaction {
 
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, compiledScript,
-                    chainId, fee, timestamp, version, Proof.emptyList());
+                    chainId, Amount.of(fee), timestamp, version, Proof.emptyList());
         }
     }
     

@@ -89,7 +89,7 @@ public abstract class JsonSerializer {
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new IssueTransaction(sender, json.get("name").asText(), json.get("description").asText(),
                     json.get("quantity").asLong(), json.get("decimals").asInt(), json.get("reissuable").asBoolean(),
-                    Base64.decode(json.get("script").asText()), chainId, fee, timestamp, version, proofs);
+                    scriptFromJson(json), chainId, Amount.of(fee), timestamp, version, proofs);
         } if (type == TransferTransaction.TYPE) {
             Recipient recipient = Recipient.as(json.get("recipient").asText());
             if (version < 3)
@@ -199,8 +199,7 @@ public abstract class JsonSerializer {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
 
-            byte[] script = json.get("script").isNull() ? Bytes.empty() : Base64.decode(json.get("script").asText());
-            return new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
+            return new SetScriptTransaction(sender, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } else if (type == SponsorFeeTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for SponsorFeeTransaction");
@@ -212,8 +211,7 @@ public abstract class JsonSerializer {
                 throw new IOException("feeAssetId field must be null for SetAssetScriptTransaction");
 
             Asset asset = assetFromJson(json.get("assetId"));
-            byte[] script = json.get("script").isNull() ? Bytes.empty() : Base64.decode(json.get("script").asText());
-            return new SetAssetScriptTransaction(sender, asset, script, chainId, fee, timestamp, version, proofs);
+            return new SetAssetScriptTransaction(sender, asset, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } else if (type == UpdateAssetInfoTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for UpdateAssetInfoTransaction");
@@ -306,8 +304,7 @@ public abstract class JsonSerializer {
                         .put("quantity", itx.quantity())
                         .put("decimals", itx.decimals())
                         .put("reissuable", itx.isReissuable())
-                        .put("script",
-                                itx.compiledScript().length > 0 ? Base64.encode(itx.compiledScript()) : null);
+                        .put("script", scriptToJson(itx.compiledScript()));
                 if (itx.version() == 1) {
                     jsObject.remove("chainId");
                     signature = itx.proofs().get(0).toString();
@@ -404,19 +401,15 @@ public abstract class JsonSerializer {
                     jsObject.remove("chainId");
             } else if (tx instanceof SetScriptTransaction) {
                 SetScriptTransaction ssTx = (SetScriptTransaction) tx;
-                if (ssTx.compiledScript().length > 0)
-                    jsObject.put("script", Base64.encode(ssTx.compiledScript()));
-                else jsObject.putNull("script");
+                jsObject.put("script", scriptToJson(ssTx.compiledScript()));
             } else if (tx instanceof SponsorFeeTransaction) {
                 SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
                 jsObject.put("assetId", assetToJson(sfTx.asset()))
                         .put("minSponsoredAssetFee", sfTx.minSponsoredFee());
             } else if (tx instanceof SetAssetScriptTransaction) {
                 SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
-                jsObject.put("assetId", assetToJson(sasTx.asset()));
-                if (sasTx.compiledScript().length > 0)
-                    jsObject.put("script", Base64.encode(sasTx.compiledScript()));
-                else jsObject.putNull("script");
+                jsObject.put("assetId", assetToJson(sasTx.asset()))
+                        .put("script", scriptToJson(sasTx.compiledScript()));
             } else if (tx instanceof UpdateAssetInfoTransaction) {
                 UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
                 jsObject.put("assetId", assetToJson(uaiTx.asset()))
@@ -476,6 +469,14 @@ public abstract class JsonSerializer {
 
     public static String assetToJson(Asset asset) {
         return asset.isWaves() ? null : asset.toString();
+    }
+
+    public static byte[] scriptFromJson(JsonNode json) {
+        return json.hasNonNull("script") ? Base64.decode(json.get("script").asText()) : Bytes.empty();
+    }
+
+    public static String scriptToJson(byte[] script) {
+        return script == null || script.length == 0 ? null : Base64.encodeWithPrefix(script);
     }
 
 }
