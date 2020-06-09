@@ -6,7 +6,6 @@ import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
@@ -234,7 +233,7 @@ public abstract class ProtobufConverter {
                     .get();
         } else if (pbTx.hasInvokeScript()) {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
-            Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
+            Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).nextFunctionCall();
             tx = InvokeScriptTransaction
                     .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
                     .payments(invoke.getPaymentsList().stream().map(p ->

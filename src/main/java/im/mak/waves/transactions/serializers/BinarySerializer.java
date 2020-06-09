@@ -19,7 +19,7 @@ public abstract class BinarySerializer {
         } catch (InvalidProtocolBufferException e) {
             try {
                 return LegacyBinarySerializer.orderFromBytes(bytes, true);
-            } catch (IOException ioe) {
+            } catch (IllegalArgumentException ioe) {
                 return LegacyBinarySerializer.orderFromBytes(bytes, false);
             }
         }

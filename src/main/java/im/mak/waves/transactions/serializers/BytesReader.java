@@ -3,13 +3,9 @@ package im.mak.waves.transactions.serializers;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Alias;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Recipient;
+import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.components.invoke.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,98 +38,102 @@ public class BytesReader {
         return bytes.length - index;
     }
 
-    public byte read() {
+    public byte nextByte() {
         return bytes[index++];
     }
 
-    public byte[] read(int count) {
+    public byte[] nextBytes(int count) {
         byte[] result = Arrays.copyOfRange(bytes, index, index + count);
         index = index + count;
         return result;
     }
 
-    public boolean readBoolean() throws IOException {
-        byte byt = read();
+    public boolean nextBoolean() {
+        byte byt = nextByte();
         if (byt == 0)
             return false;
         else if (byt == 1)
             return true;
-        else throw new IOException("Can't read byte " + byt + " as boolean. Expected 1 or 0");
+        else throw new IllegalArgumentException("Can't read byte " + byt + " as boolean. Expected 1 or 0");
     }
 
-    public short readShort() {
-        return Bytes.toShort(read(2));
+    public short nextShort() {
+        return Bytes.toShort(nextBytes(2));
     }
 
-    public int readInt() {
-        return Bytes.toInt(read(4));
+    public int nextInt() {
+        return Bytes.toInt(nextBytes(4));
     }
 
-    public long readLong() {
-        return Bytes.toLong(read(8));
+    public long nextLong() {
+        return Bytes.toLong(nextBytes(8));
     }
 
-    public byte[] readSizedArray() {
-        short arrayLength = readShort();
-        return read(arrayLength);
+    public byte[] nextSizedArray() {
+        short arrayLength = nextShort();
+        return nextBytes(arrayLength);
     }
 
-    public PublicKey readPublicKey() {
-        return PublicKey.as(read(PublicKey.BYTES_LENGTH));
+    public PublicKey nextPublicKey() {
+        return PublicKey.as(nextBytes(PublicKey.BYTES_LENGTH));
     }
 
-    public Recipient readRecipient() throws IOException {
-        byte recipientType = read(); //todo Recipient.from(bytes) or Alias.from(bytes)
+    public Recipient nextRecipient() {
+        byte recipientType = nextByte(); //todo Recipient.from(bytes) or Alias.from(bytes)
         if (recipientType == 1)
-            return Recipient.as(Address.as(concat(of(recipientType), read(25)))); //todo Address.LENGTH
+            return Recipient.as(Address.as(concat(of(recipientType), nextBytes(25)))); //todo Address.LENGTH
         else if (recipientType == 2) {
-            return Recipient.as(Alias.as(read(), new String(readSizedArray()))); //todo Alias.as(bytes)
-        } else throw new IOException("Unknown recipient type");
+            return Recipient.as(Alias.as(nextByte(), new String(nextSizedArray()))); //todo Alias.as(bytes)
+        } else throw new IllegalArgumentException("Unknown recipient type");
     }
 
-    public Asset readAsset() {
-        return Asset.id(read(Asset.BYTE_LENGTH));
+    public Asset nextAsset() {
+        return Asset.id(nextBytes(Asset.BYTE_LENGTH));
     }
 
-    public Asset readAssetOrWaves() throws IOException {
-        boolean isAsset = readBoolean();
-        return isAsset ? readAsset() : Asset.WAVES;
+    public Asset nextAssetOrWaves() {
+        boolean isAsset = nextBoolean();
+        return isAsset ? nextAsset() : Asset.WAVES;
     }
 
-    public Function readFunctionCall() throws IOException {
-        if (readBoolean()) {
-            if (read() != 9) throw new IOException("FunctionCall Id must be equal 9");
-            if (read() != 1) throw new IOException("Function type Id must be equal 1");
-            String name = new String(readSizedArray(), UTF_8);
-            int argsCount = readInt();
+    public TxId nextTxId() {
+        return TxId.id(nextBytes(TxId.BYTE_LENGTH));
+    }
+
+    public Function nextFunctionCall() {
+        if (nextBoolean()) {
+            if (nextByte() != 9) throw new IllegalArgumentException("FunctionCall Id must be equal 9");
+            if (nextByte() != 1) throw new IllegalArgumentException("Function type Id must be equal 1");
+            String name = new String(nextSizedArray(), UTF_8);
+            int argsCount = nextInt();
             List<Arg> args = new ArrayList<>();
             for (int i = 0; i < argsCount; i++) {
-                byte argType = read();
-                if (argType == 0) args.add(IntegerArg.as(readLong()));
-                else if (argType == 1) args.add(BinaryArg.as(readSizedArray()));
-                else if (argType == 2) args.add(StringArg.as(new String(readSizedArray(), UTF_8)));
+                byte argType = nextByte();
+                if (argType == 0) args.add(IntegerArg.as(nextLong()));
+                else if (argType == 1) args.add(BinaryArg.as(nextSizedArray()));
+                else if (argType == 2) args.add(StringArg.as(new String(nextSizedArray(), UTF_8)));
                 else if (argType == 6) args.add(BooleanArg.as(true));
                 else if (argType == 7) args.add(BooleanArg.as(false));
                     //todo else if (argType == 11) args.add(ListArg.as(...));
-                else throw new IOException("Unknown arg type " + argType);
+                else throw new IllegalArgumentException("Unknown arg type " + argType);
             }
             return Function.as(name, args);
         } else return Function.asDefault();
     }
 
-    public List<Proof> readSignature() {
-        return Proof.list(Proof.as(read(Proof.BYTE_LENGTH)));
+    public List<Proof> nextSignature() {
+        return Proof.list(Proof.as(nextBytes(Proof.BYTE_LENGTH)));
     }
 
-    public List<Proof> readProofs() throws IOException {
-        byte version = read(); //todo Proofs.VERSION = 1
+    public List<Proof> nextProofs() {
+        byte version = nextByte(); //todo Proofs.VERSION = 1
         if (version != 1)
-            throw new IOException("Wrong proofs version " + version + " but " + 1 + " expected");
+            throw new IllegalArgumentException("Wrong proofs version " + version + " but " + 1 + " expected");
 
         List<Proof> result = Proof.emptyList();
-        short proofsCount = readShort();
+        short proofsCount = nextShort();
         for (short i = 0; i < proofsCount; i++)
-            result.add(Proof.as(readSizedArray()));
+            result.add(Proof.as(nextSizedArray()));
 
         return result;
     }
