@@ -14,7 +14,7 @@ public class CreateAliasTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
 
-    private final String alias;
+    private final String alias; //todo Alias, but what about constructor and builder.chainId()?
 
     public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, long fee, long timestamp, int version) {
         this(sender, alias, chainId, fee, timestamp, version, Proof.emptyList());

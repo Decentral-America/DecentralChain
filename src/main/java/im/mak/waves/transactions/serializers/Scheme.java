@@ -14,10 +14,6 @@ public enum Scheme {
         throw new IllegalArgumentException("Unsupported order version " + version);
     }
 
-    public static Scheme ofOrder(Order order) {
-        return ofOrder(order.version());
-    }
-
     public static Scheme of(int txType, int txVersion) {
         //todo genesis, payment
         if (txType >= IssueTransaction.TYPE && txType <= CreateAliasTransaction.TYPE) {
@@ -35,8 +31,12 @@ public enum Scheme {
         throw new IllegalArgumentException("Unsupported transaction type " + txType + " with version " + txVersion);
     }
 
-    public static Scheme of(Transaction tx) {
-        return of(tx.type(), tx.version());
+    public static Scheme of(TransactionOrOrder txOrOrder) {
+        if (txOrOrder instanceof Order)
+            return ofOrder(txOrOrder.version());
+        else if (txOrOrder instanceof Transaction)
+            return of(((Transaction) txOrOrder).type(), txOrOrder.version());
+        else throw new IllegalArgumentException("Can't recognize transaction or order of " + txOrOrder.getClass().getCanonicalName()); //todo
     }
 
 }

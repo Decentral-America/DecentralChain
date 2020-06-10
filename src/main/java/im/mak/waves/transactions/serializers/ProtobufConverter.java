@@ -233,7 +233,7 @@ public abstract class ProtobufConverter {
                     .get();
         } else if (pbTx.hasInvokeScript()) {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
-            Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).nextFunctionCall();
+            Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
             tx = InvokeScriptTransaction
                     .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
                     .payments(invoke.getPaymentsList().stream().map(p ->
@@ -413,7 +413,7 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.InvokeScriptTransactionData.Builder invoke =
                     TransactionOuterClass.InvokeScriptTransactionData.newBuilder();
             invoke.setDApp(recipientToProto(isTx.dApp()));
-            invoke.setFunctionCall(ByteString.copyFrom(LegacyBinarySerializer.functionCallToBytes(isTx.function())));
+            invoke.setFunctionCall(ByteString.copyFrom(new BytesWriter().write(isTx.function()).getBytes()));
             isTx.payments().forEach(p -> invoke.addPayments(AmountOuterClass.Amount.newBuilder()
                     .setAmount(p.value())
                     .setAssetId(ByteString.copyFrom(p.asset().bytes()))

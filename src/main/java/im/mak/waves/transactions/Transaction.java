@@ -27,7 +27,7 @@ public abstract class Transaction extends TransactionOrOrder {
     }
 
     public static Transaction fromBytes(byte[] bytes) throws IOException {
-        return BinarySerializer.fromBytes(bytes);
+        return BinarySerializer.transactionFromBytes(bytes);
     }
 
     public static Transaction fromJson(String json) throws IOException {
