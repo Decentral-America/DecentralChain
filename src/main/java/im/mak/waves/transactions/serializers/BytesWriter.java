@@ -32,7 +32,7 @@ public class BytesWriter {
         return this;
     }
 
-    public BytesWriter write(boolean value) {
+    public BytesWriter writeBoolean(boolean value) {
         return write((byte) (value ? 1 : 0));
     }
 
@@ -43,9 +43,9 @@ public class BytesWriter {
 
     public BytesWriter writeOptionArrayWithLength(byte[] value) {
         if (value != null && value.length > 0) {
-            return write(true).writeArrayWithLength(value);
+            return writeBoolean(true).writeArrayWithLength(value);
         } else
-            return write(false);
+            return writeBoolean(false);
     }
 
     public BytesWriter writeShort(short value) {
@@ -69,11 +69,11 @@ public class BytesWriter {
         return this;
     }
 
-    public BytesWriter write(PublicKey publicKey) {
+    public BytesWriter writePublicKey(PublicKey publicKey) {
         return write(publicKey.bytes());
     }
 
-    public BytesWriter write(Recipient recipient) {
+    public BytesWriter writeRecipient(Recipient recipient) {
         if (recipient.isAlias())
             return write((byte) 2, recipient.alias().chainId())
                     .writeArrayWithLength(recipient.alias().value().getBytes(UTF_8));
@@ -92,7 +92,7 @@ public class BytesWriter {
         return write(txId.bytes());
     }
 
-    public BytesWriter write(Function function) {
+    public BytesWriter writeFunction(Function function) {
         if (function.isDefault())
             return write((byte) 0);
         else {

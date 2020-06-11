@@ -4,6 +4,7 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.*;
+import im.mak.waves.transactions.components.OrderType;
 import im.mak.waves.transactions.components.invoke.*;
 
 import java.util.ArrayList;
@@ -67,6 +68,10 @@ public class BytesReader {
 
     public long readLong() {
         return Bytes.toLong(readBytes(8));
+    }
+
+    public OrderType readOrderType() {
+        return readBoolean() ? OrderType.SELL : OrderType.BUY;
     }
 
     public byte[] readArrayWithLength() {

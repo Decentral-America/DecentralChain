@@ -51,7 +51,20 @@ public abstract class ProtobufConverter {
         Transaction tx;
         TransactionOuterClass.Transaction pbTx = pbSignedTx.getTransaction();
 
-        if (pbTx.hasIssue()) {
+        if (pbTx.hasPayment()) {
+            Asset feeAsset = Asset.id(pbTx.getFee().getAssetId().toByteArray());
+            if (!feeAsset.isWaves())
+                throw new IllegalArgumentException(
+                        "PaymentTransaction fee asset must be Waves but " + feeAsset.toString() + " found");
+            TransactionOuterClass.PaymentTransactionData payment = pbTx.getPayment();
+            tx = new PaymentTransaction(
+                    PublicKey.as(pbTx.getSenderPublicKey().toByteArray()),
+                    Address.as(payment.getRecipientAddress().toByteArray()),
+                    payment.getAmount(),
+                    pbTx.getFee().getAmount(),
+                    pbTx.getTimestamp()
+            );
+        } else if (pbTx.hasIssue()) {
             TransactionOuterClass.IssueTransactionData issue = pbTx.getIssue();
             tx = new IssueTransaction(
                     PublicKey.as(pbTx.getSenderPublicKey().toByteArray()),
@@ -289,6 +302,13 @@ public abstract class ProtobufConverter {
                         .build())
                 .setTimestamp(tx.timestamp());
 
+        if (tx instanceof PaymentTransaction) {
+            PaymentTransaction ptx = (PaymentTransaction) tx;
+            protoBuilder.setPayment(TransactionOuterClass.PaymentTransactionData.newBuilder()
+                    .setRecipientAddress(ByteString.copyFrom(ptx.recipient().bytes()))
+                    .setAmount(ptx.amount())
+                    .build());
+        }
         if (tx instanceof IssueTransaction) {
             IssueTransaction itx = (IssueTransaction) tx;
             protoBuilder.setIssue(TransactionOuterClass.IssueTransactionData.newBuilder()
@@ -413,7 +433,7 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.InvokeScriptTransactionData.Builder invoke =
                     TransactionOuterClass.InvokeScriptTransactionData.newBuilder();
             invoke.setDApp(recipientToProto(isTx.dApp()));
-            invoke.setFunctionCall(ByteString.copyFrom(new BytesWriter().write(isTx.function()).getBytes()));
+            invoke.setFunctionCall(ByteString.copyFrom(new BytesWriter().writeFunction(isTx.function()).getBytes()));
             isTx.payments().forEach(p -> invoke.addPayments(AmountOuterClass.Amount.newBuilder()
                     .setAmount(p.value())
                     .setAssetId(ByteString.copyFrom(p.asset().bytes()))
