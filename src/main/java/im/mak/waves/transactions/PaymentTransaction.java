@@ -4,9 +4,9 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.TxId;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 @Deprecated
@@ -20,12 +20,13 @@ public class PaymentTransaction extends Transaction {
     private final long amount;
 
     public PaymentTransaction(PublicKey sender, Address recipient, long amount, long fee, long timestamp) {
-        this(sender, recipient, amount, fee, timestamp, Proof.emptyList());
+        this(sender, recipient, amount, fee, timestamp, null);
     }
 
     public PaymentTransaction(
-            PublicKey sender, Address recipient, long amount, long fee, long timestamp, List<Proof> proofs) {
-        super(TYPE, LATEST_VERSION, recipient.chainId(), sender, fee, Asset.WAVES, timestamp, proofs);
+            PublicKey sender, Address recipient, long amount, long fee, long timestamp, Proof signature) {
+        super(TYPE, LATEST_VERSION, recipient.chainId(), sender, fee, Asset.WAVES, timestamp,
+                signature == null ? Proof.emptyList() : Proof.list(signature));
 
         this.recipient = recipient;
         this.amount =  amount;
@@ -37,6 +38,11 @@ public class PaymentTransaction extends Transaction {
 
     public static PaymentTransaction fromJson(String json) throws IOException {
         return (PaymentTransaction) Transaction.fromJson(json);
+    }
+
+    @Override
+    public TxId id() {
+        return TxId.id(proofs().get(0).bytes());
     }
 
     public Address recipient() {

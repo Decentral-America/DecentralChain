@@ -3,10 +3,15 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.TxId;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+
+import static im.mak.waves.crypto.Bytes.concat;
+import static im.mak.waves.crypto.Bytes.of;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CreateAliasTransaction extends Transaction {
 
@@ -36,6 +41,11 @@ public class CreateAliasTransaction extends Transaction {
 
     public static CreateAliasTransactionBuilder with(String alias) {
         return new CreateAliasTransactionBuilder(alias);
+    }
+
+    @Override
+    public TxId id() {
+        return version() < 3 ? TxId.id(concat(of((byte) type(), chainId()), alias.getBytes(UTF_8))) : super.id();
     }
 
     public String alias() {

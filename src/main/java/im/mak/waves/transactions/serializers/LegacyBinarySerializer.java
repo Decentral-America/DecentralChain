@@ -75,14 +75,19 @@ public abstract class LegacyBinarySerializer {
         }
 
         Transaction transaction;
-        if (type == 1) throw new IllegalArgumentException("Genesis transactions are not supported"); //todo
-        else if (type == PaymentTransaction.TYPE) {
+        if (type == GenesisTransaction.TYPE) {
+            long timestamp = reader.readLong();
+            Address recipient = Address.as(reader.readBytes(26)); //todo Address.LENGTH
+            long amount = reader.readLong();
+
+            transaction = new GenesisTransaction(recipient, amount, timestamp);
+        } else if (type == PaymentTransaction.TYPE) {
             long timestamp = reader.readLong();
             PublicKey sender = reader.readPublicKey();
             Address recipient = Address.as(reader.readBytes(26)); //todo Address.LENGTH
             long amount = reader.readLong();
             long fee = reader.readLong();
-            List<Proof> signature = reader.readSignature();
+            Proof signature = reader.readSignature().get(0);
 
             transaction = new PaymentTransaction(sender, recipient, amount, fee, timestamp, signature);
         } else if (type == IssueTransaction.TYPE) {
@@ -329,7 +334,12 @@ public abstract class LegacyBinarySerializer {
             if (scheme == WITH_PROOFS)
                 bwStream.write((byte) tx.version());
 
-            if (tx instanceof PaymentTransaction) {
+            if (tx instanceof GenesisTransaction) {
+                GenesisTransaction gtx = (GenesisTransaction) tx;
+                bwStream.writeLong(gtx.timestamp())
+                        .write(gtx.recipient().bytes())
+                        .writeLong(gtx.amount());
+            } else if (tx instanceof PaymentTransaction) {
                 PaymentTransaction ptx = (PaymentTransaction) tx;
                 bwStream.writeLong(ptx.timestamp())
                         .writePublicKey(ptx.sender())

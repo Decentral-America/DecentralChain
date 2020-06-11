@@ -51,11 +51,14 @@ public abstract class ProtobufConverter {
         Transaction tx;
         TransactionOuterClass.Transaction pbTx = pbSignedTx.getTransaction();
 
-        if (pbTx.hasPayment()) {
-            Asset feeAsset = Asset.id(pbTx.getFee().getAssetId().toByteArray());
-            if (!feeAsset.isWaves())
-                throw new IllegalArgumentException(
-                        "PaymentTransaction fee asset must be Waves but " + feeAsset.toString() + " found");
+        if (pbTx.hasGenesis()) {
+            TransactionOuterClass.GenesisTransactionData genesis = pbTx.getGenesis();
+            tx = new GenesisTransaction(
+                    Address.as(genesis.getRecipientAddress().toByteArray()),
+                    genesis.getAmount(),
+                    pbTx.getTimestamp()
+            );
+        } else if (pbTx.hasPayment()) {
             TransactionOuterClass.PaymentTransactionData payment = pbTx.getPayment();
             tx = new PaymentTransaction(
                     PublicKey.as(pbTx.getSenderPublicKey().toByteArray()),
@@ -302,14 +305,19 @@ public abstract class ProtobufConverter {
                         .build())
                 .setTimestamp(tx.timestamp());
 
-        if (tx instanceof PaymentTransaction) {
+        if (tx instanceof GenesisTransaction) {
+            GenesisTransaction gtx = (GenesisTransaction) tx;
+            protoBuilder.setGenesis(TransactionOuterClass.GenesisTransactionData.newBuilder()
+                    .setRecipientAddress(ByteString.copyFrom(gtx.recipient().bytes()))
+                    .setAmount(gtx.amount())
+                    .build());
+        } else if (tx instanceof PaymentTransaction) {
             PaymentTransaction ptx = (PaymentTransaction) tx;
             protoBuilder.setPayment(TransactionOuterClass.PaymentTransactionData.newBuilder()
                     .setRecipientAddress(ByteString.copyFrom(ptx.recipient().bytes()))
                     .setAmount(ptx.amount())
                     .build());
-        }
-        if (tx instanceof IssueTransaction) {
+        } else if (tx instanceof IssueTransaction) {
             IssueTransaction itx = (IssueTransaction) tx;
             protoBuilder.setIssue(TransactionOuterClass.IssueTransactionData.newBuilder()
                     .setNameBytes(ByteString.copyFrom(itx.nameBytes()))

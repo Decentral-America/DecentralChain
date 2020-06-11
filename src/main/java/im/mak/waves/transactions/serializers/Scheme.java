@@ -15,8 +15,7 @@ public enum Scheme {
     }
 
     public static Scheme of(int txType, int txVersion) {
-        //todo genesis, payment
-        if (txType == PaymentTransaction.TYPE) {
+        if (txType == GenesisTransaction.TYPE || txType == PaymentTransaction.TYPE) {
             if (txVersion == 1) return Scheme.WITH_SIGNATURE;
         }
         if (txType >= IssueTransaction.TYPE && txType <= CreateAliasTransaction.TYPE) {
