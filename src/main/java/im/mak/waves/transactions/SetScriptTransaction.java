@@ -12,7 +12,6 @@ import java.util.Objects;
 
 public class SetScriptTransaction extends Transaction {
 
-    //todo checkstyle custom checks
     public static final int TYPE = 13;
     public static final int LATEST_VERSION = 2;
     public static final long MIN_FEE = 1_000_000;

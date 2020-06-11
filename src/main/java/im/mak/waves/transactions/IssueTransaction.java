@@ -14,7 +14,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class IssueTransaction extends Transaction {
 
-    //todo checkstyle custom checks
     public static final int TYPE = 3;
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000_000;

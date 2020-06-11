@@ -38,8 +38,6 @@ public abstract class Transaction extends TransactionOrOrder {
         return ProtobufConverter.fromProtobuf(protobufTx);
     }
 
-    //todo method to calculate fee/size coefficient (and fee by the target coefficient)
-
     public TxId id() {
         if (id == null)
             id = new TxId(Hash.blake(bodyBytes()));

@@ -26,7 +26,7 @@ public abstract class TransactionOrOrder {
     protected TransactionOrOrder(int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
         this.version = version;
         this.chainId = chainId;
-        this.sender = sender; //todo if null (genesisTx)?
+        this.sender = sender;
         this.fee = fee;
         this.feeAsset = feeAsset;
         this.timestamp = timestamp;
@@ -84,7 +84,6 @@ public abstract class TransactionOrOrder {
     //TODO basic validations in builder/constructor
     //TODO check access to everything
     //TODO check all ") throws {", "throw new" and "catch". Maybe wrap to own exceptions with message patterns?
-    //TODO simplified method to check kind of tx version (with signature, with proofs, protobuf)
     //TODO immutable lists
     //TODO calculate fee (data, massTransfer)
 

@@ -2,7 +2,7 @@ package im.mak.waves.transactions.common;
 
 import java.util.Objects;
 
-public class Amount { //TODO use in all transactions
+public class Amount {
 
     private final long value;
     private final Asset asset;

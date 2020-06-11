@@ -15,7 +15,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class TransferTransaction extends Transaction {
 
-    //todo checkstyle custom checks
     public static final int TYPE = 4;
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
