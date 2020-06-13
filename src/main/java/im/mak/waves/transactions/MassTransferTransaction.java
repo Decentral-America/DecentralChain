@@ -4,7 +4,7 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.components.Transfer;
+import im.mak.waves.transactions.mass.Transfer;
 
 import java.io.IOException;
 import java.util.ArrayList;

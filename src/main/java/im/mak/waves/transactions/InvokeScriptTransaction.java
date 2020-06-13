@@ -5,7 +5,7 @@ import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
-import im.mak.waves.transactions.components.invoke.Function;
+import im.mak.waves.transactions.invocation.Function;
 
 import java.io.IOException;
 import java.util.*;

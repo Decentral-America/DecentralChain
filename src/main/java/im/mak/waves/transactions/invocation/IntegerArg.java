@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components.invoke;
+package im.mak.waves.transactions.invocation;
 
 public class IntegerArg extends Arg {
 

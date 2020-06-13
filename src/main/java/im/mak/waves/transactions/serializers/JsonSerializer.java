@@ -10,11 +10,11 @@ import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.components.Order;
-import im.mak.waves.transactions.components.OrderType;
-import im.mak.waves.transactions.components.Transfer;
-import im.mak.waves.transactions.components.data.*;
-import im.mak.waves.transactions.components.invoke.*;
+import im.mak.waves.transactions.data.*;
+import im.mak.waves.transactions.exchange.Order;
+import im.mak.waves.transactions.exchange.OrderType;
+import im.mak.waves.transactions.invocation.*;
+import im.mak.waves.transactions.mass.Transfer;
 
 import java.io.IOException;
 import java.util.ArrayList;

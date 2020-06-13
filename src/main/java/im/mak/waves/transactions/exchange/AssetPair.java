@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components;
+package im.mak.waves.transactions.exchange;
 
 import im.mak.waves.transactions.common.Asset;
 

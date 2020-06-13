@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components.invoke;
+package im.mak.waves.transactions.invocation;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.base.Base64;

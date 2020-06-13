@@ -1,7 +1,7 @@
 package im.mak.waves.transactions.serializers;
 
 import im.mak.waves.transactions.*;
-import im.mak.waves.transactions.components.Order;
+import im.mak.waves.transactions.exchange.Order;
 
 public enum Scheme {
 

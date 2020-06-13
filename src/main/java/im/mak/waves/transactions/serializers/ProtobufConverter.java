@@ -10,11 +10,11 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.components.Order;
-import im.mak.waves.transactions.components.OrderType;
-import im.mak.waves.transactions.components.Transfer;
-import im.mak.waves.transactions.components.data.*;
-import im.mak.waves.transactions.components.invoke.Function;
+import im.mak.waves.transactions.data.*;
+import im.mak.waves.transactions.exchange.Order;
+import im.mak.waves.transactions.exchange.OrderType;
+import im.mak.waves.transactions.mass.Transfer;
+import im.mak.waves.transactions.invocation.Function;
 
 import java.io.IOException;
 import java.util.List;

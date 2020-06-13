@@ -1,26 +1,22 @@
-package im.mak.waves.transactions.components.data;
+package im.mak.waves.transactions.invocation;
 
 import im.mak.waves.crypto.base.Base64;
 
 import java.util.Objects;
 
-public abstract class DataEntry {
+public abstract class Arg {
 
-    private final String key;
-    private final EntryType type;
+    private final ArgType type;
     private final Object value;
 
-    protected DataEntry(String key, EntryType type, Object value) {
-        this.key = key == null ? "" : key;
-        this.type = type == null ? EntryType.DELETE : type;
+    protected Arg(ArgType type, Object value) {
+        if (type == null || value == null)
+            throw new IllegalArgumentException("Argument type and value can't be null");
+        this.type = type;
         this.value = value;
     }
 
-    public String key() {
-        return key;
-    }
-
-    public EntryType type() {
+    public ArgType type() {
         return type;
     }
 
@@ -32,23 +28,20 @@ public abstract class DataEntry {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DataEntry that = (DataEntry) o;
-        return this.key.equals(that.key)
-                && this.type == that.type
-                && Objects.equals(this.value, that.value);
+        Arg that = (Arg) o;
+        return this.type == that.type
+                && this.value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, type, value);
+        return Objects.hash(type, value);
     }
 
     @Override
     public String toString() {
         String value;
-        if (this.value == null)
-            value = "";
-        else if (this.value instanceof byte[])
+        if (this.value instanceof byte[])
             value = Base64.encode((byte[]) this.value);
         else if (this.value instanceof Boolean)
             value = String.valueOf((boolean) this.value);
@@ -57,10 +50,10 @@ public abstract class DataEntry {
         else if (this.value instanceof String)
             value = (String) this.value;
         else value = "<unknown type>";
-        return "DataEntry{" +
-                "key='" + key + '\'' +
-                ", type=" + type +
+        return "Arg{" +
+                "type=" + type +
                 ", value=" + value +
                 '}';
     }
+
 }

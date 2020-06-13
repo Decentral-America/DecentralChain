@@ -4,7 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.transactions.*;
-import im.mak.waves.transactions.components.Order;
+import im.mak.waves.transactions.exchange.Order;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components.data;
+package im.mak.waves.transactions.data;
 
 public enum EntryType {
 

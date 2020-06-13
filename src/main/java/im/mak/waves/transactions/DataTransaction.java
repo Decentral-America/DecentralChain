@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.components.data.*;
+import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

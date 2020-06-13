@@ -3,9 +3,9 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.components.AssetPair;
-import im.mak.waves.transactions.components.Order;
-import im.mak.waves.transactions.components.OrderType;
+import im.mak.waves.transactions.exchange.AssetPair;
+import im.mak.waves.transactions.exchange.Order;
+import im.mak.waves.transactions.exchange.OrderType;
 
 import java.io.IOException;
 import java.util.List;

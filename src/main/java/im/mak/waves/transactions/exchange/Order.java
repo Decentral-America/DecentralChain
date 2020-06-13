@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.components;
+package im.mak.waves.transactions.exchange;
 
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import im.mak.waves.crypto.Bytes;
