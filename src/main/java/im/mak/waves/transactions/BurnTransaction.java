@@ -1,6 +1,7 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 
@@ -14,19 +15,17 @@ public class BurnTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
 
-    private final Asset asset;
-    private final long amount;
+    private final Amount amount;
 
-    public BurnTransaction(PublicKey sender, Asset asset, long amount, byte chainId, long fee, long timestamp, int version) {
-        this(sender, asset, amount, chainId, fee, timestamp, version, Proof.emptyList());
+    public BurnTransaction(PublicKey sender, Amount amount, byte chainId, long fee, long timestamp, int version) {
+        this(sender, amount, chainId, fee, timestamp, version, Proof.emptyList());
     }
 
-    public BurnTransaction(PublicKey sender, Asset asset, long amount, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
+    public BurnTransaction(PublicKey sender, Amount amount, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
-        if (asset.isWaves())
+        if (amount.asset().isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
-        this.asset = asset;
         this.amount = amount;
     }
 
@@ -38,15 +37,11 @@ public class BurnTransaction extends Transaction {
         return (BurnTransaction) Transaction.fromJson(json);
     }
 
-    public static BurnTransactionBuilder with(Asset asset, long amount) {
-        return new BurnTransactionBuilder(asset, amount);
+    public static BurnTransactionBuilder with(Amount amount) {
+        return new BurnTransactionBuilder(amount);
     }
 
-    public Asset asset() {
-        return asset;
-    }
-
-    public long amount() {
+    public Amount amount() {
         return amount;
     }
 
@@ -56,28 +51,25 @@ public class BurnTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         BurnTransaction that = (BurnTransaction) o;
-        return this.asset.equals(that.asset)
-                && this.amount == that.amount;
+        return this.amount.equals(that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), asset, amount);
+        return Objects.hash(super.hashCode(), amount);
     }
 
     public static class BurnTransactionBuilder
             extends TransactionBuilder<BurnTransactionBuilder, BurnTransaction> {
-        private final Asset asset;
-        private final long amount;
+        private final Amount amount;
 
-        protected BurnTransactionBuilder(Asset asset, long amount) {
+        protected BurnTransactionBuilder(Amount amount) {
             super(LATEST_VERSION, MIN_FEE);
-            this.asset = asset;
             this.amount = amount;
         }
 
         protected BurnTransaction _build() {
-            return new BurnTransaction(sender, asset, amount, chainId, fee, timestamp, version);
+            return new BurnTransaction(sender, amount, chainId, fee, timestamp, version);
         }
     }
 

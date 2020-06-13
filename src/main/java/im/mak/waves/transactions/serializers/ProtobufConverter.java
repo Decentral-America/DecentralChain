@@ -100,7 +100,8 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasReissue()) {
             TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
             tx = ReissueTransaction
-                    .with(Asset.id(reissue.getAssetAmount().getAssetId().toByteArray()), reissue.getAssetAmount().getAmount())
+                    .with(Amount.of(reissue.getAssetAmount().getAmount(),
+                            Asset.id(reissue.getAssetAmount().getAssetId().toByteArray())))
                     .reissuable(reissue.getReissuable())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
@@ -112,7 +113,8 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasBurn()) {
             TransactionOuterClass.BurnTransactionData burn = pbTx.getBurn();
             tx = BurnTransaction
-                    .with(Asset.id(burn.getAssetAmount().getAssetId().toByteArray()), burn.getAssetAmount().getAmount())
+                    .with(Amount.of(burn.getAssetAmount().getAmount(),
+                            Asset.id(burn.getAssetAmount().getAssetId().toByteArray())))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -343,8 +345,8 @@ public abstract class ProtobufConverter {
             ReissueTransaction rtx = (ReissueTransaction) tx;
             protoBuilder.setReissue(TransactionOuterClass.ReissueTransactionData.newBuilder()
                     .setAssetAmount(AmountOuterClass.Amount.newBuilder()
-                            .setAssetId(ByteString.copyFrom(rtx.asset().bytes()))
-                            .setAmount(rtx.amount())
+                            .setAssetId(ByteString.copyFrom(rtx.amount().asset().bytes()))
+                            .setAmount(rtx.amount().value())
                             .build())
                     .setReissuable(rtx.isReissuable())
                     .build());
@@ -352,8 +354,8 @@ public abstract class ProtobufConverter {
             BurnTransaction btx = (BurnTransaction) tx;
             protoBuilder.setBurn(TransactionOuterClass.BurnTransactionData.newBuilder()
                     .setAssetAmount(AmountOuterClass.Amount.newBuilder()
-                            .setAssetId(ByteString.copyFrom(btx.asset().bytes()))
-                            .setAmount(btx.amount())
+                            .setAssetId(ByteString.copyFrom(btx.amount().asset().bytes()))
+                            .setAmount(btx.amount().value())
                             .build())
                     .build());
         } else if (tx instanceof ExchangeTransaction) {

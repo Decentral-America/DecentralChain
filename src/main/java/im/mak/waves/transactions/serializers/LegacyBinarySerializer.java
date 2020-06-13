@@ -132,10 +132,12 @@ public abstract class LegacyBinarySerializer {
             boolean reissuable = reader.readBoolean();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
-            proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
+
+            if (scheme == WITH_PROOFS)
+                proofs = reader.readProofs();
 
             transaction = new ReissueTransaction(
-                    sender, asset, amount, reissuable, chainId, fee, timestamp, version, proofs);
+                    sender, Amount.of(amount, asset), reissuable, chainId, fee, timestamp, version, proofs);
         } else if (type == BurnTransaction.TYPE) {
             if (scheme == WITH_PROOFS)
                 chainId = reader.readByte();
@@ -146,7 +148,8 @@ public abstract class LegacyBinarySerializer {
             long timestamp = reader.readLong();
             proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
-            transaction = new BurnTransaction(sender, asset, amount, chainId, fee, timestamp, version, proofs);
+            transaction = new BurnTransaction(
+                    sender, Amount.of(amount, asset), chainId, fee, timestamp, version, proofs);
         } else if (type == ExchangeTransaction.TYPE) {
             Order order1, order2;
             int order1Length = reader.readInt();
@@ -375,8 +378,8 @@ public abstract class LegacyBinarySerializer {
                     bwStream.write(tx.chainId());
                 ReissueTransaction rtx = (ReissueTransaction) tx;
                 bwStream.writePublicKey(rtx.sender())
-                        .writeAsset(rtx.asset())
-                        .writeLong(rtx.amount())
+                        .writeAsset(rtx.amount().asset())
+                        .writeLong(rtx.amount().value())
                         .writeBoolean(rtx.isReissuable())
                         .writeLong(rtx.fee())
                         .writeLong(rtx.timestamp());
@@ -385,8 +388,8 @@ public abstract class LegacyBinarySerializer {
                     bwStream.write(tx.chainId());
                 BurnTransaction btx = (BurnTransaction) tx;
                 bwStream.writePublicKey(btx.sender())
-                        .writeAsset(btx.asset())
-                        .writeLong(btx.amount())
+                        .writeAsset(btx.amount().asset())
+                        .writeLong(btx.amount().value())
                         .writeLong(btx.fee())
                         .writeLong(btx.timestamp());
             } else if (tx instanceof ExchangeTransaction) {

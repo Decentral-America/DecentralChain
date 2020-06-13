@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static im.mak.waves.transactions.serializers.Scheme.PROTOBUF;
+
 public abstract class JsonSerializer {
 
     //todo use modules http://tutorials.jenkov.com/java-json/jackson-objectmapper.html#custom-serializer
@@ -74,6 +76,8 @@ public abstract class JsonSerializer {
         //todo validate id if exists? configurable?
         //todo what if some field doesn't exist? Default values, e.g. for proofs
 
+        Scheme scheme = Scheme.of(type, version);
+
         List<Proof> proofs = new ArrayList<>();
         if (json.has("proofs")) {
             JsonNode jProofs = json.get("proofs");
@@ -107,9 +111,9 @@ public abstract class JsonSerializer {
 
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
-            return new ReissueTransaction(sender, assetFromJson(json.get("assetId")),
-                    json.get("quantity").asLong(), json.get("reissuable").asBoolean(),
-                    chainId, fee, timestamp, version, proofs);
+            return new ReissueTransaction(
+                    sender, Amount.of(json.get("quantity").asLong(), assetFromJson(json.get("assetId"))),
+                    json.get("reissuable").asBoolean(), chainId, fee, timestamp, version, proofs);
         } else if (type == BurnTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for BurnTransaction");
@@ -117,8 +121,11 @@ public abstract class JsonSerializer {
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
 
-            return new BurnTransaction(sender, assetFromJson(json.get("assetId")),
-                    json.get("quantity").asLong(), chainId, fee, timestamp, version, proofs);
+            long amount = json.get(scheme == PROTOBUF ? "quantity" : "amount").asLong();
+
+            return new BurnTransaction(
+                    sender, Amount.of(amount, assetFromJson(json.get("assetId"))),
+                    chainId, fee, timestamp, version, proofs);
         } else if (type == ExchangeTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for ExchangeTransaction");
@@ -293,6 +300,8 @@ public abstract class JsonSerializer {
                     .put("senderPublicKey", tx.sender().toString())
                     .put("sender", tx.sender().address(tx.chainId()).toString());
 
+            Scheme scheme = Scheme.of(tx.type(), tx.version());
+
             ArrayNode proofs = JSON_MAPPER.createArrayNode();
             tx.proofs().forEach(p -> proofs.add(p.toString()));
 
@@ -321,8 +330,8 @@ public abstract class JsonSerializer {
                     signature = ttx.proofs().get(0).toString();
             } else if (tx instanceof ReissueTransaction) {
                 ReissueTransaction rtx = (ReissueTransaction) tx;
-                jsObject.put("assetId", assetToJson(rtx.asset()))
-                        .put("quantity", rtx.amount())
+                jsObject.put("assetId", assetToJson(rtx.amount().asset()))
+                        .put("quantity", rtx.amount().value())
                         .put("reissuable", rtx.isReissuable());
                 if (rtx.version() == 1) {
                     jsObject.remove("chainId");
@@ -330,8 +339,8 @@ public abstract class JsonSerializer {
                 }
             } else if (tx instanceof BurnTransaction) {
                 BurnTransaction btx = (BurnTransaction) tx;
-                jsObject.put("assetId", assetToJson(btx.asset()))
-                        .put("quantity", btx.amount());
+                jsObject.put("assetId", assetToJson(btx.amount().asset()))
+                        .put(scheme == PROTOBUF ? "quantity" : "amount", btx.amount().value());
                 if (btx.version() == 1) {
                     jsObject.remove("chainId");
                     signature = btx.proofs().get(0).toString();
