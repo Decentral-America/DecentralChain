@@ -199,13 +199,13 @@ public abstract class LegacyBinarySerializer {
             transaction = new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version, proofs);
         } else if (type == CreateAliasTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
-            chainId = reader.readByte();
-            String alias = new String(reader.readArrayWithLength(), UTF_8);
+            byte[] aliasBytes = reader.readArrayWithLength();
+            Alias alias = new BytesReader(aliasBytes).readRecipient().alias();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
             proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
-            transaction = new CreateAliasTransaction(sender, alias, chainId, fee, timestamp, version, proofs);
+            transaction = new CreateAliasTransaction(sender, alias.value(), alias.chainId(), fee, timestamp, version, proofs);
         } else if (type == MassTransferTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
             Asset asset = reader.readAssetOrWaves();
@@ -435,8 +435,9 @@ public abstract class LegacyBinarySerializer {
             } else if (tx instanceof CreateAliasTransaction) {
                 CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
                 bwStream.writePublicKey(caTx.sender())
-                        .write(caTx.chainId())
-                        .writeArrayWithLength(caTx.alias().getBytes(UTF_8))
+                        .writeArrayWithLength(new BytesWriter()
+                                .writeRecipient(Recipient.as(Alias.as(caTx.chainId(), caTx.alias())))
+                                .getBytes())
                         .writeLong(caTx.fee())
                         .writeLong(caTx.timestamp());
             } else if (tx instanceof MassTransferTransaction) {

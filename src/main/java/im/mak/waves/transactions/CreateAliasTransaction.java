@@ -1,5 +1,7 @@
 package im.mak.waves.transactions;
 
+import im.mak.waves.crypto.Bytes;
+import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
@@ -45,7 +47,9 @@ public class CreateAliasTransaction extends Transaction {
 
     @Override
     public TxId id() {
-        return version() < 3 ? TxId.id(concat(of((byte) type(), chainId()), alias.getBytes(UTF_8))) : super.id();
+        return version() < 3
+                ? TxId.id(Hash.blake(concat(of((byte) type(), (byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)))))
+                : super.id();
     }
 
     public String alias() {
