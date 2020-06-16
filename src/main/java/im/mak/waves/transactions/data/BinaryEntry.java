@@ -3,6 +3,8 @@ package im.mak.waves.transactions.data;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.base.Base64;
 
+import java.util.Arrays;
+
 public class BinaryEntry extends DataEntry {
 
     public static BinaryEntry as(String key, byte[] value) {
@@ -26,7 +28,17 @@ public class BinaryEntry extends DataEntry {
     }
 
     public String valueEncoded() {
-        return Base64.encode(value());
+        return Base64.encodeWithPrefix(value());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryEntry that = (BinaryEntry) o;
+        return this.key().equals(that.key())
+                && this.type() == that.type()
+                && Arrays.equals(this.value(), that.value());
     }
 
 }

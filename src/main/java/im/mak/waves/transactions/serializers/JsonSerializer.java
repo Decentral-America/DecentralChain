@@ -189,7 +189,7 @@ public abstract class JsonSerializer {
             for (int i = 0; i < jsData.size(); i++) {
                 JsonNode entry = jsData.get(i);
                 String key = entry.get("key").asText();
-                String entryType = entry.get("type").asText();
+                String entryType = entry.hasNonNull("type") ? entry.get("type").asText() : "";
                 if (entryType.isEmpty())
                     data.add(new DeleteEntry(key));
                 else if (entryType.equals("binary"))
@@ -395,15 +395,16 @@ public abstract class JsonSerializer {
                 dtx.data().forEach(e -> {
                     ObjectNode entry = JSON_MAPPER.createObjectNode().put("key", e.key());
                     if (e.type() == EntryType.BINARY)
-                        entry.put("type", "binary").put("value", Base64.encode(((BinaryEntry) e).value()));
+                        entry.put("type", "binary").put("value", ((BinaryEntry) e).valueEncoded());
                     else if (e.type() == EntryType.BOOLEAN)
                         entry.put("type", "boolean").put("value", ((BooleanEntry) e).value());
                     else if (e.type() == EntryType.INTEGER)
                         entry.put("type", "integer").put("value", ((IntegerEntry) e).value());
                     else if (e.type() == EntryType.STRING)
                         entry.put("type", "string").put("value", ((StringEntry) e).value());
-                    else if (e.type() == EntryType.DELETE)
-                        entry.putNull("type").putNull("value");
+                    else if (e.type() == EntryType.DELETE) {
+                        entry.putNull("value").remove("type");
+                    } else throw new IllegalArgumentException("Can't serialize entry with type " + e.type());
                     data.add(entry);
                 });
                 if (dtx.version() == 1)

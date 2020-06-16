@@ -19,6 +19,7 @@ import im.mak.waves.transactions.invocation.Function;
 import java.io.IOException;
 import java.util.List;
 
+import static com.wavesplatform.protobuf.transaction.TransactionOuterClass.DataTransactionData.DataEntry.ValueCase.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
@@ -191,12 +192,17 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.DataTransactionData data = pbTx.getDataTransaction();
             tx = DataTransaction
                     .with(data.getDataList().stream().map(e -> {
-                        int descriptor = e.getDescriptorForType().getIndex();
-                        if (descriptor == 10) return new IntegerEntry(e.getKey(), e.getIntValue());
-                        else if (descriptor == 11) return new BooleanEntry(e.getKey(), e.getBoolValue());
-                        else if (descriptor == 12) return new BinaryEntry(e.getKey(), e.getBinaryValue().toByteArray());
-                        else if (descriptor == 13) return new StringEntry(e.getKey(), e.getStringValue());
-                        else return new DeleteEntry(e.getKey());
+                        if (e.getValueCase() == INT_VALUE)
+                            return new IntegerEntry(e.getKey(), e.getIntValue());
+                        else if (e.getValueCase() == BOOL_VALUE)
+                            return new BooleanEntry(e.getKey(), e.getBoolValue());
+                        else if (e.getValueCase() == BINARY_VALUE)
+                            return new BinaryEntry(e.getKey(), e.getBinaryValue().toByteArray());
+                        else if (e.getValueCase() == STRING_VALUE)
+                            return new StringEntry(e.getKey(), e.getStringValue());
+                        else if (e.getValueCase() == VALUE_NOT_SET)
+                            return new DeleteEntry(e.getKey());
+                        else throw new IllegalArgumentException("Unknown value case " + e.getValueCase().getNumber());
                     }).collect(toList()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
@@ -409,6 +415,8 @@ public abstract class ProtobufConverter {
                         else if (e.type() == EntryType.BOOLEAN) builder.setBoolValue(((BooleanEntry)e).value()).build();
                         else if (e.type() == EntryType.INTEGER) builder.setIntValue(((IntegerEntry)e).value()).build();
                         else if (e.type() == EntryType.STRING) builder.setStringValue(((StringEntry)e).value()).build();
+                        else if (e.type() == EntryType.DELETE) builder.setKey(e.key());
+                        else throw new IllegalArgumentException("Unknown entry type " + e.type());
                         return builder.build();
                     }).collect(toList()))
                     .build());
