@@ -97,7 +97,8 @@ public class BytesWriter {
             return write((byte) 0);
         else {
             write((byte) 1, (byte) 9, (byte) 1)
-                    .writeArrayWithLength(function.name().getBytes(UTF_8))
+                    .writeInt(function.name().length())
+                    .write(function.name().getBytes(UTF_8))
                     .writeInt(function.args().size());
             function.args().forEach(arg -> {
                 if (arg instanceof IntegerArg)

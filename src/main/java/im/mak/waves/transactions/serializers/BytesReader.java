@@ -113,7 +113,7 @@ public class BytesReader {
         if (readBoolean()) {
             if (readByte() != 9) throw new IllegalArgumentException("FunctionCall Id must be equal 9");
             if (readByte() != 1) throw new IllegalArgumentException("Function type Id must be equal 1");
-            String name = new String(readArrayWithLength(), UTF_8);
+            String name = new String(readBytes(readInt()), UTF_8);
             int argsCount = readInt();
             List<Arg> args = new ArrayList<>();
             for (int i = 0; i < argsCount; i++) {
