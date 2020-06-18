@@ -253,6 +253,14 @@ public abstract class LegacyBinarySerializer {
 
             transaction = new SetScriptTransaction(sender, script, chainId, fee, timestamp, version, proofs);
         } else if (type == SponsorFeeTransaction.TYPE) {
+            int typeInBody = reader.readByte();
+            if (typeInBody != type)
+                throw new IllegalArgumentException(
+                        "Expected transaction type " + type + " but " + typeInBody + " found");
+            int versionInBody = reader.readByte();
+            if (versionInBody != version)
+                throw new IllegalArgumentException(
+                        "Expected transaction type " + type + " but " + typeInBody + " found");
             PublicKey sender = reader.readPublicKey();
             Asset asset = reader.readAsset();
             long minSponsoredFee = reader.readLong();

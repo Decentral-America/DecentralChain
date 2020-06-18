@@ -67,7 +67,7 @@ public class BurnTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void transferTransaction(int version, TxId expectedId, List<Proof> proofs,
+    void burnTransaction(int version, TxId expectedId, List<Proof> proofs,
                              byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         BurnTransaction builtTx = BurnTransaction
                 .with(Amount.of(amount, asset))

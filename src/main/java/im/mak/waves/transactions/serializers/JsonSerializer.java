@@ -414,6 +414,8 @@ public abstract class JsonSerializer {
                 jsObject.put("script", scriptToJson(ssTx.compiledScript()));
             } else if (tx instanceof SponsorFeeTransaction) {
                 SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
+                if (sfTx.version() == 1)
+                    jsObject.remove("chainId");
                 jsObject.put("assetId", assetToJson(sfTx.asset()))
                         .put("minSponsoredAssetFee", sfTx.minSponsoredFee());
             } else if (tx instanceof SetAssetScriptTransaction) {
