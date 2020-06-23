@@ -90,7 +90,7 @@ public abstract class ProtobufConverter {
             tx = TransferTransaction
                     .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()),
                             Amount.of(amount.getAmount(), Asset.id(amount.getAssetId().toByteArray())))
-                    .attachment(transfer.getAttachment().getBinaryValue().toByteArray())
+                    .attachment(transfer.getAttachment().toByteArray())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -180,7 +180,7 @@ public abstract class ProtobufConverter {
             tx = MassTransferTransaction
                     .with(transfers)
                     .asset(Asset.id(massTransfer.getAssetId().toByteArray()))
-                    .attachment(massTransfer.getAttachment().getBinaryValue().toByteArray())
+                    .attachment(massTransfer.getAttachment().toByteArray())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -343,9 +343,7 @@ public abstract class ProtobufConverter {
                             .setAmount(ttx.amount().value())
                             .setAssetId(ByteString.copyFrom(ttx.amount().asset().bytes()))
                             .build())
-                    .setAttachment(TransactionOuterClass.Attachment.newBuilder()
-                            .setBinaryValue(ByteString.copyFrom(ttx.attachmentBytes()))
-                            .build())
+                    .setAttachment(ByteString.copyFrom(ttx.attachmentBytes()))
                     .build());
         } else if (tx instanceof ReissueTransaction) {
             ReissueTransaction rtx = (ReissueTransaction) tx;
@@ -402,9 +400,8 @@ public abstract class ProtobufConverter {
                                 .build()
                     ).collect(toList()))
                     .setAssetId(ByteString.copyFrom(mtTx.asset().bytes()))
-                    .setAttachment(TransactionOuterClass.Attachment.newBuilder()
-                            .setBinaryValue(ByteString.copyFrom(mtTx.attachmentBytes())).build())
-                    .build());
+                    .setAttachment(ByteString.copyFrom(mtTx.attachmentBytes())))
+                    .build();
         } else if (tx instanceof DataTransaction) {
             DataTransaction dtx = (DataTransaction) tx;
             protoBuilder.setDataTransaction(TransactionOuterClass.DataTransactionData.newBuilder()
