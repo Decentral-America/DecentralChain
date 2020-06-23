@@ -73,7 +73,7 @@ public class ReissueTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void transferTransaction(int version, boolean reissuable, TxId expectedId, List<Proof> proofs,
+    void reissueTransaction(int version, boolean reissuable, TxId expectedId, List<Proof> proofs,
                              byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         ReissueTransaction builtTx = ReissueTransaction
                 .with(Amount.of(amount, asset))
