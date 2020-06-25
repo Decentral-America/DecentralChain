@@ -57,7 +57,7 @@ public abstract class LegacyBinarySerializer {
         byte type = maybeVersionFlag == 0 ? reader.readByte() : maybeVersionFlag;
         if (type == MassTransferTransaction.TYPE && maybeVersionFlag == 0)
             throw new IllegalArgumentException("MassTransferTransaction must not have a version flag in the start byte");
-        byte version = maybeVersionFlag == 0 ? reader.readByte() : 1;
+        byte version = maybeVersionFlag == 0 || type == MassTransferTransaction.TYPE ? reader.readByte() : 1;
 
         Scheme scheme = Scheme.of(type, version);
         if (scheme != WITH_PROOFS && scheme != WITH_SIGNATURE)

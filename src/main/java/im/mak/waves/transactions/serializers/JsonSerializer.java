@@ -165,15 +165,16 @@ public abstract class JsonSerializer {
             return new CreateAliasTransaction(
                     sender, json.get("alias").asText(), chainId, fee, timestamp, version, proofs);
         } if (type == MassTransferTransaction.TYPE) {
-            JsonNode jsTransfers = json.get("transfer");
+            //todo transferCount, totalAmount?
+            JsonNode jsTransfers = json.get("transfers");
             List<Transfer> transfers = new ArrayList<>();
             for (JsonNode jsTransfer : jsTransfers) {
                 Recipient recipient = Recipient.as(jsTransfer.get("recipient").asText());
-                long amount = json.get("amount").asLong();
+                long amount = jsTransfer.get("amount").asLong();
                 transfers.add(Transfer.to(recipient, amount));
             }
             Asset asset = assetFromJson(json.get("assetId"));
-            byte[] attachment = json.has("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
+            byte[] attachment = json.hasNonNull("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
             if (version == 1 && transfers.size() > 0)
                 chainId = transfers.get(0).recipient().chainId();
 
@@ -382,13 +383,15 @@ public abstract class JsonSerializer {
             } else if (tx instanceof MassTransferTransaction) {
                 MassTransferTransaction mtTx = (MassTransferTransaction) tx;
                 jsObject.put("assetId", assetToJson(mtTx.asset()))
-                        .put("attachment", mtTx.attachment().length() > 0 ? Base58.encode(mtTx.attachmentBytes()) : null);
+                        .put("attachment", Base58.encode(mtTx.attachmentBytes()));
                 ArrayNode jsTransfers = jsObject.putArray("transfers");
                 for (Transfer transfer : mtTx.transfers()) {
                     jsTransfers.addObject()
                             .put("recipient", transfer.recipient().toString())
                             .put("amount", transfer.amount());
                 }
+                if (mtTx.version() == 1)
+                    jsObject.remove("chainId");
             } else if (tx instanceof DataTransaction) {
                 DataTransaction dtx = (DataTransaction) tx;
                 ArrayNode data = jsObject.putArray("data");
