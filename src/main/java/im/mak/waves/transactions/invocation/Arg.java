@@ -29,8 +29,9 @@ public abstract class Arg {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Arg that = (Arg) o;
-        return this.type == that.type
-                && this.value.equals(that.value);
+        return this.type.equals(that.type)
+                && this.value.equals(that.value)
+                && Objects.equals(this.value, that.value);
     }
 
     @Override

@@ -99,21 +99,32 @@ public class BytesWriter {
             write((byte) 1, (byte) 9, (byte) 1)
                     .writeInt(function.name().length())
                     .write(function.name().getBytes(UTF_8))
-                    .writeInt(function.args().size());
-            function.args().forEach(arg -> {
-                if (arg instanceof IntegerArg)
-                    write((byte) 0).writeLong(((IntegerArg) arg).value());
-                else if (arg instanceof BinaryArg)
-                    write((byte) 1).writeArrayWithLength(((BinaryArg) arg).value());
-                else if (arg instanceof StringArg)
-                    write((byte) 2).writeArrayWithLength(((StringArg) arg).value().getBytes(UTF_8));
-                else if (arg instanceof BooleanArg)
-                    write((byte)(((BooleanArg) arg).value() ? 6 : 7));
-                else throw new IllegalArgumentException("Unknown arg type " + arg.type());
-                //todo else if (arg instanceof ListArg)
-            });
+                    .writeArguments(function.args());
             return this;
         }
+    }
+
+    public BytesWriter writeArguments(List<Arg> args) {
+        writeInt(args.size());
+        args.forEach(arg -> {
+            if (arg instanceof IntegerArg)
+                write((byte) 0).writeLong(((IntegerArg) arg).value());
+            else if (arg instanceof BinaryArg) {
+                BinaryArg binArg = (BinaryArg) arg;
+                int intLength = binArg.value().length;
+                write((byte) 1).writeInt(intLength).write(binArg.value());
+            } else if (arg instanceof StringArg) {
+                StringArg strArg = (StringArg) arg;
+                int intLength = strArg.value().length();
+                write((byte) 2).writeInt(intLength).write(strArg.value().getBytes(UTF_8));
+            } else if (arg instanceof BooleanArg)
+                write((byte)(((BooleanArg) arg).value() ? 6 : 7));
+            else if (arg instanceof ListArg)
+                write((byte) 11).writeArguments(((ListArg) arg).value());
+            else throw new IllegalArgumentException("Unknown arg type " + arg.type());
+
+        });
+        return this;
     }
 
     public BytesWriter writeSignature(List<Proof> proofs) {

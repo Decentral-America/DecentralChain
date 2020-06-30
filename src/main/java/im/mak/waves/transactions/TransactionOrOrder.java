@@ -142,6 +142,7 @@ public abstract class TransactionOrOrder {
             return builder();
         }
 
+        //todo what if Amount? (TransferTx, InvokeTx)
         public BUILDER fee(long fee) {
             this.fee = fee;
             return builder();

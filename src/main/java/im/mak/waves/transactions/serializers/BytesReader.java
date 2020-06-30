@@ -15,6 +15,7 @@ import static im.mak.waves.crypto.Bytes.concat;
 import static im.mak.waves.crypto.Bytes.of;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+//todo throw exception in all usages, where hasNext() after read
 public class BytesReader {
     private final byte[] bytes;
     private final int length;
@@ -114,20 +115,25 @@ public class BytesReader {
             if (readByte() != 9) throw new IllegalArgumentException("FunctionCall Id must be equal 9");
             if (readByte() != 1) throw new IllegalArgumentException("Function type Id must be equal 1");
             String name = new String(readBytes(readInt()), UTF_8);
-            int argsCount = readInt();
-            List<Arg> args = new ArrayList<>();
-            for (int i = 0; i < argsCount; i++) {
-                byte argType = readByte();
-                if (argType == 0) args.add(IntegerArg.as(readLong()));
-                else if (argType == 1) args.add(BinaryArg.as(readArrayWithLength()));
-                else if (argType == 2) args.add(StringArg.as(new String(readArrayWithLength(), UTF_8)));
-                else if (argType == 6) args.add(BooleanArg.as(true));
-                else if (argType == 7) args.add(BooleanArg.as(false));
-                    //todo else if (argType == 11) args.add(ListArg.as(...));
-                else throw new IllegalArgumentException("Unknown arg type " + argType);
-            }
+            List<Arg> args = readArguments();
             return Function.as(name, args);
         } else return Function.asDefault();
+    }
+
+    public List<Arg> readArguments() {
+        int argsCount = readInt();
+        List<Arg> args = new ArrayList<>();
+        for (int i = 0; i < argsCount; i++) {
+            byte argType = readByte();
+            if (argType == 0) args.add(IntegerArg.as(readLong()));
+            else if (argType == 1) args.add(BinaryArg.as(readBytes(readInt())));
+            else if (argType == 2) args.add(StringArg.as(new String(readBytes(readInt()), UTF_8)));
+            else if (argType == 6) args.add(BooleanArg.as(true));
+            else if (argType == 7) args.add(BooleanArg.as(false));
+            else if (argType == 11) args.add(ListArg.as(readArguments()));
+            else throw new IllegalArgumentException("Unknown arg type " + argType);
+        }
+        return args;
     }
 
     public List<Proof> readSignature() {

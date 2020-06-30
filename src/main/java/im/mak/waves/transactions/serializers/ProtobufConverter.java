@@ -244,17 +244,6 @@ public abstract class ProtobufConverter {
                     .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
-        } else if (pbTx.hasUpdateAssetInfo()) {
-            TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
-            tx = UpdateAssetInfoTransaction
-                    .with(Asset.id(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
-                    .version(pbTx.getVersion())
-                    .chainId((byte) pbTx.getChainId())
-                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
-                    .timestamp(pbTx.getTimestamp())
-                    .get();
         } else if (pbTx.hasInvokeScript()) {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
             Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
@@ -263,6 +252,17 @@ public abstract class ProtobufConverter {
                     .payments(invoke.getPaymentsList().stream().map(p ->
                             Amount.of(p.getAmount(), Asset.id(p.getAssetId().toByteArray())))
                             .collect(toList()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbTx.getFee().getAmount())
+                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .timestamp(pbTx.getTimestamp())
+                    .get();
+        } else if (pbTx.hasUpdateAssetInfo()) {
+            TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
+            tx = UpdateAssetInfoTransaction
+                    .with(Asset.id(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -436,13 +436,6 @@ public abstract class ProtobufConverter {
                     .setAssetId(ByteString.copyFrom(sasTx.asset().bytes()))
                     .setScript(ByteString.copyFrom(sasTx.compiledScript()))
                     .build());
-        } else if (tx instanceof UpdateAssetInfoTransaction) {
-            UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
-            protoBuilder.setUpdateAssetInfo(TransactionOuterClass.UpdateAssetInfoTransactionData.newBuilder()
-                    .setAssetId(ByteString.copyFrom(uaiTx.asset().bytes()))
-                    .setName(uaiTx.name())
-                    .setDescription(uaiTx.description())
-                    .build());
         } else if (tx instanceof InvokeScriptTransaction) {
             InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
             TransactionOuterClass.InvokeScriptTransactionData.Builder invoke =
@@ -454,6 +447,13 @@ public abstract class ProtobufConverter {
                     .setAssetId(ByteString.copyFrom(p.asset().bytes()))
                     .build()));
             protoBuilder.setInvokeScript(invoke.build());
+        } else if (tx instanceof UpdateAssetInfoTransaction) {
+            UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
+            protoBuilder.setUpdateAssetInfo(TransactionOuterClass.UpdateAssetInfoTransactionData.newBuilder()
+                    .setAssetId(ByteString.copyFrom(uaiTx.asset().bytes()))
+                    .setName(uaiTx.name())
+                    .setDescription(uaiTx.description())
+                    .build());
         }
 
         return protoBuilder.build();

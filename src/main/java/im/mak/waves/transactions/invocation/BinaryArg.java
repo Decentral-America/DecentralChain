@@ -3,6 +3,8 @@ package im.mak.waves.transactions.invocation;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.base.Base64;
 
+import java.util.Arrays;
+
 public class BinaryArg extends Arg {
 
     public static BinaryArg as(byte[] value) {
@@ -26,7 +28,16 @@ public class BinaryArg extends Arg {
     }
 
     public String valueEncoded() {
-        return Base64.encode(value());
+        return Base64.encodeWithPrefix(value());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryArg that = (BinaryArg) o;
+        return this.type().equals(that.type())
+                && Arrays.equals(this.value(), that.value());
     }
 
 }

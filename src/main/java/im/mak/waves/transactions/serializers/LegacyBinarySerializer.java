@@ -288,15 +288,22 @@ public abstract class LegacyBinarySerializer {
             Function functionCall = reader.readFunctionCall();
             short paymentsCount = reader.readShort();
             List<Amount> payments = new ArrayList<>();
-            for (int i = 0; i < paymentsCount; i++)
-                payments.add(Amount.of(reader.readLong(), reader.readAssetOrWaves()));
+            for (int i = 0; i < paymentsCount; i++) {
+                byte[] paymentBytes = reader.readArrayWithLength();
+                BytesReader paymentReader = new BytesReader(paymentBytes);
+                payments.add(Amount.of(paymentReader.readLong(), paymentReader.readAssetOrWaves()));
+                if (paymentReader.hasNext())
+                    throw new IllegalArgumentException("The size of " + paymentBytes.length
+                            + " bytes is " + (paymentBytes.length - paymentReader.rest())
+                            + " greater than expected for the payment with index " + i + " of the parsed InvokeScriptTransaction");
+            }
             long fee = reader.readLong();
             Asset feeAsset = reader.readAssetOrWaves();
             long timestamp = reader.readLong();
             proofs = reader.readProofs();
 
             transaction = new InvokeScriptTransaction(
-                    sender, dApp, functionCall, payments, chainId, fee, feeAsset, timestamp, version, proofs);
+                    sender, dApp, functionCall, payments, chainId, Amount.of(fee, feeAsset), timestamp, version, proofs);
         } else throw new IllegalArgumentException("Unsupported transaction type " + type);
 
         if (reader.hasNext())
@@ -512,8 +519,10 @@ public abstract class LegacyBinarySerializer {
                         .writeFunction(isTx.function())
                         .writeShort((short) isTx.payments().size());
                 isTx.payments().forEach(payment -> bwStream
-                        .writeLong(payment.value())
-                        .writeAssetOrWaves(payment.asset()));
+                        .writeArrayWithLength(new BytesWriter()
+                                .writeLong(payment.value())
+                                .writeAssetOrWaves(payment.asset())
+                                .getBytes()));
                 bwStream.writeLong(isTx.fee())
                         .writeAssetOrWaves(isTx.feeAsset())
                         .writeLong(isTx.timestamp());

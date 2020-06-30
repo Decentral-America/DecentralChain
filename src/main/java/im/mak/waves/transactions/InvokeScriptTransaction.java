@@ -2,7 +2,6 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
 import im.mak.waves.transactions.invocation.Function;
@@ -21,13 +20,13 @@ public class InvokeScriptTransaction extends Transaction {
     private final List<Amount> payments;
 
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments,
-                                   byte chainId, long fee, Asset feeAsset, long timestamp, int version) {
-        this(sender, dApp, function, payments, chainId, fee, feeAsset, timestamp, version, Proof.emptyList());
+                                   byte chainId, Amount fee, long timestamp, int version) {
+        this(sender, dApp, function, payments, chainId, fee, timestamp, version, Proof.emptyList());
     }
 
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments,
-                                   byte chainId, long fee, Asset feeAsset, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, feeAsset, timestamp, proofs);
+                                   byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee.value(), fee.asset(), timestamp, proofs);
         if (dApp == null)
             throw new IllegalArgumentException("dApp can't be null");
 
@@ -82,6 +81,7 @@ public class InvokeScriptTransaction extends Transaction {
         private final Function function;
         private final List<Amount> payments;
 
+        //todo invokeTx has size limit 5Kb. How to check the rest of the limit when add arg values?
         protected InvokeScriptTransactionBuilder(Recipient dApp, Function function) {
             super(LATEST_VERSION, MIN_FEE);
             this.dApp = dApp;
@@ -100,7 +100,8 @@ public class InvokeScriptTransaction extends Transaction {
         }
 
         protected InvokeScriptTransaction _build() {
-            return new InvokeScriptTransaction(sender, dApp, function, payments, chainId, fee, feeAsset, timestamp, version);
+            return new InvokeScriptTransaction(
+                    sender, dApp, function, payments, chainId, Amount.of(fee, feeAsset), timestamp, version);
         }
     }
 

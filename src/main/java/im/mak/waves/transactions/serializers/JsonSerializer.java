@@ -220,6 +220,21 @@ public abstract class JsonSerializer {
 
             Asset asset = assetFromJson(json.get("assetId"));
             return new SetAssetScriptTransaction(sender, asset, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
+        } else if (type == InvokeScriptTransaction.TYPE) {
+            Recipient dApp = Recipient.as(json.get("dApp").asText());
+            Function function = Function.asDefault();
+            if (json.hasNonNull("call")) {
+                JsonNode call = json.get("call");
+                List<Arg> args = call.hasNonNull("args") ? argsFromJson(call.get("args")) : new ArrayList<>();
+                function = Function.as(call.get("function").asText(), args);
+            }
+            List<Amount> payments = new ArrayList<>();
+            String paymentsFieldName = "payment"; //todo why not "payments" for v2? `version == 1 ? "payment" : "payments"`
+            if (json.hasNonNull(paymentsFieldName))
+                json.get(paymentsFieldName).forEach(p ->
+                        payments.add(Amount.of(p.get("amount").asLong(), assetFromJson(p.get("assetId")))));
+            return new InvokeScriptTransaction(
+                    sender, dApp, function, payments, chainId, Amount.of(fee, feeAssetId), timestamp, version, proofs);
         } else if (type == UpdateAssetInfoTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for UpdateAssetInfoTransaction");
@@ -228,35 +243,6 @@ public abstract class JsonSerializer {
             String name = json.get("name").asText();
             String description = json.get("description").asText();
             return new UpdateAssetInfoTransaction(sender, asset, name, description, chainId, fee, timestamp, version, proofs);
-        } else if (type == InvokeScriptTransaction.TYPE) {
-            Recipient dApp = Recipient.as(json.get("dApp").asText());
-            Function function = Function.asDefault();
-            if (json.has("call") && !json.get("call").isNull()) {
-                JsonNode call = json.get("call");
-                List<Arg> args = new ArrayList<>();
-                if (call.has("args")) {
-                    JsonNode jsArgs = call.get("args");
-                    for (int i = 0; i < jsArgs.size(); i++) {
-                        JsonNode arg = jsArgs.get(i);
-                        String argType = arg.get("type").asText();
-                        if (argType.equals("binary"))
-                            args.add(BinaryArg.as(arg.get("value").asText()));
-                        else if (argType.equals("boolean"))
-                            args.add(BooleanArg.as(arg.get("value").asBoolean()));
-                        else if (argType.equals("integer"))
-                            args.add(IntegerArg.as(arg.get("value").asLong()));
-                        else if (argType.equals("string"))
-                            args.add(StringArg.as(arg.get("value").asText()));
-                        else throw new IOException("Unknown arg type " + argType);
-                    }
-                }
-                function = Function.as(call.get("name").asText(), args);
-            }
-            List<Amount> payments = new ArrayList<>();
-            if (json.has("payments"))
-                json.get("payments").forEach(p ->
-                        payments.add(Amount.of(p.get("amount").asLong(), assetFromJson(p.get("assetId")))));
-            return new InvokeScriptTransaction(sender, dApp, function, payments, chainId, fee, feeAssetId, timestamp, version, proofs);
         }
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -425,37 +411,29 @@ public abstract class JsonSerializer {
                 SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
                 jsObject.put("assetId", assetToJson(sasTx.asset()))
                         .put("script", scriptToJson(sasTx.compiledScript()));
-            } else if (tx instanceof UpdateAssetInfoTransaction) {
-                UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
-                jsObject.put("assetId", assetToJson(uaiTx.asset()))
-                        .put("name", uaiTx.name())
-                        .put("description", uaiTx.description());
             } else if (tx instanceof InvokeScriptTransaction) {
                 InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
+                jsObject.put("dApp", isTx.dApp().toString());
                 if (isTx.function().isDefault())
-                    jsObject.putNull("call");
+                {} //todo why is hidden? jsObject.putNull("call");
                 else {
                     ObjectNode call = jsObject.putObject("call");
                     call.put("function", isTx.function().name());
-                    ArrayNode args = call.putArray("args");
-                    isTx.function().args().forEach(a -> {
-                        ObjectNode arg = args.addObject();
-                        if (a.type() == ArgType.BINARY)
-                            arg.put("type", "binary").put("value", ((BinaryArg) a).valueEncoded());
-                        else if (a.type() == ArgType.BOOLEAN)
-                            arg.put("type", "boolean").put("value", ((BooleanArg) a).value());
-                        else if (a.type() == ArgType.INTEGER)
-                            arg.put("type", "integer").put("value", ((IntegerArg) a).value());
-                        else if (a.type() == ArgType.STRING)
-                            arg.put("type", "string").put("value", ((StringArg) a).value());
-                    });
+                    argsToJson(call.putArray("args"), isTx.function().args());
                 }
-                ArrayNode payments = jsObject.putArray("payments");
+                ArrayNode payments = jsObject.putArray("payment");
                 isTx.payments().forEach(p -> {
                     ObjectNode payment = payments.addObject();
                     payment.put("amount", p.value()).
                             put("assetId", assetToJson(p.asset()));
                 });
+                if (isTx.version() == 1)
+                    jsObject.remove("chainId");
+            } else if (tx instanceof UpdateAssetInfoTransaction) {
+                UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
+                jsObject.put("assetId", assetToJson(uaiTx.asset()))
+                        .put("name", uaiTx.name())
+                        .put("description", uaiTx.description());
             }
 
             jsObject.put("fee", tx.fee())
@@ -484,6 +462,44 @@ public abstract class JsonSerializer {
 
     public static String assetToJson(Asset asset) {
         return asset.isWaves() ? null : asset.toString();
+    }
+
+    public static List<Arg> argsFromJson(JsonNode json) throws IOException {
+        List<Arg> args = new ArrayList<>();
+        for (int i = 0; i < json.size(); i++) {
+            JsonNode arg = json.get(i);
+            String argType = arg.get("type").asText();
+            if (argType.equals("binary"))
+                args.add(BinaryArg.as(arg.get("value").asText()));
+            else if (argType.equals("boolean"))
+                args.add(BooleanArg.as(arg.get("value").asBoolean()));
+            else if (argType.equals("integer"))
+                args.add(IntegerArg.as(arg.get("value").asLong()));
+            else if (argType.equals("string"))
+                args.add(StringArg.as(arg.get("value").asText()));
+            else if (argType.equals("list"))
+                args.add(ListArg.as(argsFromJson(arg.get("value"))));
+            else throw new IOException("Unknown arg type " + argType);
+        }
+        return args;
+    }
+
+    public static void argsToJson(ArrayNode json, List<Arg> args) {
+        args.forEach(a -> {
+            ObjectNode arg = json.addObject();
+            if (a instanceof BinaryArg)
+                arg.put("type", "binary").put("value", ((BinaryArg) a).valueEncoded());
+            else if (a instanceof BooleanArg)
+                arg.put("type", "boolean").put("value", ((BooleanArg) a).value());
+            else if (a instanceof IntegerArg)
+                arg.put("type", "integer").put("value", ((IntegerArg) a).value());
+            else if (a instanceof StringArg)
+                arg.put("type", "string").put("value", ((StringArg) a).value());
+            else if (a instanceof ListArg) {
+                arg.put("type", "list");
+                argsToJson(arg.putArray("value"), ((ListArg) a).value());
+            } else throw new IllegalArgumentException(); //todo
+        });
     }
 
     public static byte[] scriptFromJson(JsonNode json) {
