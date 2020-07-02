@@ -24,7 +24,7 @@ public class Id extends Base58Encoded {
 
     @Override
     protected byte[] validateAndGet(byte[] value) throws IllegalArgumentException {
-        if (value.length == BYTE_LENGTH)
+        if (value.length == BYTE_LENGTH || value.length == BYTE_LENGTH * 2) // x2 for PaymentTransaction
             return value;
         else throw new IllegalArgumentException("Wrong transaction id '" + Base58.encode(value)
                 + "' byte length " + value.length + ". Must be " + BYTE_LENGTH);

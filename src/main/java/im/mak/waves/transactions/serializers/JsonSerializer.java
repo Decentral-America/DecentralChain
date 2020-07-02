@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import im.mak.waves.crypto.Bytes;
+import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.crypto.base.Base64;
@@ -67,7 +68,7 @@ public abstract class JsonSerializer {
 
     public static Transaction fromJson(JsonNode json) throws IOException {
         int type = json.get("type").asInt();
-        int version = json.get("version").asInt();
+        int version = json.hasNonNull("version") ? json.get("version").asInt() : 1;
         byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId;
         PublicKey sender = PublicKey.as(json.get("senderPublicKey").asText());
         //todo validate sender address if exists? configurable? jsonNode.get("sender").asText(sender.address())
@@ -87,7 +88,11 @@ public abstract class JsonSerializer {
                 proofs.add(Proof.as(jProofs.get(i).asText()));
         }
 
-        if (type == IssueTransaction.TYPE) {
+        if (type == PaymentTransaction.TYPE) {
+            Address recipient = Address.as(json.get("recipient").asText());
+            return new PaymentTransaction(sender, recipient, json.get("amount").asLong(), fee, timestamp,
+                    Proof.as(json.get("proofs").get(0).asText())); //todo why proofs, not signature???
+        } else if (type == IssueTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for ReissueTransaction");
             if (version == 1 && json.has("signature"))
@@ -298,7 +303,13 @@ public abstract class JsonSerializer {
             tx.proofs().forEach(p -> proofs.add(p.toString()));
 
             String signature = null;
-            if (tx instanceof IssueTransaction) {
+            if (tx instanceof PaymentTransaction) {
+                PaymentTransaction ptx = (PaymentTransaction) tx;
+                jsObject.put("recipient", ptx.recipient().toString())
+                        .put("amount", ptx.amount());
+                jsObject.remove("version");
+                jsObject.remove("chainId");
+            } if (tx instanceof IssueTransaction) {
                 IssueTransaction itx = (IssueTransaction) tx;
                 jsObject.put("name", itx.name())
                         .put("description", itx.description())
