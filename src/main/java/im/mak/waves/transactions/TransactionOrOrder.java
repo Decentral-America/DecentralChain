@@ -1,8 +1,10 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
+import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Id;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.serializers.BinarySerializer;
@@ -14,6 +16,7 @@ import java.util.Objects;
 
 public abstract class TransactionOrOrder {
 
+    private Id id;
     private final int version;
     private final byte chainId;
     private final PublicKey sender;
@@ -24,6 +27,7 @@ public abstract class TransactionOrOrder {
     private byte[] bodyBytes;
 
     protected TransactionOrOrder(int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
+        this.id = null;
         this.version = version;
         this.chainId = chainId;
         this.sender = sender;
@@ -65,6 +69,12 @@ public abstract class TransactionOrOrder {
         if (this.bodyBytes == null)
             this.bodyBytes = BinarySerializer.bodyBytes(this);
         return this.bodyBytes;
+    }
+
+    public Id id() {
+        if (id == null)
+            id = new Id(Hash.blake(bodyBytes()));
+        return id;
     }
 
     public byte[] toBytes() {

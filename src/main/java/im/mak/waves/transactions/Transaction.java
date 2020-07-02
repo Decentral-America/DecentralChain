@@ -5,7 +5,7 @@ import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.common.Id;
 import im.mak.waves.transactions.serializers.BinarySerializer;
 import im.mak.waves.transactions.serializers.JsonSerializer;
 import im.mak.waves.transactions.serializers.ProtobufConverter;
@@ -16,13 +16,11 @@ import java.util.Objects;
 
 public abstract class Transaction extends TransactionOrOrder {
 
-    private TxId id;
     private final int type;
 
     protected Transaction(int type, int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
         super(version, chainId, sender, fee, feeAsset, timestamp, proofs);
 
-        this.id = null;
         this.type = type;
     }
 
@@ -36,12 +34,6 @@ public abstract class Transaction extends TransactionOrOrder {
 
     public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction protobufTx) throws IOException {
         return ProtobufConverter.fromProtobuf(protobufTx);
-    }
-
-    public TxId id() {
-        if (id == null)
-            id = new TxId(Hash.blake(bodyBytes()));
-        return id;
     }
 
     public int type() {

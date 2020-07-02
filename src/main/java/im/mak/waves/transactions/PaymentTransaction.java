@@ -4,7 +4,7 @@ import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.common.Id;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -41,8 +41,8 @@ public class PaymentTransaction extends Transaction {
     }
 
     @Override
-    public TxId id() {
-        return TxId.id(proofs().get(0).bytes());
+    public Id id() {
+        return Id.as(proofs().get(0).bytes());
     }
 
     public Address recipient() {

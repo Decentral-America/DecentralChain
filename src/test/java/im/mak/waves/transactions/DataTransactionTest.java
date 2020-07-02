@@ -4,7 +4,7 @@ import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.common.Id;
 import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.data.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,19 +46,19 @@ public class DataTransactionTest {
         entriesV2.add(new DeleteEntry("del"));
 
         return Stream.of(
-                arguments(1, entriesV1, TxId.id("H6BaWKEMRpj7LZRoUm2gyr4Gx2LkatKsazdtNedzjnP8"),
+                arguments(1, entriesV1, Id.as("H6BaWKEMRpj7LZRoUm2gyr4Gx2LkatKsazdtNedzjnP8"),
                         Proof.list(Proof.as("65kVxi4W2zfRREUSqb5uDkfCJaPNa31Y8gLhRh1tCXhF86b5vUAuRnDkJpzq44jg6uvJy2TLNvsHQ4vWQas9h5hp")),
                         Base64.decode("DAGNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAEAARib29sAQEAA2ludAB//////////wADYmluAgAEYWFhYQADc3RyAwAEYWFhYQAAAXSHboAAAAAAAAABhqE="),
                         Base64.decode("AAwBjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QABAAEYm9vbAEBAANpbnQAf/////////8AA2JpbgIABGFhYWEAA3N0cgMABGFhYWEAAAF0h26AAAAAAAAAAYahAQABAED+LmM4bBKE0shoPJOhKxqsOXccDu7yUtdVs585BmVY6atXnf0dAog3MsDWNN0lN4CeUrOaWDn4enCFc4SIuXiP"),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"data\":[{\"type\":\"boolean\",\"value\":true,\"key\":\"bool\"},{\"type\":\"integer\",\"value\":9223372036854775807,\"key\":\"int\"},{\"type\":\"binary\",\"value\":\"base64:YWFhYQ==\",\"key\":\"bin\"},{\"type\":\"string\",\"value\":\"aaaa\",\"key\":\"str\"}],\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"proofs\":[\"65kVxi4W2zfRREUSqb5uDkfCJaPNa31Y8gLhRh1tCXhF86b5vUAuRnDkJpzq44jg6uvJy2TLNvsHQ4vWQas9h5hp\"],\"fee\":100001,\"id\":\"H6BaWKEMRpj7LZRoUm2gyr4Gx2LkatKsazdtNedzjnP8\",\"type\":12,\"version\":1,\"timestamp\":1600000000000}"
                 ),
-                arguments(2, entriesV2, TxId.id("5T7SYvQmdcQqbPhFW6fs4N1cED4kbpN4X5qxbUGmDsGJ"),
+                arguments(2, entriesV2, Id.as("5T7SYvQmdcQqbPhFW6fs4N1cED4kbpN4X5qxbUGmDsGJ"),
                         Proof.list(Proof.as("25FY5wjxnTWZnBHuLG4jEY9aveNVSfFFTrk4GhE3G6ECijFKb7YGEN43XdaWbLZ91UrMgrBjmpnk58m9k6xXMPnV")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQoY0GIICAurvILigCggc8CggKBGJvb2xYAQoPCgNpbnRQ//////////9/CgsKA2JpbmIEYWFhYQoLCgNzdHJqBGFhYWEKBQoDZGVs"),
                         Base64.decode("CnIIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChjQYggIC6u8guKAKCBzwKCAoEYm9vbFgBCg8KA2ludFD//////////38KCwoDYmluYgRhYWFhCgsKA3N0cmoEYWFhYQoFCgNkZWwSQDWuvQNUFI8ceUpEsu5SypzeLUGZFjdFLkaByQ3ragBPoU77Z9Y7SSF8teoF5zzXMHG5ML9ZQrbR3UlUgwVnkoY="),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"data\":[{\"type\":\"boolean\",\"value\":true,\"key\":\"bool\"},{\"type\":\"integer\",\"value\":9223372036854775807,\"key\":\"int\"},{\"type\":\"binary\",\"value\":\"base64:YWFhYQ==\",\"key\":\"bin\"},{\"type\":\"string\",\"value\":\"aaaa\",\"key\":\"str\"},{\"key\":\"del\",\"value\":null}],\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"chainId\":82,\"proofs\":[\"25FY5wjxnTWZnBHuLG4jEY9aveNVSfFFTrk4GhE3G6ECijFKb7YGEN43XdaWbLZ91UrMgrBjmpnk58m9k6xXMPnV\"],\"fee\":100001,\"id\":\"5T7SYvQmdcQqbPhFW6fs4N1cED4kbpN4X5qxbUGmDsGJ\",\"type\":12,\"version\":2,\"timestamp\":1600000000000}"
                 ),
-                arguments(2, entriesV2, TxId.id("5T7SYvQmdcQqbPhFW6fs4N1cED4kbpN4X5qxbUGmDsGJ"),
+                arguments(2, entriesV2, Id.as("5T7SYvQmdcQqbPhFW6fs4N1cED4kbpN4X5qxbUGmDsGJ"),
                         Proof.list(Proof.as("s7f9Z9LvPb2gXPujpaQLNgFrotP6FVg3oDhmcJbV8RaBBohjk732UkGH9Ahmby3KacpPGxqfCns6RnWQMjLgAUP"), Proof.as("2JzFRQhnMysUYrvCBP87SWqs8zTE2aeu7qzYJ8fBQtjAtNdtSshvsCCFgSdbXP7Vd7NAiASDJiY5ByevySMYNbHg"), Proof.as("5KE21N9RAiQcRTjXv79oK61FDGndmg5Mq5qjXCvsYFMPGTFTZSCUzmCXZPxBFjQhgdKK433BeVe1mYbvYEtcCiYo"), Proof.as("4Q28pp5V1X5itqoygADT4AGe6rB5pHyfJXQgJ13GQnTa7xDVpN7uGatezUPaU5L37kMatQGGTUNAs7kotgSEMK1t"), Proof.as("3LJUNvz1evQpU26DzpLqZkE2ZeWCHQZn8XbXz31PaS7zLkk8HWyYNJjeLkcCPDRyvui6mAcruu557aTZmuS5g41j"), Proof.as("3hZQeQQqU435ce5Fqrf8mEZBfX3J4q5oztLrjMoqGKFEc1heY5DWeXuouYzWa8kPrQvzBXrsYwFCa2y8N6UKfsHm"), Proof.as("43RKAskxmXaE5LXHdBpiu8Ne2t7XWqVTu6f766RfQQ4wouBpu22guKFGoXeSd9hkMXYsRRrhe6sfAHDdMCZjQnvs"), Proof.as("3cBR8nA7667GATKQFMBEnBCFGUC3YUgwFfE3yG8qZLxYeuRLHmNVpLnD9AvwFyLqv4SBLsBNuYgfrGkuF1NUNHAf")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQoY0GIICAurvILigCggc8CggKBGJvb2xYAQoPCgNpbnRQ//////////9/CgsKA2JpbmIEYWFhYQoLCgNzdHJqBGFhYWEKBQoDZGVs"),
                         Base64.decode("CnIIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChjQYggIC6u8guKAKCBzwKCAoEYm9vbFgBCg8KA2ludFD//////////38KCwoDYmluYgRhYWFhCgsKA3N0cmoEYWFhYQoFCgNkZWwSQCs3k0c2eNqPFuswpt8t1LPtKb7q5+RwHgHdusos4ziWIJIi/yiuPPit7pxbQtdG8R9p72i3de8zWsin14AXYoASQEGHQYanZQUIrAgd+nTWtWelweuNod/Q0t0Zft5eERi50ORDHs7Kggr4X389/v9UgcxcOLVyTxo/SlT5NAfcPIcSQNfIt+mPxrD768g+J3FuaZ5/FIEM5eG7jqoShvoqsSD/5Hj8gRLSNHUFogHdsT8J5kGkNMVkAnGNc0uNego7tYASQKnm9lQoIuBouDRIT/7VaIR4Crg4xbn+NmEPVsdL3Ee785BlmQRx499QjZ92O5uY33cT5IhOouLSxGrSlekEzYsSQHStvFk9ciXHmTf5JXjUlopsQf9ICZ4nDNXdA4WOA51HcP0Z6fI1xt9aX5/LLerFITyBFzx1Pq/hiD96L7EQn44SQIcCpLUfXQ1OH01KEvREMGM9Ok4NqpZZLSlYFkpbj+fnpw7Z7yDYomnnmpmvQaSFguJKMbaw0Z6G4h0RM8KrmIQSQJgjIKFZaxy7fqeju82ZWkgjn+3qck6R2qVGKMD8YfV4ZslDv3zjYAYfwPw2mn9nPMDK9WMLzExdabzgz8N9SIASQIJfHR74gQ4kRiYXkSfA5U8ieQCE+bAMALJCOrMHjwLlxm9kxnDPmSrVhpDQR9Fp1s5/od2e2v0WmhhOhwE1SYg="),
@@ -69,7 +69,7 @@ public class DataTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void dataTransaction(int version, List<DataEntry> entries, TxId expectedId, List<Proof> proofs,
+    void dataTransaction(int version, List<DataEntry> entries, Id expectedId, List<Proof> proofs,
                          byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         DataTransaction builtTx = DataTransaction
                 .with(entries)

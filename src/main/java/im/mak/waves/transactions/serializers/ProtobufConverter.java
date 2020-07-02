@@ -33,7 +33,7 @@ public abstract class ProtobufConverter {
             type = OrderType.SELL;
         else throw new IOException("Unknown order type \"" + pbOrder.getOrderSide() + "\"");
 
-        return Order
+        Order order = Order
                 .with(type,
                         Amount.of(pbOrder.getAmount(), Asset.id(pbOrder.getAssetPair().getAmountAssetId().toByteArray())),
                         Amount.of(pbOrder.getPrice(), Asset.id(pbOrder.getAssetPair().getPriceAssetId().toByteArray())),
@@ -46,6 +46,8 @@ public abstract class ProtobufConverter {
                 .timestamp(pbOrder.getTimestamp())
                 .expiration(pbOrder.getExpiration())
                 .get();
+        pbOrder.getProofsList().forEach(p -> order.proofs().add(Proof.as(p.toByteArray())));
+        return order;
     }
 
     public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction pbSignedTx) throws IOException {
@@ -152,7 +154,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasLeaseCancel()) {
             TransactionOuterClass.LeaseCancelTransactionData leaseCancel = pbTx.getLeaseCancel();
             tx = LeaseCancelTransaction
-                    .with(TxId.id(leaseCancel.getLeaseId().toByteArray()))
+                    .with(Id.as(leaseCancel.getLeaseId().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -367,8 +369,8 @@ public abstract class ProtobufConverter {
             OrderOuterClass.Order order1 = toProtobuf(etx.isDirectionBuySell() ? etx.buyOrder() : etx.sellOrder());
             OrderOuterClass.Order order2 = toProtobuf(etx.isDirectionBuySell() ? etx.sellOrder() : etx.buyOrder());
             protoBuilder.setExchange(TransactionOuterClass.ExchangeTransactionData.newBuilder()
-                    .setOrders(0, order1)
-                    .setOrders(1, order2)
+                    .addOrders(order1)
+                    .addOrders(order2)
                     .setAmount(etx.amount())
                     .setPrice(etx.price())
                     .setBuyMatcherFee(etx.buyMatcherFee())

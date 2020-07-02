@@ -2,24 +2,24 @@ package im.mak.waves.transactions.common;
 
 import im.mak.waves.crypto.base.Base58;
 
-public class TxId extends Base58Encoded {
+public class Id extends Base58Encoded {
 
     public static final int BYTE_LENGTH = 32;
 
-    public TxId(byte[] id) {
+    public Id(byte[] id) {
         super(id);
     }
 
-    public TxId(String id) {
+    public Id(String id) {
         super(id);
     }
 
-    public static TxId id(byte[] id) {
-        return new TxId(id);
+    public static Id as(byte[] id) {
+        return new Id(id);
     }
 
-    public static TxId id(String id) {
-        return new TxId(id);
+    public static Id as(String id) {
+        return new Id(id);
     }
 
     @Override

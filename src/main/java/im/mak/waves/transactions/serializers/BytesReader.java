@@ -106,8 +106,8 @@ public class BytesReader {
         return isAsset ? readAsset() : Asset.WAVES;
     }
 
-    public TxId readTxId() {
-        return TxId.id(readBytes(TxId.BYTE_LENGTH));
+    public Id readTxId() {
+        return Id.as(readBytes(Id.BYTE_LENGTH));
     }
 
     public Function readFunctionCall() {

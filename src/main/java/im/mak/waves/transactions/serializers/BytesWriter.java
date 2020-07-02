@@ -88,8 +88,8 @@ public class BytesWriter {
         return assetOrWaves.isWaves() ? write((byte) 0) : write((byte) 1).write(assetOrWaves.bytes());
     }
 
-    public BytesWriter writeTxId(TxId txId) {
-        return write(txId.bytes());
+    public BytesWriter writeTxId(Id id) {
+        return write(id.bytes());
     }
 
     public BytesWriter writeFunction(Function function) {

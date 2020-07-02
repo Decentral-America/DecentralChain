@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static im.mak.waves.transactions.serializers.Scheme.PROTOBUF;
+import static im.mak.waves.transactions.serializers.Scheme.WITH_SIGNATURE;
 
 public abstract class JsonSerializer {
 
@@ -47,12 +48,12 @@ public abstract class JsonSerializer {
         return new Order(
                 PublicKey.as(json.get("senderPublicKey").asText()),
                 type,
-                Amount.of(json.get("amount").asLong(), Asset.id(json.get("assetPair").get("amountAsset").asText())),
-                Amount.of(json.get("price").asLong(), Asset.id(json.get("assetPair").get("priceAsset").asText())),
+                Amount.of(json.get("amount").asLong(), assetFromJson(json.get("assetPair").get("amountAsset"))),
+                Amount.of(json.get("price").asLong(), assetFromJson(json.get("assetPair").get("priceAsset"))),
                 PublicKey.as(json.get("matcherPublicKey").asText()),
                 json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId,
                 json.get("matcherFee").asLong(),
-                json.has("matcherFeeAssetId") ? Asset.id(json.get("matcherFeeAssetId").asText()) : Asset.WAVES,
+                json.has("matcherFeeAssetId") ? assetFromJson(json.get("matcherFeeAssetId")) : Asset.WAVES,
                 json.get("timestamp").asLong(),
                 json.get("expiration").asLong(),
                 version,
@@ -155,7 +156,7 @@ public abstract class JsonSerializer {
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new LeaseCancelTransaction(
-                    sender, TxId.id(json.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
+                    sender, Id.as(json.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
         } else if (type == CreateAliasTransaction.TYPE) {
             if (!feeAssetId.isWaves())
                 throw new IOException("feeAssetId field must be null for CreateAliasTransaction");
@@ -252,12 +253,14 @@ public abstract class JsonSerializer {
         return fromJson(JSON_MAPPER.readTree(json));
     }
 
-    public static JsonNode toJsonObject(TransactionOrOrder txOrOrder) { //todo configurable long->string
+    public static JsonNode toJsonObject(TransactionOrOrder txOrOrder) { //todo configurable json number->string
         ObjectNode jsObject = JSON_MAPPER.createObjectNode();
+        Scheme scheme = Scheme.of(txOrOrder);
 
         if (txOrOrder instanceof Order) {
             Order order = (Order) txOrOrder;
-            jsObject.put("orderType", order.type().value())
+            jsObject.put("id", order.id().toString())
+                    .put("orderType", order.type().value())
                     .put("version", order.version())
                     .put("chainId", order.chainId())
                     .put("senderPublicKey", order.sender().toString())
@@ -271,10 +274,14 @@ public abstract class JsonSerializer {
                     .put("matcherFee", order.fee())
                     .put("matcherFeeAssetId", assetToJson(order.feeAsset()))
                     .put("timestamp", order.timestamp())
-                    .put("expiration", order.expiration());
+                    .put("expiration", order.expiration())
+                    .put("signature", order.proofs().get(0).toString());
 
-            if (order.version() == 1)
-                jsObject.put("signature", order.proofs().get(0).toString());
+//todo why don't show chainId? `if (order.version() < 4)`
+            jsObject.remove("chainId");
+            if (order.version() < 3)
+                jsObject.remove("matcherFeeAssetId");
+
             ArrayNode proofs = JSON_MAPPER.createArrayNode();
             order.proofs().forEach(p -> proofs.add(p.toString()));
             jsObject.set("proofs", proofs); //todo configurable for v1, true by default
@@ -286,8 +293,6 @@ public abstract class JsonSerializer {
                     .put("chainId", tx.chainId())
                     .put("senderPublicKey", tx.sender().toString())
                     .put("sender", tx.sender().address(tx.chainId()).toString());
-
-            Scheme scheme = Scheme.of(tx.type(), tx.version());
 
             ArrayNode proofs = JSON_MAPPER.createArrayNode();
             tx.proofs().forEach(p -> proofs.add(p.toString()));
@@ -340,10 +345,10 @@ public abstract class JsonSerializer {
                         .put("price", etx.price())
                         .put("buyMatcherFee", etx.buyMatcherFee())
                         .put("sellMatcherFee", etx.sellMatcherFee());
-                if (etx.version() == 1) {
+                if (scheme != PROTOBUF)
                     jsObject.remove("chainId");
+                if (scheme == WITH_SIGNATURE)
                     signature = etx.proofs().get(0).toString();
-                }
             } else if (tx instanceof LeaseTransaction) {
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 jsObject.put("recipient", ltx.recipient().toString())

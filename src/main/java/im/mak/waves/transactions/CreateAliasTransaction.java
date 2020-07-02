@@ -5,7 +5,7 @@ import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.common.Id;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,9 +46,9 @@ public class CreateAliasTransaction extends Transaction {
     }
 
     @Override
-    public TxId id() {
+    public Id id() {
         return version() < 3
-                ? TxId.id(Hash.blake(concat(of((byte) type(), (byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)))))
+                ? Id.as(Hash.blake(concat(of((byte) type(), (byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)))))
                 : super.id();
     }
 

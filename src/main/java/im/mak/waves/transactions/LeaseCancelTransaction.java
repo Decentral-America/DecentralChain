@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.TxId;
+import im.mak.waves.transactions.common.Id;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,13 +15,13 @@ public class LeaseCancelTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
 
-    private final TxId leaseId;
+    private final Id leaseId;
 
-    public LeaseCancelTransaction(PublicKey sender, TxId leaseId, byte chainId, long fee, long timestamp, int version) {
+    public LeaseCancelTransaction(PublicKey sender, Id leaseId, byte chainId, long fee, long timestamp, int version) {
         this(sender, leaseId, chainId, fee, timestamp, version, Proof.emptyList());
     }
 
-    public LeaseCancelTransaction(PublicKey sender, TxId leaseId, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
+    public LeaseCancelTransaction(PublicKey sender, Id leaseId, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
 
         this.leaseId = leaseId;
@@ -35,11 +35,11 @@ public class LeaseCancelTransaction extends Transaction {
         return (LeaseCancelTransaction) Transaction.fromJson(json);
     }
 
-    public static LeaseCancelTransactionBuilder with(TxId leaseId) {
+    public static LeaseCancelTransactionBuilder with(Id leaseId) {
         return new LeaseCancelTransactionBuilder(leaseId);
     }
 
-    public TxId leaseId() {
+    public Id leaseId() {
         return leaseId;
     }
 
@@ -59,9 +59,9 @@ public class LeaseCancelTransaction extends Transaction {
 
     public static class LeaseCancelTransactionBuilder
             extends TransactionBuilder<LeaseCancelTransactionBuilder, LeaseCancelTransaction> {
-        private final TxId leaseId;
+        private final Id leaseId;
 
-        protected LeaseCancelTransactionBuilder(TxId leaseId) {
+        protected LeaseCancelTransactionBuilder(Id leaseId) {
             super(LATEST_VERSION, MIN_FEE);
             this.leaseId = leaseId;
         }

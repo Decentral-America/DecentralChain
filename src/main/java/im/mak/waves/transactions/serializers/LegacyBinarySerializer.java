@@ -14,6 +14,7 @@ import im.mak.waves.transactions.mass.Transfer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static im.mak.waves.crypto.Bytes.concat;
 import static im.mak.waves.transactions.serializers.Scheme.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -154,11 +155,24 @@ public abstract class LegacyBinarySerializer {
             Order order1, order2;
             int order1Length = reader.readInt();
             if (scheme == WITH_PROOFS) {
-                boolean isVersionedOrder1 = !reader.readBoolean();
-                order1 = orderFromBytes(reader.readBytes(order1Length), isVersionedOrder1);
+                byte order1Version = reader.readByte();
+                if (order1Version > 1) {
+                    byte[] order1Bytes = concat(Bytes.of(order1Version), reader.readBytes(order1Length - 1));
+                    order1 = orderFromBytes(order1Bytes, true);
+                } else {
+                    byte[] order1Bytes = reader.readBytes(order1Length);
+                    order1 = orderFromBytes(order1Bytes, false);
+                }
+
                 int order2Length = reader.readInt();
-                boolean isVersionedOrder2 = !reader.readBoolean();
-                order2 = orderFromBytes(reader.readBytes(order2Length), isVersionedOrder2);
+                byte order2Version = reader.readByte();
+                if (order2Version > 1) {
+                    byte[] order2Bytes = concat(Bytes.of(order2Version), reader.readBytes(order2Length - 1));
+                    order2 = orderFromBytes(order2Bytes, true);
+                } else {
+                    byte[] order2Bytes = reader.readBytes(order2Length);
+                    order2 = orderFromBytes(order2Bytes, false);
+                }
             } else {
                 int order2Length = reader.readInt();
                 order1 = orderFromBytes(reader.readBytes(order1Length), false);
@@ -193,7 +207,7 @@ public abstract class LegacyBinarySerializer {
             PublicKey sender = reader.readPublicKey();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
-            TxId leaseId = reader.readTxId();
+            Id leaseId = reader.readTxId();
             proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
             transaction = new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version, proofs);
@@ -415,12 +429,14 @@ public abstract class LegacyBinarySerializer {
                 int order1Size = order1.toBytes().length;
                 int order2Size = order2.toBytes().length;
                 bwStream.writeInt(order1Size);
-                if (scheme == WITH_PROOFS)
-                    bwStream.writeBoolean(order1.version() == 1)
-                            .write(toBytes(order1))
-                            .writeInt(order2Size)
-                            .writeBoolean(order2.version() == 1);
-                else
+                if (scheme == WITH_PROOFS) {
+                    if (order1.version() == 1)
+                        bwStream.write((byte) order1.version());
+                    bwStream.write(toBytes(order1))
+                            .writeInt(order2Size);
+                    if (order2.version() == 1)
+                        bwStream.write((byte) order2.version());
+                } else
                     bwStream.writeInt(order2Size)
                             .write(toBytes(order1));
                 bwStream.write(toBytes(order2))
@@ -541,9 +557,9 @@ public abstract class LegacyBinarySerializer {
         if (txOrOrder instanceof Order) {
             bwStream.write(txOrOrder.bodyBytes());
             if (scheme == WITH_PROOFS)
-                bwStream.writeSignature(txOrOrder.proofs());
-            else
                 bwStream.writeProofs(txOrOrder.proofs());
+            else
+                bwStream.writeSignature(txOrOrder.proofs());
         } else {
             Transaction tx = (Transaction) txOrOrder;
 
