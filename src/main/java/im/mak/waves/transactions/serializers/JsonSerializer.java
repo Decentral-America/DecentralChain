@@ -70,10 +70,12 @@ public abstract class JsonSerializer {
         int type = json.get("type").asInt();
         int version = json.hasNonNull("version") ? json.get("version").asInt() : 1;
         byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId;
-        PublicKey sender = PublicKey.as(json.get("senderPublicKey").asText());
+        PublicKey sender = json.hasNonNull("senderPublicKey")
+                ? PublicKey.as(json.get("senderPublicKey").asText())
+                : PublicKey.as(new byte[PublicKey.BYTES_LENGTH]);
         //todo validate sender address if exists? configurable? jsonNode.get("sender").asText(sender.address())
         long fee = json.get("fee").asLong();
-        Asset feeAssetId = assetFromJson(json.get("feeAssetId"));
+        Asset feeAssetId = json.hasNonNull("feeAssetId") ? assetFromJson(json.get("feeAssetId")) : Asset.WAVES;
         long timestamp = json.get("timestamp").asLong();
         //todo validate id if exists? configurable?
         //todo what if some field doesn't exist? Default values, e.g. for proofs
@@ -88,7 +90,10 @@ public abstract class JsonSerializer {
                 proofs.add(Proof.as(jProofs.get(i).asText()));
         }
 
-        if (type == PaymentTransaction.TYPE) {
+        if (type == GenesisTransaction.TYPE) {
+            Address recipient = Address.as(json.get("recipient").asText());
+            return new GenesisTransaction(recipient, json.get("amount").asLong(), timestamp);
+        } else if (type == PaymentTransaction.TYPE) {
             Address recipient = Address.as(json.get("recipient").asText());
             return new PaymentTransaction(sender, recipient, json.get("amount").asLong(), fee, timestamp,
                     Proof.as(json.get("proofs").get(0).asText())); //todo why proofs, not signature???
@@ -303,13 +308,22 @@ public abstract class JsonSerializer {
             tx.proofs().forEach(p -> proofs.add(p.toString()));
 
             String signature = null;
-            if (tx instanceof PaymentTransaction) {
+            if (tx instanceof GenesisTransaction) {
+                GenesisTransaction gtx = (GenesisTransaction) tx;
+                jsObject.put("recipient", gtx.recipient().toString())
+                        .put("amount", gtx.amount());
+                jsObject.remove("version");
+                jsObject.remove("chainId");
+                jsObject.remove("senderPublicKey");
+                jsObject.remove("sender");
+                signature = gtx.proofs().get(0).toString();
+            } else if (tx instanceof PaymentTransaction) {
                 PaymentTransaction ptx = (PaymentTransaction) tx;
                 jsObject.put("recipient", ptx.recipient().toString())
                         .put("amount", ptx.amount());
                 jsObject.remove("version");
                 jsObject.remove("chainId");
-            } if (tx instanceof IssueTransaction) {
+            } else if (tx instanceof IssueTransaction) {
                 IssueTransaction itx = (IssueTransaction) tx;
                 jsObject.put("name", itx.name())
                         .put("description", itx.description())
@@ -452,13 +466,15 @@ public abstract class JsonSerializer {
                         .put("description", uaiTx.description());
             }
 
-            jsObject.put("fee", tx.fee())
-                    .put("feeAssetId", assetToJson(tx.feeAsset()))
-                    .put("timestamp", tx.timestamp());
+            jsObject.put("fee", tx.fee());
+            if (!(tx instanceof GenesisTransaction))
+                jsObject.put("feeAssetId", assetToJson(tx.feeAsset()));
+            jsObject.put("timestamp", tx.timestamp());
 
             if (signature != null)
                 jsObject.put("signature", signature);
-            jsObject.set("proofs", proofs); //todo configurable for v1, true by default
+            if (!(tx instanceof GenesisTransaction))
+                jsObject.set("proofs", proofs); //todo configurable for v1, true by default
         }
 
         return jsObject;

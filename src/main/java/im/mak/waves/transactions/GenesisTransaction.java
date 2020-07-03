@@ -21,12 +21,8 @@ public class GenesisTransaction extends Transaction {
     private final long amount;
 
     public GenesisTransaction(Address recipient, long amount, long timestamp) {
-        this(recipient, amount, timestamp, generateSignature(recipient, amount, timestamp));
-    }
-
-    public GenesisTransaction(Address recipient, long amount, long timestamp, Proof signature) {
         super(TYPE, LATEST_VERSION, recipient.chainId(), PublicKey.as(new byte[PublicKey.BYTES_LENGTH]),
-                0, Asset.WAVES, timestamp, Proof.list(signature));
+                0, Asset.WAVES, timestamp, Proof.list(generateSignature(recipient, amount, timestamp)));
 
         this.recipient = recipient;
         this.amount =  amount;
@@ -34,7 +30,7 @@ public class GenesisTransaction extends Transaction {
 
     private static Proof generateSignature(Address recipient, long amount, long timestamp) {
         byte[] message = new BytesWriter()
-                .write((byte) TYPE)
+                .writeInt(TYPE)
                 .writeLong(timestamp)
                 .write(recipient.bytes())
                 .writeLong(amount)

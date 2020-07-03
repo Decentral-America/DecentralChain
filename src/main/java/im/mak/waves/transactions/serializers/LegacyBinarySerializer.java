@@ -576,17 +576,19 @@ public abstract class LegacyBinarySerializer {
             }
 
             if (scheme == WITH_SIGNATURE) {
-                if (tx instanceof IssueTransaction
-                        || tx instanceof TransferTransaction
-                        || tx instanceof ReissueTransaction)
-                    bwStream.write((byte) tx.type())
-                            .writeSignature(tx.proofs())
-                            .write(tx.bodyBytes());
+                if (tx instanceof GenesisTransaction)
+                    bwStream.write(tx.bodyBytes());
                 else if (tx instanceof PaymentTransaction) {
                     byte[] bodyWithoutIntType = Bytes.drop(tx.bodyBytes(), 4);
                     bwStream.write((byte) tx.type())
                             .write(bodyWithoutIntType)
                             .writeSignature(tx.proofs());
+                } else if (tx instanceof IssueTransaction
+                        || tx instanceof TransferTransaction
+                        || tx instanceof ReissueTransaction) {
+                    bwStream.write((byte) tx.type())
+                            .writeSignature(tx.proofs())
+                            .write(tx.bodyBytes());
                 } else
                     bwStream.write(tx.bodyBytes())
                             .writeSignature(tx.proofs());
