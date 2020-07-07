@@ -2,7 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Waves;
 
@@ -16,22 +16,22 @@ public class UpdateAssetInfoTransaction extends Transaction {
     public static final int LATEST_VERSION = 1;
     public static final long MIN_FEE = 100_000;
 
-    private final Asset asset;
+    private final AssetId assetId;
     private final String name;
     private final String description;
 
-    public UpdateAssetInfoTransaction(PublicKey sender, Asset asset, String name, String description) {
-        this(sender, asset, name, description, Waves.chainId, Amount.of(MIN_FEE),
+    public UpdateAssetInfoTransaction(PublicKey sender, AssetId assetId, String name, String description) {
+        this(sender, assetId, name, description, Waves.chainId, Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public UpdateAssetInfoTransaction(PublicKey sender, Asset asset, String name, String description,
+    public UpdateAssetInfoTransaction(PublicKey sender, AssetId assetId, String name, String description,
                                       byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (asset.isWaves())
+        if (assetId.isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
-        this.asset = asset;
+        this.assetId = assetId;
         this.name = name == null ? "" : name;
         this.description = description == null ? "" : description;
     }
@@ -44,12 +44,12 @@ public class UpdateAssetInfoTransaction extends Transaction {
         return (UpdateAssetInfoTransaction) Transaction.fromJson(json);
     }
 
-    public static UpdateAssetInfoTransactionBuilder with(Asset asset, String name, String description) {
-        return new UpdateAssetInfoTransactionBuilder(asset, name, description);
+    public static UpdateAssetInfoTransactionBuilder with(AssetId assetId, String name, String description) {
+        return new UpdateAssetInfoTransactionBuilder(assetId, name, description);
     }
 
-    public Asset asset() {
-        return asset;
+    public AssetId assetId() {
+        return assetId;
     }
 
     public String name() {
@@ -66,32 +66,32 @@ public class UpdateAssetInfoTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         UpdateAssetInfoTransaction that = (UpdateAssetInfoTransaction) o;
-        return this.asset.equals(that.asset)
+        return this.assetId.equals(that.assetId)
                 && this.name.equals(that.name)
                 && this.description.equals(that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), asset, name, description);
+        return Objects.hash(super.hashCode(), assetId, name, description);
     }
 
     public static class UpdateAssetInfoTransactionBuilder
             extends TransactionBuilder<UpdateAssetInfoTransactionBuilder, UpdateAssetInfoTransaction> {
-        private final Asset asset;
+        private final AssetId assetId;
         private final String name;
         private final String description;
 
-        protected UpdateAssetInfoTransactionBuilder(Asset asset, String name, String description) {
+        protected UpdateAssetInfoTransactionBuilder(AssetId assetId, String name, String description) {
             super(LATEST_VERSION, MIN_FEE);
-            this.asset = asset;
+            this.assetId = assetId;
             this.name = name;
             this.description = description;
         }
 
         protected UpdateAssetInfoTransaction _build() {
             return new UpdateAssetInfoTransaction(
-                    sender, asset, name, description, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, name, description, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
     

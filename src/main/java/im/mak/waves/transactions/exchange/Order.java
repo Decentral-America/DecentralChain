@@ -5,7 +5,6 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.TransactionOrOrder;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.serializers.BinarySerializer;
 import im.mak.waves.transactions.serializers.JsonSerializer;
@@ -76,7 +75,7 @@ public class Order extends TransactionOrOrder {
     }
 
     public AssetPair pair() {
-        return AssetPair.of(amount.asset(), price.asset());
+        return AssetPair.of(amount.assetId(), price.assetId());
     }
 
     public Amount amount() {

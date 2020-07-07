@@ -3,25 +3,25 @@ package im.mak.waves.transactions.common;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.base.Base58;
 
-public class Asset extends Base58Encoded {
+public class AssetId extends Base58Encoded {
 
     public static final int BYTE_LENGTH = 32;
-    public static final Asset WAVES = new Asset("");
+    public static final AssetId WAVES = new AssetId("");
 
-    public Asset(byte[] id) {
+    public AssetId(byte[] id) {
         super(id);
     }
 
-    public Asset(String id) {
+    public AssetId(String id) {
         super(id);
     }
 
-    public static Asset id(byte[] id) {
-        return new Asset(id);
+    public static AssetId as(byte[] id) {
+        return new AssetId(id);
     }
 
-    public static Asset id(String id) {
-        return new Asset(id);
+    public static AssetId as(String id) {
+        return new AssetId(id);
     }
 
     public boolean isWaves() {

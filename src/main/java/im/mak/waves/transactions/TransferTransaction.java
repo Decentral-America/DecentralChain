@@ -30,7 +30,7 @@ public class TransferTransaction extends Transaction {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.recipient = recipient;
-        this.amount = amount == null ? Amount.of(0, Asset.WAVES) : amount;
+        this.amount = amount == null ? Amount.of(0, AssetId.WAVES) : amount;
         this.attachment = attachment;
     }
 

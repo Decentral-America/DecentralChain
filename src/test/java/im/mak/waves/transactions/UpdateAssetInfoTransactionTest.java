@@ -20,7 +20,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class UpdateAssetInfoTransactionTest {
 
     static PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
-    static Asset asset = Asset.id("8Vbtg5kgtCJHEnpV9YsUHyWsoD76J3YeQnhoipQcaCK2");
+    static AssetId assetId = AssetId.as("8Vbtg5kgtCJHEnpV9YsUHyWsoD76J3YeQnhoipQcaCK2");
     static long timestamp = 1600000000000L;
     static long fee = UpdateAssetInfoTransaction.MIN_FEE + 1;
 
@@ -60,7 +60,7 @@ public class UpdateAssetInfoTransactionTest {
     void updateAssetInfoTransaction(int version, String name, String description, Id expectedId, List<Proof> proofs,
                                     byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         UpdateAssetInfoTransaction builtTx = UpdateAssetInfoTransaction
-                .with(asset, name, description)
+                .with(assetId, name, description)
                 .chainId(Waves.chainId)
                 .fee(fee)
                 .timestamp(timestamp)
@@ -75,7 +75,7 @@ public class UpdateAssetInfoTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        UpdateAssetInfoTransaction constructedTx = new UpdateAssetInfoTransaction(sender, asset, name, description,
+        UpdateAssetInfoTransaction constructedTx = new UpdateAssetInfoTransaction(sender, assetId, name, description,
                 Waves.chainId, Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
@@ -93,7 +93,7 @@ public class UpdateAssetInfoTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

@@ -34,7 +34,7 @@ public class InvokeScriptTransactionTest {
     static Stream<Arguments> transactionsProvider() {
         Recipient alias = Recipient.as(Alias.as("dapp"));
         Recipient address = Recipient.as(Address.from(sender, Waves.chainId));
-        Asset asset = Asset.id("5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd");
+        AssetId assetId = AssetId.as("5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd");
 
         String str = new String(new char[16]).replace("\0", "a");
         List<Arg> argsV1 = new ArrayList<>(asList(
@@ -48,7 +48,7 @@ public class InvokeScriptTransactionTest {
         argsV2.add(ListArg.as(argsV1));
 
         Amount fee = Amount.of(InvokeScriptTransaction.MIN_FEE + 1);
-        Amount sponsoredFee = Amount.of(2, asset);
+        Amount sponsoredFee = Amount.of(2, assetId);
 
         return Stream.of(
                 arguments(1, address, Function.asDefault(), payments(),
@@ -65,7 +65,7 @@ public class InvokeScriptTransactionTest {
                         Base64.decode("ABABUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AlIABGRhcHABCQEAAAAHZGVmYXVsdAAAAAAAAQAJAAAAAAAAAAoAAAAAAAAHoSEAAAABdIdugAABAAEAQLS56zyvVMFu7fgkGYyPfeJz7JiHCsl96X3rAkLwcLH2GgQzmQT0W/2E7hgYb15hwN4mUUqT22RvhEwccWM8EIY="),
                         "{\"type\":16,\"id\":\"346JhuGSgcDyrYf1CYR7aX9ySo6Lpx6136kfwGmVFYBK\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"4ca8WVtrB7WBQy4B5vKRVL57Bi8wCSUay4aUYurRJov8PF3XiwQyvV48nWpBSmFKBYTko85r1EXhVvsES2QV4vfX\"],\"version\":1,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}],\"call\":{\"function\":\"default\",\"args\":[]}}"
                 ),
-                arguments(1, alias, Function.as("function", argsV1), payments(Amount.of(20, asset)),
+                arguments(1, alias, Function.as("function", argsV1), payments(Amount.of(20, assetId)),
                         fee, Id.as("3yhi3JvhMYfTWVFR8We3X9gWhSH7vJousayvvjrFEuVk"),
                         Proof.list(Proof.as("3iUS3Kt76SL1AyYVPS1k28mXDLLxgso9m5DSX86hf1hgPWXc84o13FsBVCh8SEb5gKXJbRAX9g4srnGtj4Jn8bsV"), Proof.as("RPyUdaVirzoD8EbfrwWEtNkqP5tgSPGg575XM74mejT2j2D2LAKHjDijGoW3mjT4YV5pfm5gTNBhTzZaupKtWLr"), Proof.as("2srtWKt787GDVW2B1WHctqt7p1ntVG3pLJPpq3GxdcrAnchVFEAeXEv44hVbo4WFbBjnpLXapEmF4gK2MuYJHmVA"), Proof.as("4yuL9Ug3fkyDAHbJ54Fkf3F5jMhi2drGyZaftRxb622Au3gS6HRMhn2pHVPTRsygXsQ8KaAaRmeJT1aHgUk8dixc"), Proof.as("4wr3Mhk91sHuyyowpm5uo9GzfhXikz8JqeSj5hawXZNm84GHz4gYgDy5gHKcFqnXnD57iZHEhJiwpyJk89VMXxSn"), Proof.as("5sHkeDA6KFzVFBRs6UdNvbTxSxwpT2MDs3yhVFEB6pZ8GF7r6kx1csJfUMEmfECC6qbauWHVwdnNCvRhMuRLumzX"), Proof.as("g9A5owMquDZq9xp2ahYGxYuzwTnqvSn6BUGWfS6RhfWoCm4oc9mNhuP5NwepHsBZ3gK8GY1dqA78hey7uys5Tcy"), Proof.as("39etNTkHPQmfUD14qv7rKoxiW4oeXyXu7NALeYfxedfmBDLoYVJrvBazFbks121WvJcgVJF4PcLtkTgF273deVi6")),
                         Base64.decode("EAFSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QCUgAEZGFwcAEJAQAAAAhmdW5jdGlvbgAAAAUGBwEAAAAQYWFhYWFhYWFhYWFhYWFhYQB//////////wIAAAAQYWFhYWFhYWFhYWFhYWFhYQABACkAAAAAAAAAFAFF4+LXJnfscLg0WvYLbUNbn5zGVFHONLg+e08RP6XIugAAAAAAB6EhAAAAAXSHboAA"),
@@ -86,7 +86,7 @@ public class InvokeScriptTransactionTest {
                         Base64.decode("ClYIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChwh4ggIC6u8guKAKiByAKBhIEZGFwcBISAQkBAAAAB2RlZmF1bHQAAAAAGgIQChJAFMApDGazkxjTi9JYYBMr0rjVUQuGvryW42oKIXcer1gMT4L9fTcepNwO7XOJRH7MJg8/7/8UnFUmgbUPnk7hgA=="),
                         "{\"type\":16,\"id\":\"jVGXJgbxhCg9gLZ1bSKPiJonAaACbQa3u9j6mpd4z4y\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"R4dQVSMzTkSRY9ULgAu6fPLEgFL4ihBwyW4r4jthCKBCnyLfevgj1MC6Mkcgx1eLoy18R9NvkEGrgUb1HHRDLBq\"],\"version\":2,\"chainId\":82,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}],\"call\":{\"function\":\"default\",\"args\":[]}}"
                 ),
-                arguments(2, alias, Function.as("function", argsV2), payments(Amount.of(10), Amount.of(20, asset)),
+                arguments(2, alias, Function.as("function", argsV2), payments(Amount.of(10), Amount.of(20, assetId)),
                         fee, Id.as("71EnNwbpssbWm2567KUBqEJn94AfwPBdhTin3NJbDojv"),
                         Proof.list(Proof.as("4UtmZ676eY2N3A22FMfvgQaMFgPNVTWhtnpopHWkGfhb7x3vip3sCBxkMwwkFzpAgi1yZfHbKNGfJQuiwSVwjdkD"), Proof.as("3wbYJ1FJGSBgqBEEKMpBqKgPndgqEe6mykAoqrZ7PJKKhPXP2cscTupTAy9jhY3hFbNw9suo6RMQoLtA8Gncc5XZ"), Proof.as("3VgdyvpVMKHjm215zfSpCpBcSuNiRv8Rteo2GJuGcCwKxb49Ad3ZhbjkSUGCGfpqj6tTef5sUswz3fm9R5sARBsu"), Proof.as("4rWyizG2FQLowanbjcowYeuwbVCD31F8kWZonQhTRXQ5NEewFhsGSb3WSJNRG7ZaU7u9e522qVru2BpwyjLxwEoE"), Proof.as("2QfRtAeuLmoN99T2bhcgKfdy9VQgodj1447zDLRd6aLQjeVguyQXzw92qeXZrxFPc5QR4neueoUFCZLAXupE56Je"), Proof.as("f4ZNC5i6dvbHUnJm52f7TgZHM3khjLGAzpJjx29fdpPxoH7VuL9hYL9N3AY2gT9igdCR1mM4MUGt5iweMA4MwGR"), Proof.as("56DKwqh3Mpe3WG7JQt9sZwCevhm87LAny9ESncAtwAcNmJXuDM1ePMLZBsNsovWm2Tbb6efPsSFfMPa2oLrEPpUh"), Proof.as("3Ka1JwQQg2xLz4ATqmfnbEsUCFMxMog26Qpq8AdgQ38cpi3gnccd5KsJc6uv8pbfqqdvxVdXSSgYMbcEKj4fGbaq")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQocIeIICAurvILigCoge3AQoGEgRkYXBwEoIBAQkBAAAACGZ1bmN0aW9uAAAABgYHAQAAABBhYWFhYWFhYWFhYWFhYWFhAH//////////AgAAABBhYWFhYWFhYWFhYWFhYWFhCwAAAAUGBwEAAAAQYWFhYWFhYWFhYWFhYWFhYQB//////////wIAAAAQYWFhYWFhYWFhYWFhYWFhYRoCEAoaJAogRePi1yZ37HC4NFr2C21DW5+cxlRRzjS4PntPET+lyLoQFA=="),

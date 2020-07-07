@@ -21,7 +21,7 @@ public class BurnTransactionTest {
 
     static PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
     static long timestamp = 1600000000000L;
-    Asset asset = Asset.id("D4H5agQLLDLEjbM2ZgHoyTe9M9Apj4t1DFSDob6c5ptb");
+    AssetId assetId = AssetId.as("D4H5agQLLDLEjbM2ZgHoyTe9M9Apj4t1DFSDob6c5ptb");
     static long amount = Long.MAX_VALUE;
     long fee = BurnTransaction.MIN_FEE + 1;
 
@@ -70,7 +70,7 @@ public class BurnTransactionTest {
     void burnTransaction(int version, Id expectedId, List<Proof> proofs,
                          byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         BurnTransaction builtTx = BurnTransaction
-                .with(Amount.of(amount, asset))
+                .with(Amount.of(amount, assetId))
                 .chainId(Waves.chainId)
                 .fee(fee)
                 .timestamp(timestamp)
@@ -85,7 +85,7 @@ public class BurnTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        BurnTransaction constructedTx = new BurnTransaction(sender, Amount.of(amount, asset),
+        BurnTransaction constructedTx = new BurnTransaction(sender, Amount.of(amount, assetId),
                 Waves.chainId, Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
@@ -97,12 +97,12 @@ public class BurnTransactionTest {
         BurnTransaction deserTx = BurnTransaction.fromBytes(expectedBytes);
 
         assertAll("Tx must be deserializable from expected bytes",
-                () -> assertThat(deserTx.amount()).isEqualTo(Amount.of(amount, asset)),
+                () -> assertThat(deserTx.amount()).isEqualTo(Amount.of(amount, assetId)),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

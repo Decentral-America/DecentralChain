@@ -48,14 +48,14 @@ public abstract class JsonSerializer {
 
         Amount fee = Amount.of(
                 json.get("matcherFee").asLong(),
-                json.has("matcherFeeAssetId") ? assetFromJson(json.get("matcherFeeAssetId")) : Asset.WAVES
+                json.has("matcherFeeAssetId") ? assetIdFromJson(json.get("matcherFeeAssetId")) : AssetId.WAVES
         );
 
         return new Order(
                 PublicKey.as(json.get("senderPublicKey").asText()),
                 type,
-                Amount.of(json.get("amount").asLong(), assetFromJson(json.get("assetPair").get("amountAsset"))),
-                Amount.of(json.get("price").asLong(), assetFromJson(json.get("assetPair").get("priceAsset"))),
+                Amount.of(json.get("amount").asLong(), assetIdFromJson(json.get("assetPair").get("amountAsset"))),
+                Amount.of(json.get("price").asLong(), assetIdFromJson(json.get("assetPair").get("priceAsset"))),
                 PublicKey.as(json.get("matcherPublicKey").asText()),
                 json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId,
                 fee,
@@ -80,7 +80,7 @@ public abstract class JsonSerializer {
         //todo validate sender address if exists? configurable? jsonNode.get("sender").asText(sender.address())
         Amount fee = Amount.of(
                 json.get("fee").asLong(),
-                json.hasNonNull("feeAssetId") ? assetFromJson(json.get("feeAssetId")) : Asset.WAVES
+                json.hasNonNull("feeAssetId") ? assetIdFromJson(json.get("feeAssetId")) : AssetId.WAVES
         );
         long timestamp = json.get("timestamp").asLong();
         //todo validate id if exists? configurable?
@@ -104,7 +104,7 @@ public abstract class JsonSerializer {
             return new PaymentTransaction(sender, recipient, json.get("amount").asLong(), fee, timestamp,
                     Proof.as(json.get("proofs").get(0).asText())); //todo why proofs, not signature???
         } else if (type == IssueTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for ReissueTransaction");
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
@@ -115,24 +115,24 @@ public abstract class JsonSerializer {
             Recipient recipient = Recipient.as(json.get("recipient").asText());
             if (version < 3)
                 chainId = recipient.chainId();
-            Asset asset = assetFromJson(json.get("assetId"));
+            AssetId assetId = assetIdFromJson(json.get("assetId"));
             byte[] attachment = json.has("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
 
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
-            return new TransferTransaction(sender, recipient, Amount.of(json.get("amount").asLong(), asset),
+            return new TransferTransaction(sender, recipient, Amount.of(json.get("amount").asLong(), assetId),
                     attachment, chainId, fee, timestamp, version, proofs);
         } else if (type == ReissueTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for ReissueTransaction");
 
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new ReissueTransaction(
-                    sender, Amount.of(json.get("quantity").asLong(), assetFromJson(json.get("assetId"))),
+                    sender, Amount.of(json.get("quantity").asLong(), assetIdFromJson(json.get("assetId"))),
                     json.get("reissuable").asBoolean(), chainId, fee, timestamp, version, proofs);
         } else if (type == BurnTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for BurnTransaction");
 
             if (version == 1 && json.has("signature"))
@@ -141,10 +141,10 @@ public abstract class JsonSerializer {
             long amount = json.get(scheme == PROTOBUF ? "quantity" : "amount").asLong();
 
             return new BurnTransaction(
-                    sender, Amount.of(amount, assetFromJson(json.get("assetId"))),
+                    sender, Amount.of(amount, assetIdFromJson(json.get("assetId"))),
                     chainId, fee, timestamp, version, proofs);
         } else if (type == ExchangeTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for ExchangeTransaction");
 
             if (version == 1 && json.has("signature"))
@@ -154,7 +154,7 @@ public abstract class JsonSerializer {
                     json.get("amount").asLong(), json.get("price").asLong(), json.get("buyMatcherFee").asLong(),
                     json.get("sellMatcherFee").asLong(), chainId, fee, timestamp, version, proofs);
         } else if (type == LeaseTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
 
             Recipient recipient = Recipient.as(json.get("recipient").asText());
@@ -166,7 +166,7 @@ public abstract class JsonSerializer {
             return new LeaseTransaction(
                     sender, recipient, json.get("amount").asLong(), chainId, fee, timestamp, version, proofs);
         } else if (type == LeaseCancelTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseCancelTransaction");
 
             if (version == 1 && json.has("signature"))
@@ -174,7 +174,7 @@ public abstract class JsonSerializer {
             return new LeaseCancelTransaction(
                     sender, Id.as(json.get("leaseId").asText()), chainId, fee, timestamp, version, proofs);
         } else if (type == CreateAliasTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for CreateAliasTransaction");
 
             if (version == 1 && json.has("signature"))
@@ -190,7 +190,7 @@ public abstract class JsonSerializer {
                 long amount = jsTransfer.get("amount").asLong();
                 transfers.add(Transfer.to(recipient, amount));
             }
-            Asset asset = assetFromJson(json.get("assetId"));
+            AssetId assetId = assetIdFromJson(json.get("assetId"));
             byte[] attachment = json.hasNonNull("attachment")
                     ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
             if (version == 1 && transfers.size() > 0)
@@ -199,9 +199,9 @@ public abstract class JsonSerializer {
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new MassTransferTransaction(
-                    sender, asset, transfers, attachment, chainId, fee, timestamp, version, proofs);
+                    sender, assetId, transfers, attachment, chainId, fee, timestamp, version, proofs);
         } else if (type == DataTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
 
             JsonNode jsData = json.get("data");
@@ -223,22 +223,22 @@ public abstract class JsonSerializer {
             }
             return new DataTransaction(sender, data, chainId, fee, timestamp, version, proofs);
         } else if (type == SetScriptTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
 
             return new SetScriptTransaction(sender, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } else if (type == SponsorFeeTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for SponsorFeeTransaction");
 
-            return new SponsorFeeTransaction(sender, assetFromJson(json.get("assetId")),
+            return new SponsorFeeTransaction(sender, assetIdFromJson(json.get("assetId")),
                     json.get("minSponsoredAssetFee").asLong(), chainId, fee, timestamp, version, proofs);
         } else if (type == SetAssetScriptTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for SetAssetScriptTransaction");
 
-            Asset asset = assetFromJson(json.get("assetId"));
-            return new SetAssetScriptTransaction(sender, asset, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
+            AssetId assetId = assetIdFromJson(json.get("assetId"));
+            return new SetAssetScriptTransaction(sender, assetId, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } else if (type == InvokeScriptTransaction.TYPE) {
             Recipient dApp = Recipient.as(json.get("dApp").asText());
             Function function = Function.asDefault();
@@ -251,17 +251,17 @@ public abstract class JsonSerializer {
             String paymentsFieldName = "payment"; //todo why not "payments" for v2? `version == 1 ? "payment" : "payments"`
             if (json.hasNonNull(paymentsFieldName))
                 json.get(paymentsFieldName).forEach(p ->
-                        payments.add(Amount.of(p.get("amount").asLong(), assetFromJson(p.get("assetId")))));
+                        payments.add(Amount.of(p.get("amount").asLong(), assetIdFromJson(p.get("assetId")))));
             return new InvokeScriptTransaction(
                     sender, dApp, function, payments, chainId, fee, timestamp, version, proofs);
         } else if (type == UpdateAssetInfoTransaction.TYPE) {
-            if (!fee.asset().isWaves())
+            if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for UpdateAssetInfoTransaction");
 
-            Asset asset = assetFromJson(json.get("assetId"));
+            AssetId assetId = assetIdFromJson(json.get("assetId"));
             String name = json.get("name").asText();
             String description = json.get("description").asText();
-            return new UpdateAssetInfoTransaction(sender, asset, name, description, chainId, fee, timestamp, version, proofs);
+            return new UpdateAssetInfoTransaction(sender, assetId, name, description, chainId, fee, timestamp, version, proofs);
         }
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -284,13 +284,13 @@ public abstract class JsonSerializer {
                     .put("senderPublicKey", order.sender().toString())
                     .put("sender", order.sender().address(Waves.chainId).toString());
             jsObject.putObject("assetPair")
-                    .put("amountAsset", assetToJson(order.amount().asset()))
-                    .put("priceAsset", assetToJson(order.price().asset()));
+                    .put("amountAsset", assetIdToJson(order.amount().assetId()))
+                    .put("priceAsset", assetIdToJson(order.price().assetId()));
             jsObject.put("amount", order.amount().value())
                     .put("price", order.price().value())
                     .put("matcherPublicKey", order.matcher().toString())
                     .put("matcherFee", order.fee().value())
-                    .put("matcherFeeAssetId", assetToJson(order.fee().asset()))
+                    .put("matcherFeeAssetId", assetIdToJson(order.fee().assetId()))
                     .put("timestamp", order.timestamp())
                     .put("expiration", order.expiration())
                     .put("signature", order.proofs().get(0).toString());
@@ -347,7 +347,7 @@ public abstract class JsonSerializer {
                 TransferTransaction ttx = (TransferTransaction) tx;
                 jsObject.put("recipient", ttx.recipient().toString())
                         .put("amount", ttx.amount().value())
-                        .put("assetId", assetToJson(ttx.amount().asset()))
+                        .put("assetId", assetIdToJson(ttx.amount().assetId()))
                         .put("attachment", Base58.encode(ttx.attachmentBytes()));
                 if (ttx.version() < 3)
                     jsObject.remove("chainId");
@@ -355,7 +355,7 @@ public abstract class JsonSerializer {
                     signature = ttx.proofs().get(0).toString();
             } else if (tx instanceof ReissueTransaction) {
                 ReissueTransaction rtx = (ReissueTransaction) tx;
-                jsObject.put("assetId", assetToJson(rtx.amount().asset()))
+                jsObject.put("assetId", assetIdToJson(rtx.amount().assetId()))
                         .put("quantity", rtx.amount().value())
                         .put("reissuable", rtx.isReissuable());
                 if (rtx.version() == 1) {
@@ -364,7 +364,7 @@ public abstract class JsonSerializer {
                 }
             } else if (tx instanceof BurnTransaction) {
                 BurnTransaction btx = (BurnTransaction) tx;
-                jsObject.put("assetId", assetToJson(btx.amount().asset()))
+                jsObject.put("assetId", assetIdToJson(btx.amount().assetId()))
                         .put(scheme == PROTOBUF ? "quantity" : "amount", btx.amount().value());
                 if (btx.version() == 1) {
                     jsObject.remove("chainId");
@@ -406,7 +406,7 @@ public abstract class JsonSerializer {
                     jsObject.remove("chainId");
             } else if (tx instanceof MassTransferTransaction) {
                 MassTransferTransaction mtTx = (MassTransferTransaction) tx;
-                jsObject.put("assetId", assetToJson(mtTx.asset()))
+                jsObject.put("assetId", assetIdToJson(mtTx.assetId()))
                         .put("attachment", Base58.encode(mtTx.attachmentBytes()));
                 ArrayNode jsTransfers = jsObject.putArray("transfers");
                 for (Transfer transfer : mtTx.transfers()) {
@@ -443,11 +443,11 @@ public abstract class JsonSerializer {
                 SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
                 if (sfTx.version() == 1)
                     jsObject.remove("chainId");
-                jsObject.put("assetId", assetToJson(sfTx.asset()))
+                jsObject.put("assetId", assetIdToJson(sfTx.assetId()))
                         .put("minSponsoredAssetFee", sfTx.minSponsoredFee());
             } else if (tx instanceof SetAssetScriptTransaction) {
                 SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
-                jsObject.put("assetId", assetToJson(sasTx.asset()))
+                jsObject.put("assetId", assetIdToJson(sasTx.assetId()))
                         .put("script", scriptToJson(sasTx.compiledScript()));
             } else if (tx instanceof InvokeScriptTransaction) {
                 InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
@@ -463,20 +463,20 @@ public abstract class JsonSerializer {
                 isTx.payments().forEach(p -> {
                     ObjectNode payment = payments.addObject();
                     payment.put("amount", p.value()).
-                            put("assetId", assetToJson(p.asset()));
+                            put("assetId", assetIdToJson(p.assetId()));
                 });
                 if (isTx.version() == 1)
                     jsObject.remove("chainId");
             } else if (tx instanceof UpdateAssetInfoTransaction) {
                 UpdateAssetInfoTransaction uaiTx = (UpdateAssetInfoTransaction) tx;
-                jsObject.put("assetId", assetToJson(uaiTx.asset()))
+                jsObject.put("assetId", assetIdToJson(uaiTx.assetId()))
                         .put("name", uaiTx.name())
                         .put("description", uaiTx.description());
             }
 
             jsObject.put("fee", tx.fee().value());
             if (!(tx instanceof GenesisTransaction))
-                jsObject.put("feeAssetId", assetToJson(tx.fee().asset()));
+                jsObject.put("feeAssetId", assetIdToJson(tx.fee().assetId()));
             jsObject.put("timestamp", tx.timestamp());
 
             if (signature != null)
@@ -496,12 +496,12 @@ public abstract class JsonSerializer {
         return toJsonObject(txOrOrder).toString();
     }
 
-    public static Asset assetFromJson(JsonNode json) {
-        return Asset.id(json.asText(null));
+    public static AssetId assetIdFromJson(JsonNode json) {
+        return AssetId.as(json.asText(null));
     }
 
-    public static String assetToJson(Asset asset) {
-        return asset.isWaves() ? null : asset.toString();
+    public static String assetIdToJson(AssetId assetId) {
+        return assetId.isWaves() ? null : assetId.toString();
     }
 
     public static List<Arg> argsFromJson(JsonNode json) throws IOException {

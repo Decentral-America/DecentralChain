@@ -97,13 +97,13 @@ public class BytesReader {
         } else throw new IllegalArgumentException("Unknown recipient type");
     }
 
-    public Asset readAsset() {
-        return Asset.id(readBytes(Asset.BYTE_LENGTH));
+    public AssetId readAssetId() {
+        return AssetId.as(readBytes(AssetId.BYTE_LENGTH));
     }
 
-    public Asset readAssetOrWaves() {
+    public AssetId readAssetIdOrWaves() {
         boolean isAsset = readBoolean();
-        return isAsset ? readAsset() : Asset.WAVES;
+        return isAsset ? readAssetId() : AssetId.WAVES;
     }
 
     public Id readTxId() {

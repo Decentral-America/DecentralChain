@@ -24,7 +24,7 @@ public class BurnTransaction extends Transaction {
     public BurnTransaction(PublicKey sender, Amount amount, byte chainId, Amount fee,
                            long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (amount.asset().isWaves())
+        if (amount.assetId().isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
         this.amount = amount;

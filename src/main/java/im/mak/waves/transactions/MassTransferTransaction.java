@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.mass.Transfer;
@@ -23,17 +23,17 @@ public class MassTransferTransaction extends Transaction {
     public static final long MIN_FEE = 100_000;
 
     private final List<Transfer> transfers;
-    private final Asset asset;
+    private final AssetId assetId;
     private final byte[] attachment;
 
-    public MassTransferTransaction(PublicKey sender, Asset asset, List<Transfer> transfers, byte[] attachment) {
-        this(sender, asset, transfers, attachment, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment) {
+        this(sender, assetId, transfers, attachment, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public MassTransferTransaction(PublicKey sender, Asset asset, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
-        this.asset = asset == null ? Asset.WAVES : asset;
+        this.assetId = assetId == null ? AssetId.WAVES : assetId;
         this.transfers = transfers == null ? new ArrayList<>() : transfers;
         this.attachment = attachment == null ? Bytes.empty() : attachment;
     }
@@ -62,8 +62,8 @@ public class MassTransferTransaction extends Transaction {
         return transfers;
     }
 
-    public Asset asset() {
-        return asset;
+    public AssetId assetId() {
+        return assetId;
     }
 
     public String attachment() {
@@ -81,30 +81,30 @@ public class MassTransferTransaction extends Transaction {
         if (!super.equals(o)) return false;
         MassTransferTransaction that = (MassTransferTransaction) o;
         return this.transfers.equals(that.transfers)
-                && this.asset.equals(that.asset)
+                && this.assetId.equals(that.assetId)
                 && Bytes.equal(this.attachment, that.attachment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), transfers, asset, attachment);
+        return Objects.hash(super.hashCode(), transfers, assetId, attachment);
     }
 
     public static class MassTransferTransactionBuilder
             extends TransactionBuilder<MassTransferTransactionBuilder, MassTransferTransaction> {
         private final List<Transfer> transfers;
-        private Asset asset;
+        private AssetId assetId;
         private byte[] attachment;
 
         protected MassTransferTransactionBuilder(List<Transfer> transfers) {
             super(LATEST_VERSION, MIN_FEE);
             this.transfers = transfers;
-            this.asset = Asset.WAVES;
+            this.assetId = AssetId.WAVES;
             this.attachment = Bytes.empty();
         }
 
-        public MassTransferTransactionBuilder asset(Asset asset) {
-            this.asset = asset;
+        public MassTransferTransactionBuilder assetId(AssetId assetId) {
+            this.assetId = assetId;
             return this;
         }
 
@@ -119,7 +119,7 @@ public class MassTransferTransaction extends Transaction {
 
         protected MassTransferTransaction _build() {
             return new MassTransferTransaction(
-                    sender, asset, transfers, attachment, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, transfers, attachment, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

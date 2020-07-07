@@ -27,12 +27,12 @@ public class OrderTest {
     static long timestamp = 1600000000000L;
     static long expiration = timestamp + 30 * 60 * 1000;
 
-    static Asset asset = Asset.id("2wBMrTzvncodBbNiXaXju4Z9QpdCFtMp9ZoCRrykk9Dk");
-    static Amount amount = Amount.of(20, asset);
+    static AssetId assetId = AssetId.as("2wBMrTzvncodBbNiXaXju4Z9QpdCFtMp9ZoCRrykk9Dk");
+    static Amount amount = Amount.of(20, assetId);
     static Amount price = Amount.of(10);
 
     static Amount wavesFee = Amount.of(Order.MIN_FEE + 1);
-    static Amount sponsoredFee = Amount.of(5, asset);
+    static Amount sponsoredFee = Amount.of(5, assetId);
 
     @BeforeAll
     static void beforeAll() {

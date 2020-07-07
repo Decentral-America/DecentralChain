@@ -2,7 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Waves;
 
@@ -16,21 +16,21 @@ public class SponsorFeeTransaction extends Transaction {
     public static final int LATEST_VERSION = 2;
     public static final long MIN_FEE = 100_000;
 
-    private final Asset asset;
+    private final AssetId assetId;
     private final long minSponsoredFee;
 
-    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee) {
-        this(sender, asset, minSponsoredFee, Waves.chainId, Amount.of(MIN_FEE),
+    public SponsorFeeTransaction(PublicKey sender, AssetId assetId, long minSponsoredFee) {
+        this(sender, assetId, minSponsoredFee, Waves.chainId, Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee, byte chainId, Amount fee,
+    public SponsorFeeTransaction(PublicKey sender, AssetId assetId, long minSponsoredFee, byte chainId, Amount fee,
                                  long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (asset.isWaves())
+        if (assetId.isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
-        this.asset = asset;
+        this.assetId = assetId;
         this.minSponsoredFee = minSponsoredFee;
     }
 
@@ -42,12 +42,12 @@ public class SponsorFeeTransaction extends Transaction {
         return (SponsorFeeTransaction) Transaction.fromJson(json);
     }
 
-    public static SponsorFeeTransactionBuilder with(Asset asset, long minSponsoredFee) {
-        return new SponsorFeeTransactionBuilder(asset, minSponsoredFee);
+    public static SponsorFeeTransactionBuilder with(AssetId assetId, long minSponsoredFee) {
+        return new SponsorFeeTransactionBuilder(assetId, minSponsoredFee);
     }
 
-    public Asset asset() {
-        return asset;
+    public AssetId assetId() {
+        return assetId;
     }
 
     public long minSponsoredFee() {
@@ -60,29 +60,29 @@ public class SponsorFeeTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SponsorFeeTransaction that = (SponsorFeeTransaction) o;
-        return this.asset.equals(that.asset)
+        return this.assetId.equals(that.assetId)
                 && this.minSponsoredFee == that.minSponsoredFee;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), asset, minSponsoredFee);
+        return Objects.hash(super.hashCode(), assetId, minSponsoredFee);
     }
 
     public static class SponsorFeeTransactionBuilder
             extends TransactionBuilder<SponsorFeeTransactionBuilder, SponsorFeeTransaction> {
-        private final Asset asset;
+        private final AssetId assetId;
         private final long minSponsoredFee;
 
-        protected SponsorFeeTransactionBuilder(Asset asset, long minSponsoredFee) {
+        protected SponsorFeeTransactionBuilder(AssetId assetId, long minSponsoredFee) {
             super(LATEST_VERSION, MIN_FEE);
-            this.asset = asset;
+            this.assetId = assetId;
             this.minSponsoredFee = minSponsoredFee;
         }
 
         protected SponsorFeeTransaction _build() {
             return new SponsorFeeTransaction(
-                    sender, asset, minSponsoredFee, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, minSponsoredFee, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

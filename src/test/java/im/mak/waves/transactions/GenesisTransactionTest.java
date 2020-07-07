@@ -63,7 +63,7 @@ public class GenesisTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(1),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(emptySender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(0, Asset.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(0, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).containsOnly(proof),
 

@@ -1,28 +1,28 @@
 package im.mak.waves.transactions.exchange;
 
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.AssetId;
 
 import java.util.Objects;
 
 public class AssetPair {
 
-    private final Asset left;
-    private final Asset right;
+    private final AssetId left;
+    private final AssetId right;
 
-    public AssetPair(Asset left, Asset right) {
-        this.left = left == null ? Asset.WAVES : left;
-        this.right = right == null ? Asset.WAVES : right;
+    public AssetPair(AssetId left, AssetId right) {
+        this.left = left == null ? AssetId.WAVES : left;
+        this.right = right == null ? AssetId.WAVES : right;
     }
 
-    public static AssetPair of(Asset left, Asset right) {
+    public static AssetPair of(AssetId left, AssetId right) {
         return new AssetPair(left, right);
     }
 
-    public Asset left() {
+    public AssetId left() {
         return left;
     }
 
-    public Asset right() {
+    public AssetId right() {
         return right;
     }
 

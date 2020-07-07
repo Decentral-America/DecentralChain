@@ -63,7 +63,7 @@ public class PaymentTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(1),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(Proof.list(proof)),
 

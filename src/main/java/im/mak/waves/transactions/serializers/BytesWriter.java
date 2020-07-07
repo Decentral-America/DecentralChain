@@ -80,12 +80,12 @@ public class BytesWriter {
         else return write(recipient.address().bytes());
     }
 
-    public BytesWriter writeAsset(Asset asset) {
-        return write(asset.bytes());
+    public BytesWriter writeAssetId(AssetId assetId) {
+        return write(assetId.bytes());
     }
 
-    public BytesWriter writeAssetOrWaves(Asset assetOrWaves) {
-        return assetOrWaves.isWaves() ? write((byte) 0) : write((byte) 1).write(assetOrWaves.bytes());
+    public BytesWriter writeAssetIdOrWaves(AssetId assetIdOrWaves) {
+        return assetIdOrWaves.isWaves() ? write((byte) 0) : write((byte) 1).write(assetIdOrWaves.bytes());
     }
 
     public BytesWriter writeTxId(Id id) {

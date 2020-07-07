@@ -5,19 +5,19 @@ import java.util.Objects;
 public class Amount {
 
     private final long value;
-    private final Asset asset;
+    private final AssetId assetId;
 
-    public Amount(long value, Asset asset) {
+    public Amount(long value, AssetId assetId) {
         this.value = value;
-        this.asset = asset == null ? Asset.WAVES : asset;
+        this.assetId = assetId == null ? AssetId.WAVES : assetId;
     }
 
     public Amount(long value) {
-        this(value, Asset.WAVES);
+        this(value, AssetId.WAVES);
     }
 
-    public static Amount of(long value, Asset asset) {
-        return new Amount(value, asset);
+    public static Amount of(long value, AssetId assetId) {
+        return new Amount(value, assetId);
     }
 
     public static Amount of(long value) {
@@ -28,8 +28,8 @@ public class Amount {
         return this.value;
     }
 
-    public Asset asset() {
-        return this.asset;
+    public AssetId assetId() {
+        return this.assetId;
     }
 
     @Override
@@ -38,19 +38,19 @@ public class Amount {
         if (o == null || getClass() != o.getClass()) return false;
         Amount that = (Amount) o;
         return this.value == that.value
-                && this.asset.equals(that.asset);
+                && this.assetId.equals(that.assetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, asset);
+        return Objects.hash(value, assetId);
     }
 
     @Override
     public String toString() {
         return "Amount{" +
                 "value=" + value +
-                ", asset=" + asset +
+                ", asset=" + assetId +
                 '}';
     }
 

@@ -4,7 +4,7 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Waves;
 
@@ -18,21 +18,21 @@ public class SetAssetScriptTransaction extends Transaction {
     public static final int LATEST_VERSION = 2;
     public static final long MIN_FEE = 100_000_000;
 
-    private final Asset asset;
+    private final AssetId assetId;
     private final byte[] compiledScript;
 
-    public SetAssetScriptTransaction(PublicKey sender, Asset asset, byte[] compiledScript) {
-        this(sender, asset, compiledScript, Waves.chainId, Amount.of(MIN_FEE),
+    public SetAssetScriptTransaction(PublicKey sender, AssetId assetId, byte[] compiledScript) {
+        this(sender, assetId, compiledScript, Waves.chainId, Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public SetAssetScriptTransaction(PublicKey sender, Asset asset, byte[] compiledScript, byte chainId, Amount fee,
+    public SetAssetScriptTransaction(PublicKey sender, AssetId assetId, byte[] compiledScript, byte chainId, Amount fee,
                                      long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (asset.isWaves())
+        if (assetId.isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
-        this.asset = asset;
+        this.assetId = assetId;
         this.compiledScript = compiledScript == null ? Bytes.empty() : compiledScript;
     }
 
@@ -44,12 +44,12 @@ public class SetAssetScriptTransaction extends Transaction {
         return (SetAssetScriptTransaction) Transaction.fromJson(json);
     }
 
-    public static SetAssetScriptTransactionBuilder with(Asset asset, byte[] compiledScript) {
-        return new SetAssetScriptTransactionBuilder(asset, compiledScript);
+    public static SetAssetScriptTransactionBuilder with(AssetId assetId, byte[] compiledScript) {
+        return new SetAssetScriptTransactionBuilder(assetId, compiledScript);
     }
 
-    public Asset asset() {
-        return asset;
+    public AssetId assetId() {
+        return assetId;
     }
 
     public String compiledBase64Script() {
@@ -66,33 +66,33 @@ public class SetAssetScriptTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SetAssetScriptTransaction that = (SetAssetScriptTransaction) o;
-        return this.asset.equals(that.asset)
+        return this.assetId.equals(that.assetId)
                 && Bytes.equal(this.compiledScript, that.compiledScript);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), asset, compiledScript);
+        return Objects.hash(super.hashCode(), assetId, compiledScript);
     }
 
     public static class SetAssetScriptTransactionBuilder
             extends TransactionBuilder<SetAssetScriptTransactionBuilder, SetAssetScriptTransaction> {
-        private final Asset asset;
+        private final AssetId assetId;
         private final byte[] compiledScript;
 
-        protected SetAssetScriptTransactionBuilder(Asset asset, String compiledBase64Script) {
-            this(asset, compiledBase64Script == null ? null : Base64.decode(compiledBase64Script));
+        protected SetAssetScriptTransactionBuilder(AssetId assetId, String compiledBase64Script) {
+            this(assetId, compiledBase64Script == null ? null : Base64.decode(compiledBase64Script));
         }
 
-        protected SetAssetScriptTransactionBuilder(Asset asset, byte[] compiledScript) {
+        protected SetAssetScriptTransactionBuilder(AssetId assetId, byte[] compiledScript) {
             super(LATEST_VERSION, MIN_FEE);
-            this.asset = asset;
+            this.assetId = assetId;
             this.compiledScript = compiledScript == null ? Bytes.empty() : compiledScript;
         }
 
         protected SetAssetScriptTransaction _build() {
             return new SetAssetScriptTransaction(
-                    sender, asset, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
     
