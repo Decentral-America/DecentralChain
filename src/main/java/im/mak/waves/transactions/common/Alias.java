@@ -1,6 +1,10 @@
 package im.mak.waves.transactions.common;
 
+import im.mak.waves.crypto.Bytes;
+
 import java.util.Objects;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Alias {
 
@@ -47,6 +51,10 @@ public class Alias {
 
     public String value() {
         return alias;
+    }
+
+    public byte[] bytes() {
+        return Bytes.concat(Bytes.of((byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)));
     }
 
     @Override

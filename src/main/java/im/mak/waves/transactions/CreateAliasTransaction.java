@@ -19,7 +19,7 @@ public class CreateAliasTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000;
 
-    private final String alias; //todo Alias, but what about constructor and builder.chainId()?
+    private final Alias alias;
 
     public CreateAliasTransaction(PublicKey sender, String alias) {
         this(sender, alias, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
@@ -28,7 +28,7 @@ public class CreateAliasTransaction extends Transaction {
     public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
-        this.alias = alias == null ? "" : alias;
+        this.alias = Alias.as(chainId, alias == null ? "" : alias);
     }
 
     public static CreateAliasTransaction fromBytes(byte[] bytes) throws IOException {
@@ -46,11 +46,11 @@ public class CreateAliasTransaction extends Transaction {
     @Override
     public Id id() {
         return version() < 3
-                ? Id.as(Hash.blake(concat(of((byte) type(), (byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)))))
+                ? Id.as(Hash.blake(concat(of((byte) type()), alias.bytes())))
                 : super.id();
     }
 
-    public String alias() {
+    public Alias alias() {
         return alias;
     }
 
@@ -71,6 +71,11 @@ public class CreateAliasTransaction extends Transaction {
     public static class CreateAliasTransactionBuilder
             extends TransactionBuilder<CreateAliasTransactionBuilder, CreateAliasTransaction> {
         private final String alias;
+
+        protected CreateAliasTransactionBuilder(Alias alias) {
+            this(alias.value());
+            chainId(alias.chainId());
+        }
 
         protected CreateAliasTransactionBuilder(String alias) {
             super(LATEST_VERSION, MIN_FEE);

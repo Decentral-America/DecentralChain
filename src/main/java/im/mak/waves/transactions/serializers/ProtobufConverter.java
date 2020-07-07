@@ -370,7 +370,7 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof CreateAliasTransaction) {
             CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
-                    .setAliasBytes(ByteString.copyFrom(caTx.alias().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
+                    .setAliasBytes(ByteString.copyFrom(caTx.alias().value().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
                     .build());
         } else if (tx instanceof MassTransferTransaction) {
             MassTransferTransaction mtTx = (MassTransferTransaction) tx;

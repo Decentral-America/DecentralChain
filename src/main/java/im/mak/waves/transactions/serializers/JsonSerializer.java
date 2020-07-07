@@ -399,7 +399,7 @@ public abstract class JsonSerializer {
                 }
             } else if (tx instanceof CreateAliasTransaction) {
                 CreateAliasTransaction catx = (CreateAliasTransaction) tx;
-                jsObject.put("alias", catx.alias());
+                jsObject.put("alias", catx.alias().value());
                 if (catx.version() == 1)
                     signature = catx.proofs().get(0).toString();
                 if (catx.version() < 3)

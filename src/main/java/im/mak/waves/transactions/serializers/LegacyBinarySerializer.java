@@ -469,7 +469,7 @@ public abstract class LegacyBinarySerializer {
                 CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
                 bwStream.writePublicKey(caTx.sender())
                         .writeArrayWithLength(new BytesWriter()
-                                .writeRecipient(Recipient.as(Alias.as(caTx.chainId(), caTx.alias())))
+                                .writeRecipient(Recipient.as(caTx.alias()))
                                 .getBytes())
                         .writeLong(caTx.fee().value())
                         .writeLong(caTx.timestamp());

@@ -96,7 +96,8 @@ public class CreateAliasTransactionTest {
         CreateAliasTransaction deserTx = CreateAliasTransaction.fromBytes(expectedBytes);
 
         assertAll("Tx must be deserializable from expected bytes",
-                () -> assertThat(deserTx.alias()).isEqualTo(alias),
+                () -> assertThat(deserTx.alias().value()).isEqualTo(alias),
+                () -> assertThat(deserTx.alias().chainId()).isEqualTo(deserTx.chainId()),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
