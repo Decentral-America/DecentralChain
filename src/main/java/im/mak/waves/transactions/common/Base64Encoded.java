@@ -4,7 +4,7 @@ import im.mak.waves.crypto.base.Base64;
 
 public abstract class Base64Encoded {
 
-    //todo BinaryEntry, CompiledScript, BinaryArg
+    //todo CompiledScript
 
     private byte[] bytes;
 

@@ -3,10 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Id;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.serializers.BinarySerializer;
 import im.mak.waves.transactions.serializers.JsonSerializer;
 
@@ -20,19 +17,17 @@ public abstract class TransactionOrOrder {
     private final int version;
     private final byte chainId;
     private final PublicKey sender;
-    private final long fee;
-    private final Asset feeAsset;
+    private final Amount fee;
     private final long timestamp;
     private final List<Proof> proofs;
     private byte[] bodyBytes;
 
-    protected TransactionOrOrder(int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
+    protected TransactionOrOrder(int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
         this.id = null;
         this.version = version;
         this.chainId = chainId;
         this.sender = sender;
         this.fee = fee;
-        this.feeAsset = feeAsset;
         this.timestamp = timestamp;
         this.proofs = proofs == null ? Proof.emptyList() : new ArrayList<>(proofs);
     }
@@ -49,12 +44,8 @@ public abstract class TransactionOrOrder {
         return sender;
     }
 
-    public long fee() {
+    public Amount fee() {
         return fee;
-    }
-
-    public Asset feeAsset() {
-        return feeAsset;
     }
 
     public long timestamp() {
@@ -119,15 +110,13 @@ public abstract class TransactionOrOrder {
         protected int version;
         protected byte chainId;
         protected PublicKey sender;
-        protected long fee;
-        protected Asset feeAsset;
+        protected Amount fee;
         protected long timestamp;
 
         protected TransactionOrOrderBuilder(int defaultVersion, long defaultFee) {
             this.version = defaultVersion;
             this.chainId = Waves.chainId;
-            this.fee = defaultFee;
-            this.feeAsset = Asset.WAVES;
+            this.fee = Amount.of(defaultFee);
         }
 
         private BUILDER builder() {
@@ -152,16 +141,13 @@ public abstract class TransactionOrOrder {
             return builder();
         }
 
-        //todo what if Amount? (TransferTx, InvokeTx)
-        public BUILDER fee(long fee) {
+        public BUILDER fee(Amount fee) {
             this.fee = fee;
             return builder();
         }
 
-        //todo hide from public
-        public BUILDER feeAsset(Asset asset) {
-            this.feeAsset = asset;
-            return builder();
+        public BUILDER fee(long fee) {
+            return fee(Amount.of(fee));
         }
 
         public BUILDER timestamp(long timestamp) {

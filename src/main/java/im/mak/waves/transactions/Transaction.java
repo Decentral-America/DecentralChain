@@ -1,11 +1,9 @@
 package im.mak.waves.transactions;
 
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
-import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Id;
 import im.mak.waves.transactions.serializers.BinarySerializer;
 import im.mak.waves.transactions.serializers.JsonSerializer;
 import im.mak.waves.transactions.serializers.ProtobufConverter;
@@ -18,8 +16,8 @@ public abstract class Transaction extends TransactionOrOrder {
 
     private final int type;
 
-    protected Transaction(int type, int version, byte chainId, PublicKey sender, long fee, Asset feeAsset, long timestamp, List<Proof> proofs) {
-        super(version, chainId, sender, fee, feeAsset, timestamp, proofs);
+    protected Transaction(int type, int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
+        super(version, chainId, sender, fee, timestamp, proofs);
 
         this.type = type;
     }

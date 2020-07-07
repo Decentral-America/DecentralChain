@@ -1,8 +1,9 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.exchange.AssetPair;
 import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
@@ -26,16 +27,15 @@ public class ExchangeTransaction extends Transaction {
     private final long buyMatcherFee;
     private final long sellMatcherFee;
 
-    public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price,
-                               long buyMatcherFee, long sellMatcherFee, byte chainId, long fee, long timestamp,
-                               int version) {
-        this(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, chainId, fee, timestamp, version, Proof.emptyList());
+    public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price) {
+        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, Waves.chainId, //todo calc instead of MIN_FEE
+                Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price,
-                               long buyMatcherFee, long sellMatcherFee, byte chainId, long fee, long timestamp,
+                               long buyMatcherFee, long sellMatcherFee, byte chainId, Amount fee, long timestamp,
                                int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
         if (order1 == null) throw new IllegalArgumentException("Buy order can't be null");
         if (order2 == null) throw new IllegalArgumentException("Sell order can't be null");
         if (order1.type() == order2.type()) throw new IllegalArgumentException("Order types must be different");
@@ -133,9 +133,9 @@ public class ExchangeTransaction extends Transaction {
             this.order1 = order1;
             this.order2 = order2;
             this.amount = Math.min(this.order1.amount().value(), this.order2.amount().value());
-//fixme            this.price = normalized?
-            this.buyMatcherFee = this.order1.fee();
-            this.sellMatcherFee = this.order2.fee();
+//todo            this.price = normalized?
+            this.buyMatcherFee = this.order1.fee().value(); //todo proportionally
+            this.sellMatcherFee = this.order2.fee().value();
         }
         
         public ExchangeTransactionBuilder amount(long amount) {
@@ -159,7 +159,8 @@ public class ExchangeTransaction extends Transaction {
         }
 
         protected ExchangeTransaction _build() {
-            return new ExchangeTransaction(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, chainId, fee, timestamp, version);
+            return new ExchangeTransaction(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee,
+                    chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

@@ -2,8 +2,8 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,12 +18,15 @@ public class ReissueTransaction extends Transaction {
     private final Amount amount;
     private final boolean reissuable;
 
-    public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable, byte chainId, long fee, long timestamp, int version) {
-        this(sender, amount, reissuable, chainId, fee, timestamp, version, Proof.emptyList());
+    //todo test short constructors
+    public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable) {
+        this(sender, amount, reissuable, Waves.chainId, Amount.of(MIN_FEE),
+                System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable, byte chainId, Amount fee,
+                              long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
         if (amount.asset().isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
@@ -83,7 +86,8 @@ public class ReissueTransaction extends Transaction {
         }
 
         protected ReissueTransaction _build() {
-            return new ReissueTransaction(sender, amount, reissuable, chainId, fee, timestamp, version);
+            return new ReissueTransaction(
+                    sender, amount, reissuable, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

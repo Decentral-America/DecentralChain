@@ -2,10 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Id;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.data.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -88,7 +85,7 @@ public class DataTransactionTest {
         );
 
         DataTransaction constructedTx = new DataTransaction(sender, entries,
-                Waves.chainId, fee, timestamp, version, proofs);
+                Waves.chainId, Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -104,8 +101,7 @@ public class DataTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(Asset.WAVES),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

@@ -2,8 +2,10 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.mass.Transfer;
 
 import java.io.IOException;
@@ -24,15 +26,15 @@ public class MassTransferTransaction extends Transaction {
     private final Asset asset;
     private final byte[] attachment;
 
-    public MassTransferTransaction(PublicKey sender, List<Transfer> transfers, Asset asset, byte[] attachment, byte chainId, long fee, long timestamp, int version) {
-        this(sender, transfers, asset, attachment, chainId, fee, timestamp, version, Proof.emptyList());
+    public MassTransferTransaction(PublicKey sender, Asset asset, List<Transfer> transfers, byte[] attachment) {
+        this(sender, asset, transfers, attachment, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public MassTransferTransaction(PublicKey sender, List<Transfer> transfers, Asset asset, byte[] attachment, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public MassTransferTransaction(PublicKey sender, Asset asset, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
-        this.transfers = transfers == null ? new ArrayList<>() : transfers;
         this.asset = asset == null ? Asset.WAVES : asset;
+        this.transfers = transfers == null ? new ArrayList<>() : transfers;
         this.attachment = attachment == null ? Bytes.empty() : attachment;
     }
 
@@ -116,7 +118,8 @@ public class MassTransferTransaction extends Transaction {
         }
 
         protected MassTransferTransaction _build() {
-            return new MassTransferTransaction(sender, transfers, asset, attachment, chainId, fee, timestamp, version);
+            return new MassTransferTransaction(
+                    sender, asset, transfers, attachment, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

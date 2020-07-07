@@ -45,7 +45,8 @@ public class PaymentTransactionTest {
     @MethodSource("transactionsProvider")
     void paymentTransaction(Address recipient, Id expectedId, Proof proof, byte[] expectedBody, byte[] expectedBytes,
                             String expectedJson) throws IOException {
-        PaymentTransaction constructedTx = new PaymentTransaction(sender, recipient, amount, fee, timestamp, proof);
+        PaymentTransaction constructedTx = new PaymentTransaction(
+                sender, recipient, amount, Amount.of(fee), timestamp, proof);
 
         assertAll("Tx created via constructor must be equal to expected bytes",
                 () -> assertThat(constructedTx.bodyBytes()).isEqualTo(expectedBody),
@@ -62,7 +63,7 @@ public class PaymentTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(1),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(Proof.list(proof)),
 

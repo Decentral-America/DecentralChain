@@ -1,8 +1,10 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,12 +19,14 @@ public class SponsorFeeTransaction extends Transaction {
     private final Asset asset;
     private final long minSponsoredFee;
 
-    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee, byte chainId, long fee, long timestamp, int version) {
-        this(sender, asset, minSponsoredFee, chainId, fee, timestamp, version, Proof.emptyList());
+    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee) {
+        this(sender, asset, minSponsoredFee, Waves.chainId, Amount.of(MIN_FEE),
+                System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public SponsorFeeTransaction(PublicKey sender, Asset asset, long minSponsoredFee, byte chainId, Amount fee,
+                                 long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
         if (asset.isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
@@ -77,7 +81,8 @@ public class SponsorFeeTransaction extends Transaction {
         }
 
         protected SponsorFeeTransaction _build() {
-            return new SponsorFeeTransaction(sender, asset, minSponsoredFee, chainId, fee, timestamp, version);
+            return new SponsorFeeTransaction(
+                    sender, asset, minSponsoredFee, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

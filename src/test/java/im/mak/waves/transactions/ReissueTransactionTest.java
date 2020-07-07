@@ -93,7 +93,7 @@ public class ReissueTransactionTest {
         );
 
         ReissueTransaction constructedTx = new ReissueTransaction(sender, Amount.of(amount, asset), reissuable,
-                Waves.chainId, fee, timestamp, version, proofs);
+                Waves.chainId, Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -110,8 +110,7 @@ public class ReissueTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(Asset.WAVES),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

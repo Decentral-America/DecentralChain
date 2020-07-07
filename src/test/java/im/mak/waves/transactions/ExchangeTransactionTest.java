@@ -112,7 +112,6 @@ public class ExchangeTransactionTest {
                 .sellMatcherFee(sellFee)
                 .chainId(Waves.chainId)
                 .fee(fee)
-                .feeAsset(Asset.WAVES)
                 .timestamp(timestamp)
                 .sender(matcher.publicKey())
                 .version(version)
@@ -126,7 +125,7 @@ public class ExchangeTransactionTest {
         );
 
         ExchangeTransaction constructedTx = new ExchangeTransaction(matcher.publicKey(), order1, order2, amount, price,
-                buyFee, sellFee, Waves.chainId, fee, timestamp, version, proofs);
+                buyFee, sellFee, Waves.chainId, Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -147,8 +146,7 @@ public class ExchangeTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(matcher.publicKey()),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(Asset.WAVES),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

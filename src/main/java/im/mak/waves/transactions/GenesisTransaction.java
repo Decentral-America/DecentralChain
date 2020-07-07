@@ -4,7 +4,7 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Id;
 import im.mak.waves.transactions.serializers.BytesWriter;
@@ -21,8 +21,12 @@ public class GenesisTransaction extends Transaction {
     private final long amount;
 
     public GenesisTransaction(Address recipient, long amount, long timestamp) {
+        this(recipient, amount, timestamp, generateSignature(recipient, amount, timestamp));
+    }
+
+    public GenesisTransaction(Address recipient, long amount, long timestamp, Proof signature) {
         super(TYPE, LATEST_VERSION, recipient.chainId(), PublicKey.as(new byte[PublicKey.BYTES_LENGTH]),
-                0, Asset.WAVES, timestamp, Proof.list(generateSignature(recipient, amount, timestamp)));
+                Amount.of(0), timestamp, Proof.list(signature));
 
         this.recipient = recipient;
         this.amount =  amount;

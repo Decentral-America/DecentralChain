@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static im.mak.waves.transactions.LeaseTransaction.MIN_FEE;
 import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -97,7 +98,7 @@ public class LeaseTransactionTest {
         LeaseTransaction builtTx = LeaseTransaction
                 .with(recipient, amount)
                 .chainId(Waves.chainId)
-                .fee(LeaseTransaction.MIN_FEE)
+                .fee(MIN_FEE)
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
@@ -110,7 +111,8 @@ public class LeaseTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        LeaseTransaction constructedTx = new LeaseTransaction(sender, recipient, amount, Waves.chainId, LeaseTransaction.MIN_FEE, timestamp, version, proofs);
+        LeaseTransaction constructedTx = new LeaseTransaction(sender, recipient, amount, Waves.chainId,
+                Amount.of(MIN_FEE), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -127,8 +129,7 @@ public class LeaseTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(LeaseTransaction.MIN_FEE),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(Asset.WAVES),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(MIN_FEE, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

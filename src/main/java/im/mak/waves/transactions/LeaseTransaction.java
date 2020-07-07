@@ -1,9 +1,7 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Recipient;
+import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,13 +16,12 @@ public class LeaseTransaction extends Transaction {
     private final Recipient recipient;
     private final long amount;
 
-    //todo third shortest constructor LeaseTransaction(PublicKey sender, Recipient recipient, long amount)
-    public LeaseTransaction(PublicKey sender, Recipient recipient, long amount, byte chainId, long fee, long timestamp, int version) {
-        this(sender, recipient, amount, chainId, fee, timestamp, version, Proof.emptyList());
+    public LeaseTransaction(PublicKey sender, Recipient recipient, long amount) {
+        this(sender, recipient, amount, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public LeaseTransaction(PublicKey sender, Recipient recipient, long amount, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public LeaseTransaction(PublicKey sender, Recipient recipient, long amount, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.recipient = recipient;
         this.amount = amount;
@@ -77,7 +74,7 @@ public class LeaseTransaction extends Transaction {
         }
 
         protected LeaseTransaction _build() {
-            return new LeaseTransaction(sender, recipient, amount, chainId, fee, timestamp, version);
+            return new LeaseTransaction(sender, recipient, amount, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

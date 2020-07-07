@@ -105,8 +105,7 @@ public class InvokeScriptTransactionTest {
                 .with(dApp, function)
                 .payments(payments)
                 .chainId(Waves.chainId)
-                .fee(fee.value())
-                .feeAsset(fee.asset())
+                .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
@@ -138,8 +137,7 @@ public class InvokeScriptTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee.value()),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(fee.asset()),
+                () -> assertThat(deserTx.fee()).isEqualTo(fee),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

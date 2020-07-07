@@ -41,8 +41,7 @@ public abstract class ProtobufConverter {
                 .version(pbOrder.getVersion())
                 .chainId((byte) pbOrder.getChainId())
                 .sender(PublicKey.as(pbOrder.getSenderPublicKey().toByteArray()))
-                .fee(pbOrder.getMatcherFee().getAmount())
-                .feeAsset(Asset.id(pbOrder.getMatcherFee().getAssetId().toByteArray()))
+                .fee(pbAmountToAmount(pbOrder.getMatcherFee()))
                 .timestamp(pbOrder.getTimestamp())
                 .expiration(pbOrder.getExpiration())
                 .get();
@@ -59,7 +58,8 @@ public abstract class ProtobufConverter {
             tx = new GenesisTransaction(
                     Address.as(genesis.getRecipientAddress().toByteArray()),
                     genesis.getAmount(),
-                    pbTx.getTimestamp()
+                    pbTx.getTimestamp(),
+                    pbSignedTx.getProofsCount() > 0 ? Proof.as(pbSignedTx.getProofs(0).toByteArray()) : Proof.EMPTY
             );
         } else if (pbTx.hasPayment()) {
             TransactionOuterClass.PaymentTransactionData payment = pbTx.getPayment();
@@ -67,8 +67,9 @@ public abstract class ProtobufConverter {
                     PublicKey.as(pbTx.getSenderPublicKey().toByteArray()),
                     Address.as(payment.getRecipientAddress().toByteArray()),
                     payment.getAmount(),
-                    pbTx.getFee().getAmount(),
-                    pbTx.getTimestamp()
+                    pbAmountToAmount(pbTx.getFee()),
+                    pbTx.getTimestamp(),
+                    Proof.EMPTY
             );
         } else if (pbTx.hasIssue()) {
             TransactionOuterClass.IssueTransactionData issue = pbTx.getIssue();
@@ -81,7 +82,7 @@ public abstract class ProtobufConverter {
                     issue.getReissuable(),
                     issue.getScript().toByteArray(),
                     (byte) pbTx.getChainId(),
-                    Amount.of(pbTx.getFee().getAmount(), Asset.id(pbTx.getFee().getAssetId().toByteArray())),
+                    pbAmountToAmount(pbTx.getFee()),
                     pbTx.getTimestamp(),
                     pbTx.getVersion(),
                     Proof.emptyList()
@@ -96,8 +97,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasReissue()) {
@@ -109,8 +109,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasBurn()) {
@@ -121,8 +120,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasExchange()) {
@@ -136,8 +134,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasLease()) {
@@ -147,8 +144,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasLeaseCancel()) {
@@ -158,19 +154,17 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasCreateAlias()) {
             TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
             tx = CreateAliasTransaction
-                    .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //ask is there non utf8 aliases?
+                    .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //todo is there non utf8 aliases?
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasMassTransfer()) {
@@ -186,8 +180,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasDataTransaction()) {
@@ -209,8 +202,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasSetScript()) {
@@ -220,8 +212,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasSponsorFee()) {
@@ -231,8 +222,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasSetAssetScript()) {
@@ -242,8 +232,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasInvokeScript()) {
@@ -257,8 +246,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else if (pbTx.hasUpdateAssetInfo()) {
@@ -268,8 +256,7 @@ public abstract class ProtobufConverter {
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
-                    .fee(pbTx.getFee().getAmount())
-                    .feeAsset(Asset.id(pbTx.getFee().getAssetId().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .get();
         } else throw new InvalidProtocolBufferException("Can't recognize transaction type");
@@ -294,13 +281,10 @@ public abstract class ProtobufConverter {
                 .setAmount(order.amount().value())
                 .setPrice(order.price().value())
                 .setMatcherPublicKey(ByteString.copyFrom(order.matcher().bytes()))
-                .setMatcherFee(AmountOuterClass.Amount.newBuilder()
-                        .setAmount(order.fee())
-                        .setAssetId(ByteString.copyFrom(order.feeAsset().bytes()))
-                        .build())
+                .setMatcherFee(amountToPBAmount(order.fee()))
                 .setTimestamp(order.timestamp())
                 .setExpiration(order.expiration());
-        return builder.build(); //ask bodyBytes are just without proofs?
+        return builder.build(); //todo bodyBytes are just without proofs?
     }
 
     public static TransactionOuterClass.Transaction toUnsignedProtobuf(Transaction tx) {
@@ -308,11 +292,7 @@ public abstract class ProtobufConverter {
                 .setVersion(tx.version())
                 .setChainId(tx.chainId())
                 .setSenderPublicKey(ByteString.copyFrom(tx.sender().bytes()))
-                .setFee(AmountOuterClass.Amount.newBuilder()
-                        .setAmount(tx.fee())
-                        .setAssetId(ByteString.copyFrom(
-                                tx.feeAsset().bytes()))
-                        .build())
+                .setFee(amountToPBAmount(tx.fee()))
                 .setTimestamp(tx.timestamp());
 
         if (tx instanceof GenesisTransaction) {
@@ -390,7 +370,7 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof CreateAliasTransaction) {
             CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
-                    .setAliasBytes(ByteString.copyFrom(caTx.alias().getBytes(UTF_8))) //ask is there aliases with non utf8 values?
+                    .setAliasBytes(ByteString.copyFrom(caTx.alias().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
                     .build());
         } else if (tx instanceof MassTransferTransaction) {
             MassTransferTransaction mtTx = (MassTransferTransaction) tx;
@@ -410,11 +390,11 @@ public abstract class ProtobufConverter {
                     .addAllData(dtx.data().stream().map(e -> {
                         TransactionOuterClass.DataTransactionData.DataEntry.Builder builder =
                                 TransactionOuterClass.DataTransactionData.DataEntry.newBuilder().setKey(e.key());
-                        if (e.type() == EntryType.BINARY) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value())).build();
-                        else if (e.type() == EntryType.BOOLEAN) builder.setBoolValue(((BooleanEntry)e).value()).build();
-                        else if (e.type() == EntryType.INTEGER) builder.setIntValue(((IntegerEntry)e).value()).build();
-                        else if (e.type() == EntryType.STRING) builder.setStringValue(((StringEntry)e).value()).build();
-                        else if (e.type() == EntryType.DELETE) builder.setKey(e.key());
+                        if (e instanceof BinaryEntry) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value())).build();
+                        else if (e instanceof BooleanEntry) builder.setBoolValue(((BooleanEntry)e).value()).build();
+                        else if (e instanceof IntegerEntry) builder.setIntValue(((IntegerEntry)e).value()).build();
+                        else if (e instanceof StringEntry) builder.setStringValue(((StringEntry)e).value()).build();
+                        else if (e instanceof DeleteEntry) builder.setKey(e.key());
                         else throw new IllegalArgumentException("Unknown entry type " + e.type());
                         return builder.build();
                     }).collect(toList()))
@@ -496,6 +476,20 @@ public abstract class ProtobufConverter {
             proto.setPublicKeyHash(ByteString.copyFrom(
                     recipient.address().publicKeyHash()));
         return proto.build();
+    }
+
+    public static Amount pbAmountToAmount(AmountOuterClass.Amount amount) {
+        return Amount.of(
+                amount.getAmount(),
+                Asset.id(amount.getAssetId().toByteArray())
+        );
+    }
+
+    public static AmountOuterClass.Amount amountToPBAmount(Amount amount) {
+        return AmountOuterClass.Amount.newBuilder()
+                .setAmount(amount.value())
+                .setAssetId(ByteString.copyFrom(amount.asset().bytes()))
+                .build();
     }
 
 }

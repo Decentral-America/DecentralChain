@@ -87,8 +87,7 @@ public class TransferTransactionTest {
                 .with(recipient, Amount.of(amount, asset))
                 .attachment(attachment)
                 .chainId(Waves.chainId)
-                .fee(fee)
-                .feeAsset(feeAsset)
+                .fee(Amount.of(fee, feeAsset))
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
@@ -102,7 +101,7 @@ public class TransferTransactionTest {
         );
 
         TransferTransaction constructedTx = new TransferTransaction(sender, recipient, Amount.of(amount, asset),
-                attachment, Waves.chainId, fee, feeAsset, timestamp, version, proofs);
+                attachment, Waves.chainId, Amount.of(fee, feeAsset), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -121,8 +120,7 @@ public class TransferTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(version),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(fee),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(feeAsset),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, feeAsset)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

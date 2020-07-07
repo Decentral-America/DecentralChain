@@ -20,7 +20,6 @@ public abstract class DataEntry {
         return key;
     }
 
-    //todo change all the type checkings to instanceof for entries, args, transactions, ...
     public EntryType type() {
         return type;
     }

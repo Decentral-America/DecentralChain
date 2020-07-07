@@ -3,10 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Id;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,6 +48,7 @@ public class GenesisTransactionTest {
         GenesisTransaction constructedTx = new GenesisTransaction(recipient, amount, timestamp);
 
         assertAll("Tx created via constructor must be equal to expected bytes",
+                () -> assertThat(constructedTx.proofs()).containsOnly(proof),
                 () -> assertThat(constructedTx.bodyBytes()).isEqualTo(expectedBody),
                 () -> assertThat(constructedTx.id()).isEqualTo(expectedId),
                 () -> assertThat(constructedTx.toBytes()).isEqualTo(expectedBytes)
@@ -65,10 +63,9 @@ public class GenesisTransactionTest {
                 () -> assertThat(deserTx.version()).isEqualTo(1),
                 () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserTx.sender()).isEqualTo(emptySender),
-                () -> assertThat(deserTx.fee()).isEqualTo(0),
-                () -> assertThat(deserTx.feeAsset()).isEqualTo(Asset.WAVES),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(0, Asset.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
-                () -> assertThat(deserTx.proofs()).isEqualTo(Proof.list(proof)),
+                () -> assertThat(deserTx.proofs()).containsOnly(proof),
 
                 () -> assertThat(deserTx.bodyBytes()).isEqualTo(expectedBody),
                 () -> assertThat(deserTx.toBytes()).isEqualTo(expectedBytes),

@@ -2,8 +2,8 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,12 +17,13 @@ public class BurnTransaction extends Transaction {
 
     private final Amount amount;
 
-    public BurnTransaction(PublicKey sender, Amount amount, byte chainId, long fee, long timestamp, int version) {
-        this(sender, amount, chainId, fee, timestamp, version, Proof.emptyList());
+    public BurnTransaction(PublicKey sender, Amount amount) {
+        this(sender, amount, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public BurnTransaction(PublicKey sender, Amount amount, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public BurnTransaction(PublicKey sender, Amount amount, byte chainId, Amount fee,
+                           long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
         if (amount.asset().isWaves())
             throw new IllegalArgumentException("Can't be Waves");
 
@@ -69,7 +70,7 @@ public class BurnTransaction extends Transaction {
         }
 
         protected BurnTransaction _build() {
-            return new BurnTransaction(sender, amount, chainId, fee, timestamp, version);
+            return new BurnTransaction(sender, amount, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

@@ -3,8 +3,9 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,12 +19,14 @@ public class SetScriptTransaction extends Transaction {
 
     private final byte[] compiledScript;
 
-    public SetScriptTransaction(PublicKey sender, byte[] compiledScript, byte chainId, long fee, long timestamp, int version) {
-        this(sender, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+    public SetScriptTransaction(PublicKey sender, byte[] compiledScript) {
+        this(sender, compiledScript, Waves.chainId, Amount.of(MIN_FEE),
+                System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public SetScriptTransaction(PublicKey sender, byte[] compiledScript, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public SetScriptTransaction(PublicKey sender, byte[] compiledScript, byte chainId, Amount fee,
+                                long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.compiledScript = compiledScript == null ? Bytes.empty() : compiledScript;
     }
@@ -76,7 +79,8 @@ public class SetScriptTransaction extends Transaction {
         }
 
         protected SetScriptTransaction _build() {
-            return new SetScriptTransaction(sender, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+            return new SetScriptTransaction(
+                    sender, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
     

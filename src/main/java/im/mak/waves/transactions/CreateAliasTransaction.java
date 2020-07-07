@@ -3,9 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Id;
+import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,12 +21,12 @@ public class CreateAliasTransaction extends Transaction {
 
     private final String alias; //todo Alias, but what about constructor and builder.chainId()?
 
-    public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, long fee, long timestamp, int version) {
-        this(sender, alias, chainId, fee, timestamp, version, Proof.emptyList());
+    public CreateAliasTransaction(PublicKey sender, String alias) {
+        this(sender, alias, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.alias = alias == null ? "" : alias;
     }
@@ -80,7 +78,7 @@ public class CreateAliasTransaction extends Transaction {
         }
 
         protected CreateAliasTransaction _build() {
-            return new CreateAliasTransaction(sender, alias, chainId, fee, timestamp, version);
+            return new CreateAliasTransaction(sender, alias, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

@@ -2,10 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Asset;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Recipient;
+import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,12 +20,14 @@ public class TransferTransaction extends Transaction {
     private final Amount amount;
     private final byte[] attachment;
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version) {
-        this(sender, recipient, amount, attachment, chainId, fee, feeAsset, timestamp, version, Proof.emptyList());
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment) {
+        this(sender, recipient, amount, attachment, Waves.chainId, Amount.of(MIN_FEE),
+                System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment, byte chainId, long fee, Asset feeAsset, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, feeAsset, timestamp, proofs);
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment,
+                               byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.recipient = recipient;
         this.amount = amount == null ? Amount.of(0, Asset.WAVES) : amount;
@@ -102,7 +101,8 @@ public class TransferTransaction extends Transaction {
         }
 
         protected TransferTransaction _build() {
-            return new TransferTransaction(sender, recipient, amount, attachment, chainId, fee, feeAsset, timestamp, version);
+            return new TransferTransaction(
+                    sender, recipient, amount, attachment, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 

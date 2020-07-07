@@ -2,7 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.Address;
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Id;
 
@@ -19,13 +19,13 @@ public class PaymentTransaction extends Transaction {
     private final Address recipient;
     private final long amount;
 
-    public PaymentTransaction(PublicKey sender, Address recipient, long amount, long fee, long timestamp) {
-        this(sender, recipient, amount, fee, timestamp, null);
+    public PaymentTransaction(PublicKey sender, Address recipient, long amount) {
+        this(sender, recipient, amount, Amount.of(MIN_FEE), System.currentTimeMillis(), null);
     }
 
     public PaymentTransaction(
-            PublicKey sender, Address recipient, long amount, long fee, long timestamp, Proof signature) {
-        super(TYPE, LATEST_VERSION, recipient.chainId(), sender, fee, Asset.WAVES, timestamp,
+            PublicKey sender, Address recipient, long amount, Amount fee, long timestamp, Proof signature) {
+        super(TYPE, LATEST_VERSION, recipient.chainId(), sender, fee, timestamp,
                 signature == null ? Proof.emptyList() : Proof.list(signature));
 
         this.recipient = recipient;

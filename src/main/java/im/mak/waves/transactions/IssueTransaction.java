@@ -5,6 +5,7 @@ import im.mak.waves.crypto.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,8 +27,9 @@ public class IssueTransaction extends Transaction {
     private final byte[] compiledScript;
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp, int version) {
-        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+                            boolean isReissuable, byte[] compiledScript) {
+        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, Waves.chainId,
+                Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
@@ -42,7 +44,7 @@ public class IssueTransaction extends Transaction {
     public IssueTransaction(PublicKey sender, byte[] name, byte[] description, long quantity, int decimals,
                             boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp,
                             int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee.value(), fee.asset(), timestamp, proofs);
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.name = name == null ? Bytes.empty() : name;
         this.description = description == null ? Bytes.empty() : description;
@@ -159,7 +161,7 @@ public class IssueTransaction extends Transaction {
 
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, compiledScript,
-                    chainId, Amount.of(fee), timestamp, version, Proof.emptyList());
+                    chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
     

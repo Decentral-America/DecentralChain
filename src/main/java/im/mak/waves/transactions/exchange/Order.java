@@ -27,14 +27,14 @@ public class Order extends TransactionOrOrder {
     private final long expiration;
 
     public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher, byte chainId,
-                 long fee, Asset feeAsset, long timestamp, long expiration, int version) {
-        this(sender, type, amount, price, matcher, chainId, fee, feeAsset, timestamp, expiration, version, Proof.emptyList());
+                 Amount fee, long timestamp, long expiration, int version) {
+        this(sender, type, amount, price, matcher, chainId, fee, timestamp, expiration, version, Proof.emptyList());
     }
 
-    //ask maybe better use AssetPair instead of two Amounts?
+    //todo maybe better use AssetPair instead of two Amounts?
     public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher, byte chainId,
-                 long fee, Asset feeAsset, long timestamp, long expiration, int version, List<Proof> proofs) {
-        super(version, chainId, sender, fee, feeAsset, timestamp, proofs);
+                 Amount fee, long timestamp, long expiration, int version, List<Proof> proofs) {
+        super(version, chainId, sender, fee, timestamp, proofs);
         if (type == null) throw new IllegalArgumentException("Order type can't be null");
         if (amount == null) throw new IllegalArgumentException("Order amount pair can't be null");
         if (price == null) throw new IllegalArgumentException("Order price pair can't be null");
@@ -136,7 +136,7 @@ public class Order extends TransactionOrOrder {
 
         protected Order _build() {
             long expiration = this.expiration == 0 ? this.timestamp + (30 * 24 * 60 * 60 * 1000L) : this.expiration;
-            return new Order(sender, type, amount, price, matcher, chainId, fee, feeAsset, timestamp, expiration, version);
+            return new Order(sender, type, amount, price, matcher, chainId, fee, timestamp, expiration, version);
         }
     }
 

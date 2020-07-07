@@ -112,8 +112,7 @@ public class OrderTest {
                 .with(type, amount, price, matcher.publicKey())
                 .expiration(expiration)
                 .chainId(Waves.chainId)
-                .fee(fee.value())
-                .feeAsset(fee.asset())
+                .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
@@ -127,7 +126,7 @@ public class OrderTest {
         );
 
         Order constructedOrder = new Order(sender, type, amount, price, matcher.publicKey(),
-                Waves.chainId, fee.value(), fee.asset(), timestamp, expiration, version, proofs);
+                Waves.chainId, fee, timestamp, expiration, version, proofs);
 
         assertAll("Orders created via builder and constructor are equal",
                 () -> assertThat(builtOrder.bodyBytes()).isEqualTo(constructedOrder.bodyBytes()),
@@ -147,8 +146,7 @@ public class OrderTest {
                 () -> assertThat(deserOrder.version()).isEqualTo(version),
                 () -> assertThat(deserOrder.chainId()).isEqualTo(Waves.chainId),
                 () -> assertThat(deserOrder.sender()).isEqualTo(sender),
-                () -> assertThat(deserOrder.fee()).isEqualTo(fee.value()),
-                () -> assertThat(deserOrder.feeAsset()).isEqualTo(fee.asset()),
+                () -> assertThat(deserOrder.fee()).isEqualTo(fee),
                 () -> assertThat(deserOrder.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserOrder.proofs()).isEqualTo(proofs),
 

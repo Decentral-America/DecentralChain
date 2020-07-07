@@ -1,8 +1,9 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.account.PublicKey;
-import im.mak.waves.transactions.common.Asset;
+import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
@@ -21,12 +22,13 @@ public class DataTransaction extends Transaction {
 
     private final List<DataEntry> data;
 
-    public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, long fee, long timestamp, int version) {
-        this(sender, data, chainId, fee, timestamp, version, Proof.emptyList());
+    //todo automatically calc fee
+    public DataTransaction(PublicKey sender, List<DataEntry> data) {
+        this(sender, data, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, long fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, Asset.WAVES, timestamp, proofs);
+    public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.data = data == null ? Collections.emptyList() : data;
     }
@@ -113,7 +115,7 @@ public class DataTransaction extends Transaction {
         }
 
         protected DataTransaction _build() {
-            return new DataTransaction(sender, data, chainId, fee, timestamp, version);
+            return new DataTransaction(sender, data, chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
 
