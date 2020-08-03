@@ -8,9 +8,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Alias {
 
+    public static final String PREFIX = "alias:";
+    public static final byte TYPE = 2;
     public static final int MIN_LENGTH = 4;
     public static final int MAX_LENGTH = 30;
+    public static final int BYTES_LENGTH = 1 + 1 + MAX_LENGTH;
+
     private static final String ALPHABET = "-.0-9@_a-z";
+
     private final byte chainId;
     private final String alias;
 
@@ -21,9 +26,9 @@ public class Alias {
     public Alias(byte chainId, String value) {
         if (isValid(value, chainId)) {
             this.chainId = chainId;
-            this.alias = value.replaceFirst("^alias:" + (char) chainId + ":", "");
+            this.alias = value.replaceFirst("^" + PREFIX + (char) chainId + ":", "");
         } else throw new IllegalArgumentException("Alias must be " + MIN_LENGTH
-                + " to " + MAX_LENGTH + " of " + ALPHABET + " characters long"
+                + " to " + MAX_LENGTH + " long of " + ALPHABET + " characters"
                 + " and may have a prefix 'alias:" + (char) chainId + ":', but actual is '" + value + "'");
     }
 

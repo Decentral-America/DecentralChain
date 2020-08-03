@@ -6,8 +6,8 @@ import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
-import im.mak.waves.crypto.account.Address;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.Address;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.data.*;
@@ -44,7 +44,7 @@ public abstract class ProtobufConverter {
                 .fee(pbAmountToAmount(pbOrder.getMatcherFee()))
                 .timestamp(pbOrder.getTimestamp())
                 .expiration(pbOrder.getExpiration())
-                .get();
+                .getUnsigned();
         pbOrder.getProofsList().forEach(p -> order.proofs().add(Proof.as(p.toByteArray())));
         return order;
     }
@@ -99,7 +99,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasReissue()) {
             TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
             tx = ReissueTransaction
@@ -111,7 +111,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasBurn()) {
             TransactionOuterClass.BurnTransactionData burn = pbTx.getBurn();
             tx = BurnTransaction
@@ -122,7 +122,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasExchange()) {
             TransactionOuterClass.ExchangeTransactionData exchange = pbTx.getExchange();
             tx = ExchangeTransaction
@@ -136,7 +136,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasLease()) {
             TransactionOuterClass.LeaseTransactionData lease = pbTx.getLease();
             tx = LeaseTransaction
@@ -146,7 +146,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasLeaseCancel()) {
             TransactionOuterClass.LeaseCancelTransactionData leaseCancel = pbTx.getLeaseCancel();
             tx = LeaseCancelTransaction
@@ -156,7 +156,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasCreateAlias()) {
             TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
             tx = CreateAliasTransaction
@@ -166,7 +166,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasMassTransfer()) {
             TransactionOuterClass.MassTransferTransactionData massTransfer = pbTx.getMassTransfer();
             List<Transfer> transfers = massTransfer.getTransfersList()
@@ -182,7 +182,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasDataTransaction()) {
             TransactionOuterClass.DataTransactionData data = pbTx.getDataTransaction();
             tx = DataTransaction
@@ -204,7 +204,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasSetScript()) {
             TransactionOuterClass.SetScriptTransactionData setScript = pbTx.getSetScript();
             tx = SetScriptTransaction
@@ -214,7 +214,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasSponsorFee()) {
             TransactionOuterClass.SponsorFeeTransactionData sponsor = pbTx.getSponsorFee();
             tx = SponsorFeeTransaction
@@ -224,7 +224,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasSetAssetScript()) {
             TransactionOuterClass.SetAssetScriptTransactionData setAssetScript = pbTx.getSetAssetScript();
             tx = SetAssetScriptTransaction
@@ -234,7 +234,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasInvokeScript()) {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
             Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
@@ -248,7 +248,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else if (pbTx.hasUpdateAssetInfo()) {
             TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
             tx = UpdateAssetInfoTransaction
@@ -258,7 +258,7 @@ public abstract class ProtobufConverter {
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
-                    .get();
+                    .getUnsigned();
         } else throw new InvalidProtocolBufferException("Can't recognize transaction type");
 
         pbSignedTx.getProofsList().forEach(p -> tx.proofs().add(Proof.as(p.toByteArray())));

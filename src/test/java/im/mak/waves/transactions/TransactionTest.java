@@ -1,6 +1,6 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Recipient;
 import org.junit.jupiter.api.Test;
 
@@ -17,13 +17,13 @@ public class TransactionTest {
                 .with(Recipient.as("rich"), 100)
                 .sender(sender)
                 .timestamp(timestamp)
-                .get();
+                .getUnsigned();
 
         Transaction leaseCancelTx = LeaseCancelTransaction
                 .with(leaseTx.id())
                 .sender(sender)
                 .timestamp(timestamp)
-                .get();
+                .getUnsigned();
 
         assertThat(leaseTx).isNotEqualTo(leaseCancelTx);
     }

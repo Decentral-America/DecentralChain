@@ -1,6 +1,6 @@
 package im.mak.waves.transactions.common;
 
-import im.mak.waves.crypto.account.Address;
+import im.mak.waves.transactions.account.Address;
 
 import java.util.Objects;
 

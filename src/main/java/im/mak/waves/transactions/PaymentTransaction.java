@@ -1,7 +1,7 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.account.Address;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.Address;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Id;

@@ -2,7 +2,7 @@ package im.mak.waves.transactions.exchange;
 
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.TransactionOrOrder;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;

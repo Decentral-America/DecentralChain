@@ -1,8 +1,8 @@
 package im.mak.waves.transactions.serializers;
 
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.account.Address;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.Address;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.exchange.OrderType;
 import im.mak.waves.transactions.invocation.*;
@@ -89,11 +89,11 @@ public class BytesReader {
     }
 
     public Recipient readRecipient() {
-        byte recipientType = readByte(); //todo Recipient.from(bytes) or Alias.from(bytes)
+        byte recipientType = readByte();
         if (recipientType == 1)
-            return Recipient.as(Address.as(concat(of(recipientType), readBytes(25)))); //todo Address.LENGTH
+            return Recipient.as(Address.as(concat(of(recipientType), readBytes(Address.BYTES_LENGTH - 1))));
         else if (recipientType == 2) {
-            return Recipient.as(Alias.as(readByte(), new String(readArrayWithLength()))); //todo Alias.as(bytes)
+            return Recipient.as(Alias.as(readByte(), new String(readArrayWithLength())));
         } else throw new IllegalArgumentException("Unknown recipient type");
     }
 
@@ -142,7 +142,7 @@ public class BytesReader {
 
     public List<Proof> readProofs() {
         byte version = readByte();
-        if (version != 1) //todo Proofs.VERSION = 1
+        if (version != Proof.LATEST_VERSION)
             throw new IllegalArgumentException("Wrong proofs version " + version + " but " + 1 + " expected");
 
         List<Proof> result = Proof.emptyList();

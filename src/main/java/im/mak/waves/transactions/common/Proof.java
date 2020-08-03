@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Proof extends Base58Encoded {
 
+    public static final byte LATEST_VERSION = 1;
     public static final int BYTE_LENGTH = 64;
     public static final Proof EMPTY = new Proof("");
 
@@ -36,9 +37,10 @@ public class Proof extends Base58Encoded {
         return new Proof(proof);
     }
 
+    //todo proofs with custom length (check legacy serialization)
     @Override
     protected byte[] validateAndGet(byte[] value) throws IllegalArgumentException {
-        if (value.length == 0)
+        if (value == null || value.length == 0)
             return Bytes.empty();
         else if (value.length == BYTE_LENGTH)
             return value;

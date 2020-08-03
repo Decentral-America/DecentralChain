@@ -1,7 +1,7 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -70,8 +70,8 @@ public class SetScriptTransactionTest {
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
-                .get();
-        proofs.forEach(p -> builtTx.proofs().add(p));
+                .getUnsigned()
+        .addProofs(proofs);
 
         assertAll("Tx created via builder must be equal to expected bytes",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(expectedBody),

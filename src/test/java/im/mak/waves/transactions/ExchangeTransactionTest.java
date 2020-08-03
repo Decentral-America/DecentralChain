@@ -1,6 +1,6 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.account.PrivateKey;
+import im.mak.waves.transactions.account.PrivateKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.exchange.Order;
@@ -115,8 +115,8 @@ public class ExchangeTransactionTest {
                 .timestamp(timestamp)
                 .sender(matcher.publicKey())
                 .version(version)
-                .get();
-        proofs.forEach(p -> builtTx.proofs().add(p));
+                .getUnsigned()
+        .addProofs(proofs);
 
         assertAll("Tx created via builder must be equal to expected bytes",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(expectedBody),

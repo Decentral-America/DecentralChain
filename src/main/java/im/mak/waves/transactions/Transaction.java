@@ -1,7 +1,7 @@
 package im.mak.waves.transactions;
 
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.serializers.BinarySerializer;
@@ -56,7 +56,7 @@ public abstract class Transaction extends TransactionOrOrder {
         return Objects.hash(super.hashCode(), type);
     }
 
-    protected static abstract class TransactionBuilder
+    public static abstract class TransactionBuilder
             <BUILDER extends TransactionBuilder<BUILDER, TX>, TX extends Transaction>
             extends TransactionOrOrderBuilder<BUILDER, TX> {
 

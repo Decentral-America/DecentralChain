@@ -2,7 +2,8 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Hash;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PrivateKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.serializers.BinarySerializer;
 import im.mak.waves.transactions.serializers.JsonSerializer;
@@ -68,6 +69,33 @@ public abstract class TransactionOrOrder {
         return id;
     }
 
+    public <T extends TransactionOrOrder> T addProof(Proof proof) {
+        proofs.add(proof);
+        return (T) this;
+    }
+
+    public <T extends TransactionOrOrder> T addProof(PrivateKey privateKey) {
+        addProof(Proof.as(privateKey.sign(bodyBytes())));
+        return (T) this;
+    }
+
+    public <T extends TransactionOrOrder> T addProofs(List<Proof> proofs) {
+        this.proofs.addAll(proofs);
+        return (T) this;
+    }
+
+    public <T extends TransactionOrOrder> T setProof(int index, Proof proof) {
+        for (int i = proofs.size(); i <= index; i++)
+            proofs.add(Proof.as(Bytes.empty()));
+        proofs.set(index, proof);
+        return (T) this;
+    }
+
+    public <T extends TransactionOrOrder> T setProof(int index, PrivateKey privateKey) {
+        setProof(index, Proof.as(privateKey.sign(bodyBytes())));
+        return (T) this;
+    }
+
     public byte[] toBytes() {
         return BinarySerializer.toBytes(this);
     }
@@ -102,6 +130,11 @@ public abstract class TransactionOrOrder {
     @Override
     public int hashCode() {
         return Objects.hash(this.bodyBytes(), proofs);
+    }
+
+    @Override
+    public String toString() {
+        return this.toJson();
     }
 
     protected static abstract class TransactionOrOrderBuilder
@@ -155,10 +188,14 @@ public abstract class TransactionOrOrder {
             return builder();
         }
 
-        public TX_OR_ORDER get() {
+        public TX_OR_ORDER getUnsigned() {
             if (timestamp == 0)
                 this.timestamp(System.currentTimeMillis());
             return _build();
+        }
+
+        public TX_OR_ORDER getSignedWith(PrivateKey signer) {
+            return getUnsigned().addProof(signer);
         }
 
         protected abstract TX_OR_ORDER _build();

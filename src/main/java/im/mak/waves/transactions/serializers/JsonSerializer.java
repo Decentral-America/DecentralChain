@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.account.Address;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.Address;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.*;
@@ -70,6 +70,7 @@ public abstract class JsonSerializer {
         return orderFromJson(JSON_MAPPER.readTree(json));
     }
 
+    //todo support unknown transactions with common fields
     public static Transaction fromJson(JsonNode json) throws IOException {
         int type = json.get("type").asInt();
         int version = json.hasNonNull("version") ? json.get("version").asInt() : 1;
@@ -204,23 +205,7 @@ public abstract class JsonSerializer {
             if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
 
-            JsonNode jsData = json.get("data");
-            List<DataEntry> data = new ArrayList<>();
-            for (int i = 0; i < jsData.size(); i++) {
-                JsonNode entry = jsData.get(i);
-                String key = entry.get("key").asText();
-                String entryType = entry.hasNonNull("type") ? entry.get("type").asText() : "";
-                if (entryType.isEmpty())
-                    data.add(new DeleteEntry(key));
-                else if (entryType.equals("binary"))
-                    data.add(new BinaryEntry(key, Base64.decode(entry.get("value").asText())));
-                else if (entryType.equals("boolean"))
-                    data.add(new BooleanEntry(key, entry.get("value").asBoolean()));
-                else if (entryType.equals("integer"))
-                    data.add(new IntegerEntry(key, entry.get("value").asLong()));
-                else if (entryType.equals("string"))
-                    data.add(new StringEntry(key, entry.get("value").asText()));
-            }
+            List<DataEntry> data = dataEntriesFromJson(json.get("data"));
             return new DataTransaction(sender, data, chainId, fee, timestamp, version, proofs);
         } else if (type == SetScriptTransaction.TYPE) {
             if (!fee.assetId().isWaves())
@@ -269,6 +254,31 @@ public abstract class JsonSerializer {
     
     public static Transaction fromJson(String json) throws IOException {
         return fromJson(JSON_MAPPER.readTree(json));
+    }
+
+    public static List<DataEntry> dataEntriesFromJson(JsonNode json) {
+        List<DataEntry> data = new ArrayList<>();
+
+        for (int i = 0; i < json.size(); i++)
+            data.add(dataEntryFromJson(json.get(i)));
+
+        return data;
+    }
+
+    public static DataEntry dataEntryFromJson(JsonNode json) {
+            String key = json.get("key").asText();
+            String entryType = json.hasNonNull("type") ? json.get("type").asText() : "";
+            if (entryType.isEmpty())
+                return new DeleteEntry(key);
+            else if (entryType.equals("binary"))
+                return new BinaryEntry(key, Base64.decode(json.get("value").asText()));
+            else if (entryType.equals("boolean"))
+                return new BooleanEntry(key, json.get("value").asBoolean());
+            else if (entryType.equals("integer"))
+                return new IntegerEntry(key, json.get("value").asLong());
+            else if (entryType.equals("string"))
+                return new StringEntry(key, json.get("value").asText());
+            else throw new IllegalArgumentException("Unknown type `" + entryType + "` of entry with key `" + key + "`");
     }
 
     public static JsonNode toJsonObject(TransactionOrOrder txOrOrder) { //todo configurable json number->string

@@ -1,6 +1,6 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;

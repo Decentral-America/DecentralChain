@@ -1,8 +1,8 @@
 package im.mak.waves.transactions.serializers;
 
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.account.Address;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.Address;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.data.*;
@@ -51,8 +51,8 @@ public abstract class LegacyBinarySerializer {
     public static Transaction transactionFromBytes(byte[] bytes) {
         if (bytes.length < 2)
             throw new IllegalArgumentException("Byte array is too short to parse");
-        BytesReader reader = new BytesReader(bytes);
         byte chainId = Waves.chainId;
+        BytesReader reader = new BytesReader(bytes);
 
         byte maybeVersionFlag = reader.readByte();
         byte type = maybeVersionFlag == 0 ? reader.readByte() : maybeVersionFlag;
@@ -78,14 +78,14 @@ public abstract class LegacyBinarySerializer {
         Transaction transaction;
         if (type == GenesisTransaction.TYPE) {
             long timestamp = reader.readLong();
-            Address recipient = Address.as(reader.readBytes(26)); //todo Address.LENGTH
+            Address recipient = Address.as(reader.readBytes(Address.BYTES_LENGTH));
             long amount = reader.readLong();
 
             transaction = new GenesisTransaction(recipient, amount, timestamp);
         } else if (type == PaymentTransaction.TYPE) {
             long timestamp = reader.readLong();
             PublicKey sender = reader.readPublicKey();
-            Address recipient = Address.as(reader.readBytes(26)); //todo Address.LENGTH
+            Address recipient = Address.as(reader.readBytes(Address.BYTES_LENGTH));
             long amount = reader.readLong();
             long fee = reader.readLong();
             Proof signature = reader.readSignature().get(0);
@@ -102,7 +102,7 @@ public abstract class LegacyBinarySerializer {
             boolean isReissuable = reader.readBoolean();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
-            byte[] script = (scheme == WITH_PROOFS && reader.readBoolean()) ? reader.readArrayWithLength() : null;
+            byte[] script = scheme == WITH_PROOFS ? reader.readOptionArrayWithLength() : null;
 
             if (scheme == WITH_PROOFS)
                 proofs = reader.readProofs();

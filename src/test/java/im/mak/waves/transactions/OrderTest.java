@@ -1,7 +1,7 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.account.PrivateKey;
-import im.mak.waves.crypto.account.PublicKey;
+import im.mak.waves.transactions.account.PrivateKey;
+import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.exchange.Order;
@@ -116,8 +116,8 @@ public class OrderTest {
                 .timestamp(timestamp)
                 .sender(sender)
                 .version(version)
-                .get();
-        proofs.forEach(p -> builtOrder.proofs().add(p));
+                .getUnsigned()
+                .addProofs(proofs);
 
         assertAll("Order created via builder must be equal to expected bytes",
                 () -> assertThat(builtOrder.bodyBytes()).isEqualTo(expectedBody),
