@@ -15,6 +15,8 @@ import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
 import im.mak.waves.transactions.mass.Transfer;
 import im.mak.waves.transactions.invocation.Function;
+import im.mak.waves.transactions.serializers.binary.BytesReader;
+import im.mak.waves.transactions.serializers.binary.BytesWriter;
 
 import java.io.IOException;
 import java.util.List;
@@ -370,7 +372,7 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof CreateAliasTransaction) {
             CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
-                    .setAliasBytes(ByteString.copyFrom(caTx.alias().value().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
+                    .setAliasBytes(ByteString.copyFrom(caTx.alias().name().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
                     .build());
         } else if (tx instanceof MassTransferTransaction) {
             MassTransferTransaction mtTx = (MassTransferTransaction) tx;
@@ -461,20 +463,20 @@ public abstract class ProtobufConverter {
     }
 
     public static Recipient recipientFromProto(RecipientOuterClass.Recipient proto, byte chainId) {
-        if (proto.getRecipientCase().getNumber() == 1)
-            return Recipient.as(Address.fromPart(proto.getPublicKeyHash().toByteArray(), chainId));
-        else if (proto.getRecipientCase().getNumber() == 2) {
-            return Recipient.as(Alias.as(chainId, proto.getAlias()));
+        if (proto.getRecipientCase().getNumber() == Address.TYPE)
+            return Address.fromPart(chainId, proto.getPublicKeyHash().toByteArray());
+        else if (proto.getRecipientCase().getNumber() == Alias.TYPE) {
+            return Alias.as(chainId, proto.getAlias());
         } else throw new IllegalArgumentException("Protobuf recipient must be specified");
     }
 
     public static RecipientOuterClass.Recipient recipientToProto(Recipient recipient) {
         RecipientOuterClass.Recipient.Builder proto = RecipientOuterClass.Recipient.newBuilder();
-        if (recipient.isAlias())
-            proto.setAlias(recipient.alias().value());
+        if (recipient.type() == Alias.TYPE)
+            proto.setAlias(((Alias) recipient).name());
         else
             proto.setPublicKeyHash(ByteString.copyFrom(
-                    recipient.address().publicKeyHash()));
+                    ((Address) recipient).publicKeyHash()));
         return proto.build();
     }
 

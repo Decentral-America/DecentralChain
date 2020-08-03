@@ -1,10 +1,12 @@
-package im.mak.waves.transactions.serializers;
+package im.mak.waves.transactions.serializers.binary;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import im.mak.waves.transactions.*;
 import im.mak.waves.transactions.exchange.Order;
+import im.mak.waves.transactions.serializers.ProtobufConverter;
+import im.mak.waves.transactions.serializers.Scheme;
 
 import java.io.IOException;
 

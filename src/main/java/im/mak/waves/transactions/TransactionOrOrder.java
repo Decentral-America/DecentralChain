@@ -5,8 +5,8 @@ import im.mak.waves.crypto.Hash;
 import im.mak.waves.transactions.account.PrivateKey;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.serializers.BinarySerializer;
-import im.mak.waves.transactions.serializers.JsonSerializer;
+import im.mak.waves.transactions.serializers.binary.BinarySerializer;
+import im.mak.waves.transactions.serializers.json.JsonSerializer;
 
 import java.util.ArrayList;
 import java.util.List;

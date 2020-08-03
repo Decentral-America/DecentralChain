@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,8 +32,8 @@ public class InvokeScriptTransactionTest {
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Recipient alias = Recipient.as(Alias.as("dapp"));
-        Recipient address = Recipient.as(Address.from(sender, Waves.chainId));
+        Recipient alias = Alias.as("dapp");
+        Recipient address = Address.from(Waves.chainId, sender);
         AssetId assetId = AssetId.as("5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd");
 
         String str = new String(new char[16]).replace("\0", "a");

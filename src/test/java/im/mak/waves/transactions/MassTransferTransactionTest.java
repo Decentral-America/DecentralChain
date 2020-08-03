@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,12 +38,12 @@ public class MassTransferTransactionTest {
     //todo fair fee
     static Stream<Arguments> transactionsProvider() {
         List<Transfer> alias = asList(
-                Transfer.to(Recipient.as(Alias.as("rich")), minAmount),
-                Transfer.to(Recipient.as(Alias.as("_rich-account.with@30_symbols_")), maxAmount)
+                Transfer.to(Alias.as("rich"), minAmount),
+                Transfer.to(Alias.as("_rich-account.with@30_symbols_"), maxAmount)
         );
         List<Transfer> address = asList(
-                Transfer.to(Recipient.as(Address.from(sender, Waves.chainId)), maxAmount),
-                Transfer.to(Recipient.as(Address.from(sender, Waves.chainId)), minAmount)
+                Transfer.to(Address.from(Waves.chainId, sender), maxAmount),
+                Transfer.to(Address.from(Waves.chainId, sender), minAmount)
         );
         AssetId assetId = AssetId.as("CjwUuXHmQvBXtykMLDD9QXWHMqawZCW3VoomauCM1XVJ");
         byte[] attachment = Base58.decode("2euEyjatz3mkRYDDPGe4rXbZrrVa3qk9Ghvc9fEVpw9mn6eTNeVimm1ae2Y5Lc1jjDXFuyj7uGxBgG8TzxZM4kaBKG1nZ4ReXEA1ACaQrL5HGmfHhHPiwEBYgXFR5opqjFcd4USi3PTevRkp6CkJghJBXozpvmC9vcBHBADQZ34PdDBkUk135d7pMrcS8siy");

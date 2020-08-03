@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.serializers;
+package im.mak.waves.transactions.serializers.binary;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.PublicKey;
@@ -74,10 +74,7 @@ public class BytesWriter {
     }
 
     public BytesWriter writeRecipient(Recipient recipient) {
-        if (recipient.isAlias())
-            return write((byte) 2, recipient.alias().chainId())
-                    .writeArrayWithLength(recipient.alias().value().getBytes(UTF_8));
-        else return write(recipient.address().bytes());
+        return write(recipient.bytes());
     }
 
     public BytesWriter writeAssetId(AssetId assetId) {

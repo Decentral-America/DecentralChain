@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static im.mak.waves.transactions.LeaseCancelTransaction.MIN_FEE;
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.params.provider.Arguments.arguments;

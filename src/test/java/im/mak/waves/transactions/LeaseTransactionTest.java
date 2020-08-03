@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static im.mak.waves.transactions.LeaseTransaction.MIN_FEE;
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -30,9 +30,9 @@ public class LeaseTransactionTest {
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Recipient minAlias = Recipient.as(Alias.as("rich"));
-        Recipient maxAlias = Recipient.as(Alias.as("_rich-account.with@30_symbols_"));
-        Recipient address = Recipient.as(Address.from(sender, Waves.chainId));
+        Recipient minAlias = Alias.as("rich");
+        Recipient maxAlias = Alias.as("_rich-account.with@30_symbols_");
+        Recipient address = Address.from(Waves.chainId, sender);
         return Stream.of(
                 arguments(1, minAlias, 1, Id.as("4HcJAJJSmPVLw2kyZH1AUen1VDKaG3DHr8cgRJLpfNc6"),
                         Proof.list(Proof.as("5naDD2BUShvyrmfsz2EdSFnAMHaL9FkRSHLcMaJftjdRHVHN4xzkG3tmXVLUqQ1nwqmQgX3iqNyTRhkchsPapRRE")),

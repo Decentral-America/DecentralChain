@@ -7,7 +7,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Id;
-import im.mak.waves.transactions.serializers.BytesWriter;
+import im.mak.waves.transactions.serializers.binary.BytesWriter;
 
 import java.io.IOException;
 import java.util.Objects;

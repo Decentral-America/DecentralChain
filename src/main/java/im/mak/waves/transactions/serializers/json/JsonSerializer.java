@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.serializers;
+package im.mak.waves.transactions.serializers.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +16,7 @@ import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
 import im.mak.waves.transactions.invocation.*;
 import im.mak.waves.transactions.mass.Transfer;
+import im.mak.waves.transactions.serializers.Scheme;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public abstract class JsonSerializer {
                     json.get("quantity").asLong(), json.get("decimals").asInt(), json.get("reissuable").asBoolean(),
                     scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } if (type == TransferTransaction.TYPE) {
-            Recipient recipient = Recipient.as(json.get("recipient").asText());
+            Recipient recipient = recipientFromJson(json.get("recipient"));
             if (version < 3)
                 chainId = recipient.chainId();
             AssetId assetId = assetIdFromJson(json.get("assetId"));
@@ -158,7 +159,7 @@ public abstract class JsonSerializer {
             if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for LeaseTransaction");
 
-            Recipient recipient = Recipient.as(json.get("recipient").asText());
+            Recipient recipient = recipientFromJson(json.get("recipient"));
             if (version < 3)
                 chainId = recipient.chainId();
             if (version == 1 && json.has("signature"))
@@ -187,7 +188,7 @@ public abstract class JsonSerializer {
             JsonNode jsTransfers = json.get("transfers");
             List<Transfer> transfers = new ArrayList<>();
             for (JsonNode jsTransfer : jsTransfers) {
-                Recipient recipient = Recipient.as(jsTransfer.get("recipient").asText());
+                Recipient recipient = recipientFromJson(jsTransfer.get("recipient"));
                 long amount = jsTransfer.get("amount").asLong();
                 transfers.add(Transfer.to(recipient, amount));
             }
@@ -225,7 +226,7 @@ public abstract class JsonSerializer {
             AssetId assetId = assetIdFromJson(json.get("assetId"));
             return new SetAssetScriptTransaction(sender, assetId, scriptFromJson(json), chainId, fee, timestamp, version, proofs);
         } else if (type == InvokeScriptTransaction.TYPE) {
-            Recipient dApp = Recipient.as(json.get("dApp").asText());
+            Recipient dApp = recipientFromJson(json.get("dApp"));
             Function function = Function.asDefault();
             if (json.hasNonNull("call")) {
                 JsonNode call = json.get("call");
@@ -409,7 +410,7 @@ public abstract class JsonSerializer {
                 }
             } else if (tx instanceof CreateAliasTransaction) {
                 CreateAliasTransaction catx = (CreateAliasTransaction) tx;
-                jsObject.put("alias", catx.alias().value());
+                jsObject.put("alias", catx.alias().name());
                 if (catx.version() == 1)
                     signature = catx.proofs().get(0).toString();
                 if (catx.version() < 3)
@@ -550,6 +551,11 @@ public abstract class JsonSerializer {
                 argsToJson(arg.putArray("value"), ((ListArg) a).value());
             } else throw new IllegalArgumentException(); //todo
         });
+    }
+
+    public static Recipient recipientFromJson(JsonNode json) {
+        String value = json.asText();
+        return Address.isValid(value) ? Address.as(value) : Alias.as(value);
     }
 
     public static byte[] scriptFromJson(JsonNode json) {

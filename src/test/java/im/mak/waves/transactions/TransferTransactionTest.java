@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -32,8 +32,8 @@ public class TransferTransactionTest {
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Recipient alias = Recipient.as(Alias.as("_rich-account.with@30_symbols_"));
-        Recipient address = Recipient.as(Address.from(sender, Waves.chainId));
+        Recipient alias = Alias.as("_rich-account.with@30_symbols_");
+        Recipient address = Address.from(Waves.chainId, sender);
         AssetId assetId = AssetId.as("9Z9DqJz4GbrJiMDHRFdGPz4GdVy6sWzzRQKZARkvsgMp");
         byte[] attachment = Base58.decode("zdRB3cqsKNeYxTf1AN4uJhWHe6hyT3DmguhM7oh4rdCjH8w9bbqChPcbTWTzTou9h84yq87Nt6NUGiLdUjpfypy3zSDe4n2DZcuQD2Y2zaUAq1m863kSAUuTYY1HdHyCJkpxE9PbKWAKR68v2WrVqskboaUYQdqaMWWeHDW8Z5c4kDQf3MLJzNSbUWCzu5A");
 

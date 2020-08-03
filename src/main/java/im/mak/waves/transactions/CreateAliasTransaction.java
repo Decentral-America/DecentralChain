@@ -71,7 +71,7 @@ public class CreateAliasTransaction extends Transaction {
         private final String alias;
 
         protected CreateAliasTransactionBuilder(Alias alias) {
-            this(alias.value());
+            this(alias.name());
             chainId(alias.chainId());
         }
 

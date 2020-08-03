@@ -1,24 +1,25 @@
 package im.mak.waves.transactions.account;
 
 import im.mak.waves.crypto.Bytes;
+import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.base.Base58;
+import im.mak.waves.transactions.common.Recipient;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
  * Address is used as recipient of transactions.
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class Address {
+public class Address implements Recipient {
 
     private static final int CHECKSUM_LENGTH = 4;
-    private static final int HASH_LENGTH = 20;
+    private static final int PUBLIC_KEY_HASH_LENGTH = 20;
 
     public static final String PREFIX = "address:";
     public static final byte TYPE = 1;
-    public static final int BYTES_LENGTH = 1 + 1 + HASH_LENGTH + CHECKSUM_LENGTH;
+    public static final int BYTES_LENGTH = 1 + 1 + PUBLIC_KEY_HASH_LENGTH + CHECKSUM_LENGTH;
     public static final int STRING_LENGTH = (int) Math.ceil(Math.log(256) / Math.log(58) * BYTES_LENGTH);
 
     /**
@@ -27,10 +28,9 @@ public class Address {
      *
      * @param chainId blockchain network Id.
      * @return address
-     * @see ChainId
      */
-    public static im.mak.waves.transactions.account.Address from(PublicKey publicKey, byte chainId) {
-        return new im.mak.waves.transactions.account.Address(publicKey, chainId);
+    public static Address from(byte chainId, PublicKey publicKey) {
+        return new Address(chainId, publicKey);
     }
 
     /**
@@ -39,10 +39,9 @@ public class Address {
      *
      * @param chainId blockchain network Id.
      * @return address
-     * @see ChainId
      */
-    public static im.mak.waves.transactions.account.Address fromPart(byte[] publicKeyHash, byte chainId) {
-        return new im.mak.waves.transactions.account.Address(publicKeyHash, chainId);
+    public static Address fromPart(byte chainId, byte[] publicKeyHash) {
+        return new Address(chainId, publicKeyHash);
     }
 
     /**
@@ -52,8 +51,8 @@ public class Address {
      * @return address instance
      * @throws IllegalArgumentException if base58 string is null
      */
-    public static im.mak.waves.transactions.account.Address as(String base58Encoded) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.Address(base58Encoded);
+    public static Address as(String base58Encoded) throws IllegalArgumentException {
+        return new Address(base58Encoded);
     }
 
     /**
@@ -63,20 +62,20 @@ public class Address {
      * @return address instance
      * @throws IllegalArgumentException if the address is wrong
      */
-    public static im.mak.waves.transactions.account.Address as(byte[] bytes) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.Address(bytes);
+    public static Address as(byte[] bytes) throws IllegalArgumentException {
+        return new Address(bytes);
     }
 
     /**
      * Check if the address is correct for specified Waves network.
      *
-     * @param address address as base58-encoded string
      * @param chainId blockchain network Id
+     * @param address address as base58-encoded string
      * @return true if the address is correct
      */
-    public static boolean isValid(String address, byte chainId) {
+    public static boolean isValid(byte chainId, String address) {
         try {
-            return isValid(Base58.decode(address), chainId);
+            return isValid(chainId, Base58.decode(address));
         } catch (IllegalArgumentException iae) {
             return false;
         }
@@ -99,11 +98,11 @@ public class Address {
     /**
      * Check if the address is correct for specified Waves network.
      *
-     * @param addressBytes address bytes
      * @param chainId      blockchain network Id
+     * @param addressBytes address bytes
      * @return true if the address is correct
      */
-    public static boolean isValid(byte[] addressBytes, byte chainId) {
+    public static boolean isValid(byte chainId, byte[] addressBytes) {
         return isValid(addressBytes) && addressBytes[1] == chainId;
     }
 
@@ -115,45 +114,34 @@ public class Address {
      */
     public static boolean isValid(byte[] addressBytes) {
         try {
-            new im.mak.waves.transactions.account.Address(addressBytes);
+            new Address(addressBytes);
         } catch (IllegalArgumentException e) {
             return false;
         }
         return true;
     }
 
-    private byte[] bytes;
-    private String encoded;
+    private final byte[] bytes;
+    private final String encoded;
 
     /**
      * Generate an address from the public key.
      * Depends on the Id of a particular blockchain network.
      *
-     * @param chainId blockchain network Id.
-     * @see ChainId
+     * @param chainId blockchain network Id
      */
-    public Address(PublicKey publicKey, byte chainId) {
-        this(partOfPublicKey(publicKey), chainId);
-    }
-
-    private static byte[] partOfPublicKey(PublicKey publicKey) {
-        return Arrays.copyOfRange(Hash.secureHash(publicKey.bytes()), 0, 20);
+    public Address(byte chainId, PublicKey publicKey) {
+        this(chainId, Crypto.getPublicKeyHash(publicKey.bytes()));
     }
 
     /**
      * Generate an address from a part of the public key.
      * Depends on the Id of a particular blockchain network.
      *
-     * @param chainId blockchain network Id.
-     * @see ChainId
+     * @param chainId blockchain network Id
      */
-    public Address(byte[] publicKeyHash, byte chainId) {
-        ByteBuffer buf = ByteBuffer.allocate(26);
-        buf.put((byte) 1).put(chainId).put(publicKeyHash);
-        byte[] checksum = Hash.secureHash(Arrays.copyOfRange(buf.array(), 0, 22));
-        buf.put(checksum, 0, 4);
-
-        this.bytes = buf.array();
+    public Address(byte chainId, byte[] publicKeyHash) {
+        this.bytes = Crypto.getAddress(chainId, publicKeyHash);
         this.encoded = Base58.encode(this.bytes);
     }
 
@@ -191,6 +179,10 @@ public class Address {
 
         this.bytes = addressBytes;
         this.encoded = Base58.encode(this.bytes);
+    }
+
+    public byte type() {
+        return TYPE;
     }
 
     /**
@@ -233,7 +225,7 @@ public class Address {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        im.mak.waves.transactions.account.Address address = (im.mak.waves.transactions.account.Address) o;
+        Address address = (Address) o;
         return Arrays.equals(bytes, address.bytes);
     }
 
@@ -249,7 +241,6 @@ public class Address {
      */
     @Override
     public String toString() {
-        if (this.encoded == null) this.encoded = Base58.encode(bytes);
         return this.encoded;
     }
 

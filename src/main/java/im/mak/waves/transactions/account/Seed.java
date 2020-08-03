@@ -218,7 +218,6 @@ public class Seed {
      *
      * @param chainId blockchain network Id.
      * @return address
-     * @see ChainId
      */
     public Address address(byte chainId) {
         return this.privateKey().address(chainId);

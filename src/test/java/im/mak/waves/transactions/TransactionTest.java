@@ -1,6 +1,7 @@
 package im.mak.waves.transactions;
 
 import im.mak.waves.transactions.account.PublicKey;
+import im.mak.waves.transactions.common.Alias;
 import im.mak.waves.transactions.common.Recipient;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class TransactionTest {
         long timestamp = 1600000000000L;
 
         Transaction leaseTx = LeaseTransaction
-                .with(Recipient.as("rich"), 100)
+                .with(Alias.as("rich"), 100)
                 .sender(sender)
                 .timestamp(timestamp)
                 .getUnsigned();

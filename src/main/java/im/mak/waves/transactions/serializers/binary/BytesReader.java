@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.serializers;
+package im.mak.waves.transactions.serializers.binary;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.Address;
@@ -90,10 +90,10 @@ public class BytesReader {
 
     public Recipient readRecipient() {
         byte recipientType = readByte();
-        if (recipientType == 1)
-            return Recipient.as(Address.as(concat(of(recipientType), readBytes(Address.BYTES_LENGTH - 1))));
-        else if (recipientType == 2) {
-            return Recipient.as(Alias.as(readByte(), new String(readArrayWithLength())));
+        if (recipientType == Address.TYPE)
+            return Address.as(concat(of(recipientType), readBytes(Address.BYTES_LENGTH - 1)));
+        else if (recipientType == Alias.TYPE) {
+            return Alias.as(readByte(), new String(readArrayWithLength()));
         } else throw new IllegalArgumentException("Unknown recipient type");
     }
 

@@ -2,11 +2,12 @@ package im.mak.waves.transactions.common;
 
 import im.mak.waves.crypto.Bytes;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class Alias {
+public class Alias implements Recipient {
 
     public static final String PREFIX = "alias:";
     public static final byte TYPE = 2;
@@ -16,28 +17,30 @@ public class Alias {
 
     private static final String ALPHABET = "-.0-9@_a-z";
 
-    private final byte chainId;
-    private final String alias;
+    private final byte[] bytes;
+    private final String name;
+    private final String fullAlias;
 
-    public Alias(String alias) {
-        this(Waves.chainId, alias);
+    public Alias(String name) {
+        this(Waves.chainId, name);
     }
 
-    public Alias(byte chainId, String value) {
-        if (isValid(value, chainId)) {
-            this.chainId = chainId;
-            this.alias = value.replaceFirst("^" + PREFIX + (char) chainId + ":", "");
+    public Alias(byte chainId, String name) {
+        if (isValid(chainId, name)) {
+            this.name = name.replaceFirst("^" + PREFIX + (char) chainId + ":", "");
+            this.bytes = Bytes.concat(Bytes.of(TYPE, chainId), Bytes.toSizedByteArray(this.name.getBytes(UTF_8)));
+            this.fullAlias = PREFIX + (char) bytes[1] + ":" + this.name;
         } else throw new IllegalArgumentException("Alias must be " + MIN_LENGTH
                 + " to " + MAX_LENGTH + " long of " + ALPHABET + " characters"
-                + " and may have a prefix 'alias:" + (char) chainId + ":', but actual is '" + value + "'");
+                + " and may have a prefix '" + PREFIX + (char) chainId + ":', but actual is '" + name + "'");
     }
 
     public static boolean isValid(String alias) {
-        return isValid(alias, Waves.chainId);
+        return isValid(Waves.chainId, alias);
     }
 
-    public static boolean isValid(String alias, byte chainId) {
-        String maybeAlias = alias.replaceFirst("^alias:" + (char) chainId + ":", "");
+    public static boolean isValid(byte chainId, String alias) {
+        String maybeAlias = alias.replaceFirst("^" + PREFIX + (char) chainId + ":", "");
 
         return maybeAlias.matches("[" + ALPHABET + "]{" + MIN_LENGTH + "," + MAX_LENGTH + "}");
     }
@@ -50,34 +53,41 @@ public class Alias {
         return new Alias(chainId, value);
     }
 
-    public byte chainId() {
-        return chainId;
+    public byte type() {
+        return TYPE;
     }
 
-    public String value() {
-        return alias;
+    public byte chainId() {
+        return bytes[1];
+    }
+
+    public String name() {
+        return name;
     }
 
     public byte[] bytes() {
-        return Bytes.concat(Bytes.of((byte) 2, chainId()), Bytes.toSizedByteArray(alias.getBytes(UTF_8)));
+        return bytes;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Alias that = (Alias) o;
-        return this.chainId == that.chainId &&
-                Objects.equals(this.alias, that.alias);
+        Alias alias = (Alias) o;
+        return Arrays.equals(bytes, alias.bytes) &&
+                Objects.equals(name, alias.name) &&
+                Objects.equals(fullAlias, alias.fullAlias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chainId, alias);
+        int result = Objects.hash(name, fullAlias);
+        result = 31 * result + Arrays.hashCode(bytes);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "alias:" + (char) chainId + ":" + alias;
+        return fullAlias;
     }
 }

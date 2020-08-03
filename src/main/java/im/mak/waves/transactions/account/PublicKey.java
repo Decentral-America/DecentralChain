@@ -99,10 +99,9 @@ public class PublicKey {
      *
      * @param chainId blockchain network Id.
      * @return address
-     * @see ChainId
      */
     public Address address(byte chainId) {
-        return Address.from(this, chainId);
+        return Address.from(chainId, this);
     }
 
     /**

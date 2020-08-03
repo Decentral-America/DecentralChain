@@ -6,8 +6,8 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.TransactionOrOrder;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.serializers.BinarySerializer;
-import im.mak.waves.transactions.serializers.JsonSerializer;
+import im.mak.waves.transactions.serializers.binary.BinarySerializer;
+import im.mak.waves.transactions.serializers.json.JsonSerializer;
 import im.mak.waves.transactions.serializers.ProtobufConverter;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package im.mak.waves.transactions.serializers;
+package im.mak.waves.transactions.serializers.binary;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.Address;
@@ -10,6 +10,7 @@ import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
 import im.mak.waves.transactions.invocation.Function;
 import im.mak.waves.transactions.mass.Transfer;
+import im.mak.waves.transactions.serializers.Scheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,13 +216,13 @@ public abstract class LegacyBinarySerializer {
         } else if (type == CreateAliasTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
             byte[] aliasBytes = reader.readArrayWithLength();
-            Alias alias = new BytesReader(aliasBytes).readRecipient().alias();
+            Alias alias = (Alias) new BytesReader(aliasBytes).readRecipient();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
             proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
             transaction = new CreateAliasTransaction(
-                    sender, alias.value(), alias.chainId(), Amount.of(fee), timestamp, version, proofs);
+                    sender, alias.name(), alias.chainId(), Amount.of(fee), timestamp, version, proofs);
         } else if (type == MassTransferTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
             AssetId assetId = reader.readAssetIdOrWaves();
@@ -469,7 +470,7 @@ public abstract class LegacyBinarySerializer {
                 CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
                 bwStream.writePublicKey(caTx.sender())
                         .writeArrayWithLength(new BytesWriter()
-                                .writeRecipient(Recipient.as(caTx.alias()))
+                                .writeRecipient(caTx.alias())
                                 .getBytes())
                         .writeLong(caTx.fee().value())
                         .writeLong(caTx.timestamp());

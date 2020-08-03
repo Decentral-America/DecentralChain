@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static im.mak.waves.transactions.serializers.JsonSerializer.JSON_MAPPER;
+import static im.mak.waves.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -30,7 +30,7 @@ public class GenesisTransactionTest {
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Address address = Address.from(sender, Waves.chainId);
+        Address address = Address.from(Waves.chainId, sender);
         return Stream.of(
                 arguments(address, Id.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
                         Proof.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
