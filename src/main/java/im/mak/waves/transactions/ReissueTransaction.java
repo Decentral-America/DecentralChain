@@ -18,7 +18,6 @@ public class ReissueTransaction extends Transaction {
     private final Amount amount;
     private final boolean reissuable;
 
-    //todo test short constructors
     public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable) {
         this(sender, amount, reissuable, Waves.chainId, Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());

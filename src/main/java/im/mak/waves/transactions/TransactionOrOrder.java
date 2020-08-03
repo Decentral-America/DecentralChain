@@ -116,8 +116,6 @@ public abstract class TransactionOrOrder {
     //TODO immutable lists
     //TODO calculate fee (data, massTransfer)
 
-    //todo boolean equals(String json)
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -195,6 +193,8 @@ public abstract class TransactionOrOrder {
         }
 
         public TX_OR_ORDER getSignedWith(PrivateKey signer) {
+            if (sender == null)
+                sender = signer.publicKey();
             return getUnsigned().addProof(signer);
         }
 

@@ -14,7 +14,7 @@ public class PaymentTransaction extends Transaction {
 
     public static final int TYPE = 2;
     public static final int LATEST_VERSION = 1;
-    public static final long MIN_FEE = 100_000; //todo ???
+    public static final long MIN_FEE = 1;
 
     private final Address recipient;
     private final long amount;

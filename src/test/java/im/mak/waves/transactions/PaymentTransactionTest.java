@@ -22,7 +22,7 @@ public class PaymentTransactionTest {
     static PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
     static long timestamp = 1600000000000L;
     static long amount = Long.MAX_VALUE;
-    static long fee = PaymentTransaction.MIN_FEE + 1;
+    static long fee = 100_000 + 1;
 
     @BeforeAll
     static void beforeAll() {
