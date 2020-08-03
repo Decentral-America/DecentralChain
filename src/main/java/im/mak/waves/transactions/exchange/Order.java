@@ -30,7 +30,6 @@ public class Order extends TransactionOrOrder {
         this(sender, type, amount, price, matcher, chainId, fee, timestamp, expiration, version, Proof.emptyList());
     }
 
-    //todo maybe better use AssetPair instead of two Amounts?
     public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher, byte chainId,
                  Amount fee, long timestamp, long expiration, int version, List<Proof> proofs) {
         super(version, chainId, sender, fee, timestamp, proofs);

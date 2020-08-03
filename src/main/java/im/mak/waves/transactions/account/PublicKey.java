@@ -1,6 +1,7 @@
 package im.mak.waves.transactions.account;
 
 import im.mak.waves.crypto.base.Base58;
+import im.mak.waves.transactions.common.Proof;
 import org.whispersystems.curve25519.Curve25519;
 import org.whispersystems.curve25519.java.curve_sigs;
 
@@ -13,7 +14,6 @@ import java.util.Arrays;
 public class PublicKey {
 
     public static final int BYTES_LENGTH = 32;
-    public static final int SIGNATURE_LENGTH = 64; //todo move to Proof
 
     /**
      * Generate public key from the private key.
@@ -113,9 +113,9 @@ public class PublicKey {
      * @throws IllegalArgumentException if signature length is different from expected
      */
     public boolean isSignatureValid(byte[] message, byte[] signature) throws IllegalArgumentException {
-        if (signature.length != SIGNATURE_LENGTH)
+        if (signature.length != Proof.BYTE_LENGTH)
             throw new IllegalArgumentException("Signature has wrong size in bytes. "
-                    + "Expected: " + SIGNATURE_LENGTH + ", actual: " + signature.length);
+                    + "Expected: " + Proof.BYTE_LENGTH + ", actual: " + signature.length);
         return cipher.verifySignature(bytes, message, signature);
     }
 

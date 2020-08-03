@@ -18,6 +18,7 @@ public class IssueTransaction extends Transaction {
     public static final int TYPE = 3;
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 100_000_000;
+    public static final long NFT_MIN_FEE = 100_000;
 
     private final byte[] name;
     private final byte[] description;
@@ -64,6 +65,10 @@ public class IssueTransaction extends Transaction {
 
     public static IssueTransaction.IssueTransactionBuilder with(String name, long quantity, int decimals) {
         return new IssueTransaction.IssueTransactionBuilder(name, quantity, decimals);
+    }
+
+    public static IssueTransaction.IssueTransactionNFTBuilder withNft(String name) {
+        return new IssueTransaction.IssueTransactionNFTBuilder(name);
     }
 
     public String name() {
@@ -161,6 +166,43 @@ public class IssueTransaction extends Transaction {
 
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, compiledScript,
+                    chainId, fee, timestamp, version, Proof.emptyList());
+        }
+    }
+
+    public static class IssueTransactionNFTBuilder
+            extends TransactionBuilder<IssueTransactionNFTBuilder, IssueTransaction> {
+        private final byte[] name;
+        private byte[] description;
+        private byte[] compiledScript;
+
+        private static final long QUANTITY = 1;
+        private static final int DECIMALS = 0;
+        private static final boolean REISSUABLE = false;
+
+        protected IssueTransactionNFTBuilder(String name) {
+            super(LATEST_VERSION, NFT_MIN_FEE);
+            this.name = name == null ? Bytes.empty() : name.getBytes(UTF_8);
+            this.description = Bytes.empty();
+            this.compiledScript = Bytes.empty();
+        }
+
+        public IssueTransactionNFTBuilder description(String description) {
+            this.description = description.getBytes(UTF_8);
+            return this;
+        }
+
+        public IssueTransactionNFTBuilder compiledScript(String compiledBase64Script) {
+            return compiledScript(compiledBase64Script == null ? null : Base64.decode(compiledBase64Script));
+        }
+
+        public IssueTransactionNFTBuilder compiledScript(byte[] compiledScript) {
+            this.compiledScript = compiledScript;
+            return this;
+        }
+
+        protected IssueTransaction _build() {
+            return new IssueTransaction(sender, name, description, QUANTITY, DECIMALS, REISSUABLE, compiledScript,
                     chainId, fee, timestamp, version, Proof.emptyList());
         }
     }

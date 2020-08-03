@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"UnusedReturnValue", "unchecked", "unused"})
 public abstract class TransactionOrOrder {
 
     private Id id;
