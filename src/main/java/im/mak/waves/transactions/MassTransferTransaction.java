@@ -27,11 +27,11 @@ public class MassTransferTransaction extends Transaction {
     private final byte[] attachment;
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment) {
-        this(sender, assetId, transfers, attachment, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, assetId, transfers, attachment, Waves.chainId, Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
+        super(TYPE, version, chainId, sender, calculateFee(transfers, fee), timestamp, proofs);
 
         this.assetId = assetId == null ? AssetId.WAVES : assetId;
         this.transfers = transfers == null ? new ArrayList<>() : transfers;
@@ -52,6 +52,15 @@ public class MassTransferTransaction extends Transaction {
 
     public static MassTransferTransactionBuilder with(Transfer... transfers) {
         return with(Arrays.asList(transfers));
+    }
+
+    private static Amount calculateFee(List<Transfer> transfers, Amount fee) {
+        if (fee.value() > 0)
+            return fee;
+        if (transfers == null)
+            return Amount.of(MIN_FEE);
+
+        return Amount.of(MIN_FEE * (1 + (transfers.size() + 1) / 2));
     }
 
     public long total() {
@@ -97,7 +106,7 @@ public class MassTransferTransaction extends Transaction {
         private byte[] attachment;
 
         protected MassTransferTransactionBuilder(List<Transfer> transfers) {
-            super(LATEST_VERSION, MIN_FEE);
+            super(LATEST_VERSION, 0);
             this.transfers = transfers;
             this.assetId = AssetId.WAVES;
             this.attachment = Bytes.empty();
