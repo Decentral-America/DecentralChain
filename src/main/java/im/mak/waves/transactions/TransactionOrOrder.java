@@ -182,6 +182,8 @@ public abstract class TransactionOrOrder {
             return fee(Amount.of(fee));
         }
 
+        //todo additionalFee
+
         public BUILDER timestamp(long timestamp) {
             this.timestamp = timestamp;
             return builder();

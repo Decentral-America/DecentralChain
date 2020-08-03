@@ -7,10 +7,7 @@ import im.mak.waves.transactions.common.Waves;
 import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -22,13 +19,14 @@ public class DataTransaction extends Transaction {
 
     private final List<DataEntry> data;
 
-    //todo automatically calc fee
     public DataTransaction(PublicKey sender, List<DataEntry> data) {
-        this(sender, data, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, data, Waves.chainId, Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, fee, timestamp, proofs);
+        super(TYPE, version, chainId, sender,
+                calculateFee(sender, data, chainId, fee, timestamp, version, proofs),
+                timestamp, proofs);
 
         this.data = data == null ? Collections.emptyList() : data;
     }
@@ -41,19 +39,32 @@ public class DataTransaction extends Transaction {
         return (DataTransaction) Transaction.fromJson(json);
     }
 
-    public static DataTransactionBuilder with() {
-        return new DataTransactionBuilder();
-    }
-
     public static DataTransactionBuilder with(List<DataEntry> data) {
         return new DataTransactionBuilder(data);
+    }
+
+    public static DataTransactionBuilder with(DataEntry... data) {
+        return new DataTransactionBuilder(Arrays.asList(data));
+    }
+
+    private static Amount calculateFee(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        if (fee.value() > 0)
+            return fee;
+
+        DataTransaction tempTx = new DataTransaction(sender, data, chainId, Amount.of(MIN_FEE), timestamp, version, proofs);
+        int payloadSize = tempTx.version() == 1
+                ? tempTx.bodyBytes().length
+                : tempTx.toProtobuf().getTransaction().getDataTransaction().toByteArray().length;
+
+        long payloadFee = MIN_FEE * (1 + (payloadSize - 1) / 1024);
+        return Amount.of(payloadFee);
     }
 
     public List<DataEntry> data() {
         return data;
     }
 
-     public List<String> dataKeys() {
+    public List<String> dataKeys() {
          return data.stream().map(DataEntry::key).collect(toCollection(ArrayList::new));
      }
 
@@ -75,43 +86,9 @@ public class DataTransaction extends Transaction {
             extends TransactionBuilder<DataTransactionBuilder, DataTransaction> {
         private final List<DataEntry> data;
 
-        protected DataTransactionBuilder() {
-            this(new ArrayList<>());
-        }
-
         protected DataTransactionBuilder(List<DataEntry> data) {
-            super(LATEST_VERSION, MIN_FEE);
+            super(LATEST_VERSION, 0);
             this.data = data;
-        }
-
-        public DataTransactionBuilder entry(DataEntry entry) {
-            data.add(entry);
-            return this;
-        }
-
-        public DataTransactionBuilder binary(String key, byte[] value) {
-            data.add(new BinaryEntry(key, value));
-            return this;
-        }
-
-        public DataTransactionBuilder bool(String key, boolean value) {
-            data.add(new BooleanEntry(key, value));
-            return this;
-        }
-
-        public DataTransactionBuilder integer(String key, long value) {
-            data.add(new IntegerEntry(key, value));
-            return this;
-        }
-
-        public DataTransactionBuilder string(String key, String value) {
-            data.add(new StringEntry(key, value));
-            return this;
-        }
-
-        public DataTransactionBuilder delete(String key) {
-            data.add(new DeleteEntry(key));
-            return this;
         }
 
         protected DataTransaction _build() {
