@@ -37,15 +37,15 @@ public class Proof extends Base58Encoded {
         return new Proof(proof);
     }
 
-    //todo proofs with custom length (check legacy serialization)
     @Override
     protected byte[] validateAndGet(byte[] value) throws IllegalArgumentException {
         if (value == null || value.length == 0)
             return Bytes.empty();
-        else if (value.length == BYTE_LENGTH)
-            return value;
-        else throw new IllegalArgumentException("Wrong proof '" + Base58.encode(value)
-                    + "' byte length " + value.length + ". Must be " + BYTE_LENGTH);
+        if (value.length > BYTE_LENGTH)
+            throw new IllegalArgumentException("Wrong proof '" + Base58.encode(value)
+                    + "' byte length " + value.length + ". Must be less or equal to " + BYTE_LENGTH);
+
+        return value;
     }
 
 }

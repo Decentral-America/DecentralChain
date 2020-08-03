@@ -131,7 +131,7 @@ public class BytesWriter {
     }
 
     public BytesWriter writeProofs(List<Proof> proofs) {
-        write((byte) 1).writeShort((short) proofs.size()); //todo Proof.VERSION
+        write(Proof.LATEST_VERSION).writeShort((short) proofs.size());
         proofs.forEach(proof -> writeArrayWithLength(proof.bytes()));
         return this;
     }

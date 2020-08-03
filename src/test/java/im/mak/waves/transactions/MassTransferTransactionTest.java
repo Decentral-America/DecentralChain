@@ -35,7 +35,6 @@ public class MassTransferTransactionTest {
         Waves.chainId = 'R';
     }
 
-    //todo fair fee
     static Stream<Arguments> transactionsProvider() {
         List<Transfer> alias = asList(
                 Transfer.to(Alias.as("rich"), minAmount),

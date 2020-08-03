@@ -110,12 +110,10 @@ public abstract class TransactionOrOrder {
     }
 
     //TODO support java 8 and 11
-    //TODO implement clone in crypto lib and in all getters and constructors
     //TODO basic validations in builder/constructor
     //TODO check access to everything
     //TODO check all ") throws {", "throw new" and "catch". Maybe wrap to own exceptions with message patterns?
     //TODO immutable lists
-    //TODO calculate fee (data, massTransfer)
 
     @Override
     public boolean equals(Object o) {
@@ -167,7 +165,6 @@ public abstract class TransactionOrOrder {
             return builder();
         }
 
-        //todo require to set, at least sender
         public BUILDER sender(PublicKey publicKey) {
             this.sender = publicKey;
             return builder();

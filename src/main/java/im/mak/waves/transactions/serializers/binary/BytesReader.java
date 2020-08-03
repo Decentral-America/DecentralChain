@@ -15,7 +15,6 @@ import static im.mak.waves.crypto.Bytes.concat;
 import static im.mak.waves.crypto.Bytes.of;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-//todo throw exception in all usages, where hasNext() after read
 public class BytesReader {
     private final byte[] bytes;
     private final int length;

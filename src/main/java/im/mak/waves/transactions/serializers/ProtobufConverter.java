@@ -105,7 +105,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasReissue()) {
             TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
             tx = ReissueTransaction
-                    .with(Amount.of(reissue.getAssetAmount().getAmount(), //todo why asset_amount??
+                    .with(Amount.of(reissue.getAssetAmount().getAmount(),
                             AssetId.as(reissue.getAssetAmount().getAssetId().toByteArray())))
                     .reissuable(reissue.getReissuable())
                     .version(pbTx.getVersion())
@@ -286,7 +286,7 @@ public abstract class ProtobufConverter {
                 .setMatcherFee(amountToPBAmount(order.fee()))
                 .setTimestamp(order.timestamp())
                 .setExpiration(order.expiration());
-        return builder.build(); //todo bodyBytes are just without proofs?
+        return builder.build();
     }
 
     public static TransactionOuterClass.Transaction toUnsignedProtobuf(Transaction tx) {
