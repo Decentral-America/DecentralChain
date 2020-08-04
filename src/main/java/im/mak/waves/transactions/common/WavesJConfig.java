@@ -1,5 +1,6 @@
 package im.mak.waves.transactions.common;
 
+//todo threads
 public abstract class WavesJConfig {
 
     public static final byte MAINNET = 'W';

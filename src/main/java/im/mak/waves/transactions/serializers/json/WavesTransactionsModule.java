@@ -18,7 +18,6 @@ public class WavesTransactionsModule extends SimpleModule {
         addDeserializer(DataEntry.class, new DataEntryDeser());
         addDeserializer(Id.class, new IdDeser());
         addDeserializer(PublicKey.class, new PublicKeyDeser());
-        //todo Recipient
         addDeserializer(Transaction.class, new TransactionDeser());
 
         addSerializer(Address.class, new AddressSer());

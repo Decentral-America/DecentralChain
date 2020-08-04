@@ -73,7 +73,7 @@ public class Order extends TransactionOrOrder {
         return type;
     }
 
-    public AssetPair pair() {
+    public AssetPair assetPair() {
         return AssetPair.of(amount.assetId(), price.assetId());
     }
 

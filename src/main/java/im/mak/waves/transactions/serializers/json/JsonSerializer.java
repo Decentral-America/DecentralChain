@@ -86,7 +86,6 @@ public abstract class JsonSerializer {
         );
         long timestamp = json.get("timestamp").asLong();
         //todo validate id if exists? configurable?
-        //todo what if some field doesn't exist? Default values, e.g. for proofs
 
         Scheme scheme = Scheme.of(type, version);
 
@@ -104,7 +103,7 @@ public abstract class JsonSerializer {
         } else if (type == PaymentTransaction.TYPE) {
             Address recipient = Address.as(json.get("recipient").asText());
             return new PaymentTransaction(sender, recipient, json.get("amount").asLong(), fee, timestamp,
-                    Proof.as(json.get("proofs").get(0).asText())); //todo why proofs, not signature???
+                    Proof.as(json.get("proofs").get(0).asText()));
         } else if (type == IssueTransaction.TYPE) {
             if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for ReissueTransaction");
@@ -184,7 +183,7 @@ public abstract class JsonSerializer {
             return new CreateAliasTransaction(
                     sender, json.get("alias").asText(), chainId, fee, timestamp, version, proofs);
         } if (type == MassTransferTransaction.TYPE) {
-            //todo transferCount, totalAmount?
+            //todo check transferCount, totalAmount?
             JsonNode jsTransfers = json.get("transfers");
             List<Transfer> transfers = new ArrayList<>();
             for (JsonNode jsTransfer : jsTransfers) {
@@ -234,7 +233,7 @@ public abstract class JsonSerializer {
                 function = Function.as(call.get("function").asText(), args);
             }
             List<Amount> payments = new ArrayList<>();
-            String paymentsFieldName = "payment"; //todo why not "payments" for v2? `version == 1 ? "payment" : "payments"`
+            String paymentsFieldName = "payment";
             if (json.hasNonNull(paymentsFieldName))
                 json.get(paymentsFieldName).forEach(p ->
                         payments.add(Amount.of(p.get("amount").asLong(), assetIdFromJson(p.get("assetId")))));
@@ -282,7 +281,7 @@ public abstract class JsonSerializer {
             else throw new IllegalArgumentException("Unknown type `" + entryType + "` of entry with key `" + key + "`");
     }
 
-    public static JsonNode toJsonObject(TransactionOrOrder txOrOrder) { //todo configurable json number->string
+    public static JsonNode toJsonObject(TransactionOrOrder txOrOrder) {
         ObjectNode jsObject = JSON_MAPPER.createObjectNode();
         Scheme scheme = Scheme.of(txOrOrder);
 
@@ -291,7 +290,6 @@ public abstract class JsonSerializer {
             jsObject.put("id", order.id().toString())
                     .put("orderType", order.type().value())
                     .put("version", order.version())
-                    .put("chainId", order.chainId())
                     .put("senderPublicKey", order.sender().toString())
                     .put("sender", order.sender().address(WavesJConfig.chainId()).toString());
             jsObject.putObject("assetPair")
@@ -306,14 +304,12 @@ public abstract class JsonSerializer {
                     .put("expiration", order.expiration())
                     .put("signature", order.proofs().get(0).toString());
 
-//todo why don't show chainId? `if (order.version() < 4)`
-            jsObject.remove("chainId");
             if (order.version() < 3)
                 jsObject.remove("matcherFeeAssetId");
 
             ArrayNode proofs = JSON_MAPPER.createArrayNode();
             order.proofs().forEach(p -> proofs.add(p.toString()));
-            jsObject.set("proofs", proofs); //todo configurable for v1, true by default
+            jsObject.set("proofs", proofs);
         } else {
             Transaction tx = (Transaction) txOrOrder;
             jsObject.put("id", tx.id().toString()) //todo serialize id? configurable and true by default?
@@ -383,8 +379,8 @@ public abstract class JsonSerializer {
                 }
             } else if (tx instanceof ExchangeTransaction) {
                 ExchangeTransaction etx = (ExchangeTransaction) tx;
-                jsObject.set("order1", toJsonObject(etx.isDirectionBuySell() ? etx.buyOrder() : etx.sellOrder()));
-                jsObject.set("order2", toJsonObject(etx.isDirectionBuySell() ? etx.sellOrder() : etx.buyOrder()));
+                jsObject.set("order1", toJsonObject(etx.orders().get(0)));
+                jsObject.set("order2", toJsonObject(etx.orders().get(1)));
                 jsObject.put("amount", etx.amount())
                         .put("price", etx.price())
                         .put("buyMatcherFee", etx.buyMatcherFee())
@@ -463,9 +459,7 @@ public abstract class JsonSerializer {
             } else if (tx instanceof InvokeScriptTransaction) {
                 InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
                 jsObject.put("dApp", isTx.dApp().toString());
-                if (isTx.function().isDefault())
-                {} //todo why is hidden? jsObject.putNull("call");
-                else {
+                if (!isTx.function().isDefault()) {
                     ObjectNode call = jsObject.putObject("call");
                     call.put("function", isTx.function().name());
                     argsToJson(call.putArray("args"), isTx.function().args());
@@ -549,7 +543,7 @@ public abstract class JsonSerializer {
             else if (a instanceof ListArg) {
                 arg.put("type", "list");
                 argsToJson(arg.putArray("value"), ((ListArg) a).value());
-            } else throw new IllegalArgumentException(); //todo
+            } else throw new IllegalArgumentException("Unknown arg type");
         });
     }
 

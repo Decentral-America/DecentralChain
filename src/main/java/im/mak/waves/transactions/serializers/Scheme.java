@@ -38,7 +38,7 @@ public enum Scheme {
             return ofOrder(txOrOrder.version());
         else if (txOrOrder instanceof Transaction)
             return of(((Transaction) txOrOrder).type(), txOrOrder.version());
-        else throw new IllegalArgumentException("Can't recognize transaction or order of " + txOrOrder.getClass().getCanonicalName()); //todo
+        else throw new IllegalArgumentException("Can't recognize transaction or order of " + txOrOrder.getClass().getCanonicalName());
     }
 
 }

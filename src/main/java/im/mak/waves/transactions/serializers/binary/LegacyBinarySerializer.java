@@ -426,9 +426,8 @@ public abstract class LegacyBinarySerializer {
                         .writeLong(btx.timestamp());
             } else if (tx instanceof ExchangeTransaction) {
                 ExchangeTransaction etx = (ExchangeTransaction) tx;
-                //todo etx.orders.get(0)
-                Order order1 = etx.isDirectionBuySell() ? etx.buyOrder() : etx.sellOrder();
-                Order order2 = etx.isDirectionBuySell() ? etx.sellOrder() : etx.buyOrder();
+                Order order1 = etx.orders().get(0);
+                Order order2 = etx.orders().get(1);
                 int order1Size = order1.toBytes().length;
                 int order2Size = order2.toBytes().length;
                 bwStream.writeInt(order1Size);

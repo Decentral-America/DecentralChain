@@ -136,8 +136,8 @@ public class ExchangeTransactionTest {
         ExchangeTransaction deserTx = ExchangeTransaction.fromBytes(expectedBytes);
 
         assertAll("Tx must be deserializable from expected bytes",
-                () -> assertThat(deserTx.buyOrder()).isEqualTo(deserTx.isDirectionBuySell() ? order1 : order2),
-                () -> assertThat(deserTx.sellOrder()).isEqualTo(deserTx.isDirectionBuySell() ? order2 : order1),
+                () -> assertThat(deserTx.orders()).containsExactlyInAnyOrder(deserTx.buyOrder(), deserTx.sellOrder()),
+                () -> assertThat(deserTx.buyOrder()).isNotEqualTo(deserTx.sellOrder()),
                 () -> assertThat(deserTx.amount()).isEqualTo(amount),
                 () -> assertThat(deserTx.price()).isEqualTo(price),
                 () -> assertThat(deserTx.buyMatcherFee()).isEqualTo(buyFee),

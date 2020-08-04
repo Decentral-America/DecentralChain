@@ -348,8 +348,8 @@ public abstract class ProtobufConverter {
                     .build());
         } else if (tx instanceof ExchangeTransaction) {
             ExchangeTransaction etx = (ExchangeTransaction) tx;
-            OrderOuterClass.Order order1 = toProtobuf(etx.isDirectionBuySell() ? etx.buyOrder() : etx.sellOrder());
-            OrderOuterClass.Order order2 = toProtobuf(etx.isDirectionBuySell() ? etx.sellOrder() : etx.buyOrder());
+            OrderOuterClass.Order order1 = toProtobuf(etx.orders().get(0));
+            OrderOuterClass.Order order2 = toProtobuf(etx.orders().get(1));
             protoBuilder.setExchange(TransactionOuterClass.ExchangeTransactionData.newBuilder()
                     .addOrders(order1)
                     .addOrders(order2)

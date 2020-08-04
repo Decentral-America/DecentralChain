@@ -9,8 +9,7 @@ import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ExchangeTransaction extends Transaction {
 
@@ -18,17 +17,14 @@ public class ExchangeTransaction extends Transaction {
     public static final int LATEST_VERSION = 3;
     public static final long MIN_FEE = 300_000;
 
-
-    private final boolean directionBuySell;
-    private final Order order1;
-    private final Order order2;
+    private final List<Order> orders;
     private final long amount;
     private final long price;
     private final long buyMatcherFee;
     private final long sellMatcherFee;
 
     public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price) {
-        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, WavesJConfig.chainId(), //todo calc instead of MIN_FEE
+        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, WavesJConfig.chainId(), //todo calc proportionally instead of MIN_FEE
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
@@ -43,12 +39,10 @@ public class ExchangeTransaction extends Transaction {
             throw new IllegalArgumentException("Matcher's public key in orders must be equal");
         if (!sender.equals(order1.matcher()))
             throw new IllegalArgumentException("Order matcher must be equal to the transaction sender");
-        if (!order1.pair().equals(order2.pair()))
+        if (!order1.assetPair().equals(order2.assetPair()))
             throw new IllegalArgumentException("Asset pair in orders must be equal");
 
-        this.directionBuySell = order1.type() == OrderType.BUY && order2.type() == OrderType.SELL;
-        this.order1 = order1;
-        this.order2 = order2;
+        this.orders = Collections.unmodifiableList(Arrays.asList(order1, order2));
         this.amount = amount;
         this.price = price;
         this.buyMatcherFee = buyMatcherFee;
@@ -67,21 +61,28 @@ public class ExchangeTransaction extends Transaction {
         return new ExchangeTransactionBuilder(buy, sell);
     }
 
-    //todo hide or remove for reflection in serializers
-    public boolean isDirectionBuySell() {
-        return directionBuySell;
+    public AssetPair assetPair() {
+        return this.orders.get(0).assetPair();
     }
-    
-    public AssetPair pair() {
-        return this.order1.pair();
+
+    public List<Order> orders() {
+        return orders;
     }
 
     public Order buyOrder() {
-        return order1.type() == OrderType.BUY ? order1 : order2;
+        return orders.stream()
+                .filter(o -> o.type() == OrderType.BUY)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "ExchangeTransaction " + id().toString() + "doesn't have buy order"));
     }
-    
+
     public Order sellOrder() {
-        return order2.type() == OrderType.SELL ? order2 : order1;
+        return orders.stream()
+                .filter(o -> o.type() == OrderType.SELL)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "ExchangeTransaction " + id().toString() + "doesn't have sell order"));
     }
 
     public long amount() {
@@ -106,17 +107,16 @@ public class ExchangeTransaction extends Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ExchangeTransaction that = (ExchangeTransaction) o;
-        return this.order1.equals(that.order1)
-                && this.order2.equals(that.order2)
-                && this.amount == that.amount
-                && this.price == that.price
-                && this.buyMatcherFee == that.buyMatcherFee
-                && this.sellMatcherFee == that.sellMatcherFee;
+        return amount == that.amount &&
+                price == that.price &&
+                buyMatcherFee == that.buyMatcherFee &&
+                sellMatcherFee == that.sellMatcherFee &&
+                Objects.equals(orders, that.orders);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), order1, order2, amount, price, buyMatcherFee, sellMatcherFee);
+        return Objects.hash(super.hashCode(), orders, amount, price, buyMatcherFee, sellMatcherFee);
     }
 
     public static class ExchangeTransactionBuilder
