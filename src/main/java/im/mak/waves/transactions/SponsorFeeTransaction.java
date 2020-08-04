@@ -82,7 +82,7 @@ public class SponsorFeeTransaction extends Transaction {
 
         protected SponsorFeeTransaction _build() {
             return new SponsorFeeTransaction(
-                    sender, assetId, minSponsoredFee, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, minSponsoredFee, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

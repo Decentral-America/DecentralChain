@@ -203,7 +203,7 @@ public class IssueTransaction extends Transaction {
 
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, QUANTITY, DECIMALS, REISSUABLE, compiledScript,
-                    chainId, fee, timestamp, version, Proof.emptyList());
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
     

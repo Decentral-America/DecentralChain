@@ -92,7 +92,7 @@ public class SetAssetScriptTransaction extends Transaction {
 
         protected SetAssetScriptTransaction _build() {
             return new SetAssetScriptTransaction(
-                    sender, assetId, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, compiledScript, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
     

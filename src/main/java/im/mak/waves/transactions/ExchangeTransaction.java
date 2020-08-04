@@ -160,7 +160,7 @@ public class ExchangeTransaction extends Transaction {
 
         protected ExchangeTransaction _build() {
             return new ExchangeTransaction(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee,
-                    chainId, fee, timestamp, version, Proof.emptyList());
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

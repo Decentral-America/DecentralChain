@@ -140,13 +140,19 @@ public abstract class TransactionOrOrder {
         protected int version;
         protected byte chainId;
         protected PublicKey sender;
-        protected Amount fee;
         protected long timestamp;
+        protected Amount fee;
+        protected long extraFee;
 
         protected TransactionOrOrderBuilder(int defaultVersion, long defaultFee) {
             this.version = defaultVersion;
             this.chainId = WavesJConfig.chainId();
             this.fee = Amount.of(defaultFee);
+            this.extraFee = 0;
+        }
+
+        protected Amount feeWithExtra() {
+            return Amount.of(fee.value() + extraFee, fee.assetId());
         }
 
         private BUILDER builder() {
@@ -179,7 +185,10 @@ public abstract class TransactionOrOrder {
             return fee(Amount.of(fee));
         }
 
-        //todo additionalFee
+        public BUILDER extraFee(long extraFee) {
+            this.extraFee = extraFee;
+            return builder();
+        }
 
         public BUILDER timestamp(long timestamp) {
             this.timestamp = timestamp;

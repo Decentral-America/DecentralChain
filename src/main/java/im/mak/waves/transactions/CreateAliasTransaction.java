@@ -81,7 +81,8 @@ public class CreateAliasTransaction extends Transaction {
         }
 
         protected CreateAliasTransaction _build() {
-            return new CreateAliasTransaction(sender, alias, chainId, fee, timestamp, version, Proof.emptyList());
+            return new CreateAliasTransaction(sender, alias,
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

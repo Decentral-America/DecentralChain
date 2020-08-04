@@ -101,8 +101,8 @@ public class TransferTransaction extends Transaction {
         }
 
         protected TransferTransaction _build() {
-            return new TransferTransaction(
-                    sender, recipient, amount, attachment, chainId, fee, timestamp, version, Proof.emptyList());
+            return new TransferTransaction(sender, recipient, amount, attachment,
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

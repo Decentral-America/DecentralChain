@@ -24,9 +24,7 @@ public class DataTransaction extends Transaction {
     }
 
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender,
-                calculateFee(sender, data, chainId, fee, timestamp, version, proofs),
-                timestamp, proofs);
+        super(TYPE, version, chainId, sender, calculateFee(data, fee, version), timestamp, proofs);
 
         this.data = data == null ? Collections.emptyList() : data;
     }
@@ -47,11 +45,12 @@ public class DataTransaction extends Transaction {
         return new DataTransactionBuilder(Arrays.asList(data));
     }
 
-    private static Amount calculateFee(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+    private static Amount calculateFee(List<DataEntry> data, Amount fee, int version) {
         if (fee.value() > 0)
             return fee;
 
-        DataTransaction tempTx = new DataTransaction(sender, data, chainId, Amount.of(MIN_FEE), timestamp, version, proofs);
+        DataTransaction tempTx = new DataTransaction(PublicKey.as("11111111111111111111111111111111"), data,
+                WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
         int payloadSize = tempTx.version() == 1
                 ? tempTx.bodyBytes().length
                 : tempTx.toProtobuf().getTransaction().getDataTransaction().toByteArray().length;
@@ -92,7 +91,10 @@ public class DataTransaction extends Transaction {
         }
 
         protected DataTransaction _build() {
-            return new DataTransaction(sender, data, chainId, fee, timestamp, version, Proof.emptyList());
+            Amount calculatedFee = calculateFee(data, fee, version);
+            Amount calculatedFeeWithExtra = Amount.of(calculatedFee.value() + extraFee, calculatedFee.assetId());
+            return new DataTransaction(sender, data,
+                    chainId, calculatedFeeWithExtra, timestamp, version, Proof.emptyList());
         }
     }
 

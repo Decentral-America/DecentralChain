@@ -70,7 +70,7 @@ public class BurnTransaction extends Transaction {
         }
 
         protected BurnTransaction _build() {
-            return new BurnTransaction(sender, amount, chainId, fee, timestamp, version, Proof.emptyList());
+            return new BurnTransaction(sender, amount, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

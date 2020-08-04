@@ -91,7 +91,7 @@ public class UpdateAssetInfoTransaction extends Transaction {
 
         protected UpdateAssetInfoTransaction _build() {
             return new UpdateAssetInfoTransaction(
-                    sender, assetId, name, description, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, name, description, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
     

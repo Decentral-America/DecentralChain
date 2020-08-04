@@ -74,7 +74,8 @@ public class LeaseTransaction extends Transaction {
         }
 
         protected LeaseTransaction _build() {
-            return new LeaseTransaction(sender, recipient, amount, chainId, fee, timestamp, version, Proof.emptyList());
+            return new LeaseTransaction(sender, recipient, amount,
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

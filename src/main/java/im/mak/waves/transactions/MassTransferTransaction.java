@@ -127,8 +127,11 @@ public class MassTransferTransaction extends Transaction {
         }
 
         protected MassTransferTransaction _build() {
+            Amount calculatedFee = calculateFee(transfers, fee);
+            Amount calculatedFeeWithExtra = Amount.of(calculatedFee.value() + extraFee, calculatedFee.assetId());
             return new MassTransferTransaction(
-                    sender, assetId, transfers, attachment, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, assetId, transfers, attachment,
+                    chainId, calculatedFeeWithExtra, timestamp, version, Proof.emptyList());
         }
     }
 

@@ -66,7 +66,8 @@ public class LeaseCancelTransaction extends Transaction {
         }
 
         protected LeaseCancelTransaction _build() {
-            return new LeaseCancelTransaction(sender, leaseId, chainId, fee, timestamp, version, Proof.emptyList());
+            return new LeaseCancelTransaction(sender, leaseId,
+                    chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
 

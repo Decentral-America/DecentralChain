@@ -80,7 +80,7 @@ public class SetScriptTransaction extends Transaction {
 
         protected SetScriptTransaction _build() {
             return new SetScriptTransaction(
-                    sender, compiledScript, chainId, fee, timestamp, version, Proof.emptyList());
+                    sender, compiledScript, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }
     
