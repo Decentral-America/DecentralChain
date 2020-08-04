@@ -26,11 +26,11 @@ public class GenesisTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Address address = Address.from(Waves.chainId, sender);
+        Address address = Address.from(WavesJConfig.chainId(), sender);
         return Stream.of(
                 arguments(address, Id.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
                         Proof.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
@@ -61,7 +61,7 @@ public class GenesisTransactionTest {
                 () -> assertThat(deserTx.amount()).isEqualTo(amount),
 
                 () -> assertThat(deserTx.version()).isEqualTo(1),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(emptySender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(0, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

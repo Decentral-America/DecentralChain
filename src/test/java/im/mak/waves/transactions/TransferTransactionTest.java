@@ -28,12 +28,12 @@ public class TransferTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
         Recipient alias = Alias.as("_rich-account.with@30_symbols_");
-        Recipient address = Address.from(Waves.chainId, sender);
+        Recipient address = Address.from(WavesJConfig.chainId(), sender);
         AssetId assetId = AssetId.as("9Z9DqJz4GbrJiMDHRFdGPz4GdVy6sWzzRQKZARkvsgMp");
         byte[] attachment = Base58.decode("zdRB3cqsKNeYxTf1AN4uJhWHe6hyT3DmguhM7oh4rdCjH8w9bbqChPcbTWTzTou9h84yq87Nt6NUGiLdUjpfypy3zSDe4n2DZcuQD2Y2zaUAq1m863kSAUuTYY1HdHyCJkpxE9PbKWAKR68v2WrVqskboaUYQdqaMWWeHDW8Z5c4kDQf3MLJzNSbUWCzu5A");
 
@@ -86,7 +86,7 @@ public class TransferTransactionTest {
         TransferTransaction builtTx = TransferTransaction
                 .with(recipient, Amount.of(amount, assetId))
                 .attachment(attachment)
-                .chainId(Waves.chainId)
+                .chainId(WavesJConfig.chainId())
                 .fee(Amount.of(fee, feeAssetId))
                 .timestamp(timestamp)
                 .sender(sender)
@@ -101,7 +101,7 @@ public class TransferTransactionTest {
         );
 
         TransferTransaction constructedTx = new TransferTransaction(sender, recipient, Amount.of(amount, assetId),
-                attachment, Waves.chainId, Amount.of(fee, feeAssetId), timestamp, version, proofs);
+                attachment, WavesJConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -118,7 +118,7 @@ public class TransferTransactionTest {
                 () -> assertThat(deserTx.attachmentBytes()).isEqualTo(attachment),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, feeAssetId)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

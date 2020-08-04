@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ReissueTransaction extends Transaction {
     private final boolean reissuable;
 
     public ReissueTransaction(PublicKey sender, Amount amount, boolean reissuable) {
-        this(sender, amount, reissuable, Waves.chainId, Amount.of(MIN_FEE),
+        this(sender, amount, reissuable, WavesJConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

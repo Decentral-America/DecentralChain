@@ -21,7 +21,7 @@ public class TransferTransaction extends Transaction {
     private final byte[] attachment;
 
     public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment) {
-        this(sender, recipient, amount, attachment, Waves.chainId, Amount.of(MIN_FEE),
+        this(sender, recipient, amount, attachment, WavesJConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

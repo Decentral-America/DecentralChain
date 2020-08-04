@@ -28,7 +28,7 @@ public class IssueTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -89,7 +89,7 @@ public class IssueTransactionTest {
                 .description(description)
                 .isReissuable(reissuable)
                 .compiledScript(script)
-                .chainId(Waves.chainId)
+                .chainId(WavesJConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -104,7 +104,7 @@ public class IssueTransactionTest {
         );
 
         IssueTransaction constructedTx = new IssueTransaction(sender, name, description, quantity, decimals,
-                reissuable, script, Waves.chainId, Amount.of(fee), timestamp, version, proofs);
+                reissuable, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -126,7 +126,7 @@ public class IssueTransactionTest {
                 () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
@@ -187,7 +187,7 @@ public class IssueTransactionTest {
                                       byte[] script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
                                       byte[] expectedBytes) throws IOException {
         IssueTransaction constructedTx = new IssueTransaction(sender, name, description, quantity, decimals,
-                reissuable, script, Waves.chainId, Amount.of(fee), timestamp, version, proofs);
+                reissuable, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Tx created via builder must be equal to expected bytes",
                 () -> assertThat(constructedTx.bodyBytes()).isEqualTo(expectedBody),
@@ -209,7 +209,7 @@ public class IssueTransactionTest {
                 () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

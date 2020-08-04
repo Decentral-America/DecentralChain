@@ -58,7 +58,7 @@ public abstract class JsonSerializer {
                 Amount.of(json.get("amount").asLong(), assetIdFromJson(json.get("assetPair").get("amountAsset"))),
                 Amount.of(json.get("price").asLong(), assetIdFromJson(json.get("assetPair").get("priceAsset"))),
                 PublicKey.as(json.get("matcherPublicKey").asText()),
-                json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId,
+                json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesJConfig.chainId(),
                 fee,
                 json.get("timestamp").asLong(),
                 json.get("expiration").asLong(),
@@ -75,7 +75,7 @@ public abstract class JsonSerializer {
     public static Transaction fromJson(JsonNode json) throws IOException {
         int type = json.get("type").asInt();
         int version = json.hasNonNull("version") ? json.get("version").asInt() : 1;
-        byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : Waves.chainId;
+        byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesJConfig.chainId();
         PublicKey sender = json.hasNonNull("senderPublicKey")
                 ? PublicKey.as(json.get("senderPublicKey").asText())
                 : PublicKey.as(new byte[PublicKey.BYTES_LENGTH]);
@@ -293,7 +293,7 @@ public abstract class JsonSerializer {
                     .put("version", order.version())
                     .put("chainId", order.chainId())
                     .put("senderPublicKey", order.sender().toString())
-                    .put("sender", order.sender().address(Waves.chainId).toString());
+                    .put("sender", order.sender().address(WavesJConfig.chainId()).toString());
             jsObject.putObject("assetPair")
                     .put("amountAsset", assetIdToJson(order.amount().assetId()))
                     .put("priceAsset", assetIdToJson(order.price().assetId()));

@@ -28,12 +28,12 @@ public class InvokeScriptTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
         Recipient alias = Alias.as("dapp");
-        Recipient address = Address.from(Waves.chainId, sender);
+        Recipient address = Address.from(WavesJConfig.chainId(), sender);
         AssetId assetId = AssetId.as("5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd");
 
         String str = new String(new char[16]).replace("\0", "a");
@@ -104,7 +104,7 @@ public class InvokeScriptTransactionTest {
         InvokeScriptTransaction builtTx = InvokeScriptTransaction
                 .with(dApp, function)
                 .payments(payments)
-                .chainId(Waves.chainId)
+                .chainId(WavesJConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -119,7 +119,7 @@ public class InvokeScriptTransactionTest {
         );
 
         InvokeScriptTransaction constructedTx = new InvokeScriptTransaction(sender, dApp, function, payments,
-                Waves.chainId, fee, timestamp, version, proofs);
+                WavesJConfig.chainId(), fee, timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -135,7 +135,7 @@ public class InvokeScriptTransactionTest {
                 () -> assertThat(deserTx.payments()).isEqualTo(payments),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(fee),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

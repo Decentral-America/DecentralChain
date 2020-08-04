@@ -4,7 +4,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.invocation.Function;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class InvokeScriptTransaction extends Transaction {
     private final List<Amount> payments;
 
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments) {
-        this(sender, dApp, function, payments, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(),
+        this(sender, dApp, function, payments, WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
                 LATEST_VERSION, Proof.emptyList());
     }
 

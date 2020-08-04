@@ -27,7 +27,7 @@ public class ReissueTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -78,7 +78,7 @@ public class ReissueTransactionTest {
         ReissueTransaction builtTx = ReissueTransaction
                 .with(Amount.of(amount, assetId))
                 .reissuable(reissuable)
-                .chainId(Waves.chainId)
+                .chainId(WavesJConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -93,7 +93,7 @@ public class ReissueTransactionTest {
         );
 
         ReissueTransaction constructedTx = new ReissueTransaction(sender, Amount.of(amount, assetId), reissuable,
-                Waves.chainId, Amount.of(fee), timestamp, version, proofs);
+                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -108,7 +108,7 @@ public class ReissueTransactionTest {
                 () -> assertThat(deserTx.isReissuable()).isEqualTo(reissuable),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

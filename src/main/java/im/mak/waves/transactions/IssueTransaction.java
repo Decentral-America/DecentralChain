@@ -5,7 +5,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,7 @@ public class IssueTransaction extends Transaction {
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
                             boolean isReissuable, byte[] compiledScript) {
-        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, Waves.chainId,
+        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, WavesJConfig.chainId(),
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

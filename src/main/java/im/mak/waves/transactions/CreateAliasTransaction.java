@@ -20,7 +20,7 @@ public class CreateAliasTransaction extends Transaction {
     private final Alias alias;
 
     public CreateAliasTransaction(PublicKey sender, String alias) {
-        this(sender, alias, Waves.chainId, Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, alias, WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public CreateAliasTransaction(PublicKey sender, String alias, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {

@@ -22,7 +22,7 @@ public class Alias implements Recipient {
     private final String fullAlias;
 
     public Alias(String name) {
-        this(Waves.chainId, name);
+        this(WavesJConfig.chainId(), name);
     }
 
     public Alias(byte chainId, String name) {
@@ -36,7 +36,7 @@ public class Alias implements Recipient {
     }
 
     public static boolean isValid(String alias) {
-        return isValid(Waves.chainId, alias);
+        return isValid(WavesJConfig.chainId(), alias);
     }
 
     public static boolean isValid(byte chainId, String alias) {

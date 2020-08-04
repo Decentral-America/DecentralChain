@@ -145,7 +145,7 @@ public abstract class TransactionOrOrder {
 
         protected TransactionOrOrderBuilder(int defaultVersion, long defaultFee) {
             this.version = defaultVersion;
-            this.chainId = Waves.chainId;
+            this.chainId = WavesJConfig.chainId();
             this.fee = Amount.of(defaultFee);
         }
 

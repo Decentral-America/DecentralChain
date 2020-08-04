@@ -46,13 +46,13 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
         return new Order(sender, type, Amount.of(amount, amountAssetId), Amount.of(price, priceAssetId), matcher,
-                Waves.chainId, Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
+                WavesJConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
     }
 
     public static Transaction transactionFromBytes(byte[] bytes) {
         if (bytes.length < 2)
             throw new IllegalArgumentException("Byte array is too short to parse");
-        byte chainId = Waves.chainId;
+        byte chainId = WavesJConfig.chainId();
         BytesReader reader = new BytesReader(bytes);
 
         byte maybeVersionFlag = reader.readByte();

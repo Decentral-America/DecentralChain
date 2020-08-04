@@ -4,7 +4,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +21,7 @@ public class UpdateAssetInfoTransaction extends Transaction {
     private final String description;
 
     public UpdateAssetInfoTransaction(PublicKey sender, AssetId assetId, String name, String description) {
-        this(sender, assetId, name, description, Waves.chainId, Amount.of(MIN_FEE),
+        this(sender, assetId, name, description, WavesJConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

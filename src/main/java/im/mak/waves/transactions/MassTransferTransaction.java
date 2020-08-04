@@ -5,7 +5,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.mass.Transfer;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class MassTransferTransaction extends Transaction {
     private final byte[] attachment;
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment) {
-        this(sender, assetId, transfers, attachment, Waves.chainId, Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, assetId, transfers, attachment, WavesJConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {

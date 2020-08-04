@@ -3,7 +3,7 @@ package im.mak.waves.transactions.account;
 import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.util.Arrays;
 
@@ -105,7 +105,7 @@ public class PublicKey {
      * @return address
      */
     public Address address() {
-        return Address.from(Waves.chainId, this);
+        return Address.from(WavesJConfig.chainId(), this);
     }
 
     /**

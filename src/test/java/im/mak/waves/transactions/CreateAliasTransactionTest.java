@@ -26,7 +26,7 @@ public class CreateAliasTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        Waves.chainId = 'R';
+        WavesJConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -70,7 +70,7 @@ public class CreateAliasTransactionTest {
                                 byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         CreateAliasTransaction builtTx = CreateAliasTransaction
                 .with(alias)
-                .chainId(Waves.chainId)
+                .chainId(WavesJConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -85,7 +85,7 @@ public class CreateAliasTransactionTest {
         );
 
         CreateAliasTransaction constructedTx = new CreateAliasTransaction(sender, alias,
-                Waves.chainId, Amount.of(fee), timestamp, version, proofs);
+                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -100,7 +100,7 @@ public class CreateAliasTransactionTest {
                 () -> assertThat(deserTx.alias().chainId()).isEqualTo(deserTx.chainId()),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(Waves.chainId),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

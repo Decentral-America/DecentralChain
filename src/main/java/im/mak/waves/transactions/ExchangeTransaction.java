@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.exchange.AssetPair;
 import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
@@ -28,7 +28,7 @@ public class ExchangeTransaction extends Transaction {
     private final long sellMatcherFee;
 
     public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price) {
-        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, Waves.chainId, //todo calc instead of MIN_FEE
+        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, WavesJConfig.chainId(), //todo calc instead of MIN_FEE
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

@@ -3,7 +3,7 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.Waves;
+import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class DataTransaction extends Transaction {
     private final List<DataEntry> data;
 
     public DataTransaction(PublicKey sender, List<DataEntry> data) {
-        this(sender, data, Waves.chainId, Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, data, WavesJConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
