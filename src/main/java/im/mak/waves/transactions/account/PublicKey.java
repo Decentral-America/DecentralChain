@@ -1,9 +1,9 @@
 package im.mak.waves.transactions.account;
 
+import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.transactions.common.Proof;
-import org.whispersystems.curve25519.Curve25519;
-import org.whispersystems.curve25519.java.curve_sigs;
+import im.mak.waves.transactions.common.Waves;
 
 import java.util.Arrays;
 
@@ -21,8 +21,8 @@ public class PublicKey {
      * @param privateKey public key
      * @return public key instance
      */
-    public static im.mak.waves.transactions.account.PublicKey from(PrivateKey privateKey) {
-        return new im.mak.waves.transactions.account.PublicKey(privateKey);
+    public static PublicKey from(PrivateKey privateKey) {
+        return new PublicKey(privateKey);
     }
 
     /**
@@ -30,10 +30,9 @@ public class PublicKey {
      *
      * @param base58Encoded public key bytes as base58-encoded string
      * @return public key instance
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public static im.mak.waves.transactions.account.PublicKey as(String base58Encoded) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.PublicKey(base58Encoded);
+    public static PublicKey as(String base58Encoded) {
+        return new PublicKey(base58Encoded);
     }
 
     /**
@@ -41,13 +40,10 @@ public class PublicKey {
      *
      * @param bytes public key bytes
      * @return public key instance
-     * @throws IllegalArgumentException if the length of the byte array is different than expected
      */
-    public static im.mak.waves.transactions.account.PublicKey as(byte[] bytes) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.PublicKey(bytes);
+    public static PublicKey as(byte[] bytes) {
+        return new PublicKey(bytes);
     }
-
-    private static final Curve25519 cipher = Curve25519.getInstance(Curve25519.BEST);
 
     private final byte[] bytes;
     private String encoded;
@@ -58,17 +54,15 @@ public class PublicKey {
      * @param privateKey public key
      */
     public PublicKey(PrivateKey privateKey) {
-        this.bytes = new byte[BYTES_LENGTH];
-        curve_sigs.curve25519_keygen(this.bytes, privateKey.bytes());
+        this.bytes = Crypto.getPublicKey(privateKey.bytes());
     }
 
     /**
      * Create public key instance from its base58 representation.
      *
      * @param base58Encoded public key bytes as base58-encoded string
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public PublicKey(String base58Encoded) throws IllegalArgumentException {
+    public PublicKey(String base58Encoded) {
         this(Base58.decode(base58Encoded));
     }
 
@@ -76,10 +70,10 @@ public class PublicKey {
      * Create public key instance from its bytes.
      *
      * @param publicKeyBytes public key bytes
-     * @throws IllegalArgumentException if the length of the byte array is different than expected
      */
-    public PublicKey(byte[] publicKeyBytes) throws IllegalArgumentException {
-        if (publicKeyBytes.length != BYTES_LENGTH) throw new IllegalArgumentException("Public key has wrong size in bytes. "
+    public PublicKey(byte[] publicKeyBytes) {
+        if (publicKeyBytes.length != BYTES_LENGTH)
+            throw new IllegalArgumentException("Public key has wrong size in bytes. "
                 + "Expected: " + BYTES_LENGTH + ", actual: " + publicKeyBytes.length);
         this.bytes = publicKeyBytes.clone();
     }
@@ -105,18 +99,27 @@ public class PublicKey {
     }
 
     /**
+     * Get an address generated from the public key.
+     * Depends on the Id of a particular blockchain network.
+     *
+     * @return address
+     */
+    public Address address() {
+        return Address.from(Waves.chainId, this);
+    }
+
+    /**
      * Check if the message is actually signed by the private key of this public key.
      *
      * @param message message bytes
      * @param signature signature to validate
      * @return true if the signature is valid
-     * @throws IllegalArgumentException if signature length is different from expected
      */
-    public boolean isSignatureValid(byte[] message, byte[] signature) throws IllegalArgumentException {
+    public boolean isSignatureValid(byte[] message, byte[] signature) {
         if (signature.length != Proof.BYTE_LENGTH)
             throw new IllegalArgumentException("Signature has wrong size in bytes. "
                     + "Expected: " + Proof.BYTE_LENGTH + ", actual: " + signature.length);
-        return cipher.verifySignature(bytes, message, signature);
+        return Crypto.isProofValid(bytes, message, signature);
     }
 
     public boolean equals(byte[] anotherKey) {
@@ -127,7 +130,7 @@ public class PublicKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        im.mak.waves.transactions.account.PublicKey publicKey = (im.mak.waves.transactions.account.PublicKey) o;
+        PublicKey publicKey = (PublicKey) o;
         return Arrays.equals(bytes, publicKey.bytes);
     }
 

@@ -1,8 +1,8 @@
 package im.mak.waves.transactions.account;
 
-import im.mak.waves.crypto.Hash;
+import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.base.Base58;
-import org.whispersystems.curve25519.Curve25519;
+import im.mak.waves.transactions.common.Waves;
 
 import java.util.Arrays;
 
@@ -17,11 +17,21 @@ public class PrivateKey {
     /**
      * Generate private key from the seed.
      *
-     * @param seed seed instance
+     * @param seedPhraseBytes seed phrase bytes
      * @return private key instance
      */
-    public static im.mak.waves.transactions.account.PrivateKey from(Seed seed) {
-        return new im.mak.waves.transactions.account.PrivateKey(seed);
+    public static PrivateKey fromSeed(byte[] seedPhraseBytes, int nonce) {
+        return new PrivateKey(Crypto.getPrivateKey(Crypto.getAccountSeed(seedPhraseBytes, nonce)));
+    }
+
+    /**
+     * Generate private key from the seed.
+     *
+     * @param seedPhraseBytes seed phrase bytes
+     * @return private key instance
+     */
+    public static PrivateKey fromSeed(byte[] seedPhraseBytes) {
+        return fromSeed(seedPhraseBytes, 0);
     }
 
     /**
@@ -29,10 +39,9 @@ public class PrivateKey {
      *
      * @param base58Encoded private key bytes as base58
      * @return private key instance
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public static im.mak.waves.transactions.account.PrivateKey as(String base58Encoded) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.PrivateKey(base58Encoded);
+    public static PrivateKey as(String base58Encoded) {
+        return new PrivateKey(base58Encoded);
     }
 
     /**
@@ -40,42 +49,21 @@ public class PrivateKey {
      *
      * @param bytes private key bytes
      * @return private key instance
-     * @throws IllegalArgumentException if the length of the byte array is different than expected
      */
-    public static im.mak.waves.transactions.account.PrivateKey as(byte[] bytes) throws IllegalArgumentException {
-        return new im.mak.waves.transactions.account.PrivateKey(bytes);
+    public static PrivateKey as(byte[] bytes) {
+        return new PrivateKey(bytes);
     }
-
-    private static final Curve25519 cipher = Curve25519.getInstance(Curve25519.BEST);
 
     private final byte[] bytes;
     private String encoded;
     private PublicKey publicKey;
 
     /**
-     * Generate private key from the seed.
-     *
-     * @param seed seed instance
-     */
-    public PrivateKey(Seed seed) {
-        // account seed from seed & nonce
-        byte[] accountSeed = Hash.secureHash(seed.bytesWithNonce());
-
-        // private key from account seed
-        byte[] hashedSeed = Hash.sha256(accountSeed);
-        this.bytes = Arrays.copyOf(hashedSeed, LENGTH);
-        this.bytes[0] &= 248;
-        this.bytes[31] &= 127;
-        this.bytes[31] |= 64;
-    }
-
-    /**
      * Create private key instance from its base58 representation.
      *
      * @param base58Encoded private key bytes as base58-encoded string
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public PrivateKey(String base58Encoded) throws IllegalArgumentException {
+    public PrivateKey(String base58Encoded) {
         this(Base58.decode(base58Encoded));
     }
 
@@ -83,10 +71,10 @@ public class PrivateKey {
      * Create private key instance from its bytes.
      *
      * @param privateKeyBytes private key bytes
-     * @throws IllegalArgumentException if the length of the byte array is different than expected
      */
-    public PrivateKey(byte[] privateKeyBytes) throws IllegalArgumentException {
-        if (privateKeyBytes.length != LENGTH) throw new IllegalArgumentException("Private key has wrong size in bytes. "
+    public PrivateKey(byte[] privateKeyBytes) {
+        if (privateKeyBytes.length != LENGTH)
+            throw new IllegalArgumentException("Private key has wrong size in bytes. "
                 + "Expected: " + LENGTH + ", actual: " + privateKeyBytes.length);
         this.bytes = privateKeyBytes.clone();
     }
@@ -122,13 +110,23 @@ public class PrivateKey {
     }
 
     /**
+     * Get an address generated from the public key of this private key.
+     * Depends on the Id of a particular blockchain network.
+     *
+     * @return address
+     */
+    public Address address() {
+        return address(Waves.chainId);
+    }
+
+    /**
      * Sign the message with the private key.
      *
      * @param message message bytes
      * @return signature
      */
     public byte[] sign(byte[] message) {
-        return cipher.calculateSignature(this.bytes, message);
+        return Crypto.sign(this.bytes, message);
     }
 
     /**
@@ -137,9 +135,8 @@ public class PrivateKey {
      * @param message message bytes
      * @param signature signature to validate
      * @return true if the signature is valid
-     * @throws IllegalArgumentException if signature length is different from expected
      */
-    public boolean isSignatureValid(byte[] message, byte[] signature) throws IllegalArgumentException {
+    public boolean isSignatureValid(byte[] message, byte[] signature) {
         return this.publicKey().isSignatureValid(message, signature);
     }
 
@@ -151,7 +148,7 @@ public class PrivateKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        im.mak.waves.transactions.account.PrivateKey that = (im.mak.waves.transactions.account.PrivateKey) o;
+        PrivateKey that = (PrivateKey) o;
         return Arrays.equals(bytes, that.bytes);
     }
 

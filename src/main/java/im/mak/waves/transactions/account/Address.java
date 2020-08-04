@@ -49,9 +49,8 @@ public class Address implements Recipient {
      *
      * @param base58Encoded address bytes as base58-encoded string
      * @return address instance
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public static Address as(String base58Encoded) throws IllegalArgumentException {
+    public static Address as(String base58Encoded) {
         return new Address(base58Encoded);
     }
 
@@ -60,9 +59,8 @@ public class Address implements Recipient {
      *
      * @param bytes address bytes
      * @return address instance
-     * @throws IllegalArgumentException if the address is wrong
      */
-    public static Address as(byte[] bytes) throws IllegalArgumentException {
+    public static Address as(byte[] bytes) {
         return new Address(bytes);
     }
 
@@ -149,9 +147,8 @@ public class Address implements Recipient {
      * Create address instance from its base58 representation.
      *
      * @param encodedAddress address bytes as base58-encoded string
-     * @throws IllegalArgumentException if base58 string is null
      */
-    public Address(String encodedAddress) throws IllegalArgumentException {
+    public Address(String encodedAddress) {
         this(Base58.decode(encodedAddress));
     }
 
@@ -159,9 +156,8 @@ public class Address implements Recipient {
      * Create address instance from its bytes.
      *
      * @param addressBytes address bytes
-     * @throws IllegalArgumentException if the address is wrong
      */
-    public Address(byte[] addressBytes) throws IllegalArgumentException {
+    public Address(byte[] addressBytes) {
         if (addressBytes.length != 26)
             throw new IllegalArgumentException("Address has wrong length. " +
                     "Expected: " + 26 + " bytes, actual: " + addressBytes.length + " bytes");

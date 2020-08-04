@@ -1,6 +1,7 @@
 package im.mak.waves.transactions.account;
 
 import im.mak.waves.crypto.Bytes;
+import im.mak.waves.transactions.common.Waves;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,13 +17,13 @@ class TestSeedAndKeys {
 
     @Test
     void seedAndKeys() {
-        Seed seed = new Seed(phrase);
+        Waves.chainId = 'T';
+        PrivateKey pk = PrivateKey.fromSeed(Bytes.fromUtf8(phrase), 0);
 
-        assertThat(seed.phrase()).isEqualTo(phrase);
-        assertThat(seed.nonce()).isEqualTo(0);
-        assertThat(seed.privateKey().toString()).isEqualTo(privateKey);
-        assertThat(seed.publicKey().toString()).isEqualTo(publicKey);
-        assertThat(seed.privateKey().address(chainId).toString()).isEqualTo(address);
+        assertThat(pk.toString()).isEqualTo(privateKey);
+        assertThat(pk.publicKey().toString()).isEqualTo(publicKey);
+        assertThat(pk.address(chainId).toString()).isEqualTo(address);
+        assertThat(pk.address().toString()).isEqualTo(address);
     }
 
     @Test
