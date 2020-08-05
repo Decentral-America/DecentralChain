@@ -128,9 +128,10 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasExchange()) {
             TransactionOuterClass.ExchangeTransactionData exchange = pbTx.getExchange();
             tx = ExchangeTransaction
-                    .with(fromProtobuf(exchange.getOrders(0)), fromProtobuf(exchange.getOrders(1)))
-                    .amount(exchange.getAmount())
-                    .price(exchange.getPrice())
+                    .with(fromProtobuf(exchange.getOrders(0)),
+                            fromProtobuf(exchange.getOrders(1)),
+                            exchange.getAmount(),
+                            exchange.getPrice())
                     .buyMatcherFee(exchange.getBuyMatcherFee())
                     .sellMatcherFee(exchange.getSellMatcherFee())
                     .version(pbTx.getVersion())

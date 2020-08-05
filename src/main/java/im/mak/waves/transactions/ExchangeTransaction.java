@@ -11,6 +11,7 @@ import im.mak.waves.transactions.exchange.OrderType;
 import java.io.IOException;
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class ExchangeTransaction extends Transaction {
 
     public static final int TYPE = 7;
@@ -57,8 +58,8 @@ public class ExchangeTransaction extends Transaction {
         return (ExchangeTransaction) Transaction.fromJson(json);
     }
 
-    public static ExchangeTransactionBuilder with(Order buy, Order sell) {
-        return new ExchangeTransactionBuilder(buy, sell);
+    public static ExchangeTransactionBuilder with(Order buy, Order sell, long amount, long price) {
+        return new ExchangeTransactionBuilder(buy, sell, amount, price);
     }
 
     public AssetPair assetPair() {
@@ -123,29 +124,19 @@ public class ExchangeTransaction extends Transaction {
             extends TransactionBuilder<ExchangeTransactionBuilder, ExchangeTransaction> {
         private final Order order1;
         private final Order order2;
-        private long amount;
-        private long price;
+        private final long amount;
+        private final long price;
         private long buyMatcherFee;
         private long sellMatcherFee;
 
-        protected ExchangeTransactionBuilder(Order order1, Order order2) {
+        protected ExchangeTransactionBuilder(Order order1, Order order2, long amount, long price) {
             super(LATEST_VERSION, MIN_FEE);
             this.order1 = order1;
             this.order2 = order2;
-            this.amount = Math.min(this.order1.amount().value(), this.order2.amount().value());
-//todo            this.price = normalized?
+            this.amount = amount;
+            this.price = price;
             this.buyMatcherFee = this.order1.fee().value(); //todo proportionally
             this.sellMatcherFee = this.order2.fee().value();
-        }
-        
-        public ExchangeTransactionBuilder amount(long amount) {
-            this.amount = amount;
-            return this;
-        }
-        
-        public ExchangeTransactionBuilder price(long price) {
-            this.price = price;
-            return this;
         }
         
         public ExchangeTransactionBuilder buyMatcherFee(long buyMatcherFee) {

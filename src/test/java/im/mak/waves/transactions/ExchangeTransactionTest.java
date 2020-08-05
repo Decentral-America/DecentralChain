@@ -105,9 +105,7 @@ public class ExchangeTransactionTest {
     void exchangeTransaction(int version, Order order1, Order order2, Id expectedId, List<Proof> proofs,
                              byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         ExchangeTransaction builtTx = ExchangeTransaction
-                .with(order1, order2)
-                .amount(amount)
-                .price(price)
+                .with(order1, order2, amount, price)
                 .buyMatcherFee(buyFee)
                 .sellMatcherFee(sellFee)
                 .chainId(WavesJConfig.chainId())
