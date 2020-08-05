@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
  * Immutable Merkle tree on blake2b256 hashes, that is supported in the Ride programming language.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class MerkleTree {
+public class MerkleTree { //todo update for Ride V4 createMerkleRoot() function
 
     /**
      * Create Merkle tree of provided leafs.

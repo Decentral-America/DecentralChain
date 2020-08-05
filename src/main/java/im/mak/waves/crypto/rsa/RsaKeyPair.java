@@ -22,17 +22,6 @@ public class RsaKeyPair {
     /**
      * Create key pair from the known RSA private key.
      *
-     * @param encodedPrivateKey base58-encoded bytes of the private key
-     * @return pair of RSA private and public keys
-     * @throws IllegalArgumentException if base58 is null
-     */
-    public static RsaKeyPair from(Base58 encodedPrivateKey) throws IllegalArgumentException {
-        return new RsaKeyPair(encodedPrivateKey);
-    }
-
-    /**
-     * Create key pair from the known RSA private key.
-     *
      * @param privateKeyBytes bytes of the private key
      * @return pair of RSA private and public keys
      */
@@ -52,16 +41,6 @@ public class RsaKeyPair {
     private final BouncyCastleProvider bcp;
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
-
-    /**
-     * Create key pair from the known RSA private key.
-     *
-     * @param encodedPrivateKey base58-encoded private key
-     * @throws IllegalArgumentException if base58 is null
-     */
-    public RsaKeyPair(Base58 encodedPrivateKey) throws IllegalArgumentException {
-        this(encodedPrivateKey.decoded());
-    }
 
     /**
      * Create key pair from the known RSA private key.

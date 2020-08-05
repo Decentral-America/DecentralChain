@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>im.mak</groupId>
-    <artifactId>waves-crypto-java</artifactId>
-    <version>1.1.0</version>
+    <artifactId>waves-crypto</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
 
     <name>Waves Crypto for Java</name>
     <description>Tools to work with cryptographic primitives used in the Waves blockchain</description>

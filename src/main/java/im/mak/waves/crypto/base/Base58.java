@@ -10,7 +10,7 @@ import java.util.Arrays;
  * Most arrays of bytes in the project are encoded by Base58 algorithm with Bitcoin alphabet to make it ease human readable.
  */
 @SuppressWarnings("WeakerAccess")
-public class Base58 {
+public abstract class Base58 {
 
     public static final char[] ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray();
     private static final char ENCODED_ZERO = ALPHABET[0];
@@ -23,6 +23,15 @@ public class Base58 {
         }
     }
 
+    public static boolean isValid(String encoded) {
+        try {
+            decode(encoded);
+        } catch (IllegalArgumentException iae) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Encodes the given bytes as a base58 string (no checksum is appended).
      *
@@ -30,33 +39,9 @@ public class Base58 {
      * @return the base58-encoded string
      */
     public static String encode(byte[] source) {
-        return new Base58(source).encoded();
-    }
-
-    /**
-     * Decodes the given base58 string into the original data bytes.
-     *
-     * @param source the base58-encoded string to decode
-     * @return the decoded data bytes
-     * @throws IllegalArgumentException if the given string is not a valid base58 string
-     */
-    public static byte[] decode(String source) throws IllegalArgumentException {
-        return new Base58(source).decoded();
-    }
-
-    private byte[] bytes;
-    private String encoded;
-
-    /**
-     * Create Base58 from array of bytes.
-     *
-     * @param source the bytes to encode
-     */
-    public Base58(byte[] source) {
-        byte[] input = source.clone();
+        byte[] input = source == null ? Bytes.empty() : source.clone();
         if (input.length == 0) {
-            this.bytes = Bytes.empty();
-            this.encoded = "";
+            return "";
         } else {
             // Count leading zeros.
             int zeros = 0;
@@ -81,28 +66,27 @@ public class Base58 {
                 encoded[--outputStart] = ENCODED_ZERO;
             }
             // create encoded string (including encoded leading zeros).
-            this.bytes = input;
-            this.encoded = new String(encoded, outputStart, encoded.length - outputStart);
+            return new String(encoded, outputStart, encoded.length - outputStart);
         }
     }
 
     /**
-     * Create Base58 from base58-encoded string.
+     * Decodes the given base58 string into the original data bytes.
      *
-     * @param encodedString base58-encoded string
-     * @throws IllegalArgumentException if the string is null or can't be parsed as base58 string
+     * @param source the base58-encoded string to decode
+     * @return the decoded data bytes
+     * @throws IllegalArgumentException if the given string is not a valid base58 string
      */
-    public Base58(String encodedString) throws IllegalArgumentException {
-        if (encodedString == null) throw new IllegalArgumentException("Base58 string can't be null");
-        if (encodedString.startsWith("base58:")) encodedString = encodedString.substring(7);
-        if (encodedString.length() == 0) {
-            this.bytes = Bytes.empty();
-            this.encoded = encodedString;
+    public static byte[] decode(String source) throws IllegalArgumentException {
+        if (source == null) throw new IllegalArgumentException("Base58 string can't be null");
+        if (source.startsWith("base58:")) source = source.substring(7); //todo make a copy?
+        if (source.length() == 0) {
+            return Bytes.empty();
         } else {
             // Convert the base58-encoded ASCII chars to a base58 byte sequence (base58 digits).
-            byte[] input58 = new byte[encodedString.length()];
-            for (int i = 0; i < encodedString.length(); ++i) {
-                char c = encodedString.charAt(i);
+            byte[] input58 = new byte[source.length()];
+            for (int i = 0; i < source.length(); ++i) {
+                char c = source.charAt(i);
                 int digit = c < 128 ? INDEXES[c] : -1;
                 if (digit < 0) {
                     throw new IllegalArgumentException("Illegal character \"" + c + "\" at position " + i);
@@ -115,7 +99,7 @@ public class Base58 {
                 ++zeros;
             }
             // Convert base-58 digits to base-256 digits.
-            byte[] decoded = new byte[encodedString.length()];
+            byte[] decoded = new byte[source.length()];
             int outputStart = decoded.length;
             for (int inputStart = zeros; inputStart < input58.length; ) {
                 decoded[--outputStart] = divmod(input58, inputStart, 58, 256);
@@ -128,27 +112,8 @@ public class Base58 {
                 ++outputStart;
             }
             // Return decoded data (including original number of leading zeros).
-            this.bytes = Arrays.copyOfRange(decoded, outputStart - zeros, decoded.length);
-            this.encoded = encodedString;
+            return Arrays.copyOfRange(decoded, outputStart - zeros, decoded.length);
         }
-    }
-
-    /**
-     * Get encoded string of the bytes.
-     *
-     * @return base58-encoded string
-     */
-    public String encoded() {
-        return this.encoded;
-    }
-
-    /**
-     * Get original bytes.
-     *
-     * @return decoded array of bytes
-     */
-    public byte[] decoded() {
-        return this.bytes;
     }
 
     /**
@@ -173,24 +138,6 @@ public class Base58 {
             remainder = temp % divisor;
         }
         return (byte) remainder;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Base58 base58 = (Base58) o;
-        return Arrays.equals(bytes, base58.bytes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(bytes);
-    }
-
-    @Override
-    public String toString() {
-        return this.encoded();
     }
 
 }

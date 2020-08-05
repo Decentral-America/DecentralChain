@@ -47,6 +47,16 @@ public abstract class Hash {
     }
 
     /**
+     * Calculates fast hash of source bytes.
+     *
+     * @param source byte array
+     * @return Blake2b256 hash
+     */
+    public static byte[] fastHash(byte[] source) {
+        return blake(source);
+    }
+
+    /**
      * Calculates secure hash of source bytes.
      *
      * @param source byte array
