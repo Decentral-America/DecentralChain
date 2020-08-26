@@ -17,7 +17,8 @@ export const TRANSACTION_TYPE = {
     SET_SCRIPT: 13 as 13,
     SPONSORSHIP: 14 as 14,
     SET_ASSET_SCRIPT: 15 as 15,
-    INVOKE_SCRIPT: 16 as 16
+    INVOKE_SCRIPT: 16 as 16,
+    UPDATE_ASSET_INFO: 17 as 17
 };
 
 export const DATA_FIELD_TYPE = {
@@ -28,4 +29,4 @@ export const DATA_FIELD_TYPE = {
 };
 
 export type TTransactionType = typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE];
-export type TDataEntyType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
+export type TDataEntryType = typeof DATA_FIELD_TYPE[keyof typeof DATA_FIELD_TYPE];
