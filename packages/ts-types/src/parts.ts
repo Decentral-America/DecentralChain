@@ -49,26 +49,26 @@ export interface IMassTransferItem<LONG> {
 
 export interface IDataTransactionEntryInteger<LONG> {
     key: string;
-    type: typeof DATA_FIELD_TYPE.INTEGER;
-    value: LONG;
+    type?: typeof DATA_FIELD_TYPE.INTEGER | null;
+    value: LONG | null;
 }
 
 export interface IDataTransactionEntryBoolean {
     key: string;
-    type: typeof DATA_FIELD_TYPE.BOOLEAN;
-    value: boolean;
+    type?: typeof DATA_FIELD_TYPE.BOOLEAN | null;
+    value: boolean | null;
 }
 
 export interface IDataTransactionEntryString {
     key: string;
-    type: typeof DATA_FIELD_TYPE.STRING;
-    value: string;
+    type?: typeof DATA_FIELD_TYPE.STRING | null;
+    value: string | null;
 }
 
 export interface IDataTransactionEntryBinary {
     key: string;
-    type: typeof DATA_FIELD_TYPE.BINARY;
-    value: Uint8Array;
+    type?: typeof DATA_FIELD_TYPE.BINARY | null;
+    value: Uint8Array | null;
 }
 
 export interface IExchangeTransactionOrder<LONG> {
