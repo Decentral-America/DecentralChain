@@ -289,7 +289,32 @@ export const invokeScriptTx = {
       },
       {type: "integer", value: 600000000},
       {type: "boolean", value: false},
-      {type: "boolean", value: true}
+      {type: "boolean", value: true},
+      {
+         type: "list",
+         value:[
+            {
+               type: "boolean",
+               value: true
+            },
+            {
+               type:"boolean",
+               value: false
+            },
+            {
+               type: "binary",
+               value: "base64:YWFhYWFhYWFhYWFhYWFhYQ=="
+            },
+            {
+               type: "integer",
+               value: 5000
+            },
+            {
+               type: "string",
+               value: "aaaaaaaaaaaaaaaa"
+            },
+         ]
+      }
     ],
   },
   'payment': [{
