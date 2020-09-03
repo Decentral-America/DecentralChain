@@ -193,7 +193,7 @@ export namespace txFields {
 
   const functionArgument = anyOf([
     ...functionArgumentPrimitives,
-    [8, {  
+    [11, {  
       type: 'array',
       items: anyOf(functionArgumentPrimitives, {valueField: 'value'}), 
     }, 'list'],
