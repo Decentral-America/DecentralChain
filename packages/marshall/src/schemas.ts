@@ -195,6 +195,8 @@ export namespace txFields {
     ...functionArgumentPrimitives,
     [11, {  
       type: 'array',
+      toBytes: INT,
+      fromBytes: P_INT,
       items: anyOf(functionArgumentPrimitives, {valueField: 'value'}), 
     }, 'list'],
   ], {valueField: 'value'})
