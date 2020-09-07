@@ -36,9 +36,10 @@ public abstract class Base58 {
      * Encodes the given bytes as a base58 string (no checksum is appended).
      *
      * @param source the bytes to encode
+     * @param withPrefix if true, return encoded string with prefix "base58:"
      * @return the base58-encoded string
      */
-    public static String encode(byte[] source) {
+    public static String encode(byte[] source, boolean withPrefix) {
         byte[] input = source == null ? Bytes.empty() : source.clone();
         if (input.length == 0) {
             return "";
@@ -66,8 +67,19 @@ public abstract class Base58 {
                 encoded[--outputStart] = ENCODED_ZERO;
             }
             // create encoded string (including encoded leading zeros).
-            return new String(encoded, outputStart, encoded.length - outputStart);
+            String prefix = withPrefix ? "base58:" : "";
+            return prefix + new String(encoded, outputStart, encoded.length - outputStart);
         }
+    }
+
+    /**
+     * Encodes the given bytes as a base58 string (no checksum is appended).
+     *
+     * @param source the bytes to encode
+     * @return the base58-encoded string
+     */
+    public static String encode(byte[] source) {
+        return encode(source, false);
     }
 
     /**
@@ -79,7 +91,7 @@ public abstract class Base58 {
      */
     public static byte[] decode(String source) throws IllegalArgumentException {
         if (source == null) throw new IllegalArgumentException("Base58 string can't be null");
-        if (source.startsWith("base58:")) source = source.substring(7); //todo make a copy?
+        if (source.startsWith("base58:")) source = source.substring(7);
         if (source.length() == 0) {
             return Bytes.empty();
         } else {

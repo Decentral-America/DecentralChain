@@ -12,6 +12,12 @@
     <description>Tools to work with cryptographic primitives used in the Waves blockchain</description>
     <url>https://github.com/msmolyakov/waves-crypto-java</url>
 
+    <properties>
+        <revision>2.0.0-SNAPSHOT</revision>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <issueManagement>
         <url>https://github.com/msmolyakov/waves-crypto-java/issues</url>
         <system>GitHub Issues</system>
@@ -37,12 +43,6 @@
             <email>smolyakovmaxim@gmail.com</email>
         </developer>
     </developers>
-
-    <properties>
-        <revision>2.0.0-SNAPSHOT</revision>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
 
     <build>
         <plugins>

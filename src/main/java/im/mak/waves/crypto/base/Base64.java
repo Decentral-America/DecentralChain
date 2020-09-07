@@ -11,10 +11,12 @@ public abstract class Base64 {
      * Encodes the given bytes as a base64 string (no checksum is appended).
      *
      * @param source the bytes to encode
+     * @param withPrefix if true, return encoded string with prefix "base64:"
      * @return the base64-encoded string
      */
-    public static String encode(byte[] source) {
-        return java.util.Base64.getEncoder().encodeToString(source);
+    public static String encode(byte[] source, boolean withPrefix) {
+        String prefix = withPrefix ? "base64:" : "";
+        return prefix + java.util.Base64.getEncoder().encodeToString(source);
     }
 
     /**
@@ -23,8 +25,8 @@ public abstract class Base64 {
      * @param source the bytes to encode
      * @return the base64-encoded string with prefix "base64:"
      */
-    public static String encodeWithPrefix(byte[] source) {
-        return "base64:" + java.util.Base64.getEncoder().encodeToString(source);
+    public static String encode(byte[] source) {
+        return encode(source, false);
     }
 
     /**

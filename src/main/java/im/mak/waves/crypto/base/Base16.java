@@ -11,15 +11,27 @@ public abstract class Base16 {
      * Encodes the given bytes as a base16 string (no checksum is appended).
      *
      * @param source the bytes to encode
+     * @param withPrefix if true, return encoded string with prefix "base16:"
      * @return the base16-encoded string
      */
-    public static String encode(byte[] source) {
+    public static String encode(byte[] source, boolean withPrefix) {
         byte[] input = source.clone();
         StringBuilder sb = new StringBuilder();
         for (byte b : input)
             sb.append(String.format("%02x", b));
 
-        return sb.toString();
+        String prefix = withPrefix ? "base16:" : "";
+        return prefix + sb.toString();
+    }
+
+    /**
+     * Encodes the given bytes as a base16 string (no checksum is appended).
+     *
+     * @param source the bytes to encode
+     * @return the base16-encoded string
+     */
+    public static String encode(byte[] source) {
+        return encode(source, false);
     }
 
     /**
