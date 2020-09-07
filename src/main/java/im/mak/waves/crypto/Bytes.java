@@ -1,5 +1,6 @@
 package im.mak.waves.crypto;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -119,7 +120,7 @@ public abstract class Bytes {
     public static short toShort(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
         buffer.put(bytes);
-        buffer.flip();
+        ((Buffer) buffer).flip();
         return buffer.getShort();
     }
 
@@ -132,7 +133,7 @@ public abstract class Bytes {
     public static int toInt(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(bytes);
-        buffer.flip();
+        ((Buffer) buffer).flip();
         return buffer.getInt();
     }
 
@@ -145,7 +146,7 @@ public abstract class Bytes {
     public static long toLong(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.put(bytes);
-        buffer.flip();
+        ((Buffer) buffer).flip();
         return buffer.getLong();
     }
 
