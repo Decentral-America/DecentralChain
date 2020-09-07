@@ -109,12 +109,6 @@ public abstract class TransactionOrOrder {
         return JsonSerializer.toJson(this);
     }
 
-    //TODO support java 8 and 11
-    //TODO basic validations in builder/constructor
-    //TODO check access to everything
-    //TODO check all ") throws {", "throw new" and "catch". Maybe wrap to own exceptions with message patterns?
-    //TODO immutable lists
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -146,7 +140,7 @@ public abstract class TransactionOrOrder {
 
         protected TransactionOrOrderBuilder(int defaultVersion, long defaultFee) {
             this.version = defaultVersion;
-            this.chainId = WavesJConfig.chainId();
+            this.chainId = WavesConfig.chainId();
             this.fee = Amount.of(defaultFee);
             this.extraFee = 0;
         }
@@ -160,7 +154,6 @@ public abstract class TransactionOrOrder {
             return (BUILDER) this;
         }
 
-        //todo hide from public and constructors
         public BUILDER version(int version) {
             this.version = version;
             return builder();

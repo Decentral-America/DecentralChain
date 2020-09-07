@@ -26,7 +26,7 @@ public class UpdateAssetInfoTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     private static String string(int length) {
@@ -60,8 +60,8 @@ public class UpdateAssetInfoTransactionTest {
     void updateAssetInfoTransaction(int version, String name, String description, Id expectedId, List<Proof> proofs,
                                     byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         UpdateAssetInfoTransaction builtTx = UpdateAssetInfoTransaction
-                .with(assetId, name, description)
-                .chainId(WavesJConfig.chainId())
+                .builder(assetId, name, description)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -76,7 +76,7 @@ public class UpdateAssetInfoTransactionTest {
         );
 
         UpdateAssetInfoTransaction constructedTx = new UpdateAssetInfoTransaction(sender, assetId, name, description,
-                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -91,7 +91,7 @@ public class UpdateAssetInfoTransactionTest {
                 () -> assertThat(deserTx.description()).isEqualTo(description),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

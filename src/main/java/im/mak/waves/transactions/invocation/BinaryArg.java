@@ -1,11 +1,14 @@
 package im.mak.waves.transactions.invocation;
 
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.base.Base64;
+import im.mak.waves.transactions.common.Base64String;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 public class BinaryArg extends Arg {
+
+    public static BinaryArg as(Base64String value) {
+        return new BinaryArg(value);
+    }
 
     public static BinaryArg as(byte[] value) {
         return new BinaryArg(value);
@@ -15,20 +18,20 @@ public class BinaryArg extends Arg {
         return new BinaryArg(base64Encoded);
     }
 
+    public BinaryArg(Base64String value) {
+        super(ArgType.BINARY, value == null ? Base64String.empty() : value);
+    }
+
     public BinaryArg(byte[] value) {
-        super(ArgType.BINARY, value == null ? Bytes.empty() : value);
+        this(new Base64String(value));
     }
 
     public BinaryArg(String base64Encoded) {
-        this(base64Encoded == null ? Bytes.empty() : Base64.decode(base64Encoded));
+        this(new Base64String(base64Encoded));
     }
 
-    public byte[] value() {
-        return (byte[]) super.valueAsObject();
-    }
-
-    public String valueEncoded() {
-        return Base64.encodeWithPrefix(value());
+    public Base64String value() {
+        return (Base64String) super.valueAsObject();
     }
 
     @Override
@@ -37,7 +40,7 @@ public class BinaryArg extends Arg {
         if (o == null || getClass() != o.getClass()) return false;
         BinaryArg that = (BinaryArg) o;
         return this.type().equals(that.type())
-                && Arrays.equals(this.value(), that.value());
+                && Objects.equals(this.value(), that.value());
     }
 
 }

@@ -6,6 +6,7 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.TransactionOrOrder;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
+import im.mak.waves.transactions.WavesConfig;
 import im.mak.waves.transactions.serializers.binary.BinarySerializer;
 import im.mak.waves.transactions.serializers.json.JsonSerializer;
 import im.mak.waves.transactions.serializers.ProtobufConverter;
@@ -24,6 +25,11 @@ public class Order extends TransactionOrOrder {
     private final Amount price;
     private final PublicKey matcher;
     private final long expiration;
+
+    public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher) {
+        this(sender, type, amount, price, matcher, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
+                System.currentTimeMillis() + (30 * 24 * 60 * 60 * 1000L), LATEST_VERSION);
+    }
 
     public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher, byte chainId,
                  Amount fee, long timestamp, long expiration, int version) {
@@ -57,16 +63,16 @@ public class Order extends TransactionOrOrder {
         return ProtobufConverter.fromProtobuf(protobufOrder);
     }
 
-    public static OrderBuilder with(OrderType type, Amount amount, Amount price, PublicKey matcher) {
+    public static OrderBuilder builder(OrderType type, Amount amount, Amount price, PublicKey matcher) {
         return new OrderBuilder(type, amount, price, matcher);
     }
 
     public static OrderBuilder buy(Amount amount, Amount price, PublicKey matcher) {
-        return with(OrderType.BUY, amount, price, matcher);
+        return builder(OrderType.BUY, amount, price, matcher);
     }
 
     public static OrderBuilder sell(Amount amount, Amount price, PublicKey matcher) {
-        return with(OrderType.SELL, amount, price, matcher);
+        return builder(OrderType.SELL, amount, price, matcher);
     }
 
     public OrderType type() {

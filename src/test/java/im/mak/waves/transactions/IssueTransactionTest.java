@@ -28,7 +28,7 @@ public class IssueTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -37,22 +37,22 @@ public class IssueTransactionTest {
         String minDescription = "";
         String maxDescription = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-        byte[] script = Base64.decode("BAbMtW/U");
+        Base64String script = new Base64String("BAbMtW/U");
 
         return Stream.of(
-                arguments(1, minName, minDescription, 0, false, Bytes.empty(), Id.as("HvbnMZ82dAnFbkSX9nNnbiHHEYNWmQ1U1pb9Jn2gsKZG"),
+                arguments(1, minName, minDescription, 0, false, Base64String.empty(), Id.as("HvbnMZ82dAnFbkSX9nNnbiHHEYNWmQ1U1pb9Jn2gsKZG"),
                         Proof.list(Proof.as("HeDrGAApxPvXS7gTfFdtPc4VyaktTAtAwU9NQeQUpoE6oKc3UHRF4MrAh9djbxo7cErcwrEWiSrTio54q2q291b")),
                         Base64.decode("A42Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AARhYWFhAAB//////////wAAAAAAAAX14QEAAAF0h26AAA=="),
                         Base64.decode("Aw5Z6Sq+uUTBglTIphC49PQP0KNu1dve3ApVy0EO1SUC05OeLvDj9bnx4LAHZ//13PfmjkVv62nAVFgY6jbKa4oDjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QABGFhYWEAAH//////////AAAAAAAABfXhAQAAAXSHboAA"),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"quantity\":9223372036854775807,\"signature\":\"HeDrGAApxPvXS7gTfFdtPc4VyaktTAtAwU9NQeQUpoE6oKc3UHRF4MrAh9djbxo7cErcwrEWiSrTio54q2q291b\",\"fee\":100000001,\"description\":\"\",\"type\":3,\"version\":1,\"reissuable\":false,\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"proofs\":[\"HeDrGAApxPvXS7gTfFdtPc4VyaktTAtAwU9NQeQUpoE6oKc3UHRF4MrAh9djbxo7cErcwrEWiSrTio54q2q291b\"],\"decimals\":0,\"name\":\"aaaa\",\"id\":\"HvbnMZ82dAnFbkSX9nNnbiHHEYNWmQ1U1pb9Jn2gsKZG\",\"timestamp\":1600000000000,\"script\":null}"
                 ),
-                arguments(1, maxName, maxDescription, 8, true, Bytes.empty(), Id.as("6kpPR9m6g6w6LP6L4MLJ898mBjuWApDQZSsyZD8t2ZKc"),
+                arguments(1, maxName, maxDescription, 8, true, Base64String.empty(), Id.as("6kpPR9m6g6w6LP6L4MLJ898mBjuWApDQZSsyZD8t2ZKc"),
                         Proof.list(Proof.as("5JQcE8Gwk8seWpz9837r5MnRGrXuhuRntc4A3FT5j4aN27KeEmP9sM1MQBnz7EPLidmNvvoJnmqyY8akhERP4wkZ")),
                         Base64.decode("A42Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0ABBhYWFhYWFhYWFhYWFhYWFhA+hhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhf/////////8IAQAAAAAF9eEBAAABdIdugAA="),
                         Base64.decode("A9cUQybiL/9vx2SszTKzJIrdrUp14IDiGn1xzUbIlNdUg1jzDTF6qmQTWgkr/m5h0Q8nzrGryQWsF9tSV//cUo4DjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QAEGFhYWFhYWFhYWFhYWFhYWED6GFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWF//////////wgBAAAAAAX14QEAAAF0h26AAA=="),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"quantity\":9223372036854775807,\"signature\":\"5JQcE8Gwk8seWpz9837r5MnRGrXuhuRntc4A3FT5j4aN27KeEmP9sM1MQBnz7EPLidmNvvoJnmqyY8akhERP4wkZ\",\"fee\":100000001,\"description\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"type\":3,\"version\":1,\"reissuable\":true,\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"proofs\":[\"5JQcE8Gwk8seWpz9837r5MnRGrXuhuRntc4A3FT5j4aN27KeEmP9sM1MQBnz7EPLidmNvvoJnmqyY8akhERP4wkZ\"],\"decimals\":8,\"name\":\"aaaaaaaaaaaaaaaa\",\"id\":\"6kpPR9m6g6w6LP6L4MLJ898mBjuWApDQZSsyZD8t2ZKc\",\"timestamp\":1600000000000,\"script\":null}"
                 ),
-                arguments(2, minName, minDescription, 0, false, Bytes.empty(), Id.as("C7RV4xjdjHkNbDG8suLwvjaQg88YsdfWV87hUGRhSYc1"),
+                arguments(2, minName, minDescription, 0, false, Base64String.empty(), Id.as("C7RV4xjdjHkNbDG8suLwvjaQg88YsdfWV87hUGRhSYc1"),
                         Proof.list(Proof.as("547UTKLHfWb8gszF52arGgWLrxUTwy95NiS7cqRjes9esBiLPLJSZJ5uiXPX6XojMCczziC6jHbxkKdM2bsatKb2")),
                         Base64.decode("AwJSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QABGFhYWEAAH//////////AAAAAAAABfXhAQAAAXSHboAAAA=="),
                         Base64.decode("AAMCUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AARhYWFhAAB//////////wAAAAAAAAX14QEAAAF0h26AAAABAAEAQMrAVvxEU/eRijdP1CdZM0AS0bspgvte1yG4YIG/p5t6Mvk1S3HcYI7YeY9fkO/8dAYeH/pthNqlXXuQ+iB//YU="),
@@ -64,7 +64,7 @@ public class IssueTransactionTest {
                         Base64.decode("AAMCUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0ABBhYWFhYWFhYWFhYWFhYWFhA+hhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhf/////////8IAQAAAAAF9eEBAAABdIdugAABAAYEBsy1b9QBAAgAQNhZqIghCp6K+T1lIEEDd+lv9OWZn1f7gZ02pNMzXQGwG0hJOFZFbjiBMC4J2aWfZaCOOFjw9H3mgP4tapY1Y4EAQIWdaro14ET5yS9Rlg2hjQfnQ4AFqciYcl+nwEU9BNITtQLHliLAc+YxS/rPSo7UCG1uT62j+X3ww1lVGOGmxIMAQEw84p/3eVVC6vN5H5/fYQ5GIpRcz/KAZtI/b01uPZzSB6ODrmv8uIkGz8Ftg/cDgoM8UpyQNFIP2MaThpUda48AQMSnmVPjT3Xp92iBj7Ug6bdAV4LOLH0njYdWs/wvArPOSRLHmn8QVL9+ZwMpr+OdZRciZHigIG8QVt0ghgPHt4QAQG6fU38hpad6caa8TIkq8wURZwNNSNXPpPM8zqqidC8p4NMbevUWpdSo7Oe8CcsrrbaIC5DLNGex5/Pt0nRHF44AQOVSttLEq8k2UeJS38RSHY4mHJA4+7zVgPgLf1YykT28QM9zqRzSDaVrnnoYCGnc656TnOHXw7Asut+yRd5qQ4wAQFRiTq9fpIexx7r8R8F7Am22OEaHX12JXhliYIK4gkMQQ15wZzTOlR5daEQ3iTCoAOmQPtadXS9pUMTA7lLCFo8AQG9hUPK0TlcQzefjm4it+QGGu0zss3SOh8MPwBCV+5XeG3BPXJYZd3wyCu95x+IAdX5FTzKZQhAp/+dp8OJVCYo="),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"quantity\":9223372036854775807,\"fee\":100000001,\"description\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"type\":3,\"version\":2,\"reissuable\":true,\"script\":\"base64:BAbMtW\\/U\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"chainId\":82,\"proofs\":[\"5Kt6bP1R18hTk85QA4okStpi17Jof3yr9584GKgR8XzKeuFN5Ccru9WyHMUBQGXmbZWQNNAURP451di7ZZbbhhw6\",\"3fwZFMceuY6HPwCR5UFPM3EifQBEwM2kmdRDy8Xtj5r5xQsmG7oBn4rUvQDtTXCHdqVHYC2inLD1Ni5oFrTWMUB4\",\"2XQYDXvT5w4LVULqgBcXBa1VNL95Xw5gK4jvvcvNdFQ3YXX86K7FYEqsMKPi9WiP5vshEeMwL6tUbQxzQEu5Tas8\",\"4w3RyKrvEX52Wbx2dcanz18buMNMFrc7okFea3LBrSZzHsget5vN9ntks27ZW52HdZ1MMCGMuPo8JmWuzToBEuu5\",\"3DH9Kj97N4qca21G7XNdZQtsJXKAHG6zs6Y2vMUFXdcwPq62zBEAjJd5qBhvMKHUktW5H5hpuDmqhdnjzybdXn7o\",\"5avcf8YsTKa8RzdB7K7zjMNQ7BYcsAwYYxGAV6C9rkjq7gFKaQ7xGyVwveKw2V4FcvhRsZg6DMPaxwN2bN25jdpf\",\"2grRmEZWQHf2RstHuJC4MKDmdnUyBVFSJZZocqzaARKcmedBF6aJEk8nNLyemD4K8Cv4RWAiagYQRF3F2de7fXVG\",\"3EA7LHH4NoX68CPXjTzVxXgBRS379E18G2Ws7Wsy53FtYKsrn3osuRQUhTFQPT1eYzEWJQbJGqgoUoBpjevqXeB3\"],\"decimals\":8,\"name\":\"aaaaaaaaaaaaaaaa\",\"id\":\"5S2eVMCngyafyj3jojZFCBqyEB7ifGHsJKQPmXRd844n\",\"timestamp\":1600000000000}"
                 ),
-                arguments(3, minName, minDescription, 0, false, Bytes.empty(), Id.as("TrvVX73TGaAcpLU93j2KzNs23SDyWWnsY75kGwcsqRo"),
+                arguments(3, minName, minDescription, 0, false, Base64String.empty(), Id.as("TrvVX73TGaAcpLU93j2KzNs23SDyWWnsY75kGwcsqRo"),
                         Proof.list(Proof.as("3X7KvoMZcgWXejejzAi1F2NuChZsP4ruvKuvFb3UmCEN72JKr2855j5CLQF83YjzPGaMiwbG51piPAZcwCqfvKet")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgUQgcLXLyCAgLq7yC4oA7oGEAoEYWFhYRj//////////38="),
                         Base64.decode("CkcIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBRCBwtcvIICAurvILigDugYQCgRhYWFhGP//////////fxJAff+5N9OnJ/kLRqvGDCDKxg5W6F5ewAARhPtY7jnVpzop34zeisJnWTqwkQZDkw6RaOOtb4XhNQ3VGbFBnR6AhQ=="),
@@ -82,14 +82,14 @@ public class IssueTransactionTest {
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
     void issueTransactionWithStringName(int version, String name, String description, int decimals, boolean reissuable,
-                                        byte[] script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
+                                        Base64String script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
                                         byte[] expectedBytes, String expectedJson) throws IOException {
         IssueTransaction builtTx = IssueTransaction
-                .with(name, quantity, decimals)
+                .builder(name, quantity, decimals)
                 .description(description)
                 .isReissuable(reissuable)
-                .compiledScript(script)
-                .chainId(WavesJConfig.chainId())
+                .script(script)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -104,7 +104,7 @@ public class IssueTransactionTest {
         );
 
         IssueTransaction constructedTx = new IssueTransaction(sender, name, description, quantity, decimals,
-                reissuable, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                reissuable, script, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -121,12 +121,11 @@ public class IssueTransactionTest {
                 () -> assertThat(deserTx.description()).isEqualTo(description),
                 () -> assertThat(deserTx.quantity()).isEqualTo(quantity),
                 () -> assertThat(deserTx.decimals()).isEqualTo(decimals),
-                () -> assertThat(deserTx.isReissuable()).isEqualTo(reissuable),
-                () -> assertThat(deserTx.compiledScript()).isEqualTo(script),
-                () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
+                () -> assertThat(deserTx.reissuable()).isEqualTo(reissuable),
+                () -> assertThat(deserTx.script()).isEqualTo(script),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
@@ -152,22 +151,22 @@ public class IssueTransactionTest {
         byte[] minDescription = Bytes.empty();
         byte[] maxDescription = Base64.decode("T84FFrGh1D9iqTkiKvsFtq1NFGscrDnjy+YK2D744xzRSYRcp2f/qGnGlwTjHcbpdX3qwO/J4nmiVQrlT3s4aElc6Ieix5sCwY9S+UIUudkBy6/gNqADxoxgdiiATk7qC7tcIhdvUFupm3LNJodqVC6wEQMbfGc7IKej3MfHScakjhcRYOSb1LvPKqqW3CNVcz9YdNyJRL8cdL4LEl7dDBAGAmVMXPZYvIjLw+VoCWCSmi3yTYBdFjga9pT8/mqX/lPC6rvQ+laS1D1QCXhOeIANDQ20xUmMWKxrwudjaMSHiq/oz80A+NE8hl6jsQRJGmXj6m2KgmGddGr3ECS6ovP+OZosirBqcZbV/ThXAuoS308J5W+lhdm+bPMMz0ry9n0m2MepGJ8kYZ02GupoyZ1dDnhjF2wH53RhJj2qkJz0AlB4zkqrHcY8MmCCozRCaS4VASNC5dxc+smdtY5fAL9MNOQTzMhOethySFxMe05OGs7HQORcYSLlCwcHWpuuXur/YpnPMtbfAvapQ/ew4kEL/tr1soMfcfmfRpGNPwdQL3OZo/YAb+c7UX0yE4pvCOnZR6ezUV2h738drnY9PNCSQb7d5o3I0FTMp11WBQgzJ7sOREsb8GyUWXFegbo4nAJGARP71+nCoDpnxBPzqtF0C551QmHWBKcWm+AkI+y/nzSt+kHloIgxSzH0XLIsZCDFOCBM3g2SESNVuOeXgdNjIHmHKZNs65zrSXaPcVSirDTPs4pIOo/hArWsCyvvUDp9j115bHU00SjFdreUkGUGS9zPiUqJhpeoyC5MjXdTBf7PxPvqAUZ/JVcPT6zTbfQtpbc+PmKxQCM0t0F2h2wK4rq4Zb/134CVb9ncjx1ZKGB5F4IYT/naB3uU1oB75VAonocFiNd62Dg7F/AAGWSHJGKWhg242IolSqZpy80Vay9yfqKJ10zA7uoh+nt4YRlyzcPHdtyXFQ1mkQEAIiwzNucmINNZ7TjH2XuBjlV8JC2myP5kkXk21aXbHjC9AOhVLJpgbIkWr6IDHjJUWTv88md0jnhGNjKsgXqsAtxiQ0vtY9nucwgx1FJwU4XuOPYVnhbxatBlQrfBXpPHdWn2yQFvdCAeEKVYPXEKoSQsD0prp5nPdUJDtLNbW9zcSRKXUY4dASyulwdDlA2vuKu+cGvE2ZXDUzzkfhR868Yn6ShxDJ7Zgd8SWrPOIyG9KnELowBJuqZxLMkITryDPmfIGG/WJ7htAAI1UFEIP27BOufT+xy6RLCeHfAzNIvzBzMRWKse79/dpzpAfi+9ozgqXsnWAzslqpqgIg1sCnF0/Znz66sKFQ==");
 
-        byte[] script = Base64.decode("BAbMtW/U");
+        Base64String script = new Base64String("BAbMtW/U");
 
         return Stream.of( //todo add first arg as more descriptive test name (in all suites)
-                arguments(1, minName, minDescription, 0, false, Bytes.empty(), Id.as("9XyxaGepzteh4QDBaRvNBCiNmjyNMSeEQpgu4vtJFCWJ"),
+                arguments(1, minName, minDescription, 0, false, Base64String.empty(), Id.as("9XyxaGepzteh4QDBaRvNBCiNmjyNMSeEQpgu4vtJFCWJ"),
                         Proof.list(Proof.as("3EBrdH9voEN9jDzTv33CpiwFaTbvokUYy691f2bjuQbsivYtDFf3TLZkftMU2AMMYukd1ApmU9LxkoZTuiAsXR7M")),
                         Base64.decode("A42Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AATq/SBqAAB//////////wAAAAAAAAX14QEAAAF0h26AAA=="),
                         Base64.decode("A29n9rA7uy2/QZnzqjvAHDe1A9rs/KuPeRilZpzgwEeq6aAX5ymgwEPQTTI/fdzzGj+diZRBGQJiihCzukTBmYADjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QABOr9IGoAAH//////////AAAAAAAABfXhAQAAAXSHboAA")
                 ),
 
-                arguments(1, maxName, maxDescription, 8, true, Bytes.empty(), Id.as("GjDZvRJ6PuuuG9vFWrav6G3gJWSUBLrwupSxy7RJbLTw"),
+                arguments(1, maxName, maxDescription, 8, true, Base64String.empty(), Id.as("GjDZvRJ6PuuuG9vFWrav6G3gJWSUBLrwupSxy7RJbLTw"),
                         Proof.list(Proof.as("3E2KdRrJRKq45EN7YrdtTDJtWoAvKq9zrjEDE9RKVGnHB91z5xAp8Ka2bafGBJ6Xpp9xTCBFyxj8o5kcqa7SGkt7")),
                         Base64.decode("A42Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0ABB/EXfS8jtTbKeGIaeY5XpaA+hPzgUWsaHUP2KpOSIq+wW2rU0UaxysOePL5grYPvjjHNFJhFynZ/+oacaXBOMdxul1ferA78nieaJVCuVPezhoSVzoh6LHmwLBj1L5QhS52QHLr+A2oAPGjGB2KIBOTuoLu1wiF29QW6mbcs0mh2pULrARAxt8Zzsgp6Pcx8dJxqSOFxFg5JvUu88qqpbcI1VzP1h03IlEvxx0vgsSXt0MEAYCZUxc9li8iMvD5WgJYJKaLfJNgF0WOBr2lPz+apf+U8Lqu9D6VpLUPVAJeE54gA0NDbTFSYxYrGvC52NoxIeKr+jPzQD40TyGXqOxBEkaZePqbYqCYZ10avcQJLqi8/45miyKsGpxltX9OFcC6hLfTwnlb6WF2b5s8wzPSvL2fSbYx6kYnyRhnTYa6mjJnV0OeGMXbAfndGEmPaqQnPQCUHjOSqsdxjwyYIKjNEJpLhUBI0Ll3Fz6yZ21jl8Av0w05BPMyE562HJIXEx7Tk4azsdA5FxhIuULBwdam65e6v9imc8y1t8C9qlD97DiQQv+2vWygx9x+Z9GkY0/B1Avc5mj9gBv5ztRfTITim8I6dlHp7NRXaHvfx2udj080JJBvt3mjcjQVMynXVYFCDMnuw5ESxvwbJRZcV6BujicAkYBE/vX6cKgOmfEE/Oq0XQLnnVCYdYEpxab4CQj7L+fNK36QeWgiDFLMfRcsixkIMU4IEzeDZIRI1W455eB02MgeYcpk2zrnOtJdo9xVKKsNM+zikg6j+ECtawLK+9QOn2PXXlsdTTRKMV2t5SQZQZL3M+JSomGl6jILkyNd1MF/s/E++oBRn8lVw9PrNNt9C2ltz4+YrFAIzS3QXaHbAriurhlv/XfgJVv2dyPHVkoYHkXghhP+doHe5TWgHvlUCiehwWI13rYODsX8AAZZIckYpaGDbjYiiVKpmnLzRVrL3J+oonXTMDu6iH6e3hhGXLNw8d23JcVDWaRAQAiLDM25yYg01ntOMfZe4GOVXwkLabI/mSReTbVpdseML0A6FUsmmBsiRavogMeMlRZO/zyZ3SOeEY2MqyBeqwC3GJDS+1j2e5zCDHUUnBThe449hWeFvFq0GVCt8Fek8d1afbJAW90IB4QpVg9cQqhJCwPSmunmc91QkO0s1tb3NxJEpdRjh0BLK6XB0OUDa+4q75wa8TZlcNTPOR+FHzrxifpKHEMntmB3xJas84jIb0qcQujAEm6pnEsyQhOvIM+Z8gYb9YnuG0AAjVQUQg/bsE659P7HLpEsJ4d8DM0i/MHMxFYqx7v392nOkB+L72jOCpeydYDOyWqmqAiDWwKcXT9mfPrqwoVf/////////8IAQAAAAAF9eEBAAABdIdugAA="),
                         Base64.decode("A29DrD1wLrwfJJMK9Ok/lQtiNAEleYqy/dvJ3Ot91JiTV/uUbvKuZ5mUHOm1/nCxvoXRcmMOTUKW4aqLFRZhqIgDjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QAEH8Rd9LyO1Nsp4Yhp5jleloD6E/OBRaxodQ/Yqk5Iir7BbatTRRrHKw548vmCtg++OMc0UmEXKdn/6hpxpcE4x3G6XV96sDvyeJ5olUK5U97OGhJXOiHosebAsGPUvlCFLnZAcuv4DagA8aMYHYogE5O6gu7XCIXb1BbqZtyzSaHalQusBEDG3xnOyCno9zHx0nGpI4XEWDkm9S7zyqqltwjVXM/WHTciUS/HHS+CxJe3QwQBgJlTFz2WLyIy8PlaAlgkpot8k2AXRY4GvaU/P5ql/5Twuq70PpWktQ9UAl4TniADQ0NtMVJjFisa8LnY2jEh4qv6M/NAPjRPIZeo7EESRpl4+ptioJhnXRq9xAkuqLz/jmaLIqwanGW1f04VwLqEt9PCeVvpYXZvmzzDM9K8vZ9JtjHqRifJGGdNhrqaMmdXQ54YxdsB+d0YSY9qpCc9AJQeM5Kqx3GPDJggqM0QmkuFQEjQuXcXPrJnbWOXwC/TDTkE8zITnrYckhcTHtOThrOx0DkXGEi5QsHB1qbrl7q/2KZzzLW3wL2qUP3sOJBC/7a9bKDH3H5n0aRjT8HUC9zmaP2AG/nO1F9MhOKbwjp2Uens1Fdoe9/Ha52PTzQkkG+3eaNyNBUzKddVgUIMye7DkRLG/BslFlxXoG6OJwCRgET+9fpwqA6Z8QT86rRdAuedUJh1gSnFpvgJCPsv580rfpB5aCIMUsx9FyyLGQgxTggTN4NkhEjVbjnl4HTYyB5hymTbOuc60l2j3FUoqw0z7OKSDqP4QK1rAsr71A6fY9deWx1NNEoxXa3lJBlBkvcz4lKiYaXqMguTI13UwX+z8T76gFGfyVXD0+s0230LaW3Pj5isUAjNLdBdodsCuK6uGW/9d+AlW/Z3I8dWShgeReCGE/52gd7lNaAe+VQKJ6HBYjXetg4OxfwABlkhyRiloYNuNiKJUqmacvNFWsvcn6iiddMwO7qIfp7eGEZcs3Dx3bclxUNZpEBACIsMzbnJiDTWe04x9l7gY5VfCQtpsj+ZJF5NtWl2x4wvQDoVSyaYGyJFq+iAx4yVFk7/PJndI54RjYyrIF6rALcYkNL7WPZ7nMIMdRScFOF7jj2FZ4W8WrQZUK3wV6Tx3Vp9skBb3QgHhClWD1xCqEkLA9Ka6eZz3VCQ7SzW1vc3EkSl1GOHQEsrpcHQ5QNr7irvnBrxNmVw1M85H4UfOvGJ+kocQye2YHfElqzziMhvSpxC6MASbqmcSzJCE68gz5nyBhv1ie4bQACNVBRCD9uwTrn0/scukSwnh3wMzSL8wczEVirHu/f3ac6QH4vvaM4Kl7J1gM7JaqaoCINbApxdP2Z8+urChV//////////wgBAAAAAAX14QEAAAF0h26AAA==")
                 ),
 
-                arguments(2, minName, minDescription, 0, false, Bytes.empty(), Id.as("GHFtf9tHfYSJghU5a8LLbze3xv9Zed9hvQzh2Lh19nKh"),
+                arguments(2, minName, minDescription, 0, false, Base64String.empty(), Id.as("GHFtf9tHfYSJghU5a8LLbze3xv9Zed9hvQzh2Lh19nKh"),
                         Proof.list(Proof.as("2mGacR3HMCGTLpdj2vY9VuRZ4yuow9A4oPMZn5Jten3TDUNPzzmSbeQ4qmcSiDs79xwwmhWehLjAJTmobJ8hQdSG")),
                         Base64.decode("AwJSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QABOr9IGoAAH//////////AAAAAAAABfXhAQAAAXSHboAAAA=="),
                         Base64.decode("AAMCUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AATq/SBqAAB//////////wAAAAAAAAX14QEAAAF0h26AAAABAAEAQFgxTDKz1foxQ8zTWr6Aivo5IlaxfPaWWNU06U2qfPEKhUMJuSNdn0QZpZW0No3w65shY0Qk9S061+1iEWbmz4E=")
@@ -184,10 +183,10 @@ public class IssueTransactionTest {
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("oldTransactionsProvider")
     void issueTransactionWithByteName(int version, byte[] name, byte[] description, int decimals, boolean reissuable,
-                                      byte[] script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
+                                      Base64String script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
                                       byte[] expectedBytes) throws IOException {
         IssueTransaction constructedTx = new IssueTransaction(sender, name, description, quantity, decimals,
-                reissuable, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                reissuable, script, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Tx created via builder must be equal to expected bytes",
                 () -> assertThat(constructedTx.bodyBytes()).isEqualTo(expectedBody),
@@ -204,12 +203,11 @@ public class IssueTransactionTest {
                 () -> assertThat(deserTx.description()).isEqualTo(new String(description, UTF_8)),
                 () -> assertThat(deserTx.quantity()).isEqualTo(quantity),
                 () -> assertThat(deserTx.decimals()).isEqualTo(decimals),
-                () -> assertThat(deserTx.isReissuable()).isEqualTo(reissuable),
-                () -> assertThat(deserTx.compiledScript()).isEqualTo(script),
-                () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
+                () -> assertThat(deserTx.reissuable()).isEqualTo(reissuable),
+                () -> assertThat(deserTx.script()).isEqualTo(script),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

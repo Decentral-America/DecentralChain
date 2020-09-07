@@ -4,7 +4,6 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
 import im.mak.waves.transactions.common.Recipient;
-import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.invocation.Function;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class InvokeScriptTransaction extends Transaction {
     private final List<Amount> payments;
 
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments) {
-        this(sender, dApp, function, payments, WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
+        this(sender, dApp, function, payments, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
                 LATEST_VERSION, Proof.emptyList());
     }
 
@@ -44,7 +43,7 @@ public class InvokeScriptTransaction extends Transaction {
         return (InvokeScriptTransaction) Transaction.fromJson(json);
     }
 
-    public static InvokeScriptTransactionBuilder with(Recipient dApp, Function function) {
+    public static InvokeScriptTransactionBuilder builder(Recipient dApp, Function function) {
         return new InvokeScriptTransactionBuilder(dApp, function);
     }
 
@@ -82,7 +81,6 @@ public class InvokeScriptTransaction extends Transaction {
         private final Function function;
         private final List<Amount> payments;
 
-        //todo invokeTx has size limit 5Kb. How to check the rest of the limit when add arg values?
         protected InvokeScriptTransactionBuilder(Recipient dApp, Function function) {
             super(LATEST_VERSION, MIN_FEE);
             this.dApp = dApp;

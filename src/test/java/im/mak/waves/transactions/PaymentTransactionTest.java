@@ -26,11 +26,11 @@ public class PaymentTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Address address = Address.from(WavesJConfig.chainId(), sender);
+        Address address = Address.from(WavesConfig.chainId(), sender);
         return Stream.of(
                 arguments(address, Id.as("4M4f8fMmRZ7WtqnhuheADetknXwZnqyeiqtatS3EkjQKeXY5Pa3aVTBmPmAXUXrNsurz6PYyzVqzs5Kp4xjY74DB"),
                         Proof.as("4M4f8fMmRZ7WtqnhuheADetknXwZnqyeiqtatS3EkjQKeXY5Pa3aVTBmPmAXUXrNsurz6PYyzVqzs5Kp4xjY74DB"),
@@ -61,7 +61,7 @@ public class PaymentTransactionTest {
                 () -> assertThat(deserTx.amount()).isEqualTo(amount),
 
                 () -> assertThat(deserTx.version()).isEqualTo(1),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

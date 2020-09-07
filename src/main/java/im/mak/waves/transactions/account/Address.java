@@ -4,6 +4,7 @@ import im.mak.waves.crypto.Bytes;
 import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.Hash;
 import im.mak.waves.crypto.base.Base58;
+import im.mak.waves.transactions.common.Base58String;
 import im.mak.waves.transactions.common.Recipient;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.Arrays;
  * Address is used as recipient of transactions.
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class Address implements Recipient {
+public class Address extends Base58String implements Recipient {
 
     private static final int CHECKSUM_LENGTH = 4;
     private static final int PUBLIC_KEY_HASH_LENGTH = 20;
@@ -119,9 +120,6 @@ public class Address implements Recipient {
         return true;
     }
 
-    private final byte[] bytes;
-    private final String encoded;
-
     /**
      * Generate an address from the public key.
      * Depends on the Id of a particular blockchain network.
@@ -139,17 +137,16 @@ public class Address implements Recipient {
      * @param chainId blockchain network Id
      */
     public Address(byte chainId, byte[] publicKeyHash) {
-        this.bytes = Crypto.getAddress(chainId, publicKeyHash);
-        this.encoded = Base58.encode(this.bytes);
+        super(Crypto.getAddress(chainId, publicKeyHash));
     }
 
     /**
      * Create address instance from its base58 representation.
      *
-     * @param encodedAddress address bytes as base58-encoded string
+     * @param address address bytes as base58-encoded string
      */
-    public Address(String encodedAddress) {
-        this(Base58.decode(encodedAddress));
+    public Address(String address) {
+        super(Base58.decode(address));
     }
 
     /**
@@ -158,11 +155,13 @@ public class Address implements Recipient {
      * @param addressBytes address bytes
      */
     public Address(byte[] addressBytes) {
+        super(addressBytes);
+
         if (addressBytes.length != 26)
             throw new IllegalArgumentException("Address has wrong length. " +
                     "Expected: " + 26 + " bytes, actual: " + addressBytes.length + " bytes");
         if (addressBytes[0] != 1)
-            throw new IllegalArgumentException("Address has unknown version " + addressBytes[0]);
+            throw new IllegalArgumentException("Address has unknown version " + addressBytes[0] + ". Expected: " + TYPE);
 
         byte[][] parts = Bytes.chunk(addressBytes, 22, 4);
         byte[] checkSumPrefix = Bytes.chunk(Hash.secureHash(parts[0]), 4)[0];
@@ -172,9 +171,6 @@ public class Address implements Recipient {
                     Base58.encode(parts[1]),
                     Base58.encode(checkSumPrefix)
             ));
-
-        this.bytes = addressBytes;
-        this.encoded = Base58.encode(this.bytes);
     }
 
     public byte type() {
@@ -230,14 +226,9 @@ public class Address implements Recipient {
         return Arrays.hashCode(bytes);
     }
 
-    /**
-     * Get the address encoded to base58.
-     *
-     * @return the base58-encoded address
-     */
     @Override
     public String toString() {
-        return this.encoded;
+        return encoded();
     }
 
 }

@@ -1,11 +1,14 @@
 package im.mak.waves.transactions.data;
 
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.base.Base64;
+import im.mak.waves.transactions.common.Base64String;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 public class BinaryEntry extends DataEntry {
+
+    public static BinaryEntry as(String key, Base64String value) {
+        return new BinaryEntry(key, value);
+    }
 
     public static BinaryEntry as(String key, byte[] value) {
         return new BinaryEntry(key, value);
@@ -15,20 +18,20 @@ public class BinaryEntry extends DataEntry {
         return new BinaryEntry(key, base64Encoded);
     }
 
+    public BinaryEntry(String key, Base64String value) {
+        super(key, EntryType.BINARY, value == null ? Base64String.empty() : value);
+    }
+
     public BinaryEntry(String key, byte[] value) {
-        super(key, EntryType.BINARY, value == null ? Bytes.empty() : value);
+        this(key, new Base64String(value));
     }
 
     public BinaryEntry(String key, String base64Encoded) {
-        this(key, base64Encoded == null ? Bytes.empty() : Base64.decode(base64Encoded));
+        this(key, new Base64String(base64Encoded));
     }
 
-    public byte[] value() {
-        return (byte[]) super.valueAsObject();
-    }
-
-    public String valueEncoded() {
-        return Base64.encodeWithPrefix(value());
+    public Base64String value() {
+        return (Base64String) super.valueAsObject();
     }
 
     @Override
@@ -38,7 +41,7 @@ public class BinaryEntry extends DataEntry {
         BinaryEntry that = (BinaryEntry) o;
         return this.key().equals(that.key())
                 && this.type() == that.type()
-                && Arrays.equals(this.value(), that.value());
+                && Objects.equals(this.value(), that.value());
     }
 
 }

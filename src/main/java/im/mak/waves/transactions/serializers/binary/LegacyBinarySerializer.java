@@ -46,13 +46,13 @@ public abstract class LegacyBinarySerializer {
         List<Proof> proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
         return new Order(sender, type, Amount.of(amount, amountAssetId), Amount.of(price, priceAssetId), matcher,
-                WavesJConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
+                WavesConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
     }
 
     public static Transaction transactionFromBytes(byte[] bytes) {
         if (bytes.length < 2)
             throw new IllegalArgumentException("Byte array is too short to parse");
-        byte chainId = WavesJConfig.chainId();
+        byte chainId = WavesConfig.chainId();
         BytesReader reader = new BytesReader(bytes);
 
         byte maybeVersionFlag = reader.readByte();
@@ -103,7 +103,7 @@ public abstract class LegacyBinarySerializer {
             boolean isReissuable = reader.readBoolean();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
-            byte[] script = scheme == WITH_PROOFS ? reader.readOptionArrayWithLength() : null;
+            Base64String script = new Base64String(scheme == WITH_PROOFS ? reader.readOptionArrayWithLength() : null);
 
             if (scheme == WITH_PROOFS)
                 proofs = reader.readProofs();
@@ -118,7 +118,7 @@ public abstract class LegacyBinarySerializer {
             long amount = reader.readLong();
             long fee = reader.readLong();
             Recipient recipient = reader.readRecipient();
-            byte[] attachment = reader.readArrayWithLength();
+            Base58String attachment = new Base58String(reader.readArrayWithLength());
 
             if (scheme == WITH_PROOFS)
                 proofs = reader.readProofs();
@@ -232,7 +232,7 @@ public abstract class LegacyBinarySerializer {
                 transfers.add(Transfer.to(reader.readRecipient(), reader.readLong()));
             long timestamp = reader.readLong();
             long fee = reader.readLong();
-            byte[] attachment = reader.readArrayWithLength();
+            Base58String attachment = new Base58String(reader.readArrayWithLength());
             proofs = reader.readProofs();
 
             if (transfersCount > 0)
@@ -245,7 +245,7 @@ public abstract class LegacyBinarySerializer {
             short entriesCount = reader.readShort();
             List<DataEntry> entries = new ArrayList<>();
             for (int i = 0; i < entriesCount; i++) {
-                String key = new String(reader.readArrayWithLength(), UTF_8); //todo can be non utf8 bytes?
+                String key = new String(reader.readArrayWithLength(), UTF_8);
                 byte entryType = reader.readByte();
                 if (entryType == 0) entries.add(new IntegerEntry(key, reader.readLong()));
                 else if (entryType == 1) entries.add(new BooleanEntry(key, reader.readBoolean()));
@@ -263,7 +263,7 @@ public abstract class LegacyBinarySerializer {
         } else if (type == SetScriptTransaction.TYPE) {
             chainId = reader.readByte();
             PublicKey sender = reader.readPublicKey();
-            byte[] script = reader.readOptionArrayWithLength();
+            Base64String script = new Base64String(reader.readOptionArrayWithLength());
             long fee = reader.readLong();
             long timestamp = reader.readLong();
             proofs = reader.readProofs();
@@ -293,7 +293,7 @@ public abstract class LegacyBinarySerializer {
             AssetId assetId = reader.readAssetId();
             long fee = reader.readLong();
             long timestamp = reader.readLong();
-            byte[] script = reader.readOptionArrayWithLength();
+            Base64String script = new Base64String(reader.readOptionArrayWithLength());
             proofs = reader.readProofs();
 
             transaction = new SetAssetScriptTransaction(
@@ -390,11 +390,11 @@ public abstract class LegacyBinarySerializer {
                         .writeArrayWithLength(itx.descriptionBytes())
                         .writeLong(itx.quantity())
                         .write((byte) itx.decimals())
-                        .writeBoolean(itx.isReissuable())
+                        .writeBoolean(itx.reissuable())
                         .writeLong(itx.fee().value())
                         .writeLong(itx.timestamp());
                 if (scheme == WITH_PROOFS)
-                    bwStream.writeOptionArrayWithLength(itx.compiledScript());
+                    bwStream.writeOptionArrayWithLength(itx.script().bytes());
             } else if (tx instanceof TransferTransaction) {
                 TransferTransaction ttx = (TransferTransaction) tx;
                 bwStream.write(ttx.sender().bytes())
@@ -404,7 +404,7 @@ public abstract class LegacyBinarySerializer {
                         .writeLong(ttx.amount().value())
                         .writeLong(ttx.fee().value())
                         .writeRecipient(ttx.recipient())
-                        .writeArrayWithLength(ttx.attachmentBytes());
+                        .writeArrayWithLength(ttx.attachment().bytes());
             } else if (tx instanceof ReissueTransaction) {
                 if (scheme == WITH_PROOFS)
                     bwStream.write(tx.chainId());
@@ -412,7 +412,7 @@ public abstract class LegacyBinarySerializer {
                 bwStream.writePublicKey(rtx.sender())
                         .writeAssetId(rtx.amount().assetId())
                         .writeLong(rtx.amount().value())
-                        .writeBoolean(rtx.isReissuable())
+                        .writeBoolean(rtx.reissuable())
                         .writeLong(rtx.fee().value())
                         .writeLong(rtx.timestamp());
             } else if (tx instanceof BurnTransaction) {
@@ -483,7 +483,7 @@ public abstract class LegacyBinarySerializer {
                         .writeLong(transfer.amount()));
                 bwStream.writeLong(mtTx.timestamp())
                         .writeLong(mtTx.fee().value())
-                        .writeArrayWithLength(mtTx.attachmentBytes());
+                        .writeArrayWithLength(mtTx.attachment().bytes());
             } else if (tx instanceof DataTransaction) {
                 DataTransaction dtx = (DataTransaction) tx;
                 bwStream.writePublicKey(dtx.sender())
@@ -498,12 +498,12 @@ public abstract class LegacyBinarySerializer {
                                 .writeBoolean(((BooleanEntry) entry).value());
                     else if (entry instanceof BinaryEntry)
                         bwStream.write((byte) 2)
-                                .writeArrayWithLength(((BinaryEntry) entry).value());
+                                .writeArrayWithLength(((BinaryEntry) entry).value().bytes());
                     else if (entry instanceof StringEntry)
                         bwStream.write((byte) 3)
                                 .writeArrayWithLength(((StringEntry) entry).value().getBytes(UTF_8));
                     else
-                        throw new IllegalArgumentException("Unknown entry type " + entry.getClass().getCanonicalName()); //todo
+                        throw new IllegalArgumentException("Unknown entry type " + entry.getClass().getCanonicalName());
                 });
                 bwStream.writeLong(dtx.timestamp())
                         .writeLong(dtx.fee().value());
@@ -511,7 +511,7 @@ public abstract class LegacyBinarySerializer {
                 SetScriptTransaction ssTx = (SetScriptTransaction) tx;
                 bwStream.write(ssTx.chainId())
                         .writePublicKey(ssTx.sender())
-                        .writeOptionArrayWithLength(ssTx.compiledScript())
+                        .writeOptionArrayWithLength(ssTx.script().bytes())
                         .writeLong(ssTx.fee().value())
                         .writeLong(ssTx.timestamp());
             } else if (tx instanceof SponsorFeeTransaction) {
@@ -528,7 +528,7 @@ public abstract class LegacyBinarySerializer {
                         .writeAssetId(sasTx.assetId())
                         .writeLong(sasTx.fee().value())
                         .writeLong(sasTx.timestamp())
-                        .writeOptionArrayWithLength(sasTx.compiledScript());
+                        .writeOptionArrayWithLength(sasTx.script().bytes());
             } else if (tx instanceof InvokeScriptTransaction) {
                 InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
                 bwStream.write(Bytes.of(isTx.chainId()))

@@ -3,7 +3,6 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +17,7 @@ public class BurnTransaction extends Transaction {
     private final Amount amount;
 
     public BurnTransaction(PublicKey sender, Amount amount) {
-        this(sender, amount, WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, amount, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public BurnTransaction(PublicKey sender, Amount amount, byte chainId, Amount fee,
@@ -38,7 +37,7 @@ public class BurnTransaction extends Transaction {
         return (BurnTransaction) Transaction.fromJson(json);
     }
 
-    public static BurnTransactionBuilder with(Amount amount) {
+    public static BurnTransactionBuilder builder(Amount amount) {
         return new BurnTransactionBuilder(amount);
     }
 

@@ -2,10 +2,7 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.PublicKey;
-import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
+import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,16 +22,16 @@ public class IssueTransaction extends Transaction {
     private final long quantity;
     private final int decimals;
     private final boolean isReissuable;
-    private final byte[] compiledScript;
+    private final Base64String script;
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript) {
-        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, WavesJConfig.chainId(),
+                            boolean isReissuable, Base64String compiledScript) {
+        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, WavesConfig.chainId(),
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp,
+                            boolean isReissuable, Base64String compiledScript, byte chainId, Amount fee, long timestamp,
                             int version, List<Proof> proofs) {
         this(sender, name == null ? Bytes.empty() : name.getBytes(UTF_8),
                 description == null ? Bytes.empty() : description.getBytes(UTF_8), quantity, decimals, isReissuable,
@@ -43,7 +40,7 @@ public class IssueTransaction extends Transaction {
 
     @Deprecated
     public IssueTransaction(PublicKey sender, byte[] name, byte[] description, long quantity, int decimals,
-                            boolean isReissuable, byte[] compiledScript, byte chainId, Amount fee, long timestamp,
+                            boolean isReissuable, Base64String compiledScript, byte chainId, Amount fee, long timestamp,
                             int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
@@ -52,7 +49,7 @@ public class IssueTransaction extends Transaction {
         this.quantity = quantity;
         this.decimals = decimals;
         this.isReissuable = isReissuable;
-        this.compiledScript = compiledScript == null ? Bytes.empty() : compiledScript;
+        this.script = compiledScript == null ? Base64String.empty() : compiledScript;
     }
 
     public static IssueTransaction fromBytes(byte[] bytes) throws IOException {
@@ -63,12 +60,16 @@ public class IssueTransaction extends Transaction {
         return (IssueTransaction) Transaction.fromJson(json);
     }
 
-    public static IssueTransaction.IssueTransactionBuilder with(String name, long quantity, int decimals) {
-        return new IssueTransaction.IssueTransactionBuilder(name, quantity, decimals);
+    public static IssueTransactionBuilder builder(String name, long quantity, int decimals) {
+        return new IssueTransactionBuilder(name, quantity, decimals);
     }
 
-    public static IssueTransaction.IssueTransactionNFTBuilder withNft(String name) {
-        return new IssueTransaction.IssueTransactionNFTBuilder(name);
+    public static IssueTransactionNFTBuilder builderNFT(String name) {
+        return new IssueTransactionNFTBuilder(name);
+    }
+
+    public AssetId assetId() {
+        return AssetId.as(this.id().bytes());
     }
 
     public String name() {
@@ -95,16 +96,12 @@ public class IssueTransaction extends Transaction {
         return decimals;
     }
 
-    public boolean isReissuable() {
+    public boolean reissuable() {
         return isReissuable;
     }
 
-    public String compiledBase64Script() {
-        return Base64.encode(compiledScript);
-    }
-
-    public byte[] compiledScript() {
-        return compiledScript;
+    public Base64String script() {
+        return script;
     }
 
     @Override
@@ -118,12 +115,12 @@ public class IssueTransaction extends Transaction {
                 && this.quantity == that.quantity
                 && this.decimals == that.decimals
                 && this.isReissuable == that.isReissuable
-                && Bytes.equal(this.compiledScript, that.compiledScript);
+                && this.script.equals(that.script);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, description, quantity, decimals, isReissuable, compiledScript);
+        return Objects.hash(super.hashCode(), name, description, quantity, decimals, isReissuable, script);
     }
 
     public static class IssueTransactionBuilder
@@ -133,7 +130,7 @@ public class IssueTransaction extends Transaction {
         private final long quantity;
         private final int decimals;
         private boolean isReissuable;
-        private byte[] compiledScript;
+        private Base64String script;
 
         protected IssueTransactionBuilder(String name, long quantity, int decimals) {
             super(LATEST_VERSION, MIN_FEE);
@@ -142,7 +139,7 @@ public class IssueTransaction extends Transaction {
             this.decimals = decimals;
             this.description = Bytes.empty();
             this.isReissuable = true;
-            this.compiledScript = Bytes.empty();
+            this.script = Base64String.empty();
         }
 
         public IssueTransactionBuilder description(String description) {
@@ -155,17 +152,13 @@ public class IssueTransaction extends Transaction {
             return this;
         }
 
-        public IssueTransactionBuilder compiledScript(String compiledBase64Script) {
-            return compiledScript(compiledBase64Script == null ? null : Base64.decode(compiledBase64Script));
-        }
-
-        public IssueTransactionBuilder compiledScript(byte[] compiledScript) {
-            this.compiledScript = compiledScript;
+        public IssueTransactionBuilder script(Base64String compiledScript) {
+            this.script = compiledScript == null ? Base64String.empty() : compiledScript;
             return this;
         }
 
         protected IssueTransaction _build() {
-            return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, compiledScript,
+            return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, script,
                     chainId, fee, timestamp, version, Proof.emptyList());
         }
     }
@@ -174,35 +167,31 @@ public class IssueTransaction extends Transaction {
             extends TransactionBuilder<IssueTransactionNFTBuilder, IssueTransaction> {
         private final byte[] name;
         private byte[] description;
-        private byte[] compiledScript;
+        private Base64String script;
 
-        private static final long QUANTITY = 1;
-        private static final int DECIMALS = 0;
-        private static final boolean REISSUABLE = false;
+        private static final long SINGLE_TOKEN = 1;
+        private static final int NO_DECIMALS = 0;
+        private static final boolean NON_REISSUABLE = false;
 
         protected IssueTransactionNFTBuilder(String name) {
             super(LATEST_VERSION, NFT_MIN_FEE);
             this.name = name == null ? Bytes.empty() : name.getBytes(UTF_8);
             this.description = Bytes.empty();
-            this.compiledScript = Bytes.empty();
+            this.script = Base64String.empty();
         }
 
         public IssueTransactionNFTBuilder description(String description) {
-            this.description = description.getBytes(UTF_8);
+            this.description = description == null ? Bytes.empty() : description.getBytes(UTF_8);
             return this;
         }
 
-        public IssueTransactionNFTBuilder compiledScript(String compiledBase64Script) {
-            return compiledScript(compiledBase64Script == null ? null : Base64.decode(compiledBase64Script));
-        }
-
-        public IssueTransactionNFTBuilder compiledScript(byte[] compiledScript) {
-            this.compiledScript = compiledScript;
+        public IssueTransactionNFTBuilder script(Base64String compiledScript) {
+            this.script = compiledScript == null ? Base64String.empty() : compiledScript;
             return this;
         }
 
         protected IssueTransaction _build() {
-            return new IssueTransaction(sender, name, description, QUANTITY, DECIMALS, REISSUABLE, compiledScript,
+            return new IssueTransaction(sender, name, description, SINGLE_TOKEN, NO_DECIMALS, NON_REISSUABLE, script,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }
     }

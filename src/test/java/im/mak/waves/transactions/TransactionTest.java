@@ -2,7 +2,6 @@ package im.mak.waves.transactions;
 
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Alias;
-import im.mak.waves.transactions.common.Recipient;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,13 +14,13 @@ public class TransactionTest {
         long timestamp = 1600000000000L;
 
         Transaction leaseTx = LeaseTransaction
-                .with(Alias.as("rich"), 100)
+                .builder(Alias.as("rich"), 100)
                 .sender(sender)
                 .timestamp(timestamp)
                 .getUnsigned();
 
         Transaction leaseCancelTx = LeaseCancelTransaction
-                .with(leaseTx.id())
+                .builder(leaseTx.id())
                 .sender(sender)
                 .timestamp(timestamp)
                 .getUnsigned();

@@ -3,7 +3,6 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ public class DataTransaction extends Transaction {
     private final List<DataEntry> data;
 
     public DataTransaction(PublicKey sender, List<DataEntry> data) {
-        this(sender, data, WavesJConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, data, WavesConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
@@ -37,11 +36,11 @@ public class DataTransaction extends Transaction {
         return (DataTransaction) Transaction.fromJson(json);
     }
 
-    public static DataTransactionBuilder with(List<DataEntry> data) {
+    public static DataTransactionBuilder builder(List<DataEntry> data) {
         return new DataTransactionBuilder(data);
     }
 
-    public static DataTransactionBuilder with(DataEntry... data) {
+    public static DataTransactionBuilder builder(DataEntry... data) {
         return new DataTransactionBuilder(Arrays.asList(data));
     }
 
@@ -50,7 +49,7 @@ public class DataTransaction extends Transaction {
             return fee;
 
         DataTransaction tempTx = new DataTransaction(PublicKey.as("11111111111111111111111111111111"), data,
-                WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
+                WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
         int payloadSize = tempTx.version() == 1
                 ? tempTx.bodyBytes().length
                 : tempTx.toProtobuf().getTransaction().getDataTransaction().toByteArray().length;

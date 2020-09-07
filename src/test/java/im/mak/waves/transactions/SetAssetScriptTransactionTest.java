@@ -21,13 +21,13 @@ public class SetAssetScriptTransactionTest {
 
     static PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
     static AssetId assetId = AssetId.as("HcGYEobfsHtYoRv3jWcrHPnu5joTB1NZKHfxqVfaG212");
-    static byte[] script = Base64.decode("BAbMtW/U");
+    static Base64String script = new Base64String("BAbMtW/U");
     static long timestamp = 1600000000000L;
     static long fee = SetAssetScriptTransaction.MIN_FEE + 1;
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -58,8 +58,8 @@ public class SetAssetScriptTransactionTest {
     void setAssetScriptTransaction(int version, Id expectedId, List<Proof> proofs, byte[] expectedBody,
                                    byte[] expectedBytes, String expectedJson) throws IOException {
         SetAssetScriptTransaction builtTx = SetAssetScriptTransaction
-                .with(assetId, script)
-                .chainId(WavesJConfig.chainId())
+                .builder(assetId, script)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -74,7 +74,7 @@ public class SetAssetScriptTransactionTest {
         );
 
         SetAssetScriptTransaction constructedTx = new SetAssetScriptTransaction(
-                sender, assetId, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                sender, assetId, script, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -85,11 +85,10 @@ public class SetAssetScriptTransactionTest {
         SetAssetScriptTransaction deserTx = SetAssetScriptTransaction.fromBytes(expectedBytes);
 
         assertAll("Tx must be deserializable from expected bytes",
-                () -> assertThat(deserTx.compiledScript()).isEqualTo(script),
-                () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
+                () -> assertThat(deserTx.script()).isEqualTo(script),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

@@ -27,7 +27,7 @@ public class SponsorFeeTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -58,8 +58,8 @@ public class SponsorFeeTransactionTest {
     void sponsorFeeTransaction(int version, Id expectedId, List<Proof> proofs,
                                byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         SponsorFeeTransaction builtTx = SponsorFeeTransaction
-                .with(assetId, minSponsoredFee)
-                .chainId(WavesJConfig.chainId())
+                .builder(assetId, minSponsoredFee)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -74,7 +74,7 @@ public class SponsorFeeTransactionTest {
         );
 
         SponsorFeeTransaction constructedTx = new SponsorFeeTransaction(sender, assetId, minSponsoredFee,
-                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -89,7 +89,7 @@ public class SponsorFeeTransactionTest {
                 () -> assertThat(deserTx.minSponsoredFee()).isEqualTo(minSponsoredFee),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

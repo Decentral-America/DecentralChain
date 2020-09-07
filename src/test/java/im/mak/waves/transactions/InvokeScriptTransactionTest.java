@@ -28,12 +28,12 @@ public class InvokeScriptTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
         Recipient alias = Alias.as("dapp");
-        Recipient address = Address.from(WavesJConfig.chainId(), sender);
+        Recipient address = Address.from(WavesConfig.chainId(), sender);
         AssetId assetId = AssetId.as("5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd");
 
         String str = new String(new char[16]).replace("\0", "a");
@@ -102,9 +102,9 @@ public class InvokeScriptTransactionTest {
                                  Id expectedId, List<Proof> proofs, byte[] expectedBody, byte[] expectedBytes,
                                  String expectedJson) throws IOException {
         InvokeScriptTransaction builtTx = InvokeScriptTransaction
-                .with(dApp, function)
+                .builder(dApp, function)
                 .payments(payments)
-                .chainId(WavesJConfig.chainId())
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -119,7 +119,7 @@ public class InvokeScriptTransactionTest {
         );
 
         InvokeScriptTransaction constructedTx = new InvokeScriptTransaction(sender, dApp, function, payments,
-                WavesJConfig.chainId(), fee, timestamp, version, proofs);
+                WavesConfig.chainId(), fee, timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -135,7 +135,7 @@ public class InvokeScriptTransactionTest {
                 () -> assertThat(deserTx.payments()).isEqualTo(payments),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(fee),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

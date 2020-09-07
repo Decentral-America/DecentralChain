@@ -27,7 +27,7 @@ public class ReissueTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -76,9 +76,9 @@ public class ReissueTransactionTest {
     void reissueTransaction(int version, boolean reissuable, Id expectedId, List<Proof> proofs,
                             byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         ReissueTransaction builtTx = ReissueTransaction
-                .with(Amount.of(amount, assetId))
+                .builder(Amount.of(amount, assetId))
                 .reissuable(reissuable)
-                .chainId(WavesJConfig.chainId())
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -93,7 +93,7 @@ public class ReissueTransactionTest {
         );
 
         ReissueTransaction constructedTx = new ReissueTransaction(sender, Amount.of(amount, assetId), reissuable,
-                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -105,10 +105,10 @@ public class ReissueTransactionTest {
 
         assertAll("Tx must be deserializable from expected bytes",
                 () -> assertThat(deserTx.amount()).isEqualTo(Amount.of(amount, assetId)),
-                () -> assertThat(deserTx.isReissuable()).isEqualTo(reissuable),
+                () -> assertThat(deserTx.reissuable()).isEqualTo(reissuable),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

@@ -1,8 +1,15 @@
-# Waves-transactions for java
+# Waves-transactions for Java
 
-## How to start
+Library for binary and json serialization of transactions in Waves blockchain.
 
-1. clone [waves-crypto-java](https://github.com/msmolyakov/waves-crypto-java)
-1. checkout branch `refactoring-for-transactions`
-1. do `mvn install`
-1. open this project
+## Installation
+
+### Maven
+
+```
+<dependency>
+    <groupId>im.mak</groupId>
+    <artifactId>waves-transactions</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```

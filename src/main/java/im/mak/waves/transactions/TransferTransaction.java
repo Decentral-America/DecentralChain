@@ -1,14 +1,11 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class TransferTransaction extends Transaction {
 
@@ -18,14 +15,14 @@ public class TransferTransaction extends Transaction {
 
     private final Recipient recipient;
     private final Amount amount;
-    private final byte[] attachment;
+    private final Base58String attachment;
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment) {
-        this(sender, recipient, amount, attachment, WavesJConfig.chainId(), Amount.of(MIN_FEE),
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, Base58String attachment) {
+        this(sender, recipient, amount, attachment, WavesConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, byte[] attachment,
+    public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, Base58String attachment,
                                byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
@@ -42,7 +39,7 @@ public class TransferTransaction extends Transaction {
         return (TransferTransaction) Transaction.fromJson(json);
     }
 
-    public static TransferTransactionBuilder with(Recipient recipient, Amount amount) {
+    public static TransferTransactionBuilder builder(Recipient recipient, Amount amount) {
         return new TransferTransactionBuilder(recipient, amount);
     }
 
@@ -54,11 +51,7 @@ public class TransferTransaction extends Transaction {
         return amount;
     }
 
-    public String attachment() {
-        return new String(attachment, UTF_8);
-    }
-
-    public byte[] attachmentBytes() {
+    public Base58String attachment() {
         return attachment;
     }
 
@@ -70,7 +63,7 @@ public class TransferTransaction extends Transaction {
         TransferTransaction that = (TransferTransaction) o;
         return this.amount.equals(that.amount)
                 && this.recipient.equals(that.recipient)
-                && Bytes.equal(this.attachment, that.attachment);
+                && this.attachment.equals(that.attachment);
     }
 
     @Override
@@ -82,22 +75,18 @@ public class TransferTransaction extends Transaction {
             extends TransactionBuilder<TransferTransactionBuilder, TransferTransaction> {
         private final Recipient recipient;
         private final Amount amount;
-        private byte[] attachment;
+        private Base58String attachment;
 
         protected TransferTransactionBuilder(Recipient recipient, Amount amount) {
             super(LATEST_VERSION, MIN_FEE);
             this.recipient = recipient;
             this.amount = amount;
-            this.attachment = Bytes.empty();
+            this.attachment = Base58String.empty();
         }
 
-        public TransferTransactionBuilder attachment(byte[] attachment) {
+        public TransferTransactionBuilder attachment(Base58String attachment) {
             this.attachment = attachment;
             return this;
-        }
-
-        public TransferTransactionBuilder attachment(String attachment) {
-            return attachment(attachment.getBytes(UTF_8));
         }
 
         protected TransferTransaction _build() {

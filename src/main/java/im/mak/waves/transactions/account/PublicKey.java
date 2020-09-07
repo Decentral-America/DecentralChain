@@ -1,9 +1,9 @@
 package im.mak.waves.transactions.account;
 
 import im.mak.waves.crypto.Crypto;
-import im.mak.waves.crypto.base.Base58;
+import im.mak.waves.transactions.common.Base58String;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
+import im.mak.waves.transactions.WavesConfig;
 
 import java.util.Arrays;
 
@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Public key is used as sender of transactions and orders.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PublicKey {
+public class PublicKey extends Base58String {
 
     public static final int BYTES_LENGTH = 32;
 
@@ -45,46 +45,35 @@ public class PublicKey {
         return new PublicKey(bytes);
     }
 
-    private final byte[] bytes;
-    private String encoded;
-
     /**
      * Generate public key from the private key.
      *
      * @param privateKey public key
      */
     public PublicKey(PrivateKey privateKey) {
-        this.bytes = Crypto.getPublicKey(privateKey.bytes());
+        this(Crypto.getPublicKey(privateKey.bytes()));
     }
 
     /**
      * Create public key instance from its base58 representation.
      *
-     * @param base58Encoded public key bytes as base58-encoded string
+     * @param publicKey public key bytes as base58-encoded string
      */
-    public PublicKey(String base58Encoded) {
-        this(Base58.decode(base58Encoded));
+    public PublicKey(String publicKey) {
+        super(publicKey);
     }
 
     /**
      * Create public key instance from its bytes.
      *
-     * @param publicKeyBytes public key bytes
+     * @param publicKey public key bytes
      */
-    public PublicKey(byte[] publicKeyBytes) {
-        if (publicKeyBytes.length != BYTES_LENGTH)
-            throw new IllegalArgumentException("Public key has wrong size in bytes. "
-                + "Expected: " + BYTES_LENGTH + ", actual: " + publicKeyBytes.length);
-        this.bytes = publicKeyBytes.clone();
-    }
+    public PublicKey(byte[] publicKey) {
+        super(publicKey);
 
-    /**
-     * Get bytes of the public key.
-     *
-     * @return bytes of the public key
-     */
-    public byte[] bytes() {
-        return this.bytes.clone();
+        if (publicKey.length != BYTES_LENGTH)
+            throw new IllegalArgumentException("Public key has wrong size in bytes. "
+                + "Expected: " + BYTES_LENGTH + ", actual: " + publicKey.length);
     }
 
     /**
@@ -105,7 +94,7 @@ public class PublicKey {
      * @return address
      */
     public Address address() {
-        return Address.from(WavesJConfig.chainId(), this);
+        return Address.from(WavesConfig.chainId(), this);
     }
 
     /**
@@ -139,15 +128,9 @@ public class PublicKey {
         return Arrays.hashCode(bytes);
     }
 
-    /**
-     * Get the public key encoded to base58.
-     *
-     * @return the base58-encoded public key
-     */
     @Override
     public String toString() {
-        if (this.encoded == null) this.encoded = Base58.encode(bytes);
-        return this.encoded;
+        return encoded();
     }
 
 }

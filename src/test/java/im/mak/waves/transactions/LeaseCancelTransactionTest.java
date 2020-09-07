@@ -25,7 +25,7 @@ public class LeaseCancelTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -69,8 +69,8 @@ public class LeaseCancelTransactionTest {
     void leaseCancelTransaction(int version, Id leaseId, Id expectedId, List<Proof> proofs,
                                 byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         LeaseCancelTransaction builtTx = LeaseCancelTransaction
-                .with(leaseId)
-                .chainId(WavesJConfig.chainId())
+                .builder(leaseId)
+                .chainId(WavesConfig.chainId())
                 .fee(MIN_FEE)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -84,7 +84,7 @@ public class LeaseCancelTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        LeaseCancelTransaction constructedTx = new LeaseCancelTransaction(sender, leaseId, WavesJConfig.chainId(),
+        LeaseCancelTransaction constructedTx = new LeaseCancelTransaction(sender, leaseId, WavesConfig.chainId(),
                 Amount.of(MIN_FEE), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
@@ -99,7 +99,7 @@ public class LeaseCancelTransactionTest {
                 () -> assertThat(deserTx.leaseId()).isEqualTo(leaseId),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(MIN_FEE, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

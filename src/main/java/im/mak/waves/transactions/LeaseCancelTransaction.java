@@ -16,7 +16,7 @@ public class LeaseCancelTransaction extends Transaction {
     private final Id leaseId;
 
     public LeaseCancelTransaction(PublicKey sender, Id leaseId) {
-        this(sender, leaseId, WavesJConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION,
+        this(sender, leaseId, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION,
                 Proof.emptyList());
     }
 
@@ -34,7 +34,7 @@ public class LeaseCancelTransaction extends Transaction {
         return (LeaseCancelTransaction) Transaction.fromJson(json);
     }
 
-    public static LeaseCancelTransactionBuilder with(Id leaseId) {
+    public static LeaseCancelTransactionBuilder builder(Id leaseId) {
         return new LeaseCancelTransactionBuilder(leaseId);
     }
 

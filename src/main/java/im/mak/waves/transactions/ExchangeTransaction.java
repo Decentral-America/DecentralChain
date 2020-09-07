@@ -3,7 +3,6 @@ package im.mak.waves.transactions;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
 import im.mak.waves.transactions.exchange.AssetPair;
 import im.mak.waves.transactions.exchange.Order;
 import im.mak.waves.transactions.exchange.OrderType;
@@ -24,8 +23,9 @@ public class ExchangeTransaction extends Transaction {
     private final long buyMatcherFee;
     private final long sellMatcherFee;
 
-    public ExchangeTransaction(PublicKey sender, Order order1, Order order2, long amount, long price) {
-        this(sender, order1, order2, amount, price, MIN_FEE, MIN_FEE, WavesJConfig.chainId(), //todo calc proportionally instead of MIN_FEE
+    public ExchangeTransaction(PublicKey sender, Order order1, Order order2,
+                               long amount, long price, long buyMatcherFee, long sellMatcherFee) {
+        this(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, WavesConfig.chainId(),
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
@@ -58,8 +58,9 @@ public class ExchangeTransaction extends Transaction {
         return (ExchangeTransaction) Transaction.fromJson(json);
     }
 
-    public static ExchangeTransactionBuilder with(Order buy, Order sell, long amount, long price) {
-        return new ExchangeTransactionBuilder(buy, sell, amount, price);
+    public static ExchangeTransactionBuilder builder(
+            Order buy, Order sell, long amount, long price, long buyMatcherFee, long sellMatcherFee) {
+        return new ExchangeTransactionBuilder(buy, sell, amount, price, buyMatcherFee, sellMatcherFee);
     }
 
     public AssetPair assetPair() {
@@ -126,27 +127,18 @@ public class ExchangeTransaction extends Transaction {
         private final Order order2;
         private final long amount;
         private final long price;
-        private long buyMatcherFee;
-        private long sellMatcherFee;
+        private final long buyMatcherFee;
+        private final long sellMatcherFee;
 
-        protected ExchangeTransactionBuilder(Order order1, Order order2, long amount, long price) {
+        protected ExchangeTransactionBuilder(
+                Order order1, Order order2, long amount, long price, long buyMatcherFee, long sellMatcherFee) {
             super(LATEST_VERSION, MIN_FEE);
             this.order1 = order1;
             this.order2 = order2;
             this.amount = amount;
             this.price = price;
-            this.buyMatcherFee = this.order1.fee().value(); //todo proportionally
-            this.sellMatcherFee = this.order2.fee().value();
-        }
-        
-        public ExchangeTransactionBuilder buyMatcherFee(long buyMatcherFee) {
             this.buyMatcherFee = buyMatcherFee;
-            return this;
-        }
-        
-        public ExchangeTransactionBuilder sellMatcherFee(long sellMatcherFee) {
             this.sellMatcherFee = sellMatcherFee;
-            return this;
         }
 
         protected ExchangeTransaction _build() {

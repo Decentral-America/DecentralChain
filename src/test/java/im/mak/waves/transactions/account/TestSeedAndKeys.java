@@ -1,7 +1,7 @@
 package im.mak.waves.transactions.account;
 
 import im.mak.waves.crypto.Bytes;
-import im.mak.waves.transactions.common.WavesJConfig;
+import im.mak.waves.transactions.WavesConfig;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,7 @@ class TestSeedAndKeys {
 
     @Test
     void seedAndKeys() {
-        WavesJConfig.chainId('T');
+        WavesConfig.chainId('T');
         PrivateKey pk = PrivateKey.fromSeed(Bytes.fromUtf8(phrase), 0);
 
         assertThat(pk.toString()).isEqualTo(privateKey);

@@ -108,8 +108,8 @@ public class BytesWriter {
                 write((byte) 0).writeLong(((IntegerArg) arg).value());
             else if (arg instanceof BinaryArg) {
                 BinaryArg binArg = (BinaryArg) arg;
-                int intLength = binArg.value().length;
-                write((byte) 1).writeInt(intLength).write(binArg.value());
+                int intLength = binArg.value().bytes().length;
+                write((byte) 1).writeInt(intLength).write(binArg.value().bytes());
             } else if (arg instanceof StringArg) {
                 StringArg strArg = (StringArg) arg;
                 int intLength = strArg.value().length();

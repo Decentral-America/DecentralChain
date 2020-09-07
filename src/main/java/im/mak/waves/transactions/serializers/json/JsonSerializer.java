@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.Address;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base58;
@@ -27,7 +26,6 @@ import static im.mak.waves.transactions.serializers.Scheme.WITH_SIGNATURE;
 
 public abstract class JsonSerializer {
 
-    //todo use modules http://tutorials.jenkov.com/java-json/jackson-objectmapper.html#custom-serializer
     public static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     
     public static Order orderFromJson(JsonNode json) throws IOException {
@@ -58,7 +56,7 @@ public abstract class JsonSerializer {
                 Amount.of(json.get("amount").asLong(), assetIdFromJson(json.get("assetPair").get("amountAsset"))),
                 Amount.of(json.get("price").asLong(), assetIdFromJson(json.get("assetPair").get("priceAsset"))),
                 PublicKey.as(json.get("matcherPublicKey").asText()),
-                json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesJConfig.chainId(),
+                json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesConfig.chainId(),
                 fee,
                 json.get("timestamp").asLong(),
                 json.get("expiration").asLong(),
@@ -71,11 +69,10 @@ public abstract class JsonSerializer {
         return orderFromJson(JSON_MAPPER.readTree(json));
     }
 
-    //todo support unknown transactions with common fields
     public static Transaction fromJson(JsonNode json) throws IOException {
         int type = json.get("type").asInt();
         int version = json.hasNonNull("version") ? json.get("version").asInt() : 1;
-        byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesJConfig.chainId();
+        byte chainId = json.has("chainId") ? (byte) json.get("chainId").asInt() : WavesConfig.chainId();
         PublicKey sender = json.hasNonNull("senderPublicKey")
                 ? PublicKey.as(json.get("senderPublicKey").asText())
                 : PublicKey.as(new byte[PublicKey.BYTES_LENGTH]);
@@ -117,7 +114,8 @@ public abstract class JsonSerializer {
             if (version < 3)
                 chainId = recipient.chainId();
             AssetId assetId = assetIdFromJson(json.get("assetId"));
-            byte[] attachment = json.has("attachment") ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
+            Base58String attachment = json.has("attachment")
+                    ? new Base58String(json.get("attachment").asText()) : Base58String.empty();
 
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
@@ -192,8 +190,8 @@ public abstract class JsonSerializer {
                 transfers.add(Transfer.to(recipient, amount));
             }
             AssetId assetId = assetIdFromJson(json.get("assetId"));
-            byte[] attachment = json.hasNonNull("attachment")
-                    ? Base58.decode(json.get("attachment").asText()) : Bytes.empty();
+            Base58String attachment = json.hasNonNull("attachment")
+                    ? new Base58String(json.get("attachment").asText()) : Base58String.empty();
             if (version == 1 && transfers.size() > 0)
                 chainId = transfers.get(0).recipient().chainId();
 
@@ -291,7 +289,7 @@ public abstract class JsonSerializer {
                     .put("orderType", order.type().value())
                     .put("version", order.version())
                     .put("senderPublicKey", order.sender().toString())
-                    .put("sender", order.sender().address(WavesJConfig.chainId()).toString());
+                    .put("sender", order.sender().address(WavesConfig.chainId()).toString());
             jsObject.putObject("assetPair")
                     .put("amountAsset", assetIdToJson(order.amount().assetId()))
                     .put("priceAsset", assetIdToJson(order.price().assetId()));
@@ -301,8 +299,9 @@ public abstract class JsonSerializer {
                     .put("matcherFee", order.fee().value())
                     .put("matcherFeeAssetId", assetIdToJson(order.fee().assetId()))
                     .put("timestamp", order.timestamp())
-                    .put("expiration", order.expiration())
-                    .put("signature", order.proofs().get(0).toString());
+                    .put("expiration", order.expiration());
+            if (order.proofs().size() > 0)
+                    jsObject.put("signature", order.proofs().get(0).toString());
 
             if (order.version() < 3)
                 jsObject.remove("matcherFeeAssetId");
@@ -312,7 +311,7 @@ public abstract class JsonSerializer {
             jsObject.set("proofs", proofs);
         } else {
             Transaction tx = (Transaction) txOrOrder;
-            jsObject.put("id", tx.id().toString()) //todo serialize id? configurable and true by default?
+            jsObject.put("id", tx.id().toString())
                     .put("type", tx.type())
                     .put("version", tx.version())
                     .put("chainId", tx.chainId())
@@ -344,8 +343,8 @@ public abstract class JsonSerializer {
                         .put("description", itx.description())
                         .put("quantity", itx.quantity())
                         .put("decimals", itx.decimals())
-                        .put("reissuable", itx.isReissuable())
-                        .put("script", scriptToJson(itx.compiledScript()));
+                        .put("reissuable", itx.reissuable())
+                        .put("script", scriptToJson(itx.script()));
                 if (itx.version() == 1) {
                     jsObject.remove("chainId");
                     signature = itx.proofs().get(0).toString();
@@ -355,7 +354,7 @@ public abstract class JsonSerializer {
                 jsObject.put("recipient", ttx.recipient().toString())
                         .put("amount", ttx.amount().value())
                         .put("assetId", assetIdToJson(ttx.amount().assetId()))
-                        .put("attachment", Base58.encode(ttx.attachmentBytes()));
+                        .put("attachment", Base58.encode(ttx.attachment().bytes()));
                 if (ttx.version() < 3)
                     jsObject.remove("chainId");
                 if (ttx.version() == 1)
@@ -364,7 +363,7 @@ public abstract class JsonSerializer {
                 ReissueTransaction rtx = (ReissueTransaction) tx;
                 jsObject.put("assetId", assetIdToJson(rtx.amount().assetId()))
                         .put("quantity", rtx.amount().value())
-                        .put("reissuable", rtx.isReissuable());
+                        .put("reissuable", rtx.reissuable());
                 if (rtx.version() == 1) {
                     jsObject.remove("chainId");
                     signature = rtx.proofs().get(0).toString();
@@ -414,7 +413,7 @@ public abstract class JsonSerializer {
             } else if (tx instanceof MassTransferTransaction) {
                 MassTransferTransaction mtTx = (MassTransferTransaction) tx;
                 jsObject.put("assetId", assetIdToJson(mtTx.assetId()))
-                        .put("attachment", Base58.encode(mtTx.attachmentBytes()));
+                        .put("attachment", Base58.encode(mtTx.attachment().bytes()));
                 ArrayNode jsTransfers = jsObject.putArray("transfers");
                 for (Transfer transfer : mtTx.transfers()) {
                     jsTransfers.addObject()
@@ -429,7 +428,7 @@ public abstract class JsonSerializer {
                 dtx.data().forEach(e -> {
                     ObjectNode entry = JSON_MAPPER.createObjectNode().put("key", e.key());
                     if (e instanceof BinaryEntry)
-                        entry.put("type", "binary").put("value", ((BinaryEntry) e).valueEncoded());
+                        entry.put("type", "binary").put("value", ((BinaryEntry) e).value().encodedWithPrefix());
                     else if (e instanceof BooleanEntry)
                         entry.put("type", "boolean").put("value", ((BooleanEntry) e).value());
                     else if (e instanceof IntegerEntry)
@@ -445,7 +444,7 @@ public abstract class JsonSerializer {
                     jsObject.remove("chainId");
             } else if (tx instanceof SetScriptTransaction) {
                 SetScriptTransaction ssTx = (SetScriptTransaction) tx;
-                jsObject.put("script", scriptToJson(ssTx.compiledScript()));
+                jsObject.put("script", scriptToJson(ssTx.script()));
             } else if (tx instanceof SponsorFeeTransaction) {
                 SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
                 if (sfTx.version() == 1)
@@ -455,7 +454,7 @@ public abstract class JsonSerializer {
             } else if (tx instanceof SetAssetScriptTransaction) {
                 SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
                 jsObject.put("assetId", assetIdToJson(sasTx.assetId()))
-                        .put("script", scriptToJson(sasTx.compiledScript()));
+                        .put("script", scriptToJson(sasTx.script()));
             } else if (tx instanceof InvokeScriptTransaction) {
                 InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;
                 jsObject.put("dApp", isTx.dApp().toString());
@@ -533,7 +532,7 @@ public abstract class JsonSerializer {
         args.forEach(a -> {
             ObjectNode arg = json.addObject();
             if (a instanceof BinaryArg)
-                arg.put("type", "binary").put("value", ((BinaryArg) a).valueEncoded());
+                arg.put("type", "binary").put("value", ((BinaryArg) a).value().encodedWithPrefix());
             else if (a instanceof BooleanArg)
                 arg.put("type", "boolean").put("value", ((BooleanArg) a).value());
             else if (a instanceof IntegerArg)
@@ -552,12 +551,12 @@ public abstract class JsonSerializer {
         return Address.isValid(value) ? Address.as(value) : Alias.as(value);
     }
 
-    public static byte[] scriptFromJson(JsonNode json) {
-        return json.hasNonNull("script") ? Base64.decode(json.get("script").asText()) : Bytes.empty();
+    public static Base64String scriptFromJson(JsonNode json) {
+        return json.hasNonNull("script") ? new Base64String(json.get("script").asText()) : Base64String.empty();
     }
 
-    public static String scriptToJson(byte[] script) {
-        return script == null || script.length == 0 ? null : Base64.encodeWithPrefix(script);
+    public static String scriptToJson(Base64String script) {
+        return script == null || script.bytes().length == 0 ? null : script.encodedWithPrefix();
     }
 
 }

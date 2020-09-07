@@ -1,6 +1,7 @@
 package im.mak.waves.transactions.common;
 
 import im.mak.waves.crypto.Bytes;
+import im.mak.waves.transactions.WavesConfig;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public class Alias implements Recipient {
     private final String fullAlias;
 
     public Alias(String name) {
-        this(WavesJConfig.chainId(), name);
+        this(WavesConfig.chainId(), name);
     }
 
     public Alias(byte chainId, String name) {
@@ -36,7 +37,7 @@ public class Alias implements Recipient {
     }
 
     public static boolean isValid(String alias) {
-        return isValid(WavesJConfig.chainId(), alias);
+        return isValid(WavesConfig.chainId(), alias);
     }
 
     public static boolean isValid(byte chainId, String alias) {

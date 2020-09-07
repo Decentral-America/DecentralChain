@@ -1,21 +1,25 @@
 package im.mak.waves.transactions.account;
 
+import com.google.common.base.Suppliers;
 import im.mak.waves.crypto.Crypto;
 import im.mak.waves.crypto.base.Base58;
-import im.mak.waves.transactions.common.WavesJConfig;
+import im.mak.waves.transactions.common.Base58String;
+import im.mak.waves.transactions.WavesConfig;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
  * Private key is used to sign any data.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PrivateKey {
+public class PrivateKey extends Base58String {
 
     public static final int LENGTH = 32;
 
     /**
-     * Generate private key from the seed.
+     * Generate private key from seed phrase.
      *
      * @param seedPhraseBytes seed phrase bytes
      * @return private key instance
@@ -25,13 +29,33 @@ public class PrivateKey {
     }
 
     /**
-     * Generate private key from the seed.
+     * Generate private key from seed phrase.
      *
      * @param seedPhraseBytes seed phrase bytes
      * @return private key instance
      */
     public static PrivateKey fromSeed(byte[] seedPhraseBytes) {
         return fromSeed(seedPhraseBytes, 0);
+    }
+
+    /**
+     * Generate private key from seed phrase.
+     *
+     * @param seedPhrase seed phrase
+     * @return private key instance
+     */
+    public static PrivateKey fromSeed(String seedPhrase, int nonce) {
+        return fromSeed(seedPhrase.getBytes(StandardCharsets.UTF_8), nonce);
+    }
+
+    /**
+     * Generate private key from seed phrase.
+     *
+     * @param seedPhrase seed phrase bytes
+     * @return private key instance
+     */
+    public static PrivateKey fromSeed(String seedPhrase) {
+        return fromSeed(seedPhrase.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -54,9 +78,7 @@ public class PrivateKey {
         return new PrivateKey(bytes);
     }
 
-    private final byte[] bytes;
-    private String encoded;
-    private PublicKey publicKey;
+    private final Supplier<PublicKey> publicKey;
 
     /**
      * Create private key instance from its base58 representation.
@@ -70,13 +92,16 @@ public class PrivateKey {
     /**
      * Create private key instance from its bytes.
      *
-     * @param privateKeyBytes private key bytes
+     * @param privateKey private key bytes
      */
-    public PrivateKey(byte[] privateKeyBytes) {
-        if (privateKeyBytes.length != LENGTH)
+    public PrivateKey(byte[] privateKey) {
+        super(privateKey);
+
+        if (privateKey.length != LENGTH)
             throw new IllegalArgumentException("Private key has wrong size in bytes. "
-                + "Expected: " + LENGTH + ", actual: " + privateKeyBytes.length);
-        this.bytes = privateKeyBytes.clone();
+                + "Expected: " + LENGTH + ", actual: " + privateKey.length);
+
+        this.publicKey = Suppliers.memoize(() -> PublicKey.from(this))::get;
     }
 
     /**
@@ -94,8 +119,7 @@ public class PrivateKey {
      * @return generated public key
      */
     public PublicKey publicKey() {
-        if (this.publicKey == null) this.publicKey = PublicKey.from(this);
-        return this.publicKey;
+        return this.publicKey.get();
     }
 
     /**
@@ -116,7 +140,7 @@ public class PrivateKey {
      * @return address
      */
     public Address address() {
-        return address(WavesJConfig.chainId());
+        return address(WavesConfig.chainId());
     }
 
     /**
@@ -157,15 +181,9 @@ public class PrivateKey {
         return Arrays.hashCode(bytes);
     }
 
-    /**
-     * Get the private key encoded to base58.
-     *
-     * @return the base58-encoded private key
-     */
     @Override
     public String toString() {
-        if (this.encoded == null) this.encoded = Base58.encode(bytes);
-        return this.encoded;
+        return encoded();
     }
 
 }

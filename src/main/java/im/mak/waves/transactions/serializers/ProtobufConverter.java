@@ -36,7 +36,7 @@ public abstract class ProtobufConverter {
         else throw new IOException("Unknown order type \"" + pbOrder.getOrderSide() + "\"");
 
         Order order = Order
-                .with(type,
+                .builder(type,
                         Amount.of(pbOrder.getAmount(), AssetId.as(pbOrder.getAssetPair().getAmountAssetId().toByteArray())),
                         Amount.of(pbOrder.getPrice(), AssetId.as(pbOrder.getAssetPair().getPriceAssetId().toByteArray())),
                         PublicKey.as(pbOrder.getMatcherPublicKey().toByteArray()))
@@ -82,7 +82,7 @@ public abstract class ProtobufConverter {
                     issue.getAmount(),
                     issue.getDecimals(),
                     issue.getReissuable(),
-                    issue.getScript().toByteArray(),
+                    new Base64String(issue.getScript().toByteArray()),
                     (byte) pbTx.getChainId(),
                     pbAmountToAmount(pbTx.getFee()),
                     pbTx.getTimestamp(),
@@ -93,9 +93,9 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.TransferTransactionData transfer = pbTx.getTransfer();
             AmountOuterClass.Amount amount = transfer.getAmount();
             tx = TransferTransaction
-                    .with(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()),
+                    .builder(recipientFromProto(transfer.getRecipient(), (byte) pbTx.getChainId()),
                             Amount.of(amount.getAmount(), AssetId.as(amount.getAssetId().toByteArray())))
-                    .attachment(transfer.getAttachment().toByteArray())
+                    .attachment(new Base58String(transfer.getAttachment().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -105,7 +105,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasReissue()) {
             TransactionOuterClass.ReissueTransactionData reissue = pbTx.getReissue();
             tx = ReissueTransaction
-                    .with(Amount.of(reissue.getAssetAmount().getAmount(),
+                    .builder(Amount.of(reissue.getAssetAmount().getAmount(),
                             AssetId.as(reissue.getAssetAmount().getAssetId().toByteArray())))
                     .reissuable(reissue.getReissuable())
                     .version(pbTx.getVersion())
@@ -117,7 +117,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasBurn()) {
             TransactionOuterClass.BurnTransactionData burn = pbTx.getBurn();
             tx = BurnTransaction
-                    .with(Amount.of(burn.getAssetAmount().getAmount(),
+                    .builder(Amount.of(burn.getAssetAmount().getAmount(),
                             AssetId.as(burn.getAssetAmount().getAssetId().toByteArray())))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
@@ -128,12 +128,12 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasExchange()) {
             TransactionOuterClass.ExchangeTransactionData exchange = pbTx.getExchange();
             tx = ExchangeTransaction
-                    .with(fromProtobuf(exchange.getOrders(0)),
+                    .builder(fromProtobuf(exchange.getOrders(0)),
                             fromProtobuf(exchange.getOrders(1)),
                             exchange.getAmount(),
-                            exchange.getPrice())
-                    .buyMatcherFee(exchange.getBuyMatcherFee())
-                    .sellMatcherFee(exchange.getSellMatcherFee())
+                            exchange.getPrice(),
+                            exchange.getBuyMatcherFee(),
+                            exchange.getSellMatcherFee())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -143,7 +143,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasLease()) {
             TransactionOuterClass.LeaseTransactionData lease = pbTx.getLease();
             tx = LeaseTransaction
-                    .with(recipientFromProto(lease.getRecipient(), (byte) pbTx.getChainId()), lease.getAmount())
+                    .builder(recipientFromProto(lease.getRecipient(), (byte) pbTx.getChainId()), lease.getAmount())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -153,7 +153,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasLeaseCancel()) {
             TransactionOuterClass.LeaseCancelTransactionData leaseCancel = pbTx.getLeaseCancel();
             tx = LeaseCancelTransaction
-                    .with(Id.as(leaseCancel.getLeaseId().toByteArray()))
+                    .builder(Id.as(leaseCancel.getLeaseId().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -163,7 +163,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasCreateAlias()) {
             TransactionOuterClass.CreateAliasTransactionData alias = pbTx.getCreateAlias();
             tx = CreateAliasTransaction
-                    .with(new String(alias.getAliasBytes().toByteArray(), UTF_8)) //todo is there non utf8 aliases?
+                    .builder(new String(alias.getAliasBytes().toByteArray(), UTF_8))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -177,9 +177,9 @@ public abstract class ProtobufConverter {
                     .map(t -> Transfer.to(recipientFromProto(t.getRecipient(), (byte) pbTx.getChainId()), t.getAmount()))
                     .collect(toList());
             tx = MassTransferTransaction
-                    .with(transfers)
+                    .builder(transfers)
                     .assetId(AssetId.as(massTransfer.getAssetId().toByteArray()))
-                    .attachment(massTransfer.getAttachment().toByteArray())
+                    .attachment(new Base58String(massTransfer.getAttachment().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -189,7 +189,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasDataTransaction()) {
             TransactionOuterClass.DataTransactionData data = pbTx.getDataTransaction();
             tx = DataTransaction
-                    .with(data.getDataList().stream().map(e -> {
+                    .builder(data.getDataList().stream().map(e -> {
                         if (e.getValueCase() == INT_VALUE)
                             return new IntegerEntry(e.getKey(), e.getIntValue());
                         else if (e.getValueCase() == BOOL_VALUE)
@@ -211,7 +211,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasSetScript()) {
             TransactionOuterClass.SetScriptTransactionData setScript = pbTx.getSetScript();
             tx = SetScriptTransaction
-                    .with(setScript.getScript().toByteArray())
+                    .builder(new Base64String(setScript.getScript().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -221,7 +221,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasSponsorFee()) {
             TransactionOuterClass.SponsorFeeTransactionData sponsor = pbTx.getSponsorFee();
             tx = SponsorFeeTransaction
-                    .with(AssetId.as(sponsor.getMinFee().getAssetId().toByteArray()), sponsor.getMinFee().getAmount())
+                    .builder(AssetId.as(sponsor.getMinFee().getAssetId().toByteArray()), sponsor.getMinFee().getAmount())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -231,7 +231,8 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasSetAssetScript()) {
             TransactionOuterClass.SetAssetScriptTransactionData setAssetScript = pbTx.getSetAssetScript();
             tx = SetAssetScriptTransaction
-                    .with(AssetId.as(setAssetScript.getAssetId().toByteArray()), setAssetScript.getScript().toByteArray())
+                    .builder(AssetId.as(setAssetScript.getAssetId().toByteArray()),
+                            new Base64String(setAssetScript.getScript().toByteArray()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -242,7 +243,7 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
             Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
             tx = InvokeScriptTransaction
-                    .with(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
+                    .builder(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
                     .payments(invoke.getPaymentsList().stream().map(p ->
                             Amount.of(p.getAmount(), AssetId.as(p.getAssetId().toByteArray())))
                             .collect(toList()))
@@ -255,7 +256,7 @@ public abstract class ProtobufConverter {
         } else if (pbTx.hasUpdateAssetInfo()) {
             TransactionOuterClass.UpdateAssetInfoTransactionData update = pbTx.getUpdateAssetInfo();
             tx = UpdateAssetInfoTransaction
-                    .with(AssetId.as(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
+                    .builder(AssetId.as(update.getAssetId().toByteArray()), update.getName(), update.getDescription())
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
                     .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
@@ -317,8 +318,8 @@ public abstract class ProtobufConverter {
                     .setDescriptionBytes(ByteString.copyFrom(itx.descriptionBytes()))
                     .setAmount(itx.quantity())
                     .setDecimals(itx.decimals())
-                    .setReissuable(itx.isReissuable())
-                    .setScript(ByteString.copyFrom(itx.compiledScript()))
+                    .setReissuable(itx.reissuable())
+                    .setScript(ByteString.copyFrom(itx.script().bytes()))
                     .build());
         } else if (tx instanceof TransferTransaction) {
             TransferTransaction ttx = (TransferTransaction) tx;
@@ -328,7 +329,7 @@ public abstract class ProtobufConverter {
                             .setAmount(ttx.amount().value())
                             .setAssetId(ByteString.copyFrom(ttx.amount().assetId().bytes()))
                             .build())
-                    .setAttachment(ByteString.copyFrom(ttx.attachmentBytes()))
+                    .setAttachment(ByteString.copyFrom(ttx.attachment().bytes()))
                     .build());
         } else if (tx instanceof ReissueTransaction) {
             ReissueTransaction rtx = (ReissueTransaction) tx;
@@ -337,7 +338,7 @@ public abstract class ProtobufConverter {
                             .setAssetId(ByteString.copyFrom(rtx.amount().assetId().bytes()))
                             .setAmount(rtx.amount().value())
                             .build())
-                    .setReissuable(rtx.isReissuable())
+                    .setReissuable(rtx.reissuable())
                     .build());
         } else if (tx instanceof BurnTransaction) {
             BurnTransaction btx = (BurnTransaction) tx;
@@ -373,7 +374,7 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof CreateAliasTransaction) {
             CreateAliasTransaction caTx = (CreateAliasTransaction) tx;
             protoBuilder.setCreateAlias(TransactionOuterClass.CreateAliasTransactionData.newBuilder()
-                    .setAliasBytes(ByteString.copyFrom(caTx.alias().name().getBytes(UTF_8))) //todo is there aliases with non utf8 values?
+                    .setAliasBytes(ByteString.copyFrom(caTx.alias().name().getBytes(UTF_8)))
                     .build());
         } else if (tx instanceof MassTransferTransaction) {
             MassTransferTransaction mtTx = (MassTransferTransaction) tx;
@@ -385,7 +386,7 @@ public abstract class ProtobufConverter {
                                 .build()
                     ).collect(toList()))
                     .setAssetId(ByteString.copyFrom(mtTx.assetId().bytes()))
-                    .setAttachment(ByteString.copyFrom(mtTx.attachmentBytes())))
+                    .setAttachment(ByteString.copyFrom(mtTx.attachment().bytes())))
                     .build();
         } else if (tx instanceof DataTransaction) {
             DataTransaction dtx = (DataTransaction) tx;
@@ -393,7 +394,7 @@ public abstract class ProtobufConverter {
                     .addAllData(dtx.data().stream().map(e -> {
                         TransactionOuterClass.DataTransactionData.DataEntry.Builder builder =
                                 TransactionOuterClass.DataTransactionData.DataEntry.newBuilder().setKey(e.key());
-                        if (e instanceof BinaryEntry) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value())).build();
+                        if (e instanceof BinaryEntry) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value().bytes())).build();
                         else if (e instanceof BooleanEntry) builder.setBoolValue(((BooleanEntry)e).value()).build();
                         else if (e instanceof IntegerEntry) builder.setIntValue(((IntegerEntry)e).value()).build();
                         else if (e instanceof StringEntry) builder.setStringValue(((StringEntry)e).value()).build();
@@ -405,7 +406,7 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof SetScriptTransaction) {
             SetScriptTransaction ssTx = (SetScriptTransaction) tx;
             protoBuilder.setSetScript(TransactionOuterClass.SetScriptTransactionData.newBuilder()
-                    .setScript(ByteString.copyFrom(ssTx.compiledScript()))
+                    .setScript(ByteString.copyFrom(ssTx.script().bytes()))
                     .build());
         } else if (tx instanceof SponsorFeeTransaction) {
             SponsorFeeTransaction sfTx = (SponsorFeeTransaction) tx;
@@ -419,7 +420,7 @@ public abstract class ProtobufConverter {
             SetAssetScriptTransaction sasTx = (SetAssetScriptTransaction) tx;
             protoBuilder.setSetAssetScript(TransactionOuterClass.SetAssetScriptTransactionData.newBuilder()
                     .setAssetId(ByteString.copyFrom(sasTx.assetId().bytes()))
-                    .setScript(ByteString.copyFrom(sasTx.compiledScript()))
+                    .setScript(ByteString.copyFrom(sasTx.script().bytes()))
                     .build());
         } else if (tx instanceof InvokeScriptTransaction) {
             InvokeScriptTransaction isTx = (InvokeScriptTransaction) tx;

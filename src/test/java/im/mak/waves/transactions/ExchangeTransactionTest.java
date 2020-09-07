@@ -33,7 +33,7 @@ public class ExchangeTransactionTest {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
 
         v1Buy = Order.fromJson("{\"version\":1,\"id\":\"Bea2BQsswtozYBNCtmqMAvFN62ePe8y8vvErxB9EFzKg\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"matcherPublicKey\":\"9JtL1azypH6XRnQcrYRT2qvy8zcRRctTiC4A1M6QywUP\",\"assetPair\":{\"amountAsset\":\"2wBMrTzvncodBbNiXaXju4Z9QpdCFtMp9ZoCRrykk9Dk\",\"priceAsset\":null},\"orderType\":\"buy\",\"amount\":20,\"price\":10,\"timestamp\":1600000000000,\"expiration\":1600001800000,\"matcherFee\":300001,\"signature\":\"2nnKPPeksC3MrRgdHZPa17vJ5fu8KKMCS7PqaEzmjNME1xkpeQsdeUuaMkoYPDrZoDQF4wiKGGk8YmAghmQXWonT\",\"proofs\":[\"2nnKPPeksC3MrRgdHZPa17vJ5fu8KKMCS7PqaEzmjNME1xkpeQsdeUuaMkoYPDrZoDQF4wiKGGk8YmAghmQXWonT\"]}");
         v1Sell = Order.fromJson("{\"version\":1,\"id\":\"CsMYW2s8FwktKZKFpsoteHGKSqyrL2ezveodQ4XVjGEP\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"matcherPublicKey\":\"9JtL1azypH6XRnQcrYRT2qvy8zcRRctTiC4A1M6QywUP\",\"assetPair\":{\"amountAsset\":\"2wBMrTzvncodBbNiXaXju4Z9QpdCFtMp9ZoCRrykk9Dk\",\"priceAsset\":null},\"orderType\":\"sell\",\"amount\":20,\"price\":10,\"timestamp\":1600000000000,\"expiration\":1600001800000,\"matcherFee\":300001,\"signature\":\"59EZ8DfdD9PNWQcb6iFHhBCU2rY828KTgV8Ha4uyUSJZB4mHMdeyEfTAAkL4Ys3NMsiXzRKpkMpFikieUcAdYtnv\",\"proofs\":[\"59EZ8DfdD9PNWQcb6iFHhBCU2rY828KTgV8Ha4uyUSJZB4mHMdeyEfTAAkL4Ys3NMsiXzRKpkMpFikieUcAdYtnv\"]}");
@@ -105,10 +105,8 @@ public class ExchangeTransactionTest {
     void exchangeTransaction(int version, Order order1, Order order2, Id expectedId, List<Proof> proofs,
                              byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         ExchangeTransaction builtTx = ExchangeTransaction
-                .with(order1, order2, amount, price)
-                .buyMatcherFee(buyFee)
-                .sellMatcherFee(sellFee)
-                .chainId(WavesJConfig.chainId())
+                .builder(order1, order2, amount, price, buyFee, sellFee)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(matcher.publicKey())
@@ -123,7 +121,7 @@ public class ExchangeTransactionTest {
         );
 
         ExchangeTransaction constructedTx = new ExchangeTransaction(matcher.publicKey(), order1, order2, amount, price,
-                buyFee, sellFee, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                buyFee, sellFee, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -142,7 +140,7 @@ public class ExchangeTransactionTest {
                 () -> assertThat(deserTx.sellMatcherFee()).isEqualTo(sellFee),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(matcher.publicKey()),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

@@ -4,7 +4,6 @@ import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.transactions.common.Amount;
 import im.mak.waves.transactions.common.AssetId;
 import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +19,7 @@ public class SponsorFeeTransaction extends Transaction {
     private final long minSponsoredFee;
 
     public SponsorFeeTransaction(PublicKey sender, AssetId assetId, long minSponsoredFee) {
-        this(sender, assetId, minSponsoredFee, WavesJConfig.chainId(), Amount.of(MIN_FEE),
+        this(sender, assetId, minSponsoredFee, WavesConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
@@ -42,7 +41,7 @@ public class SponsorFeeTransaction extends Transaction {
         return (SponsorFeeTransaction) Transaction.fromJson(json);
     }
 
-    public static SponsorFeeTransactionBuilder with(AssetId assetId, long minSponsoredFee) {
+    public static SponsorFeeTransactionBuilder builder(AssetId assetId, long minSponsoredFee) {
         return new SponsorFeeTransactionBuilder(assetId, minSponsoredFee);
     }
 

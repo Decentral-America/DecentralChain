@@ -1,11 +1,7 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.PublicKey;
-import im.mak.waves.transactions.common.Amount;
-import im.mak.waves.transactions.common.AssetId;
-import im.mak.waves.transactions.common.Proof;
-import im.mak.waves.transactions.common.WavesJConfig;
+import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.mass.Transfer;
 
 import java.io.IOException;
@@ -13,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MassTransferTransaction extends Transaction {
 
@@ -24,18 +18,18 @@ public class MassTransferTransaction extends Transaction {
 
     private final List<Transfer> transfers;
     private final AssetId assetId;
-    private final byte[] attachment;
+    private final Base58String attachment;
 
-    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment) {
-        this(sender, assetId, transfers, attachment, WavesJConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment) {
+        this(sender, assetId, transfers, attachment, WavesConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
-    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, byte[] attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+    public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, calculateFee(transfers, fee), timestamp, proofs);
 
         this.assetId = assetId == null ? AssetId.WAVES : assetId;
         this.transfers = transfers == null ? new ArrayList<>() : transfers;
-        this.attachment = attachment == null ? Bytes.empty() : attachment;
+        this.attachment = attachment == null ? Base58String.empty() : attachment;
     }
 
     public static MassTransferTransaction fromBytes(byte[] bytes) throws IOException {
@@ -46,12 +40,12 @@ public class MassTransferTransaction extends Transaction {
         return (MassTransferTransaction) Transaction.fromJson(json);
     }
 
-    public static MassTransferTransactionBuilder with(List<Transfer> transfers) {
+    public static MassTransferTransactionBuilder builder(List<Transfer> transfers) {
         return new MassTransferTransactionBuilder(transfers);
     }
 
-    public static MassTransferTransactionBuilder with(Transfer... transfers) {
-        return with(Arrays.asList(transfers));
+    public static MassTransferTransactionBuilder builder(Transfer... transfers) {
+        return builder(Arrays.asList(transfers));
     }
 
     private static Amount calculateFee(List<Transfer> transfers, Amount fee) {
@@ -75,11 +69,7 @@ public class MassTransferTransaction extends Transaction {
         return assetId;
     }
 
-    public String attachment() {
-        return new String(attachment, UTF_8);
-    }
-
-    public byte[] attachmentBytes() {
+    public Base58String attachment() {
         return attachment;
     }
 
@@ -91,7 +81,7 @@ public class MassTransferTransaction extends Transaction {
         MassTransferTransaction that = (MassTransferTransaction) o;
         return this.transfers.equals(that.transfers)
                 && this.assetId.equals(that.assetId)
-                && Bytes.equal(this.attachment, that.attachment);
+                && this.attachment.equals(that.attachment);
     }
 
     @Override
@@ -103,13 +93,13 @@ public class MassTransferTransaction extends Transaction {
             extends TransactionBuilder<MassTransferTransactionBuilder, MassTransferTransaction> {
         private final List<Transfer> transfers;
         private AssetId assetId;
-        private byte[] attachment;
+        private Base58String attachment;
 
         protected MassTransferTransactionBuilder(List<Transfer> transfers) {
             super(LATEST_VERSION, 0);
             this.transfers = transfers;
             this.assetId = AssetId.WAVES;
-            this.attachment = Bytes.empty();
+            this.attachment = Base58String.empty();
         }
 
         public MassTransferTransactionBuilder assetId(AssetId assetId) {
@@ -117,13 +107,9 @@ public class MassTransferTransaction extends Transaction {
             return this;
         }
 
-        public MassTransferTransactionBuilder attachment(byte[] attachment) {
+        public MassTransferTransactionBuilder attachment(Base58String attachment) {
             this.attachment = attachment;
             return this;
-        }
-
-        public MassTransferTransactionBuilder attachment(String attachment) {
-            return attachment(attachment.getBytes(UTF_8));
         }
 
         protected MassTransferTransaction _build() {

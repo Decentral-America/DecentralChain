@@ -1,6 +1,5 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.PublicKey;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.*;
@@ -21,18 +20,18 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class SetScriptTransactionTest {
 
     static PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
-    static byte[] script = Base64.decode("BAbMtW/U");
+    static Base64String script = new Base64String("BAbMtW/U");
     static long timestamp = 1600000000000L;
     static long fee = SetScriptTransaction.MIN_FEE + 1;
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
         return Stream.of(
-                arguments(1, Bytes.empty(), Id.as("9NDmssQqrKhUux7mEFe7t5FBgN3re4sPLxtvd7kM3an"),
+                arguments(1, Base64String.empty(), Id.as("9NDmssQqrKhUux7mEFe7t5FBgN3re4sPLxtvd7kM3an"),
                         Proof.list(Proof.as("4UCa1VXcXXMn9kLTvhv7R6CeVCT3UEUtGbeBL3e1ECNCvwQknpLiF4fCzHKd657kRP3uWKqWKteKdr4R3SnWAKiW")),
                         Base64.decode("DQFSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QAAAAAAAAPQkEAAAF0h26AAA=="),
                         Base64.decode("AA0BUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AAAAAAAAD0JBAAABdIdugAABAAEAQK2BvI7G+OtG1ATPBaQlnsV3d2qTC/9WuKXzlljDpw4p6BocNnmKZHCQySYPVhqrAUPxJg/B2N6E94AlEyznZIc="),
@@ -44,7 +43,7 @@ public class SetScriptTransactionTest {
                         Base64.decode("AA0BUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AQAGBAbMtW/UAAAAAAAPQkEAAAF0h26AAAEAAQBAVdfWLtbaXPb/aFqcKlQmciEf23jbbq9IcOcmmiACq9z7mSGhA0BrV1cwFpXcBpmDI4cwl6lOYLjKwGKLJ7rZhA=="),
                         "{\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"feeAssetId\":null,\"chainId\":82,\"proofs\":[\"2iYZaiM8WyX7SMT8LHRCAyZwYJBsYXyqs8AUE9djpNEBmGPmtZdQbn51RiDCzSK7frHbpuBWb6iUyxUgoCKFkoGF\"],\"fee\":1000001,\"id\":\"52gNwMctfVwEwacKv8e13jjkHMBcaPPdWTAWKtohpqvq\",\"type\":13,\"version\":1,\"script\":\"base64:BAbMtW\\/U\",\"timestamp\":1600000000000}"
                 ),
-                arguments(2, Bytes.empty(), Id.as("6uUXV3hSWQwVHBrsgdVczP7fxfrdWrBVX5TueeahSBx9"),
+                arguments(2, Base64String.empty(), Id.as("6uUXV3hSWQwVHBrsgdVczP7fxfrdWrBVX5TueeahSBx9"),
                         Proof.list(Proof.as("4U9eSiGhWsfG3UM1rVhKxQhqYJTTEQuRdptJVMhwPFXreR37xABbfHQVRKySsLdfPcNBoTxdi7M9Hfxb8VJDxSLy")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQwYQ9IICAurvILigCigcA"),
                         Base64.decode("CjYIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBDBhD0ggIC6u8guKAKKBwASQK12m9Wm7ogIQPNZncJtRek6GQoPRLyusy3I+A55DHnMo2XDVHkO/FtEAE1msVBTk++6I4KVywfS7994cf08AII="),
@@ -61,11 +60,11 @@ public class SetScriptTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void setScriptTransaction(int version, byte[] script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
+    void setScriptTransaction(int version, Base64String script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
                               byte[] expectedBytes, String expectedJson) throws IOException {
         SetScriptTransaction builtTx = SetScriptTransaction
-                .with(script)
-                .chainId(WavesJConfig.chainId())
+                .builder(script)
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -80,7 +79,7 @@ public class SetScriptTransactionTest {
         );
 
         SetScriptTransaction constructedTx = new SetScriptTransaction(
-                sender, script, WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                sender, script, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -91,11 +90,10 @@ public class SetScriptTransactionTest {
         SetScriptTransaction deserTx = SetScriptTransaction.fromBytes(expectedBytes);
 
         assertAll("Tx must be deserializable from expected bytes",
-                () -> assertThat(deserTx.compiledScript()).isEqualTo(script),
-                () -> assertThat(deserTx.compiledBase64Script()).isEqualTo(Base64.encode(script)),
+                () -> assertThat(deserTx.script()).isEqualTo(script),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),

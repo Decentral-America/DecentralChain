@@ -1,9 +1,7 @@
 package im.mak.waves.transactions;
 
-import im.mak.waves.crypto.Bytes;
 import im.mak.waves.transactions.account.Address;
 import im.mak.waves.transactions.account.PublicKey;
-import im.mak.waves.crypto.base.Base58;
 import im.mak.waves.crypto.base.Base64;
 import im.mak.waves.transactions.common.*;
 import im.mak.waves.transactions.mass.Transfer;
@@ -32,7 +30,7 @@ public class MassTransferTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesJConfig.chainId('R');
+        WavesConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -41,14 +39,14 @@ public class MassTransferTransactionTest {
                 Transfer.to(Alias.as("_rich-account.with@30_symbols_"), maxAmount)
         );
         List<Transfer> address = asList(
-                Transfer.to(Address.from(WavesJConfig.chainId(), sender), maxAmount),
-                Transfer.to(Address.from(WavesJConfig.chainId(), sender), minAmount)
+                Transfer.to(Address.from(WavesConfig.chainId(), sender), maxAmount),
+                Transfer.to(Address.from(WavesConfig.chainId(), sender), minAmount)
         );
         AssetId assetId = AssetId.as("CjwUuXHmQvBXtykMLDD9QXWHMqawZCW3VoomauCM1XVJ");
-        byte[] attachment = Base58.decode("2euEyjatz3mkRYDDPGe4rXbZrrVa3qk9Ghvc9fEVpw9mn6eTNeVimm1ae2Y5Lc1jjDXFuyj7uGxBgG8TzxZM4kaBKG1nZ4ReXEA1ACaQrL5HGmfHhHPiwEBYgXFR5opqjFcd4USi3PTevRkp6CkJghJBXozpvmC9vcBHBADQZ34PdDBkUk135d7pMrcS8siy");
+        Base58String attachment = new Base58String("2euEyjatz3mkRYDDPGe4rXbZrrVa3qk9Ghvc9fEVpw9mn6eTNeVimm1ae2Y5Lc1jjDXFuyj7uGxBgG8TzxZM4kaBKG1nZ4ReXEA1ACaQrL5HGmfHhHPiwEBYgXFR5opqjFcd4USi3PTevRkp6CkJghJBXozpvmC9vcBHBADQZ34PdDBkUk135d7pMrcS8siy");
 
         return Stream.of(
-                arguments(1, address, AssetId.WAVES, Bytes.empty(), Id.as("9BctskM13RG8ZpSnCexp9ZyE2ktdnK38qSMQmjxZcJTS"),
+                arguments(1, address, AssetId.WAVES, Base58String.empty(), Id.as("9BctskM13RG8ZpSnCexp9ZyE2ktdnK38qSMQmjxZcJTS"),
                         Proof.list(Proof.as("5FQQuuzeTp6tS1pTNEd3citefhB75ax6vbq38kC7xieTKsRTL3dv2sRQJFXJU4Zk5rHasCTFzZt8kjQPAQpcSJBm")),
                         Base64.decode("CwGNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAAAgFSJ4nJhdNdZ9aF3A6Yui8hbYa+j7wGgKYwf/////////8BUieJyYXTXWfWhdwOmLovIW2Gvo+8BoCmMAAAAAAAAAAAAAABdIdugAAAAAAAAAGGoQAA"),
                         Base64.decode("CwGNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAAAgFSJ4nJhdNdZ9aF3A6Yui8hbYa+j7wGgKYwf/////////8BUieJyYXTXWfWhdwOmLovIW2Gvo+8BoCmMAAAAAAAAAAAAAABdIdugAAAAAAAAAGGoQAAAQABAEDUfTnMeCd0Fp6O+edbGkUIHIe3EhtswBteKlznRzqIqv/BTFeBi427lPGbNe904ycuxcsLQCz1jOOj/1jY+3uM"),
@@ -60,7 +58,7 @@ public class MassTransferTransactionTest {
                         Base64.decode("CwGNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAGucI1bwtimUPqsjCs4YL6vk36ZLEQAqsoooz7LtZOTQQACAlIABHJpY2gAAAAAAAAAAAJSAB5fcmljaC1hY2NvdW50LndpdGhAMzBfc3ltYm9sc19//////////wAAAXSHboAAAAAAAAABhqEAjMH+IimjxAOvYBD63pDyDoDKGXqb2AaLxRHzzaJcGIK5BCrrrVgegMNYSkimx35XXcNqoyxlKLlMs+PsxbstPVx54ARIHiWJ6hzemfOddd1B+XxYc1SHsR9h+6MFTW3uWWutOb560vUN0Q9sC+ES/oOT2C1XLIEnXKYwq+w7MEhyf3czCThZvFzGfsxSAQAIAEC8xJmNnL0hPkDIHWCuxxOXVHlt8Kzn3CRrO35fvfkbDWBIQ6IqOZPWM3chkIMWqjzIECZ1VTCT4WLkG8FKh1KEAEAozHAMdJolKDMEYuMaAwf5iNrznDuKXXoCb7qB/zuZRbrBrSORZcuzBG89pNg4ZyqBWOHeRwGc2+SyoQjLkeKLAEA/5Bp6pAP1EU7TWwy778AnxjOJe14br0AIlmVXkIZz1cmJKVACr1WoOj08cVFG+Fk8UXBFHV61r57AvR+2CZCHAED0/cdTk2CcDqy0ka1aUPfx3pPk1ygxTQhpLUWdEIu4wS2BihuChfwF4Hbjyk8SWQEuHIeSy7+grKchergQFPOJAEAy+iTMxebQGcvgt26TPT3SVmlp6HT7wHJiiZvxHWBoXD6AGns/BezxLIWsyafM6WdMY3pvBw2ToP1JBrqD6jaIAED3wKHQqQiKx+zxbPU+13gy36jvUi2kC86anFJ7kaHGtbODSukyY499fu1KYTVE/yAm1ZH87CpalPUCu/2tvWyEAECIHD/xFM4INxRtYa071L0oe8n7sMCUyxw4vdXb/oplPZX2iY2StaWsYMNNLUSZT+yEBtqQiHHXeuTOK66CDRKCAED4J7EynrMYrwA1goq7mJU469kDgwRGuET1N7sqfp/KlvlIwwPeZlPUNbNCXg5oqZBeR18VcoJZgCNzctYJZcSL"),
                         "{\"type\":11,\"id\":\"31JjDMAjiZs7z5WQ946nNVqfnswPJr1BKY4VqPKwnSCp\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":100001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"4mtzaKLLdh1uJt721UxeD92VymykWUtcUkpsAQBVovMJDKht4QUmfnRFdVe5YwVzkyxLcnaNwCxBZGRodeDJu6J7\",\"pJzmF6KFfWdNaL9BwUaRGQoWFZqbzGMyHTCb8kFfqYZZgcdT77T7obp5K7HeY8WikwgbRYC6Js7Wsc9eMtyXFcN\",\"2H68Q5PbKUchYcVzPsdJHUNL7AxE2yoTV3y4yJX8m8fviZAZz3xfLP4kFh5Tusz8tp5qaEH3fqw7xznoscpCEV4J\",\"5u6R34QFKM1ChKk2tVaYFaUAQveY6T8nSrjfoqpNcD9zBksLfkU33jrzJ76Ucsjh6Y8LyJ2zPPCXdbtd6jfe4cqv\",\"227aNJpans7MAqs9TqhoRKXSMeYVNsdPNNVW3sVWEkWDGnxwRdExumUZkbcEVst64jp5XRBDBjZwmT6w6VKVsobD\",\"5xJ82iJwJ89TLdzVgh2SVZN4w3uxMdHYbEGJmSHKug5AvR48oYB8ssc17UrrXq7bcZiPFj8MXnjByAdTeYGMDCvw\",\"3iqPkM85pak9o7zo1EX9HTASsM68ivF3hUQ9LjkN3adPB42Q3ndZWtrKNNaxnDQTEwdYZCsqB6TkcHsBn6de7Jos\",\"5xmCTJNSYxL6vBFgf6GKGc6LHnyH4Xfxo4aVHe67wwrNMTpStLZqDRk2C3W8LAhd41cVtBApsbgwfRLDnTgAEwNz\"],\"version\":1,\"assetId\":\"CjwUuXHmQvBXtykMLDD9QXWHMqawZCW3VoomauCM1XVJ\",\"attachment\":\"2euEyjatz3mkRYDDPGe4rXbZrrVa3qk9Ghvc9fEVpw9mn6eTNeVimm1ae2Y5Lc1jjDXFuyj7uGxBgG8TzxZM4kaBKG1nZ4ReXEA1ACaQrL5HGmfHhHPiwEBYgXFR5opqjFcd4USi3PTevRkp6CkJghJBXozpvmC9vcBHBADQZ34PdDBkUk135d7pMrcS8siy\",\"transfers\":[{\"recipient\":\"alias:R:rich\",\"amount\":0},{\"recipient\":\"alias:R:_rich-account.with@30_symbols_\",\"amount\":9223372036854775807}]}"
                 ),
-                arguments(2, address, AssetId.WAVES, Bytes.empty(), Id.as("ByZGfrDr5YLvUCHWm2Rn4N2NrvYTkLjckGejw33aAFa3"),
+                arguments(2, address, AssetId.WAVES, Base58String.empty(), Id.as("ByZGfrDr5YLvUCHWm2Rn4N2NrvYTkLjckGejw33aAFa3"),
                         Proof.list(Proof.as("4Y6QTs5R1vBEb9rJWjWKJcN2yrEacb4xur5HJ3obFGNQdAaNZaoSaoB3FH7q2RSHpr8jEgroaLDYdPnxnFhjYU2H")),
                         Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQoY0GIICAurvILigC+gY+EiIKFgoUJ4nJhdNdZ9aF3A6Yui8hbYa+j7wQ//////////9/EhgKFgoUJ4nJhdNdZ9aF3A6Yui8hbYa+j7w="),
                         Base64.decode("CnQIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChjQYggIC6u8guKAL6Bj4SIgoWChQnicmF011n1oXcDpi6LyFthr6PvBD//////////38SGAoWChQnicmF011n1oXcDpi6LyFthr6PvBJAsN1UxZp8jk13dap9jMkG7Pd8kXfLAU/XJIr5phpYCsaiN1FBqxW3ft0JxdVBegbD9RcAxo31S3qczRGT4Wn0jg=="),
@@ -77,14 +75,14 @@ public class MassTransferTransactionTest {
 
     @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
     @MethodSource("transactionsProvider")
-    void massTransferTransaction(int version, List<Transfer> transfers, AssetId assetId, byte[] attachment,
+    void massTransferTransaction(int version, List<Transfer> transfers, AssetId assetId, Base58String attachment,
                                  Id expectedId, List<Proof> proofs, byte[] expectedBody, byte[] expectedBytes,
                                  String expectedJson) throws IOException {
         MassTransferTransaction builtTx = MassTransferTransaction
-                .with(transfers)
+                .builder(transfers)
                 .assetId(assetId)
                 .attachment(attachment)
-                .chainId(WavesJConfig.chainId())
+                .chainId(WavesConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -99,7 +97,7 @@ public class MassTransferTransactionTest {
         );
 
         MassTransferTransaction constructedTx = new MassTransferTransaction(sender, assetId, transfers, attachment,
-                WavesJConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -112,10 +110,10 @@ public class MassTransferTransactionTest {
         assertAll("Tx must be deserializable from expected bytes",
                 () -> assertThat(deserTx.transfers()).isEqualTo(transfers),
                 () -> assertThat(deserTx.assetId()).isEqualTo(assetId),
-                () -> assertThat(deserTx.attachmentBytes()).isEqualTo(attachment),
+                () -> assertThat(deserTx.attachment()).isEqualTo(attachment),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesJConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
                 () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
