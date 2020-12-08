@@ -105,7 +105,7 @@ export interface IPaymentTransactionFields<LONG = TLong> {
     amount: LONG;
 }
 
-export interface IPaymentTransaction<LONG = TLong> extends 
+export interface IPaymentTransaction<LONG = TLong> extends
     ITransaction<LONG, typeof TRANSACTION_TYPE.PAYMENT>,
     IPaymentTransactionFields<LONG> {}
 
@@ -148,7 +148,7 @@ export interface IReissueTransaction<LONG = TLong> extends
 
 export interface IBurnTransactionFields<LONG = TLong> {
     assetId: string;
-    quantity: LONG;
+    amount: LONG;
     chainId: number;
 }
 
@@ -170,7 +170,7 @@ export interface ICancelLeaseTransactionFields<LONG = TLong> {
 }
 
 export interface ICancelLeaseTransaction<LONG = TLong> extends
-    ITransaction<LONG, typeof TRANSACTION_TYPE.CANCEL_LEASE>, 
+    ITransaction<LONG, typeof TRANSACTION_TYPE.CANCEL_LEASE>,
     ICancelLeaseTransactionFields<LONG> {}
 
 
