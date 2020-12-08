@@ -99,7 +99,7 @@ export interface IReissueTransaction<LONG> extends ITransaction<LONG, typeof TRA
 
 export interface IBurnTransaction<LONG> extends ITransaction<LONG, typeof TRANSACTION_TYPE.BURN> {
     assetId: string;
-    quantity: LONG;
+    amount: LONG;
     chainId: number;
 }
 
