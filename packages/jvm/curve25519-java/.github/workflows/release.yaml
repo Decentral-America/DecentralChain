@@ -1,0 +1,100 @@
+name: Publish artfiacts to Sonatype Repo
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - v[0-9].[0-9]+.[0-9]+
+
+jobs:
+  build-native:
+    runs-on: ${{ matrix.os }}
+    env:
+      target-path: ${{ matrix.platform }}-${{ matrix.arch }}
+    strategy:
+      matrix:
+        platform: [linux, win32, macos]
+        arch: [x86, x86-64, aarch64]
+        exclude:
+          - platform: macos
+            arch: x86
+          - platform: macos
+            arch: aarch64
+          - platform: win32
+            arch: aarch64
+        include:
+          - platform: macos
+            os: macos-latest
+            compiled-path: libcurve25519.dylib
+            target-path: darwin
+          - platform: linux
+            os: ubuntu-latest
+            compiled-path: libcurve25519.so
+          - platform: linux
+            arch: aarch64
+            extra-packages: gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          - platform: linux
+            arch: x86
+            extra-packages: gcc-multilib g++-multilib
+          - platform: win32
+            os: ubuntu-latest
+            compiled-path: curve25519.dll
+            extra-packages: mingw-w64
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install build tools
+        if: ${{ matrix.extra-packages }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.extra-packages }}
+      - name: Build native image
+        run: |
+          mkdir -p native/build/target/${{ matrix.target-path || env.target-path }}
+          cd native/build
+          cp ../toolchains/${{ matrix.platform }}-${{ matrix.arch }}.toolchain current.toolchain || touch current.toolchain
+          cmake -DCMAKE_TOOLCHAIN_FILE=current.toolchain -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build .
+          mv ${{ matrix.compiled-path }} target/${{ matrix.target-path || env.target-path }}/
+      - name: Upload result
+        uses: actions/upload-artifact@v2
+        with:
+          name: native-images.zip
+          path: native/build/target/*
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build-native
+    env:
+      USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      GPG_KEY_ID: ${{ secrets.OSSRH_GPG_KEY_ID }}
+      GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          echo '${{ secrets.OSSRH_GPG_KEY }}' | base64 -d > secret.gpg
+          mkdir -p java/src/main/resources
+      - uses: actions/download-artifact@v1
+        with:
+          name: native-images.zip
+          path: java/src/main/resources/
+      - name: Publish Snapshot
+        if: ${{ !contains(github.ref, '/tags/') }}
+        run: |
+          ./gradlew uploadArchives \
+            -PsonatypeRepo=https://oss.sonatype.org/content/repositories/snapshots \
+            -PwhisperSonatypeUsername=$USERNAME \
+            -PwhisperSonatypePassword=$PASSWORD \
+            -Psigning.secretKeyRingFile=../secret.gpg \
+            -Psigning.keyId="$GPG_KEY_ID" \
+            -Psigning.password="$GPG_PASSPHRASE" \
+      - name: Publish Release
+        if: contains(github.ref, '/tags/')
+        run: |
+          ./gradlew closeAndReleaseRepository \
+            -PsonatypeRepo=https://oss.sonatype.org/service/local/staging/deploy/maven2 \
+            -PwhisperSonatypeUsername=$USERNAME \
+            -PwhisperSonatypePassword=$PASSWORD \
+            -Psigning.secretKeyRingFile=../secret.gpg \
+            -Psigning.keyId="$GPG_KEY_ID" \
+            -Psigning.password="$GPG_PASSPHRASE"

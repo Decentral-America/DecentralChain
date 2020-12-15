@@ -43,11 +43,12 @@ jmh {
 }
 
 dependencies {
+    compile group: 'net.java.dev.jna', name: 'jna', version: '5.5.0'
     testCompile project(':tests')
 }
 
 signing {
-    required { hasProperty("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    // required { hasProperty("release") && gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
 
