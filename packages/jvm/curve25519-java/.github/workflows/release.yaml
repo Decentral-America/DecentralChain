@@ -83,18 +83,18 @@ jobs:
         run: |
           ./gradlew uploadArchives \
             -PsonatypeRepo=https://oss.sonatype.org/content/repositories/snapshots \
-            -PwhisperSonatypeUsername=$USERNAME \
-            -PwhisperSonatypePassword=$PASSWORD \
+            -PwhisperSonatypeUsername='${{ secrets.OSSRH_USERNAME }}' \
+            -PwhisperSonatypePassword='${{ secrets.OSSRH_PASSWORD }}' \
             -Psigning.secretKeyRingFile=../secret.gpg \
-            -Psigning.keyId="$GPG_KEY_ID" \
-            -Psigning.password="$GPG_PASSPHRASE" \
+            -Psigning.keyId='${{ secrets.OSSRH_GPG_KEY_ID }}' \
+            -Psigning.password='${{ secrets.OSSRH_GPG_PASSPHRASE }}'
       - name: Publish Release
         if: contains(github.ref, '/tags/')
         run: |
-          ./gradlew closeAndReleaseRepository \
+          ./gradlew uploadArchives closeAndReleaseRepository \
             -PsonatypeRepo=https://oss.sonatype.org/service/local/staging/deploy/maven2 \
-            -PwhisperSonatypeUsername=$USERNAME \
-            -PwhisperSonatypePassword=$PASSWORD \
+            -PwhisperSonatypeUsername='${{ secrets.OSSRH_USERNAME }}' \
+            -PwhisperSonatypePassword='${{ secrets.OSSRH_PASSWORD }}' \
             -Psigning.secretKeyRingFile=../secret.gpg \
-            -Psigning.keyId="$GPG_KEY_ID" \
-            -Psigning.password="$GPG_PASSPHRASE"
+            -Psigning.keyId='${{ secrets.OSSRH_GPG_KEY_ID }}' \
+            -Psigning.password='${{ secrets.OSSRH_GPG_PASSPHRASE }}'
