@@ -16,10 +16,10 @@
 
     <name>Waves Transactions for Java</name>
     <description>Library for binary and json serialization of transactions in Waves blockchain.</description>
-    <url>https://github.com/msmolyakov/waves-transactions-java</url>
+    <url>https://github.com/wavesplatform/waves-transactions-java</url>
 
     <issueManagement>
-        <url>https://github.com/msmolyakov/waves-transactions-java/issues</url>
+        <url>https://github.com/wavesplatform/waves-transactions-java/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -32,9 +32,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/msmolyakov/waves-transactions-java</url>
-        <connection>scm:git:git://github.com/msmolyakov/waves-transactions-java.git</connection>
-        <developerConnection>scm:git:git@github.com:msmolyakov/waves-transactions-java.git</developerConnection>
+        <url>https://github.com/wavesplatform/waves-transactions-java</url>
+        <connection>scm:git:git://github.com/wavesplatform/waves-transactions-java.git</connection>
+        <developerConnection>scm:git:git@github.com:wavesplatform/waves-transactions-java.git</developerConnection>
     </scm>
 
     <developers>
