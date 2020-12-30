@@ -1,6 +1,6 @@
-package im.mak.waves.crypto;
+package com.wavesplatform.crypto;
 
-import im.mak.waves.crypto.internal.Dictionary;
+import com.wavesplatform.crypto.internal.Dictionary;
 import org.whispersystems.curve25519.Curve25519;
 import org.whispersystems.curve25519.java.curve_sigs;
 

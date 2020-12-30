@@ -1,12 +1,12 @@
-package im.mak.waves.crypto;
+package com.wavesplatform.crypto;
 
-import im.mak.waves.crypto.rsa.RsaKeyPair;
-import im.mak.waves.crypto.rsa.RsaPublicKey;
+import com.wavesplatform.crypto.rsa.RsaKeyPair;
+import com.wavesplatform.crypto.rsa.RsaPublicKey;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static im.mak.waves.crypto.rsa.HashAlg.*;
+import static com.wavesplatform.crypto.rsa.HashAlg.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

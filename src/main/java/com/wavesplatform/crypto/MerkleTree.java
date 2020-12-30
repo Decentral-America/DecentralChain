@@ -1,6 +1,6 @@
-package im.mak.waves.crypto;
+package com.wavesplatform.crypto;
 
-import im.mak.waves.crypto.base.Base58;
+import com.wavesplatform.crypto.base.Base58;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

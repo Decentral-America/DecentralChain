@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>im.mak</groupId>
+    <groupId>com.wavesplatform</groupId>
     <artifactId>waves-crypto</artifactId>
     <version>${revision}</version>
 
     <name>Waves Crypto for Java</name>
     <description>Tools to work with cryptographic primitives used in the Waves blockchain</description>
-    <url>https://github.com/msmolyakov/waves-crypto-java</url>
+    <url>https://github.com/wavesplatform/waves-crypto-java</url>
 
     <properties>
         <revision>2.0.0-SNAPSHOT</revision>
@@ -19,7 +19,7 @@
     </properties>
 
     <issueManagement>
-        <url>https://github.com/msmolyakov/waves-crypto-java/issues</url>
+        <url>https://github.com/wavesplatform/waves-crypto-java/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -32,9 +32,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/msmolyakov/waves-crypto-java</url>
-        <connection>scm:git:git://github.com/msmolyakov/waves-crypto-java.git</connection>
-        <developerConnection>scm:git:git@github.com:msmolyakov/waves-crypto-java.git</developerConnection>
+        <url>https://github.com/wavesplatform/waves-crypto-java</url>
+        <connection>scm:git:git://github.com/wavesplatform/waves-crypto-java.git</connection>
+        <developerConnection>scm:git:git@github.com:wavesplatform/waves-crypto-java.git</developerConnection>
     </scm>
 
     <developers>
