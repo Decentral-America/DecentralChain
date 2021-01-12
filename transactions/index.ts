@@ -2,11 +2,16 @@ import {
     InvokeScriptCall,
     InvokeScriptPayment,
     MassTransferItem,
-    WithId,
     DataTransactionEntry,
     ExchangeTransactionOrder,
     TRANSACTION_TYPE,
-    TransactionType, Long, AssetDecimals, Base64Script, Base58Bytes, WithVersion, SignedIExchangeTransactionOrder,
+    TransactionType,
+    Long,
+    AssetDecimals,
+    Base64Script,
+    Base58Bytes,
+    WithVersion,
+    SignedIExchangeTransactionOrder,
 } from '../src';
 
 export type BaseTransaction<LONG = Long, TYPE extends TransactionType = TransactionType> = {
@@ -444,7 +449,7 @@ type WithProofs = {
     proofs: Array<string>;
 }
 
-export type TSignedTransaction<TX extends Transaction<any>> = TX &
+export type SignedTransaction<TX extends Transaction<any>> = TX &
     (TX['type'] extends keyof TWithSignatureMap
         ? TX['version'] extends TWithSignatureMap[TX['type']]
             ? WithSignature
