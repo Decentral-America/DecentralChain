@@ -7,7 +7,7 @@
     "prepublish": "tsc",
     "postversion": "npm publish",
     "postpublish": "git push",
-    "prepare": "tsc",
+    "prepare": "npx tsc",
     "build": "npm run prepare"
   },
   "devDependencies": {
