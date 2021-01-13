@@ -1,98 +1,174 @@
-import { DATA_FIELD_TYPE, TProofs } from './index';
+import { DATA_FIELD_TYPE, ExchangeTransaction } from './index';
 
+export type ExchangeTransactionOrderType = 'buy' | 'sell';
+export type Base64Script = string;
+export type Base58Bytes = string;
+export type Proofs = Array<string>;
+export type Long = string | number;
+export type AssetDecimals = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type Base64string = string;
 
-export type TOrderType = 'buy' | 'sell';
+export type WithApiMixin = WithId & {
+    sender: string;
+    height: number;
+};
 
-
-export interface IInvokeScriptCall<LONG> {
+export type InvokeScriptCall<LONG = Long> = {
     function: string;
-    args: Array<TInvokeScriptCallArgument<LONG>>;
-}
+    args: Array<InvokeScriptCallArgument<LONG>>;
+};
 
-export interface IInvokeScriptPayment<LONG> {
+export type InvokeScriptPayment<LONG = Long> = {
     assetId: string;
     amount: LONG;
-}
+};
 
-export type TInvokeScriptCallArgument<LONG> =
-    IInvokeScriptCallStringOrBinaryArgument |
-    IInvokeScriptCallBoolArgument |
-    IInvokeScriptCallIntArgument<LONG>;
+export type InvokeScriptCallArgument<LONG = Long> =
+    | InvokeScriptCallStringArgument
+    | InvokeScriptCallBinaryArgument
+    | InvokeScriptCallBooleanArgument
+    | InvokeScriptCallIntegerArgument<LONG>
+    | InvokeScriptCallListArgument<
+          LONG,
+          string | boolean | LONG | Base64Script
+      >;
 
-export interface IInvokeScriptCallStringOrBinaryArgument {
-    type: 'string' | 'binary';
-    value: string;
-}
+export type InvokeScriptCallArgumentGeneric<Type, Value> = {
+    type: Type;
+    value: Value;
+};
 
-export interface IInvokeScriptCallBoolArgument {
-    type: 'boolean';
-    value: boolean;
-}
+export type InvokeScriptCallStringArgument = InvokeScriptCallArgumentGeneric<
+    'string',
+    string
+>;
+export type InvokeScriptCallBinaryArgument = InvokeScriptCallArgumentGeneric<
+    'binary',
+    Base64string
+>;
+export type InvokeScriptCallBooleanArgument = InvokeScriptCallArgumentGeneric<
+    'boolean',
+    boolean
+>;
+export type InvokeScriptCallIntegerArgument<
+    LONG = Long
+> = InvokeScriptCallArgumentGeneric<'integer', LONG>;
+export type InvokeScriptCallListArgument<
+    LONG,
+    ITEMS extends string | boolean | LONG | Base64Script
+> = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>>;
 
-export interface IInvokeScriptCallIntArgument<LONG> {
-    type: 'integer';
-    value: LONG;
-}
-
-export interface IWithProofs {
-    proofs: TProofs;
-}
-
-export interface IWithId {
+export interface WithId {
     id: string;
 }
 
-export interface IMassTransferItem<LONG> {
-    recipient: string
+export type MassTransferItem<LONG = Long> = {
+    recipient: string;
     amount: LONG;
-}
+};
 
-export interface IDataTransactionEntryInteger<LONG> {
+export type DataTransactionEntryGeneric<Type, Value> = {
     key: string;
-    type?: typeof DATA_FIELD_TYPE.INTEGER | null;
-    value: LONG | null;
-}
+    type: Type;
+    value: Value;
+};
 
-export interface IDataTransactionEntryBoolean {
-    key: string;
-    type?: typeof DATA_FIELD_TYPE.BOOLEAN | null;
-    value: boolean | null;
-}
+export type DataTransactionEntryInteger<LONG> = DataTransactionEntryGeneric<
+    typeof DATA_FIELD_TYPE.INTEGER,
+    LONG
+>;
+export type DataTransactionEntryString = DataTransactionEntryGeneric<
+    typeof DATA_FIELD_TYPE.STRING,
+    string
+>;
+export type DataTransactionEntryBinary = DataTransactionEntryGeneric<
+    typeof DATA_FIELD_TYPE.BINARY,
+    Base64string
+>;
+export type DataTransactionEntryBoolean = DataTransactionEntryGeneric<
+    typeof DATA_FIELD_TYPE.BOOLEAN,
+    boolean
+>;
 
-export interface IDataTransactionEntryString {
-    key: string;
-    type?: typeof DATA_FIELD_TYPE.STRING | null;
-    value: string | null;
-}
-
-export interface IDataTransactionEntryBinary {
-    key: string;
-    type?: typeof DATA_FIELD_TYPE.BINARY | null;
-    value: Uint8Array | null;
-}
-
-export interface IExchangeTransactionOrder<LONG> {
+export type ExchangeTransactionOrderData<LONG> = {
     matcherPublicKey: string;
     version: number;
     assetPair: {
         amountAsset: string;
         priceAsset: string;
-    },
-    orderType: TOrderType;
+    };
+    orderType: ExchangeTransactionOrderType;
     price: LONG;
     amount: LONG;
     timestamp: number;
     expiration: number;
     matcherFee: LONG;
-    matcherFeeAssetId: string;
     senderPublicKey: string;
-}
+};
 
-export interface IExchangeTransactionOrderWithProofs<LONG> extends IExchangeTransactionOrder<LONG>, IWithProofs {
-}
+export type WithVersion<
+    Target extends Record<string, any>,
+    Version extends number
+> = Target & {
+    version: Version;
+};
 
-export type TDataTransactionEntry<LONG> =
-    IDataTransactionEntryInteger<LONG> |
-    IDataTransactionEntryBoolean |
-    IDataTransactionEntryString |
-    IDataTransactionEntryBinary;
+type ExchangeOrderWithCustomFee<Long> = ExchangeTransactionOrderData<Long> & {
+    matcherFeeAssetId: string | null;
+};
+
+export type ExchangeTransactionOrderV1<LONG = Long> = WithVersion<
+    ExchangeTransactionOrderData<LONG>,
+    1
+>;
+export type ExchangeTransactionOrderV2<LONG = Long> = WithVersion<
+    ExchangeTransactionOrderData<LONG>,
+    2
+>;
+export type ExchangeTransactionOrderV3<LONG = Long> = WithVersion<
+    ExchangeOrderWithCustomFee<LONG>,
+    3
+>;
+export type ExchangeTransactionOrderV4<LONG = Long> = WithVersion<
+    ExchangeOrderWithCustomFee<LONG>,
+    4
+>;
+
+export type ExchangeTransactionOrder<LONG = Long> =
+    | ExchangeTransactionOrderV1<LONG>
+    | ExchangeTransactionOrderV2<LONG>
+    | ExchangeTransactionOrderV3<LONG>
+    | ExchangeTransactionOrderV4<LONG>;
+
+export type SignedIExchangeTransactionOrder<
+    ORDER extends ExchangeTransactionOrder<any>
+> = ORDER &
+    (ORDER extends { version: 1 }
+        ? { signature: string }
+        : { proofs: Array<string> });
+
+export type ExchangeTransactionOrderMap<LONG = Long> = {
+    1: ExchangeTransactionOrderV1<LONG>;
+    2: ExchangeTransactionOrderV2<LONG>;
+    3: ExchangeTransactionOrderV3<LONG>;
+    4: ExchangeTransactionOrderV4<LONG>;
+};
+
+export type ExchangeTransactionOrderByTx<
+    TX extends ExchangeTransaction
+> = TX extends { version: 1 }
+    ? ExchangeTransactionOrderMap[1]
+    : TX extends { version: 2 }
+    ? ExchangeTransactionOrderMap[1 | 2 | 3]
+    : ExchangeTransactionOrder;
+
+export type DataTransactionEntry<LONG = Long> =
+    | DataTransactionEntryInteger<LONG>
+    | DataTransactionEntryString
+    | DataTransactionEntryBinary
+    | DataTransactionEntryBoolean
+    | DataTransactionDeleteRequest;
+
+export type DataTransactionDeleteRequest = {
+    key: string;
+};
