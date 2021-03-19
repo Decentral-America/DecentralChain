@@ -1,7 +1,7 @@
 package com.wavesplatform.transactions.account;
 
+import com.wavesplatform.crypto.Bytes;
 import com.wavesplatform.transactions.WavesConfig;
-import im.mak.waves.crypto.Bytes;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

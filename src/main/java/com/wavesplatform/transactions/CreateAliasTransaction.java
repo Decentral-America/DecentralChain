@@ -1,19 +1,18 @@
 package com.wavesplatform.transactions;
 
+import com.wavesplatform.crypto.Hash;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Alias;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
-import im.mak.waves.crypto.Hash;
-import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import static im.mak.waves.crypto.Bytes.concat;
-import static im.mak.waves.crypto.Bytes.of;
+import static com.wavesplatform.crypto.Bytes.concat;
+import static com.wavesplatform.crypto.Bytes.of;
 
 public class CreateAliasTransaction extends Transaction {
 

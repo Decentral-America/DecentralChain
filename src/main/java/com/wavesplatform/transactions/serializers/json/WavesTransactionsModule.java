@@ -1,16 +1,13 @@
 package com.wavesplatform.transactions.serializers.json;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.wavesplatform.transactions.common.*;
-import com.wavesplatform.transactions.serializers.json.deser.*;
-import com.wavesplatform.transactions.serializers.json.ser.*;
 import com.wavesplatform.transactions.Transaction;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.account.PublicKey;
-import im.mak.waves.transactions.common.*;
+import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.data.DataEntry;
-import im.mak.waves.transactions.serializers.json.deser.*;
-import im.mak.waves.transactions.serializers.json.ser.*;
+import com.wavesplatform.transactions.serializers.json.deser.*;
+import com.wavesplatform.transactions.serializers.json.ser.*;
 
 public class WavesTransactionsModule extends SimpleModule {
 

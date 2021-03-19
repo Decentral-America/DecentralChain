@@ -1,13 +1,11 @@
 package com.wavesplatform.transactions.serializers.binary;
 
-import com.wavesplatform.transactions.common.*;
-import com.wavesplatform.transactions.data.*;
-import im.mak.waves.crypto.Bytes;
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.transactions.*;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.account.PublicKey;
-import im.mak.waves.transactions.*;
-import im.mak.waves.transactions.common.*;
-import im.mak.waves.transactions.data.*;
+import com.wavesplatform.transactions.common.*;
+import com.wavesplatform.transactions.data.*;
 import com.wavesplatform.transactions.exchange.Order;
 import com.wavesplatform.transactions.exchange.OrderType;
 import com.wavesplatform.transactions.invocation.Function;
@@ -17,8 +15,9 @@ import com.wavesplatform.transactions.serializers.Scheme;
 import java.util.ArrayList;
 import java.util.List;
 
-import static im.mak.waves.crypto.Bytes.concat;
-import static com.wavesplatform.transactions.serializers.Scheme.*;
+import static com.wavesplatform.crypto.Bytes.concat;
+import static com.wavesplatform.transactions.serializers.Scheme.WITH_PROOFS;
+import static com.wavesplatform.transactions.serializers.Scheme.WITH_SIGNATURE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class LegacyBinarySerializer {

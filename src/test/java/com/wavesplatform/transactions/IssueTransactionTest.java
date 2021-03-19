@@ -1,11 +1,10 @@
 package com.wavesplatform.transactions;
 
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.crypto.base.Base64;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.serializers.json.JsonSerializer;
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.base.Base64;
-import im.mak.waves.transactions.common.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;

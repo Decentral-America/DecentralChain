@@ -1,6 +1,6 @@
 package com.wavesplatform.transactions.common;
 
-import im.mak.waves.crypto.Bytes;
+import com.wavesplatform.crypto.Bytes;
 import com.wavesplatform.transactions.WavesConfig;
 
 import java.util.Arrays;

@@ -1,20 +1,18 @@
 package com.wavesplatform.transactions.serializers.binary;
 
-import com.wavesplatform.transactions.common.*;
-import com.wavesplatform.transactions.invocation.*;
-import im.mak.waves.crypto.Bytes;
+import com.wavesplatform.crypto.Bytes;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.account.PublicKey;
-import im.mak.waves.transactions.common.*;
+import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.exchange.OrderType;
-import im.mak.waves.transactions.invocation.*;
+import com.wavesplatform.transactions.invocation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static im.mak.waves.crypto.Bytes.concat;
-import static im.mak.waves.crypto.Bytes.of;
+import static com.wavesplatform.crypto.Bytes.concat;
+import static com.wavesplatform.crypto.Bytes.of;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BytesReader {

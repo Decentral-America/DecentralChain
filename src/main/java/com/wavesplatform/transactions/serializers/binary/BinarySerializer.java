@@ -5,7 +5,6 @@ import com.wavesplatform.protobuf.order.OrderOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import com.wavesplatform.transactions.Transaction;
 import com.wavesplatform.transactions.TransactionOrOrder;
-import im.mak.waves.transactions.*;
 import com.wavesplatform.transactions.exchange.Order;
 import com.wavesplatform.transactions.serializers.ProtobufConverter;
 import com.wavesplatform.transactions.serializers.Scheme;

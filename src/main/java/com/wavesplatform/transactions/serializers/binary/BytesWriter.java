@@ -1,15 +1,13 @@
 package com.wavesplatform.transactions.serializers.binary;
 
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.AssetId;
 import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.common.Recipient;
-import com.wavesplatform.transactions.invocation.*;
-import im.mak.waves.crypto.Bytes;
-import com.wavesplatform.transactions.account.PublicKey;
-import im.mak.waves.transactions.common.*;
 import com.wavesplatform.transactions.exchange.OrderType;
-import im.mak.waves.transactions.invocation.*;
+import com.wavesplatform.transactions.invocation.*;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.wavesplatform.transactions.account;
 
 import com.google.common.base.Suppliers;
-import im.mak.waves.crypto.Crypto;
-import im.mak.waves.crypto.base.Base58;
-import com.wavesplatform.transactions.common.Base58String;
+import com.wavesplatform.crypto.Crypto;
+import com.wavesplatform.crypto.base.Base58;
 import com.wavesplatform.transactions.WavesConfig;
+import com.wavesplatform.transactions.common.Base58String;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

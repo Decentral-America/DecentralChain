@@ -1,6 +1,6 @@
 package com.wavesplatform.transactions.serializers;
 
-import im.mak.waves.transactions.*;
+import com.wavesplatform.transactions.*;
 import com.wavesplatform.transactions.exchange.Order;
 
 public enum Scheme {

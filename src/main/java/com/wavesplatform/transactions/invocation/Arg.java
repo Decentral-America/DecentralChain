@@ -1,6 +1,6 @@
 package com.wavesplatform.transactions.invocation;
 
-import im.mak.waves.crypto.base.Base64;
+import com.wavesplatform.crypto.base.Base64;
 
 import java.util.Objects;
 

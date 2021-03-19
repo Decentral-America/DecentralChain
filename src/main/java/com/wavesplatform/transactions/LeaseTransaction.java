@@ -4,7 +4,6 @@ import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.common.Recipient;
-import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;

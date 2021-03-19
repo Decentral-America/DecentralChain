@@ -5,7 +5,6 @@ import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.AssetId;
 import com.wavesplatform.transactions.common.Base64String;
 import com.wavesplatform.transactions.common.Proof;
-import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;

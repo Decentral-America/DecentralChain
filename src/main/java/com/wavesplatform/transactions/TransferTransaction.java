@@ -2,7 +2,6 @@ package com.wavesplatform.transactions;
 
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.*;
-import im.mak.waves.transactions.common.*;
 
 import java.io.IOException;
 import java.util.List;

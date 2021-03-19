@@ -1,9 +1,9 @@
 package com.wavesplatform.transactions.account;
 
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.Crypto;
-import im.mak.waves.crypto.Hash;
-import im.mak.waves.crypto.base.Base58;
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.crypto.Crypto;
+import com.wavesplatform.crypto.Hash;
+import com.wavesplatform.crypto.base.Base58;
 import com.wavesplatform.transactions.common.Base58String;
 import com.wavesplatform.transactions.common.Recipient;
 

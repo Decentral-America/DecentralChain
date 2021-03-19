@@ -1,13 +1,13 @@
 package com.wavesplatform.transactions;
 
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.crypto.Hash;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.serializers.binary.BytesWriter;
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.Hash;
 
 import java.io.IOException;
 import java.util.Objects;

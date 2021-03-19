@@ -1,8 +1,8 @@
 package com.wavesplatform.transactions.common;
 
 import com.google.common.base.Suppliers;
-import im.mak.waves.crypto.Bytes;
-import im.mak.waves.crypto.base.Base58;
+import com.wavesplatform.crypto.Bytes;
+import com.wavesplatform.crypto.base.Base58;
 
 import java.util.Arrays;
 import java.util.function.Supplier;

@@ -1,9 +1,9 @@
 package com.wavesplatform.transactions.account;
 
-import im.mak.waves.crypto.Crypto;
+import com.wavesplatform.crypto.Crypto;
+import com.wavesplatform.transactions.WavesConfig;
 import com.wavesplatform.transactions.common.Base58String;
 import com.wavesplatform.transactions.common.Proof;
-import com.wavesplatform.transactions.WavesConfig;
 
 import java.util.Arrays;
 

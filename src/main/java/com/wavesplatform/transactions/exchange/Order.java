@@ -1,15 +1,15 @@
 package com.wavesplatform.transactions.exchange;
 
+import com.wavesplatform.crypto.Bytes;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
+import com.wavesplatform.transactions.TransactionOrOrder;
+import com.wavesplatform.transactions.WavesConfig;
 import com.wavesplatform.transactions.account.PublicKey;
+import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.serializers.ProtobufConverter;
 import com.wavesplatform.transactions.serializers.binary.BinarySerializer;
 import com.wavesplatform.transactions.serializers.json.JsonSerializer;
-import im.mak.waves.crypto.Bytes;
-import com.wavesplatform.transactions.TransactionOrOrder;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.WavesConfig;
 
 import java.io.IOException;
 import java.util.List;

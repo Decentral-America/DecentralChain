@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.wavesplatform.transactions.data.*;
-import im.mak.waves.transactions.data.*;
 
 import java.io.IOException;
 
