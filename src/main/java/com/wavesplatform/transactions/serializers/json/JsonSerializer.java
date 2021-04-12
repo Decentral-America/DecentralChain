@@ -134,7 +134,7 @@ public abstract class JsonSerializer {
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
 
-            long amount = json.get(scheme == Scheme.PROTOBUF ? "quantity" : "amount").asLong();
+            long amount = json.get(json.hasNonNull("amount") ? "amount" : "quantity").asLong();
 
             return new BurnTransaction(
                     sender, Amount.of(amount, assetIdFromJson(json.get("assetId"))),
@@ -368,7 +368,7 @@ public abstract class JsonSerializer {
             } else if (tx instanceof BurnTransaction) {
                 BurnTransaction btx = (BurnTransaction) tx;
                 jsObject.put("assetId", assetIdToJson(btx.amount().assetId()))
-                        .put(scheme == Scheme.PROTOBUF ? "quantity" : "amount", btx.amount().value());
+                        .put("amount", btx.amount().value());
                 if (btx.version() == 1) {
                     jsObject.remove("chainId");
                     signature = btx.proofs().get(0).toString();
