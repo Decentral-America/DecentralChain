@@ -18,8 +18,8 @@ export default class Currency {
 
     static WAVES = new Currency({
         id: '',
-        displayName: 'Waves',
-        shortName: 'WAVES',
+        displayName: 'DCC',
+        shortName: 'DCC',
         precision: 8
     });
 

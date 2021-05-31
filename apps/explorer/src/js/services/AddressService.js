@@ -5,7 +5,6 @@ import Currency from '../shared/Currency';
 import Money from '../shared/Money';
 import {ApiClientService} from './ApiClientService';
 import {thirdPartyApi} from '../shared/api/ThirdPartyApi';
-import {VostokToWavesEnterprise} from '../shared/constants';
 
 export class AddressService extends ApiClientService {
     constructor(transactionTransformerService, currencyService, configurationService, networkId) {
@@ -57,11 +56,6 @@ export class AddressService extends ApiClientService {
             .reduce((acc, val) => ({...acc, [val.assetId]: val}), {})
         return balanceResponse.data.balances.map(item => {
 
-            // TODO: remove when token is renamed
-            if (item.assetId === VostokToWavesEnterprise.id) {
-                item.issueTransaction.name = VostokToWavesEnterprise.name;
-                item.issueTransaction.description = VostokToWavesEnterprise.description;
-            }
             const currency = new Currency({
                 id: details[item.assetId].originTransactionId,
                 displayName: details[item.assetId].name,
