@@ -176,7 +176,7 @@ const transformUpdateAssetInfo = (currencyService, tx) => {
 
 const transformScriptInvocation = (currencyService, stateChangeService, assetService, tx, shouldLoadDetails) => {
 
-    const wavesDetail = {name: "WAVES", assetId: null, decimals: 8, description: "waves"}
+    const wavesDetail = {name: "DCC", assetId: null, decimals: 8, description: "DCC"}
 
     return currencyService.get(tx.feeAssetId).then(async (feeCurrency) => {
         let payment = [];

@@ -2,35 +2,31 @@ import React from 'react';
 
 const socialLinks = [{
     id: 'github',
-    url: 'https://github.com/wavesplatform/'
+    url: ''
 }, {
     id: 'twitter',
-    url: 'https://twitter.com/@wavesplatform'
+    url: ''
 }, {
     id: 'facebook',
-    url: 'https://www.facebook.com/wavesplatform/'
+    url: ''
 }, {
     id: 'discord',
-    url: 'https://discord.gg/cnFmDyA'
+    url: ''
 }, {
     id: 'telegram',
-    url: 'https://telegram.me/wavesnews'
+    url: ''
 }, {
     id: 'reddit',
-    url: 'https://reddit.com/r/Wavesplatform/'
+    url: ''
 }];
 
 const Footer = ({version}) => {
     return (
         <div className="menu-footer">
             <div>Version: {version}</div>
-            <div>Brought to you by Waves Team</div>
+
             <div>
-                {socialLinks.map(item =>
-                    (<a key={item.id} className={`social ${item.id}`} href={item.url} target="_blank"></a>))}
-            </div>
-            <div>
-                <a className="fade" href="https://wavesplatform.com" target="_blank">wavesplatform.com</a>
+                <a className="fade" href="https://decentralamerica.com/" target="_blank">decentralamerica.com</a>
             </div>
         </div>
     );

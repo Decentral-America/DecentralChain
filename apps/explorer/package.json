@@ -1,8 +1,8 @@
 {
-    "name": "waves-blockchain-explorer",
+    "name": "dcc-blockchain-explorer",
     "version": "3.2.3",
     "private": true,
-    "description": "Waves blockchain information tool",
+    "description": "DCC blockchain information tool",
     "repository": {
         "type": "git",
         "url": "https://github.com/wavesplatform/WavesExplorerLite.git"

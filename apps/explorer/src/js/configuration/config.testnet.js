@@ -1,20 +1,24 @@
-const nodeUrl = 'https://testnode1.wavesnodes.com';
-
+const nodeUrl = "https://testnet-node.decentralchain.io";
+// testnet-node.decentralchain.io
+// testnet-node1.decentralchain.io
+// testnet-node2.decentralchain.io
 export default {
-    networkId: 'testnet',
-    displayName: 'Testnet',
+    networkId: "testnet",
+    displayName: "Testnet",
     apiBaseUrl: nodeUrl,
     useCustomRequestConfig: true,
-    dataServicesBaseUrl: 'https://api.testnet.wavesplatform.com/v0',
+    dataServicesBaseUrl: "https://api.testnet.wavesplatform.com/v0",
     nodes: [
-        {url: nodeUrl, maintainer: 'Waves', showAsLink: true},
-        {url: 'https://testnode2.wavesnodes.com', maintainer: 'Waves', showAsLink: true},
-        {url: 'https://testnode3.wavesnodes.com', maintainer: 'Waves', showAsLink: true},
-        {url: 'https://testnode4.wavesnodes.com', maintainer: 'Waves', showAsLink: true}
+        { url: nodeUrl, maintainer: "DCC", showAsLink: true },
+        {
+            url: "https://testnet-node1.decentralchain.io",
+            maintainer: "DCC",
+            showAsLink: true,
+        },
+        {
+            url: "https://testnet-node2.decentralchain.io",
+            maintainer: "DCC",
+            showAsLink: true,
+        },
     ],
-    faucet: {
-        url: 'https://waves-faucet-testnet.wvservices.com/faucet',
-        captchaKey: '6Le5cskZAAAAAGR6u8UvY1-wn4Gg97lUef-hFfQC',
-        address: '3Myqjf1D44wR8Vko4Tr5CwSzRNo2Vg9S7u7'
-    }
 };
