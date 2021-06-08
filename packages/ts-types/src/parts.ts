@@ -19,7 +19,7 @@ export type InvokeScriptCall<LONG = Long> = {
 };
 
 export type InvokeScriptPayment<LONG = Long> = {
-    assetId: string;
+    assetId: string | null;
     amount: LONG;
 };
 
@@ -94,8 +94,8 @@ export type ExchangeTransactionOrderData<LONG> = {
     matcherPublicKey: string;
     version: number;
     assetPair: {
-        amountAsset: string;
-        priceAsset: string;
+        amountAsset: string | null;
+        priceAsset: string | null;
     };
     orderType: ExchangeTransactionOrderType;
     price: LONG;
@@ -104,6 +104,7 @@ export type ExchangeTransactionOrderData<LONG> = {
     expiration: number;
     matcherFee: LONG;
     senderPublicKey: string;
+    matcherFeeAssetId: string | null;
 };
 
 export type WithVersion<
@@ -170,5 +171,7 @@ export type DataTransactionEntry<LONG = Long> =
     | DataTransactionDeleteRequest;
 
 export type DataTransactionDeleteRequest = {
+    type: undefined;
+    value: undefined;
     key: string;
 };
