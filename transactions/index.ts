@@ -138,6 +138,7 @@ export type AliasTransactionFields<LONG = Long> = {
 }
 
 export type MassTransferTransactionFields<LONG = Long> = {
+    attachment: string | null;
     transfers: Array<MassTransferItem<LONG>>;
     assetId: string | null;
 }
@@ -295,7 +296,7 @@ export type AliasTransactionMap<LONG = Long> = {
 
 //MassTransferTransaction
 export type MassTransferTransactionV1<LONG> = WithVersion<MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>, 1>;
-export type MassTransferTransactionV2<LONG> = WithVersion<MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>, 1>;
+export type MassTransferTransactionV2<LONG> = WithVersion<MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>, 2>;
 
 export type MassTransferTransactionMap<LONG = Long> = {
     1: MassTransferTransactionV1<LONG>;
