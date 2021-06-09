@@ -138,7 +138,7 @@ export type AliasTransactionFields<LONG = Long> = {
 }
 
 export type MassTransferTransactionFields<LONG = Long> = {
-    attachment: string | null;
+    attachment: string;
     transfers: Array<MassTransferItem<LONG>>;
     assetId: string | null;
 }
