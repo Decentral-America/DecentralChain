@@ -21,7 +21,6 @@ import SingleTransactionPage from './pages/SingleTransactionPage';
 import SingleAddressPage from './pages/SingleAddressPage';
 import SingleAliasPage from './pages/SingleAliasPage';
 import SingleAssetPage from './pages/SingleAssetPage';
-import FaucetPage from './pages/FaucetPage'
 import UnsupportedPage from './pages/UnsupportedPage';
 
 const routeParams = routeParamsBuilder(ServiceFactory.global().configurationService().all());
@@ -93,7 +92,6 @@ class App extends React.Component {
                             <Route exact path={routes.assets.one(routeParams.assetId)} component={SingleAssetPage} />
                             <Route path={routes.nodes.list} component={NodesPage} />
                             <Route path={routes.peers.list} component={PeersPage} />
-                            <Route exact path={routes.faucet} component={FaucetPage} />
                             <Route path={routes.root} component={MainPage} />
                         </Switch>
                     </div>

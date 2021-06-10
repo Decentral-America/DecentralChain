@@ -163,7 +163,8 @@ body {
         }
 
         > .logo {
-            background: url('../images/waves-124.svg') no-repeat 0 3px;
+            background: url('../images/dcc-logo.jpg') no-repeat 0 3px;
+            background-size: contain;
             min-height: 44px;
 
             a {
@@ -176,7 +177,7 @@ body {
 
             &::after {
                 content: "Explorer";
-                left: 132px;
+                left: 50px;
                 bottom: -8px;
                 position: relative;
                 @include font(headline1);
