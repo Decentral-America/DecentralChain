@@ -64,6 +64,28 @@ function buildCustom(done) {
     buildApp({network: 'custom'}, 'prod', done);
 }
 
+function dockerImage(done) {
+    exec('docker build . -t blockchaincostarica/explorer:' + config.package.data.version, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        done(err);
+    });
+}
+
+function pushDockerImage(done){
+    exec('docker push blockchaincostarica/explorer:' + config.package.data.version, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        done(err);
+    });
+}
+gulp.task('docker-prod', function (done) {
+    dockerImage(done);
+});
+gulp.task('docker-push',gulp.series('docker-prod', function (done) {
+    pushDockerImage(done);
+}));
+
 exports.buildOfficialProd = gulp.series(clean, buildOfficialProd);
 exports.buildOfficialStaging = gulp.series(clean, buildOfficialStaging);
 exports.buildOfficialStagenet = gulp.series(clean, buildOfficialStagenet);
