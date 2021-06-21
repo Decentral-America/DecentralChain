@@ -12,7 +12,7 @@
         bottom: 0;
         display: block;
         transition: background-color .5s;
-        background-color: map-get($colors, basic500);
+        background-color: map-get($colors, white);
     }
 
     .search {
@@ -26,10 +26,10 @@
 
     &.search-box-active {
         svg {
-            color: map-get($colors, black);
+            color: map-get($colors, white);
         }
         &::before {
-            background-color: map-get($colors, black);
+            background-color: map-get($colors, white);
         }
     }
 
@@ -89,9 +89,9 @@
         }
 
         &:hover {
-            color: black;
+            color: white;
             svg {
-                fill: map-get($colors, black);
+                fill: map-get($colors, white);
             }
         }
     }

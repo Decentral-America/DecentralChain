@@ -112,7 +112,7 @@
         }
 
         >.panel-empty-label {
-            @include font(body, basic500);
+            @include font(body, white);
             text-align: center;
         }
 
@@ -189,7 +189,7 @@
         }
     }
     * {
-        color: map_get($colors, basic500);
+        color: map_get($colors, white);
     }
 }
 
@@ -243,7 +243,7 @@
     }
 
     > .action {
-        border-bottom: 1px dashed map-get($colors, black);
+        border-bottom: 1px dashed map-get($colors, white);
         float: right;
         cursor: pointer;
     }
@@ -296,7 +296,7 @@
 
             @include responsive_styles($card_inner, padding-right, padding-left);
             @include responsive_styles($card_column);
-            @include font(body, basic500);
+            @include font(body, white);
         }
 
         > .dictionary-pair-value {
