@@ -33,7 +33,7 @@
         &.disabled {
             cursor: default;
             border: none;
-            color: map-get($colors, basic500);
+            color: map-get($colors, white);
         }
 
         &.first {

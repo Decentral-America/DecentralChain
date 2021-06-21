@@ -31,7 +31,7 @@ input {
         line-height: 1.25;
 
         & ::placeholder {
-            @include font(headline3, basic500);
+            @include font(headline3, white);
             line-height: 1.25;
         }
 
@@ -46,20 +46,20 @@ input {
 
     &:not(.search-input) {
         &::-webkit-input-placeholder {
-            color: map-get($colors, basic500);
+            color: map-get($colors, white);
         }
         &::-moz-placeholder {
-            color: map-get($colors, basic500);
+            color: map-get($colors, white);
         }
         &:-ms-input-placeholder {
-            color: map-get($colors, basic500);
+            color: map-get($colors, white);
         }
         &:-moz-placeholder {
-            color: map-get($colors, basic500);
+            color: map-get($colors, white);
         }
     }
 }
 
 label {
-    @include font(body, basic500);
+    @include font(body, white);
 }

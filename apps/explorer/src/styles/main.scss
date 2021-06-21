@@ -163,7 +163,7 @@ body {
         }
 
         > .logo {
-            background: url('../images/dcc-logo.jpg') no-repeat 0 3px;
+            background: url('../images/decentralscan.svg') no-repeat 0 3px;
             background-size: contain;
             min-height: 44px;
 
@@ -176,7 +176,7 @@ body {
             }
 
             &::after {
-                content: "Explorer";
+                content: "";
                 left: 50px;
                 bottom: -8px;
                 position: relative;
@@ -311,13 +311,13 @@ body {
                 @include font(headline2, disabled500);
 
                 &:hover {
-                    color: map-get($colors, black);
+                    color: map-get($colors, basic500);
                 }
             }
 
             &.current {
                 a {
-                    color: map-get($colors, black);
+                    color: map-get($colors, white);
                 }
 
                 &::before {
@@ -333,7 +333,7 @@ body {
     }
 
     > .menu-footer {
-        @include font(body, basic500);
+        @include font(body, white);
         bottom: map-get($layout, padding-top);
 
         > * {
@@ -381,7 +381,7 @@ body {
 }
 
 .card {
-    background-color: map-get($colors, white);
+    background-color: map-get($colors, darkCard);
     border-radius: 4px;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.14);
 
@@ -472,7 +472,7 @@ body {
 
             &.grey {
                 background: map-get($colors, iceBlue);
-                color: black;
+                color: white;
             }
 
             &:not(:disabled) {

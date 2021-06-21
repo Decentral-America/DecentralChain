@@ -109,7 +109,7 @@
 // **** link ****
 a {
     font-weight: bold;
-    color: map-get($colors, submit400);
+    color: map-get($colors, white);
     text-decoration: underline;
     cursor: pointer;
 
@@ -118,12 +118,12 @@ a {
     }
 
     &.no-accent {
-        color: map-get($colors, black);
+        color: map-get($colors, white);
         font-weight: normal;
     }
 
     &.fade {
-        color: map-get($colors, basic500);
+        color: map-get($colors, white);
         font-weight: normal;
     }
 

@@ -57,7 +57,7 @@
     }
 }
 
-@mixin font($type, $color_name: black) {
+@mixin font($type, $color_name: white) {
     font-weight: map-get($font, weight);
     font-family: map-get($font, family);
     font-size: map-get($font, #{$type}_size);
