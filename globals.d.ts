@@ -341,7 +341,8 @@ declare namespace WavesKeeper {
         TSetScriptTxData |
         TSponsoredFeeTxData |
         TSetAssetScriptTxData |
-        TScriptInvocationTxData;
+        TScriptInvocationTxData |
+        TUpdateAssetInfoTxData;
 
     interface ISignData<TYPE extends number, BODY> {
         type: TYPE;
@@ -592,6 +593,19 @@ declare namespace WavesKeeper {
     }
 
     type TScriptInvocationTxData = ISignData<16, IScriptInvocationTx>;
+
+    interface IUpdateAssetInfoTx extends ITransactionBase {
+      /**
+       * [4, 16] string – token name
+       */
+      name: string;
+      /**
+       * [0, 1000] string – token description
+       */
+      description: string,
+    }
+
+    type TUpdateAssetInfoTxData = ISignData<17, IUpdateAssetInfoTx>;
 
     type TSignTransactionPackageData = Array<
         TIssueTxData |
