@@ -91,20 +91,19 @@ export type DataTransactionEntryBoolean = DataTransactionEntryGeneric<
 >;
 
 export type ExchangeTransactionOrderData<LONG> = {
-    matcherPublicKey: string;
     version: number;
+    orderType: ExchangeTransactionOrderType;
     assetPair: {
         amountAsset: string | null;
         priceAsset: string | null;
     };
-    orderType: ExchangeTransactionOrderType;
     price: LONG;
     amount: LONG;
     timestamp: number;
     expiration: number;
     matcherFee: LONG;
+    matcherPublicKey: string;
     senderPublicKey: string;
-    matcherFeeAssetId: string | null;
 };
 
 export type WithVersion<
