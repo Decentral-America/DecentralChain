@@ -1,5 +1,8 @@
 package com.wavesplatform.transactions.common;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Amount {
@@ -7,7 +10,10 @@ public class Amount {
     private final long value;
     private final AssetId assetId;
 
-    public Amount(long value, AssetId assetId) {
+    @JsonCreator
+    public Amount(
+            @JsonProperty("amount") long value,
+            @JsonProperty("assetId") AssetId assetId) {
         this.value = value;
         this.assetId = assetId == null ? AssetId.WAVES : assetId;
     }
