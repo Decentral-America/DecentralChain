@@ -163,7 +163,7 @@ export type SetScriptTransactionFields<LONG = Long> = {
 
 export type SponsorshipTransactionFields<LONG = Long> = {
     assetId: string;
-    minSponsoredAssetFee: LONG;
+    minSponsoredAssetFee: LONG | null;
 }
 
 export type SetAssetScriptTransactionFields<LONG = Long> = {
@@ -183,7 +183,7 @@ export type UpdateAssetInfoTransactionFields<LONG = Long> = {
     name: string;
     description: string;
     feeAssetId: string | null;
-}
+};
 
 export interface IUpdateAssetInfoTransaction<LONG = Long> extends BaseTransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO>,
     UpdateAssetInfoTransactionFields<LONG> {

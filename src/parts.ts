@@ -30,7 +30,10 @@ export type InvokeScriptCallArgument<LONG = Long> =
     | InvokeScriptCallIntegerArgument<LONG>
     | InvokeScriptCallListArgument<
           LONG,
-          string | boolean | LONG | Base64Script
+          | InvokeScriptCallStringArgument
+          | InvokeScriptCallBinaryArgument
+          | InvokeScriptCallBooleanArgument
+          | InvokeScriptCallIntegerArgument
       >;
 
 export type InvokeScriptCallArgumentGeneric<Type, Value> = {
@@ -53,9 +56,14 @@ export type InvokeScriptCallBooleanArgument = InvokeScriptCallArgumentGeneric<
 export type InvokeScriptCallIntegerArgument<
     LONG = Long
 > = InvokeScriptCallArgumentGeneric<'integer', LONG>;
+
 export type InvokeScriptCallListArgument<
     LONG,
-    ITEMS extends string | boolean | LONG | Base64Script
+    ITEMS extends
+        | InvokeScriptCallStringArgument
+        | InvokeScriptCallBinaryArgument
+        | InvokeScriptCallBooleanArgument
+        | InvokeScriptCallIntegerArgument
 > = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>>;
 
 export interface WithId {
