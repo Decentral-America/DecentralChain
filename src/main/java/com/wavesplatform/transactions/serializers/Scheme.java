@@ -10,7 +10,7 @@ public enum Scheme {
     public static Scheme ofOrder(int version) {
         if (version == 1) return Scheme.WITH_SIGNATURE;
         if (version == 2 || version == 3) return Scheme.WITH_PROOFS;
-        if (version == 4) return Scheme.PROTOBUF;
+        if (version >= 4) return Scheme.PROTOBUF;
         throw new IllegalArgumentException("Unsupported order version " + version);
     }
 
@@ -21,14 +21,14 @@ public enum Scheme {
         if (txType >= IssueTransaction.TYPE && txType <= CreateAliasTransaction.TYPE) {
             if (txVersion == 1) return Scheme.WITH_SIGNATURE;
             if (txVersion == 2) return Scheme.WITH_PROOFS;
-            if (txVersion == 3) return Scheme.PROTOBUF;
+            if (txVersion >= 3) return Scheme.PROTOBUF;
         }
         if (txType >= MassTransferTransaction.TYPE && txType <= InvokeScriptTransaction.TYPE) {
             if (txVersion == 1) return Scheme.WITH_PROOFS;
-            if (txVersion == 2) return Scheme.PROTOBUF;
+            if (txVersion >= 2) return Scheme.PROTOBUF;
         }
         if (txType == UpdateAssetInfoTransaction.TYPE) {
-            if (txVersion == 1) return Scheme.PROTOBUF;
+            if (txVersion >= 1) return Scheme.PROTOBUF;
         }
         throw new IllegalArgumentException("Unsupported transaction type " + txType + " with version " + txVersion);
     }
