@@ -12,6 +12,6 @@ Library for binary and json serialization of transactions in Waves blockchain.
 <dependency>
     <groupId>com.wavesplatform</groupId>
     <artifactId>waves-transactions</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 </dependency>
 ```
