@@ -1,6 +1,6 @@
 # DCC Explorer
 
-DCC Blockchain Explorer is available on https://wavesexplorer.com
+DCC Blockchain Explorer is available on https://decentralscan.com
 
 ## Setup
 
