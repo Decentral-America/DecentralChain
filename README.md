@@ -1,7 +1,7 @@
 # Waves Crypto for Java
 
-[![Checks](https://badgen.net/github/checks/wavesplatform/waves-crypto-java?icon=github&cache=86400)](https://github.com/wavesplatform/waves-crypto-java/actions)
 [![Maven Central](https://badgen.net/maven/v/maven-central/com.wavesplatform/waves-crypto?icon=maven&label=latest&cache=3600)](https://search.maven.org/artifact/com.wavesplatform/waves-crypto)
+[![Checks](https://badgen.net/github/checks/wavesplatform/waves-crypto-java?icon=github&cache=86400)](https://github.com/wavesplatform/waves-crypto-java/actions)
 
 [![Waves Node GitHub](https://badgen.net/badge/icon/Waves%20Node?icon=github&label&color=gray&cache=86400)](https://github.com/wavesplatform/waves)
 [![Telegram](https://badgen.net/badge/icon/Waves%20Dev%20Jedi?icon=telegram&label=Telegram&cache=86400)](https://t.me/waves_ride_dapps_dev)
@@ -127,7 +127,7 @@ If you have generated an account, you can sign messages with private key and val
 byte[] message = new Random().nextBytes(new byte[32]);
 
 byte[] proof = Crypto.sign(privateKey, message);
-boolean isValid = Crypto.isProofValid(publicKey, message, prood);
+boolean isValid = Crypto.isProofValid(publicKey, message, proof);
 ```
 
 ## Base encodings
@@ -142,7 +142,7 @@ In the Waves blockchain, all binary data is presented in Base Encodings:
   - asset id
 * Base64 is used for potentially long values like:
   - compiled Ride scripts
-  - binary arguments and result of smart contract invocations
+  - binary arguments of smart contract invocations
   - binary entries in account data storage
 * Base16 is available in smart contracts for any purpose.
 
@@ -184,8 +184,8 @@ byte[] secureHash = Hash.secureHash(message);
 
 ## Merkle tree
 
-TBD... see [TestMerkleTree](./src/test/java/com/wavesplatform/crypto/TestMerkleTree.java) for examples.
+TBD... see [TestMerkleTree](./src/test/java/com/wavesplatform/crypto/TestMerkleTree.java) for usage examples.
 
 ## RSA
 
-TBD... see [TestRsa](./src/test/java/com/wavesplatform/crypto/TestRsa.java) for examples.
+TBD... see [TestRsa](./src/test/java/com/wavesplatform/crypto/TestRsa.java) for usage examples.
