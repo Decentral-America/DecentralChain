@@ -229,30 +229,30 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.59</version>
+            <version>1.69</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.59</version>
+            <version>1.69</version>
         </dependency>
         <dependency>
-            <groupId>org.whispersystems</groupId>
+            <groupId>com.wavesplatform</groupId>
             <artifactId>curve25519-java</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.4</version>
         </dependency>
         
         <!-- testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.4.2</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.12.2</version>
+            <version>3.20.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
