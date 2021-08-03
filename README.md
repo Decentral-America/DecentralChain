@@ -1,8 +1,7 @@
 # Waves Crypto for Java
 
 [![Maven Central](https://badgen.net/maven/v/maven-central/com.wavesplatform/waves-crypto?icon=maven&label=latest&cache=3600)](https://search.maven.org/artifact/com.wavesplatform/waves-crypto)
-[![Checks](https://badgen.net/github/checks/wavesplatform/waves-crypto-java?icon=github&cache=86400)](https://github.com/wavesplatform/waves-crypto-java/actions)
-[![Checks](https://img.shields.io/github/checks-status/wavesplatform/waves/HEAD?logo=github)](https://github.com/wavesplatform/waves-crypto-java/actions)
+[![Checks](https://badgen.net/github/checks/wavesplatform/waves-crypto-java?icon=github&cache=600)](https://github.com/wavesplatform/waves-crypto-java/actions)
 
 [![Waves Node GitHub](https://badgen.net/badge/icon/Waves%20Node?icon=github&label&color=gray&cache=86400)](https://github.com/wavesplatform/waves)
 [![Telegram](https://badgen.net/badge/icon/Waves%20Dev%20Jedi?icon=telegram&label=Telegram&cache=86400)](https://t.me/waves_ride_dapps_dev)
