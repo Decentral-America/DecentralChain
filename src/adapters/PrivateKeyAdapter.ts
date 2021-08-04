@@ -1,6 +1,6 @@
 import { Adapter, IPrivateKeyUser, IUser } from './Adapter';
 import { AdapterType } from '../config';
-import { seedUtils, libs } from '@waves/waves-transactions';
+import { seedUtils, libs } from '@decentralchain/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const publicKey = libs.crypto.publicKey;
@@ -38,7 +38,7 @@ export class PrivateKeyAdapter extends Adapter {
             [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3, 4],
             [SIGN_TYPE.CANCEL_ORDER]: [0, 1],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
-            [SIGN_TYPE.WAVES_CONFIRMATION]: [1],
+            [SIGN_TYPE.DCC_CONFIRMATION]: [1],
             [SIGN_TYPE.TRANSFER]: [3, 2],
             [SIGN_TYPE.ISSUE]: [3, 2],
             [SIGN_TYPE.REISSUE]: [3, 2],

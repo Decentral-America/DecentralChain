@@ -12,8 +12,8 @@ import { SeedAdapter, SIGN_TYPE } from '@waves/signature-adapter';
 import { Money, Asset } from '@waves/data-entities';
 
 const asset = new Asset({
-   ticker: 'WAVES',
-   id: 'WAVES',
+   ticker: 'DCC',
+   id: 'DCC',
    name: 'Waves',
    precision: 8,
    description: '',

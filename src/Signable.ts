@@ -5,13 +5,13 @@ import {
     SIGN_TYPE,
     SIGN_TYPES,
     TSignData,
-    WAVES_ID
+    DCC_ID
 } from './prepareTx';
 import { currentFeeFactory, currentCreateOrderFactory, IFeeConfig, isEmpty, last, normalizeAssetId } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-import { libs } from '@waves/waves-transactions';
+import { libs } from '@decentralchain/waves-transactions';
 import { convert } from '@waves/money-like-to-node';
 import { BigNumber } from '@waves/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
@@ -120,7 +120,7 @@ export class Signable {
     public async getAssetIds(): Promise<Array<string>> {
         const transaction = await this.getSignData();
         const hash = Object.create(null);
-        hash[WAVES_ID] = true;
+        hash[DCC_ID] = true;
         hash[normalizeAssetId(transaction.feeAssetId)] = true;
 
         switch (transaction.type) {

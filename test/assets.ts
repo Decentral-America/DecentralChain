@@ -2,8 +2,8 @@ import { Asset } from '@waves/data-entities';
 
 
 export const WavesAsset = new Asset({
-    ticker: 'WAVES',
-    id: 'WAVES',
+    ticker: 'DCC',
+    id: 'DCC',
     name: 'Waves',
     precision: 8,
     description: '',

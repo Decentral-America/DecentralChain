@@ -1,6 +1,6 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
 import { txs } from './transactionsData';
-import { libs } from '@waves/waves-transactions';
+import { libs } from '@decentralchain/waves-transactions';
 
 const { verifySignature } = libs.crypto;
 
@@ -82,7 +82,7 @@ describe('Create data and signature check', () => {
         
         it('check matcher orders signature', () => checkTx(SIGN_TYPE.MATCHER_ORDERS, 1).check());
         
-        it('check waves auth signature', () => checkTx(SIGN_TYPE.WAVES_CONFIRMATION, 1).check());
+        it('check waves auth signature', () => checkTx(SIGN_TYPE.DCC_CONFIRMATION, 1).check());
     
         it('check matcher cancel order signature 0', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 0).check());
         

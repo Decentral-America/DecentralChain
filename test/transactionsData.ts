@@ -1,7 +1,7 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@waves/data-entities';
 import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
-import { libs } from '@waves/waves-transactions';
+import { libs } from '@decentralchain/waves-transactions';
 import { BigNumber } from '@waves/bignumber';
 
 const { base58Decode } = libs.crypto;
@@ -592,7 +592,7 @@ export const txs = {
             proof: '5zWuPQNs8QD7uGWiNLCLjHgFVYwzbyUXTb8bPaQgirfV6AEmdhVUqgmcbSgxJn2YgL3yuQjAZ9TuQrSsb16w9GMc'
         }
     },
-    [SIGN_TYPE.WAVES_CONFIRMATION]: {
+    [SIGN_TYPE.DCC_CONFIRMATION]: {
         1: {
             name: 'waves confirmation request',
             data: {
