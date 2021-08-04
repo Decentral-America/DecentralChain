@@ -13,7 +13,7 @@ import {
 } from '../generic'
 import {TSeedTypes} from '../types'
 import {base58Encode, blake2b, signBytes} from '@waves/ts-lib-crypto'
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {validate} from '../validators'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'

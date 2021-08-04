@@ -5,7 +5,7 @@ import {IInvokeScriptParams, WithId, WithProofs, WithSender} from '../transactio
 import {base58Encode, blake2b, signBytes,} from '@waves/ts-lib-crypto'
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte, normalizeAssetId} from '../generic'
 import {TSeedTypes} from '../types'
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {validate} from '../validators'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
@@ -25,7 +25,7 @@ export function invokeScript(paramsOrTx: any, seed?: TSeedTypes): InvokeScriptTr
         version,
         senderPublicKey,
         dApp: paramsOrTx.dApp,
-        call: callField(paramsOrTx),
+        call: paramsOrTx.call && {args: [], ...paramsOrTx.call},
         payment: mapPayment(paramsOrTx.payment),
         fee: fee(paramsOrTx, 500000),
         feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
@@ -47,8 +47,4 @@ export function invokeScript(paramsOrTx: any, seed?: TSeedTypes): InvokeScriptTr
 
 const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] => payments == null
     ? []
-    : payments.map(pmt => ({...pmt, assetId: pmt.assetId === 'WAVES' ? null : pmt.assetId}))
-
-const callField = (paramsOrTx: any) => {
-    return !!paramsOrTx.call ? {args: paramsOrTx.call.args || [], ...paramsOrTx.call} : null
-}
+    : payments.map(pmt => ({...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId}))

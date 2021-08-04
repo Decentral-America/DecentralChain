@@ -2,7 +2,7 @@
  * @module index
  */
 import {WithId, WithProofs} from '../transactions'
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {base58Encode, blake2b, signBytes} from '@waves/ts-lib-crypto'
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 import {TSeedTypes} from '../types'

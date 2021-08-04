@@ -32,7 +32,7 @@ import {exchange} from './transactions/exchange'
 import {invokeScript} from './transactions/invoke-script'
 import {updateAssetInfo} from './transactions/update-asset-info'
 import {txToProtoBytes} from './proto-serialize'
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {
     AliasTransaction,
     BurnTransaction,

@@ -223,9 +223,9 @@ describe('Validators', () => {
         })
 
         it('Validate assetId', () => {
-            expect(validators.isWavesOrAssetId('474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu')).toBe(true)
-            expect(validators.isWavesOrAssetId(null)).toBe(true)
-            expect(validators.isWavesOrAssetId('WAVES')).toBe(true)
+            expect(validators.isAssetId('474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu')).toBe(true)
+            expect(validators.isAssetId(null)).toBe(true)
+            expect(validators.isAssetId('DCC')).toBe(true)
         })
 
         it('Validate by schema', () => {
@@ -271,12 +271,12 @@ describe('Validators', () => {
                 type: TRANSACTION_TYPE.TRANSFER,
                 version: 2,
                 senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
-                assetId: 'WAVES',
+                assetId: 'DCC',
                 recipient: 'alias:W:test',
                 amount: 100000,
                 attachment: null,
                 fee: 100000,
-                feeAssetId: 'WAVES',
+                feeAssetId: 'DCC',
                 timestamp: Date.now(),
             } as any
 

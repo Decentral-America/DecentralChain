@@ -1,7 +1,7 @@
 import { randomBytes } from '@waves/ts-lib-crypto'
 
 /**
- * Before running test ensure MASTER_SEED has at leas 10 WAVES!!
+ * Before running test ensure MASTER_SEED has at leas 10 DCC!!
  */
 // export const CHAIN_ID = 'S'
 // export const API_BASE = 'https://nodes-stagenet.wavesnodes.com' //3MVCPdW6ZUzLSmMj4RnpZKva1cnTdxQKtNt

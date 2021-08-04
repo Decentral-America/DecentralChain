@@ -2,7 +2,7 @@
  * @module index
  */
 import {ICancelLeaseParams, WithId, WithProofs, WithSender} from '../transactions'
-import { binary } from '@waves/marshall'
+import { binary } from '@decentralchain/marshall'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 import {addProof, getSenderPublicKey, convertToPairs, networkByte, fee} from '../generic'
 import { TSeedTypes } from '../types'

@@ -2,7 +2,7 @@
  * @module index
  */
 import * as wavesProto from '@waves/protobuf-serialization'
-import {binary, serializePrimitives} from '@waves/marshall'
+import {binary, serializePrimitives} from '@decentralchain/marshall'
 import {base58Encode, blake2b, concat, signBytes} from '@waves/ts-lib-crypto'
 import {IDataParams, WithId, WithProofs, WithSender} from '../transactions'
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'

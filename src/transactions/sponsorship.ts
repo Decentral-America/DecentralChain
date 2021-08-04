@@ -5,7 +5,7 @@ import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transaction
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
 import { TSeedTypes } from '../types'
-import { binary } from '@waves/marshall'
+import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
