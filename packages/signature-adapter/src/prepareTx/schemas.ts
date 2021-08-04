@@ -21,7 +21,7 @@ export const getValidateSchema = (networkByte: number) => {
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
-        [SIGN_TYPE.WAVES_CONFIRMATION]: [
+        [SIGN_TYPE.DCC_CONFIRMATION]: [
             fieldsType.publicKey()('publicKey', 'publicKey', null, true),
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),

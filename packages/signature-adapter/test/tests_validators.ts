@@ -3,7 +3,7 @@ import { Asset, Money } from '@waves/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
 import { BigNumber } from '@waves/bignumber';
-import { seedUtils } from '@waves/waves-transactions';
+import { seedUtils } from '@decentralchain/waves-transactions';
 
 const Seed = seedUtils.Seed;
 

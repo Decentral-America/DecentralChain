@@ -1,4 +1,4 @@
-import { libs } from '@waves/waves-transactions';
+import { libs } from '@decentralchain/waves-transactions';
 import { Money } from '@waves/data-entities';
 import { BigNumber } from '@waves/bignumber';
 
@@ -313,7 +313,7 @@ const assetId = (options: IFieldOptions) => {
         isAssetId = false;
     }
 
-    if (!isAssetId && value !== 'WAVES') {
+    if (!isAssetId && value !== 'DCC') {
         return error(options, ERROR_MSG.WRONG_ASSET_ID);
     }
 };
