@@ -1,6 +1,6 @@
 import { IAdapterSignMethods } from './interfaces';
-import { libs, protoSerialize } from '@waves/waves-transactions';
-import * as wavesTransactions from '@waves/waves-transactions';
+import { libs, protoPerialize } from '@decentralchain/waves-transactions';
+import * as wavesTransactions from '@decentralchain/waves-transactions';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
@@ -8,7 +8,7 @@ import { Money } from '@waves/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
-const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
+const { txToProtoBytes } = protoPerialize;
 
 const toNode = (data: any, convert?: Function) => {
     const r = mlToNode(data);
@@ -48,7 +48,6 @@ export enum TRANSACTION_TYPE_NUMBER {
     SET_ASSET_SCRIPT = 15,
     SCRIPT_INVOCATION = 16,
     UPDATE_ASSET_INFO = 17,
-    ETHEREUM_TX = 18,
 }
 
 export enum SIGN_TYPE {
@@ -57,7 +56,7 @@ export enum SIGN_TYPE {
     CREATE_ORDER = 1002,
     CANCEL_ORDER = 1003,
     COINOMAT_CONFIRMATION = 1004,
-    WAVES_CONFIRMATION = 1005,
+    DCC_CONFIRMATION = 1005,
     ISSUE = 3,
     TRANSFER = 4,
     REISSUE = 5,
@@ -73,7 +72,6 @@ export enum SIGN_TYPE {
     SET_ASSET_SCRIPT = 15,
     SCRIPT_INVOCATION = 16,
     UPDATE_ASSET_INFO = 17,
-    ETHEREUM_TX = 18,
 }
 
 export interface ITypesMap {
@@ -127,7 +125,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         adapter: 'signRequest'
     },
-    [SIGN_TYPE.WAVES_CONFIRMATION]: {
+    [SIGN_TYPE.DCC_CONFIRMATION]: {
         getBytes: {
             1: (txData) => {
                 const { timestamp, publicKey } = txData;
@@ -162,8 +160,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeOrder,
             1: binary.serializeOrder,
             2: binary.serializeOrder,
-            3: binary.serializeOrder,
-            4: orderToProtoBytes
+            3: binary.serializeOrder
         },
         toNode: data => {
             const price =  processors.toOrderPrice(data);
@@ -236,7 +233,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.UPDATE_ASSET_INFO]: {
         getBytes: {
-            1: protoSerialize.txToProtoBytes,
+            1: protoPerialize.txToProtoBytes,
         },
         toNode: data => {
             return toNode(data, wavesTransactions.updateAssetInfo);
@@ -365,8 +362,4 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         }, wavesTransactions.invokeScript)),
         adapter: 'signTransaction'
     },
-    [SIGN_TYPE.ETHEREUM_TX]: {
-        getBytes: {},
-        adapter: 'signTransaction'
-    }
 };
