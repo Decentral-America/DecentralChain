@@ -1,22 +1,14 @@
 import * as wavesProto from '@waves/protobuf-serialization'
-import {
-    address, base16Decode, base16Encode,
-    base58Decode,
-    base58Encode,
-    base64Decode,
-    base64Encode,
-    blake2b,
-    concat,
-    keccak
-} from '@waves/ts-lib-crypto'
-import {binary, schemas} from '@waves/marshall'
+import {base58Decode, base58Encode, base64Decode, base64Encode, blake2b, concat, keccak} from '@waves/ts-lib-crypto'
+import {binary, parsePrimitives, schemas, serializePrimitives} from '@decentralchain/marshall'
 import {
     AliasTransaction,
     BurnTransaction,
     CancelLeaseTransaction,
     DataTransaction,
     DataTransactionEntry,
-    ExchangeTransactionOrder,
+    ExchangeTransaction,
+    ExchangeTransactionOrder, ExchangeTransactionV1, ExchangeTransactionV2, ExchangeTransactionV3,
     InvokeScriptTransaction,
     IssueTransaction,
     LeaseTransaction,
@@ -25,19 +17,18 @@ import {
     ReissueTransaction,
     SetAssetScriptTransaction,
     SetScriptTransaction,
-    SignedIExchangeTransactionOrder,
+    SignedIExchangeTransactionOrder, SignedTransaction,
     SponsorshipTransaction,
     TRANSACTION_TYPE,
     TransactionType,
     TransferTransaction,
-    UpdateAssetInfoTransaction,
-    GenesisTransaction,
-    // InvokeExpressionTransaction
+    UpdateAssetInfoTransaction
 } from '@waves/ts-types'
 import {base64Prefix, chainIdFromRecipient} from './generic'
 import Long from 'long'
 import {lease} from './transactions/lease'
-import {TTx, TTransaction, WithChainId} from './transactions'
+import {GenesisTransaction} from '@waves/ts-types/transactions/index'
+import {TTransaction, WithChainId} from './transactions'
 
 const invokeScriptCallSchema = {
     ...schemas.txFields.functionCall[1],
@@ -47,11 +38,13 @@ const recipientFromProto = (recipient: wavesProto.waves.IRecipient, chainId: num
     if (recipient.alias) {
         return `alias:${String.fromCharCode(chainId)}:${recipient.alias}`
     }
-
     const rawAddress = concat([1], [chainId], recipient!.publicKeyHash!)
     const checkSum = keccak(blake2b(rawAddress)).slice(0, 4)
-
     return base58Encode(concat(rawAddress, checkSum))
+}
+
+export function txToProtoBytes(obj: TTransaction): Uint8Array {
+    return new Uint8Array(wavesProto.waves.Transaction.encode(txToProto(obj)).finish())
 }
 
 function convertNumber(n: Long) {
@@ -60,32 +53,9 @@ function convertNumber(n: Long) {
     return n.toNumber() > maxJsNumber ? n.toString() : n.toNumber()
 }
 
-export function txToProtoBytes(obj: TTransaction): Uint8Array {
-    return new Uint8Array(wavesProto.waves.Transaction.encode(txToProto(obj)).finish())
-}
-
-export function signedTxToProtoBytes(obj: TTx): Uint8Array {
-    return new Uint8Array(wavesProto.waves.SignedTransaction.encode(signedTxToProto(obj)).finish())
-}
-
-export function protoBytesToSignedTx(bytes: Uint8Array): TTx {
-    const txData = wavesProto.waves.SignedTransaction.decode(bytes)
-    const tx: TTransaction = protoTxDataToTx(txData.transaction as never as wavesProto.waves.Transaction)
-
-    const signedTx: TTx = {
-        ...tx,
-        proofs: (txData.proofs || []).map(uint8Array2proof),
-    }
-
-    return signedTx
-}
 
 export function protoBytesToTx(bytes: Uint8Array): TTransaction {
     const t = wavesProto.waves.Transaction.decode(bytes)
-    return protoTxDataToTx(t)
-}
-
-export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
     type transactionTypes =
         'genesis'
         | 'payment'
@@ -104,8 +74,6 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
         | 'setAssetScript'
         | 'invokeScript'
         | 'updateAssetInfo'
-    // | 'invokeExpression'
-
     let res: any = {
         version: t.version,
         type: typeByName[t.data! as transactionTypes] as TransactionType,
@@ -114,11 +82,8 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
         fee: convertNumber(t.fee!.amount!),
         // chainId: t.chainId
     }
-
     if (t.fee!.hasOwnProperty('assetId')) {
         res.feeAssetId = base58Encode(t.fee!.assetId!)
-    } else {
-        res.feeAssetId = null
     }
 
     if (t.hasOwnProperty('chainId')) {
@@ -131,13 +96,19 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
             res.quantity = convertNumber(t.issue!.amount!)
             res.decimals = t.issue!.decimals
             res.reissuable = t.issue!.reissuable
-            res.script = (t.issue!.hasOwnProperty('script')) ? base64Prefix(base64Encode(t.issue!.script!)) : null
+            if (t.issue!.hasOwnProperty('script')) {
+                res.script = t.issue!.script && base64Prefix(base64Encode(t.issue!.script))
+            }
             break
         case 'transfer':
             res.amount = convertNumber(t.transfer!.amount!.amount!)
             res.recipient = recipientFromProto(t.transfer!.recipient!, t.chainId)
-            res.attachment = (t.transfer!.hasOwnProperty('attachment')) ? base58Encode(t.transfer!.attachment!) : ''
-            res.assetId = (t.transfer!.amount!.hasOwnProperty('assetId')) ? base58Encode(t.transfer!.amount!.assetId!) : null
+            if (t.transfer!.hasOwnProperty('attachment')) {
+                res.attachment = t.transfer!.attachment == null ? null : base58Encode(t.transfer!.attachment)
+            }
+            if (t.transfer!.hasOwnProperty('assetId')) {
+                res.assetId = t.transfer!.amount!.assetId == null ? null : base58Encode(t.transfer!.amount!.assetId)
+            }
             break
         case 'reissue':
             res.quantity = convertNumber(t.reissue!.assetAmount!.amount!)
@@ -167,10 +138,12 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
             res.alias = t.createAlias!.alias
             break
         case 'massTransfer':
-
-            res.assetId = (t.massTransfer!.hasOwnProperty('assetId')) ? base58Encode(t.massTransfer!.assetId!) : null
-            res.attachment = (t.massTransfer!.hasOwnProperty('attachment')) ? base58Encode(t.massTransfer!.attachment!) : ''
-
+            if (t.massTransfer!.hasOwnProperty('assetId')) {
+                res.assetId = t.massTransfer!.assetId == null ? null : base58Encode(t.massTransfer!.assetId)
+            }
+            if (t.massTransfer!.hasOwnProperty('attachment')) {
+                res.attachment = t.massTransfer!.attachment == null ? '' : base58Encode(t.massTransfer!.attachment)
+            } else res.attachment = ''
             res.transfers = t.massTransfer!.transfers!.map(({amount, recipient}) => ({
                 amount: convertNumber(amount!),
                 recipient: recipientFromProto(recipient!, t.chainId),
@@ -184,17 +157,13 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
                     value: base64Prefix(base64Encode(de.binaryValue!)),
                 }
                 if (de.hasOwnProperty('boolValue')) return {key: de.key, type: 'boolean', value: de.boolValue}
-                if (de.hasOwnProperty('intValue')) return {
-                    key: de.key,
-                    type: 'integer',
-                    value: convertNumber(de.intValue!),
-                }
+                if (de.hasOwnProperty('intValue')) return {key: de.key, type: 'integer', value: convertNumber(de.intValue!)}
                 if (de.hasOwnProperty('stringValue')) return {key: de.key, type: 'string', value: de.stringValue}
-                return {key: de.key, value: null}
+                return {key: de.key}
             })
             break
         case 'setScript':
-            res.script = (t.setScript!.hasOwnProperty('script')) ? base64Prefix(base64Encode(t.setScript!.script!)) : null
+            res.script = t.setScript!.script == null ? null : base64Prefix(base64Encode(t.setScript!.script!))
             break
         case 'sponsorFee':
             res.minSponsoredAssetFee = convertNumber(t.sponsorFee!.minFee!.amount!)
@@ -211,7 +180,7 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
             }
             res.payment = t.invokeScript!.payments!.map(p => ({
                 amount: convertNumber(p.amount!),
-                assetId: p.hasOwnProperty('assetId') ? base58Encode(p.assetId!) : null,
+                assetId: p.assetId == null ? null : base58Encode(p.assetId),
             }))
             break
         case 'updateAssetInfo':
@@ -219,20 +188,8 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
             res.name = t.updateAssetInfo!.name
             res.description = t.updateAssetInfo!.description
             break
-        // case 'invokeExpression':
-        //     res.expression = t.invokeExpression?.expression == null ? null : base64Prefix(base64Encode(t.invokeExpression?.expression))
-        //     break
         default:
             throw new Error(`Unsupported tx type ${t.data}`)
-    }
-
-    if (res.hasOwnProperty('chainId')) {
-        res.sender = address({publicKey: t.senderPublicKey}, t.chainId)
-    } else {
-        let recipient = res.recipient || res.dApp || (res.transfers && res.transfers[0] && res.transfers[0].recipient)
-        if (recipient) {
-            res.sender = address({publicKey: t.senderPublicKey}, chainIdFromRecipient(recipient))
-        }
     }
 
     return res
@@ -267,17 +224,6 @@ const getCommonFields = ({senderPublicKey, fee, timestamp, type, version, ...res
         data: typename,
     }
 }
-
-const getCommonSignedFields = (tx: TTx) => {
-    const fields: any = getCommonFields(tx)
-
-    if (tx.hasOwnProperty('proofs')) {
-        fields.proofs = tx.proofs
-    }
-
-    return fields
-}
-
 const getIssueData = (t: IssueTransaction): wavesProto.waves.IIssueTransactionData => ({
     name: t.name,
     description: t.description === '' ? null : t.description,
@@ -333,7 +279,7 @@ const getSetAssetScriptData = (t: SetAssetScriptTransaction): wavesProto.waves.I
 })
 const getInvokeData = (t: InvokeScriptTransaction): wavesProto.waves.IInvokeScriptTransactionData => ({
     dApp: recipientToProto(t.dApp),
-    functionCall: binary.serializerFromSchema((schemas.invokeScriptSchemaV1 as any).schema[5][1])(t.call),
+    functionCall: binary.serializerFromSchema((schemas.invokeScriptSchemaV1 as any).schema[5][1])(t.call), //todo: export function call from marshall and use it directly
     payments: t.payment == null ? null : t.payment.map(({amount, assetId}) => amountToProto(amount, assetId)),
 })
 
@@ -344,16 +290,9 @@ const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction): wavesProto.waves
         description: t.description === '' ? null : t.description,
     }
 }
-
-// const getInvokeExpressionData = (t: InvokeExpressionTransaction): wavesProto.waves.IInvokeExpressionTransactionData => {
-//     return {
-//         expression: t.expression == null ? null : scriptToProto(t.expression),
-//     }
-// }
-
-const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): any /*wavesProto.waves.ITransaction*/ => {
+export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): wavesProto.waves.ITransaction => {
+    const common = getCommonFields(t)
     let txData
-
     switch (t.type) {
         case TRANSACTION_TYPE.ISSUE:
             txData = getIssueData(t)
@@ -400,108 +339,47 @@ const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): any /*wavesPro
         case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
             txData = getUpdateAssetInfoData(t)
             break
-        // case TRANSACTION_TYPE.INVOKE_EXPRESSION:
-        //     txData = getInvokeExpressionData(t)
-        //     break
     }
-
-    return txData
-}
-
-export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): wavesProto.waves.ITransaction => {
-    const common = getCommonFields(t)
-    const txData = getTxData(t)
-
-    return {
-        ...common,
-        [common.data]: txData,
-    }
+    return {...common, [common.data]: txData}
 }
 
 
-export const signedTxToProto = (t: TTx): wavesProto.waves.ISignedTransaction => {
-    const common = getCommonSignedFields(t)
-    const txData = getTxData(t)
+const orderToProto = (o: any): wavesProto.waves.IOrder => ({
+    chainId: o.chainId,
+    senderPublicKey: base58Decode(o.senderPublicKey),
+    matcherPublicKey: base58Decode(o.matcherPublicKey),
+    assetPair: {
+        amountAssetId: o.assetPair.amountAsset == null ? null : base58Decode(o.assetPair.amountAsset),
+        priceAssetId: o.assetPair.priceAsset == null ? null : base58Decode(o.assetPair.priceAsset),
+    },
+    orderSide: o.orderType === 'buy' ? undefined : wavesProto.waves.Order.Side.SELL,
+    amount: Long.fromValue(o.amount),
+    price: Long.fromValue(o.price),
+    timestamp: Long.fromValue(o.timestamp),
+    expiration: Long.fromValue(o.expiration),
+    matcherFee: amountToProto(o.matcherFee, null),
+    version: o.version,
+    proofs: o.proofs.map(base58Decode),
+})
 
-    return {
-        wavesTransaction: {
-            ...common,
-            [common.data]: txData,
-        },
-        proofs: (t.proofs || []).map(proof2Uint8Array),
-    }
-}
-
-const orderToProto = (o: any): wavesProto.waves.IOrder => {
-    let priceMode
-    let attachment
-    if (o.version === 4 && 'priceMode' in o) {
-        if (o.priceMode === 0 || o.priceMode === 'default') {
-            priceMode = undefined
-        }
-        o.priceMode === 'assetDecimals'
-            ? priceMode = wavesProto.waves.Order.PriceMode.ASSET_DECIMALS
-            : priceMode = wavesProto.waves.Order.PriceMode.FIXED_DECIMALS
-    } else priceMode = undefined
-
-    if (o.version === 4 && 'attachment' in o) {
-       attachment = base64Decode(o.attachment.startsWith('base64:') ? o.attachment.slice(7) : o.attachment)
-    } else attachment = undefined
-
-    const isNullOrWaves = (asset: string | null) => asset == null || asset.toLowerCase() == 'waves'
-    return ({
-        chainId: o.chainId,
-        senderPublicKey: o.senderPublicKey ? base58Decode(o.senderPublicKey) : null,
-        matcherPublicKey: base58Decode(o.matcherPublicKey),
-        assetPair: {
-            amountAssetId: isNullOrWaves(o.assetPair.amountAsset) ? null : base58Decode(o.assetPair.amountAsset),
-            priceAssetId: isNullOrWaves(o.assetPair.priceAsset) ? null : base58Decode(o.assetPair.priceAsset),
-        },
-        orderSide: o.orderType === 'buy' ? undefined : wavesProto.waves.Order.Side.SELL,
-        amount: Long.fromValue(o.amount),
-        price: Long.fromValue(o.price),
-        timestamp: Long.fromValue(o.timestamp),
-        expiration: Long.fromValue(o.expiration),
-        matcherFee: amountToProto(o.matcherFee, o.matcherFeeAssetId ? o.matcherFeeAssetId : null),
-        version: o.version,
-        proofs: o.proofs?.map(base58Decode),
-        eip712Signature: o.eip712Signature ? base16Decode(o.eip712Signature.slice(2)) : undefined,
-        priceMode: priceMode,
-        attachment: attachment,
-    })
-}
-
-const orderFromProto = (po: wavesProto.waves.IOrder): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
-    let priceMode
-    if (po.version === 4 && po.priceMode) {
-        po.priceMode === 1
-            ? priceMode = 'fixedDecimals'
-            : priceMode = 'assetDecimals'
-    } else priceMode = undefined
-
-    return {
-        version: po.version! as 1 | 2 | 3 | 4,
-        senderPublicKey: base58Encode(po.senderPublicKey!),
-        matcherPublicKey: base58Encode(po.matcherPublicKey!),
-        assetPair: {
-            amountAsset: po!.assetPair!.amountAssetId == null ? null : base58Encode(po!.assetPair!.amountAssetId),
-            priceAsset: po!.assetPair!.priceAssetId == null ? null : base58Encode(po!.assetPair!.priceAssetId),
-        },
-        // @ts-ignore
-        chainId: po.chainId,
-        orderType: po.orderSide === wavesProto.waves.Order.Side.BUY ? 'buy' : 'sell',
-        amount: convertNumber(po.amount!),
-        price: convertNumber(po.price!),
-        timestamp: po.timestamp!.toNumber(),
-        expiration: po.expiration!.toNumber(),
-        matcherFee: convertNumber(po.matcherFee!.amount!),
-        matcherFeeAssetId: po.matcherFee!.assetId == null ? null : base58Encode(po.matcherFee!.assetId),
-        attachment: po.attachment?.length ? base64Encode(po.attachment) : undefined,
-        // @ts-ignore
-        priceMode: priceMode,
-        eip712Signature: po.eip712Signature?.length ? `0x${base16Encode(po.eip712Signature)}` : undefined,
-    }
-}
+const orderFromProto = (po: wavesProto.waves.IOrder): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => ({
+    version: po.version! as 1 | 2 | 3,
+    senderPublicKey: base58Encode(po.senderPublicKey!),
+    matcherPublicKey: base58Encode(po.matcherPublicKey!),
+    assetPair: {
+        amountAsset: po!.assetPair!.amountAssetId == null ? null : base58Encode(po!.assetPair!.amountAssetId),
+        priceAsset: po!.assetPair!.priceAssetId == null ? null : base58Encode(po!.assetPair!.priceAssetId),
+    },
+    // @ts-ignore
+    chainId: po.chainId,
+    orderType: po.orderSide === wavesProto.waves.Order.Side.BUY ? 'buy' : 'sell',
+    amount: convertNumber(po.amount!),
+    price: convertNumber(po.price!),
+    timestamp: po.timestamp!.toNumber(),
+    expiration: po.expiration!.toNumber(),
+    matcherFee: convertNumber(po.matcherFee!.amount!),
+    matcherFeeAssetId: po.matcherFee!.assetId == null ? null : base58Encode(po.matcherFee!.assetId),
+})
 
 const recipientToProto = (r: string): wavesProto.waves.IRecipient => ({
     alias: r.startsWith('alias') ? r.slice(8) : undefined,
@@ -515,15 +393,15 @@ const massTransferItemToProto = (mti: MassTransferItem): wavesProto.waves.MassTr
     recipient: recipientToProto(mti.recipient),
     amount: mti.amount == 0 ? null : Long.fromValue(mti.amount),
 })
-export const dataEntryToProto = (de: DataTransactionEntry): wavesProto.waves.IDataEntry => ({
+export const dataEntryToProto = (de: DataTransactionEntry): wavesProto.waves.DataTransactionData.IDataEntry => ({
     key: de.key,
     intValue: de.type === 'integer' ? Long.fromValue(de.value) : undefined,
     boolValue: de.type === 'boolean' ? de.value : undefined,
     binaryValue: de.type === 'binary' ? base64Decode((de.value.startsWith('base64:') ? de.value.slice(7) : de.value)) : undefined,
     stringValue: de.type === 'string' ? de.value : undefined,
 })
-export const scriptToProto = (s: string): Uint8Array | null => {
-    return s ? base64Decode(s.toString().startsWith('base64:') ? s.slice(7) : s) : null
+const scriptToProto = (s: string): Uint8Array => {
+    return base64Decode(s.startsWith('base64:') ? s.slice(7) : s)
 }
 
 const nameByType = {
@@ -544,7 +422,6 @@ const nameByType = {
     15: 'setAssetScript' as 'setAssetScript',
     16: 'invokeScript' as 'invokeScript',
     17: 'updateAssetInfo' as 'updateAssetInfo',
-    // 18: 'invokeExpression' as 'invokeExpression',
 }
 const typeByName = {
     'genesis': 1 as 1,
@@ -564,13 +441,5 @@ const typeByName = {
     'setAssetScript': 15 as 15,
     'invokeScript': 16 as 16,
     'updateAssetInfo': 17 as 17,
-    // 'invokeExpression': 18 as 18,
 }
 
-const proof2Uint8Array = (proof: string): Uint8Array => {
-    return base58Decode(proof)
-}
-
-const uint8Array2proof = (proofBytes: Uint8Array): string => {
-    return base58Encode(proofBytes)
-}
