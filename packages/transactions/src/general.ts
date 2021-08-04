@@ -1,4 +1,4 @@
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {address, verifySignature} from '@waves/ts-lib-crypto'
 import request from '@waves/node-api-js/cjs/tools/request'
 import stringify from '@waves/node-api-js/cjs/tools/stringify'
@@ -156,7 +156,7 @@ export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSen
  * @param matcherUrl - matcher address to send order cancel to. E.g. https://matcher.waves.exchange/
  */
 export function cancelSubmittedOrder(co: ICancelOrder, amountAsset: string | null, priceAsset: string | null, matcherUrl: string) {
-    const endpoint = `matcher/orderbook/${amountAsset || 'WAVES'}/${priceAsset || 'WAVES'}/cancel`
+    const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`
     return request({
         base: matcherUrl,
         url: endpoint,

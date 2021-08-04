@@ -14,7 +14,7 @@ import {
 } from '../generic'
 import {validate} from '../validators'
 import {TSeedTypes} from '../types'
-import {binary} from '@waves/marshall'
+import {binary} from '@decentralchain/marshall'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
 import {TRANSACTION_TYPE, TransferTransaction} from '@waves/ts-types'
