@@ -353,7 +353,7 @@ declare namespace WavesKeeper {
         /**
          * MoneyLike - fee
          */
-        fee: TMoney;
+        fee?: TMoney;
         /**
          * sender's public key in base58
          */
