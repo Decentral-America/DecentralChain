@@ -1,6 +1,6 @@
 {
   "name": "@waves/waveskeeper-types",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Interfaces for Waves Keeper",
   "types": "globals.d.ts",
   "main": "",
@@ -10,7 +10,7 @@
   "typeScriptVersion": "2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wavesplatform/waveskeeper-types.git"
+    "url": "https://github.com/wavesplatform/waveskeeper-types.git"
   },
   "keywords": [
     "types",
