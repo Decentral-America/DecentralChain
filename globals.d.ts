@@ -612,11 +612,15 @@ declare namespace WavesKeeper {
         TTransferTxData |
         TReissueTxData |
         TBurnTxData |
+        TLeaseTxData |
+        TLeaseCancelTxData |
         TCreateAliasTxData |
         TMassTransferTxData |
         TDataTxData |
+        TSetScriptTxData |
+        TSponsoredFeeTxData |
+        TSetAssetScriptTxData |
         TScriptInvocationTxData>;
-
     interface INotificationData {
         /**
          * string (20 chars max)
