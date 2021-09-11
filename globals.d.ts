@@ -516,7 +516,7 @@ declare namespace WavesKeeper {
          * script
          * https://docs.wavesplatform.com/en/#section-5e6520b97a7ead921d7fb6bce7292ce0
          */
-        script: string;
+        script: string | null;
     }
 
     type TSetScriptTxData = ISignData<13, ISetScriptTx>;
