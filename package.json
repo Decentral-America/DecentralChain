@@ -1,6 +1,6 @@
 {
   "name": "@waves/waveskeeper-types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Interfaces for Waves Keeper",
   "types": "globals.d.ts",
   "main": "",
@@ -26,6 +26,6 @@
   "dependencies": {},
   "engineStrict": true,
   "engines": {
-    "node": "^14"
+    "node": "^16"
   }
 }
