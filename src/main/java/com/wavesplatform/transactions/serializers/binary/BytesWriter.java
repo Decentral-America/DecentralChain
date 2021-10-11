@@ -115,8 +115,8 @@ public class BytesWriter {
                 write((byte) 1).writeInt(intLength).write(binArg.value().bytes());
             } else if (arg instanceof StringArg) {
                 StringArg strArg = (StringArg) arg;
-                int intLength = strArg.value().length();
-                write((byte) 2).writeInt(intLength).write(strArg.value().getBytes(UTF_8));
+                byte[] valueBytes = strArg.value().getBytes(UTF_8);
+                write((byte) 2).writeInt(valueBytes.length).write(valueBytes);
             } else if (arg instanceof BooleanArg)
                 write((byte)(((BooleanArg) arg).value() ? 6 : 7));
             else if (arg instanceof ListArg)
