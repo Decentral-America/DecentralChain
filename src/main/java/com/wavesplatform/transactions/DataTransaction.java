@@ -48,11 +48,11 @@ public class DataTransaction extends Transaction {
         if (fee.value() > 0)
             return fee;
 
-        DataTransaction tempTx = new DataTransaction(PublicKey.as("11111111111111111111111111111111"), data,
+        DataTransaction tempTx = new DataTransaction(PublicKey.ZERO, data,
                 WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
         int payloadSize = tempTx.version() == 1
                 ? tempTx.bodyBytes().length
-                : tempTx.toProtobuf().getTransaction().getDataTransaction().toByteArray().length;
+                : tempTx.toProtobuf().getWavesTransaction().getDataTransaction().toByteArray().length;
 
         long payloadFee = MIN_FEE * (1 + (payloadSize - 1) / 1024);
         return Amount.of(payloadFee);

@@ -30,6 +30,10 @@ public enum Scheme {
         if (txType == UpdateAssetInfoTransaction.TYPE) {
             if (txVersion >= 1) return Scheme.PROTOBUF;
         }
+        if (txType == EthereumTransaction.TYPE_TAG) {
+            return Scheme.PROTOBUF;
+        }
+
         throw new IllegalArgumentException("Unsupported transaction type " + txType + " with version " + txVersion);
     }
 

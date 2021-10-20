@@ -2,6 +2,7 @@ package com.wavesplatform.transactions;
 
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
+import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.exchange.AssetPair;
 import com.wavesplatform.transactions.exchange.Order;
@@ -48,6 +49,14 @@ public class ExchangeTransaction extends Transaction {
         this.price = price;
         this.buyMatcherFee = buyMatcherFee;
         this.sellMatcherFee = sellMatcherFee;
+    }
+
+    public ExchangeTransaction(Id id, PublicKey sender, Order order1, Order order2, long amount, long price,
+                               long buyMatcherFee, long sellMatcherFee, byte chainId, Amount fee, long timestamp,
+                               int version, List<Proof> proofs) {
+        this(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, chainId,
+                fee, timestamp, version, proofs);
+        this.id = id;
     }
 
     public static ExchangeTransaction fromBytes(byte[] bytes) throws IOException {
