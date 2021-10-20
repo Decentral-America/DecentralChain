@@ -14,13 +14,16 @@ import {
     SignedIExchangeTransactionOrder,
 } from '../src';
 
-export type BaseTransaction<LONG = Long, TYPE extends TransactionType = TransactionType> = {
+export type BaseTransaction<
+    LONG = Long,
+    TYPE extends TransactionType = TransactionType
+> = {
     type: TYPE;
     chainId: number;
     senderPublicKey: string;
     timestamp: number;
     fee: LONG;
-}
+};
 
 export type Transaction<LONG = Long> =
     | GenesisTransaction<LONG>
@@ -39,7 +42,8 @@ export type Transaction<LONG = Long> =
     | ExchangeTransaction<LONG>
     | SetAssetScriptTransaction<LONG>
     | InvokeScriptTransaction<LONG>
-    | UpdateAssetInfoTransaction<LONG>;
+    | UpdateAssetInfoTransaction<LONG>
+    | InvokeExpressionTransaction<LONG>;
 
 export type TransactionMap<LONG = Long> = {
     [TRANSACTION_TYPE.GENESIS]: GenesisTransaction<LONG>;
@@ -59,6 +63,7 @@ export type TransactionMap<LONG = Long> = {
     [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransaction<LONG>;
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
+    [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction<LONG>;
 };
 
 export type TransactionVersionsMap<LONG = Long> = {
@@ -79,22 +84,23 @@ export type TransactionVersionsMap<LONG = Long> = {
     [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransactionMap<LONG>;
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransactionMap<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
+    [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction<LONG>;
 };
 
 type Omit<A extends Record<string, any>, B extends keyof A> = {
-    [Key in Exclude<keyof A, B>]: A[Key]
-}
+    [Key in Exclude<keyof A, B>]: A[Key];
+};
 
 export type GenesisTransactionFields<LONG = Long> = {
     recipient: string;
     amount: LONG;
-}
+};
 
 export type PaymentTransactionFields<LONG = Long> = {
     sender: string;
     recipient: string;
     amount: LONG;
-}
+};
 
 export type IssueTransactionFields<LONG = Long> = {
     name: string;
@@ -103,7 +109,7 @@ export type IssueTransactionFields<LONG = Long> = {
     quantity: LONG;
     reissuable: boolean;
     script: Base64Script | null;
-}
+};
 
 export type TransferTransactionFields<LONG = Long> = {
     recipient: string;
@@ -111,41 +117,41 @@ export type TransferTransactionFields<LONG = Long> = {
     feeAssetId: string | null;
     assetId: string | null;
     attachment: Base58Bytes | null;
-}
+};
 
 export type ReissueTransactionFields<LONG = Long> = {
     assetId: string;
     quantity: LONG;
     reissuable: boolean;
-}
+};
 
 export type BurnTransactionFields<LONG = Long> = {
     assetId: string;
     amount: LONG;
-}
+};
 
 export type LeaseTransactionFields<LONG = Long> = {
     amount: LONG;
     recipient: string;
-}
+};
 
 export type CancelLeaseTransactionFields<LONG = Long> = {
     leaseId: string;
-}
+};
 
 export type AliasTransactionFields<LONG = Long> = {
     alias: string;
-}
+};
 
 export type MassTransferTransactionFields<LONG = Long> = {
     transfers: Array<MassTransferItem<LONG>>;
     assetId: string | null;
     attachment: Base58Bytes | null;
-}
+};
 
 export type DataTransactionFields<LONG = Long> = {
     data: Array<DataTransactionEntry<LONG>>;
-}
+};
 
 export type ExchangeTransactionFields<LONG = Long> = {
     order1: SignedIExchangeTransactionOrder<ExchangeTransactionOrder<LONG>>;
@@ -154,29 +160,28 @@ export type ExchangeTransactionFields<LONG = Long> = {
     amount: LONG;
     buyMatcherFee: LONG;
     sellMatcherFee: LONG;
-}
+};
 
 export type SetScriptTransactionFields<LONG = Long> = {
     script: Base64Script | null;
-}
-
+};
 
 export type SponsorshipTransactionFields<LONG = Long> = {
     assetId: string;
     minSponsoredAssetFee: LONG;
-}
+};
 
 export type SetAssetScriptTransactionFields<LONG = Long> = {
     assetId: string;
     script: Base64Script;
-}
+};
 
 export type InvokeScriptTransactionFields<LONG = Long> = {
     dApp: string;
     call: InvokeScriptCall<LONG> | null;
     feeAssetId: string | null;
     payment: Array<InvokeScriptPayment<LONG>> | null;
-}
+};
 
 export type UpdateAssetInfoTransactionFields<LONG = Long> = {
     assetId: string;
@@ -185,31 +190,53 @@ export type UpdateAssetInfoTransactionFields<LONG = Long> = {
     feeAssetId: string | null;
 };
 
-export interface IUpdateAssetInfoTransaction<LONG = Long> extends BaseTransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO>,
-    UpdateAssetInfoTransactionFields<LONG> {
-}
+export type InvokeExpressionTransactionFields<LONG = Long> = {
+    expression: Base64Script | null;
+    feeAssetId: string | null;
+};
+
+export interface IUpdateAssetInfoTransaction<LONG = Long>
+    extends BaseTransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO>,
+        UpdateAssetInfoTransactionFields<LONG> {}
 
 //--------------------------------------------------------------------------------------------------------------------
 
 //GenesisTransaction
-export type GenesisTransactionV1<LONG> = WithVersion<GenesisTransactionFields<LONG> & Omit<BaseTransaction<LONG, 1>, 'senderPublicKey'>, 1>;
+export type GenesisTransactionV1<LONG> = WithVersion<
+    GenesisTransactionFields<LONG> &
+        Omit<BaseTransaction<LONG, 1>, 'senderPublicKey'>,
+    1
+>;
 export type GenesisTransactionMap<LONG = Long> = {
     1: GenesisTransactionV1<LONG>;
 };
 
 //PaymentTransaction
-export type PaymentTransactionV1<LONG> = WithVersion<PaymentTransactionFields<LONG> & BaseTransaction<LONG, 2>, 1>;
+export type PaymentTransactionV1<LONG> = WithVersion<
+    PaymentTransactionFields<LONG> & BaseTransaction<LONG, 2>,
+    1
+>;
 
 export type PaymentTransactionMap<LONG = Long> = {
     1: PaymentTransactionV1<LONG>;
 };
 
 //IssueTransaction
-export type IssueTransactionV1<LONG = Long> = WithVersion<IssueTransactionFields<LONG> & BaseTransaction<LONG, 3>, 1>;
-export type IssueTransactionV2<LONG = Long> = WithVersion<IssueTransactionFields<LONG> & BaseTransaction<LONG, 3>, 2>;
-export type IssueTransactionV3<LONG = Long> = WithVersion<IssueTransactionFields<LONG> & BaseTransaction<LONG, 3> & {
-    feeAssetId: string | null
-}, 3>;
+export type IssueTransactionV1<LONG = Long> = WithVersion<
+    IssueTransactionFields<LONG> & BaseTransaction<LONG, 3>,
+    1
+>;
+export type IssueTransactionV2<LONG = Long> = WithVersion<
+    IssueTransactionFields<LONG> & BaseTransaction<LONG, 3>,
+    2
+>;
+export type IssueTransactionV3<LONG = Long> = WithVersion<
+    IssueTransactionFields<LONG> &
+        BaseTransaction<LONG, 3> & {
+            feeAssetId: string | null;
+        },
+    3
+>;
 
 export type IssueTransactionMap<LONG = Long> = {
     1: IssueTransactionV1<LONG>;
@@ -218,9 +245,18 @@ export type IssueTransactionMap<LONG = Long> = {
 };
 
 //TransferTransaction
-export type TransferTransactionV1<LONG> = WithVersion<TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>, 1>;
-export type TransferTransactionV2<LONG> = WithVersion<TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>, 2>;
-export type TransferTransactionV3<LONG> = WithVersion<TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>, 3>;
+export type TransferTransactionV1<LONG> = WithVersion<
+    TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>,
+    1
+>;
+export type TransferTransactionV2<LONG> = WithVersion<
+    TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>,
+    2
+>;
+export type TransferTransactionV3<LONG> = WithVersion<
+    TransferTransactionFields<LONG> & BaseTransaction<LONG, 4>,
+    3
+>;
 
 export type TransferTransactionMap<LONG = Long> = {
     1: TransferTransactionV1<LONG>;
@@ -229,9 +265,18 @@ export type TransferTransactionMap<LONG = Long> = {
 };
 
 //ReissueTransaction
-export type ReissueTransactionV1<LONG> = WithVersion<ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>, 1>;
-export type ReissueTransactionV2<LONG> = WithVersion<ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>, 2>;
-export type ReissueTransactionV3<LONG> = WithVersion<ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>, 3>;
+export type ReissueTransactionV1<LONG> = WithVersion<
+    ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>,
+    1
+>;
+export type ReissueTransactionV2<LONG> = WithVersion<
+    ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>,
+    2
+>;
+export type ReissueTransactionV3<LONG> = WithVersion<
+    ReissueTransactionFields<LONG> & BaseTransaction<LONG, 5>,
+    3
+>;
 
 export type ReissueTransactionMap<LONG = Long> = {
     1: ReissueTransactionV1<LONG>;
@@ -240,9 +285,18 @@ export type ReissueTransactionMap<LONG = Long> = {
 };
 
 //BurnTransaction
-export type BurnTransactionV1<LONG> = WithVersion<BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>, 1>;
-export type BurnTransactionV2<LONG> = WithVersion<BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>, 2>;
-export type BurnTransactionV3<LONG> = WithVersion<BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>, 3>;
+export type BurnTransactionV1<LONG> = WithVersion<
+    BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>,
+    1
+>;
+export type BurnTransactionV2<LONG> = WithVersion<
+    BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>,
+    2
+>;
+export type BurnTransactionV3<LONG> = WithVersion<
+    BurnTransactionFields<LONG> & BaseTransaction<LONG, 6>,
+    3
+>;
 
 export type BurnTransactionMap<LONG = Long> = {
     1: BurnTransactionV1<LONG>;
@@ -251,9 +305,18 @@ export type BurnTransactionMap<LONG = Long> = {
 };
 
 //ExchangeTransaction // TODO maybe create map by version for check orders version?
-export type ExchangeTransactionV1<LONG = Long> = WithVersion<ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>, 1>;
-export type ExchangeTransactionV2<LONG = Long> = WithVersion<ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>, 2>;
-export type ExchangeTransactionV3<LONG = Long> = WithVersion<ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>, 3>;
+export type ExchangeTransactionV1<LONG = Long> = WithVersion<
+    ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>,
+    1
+>;
+export type ExchangeTransactionV2<LONG = Long> = WithVersion<
+    ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>,
+    2
+>;
+export type ExchangeTransactionV3<LONG = Long> = WithVersion<
+    ExchangeTransactionFields<LONG> & BaseTransaction<LONG, 7>,
+    3
+>;
 
 export type ExchangeTransactionMap<LONG = Long> = {
     1: ExchangeTransactionV1<LONG>;
@@ -262,9 +325,18 @@ export type ExchangeTransactionMap<LONG = Long> = {
 };
 
 //LeaseTransaction
-export type LeaseTransactionV1<LONG> = WithVersion<LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>, 1>;
-export type LeaseTransactionV2<LONG> = WithVersion<LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>, 2>;
-export type LeaseTransactionV3<LONG> = WithVersion<LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>, 3>;
+export type LeaseTransactionV1<LONG> = WithVersion<
+    LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>,
+    1
+>;
+export type LeaseTransactionV2<LONG> = WithVersion<
+    LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>,
+    2
+>;
+export type LeaseTransactionV3<LONG> = WithVersion<
+    LeaseTransactionFields<LONG> & BaseTransaction<LONG, 8>,
+    3
+>;
 
 export type LeaseTransactionMap<LONG = Long> = {
     1: LeaseTransactionV1<LONG>;
@@ -273,9 +345,18 @@ export type LeaseTransactionMap<LONG = Long> = {
 };
 
 //CancelLeaseTransaction
-export type CancelLeaseTransactionV1<LONG> = WithVersion<CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>, 1>;
-export type CancelLeaseTransactionV2<LONG> = WithVersion<CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>, 2>;
-export type CancelLeaseTransactionV3<LONG> = WithVersion<CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>, 3>;
+export type CancelLeaseTransactionV1<LONG> = WithVersion<
+    CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>,
+    1
+>;
+export type CancelLeaseTransactionV2<LONG> = WithVersion<
+    CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>,
+    2
+>;
+export type CancelLeaseTransactionV3<LONG> = WithVersion<
+    CancelLeaseTransactionFields<LONG> & BaseTransaction<LONG, 9>,
+    3
+>;
 
 export type CancelLeaseTransactionMap<LONG = Long> = {
     1: LeaseTransactionV1<LONG>;
@@ -284,9 +365,18 @@ export type CancelLeaseTransactionMap<LONG = Long> = {
 };
 
 //AliasTransaction
-export type AliasTransactionV1<LONG> = WithVersion<AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>, 1>;
-export type AliasTransactionV2<LONG> = WithVersion<AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>, 2>;
-export type AliasTransactionV3<LONG> = WithVersion<AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>, 3>;
+export type AliasTransactionV1<LONG> = WithVersion<
+    AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>,
+    1
+>;
+export type AliasTransactionV2<LONG> = WithVersion<
+    AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>,
+    2
+>;
+export type AliasTransactionV3<LONG> = WithVersion<
+    AliasTransactionFields<LONG> & BaseTransaction<LONG, 10>,
+    3
+>;
 
 export type AliasTransactionMap<LONG = Long> = {
     1: AliasTransactionV1<LONG>;
@@ -295,8 +385,14 @@ export type AliasTransactionMap<LONG = Long> = {
 };
 
 //MassTransferTransaction
-export type MassTransferTransactionV1<LONG> = WithVersion<MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>, 1>;
-export type MassTransferTransactionV2<LONG> = WithVersion<MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>, 2>;
+export type MassTransferTransactionV1<LONG> = WithVersion<
+    MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>,
+    1
+>;
+export type MassTransferTransactionV2<LONG> = WithVersion<
+    MassTransferTransactionFields<LONG> & BaseTransaction<LONG, 11>,
+    2
+>;
 
 export type MassTransferTransactionMap<LONG = Long> = {
     1: MassTransferTransactionV1<LONG>;
@@ -304,8 +400,14 @@ export type MassTransferTransactionMap<LONG = Long> = {
 };
 
 //DataTransaction
-export type DataTransactionV1<LONG> = WithVersion<DataTransactionFields<LONG> & BaseTransaction<LONG, 12>, 1>;
-export type DataTransactionV2<LONG> = WithVersion<DataTransactionFields<LONG> & BaseTransaction<LONG, 12>, 2>;
+export type DataTransactionV1<LONG> = WithVersion<
+    DataTransactionFields<LONG> & BaseTransaction<LONG, 12>,
+    1
+>;
+export type DataTransactionV2<LONG> = WithVersion<
+    DataTransactionFields<LONG> & BaseTransaction<LONG, 12>,
+    2
+>;
 
 export type DataTransactionMap<LONG = Long> = {
     1: DataTransactionV1<LONG>;
@@ -313,8 +415,14 @@ export type DataTransactionMap<LONG = Long> = {
 };
 
 //SetScriptTransaction
-export type SetScriptTransactionV1<LONG> = WithVersion<SetScriptTransactionFields<LONG> & BaseTransaction<LONG, 13>, 1>;
-export type SetScriptTransactionV2<LONG> = WithVersion<SetScriptTransactionFields<LONG> & BaseTransaction<LONG, 13>, 2>;
+export type SetScriptTransactionV1<LONG> = WithVersion<
+    SetScriptTransactionFields<LONG> & BaseTransaction<LONG, 13>,
+    1
+>;
+export type SetScriptTransactionV2<LONG> = WithVersion<
+    SetScriptTransactionFields<LONG> & BaseTransaction<LONG, 13>,
+    2
+>;
 
 export type SetScriptTransactionMap<LONG = Long> = {
     1: SetScriptTransactionV1<LONG>;
@@ -322,8 +430,14 @@ export type SetScriptTransactionMap<LONG = Long> = {
 };
 
 //ISponsorshipTransaction
-export type SponsorshipTransactionV1<LONG> = WithVersion<SponsorshipTransactionFields<LONG> & BaseTransaction<LONG, 14>, 1>;
-export type SponsorshipTransactionV2<LONG> = WithVersion<SponsorshipTransactionFields<LONG> & BaseTransaction<LONG, 14>, 2>;
+export type SponsorshipTransactionV1<LONG> = WithVersion<
+    SponsorshipTransactionFields<LONG> & BaseTransaction<LONG, 14>,
+    1
+>;
+export type SponsorshipTransactionV2<LONG> = WithVersion<
+    SponsorshipTransactionFields<LONG> & BaseTransaction<LONG, 14>,
+    2
+>;
 
 export type SponsorshipTransactionMap<LONG = Long> = {
     1: SponsorshipTransactionV1<LONG>;
@@ -331,8 +445,14 @@ export type SponsorshipTransactionMap<LONG = Long> = {
 };
 
 //SetAssetScriptTransaction
-export type SetAssetScriptTransactionV1<LONG> = WithVersion<SetAssetScriptTransactionFields<LONG> & BaseTransaction<LONG, 15>, 1>;
-export type SetAssetScriptTransactionV2<LONG> = WithVersion<SetAssetScriptTransactionFields<LONG> & BaseTransaction<LONG, 15>, 2>;
+export type SetAssetScriptTransactionV1<LONG> = WithVersion<
+    SetAssetScriptTransactionFields<LONG> & BaseTransaction<LONG, 15>,
+    1
+>;
+export type SetAssetScriptTransactionV2<LONG> = WithVersion<
+    SetAssetScriptTransactionFields<LONG> & BaseTransaction<LONG, 15>,
+    2
+>;
 
 export type SetAssetScriptTransactionMap<LONG = Long> = {
     1: SetAssetScriptTransactionV1<LONG>;
@@ -340,8 +460,14 @@ export type SetAssetScriptTransactionMap<LONG = Long> = {
 };
 
 //IInvokeScriptTransaction
-export type InvokeScriptTransactionV1<LONG> = WithVersion<InvokeScriptTransactionFields<LONG> & BaseTransaction<LONG, 16>, 1>;
-export type InvokeScriptTransactionV2<LONG> = WithVersion<InvokeScriptTransactionFields<LONG> & BaseTransaction<LONG, 16>, 2>;
+export type InvokeScriptTransactionV1<LONG> = WithVersion<
+    InvokeScriptTransactionFields<LONG> & BaseTransaction<LONG, 16>,
+    1
+>;
+export type InvokeScriptTransactionV2<LONG> = WithVersion<
+    InvokeScriptTransactionFields<LONG> & BaseTransaction<LONG, 16>,
+    2
+>;
 
 export type InvokeScriptTransactionMap<LONG = Long> = {
     1: InvokeScriptTransactionV1<LONG>;
@@ -349,12 +475,20 @@ export type InvokeScriptTransactionMap<LONG = Long> = {
 };
 
 //UpdateAssetInfoTransaction
-export type UpdateAssetInfoTransactionV1<LONG> = WithVersion<UpdateAssetInfoTransactionFields<LONG> & BaseTransaction<LONG, 17>, 1>;
+export type UpdateAssetInfoTransactionV1<LONG> = WithVersion<
+    UpdateAssetInfoTransactionFields<LONG> & BaseTransaction<LONG, 17>,
+    1
+>;
 
 export type UpdateAssetInfoTransactionMap<LONG = Long> = {
     1: UpdateAssetInfoTransactionV1<LONG>;
 };
 
+//InvokeExpressionTransaction
+export type InvokeExpressionTransactionV1<LONG> = WithVersion<
+    InvokeExpressionTransactionFields<LONG> & BaseTransaction<LONG, 18>,
+    1
+>;
 
 //------------------------------------------------------------------------------------------
 //Transaction types
@@ -426,7 +560,13 @@ export type InvokeScriptTransaction<LONG = Long> =
     | InvokeScriptTransactionV1<LONG>
     | InvokeScriptTransactionV2<LONG>;
 
-export type UpdateAssetInfoTransaction<LONG = Long> = UpdateAssetInfoTransactionV1<LONG>;
+export type UpdateAssetInfoTransaction<
+    LONG = Long
+> = UpdateAssetInfoTransactionV1<LONG>;
+
+export type InvokeExpressionTransaction<
+    LONG = Long
+> = InvokeExpressionTransactionV1<LONG>;
 
 //
 type TWithSignatureMap = {
@@ -444,15 +584,15 @@ type TWithSignatureMap = {
 
 type WithSignature = {
     signature: string;
-}
+};
 
 type WithProofs = {
     proofs: Array<string>;
-}
+};
 
 export type SignedTransaction<TX extends Transaction<any>> = TX &
     (TX['type'] extends keyof TWithSignatureMap
         ? TX['version'] extends TWithSignatureMap[TX['type']]
             ? WithSignature
             : WithProofs
-        : WithProofs)
+        : WithProofs);

@@ -1,6 +1,6 @@
 {
   "name": "@waves/ts-types",
-  "version": "1.0.4",
+  "version": "1.0.6-beta.4",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
