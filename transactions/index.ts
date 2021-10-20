@@ -1,17 +1,18 @@
 import {
-    InvokeScriptCall,
-    InvokeScriptPayment,
-    MassTransferItem,
+    AssetDecimals,
+    Base58Bytes,
+    Base64Script,
     DataTransactionEntry,
     ExchangeTransactionOrder,
+    InvokeScriptCall,
+    InvokeScriptPayment,
+    Long,
+    MassTransferItem,
+    SignedIExchangeTransactionOrder,
     TRANSACTION_TYPE,
     TransactionType,
-    Long,
-    AssetDecimals,
-    Base64Script,
-    Base58Bytes,
+    TStateChanges,
     WithVersion,
-    SignedIExchangeTransactionOrder,
 } from '../src';
 
 export type BaseTransaction<
@@ -43,6 +44,7 @@ export type Transaction<LONG = Long> =
     | SetAssetScriptTransaction<LONG>
     | InvokeScriptTransaction<LONG>
     | UpdateAssetInfoTransaction<LONG>
+    | EthereumTransaction<LONG>
     | InvokeExpressionTransaction<LONG>;
 
 export type TransactionMap<LONG = Long> = {
@@ -64,6 +66,7 @@ export type TransactionMap<LONG = Long> = {
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
     [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction<LONG>;
+    [TRANSACTION_TYPE.ETHEREUM]: EthereumTransaction<LONG>;
 };
 
 export type TransactionVersionsMap<LONG = Long> = {
@@ -85,6 +88,7 @@ export type TransactionVersionsMap<LONG = Long> = {
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransactionMap<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
     [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction<LONG>;
+    [TRANSACTION_TYPE.ETHEREUM]: EthereumTransactionMap<LONG>;
 };
 
 type Omit<A extends Record<string, any>, B extends keyof A> = {
@@ -199,6 +203,18 @@ export interface IUpdateAssetInfoTransaction<LONG = Long>
     extends BaseTransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO>,
         UpdateAssetInfoTransactionFields<LONG> {}
 
+export type EthereumTransactionFields<LONG = Long> = {
+    payload:
+        | ({
+              type: 'invocation';
+              stateChanges: TStateChanges;
+          } & InvokeScriptTransactionFields)
+        | ({ type: 'transfer' } & Omit<
+              TransferTransactionFields,
+              'attachment'
+          >);
+    bytes: string;
+};
 //--------------------------------------------------------------------------------------------------------------------
 
 //GenesisTransaction
@@ -484,6 +500,16 @@ export type UpdateAssetInfoTransactionMap<LONG = Long> = {
     1: UpdateAssetInfoTransactionV1<LONG>;
 };
 
+//EthereumTransaction
+export type EthereumTransactionV1<LONG> = WithVersion<
+    EthereumTransactionFields<LONG> & BaseTransaction<LONG, 19>,
+    1
+>;
+
+export type EthereumTransactionMap<LONG = Long> = {
+    1: EthereumTransactionV1<LONG>;
+};
+
 //InvokeExpressionTransaction
 export type InvokeExpressionTransactionV1<LONG> = WithVersion<
     InvokeExpressionTransactionFields<LONG> & BaseTransaction<LONG, 18>,
@@ -563,6 +589,8 @@ export type InvokeScriptTransaction<LONG = Long> =
 export type UpdateAssetInfoTransaction<
     LONG = Long
 > = UpdateAssetInfoTransactionV1<LONG>;
+
+export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG>;
 
 export type InvokeExpressionTransaction<
     LONG = Long
