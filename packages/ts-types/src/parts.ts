@@ -182,3 +182,54 @@ export type DataTransactionDeleteRequest = {
     value: undefined;
     key: string;
 };
+
+export type TStateChanges = {
+    data: DataTransactionEntry[];
+    transfers: {
+        address: string;
+        amount: Long;
+        asset: string | null;
+    }[];
+    issues: {
+        assetId: string;
+        name: string;
+        description: string;
+        quantity: Long;
+        decimals: AssetDecimals;
+        isReissuable: boolean;
+        compiledScript: null | string;
+        nonce: Long;
+    }[];
+    reissues: {
+        assetId: string;
+        isReissuable: boolean;
+        quantity: Long;
+    }[];
+    burns: {
+        assetId: string;
+        quantity: Long;
+    }[];
+    sponsorFees: {
+        assetId: string;
+        minSponsoredAssetFee: Long;
+    }[];
+    leases: {
+        leaseId: string;
+        recipient: string;
+        amount: Long;
+    }[];
+    leaseCancels: { leaseId: string }[];
+    invokes: {
+        dApp: string;
+        call: {
+            function: string;
+            args: { type: string; value: string }[];
+        };
+        payment: InvokeScriptPayment[];
+        stateChanges: TStateChanges;
+    }[];
+    error?: {
+        code: number;
+        text: string;
+    };
+};
