@@ -34,14 +34,14 @@ function clean() {
 function buildOfficialProd(done) {
     buildApp({
         network: 'mainnet',
-        decompileUrl: 'https://nodes.wavesnodes.com/utils/script/decompile'
+        decompileUrl: 'https://mainnet-node.decentralchain.io/utils/script/decompile'
     }, 'prod', done);
 }
 
 function buildOfficialTestnet(done) {
     buildApp({
         network: 'testnet',
-        decompileUrl: 'https://testnode1.wavesnodes.com/utils/script/decompile'
+        decompileUrl: 'https://testnet-node.decentralchain.io/utils/script/decompile'
     }, 'prod', done);
 }
 
