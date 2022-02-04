@@ -20,7 +20,7 @@ import { ensureNetwork } from './decorators';
 import { calculateFee } from './utils';
 import { TRANSACTION_TYPE } from '@waves/ts-types';
 
-export class ProviderKeeper implements Provider {
+export class ProviderCubensis implements Provider {
   public user: UserData | null = null;
   private readonly _authData: CubensisConnect.IAuthData;
   private _api!: CubensisConnect.TCubensisConnectApi;

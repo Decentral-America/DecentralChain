@@ -1,22 +1,22 @@
-# ProviderKeeper
+# ProviderCubensis
 
 [![npm](https://img.shields.io/npm/v/@decentralchain/provider-cubensis?color=blue&label=%40waves%2Fprovider-keeper&logo=npm)](https://www.npmjs.com/package/@decentralchain/provider-cubensis)
 
-ProviderKeeper implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
+ProviderCubensis implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
 
 ## How to use
 
-Check out [the readme of the main package](provider) on how to install and use ProviderKeeper.
+Check out [the readme of the main package](provider) on how to install and use ProviderCubensis.
 
 ## Workspaces
 
 - [provider](provider) - the main package package of this library
 
-- [test-app](test-app) - simple web app using ProviderKeeper for e2e tests
+- [test-app](test-app) - simple web app using ProviderCubensis for e2e tests
 
 ## How to build
 
-To build ProviderKeeper from the repository root you have to install `npm@>=7` and run
+To build ProviderCubensis from the repository root you have to install `npm@>=7` and run
 
 ```
 npm ci
