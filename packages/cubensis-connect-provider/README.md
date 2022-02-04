@@ -1,8 +1,8 @@
 # ProviderCubensis
 
-[![npm](https://img.shields.io/npm/v/@decentralchain/provider-cubensis?color=blue&label=%40waves%2Fprovider-keeper&logo=npm)](https://www.npmjs.com/package/@decentralchain/provider-cubensis)
+[![npm](https://img.shields.io/npm/v/@decentralchain/provider-cubensis?color=blue&label=%40decentralchain%2Fprovider-cubensis&logo=npm)](https://www.npmjs.com/package/@decentralchain/provider-cubensis)
 
-ProviderCubensis implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
+ProviderCubensis implements a Signature Provider for DCC [Signer](https://github.com/Decentral-America/signer) protocol library.
 
 ## How to use
 
