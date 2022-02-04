@@ -111,7 +111,7 @@ describe('WSeed adapter test', () => {
     
     it('signCustomData - string', async () => {
         const seed = '1234567890123456789123456789';
-        const adapter = new SeedAdapter(seed, 'W');
+        const adapter = new SeedAdapter(seed, '?');
         const data = await adapter.signCustomData('test');
         const pk = await adapter.getPublicKey();
         const binary = serializeCustomData(
@@ -122,7 +122,7 @@ describe('WSeed adapter test', () => {
     
     it('sign Api Token Data - string', async () => {
         const seed = '1234567890123456789123456789';
-        const adapter = new SeedAdapter(seed, 'W');
+        const adapter = new SeedAdapter(seed, '?');
         const { clientId, publicKey, seconds, signature, networkByte } = await adapter.signApiTokenData('testClient', Date.now() + 10000);
         
         const str = `${networkByte}:${clientId}:${seconds}`;
