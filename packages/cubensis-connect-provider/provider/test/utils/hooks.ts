@@ -27,12 +27,12 @@ interface GlobalFixturesContext {
 
 export async function mochaGlobalSetup(this: GlobalFixturesContext) {
   const rootDir = path.resolve(__dirname, '..', '..', '..');
-  const wavesKeeperDir = path.resolve(rootDir, 'dist');
+  const CubensisConnectDir = path.resolve(rootDir, 'dist');
   const testAppDir = path.resolve(rootDir, 'test-app', 'dist');
 
   if (
-    !fs.existsSync(wavesKeeperDir) ||
-    fs.readdirSync(wavesKeeperDir).length === 0
+    !fs.existsSync(CubensisConnectDir) ||
+    fs.readdirSync(CubensisConnectDir).length === 0
   ) {
     throw new Error(
       `
@@ -58,7 +58,7 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
 
   const seleniumPorts = [4444, 5900];
   this.selenium = await new GenericContainer('selenium/standalone-chrome')
-    .withBindMount(path.resolve(wavesKeeperDir), '/app/waves_keeper', 'ro')
+    .withBindMount(path.resolve(CubensisConnectDir), '/app/waves_keeper', 'ro')
     .withExposedPorts(...seleniumPorts)
     .start();
 

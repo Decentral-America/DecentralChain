@@ -1,6 +1,5 @@
 {
   "name": "provider-cubensis",
-  "private": true,
   "version": "0.0.1",
   "scripts": {
     "provider:test": "npm run test -workspace=provider",
