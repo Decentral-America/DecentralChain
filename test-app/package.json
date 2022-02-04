@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@decentralchain/signer": "^1.0.3",
+    "@decentralchain/signer": "^1.0.8",
     "@decentralchain/cubensisconnect-types": "^0.2.1"
   },
   "devDependencies": {
