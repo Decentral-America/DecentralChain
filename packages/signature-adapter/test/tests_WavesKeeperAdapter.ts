@@ -1,4 +1,4 @@
-import { WavesKeeperAdapter } from '../src/adapters/WavesKeeperAdapter';
+import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
 import { Asset, Money } from '@waves/data-entities';
 import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 import { BigNumber } from '@waves/bignumber';
@@ -72,15 +72,15 @@ const keeperMock = {
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
-WavesKeeperAdapter.initOptions({ networkCode: 'W'.charCodeAt(0), extension: keeperMock });
+CubensisConnectAdapter.initOptions({ networkCode: '?'.charCodeAt(0), extension: keeperMock });
 
 
-describe('WavesKeeper adapter test', () => {
+describe('CubensisConnect adapter test', () => {
 
     it('Test connect to extension', async () => {
         try {
-            const users = await WavesKeeperAdapter.getUserList();
-            const adapter = new WavesKeeperAdapter(users[0]);
+            const users = await CubensisConnectAdapter.getUserList();
+            const adapter = new CubensisConnectAdapter(users[0]);
             await adapter.isAvailable();
         } catch (e) {
             console.error(e);
@@ -90,11 +90,11 @@ describe('WavesKeeper adapter test', () => {
 
     it('Test connect to extension by cb', async () => {
         let mock: any = null;
-        WavesKeeperAdapter.setApiExtension(() => mock);
+        CubensisConnectAdapter.setApiExtension(() => mock);
 
         try {
-            const users = await WavesKeeperAdapter.getUserList();
-            const adapter = new WavesKeeperAdapter(users[0]);
+            const users = await CubensisConnectAdapter.getUserList();
+            const adapter = new CubensisConnectAdapter(users[0]);
             await adapter.isAvailable();
             expect('Fail init Adapter').toBe('Done');
         } catch (e) {
@@ -102,8 +102,8 @@ describe('WavesKeeper adapter test', () => {
         }
 
         try {
-            const users = await WavesKeeperAdapter.getUserList();
-            const adapter = new WavesKeeperAdapter(users[0]);
+            const users = await CubensisConnectAdapter.getUserList();
+            const adapter = new CubensisConnectAdapter(users[0]);
             await adapter.isAvailable();
 
         } catch (e) {
@@ -124,9 +124,9 @@ describe('WavesKeeper adapter test', () => {
         };
 
         try {
-            WavesKeeperAdapter.setApiExtension(keeperMock);
-            const users = await WavesKeeperAdapter.getUserList();
-            const adapter = new WavesKeeperAdapter(users[0]);
+            CubensisConnectAdapter.setApiExtension(keeperMock);
+            const users = await CubensisConnectAdapter.getUserList();
+            const adapter = new CubensisConnectAdapter(users[0]);
             const signable = adapter.makeSignable(data as any);
             const result = await signable.getDataForApi() as any;
             expect(result.proofs[0]).toBe('realProof');
@@ -148,9 +148,9 @@ describe('WavesKeeper adapter test', () => {
         };
 
         try {
-            WavesKeeperAdapter.setApiExtension(keeperMock);
-            const users = await WavesKeeperAdapter.getUserList();
-            const adapter = new WavesKeeperAdapter(users[0]);
+            CubensisConnectAdapter.setApiExtension(keeperMock);
+            const users = await CubensisConnectAdapter.getUserList();
+            const adapter = new CubensisConnectAdapter(users[0]);
             const signable = adapter.makeSignable(data as any);
             const result = await signable.getDataForApi() as any;
             expect(result.proofs[0]).toBe('realProof');
