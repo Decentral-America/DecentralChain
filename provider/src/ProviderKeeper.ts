@@ -22,11 +22,11 @@ import { TRANSACTION_TYPE } from '@waves/ts-types';
 
 export class ProviderKeeper implements Provider {
   public user: UserData | null = null;
-  private readonly _authData: WavesKeeper.IAuthData;
-  private _api!: WavesKeeper.TWavesKeeperApi;
+  private readonly _authData: CubensisConnect.IAuthData;
+  private _api!: CubensisConnect.TCubensisConnectApi;
   private _options: ConnectOptions = {
-    NETWORK_BYTE: 'W'.charCodeAt(0),
-    NODE_URL: 'https://nodes.wavesnodes.com',
+    NETWORK_BYTE: '?'.charCodeAt(0),
+    NODE_URL: 'https://mainnet-node.decentralchain.io',
   };
   private readonly _emitter: EventEmitter<AuthEvents> =
     new EventEmitter<AuthEvents>();
@@ -68,11 +68,11 @@ export class ProviderKeeper implements Provider {
 
     const poll = (resolve, reject, attempt = 0) => {
       if (attempt > this._maxRetries) {
-        return reject(new Error('WavesKeeper is not installed.'));
+        return reject(new Error('CubensisConnect is not installed.'));
       }
 
-      if (!!window.WavesKeeper) {
-        return window.WavesKeeper.initialPromise.then(api =>
+      if (!!window.CubensisConnect) {
+        return window.CubensisConnect.initialPromise.then(api =>
           resolve((this._api = api))
         );
       } else setTimeout(() => poll(resolve, reject, ++attempt), 100);
@@ -111,7 +111,7 @@ export class ProviderKeeper implements Provider {
     return this._api
       .signCustomData({
         version: 2,
-        data: data as WavesKeeper.TTypedData[],
+        data: data as CubensisConnect.TTypedData[],
       })
       .then(data => data.signature);
   }
@@ -135,7 +135,7 @@ export class ProviderKeeper implements Provider {
       .signTransactionPackage(
         toSignWithFee.map(tx =>
           keeperTxFactory(tx)
-        ) as WavesKeeper.TSignTransactionPackageData
+        ) as CubensisConnect.TSignTransactionPackageData
       )
       .then(data => data.map(tx => signerTxFactory(tx))) as Promise<
       SignedTx<T>
