@@ -1,19 +1,19 @@
 import { SeedAdapter } from './adapters/SeedAdapter';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
-import { CustomAdapter, WavesKeeperAdapter } from './adapters';
+import { CustomAdapter, CubensisConnectAdapter } from './adapters';
 import {PrivateKeyAdapter} from "./adapters/PrivateKeyAdapter";
 
 export const enum AdapterType {
     Seed = 'seed',
     PrivateKey = 'privateKey',
-    WavesKeeper = 'wavesKeeper',
+    CubensisConnect = 'cubensisConnect',
     Ledger = 'ledger',
     Tresor = 'tresor',
     Custom = 'custom'
 }
 
 export const adapterPriorityList = [
-    AdapterType.WavesKeeper,
+    AdapterType.CubensisConnect,
     AdapterType.Ledger,
     AdapterType.Tresor,
     AdapterType.Seed,
@@ -24,7 +24,7 @@ export const adapterPriorityList = [
 export const adapterList = [
     SeedAdapter,
     LedgerAdapter,
-    WavesKeeperAdapter,
+    CubensisConnectAdapter,
     PrivateKeyAdapter,
     CustomAdapter
 ];

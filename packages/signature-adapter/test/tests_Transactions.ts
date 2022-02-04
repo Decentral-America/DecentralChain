@@ -7,7 +7,7 @@ const testSeed = 'some test seed words without money on mainnet';
 describe('Test invoke', () => {
 
     const tx = {
-        network: 'T',
+        network: '!',
         name: 'script invocation',
         data: {
             'senderPublicKey': 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
