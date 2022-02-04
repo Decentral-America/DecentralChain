@@ -10,7 +10,7 @@ export function ensureNetwork(
 
   descriptor.value = function (
     this: { [Key in keyof ProviderKeeper]: ProviderKeeper[Key] } & {
-      _api: WavesKeeper.TWavesKeeperApi;
+      _api: CubensisConnect.TCubensisConnectApi;
       _options: ConnectOptions;
     },
     ...args: Array<any>

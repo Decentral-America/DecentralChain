@@ -29,14 +29,14 @@ function addressFactory(address: string): string {
 function moneyFactory(
   amount: number | string,
   assetId: string | null = 'DCC'
-): WavesKeeper.IMoneyCoins {
+): CubensisConnect.IMoneyCoins {
   return {
     coins: amount,
     assetId: assetId ?? 'DCC',
   };
 }
 
-function defaultsFactory(tx: SignerTx): WavesKeeper.ITransactionBase {
+function defaultsFactory(tx: SignerTx): CubensisConnect.ITransactionBase {
   const { fee } = tx;
   let feeAssetId;
 
@@ -52,9 +52,9 @@ function defaultsFactory(tx: SignerTx): WavesKeeper.ITransactionBase {
   };
 }
 
-function issueAdapter(tx: SignerIssueTx): WavesKeeper.TIssueTxData {
+function issueAdapter(tx: SignerIssueTx): CubensisConnect.TIssueTxData {
   const { name, description, quantity, decimals, reissuable, script } = tx;
-  const data: WavesKeeper.IIssueTx = {
+  const data: CubensisConnect.IIssueTx = {
     ...defaultsFactory(tx),
     name,
     description: description ?? '',
@@ -66,9 +66,9 @@ function issueAdapter(tx: SignerIssueTx): WavesKeeper.TIssueTxData {
   return { type: TRANSACTION_TYPE.ISSUE, data };
 }
 
-function transferAdapter(tx: SignerTransferTx): WavesKeeper.TTransferTxData {
+function transferAdapter(tx: SignerTransferTx): CubensisConnect.TTransferTxData {
   const { amount, assetId, fee, feeAssetId, recipient, attachment } = tx;
-  const data: WavesKeeper.ITransferTx = {
+  const data: CubensisConnect.ITransferTx = {
     ...defaultsFactory(tx),
     amount: moneyFactory(amount, assetId),
     recipient: addressFactory(recipient),
@@ -78,9 +78,9 @@ function transferAdapter(tx: SignerTransferTx): WavesKeeper.TTransferTxData {
   return { type: TRANSACTION_TYPE.TRANSFER, data };
 }
 
-function reissueAdapter(tx: SignerReissueTx): WavesKeeper.TReissueTxData {
+function reissueAdapter(tx: SignerReissueTx): CubensisConnect.TReissueTxData {
   const { assetId, quantity, reissuable } = tx;
-  const data: WavesKeeper.IReissueTx = {
+  const data: CubensisConnect.IReissueTx = {
     ...defaultsFactory(tx),
     assetId,
     quantity,
@@ -89,9 +89,9 @@ function reissueAdapter(tx: SignerReissueTx): WavesKeeper.TReissueTxData {
   return { type: TRANSACTION_TYPE.REISSUE, data };
 }
 
-function burnAdapter(tx: SignerBurnTx): WavesKeeper.TBurnTxData {
+function burnAdapter(tx: SignerBurnTx): CubensisConnect.TBurnTxData {
   const { assetId, amount } = tx;
-  const data: WavesKeeper.IBurnTx = {
+  const data: CubensisConnect.IBurnTx = {
     ...defaultsFactory(tx),
     assetId,
     amount,
@@ -99,9 +99,9 @@ function burnAdapter(tx: SignerBurnTx): WavesKeeper.TBurnTxData {
   return { type: TRANSACTION_TYPE.BURN, data };
 }
 
-function leaseAdapter(tx: SignerLeaseTx): WavesKeeper.TLeaseTxData {
+function leaseAdapter(tx: SignerLeaseTx): CubensisConnect.TLeaseTxData {
   const { recipient, amount } = tx;
-  const data: WavesKeeper.ILeaseTx = {
+  const data: CubensisConnect.ILeaseTx = {
     ...defaultsFactory(tx),
     recipient: addressFactory(recipient),
     amount,
@@ -111,18 +111,18 @@ function leaseAdapter(tx: SignerLeaseTx): WavesKeeper.TLeaseTxData {
 
 function leaseCancelAdapter(
   tx: SignerCancelLeaseTx
-): WavesKeeper.TLeaseCancelTxData {
+): CubensisConnect.TLeaseCancelTxData {
   const { leaseId } = tx;
-  const data: WavesKeeper.ILeaseCancelTx = {
+  const data: CubensisConnect.ILeaseCancelTx = {
     ...defaultsFactory(tx),
     leaseId,
   };
   return { type: TRANSACTION_TYPE.CANCEL_LEASE, data };
 }
 
-function aliasAdapter(tx: SignerAliasTx): WavesKeeper.TCreateAliasTxData {
+function aliasAdapter(tx: SignerAliasTx): CubensisConnect.TCreateAliasTxData {
   const { alias } = tx;
-  const data: WavesKeeper.ICreateAliasTx = {
+  const data: CubensisConnect.ICreateAliasTx = {
     ...defaultsFactory(tx),
     alias,
   };
@@ -131,9 +131,9 @@ function aliasAdapter(tx: SignerAliasTx): WavesKeeper.TCreateAliasTxData {
 
 function massTransferAdapter(
   tx: SignerMassTransferTx
-): WavesKeeper.TMassTransferTxData {
+): CubensisConnect.TMassTransferTxData {
   const { assetId, transfers, attachment } = tx;
-  const data: WavesKeeper.IMassTransferTx = {
+  const data: CubensisConnect.IMassTransferTx = {
     ...defaultsFactory(tx),
     totalAmount: moneyFactory(0, assetId),
     transfers: transfers.map(transfer => ({
@@ -145,18 +145,18 @@ function massTransferAdapter(
   return { type: TRANSACTION_TYPE.MASS_TRANSFER, data };
 }
 
-function dataAdapter(tx: SignerDataTx): WavesKeeper.TDataTxData {
+function dataAdapter(tx: SignerDataTx): CubensisConnect.TDataTxData {
   const { data } = tx;
-  const dataTx: WavesKeeper.IDataTx = {
+  const dataTx: CubensisConnect.IDataTx = {
     ...defaultsFactory(tx),
-    data: data as Array<WavesKeeper.TData>,
+    data: data as Array<CubensisConnect.TData>,
   };
   return { type: TRANSACTION_TYPE.DATA, data: dataTx };
 }
 
-function setScriptAdapter(tx: SignerSetScriptTx): WavesKeeper.TSetScriptTxData {
+function setScriptAdapter(tx: SignerSetScriptTx): CubensisConnect.TSetScriptTxData {
   const { script } = tx;
-  const data: WavesKeeper.ISetScriptTx = {
+  const data: CubensisConnect.ISetScriptTx = {
     ...defaultsFactory(tx),
     script,
   };
@@ -165,9 +165,9 @@ function setScriptAdapter(tx: SignerSetScriptTx): WavesKeeper.TSetScriptTxData {
 
 function sponsorshipAdapter(
   tx: SignerSponsorshipTx
-): WavesKeeper.TSponsoredFeeTxData {
+): CubensisConnect.TSponsoredFeeTxData {
   const { assetId, minSponsoredAssetFee } = tx;
-  const data: WavesKeeper.ISponsoredFeeTx = {
+  const data: CubensisConnect.ISponsoredFeeTx = {
     ...defaultsFactory(tx),
     minSponsoredAssetFee: moneyFactory(minSponsoredAssetFee, assetId),
   };
@@ -176,9 +176,9 @@ function sponsorshipAdapter(
 
 function setAssetScriptAdapter(
   tx: SignerSetAssetScriptTx
-): WavesKeeper.TSetAssetScriptTxData {
+): CubensisConnect.TSetAssetScriptTxData {
   const { assetId, script } = tx;
-  const data: WavesKeeper.ISetAssetScriptTx = {
+  const data: CubensisConnect.ISetAssetScriptTx = {
     ...defaultsFactory(tx),
     assetId,
     script,
@@ -188,50 +188,50 @@ function setAssetScriptAdapter(
 
 function invokeScriptAdapter(
   tx: SignerInvokeTx
-): WavesKeeper.TScriptInvocationTxData {
+): CubensisConnect.TScriptInvocationTxData {
   const { dApp, fee, feeAssetId, payment, call } = tx;
-  const data: WavesKeeper.IScriptInvocationTx = {
+  const data: CubensisConnect.IScriptInvocationTx = {
     ...defaultsFactory(tx),
     dApp: addressFactory(dApp),
-    payment: (payment ?? []) as Array<WavesKeeper.TMoney>,
-    ...(call ? { call: call as WavesKeeper.ICall } : {}),
+    payment: (payment ?? []) as Array<CubensisConnect.TMoney>,
+    ...(call ? { call: call as CubensisConnect.ICall } : {}),
     ...(fee ? { fee: moneyFactory(fee, feeAssetId) } : {}),
   };
   return { type: TRANSACTION_TYPE.INVOKE_SCRIPT, data };
 }
 
-export function keeperTxFactory(tx: SignerIssueTx): WavesKeeper.TIssueTxData;
+export function keeperTxFactory(tx: SignerIssueTx): CubensisConnect.TIssueTxData;
 export function keeperTxFactory(
   tx: SignerTransferTx
-): WavesKeeper.TTransferTxData;
+): CubensisConnect.TTransferTxData;
 export function keeperTxFactory(
   tx: SignerReissueTx
-): WavesKeeper.TReissueTxData;
-export function keeperTxFactory(tx: SignerBurnTx): WavesKeeper.TBurnTxData;
-export function keeperTxFactory(tx: SignerLeaseTx): WavesKeeper.TLeaseTxData;
+): CubensisConnect.TReissueTxData;
+export function keeperTxFactory(tx: SignerBurnTx): CubensisConnect.TBurnTxData;
+export function keeperTxFactory(tx: SignerLeaseTx): CubensisConnect.TLeaseTxData;
 export function keeperTxFactory(
   tx: SignerCancelLeaseTx
-): WavesKeeper.TLeaseCancelTxData;
+): CubensisConnect.TLeaseCancelTxData;
 export function keeperTxFactory(
   tx: SignerAliasTx
-): WavesKeeper.TCreateAliasTxData;
+): CubensisConnect.TCreateAliasTxData;
 export function keeperTxFactory(
   tx: SignerMassTransferTx
-): WavesKeeper.TMassTransferTxData;
-export function keeperTxFactory(tx: SignerDataTx): WavesKeeper.TDataTxData;
+): CubensisConnect.TMassTransferTxData;
+export function keeperTxFactory(tx: SignerDataTx): CubensisConnect.TDataTxData;
 export function keeperTxFactory(
   tx: SignerSetScriptTx
-): WavesKeeper.TSetScriptTxData;
+): CubensisConnect.TSetScriptTxData;
 export function keeperTxFactory(
   tx: SignerSponsorshipTx
-): WavesKeeper.TSponsoredFeeTxData;
+): CubensisConnect.TSponsoredFeeTxData;
 export function keeperTxFactory(
   tx: SignerSetAssetScriptTx
-): WavesKeeper.TSetAssetScriptTxData;
+): CubensisConnect.TSetAssetScriptTxData;
 export function keeperTxFactory(
   tx: SignerInvokeTx
-): WavesKeeper.TScriptInvocationTxData;
-export function keeperTxFactory(tx: SignerTx): WavesKeeper.TSignTransactionData;
+): CubensisConnect.TScriptInvocationTxData;
+export function keeperTxFactory(tx: SignerTx): CubensisConnect.TSignTransactionData;
 export function keeperTxFactory(tx) {
   switch (tx.type) {
     case TRANSACTION_TYPE.ISSUE:

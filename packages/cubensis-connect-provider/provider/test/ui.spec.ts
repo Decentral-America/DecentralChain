@@ -38,7 +38,7 @@ declare global {
 
 describe('Signer integration', function () {
   this.timeout(5 * m);
-  let wavesKeeper, testApp;
+  let CubensisConnect, testApp;
 
   before(async function () {
     await App.initVault.call(this);
@@ -52,7 +52,7 @@ describe('Signer integration', function () {
 
     // prepare browse keeper and test-app tabs
     await App.open.call(this);
-    wavesKeeper = await this.driver.getWindowHandle();
+    CubensisConnect = await this.driver.getWindowHandle();
 
     await this.driver.switchTo().newWindow('tab');
     await this.driver.get(this.testAppUrl);
@@ -87,7 +87,7 @@ describe('Signer integration', function () {
       window.result = window.signer.login();
     });
 
-    await this.driver.switchTo().window(wavesKeeper);
+    await this.driver.switchTo().window(CubensisConnect);
     // site permission request
     await this.driver.wait(
       until.elementLocated(By.xpath("//div[contains(@class, '-originAuthTx')]"))
@@ -118,7 +118,7 @@ describe('Signer integration', function () {
   });
 
   it('Error when Waves Keeper on the wrong network', async function () {
-    await this.driver.switchTo().window(wavesKeeper);
+    await this.driver.switchTo().window(CubensisConnect);
     await Network.switchTo.call(this, 'Mainnet');
 
     await this.driver.switchTo().window(testApp);
@@ -131,7 +131,7 @@ describe('Signer integration', function () {
     expect(error.code).to.be.equal(ERRORS.ENSURE_PROVIDER);
     expect(error.type).to.be.equal('provider');
 
-    await this.driver.switchTo().window(wavesKeeper);
+    await this.driver.switchTo().window(CubensisConnect);
     await Network.switchTo.call(this, 'Testnet');
   });
 
@@ -151,7 +151,7 @@ describe('Signer integration', function () {
     );
 
     // tx request
-    await this.driver.switchTo().window(wavesKeeper);
+    await this.driver.switchTo().window(CubensisConnect);
     await this.driver.wait(until.elementLocated(formSelector));
     const acceptBtn = await this.driver.findElement(
       By.css('.app button[type=submit]')
