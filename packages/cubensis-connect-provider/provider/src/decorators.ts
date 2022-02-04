@@ -1,5 +1,5 @@
 import { ProviderKeeper } from './ProviderKeeper';
-import { ConnectOptions } from '@waves/signer';
+import { ConnectOptions } from '@decentralchain/signer';
 
 export function ensureNetwork(
   target,

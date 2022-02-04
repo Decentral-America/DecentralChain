@@ -16,7 +16,7 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@waves/provider-keeper': path.resolve(__dirname, '../provider/src'),
+      '@decentralchain/provider-cubensis': path.resolve(__dirname, '../provider/src'),
     },
   },
   output: {
