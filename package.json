@@ -1,12 +1,12 @@
 {
   "name": "@decentralchain/signature-adapter",
-  "version": "6.1.6",
+  "version": "6.1.7",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "license": "MIT",
   "repository": {
     "type": "GIT",
-    "url": "https://github.com/wavesplatform/waves-signature-adapter"
+    "url": "https://github.com/Decentral-America/waves-signature-adapter"
   },
   "dependencies": {
     "@types/ramda": "0.25.34",

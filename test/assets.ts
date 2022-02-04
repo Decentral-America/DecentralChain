@@ -4,7 +4,7 @@ import { Asset } from '@waves/data-entities';
 export const WavesAsset = new Asset({
     ticker: 'DCC',
     id: 'DCC',
-    name: 'Waves',
+    name: 'DecenralCoin',
     precision: 8,
     description: '',
     height: 0,
@@ -16,13 +16,13 @@ export const WavesAsset = new Asset({
 
 export const BtcAsset = new Asset({
     ticker: 'BTC',
-    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+    id: '25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK',
     name: 'WBTC',
     precision: 8,
     description: 'Bitcoin Token',
-    height: 257457,
+    height: 185539,
     timestamp: new Date(1480690876160),
-    sender: '3PC4roN512iugc6xGVTTM2XkoWKEdSiiscd',
+    sender: '3DhKtKgynxyh9K2YrEMLgLBM8AMuLkKdkRn',
     quantity: 2100000000000000,
     reissuable: false
 });
