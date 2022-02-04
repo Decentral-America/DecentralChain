@@ -117,7 +117,7 @@ describe('Signer integration', function () {
     expect(userData.publicKey).to.exist;
   });
 
-  it('Error when Waves Keeper on the wrong network', async function () {
+  it('Error when Cubensis Connect on the wrong network', async function () {
     await this.driver.switchTo().window(CubensisConnect);
     await Network.switchTo.call(this, 'Mainnet');
 
