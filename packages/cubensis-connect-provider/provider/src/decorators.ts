@@ -1,4 +1,4 @@
-import { ProviderKeeper } from './ProviderKeeper';
+import { ProviderCubensis } from './ProviderCubensis';
 import { ConnectOptions } from '@decentralchain/signer';
 
 export function ensureNetwork(
@@ -9,7 +9,7 @@ export function ensureNetwork(
   const origin = descriptor.value;
 
   descriptor.value = function (
-    this: { [Key in keyof ProviderKeeper]: ProviderKeeper[Key] } & {
+    this: { [Key in keyof ProviderCubensis]: ProviderCubensis[Key] } & {
       _api: CubensisConnect.TCubensisConnectApi;
       _options: ConnectOptions;
     },

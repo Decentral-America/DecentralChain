@@ -22,7 +22,7 @@ import {
 } from './utils/transactions';
 import { Signer, SignerTx, UserData } from '@decentralchain/signer';
 import { App, CreateNewAccount, Network, Settings } from './utils/actions';
-import { ProviderKeeper } from '../src';
+import { ProviderCubensis } from '../src';
 import { ERRORS, SignerError } from '@decentralchain/signer/dist/cjs/SignerError';
 
 const m = 60000;
@@ -31,7 +31,7 @@ declare global {
   interface Window {
     signer: Signer;
     Signer: typeof Signer;
-    ProviderKeeper: typeof ProviderKeeper;
+    ProviderCubensis: typeof ProviderCubensis;
     result: any;
   }
 }
@@ -60,15 +60,15 @@ describe('Signer integration', function () {
       window.signer = new window.Signer({
         NODE_URL: nodeUrl,
       });
-      window.signer.setProvider(new window.ProviderKeeper());
-    }, 'https://nodes-testnet.wavesnodes.com');
+      window.signer.setProvider(new window.ProviderCubensis());
+    }, 'https://testnet-node.decentralchain.io');
     testApp = await this.driver.getWindowHandle();
   });
 
-  it('Current provider is ProviderKeeper', async function () {
+  it('Current provider is ProviderCubensis', async function () {
     expect(
       await this.driver.executeScript(function () {
-        return window.signer.currentProvider instanceof window.ProviderKeeper;
+        return window.signer.currentProvider instanceof window.ProviderCubensis;
       })
     ).to.be.true;
   });
