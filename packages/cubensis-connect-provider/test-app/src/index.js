@@ -1,6 +1,6 @@
 import { Signer } from '@decentralchain/signer';
-import { ProviderKeeper } from '@decentralchain/provider-cubensis';
+import { ProviderCubensis } from '@decentralchain/provider-cubensis';
 
 window.Signer = Signer;
-window.ProviderKeeper = ProviderKeeper;
+window.ProviderCubensis = ProviderCubensis;
 window.result = null;

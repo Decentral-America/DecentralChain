@@ -1,17 +1,17 @@
-# ProviderKeeper
+# ProviderCubensis
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
 
 ## Overview
 
-ProviderKeeper implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
+ProviderCubensis implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
 
 ## Getting Started
 
 ### Library installation
 
-To install Signer and ProviderKeeper libraries use
+To install Signer and ProviderCubensis libraries use
 
 ```bash
 npm i @decentralchain/signer @decentralchain/provider-cubensis
@@ -25,13 +25,13 @@ Add library initialization to your app.
 
   ```js
   import { Signer } from '@decentralchain/signer';
-  import { ProviderKeeper } from '@decentralchain/provider-cubensis';
+  import { ProviderCubensis } from '@decentralchain/provider-cubensis';
 
   const signer = new Signer({
     // Specify URL of the node on Testnet
-    NODE_URL: 'https://nodes-testnet.wavesnodes.com',
+    NODE_URL: 'https://testnet-node.decentralchain.io',
   });
-  const keeper = new ProviderKeeper();
+  const keeper = new ProviderCubensis();
   signer.setProvider(keeper);
   ```
 
@@ -39,10 +39,10 @@ Add library initialization to your app.
 
   ```js
   import { Signer } from '@decentralchain/signer';
-  import { ProviderKeeper } from '@decentralchain/provider-cubensis';
+  import { ProviderCubensis } from '@decentralchain/provider-cubensis';
 
   const signer = new Signer();
-  const keeper = new ProviderKeeper();
+  const keeper = new ProviderCubensis();
   signer.setProvider(keeper);
   ```
 

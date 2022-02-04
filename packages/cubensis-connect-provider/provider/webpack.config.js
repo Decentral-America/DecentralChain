@@ -19,8 +19,8 @@ module.exports = [
     output: {
       libraryTarget: 'umd',
       globalObject: 'this',
-      library: 'providerKeeper',
-      filename: 'provider-keeper.js',
+      library: 'providerCubensis',
+      filename: 'provider-cubensis.js',
       path: resolve(__dirname, 'dist'),
     },
   },

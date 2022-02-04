@@ -11,11 +11,14 @@
     "blockchain"
   ],
   "author": "smelnikov@web3tech.ru",
-  "main": "dist/provider-keeper.js",
+  "main": "dist/provider-cubensis.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Decentral-America/provider-cubensis.git"
@@ -55,7 +58,7 @@
     "@types/node": "^16.9.1",
     "@types/selenium-webdriver": "^4.0.15",
     "@decentralchain/signer": "^1.0.6",
-    "@decentralchain/waves-transactions": "^4.2.5-beta.1",
+    "@decentralchain/waves-transactions": "^4.2.3",
     "c8": "^7.9.0",
     "chai": "^4.3.4",
     "chromedriver": "^93.0.1",
