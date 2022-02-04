@@ -16,7 +16,7 @@ import {
   SignerTransferTx,
   SignerTx,
   SignerTxToSignedTx,
-} from '@waves/signer';
+} from '@decentralchain/signer';
 import { expect } from 'chai';
 import { TRANSACTION_TYPE, TransactionMap } from '@waves/ts-types';
 import {
@@ -63,7 +63,7 @@ describe('Adapter', () => {
 
         expect(keeperTxFactory(tx).data.fee).to.be.deep.equal({
           coins: tx.fee,
-          assetId: 'WAVES',
+          assetId: 'DCC',
         });
 
         if (
@@ -129,7 +129,7 @@ describe('Adapter', () => {
       it('optional fields are valid', () => {
         delete txTransfer.assetId;
         expect(keeperTxFactory(txTransfer).data.amount.assetId).to.be.equal(
-          'WAVES'
+          'DCC'
         );
         delete txTransfer.attachment;
         expect(keeperTxFactory(txTransfer).data.attachment).to.be.undefined;
@@ -237,7 +237,7 @@ describe('Adapter', () => {
         delete txMassTransfer.assetId;
         expect(
           keeperTxFactory(txMassTransfer).data.totalAmount.assetId
-        ).to.be.equal('WAVES');
+        ).to.be.equal('DCC');
       });
 
       feeShouldBeValid(txMassTransfer);

@@ -14,7 +14,7 @@ ProviderKeeper implements a Signature Provider for [Signer](https://github.com/w
 To install Signer and ProviderKeeper libraries use
 
 ```bash
-npm i @waves/signer @waves/provider-keeper
+npm i @decentralchain/signer @decentralchain/provider-cubensis
 ```
 
 ### Library initialization
@@ -24,8 +24,8 @@ Add library initialization to your app.
 - For Testnet:
 
   ```js
-  import { Signer } from '@waves/signer';
-  import { ProviderKeeper } from '@waves/provider-keeper';
+  import { Signer } from '@decentralchain/signer';
+  import { ProviderKeeper } from '@decentralchain/provider-cubensis';
 
   const signer = new Signer({
     // Specify URL of the node on Testnet
@@ -38,8 +38,8 @@ Add library initialization to your app.
 - For Mainnet:
 
   ```js
-  import { Signer } from '@waves/signer';
-  import { ProviderKeeper } from '@waves/provider-keeper';
+  import { Signer } from '@decentralchain/signer';
+  import { ProviderKeeper } from '@decentralchain/provider-cubensis';
 
   const signer = new Signer();
   const keeper = new ProviderKeeper();

@@ -12,7 +12,7 @@ import {
   SignerSetScriptTx,
   SignerSponsorshipTx,
   SignerTransferTx,
-} from '@waves/signer';
+} from '@decentralchain/signer';
 import { TRANSACTION_TYPE } from '@waves/ts-types';
 
 const assetId = '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT';
@@ -162,7 +162,7 @@ export const INVOKE_NO_ARGS_SINGLE_PAYMENTS: SignerInvokeTx = {
   fee: dAppMinFee,
   payment: [
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: longMax,
     },
   ],
@@ -178,43 +178,43 @@ export const INVOKE_NO_ARGS_MANY_PAYMENTS: SignerInvokeTx = {
   fee: dAppMinFee,
   payment: [
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
     {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       amount: 1,
     },
   ],

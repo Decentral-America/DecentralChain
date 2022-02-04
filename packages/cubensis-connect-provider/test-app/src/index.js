@@ -1,5 +1,5 @@
-import { Signer } from '@waves/signer';
-import { ProviderKeeper } from '@waves/provider-keeper';
+import { Signer } from '@decentralchain/signer';
+import { ProviderKeeper } from '@decentralchain/provider-cubensis';
 
 window.Signer = Signer;
 window.ProviderKeeper = ProviderKeeper;

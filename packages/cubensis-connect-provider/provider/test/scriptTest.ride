@@ -15,7 +15,7 @@ func callWithPaymentsButNoArgs() = {
       let pmt = i.payments[index]
         let asset = match pmt.assetId {
         case id: ByteVector => assetInfo(id).value().name + " (" + id.toBase58String() + ")"
-        case waves: Unit => "WAVES"
+        case waves: Unit => "DCC"
       }
       acc :+ StringEntry(txId + "_" + index.toString(), pmt.amount.toString() + " " + asset)
     }
