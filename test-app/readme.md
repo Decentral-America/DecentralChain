@@ -1,6 +1,6 @@
-# ProviderKeeper example
+# ProviderCubensis example
 
-This is a simple web application for e2e tests that communicates with Waves Keeper via Waves Signer using ProviderKeeper
+This is a simple web application for e2e tests that communicates with Waves Keeper via Waves Signer using ProviderCubensis
 
 ## Usage
 

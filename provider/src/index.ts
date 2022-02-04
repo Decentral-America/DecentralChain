@@ -1,4 +1,4 @@
-import { ProviderKeeper as Class } from './ProviderKeeper';
+import { ProviderCubensis as Class } from './ProviderCubensis';
 
-export const ProviderKeeper = Class;
+export const ProviderCubensis = Class;
 export default Class;
