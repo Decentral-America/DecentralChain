@@ -20,10 +20,10 @@ import {
   SPONSORSHIP,
   TRANSFER,
 } from './utils/transactions';
-import { Signer, SignerTx, UserData } from '@waves/signer';
+import { Signer, SignerTx, UserData } from '@decentralchain/signer';
 import { App, CreateNewAccount, Network, Settings } from './utils/actions';
 import { ProviderKeeper } from '../src';
-import { ERRORS, SignerError } from '@waves/signer/dist/cjs/SignerError';
+import { ERRORS, SignerError } from '@decentralchain/signer/dist/cjs/SignerError';
 
 const m = 60000;
 

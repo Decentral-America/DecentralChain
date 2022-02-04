@@ -11,6 +11,6 @@
     "sourceMap": false,
     "strict": true,
     "target": "es6",
-    "types": ["@waves/waveskeeper-types"]
+    "types": ["@decentralchain/cubensisconnect-types"]
   }
 }

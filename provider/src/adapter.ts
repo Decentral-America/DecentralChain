@@ -14,9 +14,9 @@ import {
   SignerSponsorshipTx,
   SignerTransferTx,
   SignerTx,
-} from '@waves/signer';
+} from '@decentralchain/signer';
 import { TRANSACTION_TYPE } from '@waves/ts-types';
-import { json } from '@waves/marshall';
+import { json } from '@decentralchain/marshall';
 
 function isAlias(source: string): boolean {
   return source.startsWith('alias:');
@@ -28,11 +28,11 @@ function addressFactory(address: string): string {
 
 function moneyFactory(
   amount: number | string,
-  assetId: string | null = 'WAVES'
+  assetId: string | null = 'DCC'
 ): WavesKeeper.IMoneyCoins {
   return {
     coins: amount,
-    assetId: assetId ?? 'WAVES',
+    assetId: assetId ?? 'DCC',
   };
 }
 
