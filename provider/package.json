@@ -1,6 +1,6 @@
 {
   "name": "@decentralchain/provider-cubensis",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "ProviderCubensis for DCC Signer",
   "keywords": [
     "signer",
