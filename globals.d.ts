@@ -1,17 +1,17 @@
-// Type definitions for WavesKeeper
-// Project: WavesKeeper
+// Type definitions for CubensisConnect
+// Project: CubensisConnect
 
 /*~ This template shows how to write a global plugin. */
 
 interface Window {
-    WavesKeeper: WavesKeeper.TWavesKeeperApi;
+    CubensisConnect: CubensisConnect.TCubensisConnectApi;
 }
 
-declare var WavesKeeper: WavesKeeper.TWavesKeeperApi;
+declare var CubensisConnect: CubensisConnect.TCubensisConnectApi;
 
-declare namespace WavesKeeper {
+declare namespace CubensisConnect {
 
-    type TWavesKeeperApi = {
+    type TCubensisConnectApi = {
         /**
          * This is a method for obtaining a signature of authorization data while verifying Waves' user.
          * @param data
@@ -134,8 +134,8 @@ declare namespace WavesKeeper {
         on(event: 'update', cb: (state: IPublicStateResponse) => any): object;
 
         /**
-         * On initialize window.WavesKeeper has no api methods.
-         * You can use WavesKeeper.initialPromise for waiting end initializing api
+         * On initialize window.CubensisConnect has no api methods.
+         * You can use CubensisConnect.initialPromise for waiting end initializing api
          */
         initialPromise : Promise<any>;
 

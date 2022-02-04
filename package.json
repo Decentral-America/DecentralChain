@@ -1,16 +1,19 @@
 {
-  "name": "@waves/waveskeeper-types",
+  "name": "@decentralchain/cubensisconnect-types",
   "version": "0.2.1",
-  "description": "Interfaces for Waves Keeper",
+  "description": "Interfaces for Cubensis Connect",
   "types": "globals.d.ts",
   "main": "",
   "files": [
     "globals.d.ts"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "typeScriptVersion": "2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wavesplatform/waveskeeper-types.git"
+    "url": "https://github.com/Decentral-America/cubensisconnect-types.git"
   },
   "keywords": [
     "types",
@@ -20,9 +23,9 @@
   "author": "kanishcheva@phystech.edu",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wavesplatform/waveskeeper-types/issues"
+    "url": "https://github.com/Decentral-America/cubensisconnect-types/issues"
   },
-  "homepage": "https://github.com/wavesplatform/waveskeeper-types#readme",
+  "homepage": "https://github.com/Decentral-America/cubensisconnect-types#readme",
   "dependencies": {},
   "engineStrict": true,
   "engines": {
