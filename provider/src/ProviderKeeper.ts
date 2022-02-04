@@ -7,7 +7,7 @@ import {
   SignerTx,
   TypedData,
   UserData,
-} from '@waves/signer';
+} from '@decentralchain/signer';
 import { EventEmitter } from 'typed-ts-events';
 import {
   base16Encode,
