@@ -5,7 +5,7 @@
 
 ## Overview
 
-ProviderCubensis implements a Signature Provider for [Signer](https://github.com/wavesplatform/signer) protocol library.
+ProviderCubensis implements a Signature Provider for [Signer](https://github.com/Decentral-America/signer) protocol library.
 
 ## Getting Started
 
