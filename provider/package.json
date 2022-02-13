@@ -1,6 +1,6 @@
 {
   "name": "@decentralchain/provider-cubensis",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "ProviderCubensis for DCC Signer",
   "keywords": [
     "signer",
@@ -43,9 +43,11 @@
     ]
   },
   "dependencies": {
-    "@decentralchain/marshall": "^0.14.0",
-    "@waves/ts-types": "^1.0.0",
     "@decentralchain/cubensisconnect-types": "^0.2.1",
+    "@decentralchain/marshall": "^0.14.0",
+    "@types/http-server": "^0.12.1",
+    "@waves/ts-types": "^1.0.0",
+    "http": "0.0.1-security",
     "tslib": "^2.1.0",
     "typed-ts-events": "^1.2.1"
   },
@@ -53,12 +55,12 @@
     "@decentralchain/signer": "1.x"
   },
   "devDependencies": {
+    "@decentralchain/signer": "^1.0.8",
+    "@decentralchain/waves-transactions": "^4.2.4",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.9.1",
+    "@types/node": "^16.11.24",
     "@types/selenium-webdriver": "^4.0.15",
-    "@decentralchain/signer": "^1.0.8",
-    "@decentralchain/waves-transactions": "^4.2.3",
     "c8": "^7.9.0",
     "chai": "^4.3.4",
     "chromedriver": "^93.0.1",

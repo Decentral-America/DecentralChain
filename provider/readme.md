@@ -48,7 +48,7 @@ Add library initialization to your app.
 
 ### Basic example
 
-Now your application is ready to work with Waves Platform. Let's test it by implementing basic functionality.
+Now your application is ready to work with DCCPlatform. Let's test it by implementing basic functionality.
 
 For example, we could try to authenticate user and transfer funds:
 
