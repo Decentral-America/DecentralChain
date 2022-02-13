@@ -46,7 +46,7 @@ describe('Signer integration', function () {
     await CreateNewAccount.importAccount.call(
       this,
       'rich',
-      'waves private node seed with waves tokens'
+      'DCCprivate node seed with DCCtokens'
     );
     await Settings.setMaxSessionTimeout.call(this);
 
