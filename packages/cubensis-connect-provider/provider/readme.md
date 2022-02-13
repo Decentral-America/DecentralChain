@@ -57,8 +57,8 @@ const user = await signer.login();
 const [transfer] = await signer
   .transfer({
     recipient: '3Myqjf1D44wR8Vko4Tr5CwSzRNo2Vg9S7u7',
-    amount: 100000, // equals to 0.001 WAVES
-    assetId: null, // equals to WAVES
+    amount: 100000, // equals to 0.001 DCC
+    assetId: null, // equals to DCC
   })
   .broadcast();
 ```
