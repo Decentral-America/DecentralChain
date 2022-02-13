@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Download and extract latest Cubensis Connect
-        run: curl -L "https://clients2.google.com/service/update2/crx?response=redirect&os=mac&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromecrx&prodchannel=unknown&prodversion=93.0.4577.63&acceptformat=crx2,crx3&x=id%3Dlpilbniiabackdjcionkobglmddfbcjo%26uc"  --output waves_keeper.crx; mkdir dist; unzip waves_keeper.crx -d dist || rm -rf waves_keeper.crx
+        run: curl -L "https://clients2.google.com/service/update2/crx?response=redirect&os=mac&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromecrx&prodchannel=unknown&prodversion=93.0.4577.63&acceptformat=crx2,crx3&x=id%3Dlpilbniiabackdjcionkobglmddfbcjo%26uc"  --output cubensis_connect.crx; mkdir dist; unzip cubensis_connect.crx -d dist || rm -rf cubensis_connect.crx
 
       - name: Build test application
         run: npm run ui:build

@@ -58,7 +58,7 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
 
   const seleniumPorts = [4444, 5900];
   this.selenium = await new GenericContainer('selenium/standalone-chrome')
-    .withBindMount(path.resolve(CubensisConnectDir), '/app/waves_keeper', 'ro')
+    .withBindMount(path.resolve(CubensisConnectDir), '/app/cubensis_connect', 'ro')
     .withExposedPorts(...seleniumPorts)
     .start();
 
@@ -103,7 +103,7 @@ export const mochaHooks = () => ({
       .usingServer(`http://localhost:4444/wd/hub`)
       .setChromeOptions(
         new chrome.Options().addArguments(
-          `--load-extension=/app/waves_keeper`,
+          `--load-extension=/app/cubensis_connect`,
           '--disable-dev-shm-usage'
         )
       )
