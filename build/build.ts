@@ -16,13 +16,13 @@ async function build() {
     await copy(p('../tsconfig.json'), p('tmp/tsconfig.json'))
     await run('tsc', p('tmp'))
     await create(p('tmp/node_modules/@waves/'))
-    await copy(p('tmp/dist'), p('tmp/node_modules/@waves/waves-transactions'))
-    await copyJson(p('../package.json'), p('tmp/node_modules/@waves/waves-transactions/package.json'), { main: 'index.js', types: 'index.d.ts' })
+    await copy(p('tmp/dist'), p('tmp/node_modules/@decentralchain/waves-transactions'))
+    await copyJson(p('../package.json'), p('tmp/node_modules/@decentralchain/waves-transactions/package.json'), { main: 'index.js', types: 'index.d.ts' })
     await remove(p('tmp/dist'))
     await run('ts-node usage/index.ts', p('tmp'))
     await run('typedoc', p('tmp'))
     await run('tsc', p('tmp'))
-    // const latestVersion = await npmGetVersion('@waves/waves-transactions')
+    // const latestVersion = await npmGetVersion('@decentralchain/waves-transactions')
     // await copyJson(p('../package.json'), p('tmp/dist/package.json'),
     //   {
     //     main: 'index.js',

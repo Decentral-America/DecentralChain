@@ -1,4 +1,4 @@
-# waves-transactions  [![npm version](https://badge.fury.io/js/%40waves%2Fwaves-transactions.svg)](https://badge.fury.io/js/%40waves%2Fwaves-transactions)
+# waves-transactions  [![npm version](https://badge.fury.io/js/%decentralchain%2Fwaves-transactions.svg)](https://badge.fury.io/js/%decentralchain%2Fwaves-transactions)
 
 [![License][license-image]][license-url]
 
@@ -25,7 +25,7 @@ const {
  alias, burn, cancelLease, data, exchange,
  invokeScript, issue, lease, massTransfer, reissue,
  setAssetScript, setScript, sponsorship, transfer, updateAssetInfo
-} = require('@waves/waves-transactions')
+} = require('@decentralchain/waves-transactions')
 ```
 Example:
 ```typescript
@@ -321,7 +321,7 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
 If you want to create  the minimum you need to provide is **amount** and **recipient** as defined in Transfer params:
 ```js
 
-const { transfer } = require('@waves/waves-transactions')
+const { transfer } = require('@decentralchain/waves-transactions')
 const seed = 'some example seed phrase'
 const signedTranserTx = transfer({ 
   amount: 1,
@@ -368,7 +368,7 @@ const unsignedTransferTx = transfer({
 })
 ```
 
-Now you are able to POST it to Waves API or store for future purpose or you can add another signature from other party:
+Now you are able to POST it to Decentralchain API or store for future purpose or you can add another signature from other party:
 ```js
 const otherPartySeed = 'other party seed phrase'
 const transferSignedWithTwoParties = transfer(signedTranserTx, seed)
@@ -398,9 +398,9 @@ So now there are two proofs:
 ### Orders
 Order is created the same way as transaction
 ```typescript
-const { order } = require('@waves/waves-transactions')
+const { order } = require('@decentralchain/waves-transactions')
 const params = {
-    amount: 100000000, //1 waves
+    amount: 100000000, //1 DCC
     price: 10, //for 0.00000010 BTC
     priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
     matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
@@ -410,23 +410,23 @@ const params = {
 const signedOrder = order(params, 'Some seed ')
 ```
 ### Broadcast
-To send transaction you can use either node [REST API](https://nodes.wavesplatform.com/api-docs/index.html#!/transactions/broadcast) or [broadcast](https://wavesplatform.github.io/waves-transactions/globals.html#broadcast) helper function:
+To send transaction you can use either node [REST API](https://mainnet-node.decentralchain.io/api-docs/index.html#!/transactions/broadcast) or [broadcast](https://decentral-america.github.io/waves-transactions/globals.html#broadcast) helper function:
 ```javascript
-const {broadcast} =  require('@waves/waves-transactions');
-const nodeUrl = 'https://nodes.wavesplatform.com';
+const {broadcast} =  require('@decentralchain/waves-transactions');
+const nodeUrl = 'https://mainnet-node.decentralchain.io';
 
 broadcast(signedTx, nodeUrl).then(resp => console.log(resp))
 ```
-You can send tx to any waves node you like:. E.g.:
-* https://nodes-testnet.wavesnodes.com - waves TESTNET nodes hosted by Wavesplatform
-* https://nodes.wavesplatform.com - waves MAINNET nodes hosted by Wavesplatform
+You can send tx to any DCC node you like:. E.g.:
+* https://testnet-node.decentralchain.io - DCC TESTNET nodes hosted by DecentralChain
+* https://mainnet-node.decentralchain.io - DCC MAINNET nodes hosted by DecentralChain
 #### Important!!!
-Most transactions require chainId as parameter, e.g: [IBurnParams](https://wavesplatform.github.io/waves-transactions/interfaces/_transactions_.iburnparams.html). By default chainId is 'W', which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node
+Most transactions require chainId as parameter, e.g: [IBurnParams](https://decentral-america.github.io/waves-transactions/interfaces/iburnparams.html). By default chainId is 'W', which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node
 
 ### Dependencies
 This library uses `@waves/ts-lib-crypto` for cryptography and `@waves/node-api-js` for interacting with node. 
 You can access them this way:
 ```typescript
-const libCrypto = require('@waves/waves-transactions').libs.crypto
-const libApi = require('@waves/waves-transactions').libs.nodeApiJs
+const libCrypto = require('@decentralchain/waves-transactions').libs.crypto
+const libApi = require('@decentralchain/waves-transactions').libs.nodeApiJs
 ```
