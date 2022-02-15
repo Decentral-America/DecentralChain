@@ -5,7 +5,7 @@ import {address, randomSeed} from '@waves/ts-lib-crypto'
 import {CHAIN_ID} from './integration/config'
 
 const chainId = 'T'
-const apiBase = 'https://nodes-testnet.wavesnodes.com/'
+const apiBase = 'https://testnet-node.decentralchain.io/'
 
 describe('Node interaction utility functions', () => {
     jest.setTimeout(60000)
