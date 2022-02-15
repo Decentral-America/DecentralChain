@@ -89,7 +89,7 @@
  alias, burn, cancelLease, data, exchange,
  invokeScript, issue, lease, massTransfer, reissue,
  setAssetScript, setScript, sponsorship, transfer, updateAssetInfo
-} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>)
+} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>)
 </code></pre>
 				<p>Example:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> issueTx = issue({
@@ -368,7 +368,7 @@
 </code></pre>
 				<p>If you want to create  the minimum you need to provide is <strong>amount</strong> and <strong>recipient</strong> as defined in Transfer params:</p>
 				<pre><code class="language-js">
-<span class="hljs-keyword">const</span> { transfer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>)
+<span class="hljs-keyword">const</span> { transfer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>)
 <span class="hljs-keyword">const</span> seed = <span class="hljs-string">&#x27;some example seed phrase&#x27;</span>
 <span class="hljs-keyword">const</span> signedTranserTx = transfer({ 
   <span class="hljs-attr">amount</span>: <span class="hljs-number">1</span>,
@@ -437,7 +437,7 @@
 					<h3>Orders</h3>
 				</a>
 				<p>Order is created the same way as transaction</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> { order } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>)
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> { order } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>)
 <span class="hljs-keyword">const</span> params = {
     <span class="hljs-attr">amount</span>: <span class="hljs-number">100000000</span>, <span class="hljs-comment">//1 waves</span>
     <span class="hljs-attr">price</span>: <span class="hljs-number">10</span>, <span class="hljs-comment">//for 0.00000010 BTC</span>
@@ -451,16 +451,16 @@
 				<a href="#broadcast" id="broadcast" style="color: inherit; text-decoration: none;">
 					<h3>Broadcast</h3>
 				</a>
-				<p>To send transaction you can use either node <a href="https://nodes.wavesplatform.com/api-docs/index.html#!/transactions/broadcast">REST API</a> or <a href="https://wavesplatform.github.io/waves-transactions/globals.html#broadcast">broadcast</a> helper function:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {broadcast} =  <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>);
-<span class="hljs-keyword">const</span> nodeUrl = <span class="hljs-string">&#x27;https://nodes.wavesplatform.com&#x27;</span>;
+				<p>To send transaction you can use either node <a href="https://mainnet-node.decentralchain.io/api-docs/index.html#!/transactions/broadcast">REST API</a> or <a href="https://wavesplatform.github.io/waves-transactions/globals.html#broadcast">broadcast</a> helper function:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {broadcast} =  <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>);
+<span class="hljs-keyword">const</span> nodeUrl = <span class="hljs-string">&#x27;https://mainnet-node.decentralchain.io&#x27;</span>;
 
 broadcast(signedTx, nodeUrl).then(<span class="hljs-function"><span class="hljs-params">resp</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(resp))
 </code></pre>
 				<p>You can send tx to any waves node you like:. E.g.:</p>
 				<ul>
-					<li><a href="https://nodes-testnet.wavesnodes.com">https://nodes-testnet.wavesnodes.com</a> - waves TESTNET nodes hosted by Wavesplatform</li>
-					<li><a href="https://nodes.wavesplatform.com">https://nodes.wavesplatform.com</a> - waves MAINNET nodes hosted by Wavesplatform
+					<li><a href="https://testnet-node.decentralchain.io">https://testnet-node.decentralchain.io</a> - waves TESTNET nodes hosted by Wavesplatform</li>
+					<li><a href="https://mainnet-node.decentralchain.io">https://mainnet-node.decentralchain.io</a> - waves MAINNET nodes hosted by Wavesplatform
 						<a href="#important" id="important" style="color: inherit; text-decoration: none;">
 							<h4>Important!!!</h4>
 						</a>
@@ -471,8 +471,8 @@ broadcast(signedTx, nodeUrl).then(<span class="hljs-function"><span class="hljs-
 				</a>
 				<p>This library uses <code>@waves/ts-lib-crypto</code> for cryptography and <code>@waves/node-api-js</code> for interacting with node.
 				You can access them this way:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> libCrypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>).libs.crypto
-<span class="hljs-keyword">const</span> libApi = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>).libs.nodeApiJs
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> libCrypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>).libs.crypto
+<span class="hljs-keyword">const</span> libApi = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>).libs.nodeApiJs
 </code></pre>
 			</div>
 		</div>
