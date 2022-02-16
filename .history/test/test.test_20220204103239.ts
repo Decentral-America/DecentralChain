@@ -1,20 +1,19 @@
 import {issue} from '../src/transactions/issue'
 import {broadcast, waitForTx} from '../src'
+import {updateAssetInfo} from '../src/transactions/update-asset-info'
 import {transfer} from '../src/transactions/transfer'
 import {massTransfer} from '../src/transactions/mass-transfer'
 import {data} from '../src/transactions/data'
 import {invokeScript} from '../src/transactions/invoke-script'
 import {address, randomSeed} from '@waves/ts-lib-crypto'
 import {setScript} from '../src/transactions/set-script'
-import {API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID} from './integration/config'
+import {API_BASE, TIMEOUT} from './integration/config'
 import {waitForTxWithNConfirmations} from '../src/nodeInteraction'
+import {strengthenPassword} from '../src/seedUtils'
 
-<<<<<<< HEAD
-=======
 const nodeUrl = 'http://localhost:6869'
-const masterSeed = 'DCC private node seed with waves tokens'
+const masterSeed = 'waves private node seed with waves tokens'
 const CHAIN_ID = 82
->>>>>>> bd10b2db (update)
 let dappAddress1 = ''
 let dappAddress2 = ''
 let assetId = ''
@@ -27,8 +26,8 @@ it('issue', async () => {
         quantity: 1097654321,
         chainId: CHAIN_ID,
         fee: 100000000,
-    }, MASTER_SEED)
-    const {id} = await broadcast(tx, API_BASE)
+    }, masterSeed)
+    const {id} = await broadcast(tx, nodeUrl)
     assetId = id
 })
 
@@ -51,8 +50,8 @@ it('transfer', async () => {
         amount: 1,
         chainId: CHAIN_ID,
         attachment: '',
-    }, MASTER_SEED)
-    await broadcast(tx, API_BASE)
+    }, masterSeed)
+    await broadcast(tx, nodeUrl)
 })
 
 it('masstransfer', async () => {
@@ -71,24 +70,24 @@ it('masstransfer', async () => {
         ],
         chainId: CHAIN_ID,
         attachment: '',
-    }, MASTER_SEED)
-    await broadcast(tx, API_BASE)
+    }, masterSeed)
+    await broadcast(tx, nodeUrl)
 })
 
 it('set data', async () => {
     const tx = data({
         data: [{key: 'foo', type:'string',value: 'bar'}],
         chainId: CHAIN_ID,
-    }, MASTER_SEED)
-    await broadcast(tx, API_BASE)
+    }, masterSeed)
+    await broadcast(tx, nodeUrl)
 })
 
 it('drop data', async () => {
     const tx = data({
         data: [{key: 'foo'}],
         chainId: CHAIN_ID,
-    }, MASTER_SEED)
-    await broadcast(tx, API_BASE)
+    }, masterSeed)
+    await broadcast(tx, nodeUrl)
 })
 
 
@@ -108,19 +107,19 @@ it('setScriptTest', async () => {
 
     let tx = transfer({
         recipient: addr,
-        amount: 0.05e8,
+        amount: 2e8,
         chainId: CHAIN_ID,
-    }, MASTER_SEED)
+    }, masterSeed)
 
     let tx2 = transfer({
         recipient: addr2,
-        amount: 0.05e8,
+        amount: 2e8,
         chainId: CHAIN_ID,
-    }, MASTER_SEED)
+    }, masterSeed)
 
-    await broadcast(tx, API_BASE)
-    await broadcast(tx2, API_BASE)
-    await waitForTx(tx.id, {apiBase: API_BASE, timeout: 10000})
+    await broadcast(tx, nodeUrl)
+    await broadcast(tx2, nodeUrl)
+    await waitForTx(tx.id, {apiBase: nodeUrl, timeout: 10000})
 
     const setScriptTx = setScript({
         script,
@@ -132,9 +131,9 @@ it('setScriptTest', async () => {
         chainId: CHAIN_ID,
     }, seed2)
 
-    await broadcast(setScriptTx2, API_BASE)
-    await broadcast(setScriptTx, API_BASE)
-    await waitForTx(setScriptTx.id, {apiBase: API_BASE, timeout: 10000})
+    await broadcast(setScriptTx2, nodeUrl)
+    await broadcast(setScriptTx, nodeUrl)
+    await waitForTx(setScriptTx.id, {apiBase: nodeUrl, timeout: 10000})
     // await sleep(15000);
     // try {
     //     const invokeTx = invokeScript({
@@ -200,10 +199,9 @@ it('invoke test', async () => {
         chainId: CHAIN_ID,
         fee: 500000,
         feeAssetId: null,
-    }, MASTER_SEED)
-    console.log('invokeTx', JSON.stringify(invokeTx, undefined, ' '))
-    const {id} = await broadcast(invokeTx, API_BASE)
-    const tx = (await waitForTxWithNConfirmations(id, 0, {apiBase: API_BASE, timeout: TIMEOUT}))
+    }, masterSeed)
+    const {id} = await broadcast(invokeTx, nodeUrl)
+    const tx = (await waitForTxWithNConfirmations(id, 0, {apiBase: nodeUrl, timeout: TIMEOUT}))
 }, 100000)
 
 it('invoke with list test', async () => {
@@ -263,9 +261,9 @@ it('invoke with list test', async () => {
             {'amount': 25, 'assetId': assetId}],
         fee: 500000,
         feeAssetId: null,
-    }, MASTER_SEED)
-    const {id} = await broadcast(invokeTx, API_BASE)
-    const tx = (await waitForTxWithNConfirmations(id, 0, {apiBase: API_BASE, timeout: TIMEOUT}))
+    }, masterSeed)
+    const {id} = await broadcast(invokeTx, nodeUrl)
+    const tx = (await waitForTxWithNConfirmations(id, 0, {apiBase: nodeUrl, timeout: TIMEOUT}))
 }, 100000)
 
 it('transfer test', async () => {
@@ -281,12 +279,12 @@ it('transfer test', async () => {
         chainId: CHAIN_ID,
         amount: 1,
         recipient: recipient,
-    }, MASTER_SEED)
+    }, masterSeed)
 
 
     for (let i in conditions) {
         try {
-            await broadcast(makeTx(conditions[i]), API_BASE)
+            await broadcast(makeTx(conditions[i]), nodeUrl)
         } catch (e) {
             console.log('fail', conditions[i])
             console.error(JSON.stringify(e, null, 4))
