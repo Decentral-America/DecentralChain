@@ -48,7 +48,7 @@ function buildOfficialTestnet(done) {
 function buildOfficialStagenet(done) {
     buildApp({
         network: 'stagenet',
-        decompileUrl: 'https://stagenet-node.decentralchain.io/utils/script/decompile'
+        decompileUrl: 'https://nodes-stagenet.wavesnodes.com/utils/script/decompile'
     }, 'prod', done);
 }
 
