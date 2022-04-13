@@ -178,8 +178,8 @@ export type DataTransactionEntry<LONG = Long> =
     | DataTransactionDeleteRequest;
 
 export type DataTransactionDeleteRequest = {
-    type: undefined;
-    value: undefined;
+    type: null;
+    value: null | undefined;
     key: string;
 };
 
