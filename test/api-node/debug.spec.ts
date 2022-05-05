@@ -1,10 +1,9 @@
 import {NODE_URL, STATE, CHAIN_ID} from '../_state';
 import {create} from '../../src';
-import {invokeScript, waitForTx, broadcast, transfer, libs} from '@waves/waves-transactions';
-import {InvokeScriptTransaction, InvokeScriptTransactionFromNode} from "@waves/ts-types";
+import {invokeScript, waitForTx, broadcast, transfer, libs} from '@decentralchain/waves-transactions';
+import {InvokeScriptTransaction} from "@waves/ts-types";
 import {TLong} from "../../src/interface";
-import {isNullableStringOrNumber, isStringOrNumber} from '../extendedMatcher'
-import {fetchBalanceHistory} from "../../src/api-node/debug";
+import {TWithState} from "../../src/tools/transactions/transactions";
 
 
 const api = create(NODE_URL);
@@ -29,9 +28,8 @@ describe('State changes by transaction Id', () => {
     });
 
     it('throws on not found tx', async () => {
-        // const f = await api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk');
-        // console.log('throws on not found tx', f)
-        await expect(api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk')).rejects.toMatchObject({"error": 311, "message": "transactions does not exist",})
+        const f = api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk');
+        expect(f).rejects.toMatchObject({error: 311})
     });
 
     it('throws on not invoke script tx', async () => {
@@ -46,23 +44,14 @@ describe('State changes by transaction Id', () => {
         expect(f).rejects.toMatchObject({error: 312})
     });
 
-    it('state schanges in stage', async () => {
+    it('state schanges in stage', async () =>{
         const api2: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');
         //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
         const tx = await api2.transactions.fetchInfo("3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK")
-        const txState = (tx as InvokeScriptTransactionFromNode).stateChanges
-        expect(Array.isArray(txState.invokes)).toBeTruthy()
-    });
+        const txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges
 
-    it('Fetch Balance History', async () => {
-        const {address} = STATE.ACCOUNTS.SIMPLE;
-        const tx = await api.debug.fetchBalanceHistory(address);
-        let l = tx.length;
+        console.log(txState.invokes)
 
-        for (let i = 0; i < l; i++) {
-            expect(typeof tx[i].height).toBe('number');
-            expect(typeof tx[i].balance).isStringOrNumber();
-        }
-    });
 
+    })
 })
