@@ -1,5 +1,5 @@
 import {CHAIN_ID, MASTER_ACCOUNT, NETWORK_BYTE, NODE_URL, STATE} from '../_state';
-import {libs, transfer} from '@waves/waves-transactions';
+import {libs, transfer} from '@decentralchain/waves-transactions';
 import create from '../../src';
 import {SignedTransaction, TransferTransaction} from '@waves/ts-types';
 import {TLong} from '../../src/interface';
