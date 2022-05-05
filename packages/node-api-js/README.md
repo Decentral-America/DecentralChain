@@ -1,2 +1,2 @@
-# Library for Waves Node Rest API
+# Library for DCC Node Rest API
 
