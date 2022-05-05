@@ -2,7 +2,7 @@ import {create} from '../../src';
 import {IPeerAllResponse, IPeerConnectedResponse} from "../../src/api-node/peers";
 import { isStringOrNumber } from  '../extendedMatcher'
 
-const api: ReturnType<typeof create> = create('https://nodes.wavesnodes.com/');
+const api: ReturnType<typeof create> = create('https://mainnet-decentralchain.io/');
 
 
 const checkPeers = (peer: IPeerAllResponse) => {
