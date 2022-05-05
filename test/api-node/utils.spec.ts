@@ -1,7 +1,7 @@
 import {create} from '../../src';
 import {isStringOrNumber} from '../extendedMatcher'
 import {ACCOUNT_SCRIPT, CHAIN_ID, DAP_SCRIPT, MASTER_ACCOUNT, NODE_URL, STATE} from "../_state";
-import { issue } from '@waves/waves-transactions';
+import { issue } from '@decentralchain/waves-transactions';
 import {MASTER_ACCOUNT_SEED} from "@waves/node-state/dist/constants";
 
 const api: ReturnType<typeof create> = create(NODE_URL);
