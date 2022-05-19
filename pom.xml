@@ -6,7 +6,7 @@
 
     <groupId>com.wavesplatform</groupId>
     <artifactId>waves-crypto</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 
     <name>Waves Crypto for Java</name>
     <description>Tools to work with cryptographic primitives used in the Waves blockchain</description>
