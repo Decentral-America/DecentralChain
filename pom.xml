@@ -192,8 +192,7 @@
             <id>release</id>
             <activation>
                 <property>
-                    <name>performRelease</name>
-                    <value>true</value>
+                    <name>gpg.passphrase</name>
                 </property>
             </activation>
             <build>
