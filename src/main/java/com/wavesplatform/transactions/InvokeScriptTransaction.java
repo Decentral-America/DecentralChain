@@ -9,6 +9,8 @@ import com.wavesplatform.transactions.invocation.Function;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 public class InvokeScriptTransaction extends Transaction {
 
     public static final int TYPE = 16;
@@ -27,10 +29,8 @@ public class InvokeScriptTransaction extends Transaction {
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments,
                                    byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (dApp == null)
-            throw new IllegalArgumentException("dApp can't be null");
 
-        this.dApp = dApp;
+        this.dApp = requireNonNull(dApp, "dApp can't be null");
         this.function = function == null ? Function.asDefault() : function;
         this.payments = payments == null ? Collections.emptyList() : payments;
     }

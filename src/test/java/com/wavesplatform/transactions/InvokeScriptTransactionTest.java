@@ -111,7 +111,7 @@ public class InvokeScriptTransactionTest {
                 .sender(sender)
                 .version(version)
                 .getUnsigned()
-        .addProofs(proofs);
+                .addProofs(proofs);
 
         assertAll("Tx created via builder must be equal to expected bytes",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(expectedBody),

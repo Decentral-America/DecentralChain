@@ -11,13 +11,14 @@ import com.wavesplatform.transactions.serializers.binary.BinarySerializer;
 import com.wavesplatform.transactions.serializers.json.JsonSerializer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"UnusedReturnValue", "unchecked", "unused"})
 public abstract class TransactionOrOrder {
 
-    private Id id;
+    protected Id id;
     private final int version;
     private final byte chainId;
     private final PublicKey sender;
@@ -122,7 +123,7 @@ public abstract class TransactionOrOrder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.bodyBytes(), proofs);
+        return Objects.hash(Arrays.hashCode(this.bodyBytes()), proofs);
     }
 
     @Override

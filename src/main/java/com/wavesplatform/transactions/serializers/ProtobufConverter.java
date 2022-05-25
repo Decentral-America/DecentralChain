@@ -2,10 +2,14 @@ package com.wavesplatform.transactions.serializers;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.wavesplatform.crypto.base.Base58;
+import com.wavesplatform.events.protobuf.Events.TransactionMetadata;
 import com.wavesplatform.protobuf.AmountOuterClass;
 import com.wavesplatform.protobuf.order.OrderOuterClass;
+import com.wavesplatform.protobuf.transaction.InvokeScriptResultOuterClass.InvokeScriptResult.Call.Argument;
 import com.wavesplatform.protobuf.transaction.RecipientOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
 import com.wavesplatform.transactions.*;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.account.PublicKey;
@@ -13,17 +17,25 @@ import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.data.*;
 import com.wavesplatform.transactions.exchange.Order;
 import com.wavesplatform.transactions.exchange.OrderType;
-import com.wavesplatform.transactions.invocation.Function;
+import com.wavesplatform.transactions.invocation.*;
 import com.wavesplatform.transactions.mass.Transfer;
 import com.wavesplatform.transactions.serializers.binary.BytesReader;
 import com.wavesplatform.transactions.serializers.binary.BytesWriter;
+import org.web3j.crypto.SignedRawTransaction;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.wavesplatform.protobuf.transaction.TransactionOuterClass.DataTransactionData.DataEntry.ValueCase.*;
+import static com.wavesplatform.transactions.EthereumTransaction.AMOUNT_MULTIPLIER;
+import static com.wavesplatform.transactions.EthereumTransaction.ERC20_PREFIX;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
+import static org.web3j.crypto.TransactionDecoder.decode;
+import static org.web3j.utils.Numeric.toHexString;
 
 public abstract class ProtobufConverter {
 
@@ -51,9 +63,18 @@ public abstract class ProtobufConverter {
         return order;
     }
 
-    public static Transaction fromProtobuf(TransactionOuterClass.SignedTransaction pbSignedTx) throws IOException {
+    public static Transaction fromProtobuf(SignedTransaction pbSignedTx) throws IOException {
+        if (!pbSignedTx.getEthereumTransaction().isEmpty()) {
+            throw new IllegalArgumentException("Ethereum transaction not supported from this method. " +
+                    "Use ethTransferTxFromProtobuf or ethInvokeScriptTxFromProtobuf instead");
+        }
+
+        if (!pbSignedTx.hasWavesTransaction()) {
+            throw new InvalidProtocolBufferException("Waves transaction is missing");
+        }
+
         Transaction tx;
-        TransactionOuterClass.Transaction pbTx = pbSignedTx.getTransaction();
+        TransactionOuterClass.Transaction pbTx = pbSignedTx.getWavesTransaction();
 
         if (pbTx.hasGenesis()) {
             TransactionOuterClass.GenesisTransactionData genesis = pbTx.getGenesis();
@@ -243,9 +264,9 @@ public abstract class ProtobufConverter {
             TransactionOuterClass.InvokeScriptTransactionData invoke = pbTx.getInvokeScript();
             Function functionCall = new BytesReader(invoke.getFunctionCall().toByteArray()).readFunctionCall();
             tx = InvokeScriptTransaction
-                    .builder(recipientFromProto(invoke.getDApp(), (byte)pbTx.getChainId()), functionCall)
+                    .builder(recipientFromProto(invoke.getDApp(), (byte) pbTx.getChainId()), functionCall)
                     .payments(invoke.getPaymentsList().stream().map(p ->
-                            Amount.of(p.getAmount(), AssetId.as(p.getAssetId().toByteArray())))
+                                    Amount.of(p.getAmount(), AssetId.as(p.getAssetId().toByteArray())))
                             .collect(toList()))
                     .version(pbTx.getVersion())
                     .chainId((byte) pbTx.getChainId())
@@ -267,6 +288,91 @@ public abstract class ProtobufConverter {
 
         pbSignedTx.getProofsList().forEach(p -> tx.proofs().add(Proof.as(p.toByteArray())));
         return tx;
+    }
+
+    public static List<Arg> fromPbArgument(List<Argument> pbArgs) {
+        ArrayList<Arg> args = new ArrayList<>();
+        for (Argument arg : pbArgs) {
+            switch (arg.getValueCase()) {
+                case INTEGER_VALUE:
+                    args.add(IntegerArg.as(arg.getIntegerValue()));
+                    break;
+                case BINARY_VALUE:
+                    args.add(BinaryArg.as(arg.getBinaryValue().toByteArray()));
+                    break;
+                case STRING_VALUE:
+                    args.add(StringArg.as(arg.getStringValue()));
+                    break;
+                case BOOLEAN_VALUE:
+                    args.add(BooleanArg.as(arg.getBooleanValue()));
+                    break;
+                case LIST:
+                    args.add(ListArg.as(fromPbArgument(arg.getList().getItemsList())));
+                    break;
+            }
+        }
+        return args;
+    }
+
+    public static EthereumTransaction ethTransferTxFromProtobuf(SignedTransaction pbSignedTx) {
+        if (!pbSignedTx.getEthereumTransaction().isEmpty()) {
+            SignedRawTransaction srt = (SignedRawTransaction) decode(toHexString(pbSignedTx.getEthereumTransaction().toByteArray()));
+            String data = Numeric.cleanHexPrefix(srt.getTransaction().getData());
+            if (data.isEmpty() && !srt.getTransaction().getValue().equals(BigInteger.ZERO)) {
+                return EthereumTransaction.transfer(
+                        Address.fromPart(srt.getChainId().byteValue(), Numeric.hexStringToByteArray(srt.getTo())),
+                        Amount.of(srt.getValue().divide(AMOUNT_MULTIPLIER).longValueExact()),
+                        srt.getGasPrice(),
+                        srt.getChainId().byteValue(),
+                        srt.getGasLimit().longValueExact(),
+                        srt.getNonce().longValueExact(),
+                        srt.getSignatureData()
+                );
+            } else if (data.startsWith(ERC20_PREFIX) && srt.getTransaction().getValue().equals(BigInteger.ZERO)) {
+                return EthereumTransaction.transfer(
+                        Address.fromPart(
+                                srt.getChainId().byteValue(),
+                                Numeric.hexStringToByteArray(new org.web3j.abi.datatypes.Address(data.substring(8, 71)).toString())
+                        ),
+                        Amount.of(
+                                Numeric.toBigInt(data.substring(72)).divide(AMOUNT_MULTIPLIER).longValueExact(),
+                                AssetId.as(Numeric.hexStringToByteArray(srt.getTo()))
+                        ),
+                        srt.getGasPrice(),
+                        srt.getChainId().byteValue(),
+                        srt.getGasLimit().longValueExact(),
+                        srt.getNonce().longValueExact(),
+                        srt.getSignatureData()
+                );
+            }
+        }
+        throw new IllegalArgumentException("Transfer ethereum transaction is missing");
+    }
+
+    public static EthereumTransaction ethInvokeScriptTxFromProtobuf(SignedTransaction pbSignedTx, TransactionMetadata pbTxMetadata) {
+        if (!pbSignedTx.getEthereumTransaction().isEmpty()) {
+            SignedRawTransaction srt = (SignedRawTransaction) decode(toHexString(pbSignedTx.getEthereumTransaction().toByteArray()));
+            String data = Numeric.cleanHexPrefix(srt.getTransaction().getData());
+            if (data.isEmpty() && !srt.getTransaction().getValue().equals(BigInteger.ZERO)
+                    || data.startsWith(ERC20_PREFIX) && srt.getTransaction().getValue().equals(BigInteger.ZERO)) {
+                throw new IllegalArgumentException("Transfer ethereum transaction not supported from this method");
+            }
+            TransactionMetadata.InvokeScriptMetadata invoke = pbTxMetadata.getEthereum().getInvoke();
+            List<Amount> payments = invoke.getPaymentsList().stream().map(p ->
+                            Amount.of(p.getAmount(), AssetId.as(p.getAssetId().toByteArray())))
+                    .collect(toList());
+            return EthereumTransaction.invocation(
+                    Address.as(Base58.encode(invoke.getDAppAddress().toByteArray())),
+                    Function.as(invoke.getFunctionName(), fromPbArgument(invoke.getArgumentsList())),
+                    payments,
+                    srt.getGasPrice(),
+                    srt.getChainId().byteValue(),
+                    srt.getGasLimit().longValueExact(),
+                    srt.getNonce().longValueExact(),
+                    srt.getSignatureData()
+            );
+        }
+        throw new IllegalArgumentException("Invoke script ethereum transaction is missing");
     }
 
     public static OrderOuterClass.Order toUnsignedProtobuf(Order order) {
@@ -379,14 +485,14 @@ public abstract class ProtobufConverter {
         } else if (tx instanceof MassTransferTransaction) {
             MassTransferTransaction mtTx = (MassTransferTransaction) tx;
             protoBuilder.setMassTransfer(TransactionOuterClass.MassTransferTransactionData.newBuilder()
-                    .addAllTransfers(mtTx.transfers().stream().map(t ->
-                        TransactionOuterClass.MassTransferTransactionData.Transfer.newBuilder()
-                                .setRecipient(recipientToProto(t.recipient()))
-                                .setAmount(t.amount())
-                                .build()
-                    ).collect(toList()))
-                    .setAssetId(ByteString.copyFrom(mtTx.assetId().bytes()))
-                    .setAttachment(ByteString.copyFrom(mtTx.attachment().bytes())))
+                            .addAllTransfers(mtTx.transfers().stream().map(t ->
+                                    TransactionOuterClass.MassTransferTransactionData.Transfer.newBuilder()
+                                            .setRecipient(recipientToProto(t.recipient()))
+                                            .setAmount(t.amount())
+                                            .build()
+                            ).collect(toList()))
+                            .setAssetId(ByteString.copyFrom(mtTx.assetId().bytes()))
+                            .setAttachment(ByteString.copyFrom(mtTx.attachment().bytes())))
                     .build();
         } else if (tx instanceof DataTransaction) {
             DataTransaction dtx = (DataTransaction) tx;
@@ -394,10 +500,11 @@ public abstract class ProtobufConverter {
                     .addAllData(dtx.data().stream().map(e -> {
                         TransactionOuterClass.DataTransactionData.DataEntry.Builder builder =
                                 TransactionOuterClass.DataTransactionData.DataEntry.newBuilder().setKey(e.key());
-                        if (e instanceof BinaryEntry) builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry)e).value().bytes())).build();
-                        else if (e instanceof BooleanEntry) builder.setBoolValue(((BooleanEntry)e).value()).build();
-                        else if (e instanceof IntegerEntry) builder.setIntValue(((IntegerEntry)e).value()).build();
-                        else if (e instanceof StringEntry) builder.setStringValue(((StringEntry)e).value()).build();
+                        if (e instanceof BinaryEntry)
+                            builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry) e).value().bytes())).build();
+                        else if (e instanceof BooleanEntry) builder.setBoolValue(((BooleanEntry) e).value()).build();
+                        else if (e instanceof IntegerEntry) builder.setIntValue(((IntegerEntry) e).value()).build();
+                        else if (e instanceof StringEntry) builder.setStringValue(((StringEntry) e).value()).build();
                         else if (e instanceof DeleteEntry) builder.setKey(e.key());
                         else throw new IllegalArgumentException("Unknown entry type " + e.type());
                         return builder.build();
@@ -447,6 +554,7 @@ public abstract class ProtobufConverter {
 
     public static OrderOuterClass.Order toProtobuf(Order order) {
         return OrderOuterClass.Order.newBuilder(toUnsignedProtobuf(order))
+                .setEip712Signature(order.eip712Signature() == null ? ByteString.EMPTY : ByteString.copyFrom(order.eip712Signature()))
                 .addAllProofs(order.proofs()
                         .stream()
                         .map(p -> ByteString.copyFrom(p.bytes()))
@@ -454,9 +562,9 @@ public abstract class ProtobufConverter {
                 .build();
     }
 
-    public static TransactionOuterClass.SignedTransaction toProtobuf(Transaction tx) {
-        return TransactionOuterClass.SignedTransaction.newBuilder()
-                .setTransaction(toUnsignedProtobuf(tx))
+    public static SignedTransaction toProtobuf(Transaction tx) {
+        return SignedTransaction.newBuilder()
+                .setWavesTransaction(toUnsignedProtobuf(tx))
                 .addAllProofs(tx.proofs()
                         .stream()
                         .map(p -> ByteString.copyFrom(p.bytes()))

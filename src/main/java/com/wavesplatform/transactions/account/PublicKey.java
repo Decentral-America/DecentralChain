@@ -1,6 +1,7 @@
 package com.wavesplatform.transactions.account;
 
 import com.wavesplatform.crypto.Crypto;
+import com.wavesplatform.crypto.Hash;
 import com.wavesplatform.transactions.WavesConfig;
 import com.wavesplatform.transactions.common.Base58String;
 import com.wavesplatform.transactions.common.Proof;
@@ -14,6 +15,9 @@ import java.util.Arrays;
 public class PublicKey extends Base58String {
 
     public static final int BYTES_LENGTH = 32;
+    public static final int ETH_BYTES_LENGTH = 64;
+
+    public static final PublicKey ZERO = PublicKey.as(new byte[BYTES_LENGTH]);
 
     /**
      * Generate public key from the private key.
@@ -71,7 +75,7 @@ public class PublicKey extends Base58String {
     public PublicKey(byte[] publicKey) {
         super(publicKey);
 
-        if (publicKey.length != BYTES_LENGTH)
+        if (publicKey.length != BYTES_LENGTH && publicKey.length != ETH_BYTES_LENGTH)
             throw new IllegalArgumentException("Public key has wrong size in bytes. "
                 + "Expected: " + BYTES_LENGTH + ", actual: " + publicKey.length);
     }
@@ -84,7 +88,9 @@ public class PublicKey extends Base58String {
      * @return address
      */
     public Address address(byte chainId) {
-        return Address.from(chainId, this);
+        return bytes.length == BYTES_LENGTH ?
+                Address.from(chainId, this)
+                : Address.fromPart(chainId, Arrays.copyOfRange(Hash.keccak(bytes), 12, 32));
     }
 
     /**
@@ -94,7 +100,7 @@ public class PublicKey extends Base58String {
      * @return address
      */
     public Address address() {
-        return Address.from(WavesConfig.chainId(), this);
+        return address(WavesConfig.chainId());
     }
 
     /**
