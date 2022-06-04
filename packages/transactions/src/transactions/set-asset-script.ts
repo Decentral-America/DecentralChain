@@ -7,6 +7,7 @@ import {
   WithSender
 } from '../transactions'
 import { signBytes, blake2b, base58Encode, } from '@waves/ts-lib-crypto'
+<<<<<<< HEAD
 import {
   addProof,
   getSenderPublicKey,
@@ -15,6 +16,9 @@ import {
   networkByte,
   fee,
 } from '../generic'
+=======
+import { addProof, getSenderPublicKey, base64Prefix, convertToPairs, networkByte, fee } from '../generic'
+>>>>>>> 697d643a (minor fixes)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
@@ -33,7 +37,11 @@ export function setAssetScript(paramsOrTx: any, seed?: TSeedTypes): SetAssetScri
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
   if (paramsOrTx.script == null) throw new Error('Asset script cannot be empty')
 
+<<<<<<< HEAD
   const tx: SetAssetScriptTransaction & WithId & WithProofs = {
+=======
+  const tx: SetAssetScriptTransaction & WithId & WithProofs= {
+>>>>>>> 697d643a (minor fixes)
     type,
     version,
     senderPublicKey,

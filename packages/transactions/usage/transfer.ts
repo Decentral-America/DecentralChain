@@ -2,7 +2,7 @@ import { transfer } from '../dist/index'
 
 const seed = 'example seed phrase'
 
-//Transfering 1 DCC
+//Transfering 1 dcc
 const params = {
   amount: 100000000,
   recipient: '3P23fi1qfVw6RVDn4CH2a5nNouEtWNQ4THs',
