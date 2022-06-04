@@ -22,12 +22,19 @@ describe('issue', () => {
         expect(tx).toMatchObject({...issueMinimalParams, decimals: 8, fee: 100000000, chainId:87, reissuable: false})
     });
 
+<<<<<<< HEAD
     it('should create issue tx with max name length = 16 and max description length = 1000', () => {
         const descr = rndString(1000);
         const tx = issue({...issueMinimalParams, name: 'this_is_16_bytes', description: descr}, stringSeed);
         expect(tx.name).toEqual('this_is_16_bytes');
         expect(tx.description).toEqual(descr);
     });
+=======
+  it('should build from minimal set of params with quantity 1', () => {
+    const tx = issue({ ...issueMinimalParams, quantity: 1 }, stringSeed)
+    expect(tx.fee).toEqual(100000000000)
+  })
+>>>>>>> 697d643a (minor fixes)
 
     it('should not create from minimal set of params with zero quantity', () => {
         expect(() => issue({...issueMinimalParams, quantity: 0}, stringSeed))
@@ -44,6 +51,7 @@ describe('issue', () => {
             .toThrowError(errorMessageByTemplate('name', 'xxx'))
     });
 
+<<<<<<< HEAD
     it('should not create with max name length > 16', () => {
         expect(() => issue({...issueMinimalParams, name: 'this_is_17_bytes_'}, stringSeed))
             .toThrowError(errorMessageByTemplate('name', 'this_is_17_bytes_'))
@@ -59,6 +67,20 @@ describe('issue', () => {
         const tx = issue({...issueMinimalParams, quantity: longMax}, stringSeed);
         expect(tx.quantity).toEqual(longMax)
     });
+=======
+    expect(validateTxSignature(tx, protoBytesMinVersion)).toBeTruthy()
+  })
+
+  it('Should get correct signature of NFT token', () => {
+    const tx = issue({
+      ...issueMinimalParams,
+      quantity: 1,
+      decimals: 0
+    }, stringSeed)
+
+    expect(validateTxSignature(tx, protoBytesMinVersion)).toBeTruthy()
+  })
+>>>>>>> 697d643a (minor fixes)
 
     it('should build with asset script', () => {
         const script = 'AQQAAAAHJG1hdGNoMAUAAAACdHgDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAAD0J1cm5UcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAcGPmRSDA==';

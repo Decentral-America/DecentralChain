@@ -26,7 +26,12 @@ export function updateAssetInfo(paramsOrTx: any, seed?: TSeedTypes): UpdateAsset
         name: paramsOrTx.name,
         description: paramsOrTx.description,
         assetId: paramsOrTx.assetId,
+<<<<<<< HEAD
         fee: fee(paramsOrTx, 100000),
+=======
+        fee: fee(paramsOrTx, 100000000000),
+        feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
+>>>>>>> 697d643a (minor fixes)
         timestamp: paramsOrTx.timestamp || Date.now(),
         proofs: paramsOrTx.proofs || [],
         chainId: networkByte(paramsOrTx.chainId, 87),

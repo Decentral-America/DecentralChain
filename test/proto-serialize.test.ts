@@ -26,9 +26,9 @@ import {issueMinimalParams} from './minimalParams'
 import {deleteProofsAndId} from './utils'
 
 
-const nodeUrl = 'http://localhost:6869/'
-const masterSeed = 'DCC private node seed with waves tokens'
-const CHAIN_ID = 82
+const nodeUrl = 'https://testnet-node.decentralchain.io/'
+const masterSeed = 'dcc private node seed with DCC tokens'
+const CHAIN_ID = 33
 let SEED = 'abc'
 const wvs = 1e8
 let assetId = ''
@@ -84,7 +84,7 @@ describe('transactions v3', () => {
 
     await broadcast(assetIssue, nodeUrl)
     assetId = assetIssue.id
-    
+
     await broadcast(mtt, nodeUrl)
     await waitForTx(mtt.id, {apiBase: nodeUrl, timeout: TIMEOUT})
 

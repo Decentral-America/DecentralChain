@@ -49,7 +49,11 @@ const invokeScheme = {
       (data: Array<unknown>) => data.every(
           validatePipe(
               pipe(prop('amount'), isNumberLike),
+<<<<<<< HEAD
               pipe(prop('assetId'), isWavesOrAssetId)
+=======
+              pipe(prop('assetId'), isAssetId),
+>>>>>>> 697d643a (minor fixes)
           )
       )
   ),

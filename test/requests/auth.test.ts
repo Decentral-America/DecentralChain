@@ -1,3 +1,4 @@
+import { CHAIN_ID } from './../integration/config';
 import { auth, serializeAuthData } from '../../src/requests/auth'
 import { verifyAuthData } from '../../src/general'
 import { base58Encode, blake2b } from '@waves/ts-lib-crypto'
@@ -9,10 +10,10 @@ describe('auth', () => {
 
   it('auth v1', () => {
     const p = { host: 'test.hello.com', data: 'custom data' }
-    const d = auth(p, stringSeed)
+    const d = auth(p, stringSeed, CHAIN_ID)
     expect(d).toMatchObject(p)
     expect(d.hash).toEqual(base58Encode(blake2b(serializeAuthData(d))))
-    expect(verifyAuthData(d, p)).toBe(true)
+    expect(verifyAuthData(d, p, CHAIN_ID)).toBe(true)
   })
   
   it('Wrong auth v1', () => {

@@ -61,6 +61,7 @@ describe('burn', () => {
         expect(tx.fee).toEqual(12345)
     })
 
+<<<<<<< HEAD
     it('Should create with zero fee', () => {
         const tx = burn({...burnMinimalParams, fee: 0}, stringSeed)
         expect(tx.fee).toEqual(0)
@@ -94,4 +95,12 @@ describe('serialize/deserialize binary burn tx', () => {
             checkBinarySerializeDeserialize({Json: Json, Bytes: Bytes})
         }))
 
+=======
+  it('Should get correct multiSignature', () => {
+    const stringSeed2 = 'example seed 2'
+    const tx = burn({ ...burnMinimalParams }, [null, stringSeed, null, stringSeed2])
+    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBeTruthy()
+    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBeTruthy()
+  })
+>>>>>>> 697d643a (minor fixes)
 })

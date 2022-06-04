@@ -27,7 +27,11 @@ export function setScript(paramsOrTx: any, seed?: TSeedTypes): SetScriptTransact
     version,
     senderPublicKey,
     chainId: networkByte(paramsOrTx.chainId, 87),
+<<<<<<< HEAD
     fee: fee(paramsOrTx, 1000000),
+=======
+    fee: fee(paramsOrTx, 100000000),
+>>>>>>> 697d643a (minor fixes)
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     id: '',

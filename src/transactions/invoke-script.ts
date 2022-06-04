@@ -27,10 +27,10 @@ export function invokeScript(paramsOrTx: any, seed?: TSeedTypes): InvokeScriptTr
         dApp: paramsOrTx.dApp,
         call: paramsOrTx.call && {args: [], ...paramsOrTx.call},
         payment: mapPayment(paramsOrTx.payment),
-        fee: fee(paramsOrTx, 500000),
+        fee: fee(paramsOrTx, 6000000),
         feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
         timestamp: paramsOrTx.timestamp || Date.now(),
-        chainId: networkByte(paramsOrTx.chainId, 87),
+        chainId: networkByte(paramsOrTx.chainId, 76),
         proofs: paramsOrTx.proofs || [],
         id: '',
     }

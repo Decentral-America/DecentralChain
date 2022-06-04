@@ -38,6 +38,5 @@
     "suppressExcessPropertyErrors": true,
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs"
-  },
-  "types": ["node"]
+  }
 }
