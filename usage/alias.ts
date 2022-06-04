@@ -4,7 +4,7 @@ const seed = 'example seed phrase'
 
 const params = {
   alias: 'new_alias',
-  chainId: 'W',
+  chainId: 'L',
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000,

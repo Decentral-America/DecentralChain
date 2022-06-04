@@ -26,7 +26,7 @@ import {ExchangeTransactionOrder, SignedIExchangeTransactionOrder} from '@waves/
  *   amount: 100000000, //1 waves
  *   price: 10, //for 0.00000010 BTC
  *   priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
- *   matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+ *   matcherPublicKey: 'DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY',
  *   orderType: 'buy'
  * }
  *
@@ -46,7 +46,7 @@ import {ExchangeTransactionOrder, SignedIExchangeTransactionOrder} from '@waves/
  *   "timestamp": 1540898977249,
  *   "expiration": 1542626977249,
  *   "matcherFee": 300000,
- *   "matcherPublicKey": "7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy",
+ *   "matcherPublicKey": "DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY",
  *   "senderPublicKey": "G62H1XE5rnaCgCCURV5pWwQHzWezZB7VkkVgqthdKgkj",
  *   "proofs": [
  *     "4MbaDLkx9ezV1DrcGRfXRfnMBtYLaeLYBe6YGqkkuq1Pe6U9Qc5Cv7Fy1zYyGatbg47U5j374iAQFbLLZiYBChgU"
@@ -82,7 +82,7 @@ export function order(paramsOrOrder: any, seed?: TSeedTypes): ExchangeTransactio
     amount,
     timestamp: t,
     expiration: expiration || t + 29 * 24 * 60 * 60 * 1000,
-    matcherFee: matcherFee || 300000,
+    matcherFee: matcherFee || 4000000,
     matcherPublicKey,
     senderPublicKey,
     proofs,

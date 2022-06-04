@@ -3,7 +3,11 @@
  */
 import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transactions'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
+<<<<<<< HEAD
 import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
+=======
+import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '../generic'
+>>>>>>> 697d643a (minor fixes)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
@@ -21,15 +25,23 @@ export function sponsorship(paramsOrTx: any, seed?: TSeedTypes): SponsorshipTran
   const seedsAndIndexes = convertToPairs(seed)
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
 
+<<<<<<< HEAD
   const tx: SponsorshipTransaction & WithId & WithProofs = {
+=======
+  const tx: SponsorshipTransaction & WithId & WithProofs= {
+>>>>>>> 697d643a (minor fixes)
     type,
     version,
     senderPublicKey,
     minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,
     assetId: paramsOrTx.assetId,
+<<<<<<< HEAD
     fee: fee(paramsOrTx, 1e5),
+=======
+    fee: fee(paramsOrTx, 1000000000),
+>>>>>>> 697d643a (minor fixes)
     timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 87),
+    chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
   }
