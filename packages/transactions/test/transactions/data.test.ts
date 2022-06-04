@@ -75,18 +75,18 @@ describe('data', () => {
     })
 
     test.each([
-        [[{key: 'bin', value: Array(100).fill(1)}], 1, 100000],
-        [[{key: 'bin', value: Array(100).fill(1)}], 2, 100000],
-        [[{key: 'bin', value: Array(1000).fill(1)}], 1, 200000],
-        [[{key: 'bin', value: Array(1000).fill(1)}], 2, 100000],
-        [[{key: 'bin', value: Array(10000).fill(1)}], 1, 1000000], //todo fix feecalc for v1
-        [[{key: 'bin', value: Array(10000).fill(1)}], 2, 1000000],
-        [[{key: 'bin', type:'binary', value: libs.crypto.base64Encode(Array(10000).fill(1))}], 1, 1000000],
-        [[{key: 'bin', type:'binary', value: Array(10000).fill(1)}], 1, 1000000],
-        [Array(10).fill({key: 'bin', value: Array(10000).fill(1)}), 1, 9800000],
-        [Array(10).fill({key: 'bin', value: Array(10000).fill(1)}), 2, 9800000],
-        [Array(15).fill({key: 'bin', value: Array(10000).fill(1)}), 1, 14700000],
-        [Array(15).fill({key: 'bin', value: Array(10000).fill(1)}), 2, 14700000],
+        [[{key: 'bin', value: Array(100).fill(1)}], 1, 2000000],
+        [[{key: 'bin', value: Array(100).fill(1)}], 2, 2000000],
+        [[{key: 'bin', value: Array(1000).fill(1)}], 1, 4000000],
+        [[{key: 'bin', value: Array(1000).fill(1)}], 2, 2000000],
+        [[{key: 'bin', value: Array(10000).fill(1)}], 1, 20000000], //todo fix feecalc for v1
+        [[{key: 'bin', value: Array(10000).fill(1)}], 2, 20000000],
+        [[{key: 'bin', type:'binary', value: libs.crypto.base64Encode(Array(10000).fill(1))}], 1, 20000000],
+        [[{key: 'bin', type:'binary', value: Array(10000).fill(1)}], 1, 20000000],
+        [Array(10).fill({key: 'bin', value: Array(10000).fill(1)}), 1, 196000000],
+        [Array(10).fill({key: 'bin', value: Array(10000).fill(1)}), 2, 196000000],
+        [Array(15).fill({key: 'bin', value: Array(10000).fill(1)}), 1, 294000000],
+        [Array(15).fill({key: 'bin', value: Array(10000).fill(1)}), 2, 294000000],
     ])('check fee calculation', (dataEntries, version, expectedFee) => {
         const tx = data({
             data: dataEntries,

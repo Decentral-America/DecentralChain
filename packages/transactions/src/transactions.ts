@@ -7,7 +7,7 @@ import {
     Transaction,
     TRANSACTION_TYPE,
     TransactionType
-} from '@waves/ts-types/src'
+} from '@waves/ts-types'
 import {InvokeScriptCallArgument} from '@waves/ts-types/src/parts'
 import {EthereumTransaction, ExchangeTransactionOrderType} from '@waves/ts-types'
 
@@ -80,7 +80,10 @@ export type TTxParams<LONG = string | number> =
     | ISponsorshipParams<LONG>
     | ITransferParams<LONG>
     | IUpdateAssetInfoParams<LONG>
+<<<<<<< HEAD
     // | IInvokeExpressionParams<LONG>
+=======
+>>>>>>> 697d643a (minor fixes)
 
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
@@ -335,6 +338,7 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
     description: string
 }
 
+<<<<<<< HEAD
 // /**
 //  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
 //  */
@@ -344,6 +348,9 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
 // }
 
 export type TTransaction = Exclude<Transaction, GenesisTransaction | PaymentTransaction | EthereumTransaction>
+=======
+export type TTransaction = Exclude<Transaction, GenesisTransaction | PaymentTransaction>
+>>>>>>> 697d643a (minor fixes)
 
 export type TTransactionType = Exclude<typeof TRANSACTION_TYPE[keyof typeof TRANSACTION_TYPE], 1 | 2 | 18>
 

@@ -4,7 +4,11 @@
 import {ICancelLeaseParams, WithId, WithProofs, WithSender} from '../transactions'
 import { binary } from '@decentralchain/marshall'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
+<<<<<<< HEAD
 import {addProof, getSenderPublicKey, convertToPairs, networkByte, fee} from '../generic'
+=======
+import { addProof, getSenderPublicKey, convertToPairs, networkByte, fee } from '../generic'
+>>>>>>> 697d643a (minor fixes)
 import { TSeedTypes } from '../types'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
