@@ -3,12 +3,16 @@
  */
 import {IReissueParams, WithId, WithProofs, WithSender} from '../transactions'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
+<<<<<<< HEAD
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
+=======
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
+>>>>>>> 697d643a (minor fixes)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {ReissueTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
 
 
@@ -21,7 +25,11 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
   const seedsAndIndexes = convertToPairs(seed)
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
 
+<<<<<<< HEAD
   const tx: ReissueTransaction & WithId & WithProofs = {
+=======
+  const tx: ReissueTransaction & WithId & WithProofs= {
+>>>>>>> 697d643a (minor fixes)
     type,
     version,
     senderPublicKey,
@@ -29,7 +37,11 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
     quantity: paramsOrTx.quantity,
     reissuable: paramsOrTx.reissuable,
     chainId: networkByte(paramsOrTx.chainId, 87),
+<<<<<<< HEAD
     fee: fee(paramsOrTx,100000),
+=======
+    fee: fee(paramsOrTx,100000000000),
+>>>>>>> 697d643a (minor fixes)
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     id: '',

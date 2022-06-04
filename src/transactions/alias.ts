@@ -26,7 +26,11 @@ export function alias(paramsOrTx: any, seed?: TSeedTypes): AliasTransaction & Wi
     version,
     senderPublicKey,
     alias: paramsOrTx.alias,
+<<<<<<< HEAD
     fee: fee(paramsOrTx, 100000),
+=======
+    fee: fee(paramsOrTx, 1000000000),
+>>>>>>> 697d643a (minor fixes)
     timestamp: paramsOrTx.timestamp || Date.now(),
     chainId: networkByte(paramsOrTx.chainId, 87),
     proofs: paramsOrTx.proofs || [],

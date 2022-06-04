@@ -1,20 +1,19 @@
 import {
-    IAliasParams,
-    IBurnParams,
-    ICancelLeaseParams,
-    IDataParams,
-    IInvokeScriptParams,
-    IIssueParams,
-    ILeaseParams,
-    IMassTransferParams,
-    IReissueParams,
-    ISetAssetScriptParams,
-    ISetScriptParams,
-    ISponsorshipParams,
-    ITransferParams,
-    TTransactionType,
-    WithId,
-    WithSender
+  IAliasParams,
+  IBurnParams,
+  ICancelLeaseParams,
+  IDataParams,
+  IInvokeScriptParams,
+  IIssueParams,
+  ILeaseParams,
+  IMassTransferParams,
+  IReissueParams,
+  ISetAssetScriptParams,
+  ISetScriptParams,
+  ISponsorshipParams,
+  ITransferParams, TTransactionType,
+  WithId,
+  WithSender
 } from './transactions'
 import {issue} from './transactions/issue'
 import {transfer} from './transactions/transfer'
@@ -39,7 +38,10 @@ import {
     CancelLeaseTransaction,
     DataTransaction,
     ExchangeTransaction,
+<<<<<<< HEAD
     // InvokeExpressionTransaction,
+=======
+>>>>>>> 697d643a (minor fixes)
     InvokeScriptTransaction,
     IssueTransaction,
     LeaseTransaction,
@@ -48,9 +50,9 @@ import {
     SetAssetScriptTransaction,
     SetScriptTransaction,
     SponsorshipTransaction,
-    TRANSACTION_TYPE,
     TransferTransaction,
-    UpdateAssetInfoTransaction
+    UpdateAssetInfoTransaction,
+    TRANSACTION_TYPE
 } from '@waves/ts-types'
 
 export type TTransaction<T extends TTransactionType> = TxTypeMap[T]
@@ -71,7 +73,10 @@ export type TxTypeMap = {
     [TRANSACTION_TYPE.EXCHANGE]: ExchangeTransaction
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction
+<<<<<<< HEAD
     // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction
+=======
+>>>>>>> 697d643a (minor fixes)
 }
 export type TTxParamsWithType<T extends TTransactionType> = TxParamsTypeMap[T] & { type: T }
 
@@ -91,7 +96,10 @@ export type TxParamsTypeMap = {
     [TRANSACTION_TYPE.EXCHANGE]: ExchangeTransaction
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: IInvokeScriptParams
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction
+<<<<<<< HEAD
     // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction
+=======
+>>>>>>> 697d643a (minor fixes)
 }
 
 /**
@@ -129,8 +137,11 @@ export function makeTx<T extends TTransactionType>(params: TTxParamsWithType<T> 
             return invokeScript(params as any) as any
         case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
             return updateAssetInfo(params as any) as any
+<<<<<<< HEAD
         // case TRANSACTION_TYPE.INVOKE_EXPRESSION:
         //     return txToProtoBytes(params as any) as any
+=======
+>>>>>>> 697d643a (minor fixes)
         default:
             throw new Error(`Unknown tx type: ${params.type}`)
     }
@@ -171,8 +182,11 @@ export function makeTxBytes<T extends TTransactionType>(tx: TTxParamsWithType<T>
             return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx)
         case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
             return txToProtoBytes(tx as any)
+<<<<<<< HEAD
         // case TRANSACTION_TYPE.INVOKE_EXPRESSION:
         //     return txToProtoBytes(tx as any)
+=======
+>>>>>>> 697d643a (minor fixes)
         default:
             throw new Error(`Unknown tx type: ${tx.type}`)
     }

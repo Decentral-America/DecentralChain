@@ -3,7 +3,11 @@
  */
 import {ILeaseParams, WithId, WithProofs, WithSender} from '../transactions'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
+<<<<<<< HEAD
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
+=======
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
+>>>>>>> 697d643a (minor fixes)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'

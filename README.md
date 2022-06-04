@@ -1,11 +1,13 @@
-# waves-transactions  [![npm version](https://badge.fury.io/js/%decentralchain%2Fwaves-transactions.svg)](https://badge.fury.io/js/%decentralchain%2Fwaves-transactions)
+# waves-transactions  [![npm version](https://badge.fury.io/js/%40decentralchain%2Fwaves-transactions.svg)](https://badge.fury.io/js/%40decentralchain%2Fwaves-transactions)
+
+
 
 [![License][license-image]][license-url]
 
 [license-url]: https://opensource.org/licenses/MIT
 [license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
 
-Using this library you can easily create and sign transactions for DecentralChain blockchain.
+Using this library you can easily create and sign transactions for DecentralChain.
 It also allows you to multi-sign existing transactions or create them without signature at all.
 
 - [Transactions](#Transactions) 
@@ -46,11 +48,11 @@ const burnTx = burn({
 You can provide seed or private key to transaction creating function to sign it. If you do, senderPublicKey can be omitted.
 ```typescript
 const signedTranfer = transfer({
-    recipient:'3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+    recipient:'3P5tbbRm9MCBc5oiMyt29dLAznXnRQwPmN9',
     amount: 100000}, 'secret seed phraze'
 )
 const signedTranferViaPrivateKey = transfer({
-    recipient:'3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+    recipient:'3P5tbbRm9MCBc5oiMyt29dLAznXnRQwPmN9',
     amount: 100000}, {privateKey: 'GucCLYU7aqzcVUwVXX4nosceDisky9UpbmpFK39tVYom'}
 )
 ```
@@ -323,16 +325,16 @@ If you want to create  the minimum you need to provide is **amount** and **recip
 
 const { transfer } = require('@decentralchain/waves-transactions')
 const seed = 'some example seed phrase'
-const signedTranserTx = transfer({ 
+const signedTranserTx = transfer({
   amount: 1,
-  recipient: '3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+  recipient: '3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2',
   //Timestamp is optional but it was overrided, in case timestamp is not provided it will fallback to Date.now(). You can set any oftional params yourself. go check full docs
-  timestamp: 1536917842558 
+  timestamp: 1536917842558
 }, seed)
 
 // or using alias
 
-const signedTranserTx = transfer({ 
+const signedTranserTx = transfer({
   amount: 1,
   recipient: 'alias:W:aliasForMyAddress'
 }, seed)
@@ -344,7 +346,7 @@ Output will be a signed transfer transaction:
   id: '8NrUwgKRCMFbUbqXKQAHkGnspmWHEjKUSi5opEC6Havq',
   type: 4,
   version: 2,
-  recipient: '3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+  recipient: '3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2',
   attachment: undefined,
   feeAssetId: undefined,
   assetId: undefined,
@@ -360,15 +362,15 @@ Output will be a signed transfer transaction:
 
 You can also create transaction, but not sign it:
 ```javascript
-const unsignedTransferTx = transfer({ 
+const unsignedTransferTx = transfer({
   amount: 1,
-  recipient: '3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+  recipient: '3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2',
   //senderPublicKey is required if you omit seed
-  senderPublicKey: '6nR7CXVV7Zmt9ew11BsNzSvVmuyM5PF6VPbWHW9BHgPq' 
+  senderPublicKey: '6nR7CXVV7Zmt9ew11BsNzSvVmuyM5PF6VPbWHW9BHgPq'
 })
 ```
 
-Now you are able to POST it to Decentralchain API or store for future purpose or you can add another signature from other party:
+Now you are able to POST it to DCCAPI or store for future purpose or you can add another signature from other party:
 ```js
 const otherPartySeed = 'other party seed phrase'
 const transferSignedWithTwoParties = transfer(signedTranserTx, seed)
@@ -380,7 +382,7 @@ So now there are two proofs:
   id: '8NrUwgKRCMFbUbqXKQAHkGnspmWHEjKUSi5opEC6Havq',
   type: 4,
   version: 2,
-  recipient: '3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE',
+  recipient: '3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2',
   attachment: undefined,
   feeAssetId: undefined,
   assetId: undefined,
@@ -400,17 +402,17 @@ Order is created the same way as transaction
 ```typescript
 const { order } = require('@decentralchain/waves-transactions')
 const params = {
-    amount: 100000000, //1 DCC
+    amount: 100000000, //1 dcc
     price: 10, //for 0.00000010 BTC
     priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-    matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+    matcherPublicKey: 'DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY',
     orderType: 'buy'
 }
   
 const signedOrder = order(params, 'Some seed ')
 ```
 ### Broadcast
-To send transaction you can use either node [REST API](https://mainnet-node.decentralchain.io/api-docs/index.html#!/transactions/broadcast) or [broadcast](https://decentral-america.github.io/waves-transactions/globals.html#broadcast) helper function:
+To send transaction you can use either node [REST API](https://mainnet-node.decentralchain.io/api-docs/index.html#!/transactions/broadcast) or [broadcast](https://github.com/Decentral-America/waves-transactions/globals.html#broadcast) helper function:
 ```javascript
 const {broadcast} =  require('@decentralchain/waves-transactions');
 const nodeUrl = 'https://mainnet-node.decentralchain.io';
@@ -418,13 +420,13 @@ const nodeUrl = 'https://mainnet-node.decentralchain.io';
 broadcast(signedTx, nodeUrl).then(resp => console.log(resp))
 ```
 You can send tx to any DCC node you like:. E.g.:
-* https://testnet-node.decentralchain.io - DCC TESTNET nodes hosted by DecentralChain
-* https://mainnet-node.decentralchain.io - DCC MAINNET nodes hosted by DecentralChain
+* https://testnet-node.decentralchain.io - DCC TESTNET nodes hosted by Blockchain Costa Rica
+* https://mainnet-node.decentralchain.io - DCC MAINNET nodes hosted by Blockchain Costa Rica
 #### Important!!!
-Most transactions require chainId as parameter, e.g: [IBurnParams](https://decentral-america.github.io/waves-transactions/interfaces/iburnparams.html). By default chainId is 'W', which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node
+Most transactions require chainId as parameter, e.g: [IBurnParams](https://github.com/Decentral-America/waves-transactions/interfaces/iburnparams.html). By default chainId is 'L', which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node
 
 ### Dependencies
-This library uses `@waves/ts-lib-crypto` for cryptography and `@waves/node-api-js` for interacting with node. 
+This library uses `@decentralchain/ts-lib-crypto` for cryptography and `@decentralchain/node-api-js` for interacting with node. 
 You can access them this way:
 ```typescript
 const libCrypto = require('@decentralchain/waves-transactions').libs.crypto

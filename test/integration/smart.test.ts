@@ -18,9 +18,15 @@ describe('Smart features', () => {
     account2 = 'account2' + nonce
     const mtt = massTransfer({
       transfers: [
+<<<<<<< HEAD
         { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
         { recipient: address(account2, CHAIN_ID), amount: 1100000 },
       ],
+=======
+        { recipient: address(account1, CHAIN_ID), amount: 10000 * wvs },
+        { recipient: address(account2, CHAIN_ID), amount: 10000 * wvs },
+      ]
+>>>>>>> 697d643a (minor fixes)
     }, MASTER_SEED)
     await broadcast(mtt, API_BASE)
     await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT })
@@ -90,7 +96,7 @@ describe('Smart features', () => {
         senderPublicKey: publicKey(account1),
         chainId: CHAIN_ID,
         script: null,
-        additionalFee: 400000,
+        additionalFee: 4000000,
       }
 
       const removeTx = setScript(removeTxParams, [null, 'bob', 'cooper'])
@@ -111,7 +117,6 @@ describe('Smart features', () => {
       {-# STDLIB_VERSION 3 #-}
       {-# CONTENT_TYPE DAPP #-}
       {-# SCRIPT_TYPE ACCOUNT #-}
-
       @Callable(i)
       func foo(a: Int) = {
           TransferSet([ScriptTransfer(i.caller, a, unit)])
@@ -139,14 +144,20 @@ describe('Smart features', () => {
       const dappAddress = address(account2, CHAIN_ID)
 
       const invokeTx = invokeScript({
-          chainId: CHAIN_ID,
-          dApp: dappAddress,
-          call: {
-            function: 'foo', args: [{ type: 'integer', value: 10000 }],
+            chainId: CHAIN_ID,
+            dApp: dappAddress,
+            additionalFee: 4000000,
+            call: {
+              function: 'foo', args: [{ type: 'integer', value: 10000 }],
+            },
           },
+<<<<<<< HEAD
           fee: 900000
         },
         account1)
+=======
+          account1)
+>>>>>>> 697d643a (minor fixes)
 
       await broadcast(invokeTx, API_BASE)
 

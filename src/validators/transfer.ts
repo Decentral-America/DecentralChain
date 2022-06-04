@@ -23,10 +23,17 @@ const transferScheme = {
     recipient: isRecipient,
     amount: isNaturalNumberOrZeroLike,
     attachment: isAttachment,
+<<<<<<< HEAD
     fee: isNaturalNumberOrZeroLike,
     timestamp: isNaturalNumberOrZeroLike,
     proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
+=======
+    fee: isNumberLike,
+    timestamp: isNumber,
+    proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ]))
+ };
+>>>>>>> 697d643a (minor fixes)
 
 
 export const transferValidator = validateByShema(transferScheme, getError);
