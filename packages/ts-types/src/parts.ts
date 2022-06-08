@@ -70,6 +70,10 @@ export interface WithId {
     id: string;
 }
 
+export interface WithApplicationStatus {
+    applicationStatus: 'succeeded' | 'script_execution_failed';
+}
+
 export type MassTransferItem<LONG = Long> = {
     recipient: string;
     amount: LONG;
