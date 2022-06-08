@@ -12,6 +12,9 @@ import {
     TRANSACTION_TYPE,
     TransactionType,
     TStateChanges,
+    WithApiMixin,
+    WithApplicationStatus,
+    WithId,
     WithVersion,
 } from '../src';
 
@@ -190,10 +193,6 @@ export type UpdateAssetInfoTransactionFields<LONG = Long> = {
     description: string;
 };
 
-export interface IUpdateAssetInfoTransaction<LONG = Long>
-    extends BaseTransaction<LONG, typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO>,
-        UpdateAssetInfoTransactionFields<LONG> {}
-
 export type EthereumTransactionFields<LONG = Long> = {
     payload:
         | ({
@@ -238,10 +237,7 @@ export type IssueTransactionV2<LONG = Long> = WithVersion<
     2
 >;
 export type IssueTransactionV3<LONG = Long> = WithVersion<
-    IssueTransactionFields<LONG> &
-        BaseTransaction<LONG, 3> & {
-            feeAssetId: string | null;
-        },
+    IssueTransactionFields<LONG> & BaseTransaction<LONG, 3>,
     3
 >;
 
@@ -505,75 +501,208 @@ export type EthereumTransactionMap<LONG = Long> = {
 //Transaction types
 export type GenesisTransaction<LONG = Long> = GenesisTransactionV1<LONG>;
 
+export type GenesisTransactionFromNode<LONG = Long> = SignedTransaction<
+    GenesisTransaction<LONG>
+> &
+    WithId &
+    Omit<WithApiMixin, 'sender'>;
+
 export type PaymentTransaction<LONG = Long> = PaymentTransactionV1<LONG>;
+
+export type PaymentTransactionFromNode<LONG = Long> = PaymentTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type IssueTransaction<LONG = Long> =
     | IssueTransactionV1<LONG>
     | IssueTransactionV2<LONG>
     | IssueTransactionV3<LONG>;
 
+export type IssueTransactionFromNode<LONG = Long> = IssueTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type TransferTransaction<LONG = Long> =
     | TransferTransactionV1<LONG>
     | TransferTransactionV2<LONG>
     | TransferTransactionV3<LONG>;
+
+export type TransferTransactionFromNode<LONG = Long> = TransferTransaction<
+    LONG
+> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin;
 
 export type LeaseTransaction<LONG = Long> =
     | LeaseTransactionV1<LONG>
     | LeaseTransactionV2<LONG>
     | LeaseTransactionV3<LONG>;
 
+export type LeaseTransactionFromNode<LONG = Long> = LeaseTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type BurnTransaction<LONG = Long> =
     | BurnTransactionV1<LONG>
     | BurnTransactionV2<LONG>
     | BurnTransactionV3<LONG>;
+
+export type BurnTransactionFromNode<LONG = Long> = BurnTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type ReissueTransaction<LONG = Long> =
     | ReissueTransactionV1<LONG>
     | ReissueTransactionV2<LONG>
     | ReissueTransactionV3<LONG>;
 
+export type ReissueTransactionFromNode<LONG = Long> = ReissueTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type CancelLeaseTransaction<LONG = Long> =
     | CancelLeaseTransactionV1<LONG>
     | CancelLeaseTransactionV2<LONG>
     | CancelLeaseTransactionV3<LONG>;
+
+export type CancelLeaseTransactionFromNode<
+    LONG = Long
+> = CancelLeaseTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type AliasTransaction<LONG = Long> =
     | AliasTransactionV1<LONG>
     | AliasTransactionV2<LONG>
     | AliasTransactionV3<LONG>;
 
+export type AliasTransactionFromNode<LONG = Long> = AliasTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 export type MassTransferTransaction<LONG = Long> =
     | MassTransferTransactionV1<LONG>
     | MassTransferTransactionV2<LONG>;
+
+export type MassTransferTransactionFromNode<
+    LONG = Long
+> = MassTransferTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type DataTransaction<LONG = Long> =
     | DataTransactionV1<LONG>
     | DataTransactionV2<LONG>;
 
+export type DataTransactionFromNode<LONG = Long> = DataTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type SetScriptTransaction<LONG = Long> =
     | SetScriptTransactionV1<LONG>
     | SetScriptTransactionV2<LONG>;
 
+export type SetScriptTransactionFromNode<LONG = Long> = SetScriptTransaction<
+    LONG
+> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type SponsorshipTransaction<LONG = Long> =
     | SponsorshipTransactionV1<LONG>
     | SponsorshipTransactionV2<LONG>;
+
+export type SponsorshipTransactionFromNode<
+    LONG = Long
+> = SponsorshipTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type ExchangeTransaction<LONG = Long> =
     | ExchangeTransactionV1<LONG>
     | ExchangeTransactionV2<LONG>
     | ExchangeTransactionV3<LONG>;
 
+export type ExchangeTransactionFromNode<LONG = Long> = ExchangeTransaction<
+    LONG
+> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
+
 export type SetAssetScriptTransaction<LONG = Long> =
     | SetAssetScriptTransactionV1<LONG>
     | SetAssetScriptTransactionV2<LONG>;
+
+export type SetAssetScriptTransactionFromNode<
+    LONG = Long
+> = SetAssetScriptTransaction<LONG> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type InvokeScriptTransaction<LONG = Long> =
     | InvokeScriptTransactionV1<LONG>
     | InvokeScriptTransactionV2<LONG>;
 
+export type InvokeScriptTransactionFromNode<LONG = Long> = SignedTransaction<
+    InvokeScriptTransaction<LONG>
+> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        stateChanges: TStateChanges;
+    };
+
 export type UpdateAssetInfoTransaction<
     LONG = Long
 > = UpdateAssetInfoTransactionV1<LONG>;
+
+export type UpdateAssetInfoTransactionFromNode<LONG = Long> = SignedTransaction<
+    UpdateAssetInfoTransaction<LONG>
+> &
+    WithId &
+    WithApplicationStatus &
+    WithApiMixin & {
+        feeAssetId: null;
+    };
 
 export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG>;
 
@@ -605,3 +734,22 @@ export type SignedTransaction<TX extends Transaction<any>> = TX &
             ? WithSignature
             : WithProofs
         : WithProofs);
+
+export type TransactionFromNode<LONG = Long> =
+    | GenesisTransactionFromNode<LONG>
+    | PaymentTransactionFromNode<LONG>
+    | IssueTransactionFromNode<LONG>
+    | TransferTransactionFromNode<LONG>
+    | ReissueTransactionFromNode<LONG>
+    | BurnTransactionFromNode<LONG>
+    | ExchangeTransactionFromNode<LONG>
+    | LeaseTransactionFromNode<LONG>
+    | CancelLeaseTransactionFromNode<LONG>
+    | AliasTransactionFromNode<LONG>
+    | MassTransferTransactionFromNode<LONG>
+    | DataTransactionFromNode<LONG>
+    | SetScriptTransactionFromNode<LONG>
+    | SponsorshipTransactionFromNode<LONG>
+    | SetAssetScriptTransactionFromNode<LONG>
+    | InvokeScriptTransactionFromNode<LONG>
+    | UpdateAssetInfoTransactionFromNode<LONG>;
