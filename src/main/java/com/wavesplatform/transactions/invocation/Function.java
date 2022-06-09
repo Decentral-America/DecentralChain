@@ -6,6 +6,7 @@ public class Function {
 
     private final String name;
     private final List<Arg> args;
+    public static final String DEFAULT_NAME = "default";
 
     public Function(String name, Arg... args) {
         this(name, new ArrayList<>(Arrays.asList(args)));
@@ -21,11 +22,11 @@ public class Function {
     }
 
     public static Function as(String name, Arg... args) {
-        return new Function(name, args);
+        return Objects.equals(name, DEFAULT_NAME) && args.length == 0 ? new Function(null, args) : new Function(name, args);
     }
 
     public static Function as(String name, List<Arg> args) {
-        return new Function(name, args);
+        return Objects.equals(name, DEFAULT_NAME) && args.size() == 0 ? new Function(null, args) : new Function(name, args);
     }
 
     public String name() {
@@ -37,7 +38,7 @@ public class Function {
     }
 
     public boolean isDefault() {
-        return name == null && args.size() == 0;
+        return (name == null || name.equals(DEFAULT_NAME)) && args.size() == 0;
     }
 
     @Override

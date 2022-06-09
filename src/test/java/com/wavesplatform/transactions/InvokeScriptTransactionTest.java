@@ -60,11 +60,11 @@ public class InvokeScriptTransactionTest {
                         "{\"type\":16,\"id\":\"ChSBYroE3h1o95utywa82GH8RhvBh2tZSCwRuHYrUDWM\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":2,\"feeAssetId\":\"5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd\",\"timestamp\":1600000000000,\"proofs\":[\"3sUwpnJ8Nb1sgktRJXLjrd6pCfGN4fCaccjpixRNGmckvsLg98QyxAK9n6ds9kdt48UzzZmcg3CXo233TJLbPwnC\"],\"version\":1,\"dApp\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"payment\":[]}"
                 ),
                 arguments(1, alias, Function.as("default"), payments(Amount.of(10)),
-                        fee, Id.as("346JhuGSgcDyrYf1CYR7aX9ySo6Lpx6136kfwGmVFYBK"),
+                        fee, Id.as("GzphCpBfYEff9z7XzJk4k2yGhT6vFC8nroxi1LaYCY7L"),
                         Proof.list(Proof.as("4ca8WVtrB7WBQy4B5vKRVL57Bi8wCSUay4aUYurRJov8PF3XiwQyvV48nWpBSmFKBYTko85r1EXhVvsES2QV4vfX")),
-                        Base64.decode("EAFSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QCUgAEZGFwcAEJAQAAAAdkZWZhdWx0AAAAAAABAAkAAAAAAAAACgAAAAAAAAehIQAAAAF0h26AAA=="),
-                        Base64.decode("ABABUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AlIABGRhcHABCQEAAAAHZGVmYXVsdAAAAAAAAQAJAAAAAAAAAAoAAAAAAAAHoSEAAAABdIdugAABAAEAQLS56zyvVMFu7fgkGYyPfeJz7JiHCsl96X3rAkLwcLH2GgQzmQT0W/2E7hgYb15hwN4mUUqT22RvhEwccWM8EIY="),
-                        "{\"type\":16,\"id\":\"346JhuGSgcDyrYf1CYR7aX9ySo6Lpx6136kfwGmVFYBK\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"4ca8WVtrB7WBQy4B5vKRVL57Bi8wCSUay4aUYurRJov8PF3XiwQyvV48nWpBSmFKBYTko85r1EXhVvsES2QV4vfX\"],\"version\":1,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}],\"call\":{\"function\":\"default\",\"args\":[]}}"
+                        Base64.decode("EAFSjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QCUgAEZGFwcAAAAQAJAAAAAAAAAAoAAAAAAAAHoSEAAAABdIdugAA="),
+                        Base64.decode("ABABUo2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AlIABGRhcHAAAAEACQAAAAAAAAAKAAAAAAAAB6EhAAAAAXSHboAAAQABAEC0ues8r1TBbu34JBmMj33ic+yYhwrJfel96wJC8HCx9hoEM5kE9Fv9hO4YGG9eYcDeJlFKk9tkb4RMHHFjPBCG"),
+                        "{\"type\":16,\"id\":\"GzphCpBfYEff9z7XzJk4k2yGhT6vFC8nroxi1LaYCY7L\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"4ca8WVtrB7WBQy4B5vKRVL57Bi8wCSUay4aUYurRJov8PF3XiwQyvV48nWpBSmFKBYTko85r1EXhVvsES2QV4vfX\"],\"version\":1,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}]}"
                 ),
                 arguments(1, alias, Function.as("function", argsV1), payments(Amount.of(20, assetId)),
                         fee, Id.as("3yhi3JvhMYfTWVFR8We3X9gWhSH7vJousayvvjrFEuVk"),
@@ -81,11 +81,11 @@ public class InvokeScriptTransactionTest {
                         "{\"type\":16,\"id\":\"2jrfokXkPtiU9Ygttxv9BnE1LYiyP7XP1muyV8rpHkCr\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":2,\"feeAssetId\":\"5hpg8uUDZhwsXsuexJ9GbhEDgnrTjXS61ZCrRL5rriJd\",\"timestamp\":1600000000000,\"proofs\":[\"41gpnbnVP8GxXkLtrTKVAbrzCA1BhkEKMy1fLKd2QkSzTeo2ThUJoy8QrUnb56rKaUxSU9jRicPUNbEGAJCo8Wyf\"],\"version\":2,\"chainId\":82,\"dApp\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"payment\":[]}"
                 ),
                 arguments(2, alias, Function.as("default"), payments(Amount.of(10)),
-                        fee, Id.as("jVGXJgbxhCg9gLZ1bSKPiJonAaACbQa3u9j6mpd4z4y"),
+                        fee, Id.as("DnCY9DUh3fQuBDTQxX5cLWyz9tLcjZRvTKNjSQU5C8Pd"),
                         Proof.list(Proof.as("R4dQVSMzTkSRY9ULgAu6fPLEgFL4ihBwyW4r4jthCKBCnyLfevgj1MC6Mkcgx1eLoy18R9NvkEGrgUb1HHRDLBq")),
-                        Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQocIeIICAurvILigCogcgCgYSBGRhcHASEgEJAQAAAAdkZWZhdWx0AAAAABoCEAo="),
-                        Base64.decode("ClYIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChwh4ggIC6u8guKAKiByAKBhIEZGFwcBISAQkBAAAAB2RlZmF1bHQAAAAAGgIQChJAFMApDGazkxjTi9JYYBMr0rjVUQuGvryW42oKIXcer1gMT4L9fTcepNwO7XOJRH7MJg8/7/8UnFUmgbUPnk7hgA=="),
-                        "{\"type\":16,\"id\":\"jVGXJgbxhCg9gLZ1bSKPiJonAaACbQa3u9j6mpd4z4y\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"R4dQVSMzTkSRY9ULgAu6fPLEgFL4ihBwyW4r4jthCKBCnyLfevgj1MC6Mkcgx1eLoy18R9NvkEGrgUb1HHRDLBq\"],\"version\":2,\"chainId\":82,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}],\"call\":{\"function\":\"default\",\"args\":[]}}"
+                        Base64.decode("CFISII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQocIeIICAurvILigCogcPCgYSBGRhcHASAQAaAhAK"),
+                        Base64.decode("CkUIUhIgjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QaBBChwh4ggIC6u8guKAKiBw8KBhIEZGFwcBIBABoCEAoSQBTAKQxms5MY04vSWGATK9K41VELhr68luNqCiF3Hq9YDE+C/X03HqTcDu1ziUR+zCYPP+//FJxVJoG1D55O4YA="),
+                        "{\"type\":16,\"id\":\"DnCY9DUh3fQuBDTQxX5cLWyz9tLcjZRvTKNjSQU5C8Pd\",\"sender\":\"3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF\",\"senderPublicKey\":\"AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV\",\"fee\":500001,\"feeAssetId\":null,\"timestamp\":1600000000000,\"proofs\":[\"R4dQVSMzTkSRY9ULgAu6fPLEgFL4ihBwyW4r4jthCKBCnyLfevgj1MC6Mkcgx1eLoy18R9NvkEGrgUb1HHRDLBq\"],\"version\":2,\"chainId\":82,\"dApp\":\"alias:R:dapp\",\"payment\":[{\"amount\":10,\"assetId\":null}]}"
                 ),
                 arguments(2, alias, Function.as("function", argsV2), payments(Amount.of(10), Amount.of(20, assetId)),
                         fee, Id.as("71EnNwbpssbWm2567KUBqEJn94AfwPBdhTin3NJbDojv"),

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wavesplatform.transactions.invocation.Function.DEFAULT_NAME;
 import static org.bouncycastle.util.encoders.Hex.decode;
 
 public abstract class JsonSerializer {
@@ -567,7 +568,10 @@ public abstract class JsonSerializer {
         if (json.hasNonNull("call")) {
             JsonNode call = json.get("call");
             List<Arg> args = call.hasNonNull("args") ? argsFromJson(call.get("args")) : new ArrayList<>();
-            function = Function.as(call.get("function").asText(), args);
+            String functionName = call.get("function").asText();
+            if (!functionName.equals(DEFAULT_NAME)) {
+                function = Function.as(functionName, args);
+            }
         }
         return function;
     }
