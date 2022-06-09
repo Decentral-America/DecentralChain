@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.wavesplatform.transactions.invocation.Function.DEFAULT_NAME;
 import static com.wavesplatform.transactions.serializers.eth.EthFunctionEncoder.encodeWavesFunctionInEthFmt;
 import static java.util.Objects.requireNonNull;
 
@@ -268,7 +269,7 @@ public class EthereumTransaction extends Transaction {
             params.add(new DynamicArray<>(StaticStruct.class, encodedPayments));
 
             org.web3j.abi.datatypes.Function f = new org.web3j.abi.datatypes.Function(
-                    function.isDefault() ? "default" : function.name(),
+                    function.isDefault() ? DEFAULT_NAME : function.name(),
                     params,
                     Collections.emptyList()
             );
