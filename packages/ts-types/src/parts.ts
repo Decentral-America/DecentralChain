@@ -156,8 +156,14 @@ export type SignedIExchangeTransactionOrder<
     ORDER extends ExchangeTransactionOrder<any>
 > = ORDER &
     (ORDER extends { version: 1 }
-        ? { signature: string }
-        : { proofs: Array<string> });
+        ? {
+              signature: string;
+              sender: string;
+          }
+        : {
+              proofs: Array<string>;
+              sender: string;
+          });
 
 export type ExchangeTransactionOrderMap<LONG = Long> = {
     1: ExchangeTransactionOrderV1<LONG>;
