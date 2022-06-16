@@ -249,7 +249,7 @@ public class EthereumTransaction extends Transaction {
                         }
                         ArrayList<Type> listValues = new ArrayList<>();
                         addArgs(listValues, ((ListArg) arg).value(), false);
-                        target.add(new DynamicArray<>(Type.class, listValues));
+                        target.add(new DynamicArray<>(listValues));
                         break;
                 }
             }
@@ -361,6 +361,18 @@ public class EthereumTransaction extends Transaction {
         }
 
         throw new IllegalArgumentException("Could not parse transaction");
+    }
+
+    public String toRawHexString() {
+        byte[] encode = EthereumTransaction.encode(
+                this.payload().toRawTransaction(
+                        this.timestamp(),
+                        this.gasPrice(),
+                        this.fee().value()
+                ),
+                this.signatureData()
+        );
+        return Numeric.toHexString(encode);
     }
 
     public static EthereumTransaction invokeScriptTxfromProtobuf(SignedTransaction protobufTx, TransactionMetadata txMetadata) {

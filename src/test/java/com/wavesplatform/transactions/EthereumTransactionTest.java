@@ -2,13 +2,13 @@ package com.wavesplatform.transactions;
 
 import com.wavesplatform.crypto.base.Base64;
 import com.wavesplatform.transactions.account.Address;
+import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.AssetId;
-import com.wavesplatform.transactions.invocation.BooleanArg;
-import com.wavesplatform.transactions.invocation.Function;
-import com.wavesplatform.transactions.invocation.IntegerArg;
-import com.wavesplatform.transactions.invocation.StringArg;
+import com.wavesplatform.transactions.common.ChainId;
+import com.wavesplatform.transactions.invocation.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,13 +16,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import static com.wavesplatform.transactions.EthereumTransaction.DEFAULT_GAS_PRICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class EthereumTransactionTest {
+
+    private final String mnemonic = "shrug target screen enemy endorse chef term october blast rate fog runway";
+
     static Stream<Arguments> transfers() {
         return Stream.of(
                 arguments(
@@ -119,4 +125,66 @@ public class EthereumTransactionTest {
                 Collections.singletonList(Amount.of(100L))
         );
     }
+
+    @Test
+    void testTransferToRawString() {
+        Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
+
+        EthereumTransaction transferTx = EthereumTransaction.createAndSign(
+                new EthereumTransaction.Transfer(
+                        new Address("3MoutSX6D5U8F8LD8GetA1b7o5SZNANpamk"),
+                        new Amount(1000, AssetId.WAVES)
+                ),
+                DEFAULT_GAS_PRICE,
+                ChainId.STAGENET,
+                100000L,
+                1655401118690L,
+                bob.getEcKeyPair()
+        );
+
+        Assertions.assertEquals(rawTransfer, transferTx.toRawHexString());
+    }
+
+    @Test
+    void testInvocationToRawString() {
+        Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
+
+        EthereumTransaction ethInvokeTx = EthereumTransaction.createAndSign(
+                new EthereumTransaction.Invocation(
+                        new Address("3MmaePEwdwKpJAnNWki8rbYnusd6BXxxpFH"),
+                        Function.as("call",
+                                BinaryArg.as(new Address("3MiKAyPxv5ccsFToCQiazxvBn4SMxECaFkU").bytes()),
+                                BooleanArg.as(true),
+                                IntegerArg.as(100500),
+                                StringArg.as(new Address("3Mf1H7VDVv6c6ejcNEGJim1nC4wmfK6165b").toString()),
+                                ListArg.as(IntegerArg.as(100500))
+                        ),
+                        Collections.emptyList()
+                ),
+                DEFAULT_GAS_PRICE,
+                ChainId.STAGENET,
+                100500000L,
+                1655738927034L,
+                bob.getEcKeyPair()
+        );
+
+        Assertions.assertEquals(rawInvocation, ethInvokeTx.toRawHexString());
+    }
+
+    private final String rawTransfer = "0xf8728601816d987be28502540be400830186a094fff689d6fea7aba445868536036452faf" +
+            "366fee68609184e72a0008081c9a04d6024005e6eca364324cdd9b8018ad8c0d9d97ef34058cf1088367190e166d9a017c80004" +
+            "614c38245351ede25d1447ee089a1a068d4d45d0c8b14b9b7c640e00";
+
+    private final String rawInvocation = "0xf9023386018181bb07ba8502540be4008405fd822094e662a65945789501222" +
+            "c67ec77d501408e5c96ca80b901c4453c90e400000000000000000000000000000000000000000000000000000000000" +
+            "000c000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000" +
+            "00000000000000000000000000000001889400000000000000000000000000000000000000000000000000000000000001" +
+            "000000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000" +
+            "00000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000001a0153c" +
+            "28d26c0b8f538eb9c520d3f26a436eda22ed42f2ecbae89000000000000000000000000000000000000000000000000000000" +
+            "0000000000000000000023334d6631483756445676366336656a634e45474a696d316e4334776d664b36313635620000000000" +
+            "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
+            "000000000100000000000000000000000000000000000000000000000000000000000188940000000000000000000000000000" +
+            "00000000000000000000000000000000000081caa0c664acaf8c5d94c6224d504e44f5fd3cdfa8bbdf23761986ee61a6d9dfb" +
+            "ee9e6a06ad4bb6015f19215a776cd9465d11b3413e6d3c30f5b3158cc60e90f32112b8c";
 }
