@@ -46,8 +46,7 @@ export type Transaction<LONG = Long> =
     | ExchangeTransaction<LONG>
     | SetAssetScriptTransaction<LONG>
     | InvokeScriptTransaction<LONG>
-    | UpdateAssetInfoTransaction<LONG>
-    | EthereumTransaction<LONG>;
+    | UpdateAssetInfoTransaction<LONG>;
 
 export type TransactionMap<LONG = Long> = {
     [TRANSACTION_TYPE.GENESIS]: GenesisTransaction<LONG>;
@@ -67,7 +66,6 @@ export type TransactionMap<LONG = Long> = {
     [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransaction<LONG>;
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
-    [TRANSACTION_TYPE.ETHEREUM]: EthereumTransaction<LONG>;
 };
 
 export type TransactionVersionsMap<LONG = Long> = {
@@ -88,7 +86,6 @@ export type TransactionVersionsMap<LONG = Long> = {
     [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransactionMap<LONG>;
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransactionMap<LONG>;
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
-    [TRANSACTION_TYPE.ETHEREUM]: EthereumTransactionMap<LONG>;
 };
 
 type Omit<A extends Record<string, any>, B extends keyof A> = {
@@ -199,10 +196,12 @@ export type EthereumTransactionFields<LONG = Long> = {
               type: 'invocation';
               stateChanges: TStateChanges;
           } & InvokeScriptTransactionFields)
-        | ({ type: 'transfer' } & Omit<
-              TransferTransactionFields,
-              'attachment'
-          >);
+        | {
+              type: 'transfer';
+              recipient: string;
+              amount: LONG;
+              asset: string | null;
+          };
     bytes: string;
 };
 //--------------------------------------------------------------------------------------------------------------------
@@ -509,7 +508,9 @@ export type GenesisTransactionFromNode<LONG = Long> = SignedTransaction<
 
 export type PaymentTransaction<LONG = Long> = PaymentTransactionV1<LONG>;
 
-export type PaymentTransactionFromNode<LONG = Long> = PaymentTransaction<LONG> &
+export type PaymentTransactionFromNode<LONG = Long> = SignedTransaction<
+    PaymentTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -521,11 +522,14 @@ export type IssueTransaction<LONG = Long> =
     | IssueTransactionV2<LONG>
     | IssueTransactionV3<LONG>;
 
-export type IssueTransactionFromNode<LONG = Long> = IssueTransaction<LONG> &
+export type IssueTransactionFromNode<LONG = Long> = SignedTransaction<
+    IssueTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
         feeAssetId: null;
+        assetId: string;
     };
 
 export type TransferTransaction<LONG = Long> =
@@ -533,8 +537,8 @@ export type TransferTransaction<LONG = Long> =
     | TransferTransactionV2<LONG>
     | TransferTransactionV3<LONG>;
 
-export type TransferTransactionFromNode<LONG = Long> = TransferTransaction<
-    LONG
+export type TransferTransactionFromNode<LONG = Long> = SignedTransaction<
+    TransferTransaction<LONG>
 > &
     WithId &
     WithApplicationStatus &
@@ -545,11 +549,14 @@ export type LeaseTransaction<LONG = Long> =
     | LeaseTransactionV2<LONG>
     | LeaseTransactionV3<LONG>;
 
-export type LeaseTransactionFromNode<LONG = Long> = LeaseTransaction<LONG> &
+export type LeaseTransactionFromNode<LONG = Long> = SignedTransaction<
+    LeaseTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
         feeAssetId: null;
+        status: 'canceled' | 'active';
     };
 
 export type BurnTransaction<LONG = Long> =
@@ -557,7 +564,9 @@ export type BurnTransaction<LONG = Long> =
     | BurnTransactionV2<LONG>
     | BurnTransactionV3<LONG>;
 
-export type BurnTransactionFromNode<LONG = Long> = BurnTransaction<LONG> &
+export type BurnTransactionFromNode<LONG = Long> = SignedTransaction<
+    BurnTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -569,7 +578,9 @@ export type ReissueTransaction<LONG = Long> =
     | ReissueTransactionV2<LONG>
     | ReissueTransactionV3<LONG>;
 
-export type ReissueTransactionFromNode<LONG = Long> = ReissueTransaction<LONG> &
+export type ReissueTransactionFromNode<LONG = Long> = SignedTransaction<
+    ReissueTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -581,13 +592,25 @@ export type CancelLeaseTransaction<LONG = Long> =
     | CancelLeaseTransactionV2<LONG>
     | CancelLeaseTransactionV3<LONG>;
 
-export type CancelLeaseTransactionFromNode<
-    LONG = Long
-> = CancelLeaseTransaction<LONG> &
+export type CancelLeaseTransactionFromNode<LONG = Long> = SignedTransaction<
+    CancelLeaseTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
         feeAssetId: null;
+    } & {
+        lease: {
+            id: string;
+            originTransactionId: string;
+            sender: string;
+            recipient: string;
+            amount: Long;
+            height: number;
+            status: 'canceled' | 'active';
+            cancelHeight: number;
+            cancelTransactionId: string;
+        };
     };
 
 export type AliasTransaction<LONG = Long> =
@@ -595,7 +618,9 @@ export type AliasTransaction<LONG = Long> =
     | AliasTransactionV2<LONG>
     | AliasTransactionV3<LONG>;
 
-export type AliasTransactionFromNode<LONG = Long> = AliasTransaction<LONG> &
+export type AliasTransactionFromNode<LONG = Long> = SignedTransaction<
+    AliasTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -605,20 +630,24 @@ export type MassTransferTransaction<LONG = Long> =
     | MassTransferTransactionV1<LONG>
     | MassTransferTransactionV2<LONG>;
 
-export type MassTransferTransactionFromNode<
-    LONG = Long
-> = MassTransferTransaction<LONG> &
+export type MassTransferTransactionFromNode<LONG = Long> = SignedTransaction<
+    MassTransferTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
         feeAssetId: null;
+        totalAmount: LONG;
+        transferCount: number;
     };
 
 export type DataTransaction<LONG = Long> =
     | DataTransactionV1<LONG>
     | DataTransactionV2<LONG>;
 
-export type DataTransactionFromNode<LONG = Long> = DataTransaction<LONG> &
+export type DataTransactionFromNode<LONG = Long> = SignedTransaction<
+    DataTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -629,8 +658,8 @@ export type SetScriptTransaction<LONG = Long> =
     | SetScriptTransactionV1<LONG>
     | SetScriptTransactionV2<LONG>;
 
-export type SetScriptTransactionFromNode<LONG = Long> = SetScriptTransaction<
-    LONG
+export type SetScriptTransactionFromNode<LONG = Long> = SignedTransaction<
+    SetScriptTransaction<LONG>
 > &
     WithId &
     WithApplicationStatus &
@@ -642,9 +671,9 @@ export type SponsorshipTransaction<LONG = Long> =
     | SponsorshipTransactionV1<LONG>
     | SponsorshipTransactionV2<LONG>;
 
-export type SponsorshipTransactionFromNode<
-    LONG = Long
-> = SponsorshipTransaction<LONG> &
+export type SponsorshipTransactionFromNode<LONG = Long> = SignedTransaction<
+    SponsorshipTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -656,8 +685,8 @@ export type ExchangeTransaction<LONG = Long> =
     | ExchangeTransactionV2<LONG>
     | ExchangeTransactionV3<LONG>;
 
-export type ExchangeTransactionFromNode<LONG = Long> = ExchangeTransaction<
-    LONG
+export type ExchangeTransactionFromNode<LONG = Long> = SignedTransaction<
+    ExchangeTransaction<LONG>
 > &
     WithId &
     WithApplicationStatus &
@@ -669,9 +698,9 @@ export type SetAssetScriptTransaction<LONG = Long> =
     | SetAssetScriptTransactionV1<LONG>
     | SetAssetScriptTransactionV2<LONG>;
 
-export type SetAssetScriptTransactionFromNode<
-    LONG = Long
-> = SetAssetScriptTransaction<LONG> &
+export type SetAssetScriptTransactionFromNode<LONG = Long> = SignedTransaction<
+    SetAssetScriptTransaction<LONG>
+> &
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
@@ -704,7 +733,11 @@ export type UpdateAssetInfoTransactionFromNode<LONG = Long> = SignedTransaction<
         feeAssetId: null;
     };
 
-export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG>;
+export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG> &
+    WithApiMixin &
+    WithApplicationStatus & {
+        feeAssetId: null;
+    };
 
 //
 type TWithSignatureMap = {
@@ -752,4 +785,5 @@ export type TransactionFromNode<LONG = Long> =
     | SponsorshipTransactionFromNode<LONG>
     | SetAssetScriptTransactionFromNode<LONG>
     | InvokeScriptTransactionFromNode<LONG>
-    | UpdateAssetInfoTransactionFromNode<LONG>;
+    | UpdateAssetInfoTransactionFromNode<LONG>
+    | EthereumTransaction<LONG>;
