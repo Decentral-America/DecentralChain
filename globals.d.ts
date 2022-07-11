@@ -394,6 +394,8 @@ declare namespace WavesKeeper {
 
     type TIssueTxData = ISignData<3, IIssueTx>;
 
+    type TBinaryIn = string | Uint8Array | number[];
+
     interface ITransferTx extends ITransactionBase {
         /**
          * MoneyLike - amount
@@ -404,9 +406,9 @@ declare namespace WavesKeeper {
          */
         recipient: string;
         /**
-         * [,140 bytes] string or byte Array – additional info in text (optional field)
+         * [,140 bytes] string or byte Array – additional info (optional field)
          */
-        attachment?: string | Uint8Array | Array<number>;
+        attachment?: TBinaryIn;
     }
 
     type TTransferTxData = ISignData<4, ITransferTx>;
@@ -483,9 +485,9 @@ declare namespace WavesKeeper {
          */
         transfers: Array<ITransfer>;
         /**
-         * [,140 bytes в base58] string – additional info (optional field)
+         * [,140 bytes] string or byte Array – additional info (optional field)
          */
-        attachment?: string;
+        attachment?: TBinaryIn;
     }
 
     interface ITransfer {
