@@ -144,6 +144,8 @@ export type ExchangeTransactionOrderV3<LONG = Long> = WithVersion<
 export type ExchangeTransactionOrderV4<LONG = Long> = WithVersion<
     ExchangeOrderWithCustomFee<LONG> & {
         priceMode: 'fixedDecimals' | 'assetDecimals';
+        eip712Signature?: string;
+        senderPublicKey?: string;
     },
     4
 >;
