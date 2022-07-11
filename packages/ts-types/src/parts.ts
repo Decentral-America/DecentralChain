@@ -142,7 +142,9 @@ export type ExchangeTransactionOrderV3<LONG = Long> = WithVersion<
     3
 >;
 export type ExchangeTransactionOrderV4<LONG = Long> = WithVersion<
-    ExchangeOrderWithCustomFee<LONG>,
+    ExchangeOrderWithCustomFee<LONG> & {
+        priceMode: 'fixedDecimals' | 'assetDecimals';
+    },
     4
 >;
 
