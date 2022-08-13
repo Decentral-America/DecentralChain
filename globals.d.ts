@@ -342,8 +342,7 @@ declare namespace WavesKeeper {
         TSponsoredFeeTxData |
         TSetAssetScriptTxData |
         TScriptInvocationTxData |
-        TUpdateAssetInfoTxData |
-        TInvokeExpressionTxData;
+        TUpdateAssetInfoTxData;
 
     interface ISignData<TYPE extends number, BODY> {
         type: TYPE;
@@ -610,15 +609,6 @@ declare namespace WavesKeeper {
 
     type TUpdateAssetInfoTxData = ISignData<17, IUpdateAssetInfoTx>;
 
-    interface IInvokeExpressionTx {
-        /**
-         * Compiled call script, base64 encoded, up to 32,768 bytes
-         */
-        expression: string
-    }
-
-    type TInvokeExpressionTxData = ISignData<18, IInvokeExpressionTx>
-
     type TSignTransactionPackageData = Array<
         TIssueTxData |
         TTransferTxData |
@@ -632,8 +622,7 @@ declare namespace WavesKeeper {
         TSetScriptTxData |
         TSponsoredFeeTxData |
         TSetAssetScriptTxData |
-        TScriptInvocationTxData |
-        TInvokeExpressionTxData>;
+        TScriptInvocationTxData>;
     interface INotificationData {
         /**
          * string (20 chars max)
