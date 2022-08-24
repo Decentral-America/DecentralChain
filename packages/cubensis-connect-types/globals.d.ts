@@ -393,7 +393,7 @@ declare namespace WavesKeeper {
 
     type TIssueTxData = ISignData<3, IIssueTx>;
 
-    type TBinaryIn = string | Uint8Array | number[];
+    type TBinaryIn = string | number[];
 
     interface ITransferTx extends ITransactionBase {
         /**
