@@ -1,6 +1,6 @@
 {
   "name": "@waves/waveskeeper-types",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Interfaces for Waves Keeper",
   "types": "globals.d.ts",
   "main": "",
