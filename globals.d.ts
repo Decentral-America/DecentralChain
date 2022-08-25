@@ -1,13 +1,10 @@
-// Type definitions for WavesKeeper
-// Project: WavesKeeper
-
-/*~ This template shows how to write a global plugin. */
-
 interface Window {
     WavesKeeper: WavesKeeper.TWavesKeeperApi;
+    KeeperWallet: WavesKeeper.TWavesKeeperApi;
 }
 
 declare var WavesKeeper: WavesKeeper.TWavesKeeperApi;
+declare var KeeperWallet: WavesKeeper.TWavesKeeperApi;
 
 declare namespace WavesKeeper {
 
