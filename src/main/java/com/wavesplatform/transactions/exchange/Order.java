@@ -148,6 +148,11 @@ public class Order extends TransactionOrOrder {
             return this;
         }
 
+        public OrderBuilder eip712Signature(byte[] eip712Signature) {
+            this.eip712Signature = eip712Signature;
+            return this;
+        }
+
         protected Order _build() {
             long expiration = this.expiration == 0 ? this.timestamp + (30 * 24 * 60 * 60 * 1000L) : this.expiration;
             return new Order(sender, type, amount, price, matcher, chainId, fee, timestamp, expiration, version);

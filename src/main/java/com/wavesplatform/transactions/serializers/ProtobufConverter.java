@@ -58,6 +58,7 @@ public abstract class ProtobufConverter {
                 .fee(pbAmountToAmount(pbOrder.getMatcherFee()))
                 .timestamp(pbOrder.getTimestamp())
                 .expiration(pbOrder.getExpiration())
+                .eip712Signature(pbOrder.getEip712Signature().toByteArray())
                 .getUnsigned();
         pbOrder.getProofsList().forEach(p -> order.proofs().add(Proof.as(p.toByteArray())));
         return order;
@@ -382,9 +383,13 @@ public abstract class ProtobufConverter {
             builder.setOrderSide(OrderOuterClass.Order.Side.BUY);
         else if (order.type() == OrderType.SELL)
             builder.setOrderSide(OrderOuterClass.Order.Side.SELL);
+        if (order.eip712Signature() != null && order.eip712Signature().length > 0) {
+            builder.setEip712Signature(ByteString.copyFrom(order.eip712Signature()));
+        } else {
+            builder.setSenderPublicKey(ByteString.copyFrom(order.sender().bytes()));
+        }
         builder.setVersion(order.version())
                 .setChainId(order.chainId())
-                .setSenderPublicKey(ByteString.copyFrom(order.sender().bytes()))
                 .setAssetPair(OrderOuterClass.AssetPair.newBuilder()
                         .setAmountAssetId(ByteString.copyFrom(order.amount().assetId().bytes()))
                         .setPriceAssetId(ByteString.copyFrom(order.price().assetId().bytes()))
@@ -555,7 +560,6 @@ public abstract class ProtobufConverter {
 
     public static OrderOuterClass.Order toProtobuf(Order order) {
         return OrderOuterClass.Order.newBuilder(toUnsignedProtobuf(order))
-                .setEip712Signature(order.eip712Signature() == null ? ByteString.EMPTY : ByteString.copyFrom(order.eip712Signature()))
                 .addAllProofs(order.proofs()
                         .stream()
                         .map(p -> ByteString.copyFrom(p.bytes()))
