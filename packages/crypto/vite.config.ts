@@ -1,4 +1,3 @@
-import wasm from 'vite-plugin-wasm';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -15,7 +14,6 @@ export default defineConfig({
     sourcemap: true,
     target: 'esnext',
   },
-  plugins: [wasm()],
   test: {
     globals: true,
     includeSource: ['index.ts'],

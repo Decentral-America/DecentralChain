@@ -2,9 +2,42 @@ import { blake2b as nobleBlake2b } from '@noble/hashes/blake2b';
 import { keccak_256 as keccak } from '@noble/hashes/sha3';
 import { base58 } from '@scure/base';
 
-import * as wasm from '../pkg';
+import * as __wasm from '../pkg';
 import { decryptAesEcb, encryptAesEcb } from './aesEcb';
 import { seedWords } from './seedWords';
+
+const getWasm = (() => {
+  let initialized = false;
+  let wasm: typeof __wasm;
+
+  return () => {
+    if (!initialized) {
+      // we work around the fact that vite replaces import.meta.url with
+      // self.location, which doesn't exist in node.js
+      const polyfillSelf = typeof self === 'undefined';
+      if (polyfillSelf) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        global.self = { location: import.meta.url } as any;
+      }
+
+      const url = new URL(
+        '../pkg/waves_crypto_bg.wasm?inline',
+        import.meta.url
+      );
+
+      if (polyfillSelf) {
+        // @ts-ignore ts requires self to be optional, but it's not
+        delete global.self;
+      }
+
+      __wasm.initSync(base64Decode(url.toString().split(',')[1]));
+      initialized = true;
+      wasm = __wasm;
+    }
+
+    return wasm;
+  };
+})();
 
 export function base16Decode(input: string) {
   return Uint8Array.from(Array.from(input.matchAll(/[0-9a-f]{2}/gi)), ([h]) =>
@@ -52,12 +85,16 @@ export async function createPrivateKey(seed: string, nonce = 0) {
   const seedBytes = Uint8Array.of(0, 0, 0, 0, ...stringToBytes(seed));
   new DataView(seedBytes.buffer).setUint32(0, nonce, false);
 
+  const wasm = getWasm();
+
   return wasm.create_private_key(
     new Uint8Array(await sha256(keccak(blake2b(seedBytes))))
   );
 }
 
 export function createPublicKey(privateKey: Uint8Array) {
+  const wasm = getWasm();
+
   return wasm.create_public_key(privateKey);
 }
 
@@ -66,6 +103,8 @@ export async function createSharedKey(
   publicKeyTo: Uint8Array,
   prefix: Uint8Array
 ) {
+  const wasm = getWasm();
+
   const key = await sha256(prefix);
   const data = wasm.create_shared_key(privateKeyFrom, publicKeyTo);
 
@@ -147,6 +186,8 @@ async function deriveSeedEncryptionKey(
   const hashedPasswordBytes = Uint8Array.from(
     hashedPassword.split('').map(c => c.charCodeAt(0))
   );
+
+  const wasm = getWasm();
 
   const part1 = wasm.md5(Uint8Array.of(...hashedPasswordBytes, ...salt));
 
@@ -254,6 +295,8 @@ function sha256(data: Uint8Array) {
 }
 
 export function signBytes(privateKey: Uint8Array, bytes: Uint8Array) {
+  const wasm = getWasm();
+
   return wasm.sign_bytes(
     privateKey,
     bytes,
@@ -291,5 +334,7 @@ export function verifySignature(
   bytes: Uint8Array,
   signature: Uint8Array
 ) {
+  const wasm = getWasm();
+
   return wasm.verify_signature(publicKey, bytes, signature);
 }
