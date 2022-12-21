@@ -1,0 +1,6 @@
+/.vscode
+/Cargo.lock
+/dist
+/node_modules
+/target
+*.tsbuildinfo

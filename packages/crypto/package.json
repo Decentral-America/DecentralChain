@@ -1,0 +1,58 @@
+{
+  "type": "module",
+  "name": "@keeper-wallet/waves-crypto",
+  "version": "0.0.0-semantically-released",
+  "description": "Cryptographic functions for Waves blockchain",
+  "repository": "https://github.com/Keeper-Wallet/waves-crypto",
+  "author": "Sergey Slipchenko <faergeek@gmail.com>",
+  "license": "MIT",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "!src/**/*.spec.ts"
+  ],
+  "scripts": {
+    "cleanup": "rimraf dist pkg",
+    "dev:rs": "wasm-pack build --dev",
+    "dev:ts": "tsc --watch",
+    "dev:js": "vite build --watch",
+    "lint:prettier": "prettier . --check",
+    "lint:prettier:fix": "prettier . --write",
+    "lint:eslint": "eslint --max-warnings 0 .",
+    "lint:typescript": "tsc -p tsconfig.node.json --noEmit",
+    "test": "vitest",
+    "build:rs": "wasm-pack build --release",
+    "build:ts": "tsc",
+    "build:js": "vite build",
+    "build": "yarn run build:rs && yarn run build:ts && yarn run build:js"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.1.4",
+    "@scure/base": "^1.1.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@faergeek/eslint-config": "^5.0.149",
+    "@size-limit/file": "^8.1.0",
+    "eslint": "^8.29.0",
+    "prettier": "^2.8.1",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^19.0.5",
+    "semantic-release-export-data": "^1.0.1",
+    "size-limit": "^8.1.0",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.0",
+    "vite-plugin-wasm": "^3.1.0",
+    "vitest": "^0.26.0"
+  }
+}

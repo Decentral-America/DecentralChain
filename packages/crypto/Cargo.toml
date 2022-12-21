@@ -1,0 +1,25 @@
+[package]
+authors = ["Sergey Slipchenko <faergeek@gmail.com>"]
+description = "Cryptographic functions for Waves blockchain"
+edition = "2021"
+license = "MIT"
+name = "waves-crypto"
+repository = "https://github.com/Keeper-Wallet/waves-crypto"
+version = "0.0.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
+opt-level = 's'
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ['-Oz', '-c']
+
+[dependencies]
+ed25519-axolotl = "1.7"
+ed25519-compact = {version = "2.0", features = ["opt_size", "traits", "x25519"]}
+getrandom = {version = "0.2", features = ["js"]}
+md5-rs = "0.1.5"
+wasm-bindgen = "0.2"

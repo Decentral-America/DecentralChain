@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "extends": "@faergeek",
+  "overrides": [
+    {
+      "files": "**/*.ts",
+      "extends": "@faergeek/eslint-config/typescript"
+    },
+    {
+      "files": "**/*.spec.ts",
+      "extends": "@faergeek/eslint-config/jest",
+      "settings": {
+        "jest": { "version": 29 }
+      }
+    }
+  ]
+}

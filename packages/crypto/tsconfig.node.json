@@ -1,0 +1,11 @@
+{
+  "include": ["src/**/*.spec.ts", "vite.config.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "downlevelIteration": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "types": ["vitest/globals"]
+  }
+}
