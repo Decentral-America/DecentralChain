@@ -10,6 +10,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [/^@noble\/hashes/, '@scure/base'],
+      output: {
+        preserveModules: true,
+      },
     },
     sourcemap: true,
     target: 'esnext',
