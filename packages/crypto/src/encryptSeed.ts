@@ -2,7 +2,7 @@ import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey';
 import { stringToBytes } from './utf-8';
 
 export async function encryptSeed(
-  input: string,
+  input: Uint8Array,
   password: string,
   hashRounds = 5000
 ) {
@@ -21,7 +21,7 @@ export async function encryptSeed(
     await crypto.subtle.encrypt(
       { name: 'AES-CBC', iv, length: iv.length },
       importedKey,
-      stringToBytes(input)
+      input
     )
   );
 
