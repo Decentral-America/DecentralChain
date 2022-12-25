@@ -2,23 +2,25 @@ import { md5 } from '../pkg/waves_crypto';
 import { base16Encode } from './base16';
 import { initWasm } from './initWasm';
 import { sha256 } from './sha256';
-import { stringToBytes } from './utf-8';
+import { bytesToString, stringToBytes } from './utf-8';
 
 export async function deriveSeedEncryptionKey(
-  password: string,
+  password: Uint8Array,
   hashRounds: number,
   salt: Uint8Array
 ) {
   let hashedPassword = password;
 
   while (hashRounds--) {
-    hashedPassword = base16Encode(
-      new Uint8Array(await sha256(stringToBytes(hashedPassword)))
+    hashedPassword = stringToBytes(
+      base16Encode(new Uint8Array(await sha256(hashedPassword)))
     );
   }
 
   const hashedPasswordBytes = Uint8Array.from(
-    hashedPassword.split('').map(c => c.charCodeAt(0))
+    bytesToString(hashedPassword)
+      .split('')
+      .map(c => c.charCodeAt(0))
   );
 
   initWasm();

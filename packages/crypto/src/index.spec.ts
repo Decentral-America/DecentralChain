@@ -316,7 +316,7 @@ describe('encryptSeed/decryptSeed', () => {
             144, 31, 110, 249, 46, 194, 198, 28, 177, 124, 40, 252, 136, 133,
             69, 231, 2,
           ]),
-          '🔑'
+          stringToBytes('🔑')
         )
       )
     ).toBe('🙈');
@@ -324,13 +324,19 @@ describe('encryptSeed/decryptSeed', () => {
 
   test('random', async () => {
     await expect(
-      decryptSeed(await encryptSeed(stringToBytes('🙈'), '🔑'), '🔑')
+      decryptSeed(
+        await encryptSeed(stringToBytes('🙈'), stringToBytes('🔑')),
+        stringToBytes('🔑')
+      )
     ).resolves.toStrictEqual(stringToBytes('🙈'));
 
     await expect(
       decryptSeed(
-        await encryptSeed(stringToBytes('Exact16BytesText'), '🗝️'),
-        '🗝️'
+        await encryptSeed(
+          stringToBytes('Exact16BytesText'),
+          stringToBytes('🗝️')
+        ),
+        stringToBytes('🗝️')
       )
     ).resolves.toStrictEqual(stringToBytes('Exact16BytesText'));
   });

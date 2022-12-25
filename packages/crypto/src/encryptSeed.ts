@@ -3,7 +3,7 @@ import { stringToBytes } from './utf-8';
 
 export async function encryptSeed(
   input: Uint8Array,
-  password: string,
+  password: Uint8Array,
   hashRounds = 5000
 ) {
   const salt = crypto.getRandomValues(new Uint8Array(8));

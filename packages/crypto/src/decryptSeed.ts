@@ -2,7 +2,7 @@ import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey';
 
 export async function decryptSeed(
   input: Uint8Array,
-  password: string,
+  password: Uint8Array,
   hashRounds = 5000
 ) {
   const [key, iv] = await deriveSeedEncryptionKey(
