@@ -173,9 +173,9 @@ describe('createPrivateKey', () => {
       ]),
     },
   ])('createPrivateKey($seed)', async ({ seed, nonce, privateKey }) => {
-    await expect(createPrivateKey(seed, nonce)).resolves.toStrictEqual(
-      privateKey
-    );
+    await expect(
+      createPrivateKey(stringToBytes(seed), nonce)
+    ).resolves.toStrictEqual(privateKey);
   });
 });
 
@@ -211,8 +211,8 @@ describe('createPublicKey', () => {
 describe('createSharedKey', () => {
   test('fixed', async () => {
     const [alicePrivateKey, bobPrivateKey] = await Promise.all([
-      createPrivateKey('alice'),
-      createPrivateKey('bob'),
+      createPrivateKey(stringToBytes('alice')),
+      createPrivateKey(stringToBytes('bob')),
     ]);
 
     const prefix = stringToBytes('waves');
@@ -238,8 +238,8 @@ describe('createSharedKey', () => {
 
   test('random', async () => {
     const [aPrivateKey, bPrivateKey] = await Promise.all([
-      createPrivateKey(generateRandomSeed()),
-      createPrivateKey(generateRandomSeed()),
+      createPrivateKey(stringToBytes(generateRandomSeed())),
+      createPrivateKey(stringToBytes(generateRandomSeed())),
     ]);
 
     const prefix = stringToBytes('something random');
@@ -255,8 +255,8 @@ describe('createSharedKey', () => {
 describe('encryptMessage/decryptMessage', () => {
   test('fixed', async () => {
     const [alicePrivateKey, bobPrivateKey] = await Promise.all([
-      createPrivateKey('alice'),
-      createPrivateKey('bob'),
+      createPrivateKey(stringToBytes('alice')),
+      createPrivateKey(stringToBytes('bob')),
     ]);
 
     const sharedKey = await createSharedKey(
@@ -286,8 +286,8 @@ describe('encryptMessage/decryptMessage', () => {
 
   test('random', async () => {
     const [aPrivateKey, bPrivateKey] = await Promise.all([
-      createPrivateKey(generateRandomSeed()),
-      createPrivateKey(generateRandomSeed()),
+      createPrivateKey(stringToBytes(generateRandomSeed())),
+      createPrivateKey(stringToBytes(generateRandomSeed())),
     ]);
 
     const prefix = stringToBytes('some prefix');
@@ -342,7 +342,10 @@ test('generateRandomSeed', () => {
 });
 
 test('signBytes/verifySignature', async () => {
-  const privateKey = await createPrivateKey('1f98af466da54014bdc08bfbaaaf3c67');
+  const privateKey = await createPrivateKey(
+    stringToBytes('1f98af466da54014bdc08bfbaaaf3c67')
+  );
+
   const publicKey = createPublicKey(privateKey);
 
   const bytes = Uint8Array.from([1, 2, 3, 4]);
