@@ -48,7 +48,11 @@ pub fn sign_bytes(private_key: Vec<u8>, message: Vec<u8>, random: Vec<u8>) -> Ve
         random.into_iter().map(|n| n as u32).collect(),
     );
 
-    m.into_iter().map(|n| n as u8).collect::<Vec<u8>>()
+    m[..64]
+        .to_owned()
+        .into_iter()
+        .map(|n| n as u8)
+        .collect::<Vec<u8>>()
 }
 
 #[wasm_bindgen]
