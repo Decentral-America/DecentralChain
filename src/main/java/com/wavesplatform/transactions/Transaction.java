@@ -3,6 +3,7 @@ package com.wavesplatform.transactions;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
+import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
 import com.wavesplatform.transactions.serializers.ProtobufConverter;
 import com.wavesplatform.transactions.serializers.binary.BinarySerializer;
@@ -17,8 +18,11 @@ public abstract class Transaction extends TransactionOrOrder {
     private final int type;
 
     protected Transaction(int type, int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
-        super(version, chainId, sender, fee, timestamp, proofs);
+        this(null, type, version, chainId, sender, fee, timestamp, proofs);
+    }
 
+    protected Transaction(Id id, int type, int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
+        super(id, version, chainId, sender, fee, timestamp, proofs);
         this.type = type;
     }
 

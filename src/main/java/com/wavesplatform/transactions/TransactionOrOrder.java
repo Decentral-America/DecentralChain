@@ -28,7 +28,11 @@ public abstract class TransactionOrOrder {
     private byte[] bodyBytes;
 
     protected TransactionOrOrder(int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
-        this.id = null;
+        this(null, version, chainId, sender, fee, timestamp, proofs);
+    }
+
+    protected TransactionOrOrder(Id id, int version, byte chainId, PublicKey sender, Amount fee, long timestamp, List<Proof> proofs) {
+        this.id = id;
         this.version = version;
         this.chainId = chainId;
         this.sender = sender;

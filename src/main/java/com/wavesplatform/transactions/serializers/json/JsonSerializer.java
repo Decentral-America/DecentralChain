@@ -195,6 +195,7 @@ public abstract class JsonSerializer {
                     sender, json.get("alias").asText(), chainId, fee, timestamp, version, proofs);
         }
         if (type == MassTransferTransaction.TYPE) {
+            Id id = new Id(json.get("id").asText());
             //todo check transferCount, totalAmount?
             JsonNode jsTransfers = json.get("transfers");
             List<Transfer> transfers = new ArrayList<>();
@@ -212,7 +213,7 @@ public abstract class JsonSerializer {
             if (version == 1 && json.has("signature"))
                 proofs = Proof.list(Proof.as(json.get("signature").asText()));
             return new MassTransferTransaction(
-                    sender, assetId, transfers, attachment, chainId, fee, timestamp, version, proofs);
+                    id, sender, assetId, transfers, attachment, chainId, fee, timestamp, version, proofs);
         } else if (type == DataTransaction.TYPE) {
             if (!fee.assetId().isWaves())
                 throw new IOException("feeAssetId field must be null for DataTransaction");
@@ -269,7 +270,7 @@ public abstract class JsonSerializer {
                                     paymentsFromJson(payload)), signatureData, sender);
                 case "transfer":
                     AssetId assetId = assetIdFromJson(payload.get("asset"));
-                    return new EthereumTransaction(new Id(id) ,chainId, rt.getNonce().longValueExact(), rt.getGasPrice(), fee.value(),
+                    return new EthereumTransaction(new Id(id), chainId, rt.getNonce().longValueExact(), rt.getGasPrice(), fee.value(),
                             new EthereumTransaction.Transfer(
                                     Address.as(payload.get("recipient").asText()),
                                     Amount.of(payload.get("amount").asLong(), assetId)

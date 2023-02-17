@@ -1,10 +1,7 @@
 package com.wavesplatform.transactions;
 
 import com.wavesplatform.transactions.account.PublicKey;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.common.AssetId;
-import com.wavesplatform.transactions.common.Base58String;
-import com.wavesplatform.transactions.common.Proof;
+import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.mass.Transfer;
 
 import java.io.IOException;
@@ -28,7 +25,11 @@ public class MassTransferTransaction extends Transaction {
     }
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
-        super(TYPE, version, chainId, sender, calculateFee(transfers, fee), timestamp, proofs);
+        this(null, sender, assetId, transfers, attachment, chainId, fee, timestamp, version, proofs);
+    }
+
+    public MassTransferTransaction(Id id, PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
+        super(id, TYPE, version, chainId, sender, calculateFee(transfers, fee), timestamp, proofs);
 
         this.assetId = assetId == null ? AssetId.WAVES : assetId;
         this.transfers = transfers == null ? new ArrayList<>() : transfers;
