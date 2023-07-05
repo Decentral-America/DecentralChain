@@ -214,7 +214,7 @@ export const ROUND_COUNT = 14;
 export function createAesKeys(keyInput: Uint8Array) {
   const keyInputCopy = new DataView(
     keyInput.slice().buffer,
-    keyInput.byteOffset
+    keyInput.byteOffset,
   );
 
   const encryptionKey = new DataView(new Uint32Array(KEY_LENGTH).buffer);
@@ -240,7 +240,7 @@ export function createAesKeys(keyInput: Uint8Array) {
           roundConstantWords[roundConstantWordsIndex]) |
           (S[keyInputCopy.getUint8(29)] << 8) |
           (S[keyInputCopy.getUint8(28)] << 16) |
-          (S[keyInputCopy.getUint8(31)] << 24))
+          (S[keyInputCopy.getUint8(31)] << 24)),
     );
 
     for (let i = 4; i < 16; i += 4) {
@@ -255,7 +255,7 @@ export function createAesKeys(keyInput: Uint8Array) {
         ((S[keyInputCopy.getUint8(12)] << 24) |
           (S[keyInputCopy.getUint8(13)] << 16) |
           (S[keyInputCopy.getUint8(14)] << 8) |
-          S[keyInputCopy.getUint8(15)])
+          S[keyInputCopy.getUint8(15)]),
     );
 
     for (let i = 20; i < 32; i += 4) {
@@ -281,7 +281,7 @@ export function createAesKeys(keyInput: Uint8Array) {
         U2[decryptionKey.getUint8(i + 2)] ^
         U3[decryptionKey.getUint8(i + 1)] ^
         U4[decryptionKey.getUint8(i)],
-      true
+      true,
     );
   }
 

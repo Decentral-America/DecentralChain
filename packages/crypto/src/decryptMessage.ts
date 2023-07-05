@@ -13,8 +13,8 @@ export async function decryptMessage(sharedKey: Uint8Array, input: Uint8Array) {
         crypto.subtle.decrypt(
           { name: 'AES-CTR', counter, length: counter.length },
           importedKey,
-          input.subarray(129)
-        )
+          input.subarray(129),
+        ),
       ),
   ]);
 

@@ -3,12 +3,12 @@ import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey.js';
 export async function decryptSeed(
   input: Uint8Array,
   password: Uint8Array,
-  hashRounds = 5000
+  hashRounds = 5000,
 ) {
   const [key, iv] = await deriveSeedEncryptionKey(
     password,
     hashRounds,
-    input.subarray(8, 16)
+    input.subarray(8, 16),
   );
 
   const importedKey = await crypto.subtle.importKey(
@@ -16,14 +16,14 @@ export async function decryptSeed(
     key,
     'AES-CBC',
     false,
-    ['decrypt']
+    ['decrypt'],
   );
 
   return new Uint8Array(
     await crypto.subtle.decrypt(
       { name: 'AES-CBC', iv, length: iv.length },
       importedKey,
-      input.subarray(16)
-    )
+      input.subarray(16),
+    ),
   );
 }

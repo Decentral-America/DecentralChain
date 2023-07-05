@@ -7,9 +7,11 @@ export async function initWasm() {
     await wasm.default(
       typeof self === 'undefined'
         ? import(/* webpackIgnore: true */ 'node:fs/promises').then(fs =>
-            fs.readFile(new URL('../pkg/waves_crypto_bg.wasm', import.meta.url))
+            fs.readFile(
+              new URL('../pkg/waves_crypto_bg.wasm', import.meta.url),
+            ),
           )
-        : undefined
+        : undefined,
     );
 
     isWasmInitialized = true;

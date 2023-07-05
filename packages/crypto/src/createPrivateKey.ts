@@ -10,6 +10,6 @@ export async function createPrivateKey(seed: Uint8Array, nonce = 0) {
   const wasm = await initWasm();
 
   return wasm.create_private_key(
-    new Uint8Array(await sha256(keccak(blake2b(seedBytes))))
+    new Uint8Array(await sha256(keccak(blake2b(seedBytes)))),
   );
 }

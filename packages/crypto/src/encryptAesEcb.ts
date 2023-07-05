@@ -195,7 +195,7 @@ export function encryptAesEcb(keyInput: Uint8Array, input: Uint8Array) {
     for (let i = 0; i < 16; i += 4) {
       t.setUint32(
         i,
-        result.getUint32(blockOffset + i, true) ^ encryptionKey.getUint32(i)
+        result.getUint32(blockOffset + i, true) ^ encryptionKey.getUint32(i),
       );
     }
 
@@ -208,7 +208,7 @@ export function encryptAesEcb(keyInput: Uint8Array, input: Uint8Array) {
             T3[t.getUint8((((i + 2) & 0b11) << 2) + 1)] ^
             T4[t.getUint8(((i + 3) & 0b11) << 2)] ^
             encryptionKey.getUint32((offset + i) << 2, true),
-          true
+          true,
         );
       }
 

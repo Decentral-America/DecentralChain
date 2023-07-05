@@ -6,6 +6,6 @@ export async function signBytes(privateKey: Uint8Array, bytes: Uint8Array) {
   return wasm.sign_bytes(
     privateKey,
     bytes,
-    crypto.getRandomValues(new Uint8Array(64))
+    crypto.getRandomValues(new Uint8Array(64)),
   );
 }

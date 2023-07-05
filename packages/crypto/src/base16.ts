@@ -1,6 +1,6 @@
 export function base16Decode(input: string) {
   return Uint8Array.from(Array.from(input.matchAll(/[0-9a-f]{2}/gi)), ([h]) =>
-    parseInt(h, 16)
+    parseInt(h, 16),
   );
 }
 

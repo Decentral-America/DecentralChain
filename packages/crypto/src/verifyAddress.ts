@@ -6,7 +6,7 @@ export function verifyAddress(
   {
     chainId: expectedChainId,
     publicKey: expectedPublicKey,
-  }: { chainId?: number; publicKey?: Uint8Array } = {}
+  }: { chainId?: number; publicKey?: Uint8Array } = {},
 ) {
   return (
     bytes.length === 26 &&

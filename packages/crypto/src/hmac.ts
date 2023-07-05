@@ -1,7 +1,7 @@
 export async function hmac(
   hash: 'SHA-256',
   key: BufferSource,
-  data: BufferSource
+  data: BufferSource,
 ) {
   const name = 'HMAC';
 
@@ -10,7 +10,7 @@ export async function hmac(
     key,
     { name, hash },
     true,
-    ['sign']
+    ['sign'],
   );
 
   return crypto.subtle.sign(name, importedKey, data);

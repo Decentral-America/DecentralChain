@@ -133,7 +133,7 @@ describe('createAddress', () => {
     'createAddress($publicKey, $chainId)',
     ({ chainId, publicKey, expected }) => {
       expect(createAddress(publicKey, chainId)).toStrictEqual(expected);
-    }
+    },
   );
 });
 
@@ -174,7 +174,7 @@ describe('createPrivateKey', () => {
     },
   ])('createPrivateKey($seed)', async ({ seed, nonce, privateKey }) => {
     await expect(
-      createPrivateKey(utf8Encode(seed), nonce)
+      createPrivateKey(utf8Encode(seed), nonce),
     ).resolves.toStrictEqual(privateKey);
   });
 });
@@ -225,7 +225,7 @@ describe('createSharedKey', () => {
     const sharedA = await createSharedKey(
       alicePrivateKey,
       bobPublicKey,
-      prefix
+      prefix,
     );
 
     expect(sharedA).toStrictEqual(
@@ -233,11 +233,11 @@ describe('createSharedKey', () => {
         162, 119, 172, 77, 222, 66, 171, 20, 118, 107, 37, 115, 109, 17, 113,
         83, 54, 170, 225, 88, 131, 11, 248, 8, 89, 222, 157, 198, 100, 46, 125,
         5,
-      ])
+      ]),
     );
 
     await expect(
-      createSharedKey(bobPrivateKey, alicePublicKey, prefix)
+      createSharedKey(bobPrivateKey, alicePublicKey, prefix),
     ).resolves.toStrictEqual(sharedA);
   });
 
@@ -255,9 +255,9 @@ describe('createSharedKey', () => {
     const prefix = utf8Encode('something random');
 
     await expect(
-      createSharedKey(bPrivateKey, aPublicKey, prefix)
+      createSharedKey(bPrivateKey, aPublicKey, prefix),
     ).resolves.toStrictEqual(
-      await createSharedKey(aPrivateKey, bPublicKey, prefix)
+      await createSharedKey(aPrivateKey, bPublicKey, prefix),
     );
   });
 });
@@ -274,7 +274,7 @@ describe('encryptMessage/decryptMessage', () => {
     const sharedKey = await createSharedKey(
       bobPrivateKey,
       alicePublicKey,
-      utf8Encode('some prefix')
+      utf8Encode('some prefix'),
     );
 
     await expect(
@@ -291,8 +291,8 @@ describe('encryptMessage/decryptMessage', () => {
           49, 223, 165, 54, 94, 209, 178, 29, 61, 166, 218, 228, 90, 74, 70, 3,
           90, 148, 193, 29, 191, 182, 172, 16, 161, 229, 137, 215, 12, 10, 79,
           171, 49, 34, 228, 123, 160, 203,
-        ])
-      )
+        ]),
+      ),
     ).resolves.toStrictEqual(utf8Encode('中國的東西'));
   });
 
@@ -318,7 +318,7 @@ describe('encryptMessage/decryptMessage', () => {
     const encryptedMessage = await encryptMessage(aSharedKey, messageBytes);
 
     await expect(
-      decryptMessage(bSharedKey, encryptedMessage)
+      decryptMessage(bSharedKey, encryptedMessage),
     ).resolves.toStrictEqual(messageBytes);
   });
 });
@@ -333,9 +333,9 @@ describe('encryptSeed/decryptSeed', () => {
             144, 31, 110, 249, 46, 194, 198, 28, 177, 124, 40, 252, 136, 133,
             69, 231, 2,
           ]),
-          utf8Encode('🔑')
-        )
-      )
+          utf8Encode('🔑'),
+        ),
+      ),
     ).toBe('🙈');
   });
 
@@ -343,15 +343,15 @@ describe('encryptSeed/decryptSeed', () => {
     await expect(
       decryptSeed(
         await encryptSeed(utf8Encode('🙈'), utf8Encode('🔑')),
-        utf8Encode('🔑')
-      )
+        utf8Encode('🔑'),
+      ),
     ).resolves.toStrictEqual(utf8Encode('🙈'));
 
     await expect(
       decryptSeed(
         await encryptSeed(utf8Encode('Exact16BytesText'), utf8Encode('🗝️')),
-        utf8Encode('🗝️')
-      )
+        utf8Encode('🗝️'),
+      ),
     ).resolves.toStrictEqual(utf8Encode('Exact16BytesText'));
   });
 });
@@ -366,7 +366,7 @@ test('generateRandomSeed', () => {
 
 test('signBytes/verifySignature', async () => {
   const privateKey = await createPrivateKey(
-    utf8Encode('1f98af466da54014bdc08bfbaaaf3c67')
+    utf8Encode('1f98af466da54014bdc08bfbaaaf3c67'),
   );
 
   const publicKey = await createPublicKey(privateKey);
@@ -375,11 +375,11 @@ test('signBytes/verifySignature', async () => {
   const signature = await signBytes(privateKey, bytes);
 
   await expect(verifySignature(publicKey, bytes, signature)).resolves.toBe(
-    true
+    true,
   );
 
   await expect(
-    verifySignature(publicKey, Uint8Array.from([4, 3, 2, 1]), signature)
+    verifySignature(publicKey, Uint8Array.from([4, 3, 2, 1]), signature),
   ).resolves.toBe(false);
 });
 
