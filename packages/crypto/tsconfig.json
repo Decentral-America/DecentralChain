@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "module": "esnext",
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
     "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
