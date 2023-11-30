@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {cancelOrder, cancelSubmittedOrder, order, submitOrder} from '../../src'
 import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} from './config'
 
@@ -11,6 +12,13 @@ import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} 
 describe('Matcher requests', () => {
   let assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf'
 >>>>>>> 697d643a (minor fixes)
+=======
+import {cancelOrder, cancelSubmittedOrder, order, submitOrder} from '../../src'
+import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} from './config'
+
+describe('Matcher requests', () => {
+    let assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf'
+>>>>>>> f33083a0 (updated dependencies)
 
     beforeAll(async () => {
         const nonce = randomHexString(6)
@@ -21,6 +29,9 @@ describe('Matcher requests', () => {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
     it('should submit and cancel order', async () => {
         const oParams = {
             orderType: 'buy' as 'buy',
@@ -31,6 +42,7 @@ describe('Matcher requests', () => {
             priceAsset: null,
             amountAsset: assetId,
         }
+<<<<<<< HEAD
 =======
   it('should submit and cancel order', async () => {
     const oParams = {
@@ -43,6 +55,8 @@ describe('Matcher requests', () => {
       amountAsset: assetId,
     }
 >>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
         const ord = order(oParams, MASTER_SEED)
         console.log('ord', JSON.stringify(ord, undefined, ' '))
@@ -56,6 +70,9 @@ describe('Matcher requests', () => {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
     it('should submit and cancel order', async () => {
         const oParams = {
             orderType: 'buy' as 'buy',
@@ -67,6 +84,7 @@ describe('Matcher requests', () => {
             amountAsset: assetId,
             version: 4
         }
+<<<<<<< HEAD
 =======
   it('should submit and cancel market order', async () => {
     const oParams = {
@@ -79,6 +97,8 @@ describe('Matcher requests', () => {
       amountAsset: assetId,
     }
 >>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
         const ord = order(oParams, MASTER_SEED)
         console.log('ord', JSON.stringify(ord, undefined, ' '))
@@ -101,6 +121,7 @@ describe('Matcher requests', () => {
             amountAsset: assetId,
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         const ord = order(oParams, MASTER_SEED)
         const submitResp = await submitOrder(ord, {market: false, matcherUrl: MATCHER_URL})
@@ -134,6 +155,16 @@ describe('Matcher requests', () => {
       price: 100000000,
     }, MASTER_SEED)
 >>>>>>> 697d643a (minor fixes)
+=======
+        const ord = order(oParams, MASTER_SEED)
+        const submitResp = await submitOrder(ord, {market: false, matcherUrl: MATCHER_URL})
+        expect(submitResp.status).toEqual('OrderAccepted')
+
+        const co = cancelOrder({orderId: ord.id}, MASTER_SEED)
+        const cancelResp = await cancelSubmittedOrder(co, ord.assetPair.amountAsset, ord.assetPair.priceAsset, MATCHER_URL)
+        expect(cancelResp.status).toEqual('OrderCanceled')
+    }, TIMEOUT)
+>>>>>>> f33083a0 (updated dependencies)
 
     it('order validation', async () => {
         const order1 = order({

@@ -23,7 +23,12 @@ import {txs} from './example-proto-tx'
 import {randomHexString, TIMEOUT} from './integration/config'
 import {address} from '@waves/ts-lib-crypto'
 import {issueMinimalParams} from './minimalParams'
+<<<<<<< HEAD
 import {deleteProofsAndId} from './utils'
+=======
+import {deleteProofsAndId} from "./utils";
+
+>>>>>>> f33083a0 (updated dependencies)
 
 
 const nodeUrl = 'https://testnet-node.decentralchain.io/'
@@ -45,10 +50,17 @@ describe('serialize/deserialize', () => {
     it('type: ' + tx.type, () => {
       // deleteProofsAndId(tx)
       //const parsed = protoBytesToTx(txToProtoBytes(tx))
+<<<<<<< HEAD
       const txWithoutProofAndId = deleteProofsAndId(tx)
       const protoBytes = txToProtoBytes(txWithoutProofAndId)
       const parsed = protoBytesToTx(protoBytes)
       expect(parsed).toMatchObject(txWithoutProofAndId)
+=======
+      const txWithoutProofAndId = deleteProofsAndId(tx);
+      const protoBytes = txToProtoBytes(txWithoutProofAndId);
+      const parsed = protoBytesToTx(protoBytes);
+      expect(parsed).toMatchObject(txWithoutProofAndId);
+>>>>>>> f33083a0 (updated dependencies)
     })
   })
 
@@ -84,7 +96,7 @@ describe('transactions v3', () => {
 
     await broadcast(assetIssue, nodeUrl)
     assetId = assetIssue.id
-
+    
     await broadcast(mtt, nodeUrl)
     await waitForTx(mtt.id, {apiBase: nodeUrl, timeout: TIMEOUT})
 

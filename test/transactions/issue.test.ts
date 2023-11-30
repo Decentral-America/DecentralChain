@@ -23,18 +23,24 @@ describe('issue', () => {
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
     it('should create issue tx with max name length = 16 and max description length = 1000', () => {
         const descr = rndString(1000);
         const tx = issue({...issueMinimalParams, name: 'this_is_16_bytes', description: descr}, stringSeed);
         expect(tx.name).toEqual('this_is_16_bytes');
         expect(tx.description).toEqual(descr);
     });
+<<<<<<< HEAD
 =======
   it('should build from minimal set of params with quantity 1', () => {
     const tx = issue({ ...issueMinimalParams, quantity: 1 }, stringSeed)
     expect(tx.fee).toEqual(100000000000)
   })
 >>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
     it('should not create from minimal set of params with zero quantity', () => {
         expect(() => issue({...issueMinimalParams, quantity: 0}, stringSeed))
@@ -52,10 +58,14 @@ describe('issue', () => {
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
     it('should not create with max name length > 16', () => {
         expect(() => issue({...issueMinimalParams, name: 'this_is_17_bytes_'}, stringSeed))
             .toThrowError(errorMessageByTemplate('name', 'this_is_17_bytes_'))
     });
+<<<<<<< HEAD
 
     it('should not create with description length > 1000', () => {
         const descr = rndString(1001);
@@ -70,17 +80,25 @@ describe('issue', () => {
 =======
     expect(validateTxSignature(tx, protoBytesMinVersion)).toBeTruthy()
   })
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
-  it('Should get correct signature of NFT token', () => {
-    const tx = issue({
-      ...issueMinimalParams,
-      quantity: 1,
-      decimals: 0
-    }, stringSeed)
+    it('should not create with description length > 1000', () => {
+        const descr = rndString(1001);
+        expect(() => issue({...issueMinimalParams, description: descr}, stringSeed))
+            .toThrowError(errorMessageByTemplate('description', descr))
+    });
 
+<<<<<<< HEAD
     expect(validateTxSignature(tx, protoBytesMinVersion)).toBeTruthy()
   })
 >>>>>>> 697d643a (minor fixes)
+=======
+    it('should create from minimal set of params with maximal quantity', () => {
+        const tx = issue({...issueMinimalParams, quantity: longMax}, stringSeed);
+        expect(tx.quantity).toEqual(longMax)
+    });
+>>>>>>> f33083a0 (updated dependencies)
 
     it('should build with asset script', () => {
         const script = 'AQQAAAAHJG1hdGNoMAUAAAACdHgDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAAD0J1cm5UcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAcGPmRSDA==';

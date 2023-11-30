@@ -1,8 +1,7 @@
-import { CHAIN_ID } from './../integration/config';
 import { wavesAuth, serializeWavesAuthData } from '../../src/requests/wavesAuth'
 import { verifyWavesAuthData } from '../../src/general'
 import { base58Encode, blake2b } from '@waves/ts-lib-crypto'
-import { address } from '@waves/ts-lib-crypto';
+import { address } from '@waves/ts-lib-crypto'
 
 describe('wavesAuth', () => {
 
@@ -10,11 +9,11 @@ describe('wavesAuth', () => {
 
   it('wavesAuth v0', () => {
     const p = { timestamp: Date.now(), publicKey: '' }
-    const d = wavesAuth(p, stringSeed, CHAIN_ID)
+    const d = wavesAuth(p, stringSeed)
     p.publicKey = d.publicKey
     expect(d).toMatchObject(p)
     expect(d.hash).toEqual(base58Encode(blake2b(serializeWavesAuthData(d))))
-    expect(verifyWavesAuthData(d, p, CHAIN_ID)).toBe(true)
+    expect(verifyWavesAuthData(d, p)).toBe(true)
   })
 
   it('Wrong auth v1', () => {

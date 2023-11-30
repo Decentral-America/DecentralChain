@@ -50,10 +50,14 @@ const invokeScheme = {
           validatePipe(
               pipe(prop('amount'), isNumberLike),
 <<<<<<< HEAD
+<<<<<<< HEAD
               pipe(prop('assetId'), isWavesOrAssetId)
 =======
               pipe(prop('assetId'), isAssetId),
 >>>>>>> 697d643a (minor fixes)
+=======
+              pipe(prop('assetId'), isWavesOrAssetId)
+>>>>>>> f33083a0 (updated dependencies)
           )
       )
   ),

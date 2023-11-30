@@ -4,10 +4,14 @@
 import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transactions'
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
 =======
 import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '../generic'
 >>>>>>> 697d643a (minor fixes)
+=======
+import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
+>>>>>>> f33083a0 (updated dependencies)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
@@ -26,20 +30,28 @@ export function sponsorship(paramsOrTx: any, seed?: TSeedTypes): SponsorshipTran
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const tx: SponsorshipTransaction & WithId & WithProofs = {
 =======
   const tx: SponsorshipTransaction & WithId & WithProofs= {
 >>>>>>> 697d643a (minor fixes)
+=======
+  const tx: SponsorshipTransaction & WithId & WithProofs = {
+>>>>>>> f33083a0 (updated dependencies)
     type,
     version,
     senderPublicKey,
     minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,
     assetId: paramsOrTx.assetId,
 <<<<<<< HEAD
+<<<<<<< HEAD
     fee: fee(paramsOrTx, 1e5),
 =======
     fee: fee(paramsOrTx, 1000000000),
 >>>>>>> 697d643a (minor fixes)
+=======
+    fee: fee(paramsOrTx, 1e5),
+>>>>>>> f33083a0 (updated dependencies)
     timestamp: paramsOrTx.timestamp || Date.now(),
     chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],

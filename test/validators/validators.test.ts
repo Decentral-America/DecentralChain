@@ -84,8 +84,8 @@ describe('Validators', () => {
             expect(validators.isValidAddress(Object.create(null))).toBe(false)
             expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj')).toBe(true)
             expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj', 'T'.charCodeAt(0))).toBe(false)
-            expect(validators.isValidAddress('3Jnj4UYo4w9o2Wihv3hhUikB1Hh6YLH4R4F', 'L'.charCodeAt(0))).toBe(true)
-            expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8', 'L'.charCodeAt(0))).toBe(false)
+            expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj', 'W'.charCodeAt(0))).toBe(true)
+            expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8', 'W'.charCodeAt(0))).toBe(false)
             expect(validators.isValidAddress('3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fa')).toBe(false)
         })
 
@@ -223,9 +223,9 @@ describe('Validators', () => {
         })
 
         it('Validate assetId', () => {
-            expect(validators.isAssetId('474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu')).toBe(true)
-            expect(validators.isAssetId(null)).toBe(true)
-            expect(validators.isAssetId('DCC')).toBe(true)
+            expect(validators.isWavesOrAssetId('474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu')).toBe(true)
+            expect(validators.isWavesOrAssetId(null)).toBe(true)
+            expect(validators.isWavesOrAssetId('WAVES')).toBe(true)
         })
 
         it('Validate by schema', () => {
@@ -271,12 +271,12 @@ describe('Validators', () => {
                 type: TRANSACTION_TYPE.TRANSFER,
                 version: 2,
                 senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
-                assetId: 'DCC',
+                assetId: 'WAVES',
                 recipient: 'alias:W:test',
                 amount: 100000,
                 attachment: null,
                 fee: 100000,
-                feeAssetId: 'DCC',
+                feeAssetId: 'WAVES',
                 timestamp: Date.now(),
             } as any
 

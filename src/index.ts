@@ -1,6 +1,3 @@
-/**
- * @module index
- */
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -30,9 +27,13 @@ export { signTx, verify, serialize, submitOrder, cancelSubmittedOrder, verifyAut
 export { waitForTx, broadcast } from './nodeInteraction'
 export { makeTx, makeTxBytes } from './make-tx'
 <<<<<<< HEAD
+<<<<<<< HEAD
 // export { invokeExpression } from './transactions/invoke-expression'
 =======
 >>>>>>> 697d643a (minor fixes)
+=======
+// export { invokeExpression } from './transactions/invoke-expression'
+>>>>>>> f33083a0 (updated dependencies)
 
 // Export interfaces
 export {
@@ -69,8 +70,8 @@ export {
 
 // internal libraries access
 import * as crypto from '@waves/ts-lib-crypto'
-// import * as nodeApiJs from '@waves/node-api-js'
 import * as marshall from '@decentralchain/marshall'
+// import * as nodeApiJs from '@waves/node-api-js'
 
 const libs = {
   crypto,

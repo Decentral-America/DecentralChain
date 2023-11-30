@@ -9,7 +9,11 @@ import {
 } from '../utils'
 import {aliasTx} from "./expected/proto/alias.tx";
 import {aliasBinaryTx} from "./expected/binary/alias.tx";
+<<<<<<< HEAD
 import {binary} from '@waves/marshall'
+=======
+import {binary} from '@decentralchain/marshall'
+>>>>>>> f33083a0 (updated dependencies)
 
 
 describe('alias', () => {

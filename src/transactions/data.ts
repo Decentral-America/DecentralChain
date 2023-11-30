@@ -91,11 +91,11 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
             LONG(_timestamp)
         )
 
-        computedFee = (Math.floor(1 + (bytes.length - 1) / 1024) * 2000000)
+        computedFee = (Math.floor(1 + (bytes.length - 1) / 1024) * 100000)
     } else {
         let protoEntries = dataEntriesWithTypes.map(dataEntryToProto)
         let dataBytes = wavesProto.waves.DataTransactionData.encode({data: protoEntries}).finish()
-        computedFee = (Math.ceil(dataBytes.length / 1024) * 2000000)
+        computedFee = (Math.ceil(dataBytes.length / 1024) * 100000)
     }
 
 
@@ -106,7 +106,7 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
         fee: fee(paramsOrTx, computedFee),
         timestamp: _timestamp,
         proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, 76),
+        chainId: networkByte(paramsOrTx.chainId, 87),
         id: '',
         data: dataEntriesWithTypes,
     }
