@@ -30,10 +30,10 @@ export function exchange(paramsOrTx: ExchangeTransaction & WithProofs, seed?: TS
         amount: paramsOrTx.amount,
         buyMatcherFee: paramsOrTx.buyMatcherFee,
         sellMatcherFee: paramsOrTx.sellMatcherFee,
-        fee: fee(paramsOrTx, 4000000),
+        fee: fee(paramsOrTx, 100000),
         timestamp: paramsOrTx.timestamp || Date.now(),
         proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, 76),
+        chainId: networkByte(paramsOrTx.chainId, 87),
         id: '',
     }
 
