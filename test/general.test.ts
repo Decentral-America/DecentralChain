@@ -2,7 +2,6 @@ import { publicKey, verifySignature } from '@waves/ts-lib-crypto'
 import {reissue, signTx, data, burn, broadcast, IDataParams} from '../src'
 import { serialize, verify } from '../src/general'
 import { reissueMinimalParams, burnMinimalParams, orderMinimalParams } from './minimalParams'
-import { TTx } from '../src'
 import { exampleTxs } from './exampleTxs'
 import { order } from '../src/requests/order'
 import {API_BASE} from './integration/config'
@@ -12,7 +11,7 @@ const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e0
 
 describe('signTx', () => {
 
-  const txs = Object.keys(exampleTxs).map(x => (<any>exampleTxs)[x] as TTx)
+  const txs = Object.keys(exampleTxs).map(x => (<any>exampleTxs)[x] as Transaction)
   txs.forEach(tx => {
     it('type: ' + tx.type, () => {
       const signed = signTx(tx, stringSeed)
@@ -28,7 +27,7 @@ describe('signTx', () => {
 
   it('should add additional fee to auto calculated one', () => {
     const tx = burn({ ...burnMinimalParams, additionalFee: 100000 }, stringSeed)
-    expect(tx.fee).toEqual(2100000)
+    expect(tx.fee).toEqual(200000)
   })
 
   it('should throw when index already exists', () => {

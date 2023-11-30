@@ -25,12 +25,12 @@ export function invokeScript(paramsOrTx: any, seed?: TSeedTypes): InvokeScriptTr
         version,
         senderPublicKey,
         dApp: paramsOrTx.dApp,
-        call: paramsOrTx.call && {args: [], ...paramsOrTx.call},
+        call: callField(paramsOrTx),
         payment: mapPayment(paramsOrTx.payment),
-        fee: fee(paramsOrTx, 6000000),
+        fee: fee(paramsOrTx, 500000),
         feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
         timestamp: paramsOrTx.timestamp || Date.now(),
-        chainId: networkByte(paramsOrTx.chainId, 76),
+        chainId: networkByte(paramsOrTx.chainId, 87),
         proofs: paramsOrTx.proofs || [],
         id: '',
     }
@@ -48,3 +48,7 @@ export function invokeScript(paramsOrTx: any, seed?: TSeedTypes): InvokeScriptTr
 const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] => payments == null
     ? []
     : payments.map(pmt => ({...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId}))
+
+const callField = (paramsOrTx: any) => {
+    return !!paramsOrTx.call ? {args: paramsOrTx.call.args || [], ...paramsOrTx.call} : null
+}

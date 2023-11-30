@@ -31,6 +31,6 @@ const exchangeScheme = {
     fee: isNaturalNumberOrZeroLike,
     timestamp: isNumber,
     proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),
-};
+}
 
 export const exchangeValidator = validateByShema(exchangeScheme, getError)

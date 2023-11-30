@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import {publicKey} from '@waves/ts-lib-crypto'
+=======
+import {base64Decode, base64Encode, publicKey} from '@waves/ts-lib-crypto'
+>>>>>>> f33083a0 (updated dependencies)
 import {burn} from '../../src'
 import {burnMinimalParams} from '../minimalParams'
 import {
@@ -6,9 +10,16 @@ import {
     checkProtoSerializeDeserialize,
     errorMessageByTemplate,
     validateTxSignature
+<<<<<<< HEAD
 } from '../utils'
 import {burnTx} from './expected/proto/burn.tx'
 import {burnBinaryTx} from './expected/binary/burn.tx'
+=======
+} from '../../test/utils'
+import {burnTx} from "./expected/proto/burn.tx"
+import {burnBinaryTx} from "./expected/binary/burn.tx"
+import {binary} from '@waves/marshall'
+>>>>>>> f33083a0 (updated dependencies)
 
 
 describe('burn', () => {
@@ -41,7 +52,11 @@ describe('burn', () => {
     it('Should not create with zero amount', () => {
         expect(() => burn({
             ...burnMinimalParams,
+<<<<<<< HEAD
             amount: 0,
+=======
+            amount: 0
+>>>>>>> f33083a0 (updated dependencies)
         }, stringSeed)).toThrowError('tx "amount", has wrong data: 0. Check tx data.')
     })
 
@@ -60,6 +75,7 @@ describe('burn', () => {
         const tx = burn({...burnMinimalParams, fee: 12345}, stringSeed)
         expect(tx.fee).toEqual(12345)
     })
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     it('Should create with zero fee', () => {
@@ -103,4 +119,40 @@ describe('serialize/deserialize binary burn tx', () => {
     expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBeTruthy()
   })
 >>>>>>> 697d643a (minor fixes)
+=======
+
+    it('Should create with zero fee', () => {
+        const tx = burn({...burnMinimalParams, fee: 0}, stringSeed)
+        expect(tx.fee).toEqual(0)
+    })
+
+    it('Should not create with negative fee', () => {
+        expect(() => burn({...burnMinimalParams, fee: -1}, stringSeed))
+            .toThrowError(errorMessageByTemplate('fee', -1))
+    })
+
+    it('Should not create with empty assetid', () => {
+        expect(() => burn({...burnMinimalParams, assetId: ''}, stringSeed))
+            .toThrowError(errorMessageByTemplate('assetId', ''))
+    })
+
+})
+
+describe('serialize/deserialize burn tx', () => {
+
+    Object.entries(burnTx).forEach(([name, {Bytes, Json}]) =>
+        it(name, () => {
+            checkProtoSerializeDeserialize({Json: Json, Bytes: Bytes})
+        }))
+
+})
+
+describe('serialize/deserialize binary burn tx', () => {
+
+    Object.entries(burnBinaryTx).forEach(([name, {Bytes, Json}]) =>
+        it(name, () => {
+            checkBinarySerializeDeserialize({Json: Json, Bytes: Bytes})
+        }))
+
+>>>>>>> f33083a0 (updated dependencies)
 })

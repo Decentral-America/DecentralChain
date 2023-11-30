@@ -39,7 +39,7 @@ describe('Node interaction utility functions', () => {
     })
 
     it('Should get transaction by id', async () => {
-        const id = '54xbNb5yN2WYNxi39sqESwzp8xSJijmD2Fa5hww12pH4'
+        const id = 'EdhLuhUMX22gKxGxKZxLcVsygMC9nBCBbSuAxFhbZumQ'
         const tx = await utilityF.transactionById(id, apiBase)
         expect(tx.id).toEqual(id)
     })
@@ -55,16 +55,20 @@ describe('Node interaction utility functions', () => {
 
 
     it('Should get balance', async () => {
-        await expect(utilityF.balance('3XXdcpdWv3HM6bqbAAcbxSbFGmsAbd5RzE3', apiBase)).resolves.not.toBeNaN()
+        await expect(utilityF.balance('3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase)).resolves.not.toBeNaN()
         await expect(utilityF.balance('bad address', apiBase)).rejects.toMatchObject({error: 199})
     }, 5000)
 
     it('Should get balanceDetails', async () => {
-        await expect(utilityF.balanceDetails('3XXdcpdWv3HM6bqbAAcbxSbFGmsAbd5RzE3', apiBase)).resolves.not.toBeFalsy()
+        await expect(utilityF.balanceDetails('3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase)).resolves.not.toBeFalsy()
     }, 5000)
 
     it('Should get asset balance', async () => {
-        await expect(utilityF.assetBalance('GZajSeUtcHMeBKc1n2roepZNkryw1rPN8R5LkmKwgR4o', '3XXdcpdWv3HM6bqbAAcbxSbFGmsAbd5RzE3', apiBase)).resolves.not.toBeFalsy()
+        await expect(utilityF.assetBalance('3xdf6GESKGNP1oUyT8QXDgzTE11yi1sJGyVmjt7HHNEU', '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase)).resolves.not.toBeFalsy()
+    }, 5000)
+
+    it('Should get NFT balance', async () => {
+        await expect(utilityF.assetBalance('2HgvJjAJFug1QriGTJPLK1AM2Yv3GqYnDLpUjQprf1Ut', '3Ms5T2C6pvqiZbMASjiJvPh9u57bQpcVLLp', apiBase)).resolves.toEqual(1)
     }, 5000)
 
     it('Should get NFT balance', async () => {
@@ -83,19 +87,19 @@ describe('Node interaction utility functions', () => {
 
     it('Should get accountData and filter it by regexp', async () => {
         const data = await utilityF.accountData({
-            address: '3XrUtvRZ6LLU8F2wwkuDffwTuLUNcpnjthB',
-            match: 'data_provider.*',
+            address: '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu',
+            match: 'binary.*',
         }, apiBase)
-        expect(Object.keys(data).length).toEqual(7)
+        expect(Object.keys(data).length).toEqual(2)
     }, 5000)
 
     it('Should get accountData by key ', async () => {
-        const data = await utilityF.accountDataByKey('data_provider_email', '3XrUtvRZ6LLU8F2wwkuDffwTuLUNcpnjthB', apiBase)
+        const data = await utilityF.accountDataByKey('string_value', '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase)
         expect(data).not.toBeFalsy()
     }, 5000)
 
     it('Should get accountData by key and return null on no data', async () => {
-        const data = await utilityF.accountDataByKey('test23', '3XXdcpdWv3HM6bqbAAcbxSbFGmsAbd5RzE3', apiBase)
+        const data = await utilityF.accountDataByKey('test23', '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase)
         expect(data).toBeNull()
     }, 5000)
 
@@ -105,11 +109,12 @@ describe('Node interaction utility functions', () => {
     }, 5000)
 
     it('Should get account script info', async () => {
-        const data = await utilityF.scriptInfo('3XVVT9TLt9cthFCxdBfgT1kp56d5E5reNak', apiBase)
+        const data = await utilityF.scriptInfo('3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR', apiBase)
         expect(data).toMatchObject({extraFee: 0})
     }, 5000)
 
     it('Should get account script meta', async () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
         const data = await utilityF.scriptMeta('3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR', apiBase)
         expect(data).toMatchObject({address: '3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR'})
@@ -118,11 +123,19 @@ describe('Node interaction utility functions', () => {
         console.log(data)
         expect(data).toMatchObject({address: '3XVVT9TLt9cthFCxdBfgT1kp56d5E5reNak'})
 >>>>>>> 697d643a (minor fixes)
+=======
+        const data = await utilityF.scriptMeta('3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR', apiBase)
+        expect(data).toMatchObject({address: '3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR'})
+>>>>>>> f33083a0 (updated dependencies)
     }, 5000)
 
+    it('Should reward info', async () => {
+        const data = await utilityF.rewards('https://testnet-node.decentralchain.io')
+        expect(data).toHaveProperty('currentReward')
+    }, 5000)
 
     it('Should get invokeTx state changes', async () => {
-        const data = await utilityF.stateChanges('31bL25RBNJmsFdJqPKTKgXoR5eJziYS8ZkXRCahyE5A6', apiBase)
+        const data = await utilityF.stateChanges('CNo4Zy72KEAo4pnpVL5FQrBujwhqhYgBogwQ1RS8uWkD', apiBase)
         expect(Array.isArray(data.data)).toBe(true)
     }, 5000)
 })

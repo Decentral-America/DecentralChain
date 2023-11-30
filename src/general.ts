@@ -29,9 +29,13 @@ import {
     ExchangeTransaction,
     ExchangeTransactionOrder,
 <<<<<<< HEAD
+<<<<<<< HEAD
     // InvokeExpressionTransaction,
 =======
 >>>>>>> 697d643a (minor fixes)
+=======
+    // InvokeExpressionTransaction,
+>>>>>>> f33083a0 (updated dependencies)
     InvokeScriptTransaction,
     IssueTransaction,
     LeaseTransaction,
@@ -43,14 +47,19 @@ import {
     SponsorshipTransaction,
     Transaction,
     TRANSACTION_TYPE,
-    TransferTransaction,
+    TransferTransaction, UpdateAssetInfoTransaction,
 } from '@waves/ts-types'
 import {IAuthParams, ICancelOrder, TTransaction, TTxParams, WithProofs, WithSender, WithTxType} from './transactions'
+<<<<<<< HEAD
 <<<<<<< HEAD
 import {updateAssetInfo} from './transactions/update-asset-info'
 // import {invokeExpression} from './transactions/invoke-expression'
 =======
 >>>>>>> 697d643a (minor fixes)
+=======
+import {updateAssetInfo} from './transactions/update-asset-info'
+// import {invokeExpression} from './transactions/invoke-expression'
+>>>>>>> f33083a0 (updated dependencies)
 
 type TLong = string | number
 
@@ -70,10 +79,15 @@ export const txTypeMap: { [type: number]: { sign: (tx: Transaction<TLong> | TTxP
     [TRANSACTION_TYPE.EXCHANGE]: {sign: (x, seed) => exchange(x as ExchangeTransaction & WithProofs, seed)},
     [TRANSACTION_TYPE.INVOKE_SCRIPT]: {sign: (x, seed) => invokeScript(x as InvokeScriptTransaction, seed)},
 <<<<<<< HEAD
+<<<<<<< HEAD
     [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed)},
     // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
 =======
 >>>>>>> 697d643a (minor fixes)
+=======
+    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed)},
+    // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
+>>>>>>> f33083a0 (updated dependencies)
 }
 
 /**
@@ -115,14 +129,14 @@ export function verifyCustomData(data: TSignedData): boolean {
 }
 
 export function verifyAuthData(authData: { signature: string, publicKey: string, address: string }, params: IAuthParams, chainId?: string | number): boolean {
-    chainId = chainId || 'L'
+    chainId = chainId || '?'
     const bytes = serializeAuthData(params)
     const myAddress = address({publicKey: authData.publicKey}, chainId)
     return myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)
 }
 
 export function verifyWavesAuthData(authData: { signature: string, publicKey: string, address: string, timestamp: number }, params: { publicKey: string, timestamp: number }, chainId?: string | number): boolean {
-    chainId = chainId || 'L'
+    chainId = chainId || '?'
     const bytes = serializeWavesAuthData(params)
     const myAddress = address({publicKey: authData.publicKey}, chainId)
     return myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)

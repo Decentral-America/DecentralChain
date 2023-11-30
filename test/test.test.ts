@@ -7,6 +7,7 @@ import {invokeScript} from '../src/transactions/invoke-script'
 import {address, randomSeed} from '@waves/ts-lib-crypto'
 import {setScript} from '../src/transactions/set-script'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID} from './integration/config'
 =======
 import {TIMEOUT} from './integration/config'
@@ -25,6 +26,11 @@ const nodeUrl = 'https://testnet-node.decentralchain.io/'
 const masterSeed = 'dcc private node seed with DCC tokens'
 const CHAIN_ID = 33
 >>>>>>> 697d643a (minor fixes)
+=======
+import {API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID} from './integration/config'
+import {waitForTxWithNConfirmations} from '../src/nodeInteraction'
+
+>>>>>>> f33083a0 (updated dependencies)
 let dappAddress1 = ''
 let dappAddress2 = ''
 let assetId = ''
@@ -37,6 +43,7 @@ it('issue', async () => {
         quantity: 1097654321,
         chainId: CHAIN_ID,
 <<<<<<< HEAD
+<<<<<<< HEAD
         fee: 100000000,
     }, MASTER_SEED)
     const {id} = await broadcast(tx, API_BASE)
@@ -45,6 +52,11 @@ it('issue', async () => {
     }, masterSeed)
     const {id} = await broadcast(tx, nodeUrl)
 >>>>>>> 697d643a (minor fixes)
+=======
+        fee: 100000000,
+    }, MASTER_SEED)
+    const {id} = await broadcast(tx, API_BASE)
+>>>>>>> f33083a0 (updated dependencies)
     assetId = id
 })
 
@@ -189,7 +201,7 @@ it('setScriptTest', async () => {
     //         // dApp: addr,
     //         dApp: '3HaN7nm7LuC7bDpgiG917VdJ1mmJE3iXMPM',
     //         call: {function: 'foo', args: []},
-    //         chainId: 82,
+    //         chainId: chainId,
     //         fee: 500000,
     //         payment: [{amount: 1, assetId: null}, {amount: 1, assetId: null}],
     //     }, masterSeed)
@@ -214,7 +226,7 @@ it('invoke test', async () => {
         dApp: dappAddress1,
         call: {function: 'foo', args: []},
         chainId: CHAIN_ID,
-        fee: 6000000,
+        fee: 500000,
         feeAssetId: null,
     }, MASTER_SEED)
     console.log('invokeTx', JSON.stringify(invokeTx, undefined, ' '))
@@ -277,7 +289,7 @@ it('invoke with list test', async () => {
             {'amount': 23, 'assetId': assetId},
             {'amount': 24, 'assetId': assetId},
             {'amount': 25, 'assetId': assetId}],
-        fee: 6000000,
+        fee: 500000,
         feeAssetId: null,
     }, MASTER_SEED)
     const {id} = await broadcast(invokeTx, API_BASE)
