@@ -1,5 +1,6 @@
-import { TRANSACTION_TYPE } from '@waves/ts-types'
+import {TRANSACTION_TYPE} from '@waves/ts-types'
 import {
+<<<<<<< HEAD
 <<<<<<< HEAD
   defaultValue,
 =======
@@ -11,6 +12,9 @@ import {
   isNumberLike,
   isArray,
 >>>>>>> 697d643a (minor fixes)
+=======
+  defaultValue,
+>>>>>>> f33083a0 (updated dependencies)
   getError,
   ifElse,
   isArray,

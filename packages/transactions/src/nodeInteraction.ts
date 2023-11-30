@@ -39,7 +39,7 @@ export interface INodeRequestOptions {
 
 const DEFAULT_NODE_REQUEST_OPTIONS = {
   timeout: 120000,
-  apiBase: 'https://cluster.tnnnode.turtlenetwork.eu',
+  apiBase: 'https://mainnet-node.decentralchain.io/',
 }
 
 export const currentHeight = async (apiBase: string): Promise<number> => {
@@ -66,19 +66,25 @@ export async function waitForHeight(height: number, options: INodeRequestOptions
   return promise()
 }
 
+type PropApplicationStatus = {
+  applicationStatus?: 'succeeded' | 'script_execution_failed'
+}
+
+type TxStatus = Transaction & PropApplicationStatus
+
 /**
  * Resolves when specified txId is mined into block
  * @param txId - waves address as base58 string
  * @param options
  */
-export async function waitForTx(txId: string, options: INodeRequestOptions, requestOptions?: RequestInit): Promise<Transaction & {applicationStatus?: 'succeed' | 'scriptExecutionFailed'}> {
+export async function waitForTx(txId: string, options: INodeRequestOptions, requestOptions?: RequestInit): Promise<TxStatus> {
   const { timeout, apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options }
 
   let expired = false
   const to = delay(timeout)
   to.then(() => expired = true)
 
-  const promise = (): Promise<Transaction & {applicationStatus?: 'succeed' | 'scriptExecutionFailed'}> =>
+  const promise = (): Promise<TxStatus> =>
       tx_route.fetchInfo(apiBase, txId, requestOptions)
     .then(x => {
       to.cancel()
@@ -96,9 +102,12 @@ const process400 = (resp: any) => resp.status === 400
   ? Promise.reject(Object.assign(new Error(), resp.data))
   : resp
 
-export async function waitForTxWithNConfirmations(txId: string, confirmations: number, options: INodeRequestOptions, requestOptions?: RequestInit):
-    Promise<Transaction & {applicationStatus?: 'succeed' | 'scriptExecutionFailed'}>{
-
+export async function waitForTxWithNConfirmations(
+  txId: string,
+  confirmations: number,
+  options: INodeRequestOptions,
+  requestOptions?: RequestInit
+): Promise<TxStatus> {
 
   const { timeout } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options }
 
@@ -132,7 +141,7 @@ export async function waitNBlocks(blocksCount: number, options: INodeRequestOpti
 /**
  * Get account effective balance
  * @param txId - transaction ID as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://nodes.wavesplatform.com/
  */
 export async function transactionById(txId: string, nodeUrl: string, requestOptions?: RequestInit): Promise<Transaction & WithId & { height: number }> {
   return tx_route.fetchInfo(nodeUrl, txId, requestOptions) as any //todo: fix types
@@ -141,7 +150,7 @@ export async function transactionById(txId: string, nodeUrl: string, requestOpti
 /**
  * Get account effective balance
  * @param address - waves address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://nodes.wavesplatform.com/
  */
 export async function balance(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<number> {
   return addresses_route.fetchBalance(nodeUrl, address, requestOptions).then(d => +d.balance)
@@ -150,7 +159,7 @@ export async function balance(address: string, nodeUrl: string, requestOptions?:
 /**
  * Retrieve full information about waves account balance. Effective, generating etc
  * @param address - waves address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://nodes.wavesplatform.com/
  */
 export async function balanceDetails(address: string, nodeUrl: string, requestOptions?: RequestInit) {
   return addresses_route.fetchBalanceDetails(nodeUrl, address, requestOptions)
@@ -160,7 +169,7 @@ export async function balanceDetails(address: string, nodeUrl: string, requestOp
  * Retrieve information about specific asset account balance
  * @param assetId - id of asset
  * @param address - waves address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://nodes.wavesplatform.com/
  */
 export async function assetBalance(assetId: string, address: string, nodeUrl: string, requestOptions?: RequestInit) {
   return assets_route.fetchBalanceAddressAssetId(nodeUrl, address, assetId, requestOptions)
@@ -175,7 +184,7 @@ export interface IAccountDataRequestOptions {
 /**
  * Get full account dictionary
  * @param options - waves address and optional match regular expression. If match is present keys will be filtered by this regexp
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function accountData(options: IAccountDataRequestOptions, nodeUrl: string, requestOptions?: RequestInit): Promise<Record<string, DataTransactionEntry>>
 export async function accountData(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<Record<string, DataTransactionEntry>>
@@ -207,7 +216,7 @@ export async function accountData(options: string | IAccountDataRequestOptions, 
  * Get data from account dictionary by key
  * @param address - waves address as base58 string
  * @param key - dictionary key
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function accountDataByKey(key: string, address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<DataTransactionEntry<TLong> | null> {
   return addresses_route.fetchDataKey(nodeUrl, address, key, requestOptions).catch((e) => {
@@ -220,7 +229,7 @@ export async function accountDataByKey(key: string, address: string, nodeUrl: st
 /**
  * Get account script info
  * @param address - waves address as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function scriptInfo(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<any> {
   return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions)
@@ -229,7 +238,7 @@ export async function scriptInfo(address: string, nodeUrl: string, requestOption
 /**
  * Get account script meta, i.e., available callable functions
  * @param address - waves address as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function scriptMeta(address: string, nodeUrl: string): Promise<any> {
   return addresses_route.fetchScriptInfoMeta(nodeUrl, address)
@@ -237,13 +246,13 @@ export async function scriptMeta(address: string, nodeUrl: string): Promise<any>
 
 /**
  * Get miner’s reward status and total supply
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function rewards(nodeUrl: string): Promise<any>
 /**
  * Get miner’s reward status at height and total supply
  * @param height - block number to get info
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function rewards(height: number, nodeUrl: string): Promise<any>
 export async function rewards(...args: [number, string] | [string]): Promise<any> {//TODO add requestOptions argument
@@ -271,7 +280,7 @@ export interface IStateChangeResponse {
 /**
  * Get invokeScript tx state changes
  * @param transactionId - invokeScript transaction id as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://nodes.wavesplatform.com/
  */
 export async function stateChanges(transactionId: string, nodeUrl: string, requestOptions?: RequestInit): Promise<IStateChangeResponse> {
   return debug_route.fetchStateChangesByTxId(nodeUrl, transactionId, requestOptions).then((t: any) => t.stateChanges) as any //todo: fix types
@@ -281,7 +290,7 @@ export async function stateChanges(transactionId: string, nodeUrl: string, reque
  * Sends transaction to waves node
  * IMPORTANT: You cannot broadcast order. Orders should be sent to matcher via submitOrder method
  * @param tx - transaction to send
- * @param nodeUrl - node address to send tx to. E.g. https://mainnet-node.decentralchain.io/
+ * @param nodeUrl - node address to send tx to. E.g. https://nodes.wavesplatform.com/
  */
 export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(tx: T, nodeUrl: string, requestOptions?: RequestInit ): Promise<T & WithApiMixin> {
   return tx_route.broadcast(nodeUrl, tx as any, requestOptions)

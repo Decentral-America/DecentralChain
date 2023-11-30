@@ -61,11 +61,10 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<a href="#waves-transactions--" id="waves-transactions--" style="color: inherit; text-decoration: none;">
-					<h1>waves-transactions  <a href="https://badge.fury.io/js/%40decentralchain%2Fwaves-transactions"><img src="https://badge.fury.io/js/%40decentralchain%2Fwaves-transactions.svg" alt="npm version"></a></h1>
+					<h1>waves-transactions  <a href="https://badge.fury.io/js/%40waves%2Fwaves-transactions"><img src="https://badge.fury.io/js/%40waves%2Fwaves-transactions.svg" alt="npm version"></a></h1>
 				</a>
-				
 				<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/npm/l/make-coverage-badge.svg" alt="License"></a></p>
-				<p>Using this library you can easily create and sign transactions for DecentralChain.
+				<p>Using this library you can easily create and sign transactions for Waves blockchain.
 				It also allows you to multi-sign existing transactions or create them without signature at all.</p>
 				<ul>
 					<li><a href="#Transactions">Transactions</a> <ul>
@@ -111,11 +110,11 @@
 				</a>
 				<p>You can provide seed or private key to transaction creating function to sign it. If you do, senderPublicKey can be omitted.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> signedTranfer = transfer({
-    <span class="hljs-attr">recipient</span>:<span class="hljs-string">&#x27;3P5tbbRm9MCBc5oiMyt29dLAznXnRQwPmN9&#x27;</span>,
+    <span class="hljs-attr">recipient</span>:<span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
     <span class="hljs-attr">amount</span>: <span class="hljs-number">100000</span>}, <span class="hljs-string">&#x27;secret seed phraze&#x27;</span>
 )
 <span class="hljs-keyword">const</span> signedTranferViaPrivateKey = transfer({
-    <span class="hljs-attr">recipient</span>:<span class="hljs-string">&#x27;3P5tbbRm9MCBc5oiMyt29dLAznXnRQwPmN9&#x27;</span>,
+    <span class="hljs-attr">recipient</span>:<span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
     <span class="hljs-attr">amount</span>: <span class="hljs-number">100000</span>}, {<span class="hljs-attr">privateKey</span>: <span class="hljs-string">&#x27;GucCLYU7aqzcVUwVXX4nosceDisky9UpbmpFK39tVYom&#x27;</span>}
 )
 </code></pre>
@@ -369,18 +368,18 @@
 </code></pre>
 				<p>If you want to create  the minimum you need to provide is <strong>amount</strong> and <strong>recipient</strong> as defined in Transfer params:</p>
 				<pre><code class="language-js">
-<span class="hljs-keyword">const</span> { transfer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>)
+<span class="hljs-keyword">const</span> { transfer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>)
 <span class="hljs-keyword">const</span> seed = <span class="hljs-string">&#x27;some example seed phrase&#x27;</span>
-<span class="hljs-keyword">const</span> signedTranserTx = transfer({
+<span class="hljs-keyword">const</span> signedTranserTx = transfer({ 
   <span class="hljs-attr">amount</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2&#x27;</span>,
+  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
   <span class="hljs-comment">//Timestamp is optional but it was overrided, in case timestamp is not provided it will fallback to Date.now(). You can set any oftional params yourself. go check full docs</span>
-  <span class="hljs-attr">timestamp</span>: <span class="hljs-number">1536917842558</span>
+  <span class="hljs-attr">timestamp</span>: <span class="hljs-number">1536917842558</span> 
 }, seed)
 
 <span class="hljs-comment">// or using alias</span>
 
-<span class="hljs-keyword">const</span> signedTranserTx = transfer({
+<span class="hljs-keyword">const</span> signedTranserTx = transfer({ 
   <span class="hljs-attr">amount</span>: <span class="hljs-number">1</span>,
   <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;alias:W:aliasForMyAddress&#x27;</span>
 }, seed)
@@ -390,7 +389,7 @@
   <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;8NrUwgKRCMFbUbqXKQAHkGnspmWHEjKUSi5opEC6Havq&#x27;</span>,
   <span class="hljs-attr">type</span>: <span class="hljs-number">4</span>,
   <span class="hljs-attr">version</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2&#x27;</span>,
+  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
   <span class="hljs-attr">attachment</span>: <span class="hljs-literal">undefined</span>,
   <span class="hljs-attr">feeAssetId</span>: <span class="hljs-literal">undefined</span>,
   <span class="hljs-attr">assetId</span>: <span class="hljs-literal">undefined</span>,
@@ -406,9 +405,9 @@
 				<p>You can also create transaction, but not sign it:</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> unsignedTransferTx = transfer({
   <span class="hljs-attr">amount</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2&#x27;</span>,
+  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
   <span class="hljs-comment">//senderPublicKey is required if you omit seed</span>
-  <span class="hljs-attr">senderPublicKey</span>: <span class="hljs-string">&#x27;6nR7CXVV7Zmt9ew11BsNzSvVmuyM5PF6VPbWHW9BHgPq&#x27;</span>
+  <span class="hljs-attr">senderPublicKey</span>: <span class="hljs-string">&#x27;6nR7CXVV7Zmt9ew11BsNzSvVmuyM5PF6VPbWHW9BHgPq&#x27;</span> 
 })
 </code></pre>
 				<p>Now you are able to POST it to Waves API or store for future purpose or you can add another signature from other party:</p>
@@ -420,7 +419,7 @@
   <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;8NrUwgKRCMFbUbqXKQAHkGnspmWHEjKUSi5opEC6Havq&#x27;</span>,
   <span class="hljs-attr">type</span>: <span class="hljs-number">4</span>,
   <span class="hljs-attr">version</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3P6fVra21KmTfWHBdib45iYV6aFduh4WwC2&#x27;</span>,
+  <span class="hljs-attr">recipient</span>: <span class="hljs-string">&#x27;3N4mLCaHq2twRKnbUjdvAHyXjoccQE9KDRE&#x27;</span>,
   <span class="hljs-attr">attachment</span>: <span class="hljs-literal">undefined</span>,
   <span class="hljs-attr">feeAssetId</span>: <span class="hljs-literal">undefined</span>,
   <span class="hljs-attr">assetId</span>: <span class="hljs-literal">undefined</span>,
@@ -443,7 +442,7 @@
     <span class="hljs-attr">amount</span>: <span class="hljs-number">100000000</span>, <span class="hljs-comment">//1 waves</span>
     <span class="hljs-attr">price</span>: <span class="hljs-number">10</span>, <span class="hljs-comment">//for 0.00000010 BTC</span>
     <span class="hljs-attr">priceAsset</span>: <span class="hljs-string">&#x27;8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS&#x27;</span>,
-    <span class="hljs-attr">matcherPublicKey</span>: <span class="hljs-string">&#x27;DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY&#x27;</span>,
+    <span class="hljs-attr">matcherPublicKey</span>: <span class="hljs-string">&#x27;7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy&#x27;</span>,
     <span class="hljs-attr">orderType</span>: <span class="hljs-string">&#x27;buy&#x27;</span>
 }
   
@@ -452,20 +451,20 @@
 				<a href="#broadcast" id="broadcast" style="color: inherit; text-decoration: none;">
 					<h3>Broadcast</h3>
 				</a>
-				<p>To send transaction you can use either node <a href="https://mainnet-node.decentralchain.io/api-docs/index.html#!/transactions/broadcast">REST API</a> or <a href="https://github.com/Decentral-America/waves-transactions/globals.html#broadcast">broadcast</a> helper function:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {broadcast} =  <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@decentralchain/waves-transactions&#x27;</span>);
-<span class="hljs-keyword">const</span> nodeUrl = <span class="hljs-string">&#x27;https://mainnet-node.decentralchain.io&#x27;</span>;
+				<p>To send transaction you can use either node <a href="https://nodes.wavesplatform.com/api-docs/index.html#!/transactions/broadcast">REST API</a> or <a href="https://wavesplatform.github.io/waves-transactions/globals.html#broadcast">broadcast</a> helper function:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {broadcast} =  <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waves/waves-transactions&#x27;</span>);
+<span class="hljs-keyword">const</span> nodeUrl = <span class="hljs-string">&#x27;https://nodes.wavesplatform.com&#x27;</span>;
 
 broadcast(signedTx, nodeUrl).then(<span class="hljs-function"><span class="hljs-params">resp</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(resp))
 </code></pre>
 				<p>You can send tx to any waves node you like:. E.g.:</p>
 				<ul>
-					<li><a href="https://testnet-node.decentralchain.io">https://testnet-node.decentralchain.io</a> - waves TESTNET nodes hosted by Blockchain Costa Rica</li>
-					<li><a href="https://mainnet-node.decentralchain.io">https://mainnet-node.decentralchain.io</a> - waves MAINNET nodes hosted by Blockchain Costa Rica
+					<li><a href="https://nodes-testnet.wavesnodes.com">https://nodes-testnet.wavesnodes.com</a> - waves TESTNET nodes hosted by Wavesplatform</li>
+					<li><a href="https://nodes.wavesplatform.com">https://nodes.wavesplatform.com</a> - waves MAINNET nodes hosted by Wavesplatform
 						<a href="#important" id="important" style="color: inherit; text-decoration: none;">
 							<h4>Important!!!</h4>
 						</a>
-					Most transactions require chainId as parameter, e.g: <a href="https://github.com/Decentral-America/waves-transactions/interfaces/iburnparams.html">IBurnParams</a>. By default chainId is &#39;L&#39;, which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node</li>
+					Most transactions require chainId as parameter, e.g: <a href="https://wavesplatform.github.io/waves-transactions/interfaces/_transactions_.iburnparams.html">IBurnParams</a>. By default chainId is &#39;W&#39;, which means MAINNET. To make transaction in TESTNET be sure to pass chainId if it is present in params interface and then send it to TESTNET node</li>
 				</ul>
 				<a href="#dependencies" id="dependencies" style="color: inherit; text-decoration: none;">
 					<h3>Dependencies</h3>
@@ -539,6 +538,9 @@ broadcast(signedTx, nodeUrl).then(<span class="hljs-function"><span class="hljs-
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_transactions_exchange_.html">&quot;transactions/exchange&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_transactions_invoke_expression_.html">&quot;transactions/invoke-<wbr>expression&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_transactions_invoke_script_.html">&quot;transactions/invoke-<wbr>script&quot;</a>
