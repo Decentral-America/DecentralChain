@@ -19,6 +19,7 @@ describe('Smart features', () => {
     const mtt = massTransfer({
       transfers: [
 <<<<<<< HEAD
+<<<<<<< HEAD
         { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
         { recipient: address(account2, CHAIN_ID), amount: 1100000 },
       ],
@@ -27,6 +28,11 @@ describe('Smart features', () => {
         { recipient: address(account2, CHAIN_ID), amount: 10000 * wvs },
       ]
 >>>>>>> 697d643a (minor fixes)
+=======
+        { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
+        { recipient: address(account2, CHAIN_ID), amount: 1100000 },
+      ],
+>>>>>>> f33083a0 (updated dependencies)
     }, MASTER_SEED)
     await broadcast(mtt, API_BASE)
     await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT })
@@ -96,7 +102,7 @@ describe('Smart features', () => {
         senderPublicKey: publicKey(account1),
         chainId: CHAIN_ID,
         script: null,
-        additionalFee: 4000000,
+        additionalFee: 400000,
       }
 
       const removeTx = setScript(removeTxParams, [null, 'bob', 'cooper'])
@@ -117,6 +123,7 @@ describe('Smart features', () => {
       {-# STDLIB_VERSION 3 #-}
       {-# CONTENT_TYPE DAPP #-}
       {-# SCRIPT_TYPE ACCOUNT #-}
+
       @Callable(i)
       func foo(a: Int) = {
           TransferSet([ScriptTransfer(i.caller, a, unit)])
@@ -144,13 +151,12 @@ describe('Smart features', () => {
       const dappAddress = address(account2, CHAIN_ID)
 
       const invokeTx = invokeScript({
-            chainId: CHAIN_ID,
-            dApp: dappAddress,
-            additionalFee: 4000000,
-            call: {
-              function: 'foo', args: [{ type: 'integer', value: 10000 }],
-            },
+          chainId: CHAIN_ID,
+          dApp: dappAddress,
+          call: {
+            function: 'foo', args: [{ type: 'integer', value: 10000 }],
           },
+<<<<<<< HEAD
 <<<<<<< HEAD
           fee: 900000
         },
@@ -158,6 +164,11 @@ describe('Smart features', () => {
 =======
           account1)
 >>>>>>> 697d643a (minor fixes)
+=======
+          fee: 900000
+        },
+        account1)
+>>>>>>> f33083a0 (updated dependencies)
 
       await broadcast(invokeTx, API_BASE)
 

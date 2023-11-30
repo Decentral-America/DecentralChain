@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
 import {protoBytesToTx, txToProtoBytes} from '../../src/proto-serialize'
 import {publicKey} from '@waves/ts-lib-crypto'
 import {invokeScriptMinimalParams} from '../minimalParams'
@@ -14,6 +17,7 @@ import {invokeScriptTx} from './expected/proto/invoke-script.tx'
 import {invokeScriptBinaryTx} from './expected/binary/invoke-script.tx'
 import {API_BASE, TIMEOUT} from '../integration/config'
 import {broadcast} from '../../src'
+<<<<<<< HEAD
 =======
 import { publicKey } from '@waves/ts-lib-crypto'
 import { invokeScriptMinimalParams } from '../minimalParams'
@@ -22,6 +26,8 @@ import { binary } from '@decentralchain/marshall'
 import { IInvokeScriptParams } from '../../src'
 import { validateTxSignature } from '../../test/utils'
 >>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
 describe('invokeScript', () => {
 
@@ -46,6 +52,9 @@ describe('invokeScript', () => {
         }, [stringSeed2])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
         console.log(protoBytesToTx(txToProtoBytes(tx)))
     })
 
@@ -184,6 +193,7 @@ describe('serialize/deserialize invoke binary tx', () => {
         it(name, () => {
             checkBinarySerializeDeserialize({Json: Json, Bytes: Bytes})
         }))
+<<<<<<< HEAD
 =======
   it('Should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2'
@@ -192,5 +202,7 @@ describe('serialize/deserialize invoke binary tx', () => {
       payment: [{ amount: 100, assetId: null }]
     }, [null, stringSeed, null, stringSeed2])
 >>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
 
 })

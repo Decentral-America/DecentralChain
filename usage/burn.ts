@@ -8,7 +8,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000,
-  //chainId: 'L',
+  //chainId: 'W',
 }
 
 const signedBurnTx = burn(params, seed)
