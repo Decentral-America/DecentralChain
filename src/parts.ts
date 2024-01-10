@@ -6,7 +6,7 @@ export type Base58Bytes = string;
 export type Proofs = Array<string>;
 export type Long = string | number;
 export type AssetDecimals = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type Base64string = string;
+export type Base64String = string;
 
 export type WithApiMixin = WithId & {
     sender: string;
@@ -47,7 +47,7 @@ export type InvokeScriptCallStringArgument = InvokeScriptCallArgumentGeneric<
 >;
 export type InvokeScriptCallBinaryArgument = InvokeScriptCallArgumentGeneric<
     'binary',
-    Base64string
+    Base64String
 >;
 export type InvokeScriptCallBooleanArgument = InvokeScriptCallArgumentGeneric<
     'boolean',
@@ -95,7 +95,7 @@ export type DataTransactionEntryString = DataTransactionEntryGeneric<
 >;
 export type DataTransactionEntryBinary = DataTransactionEntryGeneric<
     typeof DATA_FIELD_TYPE.BINARY,
-    Base64string
+    Base64String
 >;
 export type DataTransactionEntryBoolean = DataTransactionEntryGeneric<
     typeof DATA_FIELD_TYPE.BOOLEAN,
@@ -146,6 +146,7 @@ export type ExchangeTransactionOrderV4<LONG = Long> = WithVersion<
         priceMode: 'fixedDecimals' | 'assetDecimals';
         eip712Signature?: string;
         senderPublicKey?: string;
+        attachment?: Base64String | null;
     },
     4
 >;
