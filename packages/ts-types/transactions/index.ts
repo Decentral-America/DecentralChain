@@ -194,7 +194,7 @@ export type EthereumTransactionFields<LONG = Long> = {
     payload:
         | ({
               type: 'invocation';
-              stateChanges: TStateChanges;
+              stateChanges: TStateChanges | null;
           } & InvokeScriptTransactionFields)
         | {
               type: 'transfer';
@@ -717,7 +717,7 @@ export type InvokeScriptTransactionFromNode<LONG = Long> = SignedTransaction<
     WithId &
     WithApplicationStatus &
     WithApiMixin & {
-        stateChanges: TStateChanges;
+        stateChanges: TStateChanges | null;
     };
 
 export type UpdateAssetInfoTransaction<
