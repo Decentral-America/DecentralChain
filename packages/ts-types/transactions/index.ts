@@ -201,7 +201,8 @@ export type EthereumTransactionFields<LONG = Long> = {
               recipient: string;
               amount: LONG;
               asset: string | null;
-          };
+          }
+        | {};
     bytes: string;
 };
 //--------------------------------------------------------------------------------------------------------------------
