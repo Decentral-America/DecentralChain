@@ -29,7 +29,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wavesplatform.protobuf.transaction.TransactionOuterClass.DataTransactionData.DataEntry.ValueCase.*;
+import static com.wavesplatform.protobuf.transaction.TransactionOuterClass.DataEntry.ValueCase.*;
 import static com.wavesplatform.transactions.EthereumTransaction.AMOUNT_MULTIPLIER;
 import static com.wavesplatform.transactions.EthereumTransaction.ERC20_PREFIX;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -504,8 +504,8 @@ public abstract class ProtobufConverter {
             DataTransaction dtx = (DataTransaction) tx;
             protoBuilder.setDataTransaction(TransactionOuterClass.DataTransactionData.newBuilder()
                     .addAllData(dtx.data().stream().map(e -> {
-                        TransactionOuterClass.DataTransactionData.DataEntry.Builder builder =
-                                TransactionOuterClass.DataTransactionData.DataEntry.newBuilder().setKey(e.key());
+                        TransactionOuterClass.DataEntry.Builder builder =
+                                TransactionOuterClass.DataEntry.newBuilder().setKey(e.key());
                         if (e instanceof BinaryEntry)
                             builder.setBinaryValue(ByteString.copyFrom(((BinaryEntry) e).value().bytes())).build();
                         else if (e instanceof BooleanEntry) builder.setBoolValue(((BooleanEntry) e).value()).build();
