@@ -140,11 +140,9 @@ public class EthereumTransaction extends Transaction {
     }
 
     public static byte[] publicKeyBytes(BigInteger publicKey) {
-        byte[] publicKeyBytes = publicKey.toByteArray();
-        return Arrays.copyOfRange(
-                publicKeyBytes,
-                publicKeyBytes.length - PublicKey.ETH_BYTES_LENGTH,
-                publicKeyBytes.length
+        return Numeric.toBytesPadded(
+                publicKey,
+                PublicKey.ETH_BYTES_LENGTH
         );
     }
 

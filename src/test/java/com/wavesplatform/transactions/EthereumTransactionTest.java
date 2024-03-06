@@ -2,7 +2,6 @@ package com.wavesplatform.transactions;
 
 import com.wavesplatform.crypto.base.Base64;
 import com.wavesplatform.transactions.account.Address;
-import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.AssetId;
@@ -16,8 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -169,6 +166,17 @@ public class EthereumTransactionTest {
         );
 
         Assertions.assertEquals(rawInvocation, ethInvokeTx.toRawHexString());
+    }
+
+    @Test
+    void testPublicKeyWithLeadingZeros() {
+        final String pk = "1BCj4dedGD4DsN5GwkLUCYmGsPrMUfKsvwTqqKsD9apgqpcqRD1m47rqR5QqLmuu5PkCTDjGULDJSQTQZfYLyHd";
+        final String txBytes = "0xf873860189d376da988502540be400830186a094b4a384b911b2b055f4f45fd69a4b06e9f6b9ab2d874" +
+                "70de4df8200008081d1a085ccf91a21722978ad4ee0ed218f96281c2d2d10d9d5d1b0d52e2c49c106d83fa07e83b04b57b1d" +
+                "a7822eaac0a7dac65debf33f74e600467f2e9dc1a4a13778781";
+        final EthereumTransaction et = EthereumTransaction.parse(txBytes);
+
+        Assertions.assertEquals(PublicKey.as(pk), et.sender());
     }
 
     private final String rawTransfer = "0xf8728601816d987be28502540be400830186a094fff689d6fea7aba445868536036452faf" +
