@@ -1,17 +1,17 @@
 package com.wavesplatform.lang.v1.evaluator.ctx
 
 import cats.Monad
-import cats.syntax.applicative._
+import cats.syntax.applicative.*
 import com.wavesplatform.lang.ExecutionError
 import com.wavesplatform.lang.directives.DirectiveDictionary
 import com.wavesplatform.lang.directives.values.StdLibVersion
 import com.wavesplatform.lang.v1.FunctionHeader
 import com.wavesplatform.lang.v1.compiler.Terms.{EVALUATED, EXPR}
-import com.wavesplatform.lang.v1.compiler.Types._
+import com.wavesplatform.lang.v1.compiler.Types.*
 import com.wavesplatform.lang.v1.evaluator.{ContextfulNativeFunction, ContextfulUserFunction}
 
 import scala.annotation.meta.field
-import scala.scalajs.js.annotation._
+import scala.scalajs.js.annotation.*
 
 sealed trait BaseFunction[C[_[_]]] {
   @JSExport def signature: FunctionTypeSignature
@@ -35,11 +35,11 @@ case class FunctionTypeSignature(result: TYPE, args: Seq[(String, TYPE)], header
 
 @JSExportTopLevel("NativeFunction")
 case class NativeFunction[C[_[_]]](
-                                    @(JSExport @field) name: String,
+                                    name: String,
                                     costByLibVersionMap: Map[StdLibVersion, Long],
-                                    @(JSExport @field) signature: FunctionTypeSignature,
+                                    signature: FunctionTypeSignature,
                                     ev: ContextfulNativeFunction[C],
-                                    @(JSExport @field) args: Seq[String]
+                                    args: Seq[String]
 ) extends BaseFunction[C]
 
 object NativeFunction {
@@ -82,12 +82,12 @@ object NativeFunction {
 
 @JSExportTopLevel("UserFunction")
 case class UserFunction[C[_[_]]](
-                                  @(JSExport@field) name: String,
-                                  @(JSExport@field) internalName: String,
-                                  costByLibVersionMap: Map[StdLibVersion, Long],
-                                  @(JSExport@field) signature: FunctionTypeSignature,
-                                  ev: ContextfulUserFunction[C],
-                                  @(JSExport@field) args: Seq[String]
+                                name: String,
+                                @(JSExport @field) internalName: String,
+                                costByLibVersionMap: Map[StdLibVersion, Long],
+                                signature: FunctionTypeSignature,
+                                ev: ContextfulUserFunction[C],
+                                args: Seq[String]
 ) extends BaseFunction[C]
 
 object UserFunction {

@@ -7,7 +7,8 @@ import cats.kernel.Monoid
 import cats.syntax.bifunctor.*
 import com.google.common.io.BaseEncoding
 import com.wavesplatform.common.state.ByteStr
-import com.wavesplatform.common.utils.{Base58, Base64, EitherExt2}
+import com.wavesplatform.common.utils.{Base58, Base64}
+import com.wavesplatform.common.utils.EitherExt2.*
 import com.wavesplatform.crypto.*
 import com.wavesplatform.lang.Common.*
 import com.wavesplatform.lang.Testing.*
@@ -1058,7 +1059,7 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   property("checking a hash of some message by crypto function invoking") {
     val bodyText      = "some text for test"
     val bodyBytes     = bodyText.getBytes("UTF-8")
-    val hashFunctions = Map(SHA256 -> Sha256.hash _, BLAKE256 -> Blake2b256.hash _, KECCAK256 -> Keccak256.hash _)
+    val hashFunctions = Map(SHA256 -> Sha256.hash, BLAKE256 -> Blake2b256.hash, KECCAK256 -> Keccak256.hash)
 
     for ((funcName, funcClass) <- hashFunctions) hashFuncTest(bodyBytes, funcName) shouldBe Right(ByteStr(funcClass(bodyBytes)))
   }

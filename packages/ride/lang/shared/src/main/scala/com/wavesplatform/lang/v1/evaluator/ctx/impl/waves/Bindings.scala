@@ -1,7 +1,7 @@
 package com.wavesplatform.lang.v1.evaluator.ctx.impl.waves
 
 import com.wavesplatform.common.state.ByteStr
-import com.wavesplatform.common.utils.EitherExt2
+import com.wavesplatform.common.utils.EitherExt2.*
 import com.wavesplatform.lang.directives.values.{StdLibVersion, V3, V4, V5, V7, V8}
 import com.wavesplatform.lang.v1.compiler.Terms.*
 import com.wavesplatform.lang.v1.compiler.Terms.CONST_BYTESTR.{DataEntrySize, NoLimit}
@@ -10,6 +10,7 @@ import com.wavesplatform.lang.v1.evaluator.ContractEvaluator.Invocation
 import com.wavesplatform.lang.v1.evaluator.ctx.impl.{converters, unit}
 import com.wavesplatform.lang.v1.traits.domain.Tx.*
 import com.wavesplatform.lang.v1.traits.domain.*
+import com.wavesplatform.common.utils.EitherExt2.*
 
 object Bindings {
 
@@ -125,11 +126,11 @@ object Bindings {
       "fee"             -> i.fee,
       "feeAssetId"      -> i.feeAssetId
     ) ++ (if (version >= V5)
-            Map(
+            Map[String, EVALUATED](
               "originCaller"          -> mapRecipient(i.originCaller)._2,
               "originCallerPublicKey" -> i.originCallerPublicKey
             )
-          else Map())
+          else Map.empty)
     CaseObj(invocationType(version), fields + buildPayments(i.payments))
   }
 

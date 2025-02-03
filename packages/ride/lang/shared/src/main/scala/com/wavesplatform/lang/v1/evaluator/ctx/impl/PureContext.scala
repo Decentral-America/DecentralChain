@@ -3,7 +3,7 @@ package com.wavesplatform.lang.v1.evaluator.ctx.impl
 import cats.implicits.*
 import cats.{Id, Monad}
 import com.wavesplatform.common.state.ByteStr
-import com.wavesplatform.common.utils.EitherExt2
+import com.wavesplatform.common.utils.EitherExt2.*
 import com.wavesplatform.lang.*
 import com.wavesplatform.lang.directives.DirectiveDictionary
 import com.wavesplatform.lang.directives.values.*
@@ -2074,14 +2074,14 @@ object PureContext {
       v5Functions(useNewPowPrecision)
     )
 
-  private[this] val v6Ctx =
+  private val v6Ctx =
     CTX[NoContext](
       v5Types,
       v5Vars,
       v6Functions
     )
 
-  private[this] val v8Ctx =
+  private val v8Ctx =
     CTX[NoContext](
       v5Types,
       v5Vars,
