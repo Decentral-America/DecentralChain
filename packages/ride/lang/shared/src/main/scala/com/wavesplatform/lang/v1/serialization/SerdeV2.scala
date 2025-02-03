@@ -6,7 +6,7 @@ import cats.syntax.apply.*
 import cats.syntax.traverse.*
 import com.google.protobuf.{CodedInputStream, CodedOutputStream}
 import com.wavesplatform.common.state.ByteStr
-import com.wavesplatform.common.utils.EitherExt2
+import com.wavesplatform.common.utils.EitherExt2.*
 import com.wavesplatform.lang.v1.compiler.Terms.*
 import com.wavesplatform.lang.v1.compiler.Types.CASETYPEREF
 import com.wavesplatform.lang.v1.serialization.Serde.*
@@ -97,7 +97,7 @@ object SerdeV2 extends Serde[CodedInputStream, CodedOutputStream] {
               (1 to argc)
                 .map(_ => desAuxR(in, allowObjects, acc))
                 .toList
-                .sequence
+                .sequence[Coeval, EXPR]
                 .map(FUNCTION_CALL(header, _))
           }
       case E_ARR =>
