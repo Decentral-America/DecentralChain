@@ -11,7 +11,6 @@ import java.util.Objects;
 
 /**
  * RSA public key to encrypt data or verify that data is actually signed by the private key of the public key.
- *
  * RSA signatures are supported in Ride language.
  */
 @SuppressWarnings("WeakerAccess")

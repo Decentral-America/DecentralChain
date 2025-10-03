@@ -13,7 +13,6 @@ import java.util.Objects;
 
 /**
  * Pair of RSA private and public keys to encrypt/decrypt or signing data.
- *
  * RSA signatures are supported in Ride language.
  */
 @SuppressWarnings("WeakerAccess")
