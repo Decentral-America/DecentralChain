@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class CommitToGenerationTransaction extends Transaction {
 
-    public static final int TYPE = 20;
+    public static final int TYPE = 19;
     public static final int LATEST_VERSION = 1;
     public static final long MIN_FEE = 100_00000;
 
