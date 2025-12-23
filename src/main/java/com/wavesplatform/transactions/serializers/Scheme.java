@@ -33,6 +33,9 @@ public enum Scheme {
         if (txType == EthereumTransaction.TYPE_TAG) {
             return Scheme.PROTOBUF;
         }
+        if (txType == CommitToGenerationTransaction.TYPE) {
+            return Scheme.PROTOBUF;
+        }
 
         throw new IllegalArgumentException("Unsupported transaction type " + txType + " with version " + txVersion);
     }

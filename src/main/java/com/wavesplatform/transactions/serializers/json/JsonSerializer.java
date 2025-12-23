@@ -8,6 +8,8 @@ import com.wavesplatform.crypto.base.Base58;
 import com.wavesplatform.crypto.base.Base64;
 import com.wavesplatform.transactions.*;
 import com.wavesplatform.transactions.account.Address;
+import com.wavesplatform.transactions.account.BlsPublicKey;
+import com.wavesplatform.transactions.account.BlsSignature;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.data.*;
@@ -16,7 +18,6 @@ import com.wavesplatform.transactions.exchange.OrderType;
 import com.wavesplatform.transactions.invocation.*;
 import com.wavesplatform.transactions.mass.Transfer;
 import com.wavesplatform.transactions.serializers.Scheme;
-import org.bouncycastle.util.encoders.Hex;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.Sign;
 import org.web3j.crypto.SignedRawTransaction;
@@ -278,6 +279,12 @@ public abstract class JsonSerializer {
                 default:
                     throw new IOException("Unsupported payload type");
             }
+        } else if (type == CommitToGenerationTransaction.TYPE) {
+            if (!fee.assetId().isWaves())
+                throw new IOException("feeAssetId field must be null for CommitToGenerationTransaction");
+            return new CommitToGenerationTransaction(sender, json.get("generationPeriodStart").asInt(),
+                    blsPublicKeyFromJson(json, "endorserPublicKey"), blsSignatureFromJson(json, "commitmentSignature"),
+                    fee, version, chainId, timestamp, proofs);
         }
 
         throw new IOException("Can't parse json of transaction with type " + type);
@@ -510,6 +517,11 @@ public abstract class JsonSerializer {
                     EthereumTransaction.Transfer transfer = (EthereumTransaction.Transfer) et.payload();
                     transferToJson(payload.put("type", "transfer"), transfer.recipient(), transfer.amount());
                 }
+            } else if (tx instanceof CommitToGenerationTransaction) {
+                CommitToGenerationTransaction gct = (CommitToGenerationTransaction) tx;
+                jsObject.put("generationPeriodStart", gct.generationPeriodStart());
+                jsObject.put("endorserPublicKey", gct.endorserPublicKey().toString());
+                jsObject.put("commitmentSignature", gct.commitmentSignature().toString());
             }
 
             jsObject.put("fee", tx.fee().value());
@@ -633,6 +645,17 @@ public abstract class JsonSerializer {
         return base64FromJson(json, "script");
     }
 
+    public static BlsPublicKey blsPublicKeyFromJson(JsonNode json, String fieldName){
+        return BlsPublicKey.as(base58FromJson(json, fieldName).bytes());
+    }
+
+    public static BlsSignature blsSignatureFromJson(JsonNode json, String fieldName){
+        return BlsSignature.as(base58FromJson(json, fieldName).bytes());
+    }
+
+    public static Base58String base58FromJson(JsonNode json, String fieldName) {
+        return json.hasNonNull(fieldName) ? new Base58String(json.get(fieldName).asText()) : Base58String.empty();
+    }
     public static Base64String base64FromJson(JsonNode json, String fieldName) {
         return json.hasNonNull(fieldName) ? new Base64String(json.get(fieldName).asText()) : Base64String.empty();
     }

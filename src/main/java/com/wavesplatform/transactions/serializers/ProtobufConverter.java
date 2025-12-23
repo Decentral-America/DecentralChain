@@ -12,6 +12,8 @@ import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
 import com.wavesplatform.transactions.*;
 import com.wavesplatform.transactions.account.Address;
+import com.wavesplatform.transactions.account.BlsPublicKey;
+import com.wavesplatform.transactions.account.BlsSignature;
 import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.*;
 import com.wavesplatform.transactions.data.*;
@@ -286,6 +288,18 @@ public abstract class ProtobufConverter {
                     .fee(pbAmountToAmount(pbTx.getFee()))
                     .timestamp(pbTx.getTimestamp())
                     .getUnsigned();
+        } else if (pbTx.hasCommitToGeneration()) {
+            TransactionOuterClass.CommitToGenerationTransactionData commitToGeneration = pbTx.getCommitToGeneration();
+            tx = CommitToGenerationTransaction
+                    .builder(commitToGeneration.getGenerationPeriodStart())
+                    .endorserPublicKey(BlsPublicKey.as(commitToGeneration.getEndorserPublicKey().toByteArray()))
+                    .commitmentSignature(BlsSignature.as(commitToGeneration.getCommitmentSignature().toByteArray()))
+                    .version(pbTx.getVersion())
+                    .chainId((byte) pbTx.getChainId())
+                    .sender(PublicKey.as(pbTx.getSenderPublicKey().toByteArray()))
+                    .fee(pbAmountToAmount(pbTx.getFee()))
+                    .timestamp(pbTx.getTimestamp())
+                    .getUnsigned();
         } else throw new InvalidProtocolBufferException("Can't recognize transaction type");
 
         pbSignedTx.getProofsList().forEach(p -> tx.proofs().add(Proof.as(p.toByteArray())));
@@ -552,6 +566,13 @@ public abstract class ProtobufConverter {
                     .setAssetId(ByteString.copyFrom(uaiTx.assetId().bytes()))
                     .setName(uaiTx.name())
                     .setDescription(uaiTx.description())
+                    .build());
+        } else if (tx instanceof CommitToGenerationTransaction) {
+            CommitToGenerationTransaction commitToGeneration = (CommitToGenerationTransaction) tx;
+            protoBuilder.setCommitToGeneration(TransactionOuterClass.CommitToGenerationTransactionData.newBuilder()
+                    .setGenerationPeriodStart(commitToGeneration.generationPeriodStart())
+                    .setEndorserPublicKey(ByteString.copyFrom(commitToGeneration.endorserPublicKey().bytes()))
+                    .setCommitmentSignature(ByteString.copyFrom(commitToGeneration.commitmentSignature().bytes()))
                     .build());
         }
 

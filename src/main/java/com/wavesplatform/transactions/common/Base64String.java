@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class Base64String implements ByteString {
 
-    private final byte[] bytes;
+    protected final byte[] bytes;
     private final Supplier<String> encoded;
 
     public static Base64String empty() {
