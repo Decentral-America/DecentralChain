@@ -6,7 +6,8 @@
 
     <groupId>com.wavesplatform</groupId>
     <artifactId>waves-transactions</artifactId>
-    <version>1.2.6-SNAPSHOT</version>
+    <version>1.2.6</version>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,73 +44,51 @@
         </developer>
     </developers>
 
-    <profiles>
-        <!-- Deployment profile (required so these plugins are only used when deploying) -->
-        <profile>
-            <id>deploy</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.3.0</version>
-                        <configuration>
-                            <source>8</source>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.8</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.3</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -121,13 +100,27 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.8</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>3.5.4</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.5.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -145,8 +138,24 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <source>11</source>
+                            <doclint>none</doclint>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>11</source>
+                    <doclint>none</doclint>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -172,7 +181,6 @@
     </distributionManagement>
 
     <dependencies>
-        <!-- waves -->
         <dependency>
             <groupId>com.wavesplatform</groupId>
             <artifactId>waves-crypto</artifactId>
@@ -181,17 +189,13 @@
         <dependency>
             <groupId>com.wavesplatform</groupId>
             <artifactId>protobuf-schemas</artifactId>
-            <version>1.6.0-90-SNAPSHOT</version>
+            <version>1.6.0</version>
         </dependency>
-
-        <!-- json -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.16.1</version>
         </dependency>
-
-        <!-- ethereum transaction -->
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>crypto</artifactId>
@@ -203,8 +207,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

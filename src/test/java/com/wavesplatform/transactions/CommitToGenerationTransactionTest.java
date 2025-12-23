@@ -8,6 +8,8 @@ import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.AssetId;
 import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.common.Proof;
+import com.wavesplatform.transactions.serializers.json.JsonSerializer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,22 +30,22 @@ public class CommitToGenerationTransactionTest {
         WavesConfig.chainId('D');
     }
 
-    private static final PublicKey sender = PublicKey.as("2JYMTjUK7tC8NQi6TD6oWgy41YbrnXuoLzZydrFKTKt6");
-    private static final long timestamp = 1759169607086L;
+    private static final PublicKey sender = PublicKey.as("Bn21Eg8HbwZWZQMHXnTFnb64MhVjgH2HygDekQDbjjMq");
+    private static final long timestamp = 1766488084192L;
 
     private static final long fee = CommitToGenerationTransaction.MIN_FEE;
 
     static Stream<Arguments> transactionsProvider() {
 
         return Stream.of(
-                arguments(1, 80,
-                        "6TGkDGP9my3dLeU1LphyCsYDcxeqfiz6xbFdNPG38PdQwEuUZeBTDr8QTTiR3XvMKR",
-                        "26DBpJeCPNrvD1q6mhNDcaHHbXg86tcbzfqpswbydjDcPNGSHVmPZozfcPh4z7NpBsz5pvHd9g4p2YqyYFXKpUTZAAHh1cDZbbB25HAE7a57NymCQewnTTQEEC2SCEY4U6qX",
-                        Id.as("AFQu6csUmCpXT92RD2hBRMkbPSfi5CGWRwnKJ8ANxsiV"),
-                        Proof.list(Proof.as("4Ki4PUwpve4tXeDjuNQF7k6jPAfyG9bNBubFGUhfSYWvddCLavdhEGdMmtmrThSLKC2vQATQnQzmz3U1r7wc9Fke")),
-                        Base64.decode("CEQSIBNaAul/RLTjlhwfp7Jm/1/avwgBD8OJDzKZWlbCLRpLGgUQgK3iBCCu67e1mTMoAcIHlgEIUBIwlKcg89S+mY5xcj6NIOPPYtlCFxs3VmbFFYcGPf1+vm8sTOcvhqiE+xWeeffPOQ7kGmC3fzy2EOk2FVGxhAdLnZ9VZSbKouMemGgKu2E8IEXZM3y/RwqTH2JVKJSqTvf19uERvyO46uluB6TkpYdsq6K+bhzYp53YiioNLKLWRkTJXnw6ALpgiTf63QBQ3wQOcDo="),
-                        Base64.decode("Cs4BCEQSIBNaAul/RLTjlhwfp7Jm/1/avwgBD8OJDzKZWlbCLRpLGgUQgK3iBCCu67e1mTMoAcIHlgEIUBIwlKcg89S+mY5xcj6NIOPPYtlCFxs3VmbFFYcGPf1+vm8sTOcvhqiE+xWeeffPOQ7kGmC3fzy2EOk2FVGxhAdLnZ9VZSbKouMemGgKu2E8IEXZM3y/RwqTH2JVKJSqTvf19uERvyO46uluB6TkpYdsq6K+bhzYp53YiioNLKLWRkTJXnw6ALpgiTf63QBQ3wQOcDoSQKYvGWH9l4EKahy0uI0Ad7XZxeb9Z9om1DMem9gNEyi32KiTUYMvdOjwjkg3uxTFky02t/9RFp/33K0Q2K9dwgs="),
-                        "{\"senderPublicKey\":\"2JYMTjUK7tC8NQi6TD6oWgy41YbrnXuoLzZydrFKTKt6\",\"fee\":10000000,\"generationPeriodStart\":\"80\",\"type\":20,\"version\":1,\"sender\":\"3FSgXpgbT6m1speWgVx3cVxAZKmdr4barHU\",\"feeAssetId\":null,\"chainId\":68,\"proofs\":[\"4Ki4PUwpve4tXeDjuNQF7k6jPAfyG9bNBubFGUhfSYWvddCLavdhEGdMmtmrThSLKC2vQATQnQzmz3U1r7wc9Fke\"],\"commitmentSignature\":\"26DBpJeCPNrvD1q6mhNDcaHHbXg86tcbzfqpswbydjDcPNGSHVmPZozfcPh4z7NpBsz5pvHd9g4p2YqyYFXKpUTZAAHh1cDZbbB25HAE7a57NymCQewnTTQEEC2SCEY4U6qX\",\"endorserPublicKey\":\"6TGkDGP9my3dLeU1LphyCsYDcxeqfiz6xbFdNPG38PdQwEuUZeBTDr8QTTiR3XvMKR\",\"id\":\"AFQu6csUmCpXT92RD2hBRMkbPSfi5CGWRwnKJ8ANxsiV\",\"timestamp\":1759169607086}"
+                arguments(1, 2941,
+                        "5t9zL1oqXW6kL3YUAuF8r4rKUaPwohPVrpMWR8Y1bAJtSMipP3TQJYZvpBFB7GWZwo",
+                        "u9CTxLENQWyd5egnHrnbnnDKy7mvtrWJfR1AuCL4e4e7uuRTobzxVy1SQBz7ayoY5mRfiTG3PR8niJPT3fdVfsD97EkagBha8ehrLAzdutWSLbiQF2VDwPfi7uvTcp5csMC",
+                        Id.as("2r6kpnJbGqNTmLxi9cPuavgxqumGufnisnN8vhuSCpaX"),
+                        Proof.list(Proof.as("2H7TeCFEBSq6gb325Up2iZPr1jbZk99XugFijYTLbvgH2Ts8NQyCusG5p84FxKySEsVz7RUqsmQQJcCGU3xx75jt")),
+                        Base64.decode("CEQSIKAdJBa6JVvXU0LO8aUp5j7w3LObv4C4vPpcq9RBuqMQGgUQgK3iBCDgnZTXtDMoAcIHlwEI/RYSMIUWaUuByJgaIrJ8Tzg7DtK6VMpZ+NMqFQnZmUZ8JQ+gtn/5ek2c2QZ2u5gPLugyohpgl11dxTrp2qTsGNyxzCVVgWCv64BdM6pqdAYmfawlVYZgg3u4l4uz1j7FM2GTQaWnCKANY7gWy3cdwzwtk7hnLZ67TBpiMZMIaXV+9Hd3sebB5UcswbwmLheDDjBcid5z"),
+                        Base64.decode("Cs8BCEQSIKAdJBa6JVvXU0LO8aUp5j7w3LObv4C4vPpcq9RBuqMQGgUQgK3iBCDgnZTXtDMoAcIHlwEI/RYSMIUWaUuByJgaIrJ8Tzg7DtK6VMpZ+NMqFQnZmUZ8JQ+gtn/5ek2c2QZ2u5gPLugyohpgl11dxTrp2qTsGNyxzCVVgWCv64BdM6pqdAYmfawlVYZgg3u4l4uz1j7FM2GTQaWnCKANY7gWy3cdwzwtk7hnLZ67TBpiMZMIaXV+9Hd3sebB5UcswbwmLheDDjBcid5zEkA/6SwuagKVYJeSgi5V6yNtzKeV7cy6+SjybD9d+bopeoERTmNPLEDduAtBy4JP5upf9S+Yf9cH1nnMgDI0FagH"),
+                        "{\"id\":\"2r6kpnJbGqNTmLxi9cPuavgxqumGufnisnN8vhuSCpaX\",\"type\":19,\"version\":1,\"chainId\":68,\"senderPublicKey\":\"Bn21Eg8HbwZWZQMHXnTFnb64MhVjgH2HygDekQDbjjMq\",\"sender\":\"3FmjX4FAeDXE4ZdDj2JKxzE4QtbxaioXzxM\",\"generationPeriodStart\":2941,\"endorserPublicKey\":\"5t9zL1oqXW6kL3YUAuF8r4rKUaPwohPVrpMWR8Y1bAJtSMipP3TQJYZvpBFB7GWZwo\",\"commitmentSignature\":\"u9CTxLENQWyd5egnHrnbnnDKy7mvtrWJfR1AuCL4e4e7uuRTobzxVy1SQBz7ayoY5mRfiTG3PR8niJPT3fdVfsD97EkagBha8ehrLAzdutWSLbiQF2VDwPfi7uvTcp5csMC\",\"proofs\":[\"2H7TeCFEBSq6gb325Up2iZPr1jbZk99XugFijYTLbvgH2Ts8NQyCusG5p84FxKySEsVz7RUqsmQQJcCGU3xx75jt\"],\"fee\":10000000,\"feeAssetId\":null,\"timestamp\":1766488084192}"
                 )
         );
     }
@@ -104,9 +106,9 @@ public class CommitToGenerationTransactionTest {
                 .describedAs("Tx must be equal to deserialized tx")
                 .isEqualTo(deserTx);
 
-//        Assertions.assertThat(JsonSerializer.JSON_MAPPER.readTree(Transaction.fromJson(expectedJson).toJson()))
-//                .describedAs("Tx serialized to json must be equal to expected")
-//                .isEqualTo(JsonSerializer.JSON_MAPPER.readTree(expectedJson));
+        Assertions.assertThat(JsonSerializer.JSON_MAPPER.readTree(Transaction.fromJson(expectedJson).toJson()))
+                .describedAs("Tx serialized to json must be equal to expected")
+                .isEqualTo(JsonSerializer.JSON_MAPPER.readTree(expectedJson));
     }
 
 }
