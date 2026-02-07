@@ -19,8 +19,8 @@ ENV VITE_NODE_URL=$VITE_NODE_URL
 ENV VITE_MATCHER_URL=$VITE_MATCHER_URL
 ENV VITE_DATA_SERVICE_URL=$VITE_DATA_SERVICE_URL
 
-# Install build tools (git, python3, make, g++ for native modules like usb/node-gyp)
-RUN apk update && apk add git python3 make g++ linux-headers eudev-dev
+# Install git (needed for some npm packages)
+RUN apk update && apk add git
 
 # Set working directory
 WORKDIR /app
@@ -28,8 +28,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Install dependencies (--ignore-scripts skips native module compilation
+# like node-hid/usb which are Electron-only and not needed for web builds)
+RUN npm ci --legacy-peer-deps --ignore-scripts
 
 # Copy source code
 COPY . .
