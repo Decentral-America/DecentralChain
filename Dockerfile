@@ -42,9 +42,12 @@ RUN npm run build
 # ================================================================
 FROM nginx:stable-alpine
 
-# Environment variable for runtime (informational)
+# Environment variable for runtime
 ARG VITE_NETWORK=mainnet
 ENV WEB_ENVIRONMENT=$VITE_NETWORK
+
+# Railway injects PORT at runtime (default 80 for local dev)
+ENV PORT=80
 
 # Install tools
 RUN apk update && apk add gettext libintl
@@ -52,15 +55,12 @@ RUN apk update && apk add gettext libintl
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
+# Copy nginx config as template (envsubst will replace $PORT at runtime)
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Use envsubst to inject PORT into nginx config, then start nginx
+CMD sh -c "envsubst '\$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
