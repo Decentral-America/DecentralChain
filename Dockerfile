@@ -5,7 +5,7 @@
 # ================================================================
 # Stage 1: Build the React application
 # ================================================================
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Build arguments for network configuration
 ARG VITE_NETWORK=mainnet
@@ -19,8 +19,8 @@ ENV VITE_NODE_URL=$VITE_NODE_URL
 ENV VITE_MATCHER_URL=$VITE_MATCHER_URL
 ENV VITE_DATA_SERVICE_URL=$VITE_DATA_SERVICE_URL
 
-# Install git (needed for some npm packages)
-RUN apk update && apk add git
+# Install build tools (git, python3, make, g++ for native modules like usb/node-gyp)
+RUN apk update && apk add git python3 make g++ linux-headers eudev-dev
 
 # Set working directory
 WORKDIR /app
