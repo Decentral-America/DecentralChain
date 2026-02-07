@@ -84,7 +84,7 @@ const ContentWrapper = styled(Box)({
   margin: '0 auto',
   position: 'relative',
   zIndex: 1,
-}));
+});
 
 const MainCard = styled(Paper)(({ theme }) => ({
   background: theme.palette.mode === 'dark'

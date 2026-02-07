@@ -65,26 +65,26 @@ enum Phase {
 }
 
 // Animations
-const pulse = keyframes\`
+const pulse = keyframes`
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.7; transform: scale(1.05); }
-\`;
+`;
 
-const float = keyframes\`
+const float = keyframes`
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }
-\`;
+`;
 
-const shimmer = keyframes\`
+const shimmer = keyframes`
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
-\`;
+`;
 
-const checkmark = keyframes\`
+const checkmark = keyframes`
   0% { transform: scale(0) rotate(0deg); }
   50% { transform: scale(1.2) rotate(180deg); }
   100% { transform: scale(1) rotate(360deg); }
-\`;
+`;
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -106,7 +106,7 @@ const FloatingShape = styled(Box)(({ theme }) => ({
   background: theme.palette.mode === 'dark'
     ? 'radial-gradient(circle, rgba(31, 90, 246, 0.15) 0%, rgba(31, 90, 246, 0) 70%)'
     : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
-  animation: \`\${float} 8s ease-in-out infinite\`,
+  animation: `\${float} 8s ease-in-out infinite`,
   pointerEvents: 'none',
 }));
 
@@ -124,7 +124,7 @@ const MainCard = styled(Paper)(({ theme }) => ({
   backdropFilter: 'blur(24px)',
   borderRadius: theme.spacing(3),
   padding: theme.spacing(5),
-  border: \`1px solid \${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}\`,
+  border: `1px solid \${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
   boxShadow: theme.palette.mode === 'dark'
     ? '0 12px 48px rgba(0, 0, 0, 0.5)'
     : '0 12px 48px rgba(0, 0, 0, 0.08)',
@@ -144,7 +144,7 @@ const AccountCard = styled(Paper)<{ selected?: boolean }>(({ theme, selected }) 
   backdropFilter: 'blur(10px)',
   borderRadius: theme.spacing(2),
   padding: theme.spacing(3),
-  border: \`2px solid \${selected ? theme.palette.primary.main : 'transparent'}\`,
+  border: `2px solid \${selected ? theme.palette.primary.main : 'transparent'}`,
   cursor: 'pointer',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
@@ -164,7 +164,7 @@ const AccountCard = styled(Paper)<{ selected?: boolean }>(({ theme, selected }) 
     width: '100%',
     height: '100%',
     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-    animation: \`\${shimmer} 2s infinite\`,
+    animation: `\${shimmer} 2s infinite`,
   } : {},
 }));
 
@@ -179,15 +179,15 @@ const IconContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.mode === 'dark'
     ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.2) 0%, rgba(90, 129, 255, 0.2) 100%)'
     : 'linear-gradient(135deg, rgba(31, 90, 246, 0.1) 0%, rgba(90, 129, 255, 0.1) 100%)',
-  border: \`3px solid \${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.3)' : 'rgba(31, 90, 246, 0.2)'}\`,
-  animation: \`\${pulse} 3s ease-in-out infinite\`,
+  border: `3px solid \${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.3)' : 'rgba(31, 90, 246, 0.2)'}`,
+  animation: `\${pulse} 3s ease-in-out infinite`,
   marginBottom: theme.spacing(3),
 }));
 
 const SuccessCheckmark = styled(CheckCircleIcon)(({ theme }) => ({
   fontSize: '100px',
   color: theme.palette.success.main,
-  animation: \`\${checkmark} 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)\`,
+  animation: `\${checkmark} 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)`,
 }));
 
 export const KeeperImportPage: React.FC = () => {
@@ -494,7 +494,7 @@ export const KeeperImportPage: React.FC = () => {
                   background: (theme) => theme.palette.mode === 'dark'
                     ? 'rgba(31, 90, 246, 0.1)'
                     : 'rgba(31, 90, 246, 0.05)',
-                  border: (theme) => \`1px solid \${theme.palette.primary.main}30\`,
+                  border: (theme) => `1px solid \${theme.palette.primary.main}30`,
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
@@ -790,7 +790,7 @@ export const KeeperImportPage: React.FC = () => {
                 background: (theme) => theme.palette.mode === 'dark'
                   ? 'rgba(31, 90, 246, 0.1)'
                   : 'rgba(31, 90, 246, 0.05)',
-                border: (theme) => \`1px solid \${theme.palette.primary.main}30\`,
+                border: (theme) => `1px solid \${theme.palette.primary.main}30`,
               }}
             >
               <Typography variant="overline" sx={{ color: 'text.secondary', mb: 2, display: 'block' }}>
