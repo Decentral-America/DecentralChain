@@ -219,6 +219,26 @@ const LedgerIcon = styled.div`
   }
 `;
 
+const ImportLink = styled.p`
+  font-size: ${(p) => p.theme.fontSizes.sm};
+  color: ${(p) => p.theme.colors.text};
+  opacity: 0.6;
+  margin: 0;
+  text-align: center;
+
+  a {
+    color: ${(p) => p.theme.colors.primary};
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: ${(p) => p.theme.fontWeights.semibold};
+    opacity: 1;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+`;
+
 export const CreateAccount = () => {
   const [seedPhrase] = useState<Seed>(() => Seed.create());
   const [password, setPassword] = useState('');
@@ -454,6 +474,19 @@ export const CreateAccount = () => {
               >
                 {isLoading ? 'Creating Wallet...' : 'Create Wallet'}
               </Button>
+
+              <ImportLink>
+                Already have a wallet?{' '}
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/import-account');
+                  }}
+                >
+                  Import one instead
+                </a>
+              </ImportLink>
             </Stack>
           </form>
         </CardBody>
