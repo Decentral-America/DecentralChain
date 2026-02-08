@@ -2,34 +2,7 @@
  * Modern Glass Card Component
  * Enterprise-grade glassmorphism card with animations
  */
-import styled, { keyframes } from 'styled-components';
-
-const shimmer = keyframes`
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-`;
-
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-`;
-
-const glow = keyframes`
-  0%, 100% {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  }
-  50% {
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-  }
-`;
+import styled from 'styled-components';
 
 export const GlassCard = styled.div<{ $variant?: 'default' | 'elevated' | 'interactive' }>`
   background: rgba(255, 255, 255, 0.05);

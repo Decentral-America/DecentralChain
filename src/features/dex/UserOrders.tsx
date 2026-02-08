@@ -377,9 +377,8 @@ export const UserOrders: React.FC = () => {
                   variant={
                     statusColors[order.status] as 'primary' | 'success' | 'error' | 'warning'
                   }
-                >
-                  {order.status}
-                </Badge>
+                  label={order.status}
+                />
               </div>
 
               <div>

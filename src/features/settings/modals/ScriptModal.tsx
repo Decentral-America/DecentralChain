@@ -129,7 +129,7 @@ match tx {
           <Button variant="text" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSave} disabled={!script.trim() || isLoading}>
+          <Button variant="primary" onClick={handleSave} disabled={!script.trim() || isLoading}>
             {isLoading ? 'Setting Script...' : 'Set Script'}
           </Button>
         </ButtonGroup>

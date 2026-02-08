@@ -259,7 +259,7 @@ export const DexDemoPage: React.FC = () => {
 
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'buy' | 'sell'>(0);
+  const [activeTab, setActiveTab] = useState<number>(0);
   const [price, setPrice] = useState('1.50');
   const [amount, setAmount] = useState('');
   const [currentPrice, setCurrentPrice] = useState(1.5);

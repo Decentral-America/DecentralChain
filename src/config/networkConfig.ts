@@ -8,7 +8,7 @@
  * All accessors are read-only as mainnet.json is immutable runtime configuration
  */
 
-import mainnetConfigJson from '../../../configs/mainnet.json';
+import mainnetConfigJson from '../configs/mainnet.json';
 import type {
   MainnetConfig,
   TradingPair,

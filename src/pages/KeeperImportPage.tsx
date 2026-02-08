@@ -26,7 +26,7 @@ import {
   AccordionDetails,
   TextField,
 } from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import {
   Extension as ExtensionIcon,
   CheckCircle as CheckCircleIcon,
@@ -63,28 +63,6 @@ enum Phase {
   ACCOUNTS = 'accounts',
   CONFIRM = 'confirm',
 }
-
-// Animations
-const pulse = keyframes`
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-`;
-
-const shimmer = keyframes`
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-`;
-
-const checkmark = keyframes`
-  0% { transform: scale(0) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(180deg); }
-  100% { transform: scale(1) rotate(360deg); }
-`;
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -321,13 +299,7 @@ export const KeeperImportPage: React.FC = () => {
       // Simulate import process
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      addAccount({
-        name,
-        address: selectedUser.address,
-        publicKey: selectedUser.publicKey,
-        type: 'keeper',
-        network: selectedUser.network || 'mainnet',
-      });
+      addAccount(selectedUser.address, name || 'Keeper Account');
 
       setSnackbar({ open: true, message: 'Account imported successfully!', severity: 'success' });
       

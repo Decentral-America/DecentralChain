@@ -14,33 +14,37 @@ export interface BadgeProps extends Omit<MuiChipProps, 'variant' | 'size'> {
   outline?: boolean;
 }
 
-const StyledBadge = styled(MuiChip, {
-  shouldForwardProp: (prop) => !['dot', 'outline'].includes(prop as string),
-})<BadgeProps>(({ theme, variant, size, dot, outline }) => {
-  const colorMap = {
-    primary: theme.palette.primary.main,
-    secondary: theme.palette.secondary.main,
-    success: theme.palette.success.main,
-    error: theme.palette.error.main,
-    warning: theme.palette.warning.main,
-    info: theme.palette.info.main,
-  };
+type BadgeVariant = BadgeProps['variant'];
+type BadgeSize = BadgeProps['size'];
 
-  const color = colorMap[variant || 'primary'];
+const StyledBadge = styled(MuiChip, {
+  shouldForwardProp: (prop) => !['dot', 'outline', 'badgeVariant', 'badgeSize'].includes(prop as string),
+})<{ dot?: boolean; outline?: boolean; badgeVariant?: BadgeVariant; badgeSize?: BadgeSize }>(
+  ({ theme, badgeVariant, badgeSize, dot, outline }) => {
+    const colorMap = {
+      primary: theme.palette.primary.main,
+      secondary: theme.palette.secondary.main,
+      success: theme.palette.success.main,
+      error: theme.palette.error.main,
+      warning: theme.palette.warning.main,
+      info: theme.palette.info.main,
+    };
+
+    const color = colorMap[badgeVariant || 'primary'];
 
   return {
     borderRadius: theme.shape.borderRadius * 4,
     fontWeight: theme.typography.fontWeightMedium,
     lineHeight: 1,
-    height: size === 'small' ? 18 : size === 'large' ? 28 : 22,
-    minWidth: size === 'small' ? 18 : size === 'large' ? 28 : 22,
+    height: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 28 : 22,
+    minWidth: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 28 : 22,
     fontSize:
-      size === 'small'
+      badgeSize === 'small'
         ? theme.typography.caption.fontSize
-        : size === 'large'
+        : badgeSize === 'large'
           ? theme.typography.body1.fontSize
           : theme.typography.body2.fontSize,
-    padding: size === 'small' ? '2px 6px' : size === 'large' ? '6px 12px' : '4px 8px',
+    padding: badgeSize === 'small' ? '2px 6px' : badgeSize === 'large' ? '6px 12px' : '4px 8px',
     backgroundColor: outline ? 'transparent' : color,
     color: outline ? color : 'white',
     border: outline ? `1px solid ${color}` : 'none',
@@ -57,8 +61,23 @@ const StyledBadge = styled(MuiChip, {
   };
 });
 
-export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>((props, ref) => {
-  return <StyledBadge ref={ref} {...props} />;
-});
+export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
+  ({ size, variant, children, ...props }, ref) => {
+    // MUI Chip only supports 'small' | 'medium', map 'large' to 'medium'
+    const chipSize = size === 'large' ? 'medium' : (size as 'small' | 'medium' | undefined);
+    // Pass our custom variant as a style prop, not MUI's variant
+    return (
+      <StyledBadge
+        ref={ref}
+        size={chipSize}
+        variant="filled"
+        label={children}
+        {...(props as Omit<MuiChipProps, 'variant' | 'size'>)}
+        badgeVariant={variant}
+        badgeSize={size}
+      />
+    );
+  }
+);
 
 Badge.displayName = 'Badge';

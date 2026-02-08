@@ -6,7 +6,6 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
   Box,
-  Container,
   Typography,
   Fade,
   Slide,

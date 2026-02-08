@@ -43,6 +43,26 @@ export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
    * @default false
    */
   trimOnBlur?: boolean;
+
+  /**
+   * Maximum character length
+   */
+  maxLength?: number;
+
+  /**
+   * Step value for number inputs
+   */
+  step?: string;
+
+  /**
+   * Minimum value for number inputs
+   */
+  min?: string;
+
+  /**
+   * Maximum value for number inputs
+   */
+  max?: string;
 }
 
 export function FormInput<TFieldValues extends FieldValues = FieldValues>({

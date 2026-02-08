@@ -25,25 +25,25 @@ export interface TabsProps {
 }
 
 const StyledTabs = styled(MuiTabs, {
-  shouldForwardProp: (prop) => prop !== 'variant',
-})<{ variant?: string }>(({ theme, variant }) => ({
-  borderBottom: variant === 'underline' ? `2px solid ${theme.palette.divider}` : 'none',
-  backgroundColor: variant === 'default' ? theme.palette.background.paper : 'transparent',
-  borderRadius: variant === 'default' ? theme.shape.borderRadius : 0,
-  padding: variant === 'default' ? theme.spacing(0.5) : 0,
+  shouldForwardProp: (prop) => prop !== 'tabVariant',
+})<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
+  borderBottom: tabVariant === 'underline' ? `2px solid ${theme.palette.divider}` : 'none',
+  backgroundColor: tabVariant === 'default' ? theme.palette.background.paper : 'transparent',
+  borderRadius: tabVariant === 'default' ? theme.shape.borderRadius : 0,
+  padding: tabVariant === 'default' ? theme.spacing(0.5) : 0,
   marginBottom: theme.spacing(3),
-  minHeight: variant === 'pills' ? 40 : 48,
+  minHeight: tabVariant === 'pills' ? 40 : 48,
 }));
 
 const StyledTab = styled(MuiTab, {
-  shouldForwardProp: (prop) => prop !== 'variant',
-})<{ variant?: string }>(({ theme, variant }) => ({
-  padding: variant === 'pills' ? '10px 20px' : '12px 16px',
-  minHeight: variant === 'pills' ? 40 : 48,
+  shouldForwardProp: (prop) => prop !== 'tabVariant',
+})<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
+  padding: tabVariant === 'pills' ? '10px 20px' : '12px 16px',
+  minHeight: tabVariant === 'pills' ? 40 : 48,
   borderRadius:
-    variant === 'pills'
+    tabVariant === 'pills'
       ? theme.shape.borderRadius * 4
-      : variant === 'default'
+      : tabVariant === 'default'
         ? theme.shape.borderRadius
         : 0,
   fontSize: '0.875rem',
@@ -51,8 +51,8 @@ const StyledTab = styled(MuiTab, {
   textTransform: 'none',
   '&.Mui-selected': {
     fontWeight: 600,
-    backgroundColor: variant === 'pills' ? theme.palette.primary.main : 'transparent',
-    color: variant === 'pills' ? 'white' : theme.palette.primary.main,
+    backgroundColor: tabVariant === 'pills' ? theme.palette.primary.main : 'transparent',
+    color: tabVariant === 'pills' ? 'white' : theme.palette.primary.main,
   },
 }));
 
@@ -88,9 +88,9 @@ export const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div>
-      <StyledTabs value={activeTab} onChange={handleChange} variant={variant}>
-        {tabs.map((tab, index) => (
-          <StyledTab key={tab.id} label={tab.label} disabled={tab.disabled} variant={variant} />
+      <StyledTabs value={activeTab} onChange={handleChange} variant="standard">
+        {tabs.map((tab) => (
+          <StyledTab key={tab.id} label={tab.label} disabled={tab.disabled} tabVariant={variant} />
         ))}
       </StyledTabs>
       {tabs.map((tab, index) => (

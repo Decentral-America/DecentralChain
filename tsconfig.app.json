@@ -27,7 +27,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "data-service": ["../data-service"]
+      "data-service": ["./src/types/data-service"],
+      "data-service/*": ["./src/types/data-service"]
     }
   },
   "include": ["src"],

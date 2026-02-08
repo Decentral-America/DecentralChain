@@ -20,7 +20,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Button } from '@/components/atoms/Button';
-import { Input } from '@/components/atoms/Input';
 import { SeedBackup } from '@/features/auth/SeedBackup';
 import { useAuth } from '@/contexts/AuthContext';
 import { NetworkConfig } from '@/config';
@@ -151,6 +150,7 @@ const AccountAvatar = styled(Box)(({ theme }) => ({
 interface User {
   address: string;
   name?: string;
+  publicKey?: string;
   userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper';
   encryptedSeed?: string;
 }
@@ -158,7 +158,7 @@ interface User {
 export const SaveSeedPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { user: currentUser, getActiveState } = useAuth();
+  const { user: _currentUser, getActiveState } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   // State
@@ -245,7 +245,7 @@ export const SaveSeedPage: React.FC = () => {
       }
 
       // Login and get seed
-      await ds.app.login(activeUser);
+      await ds.app.login({ address: activeUser.address, publicKey: activeUser.publicKey || '' });
       const seedPhrase = await ds.signature.getSignatureApi().getSeed();
 
       setSeed(seedPhrase);

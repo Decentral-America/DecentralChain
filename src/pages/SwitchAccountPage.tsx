@@ -10,7 +10,6 @@ import {
   useTheme,
   Fade,
   Slide,
-  keyframes,
 } from '@mui/material';
 import { AccountCircle, CheckCircle, SwapHoriz, PersonOutline } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,16 +19,6 @@ import { useAuth } from '../contexts/AuthContext';
  *
  * Modern account switcher with glassmorphic cards
  */
-
-// Hover scale animation
-const scaleUp = keyframes`
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.02);
-  }
-`;
 
 // Container with gradient background
 const PageContainer = styled(Box)(({ theme }) => ({

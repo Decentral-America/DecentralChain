@@ -122,7 +122,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
 
     try {
       // Create the transaction
-      const fee = await (ds as unknown).moneyFromCoins(ALIAS_FEE, 'DCC');
+      const fee = await ds.moneyFromCoins(ALIAS_FEE, 'DCC');
       const signedTx = await signAlias({
         alias,
         fee,

@@ -3,9 +3,9 @@ import { config } from '@/config';
 import type { ConfigContextType, NetworkType } from '@/types/config';
 
 // Import network configurations
-import mainnetConfig from '../../../configs/mainnet.json';
-import testnetConfig from '../../../configs/testnet.json';
-import stagenetConfig from '../../../configs/stagenet.json';
+import mainnetConfig from '../configs/mainnet.json';
+import testnetConfig from '../configs/testnet.json';
+import stagenetConfig from '../configs/stagenet.json';
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 

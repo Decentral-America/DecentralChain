@@ -33,7 +33,10 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
 
     // Fetch deposit address from gateway service
     gatewayService
-      .getDepositDetails({ id: assetId, name: assetName || assetId }, user.address)
+      .getDepositDetails(
+        { id: assetId, name: assetName || assetId, displayName: assetName || assetId, precision: 8 },
+        user.address
+      )
       .then((details) => {
         if (details) {
           setDepositAddress(details.address);
@@ -159,7 +162,7 @@ const Warning = styled.div`
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid ${(p) => p.theme.colors.warningBorder || '#ffc107'};
+  border: 1px solid ${(p) => (p.theme.colors as Record<string, string>).warningBorder || '#ffc107'};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 

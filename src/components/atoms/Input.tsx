@@ -9,10 +9,13 @@ import TextField, { TextFieldProps } from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { styled } from '@mui/material/styles';
 
-export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant'> {
+export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'error'> {
   label?: string;
   error?: string;
   helperText?: string;
+  step?: string;
+  min?: string | number;
+  max?: string | number;
   fullWidth?: boolean;
   inputSize?: 'small' | 'medium' | 'large';
   leftIcon?: React.ReactNode;

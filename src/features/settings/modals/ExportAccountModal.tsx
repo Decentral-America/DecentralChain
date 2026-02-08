@@ -210,7 +210,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
             Cancel
           </Button>
           <Button
-            variant="contained"
+            variant="primary"
             onClick={handleExport}
             disabled={selectedAddresses.size === 0}
           >

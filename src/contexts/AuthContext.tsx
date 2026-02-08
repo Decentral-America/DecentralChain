@@ -1034,47 +1034,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   /**
-   * Helper function to toggle a value in array user setting
-   * Matches Angular: User.toggleArrayUserSetting() lines 230-251
-   * @param path - Setting path
-   * @param value - Value to toggle
-   * @param state - Optional explicit state (true to add, false to remove)
-   */
-  const toggleArrayUserSetting = useCallback(
-    (path: string, value: string, state?: boolean): void => {
-      if (!user) return;
-
-      const list = (user.settings?.[path] as string[]) || [];
-      const index = list.indexOf(value);
-
-      // If state not provided, determine from current presence
-      const shouldAdd = state !== undefined ? state : index === -1;
-
-      const newList = [...list];
-
-      if (shouldAdd && index === -1) {
-        // Add to list
-        newList.push(value);
-      } else if (!shouldAdd && index !== -1) {
-        // Remove from list
-        newList.splice(index, 1);
-      } else {
-        // No change needed
-        return;
-      }
-
-      // Update user settings with new list
-      const newSettings = {
-        ...user.settings,
-        [path]: newList,
-      };
-
-      updateUser({ settings: newSettings });
-    },
-    [user, updateUser]
-  );
-
-  /**
    * Toggle asset pinning status
    * Matches Angular: User.togglePinAsset() lines 210-215
    * Pinned assets appear at top of portfolio
