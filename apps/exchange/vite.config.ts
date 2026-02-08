@@ -61,10 +61,8 @@ export default defineConfig({
           router: ['react-router-dom'],
           // UI chunk: styled-components and theme (will be removed after migration)
           ui: ['styled-components'],
-          // MUI chunk: Material UI core components
-          'mui-core': ['@mui/material', '@mui/system'],
-          // Emotion chunk: MUI's CSS-in-JS engine
-          emotion: ['@emotion/react', '@emotion/styled'],
+          // MUI chunk: Material UI core + Emotion (must be in same chunk to avoid circular dep)
+          'mui-core': ['@mui/material', '@mui/system', '@emotion/react', '@emotion/styled'],
         },
       },
     },
