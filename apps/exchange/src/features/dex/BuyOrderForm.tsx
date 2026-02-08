@@ -327,8 +327,8 @@ export const BuyOrderForm: React.FC = () => {
         matcherPublicKey: matcherSettings.matcherPublicKey,
         matcherFee: matcherSettings.orderFee.dynamic.baseFee,
         assetPair: {
-          amountAsset: selectedPair?.amountAsset || null,
-          priceAsset: selectedPair?.priceAsset || null,
+          amountAsset: selectedPair?.amountAsset || '',
+          priceAsset: selectedPair?.priceAsset || '',
         },
         timestamp: Date.now(),
         expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days

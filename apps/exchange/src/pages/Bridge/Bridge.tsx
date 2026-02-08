@@ -15,7 +15,6 @@ import {
   Button,
   Card,
   CardContent,
-  Avatar,
   Chip,
   Grid,
 } from '@mui/material';

@@ -142,6 +142,7 @@ const PaginationButtons = styled.div`
 export interface Transaction {
   id: string;
   type: 'transfer' | 'receive' | 'send' | 'exchange' | 'swap' | 'lease' | 'cancel_lease';
+  typeName?: string;
   amount: number;
   asset: string;
   assetId: string;
@@ -269,7 +270,16 @@ export const Transactions = () => {
 
     try {
       const ds = await import('data-service');
-      const allTransactions: Transaction[] = [];
+      const allTransactions: Array<{
+        id: string;
+        typeName: string;
+        amount: number;
+        assetId: string;
+        fee: number;
+        timestamp: number;
+        sender: string;
+        recipient?: string;
+      }> = [];
       const MAX_LIMIT = 1000;
       const MAX_TOTAL = 10000;
       let after = '';
@@ -436,7 +446,7 @@ export const Transactions = () => {
             ]}
           />
 
-          <Button onClick={handleExport} disabled={isExporting} variant="outline">
+          <Button onClick={handleExport} disabled={isExporting} variant="secondary">
             {isExporting ? 'Exporting...' : 'Export CSV'}
           </Button>
         </FilterBar>

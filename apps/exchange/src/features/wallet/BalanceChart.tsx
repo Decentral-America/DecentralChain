@@ -6,7 +6,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { VictoryChart, VictoryLine, VictoryAxis, VictoryTheme, VictoryTooltip } from 'victory';
+import { VictoryChart, VictoryLine, VictoryAxis, VictoryTheme } from 'victory';
 import { Spinner } from '@/components/atoms/Spinner';
 
 type ChartMode = 'hour' | 'day' | 'week' | 'month';

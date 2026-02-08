@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   Box,
@@ -9,13 +8,9 @@ import {
   Stepper,
   Step,
   StepLabel,
-  TextField,
   Checkbox,
   FormControlLabel,
   Alert,
-  LinearProgress,
-  Grid,
-  Chip,
   IconButton,
   Dialog,
   DialogTitle,
@@ -23,37 +18,17 @@ import {
   DialogActions,
   List,
   ListItem,
-  ListItemText,
-  ListItemIcon,
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormLabel,
   Fade,
-  Slide,
   Grow,
-  CircularProgress,
   Snackbar,
   Tooltip,
-  InputAdornment,
-  Collapse,
 } from '@mui/material';
 import { styled, keyframes } from '@mui/material/styles';
 import {
   Warning as WarningIcon,
-  CheckCircle as CheckCircleIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-  ContentCopy as CopyIcon,
-  Download as DownloadIcon,
   HelpOutline as HelpIcon,
-  Error as ErrorIcon,
   ArrowForward as ArrowForwardIcon,
-  ArrowBack as ArrowBackIcon,
-  Save as SaveIcon,
   Security as SecurityIcon,
-  SwapHoriz as SwapIcon,
-  OpenInNew as OpenInNewIcon,
 } from '@mui/icons-material';
 
 enum MigrationStep {
@@ -62,13 +37,6 @@ enum MigrationStep {
   GENERATE_NEW = 2,
   CONFIRM = 3,
   COMPLETE = 4,
-}
-
-interface MigrationAsset {
-  id: string;
-  name: string;
-  amount: number;
-  selected: boolean;
 }
 
 // Animations
@@ -80,12 +48,6 @@ const pulse = keyframes`
 const float = keyframes`
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-15px); }
-`;
-
-const successPulse = keyframes`
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
 `;
 
 // Styled Components
@@ -137,96 +99,21 @@ const MainCard = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const SeedWordChip = styled(Chip)(({ theme }) => ({
-  fontFamily: 'monospace',
-  fontWeight: 600,
-  fontSize: '0.95rem',
-  padding: theme.spacing(1.5),
-  margin: theme.spacing(0.5),
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow:
-      theme.palette.mode === 'dark'
-        ? '0 4px 12px rgba(31, 90, 246, 0.3)'
-        : '0 4px 12px rgba(31, 90, 246, 0.2)',
-  },
-}));
-
-const BlurOverlay = styled(Box)<{ revealed?: boolean }>(({ theme, revealed }) => ({
-  position: 'relative',
-  filter: revealed ? 'none' : 'blur(8px)',
-  transition: 'filter 0.3s ease',
-  cursor: revealed ? 'default' : 'pointer',
-  '&::after': revealed
-    ? {}
-    : {
-        content: '"Click to reveal"',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        padding: theme.spacing(1, 2),
-        background: theme.palette.primary.main,
-        color: 'white',
-        borderRadius: theme.spacing(1),
-        fontSize: '0.9rem',
-        fontWeight: 600,
-        pointerEvents: 'none',
-      },
-}));
-
-const SuccessIcon = styled(CheckCircleIcon)(({ theme }) => ({
-  fontSize: '120px',
-  color: theme.palette.success.main,
-  animation: `${successPulse} 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)`,
-}));
-
-const ComparisonCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  background: theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.2)' : 'rgba(31, 90, 246, 0.1)'}`,
-  borderRadius: theme.spacing(2),
-}));
-
 export const MigratePage: React.FC = () => {
-  const navigate = useNavigate();
-  const { addAccount } = useAuth();
+  useAuth(); // Kept for auth context
   const [activeStep, setActiveStep] = useState(MigrationStep.WARNING);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   // Step 1: Warning checkboxes
   const [backupConfirmed, setBackupConfirmed] = useState(false);
   const [exportConfirmed, setExportConfirmed] = useState(false);
   const [irreversibleConfirmed, setIrreversibleConfirmed] = useState(false);
 
-  // Step 2: Old seed verification
-  const [oldSeed, setOldSeed] = useState('');
-  const [oldSeedVisible, setOldSeedVisible] = useState(false);
-  const [oldSeedValid, setOldSeedValid] = useState<boolean | null>(null);
-  const [oldAddress, setOldAddress] = useState('');
-
   // Step 3: New account generation
   const [newSeed, setNewSeed] = useState<string[]>([]);
-  const [newSeedRevealed, setNewSeedRevealed] = useState(false);
-  const [newSeedConfirmed, setNewSeedConfirmed] = useState(false);
-  const [newAddress, setNewAddress] = useState('');
-
-  // Step 4: Migration options
-  const [migrationMode, setMigrationMode] = useState<'all' | 'selective'>('all');
-  const [assets, setAssets] = useState<MigrationAsset[]>([
-    { id: 'waves', name: 'WAVES', amount: 100.5, selected: true },
-    { id: 'usdn', name: 'USDN', amount: 500, selected: true },
-    { id: 'nsbt', name: 'NSBT', amount: 25, selected: true },
-  ]);
-
-  // Step 5: Complete
-  const [migrationComplete, setMigrationComplete] = useState(false);
-  const [txIds, setTxIds] = useState<string[]>([]);
+  const [, setNewAddress] = useState('');
 
   // UI states
-  const [exitDialogOpen, setExitDialogOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -269,39 +156,6 @@ export const MigratePage: React.FC = () => {
       localStorage.removeItem('migration_progress');
     }
   }, [activeStep]);
-
-  const handleVerifyOldSeed = async () => {
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const words = oldSeed.trim().split(/\s+/);
-      const valid = [12, 15, 18, 21, 24].includes(words.length);
-
-      setOldSeedValid(valid);
-
-      if (valid) {
-        setOldAddress('3P' + 'A'.repeat(33));
-        setSnackbar({
-          open: true,
-          message: 'Seed phrase verified successfully',
-          severity: 'success',
-        });
-        setTimeout(() => setActiveStep(MigrationStep.GENERATE_NEW), 800);
-      } else {
-        setSnackbar({
-          open: true,
-          message: 'Invalid seed phrase. Please check and try again.',
-          severity: 'error',
-        });
-      }
-    } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to verify seed phrase', severity: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleGenerateNewAccount = async () => {
     setLoading(true);
@@ -347,52 +201,6 @@ export const MigratePage: React.FC = () => {
     }
   }, [activeStep, newSeed.length]);
 
-  const handleStartMigration = async () => {
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      const selectedAssets = migrationMode === 'all' ? assets : assets.filter((a) => a.selected);
-      const mockTxIds = selectedAssets.map((_, i) => `tx_${Date.now()}_${i}`);
-
-      setTxIds(mockTxIds);
-      setMigrationComplete(true);
-      setActiveStep(MigrationStep.COMPLETE);
-
-      addAccount({
-        name: 'Migrated Account',
-        address: newAddress,
-        publicKey: '',
-        type: 'seed',
-        network: 'mainnet',
-      });
-
-      setSnackbar({
-        open: true,
-        message: 'Migration completed successfully!',
-        severity: 'success',
-      });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: 'Migration failed. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCopy = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setSnackbar({ open: true, message: `${label} copied to clipboard`, severity: 'success' });
-  };
-
-  const handleAssetToggle = (assetId: string) => {
-    setAssets((prev) => prev.map((a) => (a.id === assetId ? { ...a, selected: !a.selected } : a)));
-  };
-
   const steps = [
     'Backup Warning',
     'Verify Old Account',
@@ -402,9 +210,6 @@ export const MigratePage: React.FC = () => {
   ];
 
   const canProceedFromWarning = backupConfirmed && exportConfirmed && irreversibleConfirmed;
-  const canProceedFromVerify = oldSeedValid && oldAddress;
-  const canProceedFromGenerate = newSeed.length > 0 && newSeedConfirmed;
-  const canStartMigration = migrationMode === 'all' || assets.some((a) => a.selected);
 
   return (
     <Fade in={isVisible} timeout={600}>

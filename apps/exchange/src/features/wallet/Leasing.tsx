@@ -190,12 +190,6 @@ export const Leasing = () => {
   const leasedInDcc = leasedBalance / DCC_DECIMALS; // Leased out in DCC
   const availableInDcc = availableBalance / DCC_DECIMALS; // Available for new leases
 
-  const activeLeaseTotalWavelets = useMemo(
-    () => (activeLeases ?? []).reduce((sum, lease) => sum + (lease.amount ?? 0), 0),
-    [activeLeases]
-  );
-  const activeLeaseTotal = activeLeaseTotalWavelets / DCC_DECIMALS;
-
   const allLeasingTxs = useMemo(() => {
     if (!recentTxs) return [];
 

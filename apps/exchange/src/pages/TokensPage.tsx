@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, MenuItem, Slider as MuiSlider } from '@mui/material';
 import { Button } from '../components/atoms/Button';
-import { Card } from '../components/atoms/Card';
 import { Input } from '../components/atoms/Input';
 import { Checkbox } from '../components/atoms/Checkbox';
 import { styled } from '@mui/material/styles';

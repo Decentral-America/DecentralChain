@@ -43,7 +43,7 @@ const LedgerErrorModal: React.FC<LedgerErrorModalProps> = ({ error, onRetry, onC
           <Button variant="primary" onClick={onRetry} fullWidth>
             Retry Connection
           </Button>
-          <Button variant="outline" onClick={onCancel} fullWidth>
+          <Button variant="secondary" onClick={onCancel} fullWidth>
             Go Back
           </Button>
         </Stack>

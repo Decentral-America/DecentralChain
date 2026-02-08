@@ -41,9 +41,6 @@ const lease = (params: any, seed: string) => {
 const cancelLease = (params: any, seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const alias = (params: any, seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
 const massTransfer = (params: any, seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
@@ -203,7 +200,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   /**
    * Get chain ID from network configuration (network byte character)
    */
-  const getChainId = useCallback((): string => {
+  const getChainId = useCallback((): number => {
     return networkByte;
   }, [networkByte]);
 

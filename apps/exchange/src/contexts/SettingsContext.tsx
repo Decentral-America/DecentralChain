@@ -6,7 +6,7 @@
  * with localStorage persistence and change notifications.
  */
 
-import React, {
+import {
   createContext,
   useContext,
   useState,

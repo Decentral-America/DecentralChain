@@ -14,7 +14,6 @@ import {
   Avatar,
 } from '@mui/material';
 import {
-  RefreshOutlined,
   SendOutlined,
   CallReceivedOutlined,
   TrendingUpOutlined,
@@ -69,8 +68,6 @@ export const Portfolio = () => {
     balances,
     isLoading: isBalancesLoading,
     error: balancesError,
-    isFetching: isBalancesFetching,
-    forceRefresh,
   } = useBalanceWatcher({ interval: 10000 });
 
   const assetEntries = useMemo(
@@ -82,8 +79,6 @@ export const Portfolio = () => {
   const {
     data: assetDetails,
     isLoading: isAssetDetailsLoading,
-    isFetching: isAssetDetailsFetching,
-    refetch: refetchAssetDetails,
   } = useMultipleAssetDetails(assetIds, { enabled: assetIds.length > 0 });
 
   const assetDetailMap = useMemo(() => {
@@ -150,13 +145,6 @@ export const Portfolio = () => {
 
   const assetCount = secondaryAssetRows.length + (baseAssetRow.amount > 0 ? 1 : 0);
 
-  const handleRefresh = async () => {
-    forceRefresh();
-    if (assetIds.length > 0) {
-      await refetchAssetDetails();
-    }
-  };
-
   const openSendModal = (asset: PortfolioAssetRow) => {
     setSendModal({
       assetId: asset.isBaseAsset ? DCC_SYMBOL : asset.assetId,
@@ -167,7 +155,6 @@ export const Portfolio = () => {
   };
 
   const isLoading = isBalancesLoading || isAssetDetailsLoading;
-  const isRefreshing = isBalancesFetching || isAssetDetailsFetching;
 
   if (!user) {
     return (
@@ -207,24 +194,23 @@ export const Portfolio = () => {
           <Grid item xs={12} md={4}>
             <Card
               sx={{
-                background: 'white',
                 height: '100%',
                 position: 'relative',
                 overflow: 'hidden',
-                borderRadius: '12px',
+                borderRadius: 3,
                 boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
-                  borderRadius: 3,
-                  background:
-                    'linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    borderColor: 'rgba(79, 70, 229, 0.4)',
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 12px 32px rgba(79, 70, 229, 0.15)',
-                  },
-                }}
-              >
+                borderColor: 'rgba(79, 70, 229, 0.2)',
+                background:
+                  'linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  borderColor: 'rgba(79, 70, 229, 0.4)',
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 32px rgba(79, 70, 229, 0.15)',
+                },
+              }}
+            >
                 <CardContent sx={{ p: 3 }}>
                   <Stack spacing={2}>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">

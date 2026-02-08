@@ -6,7 +6,8 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/organisms/Modal';
 import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+// useAuth available if needed for password change
+// import { useAuth } from '@/contexts/AuthContext';
 import styled from 'styled-components';
 
 const ModalBody = styled.div`
@@ -203,7 +204,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
           <Button variant="text" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSubmit} disabled={isLoading || success}>
+          <Button variant="primary" onClick={handleSubmit} disabled={isLoading || success}>
             {isLoading ? 'Changing...' : 'Change Password'}
           </Button>
         </ButtonGroup>

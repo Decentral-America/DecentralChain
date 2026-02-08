@@ -29,7 +29,6 @@ import {
 import { styled } from '@mui/material/styles';
 import {
   CloudUpload,
-  Lock,
   CheckCircle,
   AccountCircle,
   Visibility,
@@ -165,12 +164,12 @@ const steps = ['Upload Backup', 'Enter Password', 'Restore Accounts'];
 export const RestoreFromBackupPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { login, getActiveState } = useAuth();
+  const { login: _login, getActiveState } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   // State
   const [activeStep, setActiveStep] = useState(0);
-  const [backupFile, setBackupFile] = useState<File | null>(null);
+  const [_backupFile, setBackupFile] = useState<File | null>(null);
   const [backupData, setBackupData] = useState<WalletBackup | null>(null);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -370,7 +369,6 @@ export const RestoreFromBackupPage: React.FC = () => {
                 onDragLeave={handleDragLeave}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                component="div"
                 elevation={0}
               >
                 <CloudUpload
@@ -386,7 +384,7 @@ export const RestoreFromBackupPage: React.FC = () => {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   or click to browse files
                 </Typography>
-                <Button variant="outlined" component="span">
+                <Button variant="secondary" component="span">
                   Select Backup File
                 </Button>
               </DropZone>

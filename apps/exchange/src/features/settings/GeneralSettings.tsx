@@ -89,16 +89,6 @@ const Select = styled.select`
   }
 `;
 
-const ThemeDot = styled.i<{ variant: 'white' | 'dark' }>`
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: ${(p) => p.theme.spacing.xs};
-  background: ${(p) => (p.variant === 'white' ? '#fff' : '#000')};
-  border: 1px solid ${(p) => p.theme.colors.border};
-`;
-
 // ========== Language Configuration ==========
 
 const LANGUAGES = [

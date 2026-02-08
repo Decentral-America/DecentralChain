@@ -16,7 +16,6 @@ import {
   Paper,
   IconButton,
   TextField,
-  InputAdornment,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { landingTheme } from '@/theme/landingTheme';

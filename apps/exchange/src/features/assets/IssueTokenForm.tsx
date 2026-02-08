@@ -247,8 +247,8 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
                   label="Decimals"
                   type="number"
                   placeholder="8"
-                  min={0}
-                  max={8}
+                  min="0"
+                  max="8"
                   disabled={isLoading}
                   required
                   helperText="Number of decimal places (0-8)."

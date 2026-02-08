@@ -43,11 +43,6 @@ const float = keyframes`
   50% { transform: translateY(-20px) rotate(5deg); }
 `;
 
-const pulse = keyframes`
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-`;
-
 const gradientShift = keyframes`
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

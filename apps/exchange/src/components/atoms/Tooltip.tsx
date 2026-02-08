@@ -6,8 +6,9 @@
 import { ReactNode } from 'react';
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip';
 
-export interface TooltipProps extends Omit<MuiTooltipProps, 'title' | 'placement' | 'children'> {
-  content: string | ReactNode;
+export interface TooltipProps
+  extends Omit<MuiTooltipProps, 'title' | 'placement' | 'children' | 'content'> {
+  content: NonNullable<React.ReactNode>;
   children: ReactNode;
   position?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;

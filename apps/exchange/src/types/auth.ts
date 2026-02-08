@@ -27,6 +27,7 @@ export interface User {
   id?: string; // Optional user ID
   seed?: string; // Decrypted seed (only in memory after auth)
   privateKey?: string; // Decrypted private key (only in memory)
+  encryptedSeed?: string; // Encrypted seed stored in local storage
   settings?: UserSettings; // User settings
   matcherSign?: {
     timestamp: number;

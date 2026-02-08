@@ -157,7 +157,7 @@ export const RestoreFromBackupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [_success, setSuccess] = useState(false);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'info' }>({
     open: false,
     message: '',

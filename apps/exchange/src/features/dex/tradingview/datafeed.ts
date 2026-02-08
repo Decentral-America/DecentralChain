@@ -13,7 +13,7 @@ import {
   OnReadyCallback,
   ResolveCallback,
   SearchSymbolsCallback,
-} from '../../../charting_library';
+} from 'charting_library';
 
 interface DecentralChainCandle {
   time: number;
@@ -91,7 +91,6 @@ export const createDatafeed = (
   amountAssetName: string,
   priceAssetName: string
 ): IBasicDataFeed => {
-  let lastBar: Bar | null = null;
 
   return {
     onReady: (callback: OnReadyCallback) => {
@@ -180,14 +179,10 @@ export const createDatafeed = (
         // Sort by time ascending
         bars.sort((a, b) => a.time - b.time);
 
-        if (bars.length > 0) {
-          lastBar = bars[bars.length - 1];
-        }
-
         onResult(bars, { noData: false });
       } catch (error) {
         console.error('Error in getBars:', error);
-        onError(error as Error);
+        onError(error instanceof Error ? error.message : String(error));
       }
     },
 

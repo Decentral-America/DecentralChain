@@ -159,7 +159,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
             Cancel
           </Button>
           <DangerButton
-            variant="contained"
+            variant="danger"
             onClick={handleDelete}
             disabled={!confirmed || isDeleting}
           >

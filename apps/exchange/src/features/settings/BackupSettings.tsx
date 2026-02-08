@@ -17,7 +17,7 @@ import {
   ListItemText,
   Divider,
 } from '@mui/material';
-import { Download, Lock, CheckCircle, Warning, AccountCircle } from '@mui/icons-material';
+import { Download, CheckCircle, AccountCircle } from '@mui/icons-material';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -33,7 +33,7 @@ interface WalletBackup {
 }
 
 export const BackupSettings: React.FC = () => {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isExporting, setIsExporting] = useState(false);
