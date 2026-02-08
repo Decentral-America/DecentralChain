@@ -8,7 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'data-service': path.resolve(__dirname, '../data-service'),
+      'data-service': path.resolve(__dirname, './src/lib/data-service'),
     },
     // Preserve symlinks to ensure dependencies are resolved correctly
     preserveSymlinks: false,

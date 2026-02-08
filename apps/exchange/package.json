@@ -39,6 +39,7 @@
     "@waves/data-service-client-js": "^4.1.1",
     "@waves/ledger": "^3.6.1",
     "@waves/oracle-data": "^0.0.6",
+    "@waves/ts-lib-crypto": "^1.4.3",
     "@waves/waves-browser-bus": "^0.2.7",
     "axios": "^1.12.2",
     "classnames": "^2.5.1",
