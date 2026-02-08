@@ -14,6 +14,8 @@ interface NoAccountModalProps {
   onCreateWallet: () => void;
   onImportSeedPhrase: () => void;
   onImportPrivateKey: () => void;
+  /** Optional z-index override (default 1000). Use higher values when rendering above overlays. */
+  zIndex?: number;
 }
 
 type ModalView = 'main' | 'import';
@@ -152,6 +154,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
   onCreateWallet,
   onImportSeedPhrase,
   onImportPrivateKey,
+  zIndex,
 }) => {
   const [view, setView] = useState<ModalView>('main');
 
@@ -171,6 +174,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
       size="small"
       showCloseButton
       testId="no-account-modal"
+      zIndex={zIndex}
     >
       {view === 'main' ? (
         <Content>

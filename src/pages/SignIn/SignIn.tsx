@@ -31,7 +31,12 @@ const SignInInner: React.FC = () => {
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
     return (
-      <MobileAuthShell actionLabel="Create Wallet" actionRoute="/create-account">
+      <MobileAuthShell
+        actionLabel="Create Wallet"
+        actionRoute="/create-account"
+        secondaryActionLabel="Import"
+        secondaryActionRoute="/import-account"
+      >
         <LoginForm />
       </MobileAuthShell>
     );
