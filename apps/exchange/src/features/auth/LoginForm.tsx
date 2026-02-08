@@ -263,9 +263,10 @@ export const LoginForm = () => {
       <NoAccountModal
         open={showNoAccountModal}
         onClose={() => setShowNoAccountModal(false)}
-        onCreateWallet={() => navigate('/signup')}
+        onCreateWallet={() => navigate('/create-account')}
         onImportSeedPhrase={() => navigate('/import-account')}
         onImportPrivateKey={() => navigate('/import-account?mode=privatekey')}
+        zIndex={1400}
       />
     </FormContainer>
   );

@@ -16,6 +16,10 @@ interface MobileAuthShellProps {
   actionLabel: string;
   /** Route to navigate to when the action button is pressed */
   actionRoute: string;
+  /** Optional secondary action label (e.g. "Import") shown as a smaller link next to the primary */
+  secondaryActionLabel?: string;
+  /** Route for the secondary action */
+  secondaryActionRoute?: string;
   /** Optional callback for the back button. Defaults to navigate(-1). */
   onBack?: () => void;
 }
@@ -24,6 +28,8 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
   children,
   actionLabel,
   actionRoute,
+  secondaryActionLabel,
+  secondaryActionRoute,
   onBack,
 }) => {
   const navigate = useNavigate();
@@ -86,23 +92,53 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
           sx={{ height: 24, width: 'auto' }}
         />
 
-        {/* Action link */}
-        <Button
-          variant="text"
-          size="small"
-          onClick={() => navigate(actionRoute)}
-          sx={{
-            fontWeight: 700,
-            fontSize: '0.8rem',
-            color: 'primary.main',
-            textTransform: 'none',
-            whiteSpace: 'nowrap',
-            minWidth: 'auto',
-            px: 1,
-          }}
-        >
-          {actionLabel}
-        </Button>
+        {/* Action link(s) */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+          {secondaryActionLabel && secondaryActionRoute && (
+            <>
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => navigate(secondaryActionRoute)}
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  color: 'text.secondary',
+                  textTransform: 'none',
+                  whiteSpace: 'nowrap',
+                  minWidth: 'auto',
+                  px: 0.5,
+                }}
+              >
+                {secondaryActionLabel}
+              </Button>
+              <Box
+                sx={{
+                  width: '1px',
+                  height: 16,
+                  bgcolor: 'divider',
+                  flexShrink: 0,
+                }}
+              />
+            </>
+          )}
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => navigate(actionRoute)}
+            sx={{
+              fontWeight: 700,
+              fontSize: '0.8rem',
+              color: 'primary.main',
+              textTransform: 'none',
+              whiteSpace: 'nowrap',
+              minWidth: 'auto',
+              px: secondaryActionLabel ? 0.5 : 1,
+            }}
+          >
+            {actionLabel}
+          </Button>
+        </Box>
       </Box>
 
       {/* ── Scrollable Form Content ── */}
