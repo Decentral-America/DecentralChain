@@ -196,7 +196,7 @@ export const Dex = () => {
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       Last Price
                     </Typography>
-                    <PriceDisplay trend={priceTrend} sx={{ fontSize: '1.5rem' }}>
+                    <PriceDisplay trend={priceTrend} sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
                       {formattedPrice}
                       {priceTrend === 'up' ? (
                         <TrendingUp sx={{ fontSize: '1.5rem' }} />
@@ -224,8 +224,8 @@ export const Dex = () => {
                   </Box>
                 </Grid>
 
-                {/* 24h High */}
-                <Grid item xs={4} md={2}>
+                {/* 24h High - hidden on xs */}
+                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h High
@@ -241,8 +241,8 @@ export const Dex = () => {
                   </Box>
                 </Grid>
 
-                {/* 24h Low */}
-                <Grid item xs={4} md={2}>
+                {/* 24h Low - hidden on xs */}
+                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Low
@@ -259,7 +259,7 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Volume */}
-                <Grid item xs={4} md={2}>
+                <Grid item xs={12} sm={4} md={2}>
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Volume
@@ -285,7 +285,7 @@ export const Dex = () => {
           <Grid item xs={12} lg={8.5}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
               {/* Large Chart Section */}
-              <TradingPanel elevation={0} sx={{ flex: 1, minHeight: 550 }}>
+              <TradingPanel elevation={0} sx={{ flex: 1, minHeight: { xs: 300, sm: 400, md: 550 } }}>
                 <PanelHeader>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
@@ -309,7 +309,7 @@ export const Dex = () => {
               </TradingPanel>
 
               {/* Order Book - Now in main area */}
-              <TradingPanel elevation={0} sx={{ minHeight: 400 }}>
+              <TradingPanel elevation={0} sx={{ minHeight: { xs: 250, md: 400 } }}>
                 <PanelHeader>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Receipt sx={{ color: 'primary.main', fontSize: 24 }} />
@@ -366,7 +366,7 @@ export const Dex = () => {
           <Grid item xs={12} lg={3.5}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {/* Buy/Sell Card with Toggle */}
-              <TradingPanel elevation={0} sx={{ minHeight: 560 }}>
+              <TradingPanel elevation={0} sx={{ minHeight: { xs: 'auto', md: 560 } }}>
                 <PanelHeader
                   sx={{
                     background:
@@ -452,7 +452,7 @@ export const Dex = () => {
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </PanelHeader>
-                <PanelContent sx={{ minHeight: 500 }}>
+                <PanelContent sx={{ minHeight: { xs: 'auto', md: 500 } }}>
                   {buySellMode === 'buy' ? <BuyOrderForm /> : <SellOrderForm />}
                 </PanelContent>
               </TradingPanel>

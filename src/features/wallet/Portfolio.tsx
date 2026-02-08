@@ -239,7 +239,7 @@ export const Portfolio = () => {
                     <Box>
                       <Typography
                         variant="h3"
-                        sx={{ fontWeight: 800, fontSize: '2.25rem', mb: 0.5 }}
+                        sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem' }, mb: 0.5 }}
                       >
                         {formatAmount(baseBalance)}
                       </Typography>
@@ -307,7 +307,7 @@ export const Portfolio = () => {
                     <Box>
                       <Typography
                         variant="h3"
-                        sx={{ fontWeight: 800, fontSize: '2.25rem', mb: 0.5 }}
+                        sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem' }, mb: 0.5 }}
                       >
                         {formatAmount(effectiveBalance)}
                       </Typography>
@@ -373,7 +373,7 @@ export const Portfolio = () => {
                     <Box>
                       <Typography
                         variant="h3"
-                        sx={{ fontWeight: 800, fontSize: '2.25rem', mb: 0.5 }}
+                        sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem' }, mb: 0.5 }}
                       >
                         {formatAmount(leased)}
                       </Typography>
@@ -405,7 +405,7 @@ export const Portfolio = () => {
             }}
           >
             <Box sx={{ p: 3, borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2}>
                 <Box>
                   <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
                     Your Assets

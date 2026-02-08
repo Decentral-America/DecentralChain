@@ -26,8 +26,8 @@ export const SignUp: React.FC = () => {
           bgcolor: 'background.default',
         }}
       >
-        <Container maxWidth="xl" sx={{ py: 8 }}>
-          <Grid container spacing={6} alignItems="center">
+        <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 5, md: 8 } }}>
+          <Grid container spacing={{ xs: 3, md: 6 }} alignItems="center">
             {/* Left Column - Branding & Features */}
             <Grid item xs={12} md={5}>
               <Box sx={{ pr: { md: 4 } }}>
@@ -174,11 +174,11 @@ export const SignUp: React.FC = () => {
                   position: 'relative',
                   borderRadius: 3,
                   overflow: 'hidden',
-                  minHeight: '600px',
+                  minHeight: { xs: 'auto', md: '600px' },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: { xs: 3, md: 5 },
+                  padding: { xs: 2, sm: 3, md: 5 },
                   // Apply gradient background directly
                   background: `
                     radial-gradient(1200px 600px at 20% -10%, #FF7A59 0%, rgba(255,122,89,0) 60%),

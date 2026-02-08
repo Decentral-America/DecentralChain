@@ -70,8 +70,8 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   backdropFilter: 'blur(10px)',
 
   [theme.breakpoints.down('md')]: {
-    minHeight: '50vh',
-    padding: theme.spacing(4),
+    minHeight: 'auto',
+    padding: theme.spacing(3),
   },
 }));
 
@@ -84,8 +84,8 @@ const RightPanel = styled(Box)(({ theme }) => ({
   position: 'relative',
 
   [theme.breakpoints.down('md')]: {
-    minHeight: '50vh',
-    padding: theme.spacing(4),
+    minHeight: 'auto',
+    padding: theme.spacing(3),
   },
 }));
 

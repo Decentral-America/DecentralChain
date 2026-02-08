@@ -27,15 +27,22 @@ const Content = styled.div`
 `;
 
 const IconCircle = styled.div`
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: ${(p) => p.theme.colors.warning}18;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
-  margin-bottom: ${(p) => p.theme.spacing.lg};
+  font-size: 30px;
+  margin-bottom: ${(p) => p.theme.spacing.md};
+
+  @media (min-width: 480px) {
+    width: 72px;
+    height: 72px;
+    font-size: 36px;
+    margin-bottom: ${(p) => p.theme.spacing.lg};
+  }
 `;
 
 const Title = styled.h3`
@@ -58,7 +65,7 @@ const Actions = styled.div`
   flex-direction: column;
   gap: ${(p) => p.theme.spacing.md};
   width: 100%;
-  max-width: 340px;
+  max-width: min(340px, 100%);
 `;
 
 const OptionCard = styled.button`
@@ -88,15 +95,21 @@ const OptionCard = styled.button`
 `;
 
 const OptionIcon = styled.span`
-  font-size: 28px;
+  font-size: 24px;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: ${(p) => p.theme.radii.sm};
   background: ${(p) => p.theme.colors.primary}12;
+
+  @media (min-width: 480px) {
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+  }
 `;
 
 const OptionText = styled.div`

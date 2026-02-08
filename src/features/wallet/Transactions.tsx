@@ -23,17 +23,40 @@ const FilterBar = styled.div`
   gap: ${(p) => p.theme.spacing.md};
   margin-bottom: ${(p) => p.theme.spacing.md};
   flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: ${(p) => p.theme.spacing.sm};
+  }
+`;
+
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  min-width: 640px;
 
   th,
   td {
-    padding: ${(p) => p.theme.spacing.md};
+    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.sm};
     text-align: left;
     border-bottom: 1px solid ${(p) => p.theme.colors.border};
+    white-space: nowrap;
+  }
+
+  @media (max-width: 600px) {
+    min-width: 560px;
+
+    th,
+    td {
+      padding: ${(p) => p.theme.spacing.sm};
+      font-size: 0.8rem;
+    }
   }
 
   th {
@@ -127,6 +150,14 @@ const Pagination = styled.div`
   align-items: center;
   margin-top: ${(p) => p.theme.spacing.md};
   padding: ${(p) => p.theme.spacing.md};
+  flex-wrap: wrap;
+  gap: ${(p) => p.theme.spacing.sm};
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
 `;
 
 const PageInfo = styled.span`
@@ -453,6 +484,7 @@ export const Transactions = () => {
 
         {/* Transactions Table */}
         <Card>
+          <TableWrapper>
           <Table>
             <thead>
               <tr>
@@ -488,6 +520,7 @@ export const Transactions = () => {
               ))}
             </tbody>
           </Table>
+          </TableWrapper>
 
           {/* Pagination */}
           {totalPages > 1 && (

@@ -96,13 +96,17 @@ const StyledNavLink = styled(NavLink)(() => ({
 // Main content area
 const MainContent = styled(Box)(({ theme }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3, 0),
+  padding: theme.spacing(3, 1),
   marginTop: '64px', // Height of AppBar
   minHeight: '100vh',
   background: '#F9FAFB',
   overflowY: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    marginTop: '56px', // Smaller toolbar on mobile
+    padding: theme.spacing(1.5, 0.5),
+  },
   [theme.breakpoints.down('md')]: {
-    padding: theme.spacing(2, 0),
+    padding: theme.spacing(2, 1),
   },
   // Custom scrollbar
   '&::-webkit-scrollbar': {
@@ -517,7 +521,7 @@ export const MainLayout = () => {
                   horizontal: 'right',
                 }}
                 PaperProps={{
-                  sx: { width: 280, mt: 1 },
+                  sx: { width: { xs: 'calc(100vw - 32px)', sm: 280 }, maxWidth: 320, mt: 1 },
                 }}
               >
                 {/* Address Info */}

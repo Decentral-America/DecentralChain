@@ -78,6 +78,8 @@ const StyledTextarea = styled.textarea`
   background: ${(p) => p.theme.colors.background};
   resize: vertical;
   transition: ${(p) => p.theme.transitions.fast};
+  word-break: break-all;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
