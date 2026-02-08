@@ -72,6 +72,7 @@ export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  sessionRestored: boolean;
   accounts: User[]; // List of all stored accounts
   scriptInfo: ScriptInfo; // Script polling info for current user
   create: (

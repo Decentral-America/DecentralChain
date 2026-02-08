@@ -1195,6 +1195,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     isAuthenticated: !!user,
     isLoading,
+    sessionRestored,
     accounts,
     scriptInfo,
     login,

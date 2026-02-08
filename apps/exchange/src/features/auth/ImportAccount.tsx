@@ -2,7 +2,7 @@
  * ImportAccount Component
  * Imports existing wallet via seed phrase
  */
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthContext';
@@ -109,8 +109,10 @@ export const ImportAccount = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstAccount, setIsFirstAccount] = useState(false);
-  const { login, create, addAccount, getActiveState } = useAuth();
+  const [pendingNavigation, setPendingNavigation] = useState(false);
+  const { login, create, addAccount, getActiveState, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const navigationTarget = useRef<string>('/desktop/wallet');
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
   const isLedgerSupported = 
@@ -122,6 +124,14 @@ export const ImportAccount = () => {
     const multiAccountData = localStorage.getItem('multiAccountData');
     setIsFirstAccount(!multiAccountData);
   }, []);
+
+  // Effect-based navigation: only navigate after user state has propagated
+  useEffect(() => {
+    if (pendingNavigation && isAuthenticated && user) {
+      setPendingNavigation(false);
+      navigate(navigationTarget.current);
+    }
+  }, [pendingNavigation, isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -155,9 +165,9 @@ export const ImportAccount = () => {
         // FIRST ACCOUNT: Use create() to initialize vault
         await create(trimmedSeed, password, accountName.trim(), true);
 
-        // create() automatically logs in, navigate to wallet
-        const targetRoute = getActiveState('wallet');
-        navigate(targetRoute);
+        // create() sets user state; navigate via effect once state propagates
+        navigationTarget.current = getActiveState('wallet');
+        setPendingNavigation(true);
       } else {
         // ADDITIONAL ACCOUNT: Use addAccount() to add to existing vault
         // This requires the vault password to decrypt and add new account
@@ -170,9 +180,9 @@ export const ImportAccount = () => {
         // Login with the newly added account
         await login(addedUser.hash, password);
 
-        // Navigate to wallet
-        const targetRoute = getActiveState('wallet');
-        navigate(targetRoute);
+        // login() sets user state; navigate via effect once state propagates
+        navigationTarget.current = getActiveState('wallet');
+        setPendingNavigation(true);
       }
     } catch (err) {
       const errorMessage =

@@ -4,7 +4,7 @@
  * Shows account selection if multiple accounts exist
  * Matches Angular's signInForm.js exactly
  */
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthContext';
@@ -96,13 +96,23 @@ export const LoginForm = () => {
     Array<{ hash: string; name?: string; address: string; lastLogin?: number }>
   >([]);
   const [showAccountSelect, setShowAccountSelect] = useState(false);
-  const { login, getActiveState } = useAuth();
+  const [pendingNavigation, setPendingNavigation] = useState(false);
+  const { login, getActiveState, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const navigationTarget = useRef<string>('/desktop/wallet');
   
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
   const isLedgerSupported = 
     (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
+
+  // Effect-based navigation: only navigate after user state has propagated
+  useEffect(() => {
+    if (pendingNavigation && isAuthenticated && user) {
+      setPendingNavigation(false);
+      navigate(navigationTarget.current);
+    }
+  }, [pendingNavigation, isAuthenticated, user, navigate]);
 
   // Check if accounts exist on mount
   useEffect(() => {
@@ -144,9 +154,9 @@ export const LoginForm = () => {
         // Auto-login with single account
         await login(accountList[0].hash, password);
 
-        // Navigate using getActiveState helper
-        const targetRoute = getActiveState('wallet');
-        navigate(targetRoute);
+        // Navigate via effect once user state propagates
+        navigationTarget.current = getActiveState('wallet');
+        setPendingNavigation(true);
       } else {
         // Show account selection for multiple accounts
         setAccounts(accountList);
@@ -165,9 +175,9 @@ export const LoginForm = () => {
     try {
       await login(userHash, password);
 
-      // Navigate using getActiveState helper
-      const targetRoute = getActiveState('wallet');
-      navigate(targetRoute);
+      // Navigate via effect once user state propagates
+      navigationTarget.current = getActiveState('wallet');
+      setPendingNavigation(true);
     } catch (error) {
       console.error('[LoginForm] Account select failed:', error);
       setError('Failed to login. Please try again.');
