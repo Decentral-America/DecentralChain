@@ -223,7 +223,7 @@ const ImportLink = styled.p`
   font-size: ${(p) => p.theme.fontSizes.sm};
   color: ${(p) => p.theme.colors.text};
   opacity: 0.6;
-  margin: 0;
+  margin: 0 0 ${(p) => p.theme.spacing.md} 0;
   text-align: center;
 
   a {
@@ -363,6 +363,19 @@ export const CreateAccount = () => {
             Your seed phrase is the key to your wallet. Write it down and store it in a safe place.
           </Description>
 
+          <ImportLink>
+            Already have a wallet?{' '}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/import-account');
+              }}
+            >
+              Import one instead
+            </a>
+          </ImportLink>
+
           {isLedgerSupported && (
             <>
               <LedgerInfoBox onClick={() => navigate('/import/ledger')}>
@@ -474,19 +487,6 @@ export const CreateAccount = () => {
               >
                 {isLoading ? 'Creating Wallet...' : 'Create Wallet'}
               </Button>
-
-              <ImportLink>
-                Already have a wallet?{' '}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/import-account');
-                  }}
-                >
-                  Import one instead
-                </a>
-              </ImportLink>
             </Stack>
           </form>
         </CardBody>
