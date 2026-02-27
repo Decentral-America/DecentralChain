@@ -1,9 +1,8 @@
 import { default as BigNum } from 'bignumber.js';
-import { BigNumber } from './BigNumber';
-import ROUND_MODE = BigNumber.ROUND_MODE;
+import { type BigNumber } from './BigNumber.js';
 
 export class Config {
-  private static DEFAULT_FORMAT: IFormat = {
+  private static readonly DEFAULT_FORMAT: IFormat = {
     prefix: '',
     decimalSeparator: '.',
     groupSeparator: ',',
@@ -17,7 +16,7 @@ export class Config {
   private format: IFormat;
 
   constructor() {
-    this.format = Config.DEFAULT_FORMAT;
+    this.format = { ...Config.DEFAULT_FORMAT };
     BigNum.config({ FORMAT: this.format });
   }
 
@@ -31,7 +30,7 @@ export class Config {
 }
 
 export interface IConfig {
-  ROUNDING_MODE: ROUND_MODE;
+  ROUNDING_MODE: BigNumber.ROUND_MODE;
   FORMAT: Partial<IFormat>;
 }
 
