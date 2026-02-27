@@ -42,7 +42,6 @@ function convertLongFields<T = string, R = string>(
   toConverter?: TToLongConverter<T>,
   fromConverter?: TFromLongConverter<R>,
 ) {
-  //ToDo: rewrite. Now simply serializes and then parses with long  factory to get right long types
   const ser = serializerFromSchema(schema, fromConverter);
   const par = parserFromSchema(schema, toConverter);
   const converted = par(ser(obj)).value;

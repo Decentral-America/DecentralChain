@@ -38,7 +38,6 @@ import {
 } from './schemaTypes';
 import { serializerFromSchema } from './serialize';
 
-//Todo: import this enums from ts-types package
 export enum TRANSACTION_TYPE {
   GENESIS = 1,
   PAYMENT = 2,
@@ -251,12 +250,12 @@ export namespace txFields {
     [2, { toBytes: LEN(INT)(STRING), fromBytes: P_STRING_VAR(P_INT) }, 'string'],
     [
       6,
-      { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: true, shift: 0 }) },
+      { toBytes: () => new Uint8Array(0), fromBytes: () => ({ value: true, shift: 0 }) },
       'boolean',
     ],
     [
       7,
-      { toBytes: () => Uint8Array.from([]), fromBytes: () => ({ value: false, shift: 0 }) },
+      { toBytes: () => new Uint8Array(0), fromBytes: () => ({ value: false, shift: 0 }) },
       'boolean',
     ],
   ];

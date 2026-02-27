@@ -1,7 +1,8 @@
-import Long = require('long');
-import { Utf8ArrayToStr } from './libs/Utf8ArrayToStr';
+import Long from 'long';
 import base58 from './libs/base58';
 import * as Base64 from 'base64-js';
+
+const textDecoder = new TextDecoder();
 
 export const ALIAS_VERSION: number = 2;
 
@@ -48,7 +49,7 @@ export const P_BOOLEAN = (bytes: Uint8Array, start = 0) => {
 export const P_STRING_FIXED =
   (len: number): TParser<string> =>
   (bytes: Uint8Array, start: number = 0) => {
-    const value = Utf8ArrayToStr(bytes.slice(start, start + len));
+    const value = textDecoder.decode(bytes.slice(start, start + len));
     return { shift: len, value };
   };
 
@@ -84,7 +85,7 @@ export const P_BASE64 =
   };
 
 const byteToString = (shift: number) => (bytes: Uint8Array, start: number) => {
-  const value = Utf8ArrayToStr(bytes.slice(start, start + shift));
+  const value = textDecoder.decode(bytes.slice(start, start + shift));
   return { shift, value };
 };
 
@@ -95,20 +96,10 @@ export const byteToStringWithLength = (bytes: Uint8Array, start: number = 0) => 
 };
 
 export const byteToBase58 = (bytes: Uint8Array, start: number = 0, length?: number) => {
-  // TODO!
   const shift = length || 32;
   const value = base58.encode(bytes.slice(start, start + shift));
   return { value, shift };
 };
-export const byteToBase58WithLength = (bytes: Uint8Array, start: number = 0) => {
-  // TODO!
-  const lenInfo = P_SHORT(bytes, start);
-  const value = base58.encode(
-    bytes.slice(start + lenInfo.shift, start + lenInfo.shift + lenInfo.value),
-  );
-  return { value, shift: lenInfo.shift + lenInfo.value };
-};
-
 export const byteToAddressOrAlias = (bytes: Uint8Array, start: number = 0) => {
   if (bytes[start] === ALIAS_VERSION) {
     const aliasData = byteToStringWithLength(bytes, start + 2);

@@ -56,7 +56,7 @@ export type TAnyOfOptions = {
 };
 
 class AnyOfClass implements IAnyOf {
-  public type: 'anyOf' = 'anyOf';
+  public type = 'anyOf' as const;
   public toBytes?: any;
   public fromBytes?: any;
   public withLength?: TPrimitive;
@@ -75,7 +75,7 @@ class AnyOfClass implements IAnyOf {
     // Here if k equals undefined (this happens if discriminator field is undefined), first item with no string key returns
     // This is useful for items without versions. E.g. orderV0
     const row = this._items.find(
-      ([key, schema, stringKey]) => stringKey === k || key == (k as any),
+      ([key, _schema, stringKey]) => stringKey === k || key === Number(k),
     );
     return (
       row && {
@@ -87,7 +87,7 @@ class AnyOfClass implements IAnyOf {
   }
 
   public itemByByteKey(k: number): TAnyOfItem | undefined {
-    const row = this._items.find(([key, _]) => key === k);
+    const row = this._items.find(([key]) => key === k);
     return (
       row && {
         schema: row[1],
