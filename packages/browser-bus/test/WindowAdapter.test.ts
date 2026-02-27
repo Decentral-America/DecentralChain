@@ -208,9 +208,9 @@ describe('Window adapter', () => {
             window.removeEventListener = (event: string, handler: any) => {
                 emitter.off(event, handler);
             };
-            window.postMessage = (data: any, origin: string) => {
+            window.postMessage = ((data: any, origin: any) => {
                 emitter.trigger('message', { data, origin });
-            };
+            }) as any;
         });
 
         afterAll(() => {
