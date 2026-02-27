@@ -14,11 +14,27 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "rollup -c && tsc -p ./ -m commonjs",
-    "prepare": "npm run build",
+    "build": "rollup -c rollup.config.mjs && tsc -p ./ -m commonjs",
+    "prepare": "husky",
     "postversion": "npm publish",
     "prepublish": "npm run test",
-    "postpublish": "git push"
+    "postpublish": "git push",
+    "format": "prettier --write \"src/**/*.{ts,json}\" \"test/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,json}\" \"test/**/*.{ts,json}\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
   },
   "keywords": [
     "bignumber",
@@ -30,18 +46,25 @@
     "bignumber.js": "^9.1.2"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "@types/long": "^4.0.0",
-    "jest": "^24.8.0",
-    "long": "^4.0.0",
-    "rollup": "^1.12.3",
-    "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-size-snapshot": "^0.8.0",
-    "rollup-plugin-terser": "^4.0.4",
-    "rollup-plugin-typescript2": "^0.21.1",
-    "ts-jest": "^24.0.2",
-    "tslib": "^1.9.3",
-    "typescript": "^3.9.10"
+    "@eslint/js": "^9.28.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/jest": "^29.5.14",
+    "@types/long": "^4.0.2",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^16.1.0",
+    "long": "^5.3.2",
+    "prettier": "^3.5.3",
+    "rollup": "^4.34.8",
+    "ts-jest": "^29.3.4",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
   },
   "jest": {
     "collectCoverage": true,
