@@ -165,12 +165,12 @@ describe('compareUint8Arrays', () => {
       112, 184, 171, 25, 60, 42, 134, 130, 136, 181, 26, 247, 132, 43, 173, 195, 46, 234, 144, 49,
       135, 237, 146, 30, 213, 228, 116, 28, 245,
     ];
-    const arr1 = new Uint32Array([222, 55, 176, ...equalPart]);
-    const arr2 = new Uint32Array([222, 219, 25, ...equalPart]);
-    const arr3 = new Uint32Array([222, 55, 25, ...equalPart]);
-    const arr4 = new Uint32Array([222, 55, 176, ...equalPart]);
-    expect(compareUint8Arrays(arr1, arr2)).toBe(true);
-    expect(compareUint8Arrays(arr1, arr3)).toBe(false);
+    const arr1 = new Uint8Array([222, 55, 176, ...equalPart]);
+    const arr2 = new Uint8Array([222, 219, 25, ...equalPart]);
+    const arr3 = new Uint8Array([222, 55, 25, ...equalPart]);
+    const arr4 = new Uint8Array([222, 55, 176, ...equalPart]);
+    expect(compareUint8Arrays(arr1, arr2)).toBe(false);
+    expect(compareUint8Arrays(arr1, arr3)).toBe(true);
     expect(compareUint8Arrays(arr1, arr4)).toBe(false); // equal → false
   });
 });
