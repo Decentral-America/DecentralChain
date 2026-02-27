@@ -36,7 +36,7 @@ export class Bus<T extends Record<string, any> = any, H extends Record<string, (
 
     public dispatchEvent<K extends keyof T>(name: K, data: T[K]): this {
         this._adapter.send(Bus._createEvent(name as string, data));
-        console.info(`Dispatch event "${name}"`, data);
+        console.info(`Dispatch event "${String(name)}"`, data);
         return this;
     }
 
@@ -50,7 +50,7 @@ export class Bus<T extends Record<string, any> = any, H extends Record<string, (
             if ((timeout || this._timeout) !== -1) {
                 timer = setTimeout(() => {
                     delete this._activeRequestHash[id];
-                    const error = new Error(`Timeout error for request with name "${name}" and timeout ${wait}!`);
+                    const error = new Error(`Timeout error for request with name "${String(name)}" and timeout ${wait}!`);
                     console.error(error);
                     reject(error);
                 }, wait);
@@ -65,18 +65,18 @@ export class Bus<T extends Record<string, any> = any, H extends Record<string, (
             this._activeRequestHash[id] = {
                 reject: (error: any) => {
                     cancelTimeout();
-                    console.error(`Error request with name "${name}"`, error);
+                    console.error(`Error request with name "${String(name)}"`, error);
                     reject(error);
                 },
                 resolve: (data: T) => {
                     cancelTimeout();
-                    console.info(`Request with name "${name}" success resolved!`, data);
+                    console.info(`Request with name "${String(name)}" success resolved!`, data);
                     resolve(data);
                 }
             };
 
             this._adapter.send({ id, type: EventType.Action, name, data });
-            console.info(`Request with name "${name}"`, data);
+            console.info(`Request with name "${String(name)}"`, data);
         });
     }
 
@@ -223,7 +223,7 @@ export class Bus<T extends Record<string, any> = any, H extends Record<string, (
                 });
             }
         } catch (e) {
-            sendError(e);
+            sendError(e as Error);
         }
     }
 

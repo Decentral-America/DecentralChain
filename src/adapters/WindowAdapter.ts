@@ -158,7 +158,7 @@ export class WindowAdapter extends Adapter {
 
         if (!(content instanceof HTMLIFrameElement)) {
             try {
-                return window.top.origin;
+                return window.top!.origin;
             } catch (e) {
                 return null;
             }
