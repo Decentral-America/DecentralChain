@@ -1,14 +1,14 @@
 import BigNum from 'bignumber.js';
-import { Config, IFormat } from './Config';
+import { Config, type IFormat } from './Config.js';
 
 type TLong = string | number | BigNumber;
 
 export class BigNumber {
   public readonly bn: BigNum;
-  public static MIN_VALUE = new BigNumber('-9223372036854775808');
-  public static MAX_VALUE = new BigNumber('9223372036854775807');
-  public static MIN_UNSIGNED_VALUE = new BigNumber('0');
-  public static MAX_UNSIGNED_VALUE = new BigNumber('18446744073709551615');
+  public static readonly MIN_VALUE = new BigNumber('-9223372036854775808');
+  public static readonly MAX_VALUE = new BigNumber('9223372036854775807');
+  public static readonly MIN_UNSIGNED_VALUE = new BigNumber('0');
+  public static readonly MAX_UNSIGNED_VALUE = new BigNumber('18446744073709551615');
   public static config = new Config();
 
   constructor(long: TLong | BigNum | BigNumber) {
@@ -56,7 +56,7 @@ export class BigNumber {
   }
 
   public roundTo(
-    decimals: number = 0,
+    decimals = 0,
     mode: BigNumber.ROUND_MODE = BigNumber.ROUND_MODE.ROUND_HALF_UP,
   ): BigNumber {
     return new BigNumber(this.bn.dp(decimals || 0, mode));
@@ -127,7 +127,10 @@ export class BigNumber {
   }
 
   public toFormat(decimals?: number, roundMode?: BigNumber.ROUND_MODE, format?: IFormat): string {
-    return this.bn.toFormat(decimals as number, roundMode as any, format as IFormat);
+    if (decimals === undefined) {
+      return this.bn.toFormat();
+    }
+    return this.bn.toFormat(decimals, roundMode as BigNum.RoundingMode, format);
   }
 
   public toFixed(decimals?: number, roundMode?: BigNumber.ROUND_MODE): string {
@@ -191,7 +194,7 @@ export class BigNumber {
   }
 
   public static fromBytes(
-    bytes: Uint8Array | Array<number>,
+    bytes: Uint8Array | number[],
     { isSigned = true, isLong = true } = {},
   ): BigNumber {
     if (isLong && bytes.length !== 8) {
@@ -200,7 +203,8 @@ export class BigNumber {
 
     bytes = (!isLong && bytes.length > 0) || isLong ? bytes : [0];
 
-    const isNegative = isSigned ? bytes[0] > 127 : false;
+    const firstByte = bytes[0] ?? 0;
+    const isNegative = isSigned ? firstByte > 127 : false;
 
     const byteString = Array.from(bytes)
       .map((byte) => (isNegative ? 255 - byte : byte))
@@ -212,18 +216,19 @@ export class BigNumber {
     return isNegative ? result.mul(-1).sub(1) : result;
   }
 
-  public static max(...items: Array<TLong>): BigNumber {
+  public static max(...items: TLong[]): BigNumber {
     return BigNumber.toBigNumber(items).reduce((max, item) => (max.gte(item) ? max : item));
   }
 
-  public static min(...items: Array<TLong>): BigNumber {
+  public static min(...items: TLong[]): BigNumber {
     return BigNumber.toBigNumber(items).reduce((min, item) => (min.lte(item) ? min : item));
   }
 
-  public static sum(...items: Array<TLong>): BigNumber {
+  public static sum(...items: TLong[]): BigNumber {
     return BigNumber.toBigNumber(items).reduce((acc, item) => acc.add(item));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static isBigNumber(some: any): some is BigNumber {
     if (!some || typeof some !== 'object') {
       return false;
@@ -231,17 +236,17 @@ export class BigNumber {
     if (some instanceof BigNumber) {
       return true;
     }
-    const protoKeys = Object.getOwnPropertyNames(BigNumber.prototype).filter(
-      (key) => key !== 'constructor' && key.charAt(0) !== '_',
+    const proto = BigNumber.prototype as unknown as Record<string, unknown>;
+    const protoKeys = Object.getOwnPropertyNames(proto).filter(
+      (key) => key !== 'constructor' && !key.startsWith('_'),
     );
-    return protoKeys.every(
-      (key) => key in some && typeof (BigNumber.prototype as any)[key] === typeof some[key],
-    );
+    const target = some as Record<string, unknown>;
+    return protoKeys.every((key) => key in target && typeof proto[key] === typeof target[key]);
   }
 
   public static toBigNumber(items: TLong): BigNumber;
-  public static toBigNumber(items: Array<TLong>): Array<BigNumber>;
-  public static toBigNumber(items: TLong | Array<TLong>): BigNumber | Array<BigNumber> {
+  public static toBigNumber(items: TLong[]): BigNumber[];
+  public static toBigNumber(items: TLong | TLong[]): BigNumber | BigNumber[] {
     if (Array.isArray(items)) {
       return items.map((item) => new BigNumber(item));
     } else {
@@ -265,7 +270,7 @@ export class BigNumber {
 }
 
 export namespace BigNumber {
-  export const enum ROUND_MODE {
+  export enum ROUND_MODE {
     ROUND_UP,
     ROUND_DOWN,
     ROUND_CEIL,
