@@ -40,7 +40,7 @@
   "scripts": {
     "build:browser": "rollup -c rollup.config.js",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "vitest run",
     "format": "prettier --write \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
     "lint": "eslint .",
@@ -69,11 +69,11 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
-    "jest": "^30.2.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
     "rollup": "^4.59.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "bs58": "^6.0.0"
