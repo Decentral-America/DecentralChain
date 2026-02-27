@@ -1,163 +1,133 @@
-# Browser Bus     
+# @decentralchain/browser-bus
 
-Библиотека для работы над текстовым протоколом.
-Позволяет реализовать связь например для:
- * двух различных окон браузера
- * окно браузера с iframe
+Cross-window browser communication library for DecentralChain DApps and wallet applications.
 
-## Browser Bus API
+Enables secure message passing between browser windows, tabs, and iframes using the postMessage API. Used for DApp-to-wallet communication, transaction signing popups, and multi-tab synchronization.
 
-В библиотеке содержится классы Bus, Adapter и WindowAdapter, кроме того есть конфигурирование 
-уровня логирования.
-Для работы библиотеки должны быть 2 
-стороны между которыми можно отправлять сообщения любого формата.
-С каждой из этих сторон нужно создать по экземпляру класса Bus для отправки и получения
-запросов и событий.
+## Installation
 
-## Bus
+```bash
+npm install @decentralchain/browser-bus
+```
 
-Позволяет отправлять и подписываться на события. 
+## Usage
 
-Принимает экземпляр класса Adapter отвечающий за реализацию протокола отправки сообщений 
-и время ожидания ответа по умолчанию (в миллисекундах).
-Время ответа не обязательный параметр и по умолчанию равен 5 секунд.
+### Parent window with iframe
 
-Пример связи iframe и родительского окна:
+On the parent window side:
+```typescript
+import { Bus, WindowAdapter } from '@decentralchain/browser-bus';
 
-На стороне родительского окна:
-```javascript
-    import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
+const url = 'https://some-iframe-content-url.com';
+const iframe = document.createElement('iframe');
 
-    const url = 'https://some-iframe-content-url.com';
-    const iframe = document.createElement('iframe');
-    
-    WindowAdapter.createSimpleWindowAdapter(iframe).then(adapter => {
-        const bus = new Bus(adapter);
-        
-        bus.once('ready', () => {
-            // Получено сообщение от iframe 
-        });
+WindowAdapter.createSimpleWindowAdapter(iframe).then(adapter => {
+    const bus = new Bus(adapter);
+
+    bus.once('ready', () => {
+        // Received message from iframe
     });
-    iframe.src = url; // Предпочтительно присваивать url после вызова WindowAdapter.createSimpleWindowAdapter
-    document.body.appendChild(iframe);
-```
-На стороне iframe:
-```javascript
-    import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
-    WindowAdapter.createSimpleWindowAdapter().then(adapter => {
-        const bus = new Bus(adapter);
-        
-        bus.dispatchEvent('ready', null); // Отправили сообщение в родительское окно
-    });
-    
-```
-
-### dispatchEvent
-
-Отправляет событие. Все экземпляры Bus, с которыми установлена связь и есть подписка на это событие, получат это сообщение.
-Вторым аргументом передаются данные для обработчиков. 
-Везде, кроме IE, допустимы объекты, которые клонируются, а в IE – только строка. 
-
-```javascript
-
-bus.dispatchEvent('some-event-name', jsonLikeData);
-
-```
-
-### request
-
-Параметры:
-+ name - метод запроса котоый вызовится на другом экземпляре Bus
-+ [data] - данные которые будут переданы в метод
-+ [timeout] - время ожидания ответа (default = 5000)
-
-Если за время `timeout` ответа не последует - будет сгенерирована ошибка по таймауту.
-Если другой экземпляр Bus не имеет обработчика с именем `name` будет сгенерирована ошибка 
-(см. `registerRequestHandler`)
-Если во время выполнения метода произойдёт ошибка - она вернётся в Promise.reject.
-
-Отправляет запрос к другому экземпляру Bus.
-
-```javascript
-
-bus.request('some-event-name', jsonLikeData, 100).then(data => {
-    // data - ответ от Bus 
 });
-
+iframe.src = url; // Preferably assign the URL after calling WindowAdapter.createSimpleWindowAdapter
+document.body.appendChild(iframe);
 ```
 
-### on
-Позволяет подписаться на события из Bus.  
+On the iframe side:
+```typescript
+import { Bus, WindowAdapter } from '@decentralchain/browser-bus';
 
-Пример:
-```javascript
-   bus.on('some-event', data => {
-        //data - данные пришедшие в событии  
-   });
+WindowAdapter.createSimpleWindowAdapter().then(adapter => {
+    const bus = new Bus(adapter);
+
+    bus.dispatchEvent('ready', null); // Send message to parent window
+});
 ```
 
+## API
 
-### once
-Позволяет однократно подписаться на события из Bus.  
+### Bus
 
-Пример:
-```javascript
-   bus.once('some-event', data => {
-        //data - данные пришедшие в событии  
-   });
+Creates a bus instance for sending and receiving events and requests.
+
+Constructor parameters:
+- `adapter` — an `Adapter` instance responsible for the messaging protocol implementation
+- `timeout` (optional) — default response timeout in milliseconds (default: 5000)
+
+#### `dispatchEvent(name, data)`
+
+Send an event. All connected Bus instances subscribed to this event will receive the message.
+
+```typescript
+bus.dispatchEvent('some-event-name', jsonLikeData);
 ```
 
-### off
-Позволяет отписаться от событий другого Bus.
+#### `request(name, data?, timeout?)`
 
-Параметры:
-+ [eventName] - имя события. Если не передано отпишется от всех событий с переданным `handler`.  
-+ [handler] - обработчик событий. Если не передан - отпишется от всех обработчиков с данным `eventName`.
+Send a request to another Bus instance. Returns a Promise that resolves with the response.
 
-Если параметры не переданы - отпишется от всех событий.
+Parameters:
+- `name` — request method name
+- `data` (optional) — data to send with the request
+- `timeout` (optional) — response timeout in ms (default: 5000)
 
-Пример:
-```javascript
-   bus.off('some-event', handler); // Отпишется от `some-event` с обработчиком `handler`
-   bus.off('some-event'); // Отпишется от всех обработчиков на имя `some-event`
-   bus.off(null, handler); // Отпишется во всех именах от обработчика `handler`
-   bus.off(); // Отпишется от всех событий
+```typescript
+bus.request('some-method', jsonLikeData, 100).then(data => {
+    // data — response from the other Bus
+});
 ```
 
+#### `on(name, handler)`
 
+Subscribe to events.
 
-### registerRequestHandler
-Метод для обработки запроса из другого экземпляра bus.
-
-Параметры:
-+ name - имя метода который будет доступен для вызова из другого bus
-+ handler - обработчик который будет отвечать в другой bus
-Если обработчик возвращает `Promise`, то bus дождется окончания и отправит результат.
-
-Пример:
-```javascript
-    // В коде c одним из bus (например в iframe)
-    bus.registerRequestHandler('get-random', () => Math.random());
-    
-    // В основном коде приложения
-    bus.request('get-random').then(num => {
-        // Получили ответ из окна в iframe
-    })
-
-    
+```typescript
+bus.on('some-event', data => {
+    // data — event payload
+});
 ```
 
-или
+#### `once(name, handler)`
 
-```javascript
-    // В коде c одним из bus (например в iframe)
-    bus.registerRequestHandler('get-random', () => Promise.resolve(Math.random()));
-    
-    // В основном коде приложения
-    bus.request('get-random').then(num => {
-        // Получили ответ из окна в iframe
-    })
+Subscribe to an event once.
 
-    
+```typescript
+bus.once('some-event', data => {
+    // data — event payload
+});
 ```
+
+#### `off(eventName?, handler?)`
+
+Unsubscribe from events.
+
+```typescript
+bus.off('some-event', handler); // Unsubscribe specific handler from 'some-event'
+bus.off('some-event');          // Unsubscribe all handlers from 'some-event'
+bus.off(null, handler);         // Unsubscribe handler from all events
+bus.off();                      // Unsubscribe from everything
+```
+
+#### `registerRequestHandler(name, handler)`
+
+Register a handler for requests from another Bus instance.
+
+```typescript
+// In iframe code
+bus.registerRequestHandler('get-random', () => Math.random());
+
+// In main application
+bus.request('get-random').then(num => {
+    // Received response from iframe
+});
+```
+
+Handlers may also return Promises:
+
+```typescript
+bus.registerRequestHandler('get-data', () => Promise.resolve(someData));
+```
+
+## License
+
+MIT
 

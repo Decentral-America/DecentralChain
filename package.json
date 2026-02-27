@@ -1,14 +1,27 @@
 {
-  "name": "@waves/waves-browser-bus",
+  "name": "@decentralchain/browser-bus",
   "version": "0.2.7",
+  "description": "Cross-window browser communication library for DecentralChain DApps and wallet applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "decentralchain",
+    "browser-bus",
+    "postMessage",
+    "cross-window",
+    "communication",
+    "dapp",
+    "wallet"
+  ],
+  "author": "Decentral-America",
+  "license": "MIT",
+  "homepage": "https://github.com/Decentral-America/browser-bus#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:wavesplatform/waves-browser-bus.git"
+    "url": "git+https://github.com/Decentral-America/browser-bus.git"
   },
   "bugs": {
-    "url": "https://github.com/wavesplatform/waves-browser-bus/issues"
+    "url": "https://github.com/Decentral-America/browser-bus/issues"
   },
   "devDependencies": {
     "@types/jest": "^24.0.4",
@@ -16,8 +29,8 @@
     "jest": "^24.1.0",
     "ts-jest": "^23.10.5",
     "ts-utils": "^6.0.7",
-    "typescript": "^3.3.3",
-    "uglifyjs": "^2.4.11"
+    "typescript": "~4.9",
+    "uglify-js": "^3.19.3"
   },
   "files": [
     "dist"
