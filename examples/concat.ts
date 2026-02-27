@@ -1,4 +1,4 @@
-import { concat, randomBytes } from '@waves/ts-lib-crypto'
+import { concat, randomBytes } from '@decentralchain/ts-lib-crypto'
 
 const bytesA = randomBytes(2)
 const bytesB = randomBytes(2)

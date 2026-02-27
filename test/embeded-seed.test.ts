@@ -6,5 +6,5 @@ const seed = 'vast local exotic manage click stone boil analyst various truth sw
 const {address} = crypto({seed, output: 'Base58'})
 
 test('address from embeded seed', () => {
-    expect(address()).toBe('3PPb7ZubjmRprx7772hWuRReMB5dwAz8Q26')
+    expect(address()).toBe('3JxsUjiKZxSjDxLa9m5rQ63ehFXoZNEkCtX')
 })

@@ -1,4 +1,4 @@
-import { signBytes, privateKey } from '@waves/ts-lib-crypto'
+import { signBytes, privateKey } from '@decentralchain/ts-lib-crypto'
 
 const bytes = 'Fk1sjwdPSwZ4bPwvpCGPH6'
 const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'

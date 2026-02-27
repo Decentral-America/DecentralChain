@@ -1,9 +1,9 @@
 {
-  "name": "@waves/ts-lib-crypto",
+  "name": "@decentralchain/ts-lib-crypto",
   "version": "1.5.0",
-  "description": "This library contains all algorithm implementations like signature verification and protocol entries like address used in Waves.",
+  "description": "Cryptographic library for the DecentralChain blockchain — key generation, signing, hashing, encoding.",
   "keywords": [
-    "waves",
+    "decentralchain",
     "crypto",
     "protocol",
     "binary",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wavesplatform/ts-lib-crypto.git"
+    "url": "https://github.com/Decentral-America/ts-lib-crypto.git"
   },
   "dependencies": {
     "js-sha256": "^0.11.1",

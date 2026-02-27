@@ -3,7 +3,7 @@ export const PRIVATE_KEY_LENGTH = 32
 export const SIGNATURE_LENGTH = 64
 export const ADDRESS_LENGTH = 26
 
-export const MAIN_NET_CHAIN_ID = 87 // W
+export const MAIN_NET_CHAIN_ID = 76 // L
 export const TEST_NET_CHAIN_ID = 84 // T
 
 export interface INonceSeed {
@@ -65,7 +65,7 @@ export type TPrivateKey<T extends TBinaryIn = TBase58> = { privateKey: T }
 
 export type TKeyPair<T extends TBinaryIn = TBase58> = TPublicKey<T> & TPrivateKey<T>
 
-//TSeed is a union of types that could represent a Waves seed.
+//TSeed is a union of types that could represent a DecentralChain seed.
 export type TSeed = TRawStringIn | INonceSeed
 
 //TRSAKeyPair is X509Encoded RSA key pair
@@ -83,8 +83,8 @@ export type TBLSKeyPair = {
    seamlessly so in case of absence of type union operator
    overloads should be implemented for each possible TSeed type */
 
-/* Waves Crypto is a collection of essential cryptography and hashing
-   algorithms used by Waves, protocol entities and binary structures. */
+/* DecentralChain Crypto is a collection of essential cryptography and hashing
+   algorithms used by DecentralChain, protocol entities and binary structures. */
 
 export interface ISeedRelated<TDesiredOut extends TBinaryOut = TBase58> {
   //Seeds, keys and addresses
@@ -110,7 +110,7 @@ export interface ISeedEmbeded<TDesiredOut extends TBinaryOut = TBase58> {
   signBytes: (bytes: TBinaryIn, random?: TBinaryIn) => TDesiredOut
 }
 
-export interface IWavesCrypto<TDesiredOut extends TBinaryOut = TBase58> {
+export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
 
   //Hashing
   blake2b: (input: TBinaryIn) => TBytes
@@ -152,7 +152,7 @@ export interface IWavesCrypto<TDesiredOut extends TBinaryOut = TBase58> {
   aesEncrypt: (data: TBinaryIn, encryptionKey: TBinaryIn, mode?: AESMode, iv?: TBinaryIn) => TBytes
   aesDecrypt: (encryptedData: TBinaryIn, encryptionKey: TBinaryIn, mode?: AESMode, iv?: TBinaryIn) => TBytes
 
-  //Seed encryption (Same algorithm as in waves client and wavesKeeper).
+  //Seed encryption (Same algorithm as in DecentralChain client and keeper).
   //Uses EvpKDF to derive key and iv from password. Then outputs AES-CBC encrypted seed in OpenSSL format as Base64 string
   encryptSeed: (seed: string, password: string, encryptionRounds?: number) => TBase64
   decryptSeed: (encryptedSeed: TBase64, password: string, encryptionRounds?: number) => string

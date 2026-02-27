@@ -34,13 +34,13 @@ test('address from seed with nonce', () => {
     const n2 = address(seedWithNonce(s, 2))
     const n3 = address(seedWithNonce(s, 3))
 
-    expect(n1).toBe('3PMGVGocJt176sS1i6z3n7Xwot7w8hhqSU7')
-    expect(n2).toBe('3P2BDW7MvwxhekbpStoF3byXtqiJnSByuTa')
-    expect(n3).toBe('3PAXLcTewsV9eZHc8JJBYFmCenEJKZYYKGL')
+    expect(n1).toBe('3JvYrScL9521TsfUkqNPGn9x9xa6krudFFV')
+    expect(n2).toBe('3JbTafv5m8yc1kqHVdBaYGbYEvAUQdHR2RQ')
+    expect(n3).toBe('3JjohnGNn4W41ZX5B2gX2vPCzrgTwmttidB')
 })
 
 test('address', () =>
-    expect(address(s)).toBe('3PKjdoVXMT96VEP8YAZRy4jKKA5GkjovboD')
+    expect(address(s)).toBe('3Ju1zyJFBe9zrEcbatwmTjMKfEXSNuULG9q')
 )
 
 test('verify address', () => {
@@ -75,7 +75,7 @@ test('signature roundtrip', () => {
 })
 
 test('string/bytes roundtrip', () => {
-    const initialString = 'waves'
+    const initialString = 'decentralchain'
     const bytes = stringToBytes(initialString)
     expect(bytesToString(bytes)).toBe(initialString)
 })
@@ -99,10 +99,10 @@ test('base64 roundtrip', () => {
 })
 
 test('base58 to base64', () => {
-    const wavesBytes = stringToBytes('waves')
-    const base58 = base58Encode(wavesBytes)
+    const dccBytes = stringToBytes('decentralchain')
+    const base58 = base58Encode(dccBytes)
     const base64 = base64Encode(base58) //you can use base58 string as an binary input
-    expect(base64Decode(base64)).toEqual(wavesBytes)
+    expect(base64Decode(base64)).toEqual(dccBytes)
 })
 
 test('output equality', () => {
@@ -125,14 +125,14 @@ test('output equality', () => {
 test('generate shared key', () => {
     const a = keyPair(s)
     const b = keyPair(s + s)
-    const sharedKeyA = sharedKey(a.privateKey, b.publicKey, 'waves')
-    const sharedKeyB = sharedKey(b.privateKey, a.publicKey, 'waves')
+    const sharedKeyA = sharedKey(a.privateKey, b.publicKey, 'dcc')
+    const sharedKeyB = sharedKey(b.privateKey, a.publicKey, 'dcc')
     expect(sharedKeyA).toEqual(sharedKeyB)
 })
 
 test('encrypt and decrypt message roundtrip', () => {
-    const originalMessage = 'Waves is awesome! Русский текст! 🦓'
-    const prefix = 'waves'
+    const originalMessage = 'DecentralChain is awesome! Русский текст! 🦓'
+    const prefix = 'dcc'
 
     const a = keyPair(s)
     const b = keyPair(s + s)
