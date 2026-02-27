@@ -1,6 +1,6 @@
-import * as create from './libs/parseJsonBigNumber';
+import create from './libs/parseJsonBigNumber';
 
-const { parse, stringify } = create();
+const { parse } = create();
 import { getTransactionSchema, orderSchemaV1, orderSchemaV2 } from './schemas';
 import { TSchema } from './schemaTypes';
 import { LONG } from './serializePrimitives';
@@ -78,13 +78,6 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
 
   function stringifyValue(value: any): string | undefined {
     if (typeof value === 'string') {
-      // ///TODO: DIRTY HACK
-      // if (value === 'integer'
-      //   && path[0] === 'call'
-      //   && path[1] === 'args'
-      //   && path[3] === 'type'
-      // ) { return `"${value}"` }
-
       if (isLongProp(path, schema, obj)) {
         return value;
       }
@@ -121,8 +114,8 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     stack[stackIndex] = array;
 
     for (let i = 0; i < array.length; i++) {
-      let key = i + '';
-      let item = array[i];
+      const key = i + '';
+      const item = array[i];
 
       if (typeof item !== 'undefined' && typeof item !== 'function') {
         path[stackIndex] = key;
@@ -150,9 +143,9 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     const stackIndex = stack.length;
     stack[stackIndex] = object;
 
-    for (let key in object) {
-      if (object.hasOwnProperty(key)) {
-        let value = object[key];
+    for (const key in object) {
+      if (Object.prototype.hasOwnProperty.call(object, key)) {
+        const value = object[key];
 
         if (includeProperty(value)) {
           if (first) {
