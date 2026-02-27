@@ -1,4 +1,2 @@
-import { BigNumber } from './BigNumber';
-
-export * from './BigNumber';
-export default BigNumber;
+export { BigNumber } from './BigNumber.js';
+export type { IConfig, IFormat } from './Config.js';

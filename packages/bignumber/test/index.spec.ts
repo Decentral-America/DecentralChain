@@ -1,4 +1,4 @@
-import { BigNumber } from '../src';
+import { BigNumber } from '../src/index.js';
 import Long from 'long';
 
 describe('BigNumber', () => {
@@ -399,9 +399,10 @@ describe('BigNumber', () => {
 
       try {
         expect(BigNumber.fromBytes(bytes).toFixed()).toEqual(value);
-      } catch (_e) {
+      } catch (cause) {
         throw new Error(
           `Bytes: ${bytes}, target: ${value}, result ${BigNumber.fromBytes(bytes).toFixed()}`,
+          { cause },
         );
       }
     });
