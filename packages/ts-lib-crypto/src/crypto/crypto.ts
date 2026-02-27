@@ -1,4 +1,4 @@
-import {IWavesCrypto, TBinaryOut, TSeed, ISeedRelated, ISeedEmbeded, TKeyPair} from './interface'
+import {IDCCCrypto, TBinaryOut, TSeed, ISeedRelated, ISeedEmbeded, TKeyPair} from './interface'
 import {randomBytes, randomSeed, random} from './random'
 import {aesEncrypt, aesDecrypt, messageDecrypt, messageEncrypt, sharedKey} from './encryption'
 import {
@@ -28,10 +28,10 @@ type TOutputTypesMap = {
 type TDefaultOut = 'Base58'
 type TOutput = keyof TOutputTypesMap
 type TOptions<T extends TBinaryOut = TDefaultOut, S extends TSeed | undefined = undefined> = { output?: T, seed?: S }
-type TWavesCrypto<T extends TBinaryOut = TDefaultOut, S extends TSeed | undefined = undefined> =
-    IWavesCrypto<T> & (S extends undefined ? ISeedRelated<T> : ISeedEmbeded<T>)
+type TDCCCrypto<T extends TBinaryOut = TDefaultOut, S extends TSeed | undefined = undefined> =
+    IDCCCrypto<T> & (S extends undefined ? ISeedRelated<T> : ISeedEmbeded<T>)
 
-export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | undefined = undefined>(options?: TOptions<TOut, S>): TWavesCrypto<TOutputTypesMap[TOut], S> => {
+export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | undefined = undefined>(options?: TOptions<TOut, S>): TDCCCrypto<TOutputTypesMap[TOut], S> => {
 
     if (options && options.seed == '')
         throw new Error('Empty seed is not allowed.')

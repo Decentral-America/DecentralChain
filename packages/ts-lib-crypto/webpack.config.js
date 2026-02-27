@@ -17,11 +17,8 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist/min'),
-    library: {
-      name: 'WavesCrypto',
-      type: 'umd',
-    },
-    globalObject: 'this',
-    filename: 'waves-lib-crypto.js',
+    library: 'DCCCrypto',
+    libraryTarget: 'umd',
+    filename: 'dcc-lib-crypto.js',
   },
 }
