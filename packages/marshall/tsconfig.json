@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-      "es6",
-      "es7",
-      "es2018"
-    ],
+    "target": "ES2020",
+    "lib": ["ES2020"],
     "sourceMap": true,
     "declaration": true,
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist",
     "strict": true,
-    "downlevelIteration": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "types": ["node", "long", "base64-js"]
   },
-  "include": [
-    "./src/**/*"
-    //"./declarations/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

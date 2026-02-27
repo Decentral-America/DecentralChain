@@ -1,6 +1,6 @@
 import { BYTE, LEN, SHORT, STRING, TSerializer } from './serializePrimitives';
 import { concat } from './libs/utils';
-import { orderSchemaV1, orderSchemaV2, getTransactionSchema, orderVersionMap } from './schemas';
+import { getTransactionSchema, orderVersionMap } from './schemas';
 import { TSchema } from './schemaTypes';
 
 export type TFromLongConverter<LONG> = (v: LONG) => string;
@@ -10,15 +10,12 @@ export type TFromLongConverter<LONG> = (v: LONG) => string;
  * @param schema
  * @param fromLongConverter
  */
-// FixMe: currently fromLongConverter does nothing. Maybe we should remove it altogether
 export const serializerFromSchema =
   <LONG = string | number>(
     schema: TSchema,
     fromLongConverter?: TFromLongConverter<LONG>,
   ): TSerializer<any> =>
   (obj: any) => {
-    //let result = Uint8Array.from([]);
-
     let serializer: TSerializer<any>, itemBytes: Uint8Array;
 
     if (schema.type === 'array') {
@@ -26,10 +23,10 @@ export const serializerFromSchema =
       itemBytes = concat(...obj.map((item: any) => serializer(item)));
       return concat((schema.toBytes || SHORT)(obj.length), itemBytes);
     } else if (schema.type === 'object') {
-      let objBytes = Uint8Array.from([]);
+      let objBytes: Uint8Array = new Uint8Array(0);
 
       if (schema.optional && obj == null) {
-        return Uint8Array.from([0]);
+        return new Uint8Array([0]);
       }
 
       schema.schema.forEach((field) => {
@@ -64,11 +61,10 @@ export const serializerFromSchema =
         throw new Error(`Serializer Error: Unknown anyOf type: ${type}`);
       }
 
-      // FIXME: HACK for boolean argument type.
-      // We cannot distinguish schema for 'true' from schema for 'false' when getting item by key since they both have 'boolean' string key
+      // Boolean argument type: both 'true' and 'false' share the 'boolean' string key,
+      // so we disambiguate by checking the actual value
       if (anyOfItem.strKey === 'boolean' && anyOfItem.key === 6 && obj.value === false)
         anyOfItem.key = 7;
-      // HACK END
 
       serializer = serializerFromSchema(anyOfItem.schema, fromLongConverter);
 

@@ -1,18 +1,18 @@
 import base58 from './libs/base58';
 import * as Base64 from 'base64-js';
 import { concat } from './libs/utils';
-import * as Long from 'long';
+import Long from 'long';
 
-const stringToUint8Array = (str: string) =>
-  Uint8Array.from([...unescape(encodeURIComponent(str))].map((c) => c.charCodeAt(0)));
+const textEncoder = new TextEncoder();
+const stringToUint8Array = (str: string) => textEncoder.encode(str);
 
 type Option<T> = T | null | undefined;
 
 export type TSerializer<T> = (value: T) => Uint8Array;
 
-export const empty: Uint8Array = Uint8Array.from([]);
-export const zero: Uint8Array = Uint8Array.from([0]);
-export const one: Uint8Array = Uint8Array.from([1]);
+export const empty: Uint8Array = new Uint8Array(0);
+export const zero: Uint8Array = new Uint8Array([0]);
+export const one: Uint8Array = new Uint8Array([1]);
 
 export const BASE58_STRING: TSerializer<string> = (value: string) => base58.decode(value);
 
@@ -24,7 +24,7 @@ export const STRING: TSerializer<Option<string>> = (value: Option<string>) =>
 
 export const BYTE: TSerializer<number> = (value: number) => Uint8Array.from([value]);
 
-export const BOOL: TSerializer<boolean> = (value: boolean) => BYTE(value == true ? 1 : 0);
+export const BOOL: TSerializer<boolean> = (value: boolean) => BYTE(value ? 1 : 0);
 
 export const BYTES: TSerializer<Uint8Array | number[]> = (value: Uint8Array | number[]) =>
   Uint8Array.from(value);
@@ -42,7 +42,7 @@ export const INT: TSerializer<number> = (value: number) => {
 export const OPTION =
   <T, R = T | null | undefined>(s: TSerializer<T>): TSerializer<R> =>
   (value: R) =>
-    value == null || (typeof value == 'string' && value.length == 0)
+    value == null || (typeof value === 'string' && value.length === 0)
       ? zero
       : concat(one, s(value as any));
 
@@ -83,7 +83,7 @@ export const SCRIPT: TSerializer<string | null> = (script) =>
   OPTION(LEN(SHORT)(BASE64_STRING))(script ? script.slice(7) : null);
 
 export const ALIAS: TSerializer<string> = (val) => {
-  const [_, byte, alias] = val.split(':');
+  const [, byte, alias] = val.split(':');
   if (!byte || byte.length !== 1) throw new Error('Invalid network byte in alias');
   if (!alias || alias.length === 0) throw new Error('Invalid alias body');
   return concat([2], [byte.charCodeAt(0)], LEN(SHORT)(STRING)(alias));

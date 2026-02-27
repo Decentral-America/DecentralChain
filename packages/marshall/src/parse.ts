@@ -61,8 +61,7 @@ export const parserFromSchema =
     } else if (schema.type === 'anyOf') {
       const typeInfo = (schema.fromBytes || P_BYTE)(bytes, cursor + schema.discriminatorBytePos);
 
-      // Не увеличивать курсор, если объект пишется целиком с дискриминатором или дискриминатор не на 0 позиции.
-      // Стоит убрать запись и чтение дискриминаторов из anyOf и вынес
+      // Do not advance cursor if the object is serialized with the discriminator or discriminator is not at position 0
       if (schema.valueField && schema.discriminatorBytePos === 0) {
         cursor += typeInfo.shift;
       }
@@ -85,15 +84,14 @@ export const parserFromSchema =
     } else if (schema.type === 'dataTxField') {
       const key = byteToStringWithLength(bytes, cursor);
       cursor += key.shift;
-      let dataType = P_BYTE(bytes, cursor);
+      const dataType = P_BYTE(bytes, cursor);
       cursor += dataType.shift;
       const itemRecord = [...schema.items].find((_, i) => i === dataType.value);
       if (!itemRecord) {
         throw new Error(`Parser Error: Unknown dataTxField type: ${dataType.value}`);
       }
-      const parser = parserFromSchema(itemRecord![1], toLongConverter);
+      const parser = parserFromSchema(itemRecord[1], toLongConverter);
       const result = parser(bytes, cursor);
-      //cursor += result.shift;
       return {
         value: {
           value: result.value,
@@ -104,7 +102,8 @@ export const parserFromSchema =
       };
     } else if (schema.type === 'primitive' || schema.type === undefined) {
       const parser = schema.fromBytes;
-      let { value, shift } = parser(bytes, start);
+      const { value: rawValue, shift } = parser(bytes, start);
+      let value = rawValue;
 
       //Capture LONG Parser and convert strings desired instance if longFactory is present
       if (parser === P_LONG && toLongConverter) {
@@ -126,7 +125,7 @@ export const parseHeader = (bytes: Uint8Array): { type: number; version: number 
     typeInfo = P_BYTE(bytes, shift);
     shift += typeInfo.shift;
   }
-  let versionInfo = P_BYTE(bytes, shift);
+  const versionInfo = P_BYTE(bytes, shift);
 
   return {
     type: typeInfo.value,
