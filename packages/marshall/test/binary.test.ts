@@ -1,6 +1,6 @@
 import { binary } from '../src';
 import { exampleBytesStr, exampleTxs, orderV0, orderV2 } from './exampleTxs';
-import Long = require('long');
+import Long from 'long';
 import BigNumber from 'bignumber.js';
 import { parserFromSchema } from '../src/parse';
 import { orderSchemaV1 } from '../src/schemas';

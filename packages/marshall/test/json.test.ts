@@ -1,5 +1,5 @@
 import { json } from '../src/';
-import Long = require('long');
+import Long from 'long';
 import { exampleOrders, exampleTxs } from './exampleTxs';
 
 describe('Basic serialization', () => {
@@ -11,7 +11,6 @@ describe('Basic serialization', () => {
   it('Should not break numbers', () => {
     const parsed = json.parseTx(txJson);
     expect(typeof parsed.data[3].value).toBe('string');
-    console.log();
   });
 
   it('Should convertLongFields numbers using factory', () => {
