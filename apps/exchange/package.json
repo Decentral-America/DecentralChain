@@ -28,7 +28,6 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
-    "@ledgerhq/hw-transport-node-hid": "^6.29.14",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "@sentry/react": "^10.20.0",
