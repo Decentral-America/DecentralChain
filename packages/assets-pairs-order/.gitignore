@@ -1,7 +1,4 @@
-.idea/
-dist/
 node_modules/
-index.umd.js
-.idea
-
+dist/
+.idea/
 *.sandbox.js

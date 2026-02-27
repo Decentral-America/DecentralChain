@@ -1,23 +1,52 @@
 {
   "name": "@decentralchain/assets-pairs-order",
-  "version": "4.0.0",
+  "version": "5.0.0",
+  "description": "Utility for determining the correct ordering of asset pairs on the DecentralChain DEX",
+  "type": "module",
   "main": "src/index.js",
   "types": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
   "license": "MIT",
+  "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Decentral-America/assets-pairs-order"
+    "url": "git+https://github.com/Decentral-America/assets-pairs-order.git"
   },
+  "homepage": "https://github.com/Decentral-America/assets-pairs-order#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/assets-pairs-order/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "dex",
+    "assets",
+    "pairs",
+    "order",
+    "trading"
+  ],
   "scripts": {
     "build:browser": "rollup -c rollup.config.js",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "format": "prettier --write \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "bulletproof": "npm run format && npm run lint:fix && npm run test",
     "bulletproof:check": "npm run format:check && npm run lint && npm run test",
-    "prepublish": "npm run build:browser",
+    "prepublishOnly": "npm run bulletproof:check && npm run build:browser",
     "prepare": "husky"
   },
   "lint-staged": {
