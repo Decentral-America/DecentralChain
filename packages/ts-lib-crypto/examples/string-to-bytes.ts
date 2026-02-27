@@ -1,3 +1,3 @@
-import { stringToBytes } from '@waves/ts-lib-crypto'
+import { stringToBytes } from '@decentralchain/ts-lib-crypto'
 
-stringToBytes('Waves!') // Uint8Array [ 87, 97, 118, 101, 115, 33 ]
+stringToBytes('DCC!') // Uint8Array [ 68, 67, 67, 33 ]
