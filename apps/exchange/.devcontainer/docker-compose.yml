@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
+    command: sleep infinity
+    environment:
+      - NODE_ENV=development
+      - VITE_HOST=0.0.0.0
+    # NO `ports` section needed — VS Code DevContainers handle port forwarding
+    # natively via `forwardPorts` in devcontainer.json. Docker port publishing
+    # is unnecessary and can cause "port already in use" conflicts on the host.
+
+volumes:
+  node_modules:
