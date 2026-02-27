@@ -6,7 +6,7 @@ export const issueTx = {
   fee: 100000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421434,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   proofs:
     ['TVMCuJAb52AqLZnJHsZoWhjmULk27hzbzy7n3LsrwivdsCQ6gQpn8TtVwYuYhAZVcCLkbm4yznGCgrV96spafcp'],
   id: '3TZ1AWMeVskdy96rNo9AiyegimGyDyXr55MbDTQX4ZXM',
@@ -33,7 +33,7 @@ export const transferTx = {
 export const reissueTx = {
   type: 5,
   version: 2,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   fee: 100000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421477,
@@ -48,7 +48,7 @@ export const reissueTx = {
 export const burnTx = {
   type: 6,
   version: 2,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   fee: 100000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421523,
@@ -176,7 +176,7 @@ export const cancelLeaseTx = {
   fee: 100000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421556,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   proofs:
     ['5yytwFhmSJhPoRViBKt8AjYkBLxHYxgrs9mSPs3khT4iFLzqbkyyAYu7qbPsJ4iut8BKFFADX2J6hfVwxNFkHTjo'],
   id: '656pBWMAPfVMu1gbSZ5dd5WTRQzWNo2phfJsD2rDBKfh',
@@ -240,7 +240,7 @@ export const setScriptTx = {
   fee: 1000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421635,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   proofs:
     ['35x1Rphm1mr24ELJgpLP6dK3wMW7cG6nWsFUcMF3RvxKr3UjEuo4NfYnQf6MEanD7bxBdKDuYxbBJZYQQ495ax3w'],
   id: 'J8SBGZzSLybdsgpFjDNxVwB8mixkZoEJkgHya3EiXXPc',
@@ -266,7 +266,7 @@ export const setAssetScriptTx = {
   fee: 1000000,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
   timestamp: 1542539421652,
-  chainId: 87,
+  chainId: 76, // DecentralChain mainnet 'L'
   proofs:
     ['4ffQFcfv9NG8GtNB5c1yamFvEFoixvgYBHPmfwSAkZeVRiCwZvB2HWWiMcbiujGhWGxXnho37bWqELnQ6DBPCaj4'],
   id: '4ERUXALAziaWJ1Acsmpnfjgtv1ixHSWXRp5dBR837o4e',

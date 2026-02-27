@@ -5,8 +5,8 @@ module.exports = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist/min'),
-        filename: 'waves-marshall.min.js',
-        library: 'WavesMarshall',
+        filename: 'dcc-marshall.min.js',
+        library: 'DCCMarshall',
         //libraryTarget: 'commonjs'
     },
     plugins: [],

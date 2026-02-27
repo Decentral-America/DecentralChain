@@ -9,6 +9,11 @@ module.exports = {
     "text",
     "lcov"
   ],
+  globals: {
+    'ts-jest': {
+      diagnostics: false
+    }
+  },
   transform: {
     "^.+\\.tsx?$": "ts-jest"
   },

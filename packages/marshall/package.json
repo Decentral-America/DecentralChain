@@ -1,9 +1,9 @@
 {
   "version": "0.14.0",
-  "name": "@waves/marshall",
+  "name": "@decentralchain/marshall",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/wavesplatform/marshall",
+  "repository": "https://github.com/Decentral-America/marshall",
   "scripts": {
     "test": "jest",
     "build": "tsc && webpack --config webpack.config.js --env",
@@ -13,7 +13,7 @@
     "/src",
     "/dist"
   ],
-  "author": "Wavesplatform",
+  "author": "DCC",
   "contributors": [
     {
       "name": "Sergey B",
@@ -38,7 +38,6 @@
   "dependencies": {
     "@types/base64-js": "^1.2.5",
     "@types/long": "^4.0.0",
-    "@waves/parse-json-bignumber": "^1.0.1",
     "base64-js": "^1.3.0",
     "long": "^4.0.0"
   }

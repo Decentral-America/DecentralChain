@@ -11,7 +11,9 @@
     "module": "commonjs",
     "outDir": "dist",
     "strict": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "types": ["node", "long", "base64-js"]
   },
   "include": [
     "./src/**/*"

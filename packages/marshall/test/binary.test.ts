@@ -58,8 +58,8 @@ describe('Tx serialize/parse', ()=> {
     expect(parsed.timestamp).toBeInstanceOf(BigNumber)
   })
 
-  it('Should accept WAVES as assetId', ()=>{
-    const tx = {...exampleTxs[4], assetId: 'WAVES', feeAssetId: 'WAVES'}
+  it('Should accept DCC as assetId', ()=>{
+    const tx = {...exampleTxs[4], assetId: 'DCC', feeAssetId: 'DCC'}
     const bytes = binary.serializeTx(tx)
     const parsed = binary.parseTx(bytes, parseInt)
     // delete non serializable fields. Should write typesafe excludeKeys function instead
