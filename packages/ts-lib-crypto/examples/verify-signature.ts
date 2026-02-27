@@ -1,4 +1,4 @@
-import { signBytes, verifySignature, keyPair } from '@waves/ts-lib-crypto'
+import { signBytes, verifySignature, keyPair } from '@decentralchain/ts-lib-crypto'
 
 //Signature roundtrip
 const bytes = [117, 110, 99, 108, 101]

@@ -1,4 +1,4 @@
-import { crypto } from '@waves/ts-lib-crypto'
+import { crypto } from '@decentralchain/ts-lib-crypto'
 
 const { randomSeed } = crypto()
 const seed = randomSeed() //figure soap board earth measure stay can nature will figure clown cross save mention liberty
@@ -7,7 +7,7 @@ const seed = randomSeed() //figure soap board earth measure stay can nature will
 
   const { address, publicKey, privateKey, keyPair } = crypto()
 
-  //Functions for creating Waves primitives like addresses and keys
+  //Functions for creating DecentralChain primitives like addresses and keys
 
   address(seed) // 3PAP3wkgbGjdd1FuBLn9ajXvo6edBMCa115
 

@@ -1,4 +1,4 @@
-import { split, randomBytes } from '@waves/ts-lib-crypto'
+import { split, randomBytes } from '@decentralchain/ts-lib-crypto'
 
 const bytes = randomBytes(2 + 3 + 4 + 10)
 split(bytes, 2, 3, 4)

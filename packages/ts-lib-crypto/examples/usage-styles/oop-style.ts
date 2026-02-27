@@ -1,4 +1,4 @@
-import { crypto, randomSeed } from '@waves/ts-lib-crypto'
+import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto'
 
 const seed = randomSeed()
 

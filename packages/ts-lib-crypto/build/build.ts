@@ -22,8 +22,8 @@ async function build() {
     await run('tsc', p('tmp'))
     //await copy(p('../usage'), p('tmp/usage'))
     //await run('tsc', p('tmp'))
-    //await copy(p('tmp/dist'), p('tmp/node_modules/waves-transactions'))
-    //await copy(p('package.json'), p('tmp/node_modules/waves-transactions/package.json'))
+    //await copy(p('tmp/dist'), p('tmp/node_modules/dcc-transactions'))
+    //await copy(p('package.json'), p('tmp/node_modules/dcc-transactions/package.json'))
     //await remove(p('tmp/dist'))
     //await run('ts-node usage/index.ts', p('tmp'))
     //await run('typedoc', p('tmp'))
@@ -39,7 +39,7 @@ async function build() {
     }));
     await remove(p('tmp'))
 
-    // const ver = await npmGetVersion('@waves/ts-lib-crypto')
+    // const ver = await npmGetVersion('@decentralchain/ts-lib-crypto')
     // ver.patch++
     await copy(p('../README.md'), p('../dist/README.md'))
     await copyJson(p('../package.json'), p('../dist/package.json'), {

@@ -14,7 +14,7 @@ const {
 const s = 'seed'
 
 test('encrypt and decrypt aes roundtrip', () => {
-    const prefix = 'waves'
+    const prefix = 'dcc'
     const a = keyPair(s)
     const b = keyPair(s + s)
     const sk = sharedKey(a.privateKey, b.publicKey, prefix)

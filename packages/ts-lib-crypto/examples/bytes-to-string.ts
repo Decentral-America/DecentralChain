@@ -1,3 +1,3 @@
-import { bytesToString } from '@waves/ts-lib-crypto'
+import { bytesToString } from '@decentralchain/ts-lib-crypto'
 
-bytesToString([ 87, 97, 118, 101, 115, 33 ]) // Waves!
+bytesToString([ 68, 67, 67, 33 ]) // DCC!

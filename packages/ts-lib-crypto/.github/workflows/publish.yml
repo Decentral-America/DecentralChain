@@ -41,4 +41,4 @@ jobs:
           npm run build
           cd dist
           npm publish --provenance --access public --tag $TAG
-          echo "url=https://www.npmjs.com/package/@waves/ts-lib-crypto/v/$(jq --raw-output .version package.json)" >> "$GITHUB_OUTPUT"
+          echo "url=https://www.npmjs.com/package/@decentralchain/ts-lib-crypto/v/$(jq --raw-output .version package.json)" >> "$GITHUB_OUTPUT"
