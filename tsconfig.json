@@ -1,30 +1,37 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    /* Language & Environment */
+    "target": "ES2024",
+    "lib": ["ES2024"],
+
+    /* Modules */
     "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+
+    /* Emit */
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
+
+    /* Type Checking — maximum strictness */
     "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "preserveConstEnums": true,
-    "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "lib": [
-      "ES2020"
-    ]
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test"
-  ],
-  "include": [
-    "src/**/*.ts"
-  ]
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.ts"]
 }
