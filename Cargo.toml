@@ -1,5 +1,5 @@
 [package]
-name = "waves-protobuf-schemas"
+name = "decentralchain-protobuf-schemas"
 version = "1.5.2"
 edition = "2021"
 

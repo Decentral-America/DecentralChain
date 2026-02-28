@@ -1,7 +1,7 @@
 {
-  "name": "@waves/protobuf-serialization",
+  "name": "@decentralchain/protobuf-serialization",
   "version": "1.4.3",
-  "description": "Generated types and methods for encoding and decoding protobuf messages as well as working with gRPC services.",
+  "description": "Generated types and methods for encoding and decoding protobuf messages for DecentralChain blockchain transactions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,14 +15,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wavesplatform/protobuf-schemas.git"
+    "url": "git+https://github.com/Decentral-America/protobuf-serialization.git"
   },
-  "author": "Dmitry Shuranov <dvshur@gmail.com>",
+  "author": "DecentralChain",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wavesplatform/protobuf-schemas/issues"
+    "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
   },
-  "homepage": "https://github.com/wavesplatform/protobuf-schemas#readme",
+  "homepage": "https://github.com/Decentral-America/protobuf-serialization#readme",
   "dependencies": {
     "@types/long": "^4.0.0",
     "protobufjs": "^6.8.8"
