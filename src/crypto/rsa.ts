@@ -1,6 +1,6 @@
 import * as forge from 'node-forge';
 import { type RSADigestAlgorithm, type TBytes, type TRSAKeyPair } from './interface';
-import { base64Decode, base64Encode } from '../conversions/base-xx';
+import { base64Decode } from '../conversions/base-xx';
 import * as sha3 from 'js-sha3';
 import { sha224 } from 'js-sha256';
 
@@ -14,29 +14,6 @@ export const pemToBytes = (pem: string) =>
       .join('')
       .trim(),
   );
-
-const pemTypeMap = {
-  rsaPrivateNonEncrypted: 'RSA PRIVATE KEY',
-  rsaPublic: 'PUBLIC KEY',
-};
-/** Convert raw key bytes to PEM format. */
-export const bytesToPem = (bytes: Uint8Array, type: keyof typeof pemTypeMap) => {
-  const header = `-----BEGIN ${pemTypeMap[type]}-----\n`;
-  const footer = `-----END ${pemTypeMap[type]}-----\n`;
-
-  let b64characters = base64Encode(bytes);
-  if (b64characters.length % 64 !== 0) {
-    b64characters += ' '.repeat(64 - (b64characters.length % 64));
-  }
-
-  let result = header;
-  for (let i = 0; i < b64characters.length / 64; i++) {
-    result += b64characters.slice(i * 64, (i + 1) * 64) + '\n';
-  }
-  result += footer;
-
-  return result;
-};
 
 /** Generate an RSA key pair synchronously. */
 export const rsaKeyPairSync = (bits?: number, e?: number): TRSAKeyPair => {
