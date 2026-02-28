@@ -13,24 +13,15 @@
       "import": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
       }
     },
     "./bytes": {
       "import": {
         "types": "./dist/bytes.d.ts",
         "default": "./dist/bytes.mjs"
-      },
-      "require": {
-        "types": "./dist/bytes.d.cts",
-        "default": "./dist/bytes.cjs"
       }
     }
   },
-  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
@@ -69,7 +60,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:publint": "publint",
-    "check:exports": "attw --pack . --profile node16",
+    "check:exports": "attw --pack . --profile esm-only",
     "check:size": "size-limit",
     "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
