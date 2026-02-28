@@ -1,5 +1,5 @@
-import { Asset, Candle, AssetPair } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
+import { Asset, Candle, AssetPair } from '@decentralchain/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
 
 export enum ApiTypes {
   List = 'list',
