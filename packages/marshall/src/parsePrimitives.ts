@@ -20,19 +20,19 @@ export const P_OPTION =
     return { value: result.value, shift: result.shift + 1 };
   };
 
-export const P_BYTE: TParser<number> = (bytes, start = 0) => ({ value: bytes[start], shift: 1 });
+export const P_BYTE: TParser<number> = (bytes, start = 0) => ({ value: bytes[start]!, shift: 1 });
 
 export const P_SHORT: TParser<number> = (bytes, start = 0) => ({
-  value: 256 * bytes[start] + bytes[start + 1],
+  value: 256 * bytes[start]! + bytes[start + 1]!,
   shift: 2,
 });
 
 export const P_INT: TParser<number> = (bytes, start = 0) => ({
   value:
-    2 ** 24 * bytes[start] +
-    2 ** 16 * bytes[start + 1] +
-    2 ** 8 * bytes[start + 2] +
-    bytes[start + 3],
+    2 ** 24 * bytes[start]! +
+    2 ** 16 * bytes[start + 1]! +
+    2 ** 8 * bytes[start + 2]! +
+    bytes[start + 3]!,
   shift: 4,
 });
 
@@ -105,7 +105,7 @@ export const byteToAddressOrAlias = (bytes: Uint8Array, start: number = 0) => {
     const aliasData = byteToStringWithLength(bytes, start + 2);
     return {
       shift: aliasData.shift + 2,
-      value: `alias:${String.fromCharCode(bytes[start + 1])}:${aliasData.value}`,
+      value: `alias:${String.fromCharCode(bytes[start + 1]!)}:${aliasData.value}`,
     };
   } else {
     return byteToBase58(bytes, start, 26);

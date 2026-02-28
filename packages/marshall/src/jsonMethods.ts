@@ -2,17 +2,17 @@ import create from './libs/parseJsonBigNumber';
 
 const { parse } = create();
 import { getTransactionSchema, orderSchemaV1, orderSchemaV2 } from './schemas';
-import { TSchema } from './schemaTypes';
+import { type TSchema } from './schemaTypes';
 import { LONG } from './serializePrimitives';
 import { convertLongFields, convertTxLongFields } from './index';
-import { TToLongConverter } from './parse';
-import { TFromLongConverter } from './serialize';
+import { type TToLongConverter } from './parse';
+import { type TFromLongConverter } from './serialize';
 
 function resolvePath(path: string[], obj: any): any {
   if (path.length === 0) return obj;
   if (typeof obj !== 'object') return undefined;
 
-  return resolvePath(path.slice(1), obj[path[0]]);
+  return resolvePath(path.slice(1), obj[path[0]!]);
 }
 
 const isLongProp = (
@@ -28,7 +28,7 @@ const isLongProp = (
 
     if (schema.type === 'object') {
       const field = schema.schema.find(([name, _]) => name === path[0]);
-      return go(path.slice(1), field && field[1]);
+      return go(path.slice(1), field?.[1]);
     }
 
     if (schema.type === 'array') {

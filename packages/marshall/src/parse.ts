@@ -1,7 +1,7 @@
-import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, TParser } from './parsePrimitives';
+import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, type TParser } from './parsePrimitives';
 import { range } from './libs/utils';
 import { getTransactionSchema, orderSchemaV2 } from './schemas';
-import { TSchema } from './schemaTypes';
+import { type TSchema } from './schemaTypes';
 
 export type TToLongConverter<LONG> = (val: string) => LONG;
 
@@ -111,10 +111,17 @@ export const parserFromSchema =
       }
       return { value, shift: shift };
     } else {
-      throw new Error(`Parser Error: Unknown schema type: ${schema!.type}`);
+      throw new Error(`Parser Error: Unknown schema type: ${schema.type}`);
     }
   };
 
+/**
+ * Parses the type and version header from serialized transaction bytes.
+ * Handles the leading zero byte present in ExchangeTransactionV2.
+ *
+ * @param bytes - Raw transaction bytes
+ * @returns Object with `type` and `version` fields
+ */
 export const parseHeader = (bytes: Uint8Array): { type: number; version: number } => {
   let shift = 0;
   let typeInfo = P_BYTE(bytes, shift);
@@ -134,7 +141,20 @@ export const parseHeader = (bytes: Uint8Array): { type: number; version: number 
 };
 
 /**
- * This function cannot parse transactions without version
+ * Parses a serialized DecentralChain transaction from binary bytes.
+ * Automatically resolves the schema from the type/version header.
+ *
+ * **Note:** Cannot parse transactions without a version byte.
+ *
+ * @param bytes - Raw transaction bytes
+ * @param toLongConverter - Optional converter for LONG string values to a custom type
+ * @returns The parsed transaction object
+ *
+ * @example
+ * ```typescript
+ * const tx = parseTx(bytes);
+ * const txWithLong = parseTx(bytes, Long.fromString);
+ * ```
  */
 export function parseTx<LONG = string>(
   bytes: Uint8Array,
@@ -147,7 +167,13 @@ export function parseTx<LONG = string>(
 }
 
 /**
- * This function cannot parse OrderV1, which doesn't have version field
+ * Parses a serialized DEX order (v2+) from binary bytes.
+ *
+ * **Note:** Cannot parse OrderV1, which lacks a version field.
+ *
+ * @param bytes - Raw order bytes
+ * @param toLongConverter - Optional converter for LONG string values to a custom type
+ * @returns The parsed order object
  */
 export function parseOrder<LONG = string>(
   bytes: Uint8Array,

@@ -95,7 +95,7 @@ const create = function (options?: Options) {
 
     num = +string;
 
-    if (options && options.parse) {
+    if (options?.parse) {
       return options.parse(string);
     }
 
@@ -221,7 +221,7 @@ const create = function (options?: Options) {
         key = string();
         white();
         next(':');
-        if (_options.strict === true && Object.hasOwnProperty.call(obj, key)) {
+        if (_options.strict && Object.hasOwnProperty.call(obj, key)) {
           error('Duplicate key "' + key + '"');
         }
         obj[key] = value();
@@ -295,7 +295,7 @@ const create = function (options?: Options) {
     let partial: string[];
     let val = holder[key];
 
-    const isBigNumber = options && options.isInstance && options.isInstance(val);
+    const isBigNumber = options?.isInstance?.(val);
 
     // Check for NaN and Infinity
     if (isBigNumber && !val.isFinite()) {
@@ -304,7 +304,7 @@ const create = function (options?: Options) {
 
     // If the value has a toJSON method, call it to obtain a replacement value.
     if (isBigNumber) {
-      val = options!.stringify!(val);
+      val = options.stringify!(val);
     } else if (val && typeof val === 'object' && typeof val.toJSON === 'function') {
       val = val.toJSON(key);
     }
