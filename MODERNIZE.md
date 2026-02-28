@@ -177,24 +177,24 @@ The final package MUST:
 
 These are final. Do not deviate.
 
-| Decision           | Choice                         | Rationale                                         |
-| ------------------ | ------------------------------ | ------------------------------------------------- |
-| Module system      | ESM-only (`"type": "module"`)  | Industry standard 2026+; no CJS unless legacy req |
-| Package manager    | npm (latest)                   | Universal, no extra tooling                       |
-| Test runner        | Vitest                         | Fast, ESM-native, Jest-compatible API             |
-| Coverage           | `@vitest/coverage-v8`          | V8-native, fast, threshold enforcement            |
-| Linter             | ESLint (flat config)           | `eslint.config.mjs` with `@eslint/js`             |
-| TS ESLint          | `typescript-eslint` (strict)   | Type-aware rules for TS projects                  |
-| Formatter          | Prettier                       | Via `eslint-config-prettier` to avoid conflicts   |
-| Git hooks          | Husky v9+                      | `prepare` script auto-installs                    |
-| Staged linting     | lint-staged                    | Runs Prettier + ESLint on staged files only       |
-| Package validation | publint + attw                 | Ensures correct exports for all consumers         |
-| Bundle size        | size-limit                     | Enforced budget per entry point                   |
-| CI                 | GitHub Actions                 | Matrix across Node versions                       |
-| Dependency updates | Dependabot                     | Weekly, grouped by dev/prod                       |
-| Changelog          | Keep a Changelog format        | Manual or Changesets                              |
-| Build (TypeScript) | tsup                           | ESM-only (default); CJS only if legacy required   |
-| Build (JavaScript) | Rollup                         | IIFE browser bundle only; source IS the ESM entry |
+| Decision           | Choice                        | Rationale                                         |
+| ------------------ | ----------------------------- | ------------------------------------------------- |
+| Module system      | ESM-only (`"type": "module"`) | Industry standard 2026+; no CJS unless legacy req |
+| Package manager    | npm (latest)                  | Universal, no extra tooling                       |
+| Test runner        | Vitest                        | Fast, ESM-native, Jest-compatible API             |
+| Coverage           | `@vitest/coverage-v8`         | V8-native, fast, threshold enforcement            |
+| Linter             | ESLint (flat config)          | `eslint.config.mjs` with `@eslint/js`             |
+| TS ESLint          | `typescript-eslint` (strict)  | Type-aware rules for TS projects                  |
+| Formatter          | Prettier                      | Via `eslint-config-prettier` to avoid conflicts   |
+| Git hooks          | Husky v9+                     | `prepare` script auto-installs                    |
+| Staged linting     | lint-staged                   | Runs Prettier + ESLint on staged files only       |
+| Package validation | publint + attw                | Ensures correct exports for all consumers         |
+| Bundle size        | size-limit                    | Enforced budget per entry point                   |
+| CI                 | GitHub Actions                | Matrix across Node versions                       |
+| Dependency updates | Dependabot                    | Weekly, grouped by dev/prod                       |
+| Changelog          | Keep a Changelog format       | Manual or Changesets                              |
+| Build (TypeScript) | tsup                          | ESM-only (default); CJS only if legacy required   |
+| Build (JavaScript) | Rollup                        | IIFE browser bundle only; source IS the ESM entry |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
