@@ -24,12 +24,20 @@
     "url": "https://github.com/Decentral-America/browser-bus/issues"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/jest": "^24.0.4",
     "browserify": "^16.2.3",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "husky": "^9.1.7",
     "jest": "^24.1.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "ts-jest": "^23.10.5",
     "ts-utils": "^6.0.7",
     "typescript": "~4.9",
+    "typescript-eslint": "^8.56.1",
     "uglify-js": "^3.19.3"
   },
   "files": [
@@ -55,13 +63,24 @@
   },
   "scripts": {
     "patch": "npm version patch && npm publish && git push",
-    "prepare": "npm run build",
+    "prepare": "husky",
     "preversion": "npm run test",
     "postversion": "npm publish",
     "postpublish": "git push",
     "build": "tsc --build ./ && npm run _build-full",
     "test": "jest",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck",
     "_build-full": "browserify ./dist/index.js -s bus -o ./dist/browser-bus.js && uglifyjs ./dist/browser-bus.js -o ./dist/browser-bus.min.js"
+  },
+  "lint-staged": {
+    "*.ts": ["prettier --write", "eslint --fix"],
+    "*.json": ["prettier --write"]
   },
   "dependencies": {
     "@types/node": "^11.9.4",
