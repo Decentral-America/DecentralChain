@@ -1,16 +1,16 @@
 /**
  * @module index
  */
-import * as wavesProto from '@waves/protobuf-serialization'
+import * as dccProto from '@decentralchain/protobuf-serialization'
 import {binary, serializePrimitives} from '@decentralchain/marshall'
-import {base58Encode, blake2b, concat, signBytes} from '@waves/ts-lib-crypto'
+import {base58Encode, blake2b, concat, signBytes} from '@decentralchain/ts-lib-crypto'
 import {IDataParams, WithId, WithProofs, WithSender} from '../transactions'
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 import {TSeedTypes} from '../types'
 import {validate} from '../validators'
 import {dataEntryToProto, txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
-import {DataFiledType, DataTransaction, DataTransactionEntry, TRANSACTION_TYPE} from '@waves/ts-types'
+import {DataFiledType, DataTransaction, DataTransactionEntry, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 const {
     BASE58_STRING,
@@ -94,7 +94,7 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
         computedFee = (Math.floor(1 + (bytes.length - 1) / 1024) * 100000)
     } else {
         let protoEntries = dataEntriesWithTypes.map(dataEntryToProto)
-        let dataBytes = wavesProto.waves.DataTransactionData.encode({data: protoEntries}).finish()
+        let dataBytes = dccProto.waves.DataTransactionData.encode({data: protoEntries}).finish()
         computedFee = (Math.ceil(dataBytes.length / 1024) * 100000)
     }
 
@@ -106,7 +106,7 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
         fee: fee(paramsOrTx, computedFee),
         timestamp: _timestamp,
         proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, 87),
+        chainId: networkByte(paramsOrTx.chainId, 76),
         id: '',
         data: dataEntriesWithTypes,
     }

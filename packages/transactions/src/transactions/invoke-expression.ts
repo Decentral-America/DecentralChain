@@ -2,7 +2,7 @@
 //  * @module index
 //  */
 // import {IInvokeExpressionParams, WithId, WithProofs, WithSender} from '../transactions'
-// import {base58Encode, blake2b, signBytes,} from '@waves/ts-lib-crypto'
+// import {base58Encode, blake2b, signBytes,} from '@decentralchain/ts-lib-crypto'
 // import {
 //     addProof,
 //     base64Prefix,
@@ -16,7 +16,7 @@
 // import {validate} from '../validators'
 // import {txToProtoBytes} from '../proto-serialize'
 // import {DEFAULT_VERSIONS} from '../defaultVersions'
-// import {InvokeExpressionTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+// import {InvokeExpressionTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 //
 // /* @echo DOCS */
 // export function invokeExpression(params: IInvokeExpressionParams, seed: TSeedTypes): InvokeExpressionTransaction & WithId & WithProofs
@@ -35,7 +35,7 @@
 //         fee: fee(paramsOrTx, 1000000),
 //         feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
 //         timestamp: paramsOrTx.timestamp || Date.now(),
-//         chainId: networkByte(paramsOrTx.chainId, 87),
+//         chainId: networkByte(paramsOrTx.chainId, 76),
 //         proofs: paramsOrTx.proofs || [],
 //         id: '',
 //     }

@@ -3,9 +3,13 @@
  */
 import {ICancelLeaseParams, WithId, WithProofs, WithSender} from '../transactions'
 import { binary } from '@decentralchain/marshall'
+<<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
 import {addProof, getSenderPublicKey, convertToPairs, networkByte, fee} from '../generic'
 =======
 import { addProof, getSenderPublicKey, convertToPairs, networkByte, fee } from '../generic'
@@ -17,7 +21,7 @@ import { TSeedTypes } from '../types'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {CancelLeaseTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {CancelLeaseTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 
 /* @echo DOCS */
@@ -36,7 +40,7 @@ export function cancelLease(paramsOrTx: any, seed?: TSeedTypes): CancelLeaseTran
     leaseId: paramsOrTx.leaseId,
     fee: fee(paramsOrTx, 100000),
     timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 87),
+    chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
   }

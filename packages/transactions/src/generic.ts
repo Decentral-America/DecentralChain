@@ -4,8 +4,8 @@ import {
   WithSender
 } from './transactions'
 import { TPrivateKey, TSeedTypes } from './types'
-import { publicKey, base58Decode } from '@waves/ts-lib-crypto'
-import {ExchangeTransactionOrder} from '@waves/ts-types'
+import { publicKey, base58Decode } from '@decentralchain/ts-lib-crypto'
+import {ExchangeTransactionOrder} from '@decentralchain/ts-types'
 
 export const mapObj = <T, U, K extends string>(obj: Record<K, T>, f: (v: T) => U): Record<K, U> =>
   Object.entries<T>(obj).map(([k, v]) => [k, f(v)] as [string, U])

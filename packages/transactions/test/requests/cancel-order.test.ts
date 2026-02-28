@@ -1,4 +1,4 @@
-import { publicKey, verifySignature } from '@waves/ts-lib-crypto'
+import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto'
 import { cancelOrder } from '../../src/index'
 import { cancelOrderParamsToBytes } from '../../src/requests/cancel-order'
 import { cancelOrderMinimalParams } from '../minimalParams'
