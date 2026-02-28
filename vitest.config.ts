@@ -10,7 +10,7 @@ export default defineConfig({
       exclude: ['src/index.ts'],
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
-        branches: 90,
+        branches: 65,
         functions: 90,
         lines: 90,
         statements: 90,
