@@ -103,7 +103,7 @@ PREVIOUS_PM: 'yarn' # yarn | npm
 # ── Version Resolution (auto-resolved at execution time) ─────────
 # The AI executing this prompt MUST resolve these to latest stable versions.
 # Do NOT fill these in manually — they are resolved dynamically.
-# LATEST_NPM: ''               # e.g. "11.9.0" — run `npm --version`
+# LATEST_NPM: ''               # e.g. "11.11.0" — run `npm --version`
 # LATEST_ACTIONS_CHECKOUT: ''   # e.g. "v6" — check github.com/actions/checkout/releases
 # LATEST_ACTIONS_SETUP_NODE: '' # e.g. "v6" — check github.com/actions/setup-node/releases
 # LATEST_ACTIONS_UPLOAD_ARTIFACT: '' # e.g. "v7" — check github.com/actions/upload-artifact/releases
@@ -394,7 +394,7 @@ SOFTWARE.
   "version": "{{PACKAGE_VERSION}}",
   "description": "{{DESCRIPTION}}",
   "type": "module",
-  "packageManager": "npm@{{LATEST_NPM}}", // resolve to latest stable npm (~11.9.0 as of Feb 2026)
+  "packageManager": "npm@{{LATEST_NPM}}", // resolve to latest stable npm (~11.11.0 as of Feb 2026)
   "exports": {
     ".": {
       "import": {
@@ -476,7 +476,7 @@ SOFTWARE.
     "eslint-config-prettier": "{{LATEST}}", // ~10.1.8 as of Feb 2026
     "globals": "{{LATEST}}", // ~17.3.0 as of Feb 2026
     "husky": "{{LATEST}}", // ~9.1.7 as of Feb 2026
-    "lint-staged": "{{LATEST}}", // ~16.2.7 as of Feb 2026
+    "lint-staged": "{{LATEST}}", // ~16.3.0 as of Feb 2026
     "prettier": "{{LATEST}}", // ~3.8.1 as of Feb 2026
     "publint": "{{LATEST}}", // ~0.3.17 as of Feb 2026
     "size-limit": "{{LATEST}}", // ~12.0.0 as of Feb 2026
@@ -519,7 +519,7 @@ SOFTWARE.
   "files": ["src/", "dist/", "LICENSE", "README.md", "CHANGELOG.md"],
   "sideEffects": false,
   "engines": { "node": ">={{MIN_NODE}}" },
-  "packageManager": "npm@{{LATEST_NPM}}", // resolve to latest stable npm (~11.9.0 as of Feb 2026)
+  "packageManager": "npm@{{LATEST_NPM}}", // resolve to latest stable npm (~11.11.0 as of Feb 2026)
   "publishConfig": { "access": "public", "provenance": true },
   "repository": {
     "type": "git",
@@ -578,7 +578,7 @@ SOFTWARE.
     "eslint-config-prettier": "{{LATEST}}", // ~10.1.8 as of Feb 2026
     "globals": "{{LATEST}}", // ~17.3.0 as of Feb 2026
     "husky": "{{LATEST}}", // ~9.1.7 as of Feb 2026
-    "lint-staged": "{{LATEST}}", // ~16.2.7 as of Feb 2026
+    "lint-staged": "{{LATEST}}", // ~16.3.0 as of Feb 2026
     "prettier": "{{LATEST}}", // ~3.8.1 as of Feb 2026
     "publint": "{{LATEST}}", // ~0.3.17 as of Feb 2026
     "rollup": "{{LATEST}}", // ~4.59.0 as of Feb 2026
@@ -931,7 +931,7 @@ jobs:
     # ⚠️  IMPORTANT: Use the latest stable MAJOR version of each action.
     #    Check https://github.com/actions/checkout/releases etc. at execution time.
     #    Dependabot (configured below) will keep these current after initial setup.
-    #    Dated references: checkout ~v4, setup-node ~v4, upload-artifact ~v4 as of Feb 2026.
+    #    Dated references: checkout ~v6, setup-node ~v6, upload-artifact ~v7 as of Feb 2026.
     steps:
       - uses: actions/checkout@{{LATEST_ACTIONS_CHECKOUT}} # latest stable major (e.g. v4 → v6)
 
