@@ -1,61 +1,68 @@
-import * as forge from 'node-forge'
-import { RSADigestAlgorithm, TBytes, TRSAKeyPair } from './interface'
-import { base64Decode, base64Encode } from '../conversions/base-xx'
-import * as sha3 from 'js-sha3'
-import { sha224 } from 'js-sha256'
+import * as forge from 'node-forge';
+import { type RSADigestAlgorithm, type TBytes, type TRSAKeyPair } from './interface';
+import { base64Decode, base64Encode } from '../conversions/base-xx';
+import * as sha3 from 'js-sha3';
+import { sha224 } from 'js-sha256';
 
-export const pemToBytes = (pem: string) => base64Decode(
-  pem.trim()
-    .split(/\r\n|\n/)
-    .slice(1, -1).join('')
-    .trim()
-)
+/** Convert a PEM-encoded key to raw bytes. */
+export const pemToBytes = (pem: string) =>
+  base64Decode(
+    pem
+      .trim()
+      .split(/\r\n|\n/)
+      .slice(1, -1)
+      .join('')
+      .trim(),
+  );
 
 const pemTypeMap = {
   rsaPrivateNonEncrypted: 'RSA PRIVATE KEY',
   rsaPublic: 'PUBLIC KEY',
-}
+};
+/** Convert raw key bytes to PEM format. */
 export const bytesToPem = (bytes: Uint8Array, type: keyof typeof pemTypeMap) => {
-  const header = `-----BEGIN ${pemTypeMap[type]}-----\n`
-  const footer = `-----END ${pemTypeMap[type]}-----\n`
+  const header = `-----BEGIN ${pemTypeMap[type]}-----\n`;
+  const footer = `-----END ${pemTypeMap[type]}-----\n`;
 
-  let b64characters = base64Encode(bytes)
+  let b64characters = base64Encode(bytes);
   if (b64characters.length % 64 !== 0) {
-    b64characters += ' '.repeat(64 - b64characters.length % 64)
+    b64characters += ' '.repeat(64 - (b64characters.length % 64));
   }
 
-  let result = header
-  for (let i = 0; i < (b64characters.length / 64); i++) {
-    result += b64characters.slice(i * 64, (i + 1) * 64) + '\n'
+  let result = header;
+  for (let i = 0; i < b64characters.length / 64; i++) {
+    result += b64characters.slice(i * 64, (i + 1) * 64) + '\n';
   }
-  result += footer
+  result += footer;
 
-  return result
-}
+  return result;
+};
 
+/** Generate an RSA key pair synchronously. */
 export const rsaKeyPairSync = (bits?: number, e?: number): TRSAKeyPair => {
-  const kp = forge.pki.rsa.generateKeyPair(bits, e)
+  const kp = forge.pki.rsa.generateKeyPair(bits, e);
   return {
     rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
     rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
-  }
-}
+  };
+};
 
+/** Generate an RSA key pair asynchronously. */
 export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair> =>
   new Promise<TRSAKeyPair>((resolve, reject) => {
     forge.pki.rsa.generateKeyPair(bits, e, function (err: any, kp: any) {
-      if (err) reject(err)
+      if (err) reject(err instanceof Error ? err : new Error(String(err)));
       resolve({
         rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
         rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
-      })
-    })
-  })
+      });
+    });
+  });
 
 interface DigestInfo {
-  oid: string
-  prefix: string // ASN.1 DER prefix
-  hash: (bytes: string) => string
+  oid: string;
+  prefix: string; // ASN.1 DER prefix
+  hash: (bytes: string) => string;
 }
 
 const DIGEST_INFOS: Record<RSADigestAlgorithm, DigestInfo> = {
@@ -109,67 +116,76 @@ const DIGEST_INFOS: Record<RSADigestAlgorithm, DigestInfo> = {
     prefix: '3051300d060960864801650304020a05000440',
     hash: (bytes) => forge.util.hexToBytes(sha3.sha3_512(bytes)),
   },
-}
+};
 
-export const rsaVerify = (rsaPublicKey: TBytes, message: TBytes, signature: TBytes, digest: RSADigestAlgorithm = 'SHA256'): boolean => {
-  const algo = DIGEST_INFOS[digest]
-  if (!algo) throw new Error(`Unsupported digest: ${digest}`)
+/** Verify an RSA PKCS#1 v1.5 signature. */
+export const rsaVerify = (
+  rsaPublicKey: TBytes,
+  message: TBytes,
+  signature: TBytes,
+  digest: RSADigestAlgorithm = 'SHA256',
+): boolean => {
+  const algo = DIGEST_INFOS[digest];
+  if (!algo) throw new Error(`Unsupported digest: ${digest}`);
 
-  const msgBytes = forge.util.binary.raw.encode(message)
-  const sigBytes = forge.util.binary.raw.encode(signature)
-  const pubDer = forge.util.binary.raw.encode(rsaPublicKey)
+  const msgBytes = forge.util.binary.raw.encode(message);
+  const sigBytes = forge.util.binary.raw.encode(signature);
+  const pubDer = forge.util.binary.raw.encode(rsaPublicKey);
 
-  const hash = algo.hash(msgBytes)
-  const digestInfo = forge.util.hexToBytes(algo.prefix) + hash
+  const hash = algo.hash(msgBytes);
+  const digestInfo = forge.util.hexToBytes(algo.prefix) + hash;
 
-  const asn1 = forge.asn1.fromDer(pubDer)
-  const publicKey = forge.pki.publicKeyFromAsn1(asn1)
+  const asn1 = forge.asn1.fromDer(pubDer);
+  const publicKey = forge.pki.publicKeyFromAsn1(asn1);
 
-  const k = Math.ceil(publicKey.n.bitLength() / 8)
-  const emBuf = forge.util.createBuffer(publicKey.encrypt(sigBytes, 'RAW'))
-  if (emBuf.length() !== k) return false
-  const em = emBuf.getBytes()
+  const k = Math.ceil(publicKey.n.bitLength() / 8);
+  const emBuf = forge.util.createBuffer(publicKey.encrypt(sigBytes, 'RAW'));
+  if (emBuf.length() !== k) return false;
+  const em = emBuf.getBytes();
 
   // PKCS#1 v1.5 padding check: 0x00 0x01 FF..FF 0x00 DigestInfo
-  if (em.charCodeAt(0) !== 0x00 || em.charCodeAt(1) !== 0x01) return false
-  const psEnd = em.indexOf('\x00', 2)
-  if (psEnd < 0) return false
+  if (em.charCodeAt(0) !== 0x00 || em.charCodeAt(1) !== 0x01) return false;
+  const psEnd = em.indexOf('\x00', 2);
+  if (psEnd < 0) return false;
   for (let i = 2; i < psEnd; i++) {
-    if (em.charCodeAt(i) !== 0xff) return false
+    if (em.charCodeAt(i) !== 0xff) return false;
   }
 
-  const recovered = em.substring(psEnd + 1)
-  return recovered === digestInfo
-}
+  const recovered = em.substring(psEnd + 1);
+  return recovered === digestInfo;
+};
 
-export const rsaSign = (rsaPrivateKey: TBytes, message: TBytes, digest: RSADigestAlgorithm = 'SHA256'): TBytes => {
-  const algo = DIGEST_INFOS[digest]
-  if (!algo) throw new Error(`Unsupported digest: ${digest}`)
+/** Create an RSA PKCS#1 v1.5 signature. */
+export const rsaSign = (
+  rsaPrivateKey: TBytes,
+  message: TBytes,
+  digest: RSADigestAlgorithm = 'SHA256',
+): TBytes => {
+  const algo = DIGEST_INFOS[digest];
+  if (!algo) throw new Error(`Unsupported digest: ${digest}`);
 
-  const msgBytes = forge.util.binary.raw.encode(message)
+  const msgBytes = forge.util.binary.raw.encode(message);
 
   // Compute hash
-  const hashBytes = algo.hash(msgBytes)
+  const hashBytes = algo.hash(msgBytes);
 
   // DigestInfo = prefix + hash
-  const digestInfo = algo.prefix ? forge.util.hexToBytes(algo.prefix) + hashBytes : hashBytes
+  const digestInfo = algo.prefix ? forge.util.hexToBytes(algo.prefix) + hashBytes : hashBytes;
 
   // Load private key
-  const derStr = forge.util.binary.raw.encode(rsaPrivateKey)
-  const asn1 = forge.asn1.fromDer(derStr)
-  const privateKey = forge.pki.privateKeyFromAsn1(asn1)
+  const derStr = forge.util.binary.raw.encode(rsaPrivateKey);
+  const asn1 = forge.asn1.fromDer(derStr);
+  const privateKey = forge.pki.privateKeyFromAsn1(asn1);
 
   // PKCS#1 v1.5 padding
-  const k = Math.ceil(privateKey.n.bitLength() / 8)
-  const tLen = digestInfo.length
-  if (tLen > k - 11) throw new Error('Message too long for RSA key size')
+  const k = Math.ceil(privateKey.n.bitLength() / 8);
+  const tLen = digestInfo.length;
+  if (tLen > k - 11) throw new Error('Message too long for RSA key size');
 
-  const PS = String.fromCharCode(...Array(k - tLen - 3).fill(0xff))
-  const EM = '\x00\x01' + PS + '\x00' + digestInfo
+  const PS = String.fromCharCode(...Array(k - tLen - 3).fill(0xff));
+  const EM = '\x00\x01' + PS + '\x00' + digestInfo;
 
   // RSA encrypt with private key
-  const sigBytes = privateKey.decrypt(EM, 'RAW')
-  return new Uint8Array(forge.util.binary.raw.decode(sigBytes))
-}
-
-
+  const sigBytes = privateKey.decrypt(EM, 'RAW');
+  return new Uint8Array(forge.util.binary.raw.decode(sigBytes));
+};

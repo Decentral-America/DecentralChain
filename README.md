@@ -1,496 +1,273 @@
 # @decentralchain/ts-lib-crypto
 
-Cryptographic library for the DecentralChain blockchain. Provides key generation, address derivation, transaction signing, signature verification, hashing, and encoding utilities.
+[![CI](https://github.com/Decentral-America/ts-lib-crypto/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/ts-lib-crypto/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@decentralchain/ts-lib-crypto)](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto)
+[![license](https://img.shields.io/npm/l/@decentralchain/ts-lib-crypto)](./LICENSE)
+[![Node.js](https://img.shields.io/node/v/@decentralchain/ts-lib-crypto)](./package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
-The DecentralChain protocol is a set of rules named consensus by which nodes reach an agreement on the network, and format which nodes use to communicate with each other. It is based on several well described hash and crypto algorithms and has a predefined set of entries to operate on the network. This library contains all algorithm implementations like signature verification and protocol entries like address used in the DecentralChain protocol. It also contains utility methods and format converters to help 3rd party developers.
+Cryptographic library for the DecentralChain blockchain — key generation, signing, hashing, encoding.
 
-## Agenda
-- **[Installation](#installation)**
-- **[Import styles](#import-styles)**
-- **[Inputs](#inputs)**
-- **[Outputs](#outputs)**
- - **[Seed generation](#seed-generation)**
-	 - [randomSeed](#randomseed)
-	 - [seedWordsList](#seedwordslist)
- - **[Keys and address](#keys-and-address)**
-	 - [publicKey](#publickey)
-	 - [privateKey](#privatekey)
-	 - [keyPair](#keypair)
-	 - [address](#address)
- - **[Signatures](#signatures)**
-	 - [signBytes](#signbytes)
-	 - [verifySignature](#verifySignature)
-- **[Hashing](#hashing)**
-	 - [blake2b](#blake2b)
-	 - [keccak](#keccak)
-	 - [sha256](#sha256)
- - **[Random](#random)**
-	 - [randomBytes](#randomBytes)
-	 - [random](#random)
- - **[Base encoding\decoding](#base-encodingdecoding)**
-	 - [base16](#base-encodingdecoding)
-	 - [base58](#base-encodingdecoding)
-	 - [base64](#base-encodingdecoding)
- - **[Messaging](#messaging)**
-	 - [sharedKey](#sharedKey)
-	 - [messageEncrypt](#messageEncrypt)
-	 - [messageDecrypt](#messageDecrypt)
- - **[Encryption](#encryption)**
-	 - [aesEncrypt](#aesEncrypt)
-	 - [aesDecrypt](#aesDecrypt)
-- **[Seed encryption](#Seed-encryption)**
- - **[Utils](#utils)**
-	 - [split](#split)
-	 - [concat](#concat)
-	 - [stringToBytes](#stringtobytes)
-	 - [bytesToString](#bytestostring)
-- **[Constants](#constants)**
-- **[Interface](#interface)**
-- **[More examples](#more-examples)**
+The DecentralChain protocol uses well-established cryptographic primitives including Curve25519 (Ed25519/X25519), Blake2b, Keccak-256, SHA-256, AES, RSA, and BLS12-381. This library provides all algorithm implementations and protocol utilities (address derivation, seed management, signature verification) needed by DecentralChain applications.
+
+## Requirements
+
+- **Node.js** >= 22
+- **npm** >= 10
+
 ## Installation
-```
+
+```bash
 npm install @decentralchain/ts-lib-crypto
 ```
-## Import styles
-There are several ways of doing things when using **ts-lib-crypto**.
-You can import functions directly:
-```ts
-import { address } from  '@decentralchain/ts-lib-crypto'
-address('my secret seed') // 3PAP3wkgbGjdd1FuBLn9ajXvo6edBMCa115
-```
-Or you can use a crypto constructor function:
-```ts
-import { crypto } from  '@decentralchain/ts-lib-crypto'
-const { address } = crypto()
-address('my secret seed') // 3PAP3wkgbGjdd1FuBLn9ajXvo6edBMCa115
-```
-The second approach gives you more flexibility, using this approach you are able to embed the **seed** and use all seed-dependant functions without **seed** parameter:
-```ts
-import { crypto } from  '@decentralchain/ts-lib-crypto'
-const { address } = crypto({seed: 'my secret seed'})
-address() // 3PAP3wkgbGjdd1FuBLn9ajXvo6edBMCa115
-```
 
-## Inputs 
-**ts-lib-crypto** is even more flexible. Any function argument that represents binary data or seed could be passed in several ways. Let's take a look on the following example:
-```ts
-import { address } from  '@decentralchain/ts-lib-crypto'
-const  seedString  =  'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-const  seedBytesAsArray  = [117, 110, 99, 108, 101, 32, 112, 117, 115, 104, 32, 104, 117, 109, 97, 110, 32, 98, 117, 115, 32, 101, 99, 104, 111, 32, 100, 114, 97, 115, 116, 105, 99, 32, 103, 97, 114, 100, 101, 110, 32, 106, 111, 107, 101, 32, 115, 97, 110, 100, 32, 119, 97, 114, 102, 97, 114, 101, 32, 115, 101, 110, 116, 101, 110, 99, 101, 32, 102, 111, 115, 115, 105, 108, 32, 116, 105, 116, 108, 101, 32, 99, 111, 108, 111, 114, 32, 99, 111, 109, 98, 105, 110, 101]
-const  seedBytesAsUintArray  =  Uint8Array.from(seedBytesAsArray)
-address(seedString) // 3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36
-address(seedBytesAsArray) // 3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36
-address(seedBytesAsUintArray) // 3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36
-```
-As you can see **seed** parameter is treated the same way for **number[]** or **Uint8Array**.
-When you pass binary data it could be represented as  **number[]** or **Uint8Array** or even **base58**:
-```ts
-import { address, randomSeed, sha256 } from '@decentralchain/ts-lib-crypto'
-const seed = randomSeed() // uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
-const addressBase58 = address(seed) // 3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36
-sha256(addressBase58) // DMPenguwWdLdZ7tesiZY6grw7mjKU2Dob1cn9Uq9TKfp
-```
-Here we got **sha256** hash from address bytes represented as **base58** *(3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36)*. 
-Be aware that **sha256** value is not based on "*3P9KR33QyXwfTXv8kKtNGZYtgKk3RXSUk36*" string itself, this value was treated as a **binary data** and **base58Decode** was applied.
-
-## Outputs
-As you've noticed from the previous section *address()* output is **base58** string like:
-```ts
-// 3PAP3wkgbGjdd1FuBLn9ajXvo6edBMCa115
-```
- By default functions from the following list output **base58** string as a result,
- no matter what import-style you choose:
-```
-keyPair
-publicKey
-privateKey
-address
-sharedKey
-signBytes
-```
-
-If you prefer **binary** output, you can alter this behaviour and make those functions to return **UInt8Array** instead.
-
-When using inline import style:
-```ts
-// You can use [/bytes] module when importing functions to set output to UInt8Array
-import { address } from  '@decentralchain/ts-lib-crypto/bytes'
-address('uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine')
-// => Uint8Array [1,76,55,118,79,89,6,115,207,200,130,220,32,33,101,69,108,108,53,48,167,127,203,18,143,121]
-```
-When using crypto constructor function:
-```ts
-import { crypto } from  '@decentralchain/ts-lib-crypto'
-const { address } = crypto({ output: 'Bytes' })
-address('uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine')
-// => Uint8Array [1,76,55,118,79,89,6,115,207,200,130,220,32,33,101,69,108,108,53,48,167,127,203,18,143,121]
-```
-
-## Seed generation
-
-The seed is a set of words or bytes that private and public keys are generated from. A typical seed looks like:
-```
-uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
-```
-There are couple ways to generate seed: 
-```ts
-const handWrittenSeedString = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-const handWrittenSeedBytes = [117, 110, 99, 108, 101, 32, 112, 117, 115, 104, 32, 104, 117, 109, 97, 110, 32, 98, 117, 115, 32, 101, 99, 104, 111, 32, 100, 114, 97, 115, 116, 105, 99, 32, 103, 97, 114, 100, 101, 110, 32, 106, 111, 107, 101, 32, 115, 97, 110, 100, 32, 119, 97, 114, 102, 97, 114, 101, 32, 115, 101, 110, 116, 101, 110, 99, 101, 32, 102, 111, 115, 115, 105, 108, 32, 116, 105, 116, 108, 101, 32, 99, 111, 108, 111, 114, 32, 99, 111, 109, 98, 105, 110, 101]
-```
-Or if you need seed with nonce:
-```ts
-import { seedWithNonce, randomSeed, address } from '@decentralchain/ts-lib-crypto'
-
-const nonce = 1
-const seedphrase = randomSeed() // uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
-const seed = seedWithNonce(seedphrase, nonce)
-
-//Now you can use seed as usual
-address(seed)
-```
-Seed could be any **string** or **number[]** or **Uint8Array** or **ISeedWithNonce**.
-
-There is also a way to generate seed-phrase using **ts-lib-crypto** described in the next section.
-
-### randomSeed
-```ts
-import { randomSeed } from '@decentralchain/ts-lib-crypto'
-
-randomSeed() //uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
-```
-You can also specify seed-phrase size:
-```ts
-randomSeed(3) //uncle push human
-```
-The default seed size is 15 words.
-
-### seedWordsList
-If you want to get all the valid seed words used for seed-phrase generation, use **seedWordsList** the 2048 word array.
-```ts
-import { seedWordsList } from '@decentralchain/ts-lib-crypto'
-console.log(seedWordsList) // [ 'abandon','ability','able', ... 2045 more items ]
-```
-## Keys and address
-
-### publicKey
-You could get public key either from raw seed-phrase or seed with nonce:
-```ts
-import { publicKey, seedWithNonce } from '@decentralchain/ts-lib-crypto'
-const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-publicKey(seed) // 4KxUVD9NtyRJjU3BCvPgJSttoJX7cb3DMdDTNucLN121
-publicKey(seedWithNonce(seed, 0)) // 4KxUVD9NtyRJjU3BCvPgJSttoJX7cb3DMdDTNucLN121
-```
-Or even from private key, it's useful in some cases:
-```ts
-import { publicKey, privateKey, seedWithNonce } from '@decentralchain/ts-lib-crypto'
-const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-const pk = privateKey(seed)
-publicKey({ privateKey: pk }) // 4KxUVD9NtyRJjU3BCvPgJSttoJX7cb3DMdDTNucLN121
-```
-
-### privateKey
-Same with private key:
-```ts
-import { privateKey, seedWithNonce } from '@decentralchain/ts-lib-crypto'
-const  seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-privateKey(seed)
-privateKey(seedWithNonce(seed, 99))
-```
-### keyPair
-You could also obtain a keyPair:
-```ts
-import { keyPair } from '@decentralchain/ts-lib-crypto'
-const  seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-keyPair(seed)
-// => { 
-//      publicKey:  '4KxUVD9NtyRJjU3BCvPgJSttoJX7cb3DMdDTNucLN121',
-//      privateKey: '6zFSymZAoaua3gtJPbAUwM584tRETdKYdEG9BeEnZaGW'
-//    }
-```
-### address
-You can create an address for *Mainnet* (chain ID `'L'` = 76 for DecentralChain):
-```ts
-import { address } from '@decentralchain/ts-lib-crypto'
-const  seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-address(seed) // Generates address using default mainnet chain ID 'L'
-```
-or *Testnet*:
-```ts
-address(seed, 'T') // 3MwJc5iX7QQGq5ciVFdNK7B5KSEGbUCVxDw
-```
-alternatively You could use **TEST_NET_CHAIN_ID** constant instead of **T** literal like this:
-```ts
-import { address, TEST_NET_CHAIN_ID } from '@decentralchain/ts-lib-crypto'
-const  seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-address(seed, TEST_NET_CHAIN_ID) // 3MwJc5iX7QQGq5ciVFdNK7B5KSEGbUCVxDw
-```
-There are several more useful constants, you can check them in [\[constants\]](/#constants) section.
-## Signatures
-#### signBytes
-To sign arbitrary bytes or usually transaction bytes you should use the **signBytes** function.
-Here is sign with seed example:
-```ts
-import { signBytes } from '@decentralchain/ts-lib-crypto'
-const bytes = [117, 110, 99, 108, 101]
-const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-signBytes(seed, bytes) // 5ZpULwrnUYoxQZcw26km6tgGbj1y23ywYB4A9bLCpax6PUdrhkCmmoLBP6C1G5yiMJ7drqN9jNxPym6f8vrPsWnm
-```
-Also you can use private key to sign bytes:
-```ts
-import { signBytes, privateKey } from '@decentralchain/ts-lib-crypto'
-const bytes = [117, 110, 99, 108, 101]
-const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-const key = privateKey(seed)
-signBytes({ privateKey: key }, bytes)
-```
-Remember that you can use **base58** strings when it's about binary data, so you can represent bytes as **base58** too:
-```ts
-signBytes({ privateKey:  key }, 'Fk1sjwdPSwZ4bPwvpCGPH6')
-```
-You can learn more about it in the [outputs](#outputs) section.
-#### verifySignature
-Verifying signature is a way to prove that particular bytes were signed with a particular private key or seed which correspond to public key that we are checking against:
-```ts
-import { signBytes, verifySignature, keyPair } from '@decentralchain/ts-lib-crypto'
-//Signature roundtrip
-const bytes = [117, 110, 99, 108, 101]
-const seed = 'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine'
-const keys = keyPair(seed)
-const signature = signBytes(keys, bytes)
-verifySignature(keys.publicKey, bytes, signature) // true
-```
-## Hashing
-There are three hashing algorithms available in **ts-lib-crypto**.
-#### blake2b
-```ts
-import { blake2b } from '@decentralchain/ts-lib-crypto'
-const bytesArray = [117, 110, 99, 108, 101]
-const bytesUint = Uint8Array.from([117, 110, 99, 108, 101])
-const bytesBase58 = 'EFRr9cp'
-blake2b(bytesArray)  // 9DqBU9wZAR85PyrUSJpwaU9DggM8veyMxRMvFe1q6atu
-blake2b(bytesUint)   // 9DqBU9wZAR85PyrUSJpwaU9DggM8veyMxRMvFe1q6atu
-blake2b(bytesBase58) // 9DqBU9wZAR85PyrUSJpwaU9DggM8veyMxRMvFe1q6atu
-
-```
-#### keccak
-```ts
-import { keccak } from '@decentralchain/ts-lib-crypto'
-const bytesArray = [117, 110, 99, 108, 101]
-const bytesUint = Uint8Array.from([117, 110, 99, 108, 101])
-const bytesBase58 = 'EFRr9cp'
-keccak(bytesArray)  // 5cqz9N2PPjDkSBSwga8AttKzQEHfn8aQ95rcZZmabLA7
-keccak(bytesUint)   // 5cqz9N2PPjDkSBSwga8AttKzQEHfn8aQ95rcZZmabLA7
-keccak(bytesBase58) // 5cqz9N2PPjDkSBSwga8AttKzQEHfn8aQ95rcZZmabLA7
-```
-#### sha256
-```ts
-import { sha256 } from '@decentralchain/ts-lib-crypto'
-const bytesArray = [117, 110, 99, 108, 101]
-const bytesUint = Uint8Array.from([117, 110, 99, 108, 101])
-const bytesBase58 = 'EFRr9cp'
-sha256(bytesArray)  // 4JPydqbhxhZF7kpuGA2tJWkXDmevJYfig45gqdV1UF9E
-sha256(bytesUint)   // 4JPydqbhxhZF7kpuGA2tJWkXDmevJYfig45gqdV1UF9E
-sha256(bytesBase58) // 4JPydqbhxhZF7kpuGA2tJWkXDmevJYfig45gqdV1UF9E
-```
-## Random
-There are several ways to get random values in **ts-lib-crypto**.
-To get an **Uint8Array** of random values simply use:
-#### randomBytes
-```ts
-import { randomBytes } from '@decentralchain/ts-lib-crypto'
-randomBytes(3) // Uint8Array [ 120, 46, 179 ]             
-```
-If you want more control over the values format you could use:
-#### random
-```ts
-import { random } from '@decentralchain/ts-lib-crypto'
-
-const length = 3     
-random(length, 'Array8')       // [ 19, 172, 130 ]   
-random(length, 'Array16')      // [ 61736, 48261, 38395 ] 
-random(length, 'Array32')      // [ 406628961, 307686833, 2604847943 ]       
-random(length, 'Buffer')       // <Buffer db ff fb>       
-random(length, 'Uint8Array')   // Uint8Array [ 137, 85, 212 ]   
-random(length, 'Uint16Array')  // Uint16Array [ 35881, 51653, 55967 ]  
-random(length, 'Uint32Array')  // Uint32Array [ 698646076, 2957331816, 2073997581 ]    
-```
-## Base encoding\decoding
-
+## Quick Start
 
 ```ts
-import { base16Encode, base16Decode, base58Encode, base58Decode, base64Encode, base64Decode, randomBytes } from '@decentralchain/ts-lib-crypto'
+import {
+  address,
+  keyPair,
+  signBytes,
+  verifySignature,
+  randomSeed,
+} from '@decentralchain/ts-lib-crypto';
 
-const bytes = randomBytes(32)
+// Generate a random seed phrase
+const seed = randomSeed();
 
-// Base16 same as Hex
-const base16String = base16Encode(bytes) // 2059ec5d9ed640b75722ec6a2ff76890e523ea4624887549db761d678ba8f899
-const bytesFromBase16 = base16Decode(base16String)
+// Derive keys and address
+const keys = keyPair(seed);
+const addr = address(seed);
 
-// Base58
-const base58String = base58Encode(bytes) // 3BHaM9Q5HhUobQ5oZAqjdkE9HRpmqMx4XLq3GXTMD5tU
-const bytesFromBase58 = base58Decode(base58String)
-
-// Base64
-const base64String = base64Encode(bytes) // IFnsXZ7WQLdXIuxqL/dokOUj6kYkiHVJ23YdZ4uo+Jk=
-const bytesFromBase64 = base64Decode(base64String)
-```
-## Messaging
-These methods implement the DecentralChain messaging protocol:
-- sharedKey 
-- messageDecrypt
-- messageEncrypt
-```typescript
-import { sharedKey, messageEncrypt, messageDecrypt, keyPair } from '@decentralchain/ts-lib-crypto'
-
-const bobKeyPair = keyPair('Bob')
-const aliceKeyPair = keyPair('Alice')
-const msg = 'hello world'
-
-// Alice derives shared key and encrypts message
-const sharedKeyA = sharedKey(aliceKeyPair.privateKey, bobKeyPair.publicKey, 'dcc') 
-const encrypted = messageEncrypt(sharedKeyA, msg)
-
-// Bob derives shared key and decrypts message
-const sharedKeyB = sharedKey(aliceKeyPair.privateKey, bobKeyPair.publicKey, 'dcc') 
-const decrypted = messageDecrypt(sharedKeyB, encrypted)
-```
-## Encryption
-This is low level functionality where you have to generate key and iv yourself 
-#### aesEncrypt
-Encrypt bytes using AES algorithm. 
-```typescript
-import { aesEncrypt, randomBytes } from '@decentralchain/ts-lib-crypto'
-
-const data = Uint8Array.from([1,2,3])
-const mode =  'CBC' // Possible modes are 'CBC' | 'CFB' | 'CTR' | 'OFB' | 'ECB' | 'GCM'
-
-const key = randomBytes(32)
-const iv = randomBytes(32)
-
-const encrypted = aesEncrypt(data, key, mode, iv)
-
-```
-#### aesDecrypt
-Decrypt bytes using AES algorithm
-```typescript
-const decrypted = aesDecrypt(encrypted, key, mode, iv)
+// Sign and verify
+const message = Uint8Array.from([1, 2, 3, 4]);
+const signature = signBytes(seed, message);
+const isValid = verifySignature(keys.publicKey, message, signature);
+console.log({ addr, isValid }); // { addr: '3P...', isValid: true }
 ```
 
-## Seed encryption
-These functions implement the seed encryption protocol used in the DecentralChain client:
-```typescript
-import { encryptSeed, decryptSeed } from '@decentralchain/ts-lib-crypto'
+## Import Styles
 
-const seed = 'some secret seed phrase i use'
-const encrypted = encryptSeed(seed, 'secure password')
-const decrypted = decryptSeed(encryptSeed, 'secure password')
+### Direct imports (Base58 output by default)
 
-```
-## Utils
-Utility functions designed to help 3rd party developers working with js binary types like Uint8Array and Buffer.
-#### split
-You can use split for splitting bytes to sub arrays.
 ```ts
-import { split, randomBytes } from '@decentralchain/ts-lib-crypto'
-const bytes = randomBytes(2 + 3 + 4 + 10)
-split(bytes, 2, 3, 4)
-// [ 
-//   Uint8Array [195, 206],
-//   Uint8Array [ 10, 208, 171 ],
-//   Uint8Array [ 36, 18, 254, 205 ],
-//   Uint8Array [ 244, 232, 55, 11, 113, 47, 80, 194, 170, 216 ]
-// ]
+import { address, publicKey, signBytes } from '@decentralchain/ts-lib-crypto';
+
+const addr = address('my secret seed'); // Base58 string
 ```
-Alternatively, you can use array deconstruction syntax:
+
+### Bytes output
+
 ```ts
-const [a, b, c, rest] = split(bytes, 2, 3, 4)
-// a = Uint8Array [195, 206],
-// b = Uint8Array [ 10, 208, 171 ],
-// c = Uint8Array [ 36, 18, 254, 205 ],
-// rest = Uint8Array [ 244, 232, 55, 11, 113, 47, 80, 194, 170, 216 ]
+import { address, publicKey } from '@decentralchain/ts-lib-crypto/bytes';
+
+const addr = address('my secret seed'); // Uint8Array
 ```
-#### concat
-Concat is the opposite and pretty self-explanatory:
+
+### Factory function
+
 ```ts
-import { concat, randomBytes } from '@decentralchain/ts-lib-crypto'
-const bytesA = randomBytes(2)
-const bytesB = randomBytes(2)
-concat(bytesA, bytesB) // Uint8Array [ 36, 18, 254, 205 ]
+import { crypto } from '@decentralchain/ts-lib-crypto';
+
+const { address, keyPair } = crypto({ output: 'Bytes' });
 ```
-#### stringToBytes
+
+### Embedded seed
+
 ```ts
-import { stringToBytes } from '@decentralchain/ts-lib-crypto'
-stringToBytes('DCC!') // Uint8Array [ 68, 67, 67, 33 ]
+import { crypto } from '@decentralchain/ts-lib-crypto';
+
+const { address, signBytes } = crypto({ output: 'Base58', seed: 'my secret seed' });
+const addr = address(); // No seed needed — it's embedded
 ```
-#### bytesToString
-```ts
-import { bytesToString } from '@decentralchain/ts-lib-crypto'
-bytesToString([ 68, 67, 67, 33 ]) // DCC!
+
+## API Reference
+
+### Seed Generation
+
+| Function                          | Description                                       |
+| --------------------------------- | ------------------------------------------------- |
+| `randomSeed(wordsCount?: number)` | Generate random mnemonic seed (default: 15 words) |
+| `seedWordsList`                   | BIP-39 compatible word list (2048 words)          |
+
+### Keys and Address
+
+| Function                                | Description                                  |
+| --------------------------------------- | -------------------------------------------- |
+| `keyPair(seed)`                         | Derive `{ publicKey, privateKey }` from seed |
+| `publicKey(seed \| privateKey)`         | Derive public key                            |
+| `privateKey(seed)`                      | Derive private key                           |
+| `address(seed \| publicKey, chainId?)`  | Derive address (default chain: mainnet)      |
+| `buildAddress(publicKeyBytes, chainId)` | Build address from raw public key bytes      |
+| `seedWithNonce(seed, nonce)`            | Create a nonce-seeded pair                   |
+
+### Signatures
+
+| Function                                       | Description                        |
+| ---------------------------------------------- | ---------------------------------- |
+| `signBytes(seed \| privateKey, bytes)`         | Sign bytes with Curve25519         |
+| `verifySignature(publicKey, bytes, signature)` | Verify a signature                 |
+| `verifyPublicKey(publicKey)`                   | Check public key validity (length) |
+| `verifyAddress(address, options?)`             | Verify address checksum and chain  |
+
+### Hashing
+
+| Function         | Description      |
+| ---------------- | ---------------- |
+| `blake2b(input)` | Blake2b-256 hash |
+| `keccak(input)`  | Keccak-256 hash  |
+| `sha256(input)`  | SHA-256 hash     |
+
+### Random
+
+| Function              | Description                          |
+| --------------------- | ------------------------------------ |
+| `randomBytes(size)`   | Generate random bytes                |
+| `random(count, type)` | Generate random data in typed format |
+
+### Base Encoding / Decoding
+
+| Function                                      | Description     |
+| --------------------------------------------- | --------------- |
+| `base58Encode(input)` / `base58Decode(input)` | Base58 encoding |
+| `base64Encode(input)` / `base64Decode(input)` | Base64 encoding |
+| `base16Encode(input)` / `base16Decode(input)` | Hex encoding    |
+
+### String / Bytes Conversion
+
+| Function                          | Description                            |
+| --------------------------------- | -------------------------------------- |
+| `stringToBytes(str, encoding?)`   | Convert string to bytes (UTF-8 or raw) |
+| `bytesToString(bytes, encoding?)` | Convert bytes to string                |
+
+### Messaging
+
+| Function                                         | Description                     |
+| ------------------------------------------------ | ------------------------------- |
+| `sharedKey(privateKeyFrom, publicKeyTo, prefix)` | Diffie-Hellman shared key       |
+| `messageEncrypt(sharedKey, message)`             | Encrypt message with shared key |
+| `messageDecrypt(sharedKey, encryptedMessage)`    | Decrypt message                 |
+
+### Encryption
+
+| Function                                    | Description                                 |
+| ------------------------------------------- | ------------------------------------------- |
+| `aesEncrypt(data, key, mode?, iv?)`         | AES encryption (CBC, CTR, ECB, etc.)        |
+| `aesDecrypt(data, key, mode?, iv?)`         | AES decryption                              |
+| `encryptSeed(seed, password, rounds?)`      | Encrypt seed with password (OpenSSL format) |
+| `decryptSeed(encrypted, password, rounds?)` | Decrypt seed                                |
+
+### RSA
+
+| Function                                            | Description                   |
+| --------------------------------------------------- | ----------------------------- |
+| `rsaKeyPair(bits?, e?)`                             | Generate RSA key pair (async) |
+| `rsaKeyPairSync(bits?, e?)`                         | Generate RSA key pair (sync)  |
+| `rsaSign(privateKey, message, digest?)`             | RSA PKCS#1 v1.5 sign          |
+| `rsaVerify(publicKey, message, signature, digest?)` | RSA verify                    |
+
+### BLS12-381
+
+| Function                                   | Description                     |
+| ------------------------------------------ | ------------------------------- |
+| `blsKeyPair(seed)`                         | Generate BLS key pair from seed |
+| `blsPublicKey(secretKey)`                  | Derive BLS public key           |
+| `blsSign(secretKey, message)`              | BLS signature                   |
+| `blsVerify(publicKey, message, signature)` | BLS verification                |
+
+### Utilities
+
+| Function                     | Description                |
+| ---------------------------- | -------------------------- |
+| `concat(...binaries)`        | Concatenate binary inputs  |
+| `split(binary, ...sizes)`    | Split binary into parts    |
+| `ChainId.toNumber(chainId)`  | Convert chain ID to number |
+| `ChainId.isMainnet(chainId)` | Check if mainnet           |
+| `ChainId.isTestnet(chainId)` | Check if testnet           |
+
+### Constants
+
+| Constant             | Value    |
+| -------------------- | -------- |
+| `PUBLIC_KEY_LENGTH`  | 32       |
+| `PRIVATE_KEY_LENGTH` | 32       |
+| `SIGNATURE_LENGTH`   | 64       |
+| `ADDRESS_LENGTH`     | 26       |
+| `MAIN_NET_CHAIN_ID`  | 76 (`L`) |
+| `TEST_NET_CHAIN_ID`  | 84 (`T`) |
+
+## Browser
+
+A UMD bundle is built at `dist/index.umd.min.js` exposing `DCCCrypto` globally:
+
+```html
+<script src="https://unpkg.com/@decentralchain/ts-lib-crypto/dist/index.umd.min.js"></script>
+<script>
+  const { address, randomSeed } = DCCCrypto;
+  console.log(address(randomSeed()));
+</script>
 ```
-## Constants
-There are several useful constants declared in **ts-lib-crypto**:
-```ts
-const PUBLIC_KEY_LENGTH = 32
-const PRIVATE_KEY_LENGTH = 32
-const SIGNATURE_LENGTH = 64
-const ADDRESS_LENGTH = 26
 
-const MAIN_NET_CHAIN_ID = 76 // L (DecentralChain mainnet)
-const TEST_NET_CHAIN_ID = 84 // T
+## Development
+
+### Prerequisites
+
+- Node.js >= 22 (24 recommended)
+- npm >= 10
+
+### Setup
+
+```bash
+git clone https://github.com/Decentral-America/ts-lib-crypto.git
+cd ts-lib-crypto
+npm install
 ```
-## Interface 
-The full **IDCCCrypto** interface can be found on the [project's GitHub](https://github.com/Decentral-America/ts-lib-crypto) in [interface.ts](https://github.com/Decentral-America/ts-lib-crypto/blob/master/src/crypto/interface.ts).
-```ts
-  //Seeds, keys and addresses
-  seedWithNonce: (seed: TSeed, nonce: number) => INonceSeed
-  keyPair: (seed: TSeed) => TKeyPair<TBytesOrBase58>
-  publicKey: (seed: TSeed) => TBytesOrBase58
-  privateKey: (seed: TSeed) => TBytesOrBase58
-  address: (seedOrPublicKey: TSeed | TPublicKey<TBinaryIn>, chainId?: TChainId) => TBytesOrBase58
 
-  //Signature
-  signBytes: (seedOrPrivateKey: TSeed | TPrivateKey<TBinaryIn>, bytes: TBinaryIn, random?: TBinaryIn) => TDesiredOut
-  //Hashing 
-  blake2b: (input: TBinaryIn) => TBytes
-  keccak: (input: TBinaryIn) => TBytes
-  sha256: (input: TBinaryIn) => TBytes
+### Scripts
 
-  //Base encoding\decoding
-  base64Encode: (input: TBinaryIn) => TBase64
-  base64Decode: (input: TBase64) => TBytes //throws (invalid input)
-  base58Encode: (input: TBinaryIn) => TBase58
-  base58Decode: (input: TBase58) => TBytes //throws (invalid input)
-  base16Encode: (input: TBinaryIn) => TBase16
-  base16Decode: (input: TBase16) => TBytes //throws (invalid input)
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `npm run build`         | Build ESM + CJS + UMD via tsup       |
+| `npm test`              | Run tests                            |
+| `npm run test:watch`    | Tests in watch mode                  |
+| `npm run test:coverage` | Tests with V8 coverage               |
+| `npm run typecheck`     | TypeScript type checking             |
+| `npm run lint`          | ESLint                               |
+| `npm run format`        | Format with Prettier                 |
+| `npm run validate`      | Full CI validation pipeline          |
+| `npm run bulletproof`   | Format + lint fix + typecheck + test |
 
-  //Utils
-  stringToBytes: (input: string) => TBytes
-  bytesToString: (input: TBinaryIn) => string
-  split: (binary: TBinaryIn, ...sizes: number[]) => TBytes[]
-  concat: (...binaries: TBinaryIn[]) => TBytes
+### Quality Gates
 
-  //Random
-  random<T extends keyof TRandomTypesMap>(count: number, type: T): TRandomTypesMap[T]
-  randomBytes: (size: number) => TBytes
-  randomSeed: (wordsCount?: number) => string
+All PRs must pass:
 
-  //Verification
-  verifySignature: (publicKey: TBinaryIn, bytes: TBinaryIn, signature: TBinaryIn) => boolean
-  verifyPublicKey: (publicKey: TBinaryIn) => boolean
-  verifyAddress: (address: TBinaryIn, optional?: { chainId?: TChainId, publicKey?: TBinaryIn }) => boolean
-
-  //Messaging
-  sharedKey: (privateKeyFrom: TBinaryIn, publicKeyTo: TBinaryIn, prefix: TRawStringIn) => TBytesOrBase58
-  messageDecrypt: (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn) => string
-  messageEncrypt: (sharedKey: TBinaryIn, message: TRawStringIn) => TBytes
-
-  //Encryption
-  aesEncrypt: (data: TRawStringIn, secret: TBinaryIn, mode?: AESMode, iv?: TBinaryIn) => TBytes
-  aesDecrypt: (encryptedData: TBinaryIn, secret: TBinaryIn, mode?: AESMode, iv?: TBinaryIn) => TBytes
+```bash
+npm run format:check    # No formatting issues
+npm run lint            # No lint errors
+npm run typecheck       # No type errors
+npm run test            # All tests pass
+npm run build           # Clean build
+npm run check:publint   # Package structure valid
+npm run check:exports   # Type exports valid
+npm run check:size      # Within size budget
 ```
-## More examples
-Every example used in this document and many more can be found on the [project's GitHub](https://github.com/Decentral-America/ts-lib-crypto) inside [examples](https://github.com/Decentral-America/ts-lib-crypto/tree/master/examples) folder.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 
-MIT
+[MIT](./LICENSE) — Copyright (c) 2026-present DecentralChain
