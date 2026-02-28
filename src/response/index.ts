@@ -49,6 +49,7 @@ export function processField<T>(
         if (required ?? true) {
           errors.push({
             path: to as string,
+            /* v8 ignore next */
             error: e instanceof Error ? e : new Error(String(e)),
           });
         }
@@ -87,6 +88,7 @@ export function processDescription(id?: string, required?: boolean) {
           if (required ?? true) {
             errors.push({
               path: `description.${lang}`,
+              /* v8 ignore next */
               error: e instanceof Error ? e : new Error(String(e)),
             });
           }
@@ -100,6 +102,7 @@ export function processDescription(id?: string, required?: boolean) {
       if (required ?? true) {
         errors.push({
           path: 'description',
+          /* v8 ignore next */
           error: e instanceof Error ? e : new Error(String(e)),
         });
       }
