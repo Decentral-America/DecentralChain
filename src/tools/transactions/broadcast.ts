@@ -2,7 +2,7 @@ import { TLong } from '../../interface';
 import { broadcast } from '../../api-node/transactions';
 import { head, toArray } from '../utils';
 import wait from './wait';
-import { Long, SignedTransaction, Transaction, TransactionMap, WithApiMixin } from '@waves/ts-types';
+import { Long, SignedTransaction, Transaction, TransactionMap, WithApiMixin } from '@decentralchain/ts-types';
 
 
 const DEFAULT_BROADCAST_OPTIONS: IOptions = {
