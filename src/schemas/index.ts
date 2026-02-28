@@ -4,9 +4,9 @@ import {
   DATA_PROVIDER_VERSIONS,
   ORACLE_ASSET_FIELD_PATTERN,
   STATUS_LIST,
-} from '../constants';
-import { IProviderData, TProviderAsset } from '../interface';
-import { addAssetId, processDescription, processField, schema } from '../response';
+} from '../constants.js';
+import type { IProviderData, TProviderAsset } from '../interface.js';
+import { addAssetId, processDescription, processField, schema } from '../response/index.js';
 import {
   addAssetVersion,
   addVersion,
@@ -16,7 +16,7 @@ import {
   toAssetField,
   toField,
   toFields,
-} from '../utils';
+} from '../utils/index.js';
 
 export const DATA_PROVIDER_VERSION_MAP = {
   [DATA_PROVIDER_VERSIONS.BETA]: schema<IProviderData>(
@@ -26,7 +26,7 @@ export const DATA_PROVIDER_VERSION_MAP = {
     processField(DATA_PROVIDER_KEYS.EMAIL, 'email', DATA_ENTRY_TYPES.STRING),
     processDescription(),
   ),
-};
+} as const;
 
 export const ASSETS_VERSION_MAP = {
   [DATA_PROVIDER_VERSIONS.BETA]: (id: string, status: STATUS_LIST) => {
@@ -37,30 +37,30 @@ export const ASSETS_VERSION_MAP = {
       case STATUS_LIST.NOT_VERIFY:
         return schema<TProviderAsset>(
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION as string),
             'version',
             DATA_ENTRY_TYPES.INTEGER,
           ),
           addAssetId(id),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.STATUS),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.STATUS as string),
             'status',
             DATA_ENTRY_TYPES.INTEGER,
           ),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.LINK),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.LINK as string),
             'link',
             DATA_ENTRY_TYPES.STRING,
             false,
           ),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.TICKER),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.TICKER as string),
             'ticker',
             DATA_ENTRY_TYPES.STRING,
             false,
           ),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.EMAIL),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.EMAIL as string),
             'email',
             DATA_ENTRY_TYPES.STRING,
             false,
@@ -71,25 +71,33 @@ export const ASSETS_VERSION_MAP = {
       case STATUS_LIST.VERIFIED:
         return schema<TProviderAsset>(
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.VERSION as string),
             'version',
             DATA_ENTRY_TYPES.INTEGER,
           ),
           addAssetId(id),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.STATUS),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.STATUS as string),
             'status',
             DATA_ENTRY_TYPES.INTEGER,
           ),
-          processField(replacer(ORACLE_ASSET_FIELD_PATTERN.LOGO), 'logo', DATA_ENTRY_TYPES.STRING),
-          processField(replacer(ORACLE_ASSET_FIELD_PATTERN.LINK), 'link', DATA_ENTRY_TYPES.STRING),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.TICKER),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.LOGO as string),
+            'logo',
+            DATA_ENTRY_TYPES.STRING,
+          ),
+          processField(
+            replacer(ORACLE_ASSET_FIELD_PATTERN.LINK as string),
+            'link',
+            DATA_ENTRY_TYPES.STRING,
+          ),
+          processField(
+            replacer(ORACLE_ASSET_FIELD_PATTERN.TICKER as string),
             'ticker',
             DATA_ENTRY_TYPES.STRING,
           ),
           processField(
-            replacer(ORACLE_ASSET_FIELD_PATTERN.EMAIL),
+            replacer(ORACLE_ASSET_FIELD_PATTERN.EMAIL as string),
             'email',
             DATA_ENTRY_TYPES.STRING,
           ),
@@ -97,7 +105,7 @@ export const ASSETS_VERSION_MAP = {
         );
     }
   },
-};
+} as const;
 
 export const DATA_TO_FIELDS = {
   PROVIDER: toFields(
