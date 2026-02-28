@@ -6,7 +6,7 @@ import {
   TPairsRequest,
   TPairJSON,
 } from '../types';
-import { AssetPair } from '@waves/data-entities';
+import { AssetPair } from '@decentralchain/data-entities';
 import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
 
