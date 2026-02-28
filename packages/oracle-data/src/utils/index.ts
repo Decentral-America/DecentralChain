@@ -190,4 +190,5 @@ export function replaceKey(id: string, lang?: string): (key: string) => string {
       : key.replace(PATTERNS.ASSET_ID, `<${id}>`);
 }
 
-export type TItemOrList<T> = T | T[];
+/** Internal type for single item or array. */
+type TItemOrList<T> = T | T[];
