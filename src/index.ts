@@ -1,5 +1,6 @@
 import { crypto } from './crypto/crypto';
 export { seedWordsList } from './crypto/seed-words-list';
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- intentional backwards-compat re-export
 export { ChainId, ChaidId } from './extensions/chain-id';
 export { Seed } from './extensions/seed';
 export { isPrivateKey, isPublicKey } from './crypto/util';
