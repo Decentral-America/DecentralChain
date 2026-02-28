@@ -150,7 +150,7 @@ describe('Candles endpoint: ', () => {
   });
 });
 
-describe('ExchangeTxs endpoint: ', async () => {
+describe('ExchangeTxs endpoint: ', () => {
   type Case = { label: string; params: any[]; expectedUrl?: string };
   const goodCases: Case[] = [
     {
@@ -213,7 +213,7 @@ describe('ExchangeTxs endpoint: ', async () => {
   });
 });
 
-describe('TransferTxs endpoint: ', async () => {
+describe('TransferTxs endpoint: ', () => {
   type Case = { label: string; params: any[]; expectedUrl?: string };
   const goodCases: Case[] = [
     {
