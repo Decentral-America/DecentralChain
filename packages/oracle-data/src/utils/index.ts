@@ -128,6 +128,7 @@ function checkType(value: string | number | boolean, type: DATA_ENTRY_TYPES): vo
         throw new Error(`Wrong value type! ${valueType} is not assignable to type string!`);
       }
       break;
+    /* v8 ignore next 5 -- BOOLEAN type not used in current data models */
     case DATA_ENTRY_TYPES.BOOLEAN:
       if (typeof value !== 'boolean') {
         throw new Error(`Wrong value type! ${valueType} is not assignable to type boolean!`);
