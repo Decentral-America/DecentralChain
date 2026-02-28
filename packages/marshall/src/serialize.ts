@@ -1,7 +1,7 @@
-import { BYTE, LEN, SHORT, STRING, TSerializer } from './serializePrimitives';
+import { BYTE, LEN, SHORT, STRING, type TSerializer } from './serializePrimitives';
 import { concat } from './libs/utils';
 import { getTransactionSchema, orderVersionMap } from './schemas';
-import { TSchema } from './schemaTypes';
+import { type TSchema } from './schemaTypes';
 
 export type TFromLongConverter<LONG> = (v: LONG) => string;
 
@@ -34,9 +34,9 @@ export const serializerFromSchema =
         let data;
         // Name as array means than we need to serialize many js fields as one binary object. E.g. we need to add length
         if (Array.isArray(name)) {
-          data = name.reduce(
+          data = name.reduce<any>(
             (acc, fieldName) => ({ ...acc, [fieldName]: obj[fieldName] }),
-            {} as any,
+            {},
           );
         } else {
           data = obj[name];
@@ -90,10 +90,23 @@ export const serializerFromSchema =
       itemBytes = serializer(obj.value);
       return concat(keyBytes, BYTE(typeCode), itemBytes);
     } else {
-      throw new Error(`Serializer Error: Unknown schema type: ${schema!.type}`);
+      throw new Error(`Serializer Error: Unknown schema type: ${schema.type}`);
     }
   };
 
+/**
+ * Serializes a DecentralChain transaction to binary bytes.
+ * Automatically resolves the correct schema from `tx.type` and `tx.version`.
+ *
+ * @param tx - The transaction object to serialize
+ * @param fromLongConverter - Optional converter for custom LONG types to string
+ * @returns Binary representation as `Uint8Array`
+ *
+ * @example
+ * ```typescript
+ * const bytes = serializeTx({ type: 4, version: 2, ... });
+ * ```
+ */
 export function serializeTx<LONG = string | number>(
   tx: any,
   fromLongConverter?: TFromLongConverter<LONG>,
@@ -104,6 +117,18 @@ export function serializeTx<LONG = string | number>(
   return serializerFromSchema(schema, fromLongConverter)(tx);
 }
 
+/**
+ * Serializes a DEX order to binary bytes.
+ *
+ * @param ord - The order object to serialize
+ * @param fromLongConverter - Optional converter for custom LONG types to string
+ * @returns Binary representation as `Uint8Array`
+ *
+ * @example
+ * ```typescript
+ * const bytes = serializeOrder({ version: 2, ... });
+ * ```
+ */
 export function serializeOrder<LONG = string | number>(
   ord: any,
   fromLongConverter?: TFromLongConverter<LONG>,

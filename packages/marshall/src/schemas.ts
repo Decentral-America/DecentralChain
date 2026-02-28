@@ -28,13 +28,13 @@ import {
   P_INT,
 } from './parsePrimitives';
 import {
-  TObject,
-  TSchema,
+  type TObject,
+  type TSchema,
   DATA_FIELD_TYPE,
-  TDataTxItem,
-  TObjectField,
+  type TDataTxItem,
+  type TObjectField,
   anyOf,
-  TPrimitive,
+  type TPrimitive,
 } from './schemaTypes';
 import { serializerFromSchema } from './serialize';
 
@@ -720,7 +720,7 @@ export const orderVersionMap: Record<number, TObject> = {
 };
 
 export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): TSchema {
-  const schemas = (<any>schemasByTypeMap)[type];
+  const schemas = (schemasByTypeMap as any)[type];
   if (typeof schemas !== 'object') {
     throw new Error(`Incorrect tx type: ${type}`);
   }

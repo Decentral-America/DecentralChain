@@ -74,7 +74,8 @@ export const LONG: TSerializer<number | string> = (value: number | string) => {
     }
     l = Long.fromNumber(value);
   } else {
-    l = Long.fromString(value.toString());
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion -- value may be a Long object at runtime
+    l = Long.fromString(String(value));
   }
   return Uint8Array.from(l.toBytesBE());
 };
@@ -84,7 +85,7 @@ export const SCRIPT: TSerializer<string | null> = (script) =>
 
 export const ALIAS: TSerializer<string> = (val) => {
   const [, byte, alias] = val.split(':');
-  if (!byte || byte.length !== 1) throw new Error('Invalid network byte in alias');
+  if (byte?.length !== 1) throw new Error('Invalid network byte in alias');
   if (!alias || alias.length === 0) throw new Error('Invalid alias body');
   return concat([2], [byte.charCodeAt(0)], LEN(SHORT)(STRING)(alias));
 };
