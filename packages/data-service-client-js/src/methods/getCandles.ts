@@ -1,4 +1,4 @@
-import { Candle } from '@waves/data-entities';
+import { Candle } from '@decentralchain/data-entities';
 import {
   ILibOptions,
   ILibRequest,
