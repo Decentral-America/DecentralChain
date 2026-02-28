@@ -3,111 +3,149 @@ import request from '../../tools/request';
 import query from '../../tools/query';
 import { DataTransactionEntry } from '@decentralchain/ts-types';
 
-
-export function fetchDataKey(base: string, address: string, key: string, options: RequestInit = Object.create(null)): Promise<DataTransactionEntry<TLong>> {
-    return request({
-        base,
-        url: `/addresses/data/${address}/${encodeURIComponent(key)}`,
-        options
-    });
+export function fetchDataKey(
+  base: string,
+  address: string,
+  key: string,
+  options: RequestInit = Object.create(null),
+): Promise<DataTransactionEntry<TLong>> {
+  return request({
+    base,
+    url: `/addresses/data/${address}/${encodeURIComponent(key)}`,
+    options,
+  });
 }
 
-export function fetchScriptInfoMeta(base: string, address: string): Promise<IScriptInfoMetaResponse> {
-    return request({
-        base,
-        url: `/addresses/scriptInfo/${address}/meta`
-    });
+export function fetchScriptInfoMeta(
+  base: string,
+  address: string,
+): Promise<IScriptInfoMetaResponse> {
+  return request({
+    base,
+    url: `/addresses/scriptInfo/${address}/meta`,
+  });
 }
 
-export function fetchBalanceDetails(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceDetails<TLong>> {
-    return request({
-        base,
-        url: `/addresses/balance/details/${address}`,
-        options
-    });
+export function fetchBalanceDetails(
+  base: string,
+  address: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBalanceDetails<TLong>> {
+  return request({
+    base,
+    url: `/addresses/balance/details/${address}`,
+    options,
+  });
 }
 
-export function fetchBalanceConfirmations(base: string, address: string, confirmations: number, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
-    return request({
-        base,
-        url: `/addresses/balance/${address}/${confirmations}`,
-        options
-    });
+export function fetchBalanceConfirmations(
+  base: string,
+  address: string,
+  confirmations: number,
+  options: RequestInit = Object.create(null),
+): Promise<IBalanceConfirmations<TLong>> {
+  return request({
+    base,
+    url: `/addresses/balance/${address}/${confirmations}`,
+    options,
+  });
 }
 
-export function fetchScriptInfo(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfo<TLong>> {
-    return request({
-        base,
-        url: `/addresses/scriptInfo/${address}`,
-        options
-    });
+export function fetchScriptInfo(
+  base: string,
+  address: string,
+  options: RequestInit = Object.create(null),
+): Promise<IScriptInfo<TLong>> {
+  return request({
+    base,
+    url: `/addresses/scriptInfo/${address}`,
+    options,
+  });
 }
 
-export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options: RequestInit = Object.create(null)): Promise<Array<DataTransactionEntry<TLong>>> {
-    return request({
-        base,
-        url: `/addresses/data/${address}${query(params)}`,
-        options
-    });
+export function data(
+  base: string,
+  address: string,
+  params: IDataQueryParams = Object.create(null),
+  options: RequestInit = Object.create(null),
+): Promise<Array<DataTransactionEntry<TLong>>> {
+  return request({
+    base,
+    url: `/addresses/data/${address}${query(params)}`,
+    options,
+  });
 }
 
 export function fetchValidate(base: string, address: string): Promise<IValidateResponse> {
-    return request({
-        base,
-        url: `/addresses/validate/${address}`
-    });
+  return request({
+    base,
+    url: `/addresses/validate/${address}`,
+  });
 }
 
-export function fetchBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
-    return request({
-        base,
-        url: `/addresses/balance/${address}`,
-        options
-    });
+export function fetchBalance(
+  base: string,
+  address: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBalanceConfirmations<TLong>> {
+  return request({
+    base,
+    url: `/addresses/balance/${address}`,
+    options,
+  });
 }
 
-export function fetchEffectiveBalanceConfirmations(base: string, address: string, confirmations: number, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
-    return request({
-        base,
-        url: `/addresses/effectiveBalance/${address}/${confirmations}`,
-        options
-    });
+export function fetchEffectiveBalanceConfirmations(
+  base: string,
+  address: string,
+  confirmations: number,
+  options: RequestInit = Object.create(null),
+): Promise<IBalanceConfirmations<TLong>> {
+  return request({
+    base,
+    url: `/addresses/effectiveBalance/${address}/${confirmations}`,
+    options,
+  });
 }
 
-export function fetchEffectiveBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
-    return request({
-        base,
-        url: `/addresses/effectiveBalance/${address}`,
-        options
-    });
+export function fetchEffectiveBalance(
+  base: string,
+  address: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBalanceConfirmations<TLong>> {
+  return request({
+    base,
+    url: `/addresses/effectiveBalance/${address}`,
+    options,
+  });
 }
 
 export function fetchSeq(base: string, from: number, to: number): Promise<Array<string>> {
-    return request({
-        base,
-        url: `/addresses/seq/${from}/${to}`
-    })
+  return request({
+    base,
+    url: `/addresses/seq/${from}/${to}`,
+  });
 }
 
 export function fetchSeed(base: string, address: string): Promise<string> {
-    return request({
-        base,
-        url: `/addresses/seed/${address}`
-    })
+  return request({
+    base,
+    url: `/addresses/seed/${address}`,
+  });
 }
 
 export function fetchPublicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
-    return request({
-        base,
-        url: `/addresses/publicKey/${publicKey}`
-    })
+  return request({
+    base,
+    url: `/addresses/publicKey/${publicKey}`,
+  });
 }
 
 export function fetchAddresses(base: string): Promise<Array<string>> {
-    return request({
-        base,
-        url: '/addresses'
-    });
+  return request({
+    base,
+    url: '/addresses',
+  });
 }
 
 // @TODO: when correct API key is received
@@ -119,70 +157,70 @@ export function fetchAddresses(base: string): Promise<Array<string>> {
 //  /addresses/{address}   DELETE
 
 export interface IBalanceConfirmations<LONG> {
-    address: string;
-    confirmations: number;
-    balance: LONG;
+  address: string;
+  confirmations: number;
+  balance: LONG;
 }
 
 export interface IScriptInfo<LONG = TLong> {
-    address: string;
-    complexity: number;
-    callableComplexities: Record<string, number>;
-    verifierComplexity: number;
-    extraFee: LONG;
-    script?: string;
-    scriptText?: string;
+  address: string;
+  complexity: number;
+  callableComplexities: Record<string, number>;
+  verifierComplexity: number;
+  extraFee: LONG;
+  script?: string;
+  scriptText?: string;
 }
 
 export interface IDataQueryParams {
-    matches?: string;
-    keys?: string | Array<string>;
+  matches?: string;
+  keys?: string | Array<string>;
 }
 
 export interface IBalanceDetails<LONG> {
-    address: string;
-    /**
-     * Весь принадлежащий мне баланс, включая исходящий лизинг
-     * Available + LeaseOut
-     */
-    regular: LONG;
-    /**
-     * Минимальный эффективный баланс за последнюю 1000 блоков
-     */
-    generating: LONG;
-    /**
-     * Мой баланс без исходящего лизинга
-     * Баланс, который можно тратить
-     */
-    available: LONG;
-    /**
-     * Баланс для генерации блоков (включая входящий лизинг и исключая исходящий)
-     * Available + LeaseIn - LeaseOut
-     */
-    effective: LONG;
+  address: string;
+  /**
+   * Весь принадлежащий мне баланс, включая исходящий лизинг
+   * Available + LeaseOut
+   */
+  regular: LONG;
+  /**
+   * Минимальный эффективный баланс за последнюю 1000 блоков
+   */
+  generating: LONG;
+  /**
+   * Мой баланс без исходящего лизинга
+   * Баланс, который можно тратить
+   */
+  available: LONG;
+  /**
+   * Баланс для генерации блоков (включая входящий лизинг и исключая исходящий)
+   * Available + LeaseIn - LeaseOut
+   */
+  effective: LONG;
 }
 
-export type ICallableFuncArgumentType = 'Int' | 'String' | 'ByteVector' | 'Boolean'
-export type TCallableFuncArgumentsArray = { name: string, type: ICallableFuncArgumentType }[]
-export type TCallableFuncArgumentsRecord = Record<string, ICallableFuncArgumentType>
-export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord 
+export type ICallableFuncArgumentType = 'Int' | 'String' | 'ByteVector' | 'Boolean';
+export type TCallableFuncArgumentsArray = { name: string; type: ICallableFuncArgumentType }[];
+export type TCallableFuncArgumentsRecord = Record<string, ICallableFuncArgumentType>;
+export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord;
 
 export interface IScriptInfoMeta<TArguments extends TCallableFuncArguments> {
-    version: string
-    isArrayArguments?: boolean
-    callableFuncTypes: Record<string, TArguments>
+  version: string;
+  isArrayArguments?: boolean;
+  callableFuncTypes: Record<string, TArguments>;
 }
 
 export interface IScriptInfoMetaResponse {
-    address: string
-    meta: IScriptInfoMeta<TCallableFuncArguments>
+  address: string;
+  meta: IScriptInfoMeta<TCallableFuncArguments>;
 }
 
 export interface IValidateResponse {
-    address: string;
-    valid: boolean;
+  address: string;
+  valid: boolean;
 }
 
 export interface IPublicKeyResponse {
-    address: string;
+  address: string;
 }
