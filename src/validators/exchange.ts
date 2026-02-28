@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@waves/ts-types'
+import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
 import { orderValidator } from './order'
 import {
     isEq,

@@ -2,13 +2,13 @@
  * @module index
  */
 import {IUpdateAssetInfoParams, WithId, WithProofs, WithSender} from '../transactions'
-import {base58Encode, blake2b, signBytes} from '@waves/ts-lib-crypto'
+import {base58Encode, blake2b, signBytes} from '@decentralchain/ts-lib-crypto'
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 import {validate} from '../validators'
 import {TSeedTypes} from '../types'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
-import {TRANSACTION_TYPE, UpdateAssetInfoTransaction} from '@waves/ts-types'
+import {TRANSACTION_TYPE, UpdateAssetInfoTransaction} from '@decentralchain/ts-types'
 
 /* @echo DOCS */
 export function updateAssetInfo(params: IUpdateAssetInfoParams, seed: TSeedTypes): UpdateAssetInfoTransaction & WithId & WithProofs
@@ -38,7 +38,7 @@ export function updateAssetInfo(paramsOrTx: any, seed?: TSeedTypes): UpdateAsset
 >>>>>>> f33083a0 (updated dependencies)
         timestamp: paramsOrTx.timestamp || Date.now(),
         proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, 87),
+        chainId: networkByte(paramsOrTx.chainId, 76),
         id: '',
     }
 

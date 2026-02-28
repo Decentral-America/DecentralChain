@@ -1,7 +1,7 @@
 import {binary} from '@decentralchain/marshall'
-import {address, verifySignature} from '@waves/ts-lib-crypto'
-import request from '@waves/node-api-js/cjs/tools/request'
-import stringify from '@waves/node-api-js/cjs/tools/stringify'
+import {address, verifySignature} from '@decentralchain/ts-lib-crypto'
+import request from '@decentralchain/node-api-js/cjs/tools/request'
+import stringify from '@decentralchain/node-api-js/cjs/tools/stringify'
 import {TSeedTypes} from './types'
 import {issue} from './transactions/issue'
 import {transfer} from './transactions/transfer'
@@ -20,7 +20,7 @@ import {sponsorship} from './transactions/sponsorship'
 import {invokeScript} from './transactions/invoke-script'
 import {serializeCustomData, TSignedData} from './requests/custom-data'
 import {serializeAuthData} from './requests/auth'
-import {serializeWavesAuthData} from './requests/wavesAuth'
+import {serializeDccAuthData} from './requests/dccAuth'
 import {
     AliasTransaction,
     BurnTransaction,
@@ -48,7 +48,7 @@ import {
     Transaction,
     TRANSACTION_TYPE,
     TransferTransaction, UpdateAssetInfoTransaction,
-} from '@waves/ts-types'
+} from '@decentralchain/ts-types'
 import {IAuthParams, ICancelOrder, TTransaction, TTxParams, WithProofs, WithSender, WithTxType} from './transactions'
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -129,15 +129,15 @@ export function verifyCustomData(data: TSignedData): boolean {
 }
 
 export function verifyAuthData(authData: { signature: string, publicKey: string, address: string }, params: IAuthParams, chainId?: string | number): boolean {
-    chainId = chainId || '?'
+    chainId = chainId || 'L'
     const bytes = serializeAuthData(params)
     const myAddress = address({publicKey: authData.publicKey}, chainId)
     return myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)
 }
 
-export function verifyWavesAuthData(authData: { signature: string, publicKey: string, address: string, timestamp: number }, params: { publicKey: string, timestamp: number }, chainId?: string | number): boolean {
-    chainId = chainId || '?'
-    const bytes = serializeWavesAuthData(params)
+export function verifyDccAuthData(authData: { signature: string, publicKey: string, address: string, timestamp: number }, params: { publicKey: string, timestamp: number }, chainId?: string | number): boolean {
+    chainId = chainId || 'L'
+    const bytes = serializeDccAuthData(params)
     const myAddress = address({publicKey: authData.publicKey}, chainId)
     return myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)
 }
@@ -145,13 +145,13 @@ export function verifyWavesAuthData(authData: { signature: string, publicKey: st
 /**
  * Sends order to matcher
  * @param ord - transaction to send
- * @param options - matcher address to send order to. E.g. https://matcher.waves.exchange/. Optional 'market' flag to send market order
+ * @param options - matcher address to send order to. E.g. https://matcher.decentralchain.io/. Optional 'market' flag to send market order
  */
 export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSender, options: { matcherUrl: string, market?: boolean }): Promise<any>
 /**
  * Sends order to matcher
  * @param ord - transaction to send
- * @param matcherUrl - matcher address to send order to. E.g. https://matcher.waves.exchange/
+ * @param matcherUrl - matcher address to send order to. E.g. https://matcher.decentralchain.io/
  */
 export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSender, matcherUrl: string): Promise<any>
 export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSender, opts: any) {
@@ -176,7 +176,7 @@ export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSen
  * @param co - signed cancelOrder object
  * @param amountAsset - amount asset of the order to be canceled
  * @param priceAsset - price asset of the order to be canceled
- * @param matcherUrl - matcher address to send order cancel to. E.g. https://matcher.waves.exchange/
+ * @param matcherUrl - matcher address to send order cancel to. E.g. https://matcher.decentralchain.io/
  */
 export function cancelSubmittedOrder(co: ICancelOrder, amountAsset: string | null, priceAsset: string | null, matcherUrl: string) {
     const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`

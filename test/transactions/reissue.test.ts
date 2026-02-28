@@ -1,4 +1,4 @@
-import {publicKey} from '@waves/ts-lib-crypto'
+import {publicKey} from '@decentralchain/ts-lib-crypto'
 import {reissue} from '../../src'
 import {
     checkBinarySerializeDeserialize,
@@ -16,7 +16,7 @@ describe('reissue', () => {
 
     it('should build from minimal set of params', () => {
         const tx = reissue({...reissueMinimalParams} as any, stringSeed);
-        expect(tx).toMatchObject({...reissueMinimalParams, fee: 100000, chainId: 87})
+        expect(tx).toMatchObject({...reissueMinimalParams, fee: 100000, chainId: 76})
     })
 
 

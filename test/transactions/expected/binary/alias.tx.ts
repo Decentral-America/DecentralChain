@@ -1,6 +1,6 @@
 export const aliasBinaryTx = {
     'Create Alias TX (type 10 v2)  case 1 max value': {
-        'Bytes': 'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAlcAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzX3//////////AAABfeG6aK0=',
+        'Bytes': 'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAkwAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzX3//////////AAABfeG6aK0=',
         'Json':
             {
                 'id': '9K3CW7EyoNrFg4ptE4WkN2HTK8emXYi4RkPciFGor5Jg',
@@ -16,7 +16,7 @@ export const aliasBinaryTx = {
             }
     },
     'Create Alias TX (type 10 v2)  case 2 min value': {
-        'Bytes': 'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAlcAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzXwAAAAAAAYagAAABfZ90YLg=',
+        'Bytes': 'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAkwAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzXwAAAAAAAYagAAABfZ90YLg=',
         'Json':
             {
                 "id":"BrasfMP34YYDXvJsXgRq7XojyfNGpU4KDLoZ5BrQ93s9",

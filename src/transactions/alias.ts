@@ -3,13 +3,13 @@
  */
 import {IAliasParams, WithId, WithProofs, WithSender} from '../transactions'
 import { binary } from '@decentralchain/marshall'
-import { base58Encode, blake2b, signBytes } from '@waves/ts-lib-crypto'
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
 import { txToProtoBytes } from '../proto-serialize'
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
 import { TSeedTypes } from '../types'
 import { validate } from '../validators'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {AliasTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {AliasTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 
 /* @echo DOCS */
@@ -45,7 +45,7 @@ export function alias(paramsOrTx: any, seed?: TSeedTypes): AliasTransaction & Wi
         alias: paramsOrTx.alias,
         fee: fee(paramsOrTx, 100000),
         timestamp: paramsOrTx.timestamp || Date.now(),
-        chainId: networkByte(paramsOrTx.chainId, 87),
+        chainId: networkByte(paramsOrTx.chainId, 76),
         proofs: paramsOrTx.proofs || [],
         id: '',
     }

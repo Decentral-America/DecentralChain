@@ -1,4 +1,4 @@
-import {base64Encode, publicKey} from '@waves/ts-lib-crypto'
+import {base64Encode, publicKey} from '@decentralchain/ts-lib-crypto'
 import {broadcast, cancelLease, data, IDataParams, libs, makeTxBytes, WithId} from '../../src'
 import {txToProtoBytes} from '../../src/proto-serialize'
 import {
@@ -10,7 +10,7 @@ import {
 } from '../../test/utils'
 import {cancelLeaseMinimalParams, dataMinimalParams} from '../minimalParams'
 import {binary} from '@decentralchain/marshall'
-import {base64Decode} from '@waves/ts-lib-crypto/conversions/base-xx'
+import {base64Decode} from '@decentralchain/ts-lib-crypto/conversions/base-xx'
 import {dataTx} from './expected/proto/data.tx'
 import {dataBinaryTx} from './expected/binary/data.tx'
 

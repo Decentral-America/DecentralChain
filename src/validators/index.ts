@@ -28,7 +28,7 @@ import { orderValidator as order } from './order'
 import { cancelOrderValidator as cancelOrder } from './cancel-order'
 import { customDataValidator as customData } from './custom-data'
 import { authValidator as auth } from './auth'
-import { authValidator as wavesAuth } from './wavesAuth'
+import { authValidator as dccAuth } from './dccAuth'
 
 
 export const validate = {
@@ -60,6 +60,6 @@ export const validate = {
     cancelOrder,
     customData,
     order,
-    wavesAuth,
+    dccAuth,
     auth,
 }
