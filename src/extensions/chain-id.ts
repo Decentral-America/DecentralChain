@@ -15,6 +15,3 @@ export const ChainId = {
     return ChainId.toNumber(chainId) === TEST_NET_CHAIN_ID;
   },
 };
-
-/** @deprecated Use `ChainId` instead. */
-export const ChaidId = ChainId;
