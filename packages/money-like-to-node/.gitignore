@@ -1,6 +1,31 @@
-.idea
-dist
+# Dependencies
+node_modules/
+
+# Build output
+dist/
 **/*.js
 **/*.js.map
-node_modules
-coverage
+**/*.d.ts
+!src/**/*.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test / Coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local

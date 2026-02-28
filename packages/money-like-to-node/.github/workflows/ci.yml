@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run compile
+
+      - name: Test
+        run: npm test
+
+  waves-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Waves contamination in source files
+        run: |
+          echo "Checking for Waves references in source and test files..."
+          FOUND=$(grep -rni "waves" --include="*.ts" --include="*.js" . \
+            | grep -v node_modules | grep -v .git | grep -v dist || true)
+          if [ -n "$FOUND" ]; then
+            echo "ERROR: Waves references found in source files:"
+            echo "$FOUND"
+            exit 1
+          fi
+          echo "✅ No Waves references in source files"
+
+      - name: Check package.json name
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          if [ "$NAME" != "@decentralchain/money-like-to-node" ]; then
+            echo "ERROR: package.json name is '$NAME', expected '@decentralchain/money-like-to-node'"
+            exit 1
+          fi
+          echo "✅ Package name is correct: $NAME"
+
+      - name: Check for @waves in direct dependencies
+        run: |
+          # Check that no dependency key starts with @waves/
+          WAVES_DEPS=$(node -p "
+            const pkg = require('./package.json');
+            const allDeps = {...(pkg.dependencies||{}), ...(pkg.devDependencies||{})};
+            Object.keys(allDeps).filter(k => k.startsWith('@waves/')).join(', ')
+          ")
+          if [ -n "$WAVES_DEPS" ]; then
+            echo "ERROR: Found @waves/ dependency keys: $WAVES_DEPS"
+            exit 1
+          fi
+          echo "✅ No @waves/ dependency keys found"

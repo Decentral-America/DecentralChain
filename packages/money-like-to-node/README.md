@@ -1,5 +1,8 @@
 # @decentralchain/money-like-to-node
 
+[![CI](https://github.com/33imattei33/money-like-to-node/actions/workflows/ci.yml/badge.svg)](https://github.com/33imattei33/money-like-to-node/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Converts human-readable money objects to the format expected by the DecentralChain blockchain node API.
 
 ## Installation
