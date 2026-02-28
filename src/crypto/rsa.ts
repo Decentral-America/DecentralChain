@@ -27,6 +27,7 @@ export const rsaKeyPairSync = (bits?: number, e?: number): TRSAKeyPair => {
 /** Generate an RSA key pair asynchronously. */
 export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair> =>
   new Promise<TRSAKeyPair>((resolve, reject) => {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- node-forge callback typing */
     forge.pki.rsa.generateKeyPair(bits, e, function (err: any, kp: any) {
       if (err) reject(err instanceof Error ? err : new Error(String(err)));
       resolve({
@@ -34,6 +35,7 @@ export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair
         rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
       });
     });
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
   });
 
 interface DigestInfo {
@@ -103,7 +105,6 @@ export const rsaVerify = (
   digest: RSADigestAlgorithm = 'SHA256',
 ): boolean => {
   const algo = DIGEST_INFOS[digest];
-  if (!algo) throw new Error(`Unsupported digest: ${digest}`);
 
   const msgBytes = forge.util.binary.raw.encode(message);
   const sigBytes = forge.util.binary.raw.encode(signature);
@@ -139,7 +140,6 @@ export const rsaSign = (
   digest: RSADigestAlgorithm = 'SHA256',
 ): TBytes => {
   const algo = DIGEST_INFOS[digest];
-  if (!algo) throw new Error(`Unsupported digest: ${digest}`);
 
   const msgBytes = forge.util.binary.raw.encode(message);
 
@@ -159,7 +159,7 @@ export const rsaSign = (
   const tLen = digestInfo.length;
   if (tLen > k - 11) throw new Error('Message too long for RSA key size');
 
-  const PS = String.fromCharCode(...Array(k - tLen - 3).fill(0xff));
+  const PS = String.fromCharCode(...new Array<number>(k - tLen - 3).fill(0xff));
   const EM = '\x00\x01' + PS + '\x00' + digestInfo;
 
   // RSA encrypt with private key

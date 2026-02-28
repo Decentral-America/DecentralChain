@@ -4,6 +4,7 @@ import { type TBytes, type TRandomTypesMap } from './interface';
 import { seedWordsList } from './seed-words-list';
 import { stringToBytes } from '../conversions/string-bytes';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- node-forge has no type declarations
 const _random = (count: number) => stringToBytes(forgeRand.getBytesSync(count), 'raw');
 
 /** Generate random data in the specified typed format. */

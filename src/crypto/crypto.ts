@@ -64,35 +64,38 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
   type Return<TFunc> = TFunc extends (...args: any) => infer R ? R : unknown;
 
   const c =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- generic wrapper
     <TFunc extends Function>(f: TFunc, first: ArgsFirstRest<TFunc>[0]) =>
-    (...args: ArgsFirstRest<TFunc>[1]) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
-      f(first, ...args) as Return<TFunc>;
+      (...args: ArgsFirstRest<TFunc>[1]) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
+        f(first, ...args) as Return<TFunc>;
 
   const toOut =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- generic wrapper
     <F extends Function>(f: F) =>
-    (...args: ArgsAll<F>): TOutputTypesMap[TOut] => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment -- generic Function wrapper
-      const r = f(...args);
-      if (!options || options.output === 'Base58') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- return type of generic Function
-        return base58Encode(r) as TOutputTypesMap[TOut];
-      } else {
-        return r as TOutputTypesMap[TOut];
-      }
-    };
+      (...args: ArgsAll<F>): TOutputTypesMap[TOut] => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment -- generic Function wrapper
+        const r = f(...args);
+        if (!options || options.output === 'Base58') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- return type of generic Function
+          return base58Encode(r) as TOutputTypesMap[TOut];
+        } else {
+          return r as TOutputTypesMap[TOut];
+        }
+      };
 
   const toOutKey =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- generic wrapper
     <F extends Function>(f: F) =>
-    (...args: ArgsAll<F>): TKeyPair<TOutputTypesMap[TOut]> => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
-      const r = f(...args) as TKeyPair;
-      return (
-        !options || options.output === 'Base58'
-          ? { privateKey: base58Encode(r.privateKey), publicKey: base58Encode(r.publicKey) }
-          : r
-      ) as TKeyPair<TOutputTypesMap[TOut]>;
-    };
+      (...args: ArgsAll<F>): TKeyPair<TOutputTypesMap[TOut]> => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
+        const r = f(...args) as TKeyPair;
+        return (
+          !options || options.output === 'Base58'
+            ? { privateKey: base58Encode(r.privateKey), publicKey: base58Encode(r.publicKey) }
+            : r
+        ) as TKeyPair<TOutputTypesMap[TOut]>;
+      };
 
   const s = options?.seed ?? undefined;
 
