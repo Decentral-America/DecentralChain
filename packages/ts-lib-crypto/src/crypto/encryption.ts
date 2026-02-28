@@ -17,6 +17,7 @@ export const aesEncrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment -- node-forge has no type declarations
   const cipher = forgeCipher.createCipher(`AES-${mode}` as any, bytesToString(_fromIn(key), 'raw'));
   cipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
   cipher.update(util.createBuffer(bytesToString(data, 'raw')));
