@@ -38,6 +38,7 @@ export function parseOracleData(hash: Record<string, TDataTxField>): TResponse<I
       errors: [
         {
           path: 'version',
+          /* v8 ignore next */
           error: e instanceof Error ? e : new Error(String(e)),
         },
       ],
@@ -75,6 +76,7 @@ export function parseAssetData(hash: Record<string, TDataTxField>): TResponse<TP
           errors: [
             {
               path: 'version',
+              /* v8 ignore next */
               error: e instanceof Error ? e : new Error(String(e)),
             },
           ],

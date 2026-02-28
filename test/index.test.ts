@@ -318,6 +318,76 @@ describe('Data provider tests', () => {
         expect(result[0].status).toEqual(RESPONSE_STATUSES.ERROR);
         expect((result[0] as IErrorResponse<TProviderAsset>).errors[0].path).toEqual('version');
       });
+
+      it('Handles optional missing description lang gracefully (required=false)', () => {
+        // SCAM assets use processDescription(id, false) - missing desc lang should NOT produce error
+        const assetId = 'SCAMWITHLANG12345678901234567890123456789';
+        const fields: TDataTxField[] = [
+          ...PROVIDER_FIELDS,
+          {
+            key: `version_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: `status_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.SCAM,
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        // Should succeed even though description is missing (optional for SCAM)
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.OK);
+      });
+
+      it('Returns error for missing required description lang (required=true)', () => {
+        // VERIFIED assets use processDescription(id) - missing desc lang SHOULD produce error
+        const assetId = 'VERIFIEDMISSINGDESC1234567890123456789012';
+        const fields: TDataTxField[] = [
+          ...PROVIDER_FIELDS,
+          {
+            key: `version_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: `status_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.VERIFIED,
+          },
+          {
+            key: `logo_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'some-logo',
+          },
+          {
+            key: `link_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'https://example.com',
+          },
+          {
+            key: `ticker_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'TKR',
+          },
+          {
+            key: `email_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'test@example.com',
+          },
+          // Deliberately missing description_<en>_<assetId>
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        // Should have error because description is required for VERIFIED
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.ERROR);
+        expect(
+          (result[0] as IErrorResponse<TProviderAsset>).errors.some((e) =>
+            e.path.includes('description'),
+          ),
+        ).toBe(true);
+      });
     });
   });
 
