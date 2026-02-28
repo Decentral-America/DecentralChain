@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- node-forge has no type declarations */
 import { type TBinaryIn, type TBytes } from './interface';
 import { _fromIn } from '../conversions/param';
 import { keccak256 } from '../libs/sha3';
-// @ts-expect-error -- no type declarations for node-forge submodule
 import * as forgeHmac from 'node-forge/lib/hmac';
-// @ts-expect-error -- no type declarations for node-forge submodule
 import * as forgeMd from 'node-forge/lib/md';
 import 'node-forge/lib/sha256';
 import * as blake from '../libs/blake2b';

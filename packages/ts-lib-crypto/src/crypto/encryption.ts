@@ -1,6 +1,4 @@
-// @ts-expect-error -- no type declarations for node-forge submodule
 import * as forgeCipher from 'node-forge/lib/cipher';
-// @ts-expect-error -- no type declarations for node-forge submodule
 import * as util from 'node-forge/lib/util';
 import { type TBinaryIn, type TRawStringIn, type TBytes, type AESMode } from './interface';
 import { randomBytes } from './random';
@@ -17,13 +15,11 @@ export const aesEncrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
-  const cipher = forgeCipher.createCipher(`AES-${mode}` as any, bytesToString(_fromIn(key), 'raw'));
+  const cipher = forgeCipher.createCipher(`AES-${mode}`, bytesToString(_fromIn(key), 'raw'));
   cipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
   cipher.update(util.createBuffer(bytesToString(data, 'raw')));
   cipher.finish();
   return stringToBytes(cipher.output.getBytes(), 'raw');
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
 };
 
 /** Decrypt AES-encrypted data with the specified mode. */
@@ -33,11 +29,7 @@ export const aesDecrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
-  const decipher = forgeCipher.createDecipher(
-    `AES-${mode}` as any,
-    bytesToString(_fromIn(key), 'raw'),
-  );
+  const decipher = forgeCipher.createDecipher(`AES-${mode}`, bytesToString(_fromIn(key), 'raw'));
   decipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
   const encbuf = util.createBuffer(bytesToString(_fromIn(encryptedData), 'raw'));
   decipher.update(encbuf);
@@ -45,7 +37,6 @@ export const aesDecrypt = (
     throw new Error('Failed to decrypt data with provided key');
   }
   return stringToBytes(decipher.output.getBytes(), 'raw');
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
 };
 
 /** Encrypt a message using a shared key (Curve25519 ECDH + AES-CTR + HMAC). */
@@ -67,22 +58,29 @@ export const messageEncrypt = (sharedKey: TBinaryIn, message: string): TBytes =>
 
 /** Decrypt a message encrypted with {@link messageEncrypt}. */
 export const messageDecrypt = (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn): string => {
-  /* eslint-disable @typescript-eslint/no-non-null-assertion -- split() segments are guaranteed by size parameters */
-  const [, Ccek, _CEKhmac, _Mhmac, iv, Cc] = split(encryptedMessage, 1, 48, 32, 32, 16);
+  const parts = split(encryptedMessage, 1, 48, 32, 32, 16);
+  const Ccek = parts[1];
+  const _CEKhmac = parts[2];
+  const _Mhmac = parts[3];
+  const iv = parts[4];
+  const Cc = parts[5];
 
-  const CEK = aesDecrypt(Ccek!, sharedKey, 'ECB');
+  if (!Ccek || !_CEKhmac || !_Mhmac || !iv || !Cc) {
+    throw new Error('Failed to decrypt: malformed encrypted message');
+  }
 
-  const CEKhmac = _fromIn(hmacSHA256(concat(CEK, iv!), _fromIn(sharedKey)));
+  const CEK = aesDecrypt(Ccek, sharedKey, 'ECB');
 
-  const isValidKey = CEKhmac.every((v: number, i: number) => v === _CEKhmac![i]);
+  const CEKhmac = _fromIn(hmacSHA256(concat(CEK, iv), _fromIn(sharedKey)));
+
+  const isValidKey = CEKhmac.every((v: number, i: number) => v === _CEKhmac[i]);
   if (!isValidKey) throw new Error('Invalid key');
 
-  const M = aesDecrypt(Cc!, CEK, 'CTR', iv);
+  const M = aesDecrypt(Cc, CEK, 'CTR', iv);
   const Mhmac = _fromIn(hmacSHA256(M, CEK));
 
-  const isValidMessage = Mhmac.every((v: number, i: number) => v === _Mhmac![i]);
+  const isValidMessage = Mhmac.every((v: number, i: number) => v === _Mhmac[i]);
   if (!isValidMessage) throw new Error('Invalid message');
-  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
   return bytesToString(M);
 };
