@@ -1,10 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig([
-  // ── ESM + CJS (for Node / bundlers) ────────────────────────────
+  // ── ESM (for Node / bundlers) ───────────────────────────────────
   {
     entry: ['src/index.ts', 'src/bytes.ts'],
-    format: ['esm', 'cjs'],
+    format: ['esm'],
     dts: true,
     sourcemap: true,
     clean: true,
@@ -12,8 +12,8 @@ export default defineConfig([
     splitting: false,
     treeshake: true,
     target: 'es2024',
-    outExtension({ format }) {
-      return { js: format === 'esm' ? '.mjs' : '.cjs' };
+    outExtension() {
+      return { js: '.mjs' };
     },
   },
   // ── UMD / IIFE (browser global) ───────────────────────────────
@@ -27,9 +27,6 @@ export default defineConfig([
     target: 'es2024',
     outExtension() {
       return { js: '.umd.min.js' };
-    },
-    footer: {
-      js: 'if(typeof module!=="undefined")module.exports=DCCCrypto;',
     },
   },
 ]);
