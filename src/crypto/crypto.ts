@@ -66,13 +66,16 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
   const c =
     <TFunc extends Function>(f: TFunc, first: ArgsFirstRest<TFunc>[0]) =>
     (...args: ArgsFirstRest<TFunc>[1]) =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
       f(first, ...args) as Return<TFunc>;
 
   const toOut =
     <F extends Function>(f: F) =>
     (...args: ArgsAll<F>): TOutputTypesMap[TOut] => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment -- generic Function wrapper
       const r = f(...args);
       if (!options || options.output === 'Base58') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- return type of generic Function
         return base58Encode(r) as TOutputTypesMap[TOut];
       } else {
         return r as TOutputTypesMap[TOut];
@@ -82,15 +85,16 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
   const toOutKey =
     <F extends Function>(f: F) =>
     (...args: ArgsAll<F>): TKeyPair<TOutputTypesMap[TOut]> => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- generic Function wrapper
       const r = f(...args) as TKeyPair;
       return (
-        !options || options?.output === 'Base58'
+        !options || options.output === 'Base58'
           ? { privateKey: base58Encode(r.privateKey), publicKey: base58Encode(r.publicKey) }
           : r
       ) as TKeyPair<TOutputTypesMap[TOut]>;
     };
 
-  const s = options?.seed ? options.seed : undefined;
+  const s = options?.seed ?? undefined;
 
   const seedPart = {
     seedWithNonce: s ? c(seedWithNonce, s) : seedWithNonce,
