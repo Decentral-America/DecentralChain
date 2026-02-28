@@ -12,16 +12,16 @@ export default {
 
     for (let i = 0; i < buffer.length; i++) {
       for (let j = 0; j < digits.length; j++) {
-        digits[j] <<= 8;
+        digits[j]! <<= 8;
       }
 
-      digits[0] += buffer[i];
+      digits[0]! += buffer[i]!;
       let carry = 0;
 
       for (let k = 0; k < digits.length; k++) {
-        digits[k] += carry;
-        carry = (digits[k] / 58) | 0;
-        digits[k] %= 58;
+        digits[k]! += carry;
+        carry = (digits[k]! / 58) | 0;
+        digits[k]! %= 58;
       }
 
       while (carry) {
@@ -48,22 +48,22 @@ export default {
     const bytes = [0];
 
     for (let i = 0; i < string.length; i++) {
-      const c = string[i];
+      const c = string[i]!;
       if (!(c in ALPHABET_MAP)) {
         throw new Error(`There is no character "${c}" in the Base58 sequence!`);
       }
 
       for (let j = 0; j < bytes.length; j++) {
-        bytes[j] *= 58;
+        bytes[j]! *= 58;
       }
 
-      bytes[0] += ALPHABET_MAP[c];
+      bytes[0]! += ALPHABET_MAP[c] as number;
       let carry = 0;
 
       for (let j = 0; j < bytes.length; j++) {
-        bytes[j] += carry;
-        carry = bytes[j] >> 8;
-        bytes[j] &= 0xff;
+        bytes[j]! += carry;
+        carry = bytes[j]! >> 8;
+        bytes[j]! &= 0xff;
       }
 
       while (carry) {

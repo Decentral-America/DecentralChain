@@ -1,12 +1,28 @@
 import { getTransactionSchema } from './schemas';
-import { serializeOrder, serializerFromSchema, serializeTx, TFromLongConverter } from './serialize';
-import { parseOrder, parserFromSchema, parseTx, TToLongConverter } from './parse';
+import {
+  serializeOrder,
+  serializerFromSchema,
+  serializeTx,
+  type TFromLongConverter,
+} from './serialize';
+import { parseOrder, parserFromSchema, parseTx, type TToLongConverter } from './parse';
 import * as json from './jsonMethods';
 import * as serializePrimitives from './serializePrimitives';
 import * as parsePrimitives from './parsePrimitives';
 import * as schemas from './schemas';
-import { TSchema } from './schemaTypes';
+import { type TSchema } from './schemaTypes';
 
+/**
+ * Binary serialization and parsing utilities for DecentralChain transactions and orders.
+ *
+ * @example
+ * ```typescript
+ * import { binary } from '@decentralchain/marshall';
+ *
+ * const bytes = binary.serializeTx(tx);
+ * const parsed = binary.parseTx(bytes);
+ * ```
+ */
 const binary = {
   serializerFromSchema,
   serializeTx,
@@ -16,9 +32,10 @@ const binary = {
   parseOrder,
 };
 
+export type { TFromLongConverter } from './serialize';
+export type { TToLongConverter } from './parse';
+
 export {
-  TFromLongConverter,
-  TToLongConverter,
   json,
   binary,
   schemas,
@@ -48,6 +65,15 @@ function convertLongFields<T = string, R = string>(
   return { ...obj, ...converted };
 }
 
+/**
+ * Converts all LONG fields in a transaction to another type using its schema.
+ * Automatically resolves the schema from `tx.type` and `tx.version`.
+ *
+ * @param tx - The transaction object
+ * @param toConverter - Converts string LONG values to the desired type
+ * @param fromConverter - Converts custom LONG instances to string (defaults to `.toString()`)
+ * @returns A new transaction object with converted LONG fields
+ */
 function convertTxLongFields<T = string, R = string>(
   tx: any,
   toConverter?: TToLongConverter<T>,
