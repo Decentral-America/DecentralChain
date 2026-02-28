@@ -1,6 +1,6 @@
 import request from '../../tools/request';
 import stringify from '../../tools/stringify';
-import { Transaction, WithApiMixin } from '@waves/ts-types';
+import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
 import { TLong } from '../../interface';
 
 /**

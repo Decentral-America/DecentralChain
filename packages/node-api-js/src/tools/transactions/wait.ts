@@ -2,7 +2,7 @@ import { TLong } from '../../interface';
 import { head, indexBy, prop, toArray, wait } from '../utils';
 import { fetchStatus } from '../../api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../constants';
-import { Transaction, WithApiMixin } from '@waves/ts-types';
+import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
 
 
 export default function <T extends Transaction<TLong> & WithApiMixin>(base: string, tx: T, options?: IWaitOptions): Promise<T>;

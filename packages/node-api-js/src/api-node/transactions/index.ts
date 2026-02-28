@@ -1,18 +1,12 @@
 import {TRANSACTION_STATUSES, TTransactionStatuses} from '../../constants';
-import {TLong} from '../../interface';
+import {IWithApplicationStatus, TLong} from '../../interface';
 import {fetchHeight} from '../blocks';
 import request, {RequestInit} from '../../tools/request';
 import query from '../../tools/query';
 import {deepAssign} from '../../tools/utils';
 import stringify from '../../tools/stringify';
-import {
-    GenesisTransaction,
-    SignedTransaction,
-    Transaction,
-    TransactionFromNode,
-    TransactionMap,
-    WithApiMixin
-} from '@waves/ts-types';
+import {SignedTransaction, Transaction, TransactionMap, WithApiMixin} from '@decentralchain/ts-types';
+import {addStateUpdateField, TTransaction} from "../../tools/transactions/transactions";
 
 
 /**
@@ -93,12 +87,13 @@ export function fetchTransactions(
     after?: string,
     retry?: number,
     options: RequestInit = Object.create(null)
-): Promise<Array<TransactionFromNode>> {
-    return request<Array<Array<TransactionFromNode>>>({
+): Promise<Array<Transaction<TLong> & WithApiMixin>> {
+    return request<Array<Array<TTransaction<TLong> & WithApiMixin>>>({
         base,
         url: `/transactions/address/${address}/limit/${limit}${query({after})}`,
         options
     }).then(([list]) => {
+        list.forEach(transaction => addStateUpdateField(transaction))
         return list
     });
 }
@@ -127,25 +122,15 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * Transaction info
  */
 
-export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TransactionFromNode> {
-    return request<TransactionFromNode>({
+
+export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus> {
+    return request<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>({
         base,
         url: `/transactions/info/${id}`,
         options
-    })
+    }).then(transaction => addStateUpdateField(transaction))
 }
 
-/**
- * GET /transactions/info/
- * Get transactions by IDs
- */
-export function fetchMultipleInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<TransactionFromNode>> {
-    return request<Array<TransactionFromNode>>({
-        base,
-        url: `/transactions/info${query({id: ids})}`,
-        options
-    })
-}
 
 export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
     const DEFAULT_STATUS: ITransactionStatus = {
@@ -164,8 +149,8 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
                     ...DEFAULT_STATUS,
                     id,
                     status: TRANSACTION_STATUSES.IN_BLOCKCHAIN,
-                    height: tx.height,
-                    applicationStatus: (tx as Exclude<TransactionFromNode, GenesisTransaction>).applicationStatus
+                    height: tx.height as number,
+                    applicationStatus: tx.applicationStatus
                 })))
             .catch(() => ({...DEFAULT_STATUS, id}))
     );

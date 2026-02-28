@@ -1,38 +1,38 @@
 import { TLong } from '../../interface';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { fetchAssetsBalance, TAssetBalance } from '../../api-node/assets';
 import { filter, map, pipe, prop } from '../utils';
 
 
-export default function (base: string, address: string, wavesFee: TLong): Promise<Array<TAssetFeeInfo>> {
+export default function (base: string, address: string, dccFee: TLong): Promise<Array<TAssetFeeInfo>> {
     return fetchAssetsBalance(base, address).then(
         pipe(
             prop('balances'),
-            filter(canBeSponsor(wavesFee)),
-            map(currentFee(wavesFee))
+            filter(canBeSponsor(dccFee)),
+            map(currentFee(dccFee))
         )
     );
 }
 
-function canBeSponsor(wavesFee: TLong): (balance: TAssetBalance) => boolean {
+function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
     return balance => (
         balance.minSponsoredAssetFee
         && BigNumber.toBigNumber(balance.sponsorBalance || 0)
-            .gte(wavesFee)
-        && BigNumber.toBigNumber(wavesFee)
+            .gte(dccFee)
+        && BigNumber.toBigNumber(dccFee)
             .div(0.001 * Math.pow(10, 8))
             .mul(balance.minSponsoredAssetFee)
             .lte(balance.balance)
     ) || false;
 }
 
-function currentFee(wavesFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo {
-    const count = BigNumber.toBigNumber(wavesFee)
+function currentFee(dccFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo {
+    const count = BigNumber.toBigNumber(dccFee)
         .div(0.001 * Math.pow(10, 8));
 
     return balance => ({
         assetId: balance.assetId,
-        wavesFee,
+        dccFee,
         assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee!)
             .mul(count)
             .toFixed()
@@ -41,6 +41,6 @@ function currentFee(wavesFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo 
 
 export type TAssetFeeInfo = {
     assetId: string;
-    wavesFee: TLong;
+    dccFee: TLong;
     assetFee: TLong;
 }

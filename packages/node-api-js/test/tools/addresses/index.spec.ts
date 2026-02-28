@@ -1,7 +1,7 @@
 import create from '../../../src/tools/adresses/watch';
 import { CHAIN_ID, NODE_URL, STATE } from '../../_state';
-import { broadcast, libs, transfer, waitForTx } from '@decentralchain/waves-transactions';
-import { Transaction, WithId } from '@waves/ts-types';
+import { broadcast, libs, transfer, waitForTx } from '@decentralchain/transactions';
+import { Transaction, WithId } from '@decentralchain/ts-types';
 import { TLong } from '../../../src/interface';
 
 

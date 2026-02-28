@@ -1,5 +1,5 @@
 import { fetchTransactions } from '../../api-node/transactions';
-import { Transaction, WithApiMixin } from '@waves/ts-types';
+import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
 import { TLong } from '../../interface';
 import { indexBy, keys, prop } from '../utils';
 import { EventEmitter } from 'typed-ts-events';

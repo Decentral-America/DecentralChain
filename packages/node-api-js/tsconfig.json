@@ -9,6 +9,7 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "downlevelIteration": true,
     "lib": [

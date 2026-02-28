@@ -1,11 +1,11 @@
 import {CHAIN_ID, MASTER_ACCOUNT, NETWORK_BYTE, NODE_URL, STATE} from '../_state';
-import {libs, transfer} from '@decentralchain/waves-transactions';
+import {libs, transfer} from '@decentralchain/transactions';
 import create from '../../src';
-import {SignedTransaction, TransferTransaction} from '@waves/ts-types';
+import {SignedTransaction, TransferTransaction} from '@decentralchain/ts-types';
 import {TLong} from '../../src/interface';
 import {TRANSACTION_STATUSES} from '../../src/constants';
 import {fetchCalculateFee} from '../../src/api-node/transactions';
-import {WithId} from "@waves/ts-types/dist/src/parts";
+import {WithId} from "@decentralchain/ts-types/dist/src/parts";
 
 
 const API = create(NODE_URL);
