@@ -1,6 +1,13 @@
 {
-  "name": "@waves/parse-json-bignumber",
-  "version": "1.0.3",
+  "name": "@decentralchain/parse-json-bignumber",
+  "version": "1.0.0",
+  "description": "Safe JSON parser for large numbers — preserves precision for DecentralChain SDK",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Decentral-America/parse-json-bignumber.git"
+  },
+  "keywords": ["json", "parse", "bignumber", "decentralchain", "precision"],
+  "license": "MIT",
   "dependencies": {},
   "main": "dist/parse-json-bignumber.min.js",
   "types": "dist/parse-json-bignumber.d.ts",
