@@ -1,15 +1,15 @@
-import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto'
+import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto';
 
-const seed = randomSeed() // uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
+const seed = randomSeed(); // uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine
 
-const { address, publicKey, privateKey, keyPair } = crypto({ seed })
+const { address, publicKey, privateKey, keyPair } = crypto({ seed });
 
 //Primitive functions has no params and use provided [seed] instead
 
-address()
+address();
 
-publicKey()
+publicKey();
 
-privateKey()
+privateKey();
 
-keyPair()
+keyPair();

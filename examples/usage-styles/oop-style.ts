@@ -1,13 +1,13 @@
-import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto'
+import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto';
 
-const seed = randomSeed()
+const seed = randomSeed();
 
-const c = crypto({ seed, output: 'Bytes' })
+const c = crypto({ seed, output: 'Bytes' });
 
-c.address() // => UInt8Array
+c.address(); // => UInt8Array
 
-c.publicKey()
+c.publicKey();
 
-c.privateKey()
+c.privateKey();
 
-c.keyPair()
+c.keyPair();
