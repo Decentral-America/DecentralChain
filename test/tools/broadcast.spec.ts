@@ -1,7 +1,7 @@
 import create from '../../src';
 import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
-import { libs, transfer } from '@decentralchain/waves-transactions';
-import {SignedTransaction, TransferTransaction, WithId} from '@waves/ts-types';
+import { libs, transfer } from '@decentralchain/transactions';
+import {SignedTransaction, TransferTransaction, WithId} from '@decentralchain/ts-types';
 import { TLong } from '../../src/interface';
 import { wait } from '../../src/tools/utils';
 import { TRANSACTION_STATUSES } from '../../src/constants';

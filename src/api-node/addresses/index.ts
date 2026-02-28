@@ -1,21 +1,13 @@
-import {TLong} from '../../interface';
-import request, {parseResponse} from '../../tools/request';
+import { TLong } from '../../interface';
+import request from '../../tools/request';
 import query from '../../tools/query';
-import {DataTransactionEntry} from '@waves/ts-types';
+import { DataTransactionEntry } from '@decentralchain/ts-types';
 
 
 export function fetchDataKey(base: string, address: string, key: string, options: RequestInit = Object.create(null)): Promise<DataTransactionEntry<TLong>> {
     return request({
         base,
         url: `/addresses/data/${address}/${encodeURIComponent(key)}`,
-        options
-    });
-}
-
-export function fetchScriptInfo(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfo<TLong>> {
-    return request({
-        base,
-        url: `/addresses/scriptInfo/${address}`,
         options
     });
 }
@@ -43,6 +35,14 @@ export function fetchBalanceConfirmations(base: string, address: string, confirm
     });
 }
 
+export function fetchScriptInfo(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfo<TLong>> {
+    return request({
+        base,
+        url: `/addresses/scriptInfo/${address}`,
+        options
+    });
+}
+
 export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options: RequestInit = Object.create(null)): Promise<Array<DataTransactionEntry<TLong>>> {
     return request({
         base,
@@ -63,24 +63,6 @@ export function fetchBalance(base: string, address: string, options: RequestInit
         base,
         url: `/addresses/balance/${address}`,
         options
-    });
-}
-
-export function fetchMultipleBalance(base: string, addresses: string[], options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>[]> {
-    return fetch(`${base}/addresses/balance`, {
-        method: "POST",
-        body: JSON.stringify({addresses}),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }).then(parseResponse) as Promise<IBalanceConfirmations<TLong>[]>
-}
-
-export function deleteAddressFromWallet(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong> | IBalanceConfirmations<TLong>[]> {
-    return request({
-        base,
-        url: `/addresses/${address}`,
-        options: {...options, method: 'DELETE'}
     });
 }
 
@@ -183,7 +165,7 @@ export interface IBalanceDetails<LONG> {
 export type ICallableFuncArgumentType = 'Int' | 'String' | 'ByteVector' | 'Boolean'
 export type TCallableFuncArgumentsArray = { name: string, type: ICallableFuncArgumentType }[]
 export type TCallableFuncArgumentsRecord = Record<string, ICallableFuncArgumentType>
-export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord
+export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord 
 
 export interface IScriptInfoMeta<TArguments extends TCallableFuncArguments> {
     version: string

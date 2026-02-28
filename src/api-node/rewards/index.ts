@@ -16,7 +16,7 @@ export function fetchRewards(base: string, height?: number, options: RequestInit
 
 export type TRewards<LONG> = {
     height: number;
-    totalWavesAmount: LONG;
+    totalDccAmount: LONG;
     currentReward: LONG;
     minIncrement: LONG;
     term: number;

@@ -1,8 +1,7 @@
 import {TLong} from '../../interface';
-import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@waves/ts-types';
+import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@decentralchain/ts-types';
 import request from '../../tools/request';
 import {toArray} from '../../tools/utils';
-import query from "../../tools/query";
 
 /**
  * GET /assets/details/{assetId}
@@ -21,21 +20,17 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
 }
 
 /**
- * POST /assets/details
+ * GET /assets/details
  * Provides detailed information about the given assets
  */
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
-    const body = JSON.stringify({ids: assetIds});
-    const _options: RequestInit = {
-        ...options,
-        body,
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'POST'
-    };
+    const params = assetIds
+        .map(assetId => `id=${assetId}`)
+        .join('&');
 
-    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details`, options: _options});
+    const query = assetIds.length ? `?${params}` : '';
+
+    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details${query}`, options});
 }
 
 export function fetchAssetDistribution(
@@ -63,7 +58,7 @@ export function fetchAssetsAddressLimit(base: string, address: string, limit: nu
  * GET assets/nft/${address}/limit/${limit}
  * Asset balance distribution
  */
-interface IFetchAssetsNftParams {
+ interface IFetchAssetsNftParams {
     address: string;
     limit: number;
     after?: string;
@@ -71,12 +66,12 @@ interface IFetchAssetsNftParams {
 
 export function fetchAssetsNft(
     base: string,
-    {address, limit, after}: IFetchAssetsNftParams,
+    { address, limit, after }: IFetchAssetsNftParams,
     options: RequestInit = Object.create(null)
 ): Promise<Array<TAssetDetails>> {
     const url = new URL(`assets/nft/${address}/limit/${limit}`, base);
 
-    if (after) {
+    if(after) {
         url.searchParams.append('after', after);
     }
 
@@ -96,54 +91,46 @@ export async function fetchAssetsBalance(base: string, address: string, options:
         }, {}
     );
 
-    const detailsIds = Object.keys(assetsWithoutIssueTransaction);
+    const assetsDetailsResponse = await fetchAssetsDetails(base, Object.keys(assetsWithoutIssueTransaction), options);
 
-    if (detailsIds.length) {
-        const assetsDetailsResponse = await fetchAssetsDetails(base, detailsIds, options);
+    assetsDetailsResponse.forEach((assetDetails) => {
+        if ('error' in assetDetails) {
+            return;
+        }
 
-        assetsDetailsResponse.forEach((assetDetails) => {
-            if ('error' in assetDetails) {
-                return;
-            }
+        const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
+        const assetBalance = balancesResponse.balances[assetIndex];
 
-            const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
-            const assetBalance = balancesResponse.balances[assetIndex];
+        if (!assetBalance) {
+            return;
+        }
 
-            if (!assetBalance) {
-                return;
-            }
-
-            assetBalance.issueTransaction = {
-                id: assetDetails.originTransactionId,
-                name: assetDetails.name,
-                decimals: assetDetails.decimals,
-                description: assetDetails.description,
-                quantity: assetDetails.quantity,
-                reissuable: assetDetails.reissuable,
-                sender: assetDetails.issuer,
-                senderPublicKey: assetDetails.issuerPublicKey,
-                timestamp: assetDetails.issueTimestamp,
-                height: assetDetails.issueHeight,
-                script: assetDetails.scripted ? '-' : null,
-                proofs: [],
-                fee: 10 ** 8,
-                feeAssetId: null,
-                version: 3,
-                type: TRANSACTION_TYPE.ISSUE,
-                chainId: 0
-            };
-        });
-    }
+        assetBalance.issueTransaction = {
+            id: assetDetails.originTransactionId,
+            name: assetDetails.name,
+            decimals: assetDetails.decimals,
+            description: assetDetails.description,
+            quantity: assetDetails.quantity,
+            reissuable: assetDetails.reissuable,
+            sender: assetDetails.issuer,
+            senderPublicKey: assetDetails.issuerPublicKey,
+            timestamp: assetDetails.issueTimestamp,
+            height: assetDetails.issueHeight,
+            script: assetDetails.scripted ? '-' : null,
+            proofs: [],
+            fee: 10 ** 8,
+            feeAssetId: null,
+            version: 3,
+            type: TRANSACTION_TYPE.ISSUE,
+            chainId: 0
+        } as any;
+    });
 
     return balancesResponse;
 }
 
 export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
     return request({base, url: `/assets/balance/${address}/${assetId}`, options});
-}
-
-export function convertEthAssetId(base: string, assetId: string): Promise<string> {
-    return request<TAssetDetails[]>({base, url: `/eth/assets${query({id: assetId})}`}).then(assets => assets[0].assetId);
 }
 
 export interface IAssetDistribution {
@@ -170,7 +157,7 @@ export type TAssetBalance<LONG = TLong> = {
     'minSponsoredAssetFee': LONG | null;
     'sponsorBalance': LONG | null;
     'quantity': LONG;
-    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin> & { feeAssetId: null };
+    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }
 
 export type TAssetDetails<LONG = TLong> = {

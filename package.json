@@ -12,10 +12,15 @@
     "build": "tsc -p ./tsconfig-es.json && tsc -p ./tsconfig-cjs.json && webpack",
     "test": "node-state -e -n -m typescript -o ./test/_state.ts -r"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Decentral-America/node-api-js"
+  },
   "dependencies": {
+    "@decentralchain/bignumber": "npm:@waves/bignumber@^1.1.1",
+    "@decentralchain/ts-lib-crypto": "npm:@waves/ts-lib-crypto@^1.4.3",
+    "@decentralchain/ts-types": "npm:@waves/ts-types@^1.0.6-beta.7",
     "@types/node-fetch": "^2.5.4",
-    "@waves/bignumber": "^1.1.1",
-    "@waves/ts-types": "^1.0.6-beta.7",
     "node-fetch": "^2.6.7",
     "typed-ts-events": "^1.1.1"
   },
@@ -56,9 +61,11 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
     "@decentralchain/node-state": "0.1.0",
-    "@decentralchain/waves-transactions": "4.2.3",
+    "@decentralchain/transactions": "npm:@decentralchain/waves-transactions@4.2.3",
+    "@types/babel__traverse": "^7.14.2",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^14.18.63",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.6",
     "ts-loader": "^7.0.5",
