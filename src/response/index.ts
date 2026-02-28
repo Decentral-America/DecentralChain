@@ -1,4 +1,4 @@
-import { IProviderAsset, IResponseError, TDataTxField, TResponse } from '../interface';
+import type { IProviderAsset, IResponseError, TDataTxField, TResponse } from '../interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_DESCRIPTION_PATTERN,
@@ -6,16 +6,17 @@ import {
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
   RESPONSE_STATUSES,
-} from '../constants';
+} from '../constants.js';
 
+/** Build a schema parser from a series of field processors. */
 export function schema<T extends object>(
-  ...processors: Array<TProcessor<Partial<T>>>
+  ...processors: TProcessor<Partial<T>>[]
 ): (hash: THash) => TResponse<T> {
-  const errors: Array<IResponseError> = [];
+  const errors: IResponseError[] = [];
   return (hash: THash) => {
-    const store: Partial<T> = Object.create(null);
+    const store: Partial<T> = Object.create(null) as Partial<T>;
     const content = processors.reduce((acc, item) => item(errors)(acc, hash), store) as T;
-    if (!errors.length) {
+    if (errors.length === 0) {
       return {
         content,
         status: RESPONSE_STATUSES.OK,
@@ -30,19 +31,22 @@ export function schema<T extends object>(
   };
 }
 
+/** Process a single field from the hash into the store. */
 export function processField<T>(
   from: string,
   to: keyof T,
   type: DATA_ENTRY_TYPES,
   required?: boolean,
 ): TProcessor<T> {
-  return (errors: Array<IResponseError>) => {
+  return (errors: IResponseError[]) => {
     return (store, hash) => {
       try {
-        store[to] = getFieldValue(hash, from, type);
+        const value = getFieldValue(hash, from, type);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- runtime-validated field assignment
+        (store as any)[to] = value;
         return store;
       } catch (e: unknown) {
-        if (required || required == null) {
+        if (required ?? true) {
           errors.push({
             path: to as string,
             error: e instanceof Error ? e : new Error(String(e)),
@@ -54,8 +58,9 @@ export function processField<T>(
   };
 }
 
+/** Add the asset ID into the store. */
 export function addAssetId(id: string) {
-  return (_errors: Array<IResponseError>) => {
+  return (_errors: IResponseError[]) => {
     return (store: Partial<IProviderAsset>) => {
       store.id = id;
       return store;
@@ -63,22 +68,23 @@ export function addAssetId(id: string) {
   };
 }
 
+/** Process description fields from the hash into the store. */
 export function processDescription(id?: string, required?: boolean) {
-  return (errors: Array<IResponseError>) => (store: any, hash: THash) => {
+  return (errors: IResponseError[]) => (store: Record<string, unknown>, hash: THash) => {
     try {
       const langList = getFieldValue(
         hash,
         DATA_PROVIDER_KEYS.LANG_LIST,
         DATA_ENTRY_TYPES.STRING,
       ) as string;
-      const description = Object.create(null);
+      const description: Record<string, string> = Object.create(null) as Record<string, string>;
 
       langList.split(',').forEach((lang) => {
         const key = getDescriptionKey(lang, id);
         try {
-          description[lang] = getFieldValue(hash, key, DATA_ENTRY_TYPES.STRING);
+          description[lang] = getFieldValue(hash, key, DATA_ENTRY_TYPES.STRING) as string;
         } catch (e: unknown) {
-          if (required || required == null) {
+          if (required ?? true) {
             errors.push({
               path: `description.${lang}`,
               error: e instanceof Error ? e : new Error(String(e)),
@@ -87,11 +93,11 @@ export function processDescription(id?: string, required?: boolean) {
         }
       });
 
-      if (Object.keys(description).length) {
-        store.description = description;
+      if (Object.keys(description).length > 0) {
+        store['description'] = description;
       }
     } catch (e: unknown) {
-      if (required || required == null) {
+      if (required ?? true) {
         errors.push({
           path: 'description',
           error: e instanceof Error ? e : new Error(String(e)),
@@ -102,7 +108,12 @@ export function processDescription(id?: string, required?: boolean) {
   };
 }
 
-export function getFieldValue(hash: THash, fieldName: string, type: DATA_ENTRY_TYPES): any {
+/** Extract a field value from the hash, throwing if missing or wrong type. */
+export function getFieldValue(
+  hash: THash,
+  fieldName: string,
+  type: DATA_ENTRY_TYPES,
+): string | number | boolean {
   const item = hash[fieldName];
 
   if (!item) {
@@ -124,21 +135,25 @@ function getDescriptionKey(lang: string, id?: string): string {
     : DATA_PROVIDER_DESCRIPTION_PATTERN.replace(PATTERNS.LANG, `<${lang}>`);
 }
 
+/** Extract an asset ID from a data key string. */
 export function getAssetIdFromKey(key: string): string | null {
-  const start = ORACLE_ASSET_FIELD_PATTERN.STATUS.replace(PATTERNS.ASSET_ID, '');
-  if (key.indexOf(start) !== 0) {
+  const start = (ORACLE_ASSET_FIELD_PATTERN.STATUS as string).replace(PATTERNS.ASSET_ID, '');
+  if (!key.startsWith(start)) {
     return null;
   }
-  const id = (key.match(/<(.+)?>/) || [])[1];
+  const match = /<(.+?)>/.exec(key);
+  const id = match?.[1];
 
-  return id && ORACLE_ASSET_FIELD_PATTERN.STATUS.replace(PATTERNS.ASSET_ID, `<${id}>`) === key
+  return id &&
+    (ORACLE_ASSET_FIELD_PATTERN.STATUS as string).replace(PATTERNS.ASSET_ID, `<${id}>`) === key
     ? id
     : null;
 }
 
+/** Type guard to check if a value is a non-null string. */
 export function isString(some: string | null): some is string {
   return typeof some === 'string';
 }
 
-export type TProcessor<R> = (errors: Array<IResponseError>) => (store: R, hash: THash) => R;
+export type TProcessor<R> = (errors: IResponseError[]) => (store: R, hash: THash) => R;
 export type THash = Record<string, TDataTxField>;
