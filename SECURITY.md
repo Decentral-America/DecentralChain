@@ -5,26 +5,28 @@
 | Version | Supported          |
 | ------- | ------------------ |
 | 1.x     | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in this package, please report it responsibly.
-
 **Do NOT open a public GitHub issue.**
 
-Instead, please email **security@decentralchain.io** with:
+Email **info@decentralchain.io** with:
 
-- A description of the vulnerability
-- Steps to reproduce the issue
-- Potential impact assessment
-- Suggested fix (if any)
+1. Description of the vulnerability
+2. Steps to reproduce
+3. Potential impact assessment
+4. Suggested fix (optional)
 
-We will acknowledge receipt within **48 hours** and aim to release a patch within **7 days** of confirmation.
+### Timeline
 
-## Security Best Practices
+- **Acknowledgement**: 48 hours
+- **Assessment**: 5 business days
+- **Critical patch**: 14 days
+- **Lower severity**: 30 days
 
-When using this library:
+## Best Practices
 
-- Always validate inputs before creating `BigNumber` instances from user-supplied data
-- Be aware that `.toNumber()` may lose precision for very large values
-- Use `.toFixed()` or `.toString()` for serialization of large values
+- Use the latest supported version
+- Pin dependencies with lockfiles
+- Run `npm audit` regularly

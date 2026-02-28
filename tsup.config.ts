@@ -18,22 +18,20 @@ export default defineConfig([
       };
     },
   },
-
-  // ── UMD (browser global) ───────────────────────────────────────
-  {
-    entry: ['src/index.ts'],
-    format: ['iife'],
-    globalName: 'BigNumber',
-    outDir: 'dist',
-    minify: true,
-    sourcemap: true,
-    target: 'es2024',
-    outExtension() {
-      return { js: '.umd.min.js' };
-    },
-    footer: {
-      // Re-export named exports as UMD globals
-      js: 'if(typeof module!=="undefined")module.exports=BigNumber;',
-    },
-  },
+  // ── UMD / IIFE (browser global) — uncomment if HAS_BROWSER_BUNDLE ──
+  // {
+  //   entry: ['src/index.ts'],
+  //   format: ['iife'],
+  //   globalName: 'BigNumber',
+  //   outDir: 'dist',
+  //   minify: true,
+  //   sourcemap: true,
+  //   target: 'es2024',
+  //   outExtension() {
+  //     return { js: '.umd.min.js' };
+  //   },
+  //   footer: {
+  //     js: 'if(typeof module!=="undefined")module.exports=BigNumber;',
+  //   },
+  // },
 ]);
