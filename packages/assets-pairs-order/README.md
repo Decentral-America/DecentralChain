@@ -12,7 +12,7 @@ When trading Asset A for Asset B, the DEX needs to decide which is the **amount 
 
 ## Requirements
 
-- Node.js >= 20
+- Node.js >= 22
 - ESM environment (`"type": "module"` in your package.json, or `.mjs` files)
 
 ## Installation
@@ -118,7 +118,7 @@ A pre-built IIFE bundle (with source map) is available at `dist/browser.js` (gen
 
 ### Prerequisites
 
-- Node.js >= 20 (see `.nvmrc`)
+- Node.js >= 22 (see `.nvmrc`)
 - npm >= 10
 
 ### Setup
