@@ -158,5 +158,8 @@ export function isString(some: string | null): some is string {
   return typeof some === 'string';
 }
 
-export type TProcessor<R> = (errors: IResponseError[]) => (store: R, hash: THash) => R;
-export type THash = Record<string, TDataTxField>;
+/** Internal type for schema processor functions. */
+type TProcessor<R> = (errors: IResponseError[]) => (store: R, hash: THash) => R;
+
+/** Internal type for hash of data fields keyed by field name. */
+type THash = Record<string, TDataTxField>;
