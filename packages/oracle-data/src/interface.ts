@@ -1,9 +1,9 @@
-import {
+import type {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_VERSIONS,
   RESPONSE_STATUSES,
   STATUS_LIST,
-} from './constants';
+} from './constants.js';
 
 export interface IProviderData {
   name: string;
@@ -32,7 +32,7 @@ export interface ISuccessResponse<T> {
 export interface IErrorResponse<T> {
   status: RESPONSE_STATUSES.ERROR;
   content: Partial<T>;
-  errors: Array<IResponseError>;
+  errors: IResponseError[];
 }
 
 export type TResponse<T> = ISuccessResponse<T> | IErrorResponse<T>;
@@ -79,4 +79,4 @@ export type TScamAsset = Partial<IProviderAsset> & {
   version: DATA_PROVIDER_VERSIONS;
 };
 export type TProviderAsset = TScamAsset | IProviderAsset;
-export type TDataOrFields = IProviderData | TProviderAsset | Array<TDataTxField>;
+export type TDataOrFields = IProviderData | TProviderAsset | TDataTxField[];

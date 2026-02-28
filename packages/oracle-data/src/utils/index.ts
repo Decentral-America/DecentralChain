@@ -1,52 +1,54 @@
-import {
+import type {
   IIntegerDataTXField,
   IProviderAsset,
   IProviderData,
   IStringDataTXField,
   TDataTxField,
   TProviderAsset,
-} from '../interface';
+} from '../interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_DESCRIPTION_PATTERN,
   DATA_PROVIDER_KEYS,
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
-} from '../constants';
+} from '../constants.js';
 
-export function getFieldsDiff(
-  previous: Array<TDataTxField>,
-  next: Array<TDataTxField>,
-): Array<TDataTxField> {
+/** Compute the diff between two arrays of data transaction fields. */
+export function getFieldsDiff(previous: TDataTxField[], next: TDataTxField[]): TDataTxField[] {
   const hashable = toHash<TDataTxField>('key');
   const previousHash = hashable(previous);
   return next.filter((item) => {
-    if (!previousHash[item.key]) {
+    const prev = previousHash[item.key];
+    if (!prev) {
       return true;
     }
 
-    return previousHash[item.key].type !== item.type || previousHash[item.key].value !== item.value;
+    return prev.type !== item.type || prev.value !== item.value;
   });
 }
 
+/** Type guard: returns true if the data is provider data (not asset data). */
 export function isProvider(data: TProviderAsset | IProviderData): data is IProviderData {
-  const onlyAssetFields: Array<keyof TProviderAsset> = ['id', 'status'];
+  const onlyAssetFields: (keyof TProviderAsset)[] = ['id', 'status'];
   return !onlyAssetFields.every((propName) => propName in data);
 }
 
-export function toHash<T>(key: keyof T): (list: Array<T>) => Record<string, T> {
+/** Convert an array to a hash keyed by a specific property. */
+export function toHash<T extends object>(key: keyof T): (list: T[]) => Record<string, T> {
   return (list) =>
-    list.reduce((acc, item) => {
-      acc[item[key]] = item;
+    list.reduce<Record<string, T>>((acc, item) => {
+      acc[String(item[key])] = item;
       return acc;
-    }, Object.create(null));
+    }, {});
 }
 
+/** Build an array of data transaction fields from processors. */
 export function toFields<T>(
-  ...processors: Array<(data: T) => TItemOrList<TDataTxField>>
-): (data: T) => Array<TDataTxField> {
+  ...processors: ((data: T) => TItemOrList<TDataTxField>)[]
+): (data: T) => TDataTxField[] {
   return (data) => {
-    return processors.reduce((acc, processor) => {
+    return processors.reduce<TDataTxField[]>((acc, processor) => {
       const result = processor(data);
       if (Array.isArray(result)) {
         acc.push(...result);
@@ -54,10 +56,11 @@ export function toFields<T>(
         acc.push(result);
       }
       return acc;
-    }, [] as Array<TDataTxField>);
+    }, []);
   };
 }
 
+/** Convert a single provider data field to a data transaction field. */
 export function toField(
   dataName: keyof IProviderData,
   key: string,
@@ -66,11 +69,12 @@ export function toField(
   return (data) => {
     const value = data[dataName];
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
     if (value == null) {
       throw new Error(`Empty field ${dataName}!`);
     }
 
-    checkType(value as any, type);
+    checkType(value as string | number | boolean, type);
 
     return {
       value,
@@ -80,14 +84,16 @@ export function toField(
   };
 }
 
+/** Convert provider description fields to data transaction fields. */
 export function descriptionToField(): (data: IProviderData) => IStringDataTXField[] {
   return (data) => {
-    const langList = Object.keys(data.description || {}).join(',');
-    const fields = Object.keys(data.description || {}).map((lang) => {
+    const desc = data.description;
+    const langList = Object.keys(desc).join(',');
+    const fields = Object.keys(desc).map((lang) => {
       return {
         key: DATA_PROVIDER_DESCRIPTION_PATTERN.replace(PATTERNS.LANG, `<${lang}>`),
         type: DATA_ENTRY_TYPES.STRING as DATA_ENTRY_TYPES.STRING,
-        value: data.description[lang],
+        value: desc[lang] ?? '',
       };
     });
     fields.push({
@@ -99,6 +105,7 @@ export function descriptionToField(): (data: IProviderData) => IStringDataTXFiel
   };
 }
 
+/** Create a version field for provider data. */
 export function addVersion(version: number): () => IIntegerDataTXField {
   return () => ({
     key: DATA_PROVIDER_KEYS.VERSION,
@@ -129,14 +136,16 @@ function checkType(value: string | number | boolean, type: DATA_ENTRY_TYPES): vo
   }
 }
 
+/** Create a version field for an asset. */
 export function addAssetVersion(version: number): (data: TProviderAsset) => TDataTxField {
   return (data) => ({
-    key: replaceKey(data.id)(ORACLE_ASSET_FIELD_PATTERN.VERSION),
+    key: replaceKey(data.id)(ORACLE_ASSET_FIELD_PATTERN.VERSION as string),
     type: DATA_ENTRY_TYPES.INTEGER,
     value: version,
   });
 }
 
+/** Convert an asset field to a data transaction field. */
 export function toAssetField(
   from: keyof IProviderAsset,
   key: string,
@@ -146,10 +155,10 @@ export function toAssetField(
     const value = data[from];
 
     if (value == null) {
-      return [] as Array<TDataTxField>;
+      return [] as TDataTxField[];
     }
 
-    checkType(value as any, type);
+    checkType(value as string | number | boolean, type);
 
     return {
       key: replaceKey(data.id)(key),
@@ -159,18 +168,20 @@ export function toAssetField(
   };
 }
 
-export function toAssetDescription(): (data: TProviderAsset) => Array<TDataTxField> {
+/** Convert asset description fields to data transaction fields. */
+export function toAssetDescription(): (data: TProviderAsset) => TDataTxField[] {
   return (data) =>
-    Object.keys(data.description || {}).map((lang) => {
+    Object.keys(data.description ?? {}).map((lang) => {
       const replacer = replaceKey(data.id, lang);
       return {
-        key: replacer(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION),
+        key: replacer(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION as string),
         type: DATA_ENTRY_TYPES.STRING as DATA_ENTRY_TYPES.STRING,
-        value: (data.description as Record<string, string>)[lang],
+        value: data.description?.[lang] ?? '',
       };
     });
 }
 
+/** Replace asset ID (and optionally lang) in a key pattern. */
 export function replaceKey(id: string, lang?: string): (key: string) => string {
   return (key) =>
     lang
@@ -178,4 +189,4 @@ export function replaceKey(id: string, lang?: string): (key: string) => string {
       : key.replace(PATTERNS.ASSET_ID, `<${id}>`);
 }
 
-export type TItemOrList<T> = T | Array<T>;
+export type TItemOrList<T> = T | T[];

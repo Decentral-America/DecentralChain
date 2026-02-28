@@ -1,13 +1,19 @@
-import { getProviderData, getProviderAssets, getFields, getDifferenceByData } from '../src';
-import { IErrorResponse, IProviderData, TDataTxField, TScamAsset } from '../src/interface';
+import { describe, expect, it } from 'vitest';
+import {
+  getProviderData,
+  getProviderAssets,
+  getFields,
+  getDifferenceByData,
+} from '../src/index.js';
+import type { IErrorResponse, IProviderData, TDataTxField, TScamAsset } from '../src/interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
   DATA_PROVIDER_VERSIONS,
   RESPONSE_STATUSES,
   STATUS_LIST,
-} from '../src/constants';
-import { toHash } from '../src/utils';
+} from '../src/constants.js';
+import { toHash } from '../src/utils/index.js';
 
 const PROVIDER_DATA = {
   version: DATA_PROVIDER_VERSIONS.BETA,
@@ -107,8 +113,8 @@ const PROVIDER_FIELDS: Array<TDataTxField> = [
 ];
 
 const compareFields: (a: TDataTxField[], b: TDataTxField[]) => void = (a, b) => {
-  const hasheble = toHash('key');
-  expect(hasheble(a)).toEqual(hasheble(b));
+  const hashable = toHash<TDataTxField>('key');
+  expect(hashable(a)).toEqual(hashable(b));
 };
 
 describe('Data provider tests', () => {

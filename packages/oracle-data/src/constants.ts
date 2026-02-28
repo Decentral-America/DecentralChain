@@ -1,3 +1,4 @@
+/** Asset verification status levels. */
 export enum STATUS_LIST {
   SCAM = -2,
   SUSPICIOUS = -1,
@@ -6,16 +7,19 @@ export enum STATUS_LIST {
   VERIFIED = 2,
 }
 
+/** Data provider protocol versions. */
 export enum DATA_PROVIDER_VERSIONS {
   BETA,
 }
 
+/** Response status codes. */
 export enum RESPONSE_STATUSES {
   ERROR = 'error',
   OK = 'ok',
   EMPTY = 'empty',
 }
 
+/** Data entry type identifiers. */
 export enum DATA_ENTRY_TYPES {
   INTEGER = 'integer',
   STRING = 'string',
@@ -23,6 +27,7 @@ export enum DATA_ENTRY_TYPES {
   BOOLEAN = 'boolean',
 }
 
+/** Standard data provider key names. */
 export enum DATA_PROVIDER_KEYS {
   VERSION = 'data_provider_version',
   NAME = 'data_provider_name',
@@ -32,8 +37,10 @@ export enum DATA_PROVIDER_KEYS {
   LOGO = 'data_provider_logo',
 }
 
+/** Pattern for provider description keys. */
 export const DATA_PROVIDER_DESCRIPTION_PATTERN = 'data_provider_description_<LANG>';
 
+/** Pattern templates for oracle asset field keys. */
 export const enum ORACLE_ASSET_FIELD_PATTERN {
   VERSION = 'version_<ASSET_ID>',
   STATUS = 'status_<ASSET_ID>',
@@ -44,6 +51,7 @@ export const enum ORACLE_ASSET_FIELD_PATTERN {
   EMAIL = 'email_<ASSET_ID>',
 }
 
+/** Placeholder tokens used in key patterns. */
 export const PATTERNS = {
   ASSET_ID: '<ASSET_ID>',
   LANG: '<LANG>',
