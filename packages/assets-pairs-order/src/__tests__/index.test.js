@@ -6,19 +6,6 @@ const orderPair = createOrderPair(MAINNET_DATA);
 
 describe('orderPair utility', () => {
   /**
-   * Simple tests for proof-of-existence
-   */
-  it('is function', () => {
-    expect(typeof orderPair).toBe('function');
-  });
-  it('has both default and named exports', () => {
-    expect(createOrderPair).toBeDefined();
-    expect(MAINNET_DATA).toBeDefined();
-    expect(TESTNET_DATA).toBeDefined();
-    expect(ARBITRARY_DATA).toBeDefined();
-  });
-
-  /**
    * Data exports are frozen (immutable)
    */
   it('exports frozen MAINNET_DATA', () => {
@@ -53,24 +40,6 @@ describe('orderPair utility', () => {
     expect(() => createOrderPair(42, 'a', 'b')).toThrow(/Expected predefinedList to be an array/);
     expect(() => orderPair(42, 'b')).toThrow(/Expected first asset ID to be a string/);
     expect(() => orderPair('a', 42)).toThrow(/Expected second asset ID to be a string/);
-  });
-
-  /**
-   * Arguments handling
-   */
-  it('accepts (string, string)', () => {
-    expect(() =>
-      orderPair(
-        'FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA',
-        'DNhP2zAH5HM1kdUSmxcBqs8RP4vvUgRFc1YgAKkfPmPD',
-      ),
-    ).not.toThrow();
-    expect(
-      orderPair(
-        'FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA',
-        'DNhP2zAH5HM1kdUSmxcBqs8RP4vvUgRFc1YgAKkfPmPD',
-      ),
-    ).toHaveLength(2);
   });
 
   /**
@@ -168,6 +137,18 @@ describe('orderPair utility', () => {
       'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck',
     ]);
   });
+  it('orders [EUR, DCC] in [DCC, EUR]', () => {
+    expect(orderPair('Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU', 'DCC')).toEqual([
+      'DCC',
+      'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
+    ]);
+  });
+  it('orders [DCC, EUR] in [DCC, EUR]', () => {
+    expect(orderPair('DCC', 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU')).toEqual([
+      'DCC',
+      'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
+    ]);
+  });
 
   /**
    * Symmetry — ordering must be the same regardless of argument order
@@ -186,8 +167,13 @@ describe('orderPair utility', () => {
   /**
    * Edge cases
    */
-  it('handles same asset passed as both arguments', () => {
+  it('handles same known asset passed as both arguments', () => {
     const asset = 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck';
+    const result = orderPair(asset, asset);
+    expect(result).toEqual([asset, asset]);
+  });
+  it('handles same unknown asset passed as both arguments', () => {
+    const asset = 'FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA';
     const result = orderPair(asset, asset);
     expect(result).toEqual([asset, asset]);
   });
@@ -265,17 +251,30 @@ describe('ARBITRARY_DATA', () => {
 
 describe('compareUint8Arrays', () => {
   it('returns true when first array is lexicographically greater', () => {
-    const equalPart = [
+    const suffix = [
       112, 184, 171, 25, 60, 42, 134, 130, 136, 181, 26, 247, 132, 43, 173, 195, 46, 234, 144, 49,
       135, 237, 146, 30, 213, 228, 116, 28, 245,
     ];
-    const arr1 = new Uint8Array([222, 55, 176, ...equalPart]);
-    const arr2 = new Uint8Array([222, 219, 25, ...equalPart]);
-    const arr3 = new Uint8Array([222, 55, 25, ...equalPart]);
-    const arr4 = new Uint8Array([222, 55, 176, ...equalPart]);
+    const arr1 = new Uint8Array([222, 55, 176, ...suffix]);
+    const arr2 = new Uint8Array([222, 55, 25, ...suffix]);
+    expect(compareUint8Arrays(arr1, arr2)).toBe(true);
+  });
+  it('returns false when first array is lexicographically smaller', () => {
+    const suffix = [
+      112, 184, 171, 25, 60, 42, 134, 130, 136, 181, 26, 247, 132, 43, 173, 195, 46, 234, 144, 49,
+      135, 237, 146, 30, 213, 228, 116, 28, 245,
+    ];
+    const arr1 = new Uint8Array([222, 55, 176, ...suffix]);
+    const arr2 = new Uint8Array([222, 219, 25, ...suffix]);
     expect(compareUint8Arrays(arr1, arr2)).toBe(false);
-    expect(compareUint8Arrays(arr1, arr3)).toBe(true);
-    expect(compareUint8Arrays(arr1, arr4)).toBe(false); // equal → false
+  });
+  it('returns false when arrays are byte-identical', () => {
+    const suffix = [
+      112, 184, 171, 25, 60, 42, 134, 130, 136, 181, 26, 247, 132, 43, 173, 195, 46, 234, 144, 49,
+      135, 237, 146, 30, 213, 228, 116, 28, 245,
+    ];
+    const arr = new Uint8Array([222, 55, 176, ...suffix]);
+    expect(compareUint8Arrays(arr, arr)).toBe(false);
   });
   it('returns false for two empty arrays', () => {
     expect(compareUint8Arrays(new Uint8Array([]), new Uint8Array([]))).toBe(false);
