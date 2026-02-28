@@ -1,340 +1,359 @@
 import { Adapter } from '../adapters/Adapter';
 import { uniqueId, console } from '../utils';
 
-
 export const enum EventType {
-    Event,
-    Action,
-    Response
+  Event,
+  Action,
+  Response,
 }
 
 export const enum ResponseStatus {
-    Success,
-    Error
+  Success,
+  Error,
 }
 
-export class Bus<T extends Record<string, any> = any, H extends Record<string, (data: any) => any> = any> {
+export class Bus<
+  T extends Record<string, any> = any,
+  H extends Record<string, (data: any) => any> = any,
+> {
+  public id: string = uniqueId('bus');
+  private _adapter: Adapter;
+  private readonly _activeRequestHash: Record<string, ISentActionData>;
+  private readonly _timeout: number;
+  private readonly _eventHandlers: Record<string, IEventHandlerData[]>;
+  private readonly _requestHandlers: H;
 
-    public id: string = uniqueId('bus');
-    private _adapter: Adapter;
-    private readonly _activeRequestHash: Record<string, ISentActionData>;
-    private readonly _timeout: number;
-    private readonly _eventHandlers: Record<string, IEventHandlerData[]>;
-    private readonly _requestHandlers: H;
+  constructor(adapter: Adapter, defaultTimeout?: number) {
+    this._timeout = defaultTimeout || 5000;
+    this._adapter = adapter;
+    this._adapter.addListener((data) => this._onMessage(data));
+    this._eventHandlers = Object.create(null);
+    this._activeRequestHash = Object.create(null);
+    this._requestHandlers = Object.create(null);
 
+    console.info(`Create Bus with id "${this.id}"`);
+  }
 
-    constructor(adapter: Adapter, defaultTimeout?: number) {
-        this._timeout = defaultTimeout || 5000;
-        this._adapter = adapter;
-        this._adapter.addListener((data) => this._onMessage(data));
-        this._eventHandlers = Object.create(null);
-        this._activeRequestHash = Object.create(null);
-        this._requestHandlers = Object.create(null);
+  public dispatchEvent<K extends keyof T>(name: K, data: T[K]): this {
+    this._adapter.send(Bus._createEvent(name as string, data));
+    console.info(`Dispatch event "${String(name)}"`, data);
+    return this;
+  }
 
-        console.info(`Create Bus with id "${this.id}"`);
+  public request<E extends keyof H>(
+    name: E,
+    data?: Parameters<H[E]>[0],
+    timeout?: number,
+  ): Promise<ReturnType<H[E]> extends Promise<infer P> ? P : ReturnType<H[E]>> {
+    return new Promise<any>((resolve, reject) => {
+      const id = uniqueId(`${this.id}-action`);
+      const wait = timeout || this._timeout;
+
+      let timer: number | NodeJS.Timeout;
+
+      if ((timeout || this._timeout) !== -1) {
+        timer = setTimeout(() => {
+          delete this._activeRequestHash[id];
+          const error = new Error(
+            `Timeout error for request with name "${String(name)}" and timeout ${wait}!`,
+          );
+          console.error(error);
+          reject(error);
+        }, wait);
+      }
+
+      const cancelTimeout = () => {
+        if (timer) {
+          clearTimeout(timer as number);
+        }
+      };
+
+      this._activeRequestHash[id] = {
+        reject: (error: any) => {
+          cancelTimeout();
+          console.error(`Error request with name "${String(name)}"`, error);
+          reject(error);
+        },
+        resolve: (data: T) => {
+          cancelTimeout();
+          console.info(`Request with name "${String(name)}" success resolved!`, data);
+          resolve(data);
+        },
+      };
+
+      this._adapter.send({ id, type: EventType.Action, name, data });
+      console.info(`Request with name "${String(name)}"`, data);
+    });
+  }
+
+  public on<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
+    return this._addEventHandler(name as string, handler, context, false);
+  }
+
+  public once<K extends keyof T>(
+    name: K,
+    handler: IOneArgFunction<T[K], void>,
+    context?: any,
+  ): this {
+    return this._addEventHandler(name as string, handler, context, true);
+  }
+
+  public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this;
+  public off<K extends keyof T>(name?: K, handler?: IOneArgFunction<T[K], void>): this;
+  public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this {
+    if (!name) {
+      Object.keys(this._eventHandlers).forEach((name) => this.off(name, handler));
+      return this;
     }
 
-    public dispatchEvent<K extends keyof T>(name: K, data: T[K]): this {
-        this._adapter.send(Bus._createEvent(name as string, data));
-        console.info(`Dispatch event "${String(name)}"`, data);
-        return this;
+    if (!this._eventHandlers[name]) {
+      return this;
     }
 
-    public request<E extends keyof H>(name: E, data?: Parameters<H[E]>[0], timeout?: number): Promise<ReturnType<H[E]> extends Promise<infer P> ? P : ReturnType<H[E]>> {
-        return new Promise<any>((resolve, reject) => {
-            const id = uniqueId(`${this.id}-action`);
-            const wait = timeout || this._timeout;
+    if (!handler) {
+      this._eventHandlers[name].slice().forEach((info) => {
+        this.off(name, info.handler);
+      });
+      return this;
+    }
 
-            let timer: number | NodeJS.Timeout;
+    this._eventHandlers[name] = this._eventHandlers[name].filter(
+      (info) => info.handler !== handler,
+    );
 
-            if ((timeout || this._timeout) !== -1) {
-                timer = setTimeout(() => {
-                    delete this._activeRequestHash[id];
-                    const error = new Error(`Timeout error for request with name "${String(name)}" and timeout ${wait}!`);
-                    console.error(error);
-                    reject(error);
-                }, wait);
-            }
+    if (!this._eventHandlers[name].length) {
+      delete this._eventHandlers[name];
+    }
 
-            const cancelTimeout = () => {
-                if (timer) {
-                    clearTimeout(timer as number);
-                }
-            };
+    return this;
+  }
 
-            this._activeRequestHash[id] = {
-                reject: (error: any) => {
-                    cancelTimeout();
-                    console.error(`Error request with name "${String(name)}"`, error);
-                    reject(error);
-                },
-                resolve: (data: T) => {
-                    cancelTimeout();
-                    console.info(`Request with name "${String(name)}" success resolved!`, data);
-                    resolve(data);
-                }
-            };
+  public registerRequestHandler<E extends keyof H>(name: E, handler: H[E]): this {
+    if (this._requestHandlers[name]) {
+      throw new Error('Duplicate request handler!');
+    }
 
-            this._adapter.send({ id, type: EventType.Action, name, data });
-            console.info(`Request with name "${String(name)}"`, data);
+    this._requestHandlers[name] = handler;
+
+    return this;
+  }
+
+  public unregisterHandler<E extends keyof H>(name: E): this {
+    if (this._requestHandlers[name]) {
+      delete this._requestHandlers[name];
+    }
+    return this;
+  }
+
+  public changeAdapter(adapter: Adapter): Bus {
+    const bus = new Bus(adapter, this._timeout);
+
+    Object.keys(this._eventHandlers).forEach((name) => {
+      this._eventHandlers[name].forEach((info) => {
+        if (info.once) {
+          bus.once(name, info.handler, info.context);
+        } else {
+          bus.on(name, info.handler, info.context);
+        }
+      });
+    });
+
+    Object.keys(this._requestHandlers).forEach((name) => {
+      bus.registerRequestHandler(name, this._requestHandlers[name]);
+    });
+
+    return bus;
+  }
+
+  public destroy(): void {
+    console.info('Destroy Bus');
+    this.off();
+    this._adapter.destroy();
+  }
+
+  private _addEventHandler(
+    name: string,
+    handler: IOneArgFunction<any, void>,
+    context: any,
+    once: boolean,
+  ): this {
+    if (!this._eventHandlers[name]) {
+      this._eventHandlers[name] = [];
+    }
+
+    this._eventHandlers[name].push({ handler, once, context });
+
+    return this;
+  }
+
+  private _onMessage(message: TMessageContent): void {
+    switch (message.type) {
+      case EventType.Event:
+        console.info(`Has event with name "${String(message.name)}"`, message.data);
+        this._fireEvent(String(message.name), message.data);
+        break;
+      case EventType.Action:
+        console.info(
+          `Start action with id "${message.id}" and name "${String(message.name)}"`,
+          message.data,
+        );
+        this._createResponse(message);
+        break;
+      case EventType.Response:
+        console.info(
+          `Start response with name "${message.id}" and status "${message.status}"`,
+          message.content,
+        );
+        this._fireEndAction(message);
+        break;
+    }
+  }
+
+  private _createResponse(message: IRequestData): void {
+    const sendError = (error: Error) => {
+      console.error(error);
+      this._adapter.send({
+        id: message.id,
+        type: EventType.Response,
+        status: ResponseStatus.Error,
+        content: Bus._dataToMessage(error),
+      });
+    };
+
+    if (!this._requestHandlers[String(message.name)]) {
+      sendError(new Error(`Has no handler for "${String(message.name)}" action!`));
+      return void 0;
+    }
+
+    try {
+      const result = this._requestHandlers[String(message.name)](message.data);
+
+      if (Bus._isPromise(result)) {
+        result.then((data) => {
+          this._adapter.send({
+            id: message.id,
+            type: EventType.Response,
+            status: ResponseStatus.Success,
+            content: Bus._dataToMessage(data),
+          });
+        }, sendError);
+      } else {
+        this._adapter.send({
+          id: message.id,
+          type: EventType.Response,
+          status: ResponseStatus.Success,
+          content: Bus._dataToMessage(result),
         });
+      }
+    } catch (e) {
+      sendError(e as Error);
+    }
+  }
+
+  private _fireEndAction(message: IResponseData) {
+    if (this._activeRequestHash[message.id]) {
+      switch (message.status) {
+        case ResponseStatus.Error:
+          this._activeRequestHash[message.id].reject(Bus._messageToData(message.content));
+          break;
+        case ResponseStatus.Success:
+          this._activeRequestHash[message.id].resolve(Bus._messageToData(message.content));
+          break;
+      }
+      delete this._activeRequestHash[message.id];
+    }
+  }
+
+  private _fireEvent(name: string, value: any): void {
+    if (!this._eventHandlers[name]) {
+      return void 0;
     }
 
-    public on<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
-        return this._addEventHandler(name as string, handler, context, false);
+    this._eventHandlers[name] = this._eventHandlers[name].slice().filter((handlerInfo) => {
+      try {
+        handlerInfo.handler.call(handlerInfo.context, value);
+      } catch (e) {
+        console.warn(e);
+      }
+      return !handlerInfo.once;
+    });
+
+    if (!this._eventHandlers[name].length) {
+      delete this._eventHandlers[name];
     }
+  }
 
-    public once<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
-        return this._addEventHandler(name as string, handler, context, true);
+  private static _createEvent(eventName: string, data: any): IEventData {
+    return {
+      type: EventType.Event,
+      name: eventName,
+      data,
+    };
+  }
+
+  private static _isPromise(some: any): some is Promise<any> {
+    return some && some.then && typeof some.then === 'function';
+  }
+
+  private static _dataToMessage(data: any): IInternalMessage {
+    const type = data instanceof Error ? 'error' : 'data';
+    const content = type === 'error' ? data.message : data;
+    return { type, content };
+  }
+
+  private static _messageToData(message: IInternalMessage): any {
+    if (!message.type || !['error', 'data'].includes(message.type) || !('content' in message)) {
+      return message;
     }
-
-    public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this
-    public off<K extends keyof T>(name?: K, handler?: IOneArgFunction<T[K], void>): this
-    public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this {
-        if (!name) {
-            Object.keys(this._eventHandlers).forEach((name) => this.off(name, handler));
-            return this;
-        }
-
-        if (!this._eventHandlers[name]) {
-            return this;
-        }
-
-        if (!handler) {
-            this._eventHandlers[name].slice().forEach((info) => {
-                this.off(name, info.handler);
-            });
-            return this;
-        }
-
-        this._eventHandlers[name] = this._eventHandlers[name].filter((info) => info.handler !== handler);
-
-        if (!this._eventHandlers[name].length) {
-            delete this._eventHandlers[name];
-        }
-
-        return this;
+    if (message.type === 'error') {
+      return new Error(message.content);
     }
-
-    public registerRequestHandler<E extends keyof H>(name: E, handler: H[E]): this {
-        if (this._requestHandlers[name]) {
-            throw new Error('Duplicate request handler!');
-        }
-
-        this._requestHandlers[name] = handler;
-
-        return this;
-    }
-
-    public unregisterHandler<E extends keyof H>(name: E): this {
-        if (this._requestHandlers[name]) {
-            delete this._requestHandlers[name];
-        }
-        return this;
-    }
-
-    public changeAdapter(adapter: Adapter): Bus {
-        const bus = new Bus(adapter, this._timeout);
-
-        Object.keys(this._eventHandlers).forEach((name) => {
-            this._eventHandlers[name].forEach((info) => {
-                if (info.once) {
-                    bus.once(name, info.handler, info.context);
-                } else {
-                    bus.on(name, info.handler, info.context);
-                }
-            });
-        });
-
-        Object.keys(this._requestHandlers).forEach((name) => {
-            bus.registerRequestHandler(name, this._requestHandlers[name]);
-        });
-
-        return bus;
-    }
-
-    public destroy(): void {
-        console.info('Destroy Bus');
-        this.off();
-        this._adapter.destroy();
-    }
-
-    private _addEventHandler(name: string, handler: IOneArgFunction<any, void>, context: any, once: boolean): this {
-        if (!this._eventHandlers[name]) {
-            this._eventHandlers[name] = [];
-        }
-
-        this._eventHandlers[name].push({ handler, once, context });
-
-        return this;
-    }
-
-    private _onMessage(message: TMessageContent): void {
-        switch (message.type) {
-            case EventType.Event:
-                console.info(`Has event with name "${String(message.name)}"`, message.data);
-                this._fireEvent(String(message.name), message.data);
-                break;
-            case EventType.Action:
-                console.info(`Start action with id "${message.id}" and name "${String(message.name)}"`, message.data);
-                this._createResponse(message);
-                break;
-            case EventType.Response:
-                console.info(`Start response with name "${message.id}" and status "${message.status}"`, message.content);
-                this._fireEndAction(message);
-                break;
-        }
-    }
-
-    private _createResponse(message: IRequestData): void {
-        const sendError = (error: Error) => {
-            console.error(error);
-            this._adapter.send({
-                id: message.id,
-                type: EventType.Response,
-                status: ResponseStatus.Error,
-                content: Bus._dataToMessage(error)
-            });
-        };
-
-        if (!this._requestHandlers[String(message.name)]) {
-            sendError(new Error(`Has no handler for "${String(message.name)}" action!`));
-            return void 0;
-        }
-
-        try {
-            const result = this._requestHandlers[String(message.name)](message.data);
-
-            if (Bus._isPromise(result)) {
-                result.then((data) => {
-                    this._adapter.send({
-                        id: message.id,
-                        type: EventType.Response,
-                        status: ResponseStatus.Success,
-                        content: Bus._dataToMessage(data)
-                    });
-                }, sendError);
-            } else {
-                this._adapter.send({
-                    id: message.id,
-                    type: EventType.Response,
-                    status: ResponseStatus.Success,
-                    content: Bus._dataToMessage(result)
-                });
-            }
-        } catch (e) {
-            sendError(e as Error);
-        }
-    }
-
-    private _fireEndAction(message: IResponseData) {
-        if (this._activeRequestHash[message.id]) {
-            switch (message.status) {
-                case ResponseStatus.Error:
-                    this._activeRequestHash[message.id].reject(Bus._messageToData(message.content));
-                    break;
-                case ResponseStatus.Success:
-                    this._activeRequestHash[message.id].resolve(Bus._messageToData(message.content));
-                    break;
-            }
-            delete this._activeRequestHash[message.id];
-        }
-    }
-
-    private _fireEvent(name: string, value: any): void {
-        if (!this._eventHandlers[name]) {
-            return void 0;
-        }
-
-        this._eventHandlers[name] = this._eventHandlers[name]
-            .slice()
-            .filter((handlerInfo) => {
-                try {
-                    handlerInfo.handler.call(handlerInfo.context, value);
-                } catch (e) {
-                    console.warn(e);
-                }
-                return !handlerInfo.once;
-            });
-
-        if (!this._eventHandlers[name].length) {
-            delete this._eventHandlers[name];
-        }
-    }
-
-    private static _createEvent(eventName: string, data: any): IEventData {
-        return {
-            type: EventType.Event,
-            name: eventName,
-            data
-        };
-    }
-
-    private static _isPromise(some: any): some is Promise<any> {
-        return some && some.then && typeof some.then === 'function';
-    }
-
-    private static _dataToMessage(data: any): IInternalMessage {
-        const type = data instanceof Error ? 'error' : 'data';
-        const content = type === 'error'
-            ? data.message
-            : data;
-        return { type, content };
-    }
-
-    private static _messageToData(message: IInternalMessage): any {
-        if (!message.type || !['error', 'data'].includes(message.type) || !('content' in message)) {
-            return message;
-        }
-        if (message.type === 'error') {
-            return new Error(message.content);
-        }
-        return message.content;
-    }
+    return message.content;
+  }
 }
 
 export interface IOneArgFunction<T, R> {
-    (data: T): R;
+  (data: T): R;
 }
 
 export type TMessageContent = IEventData | IRequestData | IResponseData;
 export type TChanelId = string | number;
 
 export interface IEventData {
-    type: EventType.Event;
-    chanelId?: TChanelId | undefined;
-    name: keyof any;
-    data?: any;
+  type: EventType.Event;
+  chanelId?: TChanelId | undefined;
+  name: keyof any;
+  data?: any;
 }
 
 export interface IRequestData {
-    id: string | number;
-    chanelId?: TChanelId | undefined;
-    type: EventType.Action;
-    name: keyof any;
-    data?: any;
+  id: string | number;
+  chanelId?: TChanelId | undefined;
+  type: EventType.Action;
+  name: keyof any;
+  data?: any;
 }
 
 export interface IResponseData {
-    id: string | number;
-    chanelId?: TChanelId | undefined;
-    type: EventType.Response;
-    status: ResponseStatus;
-    content: any;
+  id: string | number;
+  chanelId?: TChanelId | undefined;
+  type: EventType.Response;
+  status: ResponseStatus;
+  content: any;
 }
 
 interface ISentActionData {
-    resolve: Function;
-    reject: Function;
+  resolve: Function;
+  reject: Function;
 }
 
 interface IEventHandlerData {
-    context: any;
-    once: boolean;
-    handler: IOneArgFunction<any, void>;
+  context: any;
+  once: boolean;
+  handler: IOneArgFunction<any, void>;
 }
 
 interface IInternalMessage {
-    type: 'data' | 'error';
-    content: any
+  type: 'data' | 'error';
+  content: any;
 }
