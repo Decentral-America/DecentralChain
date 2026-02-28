@@ -8,7 +8,7 @@ export enum DATA_FIELD_TYPE {
 export type TSchema = TObject | TArray | IAnyOf | TDataTxItem | TPrimitive;
 
 export type TObjectField = [string | string[], TSchema];
-export type TAnyOfItem = { schema: TSchema; key: number; strKey?: string };
+export type TAnyOfItem = { schema: TSchema; key: number; strKey?: string | undefined };
 
 export type TObject = {
   type: 'object';
