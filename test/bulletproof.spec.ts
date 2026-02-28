@@ -25,7 +25,7 @@
  *  - Cross-output-format consistency (Base58 vs Bytes)
  */
 
-import { describe, expect, test, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { crypto, MAIN_NET_CHAIN_ID, TEST_NET_CHAIN_ID } from '../src';
 import { decryptSeed, encryptSeed } from '../src/crypto/seed-ecryption';
 

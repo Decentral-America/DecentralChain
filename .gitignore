@@ -20,4 +20,6 @@ Thumbs.db
 .size-snapshot.json
 .rpt2_cache
 *.local
+*.tgz
+*.log
 MODERNIZE.md

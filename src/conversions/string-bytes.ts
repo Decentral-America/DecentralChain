@@ -25,19 +25,3 @@ export const bytesToString = (bytes: TBinaryIn, encoding: 'utf8' | 'raw' = 'utf8
     throw new Error(`Unsupported encoding ${encoding}`);
   }
 };
-
-/**
- * Converts each character to byte
- */
-/** Convert a raw binary string to bytes (each char code becomes one byte). */
-export const binaryStringToBytes = (str: string): TBytes =>
-  Uint8Array.from([...str].map((c) => c.charCodeAt(0)));
-
-/**
- * Reads each byte as individual character
- */
-/** Convert bytes to a raw binary string (each byte becomes one char code). */
-export const bytesToBinaryString = (bytes: TBinaryIn): string =>
-  Array.from(_fromIn(bytes))
-    .map((byte) => String.fromCharCode(byte))
-    .join('');

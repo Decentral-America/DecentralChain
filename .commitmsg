@@ -1,3 +1,0 @@
-fix!: remove deprecated ChaidId export
-
-BREAKING CHANGE: The misspelled ChaidId alias has been removed. Use ChainId instead.

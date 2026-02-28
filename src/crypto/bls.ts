@@ -12,7 +12,7 @@ const CURVE_ORDER = BigInt('0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeff
 const bls = bls12_381.longSignatures;
 
 /** Derive a BLS12-381 secret key from a seed using HKDF. */
-export function mkBlsSecretKey(seed: Uint8Array): Uint8Array {
+function mkBlsSecretKey(seed: Uint8Array): Uint8Array {
   const ikm = new Uint8Array([...seed, 0]);
   const info = new Uint8Array([0x00, 0x30]); // 48
 
