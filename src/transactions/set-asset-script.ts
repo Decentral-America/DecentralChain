@@ -6,11 +6,15 @@ import {
   WithId, WithProofs,
   WithSender
 } from '../transactions'
+<<<<<<< HEAD
 import { signBytes, blake2b, base58Encode, } from '@waves/ts-lib-crypto'
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> f33083a0 (updated dependencies)
+=======
+import { signBytes, blake2b, base58Encode, } from '@decentralchain/ts-lib-crypto'
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
 import {
   addProof,
   getSenderPublicKey,
@@ -30,7 +34,7 @@ import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {SetAssetScriptTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {SetAssetScriptTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 
 /* @echo DOCS */
@@ -56,7 +60,7 @@ export function setAssetScript(paramsOrTx: any, seed?: TSeedTypes): SetAssetScri
     version,
     senderPublicKey,
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 87),
+    chainId: networkByte(paramsOrTx.chainId, 76),
     fee: fee(paramsOrTx, 100000000),
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],

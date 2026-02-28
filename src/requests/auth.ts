@@ -1,7 +1,7 @@
 /**
  * @module index
  */
-import { base58Encode, blake2b, concat, signBytes, address } from '@waves/ts-lib-crypto'
+import { base58Encode, blake2b, concat, signBytes, address } from '@decentralchain/ts-lib-crypto'
 import { serializePrimitives } from '@decentralchain/marshall'
 const {STRING, LEN, SHORT} = serializePrimitives
 import { getSenderPublicKey, convertToPairs } from '../generic'
@@ -10,7 +10,7 @@ import { validate } from '../validators'
 import { TPrivateKey } from '../types'
 
 export const serializeAuthData = (auth: {host: string, data: string}) => concat(
-    LEN(SHORT)(STRING)('WavesWalletAuthentication'),
+    LEN(SHORT)(STRING)('DccWalletAuthentication'),
     LEN(SHORT)(STRING)(auth.host || ''),
     LEN(SHORT)(STRING)(auth.data || '')
 )
@@ -28,7 +28,7 @@ export function auth(params: IAuthParams, seed?: string | TPrivateKey, chainId?:
     host: params.host,
     data: params.data,
     publicKey,
-    address: address({ publicKey }, chainId),
+    address: address({ publicKey }, chainId || 'L'),
   }
 
   const bytes = serializeAuthData(rx)

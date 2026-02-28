@@ -1,10 +1,10 @@
 import { broadcast, ISetScriptParams, libs, massTransfer, setScript, waitForTx } from '../../src'
-import { address, publicKey } from '@waves/ts-lib-crypto'
+import { address, publicKey } from '@decentralchain/ts-lib-crypto'
 import { MASTER_SEED, CHAIN_ID, TIMEOUT, API_BASE, randomHexString } from './config'
 import { data, invokeScript } from '../../src'
 
 import { txToProtoBytes } from '../../src/proto-serialize'
-import {DATA_FIELD_TYPE} from '@waves/ts-types'
+import {DATA_FIELD_TYPE} from '@decentralchain/ts-types'
 
 describe('Smart features', () => {
   let account1: string, account2: string
@@ -118,7 +118,7 @@ describe('Smart features', () => {
 
     it('Should set dapp account', async () => {
       // Set script
-      // This script has one function 'foo'. It accepts integer and sends you this integer amount of waves
+      // This script has one function 'foo'. It accepts integer and sends you this integer amount of DCC
       /*
       {-# STDLIB_VERSION 3 #-}
       {-# CONTENT_TYPE DAPP #-}

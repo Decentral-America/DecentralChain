@@ -1,4 +1,4 @@
-import {base58Decode, base64Decode, keccak, blake2b, stringToBytes} from '@waves/ts-lib-crypto'
+import {base58Decode, base64Decode, keccak, blake2b, stringToBytes} from '@decentralchain/ts-lib-crypto'
 
 
 const TX_DEFAULTS = {
@@ -200,7 +200,7 @@ export const isPublicKeyForEthSuppTx = ifElse(
     )
 )
 
-export const isWavesOrAssetId = ifElse(
+export const isDccOrAssetId = ifElse(
     orEq(['', null, undefined, 'DCC']),
     defaultValue(true),
     isHash
