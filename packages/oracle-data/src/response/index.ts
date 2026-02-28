@@ -12,8 +12,8 @@ import {
 export function schema<T extends object>(
   ...processors: TProcessor<Partial<T>>[]
 ): (hash: THash) => TResponse<T> {
-  const errors: IResponseError[] = [];
   return (hash: THash) => {
+    const errors: IResponseError[] = [];
     const store: Partial<T> = Object.create(null) as Partial<T>;
     const content = processors.reduce((acc, item) => item(errors)(acc, hash), store) as T;
     if (errors.length === 0) {
