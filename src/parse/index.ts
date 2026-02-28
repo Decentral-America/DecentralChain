@@ -1,30 +1,36 @@
-import {
+import type {
   IErrorResponse,
   IProviderData,
   TDataTxField,
   TProviderAsset,
   TResponse,
-} from '../interface';
-import { getAssetIdFromKey, getFieldValue, isString } from '../response';
+} from '../interface.js';
+import { getAssetIdFromKey, getFieldValue, isString } from '../response/index.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
-  DATA_PROVIDER_VERSIONS,
+  type DATA_PROVIDER_VERSIONS,
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
   RESPONSE_STATUSES,
-  STATUS_LIST,
-} from '../constants';
-import { ASSETS_VERSION_MAP, DATA_PROVIDER_VERSION_MAP } from '../schemas';
+  type STATUS_LIST,
+} from '../constants.js';
+import { ASSETS_VERSION_MAP, DATA_PROVIDER_VERSION_MAP } from '../schemas/index.js';
 
+/** Parse oracle provider data from a hash of data transaction fields. */
 export function parseOracleData(hash: Record<string, TDataTxField>): TResponse<IProviderData> {
   try {
     const version = getFieldValue(
       hash,
       DATA_PROVIDER_KEYS.VERSION,
       DATA_ENTRY_TYPES.INTEGER,
-    ) as DATA_PROVIDER_VERSIONS.BETA;
-    return DATA_PROVIDER_VERSION_MAP[version](hash);
+    ) as DATA_PROVIDER_VERSIONS;
+    const parser = DATA_PROVIDER_VERSION_MAP[version];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
+    if (!parser) {
+      throw new Error(`Unsupported provider version: ${String(version)}`);
+    }
+    return parser(hash);
   } catch (e: unknown) {
     return {
       status: RESPONSE_STATUSES.ERROR,
@@ -39,9 +45,8 @@ export function parseOracleData(hash: Record<string, TDataTxField>): TResponse<I
   }
 }
 
-export function parseAssetData(
-  hash: Record<string, TDataTxField>,
-): Array<TResponse<TProviderAsset>> {
+/** Parse oracle asset data from a hash of data transaction fields. */
+export function parseAssetData(hash: Record<string, TDataTxField>): TResponse<TProviderAsset>[] {
   return Object.keys(hash)
     .map(getAssetIdFromKey)
     .filter(isString)
@@ -51,21 +56,26 @@ export function parseAssetData(
           hash,
           getDataName(ORACLE_ASSET_FIELD_PATTERN.VERSION, id),
           DATA_ENTRY_TYPES.INTEGER,
-        ) as DATA_PROVIDER_VERSIONS.BETA;
+        ) as DATA_PROVIDER_VERSIONS;
         const status = getFieldValue(
           hash,
           getDataName(ORACLE_ASSET_FIELD_PATTERN.STATUS, id),
           DATA_ENTRY_TYPES.INTEGER,
         ) as STATUS_LIST;
-        return ASSETS_VERSION_MAP[version](id, status)(hash);
-      } catch (e) {
+        const parser = ASSETS_VERSION_MAP[version];
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
+        if (!parser) {
+          throw new Error(`Unsupported asset version: ${String(version)}`);
+        }
+        return parser(id, status)(hash);
+      } catch (e: unknown) {
         return {
           status: RESPONSE_STATUSES.ERROR,
           content: { id },
           errors: [
             {
               path: 'version',
-              error: e,
+              error: e instanceof Error ? e : new Error(String(e)),
             },
           ],
         } as IErrorResponse<TProviderAsset>;
