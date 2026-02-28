@@ -1,10 +1,10 @@
-import { crypto } from './crypto/crypto'
-export { seedWordsList } from './crypto/seed-words-list'
-export { ChaidId } from './extensions/chain-id'
-export { Seed } from './extensions/seed'
-export { isPrivateKey, isPublicKey } from './crypto/util'
-export { crypto } from './crypto/crypto'
-export * from './crypto/interface'
+import { crypto } from './crypto/crypto';
+export { seedWordsList } from './crypto/seed-words-list';
+export { ChainId, ChaidId } from './extensions/chain-id';
+export { Seed } from './extensions/seed';
+export { isPrivateKey, isPublicKey } from './crypto/util';
+export { crypto } from './crypto/crypto';
+export * from './crypto/interface';
 
 export const {
   signBytes,
@@ -45,6 +45,8 @@ export const {
   merkleVerify,
   split,
   concat,
-} = crypto({ output: 'Base58' })
-
-
+  blsKeyPair,
+  blsPublicKey,
+  blsSign,
+  blsVerify,
+} = crypto({ output: 'Base58' });
