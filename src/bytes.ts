@@ -6,6 +6,7 @@ export { Seed } from './extensions/seed';
 export { isPrivateKey, isPublicKey } from './crypto/util';
 export { crypto } from './crypto/crypto';
 export * from './crypto/interface';
+/* eslint-disable @typescript-eslint/unbound-method -- destructured arrow functions, no `this` binding issues */
 export const {
   signBytes,
   keyPair,
@@ -50,3 +51,4 @@ export const {
   blsSign,
   blsVerify,
 } = crypto({ output: 'Bytes' });
+/* eslint-enable @typescript-eslint/unbound-method */
