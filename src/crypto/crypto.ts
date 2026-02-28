@@ -56,8 +56,11 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
 ): TDCCCrypto<TOutputTypesMap[TOut], S> => {
   if (options?.seed == '') throw new Error('Empty seed is not allowed.');
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic type extraction requires `any`
   type ArgsFirstRest<TFunc> = TFunc extends (a: infer A, ...args: infer U) => any ? [A, U] : never;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic type extraction requires `any`
   type ArgsAll<TFunc> = TFunc extends (...args: infer U) => any ? U : never;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic type extraction requires `any`
   type Return<TFunc> = TFunc extends (...args: any) => infer R ? R : unknown;
 
   const c =
