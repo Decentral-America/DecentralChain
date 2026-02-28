@@ -1,10 +1,10 @@
-import { keccak, blake2b, base58Encode, base16Decode } from '@waves/ts-lib-crypto'
+import { keccak, blake2b, base58Encode, base16Decode } from '@decentralchain/ts-lib-crypto'
 
 const validateEthAddress = (addr: string): boolean => {
     return addr != null && addr.length == 42;
 }
 
-export default function ethAddress2waves(ethAddress: string, chainId: number): string {
+export default function ethAddress2dcc(ethAddress: string, chainId: number): string {
     if(validateEthAddress(ethAddress)) {
         ethAddress = ethAddress.substr(2);
     } else {
@@ -24,14 +24,14 @@ export default function ethAddress2waves(ethAddress: string, chainId: number): s
     const checksum = keccak(blake2b(checksumBytes));      
 
     // склеить [0x01, CHAIN_ID] (два байта) + PK_HASH (изначальные 20 байт) + CHECKSUM[1:4] (первые четыре байта чексуммы)
-    const wavesBytes = new Uint8Array([
+    const dccBytes = new Uint8Array([
         ...prefixBytes,
         ...pkHashBytes.slice(0, 20),
         ...checksum.slice(0, 4)
     ]);
 
     // закодировать в base58
-    const wavesAddress = base58Encode(wavesBytes);
+    const dccAddress = base58Encode(dccBytes);
 
-    return wavesAddress;
+    return dccAddress;
 }

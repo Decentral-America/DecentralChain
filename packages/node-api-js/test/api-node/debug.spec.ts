@@ -1,7 +1,7 @@
 import {NODE_URL, STATE, CHAIN_ID} from '../_state';
 import {create} from '../../src';
-import {invokeScript, waitForTx, broadcast, transfer, libs} from '@decentralchain/waves-transactions';
-import {InvokeScriptTransaction} from "@waves/ts-types";
+import {invokeScript, waitForTx, broadcast, transfer, libs} from '@decentralchain/transactions';
+import {InvokeScriptTransaction} from "@decentralchain/ts-types";
 import {TLong} from "../../src/interface";
 import {TWithState} from "../../src/tools/transactions/transactions";
 
@@ -45,7 +45,7 @@ describe('State changes by transaction Id', () => {
     });
 
     it('state schanges in stage', async () =>{
-        const api2: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');
+        const api2: ReturnType<typeof create> = create('https://nodes-stagenet.decentralchain.io/');
         //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
         const tx = await api2.transactions.fetchInfo("3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK")
         const txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges

@@ -1,15 +1,15 @@
-import wavesAddress2eth from "./tools/adresses/wavesAddress2eth";
-import ethAddress2waves from "./tools/adresses/ethAddress2waves";
-import wavesAsset2Eth from "./tools/assets/wavesAsset2eth";
-import ethTxId2waves from "./tools/transactions/ethTxId2waves";
+import dccAddress2eth from "./tools/adresses/dccAddress2eth";
+import ethAddress2dcc from "./tools/adresses/ethAddress2dcc";
+import dccAsset2Eth from "./tools/assets/dccAsset2eth";
+import ethTxId2dcc from "./tools/transactions/ethTxId2dcc";
 
 import { create as createFn } from './create';
 
 export {
-    wavesAddress2eth,
-    ethAddress2waves,
-    wavesAsset2Eth,
-    ethTxId2waves
+    dccAddress2eth,
+    ethAddress2dcc,
+    dccAsset2Eth,
+    ethTxId2dcc
 };
 
 export const create = createFn;

@@ -1,6 +1,6 @@
 import { TLong } from '../../interface';
 import request from '../../tools/request';
-import {Transaction, TransactionFromNode, WithApiMixin} from '@waves/ts-types';
+import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
 
 /**
  * GET /blocks/headers/seq/{from}/{to}
@@ -203,7 +203,7 @@ export interface IBlockHeader {
     generatorPublicKey: string;
     version: number;
     reference: string;
-    features: Array<number>;
+    features: Array<string>;
     totalFee: TLong;
     desiredReward: number;
     transactionCount: number;
@@ -213,21 +213,9 @@ export interface IBlockHeader {
         'base-target': number;
         'generation-signature': string;
     }
-    stateHash?: string;
-    rewardShares?: {
-        [key: string]: TLong;
-    }
-    challengedHeader?:{
-        headerSignature: string;
-        features: Array<number>;
-        generator: string;
-        generatorPublicKey: string;
-        desiredReward: TLong;
-        stateHash: string;
-    }
 }
 
 export interface IBlock extends IBlockHeader {
     fee: TLong;
-    transactions: Array<TransactionFromNode & WithApiMixin>;
+    transactions: Array<Transaction<TLong> & WithApiMixin>;
 }
