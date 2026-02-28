@@ -1,15 +1,17 @@
 # Contributing to @decentralchain/bignumber
 
-Thank you for your interest in contributing! This document provides guidelines and instructions.
+Thank you for your interest in contributing!
 
-## Development Setup
+## Code of Conduct
 
-### Prerequisites
+By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+## Prerequisites
 
 - **Node.js** >= 22 (24 recommended — see `.node-version`)
 - **npm** >= 11
 
-### Getting Started
+## Setup
 
 ```bash
 git clone https://github.com/Decentral-America/bignumber.git
@@ -17,58 +19,49 @@ cd bignumber
 npm install
 ```
 
-### Available Scripts
+## Scripts
 
-| Command                 | Description                              |
-| ----------------------- | ---------------------------------------- |
-| `npm run build`         | Build ESM, CJS, and UMD bundles via tsup |
-| `npm test`              | Run tests with Vitest                    |
-| `npm run test:watch`    | Run tests in watch mode                  |
-| `npm run test:coverage` | Run tests with V8 coverage               |
-| `npm run typecheck`     | TypeScript type checking                 |
-| `npm run lint`          | ESLint (type-aware, strict)              |
-| `npm run lint:fix`      | ESLint with auto-fix                     |
-| `npm run format`        | Format code with Prettier                |
-| `npm run validate`      | Full CI validation pipeline              |
-| `npm run bulletproof`   | Format + lint fix + typecheck + test     |
+| Command                     | Description                              |
+| --------------------------- | ---------------------------------------- |
+| `npm run build`             | Build distribution files                 |
+| `npm test`                  | Run tests with Vitest                    |
+| `npm run test:watch`        | Tests in watch mode                      |
+| `npm run test:coverage`     | Tests with V8 coverage                   |
+| `npm run typecheck`         | TypeScript type checking                 |
+| `npm run lint`              | ESLint                                   |
+| `npm run lint:fix`          | ESLint with auto-fix                     |
+| `npm run format`            | Format with Prettier                     |
+| `npm run validate`          | Full CI validation pipeline              |
+| `npm run bulletproof`       | Format + lint fix + typecheck + test     |
+| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test |
 
 ## Workflow
 
-1. **Fork** the repository
-2. **Create a branch** from `main` (`git checkout -b feat/my-feature`)
-3. **Make your changes** with tests
-4. **Run the full pipeline**: `npm run bulletproof`
-5. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/)
-6. **Push** and open a Pull Request
+1. Fork → branch from `main` (`feat/my-feature`)
+2. Make changes with tests
+3. `npm run bulletproof`
+4. Commit with [Conventional Commits](https://www.conventionalcommits.org/)
+5. Push → open PR
 
 ### Commit Convention
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
 ```
-feat: add new comparison method
-fix: handle NaN edge case in fromBytes
+feat: add new method
+fix: handle edge case
 docs: update API reference
 chore: bump dependencies
-test: add coverage for unsigned range
-refactor: simplify toBytes implementation
+test: add coverage for X
+refactor: simplify implementation
 ```
 
-## Code Standards
+## Standards
 
-- **TypeScript strict mode** — all strict compiler flags enabled
-- **Type-aware ESLint** — `strictTypeChecked` + `stylisticTypeChecked`
-- **Prettier** — auto-formatting on commit via Husky + lint-staged
-- **100% type safety** — no untyped escape hatches in production code
-- **Immutable by default** — all `BigNumber` operations return new instances
+- **Strict mode** — all TypeScript strict flags enabled
+- **Prettier** — auto-formatting on commit
+- **Coverage** — thresholds enforced (90%+)
+- **Immutable** — operations return new instances where applicable
 
-## Testing
-
-- All new features must include tests
-- Coverage thresholds are enforced (90%+ for branches, functions, lines, statements)
-- Run `npm run test:coverage` to verify locally
-
-## Pull Request Checklist
+## PR Checklist
 
 - [ ] Tests added/updated
 - [ ] `npm run bulletproof` passes

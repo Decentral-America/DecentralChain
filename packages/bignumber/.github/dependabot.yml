@@ -10,13 +10,15 @@ updates:
       - Decentral-America
     labels:
       - dependencies
+    commit-message:
+      prefix: 'chore(deps):'
     groups:
-      development:
+      dev-dependencies:
         dependency-type: development
         update-types:
           - minor
           - patch
-      production:
+      production-dependencies:
         dependency-type: production
         update-types:
           - minor
@@ -28,3 +30,5 @@ updates:
       interval: weekly
     labels:
       - ci
+    commit-message:
+      prefix: 'ci:'
