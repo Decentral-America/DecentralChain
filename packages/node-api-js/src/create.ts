@@ -25,7 +25,7 @@ import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
 import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
-import {Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
+import {Transaction, TransactionMap, WithApiMixin} from '@decentralchain/ts-types';
 import {TLong} from './interface';
 
 declare function broadcastWrapped<T extends Array<Transaction<TLong>>>(list: T, options?: Partial<IOptions>): Promise<TMapTuple<T, TransactionMap<TLong>, 'type'> & WithApiMixin>;

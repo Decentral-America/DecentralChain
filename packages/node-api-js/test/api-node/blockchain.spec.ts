@@ -9,7 +9,7 @@ const api: ReturnType<typeof create> = create(NODE_URL);
 
 const checkRewards = (blockchainRewards: TRewards<TLong>) => {
     expect(blockchainRewards.currentReward).isStringOrNumber();
-    expect(blockchainRewards.totalWavesAmount).isStringOrNumber();
+    expect(blockchainRewards.totalDccAmount).isStringOrNumber();
     expect(blockchainRewards.minIncrement).isStringOrNumber();
     expect(typeof blockchainRewards.height).toBe('number');
     expect(typeof blockchainRewards.term).toBe('number');
