@@ -12,7 +12,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced webpack with tsup for building ESM + CJS + UMD bundles.
 - Upgraded all dependencies to latest versions.
 - Rebranded copyright from `WavesPlatform` to `DecentralChain`.
-- Fixed `ChaidId` typo — now exported as `ChainId` (with deprecated `ChaidId` alias).
+- Removed `ChaidId` typo export — use `ChainId` instead.
 - Improved `concat()` from O(n²) to O(n) using pre-allocated `Uint8Array`.
 - Modernized `Utf8.ts` to use native `TextEncoder`/`TextDecoder`.
 - Removed deprecated `Buffer` constructor usage in `random.ts`.
