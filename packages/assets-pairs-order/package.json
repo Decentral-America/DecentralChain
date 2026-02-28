@@ -13,9 +13,13 @@
   },
   "files": [
     "src/",
-    "dist/"
+    "dist/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "license": "MIT",
+  "author": "Decentral-America <https://github.com/Decentral-America>",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -25,9 +29,18 @@
   "bugs": {
     "url": "https://github.com/Decentral-America/assets-pairs-order/issues"
   },
-  "engines": {
-    "node": ">=24"
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@11.9.0",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -35,19 +48,27 @@
     "assets",
     "pairs",
     "order",
-    "trading"
+    "trading",
+    "blockchain",
+    "cryptocurrency"
   ],
   "scripts": {
     "build:browser": "rollup -c rollup.config.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "format": "prettier --write \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
-    "format:check": "prettier --check \"src/**/*.{js,json}\" \"*.{js,mjs,json}\"",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "check:publint": "publint",
+    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build:browser && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
     "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
-    "prepublishOnly": "npm run bulletproof:check && npm run build:browser",
+    "prepublishOnly": "npm run validate",
+    "prepack": "npm run build:browser",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -57,21 +78,35 @@
     ],
     "*.json": [
       "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
   },
+  "size-limit": [
+    {
+      "path": "./dist/browser.js",
+      "limit": "5 kB"
+    }
+  ],
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
     "@eslint/js": "^10.0.1",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
+    "publint": "0.3.17",
     "rollup": "^4.59.0",
+    "size-limit": "12.0.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   },

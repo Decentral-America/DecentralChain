@@ -11,9 +11,6 @@ describe('orderPair utility', () => {
   it('is function', () => {
     expect(typeof orderPair).toBe('function');
   });
-  it('is callable without arguments', () => {
-    expect(() => orderPair()).not.toThrow();
-  });
   it('has both default and named exports', () => {
     expect(createOrderPair).toBeDefined();
     expect(MAINNET_DATA).toBeDefined();
@@ -22,9 +19,45 @@ describe('orderPair utility', () => {
   });
 
   /**
+   * Data exports are frozen (immutable)
+   */
+  it('exports frozen MAINNET_DATA', () => {
+    expect(Object.isFrozen(MAINNET_DATA)).toBe(true);
+  });
+  it('exports frozen TESTNET_DATA', () => {
+    expect(Object.isFrozen(TESTNET_DATA)).toBe(true);
+  });
+  it('exports frozen ARBITRARY_DATA', () => {
+    expect(Object.isFrozen(ARBITRARY_DATA)).toBe(true);
+  });
+
+  /**
+   * Input validation
+   */
+  it('throws TypeError when predefinedList is not an array', () => {
+    expect(() => createOrderPair('not-an-array', 'a', 'b')).toThrow(TypeError);
+    expect(() => createOrderPair(null, 'a', 'b')).toThrow(TypeError);
+    expect(() => createOrderPair(42, 'a', 'b')).toThrow(TypeError);
+  });
+  it('throws TypeError when first asset ID is not a string', () => {
+    expect(() => orderPair(123, 'b')).toThrow(TypeError);
+    expect(() => orderPair(null, 'b')).toThrow(TypeError);
+    expect(() => orderPair(undefined, 'b')).toThrow(TypeError);
+  });
+  it('throws TypeError when second asset ID is not a string', () => {
+    expect(() => orderPair('a', 123)).toThrow(TypeError);
+    expect(() => orderPair('a', null)).toThrow(TypeError);
+    expect(() => orderPair('a', undefined)).toThrow(TypeError);
+  });
+  it('includes informative error messages', () => {
+    expect(() => createOrderPair(42, 'a', 'b')).toThrow(/Expected predefinedList to be an array/);
+    expect(() => orderPair(42, 'b')).toThrow(/Expected first asset ID to be a string/);
+    expect(() => orderPair('a', 42)).toThrow(/Expected second asset ID to be a string/);
+  });
+
+  /**
    * Arguments handling
    */
-
   it('accepts (string, string)', () => {
     expect(() =>
       orderPair(
@@ -38,6 +71,27 @@ describe('orderPair utility', () => {
         'DNhP2zAH5HM1kdUSmxcBqs8RP4vvUgRFc1YgAKkfPmPD',
       ),
     ).toHaveLength(2);
+  });
+
+  /**
+   * Return value structure
+   */
+  it('returns an array of exactly two strings', () => {
+    const result = orderPair(
+      'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck',
+      'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
+    );
+    expect(Array.isArray(result)).toBe(true);
+    expect(result).toHaveLength(2);
+    expect(typeof result[0]).toBe('string');
+    expect(typeof result[1]).toBe('string');
+  });
+  it('always returns both original assets (no data loss)', () => {
+    const a = 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck';
+    const b = 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU';
+    const result = orderPair(a, b);
+    expect(result).toContain(a);
+    expect(result).toContain(b);
   });
 
   /**
@@ -116,6 +170,43 @@ describe('orderPair utility', () => {
   });
 
   /**
+   * Symmetry — ordering must be the same regardless of argument order
+   */
+  it('is symmetric: orderPair(a, b) === orderPair(b, a) for known assets', () => {
+    const usd = 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck';
+    const eur = 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU';
+    expect(orderPair(usd, eur)).toEqual(orderPair(eur, usd));
+  });
+  it('is symmetric: orderPair(a, b) === orderPair(b, a) for mixed known/unknown', () => {
+    const eur = 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU';
+    const unknown = 'FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA';
+    expect(orderPair(eur, unknown)).toEqual(orderPair(unknown, eur));
+  });
+
+  /**
+   * Edge cases
+   */
+  it('handles same asset passed as both arguments', () => {
+    const asset = 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck';
+    const result = orderPair(asset, asset);
+    expect(result).toEqual([asset, asset]);
+  });
+  it('works with an empty priority list', () => {
+    const emptyOrder = createOrderPair([]);
+    // With no priority list, falls back to base58 comparison
+    const result = emptyOrder(
+      'FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA',
+      'DNhP2zAH5HM1kdUSmxcBqs8RP4vvUgRFc1YgAKkfPmPD',
+    );
+    expect(result).toHaveLength(2);
+  });
+  it('works with a single-element priority list', () => {
+    const singleOrder = createOrderPair(['DCC']);
+    const result = singleOrder('FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA', 'DCC');
+    expect(result[1]).toBe('DCC'); // known asset is always price
+  });
+
+  /**
    * Currying
    */
   it('works with custom predefinedList', () => {
@@ -130,6 +221,10 @@ describe('orderPair utility', () => {
     );
     expect(result).toEqual(['DCC', 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck']);
   });
+  it('curried function with partial application returns a function', () => {
+    const fn = createOrderPair(MAINNET_DATA);
+    expect(typeof fn).toBe('function');
+  });
 });
 
 describe('TESTNET_DATA', () => {
@@ -137,6 +232,10 @@ describe('TESTNET_DATA', () => {
 
   it('contains DCC', () => {
     expect(TESTNET_DATA).toContain('DCC');
+  });
+  it('is a non-empty array of strings', () => {
+    expect(TESTNET_DATA.length).toBeGreaterThan(0);
+    TESTNET_DATA.forEach((id) => expect(typeof id).toBe('string'));
   });
   it('orders [unknown, DCC] with DCC as price asset', () => {
     expect(testnetOrderPair('FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA', 'DCC')).toEqual([
@@ -151,6 +250,10 @@ describe('ARBITRARY_DATA', () => {
 
   it('contains DCC', () => {
     expect(ARBITRARY_DATA).toContain('DCC');
+  });
+  it('is a non-empty array of strings', () => {
+    expect(ARBITRARY_DATA.length).toBeGreaterThan(0);
+    ARBITRARY_DATA.forEach((id) => expect(typeof id).toBe('string'));
   });
   it('orders [unknown, DCC] with DCC as price asset', () => {
     expect(arbitraryOrderPair('FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA', 'DCC')).toEqual([
@@ -173,5 +276,18 @@ describe('compareUint8Arrays', () => {
     expect(compareUint8Arrays(arr1, arr2)).toBe(false);
     expect(compareUint8Arrays(arr1, arr3)).toBe(true);
     expect(compareUint8Arrays(arr1, arr4)).toBe(false); // equal → false
+  });
+  it('returns false for two empty arrays', () => {
+    expect(compareUint8Arrays(new Uint8Array([]), new Uint8Array([]))).toBe(false);
+  });
+  it('returns true when first is longer and prefix matches', () => {
+    expect(compareUint8Arrays(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2]))).toBe(true);
+  });
+  it('returns false when second is longer and prefix matches', () => {
+    expect(compareUint8Arrays(new Uint8Array([1, 2]), new Uint8Array([1, 2, 3]))).toBe(false);
+  });
+  it('handles single-byte arrays', () => {
+    expect(compareUint8Arrays(new Uint8Array([255]), new Uint8Array([0]))).toBe(true);
+    expect(compareUint8Arrays(new Uint8Array([0]), new Uint8Array([255]))).toBe(false);
   });
 });
