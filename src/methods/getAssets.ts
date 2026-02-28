@@ -1,4 +1,4 @@
-import { Asset } from '@waves/data-entities';
+import { Asset } from '@decentralchain/data-entities';
 import {
   ILibOptions,
   ILibRequest,

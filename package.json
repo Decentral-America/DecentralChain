@@ -1,5 +1,5 @@
 {
-  "name": "@waves/data-service-client-js",
+  "name": "@decentralchain/data-service-client-js",
   "version": "4.1.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,14 +9,14 @@
     "dev": "ts-node src/index.ts",
     "build": "tsc",
     "build:browser:dev": "tsc && browserify ./dist/index.js -o ./dist/umd.js",
-    "build:browser": "browserify ./dist/index.js -o ./dist/umd.js -u @waves/data-entities -u @waves/bignumber",
+    "build:browser": "browserify ./dist/index.js -o ./dist/umd.js -u @decentralchain/data-entities -u @decentralchain/bignumber",
     "build:all": "rimraf ./dist/* && npm run build && npm run build:browser",
     "test": "jest",
     "prepare": "npm run build:all && npm test"
   },
   "dependencies": {
-    "@waves/bignumber": "^1.0.0",
-    "@waves/data-entities": "^2.0.0-a3"
+    "@decentralchain/bignumber": "^1.0.0",
+    "@decentralchain/data-entities": "^2.0.0"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
