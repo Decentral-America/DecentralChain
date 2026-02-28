@@ -4,8 +4,16 @@ import getAssetsByTransaction from './getAssetsByTransaction';
 import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
 import { TLong } from '../../interface';
 
-
-export default function (base: string, address: string, limit: number, after?: string): Promise<{ transactions: Array<Transaction<TLong> & WithApiMixin>; assets: Record<string, TAssetDetails> }> {
-    return fetchTransactions(base, address, limit, after)
-        .then(transactions => getAssetsByTransaction(base, transactions).then(assets => ({ transactions, assets })));
+export default function (
+  base: string,
+  address: string,
+  limit: number,
+  after?: string,
+): Promise<{
+  transactions: Array<Transaction<TLong> & WithApiMixin>;
+  assets: Record<string, TAssetDetails>;
+}> {
+  return fetchTransactions(base, address, limit, after).then((transactions) =>
+    getAssetsByTransaction(base, transactions).then((assets) => ({ transactions, assets })),
+  );
 }

@@ -9,12 +9,17 @@ import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
  * @param from
  * @param to
  */
-export function fetchHeadersSeq(base: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlockHeader>> {
-    return request({
-        base,
-        url: `/blocks/headers/seq/${from}/${to}`,
-        options
-    })
+export function fetchHeadersSeq(
+  base: string,
+  from: number,
+  to: number,
+  options: RequestInit = Object.create(null),
+): Promise<Array<IBlockHeader>> {
+  return request({
+    base,
+    url: `/blocks/headers/seq/${from}/${to}`,
+    options,
+  });
 }
 
 /**
@@ -22,12 +27,15 @@ export function fetchHeadersSeq(base: string, from: number, to: number, options:
  * Last block header
  * @param base
  */
-export function fetchHeadersLast(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
-    return request({
-        base,
-        url: `/blocks/headers/last`,
-        options
-    });
+export function fetchHeadersLast(
+  base: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBlockHeader> {
+  return request({
+    base,
+    url: `/blocks/headers/last`,
+    options,
+  });
 }
 
 /**
@@ -37,10 +45,10 @@ export function fetchHeadersLast(base: string, options: RequestInit = Object.cre
  * @param id
  */
 export function fetchHeightById(base: string, id: string): Promise<{ height: number }> {
-    return request({
-        base,
-        url: `/blocks/height/${id}`
-    })
+  return request({
+    base,
+    url: `/blocks/height/${id}`,
+  });
 }
 
 /**
@@ -49,12 +57,16 @@ export function fetchHeightById(base: string, id: string): Promise<{ height: num
  * @param base
  * @param height
  */
-export function fetchHeadersAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
-    return request({
-        base,
-        url: `/blocks/headers/at/${height}`,
-        options
-    });
+export function fetchHeadersAt(
+  base: string,
+  height: number,
+  options: RequestInit = Object.create(null),
+): Promise<IBlockHeader> {
+  return request({
+    base,
+    url: `/blocks/headers/at/${height}`,
+    options,
+  });
 }
 
 /**
@@ -63,12 +75,16 @@ export function fetchHeadersAt(base: string, height: number, options: RequestIni
  * @param base
  * @param height
  */
-export function fetchHeadersById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: `/blocks/headers/${id}`,
-        options
-    });
+export function fetchHeadersById(
+  base: string,
+  id: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBlock> {
+  return request({
+    base,
+    url: `/blocks/headers/${id}`,
+    options,
+  });
 }
 
 /**
@@ -77,12 +93,16 @@ export function fetchHeadersById(base: string, id: string, options: RequestInit 
  * @param base
  * @param height
  */
-export function fetchBlockAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: `/blocks/at/${height}`,
-        options
-    });
+export function fetchBlockAt(
+  base: string,
+  height: number,
+  options: RequestInit = Object.create(null),
+): Promise<IBlock> {
+  return request({
+    base,
+    url: `/blocks/at/${height}`,
+    options,
+  });
 }
 
 /**
@@ -92,12 +112,17 @@ export function fetchBlockAt(base: string, height: number, options: RequestInit 
  * @param from
  * @param to
  */
-export function fetchSeq(base: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlock>> {
-    return request({
-        base,
-        url: `/blocks/seq/${from}/${to}`,
-        options
-    })
+export function fetchSeq(
+  base: string,
+  from: number,
+  to: number,
+  options: RequestInit = Object.create(null),
+): Promise<Array<IBlock>> {
+  return request({
+    base,
+    url: `/blocks/seq/${from}/${to}`,
+    options,
+  });
 }
 
 /**
@@ -106,12 +131,16 @@ export function fetchSeq(base: string, from: number, to: number, options: Reques
  * @param base
  * @param id
  */
-export function fetchBlockById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: `/blocks/${id}`,
-        options
-    })
+export function fetchBlockById(
+  base: string,
+  id: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBlock> {
+  return request({
+    base,
+    url: `/blocks/${id}`,
+    options,
+  });
 }
 
 /**
@@ -119,12 +148,15 @@ export function fetchBlockById(base: string, id: string, options: RequestInit = 
  * Get genesis block
  * @param base
  */
-export function fetchFirst(base: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: `/blocks/first`,
-        options
-    })
+export function fetchFirst(
+  base: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBlock> {
+  return request({
+    base,
+    url: `/blocks/first`,
+    options,
+  });
 }
 
 /**
@@ -135,12 +167,18 @@ export function fetchFirst(base: string, options: RequestInit = Object.create(nu
  * @param from
  * @param to
  */
-export function fetchBlocksByAddress(base: string, address: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlock>>  {
-    return request({
-        base,
-        url: `/blocks/address/${address}/${from}/${to}`,
-        options
-    })
+export function fetchBlocksByAddress(
+  base: string,
+  address: string,
+  from: number,
+  to: number,
+  options: RequestInit = Object.create(null),
+): Promise<Array<IBlock>> {
+  return request({
+    base,
+    url: `/blocks/address/${address}/${from}/${to}`,
+    options,
+  });
 }
 
 /**
@@ -148,12 +186,15 @@ export function fetchBlocksByAddress(base: string, address: string, from: number
  * Last block
  * @param base
  */
-export function fetchLast(base: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: '/blocks/last',
-        options
-    })
+export function fetchLast(
+  base: string,
+  options: RequestInit = Object.create(null),
+): Promise<IBlock> {
+  return request({
+    base,
+    url: '/blocks/last',
+    options,
+  });
 }
 
 /**
@@ -163,11 +204,11 @@ export function fetchLast(base: string, options: RequestInit = Object.create(nul
  * @param id
  * @param blockNum
  */
-export function fetchDelay(base: string, id: string, blockNum: number): Promise<{ delay: number}> {
-    return request({
-        base,
-        url: `/blocks/delay/${id}/${blockNum}`
-    })
+export function fetchDelay(base: string, id: string, blockNum: number): Promise<{ delay: number }> {
+  return request({
+    base,
+    url: `/blocks/delay/${id}/${blockNum}`,
+  });
 }
 
 /**
@@ -175,47 +216,51 @@ export function fetchDelay(base: string, id: string, blockNum: number): Promise<
  * @param base
  */
 export function fetchHeight(base: string): Promise<{ height: number }> {
-    return request({
-        base,
-        url: '/blocks/height'
-    });
+  return request({
+    base,
+    url: '/blocks/height',
+  });
 }
 
 /**
  * GET /blocks/heightByTimestamp
  * @param base
  */
-export function fetchHeightByTimestamp(base: string, timestamp: number, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
-    return request({
-        base,
-        url: `/blocks/heightByTimestamp/${timestamp}`,
-        options
-    });
+export function fetchHeightByTimestamp(
+  base: string,
+  timestamp: number,
+  options: RequestInit = Object.create(null),
+): Promise<{ height: number }> {
+  return request({
+    base,
+    url: `/blocks/heightByTimestamp/${timestamp}`,
+    options,
+  });
 }
 
 export interface IBlockHeader {
-    id: string;
-    blocksize: number;
-    reward: TLong;
-    signature: string;
-    VRF: string;
-    generator: string;
-    generatorPublicKey: string;
-    version: number;
-    reference: string;
-    features: Array<string>;
-    totalFee: TLong;
-    desiredReward: number;
-    transactionCount: number;
-    timestamp: number;
-    height: number;
-    'nxt-consensus': {
-        'base-target': number;
-        'generation-signature': string;
-    }
+  id: string;
+  blocksize: number;
+  reward: TLong;
+  signature: string;
+  VRF: string;
+  generator: string;
+  generatorPublicKey: string;
+  version: number;
+  reference: string;
+  features: Array<string>;
+  totalFee: TLong;
+  desiredReward: number;
+  transactionCount: number;
+  timestamp: number;
+  height: number;
+  'nxt-consensus': {
+    'base-target': number;
+    'generation-signature': string;
+  };
 }
 
 export interface IBlock extends IBlockHeader {
-    fee: TLong;
-    transactions: Array<Transaction<TLong> & WithApiMixin>;
+  fee: TLong;
+  transactions: Array<Transaction<TLong> & WithApiMixin>;
 }

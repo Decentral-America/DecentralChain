@@ -4,14 +4,13 @@ import { broadcast, libs, transfer, waitForTx } from '@decentralchain/transactio
 import { Transaction, WithId } from '@decentralchain/ts-types';
 import { TLong } from '../../../src/interface';
 
-
 let watcher: ReturnType<typeof create> extends Promise<infer T> ? T : never = null as any;
 let address: string = '';
-const wait = (time: number) => new Promise(resolve => setTimeout(resolve, time));
+const wait = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
 
 beforeEach(async () => {
-    address = libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID);
-    watcher = await create(NODE_URL, address, 50);
+  address = libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID);
+  watcher = await create(NODE_URL, address, 50);
 });
 
 // describe('Check available sponsorship', () => {
@@ -46,81 +45,92 @@ beforeEach(async () => {
 // });
 
 it('Catch one transaction', async () => {
-    let ok = false;
+  let ok = false;
 
-    watcher.on('change-state', ([tx]) => {
-        ok = tx.type === 4;
-    });
+  watcher.on('change-state', ([tx]) => {
+    ok = tx.type === 4;
+  });
 
-    const tx = transfer({
-        amount: 1,
-        recipient: address,
-    }, STATE.ACCOUNTS.SIMPLE.seed);
+  const tx = transfer(
+    {
+      amount: 1,
+      recipient: address,
+    },
+    STATE.ACCOUNTS.SIMPLE.seed,
+  );
 
-    await broadcast(tx, NODE_URL);
-    await waitForTx(tx.id, { apiBase: NODE_URL });
-    await wait(500);
+  await broadcast(tx, NODE_URL);
+  await waitForTx(tx.id, { apiBase: NODE_URL });
+  await wait(500);
 
-    expect(ok).toBe(true);
+  expect(ok).toBe(true);
 });
 
 it('Catch once transaction', async () => {
-    let count = 0;
+  let count = 0;
 
-    watcher.once('change-state', ([tx]) => {
-        count++;
-    });
+  watcher.once('change-state', ([_tx]) => {
+    count++;
+  });
 
-    for (let i = 0; i < 2; i++) {
-        const tx = transfer({
-            amount: 1,
-            recipient: address,
-        }, STATE.ACCOUNTS.SIMPLE.seed);
+  for (let i = 0; i < 2; i++) {
+    const tx = transfer(
+      {
+        amount: 1,
+        recipient: address,
+      },
+      STATE.ACCOUNTS.SIMPLE.seed,
+    );
 
-        await broadcast(tx, NODE_URL);
-        await waitForTx(tx.id, { apiBase: NODE_URL });
-        await wait(100);
-    }
+    await broadcast(tx, NODE_URL);
+    await waitForTx(tx.id, { apiBase: NODE_URL });
+    await wait(100);
+  }
 
-    expect(count).toBe(1);
+  expect(count).toBe(1);
 });
 
 test('Catch 30 transactions', async () => {
-    const result: Array<Transaction<TLong>> = [];
-    const toSend: Array<Transaction<TLong> & WithId> = [];
-    let count = 0;
+  const result: Array<Transaction<TLong>> = [];
+  const toSend: Array<Transaction<TLong> & WithId> = [];
+  let count = 0;
 
-    watcher.on('change-state', list => {
-        result.push(...list);
-    });
+  watcher.on('change-state', (list) => {
+    result.push(...list);
+  });
 
-    const add = async () => {
-        const tmp = [];
-        for (let i = count; i < count + 5; i++) {
-            tmp.push(transfer({
-                amount: i + 1,
-                recipient: address
-            }, STATE.ACCOUNTS.SIMPLE.seed));
-        }
-        toSend.push(...tmp as any);
-        count = count + 5;
+  const add = async () => {
+    const tmp = [];
+    for (let i = count; i < count + 5; i++) {
+      tmp.push(
+        transfer(
+          {
+            amount: i + 1,
+            recipient: address,
+          },
+          STATE.ACCOUNTS.SIMPLE.seed,
+        ),
+      );
+    }
+    toSend.push(...(tmp as any));
+    count = count + 5;
 
-        await Promise.all(tmp.map(tx => broadcast(tx, NODE_URL)));
-        await Promise.all(tmp.map(tx => waitForTx(tx.id, { apiBase: NODE_URL })));
-    };
+    await Promise.all(tmp.map((tx) => broadcast(tx, NODE_URL)));
+    await Promise.all(tmp.map((tx) => waitForTx(tx.id, { apiBase: NODE_URL })));
+  };
 
-    await add();
-    await wait(500);
-    await add();
-    await wait(500);
-    await add();
-    await wait(500);
-    await add();
-    await wait(500);
-    await add();
-    await wait(500);
-    await add();
-    await wait(500);
+  await add();
+  await wait(500);
+  await add();
+  await wait(500);
+  await add();
+  await wait(500);
+  await add();
+  await wait(500);
+  await add();
+  await wait(500);
+  await add();
+  await wait(500);
 
-    expect(result.length).toBe(toSend.length);
+  expect(result.length).toBe(toSend.length);
 }, 60000000);

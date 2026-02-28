@@ -3,44 +3,39 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { fetchAssetsBalance, TAssetBalance } from '../../api-node/assets';
 import { filter, map, pipe, prop } from '../utils';
 
-
-export default function (base: string, address: string, dccFee: TLong): Promise<Array<TAssetFeeInfo>> {
-    return fetchAssetsBalance(base, address).then(
-        pipe(
-            prop('balances'),
-            filter(canBeSponsor(dccFee)),
-            map(currentFee(dccFee))
-        )
-    );
+export default function (
+  base: string,
+  address: string,
+  dccFee: TLong,
+): Promise<Array<TAssetFeeInfo>> {
+  return fetchAssetsBalance(base, address).then(
+    pipe(prop('balances'), filter(canBeSponsor(dccFee)), map(currentFee(dccFee))),
+  );
 }
 
 function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
-    return balance => (
-        balance.minSponsoredAssetFee
-        && BigNumber.toBigNumber(balance.sponsorBalance || 0)
-            .gte(dccFee)
-        && BigNumber.toBigNumber(dccFee)
-            .div(0.001 * Math.pow(10, 8))
-            .mul(balance.minSponsoredAssetFee)
-            .lte(balance.balance)
-    ) || false;
+  return (balance) =>
+    (balance.minSponsoredAssetFee &&
+      BigNumber.toBigNumber(balance.sponsorBalance || 0).gte(dccFee) &&
+      BigNumber.toBigNumber(dccFee)
+        .div(0.001 * Math.pow(10, 8))
+        .mul(balance.minSponsoredAssetFee)
+        .lte(balance.balance)) ||
+    false;
 }
 
 function currentFee(dccFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo {
-    const count = BigNumber.toBigNumber(dccFee)
-        .div(0.001 * Math.pow(10, 8));
+  const count = BigNumber.toBigNumber(dccFee).div(0.001 * Math.pow(10, 8));
 
-    return balance => ({
-        assetId: balance.assetId,
-        dccFee,
-        assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee!)
-            .mul(count)
-            .toFixed()
-    });
+  return (balance) => ({
+    assetId: balance.assetId,
+    dccFee,
+    assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee!).mul(count).toFixed(),
+  });
 }
 
 export type TAssetFeeInfo = {
-    assetId: string;
-    dccFee: TLong;
-    assetFee: TLong;
-}
+  assetId: string;
+  dccFee: TLong;
+  assetFee: TLong;
+};

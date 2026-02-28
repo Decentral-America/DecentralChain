@@ -1,37 +1,34 @@
-import { keccak, blake2b, base58Encode, base16Decode } from '@decentralchain/ts-lib-crypto'
+import { keccak, blake2b, base58Encode, base16Decode } from '@decentralchain/ts-lib-crypto';
 
 const validateEthAddress = (addr: string): boolean => {
-    return addr != null && addr.length == 42;
-}
+  return addr != null && addr.length == 42;
+};
 
 export default function ethAddress2dcc(ethAddress: string, chainId: number): string {
-    if(validateEthAddress(ethAddress)) {
-        ethAddress = ethAddress.substr(2);
-    } else {
-        throw `Invalid ethereum address: ${ethAddress} `;
-    }
+  if (validateEthAddress(ethAddress)) {
+    ethAddress = ethAddress.substr(2);
+  } else {
+    throw `Invalid ethereum address: ${ethAddress} `;
+  }
 
-    const prefixBytes = new Uint8Array([0x01, chainId]);
+  const prefixBytes = new Uint8Array([0x01, chainId]);
 
-    // Раскодировать HEX строку в байты (PK_HASH)
-    const pkHashBytes = base16Decode(ethAddress);
+  // Раскодировать HEX строку в байты (PK_HASH)
+  const pkHashBytes = base16Decode(ethAddress);
 
-    // Сделать чексумму CHECKSUM=keccak256(blake2b256([0x01, CHAIN_ID] + PK_HASH))
-    const checksumBytes = new Uint8Array([
-        ...prefixBytes,
-        ...pkHashBytes
-    ]);
-    const checksum = keccak(blake2b(checksumBytes));      
+  // Сделать чексумму CHECKSUM=keccak256(blake2b256([0x01, CHAIN_ID] + PK_HASH))
+  const checksumBytes = new Uint8Array([...prefixBytes, ...pkHashBytes]);
+  const checksum = keccak(blake2b(checksumBytes));
 
-    // склеить [0x01, CHAIN_ID] (два байта) + PK_HASH (изначальные 20 байт) + CHECKSUM[1:4] (первые четыре байта чексуммы)
-    const dccBytes = new Uint8Array([
-        ...prefixBytes,
-        ...pkHashBytes.slice(0, 20),
-        ...checksum.slice(0, 4)
-    ]);
+  // склеить [0x01, CHAIN_ID] (два байта) + PK_HASH (изначальные 20 байт) + CHECKSUM[1:4] (первые четыре байта чексуммы)
+  const dccBytes = new Uint8Array([
+    ...prefixBytes,
+    ...pkHashBytes.slice(0, 20),
+    ...checksum.slice(0, 4),
+  ]);
 
-    // закодировать в base58
-    const dccAddress = base58Encode(dccBytes);
+  // закодировать в base58
+  const dccAddress = base58Encode(dccBytes);
 
-    return dccAddress;
+  return dccAddress;
 }
