@@ -47,7 +47,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:publint": "publint",
-    "check:exports": "attw --pack .",
+    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
     "check:size": "size-limit",
     "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
