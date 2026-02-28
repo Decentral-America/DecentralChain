@@ -18,7 +18,7 @@ export const ARBITRARY_DATA = Object.freeze(ARBITRARY_RAW_DATA.map((d) => d.id))
  * Determines the correct ordering of an asset pair on the DEX.
  *
  * Ordering rules:
- * 1. Both assets in the priority list → higher-index asset becomes the price asset
+ * 1. Both assets in the priority list → lower-index (higher-priority) asset becomes the price asset
  * 2. One asset in the list → the listed asset becomes the price asset
  * 3. Neither asset in the list → ordered deterministically by Base58 byte comparison
  *
