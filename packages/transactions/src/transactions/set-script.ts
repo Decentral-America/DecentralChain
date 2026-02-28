@@ -2,7 +2,7 @@
  * @module index
  */
 import {ISetScriptParams, WithId, WithProofs, WithSender} from '../transactions'
-import {signBytes, blake2b, base58Encode} from '@waves/ts-lib-crypto'
+import {signBytes, blake2b, base58Encode} from '@decentralchain/ts-lib-crypto'
 import {
   addProof,
   getSenderPublicKey,
@@ -16,7 +16,7 @@ import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import {scriptToProto, txToProtoBytes} from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {SetScriptTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {SetScriptTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 /* @echo DOCS */
 export function setScript(params: ISetScriptParams, seed: TSeedTypes): SetScriptTransaction & WithId & WithProofs
@@ -35,6 +35,7 @@ export function setScript(paramsOrTx: any, seed?: TSeedTypes): SetScriptTransact
     type,
     version,
     senderPublicKey,
+<<<<<<< HEAD
     chainId: networkByte(paramsOrTx.chainId, 87),
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -43,6 +44,9 @@ export function setScript(paramsOrTx: any, seed?: TSeedTypes): SetScriptTransact
     fee: fee(paramsOrTx, 100000000),
 >>>>>>> 697d643a (minor fixes)
 =======
+=======
+    chainId: networkByte(paramsOrTx.chainId, 76),
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
     fee: fee(paramsOrTx, computedFee),
 >>>>>>> f33083a0 (updated dependencies)
     timestamp: paramsOrTx.timestamp || Date.now(),

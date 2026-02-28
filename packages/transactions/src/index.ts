@@ -20,10 +20,10 @@ export { order } from './requests/order'
 export { cancelOrder } from './requests/cancel-order'
 export { customData, serializeCustomData } from './requests/custom-data'
 export { auth } from './requests/auth'
-export { wavesAuth } from './requests/wavesAuth'
+export { dccAuth } from './requests/dccAuth'
 export { invokeScript } from './transactions/invoke-script'
 export { updateAssetInfo } from './transactions/update-asset-info'
-export { signTx, verify, serialize, submitOrder, cancelSubmittedOrder, verifyAuthData, verifyCustomData, verifyWavesAuthData } from './general'
+export { signTx, verify, serialize, submitOrder, cancelSubmittedOrder, verifyAuthData, verifyCustomData, verifyDccAuthData } from './general'
 export { waitForTx, broadcast } from './nodeInteraction'
 export { makeTx, makeTxBytes } from './make-tx'
 <<<<<<< HEAD
@@ -69,9 +69,9 @@ export {
 } from './types'
 
 // internal libraries access
-import * as crypto from '@waves/ts-lib-crypto'
+import * as crypto from '@decentralchain/ts-lib-crypto'
 import * as marshall from '@decentralchain/marshall'
-// import * as nodeApiJs from '@waves/node-api-js'
+// import * as nodeApiJs from '@decentralchain/node-api-js'
 
 const libs = {
   crypto,

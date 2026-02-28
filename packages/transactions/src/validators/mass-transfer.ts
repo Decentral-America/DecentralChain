@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@waves/ts-types'
+import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
 import {
     defaultValue,
     getError,
@@ -12,7 +12,7 @@ import {
     isPublicKey,
     isRecipient,
     isRequired,
-    isWavesOrAssetId, lte,
+    isDccOrAssetId, lte,
     orEq,
     pipe,
     prop,
@@ -37,7 +37,7 @@ const massTransferScheme = {
           )
       )
   ),
-  assetId: isWavesOrAssetId,
+  assetId: isDccOrAssetId,
   attachment: isAttachment,
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,

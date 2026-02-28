@@ -22,7 +22,7 @@
     "test"
   ],
   "typedocOptions": {
-    "name": "waves-transactions",
+    "name": "dcc-transactions",
     "mode": "modules",
     "out": "docs",
     "theme": "./node_modules/typedoc-clarity-theme",

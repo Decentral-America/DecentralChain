@@ -1,7 +1,7 @@
 import {
     isEq,
     orEq,
-    isWavesOrAssetId,
+    isDccOrAssetId,
     isNumber,
     isNumberLike,
     isArray,
@@ -23,8 +23,8 @@ const orderScheme = {
     version: orEq([undefined, 1, 2, 3, 4]),
     assetPair: validatePipe(
         isRequired(true),
-        pipe(prop('amountAsset'), isWavesOrAssetId),
-        pipe(prop('priceAsset'), isWavesOrAssetId)
+        pipe(prop('amountAsset'), isDccOrAssetId),
+        pipe(prop('priceAsset'), isDccOrAssetId)
     ),
     price: isNumberLike,
     amount: isNumberLike,
@@ -40,12 +40,12 @@ const v1_2_OrderScheme = {
 }
 
 const v3_OrderScheme = {
-    matcherFeeAssetId: isWavesOrAssetId,
+    matcherFeeAssetId: isDccOrAssetId,
     senderPublicKey: isPublicKey,
 }
 
 const v4_OrderScheme = {
-    matcherFeeAssetId: isWavesOrAssetId,
+    matcherFeeAssetId: isDccOrAssetId,
     senderPublicKey: isPublicKeyForEthSuppTx,
 }
 

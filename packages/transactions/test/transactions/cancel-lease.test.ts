@@ -1,4 +1,4 @@
-import {publicKey} from '@waves/ts-lib-crypto'
+import {publicKey} from '@decentralchain/ts-lib-crypto'
 import {cancelLease} from '../../src'
 import {cancelLeaseMinimalParams} from '../minimalParams'
 import {
@@ -17,7 +17,7 @@ describe('cancel-lease', () => {
 
   it('should build from minimal set of params', () => {
     const tx = cancelLease({ ...cancelLeaseMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...cancelLeaseMinimalParams, version: 3, fee: 100000, chainId: 87})
+    expect(tx).toMatchObject({ ...cancelLeaseMinimalParams, version: 3, fee: 100000, chainId: 76})
   })
 
 

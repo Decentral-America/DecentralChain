@@ -1,4 +1,4 @@
-import {publicKey,} from '@waves/ts-lib-crypto'
+import {publicKey,} from '@decentralchain/ts-lib-crypto'
 import {setScript} from '../../src'
 import {
   checkBinarySerializeDeserialize,
@@ -76,7 +76,7 @@ describe('setScript', () => {
     const signedTx = setScript(txParams, seed);
 
     expect(signedTx.fee).toEqual(100000)
-    expect(signedTx.chainId).toEqual(87)
+    expect(signedTx.chainId).toEqual(76)
   })
 
   it('Should generate correct signed setScript transaction with zero fee', () => {

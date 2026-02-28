@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@waves/ts-types'
+import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
 import {
   defaultValue,
   getError,
@@ -14,7 +14,7 @@ import {
   isRequired,
   isString,
   isValidDataPair,
-  isWavesOrAssetId,
+  isDccOrAssetId,
   orEq,
   pipe,
   prop,
@@ -51,6 +51,7 @@ const invokeScheme = {
               pipe(prop('amount'), isNumberLike),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               pipe(prop('assetId'), isWavesOrAssetId)
 =======
               pipe(prop('assetId'), isAssetId),
@@ -58,11 +59,14 @@ const invokeScheme = {
 =======
               pipe(prop('assetId'), isWavesOrAssetId)
 >>>>>>> f33083a0 (updated dependencies)
+=======
+              pipe(prop('assetId'), isDccOrAssetId)
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
           )
       )
   ),
   fee: isNaturalNumberOrZeroLike,
-  feeAssetId: isWavesOrAssetId,
+  feeAssetId: isDccOrAssetId,
   chainId: isNaturalNumberLike,
   timestamp: isNaturalNumberLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),
