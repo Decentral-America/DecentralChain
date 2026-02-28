@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- **Node.js** >= 20 (use `.nvmrc` with [nvm](https://github.com/nvm-sh/nvm): `nvm use`)
+- **Node.js** >= 22 (use `.nvmrc` with [nvm](https://github.com/nvm-sh/nvm): `nvm use`)
 - **npm** >= 10
 
 ### Setup
