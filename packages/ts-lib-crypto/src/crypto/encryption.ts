@@ -17,13 +17,13 @@ export const aesEncrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
   const cipher = forgeCipher.createCipher(`AES-${mode}` as any, bytesToString(_fromIn(key), 'raw'));
   cipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
   cipher.update(util.createBuffer(bytesToString(data, 'raw')));
   cipher.finish();
   return stringToBytes(cipher.output.getBytes(), 'raw');
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
+  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
 };
 
 /** Decrypt AES-encrypted data with the specified mode. */
@@ -33,7 +33,7 @@ export const aesDecrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- node-forge has no type declarations */
   const decipher = forgeCipher.createDecipher(
     `AES-${mode}` as any,
     bytesToString(_fromIn(key), 'raw'),
@@ -45,7 +45,7 @@ export const aesDecrypt = (
     throw new Error('Failed to decrypt data with provided key');
   }
   return stringToBytes(decipher.output.getBytes(), 'raw');
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
+  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
 };
 
 /** Encrypt a message using a shared key (Curve25519 ECDH + AES-CTR + HMAC). */
@@ -67,6 +67,7 @@ export const messageEncrypt = (sharedKey: TBinaryIn, message: string): TBytes =>
 
 /** Decrypt a message encrypted with {@link messageEncrypt}. */
 export const messageDecrypt = (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn): string => {
+  /* eslint-disable @typescript-eslint/no-non-null-assertion -- split() segments are guaranteed by size parameters */
   const [, Ccek, _CEKhmac, _Mhmac, iv, Cc] = split(encryptedMessage, 1, 48, 32, 32, 16);
 
   const CEK = aesDecrypt(Ccek!, sharedKey, 'ECB');
@@ -81,6 +82,7 @@ export const messageDecrypt = (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn
 
   const isValidMessage = Mhmac.every((v: number, i: number) => v === _Mhmac![i]);
   if (!isValidMessage) throw new Error('Invalid message');
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
   return bytesToString(M);
 };

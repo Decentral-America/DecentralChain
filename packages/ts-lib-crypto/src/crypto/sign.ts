@@ -16,5 +16,5 @@ export const signBytes = (
       isPrivateKey(seedOrPrivateKey) ? seedOrPrivateKey.privateKey : privateKey(seedOrPrivateKey),
     ),
     _fromIn(bytes),
-    _fromIn(random || randomBytes(64)),
+    _fromIn(random ?? randomBytes(64)),
   );
