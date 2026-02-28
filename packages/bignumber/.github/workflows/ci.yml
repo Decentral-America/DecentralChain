@@ -9,18 +9,23 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
-    name: Quality Gate
+    name: Quality Gate (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -52,11 +57,19 @@ jobs:
       - name: Check bundle size
         run: npm run check:size
 
-      - name: Check package size
+      - name: Check package contents
         run: |
           npm pack --dry-run 2>&1 | tail -5
           echo "---"
           du -sh dist/
+
+      - name: Upload coverage
+        if: matrix.node-version == 24
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
 
   release-dry-run:
     name: Release Dry Run
@@ -64,9 +77,9 @@ jobs:
     needs: quality
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
