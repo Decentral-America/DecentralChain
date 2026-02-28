@@ -508,4 +508,330 @@ describe('Data provider tests', () => {
       expect(result.status).toBeDefined();
     });
   });
+
+  describe('Roundtrip / Symmetry Tests', () => {
+    it('Provider data survives encode → decode roundtrip', () => {
+      const original: IProviderData = { ...PROVIDER_DATA };
+      const fields = getFields(original);
+      const decoded = getProviderData(fields);
+
+      expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded.content).toEqual(original);
+    });
+
+    it('Verified asset survives encode → decode roundtrip', () => {
+      const original = { ...VERIFIED_ASSET };
+      const fields = [...PROVIDER_FIELDS, ...getFields(original)];
+      const decoded = getProviderAssets(fields);
+
+      expect(decoded.length).toEqual(1);
+      expect(decoded[0].status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded[0].content).toEqual(original);
+    });
+
+    it('Scam asset survives encode → decode roundtrip', () => {
+      const original: TScamAsset = { ...SCAM_ASSET };
+      const fields = [...PROVIDER_FIELDS, ...getFields(original)];
+      const decoded = getProviderAssets(fields);
+
+      expect(decoded.length).toEqual(1);
+      expect(decoded[0].status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded[0].content).toEqual(original);
+    });
+
+    it('Multiple assets survive encode → decode roundtrip', () => {
+      const assets = [VERIFIED_ASSET, SCAM_ASSET];
+      const assetFields = assets.flatMap((a) => getFields(a));
+      const fields = [...PROVIDER_FIELDS, ...assetFields];
+      const decoded = getProviderAssets(fields);
+
+      expect(decoded.length).toEqual(2);
+      decoded.forEach((result) => {
+        expect(result.status).toEqual(RESPONSE_STATUSES.OK);
+      });
+    });
+  });
+
+  describe('Immutability Tests', () => {
+    it('getFields does not mutate input provider data', () => {
+      const original: IProviderData = JSON.parse(JSON.stringify(PROVIDER_DATA)) as IProviderData;
+      const snapshot = JSON.stringify(original);
+
+      getFields(original);
+
+      expect(JSON.stringify(original)).toEqual(snapshot);
+    });
+
+    it('getFields does not mutate input asset data', () => {
+      const original = JSON.parse(JSON.stringify(VERIFIED_ASSET)) as typeof VERIFIED_ASSET;
+      const snapshot = JSON.stringify(original);
+
+      getFields(original);
+
+      expect(JSON.stringify(original)).toEqual(snapshot);
+    });
+
+    it('getProviderData does not mutate input fields', () => {
+      const fields = JSON.parse(JSON.stringify(PROVIDER_FIELDS)) as TDataTxField[];
+      const snapshot = JSON.stringify(fields);
+
+      getProviderData(fields);
+
+      expect(JSON.stringify(fields)).toEqual(snapshot);
+    });
+
+    it('getDifferenceByData does not mutate either input', () => {
+      const prev: IProviderData = JSON.parse(JSON.stringify(PROVIDER_DATA)) as IProviderData;
+      const next: IProviderData = JSON.parse(
+        JSON.stringify({ ...PROVIDER_DATA, name: 'New Name' }),
+      ) as IProviderData;
+      const prevSnapshot = JSON.stringify(prev);
+      const nextSnapshot = JSON.stringify(next);
+
+      getDifferenceByData(prev, next);
+
+      expect(JSON.stringify(prev)).toEqual(prevSnapshot);
+      expect(JSON.stringify(next)).toEqual(nextSnapshot);
+    });
+  });
+
+  describe('Idempotency Tests', () => {
+    it('getFields produces identical output on repeated calls', () => {
+      const first = getFields(PROVIDER_DATA);
+      const second = getFields(PROVIDER_DATA);
+
+      expect(first).toEqual(second);
+    });
+
+    it('getProviderData produces identical output on repeated calls', () => {
+      const first = getProviderData(PROVIDER_FIELDS);
+      const second = getProviderData(PROVIDER_FIELDS);
+
+      expect(first).toEqual(second);
+    });
+
+    it('getDifferenceByData produces identical output on repeated calls', () => {
+      const modified = { ...PROVIDER_DATA, name: 'Changed' };
+      const first = getDifferenceByData(PROVIDER_DATA, modified);
+      const second = getDifferenceByData(PROVIDER_DATA, modified);
+
+      expect(first).toEqual(second);
+    });
+  });
+
+  describe('Boundary Value Tests', () => {
+    it('Handles empty string fields correctly', () => {
+      const emptyProvider: IProviderData = {
+        version: DATA_PROVIDER_VERSIONS.BETA,
+        name: '',
+        link: '',
+        email: '',
+        description: { en: '' },
+      };
+      const fields = getFields(emptyProvider);
+      const decoded = getProviderData(fields);
+
+      expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded.content).toEqual(emptyProvider);
+    });
+
+    it('Handles long asset IDs correctly', () => {
+      const longId = 'A'.repeat(44); // Base58 asset IDs are typically 43-44 chars
+      const asset: TScamAsset = {
+        id: longId,
+        version: DATA_PROVIDER_VERSIONS.BETA,
+        status: STATUS_LIST.SCAM,
+      };
+      const fields = [...PROVIDER_FIELDS, ...getFields(asset)];
+      const decoded = getProviderAssets(fields);
+
+      expect(decoded.length).toEqual(1);
+      expect(decoded[0].status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded[0].content.id).toEqual(longId);
+    });
+
+    it('Handles special characters in description', () => {
+      const specialChars: IProviderData = {
+        ...PROVIDER_DATA,
+        description: {
+          en: '!@#$%^&*()_+-=[]{}|;\':",./<>?`~\n\t',
+        },
+      };
+      const fields = getFields(specialChars);
+      const decoded = getProviderData(fields);
+
+      expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded.content.description).toEqual(specialChars.description);
+    });
+
+    it('Handles unicode/emoji in text fields', () => {
+      const unicodeProvider: IProviderData = {
+        ...PROVIDER_DATA,
+        name: '🚀 DCC Provider 日本語',
+        description: { en: 'Supports émojis 🎉 and ñ special chars' },
+      };
+      const fields = getFields(unicodeProvider);
+      const decoded = getProviderData(fields);
+
+      expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(decoded.content.name).toEqual(unicodeProvider.name);
+    });
+
+    it('Handles multiple description languages', () => {
+      const multiLang: IProviderData = {
+        ...PROVIDER_DATA,
+        description: {
+          en: 'English description',
+          es: 'Descripción en español',
+          ja: '日本語の説明',
+          ru: 'Русское описание',
+        },
+      };
+      const fields = getFields(multiLang);
+      const decoded = getProviderData(fields);
+
+      expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(Object.keys(decoded.content.description ?? {}).sort()).toEqual(
+        ['en', 'es', 'ja', 'ru'].sort(),
+      );
+    });
+  });
+
+  describe('Consistency / Determinism Tests', () => {
+    it('Field order is consistent across multiple encodes', () => {
+      const fields1 = getFields(PROVIDER_DATA);
+      const fields2 = getFields(PROVIDER_DATA);
+      const fields3 = getFields(PROVIDER_DATA);
+
+      // Same keys in same order
+      expect(fields1.map((f) => f.key)).toEqual(fields2.map((f) => f.key));
+      expect(fields2.map((f) => f.key)).toEqual(fields3.map((f) => f.key));
+    });
+
+    it('Diff calculation is consistent', () => {
+      const modified = { ...PROVIDER_DATA, link: 'https://new.link.com' };
+
+      for (let i = 0; i < 10; i++) {
+        const diff = getDifferenceByData(PROVIDER_DATA, modified);
+        expect(diff.length).toEqual(1);
+        expect(diff[0].key).toEqual(DATA_PROVIDER_KEYS.LINK);
+      }
+    });
+  });
+
+  describe('Defensive Input Handling', () => {
+    it('getProviderAssets returns empty array for fields with no assets', () => {
+      const result = getProviderAssets(PROVIDER_FIELDS);
+      expect(result).toEqual([]);
+    });
+
+    it('getProviderAssets handles mixed valid and invalid assets', () => {
+      const validAsset: TScamAsset = {
+        id: 'VALIDASSET123456789012345678901234567890123',
+        version: DATA_PROVIDER_VERSIONS.BETA,
+        status: STATUS_LIST.SCAM,
+      };
+      const validFields = getFields(validAsset);
+
+      // Invalid asset with unsupported version
+      const invalidFields: TDataTxField[] = [
+        {
+          key: 'version_<INVALID123456789012345678901234567890123>',
+          type: DATA_ENTRY_TYPES.INTEGER,
+          value: 999,
+        },
+        {
+          key: 'status_<INVALID123456789012345678901234567890123>',
+          type: DATA_ENTRY_TYPES.INTEGER,
+          value: STATUS_LIST.SCAM,
+        },
+      ];
+
+      const allFields = [...PROVIDER_FIELDS, ...validFields, ...invalidFields];
+      const result = getProviderAssets(allFields);
+
+      expect(result.length).toEqual(2);
+      // One should succeed, one should fail
+      const statuses = result.map((r) => r.status);
+      expect(statuses).toContain(RESPONSE_STATUSES.OK);
+      expect(statuses).toContain(RESPONSE_STATUSES.ERROR);
+    });
+
+    it('getDifferenceByData returns empty array when data is identical', () => {
+      const diff = getDifferenceByData(PROVIDER_DATA, PROVIDER_DATA);
+      expect(diff).toEqual([]);
+    });
+
+    it('getDifferenceByData detects all changed fields', () => {
+      const modified: IProviderData = {
+        version: DATA_PROVIDER_VERSIONS.BETA,
+        name: 'New Name',
+        link: 'https://new.link.com',
+        email: 'new@email.com',
+        description: { en: 'New description' },
+      };
+      const diff = getDifferenceByData(PROVIDER_DATA, modified);
+
+      // Should detect changes in name, link, email, description
+      expect(diff.length).toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  describe('Error Response Structure', () => {
+    it('Error responses include actionable error messages', () => {
+      const result = getProviderData([]) as IErrorResponse<IProviderData>;
+
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+      expect(result.errors).toBeDefined();
+      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.errors[0].error).toBeInstanceOf(Error);
+      expect(result.errors[0].error.message.length).toBeGreaterThan(0);
+    });
+
+    it('Error responses include correct path for debugging', () => {
+      const fieldsWithBadEmail = PROVIDER_FIELDS.filter((f) => f.key !== DATA_PROVIDER_KEYS.EMAIL);
+      const result = getProviderData(fieldsWithBadEmail) as IErrorResponse<IProviderData>;
+
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+      const emailError = result.errors.find((e) => e.path === 'email');
+      expect(emailError).toBeDefined();
+    });
+
+    it('Partial content is still returned on error', () => {
+      const fieldsWithoutEmail = PROVIDER_FIELDS.filter((f) => f.key !== DATA_PROVIDER_KEYS.EMAIL);
+      const result = getProviderData(fieldsWithoutEmail) as IErrorResponse<IProviderData>;
+
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+      // Should still have the fields that were successfully parsed
+      expect(result.content.name).toEqual(PROVIDER_DATA.name);
+      expect(result.content.link).toEqual(PROVIDER_DATA.link);
+    });
+  });
+
+  describe('Type Safety at Runtime', () => {
+    it('Rejects integer field with wrong type in hash', () => {
+      const badFields: TDataTxField[] = [
+        {
+          key: DATA_PROVIDER_KEYS.VERSION,
+          type: DATA_ENTRY_TYPES.STRING, // Wrong type! Should be INTEGER
+          value: '0',
+        },
+      ];
+      const result = getProviderData(badFields);
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+    });
+
+    it('Rejects string field with wrong type in hash', () => {
+      const badFields: TDataTxField[] = [
+        ...PROVIDER_FIELDS.filter((f) => f.key !== DATA_PROVIDER_KEYS.NAME),
+        {
+          key: DATA_PROVIDER_KEYS.NAME,
+          type: DATA_ENTRY_TYPES.INTEGER, // Wrong type! Should be STRING
+          value: 12345,
+        },
+      ];
+      const result = getProviderData(badFields);
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+    });
+  });
 });
