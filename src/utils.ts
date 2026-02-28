@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 
 
 export function toBigNumber(some: string | number | BigNumber): BigNumber {

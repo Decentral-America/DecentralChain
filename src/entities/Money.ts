@@ -1,5 +1,5 @@
 import { Asset } from './Asset';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { toBigNumber } from '../utils';
 
 

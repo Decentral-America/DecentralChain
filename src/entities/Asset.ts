@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { config } from '../config';
 import { toBigNumber } from '../utils';
 

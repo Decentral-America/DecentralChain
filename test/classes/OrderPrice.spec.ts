@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { getAssetData } from '../assetData';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, AssetPair, OrderPrice } from '../../dist';
 
 
@@ -56,7 +56,7 @@ describe('OrderPrice', () => {
             // TODO
 
             // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromTokens('1.47', fakeWAVES, fakeBTC).then((orderPrice) => {
+            //     OrderPrice.fromTokens('1.47', fakeDCC, fakeBTC).then((orderPrice) => {
             //         expect(orderPrice.toMatcherCoins()).to.equal('147000000');
             //     }).then(() => done());
             // });
@@ -74,7 +74,7 @@ describe('OrderPrice', () => {
             // });
             //
             // it('should convert when assets precisions are different [8, 2]', (done) => {
-            //     OrderPrice.fromTokens('11.5', fakeWAVES, fakeUSD).then((orderPrice) => {
+            //     OrderPrice.fromTokens('11.5', fakeDCC, fakeUSD).then((orderPrice) => {
             //         expect(orderPrice.toMatcherCoins()).to.equal('1150');
             //     }).then(() => done());
             // });
@@ -92,7 +92,7 @@ describe('OrderPrice', () => {
             // });
             //
             // it('should convert when assets precisions are different [0, 8]', (done) => {
-            //     OrderPrice.fromTokens('100.01020304', fakeZERO, fakeWAVES).then((orderPrice) => {
+            //     OrderPrice.fromTokens('100.01020304', fakeZERO, fakeDCC).then((orderPrice) => {
             //         expect(orderPrice.toMatcherCoins()).to.equal('1000102030400000000');
             //     }).then(() => done());
             // });
@@ -104,13 +104,13 @@ describe('OrderPrice', () => {
             // TODO
 
             // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromTokens('11.509910102', fakeWAVES, fakeBTC).then((orderPrice) => {
+            //     OrderPrice.fromTokens('11.509910102', fakeDCC, fakeBTC).then((orderPrice) => {
             //         expect(orderPrice.toMatcherCoins()).to.equal('1150991010');
             //     }).then(() => done());
             // });
             //
             // it('should convert when assets precisions are different [8, 2]', (done) => {
-            //     OrderPrice.fromTokens('11.5099', fakeWAVES, fakeUSD).then((orderPrice) => {
+            //     OrderPrice.fromTokens('11.5099', fakeDCC, fakeUSD).then((orderPrice) => {
             //         expect(orderPrice.toMatcherCoins()).to.equal('1150');
             //     }).then(() => done());
             // });
@@ -140,7 +140,7 @@ describe('OrderPrice', () => {
             // TODO
 
             // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromMatcherCoins('147000000', fakeWAVES, fakeBTC).then((orderPrice) => {
+            //     OrderPrice.fromMatcherCoins('147000000', fakeDCC, fakeBTC).then((orderPrice) => {
             //         expect(orderPrice.toTokens()).to.equal('1.47000000');
             //     }).then(() => done());
             // });
@@ -164,13 +164,13 @@ describe('OrderPrice', () => {
             // });
             //
             // it('should convert when assets precisions are different [8, 0]', (done) => {
-            //     OrderPrice.fromMatcherCoins('555', fakeWAVES, fakeZERO).then((orderPrice) => {
+            //     OrderPrice.fromMatcherCoins('555', fakeDCC, fakeZERO).then((orderPrice) => {
             //         expect(orderPrice.toTokens()).to.equal('555');
             //     }).then(() => done());
             // });
             //
             // it('should convert when assets precisions are different [2, 8]', (done) => {
-            //     OrderPrice.fromMatcherCoins('233445566000000', fakeUSD, fakeWAVES).then((orderPrice) => {
+            //     OrderPrice.fromMatcherCoins('233445566000000', fakeUSD, fakeDCC).then((orderPrice) => {
             //         expect(orderPrice.toTokens()).to.equal('2.33445566');
             //     }).then(() => done());
             // });
