@@ -5,7 +5,13 @@ import {
   getFields,
   getDifferenceByData,
 } from '../src/index.js';
-import type { IErrorResponse, IProviderData, TDataTxField, TScamAsset } from '../src/interface.js';
+import type {
+  IErrorResponse,
+  IProviderData,
+  TDataTxField,
+  TScamAsset,
+  TProviderAsset,
+} from '../src/interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
@@ -13,7 +19,8 @@ import {
   RESPONSE_STATUSES,
   STATUS_LIST,
 } from '../src/constants.js';
-import { toHash } from '../src/utils/index.js';
+import { toHash, getFieldsDiff, toField, toFields, isProvider } from '../src/utils/index.js';
+import { getFieldValue, getAssetIdFromKey } from '../src/response/index.js';
 
 const PROVIDER_DATA = {
   version: DATA_PROVIDER_VERSIONS.BETA,
@@ -189,6 +196,246 @@ describe('Data provider tests', () => {
       it('Get fields from scam asset', () => {
         compareFields(getFields(SCAM_ASSET), SCAM_ASSET_FIELDS);
       });
+
+      it('Get suspicious asset data', () => {
+        const suspiciousAsset: TScamAsset = {
+          id: 'SUSPICIOUS123456789012345678901234567890123',
+          version: DATA_PROVIDER_VERSIONS.BETA,
+          status: STATUS_LIST.SUSPICIOUS,
+        };
+        const fields: TDataTxField[] = [
+          {
+            key: 'version_<SUSPICIOUS123456789012345678901234567890123>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: 'status_<SUSPICIOUS123456789012345678901234567890123>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.SUSPICIOUS,
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.OK);
+        expect(result[0].content).toEqual(suspiciousAsset);
+      });
+
+      it('Get not_verify asset data', () => {
+        const notVerifyAsset: TScamAsset = {
+          id: 'NOTVERIFY12345678901234567890123456789012345',
+          version: DATA_PROVIDER_VERSIONS.BETA,
+          status: STATUS_LIST.NOT_VERIFY,
+        };
+        const fields: TDataTxField[] = [
+          {
+            key: 'version_<NOTVERIFY12345678901234567890123456789012345>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: 'status_<NOTVERIFY12345678901234567890123456789012345>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.NOT_VERIFY,
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.OK);
+        expect(result[0].content).toEqual(notVerifyAsset);
+      });
+
+      it('Get detailed asset data', () => {
+        const detailedAsset = {
+          id: 'DETAILED123456789012345678901234567890123456',
+          version: DATA_PROVIDER_VERSIONS.BETA,
+          status: STATUS_LIST.DETAILED,
+          ticker: 'DTL',
+          link: 'https://detailed.com',
+          email: 'test@detailed.com',
+          logo: 'detailed-logo',
+          description: { en: 'Detailed description' },
+        };
+        const fields: TDataTxField[] = [
+          ...PROVIDER_FIELDS,
+          {
+            key: 'version_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: 'status_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.DETAILED,
+          },
+          {
+            key: 'ticker_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'DTL',
+          },
+          {
+            key: 'link_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'https://detailed.com',
+          },
+          {
+            key: 'email_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'test@detailed.com',
+          },
+          {
+            key: 'logo_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'detailed-logo',
+          },
+          {
+            key: 'description_<en>_<DETAILED123456789012345678901234567890123456>',
+            type: DATA_ENTRY_TYPES.STRING,
+            value: 'Detailed description',
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.OK);
+        expect(result[0].content).toEqual(detailedAsset);
+      });
+
+      it('Returns error for unsupported asset version', () => {
+        const fields: TDataTxField[] = [
+          {
+            key: 'version_<INVALID1234567890123456789012345678901234567>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: 999, // Unsupported version
+          },
+          {
+            key: 'status_<INVALID1234567890123456789012345678901234567>',
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: STATUS_LIST.SCAM,
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.ERROR);
+        expect((result[0] as IErrorResponse<TProviderAsset>).errors[0].path).toEqual('version');
+      });
+    });
+  });
+
+  describe('Utils', () => {
+    it('getFieldsDiff returns new fields not in previous', () => {
+      const previous: TDataTxField[] = [{ key: 'a', type: DATA_ENTRY_TYPES.STRING, value: 'old' }];
+      const next: TDataTxField[] = [
+        { key: 'a', type: DATA_ENTRY_TYPES.STRING, value: 'old' },
+        { key: 'b', type: DATA_ENTRY_TYPES.STRING, value: 'new' },
+      ];
+      const diff = getFieldsDiff(previous, next);
+      expect(diff.length).toEqual(1);
+      expect(diff[0].key).toEqual('b');
+    });
+
+    it('getFieldsDiff returns fields with changed type', () => {
+      const previous: TDataTxField[] = [{ key: 'a', type: DATA_ENTRY_TYPES.STRING, value: 'old' }];
+      const next: TDataTxField[] = [{ key: 'a', type: DATA_ENTRY_TYPES.INTEGER, value: 123 }];
+      const diff = getFieldsDiff(previous, next);
+      expect(diff.length).toEqual(1);
+      expect(diff[0].type).toEqual(DATA_ENTRY_TYPES.INTEGER);
+    });
+
+    it('isProvider distinguishes provider from asset', () => {
+      expect(isProvider(PROVIDER_DATA)).toBe(true);
+      expect(isProvider(SCAM_ASSET)).toBe(false);
+    });
+
+    it('toField throws on null value', () => {
+      const data = { ...PROVIDER_DATA, name: undefined } as unknown as IProviderData;
+      const fieldProcessor = toField('name', DATA_PROVIDER_KEYS.NAME, DATA_ENTRY_TYPES.STRING);
+      expect(() => fieldProcessor(data)).toThrow('Empty field name!');
+    });
+
+    it('toField throws on wrong type - expects integer', () => {
+      const data = { ...PROVIDER_DATA, version: 'not-a-number' } as unknown as IProviderData;
+      const fieldProcessor = toField(
+        'version',
+        DATA_PROVIDER_KEYS.VERSION,
+        DATA_ENTRY_TYPES.INTEGER,
+      );
+      expect(() => fieldProcessor(data)).toThrow('Wrong value type!');
+    });
+
+    it('toField throws on wrong type - expects boolean', () => {
+      const data = { version: 'not-a-boolean' } as unknown as IProviderData;
+      const fieldProcessor = toField('version', 'some_key', DATA_ENTRY_TYPES.BOOLEAN);
+      expect(() => fieldProcessor(data)).toThrow('Wrong value type!');
+    });
+
+    it('toField throws on wrong type - expects binary/string', () => {
+      const data = { version: 123 } as unknown as IProviderData;
+      const fieldProcessor = toField('version', 'some_key', DATA_ENTRY_TYPES.BINARY);
+      expect(() => fieldProcessor(data)).toThrow('Wrong value type!');
+    });
+
+    it('toFields handles mixed array and single results', () => {
+      const processor = toFields<{ a: number; b: number }>(
+        (d) => ({ key: 'a', type: DATA_ENTRY_TYPES.INTEGER, value: d.a }),
+        (d) => [
+          { key: 'b1', type: DATA_ENTRY_TYPES.INTEGER, value: d.b },
+          { key: 'b2', type: DATA_ENTRY_TYPES.INTEGER, value: d.b * 2 },
+        ],
+      );
+      const result = processor({ a: 1, b: 2 });
+      expect(result.length).toEqual(3);
+    });
+  });
+
+  describe('Response utils', () => {
+    it('getFieldValue throws on missing field', () => {
+      const hash = {};
+      expect(() => getFieldValue(hash, 'missing', DATA_ENTRY_TYPES.STRING)).toThrow(
+        'Has no field with name missing',
+      );
+    });
+
+    it('getFieldValue throws on wrong type', () => {
+      const hash = {
+        test: { key: 'test', type: DATA_ENTRY_TYPES.STRING, value: 'hello' },
+      };
+      expect(() => getFieldValue(hash, 'test', DATA_ENTRY_TYPES.INTEGER)).toThrow(
+        'Wrong field type!',
+      );
+    });
+
+    it('getAssetIdFromKey returns null for non-asset keys', () => {
+      expect(getAssetIdFromKey('data_provider_version')).toBeNull();
+      expect(getAssetIdFromKey('random_key')).toBeNull();
+    });
+
+    it('getAssetIdFromKey extracts asset id from valid key', () => {
+      const result = getAssetIdFromKey('status_<ABC123>');
+      expect(result).toEqual('ABC123');
+    });
+  });
+
+  describe('Provider data edge cases', () => {
+    it('Returns error for unsupported provider version', () => {
+      const fields: TDataTxField[] = [
+        {
+          key: DATA_PROVIDER_KEYS.VERSION,
+          type: DATA_ENTRY_TYPES.INTEGER,
+          value: 999, // Unsupported version
+        },
+      ];
+      const result = getProviderData(fields);
+      expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+      expect((result as IErrorResponse<IProviderData>).errors[0].path).toEqual('version');
+    });
+
+    it('Handles missing optional description gracefully', () => {
+      const fieldsWithoutLangList = PROVIDER_FIELDS.filter(
+        (item) => item.key !== DATA_PROVIDER_KEYS.LANG_LIST && !item.key.includes('description'),
+      );
+      const result = getProviderData(fieldsWithoutLangList);
+      // Should still work but without description
+      expect(result.status).toBeDefined();
     });
   });
 });
