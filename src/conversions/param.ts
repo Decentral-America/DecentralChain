@@ -7,8 +7,8 @@ import {
 import { base58Decode } from './base-xx';
 import { stringToBytes } from './string-bytes';
 
-const isString = (val: any): val is string => typeof val === 'string' || val instanceof String;
-const isUint8Array = (val: any): val is Uint8Array => val instanceof Uint8Array;
+const isString = (val: unknown): val is string => typeof val === 'string' || val instanceof String;
+const isUint8Array = (val: unknown): val is Uint8Array => val instanceof Uint8Array;
 
 const isTRawStringInDiscriminator = (_: TRawStringIn): _ is TRawStringInDiscriminator => false;
 
