@@ -1,6 +1,5 @@
 import { type TBase64 } from './interface';
 import { bytesToString, stringToBytes } from '../conversions/string-bytes';
-// @ts-expect-error -- no type declarations for node-forge submodule
 import * as forgeMd5 from 'node-forge/lib/md5';
 import { concat } from './concat-split';
 import { aesDecrypt, aesEncrypt } from './encryption';
@@ -17,7 +16,6 @@ function strengthenPassword(password: string, rounds = 5000): string {
 }
 
 function evpKdf(passphrase: Uint8Array, salt: Uint8Array, output = 48) {
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- node-forge has no type declarations */
   const passPlusSalt = bytesToString(concat(passphrase, salt), 'raw');
   let key = '';
   let final_key = key;
@@ -29,7 +27,6 @@ function evpKdf(passphrase: Uint8Array, salt: Uint8Array, output = 48) {
       .getBytes();
     final_key += key;
   }
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
   return final_key;
 }
 

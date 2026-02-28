@@ -27,15 +27,20 @@ export const rsaKeyPairSync = (bits?: number, e?: number): TRSAKeyPair => {
 /** Generate an RSA key pair asynchronously. */
 export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair> =>
   new Promise<TRSAKeyPair>((resolve, reject) => {
-    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- node-forge callback typing */
-    forge.pki.rsa.generateKeyPair(bits, e, function (err: any, kp: any) {
-      if (err) reject(err instanceof Error ? err : new Error(String(err)));
-      resolve({
-        rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
-        rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
-      });
-    });
-    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
+    forge.pki.rsa.generateKeyPair(
+      bits,
+      e,
+      function (
+        err: Error | null,
+        kp: { privateKey: forge.pki.rsa.PrivateKey; publicKey: forge.pki.rsa.PublicKey },
+      ) {
+        if (err) reject(err);
+        resolve({
+          rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
+          rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
+        });
+      },
+    );
   });
 
 interface DigestInfo {
