@@ -1,11 +1,10 @@
 # @decentralchain/bignumber
 
 [![CI](https://github.com/Decentral-America/bignumber/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/bignumber/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/bignumber.svg)](https://www.npmjs.com/package/@decentralchain/bignumber)
-[![npm downloads](https://img.shields.io/npm/dm/@decentralchain/bignumber.svg)](https://www.npmjs.com/package/@decentralchain/bignumber)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/@decentralchain/bignumber)](https://www.npmjs.com/package/@decentralchain/bignumber)
+[![license](https://img.shields.io/npm/l/@decentralchain/bignumber)](./LICENSE)
+[![Node.js](https://img.shields.io/node/v/@decentralchain/bignumber)](./package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22-green.svg)](https://nodejs.org/)
 
 Arbitrary-precision BigNumber wrapper for the DecentralChain SDK.
 
@@ -17,8 +16,13 @@ Provides **safe arithmetic** for blockchain token amounts that exceed JavaScript
 - Byte serialization for blockchain wire format (signed/unsigned, long/variable-length)
 - Immutable — all operations return new instances
 - Full TypeScript support with strict types
-- ESM, CJS, and UMD builds
+- ESM and CJS builds
 - Zero configuration — works in Node.js and browsers
+
+## Requirements
+
+- **Node.js** >= 22
+- **npm** >= 11
 
 ## Installation
 
@@ -223,6 +227,44 @@ Available via `BigNumber.ROUND_MODE`:
 | `ROUND_HALF_CEIL`  | To nearest, 0.5 towards +Infinity           |
 | `ROUND_HALF_FLOOR` | To nearest, 0.5 towards -Infinity           |
 
+## Development
+
+### Prerequisites
+
+- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **npm** >= 11
+
+### Setup
+
+```bash
+git clone https://github.com/Decentral-America/bignumber.git
+cd bignumber
+npm install
+```
+
+### Scripts
+
+| Command                     | Description                              |
+| --------------------------- | ---------------------------------------- |
+| `npm run build`             | Build distribution files                 |
+| `npm test`                  | Run tests with Vitest                    |
+| `npm run test:watch`        | Tests in watch mode                      |
+| `npm run test:coverage`     | Tests with V8 coverage                   |
+| `npm run typecheck`         | TypeScript type checking                 |
+| `npm run lint`              | ESLint                                   |
+| `npm run lint:fix`          | ESLint with auto-fix                     |
+| `npm run format`            | Format with Prettier                     |
+| `npm run validate`          | Full CI validation pipeline              |
+| `npm run bulletproof`       | Format + lint fix + typecheck + test     |
+| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test |
+
+### Quality Gates
+
+- **Coverage**: 90%+ threshold for branches, functions, lines, and statements
+- **Bundle size**: Enforced via size-limit
+- **Type exports**: Validated with publint and attw
+- **Formatting**: Prettier enforced on commit via Husky + lint-staged
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
@@ -230,6 +272,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 ## Security
 
 See [SECURITY.md](SECURITY.md) for the security policy and responsible disclosure.
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## License
 

@@ -6,17 +6,14 @@ labels: feature
 assignees: ''
 ---
 
-**Аbstract**
+**Abstract**
 Is your feature request related to a problem? Please describe.
 
 **Motivation and Purposes**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...].
+Why is this needed?
 
-** Specification**
-A clear and concise description of what you want to happen. Describe alternatives you've considered
+**Specification**
+Describe the desired behavior. Include API examples if applicable.
 
 **Backwards Compatibility**
-Can your proposition affect any existing features?
-
-**Examples and Implementation**
-Examples of implementation in other projects?
+Can this affect existing features?

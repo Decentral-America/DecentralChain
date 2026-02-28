@@ -19,7 +19,6 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "browser": "./dist/index.umd.min.js",
   "sideEffects": false,
   "files": [
     "dist",
@@ -36,6 +35,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Decentral-America/bignumber.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
   },
   "bugs": {
     "url": "https://github.com/Decentral-America/bignumber/issues"
@@ -56,6 +59,7 @@
     "check:size": "size-limit",
     "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "prepare": "husky",
     "prepack": "npm run build",
     "postversion": "npm publish",
