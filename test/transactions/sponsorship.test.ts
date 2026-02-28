@@ -10,7 +10,7 @@ describe('setSponsorship', () => {
 
     it('Should create sponsorship transaction', () => {
       const tx = sponsorship({ ...sponsorshipMinimalParams}, stringSeed)
-      expect(tx).toMatchObject({...sponsorshipMinimalParams, fee: 100000, chainId: 87})
+      expect(tx).toMatchObject({...sponsorshipMinimalParams, fee: 100000, chainId: 76})
     });
 
     it('Should not create sponsorship transaction with zero sponsor fee', () => {

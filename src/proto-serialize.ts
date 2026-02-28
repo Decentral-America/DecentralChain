@@ -1,4 +1,4 @@
-import * as wavesProto from '@waves/protobuf-serialization'
+import * as dccProto from '@decentralchain/protobuf-serialization'
 import {
     address, base16Decode, base16Encode,
     base58Decode,
@@ -8,7 +8,7 @@ import {
     blake2b,
     concat,
     keccak
-} from '@waves/ts-lib-crypto'
+} from '@decentralchain/ts-lib-crypto'
 import {binary, schemas} from '@decentralchain/marshall'
 import {
     AliasTransaction,
@@ -33,7 +33,7 @@ import {
     UpdateAssetInfoTransaction,
     GenesisTransaction,
     // InvokeExpressionTransaction
-} from '@waves/ts-types'
+} from '@decentralchain/ts-types'
 import {base64Prefix, chainIdFromRecipient} from './generic'
 import Long from 'long'
 import {lease} from './transactions/lease'
@@ -43,7 +43,7 @@ const invokeScriptCallSchema = {
     ...schemas.txFields.functionCall[1],
 }
 
-const recipientFromProto = (recipient: wavesProto.waves.IRecipient, chainId: number): string => {
+const recipientFromProto = (recipient: dccProto.waves.IRecipient, chainId: number): string => {
     if (recipient.alias) {
         return `alias:${String.fromCharCode(chainId)}:${recipient.alias}`
     }
@@ -61,16 +61,16 @@ function convertNumber(n: Long) {
 }
 
 export function txToProtoBytes(obj: TTransaction): Uint8Array {
-    return new Uint8Array(wavesProto.waves.Transaction.encode(txToProto(obj)).finish())
+    return new Uint8Array(dccProto.waves.Transaction.encode(txToProto(obj)).finish())
 }
 
 export function signedTxToProtoBytes(obj: TTx): Uint8Array {
-    return new Uint8Array(wavesProto.waves.SignedTransaction.encode(signedTxToProto(obj)).finish())
+    return new Uint8Array(dccProto.waves.SignedTransaction.encode(signedTxToProto(obj)).finish())
 }
 
 export function protoBytesToSignedTx(bytes: Uint8Array): TTx {
-    const txData = wavesProto.waves.SignedTransaction.decode(bytes)
-    const tx: TTransaction = protoTxDataToTx(txData.transaction as never as wavesProto.waves.Transaction)
+    const txData = dccProto.waves.SignedTransaction.decode(bytes)
+    const tx: TTransaction = protoTxDataToTx(txData.transaction as never as dccProto.waves.Transaction)
 
     const signedTx: TTx = {
         ...tx,
@@ -81,13 +81,13 @@ export function protoBytesToSignedTx(bytes: Uint8Array): TTx {
 }
 
 export function protoBytesToTx(bytes: Uint8Array): TTransaction {
-    const t = wavesProto.waves.Transaction.decode(bytes)
+    const t = dccProto.waves.Transaction.decode(bytes)
     const res = protoTxDataToTx(t)
 
     return res
 }
 
-export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
+export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
     type transactionTypes =
         'genesis'
         | 'payment'
@@ -241,11 +241,11 @@ export function protoTxDataToTx(t: wavesProto.waves.Transaction): TTransaction {
 }
 
 export function orderToProtoBytes(obj: ExchangeTransactionOrder): Uint8Array {
-    return wavesProto.waves.Order.encode(orderToProto(obj as any)).finish()
+    return dccProto.waves.Order.encode(orderToProto(obj as any)).finish()
 }
 
 export function protoBytesToOrder(bytes: Uint8Array) {
-    const o = wavesProto.waves.Order.decode(bytes)
+    const o = dccProto.waves.Order.decode(bytes)
     return orderFromProto(o)
 }
 
@@ -280,7 +280,7 @@ const getCommonSignedFields = (tx: TTx) => {
     return fields
 }
 
-const getIssueData = (t: IssueTransaction): wavesProto.waves.IIssueTransactionData => ({
+const getIssueData = (t: IssueTransaction): dccProto.waves.IIssueTransactionData => ({
     name: t.name,
     description: t.description === '' ? null : t.description,
     amount: Long.fromValue(t.quantity),
@@ -288,58 +288,58 @@ const getIssueData = (t: IssueTransaction): wavesProto.waves.IIssueTransactionDa
     reissuable: t.reissuable ? true : undefined,
     script: t.script == null ? null : scriptToProto(t.script),
 })
-const getTransferData = (t: TransferTransaction): wavesProto.waves.ITransferTransactionData => ({
+const getTransferData = (t: TransferTransaction): dccProto.waves.ITransferTransactionData => ({
     recipient: recipientToProto(t.recipient),
     amount: amountToProto(t.amount, t.assetId),
     attachment: t.attachment == null || t.attachment == '' ? undefined : base58Decode(t.attachment),
 })
-const getReissueData = (t: ReissueTransaction): wavesProto.waves.IReissueTransactionData => ({
+const getReissueData = (t: ReissueTransaction): dccProto.waves.IReissueTransactionData => ({
     assetAmount: amountToProto(t.quantity, t.assetId),
     reissuable: t.reissuable ? true : undefined,
 })
-const getBurnData = (t: BurnTransaction): wavesProto.waves.IBurnTransactionData => ({
+const getBurnData = (t: BurnTransaction): dccProto.waves.IBurnTransactionData => ({
     assetAmount: amountToProto(t.amount || (t as any).amount, t.assetId),
 })
-const getExchangeData = (t: any): wavesProto.waves.IExchangeTransactionData => ({
+const getExchangeData = (t: any): dccProto.waves.IExchangeTransactionData => ({
     amount: Long.fromValue(t.amount),
     price: Long.fromValue(t.price),
     buyMatcherFee: Long.fromValue(t.buyMatcherFee),
     sellMatcherFee: Long.fromValue(t.sellMatcherFee),
     orders: [orderToProto({chainId: t.chainId, ...t.order1}), orderToProto({chainId: t.chainId, ...t.order2})],
 })
-const getLeaseData = (t: LeaseTransaction): wavesProto.waves.ILeaseTransactionData => ({
+const getLeaseData = (t: LeaseTransaction): dccProto.waves.ILeaseTransactionData => ({
     recipient: recipientToProto(t.recipient),
     amount: Long.fromValue(t.amount),
 })
-const getCancelLeaseData = (t: CancelLeaseTransaction): wavesProto.waves.ILeaseCancelTransactionData => ({
+const getCancelLeaseData = (t: CancelLeaseTransaction): dccProto.waves.ILeaseCancelTransactionData => ({
     leaseId: base58Decode(t.leaseId),
 })
-const getAliasData = (t: AliasTransaction): wavesProto.waves.ICreateAliasTransactionData => ({alias: t.alias})
-const getMassTransferData = (t: MassTransferTransaction): wavesProto.waves.IMassTransferTransactionData => ({
+const getAliasData = (t: AliasTransaction): dccProto.waves.ICreateAliasTransactionData => ({alias: t.alias})
+const getMassTransferData = (t: MassTransferTransaction): dccProto.waves.IMassTransferTransactionData => ({
     assetId: t.assetId == null ? null : base58Decode(t.assetId),
     attachment: t.attachment == null || t.attachment == '' ? undefined : base58Decode(t.attachment),
     transfers: t.transfers.map(massTransferItemToProto),
 })
-const getDataTxData = (t: DataTransaction): wavesProto.waves.IDataTransactionData => ({
+const getDataTxData = (t: DataTransaction): dccProto.waves.IDataTransactionData => ({
     data: t.data.map(dataEntryToProto),
 })
-const getSetScriptData = (t: SetScriptTransaction): wavesProto.waves.ISetScriptTransactionData => ({
+const getSetScriptData = (t: SetScriptTransaction): dccProto.waves.ISetScriptTransactionData => ({
     script: t.script == null ? null : scriptToProto(t.script),
 })
-const getSponsorData = (t: SponsorshipTransaction): wavesProto.waves.ISponsorFeeTransactionData => ({
+const getSponsorData = (t: SponsorshipTransaction): dccProto.waves.ISponsorFeeTransactionData => ({
     minFee: t.minSponsoredAssetFee === null ? amountToProto(0, t.assetId) : amountToProto(t.minSponsoredAssetFee, t.assetId),
 })
-const getSetAssetScriptData = (t: SetAssetScriptTransaction): wavesProto.waves.ISetAssetScriptTransactionData => ({
+const getSetAssetScriptData = (t: SetAssetScriptTransaction): dccProto.waves.ISetAssetScriptTransactionData => ({
     assetId: base58Decode(t.assetId),
     script: t.script == null ? null : scriptToProto(t.script),
 })
-const getInvokeData = (t: InvokeScriptTransaction): wavesProto.waves.IInvokeScriptTransactionData => ({
+const getInvokeData = (t: InvokeScriptTransaction): dccProto.waves.IInvokeScriptTransactionData => ({
     dApp: recipientToProto(t.dApp),
     functionCall: binary.serializerFromSchema((schemas.invokeScriptSchemaV1 as any).schema[5][1])(t.call),
     payments: t.payment == null ? null : t.payment.map(({amount, assetId}) => amountToProto(amount, assetId)),
 })
 
-const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction): wavesProto.waves.IUpdateAssetInfoTransactionData => {
+const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction): dccProto.waves.IUpdateAssetInfoTransactionData => {
     return {
         assetId: base58Decode(t.assetId),
         name: t.name,
@@ -347,13 +347,13 @@ const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction): wavesProto.waves
     }
 }
 
-// const getInvokeExpressionData = (t: InvokeExpressionTransaction): wavesProto.waves.IInvokeExpressionTransactionData => {
+// const getInvokeExpressionData = (t: InvokeExpressionTransaction): dccProto.waves.IInvokeExpressionTransactionData => {
 //     return {
 //         expression: t.expression == null ? null : scriptToProto(t.expression),
 //     }
 // }
 
-const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): any /*wavesProto.waves.ITransaction*/ => {
+const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): any /*dccProto.waves.ITransaction*/ => {
     let txData
 
     switch (t.type) {
@@ -410,7 +410,7 @@ const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): any /*wavesPro
     return txData
 }
 
-export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): wavesProto.waves.ITransaction => {
+export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): dccProto.waves.ITransaction => {
     const common = getCommonFields(t)
     const txData = getTxData(t)
 
@@ -421,7 +421,7 @@ export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): wavesPr
 }
 
 
-export const signedTxToProto = (t: TTx): wavesProto.waves.ISignedTransaction => {
+export const signedTxToProto = (t: TTx): dccProto.waves.ISignedTransaction => {
     const common = getCommonSignedFields(t)
     const txData = getTxData(t)
 
@@ -434,27 +434,27 @@ export const signedTxToProto = (t: TTx): wavesProto.waves.ISignedTransaction => 
     }
 }
 
-const orderToProto = (o: any): wavesProto.waves.IOrder => {
+const orderToProto = (o: any): dccProto.waves.IOrder => {
     let priceMode
     if (o.version === 4 && 'priceMode' in o) {
         if (o.priceMode === 0 || o.priceMode === 'default') {
             priceMode = undefined
         }
         o.priceMode === 'assetDecimals'
-            ? priceMode = wavesProto.waves.Order.PriceMode.ASSET_DECIMALS
-            : priceMode = wavesProto.waves.Order.PriceMode.FIXED_DECIMALS
+            ? priceMode = dccProto.waves.Order.PriceMode.ASSET_DECIMALS
+            : priceMode = dccProto.waves.Order.PriceMode.FIXED_DECIMALS
     } else priceMode = undefined
 
-    const isNullOrWaves = (asset: string | null) => asset == null || asset.toLowerCase() == 'waves'
+    const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() == 'dcc'
     return ({
         chainId: o.chainId,
         senderPublicKey: o.senderPublicKey ? base58Decode(o.senderPublicKey) : null,
         matcherPublicKey: base58Decode(o.matcherPublicKey),
         assetPair: {
-            amountAssetId: isNullOrWaves(o.assetPair.amountAsset) ? null : base58Decode(o.assetPair.amountAsset),
-            priceAssetId: isNullOrWaves(o.assetPair.priceAsset) ? null : base58Decode(o.assetPair.priceAsset),
+            amountAssetId: isNullOrDcc(o.assetPair.amountAsset) ? null : base58Decode(o.assetPair.amountAsset),
+            priceAssetId: isNullOrDcc(o.assetPair.priceAsset) ? null : base58Decode(o.assetPair.priceAsset),
         },
-        orderSide: o.orderType === 'buy' ? undefined : wavesProto.waves.Order.Side.SELL,
+        orderSide: o.orderType === 'buy' ? undefined : dccProto.waves.Order.Side.SELL,
         amount: Long.fromValue(o.amount),
         price: Long.fromValue(o.price),
         timestamp: Long.fromValue(o.timestamp),
@@ -467,7 +467,7 @@ const orderToProto = (o: any): wavesProto.waves.IOrder => {
     })
 }
 
-const orderFromProto = (po: wavesProto.waves.IOrder): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
+const orderFromProto = (po: dccProto.waves.IOrder): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
     let priceMode
     if (po.version === 4 && po.priceMode) {
         po.priceMode === 1
@@ -485,7 +485,7 @@ const orderFromProto = (po: wavesProto.waves.IOrder): SignedIExchangeTransaction
         },
         // @ts-ignore
         chainId: po.chainId,
-        orderType: po.orderSide === wavesProto.waves.Order.Side.BUY ? 'buy' : 'sell',
+        orderType: po.orderSide === dccProto.waves.Order.Side.BUY ? 'buy' : 'sell',
         amount: convertNumber(po.amount!),
         price: convertNumber(po.price!),
         timestamp: po.timestamp!.toNumber(),
@@ -498,19 +498,19 @@ const orderFromProto = (po: wavesProto.waves.IOrder): SignedIExchangeTransaction
     }
 }
 
-const recipientToProto = (r: string): wavesProto.waves.IRecipient => ({
+const recipientToProto = (r: string): dccProto.waves.IRecipient => ({
     alias: r.startsWith('alias') ? r.slice(8) : undefined,
     publicKeyHash: !r.startsWith('alias') ? base58Decode(r).slice(2, -4) : undefined,
 })
-const amountToProto = (a: string | number, assetId?: string | null): wavesProto.waves.IAmount => ({
+const amountToProto = (a: string | number, assetId?: string | null): dccProto.waves.IAmount => ({
     amount: a == 0 ? null : Long.fromValue(a),
     assetId: assetId == null ? null : base58Decode(assetId),
 })
-const massTransferItemToProto = (mti: MassTransferItem): wavesProto.waves.MassTransferTransactionData.ITransfer => ({
+const massTransferItemToProto = (mti: MassTransferItem): dccProto.waves.MassTransferTransactionData.ITransfer => ({
     recipient: recipientToProto(mti.recipient),
     amount: mti.amount == 0 ? null : Long.fromValue(mti.amount),
 })
-export const dataEntryToProto = (de: DataTransactionEntry): wavesProto.waves.DataTransactionData.IDataEntry => ({
+export const dataEntryToProto = (de: DataTransactionEntry): dccProto.waves.DataTransactionData.IDataEntry => ({
     key: de.key,
     intValue: de.type === 'integer' ? Long.fromValue(de.value) : undefined,
     boolValue: de.type === 'boolean' ? de.value : undefined,

@@ -1,4 +1,4 @@
-import {publicKey,} from '@waves/ts-lib-crypto'
+import {publicKey,} from '@decentralchain/ts-lib-crypto'
 import {setAssetScript} from '../../src'
 import {
   checkBinarySerializeDeserialize,
@@ -83,7 +83,7 @@ describe('setAssetScript', () => {
     const txParams = { ...setAssetScriptMinimalParams };
     const signedTx = setAssetScript(txParams, seed)
 
-    expect(signedTx).toMatchObject({...setAssetScriptMinimalParams, fee: 100000000, chainId: 87})
+    expect(signedTx).toMatchObject({...setAssetScriptMinimalParams, fee: 100000000, chainId: 76})
   })
 
   it('Should add base64 prefix for script when create setAssetScript tz', () => {

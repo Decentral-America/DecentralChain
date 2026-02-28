@@ -1,4 +1,4 @@
-import {base16Encode, base64Decode, publicKey, verifySignature} from '@waves/ts-lib-crypto'
+import {base16Encode, base64Decode, publicKey, verifySignature} from '@decentralchain/ts-lib-crypto'
 import {sponsorship, transfer} from '../../src'
 import {
   checkBinarySerializeDeserialize,

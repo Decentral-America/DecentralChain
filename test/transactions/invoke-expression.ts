@@ -21,6 +21,6 @@
 //         // console.log(JSON.stringify(tx, null, ' '))
 //
 //         const signingTx = await signTx(tx, stringSeed)
-//         await broadcast(signingTx, 'https://nodes-stagenet.wavesnodes.com')
+//         await broadcast(signingTx, 'https://nodes-stagenet.decentralchain.io')
 //     })
 // })

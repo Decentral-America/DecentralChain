@@ -1,4 +1,4 @@
-import {base16Encode, base64Decode, verifySignature} from '@waves/ts-lib-crypto'
+import {base16Encode, base64Decode, verifySignature} from '@decentralchain/ts-lib-crypto'
 import {binary} from '@decentralchain/marshall'
 
 import {makeTx, TTx} from '../src'

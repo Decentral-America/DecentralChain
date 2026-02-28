@@ -1,13 +1,13 @@
 /**
  * @module index
  */
-import {signBytes, blake2b, base58Encode} from '@waves/ts-lib-crypto'
+import {signBytes, blake2b, base58Encode} from '@decentralchain/ts-lib-crypto'
 import {addProof, getSenderPublicKey, convertToPairs, isOrder, networkByte} from '../generic'
 import {IOrderParams, WithId, WithProofs, WithSender} from '../transactions'
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
-import {ExchangeTransactionOrder, SignedIExchangeTransactionOrder} from '@waves/ts-types'
+import {ExchangeTransactionOrder, SignedIExchangeTransactionOrder} from '@decentralchain/ts-types'
 import {orderToProtoBytes} from '../proto-serialize'
 
 
@@ -19,12 +19,12 @@ import {orderToProtoBytes} from '../proto-serialize'
  *
  * ### Usage
  * ```js
- * const { order } = require('@waves/waves-transactions')
+ * const { order } = require('@decentralchain/waves-transactions')
  *
  * const seed = 'b716885e9ba64442b4f1263c8e2d8671e98b800c60ec4dc2a27c83e5f9002b18'
  *
  * const params = {
- *   amount: 100000000, //1 waves
+ *   amount: 100000000, //1 DCC
  *   price: 10, //for 0.00000010 BTC
  *   priceAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
  *   matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
@@ -99,7 +99,7 @@ export function order(paramsOrOrder: any, seed?: TSeedTypes): SignedIExchangeTra
     if (ord.version === 4) {
         ord.priceMode = paramsOrOrder.priceMode || 'fixedDecimals'
         // @ts-ignore
-        ord.chainId = networkByte(paramsOrOrder.chainId, 87)
+        ord.chainId = networkByte(paramsOrOrder.chainId, 76)
         if (paramsOrOrder.eip712Signature) ord.eip712Signature = paramsOrOrder.eip712Signature
     }
 

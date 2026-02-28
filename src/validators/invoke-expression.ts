@@ -1,8 +1,8 @@
-// import {TRANSACTION_TYPE} from '@waves/ts-types'
+// import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
 // import {
 //     isEq,
 //     orEq,
-//     isWavesOrAssetId,
+//     isDccOrAssetId,
 //     isNumber,
 //     isNumberLike,
 //     isArray,
@@ -21,7 +21,7 @@
 //     version: isEq(1),
 //     expression: isBase64,
 //     fee: isNaturalNumberOrZeroLike,
-//     feeAssetId: isWavesOrAssetId,
+//     feeAssetId: isDccOrAssetId,
 //     chainId: isNumber,
 //     timestamp: isNumber,
 //     proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),

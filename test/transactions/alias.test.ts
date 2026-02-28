@@ -1,4 +1,4 @@
-import {base16Decode, base16Encode, base64Decode, base64Encode, publicKey} from '@waves/ts-lib-crypto'
+import {base16Decode, base16Encode, base64Decode, base64Encode, publicKey} from '@decentralchain/ts-lib-crypto'
 import {alias} from '../../src'
 import {aliasMinimalParams} from '../minimalParams'
 import {
@@ -23,7 +23,7 @@ describe('alias', () => {
 
   it('should build from minimal set of params', () => {
     const tx = alias({ ...aliasMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...aliasMinimalParams, fee: 100000, chainId: 87 })
+    expect(tx).toMatchObject({ ...aliasMinimalParams, fee: 100000, chainId: 76 })
   });
 
 

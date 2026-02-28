@@ -9,7 +9,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000000,
-  //chainId: 'W'
+  //chainId: 'L'
 }
 
 const signedReissueTx = reissue(params, seed)

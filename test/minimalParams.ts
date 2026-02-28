@@ -6,7 +6,7 @@ import {
   IMassTransferParams, IOrderParams, IReissueParams, ISetAssetScriptParams, ISetScriptParams, ITransferParams,
   ICancelOrderParams, ISponsorshipParams, IUpdateAssetInfoParams,
 } from '../src/transactions'
-import {TRANSACTION_TYPE} from '@waves/ts-types'
+import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 export const aliasMinimalParams: IAliasParams = {
   alias: 'mytestalias',

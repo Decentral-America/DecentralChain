@@ -58,7 +58,7 @@ import {
     TRANSACTION_TYPE,
     TransferTransaction,
     UpdateAssetInfoTransaction
-} from '@waves/ts-types'
+} from '@decentralchain/ts-types'
 
 export type TTransaction<T extends TTransactionType> = TxTypeMap[T]
 

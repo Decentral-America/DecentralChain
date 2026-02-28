@@ -10,7 +10,7 @@ import {
   encryptSeed,
   decryptSeed,
   randomSeed
-} from '@waves/ts-lib-crypto'
+} from '@decentralchain/ts-lib-crypto'
 import { serializePrimitives } from '@decentralchain/marshall'
 
 export class Seed {

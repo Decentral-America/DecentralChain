@@ -1,4 +1,4 @@
-import { publicKey, verifySignature } from '@waves/ts-lib-crypto'
+import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto'
 import {massTransfer, reissue} from '../../src'
 import {
   checkBinarySerializeDeserialize,

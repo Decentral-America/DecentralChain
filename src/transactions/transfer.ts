@@ -2,7 +2,7 @@
  * @module index
  */
 import {ITransferParams, WithId, WithProofs, WithSender} from '../transactions'
-import {base58Encode, blake2b, signBytes} from '@waves/ts-lib-crypto'
+import {base58Encode, blake2b, signBytes} from '@decentralchain/ts-lib-crypto'
 import {
     addProof,
     chainIdFromRecipient,
@@ -17,7 +17,7 @@ import {TSeedTypes} from '../types'
 import {binary} from '@decentralchain/marshall'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
-import {TRANSACTION_TYPE, TransferTransaction} from '@waves/ts-types'
+import {TRANSACTION_TYPE, TransferTransaction} from '@decentralchain/ts-types'
 
 /* @echo DOCS */
 export function transfer(params: ITransferParams, seed: TSeedTypes): TransferTransaction & WithId & WithProofs

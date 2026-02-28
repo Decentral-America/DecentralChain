@@ -2,14 +2,14 @@
  * @module index
  */
 import {IIssueParams, WithId, WithProofs, WithSender} from '../transactions'
-import {base58Encode, blake2b, signBytes} from '@waves/ts-lib-crypto'
+import {base58Encode, blake2b, signBytes} from '@decentralchain/ts-lib-crypto'
 import {addProof, base64Prefix, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 import {TSeedTypes} from '../types'
 import {binary} from '@decentralchain/marshall'
 import {validate} from '../validators'
 import {txToProtoBytes} from '../proto-serialize'
 import {DEFAULT_VERSIONS} from '../defaultVersions'
-import {IssueTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {IssueTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 /* @echo DOCS */
 export function issue(params: IIssueParams, seed: TSeedTypes): IssueTransaction & WithId & WithProofs
@@ -32,7 +32,7 @@ export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & Wi
     reissuable: paramsOrTx.reissuable || false,
     fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
     timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 87),
+    chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
   }

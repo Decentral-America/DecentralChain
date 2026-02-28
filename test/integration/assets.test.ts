@@ -10,7 +10,7 @@ import {
   reissue, setAssetScript, transfer,
   waitForTx
 } from '../../src'
-import { address, publicKey } from '@waves/ts-lib-crypto'
+import { address, publicKey } from '@decentralchain/ts-lib-crypto'
 import { MASTER_SEED, CHAIN_ID, TIMEOUT, API_BASE, randomHexString } from './config'
 import { issueMinimalParams } from '../minimalParams'
 
@@ -246,7 +246,7 @@ describe('Assets', () => {
       const issueTx = issue(txParams, account1)
       assetId = issueTx.id
       await broadcast(issueTx, API_BASE)
-      // GIVE WAVES TO TEST ACC
+      // GIVE DCC TO TEST ACC
       // const transferTx = transfer({ recipient: address(account2, CHAIN_ID), amount: 100000000, chainId: CHAIN_ID }, MASTER_SEED)
       // await broadcast(transferTx, API_BASE)
 

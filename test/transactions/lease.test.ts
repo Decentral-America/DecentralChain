@@ -1,4 +1,4 @@
-import {publicKey} from '@waves/ts-lib-crypto'
+import {publicKey} from '@decentralchain/ts-lib-crypto'
 import {lease} from '../../src'
 import {
     checkBinarySerializeDeserialize,
@@ -17,7 +17,7 @@ describe('lease', () => {
 
     it('should build from minimal set of params', () => {
         const tx = lease({...leaseMinimalParams}, stringSeed);
-        expect(tx).toMatchObject({...leaseMinimalParams, version: 3, fee: 100000, chainId: 87})
+        expect(tx).toMatchObject({...leaseMinimalParams, version: 3, fee: 100000, chainId: 76})
     });
 
 

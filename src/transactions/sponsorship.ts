@@ -2,9 +2,13 @@
  * @module index
  */
 import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transactions'
+<<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
 import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
 =======
 import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '../generic'
@@ -17,7 +21,7 @@ import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {SponsorshipTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {SponsorshipTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 
 /* @echo DOCS */

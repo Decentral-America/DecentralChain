@@ -2,9 +2,13 @@
  * @module index
  */
 import {IReissueParams, WithId, WithProofs, WithSender} from '../transactions'
+<<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 =======
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
@@ -17,7 +21,7 @@ import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {ReissueTransaction, TRANSACTION_TYPE} from '@waves/ts-types'
+import {ReissueTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
 
 
 /* @echo DOCS */
@@ -44,9 +48,13 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
     assetId: paramsOrTx.assetId,
     quantity: paramsOrTx.quantity,
     reissuable: paramsOrTx.reissuable,
+<<<<<<< HEAD
     chainId: networkByte(paramsOrTx.chainId, 87),
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+    chainId: networkByte(paramsOrTx.chainId, 76),
+>>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
     fee: fee(paramsOrTx,100000),
 =======
     fee: fee(paramsOrTx,100000000000),

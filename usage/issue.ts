@@ -11,7 +11,7 @@ const params = {
   //decimals: 8
   //timestamp: Date.now(),
   //fee: 100000000,
-  //chainId: 'W'
+  //chainId: 'L'
 }
 
 const signedIssueTx = issue(params, seed)

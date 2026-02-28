@@ -9,7 +9,7 @@ async function build() {
     await create(p('tmp/src'))
 
     await npmInstall('typedoc-clarity-theme', 'tmp')
-    await npmInstall('waves-crypto', 'tmp')
+    await npmInstall('@decentralchain/ts-lib-crypto', 'tmp')
 
     await copy(p('../src'), p('tmp/src'))
     await copy(p('../usage'), p('tmp/usage'))
