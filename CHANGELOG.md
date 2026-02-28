@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`). CommonJS `require()` is no longer supported.
-- Minimum Node.js version is now 20 (from 16).
+- Minimum Node.js version is now 22 (from 16).
 - Replaced Jest with Vitest for testing.
 - Replaced webpack with Rollup for browser bundle.
 - Added input validation with descriptive `TypeError` messages for all public API functions.
