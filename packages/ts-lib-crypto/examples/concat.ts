@@ -1,5 +1,5 @@
-import { concat, randomBytes } from '@decentralchain/ts-lib-crypto'
+import { concat, randomBytes } from '@decentralchain/ts-lib-crypto';
 
-const bytesA = randomBytes(2)
-const bytesB = randomBytes(2)
-concat(bytesA, bytesB) // Uint8Array [ 36, 18, 254, 205 ]
+const bytesA = randomBytes(2);
+const bytesB = randomBytes(2);
+concat(bytesA, bytesB); // Uint8Array [ 36, 18, 254, 205 ]
