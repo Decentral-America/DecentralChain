@@ -11,6 +11,7 @@ export default {
     format: 'iife',
     name: 'OrderPairs',
     exports: 'named',
+    sourcemap: true,
   },
   plugins: [json(), resolve({ preferBuiltins: false, browser: true }), commonjs(), terser()],
 };
