@@ -44,59 +44,48 @@ export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair
   });
 
 interface DigestInfo {
-  oid: string;
-  prefix: string; // ASN.1 DER prefix
+  prefix: string; // ASN.1 DER DigestInfo prefix (hex)
   hash: (bytes: string) => string;
 }
 
 const DIGEST_INFOS: Record<RSADigestAlgorithm, DigestInfo> = {
   MD5: {
-    oid: '1.2.840.113549.2.5',
     prefix: '3020300c06082a864886f70d020505000410',
     hash: (bytes) => forge.md.md5.create().update(bytes).digest().getBytes(),
   },
   SHA1: {
-    oid: '1.3.14.3.2.26',
     prefix: '3021300906052b0e03021a05000414',
     hash: (bytes) => forge.md.sha1.create().update(bytes).digest().getBytes(),
   },
   SHA224: {
-    oid: '2.16.840.1.101.3.4.2.4',
     prefix: '303d300d06096086480165030402040500041c',
     hash: (bytes) => forge.util.hexToBytes(sha224(bytes)),
   },
   SHA256: {
-    oid: '2.16.840.1.101.3.4.2.1',
     prefix: '3031300d060960864801650304020105000420',
     hash: (bytes) => forge.md.sha256.create().update(bytes).digest().getBytes(),
   },
   SHA384: {
-    oid: '2.16.840.1.101.3.4.2.2',
     prefix: '3041300d060960864801650304020205000430',
     hash: (bytes) => forge.md.sha384.create().update(bytes).digest().getBytes(),
   },
   SHA512: {
-    oid: '2.16.840.1.101.3.4.2.3',
     prefix: '3051300d060960864801650304020305000440',
     hash: (bytes) => forge.md.sha512.create().update(bytes).digest().getBytes(),
   },
   'SHA3-224': {
-    oid: '2.16.840.1.101.3.4.2.7',
     prefix: '302d300d06096086480165030402070500041c',
     hash: (bytes) => forge.util.hexToBytes(sha3.sha3_224(bytes)),
   },
   'SHA3-256': {
-    oid: '2.16.840.1.101.3.4.2.8',
     prefix: '3031300d060960864801650304020805000420',
     hash: (bytes) => forge.util.hexToBytes(sha3.sha3_256(bytes)),
   },
   'SHA3-384': {
-    oid: '2.16.840.1.101.3.4.2.9',
     prefix: '3041300d060960864801650304020905000430',
     hash: (bytes) => forge.util.hexToBytes(sha3.sha3_384(bytes)),
   },
   'SHA3-512': {
-    oid: '2.16.840.1.101.3.4.2.10',
     prefix: '3051300d060960864801650304020a05000440',
     hash: (bytes) => forge.util.hexToBytes(sha3.sha3_512(bytes)),
   },
