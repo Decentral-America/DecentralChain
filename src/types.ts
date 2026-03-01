@@ -26,16 +26,11 @@ export interface ILibOptions {
   transform?: TFunction<any>;
 }
 
-export type TListResponseJSON<T> = {
-  __type: ApiTypes.List;
-  data: T[];
-};
 export type TResponse<T> = Promise<{
   data: T;
   fetchMore?: TFunction<TResponse<T>>;
 }>;
 export type TCreateGetFn<T> = (libOptions: ILibOptions) => T;
-export type TPredicate = (...args: any[]) => boolean;
 export type TFunction<T> = (...args: any[]) => T;
 export type TParser = (text: string) => any;
 

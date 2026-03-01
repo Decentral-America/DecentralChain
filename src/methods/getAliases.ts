@@ -18,9 +18,11 @@ const validateId = (id: string): Promise<string> =>
     : Promise.resolve(id);
 
 const validateIdList = (idList: Array<string>): Promise<Array<string>> =>
-    Array.isArray(idList)
-        ? Promise.resolve(idList)
-        : Promise.reject(new Error('ArgumentsError: aliasId should be Array'));
+    !Array.isArray(idList)
+        ? Promise.reject(new Error('ArgumentsError: aliasId should be Array'))
+        : idList.some(id => typeof id !== 'string')
+        ? Promise.reject(new Error('ArgumentsError: each alias in list should be string'))
+        : Promise.resolve(idList);
 
 const validateByAddressParams = ([
   address,
@@ -31,10 +33,10 @@ const validateByAddressParams = ([
     : Promise.resolve([address, options] as TAliasesByAddressParams);
 
 const createRequestForId = (rootUrl: string) => (id: TAliasId): ILibRequest =>
-  createRequest(`${rootUrl}/aliases/${id}`);
+  createRequest(`${rootUrl}/aliases/${encodeURIComponent(id)}`);
 
 const createRequestForIdList = (rootUrl: string) => (idList: Array<TAliasId>): ILibRequest =>
-    createRequest(`${rootUrl}/aliases/?aliases=${idList.join(',')}`);
+    createRequest(`${rootUrl}/aliases/?aliases=${idList.map(id => encodeURIComponent(id)).join(',')}`);
 
 const createRequestForAddress = (rootUrl: string) => ([
   address,

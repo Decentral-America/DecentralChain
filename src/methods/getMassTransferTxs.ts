@@ -11,9 +11,9 @@ import { createRequest } from '../createRequest';
 
 // One
 const validateId = id =>
-  typeof id === 'string' ? Promise.resolve(id) : Promise.reject('Wrong id');
+  typeof id === 'string' ? Promise.resolve(id) : Promise.reject(new Error('ArgumentsError: id should be string'));
 const generateRequestOne = (rootUrl: string) => (id: string): ILibRequest =>
-  createRequest(`${rootUrl}/transactions/mass-transfer/${id}`);
+  createRequest(`${rootUrl}/transactions/mass-transfer/${encodeURIComponent(id)}`);
 
 //Many
 const isFilters = (filters: any): filters is IMassTransferTxFilters => {
@@ -28,14 +28,16 @@ const isFilters = (filters: any): filters is IMassTransferTxFilters => {
     'limit',
   ];
   return (
+    filters !== null &&
     typeof filters === 'object' &&
+    !Array.isArray(filters) &&
     Object.keys(filters).every(k => possibleFilters.includes(k))
   );
 };
 const validateFilters = (filters: any) =>
   isFilters(filters)
     ? Promise.resolve(filters)
-    : Promise.reject('Wrong filters object');
+    : Promise.reject(new Error('ArgumentsError: invalid filters object'));
 
 const generateRequestMany = (rootUrl: string) => (
   filters: IMassTransferTxFilters
