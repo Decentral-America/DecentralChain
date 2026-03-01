@@ -24,16 +24,21 @@ export function merkleVerify(
   const leafHash = blake2b(concat(LEAF_PREFIX, leafData));
 
   const proofsWithSide: ['L' | 'R', Uint8Array][] = [];
-  let proofBytes = merkleProof.map((x) => x);
-  while (proofBytes.length > 0) {
-    const side = proofBytes[0] === 0 ? 'L' : 'R';
-    const size = proofBytes[1];
-    if (size === undefined || size < 1)
-      throw new Error('Failed to parse merkleProof: Wrong hash size');
+  let offset = 0;
+  while (offset < merkleProof.length) {
+    if (offset + 1 >= merkleProof.length)
+      throw new Error('Failed to parse merkleProof: Truncated proof entry (missing size byte)');
+    const side = merkleProof[offset] === 0 ? 'L' : 'R';
+    const size = merkleProof[offset + 1]!;
+    if (size < 1) throw new Error('Failed to parse merkleProof: Wrong hash size');
+    if (offset + 2 + size > merkleProof.length)
+      throw new Error(
+        'Failed to parse merkleProof: Truncated proof entry (hash extends beyond proof)',
+      );
 
-    const hash = proofBytes.slice(2, 2 + size);
+    const hash = merkleProof.slice(offset + 2, offset + 2 + size);
     proofsWithSide.push([side, hash]);
-    proofBytes = proofBytes.slice(2 + size);
+    offset += 2 + size;
   }
 
   const rootHashFromProof = proofsWithSide.reduce(
