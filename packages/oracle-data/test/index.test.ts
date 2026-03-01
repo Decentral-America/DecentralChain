@@ -3,7 +3,10 @@ import {
   getProviderData,
   getProviderAssets,
   getFields,
+  getFieldsFromData,
+  getFieldsFromAsset,
   getDifferenceByData,
+  getDifferenceByFields,
 } from '../src/index.js';
 import type {
   IErrorResponse,
@@ -832,6 +835,72 @@ describe('Data provider tests', () => {
       ];
       const result = getProviderData(badFields);
       expect(result.status).toEqual(RESPONSE_STATUSES.ERROR);
+    });
+  });
+
+  describe('Public API: getFieldsFromData / getFieldsFromAsset', () => {
+    it('getFieldsFromData returns identical output to getFields for provider data', () => {
+      const fromDirect = getFieldsFromData(PROVIDER_DATA);
+      const fromGeneric = getFields(PROVIDER_DATA);
+      expect(fromDirect).toEqual(fromGeneric);
+    });
+
+    it('getFieldsFromAsset returns identical output to getFields for asset data', () => {
+      const fromDirect = getFieldsFromAsset(VERIFIED_ASSET);
+      const fromGeneric = getFields(VERIFIED_ASSET);
+      expect(fromDirect).toEqual(fromGeneric);
+    });
+
+    it('getFieldsFromAsset handles scam asset with minimal fields', () => {
+      const fields = getFieldsFromAsset(SCAM_ASSET);
+      expect(fields.length).toBeGreaterThan(0);
+      const keys = fields.map((f) => f.key);
+      expect(keys.some((k) => k.includes(SCAM_ASSET.id))).toBe(true);
+    });
+  });
+
+  describe('Public API: getDifferenceByFields', () => {
+    it('Returns empty array when fields are identical', () => {
+      const diff = getDifferenceByFields(PROVIDER_FIELDS, PROVIDER_FIELDS);
+      expect(diff).toEqual([]);
+    });
+
+    it('Detects added fields', () => {
+      const next = [
+        ...PROVIDER_FIELDS,
+        { key: 'extra_key', type: DATA_ENTRY_TYPES.STRING, value: 'extra' } as TDataTxField,
+      ];
+      const diff = getDifferenceByFields(PROVIDER_FIELDS, next);
+      expect(diff.length).toEqual(1);
+      expect(diff[0].key).toEqual('extra_key');
+    });
+
+    it('Detects value changes', () => {
+      const modified = PROVIDER_FIELDS.map((f) =>
+        f.key === DATA_PROVIDER_KEYS.NAME ? { ...f, value: 'Changed name' } : f,
+      ) as TDataTxField[];
+      const diff = getDifferenceByFields(PROVIDER_FIELDS, modified);
+      expect(diff.length).toEqual(1);
+      expect(diff[0].key).toEqual(DATA_PROVIDER_KEYS.NAME);
+      expect(diff[0].value).toEqual('Changed name');
+    });
+
+    it('Detects type changes', () => {
+      const modified = PROVIDER_FIELDS.map((f) =>
+        f.key === DATA_PROVIDER_KEYS.NAME
+          ? { key: f.key, type: DATA_ENTRY_TYPES.INTEGER, value: 42 }
+          : f,
+      ) as TDataTxField[];
+      const diff = getDifferenceByFields(PROVIDER_FIELDS, modified);
+      expect(diff.length).toEqual(1);
+      expect(diff[0].type).toEqual(DATA_ENTRY_TYPES.INTEGER);
+    });
+
+    it('Is consistent with getDifferenceByData for equivalent data', () => {
+      const modified = { ...PROVIDER_DATA, name: 'New Name' };
+      const byData = getDifferenceByData(PROVIDER_DATA, modified);
+      const byFields = getDifferenceByFields(getFields(PROVIDER_DATA), getFields(modified));
+      expect(byData).toEqual(byFields);
     });
   });
 });
