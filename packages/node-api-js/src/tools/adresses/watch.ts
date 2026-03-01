@@ -1,15 +1,17 @@
 import { fetchTransactions } from '../../api-node/transactions';
-import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
-import { TLong } from '../../interface';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
 import { indexBy, keys, prop } from '../utils';
 import { EventEmitter } from 'typed-ts-events';
 
+/** @public — exposed via create().tools.addresses.watch() return type */
 export class Watch extends EventEmitter<IEvents> {
   public readonly address: string;
   private readonly _base: string;
   private readonly _interval: number;
   private _lastBlock: ILastBlockInfo;
   private _timer: ReturnType<typeof setTimeout> | null = null;
+  private _stopped = false;
 
   constructor(
     base: string,
@@ -30,12 +32,33 @@ export class Watch extends EventEmitter<IEvents> {
     this._addTimeout();
   }
 
+  /**
+   * Stop polling and release all timers.
+   * Once stopped the instance cannot be restarted.
+   */
+  public stop(): void {
+    this._stopped = true;
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = null;
+    }
+  }
+
+  /** Whether the watcher has been stopped. */
+  public get isStopped(): boolean {
+    return this._stopped;
+  }
+
   private _run() {
+    if (this._stopped) return;
+
     if (this._timer) {
       clearTimeout(this._timer);
     }
 
-    const onError = () => this._addTimeout();
+    const onError = () => {
+      this._addTimeout();
+    };
 
     fetchTransactions(this._base, this.address, 1)
       .then(([tx]) => {
@@ -49,19 +72,28 @@ export class Watch extends EventEmitter<IEvents> {
           const heightList = keys(hash)
             .map(Number)
             .sort((a, b) => b - a);
-          const [last, prev] = heightList;
+          const last = heightList[0];
+          const prev = heightList[1];
+
+          if (last === undefined) {
+            this._addTimeout();
+            return;
+          }
+
+          const lastTxs = hash[last] ?? [];
+          const prevTxs = prev !== undefined ? (hash[prev] ?? []) : [];
 
           if (!this._lastBlock.height) {
             this._lastBlock = {
               height: last,
-              lastId: hash[prev] && hash[prev].length ? hash[prev][0].id : '',
-              transactions: hash[last],
+              lastId: prevTxs.length ? prevTxs[0]!.id : '',
+              transactions: lastTxs,
             };
             this.trigger('change-state', list);
           } else {
             const wasDispatchHash = indexBy(prop('id'), this._lastBlock.transactions);
             const toDispatch = Watch._getTransactionsToDispatch(
-              [...hash[last], ...(hash[prev] || [])],
+              [...lastTxs, ...prevTxs],
               wasDispatchHash,
               this._lastBlock.lastId,
             );
@@ -69,8 +101,8 @@ export class Watch extends EventEmitter<IEvents> {
             if (this._lastBlock.height !== last) {
               this._lastBlock = {
                 height: last,
-                lastId: hash[prev] && hash[prev].length ? hash[prev][0].id : '',
-                transactions: hash[last],
+                lastId: prevTxs.length ? prevTxs[0]!.id : '',
+                transactions: lastTxs,
               };
             } else {
               this._lastBlock.transactions.push(...toDispatch);
@@ -89,12 +121,12 @@ export class Watch extends EventEmitter<IEvents> {
   private getTransactionsInHeight(
     from: Transaction<TLong> & WithApiMixin,
     limit: number,
-  ): Promise<Array<Transaction<TLong> & WithApiMixin>> {
-    const height = from.height as number;
+  ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
+    const height = from.height;
 
     const loop = (
-      downloaded: Array<Transaction<TLong> & WithApiMixin>,
-    ): Promise<Array<Transaction<TLong> & WithApiMixin>> => {
+      downloaded: (Transaction<TLong> & WithApiMixin)[],
+    ): Promise<(Transaction<TLong> & WithApiMixin)[]> => {
       if (downloaded.length >= limit) {
         return Promise.resolve(downloaded);
       }
@@ -107,10 +139,17 @@ export class Watch extends EventEmitter<IEvents> {
         const heightList = keys(hash)
           .map(Number)
           .sort((a, b) => b - a);
-        const [last, prev] = heightList;
+        const last = heightList[0];
+        const prev = heightList[1];
 
         if (last === height) {
-          return prev ? [...hash[last], hash[prev][0]] : loop(list);
+          const lastTxs = hash[last] ?? [];
+          if (prev !== undefined) {
+            const prevTxs = hash[prev] ?? [];
+            const firstPrev = prevTxs[0];
+            return firstPrev ? [...lastTxs, firstPrev] : loop(list);
+          }
+          return loop(list);
         } else {
           return loop(list);
         }
@@ -121,32 +160,35 @@ export class Watch extends EventEmitter<IEvents> {
   }
 
   private _addTimeout(): void {
+    if (this._stopped) return;
+
     this._timer = setTimeout(() => {
       this._run();
     }, this._interval);
   }
 
   private static _groupByHeight(
-    list: Array<Transaction<TLong> & WithApiMixin>,
-  ): Record<number, Array<Transaction<TLong> & WithApiMixin>> {
-    return list.reduce((hash, tx) => {
-      if (!hash[tx.height]) {
+    list: (Transaction<TLong> & WithApiMixin)[],
+  ): Record<number, (Transaction<TLong> & WithApiMixin)[]> {
+    return list.reduce<Record<number, (Transaction<TLong> & WithApiMixin)[]>>((hash, tx) => {
+      const existing = hash[tx.height];
+      if (!existing) {
         hash[tx.height] = [tx];
       } else {
-        hash[tx.height].push(tx);
+        existing.push(tx);
       }
       return hash;
     }, Object.create(null));
   }
 
   private static _getTransactionsToDispatch(
-    list: Array<Transaction<TLong> & WithApiMixin>,
+    list: (Transaction<TLong> & WithApiMixin)[],
     dispatched: Record<string, Transaction<TLong> & WithApiMixin>,
     lastId: string,
-  ): Array<Transaction<TLong> & WithApiMixin> {
-    const result = [];
+  ): (Transaction<TLong> & WithApiMixin)[] {
+    const result: (Transaction<TLong> & WithApiMixin)[] = [];
     for (let i = 0; i < list.length; i++) {
-      const tx = list[i];
+      const tx = list[i]!;
       if (tx.id === lastId) {
         break;
       }
@@ -161,13 +203,15 @@ export class Watch extends EventEmitter<IEvents> {
 interface ILastBlockInfo {
   height: number;
   lastId: string;
-  transactions: Array<Transaction<TLong> & WithApiMixin>;
+  transactions: (Transaction<TLong> & WithApiMixin)[];
 }
 
-export interface IEvents {
-  'change-state': Array<Transaction<TLong> & WithApiMixin>;
+interface IEvents {
+  'change-state': (Transaction<TLong> & WithApiMixin)[];
 }
 
 export default function (base: string, address: string, interval?: number) {
-  return fetchTransactions(base, address, 1).then(([tx]) => new Watch(base, address, tx, interval));
+  return fetchTransactions(base, address, 1).then(
+    ([tx]) => new Watch(base, address, tx ?? null, interval),
+  );
 }

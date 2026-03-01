@@ -1,21 +1,4 @@
-export const TYPE_MAP = {
-  3: 'issue' as const,
-  4: 'transfer' as const,
-  5: 'reissue' as const,
-  6: 'burn' as const,
-  7: 'exchange' as const,
-  8: 'lease' as const,
-  9: 'cancelLease' as const,
-  10: 'alias' as const,
-  11: 'massTransfer' as const,
-  12: 'data' as const,
-  13: 'setScript' as const,
-  14: 'sponsorship' as const,
-  15: 'setAssetScript' as const,
-  16: 'invoke' as const,
-  17: 'updateAsset' as const,
-};
-
+/** Map from transaction name to numeric type code. */
 export const NAME_MAP = {
   issue: 3 as const,
   transfer: 4 as const,
@@ -34,6 +17,7 @@ export const NAME_MAP = {
   updateAsset: 17 as const,
 };
 
+/** Transaction lifecycle statuses as returned by the node. */
 export const TRANSACTION_STATUSES = {
   IN_BLOCKCHAIN: 'in_blockchain' as const,
   UNCONFIRMED: 'unconfirmed' as const,

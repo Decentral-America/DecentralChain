@@ -1,5 +1,11 @@
 import { toArray } from './utils';
 
+/**
+ * Build a URL query string from a parameter object.
+ *
+ * All keys and values are percent-encoded via `encodeURIComponent` to prevent
+ * query-string injection (e.g. values containing `&`, `=`, or `#`).
+ */
 export default function <T extends Record<string, any>>(
   params: T,
   evolver: TEvolver<T> = Object.create(null),
@@ -15,13 +21,13 @@ export default function <T extends Record<string, any>>(
     .filter(([_key, value]) => value != null)
     .map(([key, value]) =>
       toArray(value)
-        .map((v) => `${key}=${v}`)
+        .map((v) => `${encodeURIComponent(String(key))}=${encodeURIComponent(String(v))}`)
         .join('&'),
     )
     .join('&');
   return query.length ? `?${query}` : '';
 }
 
-export type TEvolver<T extends Record<string, any>> = {
+type TEvolver<T extends Record<string, any>> = {
   [Key in keyof T]?: (value: T[Key]) => string | undefined;
 };
