@@ -1,9 +1,26 @@
-
-node_modules
-cjs
-dist
-es
-coverage
+# IDE
 .idea
-test/_state.ts
+.vscode
+*.swp
+*.swo
+
+# Build output
+dist
+coverage
+*.tsbuildinfo
+
+# Dependencies
+node_modules
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Misc
+.size-snapshot.json
+.rpt2_cache
+*.local
+
+# Legacy build outputs
+cjs
+es
