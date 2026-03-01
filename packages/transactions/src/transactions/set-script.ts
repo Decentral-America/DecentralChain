@@ -32,7 +32,7 @@ export function setScript(
   seed?: TSeedTypes,
 ): SetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_SCRIPT;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.SET_SCRIPT;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SET_SCRIPT;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   if (paramsOrTx.script === undefined)

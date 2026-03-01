@@ -99,7 +99,7 @@ export function order(
     amount,
     timestamp: t,
     expiration: expiration || t + 29 * 24 * 60 * 60 * 1000,
-    matcherFee: matcherFee || 300000,
+    matcherFee: matcherFee ?? 300000,
     matcherPublicKey,
     senderPublicKey,
     proofs,
@@ -132,7 +132,7 @@ export function order(
   // @ts-ignore
   if (ord.version === undefined || ord.version === 1)
     // @ts-ignore – version narrowing causes `never` on proofs
-    (ord as any).signature = ord.proofs && ord.proofs[0];
+    (ord as any).signature = ord.proofs?.[0] ?? '';
 
   return ord;
 }

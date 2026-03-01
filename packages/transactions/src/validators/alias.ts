@@ -2,6 +2,7 @@ import {
   isEq,
   orEq,
   isNumber,
+  isNaturalNumberLike,
   isArray,
   getError,
   validateByShema,
@@ -19,7 +20,7 @@ const aliasScheme = {
   senderPublicKey: isPublicKey,
   alias: isValidAliasName,
   fee: isNaturalNumberOrZeroLike,
-  chainId: isNumber,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

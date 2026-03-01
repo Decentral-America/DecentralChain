@@ -21,9 +21,11 @@ export const base64Prefix = (str: string | null) =>
 
 export function addProof(tx: WithProofs, proof: string, index?: number) {
   if (index == null) {
+    if (tx.proofs.length >= 8) throw new Error('Maximum number of proofs (8) exceeded');
     tx.proofs = [...tx.proofs, proof];
     return tx;
   }
+  if (index >= 8) throw new Error(`Proof index ${index} exceeds maximum (7)`);
   if (tx.proofs != null && !!tx.proofs[index])
     throw new Error(`Proof at index ${index} already exists.`);
   for (let i = tx.proofs.length; i < index; i++) tx.proofs.push('');
@@ -51,7 +53,9 @@ export function convertToPairs(seedObj?: TSeedTypes): [string | TPrivateKey, num
 }
 
 export const isOrder = (p: any): p is ExchangeTransactionOrder & WithProofs & WithSender =>
-  (<ExchangeTransactionOrder & WithProofs & WithSender>p).assetPair !== undefined;
+  (<ExchangeTransactionOrder & WithProofs & WithSender>p).assetPair !== undefined &&
+  'orderType' in p &&
+  'matcherPublicKey' in p;
 
 export function networkByte(p: number | string | undefined, def: number): number {
   switch (typeof p) {
@@ -71,13 +75,15 @@ export function fee(params: IBasicParams, def: number) {
 }
 
 export function normalizeAssetId(assetId: string | null) {
+  if (assetId === '') throw new Error('Asset ID cannot be an empty string. Use null for DCC.');
   assetId = assetId || null;
   return assetId === 'DCC' ? null : assetId;
 }
 
 export function chainIdFromRecipient(recipient: string) {
-  if (recipient.startsWith('alias')) {
-    return recipient.charCodeAt(6);
+  const aliasMatch = /^alias:(.):.+$/.exec(recipient);
+  if (aliasMatch) {
+    return aliasMatch[1]!.charCodeAt(0);
   } else {
     try {
       return base58Decode(recipient)[1]!;

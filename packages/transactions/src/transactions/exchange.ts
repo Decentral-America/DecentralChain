@@ -17,7 +17,7 @@ export function exchange(
   seed?: TSeedTypes,
 ): ExchangeTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.EXCHANGE;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.EXCHANGE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.EXCHANGE;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
