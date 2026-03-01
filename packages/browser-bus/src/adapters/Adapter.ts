@@ -1,5 +1,9 @@
-import { IOneArgFunction, TMessageContent } from '../bus/Bus';
+import type { IOneArgFunction, TMessageContent } from '../bus/Bus.js';
 
+/**
+ * Abstract base class for message transport adapters.
+ * Subclass this to create custom transport mechanisms.
+ */
 export abstract class Adapter {
   public abstract send(data: TMessageContent): this;
   public abstract addListener(cb: IOneArgFunction<TMessageContent, void>): this;
