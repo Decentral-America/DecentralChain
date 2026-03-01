@@ -1,4 +1,4 @@
-import { DATA_FIELD_TYPE, ExchangeTransaction } from './index';
+import { DATA_FIELD_TYPE, ExchangeTransaction } from './index.js';
 
 export type ExchangeTransactionOrderType = 'buy' | 'sell';
 export type Base64Script = string;
@@ -134,7 +134,7 @@ export type ExchangeTransactionOrderV3<LONG = Long> = WithVersion<
   3
 >;
 export type ExchangeTransactionOrderV4<LONG = Long> = WithVersion<
-  ExchangeOrderWithCustomFee<LONG> & {
+  Omit<ExchangeOrderWithCustomFee<LONG>, 'senderPublicKey'> & {
     priceMode: 'fixedDecimals' | 'assetDecimals';
     eip712Signature?: string;
     senderPublicKey?: string;
