@@ -2,7 +2,7 @@ export { Bus, EventType, ResponseStatus } from './bus/Bus.js';
 export type {
   IOneArgFunction,
   TMessageContent,
-  TChanelId,
+  TChannelId,
   IEventData,
   IRequestData,
   IResponseData,

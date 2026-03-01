@@ -1,5 +1,6 @@
 import { Adapter } from './Adapter.js';
-import type { IOneArgFunction, TChanelId, TMessageContent } from '../bus/Bus.js';
+import type { IOneArgFunction, TChannelId, TMessageContent } from '../bus/Bus.js';
+import { EventType, ResponseStatus } from '../bus/Bus.js';
 import { console } from '../utils/console/index.js';
 import { pipe, toArray, uniqueId } from '../utils/utils/index.js';
 import { UniqPrimitiveCollection } from '../utils/UniqPrimitiveCollection.js';
@@ -8,9 +9,9 @@ import { WindowProtocol } from '../protocols/WindowProtocol.js';
 type TOrList<T> = T | T[];
 type TContent = HTMLIFrameElement | WindowProtocol.IWindow;
 
-const EMPTY_OPTIONS: WindowAdapter.IOptions<TOrList<string>, TOrList<TChanelId>> = {
+const EMPTY_OPTIONS: WindowAdapter.IOptions<TOrList<string>, TOrList<TChannelId>> = {
   origins: [],
-  availableChanelId: [],
+  availableChannelId: [],
 };
 
 /**
@@ -22,14 +23,14 @@ export class WindowAdapter extends Adapter {
   private readonly listen: WindowProtocol<TMessageContent>[];
   private readonly options: WindowAdapter.IOptions<
     UniqPrimitiveCollection<string>,
-    UniqPrimitiveCollection<TChanelId>
+    UniqPrimitiveCollection<TChannelId>
   >;
   private readonly callbacks: IOneArgFunction<TMessageContent, void>[] = [];
 
   constructor(
     listen: WindowProtocol<TMessageContent>[],
     dispatch: WindowProtocol<TMessageContent>[],
-    options?: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChanelId>>>,
+    options?: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChannelId>>>,
   ) {
     super();
 
@@ -50,7 +51,7 @@ export class WindowAdapter extends Adapter {
   }
 
   public send(data: TMessageContent): this {
-    const message = { ...data, chanelId: this.options.chanelId };
+    const message = { ...data, channelId: this.options.channelId };
     this.dispatch.forEach((protocol) => protocol.dispatch(message));
     console.info('WindowAdapter: Send message', message);
     return this;
@@ -80,8 +81,14 @@ export class WindowAdapter extends Adapter {
 
   private accessEvent(event: WindowProtocol.IMessageEvent<TMessageContent>): boolean {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard for unknown postMessage data
-    if (typeof event.data !== 'object' || event.data.type == null) {
+    if (typeof event.data !== 'object' || event.data?.type == null) {
       console.info('WindowAdapter: Block event. Wrong event format!', event.data);
+      return false;
+    }
+
+    // Runtime schema validation: reject messages that don't conform to the protocol
+    if (!WindowAdapter.isValidMessage(event.data)) {
+      console.info('WindowAdapter: Block event. Invalid message schema!', event.data);
       return false;
     }
 
@@ -90,26 +97,70 @@ export class WindowAdapter extends Adapter {
       return false;
     }
 
-    if (!this.options.availableChanelId.size) {
+    if (!this.options.availableChannelId.size) {
       return true;
     }
 
     const access = !!(
-      event.data.chanelId && this.options.availableChanelId.has(event.data.chanelId)
+      event.data.channelId && this.options.availableChannelId.has(event.data.channelId)
     );
 
     if (!access) {
       console.info(
-        `SimpleWindowAdapter: Block event by chanel id "${String(event.data.chanelId)}"`,
+        `SimpleWindowAdapter: Block event by channel id "${String(event.data.channelId)}"`,
       );
     }
 
     return access;
   }
 
+  /**
+   * Validates that a message conforms to the expected protocol schema.
+   * Rejects messages with wrong field types that could cause runtime errors.
+   */
+  private static isValidMessage(data: TMessageContent): boolean {
+    // Cast to number: this validates untrusted postMessage data at runtime
+    const type = data.type as number;
+
+    // type must be a valid EventType enum value
+    if (
+      type !== (EventType.Event as number) &&
+      type !== (EventType.Action as number) &&
+      type !== (EventType.Response as number)
+    ) {
+      return false;
+    }
+
+    // Events and Actions require a 'name' field
+    if (type === (EventType.Event as number) || type === (EventType.Action as number)) {
+      const msg = data as { name?: unknown };
+      if (msg.name == null) {
+        return false;
+      }
+    }
+
+    // Actions and Responses require an 'id' field
+    if (type === (EventType.Action as number) || type === (EventType.Response as number)) {
+      const msg = data as { id?: unknown };
+      if (msg.id == null) {
+        return false;
+      }
+    }
+
+    // Responses require a valid 'status' field
+    if (type === (EventType.Response as number)) {
+      const msg = data as { status?: unknown };
+      if (msg.status !== ResponseStatus.Success && msg.status !== ResponseStatus.Error) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public static createSimpleWindowAdapter(
     iframe?: TContent,
-    options?: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChanelId>>>,
+    options?: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChannelId>>>,
   ): Promise<WindowAdapter> {
     const origin = this.getContentOrigin(iframe);
     const myOptions = this.prepareOptions(options);
@@ -133,6 +184,7 @@ export class WindowAdapter extends Adapter {
       const dispatch = new WindowProtocol<TMessageContent>(
         win.win,
         WindowProtocol.PROTOCOL_TYPES.DISPATCH,
+        origin ?? '*',
       );
       const adapter = new WindowAdapter([listen], [dispatch], this.unPrepareOptions(myOptions));
 
@@ -146,8 +198,8 @@ export class WindowAdapter extends Adapter {
   }
 
   private static prepareOptions(
-    options: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChanelId>>> = EMPTY_OPTIONS,
-  ): WindowAdapter.IOptions<UniqPrimitiveCollection<string>, UniqPrimitiveCollection<TChanelId>> {
+    options: Partial<WindowAdapter.IOptions<TOrList<string>, TOrList<TChannelId>>> = EMPTY_OPTIONS,
+  ): WindowAdapter.IOptions<UniqPrimitiveCollection<string>, UniqPrimitiveCollection<TChannelId>> {
     const concat =
       <U extends string | number | symbol>(initialValue: UniqPrimitiveCollection<U>) =>
       (list: U[]) =>
@@ -161,24 +213,24 @@ export class WindowAdapter extends Adapter {
       options.origins ?? [],
       new UniqPrimitiveCollection([window.location.origin]),
     );
-    const chanelId = getCollection<TChanelId>(
-      options.availableChanelId ?? [],
+    const channelId = getCollection<TChannelId>(
+      options.availableChannelId ?? [],
       new UniqPrimitiveCollection(),
     );
 
-    return { ...options, origins, availableChanelId: chanelId };
+    return { ...options, origins, availableChannelId: channelId };
   }
 
   private static unPrepareOptions(
     options: WindowAdapter.IOptions<
       UniqPrimitiveCollection<string>,
-      UniqPrimitiveCollection<TChanelId>
+      UniqPrimitiveCollection<TChannelId>
     >,
-  ): WindowAdapter.IOptions<TOrList<string>, TOrList<TChanelId>> {
+  ): WindowAdapter.IOptions<TOrList<string>, TOrList<TChannelId>> {
     return {
       origins: options.origins.toArray(),
-      availableChanelId: options.availableChanelId.toArray(),
-      chanelId: options.chanelId,
+      availableChannelId: options.availableChannelId.toArray(),
+      channelId: options.channelId,
     };
   }
 
@@ -235,9 +287,9 @@ export class WindowAdapter extends Adapter {
 }
 
 export namespace WindowAdapter {
-  export interface IOptions<ORIGINS, CHANEL_ID> {
+  export interface IOptions<ORIGINS, CHANNEL_ID> {
     origins: ORIGINS;
-    availableChanelId: CHANEL_ID;
-    chanelId?: TChanelId | undefined;
+    availableChannelId: CHANNEL_ID;
+    channelId?: TChannelId | undefined;
   }
 }

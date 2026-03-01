@@ -336,9 +336,15 @@ export class Bus<
   }
 
   private static _dataToMessage(data: unknown): IInternalMessage {
-    const type = data instanceof Error ? 'error' : 'data';
-    const content: unknown = data instanceof Error ? data.message : data;
-    return { type, content };
+    if (data instanceof Error) {
+      return {
+        type: 'error',
+        content: data.message,
+        name: data.name,
+        stack: data.stack,
+      };
+    }
+    return { type: 'data', content: data };
   }
 
   private static _messageToData(message: unknown): unknown {
@@ -355,7 +361,14 @@ export class Bus<
       return message;
     }
     if (msg.type === 'error') {
-      return new Error(msg.content as string);
+      const error = new Error(msg.content as string);
+      if ('name' in msg && typeof msg.name === 'string') {
+        error.name = msg.name;
+      }
+      if ('stack' in msg && typeof msg.stack === 'string') {
+        error.stack = msg.stack;
+      }
+      return error;
     }
     return msg.content;
   }
@@ -368,12 +381,12 @@ export type IOneArgFunction<T, R> = (data: T) => R;
 export type TMessageContent = IEventData | IRequestData | IResponseData;
 
 /** Channel identifier type. */
-export type TChanelId = string | number;
+export type TChannelId = string | number;
 
 /** Event message shape. */
 export interface IEventData {
   type: EventType.Event;
-  chanelId?: TChanelId | undefined;
+  channelId?: TChannelId | undefined;
   name: string | number | symbol;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined event data
   data?: any;
@@ -382,7 +395,7 @@ export interface IEventData {
 /** Request (action) message shape. */
 export interface IRequestData {
   id: string | number;
-  chanelId?: TChanelId | undefined;
+  channelId?: TChannelId | undefined;
   type: EventType.Action;
   name: string | number | symbol;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined request data
@@ -392,7 +405,7 @@ export interface IRequestData {
 /** Response message shape. */
 export interface IResponseData {
   id: string | number;
-  chanelId?: TChanelId | undefined;
+  channelId?: TChannelId | undefined;
   type: EventType.Response;
   status: ResponseStatus;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined response data
@@ -414,4 +427,8 @@ interface IEventHandlerData {
 interface IInternalMessage {
   type: 'data' | 'error';
   content: unknown;
+  /** Original error name (e.g. 'TypeError', 'RangeError'). */
+  name?: string | undefined;
+  /** Original stack trace from the throwing side. */
+  stack?: string | undefined;
 }

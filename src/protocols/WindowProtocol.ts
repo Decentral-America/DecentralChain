@@ -1,4 +1,4 @@
-import { EventEmitter } from 'typed-ts-events';
+import { EventEmitter } from '../utils/EventEmitter.js';
 
 /**
  * A protocol adapter that wraps the browser `postMessage` / `addEventListener` API.
@@ -7,12 +7,14 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
   private win: WindowProtocol.IWindow;
   private readonly handler: (event: WindowProtocol.IMessageEvent<T>) => void;
   private readonly type: WindowProtocol.TProtocolType;
+  private readonly targetOrigin: string;
 
-  constructor(win: WindowProtocol.IWindow, type: WindowProtocol.TProtocolType) {
+  constructor(win: WindowProtocol.IWindow, type: WindowProtocol.TProtocolType, targetOrigin = '*') {
     super();
 
     this.win = win;
     this.type = type;
+    this.targetOrigin = targetOrigin;
 
     this.handler = (event: WindowProtocol.IMessageEvent<T>) => {
       this.trigger('message', event);
@@ -28,7 +30,7 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
   }
 
   public dispatch(data: unknown): this {
-    this.win.postMessage(data, '*');
+    this.win.postMessage(data, this.targetOrigin);
     return this;
   }
 
