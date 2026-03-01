@@ -25,6 +25,11 @@ message Transaction {
     int64 timestamp = 4;
     int32 version = 5;
 
+    // Field 118 was removed from the oneof below. The reserved directive
+    // prevents accidental reuse, which would cause silent wire-format
+    // incompatibility with existing blockchain nodes.
+    reserved 118;
+
     oneof data {
         GenesisTransactionData genesis = 101;
         PaymentTransactionData payment = 102;
@@ -43,8 +48,6 @@ message Transaction {
         SetAssetScriptTransactionData set_asset_script = 115;
         InvokeScriptTransactionData invoke_script = 116;
         UpdateAssetInfoTransactionData update_asset_info = 117;
-        // Field 118 was removed. DO NOT reuse — it would cause silent
-        // wire-format incompatibility with existing blockchain nodes.
         InvokeExpressionTransactionData invoke_expression = 119;
         CommitToGenerationTransactionData commit_to_generation = 120;
     };
