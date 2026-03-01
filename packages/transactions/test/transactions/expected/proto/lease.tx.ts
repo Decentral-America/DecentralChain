@@ -59,4 +59,4 @@ export const leaseTx = {
       ],
     },
   },
-}
+};

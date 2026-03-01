@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -20,7 +20,7 @@ import {
   prop,
   validateByShema,
   validatePipe,
-} from './validators'
+} from './validators';
 
 const invokeScheme = {
   type: isEq(TRANSACTION_TYPE.INVOKE_SCRIPT),
@@ -71,6 +71,6 @@ const invokeScheme = {
   chainId: isNaturalNumberLike,
   timestamp: isNaturalNumberLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const invokeValidator = validateByShema(invokeScheme, getError)
+export const invokeValidator = validateByShema(invokeScheme, getError);

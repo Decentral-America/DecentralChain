@@ -1,25 +1,25 @@
 /**
  * @module index
  */
-import { WithId, WithProofs } from '../transactions'
-import { binary } from '@decentralchain/marshall'
-import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
-import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
-import { TSeedTypes } from '../types'
-import { validate } from '../validators'
-import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
-import { ExchangeTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { WithId, WithProofs } from '../transactions';
+import { binary } from '@decentralchain/marshall';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { TSeedTypes } from '../types';
+import { validate } from '../validators';
+import { txToProtoBytes } from '../proto-serialize';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { ExchangeTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 /* @echo DOCS */
 export function exchange(
   paramsOrTx: ExchangeTransaction & WithProofs,
   seed?: TSeedTypes,
 ): ExchangeTransaction & WithId & WithProofs {
-  const type = TRANSACTION_TYPE.EXCHANGE
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.EXCHANGE
-  const seedsAndIndexes = convertToPairs(seed)
-  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
+  const type = TRANSACTION_TYPE.EXCHANGE;
+  const version = paramsOrTx.version || DEFAULT_VERSIONS.EXCHANGE;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: ExchangeTransaction & WithId & WithProofs = {
     type,
@@ -36,13 +36,13 @@ export function exchange(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(paramsOrTx.chainId, 76),
     id: '',
-  }
+  };
 
-  validate.exchange(tx)
+  validate.exchange(tx);
 
-  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx)
+  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
 
-  return { ...tx, id: base58Encode(blake2b(bytes)) }
+  return { ...tx, id: base58Encode(blake2b(bytes)) };
 }

@@ -1,14 +1,17 @@
 /**
  * @module index
  */
-import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
-import { addProof, getSenderPublicKey, convertToPairs, isOrder, networkByte } from '../generic'
-import { IOrderParams, WithId, WithProofs, WithSender } from '../transactions'
-import { TSeedTypes } from '../types'
-import { binary } from '@decentralchain/marshall'
-import { validate } from '../validators'
-import { ExchangeTransactionOrder, SignedIExchangeTransactionOrder } from '@decentralchain/ts-types'
-import { orderToProtoBytes } from '../proto-serialize'
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
+import { addProof, getSenderPublicKey, convertToPairs, isOrder, networkByte } from '../generic';
+import { IOrderParams, WithId, WithProofs, WithSender } from '../transactions';
+import { TSeedTypes } from '../types';
+import { binary } from '@decentralchain/marshall';
+import { validate } from '../validators';
+import {
+  ExchangeTransactionOrder,
+  SignedIExchangeTransactionOrder,
+} from '@decentralchain/ts-types';
+import { orderToProtoBytes } from '../proto-serialize';
 
 /**
  * Creates and signs [[TOrder]].
@@ -58,33 +61,33 @@ import { orderToProtoBytes } from '../proto-serialize'
 export function order(
   paramsOrOrder: IOrderParams,
   seed: TSeedTypes,
-): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>
+): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>;
 export function order(
   paramsOrOrder: (IOrderParams & WithSender) | (ExchangeTransactionOrder & WithProofs & WithSender),
   seed?: TSeedTypes,
-): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>
+): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>;
 export function order(
   paramsOrOrder: any,
   seed?: TSeedTypes,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> {
   const amountAsset = isOrder(paramsOrOrder)
     ? paramsOrOrder.assetPair.amountAsset
-    : paramsOrOrder.amountAsset
+    : paramsOrOrder.amountAsset;
   const priceAsset = isOrder(paramsOrOrder)
     ? paramsOrOrder.assetPair.priceAsset
-    : paramsOrOrder.priceAsset
-  const proofs = isOrder(paramsOrOrder) ? paramsOrOrder.proofs : []
+    : paramsOrOrder.priceAsset;
+  const proofs = isOrder(paramsOrOrder) ? paramsOrOrder.proofs : [];
 
   const { matcherFee, matcherPublicKey, price, amount, orderType, expiration, timestamp } =
-    paramsOrOrder
-  const t = timestamp || Date.now()
+    paramsOrOrder;
+  const t = timestamp || Date.now();
 
-  const seedsAndIndexes = convertToPairs(seed)
+  const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey =
-    paramsOrOrder.senderPublicKey || getSenderPublicKey(seedsAndIndexes, paramsOrOrder)
+    paramsOrOrder.senderPublicKey || getSenderPublicKey(seedsAndIndexes, paramsOrOrder);
 
   // Use old versionless order only if it is set to null explicitly
-  const version = paramsOrOrder.version === null ? undefined : paramsOrOrder.version
+  const version = paramsOrOrder.version === null ? undefined : paramsOrOrder.version;
   const ord: SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs = {
     orderType,
     version,
@@ -103,32 +106,33 @@ export function order(
     matcherFeeAssetId: null,
     id: '',
     priceMode: paramsOrOrder.priceMode,
-  }
+  };
 
   if (ord.version >= 3) {
     ord.matcherFeeAssetId =
-      paramsOrOrder.matcherFeeAssetId === 'DCC' ? null : paramsOrOrder.matcherFeeAssetId
+      paramsOrOrder.matcherFeeAssetId === 'DCC' ? null : paramsOrOrder.matcherFeeAssetId;
   }
 
   if (ord.version === 4) {
-    ord.priceMode = paramsOrOrder.priceMode || 'fixedDecimals'
+    ord.priceMode = paramsOrOrder.priceMode || 'fixedDecimals';
     // @ts-ignore
-    ord.chainId = networkByte(paramsOrOrder.chainId, 76)
-    if (paramsOrOrder.eip712Signature) ord.eip712Signature = paramsOrOrder.eip712Signature
+    ord.chainId = networkByte(paramsOrOrder.chainId, 76);
+    if (paramsOrOrder.eip712Signature) ord.eip712Signature = paramsOrOrder.eip712Signature;
   }
 
-  const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord)
+  const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(ord, signBytes(s, bytes), i))
+  seedsAndIndexes.forEach(([s, i]) => addProof(ord, signBytes(s, bytes), i));
 
-  validate.order(ord)
+  validate.order(ord);
 
-  ord.id = base58Encode(blake2b(bytes))
+  ord.id = base58Encode(blake2b(bytes));
 
   // OrderV1 uses signature instead of proofs
   // @ts-ignore
   if (ord.version === undefined || ord.version === 1)
-    (ord as any).signature = ord.proofs && ord.proofs[0]
+    // @ts-ignore – version narrowing causes `never` on proofs
+    (ord as any).signature = ord.proofs && ord.proofs[0];
 
-  return ord
+  return ord;
 }
