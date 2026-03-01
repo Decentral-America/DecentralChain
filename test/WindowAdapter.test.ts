@@ -3,7 +3,7 @@ import { EventType, WindowAdapter } from '../src/index.js';
 import type { IEventData, TMessageContent } from '../src/index.js';
 import { mockWindow } from './mock/Win.js';
 import type { IMockWindow } from './mock/Win.js';
-import { EventEmitter } from 'typed-ts-events';
+import { EventEmitter } from '../src/utils/EventEmitter.js';
 import { WindowProtocol } from '../src/protocols/WindowProtocol.js';
 
 describe('Window adapter', () => {
@@ -11,7 +11,7 @@ describe('Window adapter', () => {
     type: EventType.Event,
     name: 'test',
     data: 'some data for event',
-    chanelId: undefined,
+    channelId: undefined,
   };
 
   let listen: Array<WindowProtocol<TMessageContent>>;
@@ -28,14 +28,14 @@ describe('Window adapter', () => {
     adapter = new WindowAdapter(listen, dispatch, {});
   });
 
-  describe('check connect by chanel id', () => {
+  describe('check connect by channel id', () => {
     it('with same chain id', () => {
       let ok = false;
 
       adapter = new WindowAdapter(listen, dispatch, {
-        chanelId: 1,
+        channelId: 1,
         origins: ['*'],
-        availableChanelId: [2],
+        availableChannelId: [2],
       });
 
       adapter.addListener((event) => {
@@ -59,7 +59,7 @@ describe('Window adapter', () => {
           type: EventType.Event,
           data: 1,
           name: 'test',
-          chanelId: 2,
+          channelId: 2,
         },
       });
 
@@ -336,30 +336,152 @@ describe('Window adapter', () => {
       expect(count).toBe(0);
     });
 
-    it('allows events with matching chanel id', () => {
-      const chanelAdapter = new WindowAdapter(listen, dispatch, {
-        chanelId: 'a',
+    it('allows events with matching channel id', () => {
+      const channelAdapter = new WindowAdapter(listen, dispatch, {
+        channelId: 'a',
         origins: ['*'],
-        availableChanelId: ['b'],
+        availableChannelId: ['b'],
       });
       let count = 0;
-      chanelAdapter.addListener(() => {
+      channelAdapter.addListener(() => {
         count++;
       });
 
-      // Wrong chanel id — blocked
+      // Wrong channel id — blocked
       listenWin.runEventListeners('message', {
         origin: 'https://any.com',
-        data: { ...eventData, chanelId: 'c' },
+        data: { ...eventData, channelId: 'c' },
       });
       expect(count).toBe(0);
 
-      // Correct chanel id — allowed
+      // Correct channel id — allowed
       listenWin.runEventListeners('message', {
         origin: 'https://any.com',
-        data: { ...eventData, chanelId: 'b' },
+        data: { ...eventData, channelId: 'b' },
       });
       expect(count).toBe(1);
+    });
+  });
+
+  describe('message schema validation', () => {
+    it('blocks events with invalid type value (out of range)', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 99, name: 'test' },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('blocks events with non-numeric type', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 'Event', name: 'test' },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('blocks Event messages without name field', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 0 },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('blocks Action messages without id field', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 1, name: 'test' },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('blocks Response messages without status field', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 2, id: 'x' },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('blocks Response messages with invalid status value', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 2, id: 'x', status: 5 },
+      });
+      expect(count).toBe(0);
+    });
+
+    it('allows valid Event messages', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 0, name: 'test', data: 'hello' },
+      });
+      expect(count).toBe(1);
+    });
+
+    it('allows valid Action messages', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 1, id: 'req-1', name: 'doSomething' },
+      });
+      expect(count).toBe(1);
+    });
+
+    it('allows valid Response messages', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: 2, id: 'req-1', status: 0, content: 'ok' },
+      });
+      expect(count).toBe(1);
+    });
+
+    it('blocks negative type values', () => {
+      let count = 0;
+      adapter.addListener(() => {
+        count++;
+      });
+      listenWin.runEventListeners('message', {
+        origin: window.location.origin,
+        data: { type: -1, name: 'test' },
+      });
+      expect(count).toBe(0);
     });
   });
 

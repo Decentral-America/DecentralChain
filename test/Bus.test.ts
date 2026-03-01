@@ -458,4 +458,29 @@ describe('Bus', () => {
       // No error thrown — the method just returns
     });
   });
+
+  describe('error serialization', () => {
+    it('preserves error name and stack across bus boundary', () =>
+      new Promise<void>((done) => {
+        const secondAdapter = new MockAdapter();
+        const secondBus = new Bus(secondAdapter);
+
+        secondBus.registerRequestHandler('fail', () => {
+          const err = new TypeError('bad input');
+          throw err;
+        });
+
+        adapter.onSend.once((data) => {
+          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          secondAdapter.dispatchAdapterEvent(data);
+        });
+
+        bus.request('fail', null, 500).catch((e: Error) => {
+          expect(e.message).toBe('bad input');
+          expect(e.name).toBe('TypeError');
+          expect(typeof e.stack).toBe('string');
+          done();
+        });
+      }));
+  });
 });
