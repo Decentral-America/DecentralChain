@@ -85,6 +85,8 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
   let at: number; // The index of the current character
   let ch: string; // The current character
+  let depth: number; // Current nesting depth for parse
+  const MAX_DEPTH = 512;
   const escapee: Readonly<Record<string, string>> = {
     '"': '"',
     '\\': '\\',
@@ -106,8 +108,11 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
   const peek = (): string => ch;
 
   const error = (m: string): never => {
-    const err = new SyntaxError(m);
-    Object.assign(err, { at, text });
+    const start = Math.max(0, at - 20);
+    const end = Math.min(text.length, at + 20);
+    const context = text.slice(start, end);
+    const err = new SyntaxError(`${m} (at position ${at})`);
+    Object.assign(err, { at, context });
     throw err;
   };
 
@@ -132,6 +137,14 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
       numStr += ch;
       next();
     }
+
+    // Reject leading zeros per RFC 8259 §6
+    const intStart = numStr.startsWith('-') ? 1 : 0;
+    const intPart = numStr.slice(intStart);
+    if (intPart.length > 1 && intPart.startsWith('0')) {
+      return error('Leading zeros not permitted');
+    }
+
     if (ch === '.') {
       numStr += '.';
       next();
@@ -158,15 +171,28 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
     const num = +numStr;
 
-    if (options?.parse) {
-      return options.parse(numStr);
-    }
-
+    // Validate BEFORE calling options.parse — never forward malformed numbers
     if (!isFinite(num)) {
       return error('Bad number');
     }
 
-    if (numStr.length > 15) {
+    if (options?.parse) {
+      return options.parse(numStr);
+    }
+
+    // Integers outside the safe range must be preserved as strings
+    if (Number.isInteger(num) && !Number.isSafeInteger(num)) {
+      return numStr;
+    }
+
+    // Count significant digits (exclude sign, decimal point, exponent notation)
+    const sigDigits = numStr
+      .replace(/^-/, '')
+      .replace(/[eE][+-]?\d+$/, '')
+      .replace('.', '')
+      .replace(/^0+/, '').length;
+
+    if (sigDigits > 15) {
       return numStr;
     }
 
@@ -206,6 +232,11 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             }
           }
         } else {
+          // Reject unescaped control characters per RFC 8259 §7
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ch is mutated by next(); flow analysis is stale
+          if (ch < '\u0020') {
+            return error('Unescaped control character in string');
+          }
           str += ch;
         }
       }
@@ -253,10 +284,15 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     const arr: unknown[] = [];
 
     if (ch === '[') {
+      depth += 1;
+      if (depth > MAX_DEPTH) {
+        return error('Nesting too deep');
+      }
       next('[');
       white();
       if (peek() === ']') {
         next(']');
+        depth -= 1;
         return arr;
       }
       while (peek()) {
@@ -264,6 +300,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         white();
         if (peek() === ']') {
           next(']');
+          depth -= 1;
           return arr;
         }
         next(',');
@@ -275,13 +312,19 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
   const object = (): Record<string, unknown> => {
     let key: string;
-    const obj: Record<string, unknown> = {};
+    // Use null-prototype object to prevent __proto__ pollution and data loss
+    const obj = Object.create(null) as Record<string, unknown>;
 
     if (ch === '{') {
+      depth += 1;
+      if (depth > MAX_DEPTH) {
+        return error('Nesting too deep');
+      }
       next('{');
       white();
       if (peek() === '}') {
         next('}');
+        depth -= 1;
         return obj;
       }
       while (peek()) {
@@ -295,6 +338,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         white();
         if (peek() === '}') {
           next('}');
+          depth -= 1;
           return obj;
         }
         next(',');
@@ -344,6 +388,9 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     | ((this: Record<string, unknown>, key: string, value: unknown) => unknown)
     | string[]
     | undefined;
+
+  // Circular reference tracking — initialized fresh per stringify() call
+  let seen: WeakSet<object>;
 
   function quote(s: string): string {
     rxEscapable.lastIndex = 0;
@@ -413,6 +460,12 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
           return 'null';
         }
 
+        // Detect circular references
+        if (seen.has(val)) {
+          throw new TypeError('Converting circular structure to JSON');
+        }
+        seen.add(val);
+
         // Make an array to hold the partial results of stringifying this object value.
         gap += indent;
         partial = [];
@@ -431,6 +484,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
                 ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
                 : '[' + partial.join(',') + ']';
           gap = mind;
+          seen.delete(val);
           return v;
         }
 
@@ -468,6 +522,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
               ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}'
               : '{' + partial.join(',') + '}';
         gap = mind;
+        seen.delete(val);
         return v;
 
       default:
@@ -487,14 +542,18 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     gap = '';
     indent = '';
 
+    // Initialize circular reference tracking
+    seen = new WeakSet<object>();
+
     // If the space parameter is a number, make an indent string containing that
-    // many spaces.
+    // many spaces. Cap at 10 to match native JSON.stringify behavior.
     if (typeof space === 'number') {
-      for (i = 0; i < space; i += 1) {
+      const n = Math.min(10, Math.max(0, Math.floor(space)));
+      for (i = 0; i < n; i += 1) {
         indent += ' ';
       }
     } else if (typeof space === 'string') {
-      indent = space;
+      indent = space.slice(0, 10);
     }
 
     // If there is a replacer, it must be a function or an array.
@@ -520,6 +579,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     text = source;
     at = 0;
     ch = ' ';
+    depth = 0;
 
     const result = value();
     white();

@@ -648,4 +648,314 @@ describe('lib', () => {
       expect(result).toBe('{"a":0}');
     });
   });
+
+  // =========================================================================
+  // SECURITY — enterprise hardening tests
+  // =========================================================================
+  describe('security hardening', () => {
+    // --- __proto__ pollution prevention (CRITICAL) ---
+    describe('__proto__ key handling', () => {
+      it('preserves __proto__ as own property, no prototype pollution', () => {
+        const { parse } = create();
+        const result = parse('{"__proto__": {"polluted": true}}') as Record<string, unknown>;
+        // The parsed object must have __proto__ as an own property
+        expect(Object.hasOwn(result, '__proto__')).toBe(true);
+        // And the global Object.prototype must NOT be polluted
+        expect(({} as any).polluted).toBeUndefined();
+      });
+
+      it('parsed objects have null prototype', () => {
+        const { parse } = create();
+        const result = parse('{"a": 1}') as Record<string, unknown>;
+        expect(Object.getPrototypeOf(result)).toBeNull();
+      });
+
+      it('nested parsed objects also have null prototype', () => {
+        const { parse } = create();
+        const result = parse('{"a": {"b": 1}}') as Record<string, unknown>;
+        expect(Object.getPrototypeOf(result)).toBeNull();
+        expect(Object.getPrototypeOf(result['a'])).toBeNull();
+      });
+
+      it('constructor key works on null-prototype object', () => {
+        const { parse } = create();
+        const result = parse('{"constructor": "safe"}') as Record<string, unknown>;
+        expect(result['constructor']).toBe('safe');
+      });
+
+      it('prototype key works on null-prototype object', () => {
+        const { parse } = create();
+        const result = parse('{"prototype": 123}') as Record<string, unknown>;
+        expect(result['prototype']).toBe(123);
+      });
+    });
+
+    // --- Exponent notation big-number protection (CRITICAL) ---
+    describe('exponent notation precision', () => {
+      it('returns string for 1e16 (unsafe integer)', () => {
+        const { parse } = create();
+        expect(parse('1e16')).toBe('1e16');
+      });
+
+      it('returns string for 9.1e15 (unsafe integer)', () => {
+        const { parse } = create();
+        expect(parse('9.1e15')).toBe('9.1e15');
+      });
+
+      it('returns number for 1e2 (safe integer)', () => {
+        const { parse } = create();
+        expect(parse('1e2')).toBe(100);
+      });
+
+      it('returns number for 1e10 (safe integer)', () => {
+        const { parse } = create();
+        expect(parse('1e10')).toBe(1e10);
+      });
+
+      it('returns string for 1e16 in BigNumber mode too', () => {
+        const { parse } = create(options);
+        const result = parse('1e16');
+        expect(BigNumber.isBigNumber(result)).toBe(true);
+      });
+    });
+
+    // --- Leading zeros rejection (CRITICAL) ---
+    describe('leading zeros', () => {
+      it('rejects "01"', () => {
+        const { parse } = create();
+        expect(() => parse('01')).toThrow(/Leading zeros/);
+      });
+
+      it('rejects "007"', () => {
+        const { parse } = create();
+        expect(() => parse('007')).toThrow(/Leading zeros/);
+      });
+
+      it('rejects "00"', () => {
+        const { parse } = create();
+        expect(() => parse('00')).toThrow(/Leading zeros/);
+      });
+
+      it('rejects "-01"', () => {
+        const { parse } = create();
+        expect(() => parse('-01')).toThrow(/Leading zeros/);
+      });
+
+      it('allows "0" (single zero)', () => {
+        const { parse } = create();
+        expect(parse('0')).toBe(0);
+      });
+
+      it('allows "0.5" (zero before decimal)', () => {
+        const { parse } = create();
+        expect(parse('0.5')).toBe(0.5);
+      });
+
+      it('rejects leading zeros in BigNumber mode too', () => {
+        const { parse } = create(options);
+        expect(() => parse('007')).toThrow(/Leading zeros/);
+      });
+    });
+
+    // --- Malformed numbers not forwarded to options.parse (CRITICAL) ---
+    describe('number validation before options.parse', () => {
+      it('does not call options.parse for Infinity-producing strings', () => {
+        let called = false;
+        const { parse } = create({
+          parse: (s: string) => {
+            called = true;
+            return s;
+          },
+        });
+        expect(() => parse('1e999')).toThrow(/Bad number/);
+        expect(called).toBe(false);
+      });
+    });
+
+    // --- Error data leak prevention (CRITICAL) ---
+    describe('error context window', () => {
+      it('error does not contain full source text', () => {
+        const { parse } = create();
+        const longJson = '{"a": ' + '1'.repeat(1000) + '}bad';
+        try {
+          parse(longJson);
+          expect.fail('should have thrown');
+        } catch (e: any) {
+          // err.context should be a short window, not the full source
+          expect(e.context).toBeDefined();
+          expect(e.context.length).toBeLessThanOrEqual(40);
+          // err.text should NOT exist
+          expect(e.text).toBeUndefined();
+        }
+      });
+
+      it('error includes position information', () => {
+        const { parse } = create();
+        try {
+          parse('{"a": bad}');
+          expect.fail('should have thrown');
+        } catch (e: any) {
+          expect(e.at).toBeDefined();
+          expect(typeof e.at).toBe('number');
+        }
+      });
+    });
+
+    // --- Recursion depth limit (HIGH) ---
+    describe('nesting depth limit', () => {
+      it('rejects deeply nested arrays (>512)', () => {
+        const { parse } = create();
+        const deep = '['.repeat(600) + '1' + ']'.repeat(600);
+        expect(() => parse(deep)).toThrow(/Nesting too deep/);
+      });
+
+      it('rejects deeply nested objects (>512)', () => {
+        const { parse } = create();
+        let json = '';
+        for (let i = 0; i < 600; i++) json += '{"a":';
+        json += '1';
+        for (let i = 0; i < 600; i++) json += '}';
+        expect(() => parse(json)).toThrow(/Nesting too deep/);
+      });
+
+      it('allows nesting up to 512', () => {
+        const { parse } = create();
+        const deep = '['.repeat(512) + '1' + ']'.repeat(512);
+        expect(() => parse(deep)).not.toThrow();
+      });
+    });
+
+    // --- Space parameter capping (HIGH) ---
+    describe('space parameter cap', () => {
+      it('caps numeric space at 10', () => {
+        const { stringify } = create();
+        const result = stringify({ a: 1 }, null, 999999);
+        const expected = stringify({ a: 1 }, null, 10);
+        expect(result).toBe(expected);
+      });
+
+      it('caps string space at 10 characters', () => {
+        const { stringify } = create();
+        const result = stringify({ a: 1 }, null, 'x'.repeat(100));
+        const expected = stringify({ a: 1 }, null, 'x'.repeat(10));
+        expect(result).toBe(expected);
+      });
+
+      it('handles zero space', () => {
+        const { stringify } = create();
+        const result = stringify({ a: 1 }, null, 0);
+        expect(result).toBe('{"a":1}');
+      });
+
+      it('handles negative space', () => {
+        const { stringify } = create();
+        const result = stringify({ a: 1 }, null, -5);
+        expect(result).toBe('{"a":1}');
+      });
+    });
+
+    // --- Circular reference detection (HIGH) ---
+    describe('circular reference detection', () => {
+      it('throws TypeError on circular object', () => {
+        const { stringify } = create();
+        const obj: any = { a: 1 };
+        obj.self = obj;
+        expect(() => stringify(obj)).toThrow(TypeError);
+        expect(() => stringify(obj)).toThrow(/circular/i);
+      });
+
+      it('throws TypeError on circular array', () => {
+        const { stringify } = create();
+        const arr: any[] = [1, 2];
+        arr.push(arr);
+        expect(() => stringify(arr)).toThrow(TypeError);
+      });
+
+      it('throws TypeError on deeply nested circular reference', () => {
+        const { stringify } = create();
+        const a: any = {};
+        const b: any = { a };
+        a.b = b;
+        expect(() => stringify(a)).toThrow(TypeError);
+      });
+
+      it('allows DAG (same object in multiple positions)', () => {
+        const { stringify } = create();
+        const shared = { x: 1 };
+        const obj = { a: shared, b: shared };
+        expect(() => stringify(obj)).not.toThrow();
+        expect(stringify(obj)).toBe('{"a":{"x":1},"b":{"x":1}}');
+      });
+
+      it('allows same array in multiple positions', () => {
+        const { stringify } = create();
+        const shared = [1, 2];
+        const obj = { a: shared, b: shared };
+        expect(() => stringify(obj)).not.toThrow();
+        expect(stringify(obj)).toBe('{"a":[1,2],"b":[1,2]}');
+      });
+    });
+
+    // --- Negative number threshold fix (HIGH) ---
+    describe('negative number significant digit counting', () => {
+      it('returns -123456789012345 as number (15 sig digits, safe)', () => {
+        const { parse } = create();
+        expect(parse('-123456789012345')).toBe(-123456789012345);
+      });
+
+      it('returns -1234567890123456 as string (16 sig digits)', () => {
+        const { parse } = create();
+        expect(parse('-1234567890123456')).toBe('-1234567890123456');
+      });
+
+      it('does not count decimal point in threshold', () => {
+        const { parse } = create();
+        // "99999999999999.9" has 15 significant digits → safe as number
+        expect(parse('99999999999999.9')).toBe(99999999999999.9);
+      });
+    });
+
+    // --- Unescaped control characters (MEDIUM) ---
+    describe('control character rejection', () => {
+      it('rejects unescaped tab in string', () => {
+        const { parse } = create();
+        expect(() => parse('"hello\tworld"')).toThrow(/control character/i);
+      });
+
+      it('rejects unescaped newline in string', () => {
+        const { parse } = create();
+        expect(() => parse('"hello\nworld"')).toThrow(/control character/i);
+      });
+
+      it('rejects null byte in string', () => {
+        const { parse } = create();
+        expect(() => parse('"hello\0world"')).toThrow(/control character/i);
+      });
+
+      it('allows escaped control characters in string', () => {
+        const { parse } = create();
+        expect(parse('"hello\\nworld"')).toBe('hello\nworld');
+        expect(parse('"hello\\tworld"')).toBe('hello\tworld');
+      });
+    });
+
+    // --- stringify(undefined) behavior ---
+    describe('stringify edge cases', () => {
+      it('stringify(undefined) returns empty string', () => {
+        const { stringify } = create();
+        expect(stringify(undefined)).toBe('');
+      });
+
+      it('stringify a function returns empty string', () => {
+        const { stringify } = create();
+        expect(stringify(() => {})).toBe('');
+      });
+
+      it('stringifies undefined object values by omitting them', () => {
+        const { stringify } = create();
+        const result = stringify({ a: 1, b: undefined, c: 3 });
+        expect(result).toBe('{"a":1,"c":3}');
+      });
+    });
+  });
 });
