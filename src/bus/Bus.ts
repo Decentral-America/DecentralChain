@@ -198,6 +198,18 @@ export class Bus<
   public destroy(): void {
     console.info('Destroy Bus');
     this.off();
+
+    // Reject all pending requests and clear their timers to prevent
+    // dangling closures, memory leaks, and stale timeout callbacks.
+    for (const id of Object.keys(this._activeRequestHash)) {
+      const entry = this._activeRequestHash[id];
+      if (entry) {
+        entry.reject(new Error('Bus destroyed'));
+      }
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
+      delete this._activeRequestHash[id];
+    }
+
     this._adapter.destroy();
   }
 
@@ -341,7 +353,8 @@ export class Bus<
         type: 'error',
         content: data.message,
         name: data.name,
-        stack: data.stack,
+        // Stack traces intentionally omitted — sending them over postMessage
+        // would leak internal code paths to potentially untrusted windows.
       };
     }
     return { type: 'data', content: data };
@@ -361,13 +374,12 @@ export class Bus<
       return message;
     }
     if (msg.type === 'error') {
-      const error = new Error(msg.content as string);
+      const error = new Error(typeof msg.content === 'string' ? msg.content : 'Unknown error');
       if ('name' in msg && typeof msg.name === 'string') {
         error.name = msg.name;
       }
-      if ('stack' in msg && typeof msg.stack === 'string') {
-        error.stack = msg.stack;
-      }
+      // Remote stack traces are intentionally NOT applied — they originate
+      // from an untrusted window and could mislead debugging or mask attacks.
       return error;
     }
     return msg.content;
@@ -429,6 +441,4 @@ interface IInternalMessage {
   content: unknown;
   /** Original error name (e.g. 'TypeError', 'RangeError'). */
   name?: string | undefined;
-  /** Original stack trace from the throwing side. */
-  stack?: string | undefined;
 }

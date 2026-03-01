@@ -181,6 +181,13 @@ export class WindowAdapter extends Adapter {
     listen.on('message', handler);
 
     return this.getIframeContent(iframe).then((win) => {
+      if (!origin) {
+        console.warn(
+          'WindowAdapter: Could not determine target origin; falling back to wildcard "*". ' +
+            'This may expose messages to unintended recipients.',
+        );
+      }
+
       const dispatch = new WindowProtocol<TMessageContent>(
         win.win,
         WindowProtocol.PROTOCOL_TYPES.DISPATCH,

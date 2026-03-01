@@ -1,31 +1,27 @@
 /**
  * A collection of unique primitive values (strings, numbers, or symbols).
- * Used for efficient origin and channel ID filtering.
+ * Uses a native Set internally for type-safe equality (no key coercion).
  */
 export class UniqPrimitiveCollection<T extends string | number | symbol> {
-  public size = 0;
-  private readonly hash: Record<string | number | symbol, boolean> = Object.create(null) as Record<
-    string | number | symbol,
-    boolean
-  >;
+  public get size(): number {
+    return this._set.size;
+  }
+  private readonly _set: Set<T>;
 
   constructor(list?: T[]) {
-    if (list) {
-      list.forEach((item) => this.add(item));
-    }
+    this._set = new Set(list);
   }
 
   public add(item: T): this {
-    this.hash[item] = true;
-    this.size = Object.keys(this.hash).length;
+    this._set.add(item);
     return this;
   }
 
   public has(key: T): boolean {
-    return key in this.hash;
+    return this._set.has(key);
   }
 
   public toArray(): T[] {
-    return Object.keys(this.hash) as T[];
+    return [...this._set];
   }
 }

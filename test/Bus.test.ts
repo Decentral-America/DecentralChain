@@ -460,7 +460,7 @@ describe('Bus', () => {
   });
 
   describe('error serialization', () => {
-    it('preserves error name and stack across bus boundary', () =>
+    it('preserves error name across bus boundary but strips remote stack', () =>
       new Promise<void>((done) => {
         const secondAdapter = new MockAdapter();
         const secondBus = new Bus(secondAdapter);
@@ -471,16 +471,51 @@ describe('Bus', () => {
         });
 
         adapter.onSend.once((data) => {
-          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          // Verify the serialized error does NOT contain a stack trace
+          secondAdapter.onSend.once((d) => {
+            if (d.type === EventType.Response) {
+              expect(d.content).not.toHaveProperty('stack');
+            }
+            adapter.dispatchAdapterEvent(d);
+          });
           secondAdapter.dispatchAdapterEvent(data);
         });
 
         bus.request('fail', null, 500).catch((e: Error) => {
           expect(e.message).toBe('bad input');
           expect(e.name).toBe('TypeError');
+          // The error has a local stack (from reconstruction), but it does NOT
+          // contain the remote throwing side's stack (security hardening).
           expect(typeof e.stack).toBe('string');
           done();
         });
       }));
+  });
+
+  describe('destroy() cleans up pending requests', () => {
+    it('rejects pending requests on destroy', () =>
+      new Promise<void>((done) => {
+        const adapter = new MockAdapter();
+        let adapterDestroyed = false;
+        adapter.destroy = () => {
+          adapterDestroyed = true;
+        };
+        const bus = new Bus(adapter, 60_000);
+
+        bus.request('long-running', null).catch((e: Error) => {
+          expect(e.message).toBe('Bus destroyed');
+          expect(adapterDestroyed).toBe(true);
+          done();
+        });
+
+        // Destroy while the request is still pending
+        bus.destroy();
+      }));
+
+    it('destroy with no pending requests does not throw', () => {
+      const adapter = new MockAdapter();
+      const bus = new Bus(adapter);
+      expect(() => bus.destroy()).not.toThrow();
+    });
   });
 });
