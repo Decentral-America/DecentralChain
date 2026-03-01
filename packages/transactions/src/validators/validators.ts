@@ -112,7 +112,7 @@ export const isArray = (value: unknown) => Array.isArray(value);
 export const bytesLength = (length: number) => (value: unknown) => {
   try {
     return Uint8Array.from(value as ArrayLike<number>).length === length;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 };
@@ -120,7 +120,7 @@ export const bytesLength = (length: number) => (value: unknown) => {
 export const isBase58 = (value: unknown) => {
   try {
     base58Decode(value as string);
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 
@@ -131,7 +131,7 @@ export const isBase64 = (value: unknown) => {
   try {
     value = (value as string).replace(/^base64:/, '');
     base64Decode(value as string);
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 
@@ -206,7 +206,7 @@ export const isPublicKeyForEthSuppTx = ifElse(
     (value: Uint8Array) => {
       try {
         return Uint8Array.from(value).length === 32 || Uint8Array.from(value).length === 64;
-      } catch (e) {
+      } catch (_e) {
         return false;
       }
     },

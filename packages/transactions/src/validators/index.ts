@@ -34,6 +34,7 @@ import { leaseValidator as lease } from './lease';
 import { invokeValidator as invokeScript } from './invoke-script';
 import { exchangeValidator as exchange } from './exchange';
 import { updateAssetInfoValidator as updateAssetInfo } from './update-asset-info';
+<<<<<<< HEAD
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // import { invokeExpressionValidator as invokeExpression } from './invoke-expression'
 =======
@@ -41,6 +42,8 @@ import { updateAssetInfoValidator as updateAssetInfo } from './update-asset-info
 =======
 // import { invokeExpressionValidator as invokeExpression } from './invoke-expression'
 >>>>>>> f33083a0 (updated dependencies)
+=======
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 
 import { orderValidator as order } from './order';
 import { cancelOrderValidator as cancelOrder } from './cancel-order';
@@ -97,7 +100,6 @@ export const validate = {
   invokeScript,
   exchange,
   updateAssetInfo,
-  // invokeExpression,
   cancelOrder,
   customData,
   order,
