@@ -1,7 +1,12 @@
 import request from '../../tools/request';
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import query from '../../tools/query';
-import { AssetDecimals, DataTransactionEntry, Transaction, WithId } from '@decentralchain/ts-types';
+import {
+  type AssetDecimals,
+  type DataTransactionEntry,
+  type Transaction,
+  type WithId,
+} from '@decentralchain/ts-types';
 
 /**
  * DecentralChain balance history
@@ -12,7 +17,7 @@ export function fetchBalanceHistory(
   base: string,
   address: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<IBalanceHistory>> {
+): Promise<IBalanceHistory[]> {
   return request({
     base,
     url: `/debug/balances/history/${address}`,
@@ -25,12 +30,12 @@ interface IBalanceHistory {
   balance: TLong;
 }
 
-export type TPayment = {
+export interface TPayment {
   assetId: string | null;
   amount: TLong;
-};
+}
 
-export type TStateChanges = {
+export interface TStateChanges {
   data: DataTransactionEntry[];
   transfers: {
     address: string;
@@ -79,7 +84,7 @@ export type TStateChanges = {
     code: number;
     text: string;
   };
-};
+}
 
 export interface IWithStateChanges {
   stateChanges: TStateChanges;
@@ -98,7 +103,7 @@ export function fetchStateChangesByAddress(
   limit: number,
   after?: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<Transaction<TLong> & WithId & IWithStateChanges>> {
+): Promise<(Transaction<TLong> & WithId & IWithStateChanges)[]> {
   return request({
     base,
     url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,

@@ -1,8 +1,8 @@
-import { TAssetDetails } from '../../api-node/assets';
+import { type TAssetDetails } from '../../api-node/assets';
 import { fetchTransactions } from '../../api-node/transactions';
 import getAssetsByTransaction from './getAssetsByTransaction';
-import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
-import { TLong } from '../../interface';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
 
 export default function (
   base: string,
@@ -10,7 +10,7 @@ export default function (
   limit: number,
   after?: string,
 ): Promise<{
-  transactions: Array<Transaction<TLong> & WithApiMixin>;
+  transactions: (Transaction<TLong> & WithApiMixin)[];
   assets: Record<string, TAssetDetails>;
 }> {
   return fetchTransactions(base, address, limit, after).then((transactions) =>

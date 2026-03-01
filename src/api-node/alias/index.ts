@@ -18,4 +18,4 @@ export interface IByAlias {
   address: string;
 }
 
-export type IByAddress = Array<string>;
+export type IByAddress = string[];

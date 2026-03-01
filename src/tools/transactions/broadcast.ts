@@ -1,13 +1,12 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import { broadcast } from '../../api-node/transactions';
 import { head, toArray } from '../utils';
 import wait from './wait';
 import {
-  Long,
-  SignedTransaction,
-  Transaction,
-  TransactionMap,
-  WithApiMixin,
+  type SignedTransaction,
+  type Transaction,
+  type TransactionMap,
+  type WithApiMixin,
 } from '@decentralchain/ts-types';
 
 const DEFAULT_BROADCAST_OPTIONS: IOptions = {
@@ -19,7 +18,7 @@ const DEFAULT_BROADCAST_OPTIONS: IOptions = {
 
 export type TMap<MAP extends Record<string | number, any>, Key extends keyof MAP> = MAP[Key];
 export type TMapTuple<
-  T extends Array<Record<string | number, any>>,
+  T extends Record<string | number, any>[],
   TO_MAP extends Record<string | number, Record<string | number, any>>,
   KEY,
 > = {
@@ -32,7 +31,7 @@ export type TMapTuple<
     : never;
 };
 
-export default function <T extends Array<SignedTransaction<Transaction<TLong>>>>(
+export default function <T extends SignedTransaction<Transaction<TLong>>[]>(
   base: string,
   list: T,
 ): Promise<TMapTuple<T, TransactionMap, 'type'> & WithApiMixin>;
@@ -43,7 +42,7 @@ export default function <T extends Transaction<TLong>>(
 ): Promise<TMap<TransactionMap<TLong>, T['type']> & WithApiMixin>;
 export default function (
   base: string,
-  list: SignedTransaction<Transaction<TLong>> | Array<SignedTransaction<Transaction<TLong>>>,
+  list: SignedTransaction<Transaction<TLong>> | SignedTransaction<Transaction<TLong>>[],
   options?: Partial<IOptions>,
 ): Promise<any> {
   const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options || {}) };
@@ -56,13 +55,14 @@ export default function (
       : simpleBroadcast(base, toArray(list))
   )
     .then((list) => (opt.confirmations <= 0 ? list : wait(base, list, opt)))
-    .then((list) => (isOnce ? (head(list) as Transaction & WithApiMixin) : list));
+    .then((list) => (isOnce ? head(list)! : list));
 }
 
-type TWithApiMixinList<T> =
-  T extends Array<Transaction<TLong>> ? { [Key in keyof T]: T[Key] & WithApiMixin } : never;
+type TWithApiMixinList<T> = T extends Transaction<TLong>[]
+  ? { [Key in keyof T]: T[Key] & WithApiMixin }
+  : never;
 
-function simpleBroadcast<T extends Array<SignedTransaction<Transaction<TLong>>>>(
+function simpleBroadcast<T extends SignedTransaction<Transaction<TLong>>[]>(
   base: string,
   list: T,
 ): Promise<TWithApiMixinList<T>> {
@@ -71,12 +71,12 @@ function simpleBroadcast<T extends Array<SignedTransaction<Transaction<TLong>>>>
 
 function chainBroadcast(
   base: string,
-  list: Array<Transaction<TLong>>,
+  list: Transaction<TLong>[],
   options: IOptions,
-): Promise<Array<Transaction<Long> & WithApiMixin>> {
-  return new Promise<Array<Transaction & WithApiMixin>>((resolve, reject) => {
+): Promise<(Transaction & WithApiMixin)[]> {
+  return new Promise<(Transaction & WithApiMixin)[]>((resolve, reject) => {
     const toBroadcast = list.slice().reverse();
-    const result: Array<Transaction<Long> & WithApiMixin> = [];
+    const result: (Transaction & WithApiMixin)[] = [];
 
     const loop = () => {
       if (!toBroadcast.length) {

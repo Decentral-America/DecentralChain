@@ -1,5 +1,5 @@
 import request from '../../tools/request';
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 
 /**
  * GET /peers/all
@@ -38,7 +38,7 @@ export function fetchConnected(
 export function fetchBlackListed(
   base: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<IBlackPeer>> {
+): Promise<IBlackPeer[]> {
   return request({
     base,
     url: '/peers/blacklisted',
@@ -53,7 +53,7 @@ export function fetchBlackListed(
 export function fetchSuspended(
   base: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<ISuspendedPeer>> {
+): Promise<ISuspendedPeer[]> {
   return request({
     base,
     url: '/peers/suspended',
@@ -66,11 +66,11 @@ export function fetchSuspended(
 // POST /peers/connect
 
 export interface IAllResponse {
-  peers: Array<IPeerAllResponse>;
+  peers: IPeerAllResponse[];
 }
 
 export interface IAllConnectedResponse {
-  peers: Array<IPeerConnectedResponse>;
+  peers: IPeerConnectedResponse[];
 }
 
 export interface IPeerAllResponse {

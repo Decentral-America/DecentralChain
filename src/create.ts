@@ -15,7 +15,11 @@ import * as ethModule from './api-node/eth';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
-import broadcast, { IOptions, TMap, TMapTuple } from './tools/transactions/broadcast';
+import broadcast, {
+  type IOptions,
+  type TMap,
+  type TMapTuple,
+} from './tools/transactions/broadcast';
 import getAssetsByTransaction from './tools/adresses/getAssetsByTransaction';
 import getAssetIdListByTx from './tools/adresses/getAssetIdListByTx';
 import getTransactionsWithAssets from './tools/adresses/getTransactionsWithAssets';
@@ -26,22 +30,24 @@ import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
 import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
-import { Transaction, TransactionMap, WithApiMixin } from '@decentralchain/ts-types';
-import { TLong } from './interface';
+import { type Transaction, type TransactionMap, type WithApiMixin } from '@decentralchain/ts-types';
+import { type TLong } from './interface';
 
-declare function _broadcastWrapped<T extends Array<Transaction<TLong>>>(
-  list: T,
-  options?: Partial<IOptions>,
-): Promise<TMapTuple<T, TransactionMap<TLong>, 'type'> & WithApiMixin>;
-declare function _broadcastWrapped<T extends Transaction<TLong>>(
-  tx: T,
-  options?: Partial<IOptions>,
-): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>;
+type BroadcastWrapped = {
+  <T extends Transaction<TLong>[]>(
+    list: T,
+    options?: Partial<IOptions>,
+  ): Promise<TMapTuple<T, TransactionMap<TLong>, 'type'> & WithApiMixin>;
+  <T extends Transaction<TLong>>(
+    tx: T,
+    options?: Partial<IOptions>,
+  ): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>;
+};
 
-type TWrapRecord<T extends Record<string, (base: string, ...args: Array<any>) => any>> = {
+type TWrapRecord<T extends Record<string, (base: string, ...args: any[]) => any>> = {
   [Key in keyof T]: TWrapApi<T[Key]>;
 };
-type TWrapApi<T extends (base: string, ...args: Array<any>) => any> = T extends (
+type TWrapApi<T extends (base: string, ...args: any[]) => any> = T extends (
   base: string,
   ...args: infer NEXT
 ) => any
@@ -66,7 +72,7 @@ export function create(base: string) {
 
   const tools = {
     transactions: {
-      broadcast: wrapRequest(base, broadcast) as typeof _broadcastWrapped,
+      broadcast: wrapRequest(base, broadcast) as BroadcastWrapped,
       wait: wrapRequest(base, wait),
     },
     blocks: {
@@ -106,17 +112,17 @@ export function create(base: string) {
   };
 }
 
-function wrapRecord<T extends Record<string, (base: string, ...args: Array<any>) => any>>(
+function wrapRecord<T extends Record<string, (base: string, ...args: any[]) => any>>(
   base: string,
   hash: T,
 ): TWrapRecord<T> {
   return Object.keys(hash).reduce<TWrapRecord<T>>((acc, methodName: keyof T) => {
     acc[methodName] = wrapRequest(base, hash[methodName]);
     return acc;
-  }, {} as any);
+  }, {} as TWrapRecord<T>);
 }
 
-function wrapRequest<T extends (base: string, ...args: Array<any>) => any>(
+function wrapRequest<T extends (base: string, ...args: any[]) => any>(
   base: string,
   callback: T,
 ): TWrapApi<T> {

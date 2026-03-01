@@ -1,8 +1,14 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import { head, indexBy, prop, toArray, wait } from '../utils';
 import { fetchStatus } from '../../api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../constants';
-import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+
+/**
+ * Default maximum wait time (5 minutes).
+ * Prevents infinite polling if a transaction is never confirmed.
+ */
+const DEFAULT_MAX_WAIT_MS = 5 * 60 * 1000;
 
 export default function <T extends Transaction<TLong> & WithApiMixin>(
   base: string,
@@ -11,37 +17,41 @@ export default function <T extends Transaction<TLong> & WithApiMixin>(
 ): Promise<T>;
 export default function <T extends Transaction<TLong> & WithApiMixin>(
   base: string,
-  list: Array<T>,
+  list: T[],
   options?: IWaitOptions,
-): Promise<Array<T>>;
+): Promise<T[]>;
 export default function <T extends Transaction<TLong> & WithApiMixin>(
   base: string,
-  tx: T | Array<T>,
+  tx: T | T[],
   options?: IWaitOptions,
-): Promise<T | Array<T>>;
+): Promise<T | T[]>;
 export default function <T extends Transaction<TLong> & WithApiMixin>(
   base: string,
-  tx: T | Array<T>,
+  tx: T | T[],
   options?: IWaitOptions,
-): Promise<T | Array<T>> {
+): Promise<T | T[]> {
   const isOnce = !Array.isArray(tx);
   const start = Date.now();
-  const confirmed: Array<T> = [];
-  const confirmations = (options && options.confirmations) || 0;
-  const maxWaitTime = (options && options.maxWaitTime) || 0;
-  const requestInterval = (options && options.requestInterval) || 250;
+  const confirmed: T[] = [];
+  const confirmations = options?.confirmations || 0;
+  const maxWaitTime = options?.maxWaitTime || DEFAULT_MAX_WAIT_MS;
+  const requestInterval = options?.requestInterval || 250;
 
-  const waitTx = (list: Array<T>): Promise<void> => {
+  const waitTx = (list: T[]): Promise<void> => {
     return fetchStatus(base, list.map(prop('id'))).then((status) => {
       const hash = indexBy(prop('id'), status.statuses);
-      const hasError = list.some((tx) => hash[tx.id].status === TRANSACTION_STATUSES.NOT_FOUND);
+      const hasError = list.some((tx) => {
+        const entry = hash[tx.id];
+        return !entry || entry.status === TRANSACTION_STATUSES.NOT_FOUND;
+      });
 
       if (hasError) {
         throw new Error('One transaction is not in blockchain!');
       }
 
       const toRequest = list.filter((tx) => {
-        if (hash[tx.id].confirmations >= confirmations) {
+        const entry = hash[tx.id];
+        if (entry && entry.confirmations >= confirmations) {
           confirmed.push(tx);
           return false;
         } else {
@@ -52,16 +62,19 @@ export default function <T extends Transaction<TLong> & WithApiMixin>(
       if (!toRequest.length) {
         return void 0;
       }
-      if (maxWaitTime && Date.now() - start > maxWaitTime) {
-        return Promise.reject('Timeout error!');
+      if (Date.now() - start > maxWaitTime) {
+        return Promise.reject(
+          new Error(`Transaction wait timed out after ${String(maxWaitTime)} ms`),
+        );
       }
       return wait(requestInterval).then(() => waitTx(toRequest));
     });
   };
 
-  return waitTx(toArray(tx)).then(() => (isOnce ? (head(confirmed) as T) : confirmed));
+  return waitTx(toArray(tx)).then(() => (isOnce ? head(confirmed)! : confirmed));
 }
 
+/** @public — exposed via create().tools.transactions.wait() parameter type */
 export interface IWaitOptions {
   confirmations?: number;
   maxWaitTime?: number;
