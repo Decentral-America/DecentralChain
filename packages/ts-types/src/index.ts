@@ -1,5 +1,5 @@
-export * from '../transactions';
-export * from './parts';
+export * from '../transactions/index.js';
+export * from './parts.js';
 
 export const GENESIS_TYPE = 1 as const;
 export const PAYMENT_TYPE = 2 as const;
@@ -54,4 +54,6 @@ export const DATA_FIELD_TYPE = {
 };
 
 export type TransactionType = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
-export type DataFiledType = (typeof DATA_FIELD_TYPE)[keyof typeof DATA_FIELD_TYPE];
+export type DataFieldType = (typeof DATA_FIELD_TYPE)[keyof typeof DATA_FIELD_TYPE];
+/** @deprecated Use `DataFieldType` instead — this name contains a typo. */
+export type DataFiledType = DataFieldType;
