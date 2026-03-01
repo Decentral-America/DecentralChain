@@ -43,9 +43,9 @@ jobs:
           gpg-private-key: ${{ secrets.OSSRH_GPG_KEY }}
       - name: Publish artifacts
         env:
-          OSSRH_USERNAME:  ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD:  ${{ secrets.OSSRH_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE:  ${{ secrets.OSSRH_GPG_PASSPHRASE }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
           REF_NAME: ${{ inputs.github-ref-name != '' && inputs.github-ref-name || github.ref_name }}
           PR_NUMBER: ${{ inputs.github-event-number != '' && inputs.github-event-number || github.event.number }}
         run: |

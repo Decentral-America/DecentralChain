@@ -1,8 +1,8 @@
 syntax = "proto3";
 package waves;
-option java_package = "com.wavesplatform.protobuf.snapshot";
-option csharp_namespace = "Waves";
-option go_package = "github.com/wavesplatform/gowaves/pkg/grpc/generated/waves";
+option java_package = "io.decentralchain.protobuf.snapshot";
+option csharp_namespace = "DecentralChain";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves";
 
 import "waves/amount.proto";
 import "waves/transaction.proto";
@@ -15,6 +15,9 @@ message TransactionStateSnapshot {
   repeated NewAsset asset_statics = 5;
   repeated AssetVolume asset_volumes = 6;
   repeated AssetNameAndDescription asset_names_and_descriptions = 7;
+  // NOTE: These fields are intentionally singular (not repeated) per the
+  // upstream protocol specification. A snapshot applies to at most one
+  // asset script and one alias per transaction.
   AssetScript asset_scripts = 8;
   Alias aliases = 9;
   repeated OrderFill order_fills = 10;
@@ -103,6 +106,10 @@ message TransactionStateSnapshot {
   }
 }
 
+// SAFETY NOTE: SUCCEEDED = 0 is the proto3 default value. Any uninitialized or
+// missing TransactionStatus field will silently resolve to SUCCEEDED. Consumers
+// MUST explicitly check that this field was set before trusting the status.
+// Changing the zero value would break wire compatibility with existing nodes.
 enum TransactionStatus {
   SUCCEEDED = 0;
   FAILED = 1;
