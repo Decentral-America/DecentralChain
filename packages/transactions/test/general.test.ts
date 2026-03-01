@@ -1,18 +1,17 @@
 import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto'
-import {reissue, signTx, data, burn, broadcast, IDataParams} from '../src'
+import { reissue, signTx, data, burn, broadcast, IDataParams } from '../src'
 import { serialize, verify } from '../src/general'
 import { reissueMinimalParams, burnMinimalParams, orderMinimalParams } from './minimalParams'
 import { exampleTxs } from './exampleTxs'
 import { order } from '../src/requests/order'
-import {API_BASE} from './integration/config'
-import {Transaction} from '@decentralchain/ts-types'
+import { API_BASE } from './integration/config'
+import { Transaction } from '@decentralchain/ts-types'
 
 const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8'
 
 describe('signTx', () => {
-
-  const txs = Object.keys(exampleTxs).map(x => (<any>exampleTxs)[x] as Transaction)
-  txs.forEach(tx => {
+  const txs = Object.keys(exampleTxs).map((x) => (<any>exampleTxs)[x] as Transaction)
+  txs.forEach((tx) => {
     it('type: ' + tx.type, () => {
       const signed = signTx(tx, stringSeed)
       const bytes = serialize(signed)
@@ -44,7 +43,6 @@ describe('signTx', () => {
 })
 
 describe('Node interaction', () => {
-
   it('should send tx to node', async () => {
     const dataParams = {
       data: [
@@ -65,15 +63,13 @@ describe('Node interaction', () => {
     } as IDataParams
     const result = data(dataParams, 'seed')
 
-    await expect(broadcast(result, API_BASE)).rejects
-      .toMatchObject({error: 404})
+    await expect(broadcast(result, API_BASE)).rejects.toMatchObject({ error: 404 })
   }, 100000)
-
 })
 
 it('verify signatures of txs and orders', async () => {
   const ord = order(orderMinimalParams, stringSeed)
-  const tx = burn({...burnMinimalParams, version: 2}, [null, stringSeed])
+  const tx = burn({ ...burnMinimalParams, version: 2 }, [null, stringSeed])
   expect(verify(ord)).toEqual(true)
   expect(verify(tx, 1)).toEqual(true)
 })
