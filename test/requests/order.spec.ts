@@ -7,17 +7,17 @@ describe('order', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
 
   it('should build from minimal set of params', () => {
-    const tx = order({ ...orderMinimalParams } as any, stringSeed);
-    delete orderMinimalParams.amountAsset;
-    delete orderMinimalParams.priceAsset;
-    expect(tx).toMatchObject({ ...orderMinimalParams });
+    const params = { ...orderMinimalParams };
+    const tx = order(params as any, stringSeed);
+    const { amountAsset, priceAsset, ...rest } = params;
+    expect(tx).toMatchObject(rest);
   });
 
   it('should get correct signature', () => {
     const tx = order({ ...orderMinimalParams }, stringSeed);
-    expect(
-      verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[0]!),
-    ).toBeTruthy();
+    expect(verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[0]!)).toBe(
+      true,
+    );
   });
 
   it('should get correct multiSignature', () => {
@@ -28,11 +28,11 @@ describe('order', () => {
       null,
       stringSeed2,
     ]);
-    expect(
-      verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[1]!),
-    ).toBeTruthy();
-    expect(
-      verifySignature(publicKey(stringSeed2), binary.serializeOrder(tx), tx.proofs[3]!),
-    ).toBeTruthy();
+    expect(verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[1]!)).toBe(
+      true,
+    );
+    expect(verifySignature(publicKey(stringSeed2), binary.serializeOrder(tx), tx.proofs[3]!)).toBe(
+      true,
+    );
   });
 });

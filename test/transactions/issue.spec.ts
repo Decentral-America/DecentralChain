@@ -262,20 +262,20 @@ describe('issue', () => {
       stringSeed,
     );
 
-    expect(validateTxSignature(tx, protoBytesMinVersion)).toBeTruthy();
+    expect(validateTxSignature(tx, protoBytesMinVersion)).toBe(true);
   });
 
   it('Should sign already signed', () => {
     let tx = issue({ ...issueMinimalParams }, stringSeed);
     tx = issue(tx, stringSeed);
-    expect(validateTxSignature(tx, protoBytesMinVersion, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, protoBytesMinVersion, 1)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2';
     const tx = issue({ ...issueMinimalParams }, [null, stringSeed, null, stringSeed2]);
-    expect(validateTxSignature(tx, protoBytesMinVersion, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, protoBytesMinVersion, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, protoBytesMinVersion, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, protoBytesMinVersion, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('should create correctly with custom fee', () => {
