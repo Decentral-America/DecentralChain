@@ -37,6 +37,24 @@ describe('AssetPair', () => {
       const assetPair = new AssetPair(asset1, asset2);
       expect(assetPair.precisionDifference).toBe(4);
     });
+
+    it('should handle zero precision difference', () => {
+      const samePrec = new Asset(getAssetData({ id: 'same', precision: 4 }));
+      const pair = new AssetPair(samePrec, asset2);
+      expect(pair.precisionDifference).toBe(0);
+    });
+
+    it('should handle negative precision difference', () => {
+      const pair = new AssetPair(asset2, asset1); // 0 - 4 = -4
+      expect(pair.precisionDifference).toBe(-4);
+    });
+  });
+
+  describe('type guard', () => {
+    it('should reject non-AssetPair objects', () => {
+      expect(AssetPair.isAssetPair({})).toBe(false);
+      expect(AssetPair.isAssetPair({ amountAsset: asset1, priceAsset: asset2 })).toBe(false);
+    });
   });
 
   describe('conversions', () => {

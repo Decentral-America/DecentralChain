@@ -71,6 +71,31 @@ describe('OrderPrice', () => {
     });
   });
 
+  describe('type guard', () => {
+    it('should reject non-OrderPrice objects', () => {
+      expect(OrderPrice.isOrderPrice({})).toBe(false);
+      expect(OrderPrice.isOrderPrice({ pair: pairOne })).toBe(false);
+    });
+  });
+
+  describe('round-trip fidelity', () => {
+    it('tokens → matcherCoins → tokens should preserve value', () => {
+      const price = OrderPrice.fromTokens('1.5000', pairTwo);
+      const coins = price.toMatcherCoins();
+      const restored = OrderPrice.fromMatcherCoins(coins, pairTwo);
+      expect(restored.toTokens()).toBe(price.toTokens());
+    });
+  });
+
+  describe('input validation', () => {
+    it('should throw on invalid input type', () => {
+      // Runtime guard for JS consumers — bypass TS typing with cast
+      expect(() => OrderPrice.fromMatcherCoins({} as unknown as string, pairTwo)).toThrow(
+        'Please use strings, numbers, or BigNumber',
+      );
+    });
+  });
+
   describe('conversions', () => {
     it('should serialize to JSON', () => {
       const orderPrice = new OrderPrice(new BigNumber(10), pairOne);

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getAssetData } from '../assetData';
 import { Asset, Money } from '../../src/index';
+import { BigNumber } from '@decentralchain/bignumber';
 
 let fakeEIGHT: Asset;
 let fakeFOUR: Asset;
@@ -164,10 +165,10 @@ describe('Money', () => {
     });
 
     it('min', () => {
-      const a = Money.fromTokens(1, fakeZERO);
-      const b = Money.fromTokens(5, fakeZERO);
+      const a = Money.fromTokens(5, fakeZERO);
+      const b = Money.fromTokens(1, fakeZERO);
       const c = Money.fromTokens(3, fakeZERO);
-      expect(Money.min(a, b, c).eq(a)).toBe(true);
+      expect(Money.min(a, b, c).eq(b)).toBe(true);
     });
 
     it('fromTokens and fromCoins', () => {
@@ -181,6 +182,76 @@ describe('Money', () => {
       const converted = money.convertTo(fakeFOUR, 2);
       expect(Money.isMoney(converted)).toBe(true);
       expect(converted.asset.id).toBe('FOUR');
+    });
+  });
+
+  describe('type guard', () => {
+    it('should reject non-Money objects', () => {
+      expect(Money.isMoney({})).toBe(false);
+      expect(Money.isMoney({ asset: fakeZERO, _coins: 10 })).toBe(false);
+    });
+  });
+
+  describe('clone methods', () => {
+    it('cloneWithCoins should create new Money with given coins', () => {
+      const money = Money.fromTokens(5, fakeEIGHT);
+      const cloned = money.cloneWithCoins(200000000);
+      expect(cloned.toCoins()).toBe('200000000');
+      expect(cloned.asset.id).toBe('EIGHT');
+    });
+
+    it('cloneWithTokens should create new Money from token amount', () => {
+      const money = Money.fromTokens(5, fakeEIGHT);
+      const cloned = money.cloneWithTokens(10);
+      expect(cloned.toTokens()).toBe('10.00000000');
+      expect(cloned.asset.id).toBe('EIGHT');
+    });
+
+    it('getCoins should return an independent clone', () => {
+      const money = Money.fromTokens(1, fakeEIGHT);
+      const coins1 = money.getCoins();
+      const coins2 = money.getCoins();
+      expect(coins1.eq(coins2)).toBe(true);
+      expect(coins1).not.toBe(coins2);
+    });
+
+    it('getTokens should return an independent clone', () => {
+      const money = Money.fromTokens(1, fakeEIGHT);
+      const tokens1 = money.getTokens();
+      const tokens2 = money.getTokens();
+      expect(tokens1.eq(tokens2)).toBe(true);
+      expect(tokens1).not.toBe(tokens2);
+    });
+  });
+
+  describe('constructor input types', () => {
+    it('should accept string input', () => {
+      const money = new Money('500000000', fakeEIGHT);
+      expect(money.toCoins()).toBe('500000000');
+    });
+
+    it('should accept BigNumber input', () => {
+      const money = new Money(new BigNumber('500000000'), fakeEIGHT);
+      expect(money.toCoins()).toBe('500000000');
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle zero amount', () => {
+      const money = Money.fromTokens(0, fakeEIGHT);
+      expect(money.toCoins()).toBe('0');
+      expect(money.toTokens()).toBe('0.00000000');
+    });
+
+    it('should handle very large numbers', () => {
+      const money = new Money('99999999999999999', fakeEIGHT);
+      expect(money.toCoins()).toBe('99999999999999999');
+    });
+
+    it('convert should return same Money if asset is identical', () => {
+      const money = Money.fromTokens(10, fakeEIGHT);
+      const same = Money.convert(money, fakeEIGHT, '1');
+      expect(same).toBe(money); // exact same reference
     });
   });
 

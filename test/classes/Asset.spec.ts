@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getAssetData } from '../assetData';
-import { Asset } from '../../src/index';
+import { Asset, config } from '../../src/index';
 import { type IAssetInfo } from '../../src/entities/Asset';
+import { BigNumber } from '@decentralchain/bignumber';
 
 let defaultAssetInfo1: IAssetInfo;
 let defaultAssetInfo2: IAssetInfo;
@@ -56,6 +57,44 @@ describe('Asset', () => {
       const info = getAssetData({ minSponsoredFee: undefined });
       const asset = new Asset(info);
       expect(asset.minSponsoredFee).toBeNull();
+    });
+
+    it('should default hasScript to false when undefined', () => {
+      const info = getAssetData({ hasScript: undefined });
+      const asset = new Asset(info);
+      expect(asset.hasScript).toBe(false);
+    });
+
+    it('should convert quantity to BigNumber', () => {
+      const asset = new Asset(getAssetData({ quantity: '99999999999999' }));
+      expect(asset.quantity).toBeInstanceOf(BigNumber);
+      expect(asset.quantity.toFixed(0)).toBe('99999999999999');
+    });
+
+    it('should convert minSponsoredFee to BigNumber when provided', () => {
+      const asset = new Asset(getAssetData({ minSponsoredFee: 500 }));
+      expect(asset.minSponsoredFee).toBeInstanceOf(BigNumber);
+      expect(asset.minSponsoredFee!.toFixed(0)).toBe('500');
+    });
+  });
+
+  describe('type guard', () => {
+    it('should reject non-Asset objects', () => {
+      expect(Asset.isAsset({})).toBe(false);
+      expect(Asset.isAsset({ id: 'fake' })).toBe(false);
+    });
+  });
+
+  describe('config integration', () => {
+    it('should apply remapAsset config', () => {
+      const original = config.get('remapAsset');
+      try {
+        config.set('remapAsset', (asset) => ({ ...asset, name: 'REMAPPED' }));
+        const asset = new Asset(getAssetData({ id: 'remap-test' }));
+        expect(asset.name).toBe('REMAPPED');
+      } finally {
+        config.set('remapAsset', original);
+      }
     });
   });
 
