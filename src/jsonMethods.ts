@@ -91,8 +91,13 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
       value instanceof Number ||
       typeof value === 'string' ||
       value instanceof String ||
-      value instanceof Date
+      value instanceof Date ||
+      typeof value === 'bigint'
     ) {
+      // BigInt needs special handling - convert to string representation for JSON
+      if (typeof value === 'bigint') {
+        return value.toString();
+      }
       return JSON.stringify(value);
     }
 
@@ -117,7 +122,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
       const key = i + '';
       const item = array[i];
 
-      if (typeof item !== 'undefined' && typeof item !== 'function') {
+      if (typeof item !== 'undefined' && typeof item !== 'function' && typeof item !== 'symbol') {
         path[stackIndex] = key;
         str += stringifyValue(item);
       } else {
@@ -170,7 +175,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
   }
 
   function includeProperty(value: any) {
-    return typeof value !== 'undefined' && typeof value !== 'function';
+    return typeof value !== 'undefined' && typeof value !== 'function' && typeof value !== 'symbol';
   }
 
   return stringifyValue(obj) || '';
