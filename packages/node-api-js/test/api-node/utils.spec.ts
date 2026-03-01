@@ -105,7 +105,7 @@ it('tx serialize', async () => {
     MASTER_ACCOUNT.SEED,
   );
 
-  // @ts-ignore fetchTransactionSerialize may have different signature
+  // @ts-expect-error fetchTransactionSerialize may have different signature
   const serialized = await api.utils.fetchTransactionSerialize(tx);
   expect(serialized.bytes).toBeInstanceOf(Array);
 });
