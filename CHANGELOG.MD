@@ -1,31 +1,36 @@
-## v3.24
-- Issue fee now defaults to 0.01 waves if quantity = 1
-## v3.23
-- added `makeTx`
-- TRANSACTION_TYPE changed to `const` from `enum`
-## v3.22
-- added `wavesAuth`
-## v3.21
-- added `scriptMeta` and `rewards` functions
-## v3.20
-- sign via private key
-- fix broadcast interface
-- fix invokeScriptParams interface to accept LONG instead of number in payments and args
-## 3.19
-- added market order support
-## 3.18
-- added `transactionById` function
-- docs and ts-lib-crypto update
-## 3.17
-- added regexp option to `accountData` function
-## 3.16
-- added auth request
-## 3.15
-- fixed validate version
-- fix doc gen
-## 3.14
-- added transaction validators
-- seed generation via `ts-lib-crypto`
-## 3.13
-- fix invokeScriptPayment interface 
-- fix min UMD build
+# Changelog
+
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+
+## [5.0.0] - 2026-03-01
+
+### Changed
+
+- **BREAKING**: Migrated to pure ESM (`"type": "module"`) with CJS compatibility via tsup.
+- **BREAKING**: Minimum Node.js version is now 22.
+- Replaced Jest with Vitest.
+- Replaced webpack + tsc with tsup.
+- Upgraded TypeScript from 3.9 to 5.9.
+- Upgraded all dependencies to latest versions.
+- Rebranded from `@waves` to `@decentralchain`.
+- Chain ID updated from 87 (W) to 76 (L) for DCC mainnet.
+- Node URLs updated to `nodes.decentralchain.io`.
+- Native asset references changed from WAVES to DCC.
+
+### Added
+
+- ESLint flat config with Prettier integration.
+- Husky + lint-staged pre-commit hooks.
+- GitHub Actions CI pipeline (Node 22, 24).
+- Dependabot for automated dependency updates.
+- Code coverage with threshold enforcement.
+- CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md.
+- publint + attw package validation.
+- size-limit bundle size enforcement.
+
+### Removed
+
+- Legacy build tooling (webpack, tslint).
+- Azure Pipelines CI.
+- All Waves branding and references.

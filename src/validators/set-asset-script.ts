@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -13,7 +13,7 @@ import {
   isPublicKey,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const setAssetScriptScheme = {
   type: isEq(TRANSACTION_TYPE.SET_ASSET_SCRIPT),
@@ -25,6 +25,6 @@ const setAssetScriptScheme = {
   timestamp: isNumber,
   script: isBase64,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const setAssetScriptValidator = validateByShema(setAssetScriptScheme, getError)
+export const setAssetScriptValidator = validateByShema(setAssetScriptScheme, getError);

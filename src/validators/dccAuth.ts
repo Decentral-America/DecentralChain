@@ -1,8 +1,8 @@
-import { getError, validateByShema, isNumber, isPublicKey } from './validators'
+import { getError, validateByShema, isNumber, isPublicKey } from './validators';
 
 const authScheme = {
   publicKey: isPublicKey,
   timestamp: isNumber,
-}
+};
 
-export const authValidator = validateByShema(authScheme, getError)
+export const authValidator = validateByShema(authScheme, getError);

@@ -1,6 +1,6 @@
-import { lease } from '../dist/index'
+import { lease } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   amount: 100,
@@ -8,7 +8,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000,
-}
+};
 
-const signedLeaseTx = lease(params, seed)
-console.log(signedLeaseTx)
+const signedLeaseTx = lease(params, seed);
+console.log(signedLeaseTx);

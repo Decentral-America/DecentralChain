@@ -1251,4 +1251,4 @@ export const txs = {
       ],
     },
   },
-}
+};

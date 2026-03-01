@@ -1,7 +1,7 @@
 /**
  * @module index
  */
-import { IMassTransferParams, WithId, WithProofs, WithSender } from '../transactions'
+import { IMassTransferParams, WithId, WithProofs, WithSender } from '../transactions';
 import {
   addProof,
   chainIdFromRecipient,
@@ -10,35 +10,35 @@ import {
   getSenderPublicKey,
   networkByte,
   normalizeAssetId,
-} from '../generic'
-import { TSeedTypes } from '../types'
-import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
-import { binary } from '@decentralchain/marshall'
-import { validate } from '../validators'
-import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
-import { MassTransferTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
+} from '../generic';
+import { TSeedTypes } from '../types';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { binary } from '@decentralchain/marshall';
+import { validate } from '../validators';
+import { txToProtoBytes } from '../proto-serialize';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { MassTransferTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 /* @echo DOCS */
 export function massTransfer(
   params: IMassTransferParams,
   seed: TSeedTypes,
-): MassTransferTransaction & WithId & WithProofs
+): MassTransferTransaction & WithId & WithProofs;
 export function massTransfer(
   paramsOrTx: (IMassTransferParams & WithSender) | MassTransferTransaction,
   seed?: TSeedTypes,
-): MassTransferTransaction & WithId & WithProofs
+): MassTransferTransaction & WithId & WithProofs;
 export function massTransfer(
   paramsOrTx: any,
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs {
-  const type = TRANSACTION_TYPE.MASS_TRANSFER
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.MASS_TRANSFER
-  const seedsAndIndexes = convertToPairs(seed)
-  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
+  const type = TRANSACTION_TYPE.MASS_TRANSFER;
+  const version = paramsOrTx.version || DEFAULT_VERSIONS.MASS_TRANSFER;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   if (!Array.isArray(paramsOrTx.transfers) || paramsOrTx.transfers.length === 0)
-    throw new Error('Should contain at least one transfer')
+    throw new Error('Should contain at least one transfer');
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -87,14 +87,19 @@ export function massTransfer(
       chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient),
     ),
     id: '',
+<<<<<<< HEAD
   }
   validate.massTransfer(tx)
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+  };
+  validate.massTransfer(tx);
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
-  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx)
+  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
-  tx.id = base58Encode(blake2b(bytes))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  tx.id = base58Encode(blake2b(bytes));
 
-  return tx
+  return tx;
 }

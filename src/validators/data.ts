@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   isEq,
   orEq,
@@ -13,7 +13,7 @@ import {
   isValidData,
   isValidDeleteRequest,
   isNaturalNumberOrZeroLike,
-} from './validators'
+} from './validators';
 
 const dataScheme = {
   type: isEq(TRANSACTION_TYPE.DATA),
@@ -24,8 +24,9 @@ const dataScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const dataFieldValidator = (item: unknown) => isValidData(item) || isValidDeleteRequest(item)
+export const dataFieldValidator = (item: unknown) =>
+  isValidData(item) || isValidDeleteRequest(item);
 
-export const dataValidator = validateByShema(dataScheme, getError)
+export const dataValidator = validateByShema(dataScheme, getError);
