@@ -1,6 +1,6 @@
 import { libs } from '@decentralchain/waves-transactions';
-import { Money } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
+import { Money } from '@decentralchain/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
 
 const { stringToBytes, base58Decode, keccak, blake2b } = libs.crypto;
 

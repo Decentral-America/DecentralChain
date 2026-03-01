@@ -1,6 +1,7 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
-import { WavesLedger } from '@waves/ledger';
+// TODO: Change to `import { DCCLedger } from '@decentralchain/ledger'` once DCC-10 is complete
+import { WavesLedger as DCCLedger } from '@decentralchain/ledger';
 import { SIGN_TYPE } from '../prepareTx';
 
 
@@ -10,7 +11,7 @@ export class LedgerAdapter extends Adapter {
     private _currentUser;
     public static type = AdapterType.Ledger;
     //@ts-ignore
-    private static _ledger: WavesLedger;
+    private static _ledger: DCCLedger;
     //@ts-ignore
     private static _hasConnectionPromise;
 
@@ -146,9 +147,9 @@ export class LedgerAdapter extends Adapter {
         return LedgerAdapter._ledger.getPaginationUsersData(from, to) as any;
     }
 
-    public static initOptions(options: IWavesLedger) {
+    public static initOptions(options: IDCCLedger) {
         Adapter.initOptions(options);
-        this._ledger = new WavesLedger( options );
+        this._ledger = new DCCLedger( options );
     }
 
     public static isAvailable() {
@@ -167,7 +168,7 @@ export class LedgerAdapter extends Adapter {
     }
 }
 
-interface IWavesLedger  {
+interface IDCCLedger  {
     networkCode: number;
     debug?: boolean;
     openTimeout?: number;

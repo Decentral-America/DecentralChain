@@ -6,22 +6,22 @@
   "license": "MIT",
   "repository": {
     "type": "GIT",
-    "url": "https://github.com/Decentral-America/waves-signature-adapter"
+    "url": "https://github.com/Decentral-America/dcc-signature-adapter"
   },
   "dependencies": {
-    "@types/ramda": "0.25.34",
-    "@waves/bignumber": "^1.0.0",
-    "@waves/data-entities": "^2.0.3",
-    "@waves/ledger": "^4.0.0",
-    "@waves/money-like-to-node": "0.1.3",
-    "@waves/ts-types": "^0.2.0",
+    "@decentralchain/bignumber": "^1.0.0",
+    "@decentralchain/data-entities": "^2.0.3",
+    "@decentralchain/ledger": "^4.0.0",
+    "@decentralchain/money-like-to-node": "0.1.3",
+    "@decentralchain/ts-types": "^0.2.0",
     "@decentralchain/waves-transactions": "4.2.3",
+    "@types/ramda": "0.25.34",
     "ramda": "^0.25.0"
   },
   "scripts": {
     "test": "jest",
     "compile": "tsc",
-    "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-crypto -u @waves/bignumber -u @decentralchain/waves-transactions -u @waves/data-entities -u @decentralchain/marshall -u @waves/ledger -o dist/signature-adapter.js",
+    "browserify": "node_modules/.bin/browserify dist/index.js -s dccSignatureAdapter -u @decentralchain/waves-crypto -u @decentralchain/bignumber -u @decentralchain/waves-transactions -u @decentralchain/data-entities -u @decentralchain/marshall -u @decentralchain/ledger -o dist/signature-adapter.js",
     "build": "npm run compile && npm run browserify && npm run uglify",
     "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
     "postpublish": "git push origin HEAD",

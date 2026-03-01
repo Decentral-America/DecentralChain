@@ -12,8 +12,8 @@ import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
 import { libs } from '@decentralchain/waves-transactions';
-import { convert } from '@waves/money-like-to-node';
-import { BigNumber } from '@waves/bignumber';
+import { convert } from '@decentralchain/money-like-to-node';
+import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
 
 const { base58Encode, blake2b, verifySignature } = libs.crypto;
