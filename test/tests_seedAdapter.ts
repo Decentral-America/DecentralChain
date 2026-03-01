@@ -134,7 +134,7 @@ describe('WSeed adapter test', () => {
         
         expect(libs.crypto.verifySignature(publicKey, binary, signature));
         
-        return await fetch('https://api.waves.exchange/v1/oauth2/token', {
+        return await fetch('https://api.decentralchain.io/v1/oauth2/token', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
