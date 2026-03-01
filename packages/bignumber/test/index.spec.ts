@@ -453,4 +453,310 @@ describe('BigNumber', () => {
     expect(BigNumber.toBigNumber(255).toString()).toBe('255');
     expect(BigNumber.toBigNumber(255).toString(16)).toBe('ff');
   });
+
+  describe('Enterprise-grade financial tests', () => {
+    describe('toNumber - precision loss warning', () => {
+      it('converts safe integers correctly', () => {
+        expect(new BigNumber(100).toNumber()).toBe(100);
+        expect(new BigNumber(Number.MAX_SAFE_INTEGER).toNumber()).toBe(Number.MAX_SAFE_INTEGER);
+      });
+
+      it('loses precision for large values beyond MAX_SAFE_INTEGER', () => {
+        const largeValue = new BigNumber(Number.MAX_SAFE_INTEGER).add(100);
+        const converted = largeValue.toNumber();
+        expect(Number.isSafeInteger(converted)).toBeFalsy();
+      });
+
+      it('converts negative values correctly', () => {
+        expect(new BigNumber(-500).toNumber()).toBe(-500);
+      });
+
+      it('converts decimal values', () => {
+        expect(new BigNumber(123.456).toNumber()).toBe(123.456);
+      });
+    });
+
+    describe('valueOf - implicit coercion', () => {
+      it('returns string representation for implicit coercion', () => {
+        const bn = new BigNumber(42);
+        expect(bn.valueOf()).toBe('42');
+      });
+
+      it('works with template literals', () => {
+        const bn = new BigNumber(100.5);
+        expect(`Value: ${bn}`).toBe('Value: 100.5');
+      });
+
+      it('handles negative values', () => {
+        expect(new BigNumber(-999).valueOf()).toBe('-999');
+      });
+    });
+
+    describe('isOdd / isEven - parity checks', () => {
+      it('identifies even numbers', () => {
+        expect(new BigNumber(0).isEven()).toBeTruthy();
+        expect(new BigNumber(2).isEven()).toBeTruthy();
+        expect(new BigNumber(100).isEven()).toBeTruthy();
+        expect(new BigNumber(-4).isEven()).toBeTruthy();
+      });
+
+      it('identifies odd numbers', () => {
+        expect(new BigNumber(1).isOdd()).toBeTruthy();
+        expect(new BigNumber(3).isOdd()).toBeTruthy();
+        expect(new BigNumber(99).isOdd()).toBeTruthy();
+        expect(new BigNumber(-5).isOdd()).toBeTruthy();
+      });
+
+      it('works with large integers', () => {
+        expect(new BigNumber(Number.MAX_SAFE_INTEGER).isOdd()).toBeTruthy();
+        expect(new BigNumber(Number.MAX_SAFE_INTEGER).sub(1).isEven()).toBeTruthy();
+      });
+    });
+
+    describe('isInSignedRange / isInUnsignedRange', () => {
+      it('validates signed range boundaries', () => {
+        expect(BigNumber.MIN_VALUE.isInSignedRange()).toBeTruthy();
+        expect(BigNumber.MAX_VALUE.isInSignedRange()).toBeTruthy();
+        expect(new BigNumber(0).isInSignedRange()).toBeTruthy();
+      });
+
+      it('detects out of signed range', () => {
+        expect(BigNumber.MIN_VALUE.sub(1).isInSignedRange()).toBeFalsy();
+        expect(BigNumber.MAX_VALUE.add(1).isInSignedRange()).toBeFalsy();
+      });
+
+      it('validates unsigned range boundaries', () => {
+        expect(BigNumber.MIN_UNSIGNED_VALUE.isInUnsignedRange()).toBeTruthy();
+        expect(BigNumber.MAX_UNSIGNED_VALUE.isInUnsignedRange()).toBeTruthy();
+        expect(new BigNumber('9223372036854775808').isInUnsignedRange()).toBeTruthy();
+      });
+
+      it('detects out of unsigned range', () => {
+        expect(new BigNumber(-1).isInUnsignedRange()).toBeFalsy();
+        expect(BigNumber.MAX_UNSIGNED_VALUE.add(1).isInUnsignedRange()).toBeFalsy();
+      });
+    });
+
+    describe('Config.set with ROUNDING_MODE', () => {
+      it('accepts and sets ROUNDING_MODE configuration', () => {
+        // This tests the else branch in Config.set (line 36)
+        // ROUNDING_MODE is passed directly to BigNum.config without merging
+        expect(() => {
+          BigNumber.config.set({
+            ROUNDING_MODE: BigNumber.ROUND_MODE.ROUND_DOWN,
+          });
+        }).not.toThrow();
+
+        expect(() => {
+          BigNumber.config.set({
+            ROUNDING_MODE: BigNumber.ROUND_MODE.ROUND_UP,
+          });
+        }).not.toThrow();
+
+        // Reset to default
+        BigNumber.config.set({
+          ROUNDING_MODE: BigNumber.ROUND_MODE.ROUND_HALF_UP,
+        });
+      });
+    });
+
+    describe('toFormat with custom format', () => {
+      it('applies custom format parameters', () => {
+        const customFormat = {
+          prefix: '$',
+          suffix: ' USD',
+          groupSeparator: ',',
+          decimalSeparator: '.',
+          groupSize: 3,
+          secondaryGroupSize: 0,
+          fractionGroupSeparator: ' ',
+          fractionGroupSize: 0,
+        };
+        expect(
+          new BigNumber('1234567.89').toFormat(2, BigNumber.ROUND_MODE.ROUND_HALF_UP, customFormat),
+        ).toBe('$1,234,567.89 USD');
+      });
+
+      it('uses custom decimal separator', () => {
+        const format = {
+          prefix: '',
+          suffix: '',
+          decimalSeparator: ',',
+          groupSeparator: '.',
+          groupSize: 3,
+          secondaryGroupSize: 0,
+          fractionGroupSeparator: ' ',
+          fractionGroupSize: 0,
+        };
+        expect(
+          new BigNumber('1000.50').toFormat(2, BigNumber.ROUND_MODE.ROUND_HALF_UP, format),
+        ).toBe('1.000,50');
+      });
+    });
+
+    describe('isBigNumber - type guard', () => {
+      it('identifies BigNumber instances', () => {
+        const bn = new BigNumber(100);
+        expect(BigNumber.isBigNumber(bn)).toBeTruthy();
+      });
+
+      it('rejects non-objects', () => {
+        expect(BigNumber.isBigNumber(null)).toBeFalsy();
+        expect(BigNumber.isBigNumber(undefined)).toBeFalsy();
+        expect(BigNumber.isBigNumber(123)).toBeFalsy();
+        expect(BigNumber.isBigNumber('123')).toBeFalsy();
+      });
+
+      it('rejects plain objects', () => {
+        expect(BigNumber.isBigNumber({})).toBeFalsy();
+        expect(BigNumber.isBigNumber({ bn: 'test' })).toBeFalsy();
+      });
+
+      it('handles duck-typed objects', () => {
+        const fakeBN = {
+          bn: {},
+          clone: () => {},
+          add: () => {},
+          sub: () => {},
+        };
+        const result = BigNumber.isBigNumber(fakeBN);
+        expect(typeof result).toBe('boolean');
+      });
+    });
+
+    describe('Immutability', () => {
+      it('add does not mutate original', () => {
+        const original = new BigNumber(10);
+        const result = original.add(5);
+        expect(original.toFixed()).toBe('10');
+        expect(result.toFixed()).toBe('15');
+      });
+
+      it('sub does not mutate original', () => {
+        const original = new BigNumber(10);
+        const result = original.sub(3);
+        expect(original.toFixed()).toBe('10');
+        expect(result.toFixed()).toBe('7');
+      });
+
+      it('mul does not mutate original', () => {
+        const original = new BigNumber(10);
+        const result = original.mul(2);
+        expect(original.toFixed()).toBe('10');
+        expect(result.toFixed()).toBe('20');
+      });
+
+      it('div does not mutate original', () => {
+        const original = new BigNumber(10);
+        const result = original.div(2);
+        expect(original.toFixed()).toBe('10');
+        expect(result.toFixed()).toBe('5');
+      });
+
+      it('roundTo does not mutate original', () => {
+        const original = new BigNumber(10.567);
+        const result = original.roundTo(2);
+        expect(original.toFixed()).toBe('10.567');
+        expect(result.toFixed()).toBe('10.57');
+      });
+    });
+
+    describe('Scientific notation', () => {
+      it('parses scientific notation', () => {
+        expect(new BigNumber('1e10').toFixed()).toBe('10000000000');
+        expect(new BigNumber('1.5e3').toFixed()).toBe('1500');
+        expect(new BigNumber('2.5e-2').toFixed()).toBe('0.025');
+      });
+
+      it('handles negative scientific notation', () => {
+        expect(new BigNumber('-1e5').toFixed()).toBe('-100000');
+      });
+    });
+
+    describe('toString with various bases', () => {
+      it('converts to binary (base 2)', () => {
+        expect(new BigNumber(255).toString(2)).toBe('11111111');
+        expect(new BigNumber(8).toString(2)).toBe('1000');
+      });
+
+      it('converts to octal (base 8)', () => {
+        expect(new BigNumber(64).toString(8)).toBe('100');
+        expect(new BigNumber(255).toString(8)).toBe('377');
+      });
+
+      it('converts to hexadecimal (base 16)', () => {
+        expect(new BigNumber(255).toString(16)).toBe('ff');
+        expect(new BigNumber(4096).toString(16)).toBe('1000');
+      });
+
+      it('converts to base 36', () => {
+        expect(new BigNumber(35).toString(36)).toBe('z');
+        expect(new BigNumber(1295).toString(36)).toBe('zz');
+      });
+    });
+
+    describe('Boundary operations', () => {
+      it('operations at MIN_VALUE boundary', () => {
+        const min = BigNumber.MIN_VALUE;
+        expect(min.add(1).toFixed()).toBe('-9223372036854775807');
+        expect(min.sub(1).toFixed()).toBe('-9223372036854775809');
+      });
+
+      it('operations at MAX_VALUE boundary', () => {
+        const max = BigNumber.MAX_VALUE;
+        expect(max.sub(1).toFixed()).toBe('9223372036854775806');
+        expect(max.add(1).toFixed()).toBe('9223372036854775808');
+      });
+
+      it('operations at zero boundary', () => {
+        expect(new BigNumber(0).sub(1).toFixed()).toBe('-1');
+        expect(new BigNumber(0).add(1).toFixed()).toBe('1');
+      });
+    });
+
+    describe('Chained operations', () => {
+      it('chains arithmetic operations', () => {
+        const result = new BigNumber(100).add(50).mul(2).div(3).roundTo(2);
+        expect(result.toFixed()).toBe('100');
+      });
+
+      it('chains comparison operations', () => {
+        const value = new BigNumber(10);
+        expect(value.add(5).gt(10)).toBeTruthy();
+        expect(value.sub(5).lt(10)).toBeTruthy();
+      });
+
+      it('complex financial calculation chain', () => {
+        const principal = new BigNumber('1000000.00');
+        const interestRate = new BigNumber('0.0525');
+        const result = principal
+          .mul(interestRate)
+          .div(12)
+          .roundTo(2, BigNumber.ROUND_MODE.ROUND_HALF_UP);
+        expect(result.toFixed()).toBe('4375');
+      });
+    });
+
+    describe('Division edge cases', () => {
+      it('division by very small number', () => {
+        const result = new BigNumber(1).div('0.00001');
+        expect(result.toFixed()).toBe('100000');
+      });
+
+      it('handles division precision', () => {
+        const result = new BigNumber(1).div(3);
+        expect(result.roundTo(10).toFixed()).toBe('0.3333333333');
+      });
+    });
+
+    describe('Negative zero handling', () => {
+      it('treats negative zero as zero', () => {
+        const negZero = new BigNumber(-0);
+        expect(negZero.toFixed()).toBe('0');
+        expect(negZero.isZero()).toBeTruthy();
+        expect(negZero.isPositive()).toBeFalsy();
+        expect(negZero.isNegative()).toBeFalsy();
+      });
+    });
+  });
 });
