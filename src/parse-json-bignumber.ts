@@ -73,8 +73,6 @@ export interface JsonHandler {
  * ```
  */
 function create<T = unknown>(options?: IOptions<T>): JsonHandler {
-  'use strict';
-
   const _options = {
     strict: false,
   };
@@ -136,6 +134,11 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     }
     if (ch === '.') {
       numStr += '.';
+      next();
+      if (peek() < '0' || peek() > '9') {
+        return error('Bad number');
+      }
+      numStr += ch;
       while (next() && peek() >= '0' && peek() <= '9') {
         numStr += ch;
       }
@@ -189,7 +192,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             for (i = 0; i < 4; i += 1) {
               hex = parseInt(next(), 16);
               if (!isFinite(hex)) {
-                break;
+                return error('Bad unicode escape');
               }
               uffff = uffff * 16 + hex;
             }
@@ -285,7 +288,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         key = string();
         white();
         next(':');
-        if (_options.strict && Object.hasOwnProperty.call(obj, key)) {
+        if (_options.strict && Object.hasOwn(obj, key)) {
           error('Duplicate key "' + key + '"');
         }
         obj[key] = value();
@@ -365,13 +368,14 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     let partial: string[];
     let val: unknown = holder[key];
 
-    const isBigNumber = options?.isInstance?.(val) ?? false;
+    let isBigNumber = options?.isInstance?.(val) ?? false;
 
     // Check for NaN and Infinity on BigNumber-like values
     if (isBigNumber) {
       const finiteCheck = val as { isFinite?: () => boolean };
       if (typeof finiteCheck.isFinite === 'function' && !finiteCheck.isFinite()) {
         val = null;
+        isBigNumber = false;
       }
     }
 
@@ -414,10 +418,10 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         partial = [];
 
         // Is the value an array?
-        if (Object.prototype.toString.apply(val) === '[object Array]') {
+        if (Array.isArray(val)) {
           length = (val as unknown[]).length;
           for (i = 0; i < length; i += 1) {
-            partial[i] = str(String(i), val as Record<string, unknown>) ?? 'null';
+            partial[i] = str(String(i), val as unknown as Record<string, unknown>) ?? 'null';
           }
 
           v =
@@ -446,7 +450,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         } else {
           // Otherwise, iterate through all of the keys in the object.
           for (k in val as Record<string, unknown>) {
-            if (Object.prototype.hasOwnProperty.call(val, k)) {
+            if (Object.hasOwn(val as Record<string, unknown>, k)) {
               v = str(k, val as Record<string, unknown>);
               if (v) {
                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
