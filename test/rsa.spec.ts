@@ -23,21 +23,20 @@ describe('RSA', () => {
     expect(valid).toBe(true);
   });
 
-  test('Should get correct rsa md5 signature with async keypair generation', async () => {
+  test('MD5 and SHA1 are blocked as cryptographically broken', async () => {
     const pair = await rsaKeyPair();
     const msg = 'hello world';
     const msgBytes = stringToBytes(msg);
-    const signature = rsaSign(pair.rsaPrivate, msgBytes, 'MD5');
-    const valid = rsaVerify(pair.rsaPublic, msgBytes, signature, 'MD5');
-    expect(valid).toBe(true);
+    // @ts-expect-error -- intentionally passing removed algorithm to verify runtime guard
+    expect(() => rsaSign(pair.rsaPrivate, msgBytes, 'MD5')).toThrow(/unsafe/);
+    // @ts-expect-error -- intentionally passing removed algorithm to verify runtime guard
+    expect(() => rsaSign(pair.rsaPrivate, msgBytes, 'SHA1')).toThrow(/unsafe/);
   });
 
   test('sign and verify with all supported digest algorithms', () => {
     const pair = rsaKeyPairSync(2048);
     const msgBytes = stringToBytes('test message for all digests');
     const algorithms: RSADigestAlgorithm[] = [
-      'MD5',
-      'SHA1',
       'SHA224',
       'SHA256',
       'SHA384',
@@ -109,14 +108,6 @@ describe('RSA', () => {
 
   test('all possible hashes', async () => {
     const testData = [
-      {
-        alg: 'MD5',
-        sig: 'kHOfaGcMkCSaVBwwyg/yy0IrYM3wntSh6/AxfdXDWyGgtxlOoeMi45Btw71hk8a+M2xCQ4FgTu2s3lWbYSTk3qf+hDOgRqOoKDoehAwtMC+DH/d/kcgArtnf9g13D4gbpWrcjb5M9Q6fNcPUfZDT6U13exh6rbjKGdpNCun2DqHzpUUUn96Jkc7XYXQwyEN8IU0J5Ez38dqlyDEvuRykjz/ABd/tQxp1IivVZ9OgAJttVlfAmmYCHPSSQfXAQk1w4fLremHqolQJGZzDCfKkqucni/BdWnMXJikI63y0u1++3Jnipb93PrfmLlGxWinwybD3O9oKiZ2SigHy5/t6eA==',
-      },
-      {
-        alg: 'SHA1',
-        sig: 'r06p9Zmdx+tJQYS2rDq4XLY4TZFofovPsq94gAkI4yCCBIQg7I+pkuixOONisnJZmItUWF9vvo+AGBTSDHDQWcTiVWLXD49ynlEG0GOS/W9zsT7KWYRwaaulXL7PFHSDC87OcuS2n0KEivM3K20QhcC+X/cNR5c6vJ2nmuAE/3xU1qlnMm/bUQYicuQOD0gKLb1BuVqFAZ/KQfKiuzdOoX9Pkg135qAygGSRRFIhJ67kb2lRpqeFS4FgHqc6Cm3oINDxx9MZTZ/DZnaqAByABbAIQhPrZeekg3Ysj8FoOvoxZGpvzb5cbjO6akV+aHnqOcOKksl/h5EKy2BjfNJpWA==',
-      },
       {
         alg: 'SHA256',
         sig: 'AD/Q/AjmUUYlEec3LbBBNA+R8A+hlHyZoQs5BUuawJRqF0ROeJZLXktSegO8q6v+/W5yBRwuSbVSTyb/vtvvM0Qr8ayhKNpcF0unYtILO6g0farJGMU21Ne0I5nNknRveLmXY6itatba+3OU510HtZWmXo+y8qXNEp2VRI6Qpz2hzl1xt9qg8/psuAPNpk1OpFqShyh9lHNkwFQYJ2lDnoMkDWFof4SojTYAvL01sRtFGwjMb+K71QvGH0RX1FdGId/tubmFQRfMJuVpZkGgyZ/8PD245MkxbIJCAKraFst5n0Wi6wx++CT31fU4qLGYdaW3MW3h9zPPUV9RLJfeDQ==',
