@@ -472,14 +472,14 @@ describe('lib', () => {
       expect(stringify(data)).toBe('{"a":0}');
     });
 
-    it('with BigNumber NaN throws (known limitation — lib nullifies value but still calls stringify)', () => {
+    it('with BigNumber NaN serializes as null', () => {
       const data = { a: new BigNumber(NaN) };
-      expect(() => stringify(data)).toThrow();
+      expect(stringify(data)).toBe('{"a":null}');
     });
 
-    it('with BigNumber Infinity throws (known limitation)', () => {
+    it('with BigNumber Infinity serializes as null', () => {
       const data = { a: new BigNumber(Infinity) };
-      expect(() => stringify(data)).toThrow();
+      expect(stringify(data)).toBe('{"a":null}');
     });
 
     it('with array of BigNumbers', () => {
@@ -600,6 +600,52 @@ describe('lib', () => {
     it('handles string with only whitespace chars', () => {
       const { parse } = create();
       expect(parse('{"a":" "}')).toEqual({ a: ' ' });
+    });
+
+    it('throws on bare decimal point (3.)', () => {
+      const { parse } = create();
+      expect(() => parse('3.')).toThrow();
+    });
+
+    it('throws on decimal point without trailing digits (3.e5)', () => {
+      const { parse } = create();
+      expect(() => parse('3.e5')).toThrow();
+    });
+
+    it('throws on malformed unicode escape (\\u00GG)', () => {
+      const { parse } = create();
+      expect(() => parse('"\\u00GG"')).toThrow();
+    });
+
+    it('throws on short unicode escape (\\u00)', () => {
+      const { parse } = create();
+      expect(() => parse('"\\u00"')).toThrow();
+    });
+  });
+
+  // =========================================================================
+  // STRINGIFY — BigNumber NaN/Infinity with replacer (regression)
+  // =========================================================================
+  describe('stringify replacer + BigNumber edge cases', () => {
+    it('replacer receives null for BigNumber NaN', () => {
+      const { stringify } = create(options);
+      const data = { a: new BigNumber(NaN) };
+      const calls: unknown[] = [];
+      stringify(data, function (_key: string, value: unknown) {
+        if (_key === 'a') calls.push(value);
+        return value;
+      });
+      expect(calls[0]).toBeNull();
+    });
+
+    it('replacer can transform BigNumber Infinity null to custom value', () => {
+      const { stringify } = create(options);
+      const data = { a: new BigNumber(Infinity) };
+      const result = stringify(data, function (_key: string, value: unknown) {
+        if (value === null && _key === 'a') return 0;
+        return value;
+      });
+      expect(result).toBe('{"a":0}');
     });
   });
 });
