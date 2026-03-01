@@ -2,12 +2,9 @@ export function keys<T extends Record<string, unknown>>(o: T): (keyof T & string
   return Object.keys(o);
 }
 
-const salt = Math.floor(Date.now() * Math.random());
-let counter = 0;
-
-/** Generate a unique string ID with the given prefix. */
+/** Generate a cryptographically unique string ID with the given prefix. */
 export function uniqueId(prefix: string): string {
-  return `${prefix}-${salt}-${counter++}`;
+  return `${prefix}-${crypto.randomUUID()}`;
 }
 
 /** Wrap a value in an array if it is not already one. */
