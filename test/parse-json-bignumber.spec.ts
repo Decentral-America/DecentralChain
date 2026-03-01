@@ -957,5 +957,143 @@ describe('lib', () => {
         expect(result).toBe('{"a":1,"c":3}');
       });
     });
+
+    // --- Re-entrancy safety (CRITICAL) ---
+    describe('re-entrancy safety', () => {
+      it('parse() from within a reviver does not corrupt outer parse state', () => {
+        const instance = create();
+        const json = '{"a": 1, "b": 2}';
+        const result = instance.parse(json, function (_key, value) {
+          // Re-entrant parse inside the reviver
+          if (_key === 'a') {
+            return instance.parse('{"nested": 99}');
+          }
+          return value;
+        }) as Record<string, unknown>;
+        // Reviver replaced "a" with the re-entrant parse result
+        expect(result['a']).toEqual({ nested: 99 });
+        // "b" should still be intact from the original parse
+        expect(result['b']).toBe(2);
+      });
+
+      it('stringify() from within a replacer does not corrupt outer stringify state', () => {
+        const instance = create();
+        const data = { a: 1, b: { c: 2 } };
+        let innerResult = '';
+        const result = instance.stringify(data, function (_key, value) {
+          // Re-entrant stringify inside the replacer
+          if (_key === 'a') {
+            innerResult = instance.stringify({ inner: 'call' });
+            return value;
+          }
+          return value;
+        });
+        expect(JSON.parse(result)).toEqual({ a: 1, b: { c: 2 } });
+        expect(innerResult).toBe('{"inner":"call"}');
+      });
+
+      it('stringify() with indentation from within a replacer preserves outer indentation', () => {
+        const instance = create();
+        const data = { a: 1, b: 2 };
+        let innerResult = '';
+        const result = instance.stringify(
+          data,
+          function (_key, value) {
+            if (_key === 'a') {
+              // Inner call uses different indentation
+              innerResult = instance.stringify({ x: 1 }, null, 4);
+              return value;
+            }
+            return value;
+          },
+          2,
+        );
+        expect(result).toBe('{\n  "a": 1,\n  "b": 2\n}');
+        expect(innerResult).toBe('{\n    "x": 1\n}');
+      });
+
+      it('stringify() from within a BigNumber replacer preserves BigNumber handling', () => {
+        const instance = create(options);
+        const data = { a: new BigNumber('99999999999999999999'), b: new BigNumber(42) };
+        let innerResult = '';
+        const result = instance.stringify(data, function (_key, value) {
+          if (_key === 'a') {
+            innerResult = instance.stringify({ z: new BigNumber(100) });
+          }
+          return value;
+        });
+        expect(result).toBe('{"a":99999999999999999999,"b":42}');
+        expect(innerResult).toBe('{"z":100}');
+      });
+    });
+
+    // --- Replacer + BigNumber value transformation (CRITICAL) ---
+    describe('replacer transforming BigNumber values', () => {
+      it('replacer returning a different string quotes it (prevents invalid JSON)', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42) };
+        const result = stringify(data, function (_key, value) {
+          if (_key === 'a') return 'hello';
+          return value;
+        });
+        // Must produce valid JSON — "hello" must be quoted
+        expect(result).toBe('{"a":"hello"}');
+        expect(() => JSON.parse(result)).not.toThrow();
+      });
+
+      it('replacer returning same string preserves raw number output', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42) };
+        const result = stringify(data, function (_key, value) {
+          // Return the stringified BigNumber value unchanged
+          return value;
+        });
+        // The BigNumber should still appear as a raw number
+        expect(result).toBe('{"a":42}');
+      });
+
+      it('replacer returning a number for BigNumber produces valid JSON', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42) };
+        const result = stringify(data, function (_key, value) {
+          if (_key === 'a') return 0;
+          return value;
+        });
+        expect(result).toBe('{"a":0}');
+        expect(() => JSON.parse(result)).not.toThrow();
+      });
+
+      it('replacer returning boolean for BigNumber produces valid JSON', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42) };
+        const result = stringify(data, function (_key, value) {
+          if (_key === 'a') return true;
+          return value;
+        });
+        expect(result).toBe('{"a":true}');
+        expect(() => JSON.parse(result)).not.toThrow();
+      });
+
+      it('replacer returning null for BigNumber produces valid JSON', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42) };
+        const result = stringify(data, function (_key, value) {
+          if (_key === 'a') return null;
+          return value;
+        });
+        expect(result).toBe('{"a":null}');
+        expect(() => JSON.parse(result)).not.toThrow();
+      });
+
+      it('replacer returning undefined for BigNumber omits the key', () => {
+        const { stringify } = create(options);
+        const data = { a: new BigNumber(42), b: 1 };
+        const result = stringify(data, function (_key, value) {
+          if (_key === 'a') return undefined;
+          return value;
+        });
+        expect(result).toBe('{"b":1}');
+      });
+    });
   });
 });
