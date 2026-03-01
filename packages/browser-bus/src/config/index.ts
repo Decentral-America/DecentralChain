@@ -14,7 +14,7 @@ export namespace config {
     export const methodsData: Record<TConsoleMethods, { save: boolean; logLevel: number }> = {
       log: { save: false, logLevel: LOG_LEVEL.VERBOSE },
       info: { save: false, logLevel: LOG_LEVEL.VERBOSE },
-      warn: { save: false, logLevel: LOG_LEVEL.VERBOSE },
+      warn: { save: true, logLevel: LOG_LEVEL.VERBOSE },
       error: { save: true, logLevel: LOG_LEVEL.ERRORS },
     };
   }
