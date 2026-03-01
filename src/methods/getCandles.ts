@@ -21,7 +21,9 @@ const possibleParams: Array<TCandlesParamsKey> = [
 ];
 
 const isCandlesParams = (params: any): params is TCandlesParams =>
+  params !== null &&
   typeof params === 'object' &&
+  !Array.isArray(params) &&
   Object.keys(params).every((k: TCandlesParamsKey) =>
     possibleParams.includes(k)
   );
@@ -36,14 +38,14 @@ const isFilters = (filters: any): filters is TCandlesRequestFilters =>
 const validateFilters = (filters: any) =>
   isFilters(filters)
     ? Promise.resolve(filters)
-    : Promise.reject('Wrong filters object');
+    : Promise.reject(new Error('ArgumentsError: invalid candles filters'));
 
 const createRequestForCandles = (rootUrl: string) => ([
   amountAssetId,
   priceAssetId,
   params,
 ]: TCandlesRequestFilters): ILibRequest =>
-  createRequest(`${rootUrl}/candles/${amountAssetId}/${priceAssetId}`, params);
+  createRequest(`${rootUrl}/candles/${encodeURIComponent(amountAssetId)}/${encodeURIComponent(priceAssetId)}`, params);
 
 const createGetCandles: TCreateGetFn<TGetCandles> = (libOptions: ILibOptions) =>
   createMethod<Candle[]>({

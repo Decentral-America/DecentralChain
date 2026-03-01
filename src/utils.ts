@@ -1,6 +1,5 @@
-import { TPredicate, TFunction } from './types';
+import { TFunction } from './types';
 
-export const noop = () => {};
 export const defaultFetch = (...args): Promise<string> => {
   return (window as any)
     .fetch(...args)
@@ -19,8 +18,6 @@ export const pipeP = (...fns: TFunction<any>[]) => (
     (prev, fn) => prev.then(fn),
     Promise.resolve(args.length === 1 ? args[0] : args)
   );
-export const some = (predicate: TPredicate) => (arr: any[]): boolean =>
-  arr.some(predicate);
 
 /**
  * @param obj flat object with primitives or arrays of primitives as values
@@ -37,7 +34,7 @@ const customSerialize = v => {
       return v;
   }
 };
-const createKeyValue = (key, v) => `${key}=${customSerialize(v)}`;
+const createKeyValue = (key, v) => `${encodeURIComponent(key)}=${encodeURIComponent(customSerialize(v))}`;
 export const createQS = (obj: Object): string => {
   const qs = Object.entries(obj)
     .filter(([_, value]) => value !== undefined)

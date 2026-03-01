@@ -50,8 +50,10 @@ describe('Asssets endpoint: ', () => {
 
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any[] = [1, null, NaN, undefined, {}];
-    wrongTypes.map(
-      async t => await expect(client.getAssets(t)).rejects.toBeDefined()
+    await Promise.all(
+      wrongTypes.map(async t =>
+        await expect(client.getAssets(t)).rejects.toBeDefined()
+      )
     );
   });
 });
@@ -91,21 +93,23 @@ describe('Pairs endpoint: ', () => {
       { priceAsset: '' },
       '',
     ];
-    wrongTypes.map(
-      async t =>
-        await expect(
-          client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(t)
-        ).rejects.toBeDefined()
+    await Promise.all(
+      wrongTypes.map(
+        async t =>
+          await expect(
+            client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(t)
+          ).rejects.toBeDefined()
+      )
     );
   });
 });
 
 describe('Aliases endpoint: ', () => {
-  it('fetch is called with correct params#1', async () => {
+  it('fetch is called with correct params for getByAddress', async () => {
     await client.aliases.getByAddress('address');
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
-  it('fetch is called with correct params#1', async () => {
+  it('fetch is called with correct params for getByAddress with showBroken', async () => {
     await client.aliases.getByAddress('address', { showBroken: true });
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
@@ -116,10 +120,12 @@ describe('Aliases endpoint: ', () => {
 
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any = [1, null, NaN, undefined, {}];
-    wrongTypes.map(async t => {
-      await expect(client.aliases.getByAddress(t)).rejects.toBeDefined();
-      await expect(client.aliases.getById(t)).rejects.toBeDefined();
-    });
+    await Promise.all(
+      wrongTypes.map(async t => {
+        await expect(client.aliases.getByAddress(t)).rejects.toBeDefined();
+        await expect(client.aliases.getById(t)).rejects.toBeDefined();
+      })
+    );
   });
 });
 
@@ -143,10 +149,12 @@ describe('Candles endpoint: ', () => {
   });
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any = [null, NaN, {}];
-    wrongTypes.map(async t => {
-      await expect(client.getCandles(null, null, null)).rejects.toBeDefined();
-      await expect(client.getCandles(null, null, t)).rejects.toBeDefined();
-    });
+    await Promise.all(
+      wrongTypes.map(async t => {
+        await expect(client.getCandles(null, null, null)).rejects.toBeDefined();
+        await expect(client.getCandles(null, null, t)).rejects.toBeDefined();
+      })
+    );
   });
 });
 
@@ -268,6 +276,98 @@ describe('TransferTxs endpoint: ', () => {
     it(`fails with (${c.label})`, async () => {
       await expect(client.getTransferTxs(c.params[0])).rejects.toBeDefined();
     });
+  });
+});
+
+describe('MassTransferTxs endpoint: ', () => {
+  type Case = { label: string; params: any[]; expectedUrl?: string };
+  const goodCases: Case[] = [
+    {
+      label: 'single string',
+      params: ['some-tx-id'],
+    },
+    {
+      label: 'empty call',
+      params: [],
+    },
+    {
+      label: 'with one filter',
+      params: [{ sender: 'some-sender' }],
+    },
+    {
+      label: 'with all filters',
+      params: [
+        {
+          sender: 'sender',
+          recipient: 'recipient',
+          assetId: 'assetId',
+          timeStart: '2016-02-01',
+          timeEnd: '2016-03-01',
+          limit: 5,
+          sort: 'asc',
+        },
+      ],
+    },
+  ];
+  const badCases: Case[] = [
+    {
+      label: 'with wrong filters',
+      params: [{ incorrectField: '' }],
+    },
+    {
+      label: 'with number',
+      params: [1],
+    },
+    {
+      label: 'with null',
+      params: [null],
+    },
+  ];
+
+  goodCases.forEach((c) => {
+    it(`works with (${c.label})`, async () => {
+      await client.getMassTransferTxs(c.params[0]);
+      expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
+    });
+  });
+  badCases.forEach((c) => {
+    it(`fails with (${c.label})`, async () => {
+      await expect(client.getMassTransferTxs(c.params[0])).rejects.toBeDefined();
+    });
+  });
+});
+
+describe('Constructor: ', () => {
+  it('throws if no rootUrl is provided', () => {
+    expect(() => new DataServiceClient({} as any)).toThrow(
+      'No rootUrl was presented in options object'
+    );
+  });
+
+  it('applies default fetch, parse, and transform when not provided', () => {
+    const instance = new DataServiceClient({ rootUrl: 'http://example.com' });
+    expect(instance).toBeDefined();
+    expect(instance.getAssets).toBeDefined();
+    expect(instance.getPairs).toBeDefined();
+    expect(instance.getCandles).toBeDefined();
+    expect(instance.getExchangeTxs).toBeDefined();
+    expect(instance.getTransferTxs).toBeDefined();
+    expect(instance.getMassTransferTxs).toBeDefined();
+    expect(instance.aliases).toBeDefined();
+    expect(instance.getAssetsByTicker).toBeDefined();
+  });
+});
+
+describe('Aliases getByIdList: ', () => {
+  it('fetch is called with correct params', async () => {
+    await client.aliases.getByIdList(['alias1', 'alias2']);
+    expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
+  });
+
+  it('throws if called with non-array', async () => {
+    await expect(
+      (client.aliases.getByIdList as any)('not-an-array')
+    ).rejects.toBeDefined();
   });
 });
 
@@ -420,5 +520,55 @@ describe('Long params transforms into POST request', () => {
     );
     await client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(pairs);
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
+  });
+});
+
+describe('Security: rejection errors are proper Error objects', () => {
+  it('getExchangeTxs rejects null with Error', async () => {
+    await expect(client.getExchangeTxs(null)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getTransferTxs rejects null with Error', async () => {
+    await expect(client.getTransferTxs(null)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getMassTransferTxs rejects null with Error', async () => {
+    await expect(client.getMassTransferTxs(null)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getExchangeTxs rejects number with Error', async () => {
+    await expect(client.getExchangeTxs(1 as any)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getCandles rejects with Error', async () => {
+    await expect(client.getCandles(null, null, null)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('aliases.getByIdList rejects non-string items with Error', async () => {
+    await expect(
+      (client.aliases.getByIdList as any)([1, 2, 3])
+    ).rejects.toBeInstanceOf(Error);
+  });
+});
+
+describe('Security: URL-encodes path and query segments', () => {
+  it('encodes special characters in exchange tx id', async () => {
+    await client.getExchangeTxs('id/with?special#chars');
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    expect(lastCall[0]).toContain('id%2Fwith%3Fspecial%23chars');
+    expect(lastCall[0]).not.toContain('id/with?special#chars');
+  });
+
+  it('encodes special characters in transfer tx id', async () => {
+    await client.getTransferTxs('id with spaces');
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    expect(lastCall[0]).toContain('id%20with%20spaces');
+  });
+
+  it('encodes query string values properly', async () => {
+    await client.getExchangeTxs({ sender: 'addr&inject=true' });
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    expect(lastCall[0]).toContain('sender=addr%26inject%3Dtrue');
+    expect(lastCall[0]).not.toContain('sender=addr&inject=true');
   });
 });
