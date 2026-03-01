@@ -1,6 +1,7 @@
 /**
  * @module index
  */
+<<<<<<< HEAD
 import {IReissueParams, WithId, WithProofs, WithSender} from '../transactions'
 <<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
@@ -16,18 +17,31 @@ import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '
 =======
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 >>>>>>> f33083a0 (updated dependencies)
+=======
+import { IReissueParams, WithId, WithProofs, WithSender } from '../transactions'
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {ReissueTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
-
+import { ReissueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 
 /* @echo DOCS */
-export function reissue(paramsOrTx: IReissueParams, seed: TSeedTypes): ReissueTransaction & WithId & WithProofs
-export function reissue(paramsOrTx: IReissueParams & WithSender | ReissueTransaction, seed?: TSeedTypes): ReissueTransaction & WithId & WithProofs
-export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction & WithId & WithProofs{
+export function reissue(
+  paramsOrTx: IReissueParams,
+  seed: TSeedTypes,
+): ReissueTransaction & WithId & WithProofs
+export function reissue(
+  paramsOrTx: (IReissueParams & WithSender) | ReissueTransaction,
+  seed?: TSeedTypes,
+): ReissueTransaction & WithId & WithProofs
+export function reissue(
+  paramsOrTx: any,
+  seed?: TSeedTypes,
+): ReissueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.REISSUE
   const version = paramsOrTx.version || DEFAULT_VERSIONS.REISSUE
   const seedsAndIndexes = convertToPairs(seed)
@@ -54,6 +68,7 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
 <<<<<<< HEAD
 =======
     chainId: networkByte(paramsOrTx.chainId, 76),
+<<<<<<< HEAD
 >>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
     fee: fee(paramsOrTx,100000),
 =======
@@ -62,6 +77,9 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
 =======
     fee: fee(paramsOrTx,100000),
 >>>>>>> f33083a0 (updated dependencies)
+=======
+    fee: fee(paramsOrTx, 100000),
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     id: '',
@@ -71,7 +89,7 @@ export function reissue(paramsOrTx: any, seed?: TSeedTypes): ReissueTransaction 
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx)
 
-  seedsAndIndexes.forEach(([s,i]) => addProof(tx, signBytes(s, bytes),i))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
   tx.id = base58Encode(blake2b(bytes))
 
   return tx

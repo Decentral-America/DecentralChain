@@ -1,6 +1,7 @@
 /**
  * @module index
  */
+<<<<<<< HEAD
 import {ILeaseParams, WithId, WithProofs, WithSender} from '../transactions'
 <<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
@@ -16,18 +17,28 @@ import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '
 =======
 import {addProof, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
 >>>>>>> f33083a0 (updated dependencies)
+=======
+import { ILeaseParams, WithId, WithProofs, WithSender } from '../transactions'
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic'
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {LeaseTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
-
+import { LeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 
 /* @echo DOCS */
-export function lease(params: ILeaseParams, seed: TSeedTypes): LeaseTransaction & WithId & WithProofs
-export function lease(paramsOrTx: ILeaseParams & WithSender | LeaseTransaction, seed?: TSeedTypes): LeaseTransaction & WithId & WithProofs
-export function lease(paramsOrTx: any, seed?: TSeedTypes): LeaseTransaction & WithId & WithProofs{
+export function lease(
+  params: ILeaseParams,
+  seed: TSeedTypes,
+): LeaseTransaction & WithId & WithProofs
+export function lease(
+  paramsOrTx: (ILeaseParams & WithSender) | LeaseTransaction,
+  seed?: TSeedTypes,
+): LeaseTransaction & WithId & WithProofs
+export function lease(paramsOrTx: any, seed?: TSeedTypes): LeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.LEASE
   const version = paramsOrTx.version || DEFAULT_VERSIONS.LEASE
   const seedsAndIndexes = convertToPairs(seed)

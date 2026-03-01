@@ -1,42 +1,51 @@
 export const invokeScriptTx = {
-    'InvokeScript TX (type 16 v2)  case 1': {
-        'Bytes': 'CFQSIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGgQQoMIeIPTlkL2mLygCogcbChYKFMCJgEpQH4BNVdKzU7jR4jDzcS12EgEA',
-        'Json': {
-            'id': '2tCkJaF4pwcb4WGypPXoPHqfZnP88eQNyiC5UcrZznHf',
-            'type': 16,
-            'version': 2,
-            'chainId': 84,
-            'senderPublicKey': 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
-            'sender': '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
-            'dApp': '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
-            'payment': [],
-            'fee': 500000,
-            'feeAssetId': null,
-            'timestamp': 1625236452084,
-            'proofs': ['2GEDViputWwT9zA2do5rU1ErhYMubtpka78D5LFx7Uqqo2t91rCve4jzVKZtZN4eGpPkBSXyyaJmD6A4jVoDPjfE'],
-        },
+  'InvokeScript TX (type 16 v2)  case 1': {
+    Bytes:
+      'CFQSIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGgQQoMIeIPTlkL2mLygCogcbChYKFMCJgEpQH4BNVdKzU7jR4jDzcS12EgEA',
+    Json: {
+      id: '2tCkJaF4pwcb4WGypPXoPHqfZnP88eQNyiC5UcrZznHf',
+      type: 16,
+      version: 2,
+      chainId: 84,
+      senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
+      sender: '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
+      dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+      payment: [],
+      fee: 500000,
+      feeAssetId: null,
+      timestamp: 1625236452084,
+      proofs: [
+        '2GEDViputWwT9zA2do5rU1ErhYMubtpka78D5LFx7Uqqo2t91rCve4jzVKZtZN4eGpPkBSXyyaJmD6A4jVoDPjfE',
+      ],
     },
-    'InvokeScript TX (type 16 v2)  case 2': {
-        'Bytes': 'CFQSIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGiwKIMoaglOigu8JmH4V0CybQhURZvAmnXAhYMYSGV4ZSfbrEP//////////fyD95ZC9pi8oAqIHVgoWChTAiYBKUB+ATVXSs1O40eIw83EtdhISAQkBAAAAB2RlZmF1bHQAAAAAGgIQChokCiDKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn26xAU',
-        'Json': {
-            'id': 'EAFs6Mv92VsvFnxgrHnZQ9qbxPsCukdSsmnZ39kBBhgK',
-            'type': 16,
-            'version': 2,
-            'chainId': 84,
-            'senderPublicKey': 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
-            'sender': '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
-            'dApp': '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
-            'call': {'function': 'default', 'args': []},
-            'payment': [{'amount': 10, 'assetId': null}, {
-                'amount': 20,
-                'assetId': 'EbvoPG191bVa2HfMGoRAJyeysHQbTDLDMadtSfCmSggJ',
-            }],
-            'fee': '9223372036854775807',
-            'feeAssetId': 'EbvoPG191bVa2HfMGoRAJyeysHQbTDLDMadtSfCmSggJ',
-            'timestamp': 1625236452093,
-            'proofs': ['57bggAeTpEzjf5d5Lcuc8bKo5NH3bzKtUG2CJZCE4w2HcNoY4DncAMmvVGfc5aMz5Unoa6KxKPv3TYjUo99N71rs'],
+  },
+  'InvokeScript TX (type 16 v2)  case 2': {
+    Bytes:
+      'CFQSIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGiwKIMoaglOigu8JmH4V0CybQhURZvAmnXAhYMYSGV4ZSfbrEP//////////fyD95ZC9pi8oAqIHVgoWChTAiYBKUB+ATVXSs1O40eIw83EtdhISAQkBAAAAB2RlZmF1bHQAAAAAGgIQChokCiDKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn26xAU',
+    Json: {
+      id: 'EAFs6Mv92VsvFnxgrHnZQ9qbxPsCukdSsmnZ39kBBhgK',
+      type: 16,
+      version: 2,
+      chainId: 84,
+      senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
+      sender: '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
+      dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+      call: { function: 'default', args: [] },
+      payment: [
+        { amount: 10, assetId: null },
+        {
+          amount: 20,
+          assetId: 'EbvoPG191bVa2HfMGoRAJyeysHQbTDLDMadtSfCmSggJ',
         },
-    },/*
+      ],
+      fee: '9223372036854775807',
+      feeAssetId: 'EbvoPG191bVa2HfMGoRAJyeysHQbTDLDMadtSfCmSggJ',
+      timestamp: 1625236452093,
+      proofs: [
+        '57bggAeTpEzjf5d5Lcuc8bKo5NH3bzKtUG2CJZCE4w2HcNoY4DncAMmvVGfc5aMz5Unoa6KxKPv3TYjUo99N71rs',
+      ],
+    },
+  } /*
     'InvokeScript TX (type 16 v2)  case 3': {
         'Bytes': 'CFQSIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGgQQoMIeIP/lkL2mLygCogeIAQoWChTAiYBKUB+ATVXSs1O40eIw83EtdhJIAQkBAAAADnRlc3RGdW5jdGlvblYyAAAABwYHAQAAAAZhYWFhYWEAf/////////8AAAAAAAAAAAACAAAABmFhYWFhYQIAAAAAGiQKIMoaglOigu8JmH4V0CybQhURZvAmnXAhYMYSGV4ZSfbrEBQ=',
         'Json': {
@@ -152,5 +161,5 @@ export const invokeScriptTx = {
             'timestamp': 1625236452097,
             'proofs': ['2RfTMxn8U9KYB3FRKyGNXRp5mbNCPutXi4HpF43ZnNEmMDfLiv68YsJyKodaD1akVHX8KEtKb7C6U1vsjhAeDChP'],
         },
-    },*/
+    },*/,
 }

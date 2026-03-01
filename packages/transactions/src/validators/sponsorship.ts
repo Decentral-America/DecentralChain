@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
 import {
   defaultValue,
   getError,
@@ -11,7 +11,7 @@ import {
   isNumber,
   isPublicKey,
   orEq,
-  validateByShema
+  validateByShema,
 } from './validators'
 
 const sponsorshipScheme = {
@@ -22,7 +22,7 @@ const sponsorshipScheme = {
   minSponsoredAssetFee: isNaturalNumberOrNullLike,
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
-  proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),
-};
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+}
 
-export const sponsorshipValidator = validateByShema(sponsorshipScheme, getError);
+export const sponsorshipValidator = validateByShema(sponsorshipScheme, getError)

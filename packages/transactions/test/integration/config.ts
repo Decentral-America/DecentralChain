@@ -14,9 +14,8 @@ export const MASTER_SEED = 'test acc 3'
 export const MATCHER_PUBLIC_KEY = 'DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY'
 export const MATCHER_URL = 'https://matcher.decentralchain.io'
 
-
-
 export const TIMEOUT = 60000
 
 // @ts-ignore
-export const randomHexString = (l: number) => [...randomBytes(l)].map(n => n.toString(16)).join('')
+export const randomHexString = (l: number) =>
+  [...randomBytes(l)].map((n) => n.toString(16)).join('')

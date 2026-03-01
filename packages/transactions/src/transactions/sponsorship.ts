@@ -1,6 +1,7 @@
 /**
  * @module index
  */
+<<<<<<< HEAD
 import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transactions'
 <<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
@@ -16,18 +17,31 @@ import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '
 =======
 import {addProof, getSenderPublicKey, convertToPairs, fee, networkByte} from '../generic'
 >>>>>>> f33083a0 (updated dependencies)
+=======
+import { ISponsorshipParams, WithId, WithProofs, WithSender } from '../transactions'
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '../generic'
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 import { TSeedTypes } from '../types'
 import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {SponsorshipTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
-
+import { SponsorshipTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 
 /* @echo DOCS */
-export function sponsorship(params: ISponsorshipParams, seed: TSeedTypes): SponsorshipTransaction & WithId & WithProofs
-export function sponsorship(paramsOrTx: ISponsorshipParams & WithSender | SponsorshipTransaction, seed?: TSeedTypes): SponsorshipTransaction & WithId & WithProofs
-export function sponsorship(paramsOrTx: any, seed?: TSeedTypes): SponsorshipTransaction & WithId & WithProofs{
+export function sponsorship(
+  params: ISponsorshipParams,
+  seed: TSeedTypes,
+): SponsorshipTransaction & WithId & WithProofs
+export function sponsorship(
+  paramsOrTx: (ISponsorshipParams & WithSender) | SponsorshipTransaction,
+  seed?: TSeedTypes,
+): SponsorshipTransaction & WithId & WithProofs
+export function sponsorship(
+  paramsOrTx: any,
+  seed?: TSeedTypes,
+): SponsorshipTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SPONSORSHIP
   const version = paramsOrTx.version || DEFAULT_VERSIONS.SPONSORSHIP
   const seedsAndIndexes = convertToPairs(seed)

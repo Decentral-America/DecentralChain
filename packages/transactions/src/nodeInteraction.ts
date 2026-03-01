@@ -6,8 +6,13 @@ import * as assets_route from '@decentralchain/node-api-js/cjs/api-node/assets'
 import * as rewards_route from '@decentralchain/node-api-js/cjs/api-node/rewards'
 import * as debug_route from '@decentralchain/node-api-js/cjs/api-node/debug'
 import { RequestInit } from '@decentralchain/node-api-js/cjs/tools/request'
-import {DataTransactionEntry, SignedTransaction, Transaction, WithApiMixin} from '@decentralchain/ts-types'
-import {TLong} from '@decentralchain/node-api-js/cjs/interface'
+import {
+  DataTransactionEntry,
+  SignedTransaction,
+  Transaction,
+  WithApiMixin,
+} from '@decentralchain/ts-types'
+import { TLong } from '@decentralchain/node-api-js/cjs/interface'
 
 export type CancellablePromise<T> = Promise<T> & { cancel: () => void }
 
@@ -19,7 +24,7 @@ const delay = (timeout: number): CancellablePromise<{}> => {
     t.id = setTimeout(resolve, timeout)
   }) as any
 
-  (<any>p).cancel = () => {
+  ;(<any>p).cancel = () => {
     t.resolve()
     clearTimeout(t.id)
   }
@@ -27,13 +32,11 @@ const delay = (timeout: number): CancellablePromise<{}> => {
   return p
 }
 
-const rerun = (f: () => Promise<any>, expired: boolean, t = 1000) => delay(t).then(_ => expired ?
-  Promise.reject(new Error('Tx wait stopped: timeout')) :
-  f()
-)
+const rerun = (f: () => Promise<any>, expired: boolean, t = 1000) =>
+  delay(t).then((_) => (expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : f()))
 
 export interface INodeRequestOptions {
-  timeout?: number,
+  timeout?: number
   apiBase: string
 }
 
@@ -43,7 +46,7 @@ const DEFAULT_NODE_REQUEST_OPTIONS = {
 }
 
 export const currentHeight = async (apiBase: string): Promise<number> => {
-  return blocks_route.fetchHeight(apiBase).then(({height}) => height)
+  return blocks_route.fetchHeight(apiBase).then(({ height }) => height)
 }
 
 export async function waitForHeight(height: number, options: INodeRequestOptions) {
@@ -51,17 +54,19 @@ export async function waitForHeight(height: number, options: INodeRequestOptions
 
   let expired = false
   const to = delay(timeout)
-  to.then(() => expired = true)
+  to.then(() => (expired = true))
 
-  const promise = (): Promise<number> => currentHeight(apiBase)
-    .then(x => {
-      if (x >= height) {
-        to.cancel()
-        return x
-      } else {
-        return rerun(promise, expired, 10000)
-      }
-    }).catch(_ => rerun(promise, expired))
+  const promise = (): Promise<number> =>
+    currentHeight(apiBase)
+      .then((x) => {
+        if (x >= height) {
+          to.cancel()
+          return x
+        } else {
+          return rerun(promise, expired, 10000)
+        }
+      })
+      .catch((_) => rerun(promise, expired))
 
   return promise()
 }
@@ -77,48 +82,52 @@ type TxStatus = Transaction & PropApplicationStatus
  * @param txId - DCC address as base58 string
  * @param options
  */
-export async function waitForTx(txId: string, options: INodeRequestOptions, requestOptions?: RequestInit): Promise<TxStatus> {
+export async function waitForTx(
+  txId: string,
+  options: INodeRequestOptions,
+  requestOptions?: RequestInit,
+): Promise<TxStatus> {
   const { timeout, apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options }
 
   let expired = false
   const to = delay(timeout)
-  to.then(() => expired = true)
+  to.then(() => (expired = true))
 
   const promise = (): Promise<TxStatus> =>
-      tx_route.fetchInfo(apiBase, txId, requestOptions)
-    .then(x => {
-      to.cancel()
-      return x as any //todo: fix types
-    })
-    .catch(_ => delay(1000)
-      .then(_ => expired ?
-        Promise.reject(new Error('Tx wait stopped: timeout')) :
-        promise()))
+    tx_route
+      .fetchInfo(apiBase, txId, requestOptions)
+      .then((x) => {
+        to.cancel()
+        return x as any //todo: fix types
+      })
+      .catch((_) =>
+        delay(1000).then((_) =>
+          expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : promise(),
+        ),
+      )
 
   return promise()
 }
 
-const process400 = (resp: any) => resp.status === 400
-  ? Promise.reject(Object.assign(new Error(), resp.data))
-  : resp
+const process400 = (resp: any) =>
+  resp.status === 400 ? Promise.reject(Object.assign(new Error(), resp.data)) : resp
 
 export async function waitForTxWithNConfirmations(
   txId: string,
   confirmations: number,
   options: INodeRequestOptions,
-  requestOptions?: RequestInit
+  requestOptions?: RequestInit,
 ): Promise<TxStatus> {
-
   const { timeout } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options }
 
   let expired = false
   const to = delay(timeout)
-  to.then(() => expired = true)
+  to.then(() => (expired = true))
 
   let tx = await waitForTx(txId, options, requestOptions)
 
   let txHeight = (tx as any).height
-  let currentHeight = (tx as any).height
+  const currentHeight = (tx as any).height
 
   while (txHeight + confirmations > currentHeight) {
     if (expired) throw new Error('Tx wait stopped: timeout')
@@ -130,7 +139,11 @@ export async function waitForTxWithNConfirmations(
   return tx
 }
 
-export async function waitNBlocks(blocksCount: number, options: INodeRequestOptions = DEFAULT_NODE_REQUEST_OPTIONS, requestOptions?: RequestInit) {
+export async function waitNBlocks(
+  blocksCount: number,
+  options: INodeRequestOptions = DEFAULT_NODE_REQUEST_OPTIONS,
+  requestOptions?: RequestInit,
+) {
   const { apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options }
   const height = await currentHeight(apiBase)
   const target = height + blocksCount
@@ -143,7 +156,11 @@ export async function waitNBlocks(blocksCount: number, options: INodeRequestOpti
  * @param txId - transaction ID as base58 string
  * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
  */
-export async function transactionById(txId: string, nodeUrl: string, requestOptions?: RequestInit): Promise<Transaction & WithId & { height: number }> {
+export async function transactionById(
+  txId: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<Transaction & WithId & { height: number }> {
   return tx_route.fetchInfo(nodeUrl, txId, requestOptions) as any //todo: fix types
 }
 
@@ -152,8 +169,12 @@ export async function transactionById(txId: string, nodeUrl: string, requestOpti
  * @param address - DCC address as base58 string
  * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
  */
-export async function balance(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<number> {
-  return addresses_route.fetchBalance(nodeUrl, address, requestOptions).then(d => +d.balance)
+export async function balance(
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<number> {
+  return addresses_route.fetchBalance(nodeUrl, address, requestOptions).then((d) => +d.balance)
 }
 
 /**
@@ -161,7 +182,11 @@ export async function balance(address: string, nodeUrl: string, requestOptions?:
  * @param address - DCC address as base58 string
  * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
  */
-export async function balanceDetails(address: string, nodeUrl: string, requestOptions?: RequestInit) {
+export async function balanceDetails(
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+) {
   return addresses_route.fetchBalanceDetails(nodeUrl, address, requestOptions)
 }
 
@@ -171,9 +196,15 @@ export async function balanceDetails(address: string, nodeUrl: string, requestOp
  * @param address - DCC address as base58 string
  * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
  */
-export async function assetBalance(assetId: string, address: string, nodeUrl: string, requestOptions?: RequestInit) {
-  return assets_route.fetchBalanceAddressAssetId(nodeUrl, address, assetId, requestOptions)
-    .then(x => x.balance)
+export async function assetBalance(
+  assetId: string,
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+) {
+  return assets_route
+    .fetchBalanceAddressAssetId(nodeUrl, address, assetId, requestOptions)
+    .then((x) => x.balance)
 }
 
 export interface IAccountDataRequestOptions {
@@ -186,9 +217,21 @@ export interface IAccountDataRequestOptions {
  * @param options - DCC address and optional match regular expression. If match is present keys will be filtered by this regexp
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function accountData(options: IAccountDataRequestOptions, nodeUrl: string, requestOptions?: RequestInit): Promise<Record<string, DataTransactionEntry>>
-export async function accountData(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<Record<string, DataTransactionEntry>>
-export async function accountData(options: string | IAccountDataRequestOptions, nodeUrl: string, requestOptions?: RequestInit): Promise<Record<string, DataTransactionEntry>> {
+export async function accountData(
+  options: IAccountDataRequestOptions,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<Record<string, DataTransactionEntry>>
+export async function accountData(
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<Record<string, DataTransactionEntry>>
+export async function accountData(
+  options: string | IAccountDataRequestOptions,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<Record<string, DataTransactionEntry>> {
   let address
   let match
   if (typeof options === 'string') {
@@ -196,21 +239,20 @@ export async function accountData(options: string | IAccountDataRequestOptions, 
     match = undefined
   } else {
     address = options.address
-    match = options.match && encodeURIComponent(typeof options.match === 'string'
-      ? options.match
-      : options.match.source)
+    match =
+      options.match &&
+      encodeURIComponent(typeof options.match === 'string' ? options.match : options.match.source)
   }
 
-  const data: DataTransactionEntry[] =  await addresses_route.data(
+  const data: DataTransactionEntry[] = (await addresses_route.data(
     nodeUrl,
     address,
     { matches: match },
-    requestOptions
-    ) as any //todo fix type
+    requestOptions,
+  )) as any //todo fix type
 
   return data.reduce((acc, item) => ({ ...acc, [item.key]: item }), {})
 }
-
 
 /**
  * Get data from account dictionary by key
@@ -218,20 +260,28 @@ export async function accountData(options: string | IAccountDataRequestOptions, 
  * @param key - dictionary key
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function accountDataByKey(key: string, address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<DataTransactionEntry<TLong> | null> {
+export async function accountDataByKey(
+  key: string,
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<DataTransactionEntry<TLong> | null> {
   return addresses_route.fetchDataKey(nodeUrl, address, key, requestOptions).catch((e) => {
     if (e.error === 304) return null
     else throw e
   })
 }
 
-
 /**
  * Get account script info
  * @param address - DCC address as base58 string
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function scriptInfo(address: string, nodeUrl: string, requestOptions?: RequestInit): Promise<any> {
+export async function scriptInfo(
+  address: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<any> {
   return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions)
 }
 
@@ -255,7 +305,8 @@ export async function rewards(nodeUrl: string): Promise<any>
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
 export async function rewards(height: number, nodeUrl: string): Promise<any>
-export async function rewards(...args: [number, string] | [string]): Promise<any> {//TODO add requestOptions argument
+export async function rewards(...args: [number, string] | [string]): Promise<any> {
+  //TODO add requestOptions argument
   let nodeUrl: string
   let _height: number | undefined = undefined
   if (args[1] !== undefined) {
@@ -269,10 +320,10 @@ export async function rewards(...args: [number, string] | [string]): Promise<any
 }
 
 export interface IStateChangeResponse {
-  data: DataTransactionEntry[],
+  data: DataTransactionEntry[]
   transfers: {
-    address: string,
-    amount: number,
+    address: string
+    amount: number
     assetId: string | null
   }[]
 }
@@ -282,8 +333,14 @@ export interface IStateChangeResponse {
  * @param transactionId - invokeScript transaction id as base58 string
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function stateChanges(transactionId: string, nodeUrl: string, requestOptions?: RequestInit): Promise<IStateChangeResponse> {
-  return debug_route.fetchStateChangesByTxId(nodeUrl, transactionId, requestOptions).then((t: any) => t.stateChanges) as any //todo: fix types
+export async function stateChanges(
+  transactionId: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<IStateChangeResponse> {
+  return debug_route
+    .fetchStateChangesByTxId(nodeUrl, transactionId, requestOptions)
+    .then((t: any) => t.stateChanges) as any //todo: fix types
 }
 
 /**
@@ -292,6 +349,10 @@ export async function stateChanges(transactionId: string, nodeUrl: string, reque
  * @param tx - transaction to send
  * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
  */
-export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(tx: T, nodeUrl: string, requestOptions?: RequestInit ): Promise<T & WithApiMixin> {
+export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(
+  tx: T,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<T & WithApiMixin> {
   return tx_route.broadcast(nodeUrl, tx as any, requestOptions)
 }

@@ -23,7 +23,16 @@ export { auth } from './requests/auth'
 export { dccAuth } from './requests/dccAuth'
 export { invokeScript } from './transactions/invoke-script'
 export { updateAssetInfo } from './transactions/update-asset-info'
-export { signTx, verify, serialize, submitOrder, cancelSubmittedOrder, verifyAuthData, verifyCustomData, verifyDccAuthData } from './general'
+export {
+  signTx,
+  verify,
+  serialize,
+  submitOrder,
+  cancelSubmittedOrder,
+  verifyAuthData,
+  verifyCustomData,
+  verifyDccAuthData,
+} from './general'
 export { waitForTx, broadcast } from './nodeInteraction'
 export { makeTx, makeTxBytes } from './make-tx'
 <<<<<<< HEAD
@@ -64,9 +73,7 @@ export {
 
 export { INodeRequestOptions, IStateChangeResponse } from './nodeInteraction'
 
-export {
-  TSeedTypes, TOption
-} from './types'
+export { TSeedTypes, TOption } from './types'
 
 // internal libraries access
 import * as crypto from '@decentralchain/ts-lib-crypto'
@@ -84,11 +91,4 @@ import * as nodeInteraction from './nodeInteraction'
 import * as validators from './validators'
 import * as protoSerialize from './proto-serialize'
 
-export {
-  libs,
-  seedUtils,
-  nodeInteraction,
-  validators,
-  protoSerialize
-}
-
+export { libs, seedUtils, nodeInteraction, validators, protoSerialize }
