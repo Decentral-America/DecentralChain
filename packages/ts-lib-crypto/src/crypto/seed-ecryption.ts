@@ -1,6 +1,6 @@
 import { type TBase64 } from './interface';
 import { bytesToString, stringToBytes } from '../conversions/string-bytes';
-import * as forgeMd5 from 'node-forge/lib/md5';
+import { md5 } from '../libs/md5';
 import { concat } from './concat-split';
 import { aesDecrypt, aesEncrypt } from './encryption';
 import { base16Encode, base64Decode, base64Encode } from '../conversions/base-xx';
@@ -15,19 +15,26 @@ function strengthenPassword(password: string, rounds = 5000): string {
   return password;
 }
 
-function evpKdf(passphrase: Uint8Array, salt: Uint8Array, output = 48) {
-  const passPlusSalt = bytesToString(concat(passphrase, salt), 'raw');
-  let key = '';
-  let final_key = key;
-  while (final_key.length < output) {
-    key = forgeMd5
-      .create()
-      .update(key + passPlusSalt)
-      .digest()
-      .getBytes();
-    final_key += key;
+/**
+ * OpenSSL EVP_BytesToKey with MD5.
+ *
+ * **Legacy only** — kept for backward compatibility with seeds encrypted by
+ * the DecentralChain client & keeper.  New code should prefer PBKDF2 / HKDF.
+ */
+function evpKdf(passphrase: Uint8Array, salt: Uint8Array, outputLen = 48): Uint8Array {
+  const passPlusSalt = concat(passphrase, salt);
+  const blocks: Uint8Array[] = [];
+  let totalLen = 0;
+  let prev = new Uint8Array(0);
+
+  while (totalLen < outputLen) {
+    const input = concat(prev, passPlusSalt);
+    prev = md5(input);
+    blocks.push(prev);
+    totalLen += prev.length;
   }
-  return final_key;
+
+  return concat(...blocks).slice(0, outputLen);
 }
 
 /**
@@ -40,9 +47,9 @@ function evpKdf(passphrase: Uint8Array, salt: Uint8Array, output = 48) {
 export const encryptSeed = (seed: string, password: string, encryptionRounds?: number): TBase64 => {
   const passphrase = strengthenPassword(password, encryptionRounds);
   const salt = randomBytes(8);
-  const key_iv = evpKdf(stringToBytes(passphrase, 'raw'), salt);
-  const key = stringToBytes(key_iv.slice(0, 32), 'raw');
-  const iv = stringToBytes(key_iv.slice(32), 'raw');
+  const keyIv = evpKdf(stringToBytes(passphrase, 'raw'), salt);
+  const key = keyIv.slice(0, 32);
+  const iv = keyIv.slice(32, 48);
   const encrypted = aesEncrypt(stringToBytes(seed), key, 'CBC', iv);
   return base64Encode(concat(stringToBytes('Salted__'), salt, encrypted));
 };
@@ -61,8 +68,8 @@ export const decryptSeed = (
   const passphrase = strengthenPassword(password, encryptionRounds);
   const encBytes = base64Decode(encryptedSeed);
   const salt = encBytes.slice(8, 16);
-  const key_iv = evpKdf(stringToBytes(passphrase, 'raw'), salt);
-  const key = stringToBytes(key_iv.slice(0, 32), 'raw');
-  const iv = stringToBytes(key_iv.slice(32), 'raw');
+  const keyIv = evpKdf(stringToBytes(passphrase, 'raw'), salt);
+  const key = keyIv.slice(0, 32);
+  const iv = keyIv.slice(32, 48);
   return bytesToString(aesDecrypt(encBytes.slice(16), key, 'CBC', iv));
 };
