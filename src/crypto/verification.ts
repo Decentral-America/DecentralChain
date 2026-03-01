@@ -3,7 +3,7 @@ import { ChainId } from '../extensions/chain-id';
 import { _fromIn } from '../conversions/param';
 import { _hashChain } from './hashing';
 import { address } from './address-keys-seed';
-import axlsign from '../libs/axlsign';
+import curve25519 from '../libs/curve25519';
 
 /** Verify a DecentralChain address against optional chain ID and public key. */
 export const verifyAddress = (
@@ -48,7 +48,7 @@ export const verifySignature = (
   signature: TBinaryIn,
 ): boolean => {
   try {
-    return axlsign.verify(_fromIn(publicKey), _fromIn(bytes), _fromIn(signature));
+    return curve25519.verify(_fromIn(publicKey), _fromIn(bytes), _fromIn(signature));
   } catch (_error) {
     return false;
   }

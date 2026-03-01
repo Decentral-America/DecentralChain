@@ -1,11 +1,11 @@
-import * as forgeCipher from 'node-forge/lib/cipher';
-import * as util from 'node-forge/lib/util';
+import { ecb, cbc, ctr, cfb, gcm } from '@noble/ciphers/aes.js';
+import { equalBytes } from '@noble/curves/utils.js';
 import { type TBinaryIn, type TRawStringIn, type TBytes, type AESMode } from './interface';
 import { randomBytes } from './random';
 import { _fromRawIn, _fromIn } from '../conversions/param';
 import { hmacSHA256, sha256 } from './hashing';
 import { concat, split } from './concat-split';
-import axlsign from '../libs/axlsign';
+import curve25519 from '../libs/curve25519';
 import { stringToBytes, bytesToString } from '../conversions/string-bytes';
 
 /** Encrypt data using AES with the specified mode. */
@@ -15,11 +15,29 @@ export const aesEncrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  const cipher = forgeCipher.createCipher(`AES-${mode}`, bytesToString(_fromIn(key), 'raw'));
-  cipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
-  cipher.update(util.createBuffer(bytesToString(data, 'raw')));
-  cipher.finish();
-  return stringToBytes(cipher.output.getBytes(), 'raw');
+  const keyBytes = _fromIn(key);
+  const dataBytes = _fromIn(data);
+  const ivBytes = iv ? _fromIn(iv) : undefined;
+  const zeroIV = new Uint8Array(16);
+
+  switch (mode) {
+    case 'CBC':
+      return cbc(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+    case 'CTR':
+      return ctr(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+    case 'ECB':
+      return ecb(keyBytes).encrypt(dataBytes);
+    case 'CFB':
+      return cfb(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+    case 'GCM':
+      return gcm(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+    case 'OFB':
+      throw new Error(
+        'OFB mode is no longer supported. Use CTR (streaming), CBC (block), or GCM (authenticated) instead.',
+      );
+    default:
+      throw new TypeError(`Unsupported AES mode: ${String(mode)}`);
+  }
 };
 
 /** Decrypt AES-encrypted data with the specified mode. */
@@ -29,14 +47,29 @@ export const aesDecrypt = (
   mode: AESMode = 'CBC',
   iv?: TBinaryIn,
 ): TBytes => {
-  const decipher = forgeCipher.createDecipher(`AES-${mode}`, bytesToString(_fromIn(key), 'raw'));
-  decipher.start({ iv: iv && util.createBuffer(bytesToString(_fromIn(iv), 'raw')) });
-  const encbuf = util.createBuffer(bytesToString(_fromIn(encryptedData), 'raw'));
-  decipher.update(encbuf);
-  if (!decipher.finish()) {
-    throw new Error('Failed to decrypt data with provided key');
+  const keyBytes = _fromIn(key);
+  const dataBytes = _fromIn(encryptedData);
+  const ivBytes = iv ? _fromIn(iv) : undefined;
+  const zeroIV = new Uint8Array(16);
+
+  switch (mode) {
+    case 'CBC':
+      return cbc(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+    case 'CTR':
+      return ctr(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+    case 'ECB':
+      return ecb(keyBytes).decrypt(dataBytes);
+    case 'CFB':
+      return cfb(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+    case 'GCM':
+      return gcm(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+    case 'OFB':
+      throw new Error(
+        'OFB mode is no longer supported. Use CTR (streaming), CBC (block), or GCM (authenticated) instead.',
+      );
+    default:
+      throw new TypeError(`Unsupported AES mode: ${String(mode)}`);
   }
-  return stringToBytes(decipher.output.getBytes(), 'raw');
 };
 
 /** Encrypt a message using a shared key (Curve25519 ECDH + AES-CTR + HMAC). */
@@ -73,14 +106,12 @@ export const messageDecrypt = (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn
 
   const CEKhmac = _fromIn(hmacSHA256(concat(CEK, iv), _fromIn(sharedKey)));
 
-  const isValidKey = CEKhmac.every((v: number, i: number) => v === _CEKhmac[i]);
-  if (!isValidKey) throw new Error('Invalid key');
+  if (!equalBytes(CEKhmac, _fromIn(_CEKhmac))) throw new Error('Invalid key');
 
   const M = aesDecrypt(Cc, CEK, 'CTR', iv);
   const Mhmac = _fromIn(hmacSHA256(M, CEK));
 
-  const isValidMessage = Mhmac.every((v: number, i: number) => v === _Mhmac[i]);
-  if (!isValidMessage) throw new Error('Invalid message');
+  if (!equalBytes(Mhmac, _fromIn(_Mhmac))) throw new Error('Invalid message');
 
   return bytesToString(M);
 };
@@ -91,7 +122,7 @@ export const sharedKey = (
   publicKeyTo: TBinaryIn,
   prefix: TRawStringIn,
 ): TBytes => {
-  const sharedKey = axlsign.sharedKey(_fromIn(privateKeyFrom), _fromIn(publicKeyTo));
+  const sharedKey = curve25519.sharedKey(_fromIn(privateKeyFrom), _fromIn(publicKeyTo));
   const prefixHash = sha256(_fromRawIn(prefix));
   return hmacSHA256(sharedKey, prefixHash);
 };

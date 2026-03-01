@@ -1,5 +1,5 @@
 import { type TSeed, type TPrivateKey, type TBinaryIn, type TBytes } from './interface';
-import axlsign from '../libs/axlsign';
+import curve25519 from '../libs/curve25519';
 import { _fromIn } from '../conversions/param';
 import { isPrivateKey } from './util';
 import { privateKey } from './address-keys-seed';
@@ -11,7 +11,7 @@ export const signBytes = (
   bytes: TBinaryIn,
   random?: TBinaryIn,
 ): TBytes =>
-  axlsign.sign(
+  curve25519.sign(
     _fromIn(
       isPrivateKey(seedOrPrivateKey) ? seedOrPrivateKey.privateKey : privateKey(seedOrPrivateKey),
     ),

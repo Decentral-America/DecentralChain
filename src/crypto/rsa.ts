@@ -1,8 +1,37 @@
-import * as forge from 'node-forge';
 import { type RSADigestAlgorithm, type TBytes, type TRSAKeyPair } from './interface';
 import { base64Decode } from '../conversions/base-xx';
-import * as sha3 from 'js-sha3';
-import { sha224 } from 'js-sha256';
+import {
+  generateKeyPairSync,
+  createPublicKey,
+  createPrivateKey,
+  createSign,
+  createVerify,
+  type KeyObject,
+} from 'node:crypto';
+
+/** Minimum RSA key size enforced by this library (NIST SP 800-57). */
+const MIN_RSA_BITS = 2048;
+const DEFAULT_RSA_BITS = 2048;
+const DEFAULT_RSA_E = 0x10001; // 65537
+
+/**
+ * Map of our digest algorithm names to Node.js OpenSSL algorithm strings.
+ * `crypto.createSign`/`createVerify` accept these directly.
+ */
+const DIGEST_MAP: Record<RSADigestAlgorithm, string> = {
+  MD5: 'md5',
+  SHA1: 'sha1',
+  SHA224: 'sha224',
+  SHA256: 'sha256',
+  SHA384: 'sha384',
+  SHA512: 'sha512',
+  'SHA3-224': 'sha3-224',
+  'SHA3-256': 'sha3-256',
+  'SHA3-384': 'sha3-384',
+  'SHA3-512': 'sha3-512',
+};
+
+/* ── Key helpers ─────────────────────────────────────────────────── */
 
 /** Convert a PEM-encoded key to raw bytes. */
 export const pemToBytes = (pem: string) =>
@@ -15,80 +44,79 @@ export const pemToBytes = (pem: string) =>
       .trim(),
   );
 
+/**
+ * Import SPKI DER bytes as a Node.js KeyObject (public key).
+ * Handles both PKCS#1 (`RSAPublicKey`) and SubjectPublicKeyInfo (`spki`)
+ * encodings — tries `spki` first, falls back to `pkcs1`.
+ */
+function importPublicKey(der: Uint8Array): KeyObject {
+  try {
+    return createPublicKey({ key: Buffer.from(der), format: 'der', type: 'spki' });
+  } catch {
+    return createPublicKey({ key: Buffer.from(der), format: 'der', type: 'pkcs1' });
+  }
+}
+
+/**
+ * Import PKCS#1 / PKCS#8 DER bytes as a Node.js KeyObject (private key).
+ */
+function importPrivateKey(der: Uint8Array): KeyObject {
+  try {
+    return createPrivateKey({ key: Buffer.from(der), format: 'der', type: 'pkcs1' });
+  } catch {
+    return createPrivateKey({ key: Buffer.from(der), format: 'der', type: 'pkcs8' });
+  }
+}
+
+/* ── Key generation ──────────────────────────────────────────────── */
+
 /** Generate an RSA key pair synchronously. */
-export const rsaKeyPairSync = (bits?: number, e?: number): TRSAKeyPair => {
-  const kp = forge.pki.rsa.generateKeyPair(bits, e);
+export const rsaKeyPairSync = (
+  bits: number = DEFAULT_RSA_BITS,
+  e: number = DEFAULT_RSA_E,
+): TRSAKeyPair => {
+  if (bits < MIN_RSA_BITS) {
+    throw new Error(`RSA key size must be at least ${MIN_RSA_BITS} bits, got ${bits}`);
+  }
+
+  const kp = generateKeyPairSync('rsa', {
+    modulusLength: bits,
+    publicExponent: e,
+    publicKeyEncoding: { type: 'spki', format: 'der' },
+    privateKeyEncoding: { type: 'pkcs1', format: 'der' },
+  });
+
   return {
-    rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
-    rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
+    rsaPublic: new Uint8Array(kp.publicKey),
+    rsaPrivate: new Uint8Array(kp.privateKey),
   };
 };
 
 /** Generate an RSA key pair asynchronously. */
-export const rsaKeyPair = async (bits?: number, e?: number): Promise<TRSAKeyPair> =>
-  new Promise<TRSAKeyPair>((resolve, reject) => {
-    forge.pki.rsa.generateKeyPair(
-      bits,
-      e,
-      function (
-        err: Error | null,
-        kp: { privateKey: forge.pki.rsa.PrivateKey; publicKey: forge.pki.rsa.PublicKey },
-      ) {
-        if (err) reject(err);
-        resolve({
-          rsaPrivate: pemToBytes(forge.pki.privateKeyToPem(kp.privateKey)),
-          rsaPublic: pemToBytes(forge.pki.publicKeyToPem(kp.publicKey)),
-        });
-      },
-    );
-  });
+export const rsaKeyPair = (
+  bits: number = DEFAULT_RSA_BITS,
+  e: number = DEFAULT_RSA_E,
+): Promise<TRSAKeyPair> => {
+  // Node.js generateKeyPairSync is used intentionally — it's fast for
+  // 2048-bit keys and avoids the callback API complexity. Wrapping in
+  // Promise.resolve keeps the async signature for callers.
+  return Promise.resolve(rsaKeyPairSync(bits, e));
+};
 
-interface DigestInfo {
-  prefix: string; // ASN.1 DER DigestInfo prefix (hex)
-  hash: (bytes: string) => string;
-}
+/* ── Sign / Verify ───────────────────────────────────────────────── */
 
-const DIGEST_INFOS: Record<RSADigestAlgorithm, DigestInfo> = {
-  MD5: {
-    prefix: '3020300c06082a864886f70d020505000410',
-    hash: (bytes) => forge.md.md5.create().update(bytes).digest().getBytes(),
-  },
-  SHA1: {
-    prefix: '3021300906052b0e03021a05000414',
-    hash: (bytes) => forge.md.sha1.create().update(bytes).digest().getBytes(),
-  },
-  SHA224: {
-    prefix: '303d300d06096086480165030402040500041c',
-    hash: (bytes) => forge.util.hexToBytes(sha224(bytes)),
-  },
-  SHA256: {
-    prefix: '3031300d060960864801650304020105000420',
-    hash: (bytes) => forge.md.sha256.create().update(bytes).digest().getBytes(),
-  },
-  SHA384: {
-    prefix: '3041300d060960864801650304020205000430',
-    hash: (bytes) => forge.md.sha384.create().update(bytes).digest().getBytes(),
-  },
-  SHA512: {
-    prefix: '3051300d060960864801650304020305000440',
-    hash: (bytes) => forge.md.sha512.create().update(bytes).digest().getBytes(),
-  },
-  'SHA3-224': {
-    prefix: '302d300d06096086480165030402070500041c',
-    hash: (bytes) => forge.util.hexToBytes(sha3.sha3_224(bytes)),
-  },
-  'SHA3-256': {
-    prefix: '3031300d060960864801650304020805000420',
-    hash: (bytes) => forge.util.hexToBytes(sha3.sha3_256(bytes)),
-  },
-  'SHA3-384': {
-    prefix: '3041300d060960864801650304020905000430',
-    hash: (bytes) => forge.util.hexToBytes(sha3.sha3_384(bytes)),
-  },
-  'SHA3-512': {
-    prefix: '3051300d060960864801650304020a05000440',
-    hash: (bytes) => forge.util.hexToBytes(sha3.sha3_512(bytes)),
-  },
+/** Create an RSA PKCS#1 v1.5 signature. */
+export const rsaSign = (
+  rsaPrivateKey: TBytes,
+  message: TBytes,
+  digest: RSADigestAlgorithm = 'SHA256',
+): TBytes => {
+  const algo = DIGEST_MAP[digest];
+  const key = importPrivateKey(rsaPrivateKey);
+
+  const signer = createSign(algo);
+  signer.update(message);
+  return new Uint8Array(signer.sign({ key, padding: 1 /* RSA_PKCS1_PADDING */ }));
 };
 
 /** Verify an RSA PKCS#1 v1.5 signature. */
@@ -98,65 +126,10 @@ export const rsaVerify = (
   signature: TBytes,
   digest: RSADigestAlgorithm = 'SHA256',
 ): boolean => {
-  const algo = DIGEST_INFOS[digest];
+  const algo = DIGEST_MAP[digest];
+  const key = importPublicKey(rsaPublicKey);
 
-  const msgBytes = forge.util.binary.raw.encode(message);
-  const sigBytes = forge.util.binary.raw.encode(signature);
-  const pubDer = forge.util.binary.raw.encode(rsaPublicKey);
-
-  const hash = algo.hash(msgBytes);
-  const digestInfo = forge.util.hexToBytes(algo.prefix) + hash;
-
-  const asn1 = forge.asn1.fromDer(pubDer);
-  const publicKey = forge.pki.publicKeyFromAsn1(asn1);
-
-  const k = Math.ceil(publicKey.n.bitLength() / 8);
-  const emBuf = forge.util.createBuffer(publicKey.encrypt(sigBytes, 'RAW'));
-  if (emBuf.length() !== k) return false;
-  const em = emBuf.getBytes();
-
-  // PKCS#1 v1.5 padding check: 0x00 0x01 FF..FF 0x00 DigestInfo
-  if (em.charCodeAt(0) !== 0x00 || em.charCodeAt(1) !== 0x01) return false;
-  const psEnd = em.indexOf('\x00', 2);
-  if (psEnd < 0) return false;
-  for (let i = 2; i < psEnd; i++) {
-    if (em.charCodeAt(i) !== 0xff) return false;
-  }
-
-  const recovered = em.substring(psEnd + 1);
-  return recovered === digestInfo;
-};
-
-/** Create an RSA PKCS#1 v1.5 signature. */
-export const rsaSign = (
-  rsaPrivateKey: TBytes,
-  message: TBytes,
-  digest: RSADigestAlgorithm = 'SHA256',
-): TBytes => {
-  const algo = DIGEST_INFOS[digest];
-
-  const msgBytes = forge.util.binary.raw.encode(message);
-
-  // Compute hash
-  const hashBytes = algo.hash(msgBytes);
-
-  // DigestInfo = prefix + hash
-  const digestInfo = algo.prefix ? forge.util.hexToBytes(algo.prefix) + hashBytes : hashBytes;
-
-  // Load private key
-  const derStr = forge.util.binary.raw.encode(rsaPrivateKey);
-  const asn1 = forge.asn1.fromDer(derStr);
-  const privateKey = forge.pki.privateKeyFromAsn1(asn1);
-
-  // PKCS#1 v1.5 padding
-  const k = Math.ceil(privateKey.n.bitLength() / 8);
-  const tLen = digestInfo.length;
-  if (tLen > k - 11) throw new Error('Message too long for RSA key size');
-
-  const PS = String.fromCharCode(...new Array<number>(k - tLen - 3).fill(0xff));
-  const EM = '\x00\x01' + PS + '\x00' + digestInfo;
-
-  // RSA encrypt with private key
-  const sigBytes = privateKey.decrypt(EM, 'RAW');
-  return new Uint8Array(forge.util.binary.raw.decode(sigBytes));
+  const verifier = createVerify(algo);
+  verifier.update(message);
+  return verifier.verify({ key, padding: 1 /* RSA_PKCS1_PADDING */ }, signature);
 };
