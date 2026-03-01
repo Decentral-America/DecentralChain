@@ -79,8 +79,9 @@ export function processDescription(id?: string, required?: boolean) {
         DATA_ENTRY_TYPES.STRING,
       ) as string;
       const description: Record<string, string> = Object.create(null) as Record<string, string>;
+      const langs = langList.length > 0 ? langList.split(',') : [];
 
-      langList.split(',').forEach((lang) => {
+      langs.forEach((lang) => {
         const key = getDescriptionKey(lang, id);
         try {
           description[lang] = getFieldValue(hash, key, DATA_ENTRY_TYPES.STRING) as string;
