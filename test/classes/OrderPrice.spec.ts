@@ -1,196 +1,95 @@
-import { expect } from 'chai';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { getAssetData } from '../assetData';
 import { BigNumber } from '@decentralchain/bignumber';
-import { Asset, AssetPair, OrderPrice } from '../../dist';
+import { Asset, AssetPair, OrderPrice } from '../../src/index';
 
-
-let fakeEIGHT;
-let fakeFOUR;
-let fakeZERO;
-let pairOne;
-let pairTwo;
-
-
-// TODO : add test for `.toFormat()` method
+let fakeEIGHT: Asset;
+let fakeFOUR: Asset;
+let fakeZERO: Asset;
+let pairOne: AssetPair;
+let pairTwo: AssetPair;
 
 describe('OrderPrice', () => {
+  beforeEach(() => {
+    fakeEIGHT = new Asset(
+      getAssetData({
+        id: 'EIGHT',
+        name: 'Eight Precision Token',
+        precision: 8,
+      }),
+    );
 
-    beforeEach(() => {
+    fakeFOUR = new Asset(
+      getAssetData({
+        id: 'FOUR',
+        name: 'Four Precision Token',
+        precision: 4,
+      }),
+    );
 
-        fakeEIGHT = new Asset(getAssetData({
-            id: 'EIGHT',
-            name: 'Eight Precision Token',
-            precision: 8
-        }));
+    fakeZERO = new Asset(
+      getAssetData({
+        id: 'ZERO',
+        name: 'Zero Precision Token',
+        precision: 0,
+      }),
+    );
 
-        fakeFOUR = new Asset(getAssetData({
-            id: 'FOUR',
-            name: 'Four Precision Token',
-            precision: 4
-        }));
+    pairOne = new AssetPair(fakeEIGHT, fakeZERO);
+    pairTwo = new AssetPair(fakeZERO, fakeFOUR);
+  });
 
-        fakeZERO = new Asset(getAssetData({
-            id: 'ZERO',
-            name: 'Zero Precision Token',
-            precision: 0
-        }));
-
-        pairOne = new AssetPair(fakeEIGHT, fakeZERO);
-        pairTwo = new AssetPair(fakeZERO, fakeFOUR);
-
+  describe('creating instances', () => {
+    it('should be an instance of OrderPrice', () => {
+      const orderPrice = new OrderPrice(new BigNumber(10), pairOne);
+      expect(OrderPrice.isOrderPrice(orderPrice)).toBe(true);
     });
 
-    describe('creating instances', () => {
-
-        it('should be an instance of OrderPrice', () => {
-            const orderPrice = new OrderPrice(new BigNumber(10), pairOne);
-            expect(OrderPrice.isOrderPrice(orderPrice)).to.be.true;
-        });
-
+    it('should create from matcher coins', () => {
+      const orderPrice = OrderPrice.fromMatcherCoins('100000000', pairTwo);
+      expect(OrderPrice.isOrderPrice(orderPrice)).toBe(true);
+      expect(orderPrice.toMatcherCoins()).toBe('100000000');
     });
 
-    describe('core functionality', () => {
+    it('should create from tokens', () => {
+      const orderPrice = OrderPrice.fromTokens('5.0000', pairTwo);
+      expect(OrderPrice.isOrderPrice(orderPrice)).toBe(true);
+    });
+  });
 
-        describe('tokens to matcher coins', () => {
-
-            // TODO
-
-            // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromTokens('1.47', fakeDCC, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('147000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are the same [2, 2]', (done) => {
-            //     OrderPrice.fromTokens('0.01', fakeUSD, fakeEUR).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('1000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are the same [0, 0]', (done) => {
-            //     OrderPrice.fromTokens('5', fakeZERO, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('500000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 2]', (done) => {
-            //     OrderPrice.fromTokens('11.5', fakeDCC, fakeUSD).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('1150');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 0]', (done) => {
-            //     OrderPrice.fromTokens('555', fakeBTC, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('555');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [2, 8]', (done) => {
-            //     OrderPrice.fromTokens('2.33445566', fakeEUR, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('233445566000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [0, 8]', (done) => {
-            //     OrderPrice.fromTokens('100.01020304', fakeZERO, fakeDCC).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('1000102030400000000');
-            //     }).then(() => done());
-            // });
-
-        });
-
-        describe('tokens to matcher coins while dropping insignificant digits', () => {
-
-            // TODO
-
-            // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromTokens('11.509910102', fakeDCC, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('1150991010');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 2]', (done) => {
-            //     OrderPrice.fromTokens('11.5099', fakeDCC, fakeUSD).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('1150');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 0]', (done) => {
-            //     OrderPrice.fromTokens('555.33', fakeBTC, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('555');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [2, 8]', (done) => {
-            //     OrderPrice.fromTokens('2.334455667788', fakeEUR, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('233445566000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are the same [0, 0]', (done) => {
-            //     OrderPrice.fromTokens('555.33', fakeZERO, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toMatcherCoins()).to.equal('55500000000');
-            //     }).then(() => done());
-            // });
-
-        });
-
-        describe('matcher coins to tokens', () => {
-
-            // TODO
-
-            // it('should convert when assets precisions are the same [8, 8]', (done) => {
-            //     OrderPrice.fromMatcherCoins('147000000', fakeDCC, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('1.47000000');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are the same [2, 2]', (done) => {
-            //     OrderPrice.fromMatcherCoins('1000000', fakeUSD, fakeEUR).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('0.01');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are the same [0, 0]', (done) => {
-            //     OrderPrice.fromMatcherCoins('500000000', fakeZERO, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('5');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 2]', (done) => {
-            //     OrderPrice.fromMatcherCoins('1150', fakeBTC, fakeEUR).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('11.50');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [8, 0]', (done) => {
-            //     OrderPrice.fromMatcherCoins('555', fakeDCC, fakeZERO).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('555');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [2, 8]', (done) => {
-            //     OrderPrice.fromMatcherCoins('233445566000000', fakeUSD, fakeDCC).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('2.33445566');
-            //     }).then(() => done());
-            // });
-            //
-            // it('should convert when assets precisions are different [0, 8]', (done) => {
-            //     OrderPrice.fromMatcherCoins('1000102030400000000', fakeZERO, fakeBTC).then((orderPrice) => {
-            //         expect(orderPrice.toTokens()).to.equal('100.01020304');
-            //     }).then(() => done());
-            // });
-
-        });
-
+  describe('core functionality', () => {
+    it('should return matcher coins as cloned BigNumber', () => {
+      const orderPrice = new OrderPrice(new BigNumber(500), pairOne);
+      const coins = orderPrice.getMatcherCoins();
+      expect(coins.toFixed(0)).toBe('500');
     });
 
-    describe('conversions', () => {
+    it('should return tokens as cloned BigNumber', () => {
+      const orderPrice = new OrderPrice(new BigNumber(500), pairOne);
+      const tokens = orderPrice.getTokens();
+      expect(typeof tokens.toFixed).toBe('function');
+    });
+  });
 
-        // TODO : JSON
-
-        // TODO : string
-
+  describe('conversions', () => {
+    it('should serialize to JSON', () => {
+      const orderPrice = new OrderPrice(new BigNumber(10), pairOne);
+      const json = orderPrice.toJSON();
+      expect(json.amountAssetId).toBe('EIGHT');
+      expect(json.priceAssetId).toBe('ZERO');
+      expect(typeof json.priceTokens).toBe('string');
     });
 
+    it('should convert to string', () => {
+      const orderPrice = new OrderPrice(new BigNumber(10), pairOne);
+      const str = orderPrice.toString();
+      expect(str).toContain('EIGHT/ZERO');
+    });
+
+    it('should format tokens', () => {
+      const orderPrice = new OrderPrice(new BigNumber(10), pairOne);
+      const formatted = orderPrice.toFormat();
+      expect(typeof formatted).toBe('string');
+    });
+  });
 });

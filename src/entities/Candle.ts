@@ -1,7 +1,8 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 import { config } from '../config';
 import { toBigNumber } from '../utils';
 
+/** Raw candle data used to construct a Candle instance. */
 export interface ICandleInfo {
   readonly time: Date;
   readonly open: BigNumber | string | number;
@@ -15,7 +16,9 @@ export interface ICandleInfo {
   readonly txsCount: number;
 }
 
-export interface ICandleJSON extends ICandleInfo {
+/** Serialized representation of a Candle, returned by `Candle.toJSON()`. */
+export interface ICandleJSON {
+  readonly time: Date;
   readonly open: BigNumber;
   readonly close: BigNumber;
   readonly high: BigNumber;
@@ -23,8 +26,15 @@ export interface ICandleJSON extends ICandleInfo {
   readonly volume: BigNumber;
   readonly quoteVolume: BigNumber;
   readonly weightedAveragePrice: BigNumber;
+  readonly maxHeight: number;
+  readonly txsCount: number;
 }
 
+/**
+ * Represents a candlestick chart data point with OHLCV values.
+ *
+ * All numeric fields are stored as BigNumber instances for precision.
+ */
 export class Candle {
   public readonly time: Date;
   public readonly open: BigNumber;
@@ -37,26 +47,29 @@ export class Candle {
   public readonly maxHeight: number;
   public readonly txsCount: number;
 
+  /**
+   * Create a new Candle instance.
+   *
+   * @param candleObject - Raw candle data. Passed through the global config
+   *   `remapCandle` function before being applied.
+   */
   constructor(candleObject: ICandleInfo) {
-    candleObject = config.get('remapCandle')(candleObject);
+    const remapped = config.get('remapCandle')(candleObject);
 
-    const bigNumbers = [
-      'open',
-      'close',
-      'high',
-      'low',
-      'volume',
-      'quoteVolume',
-      'weightedAveragePrice',
-    ];
+    this.open = toBigNumber(remapped.open);
+    this.close = toBigNumber(remapped.close);
+    this.high = toBigNumber(remapped.high);
+    this.low = toBigNumber(remapped.low);
+    this.volume = toBigNumber(remapped.volume);
+    this.quoteVolume = toBigNumber(remapped.quoteVolume);
+    this.weightedAveragePrice = toBigNumber(remapped.weightedAveragePrice);
 
-    bigNumbers.forEach(key => (this[key] = toBigNumber(candleObject[key])));
-
-    this.time = candleObject.time;
-    this.maxHeight = candleObject.maxHeight;
-    this.txsCount = candleObject.txsCount;
+    this.time = remapped.time;
+    this.maxHeight = remapped.maxHeight;
+    this.txsCount = remapped.txsCount;
   }
 
+  /** Serialize this Candle to a plain JSON-friendly object. */
   public toJSON(): ICandleJSON {
     return {
       time: this.time,
@@ -72,10 +85,12 @@ export class Candle {
     };
   }
 
+  /** Return a string representation. */
   public toString(): string {
     return '[object Candle]';
   }
 
+  /** Type guard: check whether an object is a Candle instance. */
   public static isCandle(object: object): object is Candle {
     return object instanceof Candle;
   }

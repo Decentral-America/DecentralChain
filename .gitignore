@@ -1,11 +1,22 @@
+# IDE
 .idea
 .vscode
-.history
+*.swp
+*.swo
 
-dist/
-tmp/
+# Build output
+dist
+coverage
+*.tsbuildinfo
 
-yarn-error.log
+# Dependencies
 node_modules
-**/*.js
-**/*.js.map
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.size-snapshot.json
+.rpt2_cache
+*.local

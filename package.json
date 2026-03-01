@@ -1,48 +1,118 @@
 {
   "name": "@decentralchain/data-entities",
+  "version": "3.0.0",
   "description": "Domain model classes for DecentralChain blockchain entities",
-  "version": "2.0.7",
-  "license": "Apache-2.0",
-  "private": false,
+  "type": "module",
+  "packageManager": "npm@11.6.2",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Decentral-America/data-entities.git"
+    "url": "git+https://github.com/Decentral-America/data-entities.git"
   },
-  "homepage": "https://github.com/Decentral-America/data-entities",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/data-entities#readme",
   "bugs": {
     "url": "https://github.com/Decentral-America/data-entities/issues"
   },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "11 kB",
+      "import": "{ Asset, Money, OrderPrice }"
+    }
+  ],
   "keywords": [
     "decentralchain",
+    "dcc",
     "blockchain",
     "data-entities",
     "asset",
     "money",
-    "order-price"
+    "order-price",
+    "asset-pair",
+    "candle"
   ],
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "prepare": "tsc --declaration && npm run build && npm run uglify",
-    "uglify": "node_modules/.bin/uglifyjs ./dist/data-entities.js -o ./dist/data-entities.min.js",
-    "build": "./node_modules/.bin/browserify ./dist/index.js --node -s data-entities -u @decentralchain/bignumber -o ./dist/data-entities.js",
-    "prepublish": "npm test",
-    "postversion": "npm publish && git push",
-    "test": "./node_modules/.bin/tsc -p ./test/tsconfig.json && ./node_modules/.bin/mocha $(find ./tmp -name '*.spec.js')"
-  },
+  "author": "DecentralChain",
+  "license": "MIT",
   "dependencies": {
-    "@decentralchain/bignumber": "^1.1.1"
+    "@decentralchain/bignumber": "npm:@waves/bignumber@1.1.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.5",
-    "@types/mocha": "^5.2.5",
-    "browserify": "^16.2.3",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "typescript": "^3.0.3",
-    "uglify-js": "^3.4.9"
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.17",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }

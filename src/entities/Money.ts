@@ -1,198 +1,296 @@
-import { Asset } from './Asset';
+import { type Asset } from './Asset';
 import { BigNumber } from '@decentralchain/bignumber';
 import { toBigNumber } from '../utils';
 
-
+/** Serialized representation of a Money instance, returned by `Money.toJSON()`. */
 export interface IMoneyJSON {
-    assetId: string;
-    tokens: string;
+  readonly assetId: string;
+  readonly tokens: string;
 }
 
+/** Acceptable input types for monetary amounts. */
 export type TMoneyInput = string | number | BigNumber;
 
+/**
+ * Represents a monetary amount tied to a specific Asset.
+ *
+ * Internally stores the value in "coins" (the smallest indivisible unit).
+ * All arithmetic methods return **new** Money instances (immutable pattern).
+ *
+ * @example
+ * ```ts
+ * const money = Money.fromTokens(1.5, myAsset);
+ * const sum = money.add(Money.fromTokens(0.5, myAsset));
+ * console.log(sum.toTokens()); // "2.00000000"
+ * ```
+ */
 export class Money {
-    public readonly asset: Asset;
+  public readonly asset: Asset;
 
-    private _coins: BigNumber;
-    private _tokens: BigNumber;
+  private readonly _coins: BigNumber;
+  private readonly _tokens: BigNumber;
 
-    // @todo refactor to accept full 'tokens' instead of 'coins'
-    // to hide precision arithmetic implementation
-    constructor(coins: TMoneyInput, asset: Asset) {
-        const divider = Money._getDivider(asset.precision);
-        this.asset = asset;
-        this._coins = toBigNumber(coins).roundTo(0, BigNumber.ROUND_MODE.ROUND_FLOOR);
-        this._tokens = this._coins.div(divider);
+  /**
+   * Create a new Money instance from a coin amount.
+   *
+   * @param coins - The amount in the smallest indivisible unit.
+   * @param asset - The asset this money represents.
+   */
+  constructor(coins: TMoneyInput, asset: Asset) {
+    const divider = Money._getDivider(asset.precision);
+    this.asset = asset;
+    // ROUND_FLOOR = 3 (const enum not accessible with verbatimModuleSyntax)
+    this._coins = toBigNumber(coins).roundTo(0, 3 as BigNumber.ROUND_MODE);
+    this._tokens = this._coins.div(divider);
+  }
+
+  /** Get the coin amount as a new BigNumber (clone). */
+  public getCoins(): BigNumber {
+    return this._coins.add(0);
+  }
+
+  /** Get the token amount as a new BigNumber (clone). */
+  public getTokens(): BigNumber {
+    return this._tokens.add(0);
+  }
+
+  /** Return the coin amount as a fixed-point string with no decimals. */
+  public toCoins(): string {
+    return this._coins.toFixed(0);
+  }
+
+  /** Return the token amount as a fixed-point string with asset precision. */
+  public toTokens(): string {
+    return this._tokens.toFixed(this.asset.precision);
+  }
+
+  /** Return the token amount as a formatted string with optional precision. */
+  public toFormat(precision?: number): string {
+    return this._tokens.toFormat(precision);
+  }
+
+  /**
+   * Add another Money amount to this one.
+   *
+   * @param money - Must share the same asset.
+   * @returns A new Money instance with the summed coins.
+   * @throws {Error} If assets do not match.
+   */
+  public add(money: Money): Money {
+    this._matchAssets(money);
+    const inputCoins = money.getCoins();
+    const result = this._coins.add(inputCoins);
+    return new Money(result, this.asset);
+  }
+
+  /** Alias for {@link add}. */
+  public plus(money: Money): Money {
+    return this.add(money);
+  }
+
+  /**
+   * Subtract another Money amount from this one.
+   *
+   * @param money - Must share the same asset.
+   * @returns A new Money instance with the difference.
+   * @throws {Error} If assets do not match.
+   */
+  public sub(money: Money): Money {
+    this._matchAssets(money);
+    const inputCoins = money.getCoins();
+    const result = this._coins.sub(inputCoins);
+    return new Money(result, this.asset);
+  }
+
+  /** Alias for {@link sub}. */
+  public minus(money: Money): Money {
+    return this.sub(money);
+  }
+
+  /**
+   * Multiply the coin amounts of two Money instances.
+   *
+   * @param money - Must share the same asset.
+   * @returns A new Money instance.
+   * @throws {Error} If assets do not match.
+   */
+  public times(money: Money): Money {
+    this._matchAssets(money);
+    return new Money(this.getCoins().mul(money.getCoins()), this.asset);
+  }
+
+  /**
+   * Divide the coin amounts of two Money instances.
+   *
+   * @param money - Must share the same asset.
+   * @returns A new Money instance.
+   * @throws {Error} If assets do not match.
+   */
+  public div(money: Money): Money {
+    this._matchAssets(money);
+    return new Money(this.getCoins().div(money.getCoins()), this.asset);
+  }
+
+  /** Check equality (same asset and coin amount). */
+  public eq(money: Money): boolean {
+    this._matchAssets(money);
+    return this._coins.eq(money.getCoins());
+  }
+
+  /** Check if this amount is strictly less than another. */
+  public lt(money: Money): boolean {
+    this._matchAssets(money);
+    return this._coins.lt(money.getCoins());
+  }
+
+  /** Check if this amount is less than or equal to another. */
+  public lte(money: Money): boolean {
+    this._matchAssets(money);
+    return this._coins.lte(money.getCoins());
+  }
+
+  /** Check if this amount is strictly greater than another. */
+  public gt(money: Money): boolean {
+    this._matchAssets(money);
+    return this._coins.gt(money.getCoins());
+  }
+
+  /** Check if this amount is greater than or equal to another. */
+  public gte(money: Money): boolean {
+    this._matchAssets(money);
+    return this._coins.gte(money.getCoins());
+  }
+
+  /**
+   * Subtract another Money, but only if assets match.
+   * If assets differ, returns `this` unchanged.
+   */
+  public safeSub(money: Money): Money {
+    if (this.asset.id === money.asset.id) {
+      return this.sub(money);
     }
+    return this;
+  }
 
-    public getCoins(): BigNumber {
-        return this._coins.add(0);
+  /** Clamp this money to a minimum of zero (non-negative). */
+  public toNonNegative(): Money {
+    if (this.getTokens().lt(0)) {
+      return this.cloneWithTokens(0);
     }
+    return this;
+  }
 
-    public getTokens(): BigNumber {
-        return this._tokens.add(0);
-    }
+  /** Create a new Money with different coins but the same asset. */
+  public cloneWithCoins(coins: TMoneyInput): Money {
+    return new Money(new BigNumber(coins), this.asset);
+  }
 
-    public toCoins(): string {
-        return this._coins.toFixed(0);
-    }
+  /** Create a new Money from a token amount, using this instance's asset. */
+  public cloneWithTokens(tokens: TMoneyInput): Money {
+    const coins = Money._tokensToCoins(tokens, this.asset.precision);
+    return new Money(coins, this.asset);
+  }
 
-    public toTokens(): string {
-        return this._tokens.toFixed(this.asset.precision);
-    }
+  /**
+   * Convert this money to a different asset using an exchange rate.
+   *
+   * @param asset - The target asset.
+   * @param exchangeRate - Conversion rate between the two assets.
+   * @returns A new Money instance denominated in `asset`.
+   */
+  public convertTo(asset: Asset, exchangeRate: TMoneyInput): Money {
+    return Money.convert(this, asset, toBigNumber(exchangeRate));
+  }
 
-    public toFormat(precision?: number): string {
-        return this._tokens.toFormat(precision);
-    }
+  /** Serialize to a JSON-friendly object with assetId and token string. */
+  public toJSON(): IMoneyJSON {
+    return {
+      assetId: this.asset.id,
+      tokens: this.toTokens(),
+    };
+  }
 
-    public add(money: Money): Money {
-        this._matchAssets(money);
-        const inputCoins = money.getCoins();
-        const result = this._coins.add(inputCoins);
-        return new Money(result, this.asset);
-    }
+  /** Return a human-readable string like `"1.50000000 ASSET_ID"`. */
+  public toString(): string {
+    return `${this.toTokens()} ${this.asset.id}`;
+  }
 
-    public plus(money: Money): Money {
-        return this.add(money);
+  /** @throws {Error} If the other Money has a different asset. */
+  private _matchAssets(money: Money): void {
+    if (this.asset.id !== money.asset.id) {
+      throw new Error(
+        'You cannot apply arithmetic operations to Money created with different assets',
+      );
     }
+  }
 
-    public sub(money: Money): Money {
-        this._matchAssets(money);
-        const inputCoins = money.getCoins();
-        const result = this._coins.sub(inputCoins);
-        return new Money(result, this.asset);
-    }
+  /** Return the Money with the greatest value. */
+  public static max(...moneyList: Money[]): Money {
+    return moneyList.reduce((max, money) => (max.gte(money) ? max : money));
+  }
 
-    public minus(money: Money): Money {
-        return this.sub(money);
-    }
+  /** Return the Money with the smallest value. */
+  public static min(...moneyList: Money[]): Money {
+    return moneyList.reduce((min, money) => (min.lte(money) ? min : money));
+  }
 
-    public times(money: Money): Money {
-        this._matchAssets(money);
-        return new Money(this.getCoins().mul(money.getCoins()), this.asset);
-    }
+  /** Type guard: check whether an object is a Money instance. */
+  public static isMoney(object: object): object is Money {
+    return object instanceof Money;
+  }
 
-    public div(money: Money): Money {
-        this._matchAssets(money);
-        return new Money(this.getCoins().div(money.getCoins()), this.asset);
+  /**
+   * Convert money to a different asset using an exchange rate.
+   *
+   * @param money - The source money.
+   * @param asset - The target asset.
+   * @param exchangeRate - Conversion rate.
+   * @returns A new Money instance denominated in `asset`.
+   */
+  public static convert(money: Money, asset: Asset, exchangeRate: BigNumber | string): Money {
+    if (money.asset === asset) {
+      return money;
     }
+    const difference = money.asset.precision - asset.precision;
+    const divider = new BigNumber(10).pow(difference);
+    const coins = money.getCoins();
+    const result = coins
+      .mul(exchangeRate)
+      .div(divider)
+      // ROUND_DOWN = 1 (const enum not accessible with verbatimModuleSyntax)
+      .roundTo(0, 1 as BigNumber.ROUND_MODE)
+      .toFixed();
+    return new Money(new BigNumber(result), asset);
+  }
 
-    public eq(money: Money): boolean {
-        this._matchAssets(money);
-        return this._coins.eq(money.getCoins());
-    }
+  /**
+   * Create Money from a human-readable token amount.
+   *
+   * @param count - Token amount (e.g. `1.5`).
+   * @param asset - The asset.
+   */
+  public static fromTokens(count: TMoneyInput, asset: Asset): Money {
+    const tokens = toBigNumber(count);
+    return new Money(tokens.mul(new BigNumber(10).pow(asset.precision)), asset);
+  }
 
-    public lt(money: Money): boolean {
-        this._matchAssets(money);
-        return this._coins.lt(money.getCoins());
-    }
+  /**
+   * Create Money from a raw coin amount.
+   *
+   * @param count - Coin amount (smallest indivisible unit).
+   * @param asset - The asset.
+   */
+  public static fromCoins(count: TMoneyInput, asset: Asset): Money {
+    return new Money(count, asset);
+  }
 
-    public lte(money: Money): boolean {
-        this._matchAssets(money);
-        return this._coins.lte(money.getCoins());
-    }
+  private static _tokensToCoins(tokens: TMoneyInput, precision: number): BigNumber {
+    const divider = Money._getDivider(precision);
+    const fixed = new BigNumber(tokens).toFixed(precision);
+    return new BigNumber(fixed).mul(divider);
+  }
 
-    public gt(money: Money): boolean {
-        this._matchAssets(money);
-        return this._coins.gt(money.getCoins());
-    }
-
-    public gte(money: Money): boolean {
-        this._matchAssets(money);
-        return this._coins.gte(money.getCoins());
-    }
-
-    public safeSub(money: Money): Money {
-        if (this.asset.id === money.asset.id) {
-            return this.sub(money);
-        }
-        return this;
-    }
-
-    public toNonNegative(): Money {
-        if (this.getTokens().lt(0)) {
-            return this.cloneWithTokens(0);
-        }
-        return this;
-    }
-
-    // @todo coins refactor
-    public cloneWithCoins(coins: TMoneyInput): Money {
-        return new Money(new BigNumber(coins), this.asset);
-    }
-
-    public cloneWithTokens(tokens: TMoneyInput): Money {
-        const coins = Money._tokensToCoins(tokens, this.asset.precision);
-        return new Money(coins, this.asset);
-    }
-
-    public convertTo(asset: Asset, exchangeRate: TMoneyInput): Money {
-        return Money.convert(this, asset, toBigNumber(exchangeRate));
-    }
-
-    public toJSON(): IMoneyJSON {
-        return {
-            assetId: this.asset.id,
-            tokens: this.toTokens(),
-        };
-    }
-
-    public toString(): string {
-        return `${this.toTokens()} ${this.asset.id}`;
-    }
-
-    private _matchAssets(money: Money): void {
-        if (this.asset.id !== money.asset.id) {
-            throw new Error(
-                'You cannot apply arithmetic operations to Money created with different assets'
-            );
-        }
-    }
-
-    public static max(...moneyList: Array<Money>): Money {
-        return moneyList.reduce((max, money) => max.gte(money) ? max : money);
-    }
-
-    public static min(...moneyList: Array<Money>): Money {
-        return moneyList.reduce((min, money) => min.lte(money) ? min : money);
-    }
-
-    public static isMoney(object: object): object is Money {
-        return object instanceof Money;
-    }
-
-    public static convert(money: Money, asset: Asset, exchangeRate: BigNumber | string): Money {
-        if (money.asset === asset) {
-            return money;
-        } else {
-            const difference = money.asset.precision - asset.precision;
-            const divider = new BigNumber(10).pow(difference);
-            const coins = money.getCoins();
-            const result = coins
-                .mul(exchangeRate)
-                .div(divider)
-                .roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN)
-                .toFixed();
-            return new Money(new BigNumber(result), asset);
-        }
-    }
-
-    public static fromTokens(count: TMoneyInput, asset: Asset): Money {
-        const tokens = toBigNumber(count);
-        return new Money(tokens.mul(new BigNumber(10).pow(asset.precision)), asset);
-    }
-
-    public static fromCoins(count: TMoneyInput, asset: Asset): Money {
-        return new Money(count, asset);
-    }
-
-    private static _tokensToCoins(tokens: TMoneyInput, precision: number): BigNumber {
-        const divider = Money._getDivider(precision);
-        tokens = new BigNumber(tokens).toFixed(precision);
-        return new BigNumber(tokens).mul(divider);
-    }
-
-    private static _getDivider(precision: number): BigNumber {
-        return new BigNumber(10).pow(precision);
-    }
+  private static _getDivider(precision: number): BigNumber {
+    return new BigNumber(10).pow(precision);
+  }
 }

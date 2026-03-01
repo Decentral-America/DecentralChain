@@ -1,88 +1,110 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 import { config } from '../config';
 import { toBigNumber } from '../utils';
 
+/** Raw asset information used to construct an Asset instance. */
 export interface IAssetInfo {
-    readonly ticker?: string;
-    readonly id: string;
-    readonly name: string;
-    readonly precision: number;
-    readonly description: string;
-    readonly height: number;
-    readonly timestamp: Date;
-    readonly sender: string;
-    readonly quantity: BigNumber | string | number;
-    readonly reissuable: boolean;
-    readonly hasScript?: boolean;
-    readonly minSponsoredFee?: BigNumber | string | number;
+  readonly ticker?: string;
+  readonly id: string;
+  readonly name: string;
+  readonly precision: number;
+  readonly description: string;
+  readonly height: number;
+  readonly timestamp: Date;
+  readonly sender: string;
+  readonly quantity: BigNumber | string | number;
+  readonly reissuable: boolean;
+  readonly hasScript?: boolean;
+  readonly minSponsoredFee?: BigNumber | string | number;
 }
 
-export interface IAssetJSON extends IAssetInfo {
-    readonly quantity: BigNumber;
-    readonly minSponsoredFee?: BigNumber
+/** Serialized representation of an Asset, returned by `Asset.toJSON()`. */
+export interface IAssetJSON {
+  readonly ticker: string | null;
+  readonly id: string;
+  readonly name: string;
+  readonly precision: number;
+  readonly description: string;
+  readonly height: number;
+  readonly timestamp: Date;
+  readonly sender: string;
+  readonly quantity: BigNumber;
+  readonly reissuable: boolean;
+  readonly hasScript: boolean;
+  readonly minSponsoredFee: BigNumber | null;
 }
 
+/**
+ * Represents a blockchain asset with metadata and quantity information.
+ *
+ * Instances are effectively immutable — all properties are readonly.
+ */
 export class Asset {
-    public readonly ticker: string | null;
+  public readonly ticker: string | null;
+  public readonly id: string;
+  public readonly name: string;
+  public readonly precision: number;
+  public readonly description: string;
+  public readonly height: number;
+  public readonly timestamp: Date;
+  public readonly sender: string;
+  public readonly quantity: BigNumber;
+  public readonly reissuable: boolean;
+  public readonly hasScript: boolean;
+  public readonly minSponsoredFee: BigNumber | null;
+  public readonly displayName: string;
 
-    public readonly id: string;
-    public readonly name: string;
-    public readonly precision: number;
-    public readonly description: string;
+  /**
+   * Create a new Asset instance.
+   *
+   * @param assetObject - Raw asset data. Passed through the global config
+   *   `remapAsset` function before being applied.
+   */
+  constructor(assetObject: IAssetInfo) {
+    const remapped = config.get('remapAsset')(assetObject);
 
-    public readonly height: number;
-    public readonly timestamp: Date;
-    public readonly sender: string;
-    public readonly quantity: BigNumber;
-    public readonly reissuable: boolean;
-    public readonly hasScript: boolean;
-    public readonly minSponsoredFee: BigNumber | null;
+    this.quantity = toBigNumber(remapped.quantity);
+    this.minSponsoredFee =
+      remapped.minSponsoredFee != null ? toBigNumber(remapped.minSponsoredFee) : null;
 
-    public readonly displayName: string;
+    this.ticker = remapped.ticker ?? null;
+    this.id = remapped.id;
+    this.name = remapped.name;
+    this.precision = remapped.precision;
+    this.description = remapped.description;
+    this.height = remapped.height;
+    this.timestamp = remapped.timestamp;
+    this.sender = remapped.sender;
+    this.reissuable = remapped.reissuable;
+    this.hasScript = remapped.hasScript ?? false;
+    this.displayName = remapped.ticker ?? remapped.name;
+  }
 
-    constructor(assetObject: IAssetInfo) {
+  /** Serialize this Asset to a plain JSON-friendly object. */
+  public toJSON(): IAssetJSON {
+    return {
+      ticker: this.ticker,
+      id: this.id,
+      name: this.name,
+      precision: this.precision,
+      description: this.description,
+      height: this.height,
+      timestamp: this.timestamp,
+      sender: this.sender,
+      quantity: this.quantity,
+      reissuable: this.reissuable,
+      hasScript: this.hasScript,
+      minSponsoredFee: this.minSponsoredFee,
+    };
+  }
 
-        assetObject = config.get('remapAsset')(assetObject);
+  /** Return the asset ID as a string representation. */
+  public toString(): string {
+    return this.id;
+  }
 
-        this.quantity = toBigNumber(assetObject.quantity);
-        this.minSponsoredFee = toBigNumber(assetObject.minSponsoredFee);
-
-        this.ticker = assetObject.ticker || null;
-
-        this.id = assetObject.id;
-        this.name = assetObject.name;
-        this.precision = assetObject.precision;
-        this.description = assetObject.description;
-        this.height = assetObject.height;
-        this.timestamp = assetObject.timestamp;
-        this.sender = assetObject.sender;
-        this.reissuable = assetObject.reissuable;
-        this.hasScript = assetObject.hasScript || false;
-        this.displayName = assetObject.ticker || assetObject.name;
-    }
-
-    public toJSON(): IAssetJSON {
-        return {
-            ticker: this.ticker,
-            id: this.id,
-            name: this.name,
-            precision: this.precision,
-            description: this.description,
-            height: this.height,
-            timestamp: this.timestamp,
-            sender: this.sender,
-            quantity: this.quantity,
-            reissuable: this.reissuable,
-            hasScript: this.hasScript,
-            minSponsoredFee: this.minSponsoredFee
-        };
-    }
-
-    public toString(): string {
-        return this.id;
-    }
-
-    public static isAsset(object: object): object is Asset {
-        return object instanceof Asset;
-    }
+  /** Type guard: check whether an object is an Asset instance. */
+  public static isAsset(object: object): object is Asset {
+    return object instanceof Asset;
+  }
 }
