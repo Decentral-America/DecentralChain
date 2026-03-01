@@ -1,44 +1,121 @@
 {
   "name": "@decentralchain/ledger",
-  "version": "4.0.1",
-  "description": "DecentralChain Ledger hardware wallet integration library for browser",
-  "main": "lib/DCCLedger.js",
-  "types": "lib/DCCLedger.d.ts",
-  "license": "Apache-2.0",
+  "version": "5.0.0",
+  "description": "DecentralChain Ledger hardware wallet integration library",
+  "type": "module",
+  "packageManager": "npm@11.9.0",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/ledger.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/ledger#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/ledger/issues"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "10 kB",
+      "import": "{ DCCLedger }"
+    }
+  ],
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "ledger",
+    "hardware-wallet",
+    "signing",
+    "nano-s",
+    "nano-x",
+    "webusb"
+  ],
   "author": {
     "name": "DecentralChain",
     "email": "info@decentralchain.io",
     "url": "https://decentralchain.io"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Decentral-America/ledger.git"
-  },
-  "scripts": {
-    "build": "tsc && node_modules/.bin/browserify lib/DCCLedger.js -s DCCLedgerJs -u @ledgerhq/logs -u @ledgerhq/hw-transport-u2f -o dist/dcc-ledger.js && npm run build_transport",
-    "build_transport": "node_modules/.bin/browserify ./node_modules/@ledgerhq/hw-transport-u2f/lib/TransportU2F.js -s TransportU2F -o dist/transport-u2f.js",
-    "prepare": "npm run build",
-    "build_ledger_monitor": "rimraf dist && npm run build && node_modules/.bin/browserify ledgerTest/index.js -o dist/ledgerTest.js -t [ babelify ] -t"
-  },
+  "license": "MIT",
   "dependencies": {
-    "@ledgerhq/hw-transport-u2f": "^5.34.0",
-    "@ledgerhq/hw-transport-webusb": "^5.34.1",
-    "@ledgerhq/logs": "^5.19.1",
-    "@decentralchain/ts-lib-crypto": "^1.4.3",
-    "rimraf": "^3.0.2"
+    "@ledgerhq/logs": "6.14.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.54",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.54",
-    "@babel/preset-env": "^7.0.0-beta.54",
-    "@babel/runtime": "^7.0.0-beta.54",
-    "babel-runtime": "^6.26.0",
-    "babelify": "^9.0.0",
-    "browserify": "^16.2.3",
-    "browserify-global-shim": "^1.0.3",
-    "typescript": "^3.9.6",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }
