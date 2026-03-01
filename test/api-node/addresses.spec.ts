@@ -37,9 +37,9 @@ it('Script info simple', async () => {
 
 it('data by key', async () => {
   const data = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
-  // @ts-ignore data may have dynamic type
+  // @ts-expect-error data may have dynamic type
   expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-  // @ts-ignore data may have dynamic type
+  // @ts-expect-error data may have dynamic type
   expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
 });
 

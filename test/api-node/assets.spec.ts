@@ -48,7 +48,9 @@ it('details array', async () => {
   const info = await api.assets.fetchAssetsDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
   expect(info).toBeInstanceOf(Array);
   info
-    .filter((asset: TAssetDetails | TErrorResponse) => asset.hasOwnProperty('error'))
+    .filter((asset: TAssetDetails | TErrorResponse) =>
+      Object.prototype.hasOwnProperty.call(asset, 'error'),
+    )
     .forEach((x) => checkAsset(x as TAssetDetails));
 });
 
@@ -59,7 +61,9 @@ it('details array, longs as string', async () => {
   );
   expect(info).toBeInstanceOf(Array);
   info
-    .filter((asset: TAssetDetails | TErrorResponse) => asset.hasOwnProperty('error'))
+    .filter((asset: TAssetDetails | TErrorResponse) =>
+      Object.prototype.hasOwnProperty.call(asset, 'error'),
+    )
     .forEach((x) => checkAssetLongAsString(x as TAssetDetails));
 });
 

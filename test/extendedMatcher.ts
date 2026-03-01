@@ -1,68 +1,67 @@
-import { printReceived } from 'jest-matcher-utils';
+import { expect } from 'vitest';
 
-declare global {
-    namespace jest {
-        interface Matchers<R> {
-            isStringOrNumber(): R;
-            isNullableString(): R;
-            isNullableNumber(): R;
-            isNullableStringOrNumber(): R;
-        }
-
-        interface Expect {
-            isStringOrNumber(): () => void;
-            isNullableString(): () => void;
-            isNullableNumber(): () => void;
-            isNullableStringOrNumber(): () => void;
-        }
-    }
+interface CustomMatchers<R = unknown> {
+  isStringOrNumber(): R;
+  isNullableString(): R;
+  isNullableNumber(): R;
+  isNullableStringOrNumber(): R;
 }
 
-export function isStringOrNumber(received:any): jest.CustomMatcherResult {
-    return {
-        pass: typeof received == 'string' || received instanceof String || typeof received == 'number' || received instanceof Number,
-        message: () =>
-            `expected null or instance of 'number' or 'string', but received ${printReceived(received)}`,
-    };
+declare module 'vitest' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Assertion<T = any> extends CustomMatchers<T> {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface AsymmetricMatchersContaining extends CustomMatchers {}
 }
 
-export function isNullableString(received:any): jest.CustomMatcherResult {
-    return {
-        pass: received === null || typeof received == 'string' || received instanceof String,
-        message: () =>
-            `expected null or instance of 'string', but received ${printReceived(received)}`,
-    };
+function formatReceived(received: unknown): string {
+  return String(received);
 }
 
-export function isNullableNumber(received:any): jest.CustomMatcherResult {
-    return {
-        pass: received === null || typeof received == 'number' || received instanceof Number,
-        message: () =>
-            `expected null or instance of 'number', but received ${printReceived(received)}`,
-    };
+export function isStringOrNumber(received: any) {
+  return {
+    pass:
+      typeof received == 'string' ||
+      received instanceof String ||
+      typeof received == 'number' ||
+      received instanceof Number,
+    message: () =>
+      `expected null or instance of 'number' or 'string', but received ${formatReceived(received)}`,
+  };
 }
 
-export function isNullableStringOrNumber(received:any): jest.CustomMatcherResult {
-    return {
-        pass: received === null || typeof received == 'string' || received instanceof String || typeof received == 'number' || received instanceof Number,
-        message: () =>
-            `expected null or instance of 'number' or 'string', but received ${printReceived(received)}`,
-    };
+export function isNullableString(received: any) {
+  return {
+    pass: received === null || typeof received == 'string' || received instanceof String,
+    message: () =>
+      `expected null or instance of 'string', but received ${formatReceived(received)}`,
+  };
+}
+
+export function isNullableNumber(received: any) {
+  return {
+    pass: received === null || typeof received == 'number' || received instanceof Number,
+    message: () =>
+      `expected null or instance of 'number', but received ${formatReceived(received)}`,
+  };
+}
+
+export function isNullableStringOrNumber(received: any) {
+  return {
+    pass:
+      received === null ||
+      typeof received == 'string' ||
+      received instanceof String ||
+      typeof received == 'number' ||
+      received instanceof Number,
+    message: () =>
+      `expected null or instance of 'number' or 'string', but received ${formatReceived(received)}`,
+  };
 }
 
 expect.extend({
-    isNullableStringOrNumber
-});
-
-
-expect.extend({
-    isStringOrNumber
-});
-
-expect.extend({
-    isNullableString
-});
-
-expect.extend({
-    isNullableNumber
+  isNullableStringOrNumber,
+  isStringOrNumber,
+  isNullableString,
+  isNullableNumber,
 });
