@@ -1,6 +1,7 @@
 /**
  * @module index
  */
+<<<<<<< HEAD
 import {
   ISetAssetScriptParams,
   WithId, WithProofs,
@@ -15,6 +16,10 @@ import { signBytes, blake2b, base58Encode, } from '@waves/ts-lib-crypto'
 =======
 import { signBytes, blake2b, base58Encode, } from '@decentralchain/ts-lib-crypto'
 >>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
+=======
+import { ISetAssetScriptParams, WithId, WithProofs, WithSender } from '../transactions'
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 import {
   addProof,
   getSenderPublicKey,
@@ -34,13 +39,21 @@ import { binary } from '@decentralchain/marshall'
 import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
-import {SetAssetScriptTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
-
+import { SetAssetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 
 /* @echo DOCS */
-export function setAssetScript(params: ISetAssetScriptParams, seed: TSeedTypes): SetAssetScriptTransaction & WithId & WithProofs
-export function setAssetScript(paramsOrTx: ISetAssetScriptParams & WithSender | SetAssetScriptTransaction, seed?: TSeedTypes): SetAssetScriptTransaction & WithId & WithProofs
-export function setAssetScript(paramsOrTx: any, seed?: TSeedTypes): SetAssetScriptTransaction & WithId & WithProofs{
+export function setAssetScript(
+  params: ISetAssetScriptParams,
+  seed: TSeedTypes,
+): SetAssetScriptTransaction & WithId & WithProofs
+export function setAssetScript(
+  paramsOrTx: (ISetAssetScriptParams & WithSender) | SetAssetScriptTransaction,
+  seed?: TSeedTypes,
+): SetAssetScriptTransaction & WithId & WithProofs
+export function setAssetScript(
+  paramsOrTx: any,
+  seed?: TSeedTypes,
+): SetAssetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_ASSET_SCRIPT
   const version = paramsOrTx.version || DEFAULT_VERSIONS.SET_ASSET_SCRIPT
   const seedsAndIndexes = convertToPairs(seed)

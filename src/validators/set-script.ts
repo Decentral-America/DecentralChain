@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
 import {
   defaultValue,
   getError,
@@ -11,7 +11,7 @@ import {
   isNumber,
   isPublicKey,
   orEq,
-  validateByShema
+  validateByShema,
 } from './validators'
 
 const setScriptScheme = {
@@ -22,7 +22,7 @@ const setScriptScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   script: ifElse(isEq(null), defaultValue(true), isBase64),
-  proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 }
 
-export const setScriptValidator = validateByShema(setScriptScheme, getError);
+export const setScriptValidator = validateByShema(setScriptScheme, getError)

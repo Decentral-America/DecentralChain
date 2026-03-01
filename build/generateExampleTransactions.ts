@@ -11,12 +11,14 @@ const typeNumbers = Object.keys(TRANSACTION_TYPE).slice(0, c)
 const typeNames = Object.keys(TRANSACTION_TYPE).slice(c)
 
 const types = typeNumbers
-  .map((n, i) => (minimalParams as any)[parseInt(n)] != null ? { n, name: typeNames[i] } : undefined)
-  .filter(x => x != null)
+  .map((n, i) =>
+    (minimalParams as any)[parseInt(n)] != null ? { n, name: typeNames[i] } : undefined,
+  )
+  .filter((x) => x != null)
   .reduce((a, b) => ({ ...a, [b!.n]: b!.name }), {})
 
 const objectToSource = (obj: any) =>
-  execSync('node -e \'console.log(JSON.parse(`' + JSON.stringify(obj) + '`))\'', { encoding: 'utf8' })
+  execSync("node -e 'console.log(JSON.parse(`" + JSON.stringify(obj) + "`))'", { encoding: 'utf8' })
 
 const r = Object.keys(types)
   .map((t) => txTypeMap[t as any].sign((minimalParams as any)[t], seed))
@@ -27,9 +29,13 @@ const r = Object.keys(types)
 
 async function main() {
   const result = await Promise.all(r)
-  writeFileSync('./test/exampleTxs.ts', result.map(r => r.statement).join('\n') + `
-  export const exampleTxs = {${result.map(r => `${r.type}: ${r.name}`)}}
-  `)
+  writeFileSync(
+    './test/exampleTxs.ts',
+    result.map((r) => r.statement).join('\n') +
+      `
+  export const exampleTxs = {${result.map((r) => `${r.type}: ${r.name}`)}}
+  `,
+  )
 }
 
 main()

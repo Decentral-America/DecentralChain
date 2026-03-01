@@ -1,4 +1,4 @@
-import {TRANSACTION_TYPE} from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
 import {
   defaultValue,
   getError,
@@ -19,9 +19,8 @@ import {
   pipe,
   prop,
   validateByShema,
-  validatePipe
+  validatePipe,
 } from './validators'
-
 
 const invokeScheme = {
   type: isEq(TRANSACTION_TYPE.INVOKE_SCRIPT),
@@ -30,20 +29,16 @@ const invokeScheme = {
   dApp: isRecipient,
 
   call: ifElse(
-      isRequired(false),
-      defaultValue(true),
-      validatePipe(
-          pipe(prop('function'), isString),
-          pipe(prop('function'), prop('length'), gte(0)),
-          pipe(prop('args'), isArray),
-          (data: Array<unknown>) => data.every(
-              validatePipe(
-                  isRequired(true),
-                  isValidDataPair
-              )
-          )
-      )
+    isRequired(false),
+    defaultValue(true),
+    validatePipe(
+      pipe(prop('function'), isString),
+      pipe(prop('function'), prop('length'), gte(0)),
+      pipe(prop('args'), isArray),
+      (data: Array<unknown>) => data.every(validatePipe(isRequired(true), isValidDataPair)),
+    ),
   ),
+<<<<<<< HEAD
   payment: validatePipe(
       isArray,
       (data: Array<unknown>) => data.every(
@@ -64,13 +59,18 @@ const invokeScheme = {
 >>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
           )
       )
+=======
+  payment: validatePipe(isArray, (data: Array<unknown>) =>
+    data.every(
+      validatePipe(pipe(prop('amount'), isNumberLike), pipe(prop('assetId'), isDccOrAssetId)),
+    ),
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
   ),
   fee: isNaturalNumberOrZeroLike,
   feeAssetId: isDccOrAssetId,
   chainId: isNaturalNumberLike,
   timestamp: isNaturalNumberLike,
-  proofs: ifElse(isArray, defaultValue(true), orEq([ undefined ])),
-};
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+}
 
-
-export const invokeValidator = validateByShema(invokeScheme, getError);
+export const invokeValidator = validateByShema(invokeScheme, getError)
