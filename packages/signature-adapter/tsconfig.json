@@ -14,25 +14,12 @@
     "skipLibCheck": true,
     "strict": true,
     "outDir": "dist",
-    "lib": [
-      "es6",
-      "es7",
-      "dom",
-      "es5",
-      "es2017.object"
-    ],
+    "lib": ["es6", "es7", "dom", "es5", "es2017.object"],
     "baseUrl": "src",
     "paths": {
-      "app/*": [
-        "./app/*"
-      ]
+      "app/*": ["./app/*"]
     }
   },
-  "files": [
-    "src/index.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "files": ["src/index.ts"],
+  "exclude": ["dist", "node_modules"]
 }
