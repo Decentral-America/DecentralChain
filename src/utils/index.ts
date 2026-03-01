@@ -37,10 +37,14 @@ export function isProvider(data: TProviderAsset | IProviderData): data is IProvi
 /** Convert an array to a hash keyed by a specific property. */
 export function toHash<T extends object>(key: keyof T): (list: T[]) => Record<string, T> {
   return (list) =>
-    list.reduce<Record<string, T>>((acc, item) => {
-      acc[String(item[key])] = item;
-      return acc;
-    }, {});
+    list.reduce<Record<string, T>>(
+      (acc, item) => {
+        acc[String(item[key])] = item;
+        return acc;
+      },
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter -- Object.create(null) prevents prototype pollution
+      Object.create(null) as Record<string, T>,
+    );
 }
 
 /** Build an array of data transaction fields from processors. */
