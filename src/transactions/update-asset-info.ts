@@ -24,7 +24,7 @@ export function updateAssetInfo(
   seed?: TSeedTypes,
 ): UpdateAssetInfoTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.UPDATE_ASSET_INFO;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.UPDATE_ASSET_INFO;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.UPDATE_ASSET_INFO;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

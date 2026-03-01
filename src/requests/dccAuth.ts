@@ -29,12 +29,12 @@ export function dccAuth(
     signature: '',
     timestamp,
     publicKey,
-    address: address({ publicKey }, chainId || 'L'),
+    address: address({ publicKey }, chainId ?? 'L'),
   };
 
   const bytes = serializeDccAuthData(rx);
 
-  rx.signature = seedsAndIndexes.map(([seed]) => signBytes(seed, bytes))[0] || '';
+  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]![0], bytes)) || '';
   rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
   return rx;

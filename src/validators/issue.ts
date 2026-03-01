@@ -2,6 +2,7 @@ import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
+  gte,
   ifElse,
   isArray,
   isBase64,
@@ -14,8 +15,10 @@ import {
   isRequired,
   isValidAssetDescription,
   isValidAssetName,
+  lte,
   orEq,
   validateByShema,
+  validatePipe,
 } from './validators';
 
 const issueScheme = {
@@ -25,10 +28,10 @@ const issueScheme = {
   name: isValidAssetName,
   description: isValidAssetDescription,
   quantity: isNaturalNumberLike,
-  decimals: isNumber,
+  decimals: validatePipe(isNumber, gte(0), lte(8)),
   reissuable: isBoolean,
   script: ifElse(isRequired(true), isBase64, defaultValue(true)),
-  chainId: isNumber,
+  chainId: isNaturalNumberLike,
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),

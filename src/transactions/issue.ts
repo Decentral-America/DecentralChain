@@ -29,7 +29,7 @@ export function issue(
 ): IssueTransaction & WithId & WithProofs;
 export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.ISSUE;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.ISSUE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.ISSUE;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -61,5 +61,7 @@ export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & Wi
 }
 
 const checkForNFT = (paramsOrTx: any) => {
-  return paramsOrTx.quantity === 1 && paramsOrTx.reissuable == false && paramsOrTx.decimals == 0;
+  const reissuable = paramsOrTx.reissuable ?? false;
+  const decimals = paramsOrTx.decimals ?? 8;
+  return paramsOrTx.quantity === 1 && reissuable === false && decimals === 0;
 };

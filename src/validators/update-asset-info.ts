@@ -20,6 +20,7 @@ import {
   isArray,
   isAssetId,
   isEq,
+  isNaturalNumberLike,
   isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
@@ -37,6 +38,7 @@ const updateAssetInfoScheme = {
   version: orEq([1]),
   assetId: isAssetId,
   fee: isNaturalNumberOrZeroLike,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
