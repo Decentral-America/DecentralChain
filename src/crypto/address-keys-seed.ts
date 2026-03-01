@@ -14,7 +14,7 @@ import { _hashChain, sha256 } from './hashing';
 import { _fromIn } from '../conversions/param';
 import { concat } from './concat-split';
 import { isPublicKey, isPrivateKey } from './util';
-import axlsign from '../libs/axlsign';
+import curve25519 from '../libs/curve25519';
 
 /** Create a seed-with-nonce pair for deterministic key derivation. */
 export const seedWithNonce = (seed: TSeed, nonce: number): INonceSeed => ({
@@ -53,7 +53,7 @@ export const keyPair = (seed: TSeed): TKeyPair<TBytes> => {
   const { seed: seedBytes, nonce } = Seed.toBinary(seed);
 
   const seedHash = buildSeedHash(seedBytes, nonce);
-  const keys = axlsign.generateKeyPair(seedHash);
+  const keys = curve25519.generateKeyPair(seedHash);
 
   return {
     privateKey: keys.private,
@@ -73,7 +73,7 @@ export const address = (
 /** Derive the public key from a seed or private key. */
 export const publicKey = (seedOrPrivateKey: TSeed | TPrivateKey<TBinaryIn>): TBytes =>
   isPrivateKey(seedOrPrivateKey)
-    ? axlsign.generateKeyPair(_fromIn(seedOrPrivateKey.privateKey)).public
+    ? curve25519.generateKeyPair(_fromIn(seedOrPrivateKey.privateKey)).public
     : keyPair(seedOrPrivateKey).publicKey;
 
 /** Derive the private key from a seed. */
