@@ -1,5 +1,7 @@
-import { Bus, EventType, TMessageContent, console, config } from '../src';
-import { MockAdapter } from './mock/MockAdapter';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
+import { Bus, EventType, config, console } from '../src/index.js';
+import type { TMessageContent } from '../src/index.js';
+import { MockAdapter } from './mock/MockAdapter.js';
 import { Signal } from 'ts-utils';
 
 describe('Bus', () => {
@@ -64,7 +66,7 @@ describe('Bus', () => {
   describe('console', () => {
     const consoleModule = (function (root: { console: Console }) {
       return root.console;
-    })(self || global);
+    })(typeof self !== 'undefined' ? self : globalThis);
 
     const originError = consoleModule.error;
     const originInfo = consoleModule.info;
@@ -83,63 +85,70 @@ describe('Bus', () => {
       };
     });
 
-    it('Check production level', (done) => {
-      let counter = 0;
-      info.on(() => {
-        counter++;
-      });
-      error.on(() => {
-        counter++;
-      });
+    it('Check production level', () =>
+      new Promise<void>((done) => {
+        let counter = 0;
+        info.on(() => {
+          counter++;
+        });
+        error.on(() => {
+          counter++;
+        });
 
-      new MockAdapter();
-      new Bus(adapter).request('some', null, 10).catch(() => {
-        expect(counter).toBe(0);
-        const message = console.getSavedMessages('error');
-        const info = console.getSavedMessages('info');
-        expect(info).toHaveLength(0);
-        expect(String(message[0][0])).toBe(
-          'Error: Timeout error for request with name "some" and timeout 10!',
-        );
-        done();
-      });
-    });
+        new MockAdapter();
+        new Bus(adapter).request('some', null, 10).catch(() => {
+          expect(counter).toBe(0);
+          const message = console.getSavedMessages('error');
+          const infoMessages = console.getSavedMessages('info');
+          expect(infoMessages).toHaveLength(0);
+          expect(String(message[0]![0])).toBe(
+            'Error: Timeout error for request with name "some" and timeout 10!',
+          );
+          done();
+        });
+      }));
 
-    it('Check errors level', (done) => {
-      config.console.logLevel = config.console.LOG_LEVEL.ERRORS;
-      let counter = 0;
-      info.on(() => {
-        counter++;
-      });
-      error.on((e) => {
-        expect(String(e)).toBe('Error: Timeout error for request with name "some" and timeout 10!');
-        counter++;
-      });
+    it('Check errors level', () =>
+      new Promise<void>((done) => {
+        config.console.logLevel = config.console.LOG_LEVEL.ERRORS;
+        let counter = 0;
+        info.on(() => {
+          counter++;
+        });
+        error.on((e) => {
+          expect(String(e)).toBe(
+            'Error: Timeout error for request with name "some" and timeout 10!',
+          );
+          counter++;
+        });
 
-      new MockAdapter();
-      new Bus(adapter).request('some', null, 10).catch(() => {
-        expect(counter).toBe(1);
-        done();
-      });
-    });
+        new MockAdapter();
+        new Bus(adapter).request('some', null, 10).catch(() => {
+          expect(counter).toBe(1);
+          done();
+        });
+      }));
 
-    it('Check verbose level', (done) => {
-      config.console.logLevel = config.console.LOG_LEVEL.VERBOSE;
-      let counter = 0;
-      info.on(() => {
-        counter++;
-      });
-      error.on((e) => {
-        expect(String(e)).toBe('Error: Timeout error for request with name "some" and timeout 10!');
-        counter++;
-      });
+    it('Check verbose level', () =>
+      new Promise<void>((done) => {
+        config.console.logLevel = config.console.LOG_LEVEL.VERBOSE;
+        let counter = 0;
+        info.on(() => {
+          counter++;
+        });
+        error.on((e) => {
+          expect(String(e)).toBe(
+            'Error: Timeout error for request with name "some" and timeout 10!',
+          );
+          counter++;
+        });
 
-      new MockAdapter();
-      new Bus(adapter).request('some', null, 10).catch(() => {
-        expect(counter).toBe(3);
-        done();
-      });
-    });
+        new MockAdapter();
+        new Bus(adapter).request('some', null, 10).catch(() => {
+          expect(counter).toBe(3);
+          done();
+        });
+      }));
 
     afterAll(() => {
       consoleModule.error = originError;
@@ -176,7 +185,7 @@ describe('Bus', () => {
       type: EventType.Event,
       name: 'test-event',
       data: { someData: true },
-    };
+    } as const;
 
     it('on', () => {
       let count = 0;
@@ -254,15 +263,18 @@ describe('Bus', () => {
   });
 
   describe('request api', () => {
-    it('timeout error', (done) => {
-      const adapter = new MockAdapter();
-      const bus = new Bus(adapter, 50);
+    it('timeout error', () =>
+      new Promise<void>((done) => {
+        const adapter = new MockAdapter();
+        const bus = new Bus(adapter, 50);
 
-      bus.request('some-event').catch((e) => {
-        expect(e.message).toBe('Timeout error for request with name "some-event" and timeout 50!');
-        done();
-      });
-    });
+        bus.request('some-event').catch((e: Error) => {
+          expect(e.message).toBe(
+            'Timeout error for request with name "some-event" and timeout 50!',
+          );
+          done();
+        });
+      }));
 
     it('response without request', () => {
       adapter.dispatchAdapterEvent({
@@ -271,108 +283,112 @@ describe('Bus', () => {
       } as any);
     });
 
-    it('request', (done) => {
-      const requestData = {
-        count: 0,
-        name: 'getRequestCount',
-        handler: (c: number) => {
-          requestData.count++;
-          return requestData.count + c;
-        },
-      };
+    it('request', () =>
+      new Promise<void>((done) => {
+        const requestData = {
+          count: 0,
+          name: 'getRequestCount',
+          handler: (c: number) => {
+            requestData.count++;
+            return requestData.count + c;
+          },
+        };
 
-      const secondAdapter = new MockAdapter();
-      const secondBus = new Bus(secondAdapter);
+        const secondAdapter = new MockAdapter();
+        const secondBus = new Bus(secondAdapter);
 
-      secondBus.registerRequestHandler(requestData.name, requestData.handler);
+        secondBus.registerRequestHandler(requestData.name, requestData.handler);
 
-      adapter.onSend.once((data) => {
-        secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
-        secondAdapter.dispatchAdapterEvent(data);
-      });
+        adapter.onSend.once((data) => {
+          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          secondAdapter.dispatchAdapterEvent(data);
+        });
 
-      bus.request(requestData.name, 10, 100).then((r) => {
-        expect(r).toBe(11);
-        done();
-      });
-    });
-
-    it('request async', (done) => {
-      const requestData = {
-        count: 0,
-        name: 'getRequestCount',
-        handler: (c: number) => {
-          requestData.count++;
-          return Promise.resolve(requestData.count + c);
-        },
-      };
-
-      const secondAdapter = new MockAdapter();
-      const secondBus = new Bus(secondAdapter);
-
-      secondBus.registerRequestHandler(requestData.name, requestData.handler);
-
-      adapter.onSend.once((data) => {
-        secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
-        secondAdapter.dispatchAdapterEvent(data);
-      });
-
-      bus.request(requestData.name, 10, 100).then((r) => {
-        expect(r).toBe(11);
-
-        secondBus.unregisterHandler(requestData.name);
-
-        bus.request(requestData.name, 10, 100).catch(() => {
+        bus.request(requestData.name, 10, 100).then((r) => {
+          expect(r).toBe(11);
           done();
         });
-      });
-    });
+      }));
 
-    it('has no handler for request', (done) => {
-      const requestData = {
-        name: 'getRequestCount',
-        handler: () => null,
-      };
+    it('request async', () =>
+      new Promise<void>((done) => {
+        const requestData = {
+          count: 0,
+          name: 'getRequestCount',
+          handler: (c: number) => {
+            requestData.count++;
+            return Promise.resolve(requestData.count + c);
+          },
+        };
 
-      const secondAdapter = new MockAdapter();
-      new Bus(secondAdapter);
+        const secondAdapter = new MockAdapter();
+        const secondBus = new Bus(secondAdapter);
 
-      adapter.onSend.once((data) => {
-        secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
-        secondAdapter.dispatchAdapterEvent(data);
-      });
+        secondBus.registerRequestHandler(requestData.name, requestData.handler);
 
-      bus.request(requestData.name, null, 100).catch((e) => {
-        expect(String(e)).toBe('Error: Has no handler for "getRequestCount" action!');
-        done();
-      });
-    });
+        adapter.onSend.once((data) => {
+          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          secondAdapter.dispatchAdapterEvent(data);
+        });
 
-    it('handler with exception', (done) => {
-      const requestData = {
-        count: 0,
-        name: 'getRequestCount',
-        handler: () => {
-          throw new Error('Test error!');
-        },
-      };
+        bus.request(requestData.name, 10, 100).then((r) => {
+          expect(r).toBe(11);
 
-      const secondAdapter = new MockAdapter();
-      const secondBus = new Bus(secondAdapter);
+          secondBus.unregisterHandler(requestData.name);
 
-      secondBus.registerRequestHandler(requestData.name, requestData.handler);
+          bus.request(requestData.name, 10, 100).catch(() => {
+            done();
+          });
+        });
+      }));
 
-      adapter.onSend.once((data) => {
-        secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
-        secondAdapter.dispatchAdapterEvent(data);
-      });
+    it('has no handler for request', () =>
+      new Promise<void>((done) => {
+        const requestData = {
+          name: 'getRequestCount',
+          handler: () => null,
+        };
 
-      bus.request(requestData.name, 10, 100).catch((e) => {
-        console.log(e);
-        expect(String(e)).toBe('Error: Test error!');
-        done();
-      });
-    });
+        const secondAdapter = new MockAdapter();
+        new Bus(secondAdapter);
+
+        adapter.onSend.once((data) => {
+          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          secondAdapter.dispatchAdapterEvent(data);
+        });
+
+        bus.request(requestData.name, null, 100).catch((e: Error) => {
+          expect(String(e)).toBe('Error: Has no handler for "getRequestCount" action!');
+          done();
+        });
+      }));
+
+    it('handler with exception', () =>
+      new Promise<void>((done) => {
+        const requestData = {
+          count: 0,
+          name: 'getRequestCount',
+          handler: () => {
+            throw new Error('Test error!');
+          },
+        };
+
+        const secondAdapter = new MockAdapter();
+        const secondBus = new Bus(secondAdapter);
+
+        secondBus.registerRequestHandler(requestData.name, requestData.handler);
+
+        adapter.onSend.once((data) => {
+          secondAdapter.onSend.once((d) => adapter.dispatchAdapterEvent(d));
+          secondAdapter.dispatchAdapterEvent(data);
+        });
+
+        bus.request(requestData.name, 10, 100).catch((e: Error) => {
+          console.log(e);
+          expect(String(e)).toBe('Error: Test error!');
+          done();
+        });
+      }));
 
     it('duplicate handler', () => {
       const f = () => null,
@@ -380,6 +396,66 @@ describe('Bus', () => {
 
       bus.registerRequestHandler(name, f);
       expect(() => bus.registerRequestHandler(name, f)).toThrow('Duplicate request handler!');
+    });
+  });
+
+  describe('_messageToData edge cases (defensive parsing)', () => {
+    it('handler receives plain string when response content is a non-object', () =>
+      new Promise<void>((done) => {
+        const secondAdapter = new MockAdapter();
+        const secondBus = new Bus(secondAdapter);
+
+        secondBus.registerRequestHandler('echo', (d: unknown) => d);
+
+        adapter.onSend.once((data) => {
+          // Intercept the outgoing request and craft a malformed response
+          secondAdapter.onSend.once(() => {
+            // Send response with primitive content (not IInternalMessage)
+            adapter.dispatchAdapterEvent({
+              id: (data as any).id,
+              type: EventType.Response,
+              status: 0, // Success
+              content: 'raw-string-content',
+            } as any);
+          });
+          secondAdapter.dispatchAdapterEvent(data);
+        });
+
+        bus.request('echo', null, 500).then((result) => {
+          // When content is not an object, _messageToData returns it as-is
+          expect(result).toBe('raw-string-content');
+          done();
+        });
+      }));
+
+    it('handler receives original object when content has unrecognized type field', () =>
+      new Promise<void>((done) => {
+        adapter.onSend.once((data) => {
+          // Send response with an object that has type/content but type is not 'error'/'data'
+          adapter.dispatchAdapterEvent({
+            id: (data as any).id,
+            type: EventType.Response,
+            status: 0, // Success
+            content: { type: 'unknown-type', content: 42 },
+          } as any);
+        });
+
+        bus.request('echo', null, 500).then((result) => {
+          // When msg.type is not 'error' or 'data', returns the whole object
+          expect(result).toEqual({ type: 'unknown-type', content: 42 });
+          done();
+        });
+      }));
+
+    it('response without active request is silently ignored', () => {
+      // Dispatch a response for an ID that does not exist in _activeRequestHash
+      adapter.dispatchAdapterEvent({
+        type: EventType.Response,
+        id: 'nonexistent-id',
+        status: 0,
+        content: { type: 'data', content: null },
+      } as any);
+      // No error thrown — the method just returns
     });
   });
 });
