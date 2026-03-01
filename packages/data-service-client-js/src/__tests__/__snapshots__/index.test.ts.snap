@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Aliases endpoint:  fetch is called with correct params#1 1`] = `
+exports[`Aliases endpoint:  fetch is called with correct params for getByAddress 1`] = `
 [
   "NODE_URL/aliases?address=address",
   {
@@ -9,7 +9,7 @@ exports[`Aliases endpoint:  fetch is called with correct params#1 1`] = `
 ]
 `;
 
-exports[`Aliases endpoint:  fetch is called with correct params#1 2`] = `
+exports[`Aliases endpoint:  fetch is called with correct params for getByAddress with showBroken 1`] = `
 [
   "NODE_URL/aliases?address=address&showBroken=true",
   {
@@ -21,6 +21,15 @@ exports[`Aliases endpoint:  fetch is called with correct params#1 2`] = `
 exports[`Aliases endpoint:  fetch is called with correct params#2 1`] = `
 [
   "NODE_URL/aliases/id",
+  {
+    "method": "GET",
+  },
+]
+`;
+
+exports[`Aliases getByIdList:  fetch is called with correct params 1`] = `
+[
+  "NODE_URL/aliases/?aliases=alias1,alias2",
   {
     "method": "GET",
   },
@@ -154,6 +163,42 @@ exports[`Long params transforms into POST request works for pairs 1`] = `
 ]
 `;
 
+exports[`MassTransferTxs endpoint:  works with (empty call) 1`] = `
+[
+  "NODE_URL/transactions/mass-transfer",
+  {
+    "method": "GET",
+  },
+]
+`;
+
+exports[`MassTransferTxs endpoint:  works with (single string) 1`] = `
+[
+  "NODE_URL/transactions/mass-transfer/some-tx-id",
+  {
+    "method": "GET",
+  },
+]
+`;
+
+exports[`MassTransferTxs endpoint:  works with (with all filters) 1`] = `
+[
+  "NODE_URL/transactions/mass-transfer?sender=sender&recipient=recipient&assetId=assetId&timeStart=2016-02-01&timeEnd=2016-03-01&limit=5&sort=asc",
+  {
+    "method": "GET",
+  },
+]
+`;
+
+exports[`MassTransferTxs endpoint:  works with (with one filter) 1`] = `
+[
+  "NODE_URL/transactions/mass-transfer?sender=some-sender",
+  {
+    "method": "GET",
+  },
+]
+`;
+
 exports[`Pagination:  works 1`] = `
 [
   [
@@ -173,7 +218,7 @@ exports[`Pagination:  works 1`] = `
 
 exports[`Pairs endpoint:  fetch is called with correct params#1 1`] = `
 [
-  "NODE_URL/pairs?pairs=DCC/8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS&pairs=DCC/474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu&matcher=3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP",
+  "NODE_URL/pairs?pairs=DCC%2F8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS&pairs=DCC%2F474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu&matcher=3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP",
   {
     "method": "GET",
   },
@@ -200,7 +245,7 @@ exports[`TransferTxs endpoint:  works with (empty call) 1`] = `
 
 exports[`TransferTxs endpoint:  works with (single string) 1`] = `
 [
-  "NODE_URL/transactions/transfer/some id",
+  "NODE_URL/transactions/transfer/some%20id",
   {
     "method": "GET",
   },
