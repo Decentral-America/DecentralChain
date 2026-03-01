@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import fc from 'fast-check';
 import {
   getProviderData,
   getProviderAssets,
@@ -7,6 +8,8 @@ import {
   getFieldsFromAsset,
   getDifferenceByData,
   getDifferenceByFields,
+  isValidStatus,
+  isValidAssetId,
 } from '../src/index.js';
 import type {
   IErrorResponse,
@@ -901,6 +904,268 @@ describe('Data provider tests', () => {
       const byData = getDifferenceByData(PROVIDER_DATA, modified);
       const byFields = getDifferenceByFields(getFields(PROVIDER_DATA), getFields(modified));
       expect(byData).toEqual(byFields);
+    });
+  });
+
+  describe('Validation Utilities', () => {
+    describe('isValidStatus', () => {
+      it('accepts all valid STATUS_LIST values', () => {
+        expect(isValidStatus(STATUS_LIST.SCAM)).toBe(true);
+        expect(isValidStatus(STATUS_LIST.SUSPICIOUS)).toBe(true);
+        expect(isValidStatus(STATUS_LIST.NOT_VERIFY)).toBe(true);
+        expect(isValidStatus(STATUS_LIST.DETAILED)).toBe(true);
+        expect(isValidStatus(STATUS_LIST.VERIFIED)).toBe(true);
+      });
+
+      it('rejects out-of-range integers', () => {
+        expect(isValidStatus(999)).toBe(false);
+        expect(isValidStatus(-999)).toBe(false);
+        expect(isValidStatus(3)).toBe(false);
+        expect(isValidStatus(-3)).toBe(false);
+        expect(isValidStatus(100)).toBe(false);
+      });
+
+      it('rejects boundary values just outside valid range', () => {
+        expect(isValidStatus(-2)).toBe(true); // SCAM
+        expect(isValidStatus(2)).toBe(true); // VERIFIED
+        expect(isValidStatus(-3)).toBe(false); // just below SCAM
+        expect(isValidStatus(3)).toBe(false); // just above VERIFIED
+      });
+    });
+
+    describe('isValidAssetId', () => {
+      it('accepts valid base58 asset IDs', () => {
+        expect(isValidAssetId('8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS')).toBe(true);
+        expect(isValidAssetId('9M1wcQwS2XvpbeWALsE5n3j4s97nuipZJzVZ1wXJAqdJ')).toBe(true);
+        expect(isValidAssetId('1')).toBe(true); // minimum valid
+      });
+
+      it('rejects IDs with non-base58 characters', () => {
+        expect(isValidAssetId('INVALID0ASSET')).toBe(false); // contains 0
+        expect(isValidAssetId('ASSET_WITH_O_CHAR')).toBe(false); // contains O
+        expect(isValidAssetId('assetWithlChar')).toBe(false); // contains l
+        expect(isValidAssetId('asset+special')).toBe(false); // contains +
+        expect(isValidAssetId('asset with space')).toBe(false);
+      });
+
+      it('rejects empty strings', () => {
+        expect(isValidAssetId('')).toBe(false);
+      });
+
+      it('rejects IDs exceeding max length', () => {
+        expect(isValidAssetId('A'.repeat(65))).toBe(false);
+        expect(isValidAssetId('A'.repeat(64))).toBe(true); // max valid
+      });
+    });
+
+    describe('isValidStatus in parser (runtime protection)', () => {
+      it('rejects asset with invalid status value', () => {
+        const assetId = '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS';
+        const fields: TDataTxField[] = [
+          ...PROVIDER_FIELDS,
+          {
+            key: `version_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: `status_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: 999, // invalid status
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.ERROR);
+        expect((result[0] as IErrorResponse<TProviderAsset>).errors[0].error.message).toContain(
+          'Invalid asset status',
+        );
+      });
+
+      it('rejects negative out-of-range status', () => {
+        const assetId = '9M1wcQwS2XvpbeWALsE5n3j4s97nuipZJzVZ1wXJAqdJ';
+        const fields: TDataTxField[] = [
+          ...PROVIDER_FIELDS,
+          {
+            key: `version_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: DATA_PROVIDER_VERSIONS.BETA,
+          },
+          {
+            key: `status_<${assetId}>`,
+            type: DATA_ENTRY_TYPES.INTEGER,
+            value: -50,
+          },
+        ];
+        const result = getProviderAssets(fields);
+        expect(result.length).toEqual(1);
+        expect(result[0].status).toEqual(RESPONSE_STATUSES.ERROR);
+      });
+    });
+  });
+
+  describe('Property-Based / Fuzz Tests (fast-check)', () => {
+    const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+    const arbBase58 = fc.string({
+      unit: fc.constantFrom(...BASE58_CHARS.split('')),
+      minLength: 1,
+      maxLength: 44,
+    });
+
+    const arbProviderData = fc.record({
+      version: fc.constant(DATA_PROVIDER_VERSIONS.BETA),
+      name: fc.string({ minLength: 0, maxLength: 100 }),
+      link: fc.string({ minLength: 0, maxLength: 200 }),
+      email: fc.string({ minLength: 0, maxLength: 100 }),
+      description: fc.dictionary(
+        fc.string({
+          unit: fc.constantFrom(...'abcdefghijklmnopqrstuvwxyz'.split('')),
+          minLength: 2,
+          maxLength: 2,
+        }),
+        fc.string({ minLength: 0, maxLength: 200 }),
+        { minKeys: 1, maxKeys: 5 },
+      ),
+    });
+
+    it('Provider data always survives encode → decode roundtrip', () => {
+      fc.assert(
+        fc.property(arbProviderData, (data) => {
+          const fields = getFields(data);
+          const decoded = getProviderData(fields);
+          expect(decoded.status).toEqual(RESPONSE_STATUSES.OK);
+          expect(decoded.content).toEqual(data);
+        }),
+        { numRuns: 200 },
+      );
+    });
+
+    it('getFields never throws on valid provider data', () => {
+      fc.assert(
+        fc.property(arbProviderData, (data) => {
+          expect(() => getFields(data)).not.toThrow();
+        }),
+        { numRuns: 200 },
+      );
+    });
+
+    it('getProviderData never throws (always returns TResponse)', () => {
+      const arbRawFields = fc.array(
+        fc.record({
+          key: fc.string({ minLength: 1, maxLength: 50 }),
+          type: fc.constantFrom(
+            DATA_ENTRY_TYPES.STRING,
+            DATA_ENTRY_TYPES.INTEGER,
+            DATA_ENTRY_TYPES.BOOLEAN,
+            DATA_ENTRY_TYPES.BINARY,
+          ),
+          value: fc.oneof(fc.string(), fc.integer(), fc.boolean()),
+        }),
+        { minLength: 0, maxLength: 20 },
+      );
+
+      fc.assert(
+        fc.property(arbRawFields, (fields) => {
+          const result = getProviderData(fields as TDataTxField[]);
+          expect(result).toBeDefined();
+          expect(result.status).toBeDefined();
+          expect([RESPONSE_STATUSES.OK, RESPONSE_STATUSES.ERROR]).toContain(result.status);
+        }),
+        { numRuns: 200 },
+      );
+    });
+
+    it('getProviderAssets never throws (always returns TResponse[])', () => {
+      const arbRawFields = fc.array(
+        fc.record({
+          key: fc.string({ minLength: 1, maxLength: 50 }),
+          type: fc.constantFrom(
+            DATA_ENTRY_TYPES.STRING,
+            DATA_ENTRY_TYPES.INTEGER,
+            DATA_ENTRY_TYPES.BOOLEAN,
+            DATA_ENTRY_TYPES.BINARY,
+          ),
+          value: fc.oneof(fc.string(), fc.integer(), fc.boolean()),
+        }),
+        { minLength: 0, maxLength: 20 },
+      );
+
+      fc.assert(
+        fc.property(arbRawFields, (fields) => {
+          const result = getProviderAssets(fields as TDataTxField[]);
+          expect(Array.isArray(result)).toBe(true);
+          result.forEach((r) => {
+            expect([RESPONSE_STATUSES.OK, RESPONSE_STATUSES.ERROR]).toContain(r.status);
+          });
+        }),
+        { numRuns: 200 },
+      );
+    });
+
+    it('getFields output is always deterministic', () => {
+      fc.assert(
+        fc.property(arbProviderData, (data) => {
+          const a = getFields(data);
+          const b = getFields(data);
+          expect(a).toEqual(b);
+        }),
+        { numRuns: 100 },
+      );
+    });
+
+    it('getDifferenceByData is symmetric with itself (self-diff is empty)', () => {
+      fc.assert(
+        fc.property(arbProviderData, (data) => {
+          const diff = getDifferenceByData(data, data);
+          expect(diff).toEqual([]);
+        }),
+        { numRuns: 100 },
+      );
+    });
+
+    it('getFields does not mutate input (fuzz)', () => {
+      fc.assert(
+        fc.property(arbProviderData, (data) => {
+          const snapshot = JSON.stringify(data);
+          getFields(data);
+          expect(JSON.stringify(data)).toEqual(snapshot);
+        }),
+        { numRuns: 100 },
+      );
+    });
+
+    it('isValidAssetId accepts all base58 strings within length', () => {
+      fc.assert(
+        fc.property(arbBase58, (id) => {
+          expect(isValidAssetId(id)).toBe(true);
+        }),
+        { numRuns: 200 },
+      );
+    });
+
+    it('isValidAssetId rejects strings with non-base58 characters', () => {
+      const nonBase58 = fc.string({
+        unit: fc.constantFrom('0', 'O', 'I', 'l'),
+        minLength: 1,
+        maxLength: 10,
+      });
+      fc.assert(
+        fc.property(nonBase58, (bad) => {
+          expect(isValidAssetId(bad)).toBe(false);
+        }),
+        { numRuns: 100 },
+      );
+    });
+
+    it('isValidStatus accepts only known enum values', () => {
+      fc.assert(
+        fc.property(fc.integer({ min: -1000, max: 1000 }), (n) => {
+          const valid = [-2, -1, 0, 1, 2].includes(n);
+          expect(isValidStatus(n)).toBe(valid);
+        }),
+        { numRuns: 500 },
+      );
     });
   });
 });
