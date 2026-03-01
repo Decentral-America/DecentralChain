@@ -1,5 +1,10 @@
 dist
+coverage
 node_modules
-package-lock.json
-docs
-*.md
+*.cjs
+*.mjs
+*.d.ts
+*.d.cts
+*.map
+LICENSE
+CHANGELOG.md

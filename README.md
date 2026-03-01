@@ -1,8 +1,17 @@
 # @decentralchain/waves-transactions
 
-Transaction builder, signer, and broadcaster for the DecentralChain blockchain.
+[![CI](https://github.com/Decentral-America/waves-transactions/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/waves-transactions/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@decentralchain/waves-transactions)](https://www.npmjs.com/package/@decentralchain/waves-transactions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node](https://img.shields.io/node/v/@decentralchain/waves-transactions)](https://nodejs.org)
+
+> Transaction builder, signer, and broadcaster for the DecentralChain blockchain.
 
 Provides builder functions for all transaction types, cryptographic signing with seed phrases or private keys, and broadcasting to DecentralChain nodes.
+
+- **ESM + CJS** dual-format package
+- **TypeScript-first** — ships declaration files
+- **Tree-shakeable** — zero side effects
 
 ## Installation
 
@@ -23,7 +32,7 @@ const tx = transfer(
     amount: 100000000, // 1 DCC (8 decimals)
     chainId: 'L', // DCC mainnet
   },
-  seed
+  seed,
 );
 
 const result = await broadcast(tx, 'https://nodes.decentralchain.io');
@@ -58,7 +67,7 @@ const signedTx = transfer(
     amount: 1,
     recipient: '3LkWnGsqMKem4WPr4N5JKgVGsGqWd6eFHxo',
   },
-  seed
+  seed,
 );
 
 await broadcast(signedTx, 'https://nodes.decentralchain.io');
@@ -80,7 +89,7 @@ const signedTx = issue(
     reissuable: true,
     chainId: 'L',
   },
-  seed
+  seed,
 );
 
 await broadcast(signedTx, 'https://nodes.decentralchain.io');
@@ -102,7 +111,7 @@ const signedTx = data(
     ],
     chainId: 'L',
   },
-  seed
+  seed,
 );
 
 await broadcast(signedTx, 'https://nodes.decentralchain.io');
@@ -111,9 +120,7 @@ await broadcast(signedTx, 'https://nodes.decentralchain.io');
 ## Node Interaction
 
 ```typescript
-import {
-  nodeInteraction,
-} from '@decentralchain/waves-transactions';
+import { nodeInteraction } from '@decentralchain/waves-transactions';
 
 const nodeUrl = 'https://nodes.decentralchain.io';
 
@@ -166,7 +173,10 @@ function cancelLease(paramsOrTx: ICancelLeaseParams, seed?: TSeedTypes): CancelL
 function massTransfer(paramsOrTx: IMassTransferParams, seed?: TSeedTypes): MassTransferTransaction;
 function data(paramsOrTx: IDataParams, seed?: TSeedTypes): DataTransaction;
 function setScript(paramsOrTx: ISetScriptParams, seed?: TSeedTypes): SetScriptTransaction;
-function setAssetScript(paramsOrTx: ISetAssetScriptParams, seed?: TSeedTypes): SetAssetScriptTransaction;
+function setAssetScript(
+  paramsOrTx: ISetAssetScriptParams,
+  seed?: TSeedTypes,
+): SetAssetScriptTransaction;
 function invokeScript(paramsOrTx: IInvokeScriptParams, seed?: TSeedTypes): InvokeScriptTransaction;
 function exchange(paramsOrTx: IExchangeParams, seed?: TSeedTypes): ExchangeTransaction;
 ```
@@ -183,6 +193,25 @@ function broadcast(tx: SignedTransaction, nodeUrl: string): Promise<any>;
 function waitForTx(txId: string, options: { apiBase: string; timeout?: number }): Promise<any>;
 ```
 
+## Scripts
+
+| Command                | Purpose                              |
+| ---------------------- | ------------------------------------ |
+| `npm run build`        | Build ESM + CJS bundles via tsup     |
+| `npm test`             | Run tests via Vitest                 |
+| `npm run test:watch`   | Run tests in watch mode              |
+| `npm run typecheck`    | Type-check with `tsc --noEmit`       |
+| `npm run lint`         | Lint via ESLint (flat config)        |
+| `npm run lint:fix`     | Auto-fix lint issues                 |
+| `npm run format`       | Format via Prettier                  |
+| `npm run format:check` | Check formatting                     |
+| `npm run validate`     | Full quality gate (CI-equivalent)    |
+| `npm run bulletproof`  | Format + lint:fix + typecheck + test |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow and guidelines.
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.

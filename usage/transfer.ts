@@ -1,6 +1,6 @@
-import { transfer } from '../dist/index'
+import { transfer } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 //Transfering 1 DCC
 const params = {
@@ -12,7 +12,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000,
-}
+};
 
-const signedTransferTx = transfer(params, seed)
-console.log(signedTransferTx)
+const signedTransferTx = transfer(params, seed);
+console.log(signedTransferTx);

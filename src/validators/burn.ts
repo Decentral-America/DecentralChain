@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -12,7 +12,7 @@ import {
   isPublicKey,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const burnScheme = {
   type: isEq(TRANSACTION_TYPE.BURN),
@@ -24,6 +24,6 @@ const burnScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const burnValidator = validateByShema(burnScheme, getError)
+export const burnValidator = validateByShema(burnScheme, getError);

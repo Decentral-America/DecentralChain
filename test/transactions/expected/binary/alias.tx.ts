@@ -34,4 +34,4 @@ export const aliasBinaryTx = {
       // "proofs":["3q5YSei9kcJE789fCG3Aw5aHpeme6z78jt62apjnx8PctSSvDLzpKfpPEjFWLBnSZCNUHiF3ACJZxJNFxCf5hN1Q"]
     },
   },
-}
+};

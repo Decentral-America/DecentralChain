@@ -1,8 +1,8 @@
 /**
  * @module index
  */
-import { IInvokeScriptParams, WithId, WithProofs, WithSender } from '../transactions'
-import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
+import { IInvokeScriptParams, WithId, WithProofs, WithSender } from '../transactions';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
   addProof,
   convertToPairs,
@@ -10,35 +10,35 @@ import {
   getSenderPublicKey,
   networkByte,
   normalizeAssetId,
-} from '../generic'
-import { TSeedTypes } from '../types'
-import { binary } from '@decentralchain/marshall'
-import { validate } from '../validators'
-import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
+} from '../generic';
+import { TSeedTypes } from '../types';
+import { binary } from '@decentralchain/marshall';
+import { validate } from '../validators';
+import { txToProtoBytes } from '../proto-serialize';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   InvokeScriptPayment,
   InvokeScriptTransaction,
   TRANSACTION_TYPE,
-} from '@decentralchain/ts-types'
+} from '@decentralchain/ts-types';
 
 /* @echo DOCS */
 export function invokeScript(
   params: IInvokeScriptParams,
   seed: TSeedTypes,
-): InvokeScriptTransaction & WithId & WithProofs
+): InvokeScriptTransaction & WithId & WithProofs;
 export function invokeScript(
   paramsOrTx: (IInvokeScriptParams & WithSender) | InvokeScriptTransaction,
   seed?: TSeedTypes,
-): InvokeScriptTransaction & WithId & WithProofs
+): InvokeScriptTransaction & WithId & WithProofs;
 export function invokeScript(
   paramsOrTx: any,
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs {
-  const type = TRANSACTION_TYPE.INVOKE_SCRIPT
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.INVOKE_SCRIPT
-  const seedsAndIndexes = convertToPairs(seed)
-  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
+  const type = TRANSACTION_TYPE.INVOKE_SCRIPT;
+  const version = paramsOrTx.version || DEFAULT_VERSIONS.INVOKE_SCRIPT;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: InvokeScriptTransaction & WithId & WithProofs = {
     type,
@@ -53,23 +53,23 @@ export function invokeScript(
     chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
-  }
+  };
 
-  validate.invokeScript(tx)
+  validate.invokeScript(tx);
 
-  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx)
+  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
-  tx.id = base58Encode(base58Encode(blake2b(bytes)))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  tx.id = base58Encode(base58Encode(blake2b(bytes)));
 
-  return tx
+  return tx;
 }
 
 const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] =>
   payments == null
     ? []
-    : payments.map((pmt) => ({ ...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId }))
+    : payments.map((pmt) => ({ ...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId }));
 
 const callField = (paramsOrTx: any) => {
-  return paramsOrTx.call ? { args: paramsOrTx.call.args || [], ...paramsOrTx.call } : null
-}
+  return paramsOrTx.call ? { args: paramsOrTx.call.args || [], ...paramsOrTx.call } : null;
+};

@@ -423,4 +423,4 @@ export const massTransferTx = {
       ],
     },
   },
-}
+};

@@ -1,6 +1,6 @@
-import { setScript } from '../dist/index'
+import { setScript } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   script: 'AQa3b8tH', //true
@@ -8,7 +8,7 @@ const params = {
   //timestamp: Date.now(),
   //fee: 100000,
   //chainId: 'L'
-}
+};
 
-const signedSetScriptTx = setScript(params, seed)
-console.log(signedSetScriptTx)
+const signedSetScriptTx = setScript(params, seed);
+console.log(signedSetScriptTx);

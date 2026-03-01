@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -19,7 +19,7 @@ import {
   prop,
   validateByShema,
   validatePipe,
-} from './validators'
+} from './validators';
 
 const massTransferScheme = {
   type: isEq(TRANSACTION_TYPE.MASS_TRANSFER),
@@ -43,6 +43,6 @@ const massTransferScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const massTransferValidator = validateByShema(massTransferScheme, getError)
+export const massTransferValidator = validateByShema(massTransferScheme, getError);

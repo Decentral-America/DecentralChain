@@ -10,35 +10,35 @@ import {
   encryptSeed,
   decryptSeed,
   randomSeed,
-} from '@decentralchain/ts-lib-crypto'
-import { serializePrimitives } from '@decentralchain/marshall'
+} from '@decentralchain/ts-lib-crypto';
+import { serializePrimitives } from '@decentralchain/marshall';
 
 export class Seed {
-  public readonly phrase: string
-  public readonly address: string
+  public readonly phrase: string;
+  public readonly address: string;
   public readonly keyPair: {
-    publicKey: string
-    privateKey: string
-  }
+    publicKey: string;
+    privateKey: string;
+  };
 
   constructor(phrase: string, chainId?: string) {
     if (phrase.length < 12) {
-      throw new Error('Your seed length is less than allowed in config')
+      throw new Error('Your seed length is less than allowed in config');
     }
 
-    this.phrase = phrase
-    this.address = address(phrase, chainId)
+    this.phrase = phrase;
+    this.address = address(phrase, chainId);
     this.keyPair = {
       privateKey: privateKey(phrase),
       publicKey: publicKey(phrase),
-    }
+    };
 
-    Object.freeze(this)
-    Object.freeze(this.keyPair)
+    Object.freeze(this);
+    Object.freeze(this.keyPair);
   }
 
   public encrypt(password: string, encryptionRounds?: number) {
-    return Seed.encryptSeedPhrase(this.phrase, password, encryptionRounds)
+    return Seed.encryptSeedPhrase(this.phrase, password, encryptionRounds);
   }
 
   public static encryptSeedPhrase(
@@ -55,10 +55,10 @@ export class Seed {
     }
 
     if (seedPhrase.length < 12) {
-      throw new Error('The seed phrase you are trying to encrypt is too short')
+      throw new Error('The seed phrase you are trying to encrypt is too short');
     }
 
-    return encryptSeed(seedPhrase, password, encryptionRounds)
+    return encryptSeed(seedPhrase, password, encryptionRounds);
   }
 
   public static decryptSeedPhrase(
@@ -66,61 +66,61 @@ export class Seed {
     password: string,
     encryptionRounds = 5000,
   ): string {
-    const wrongPasswordMessage = 'The password is wrong'
+    const wrongPasswordMessage = 'The password is wrong';
 
-    let phrase
+    let phrase;
 
     try {
-      phrase = decryptSeed(encryptedSeedPhrase, password, encryptionRounds)
+      phrase = decryptSeed(encryptedSeedPhrase, password, encryptionRounds);
     } catch (e) {
-      throw new Error(wrongPasswordMessage)
+      throw new Error(wrongPasswordMessage);
     }
 
     if (phrase === '' || phrase.length < 12) {
-      throw new Error(wrongPasswordMessage)
+      throw new Error(wrongPasswordMessage);
     }
 
-    return phrase
+    return phrase;
   }
 
   public static create(words = 15): Seed {
-    const phrase = generateNewSeed(words)
-    const minimumSeedLength = 12
+    const phrase = generateNewSeed(words);
+    const minimumSeedLength = 12;
 
     if (phrase.length < minimumSeedLength) {
       // If you see that error you should increase the number of words in the generated seed
       throw new Error(
         `The resulted seed length is less than the minimum length (${minimumSeedLength})`,
-      )
+      );
     }
 
-    return new Seed(phrase)
+    return new Seed(phrase);
   }
 
   public static fromExistingPhrase(phrase: string): Seed {
-    const minimumSeedLength = 12
+    const minimumSeedLength = 12;
 
     if (phrase.length < minimumSeedLength) {
       // If you see that error you should increase the number of words or set it lower in the config
       throw new Error(
         `The resulted seed length is less than the minimum length (${minimumSeedLength})`,
-      )
+      );
     }
 
-    return new Seed(phrase)
+    return new Seed(phrase);
   }
 }
 
 export function generateNewSeed(length = 15) {
-  return randomSeed(length)
+  return randomSeed(length);
 }
 
 export function strengthenPassword(password: string, rounds = 5000): string {
   while (rounds--) {
-    const bytes = serializePrimitives.STRING(password)
-    password = base16Encode(sha256(bytes))
+    const bytes = serializePrimitives.STRING(password);
+    password = base16Encode(sha256(bytes));
   }
-  return password
+  return password;
 }
 
-export { encryptSeed, decryptSeed }
+export { encryptSeed, decryptSeed };

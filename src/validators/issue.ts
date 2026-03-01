@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -16,7 +16,7 @@ import {
   isValidAssetName,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const issueScheme = {
   type: isEq(TRANSACTION_TYPE.ISSUE),
@@ -32,6 +32,6 @@ const issueScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const issueValidator = validateByShema(issueScheme, getError)
+export const issueValidator = validateByShema(issueScheme, getError);

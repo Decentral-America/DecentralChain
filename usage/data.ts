@@ -1,6 +1,6 @@
-import { data } from '../dist/index'
+import { data } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   data: [
@@ -12,7 +12,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000 + bytes.length * 100000
-}
+};
 
-const signedDataTx = data(params, seed)
-console.log(signedDataTx)
+const signedDataTx = data(params, seed);
+console.log(signedDataTx);

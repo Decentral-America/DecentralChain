@@ -1,6 +1,6 @@
-import { reissue } from '../dist/index'
+import { reissue } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   quantity: 10000,
@@ -10,7 +10,7 @@ const params = {
   //timestamp: Date.now(),
   //fee: 100000000,
   //chainId: 'L'
-}
+};
 
-const signedReissueTx = reissue(params, seed)
-console.log(signedReissueTx)
+const signedReissueTx = reissue(params, seed);
+console.log(signedReissueTx);
