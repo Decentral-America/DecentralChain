@@ -1,5 +1,6 @@
 import { blake2b } from './hashing';
 import { concat } from './concat-split';
+import { equalBytes } from '@noble/curves/utils.js';
 
 /**
  * Verify a Merkle proof against a root hash and leaf data.
@@ -41,5 +42,5 @@ export function merkleVerify(
     leafHash,
   );
 
-  return rootHashFromProof.every((v, i) => v === rootHash[i]);
+  return equalBytes(rootHashFromProof, rootHash);
 }

@@ -1,9 +1,15 @@
-import forgeRand from 'node-forge/lib/random';
 import { type TBytes, type TRandomTypesMap } from './interface';
 import { seedWordsList } from './seed-words-list';
-import { stringToBytes } from '../conversions/string-bytes';
 
-const _random = (count: number) => stringToBytes(forgeRand.getBytesSync(count), 'raw');
+/**
+ * Generate cryptographically secure random bytes using the platform CSPRNG.
+ * Uses `globalThis.crypto.getRandomValues()` — available in Node 19+ and all modern browsers.
+ */
+const _random = (count: number): Uint8Array => {
+  const buf = new Uint8Array(count);
+  globalThis.crypto.getRandomValues(buf);
+  return buf;
+};
 
 /** Generate random data of the specified length and return type. */
 export const random = <T extends keyof TRandomTypesMap>(

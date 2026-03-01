@@ -29,11 +29,9 @@ describe('AES encryption edge cases', () => {
     expect(bytesToString(dec)).toEqual(message);
   });
 
-  it('encrypts/decrypts with OFB mode', () => {
+  it('throws on OFB mode (no longer supported)', () => {
     const iv = randomBytes(16);
-    const enc = aesEncrypt(msgBytes, key, 'OFB', iv);
-    const dec = aesDecrypt(enc, key, 'OFB', iv);
-    expect(bytesToString(dec)).toEqual(message);
+    expect(() => aesEncrypt(msgBytes, key, 'OFB', iv)).toThrow(/no longer supported/);
   });
 
   it('encrypts/decrypts with CTR mode', () => {
@@ -68,7 +66,7 @@ describe('AES encryption edge cases', () => {
       const dec = aesDecrypt(enc, wrongKey, 'CBC', iv);
       expect(bytesToString(dec)).not.toEqual('A'.repeat(256));
     } catch (e) {
-      expect((e as Error).message).toMatch(/Failed to decrypt/);
+      expect((e as Error).message).toMatch(/Failed to decrypt|wrong padding|invalid padding/i);
     }
   });
 

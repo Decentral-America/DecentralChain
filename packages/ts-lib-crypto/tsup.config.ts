@@ -12,6 +12,7 @@ export default defineConfig([
     splitting: false,
     treeshake: true,
     target: 'es2024',
+    platform: 'node',
     outExtension() {
       return { js: '.mjs' };
     },
@@ -25,6 +26,7 @@ export default defineConfig([
     minify: true,
     sourcemap: true,
     target: 'es2024',
+    platform: 'node',
     outExtension() {
       return { js: '.umd.min.js' };
     },
