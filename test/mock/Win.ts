@@ -1,9 +1,9 @@
 import { Signal } from 'ts-utils';
-import { WindowProtocol } from '../../src/protocols/WindowProtocol';
+import type { WindowProtocol } from '../../src/protocols/WindowProtocol.js';
 
 class Win {
   public onPostMessageRun: Signal<any> = new Signal();
-  private _handlers: Record<string, Array<Function>> = Object.create(null);
+  private _handlers: Record<string, ((...args: any[]) => void)[]> = Object.create(null);
 
   public postMessage(data: any, origin: string): void {
     this.onPostMessageRun.dispatch({ data, origin });
@@ -16,7 +16,7 @@ class Win {
     this._handlers[event] = this._handlers[event].filter((cb) => cb !== handler);
   }
 
-  public addEventListener(event: string, handler: Function): void {
+  public addEventListener(event: string, handler: (...args: any[]) => void): void {
     if (!this._handlers[event]) {
       this._handlers[event] = [];
     }

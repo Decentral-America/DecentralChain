@@ -1,8 +1,11 @@
 import { EventEmitter } from 'typed-ts-events';
 
+/**
+ * A protocol adapter that wraps the browser `postMessage` / `addEventListener` API.
+ */
 export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
   private win: WindowProtocol.IWindow;
-  private readonly handler: (event: WindowProtocol.IMessageEvent<T>) => any;
+  private readonly handler: (event: WindowProtocol.IMessageEvent<T>) => void;
   private readonly type: WindowProtocol.TProtocolType;
 
   constructor(win: WindowProtocol.IWindow, type: WindowProtocol.TProtocolType) {
@@ -11,38 +14,46 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
     this.win = win;
     this.type = type;
 
-    this.handler = (event) => {
+    this.handler = (event: WindowProtocol.IMessageEvent<T>) => {
       this.trigger('message', event);
     };
 
     if (type === WindowProtocol.PROTOCOL_TYPES.LISTEN) {
-      this.win.addEventListener('message', this.handler, false);
+      this.win.addEventListener(
+        'message',
+        this.handler as EventListenerOrEventListenerObject,
+        false,
+      );
     }
   }
 
-  public dispatch<R>(data: R): this {
+  public dispatch(data: unknown): this {
     this.win.postMessage(data, '*');
     return this;
   }
 
   public destroy(): void {
     if (this.type === WindowProtocol.PROTOCOL_TYPES.LISTEN) {
-      this.win.removeEventListener('message', this.handler, false);
+      this.win.removeEventListener(
+        'message',
+        this.handler as EventListenerOrEventListenerObject,
+        false,
+      );
     }
     this.win = WindowProtocol._fakeWin;
   }
 
-  private static _fakeWin: WindowProtocol.IWindow = (function () {
+  private static readonly _fakeWin: WindowProtocol.IWindow = (function () {
     const empty = () => null;
     return {
-      postMessage: empty,
-      addEventListener: empty,
-      removeEventListener: empty,
+      postMessage: empty as unknown as WindowProtocol.IWindow['postMessage'],
+      addEventListener: empty as unknown as WindowProtocol.IWindow['addEventListener'],
+      removeEventListener: empty as unknown as WindowProtocol.IWindow['removeEventListener'],
     };
   })();
 }
 
-/* istanbul ignore next */
+/* v8 ignore next */
 export namespace WindowProtocol {
   export const PROTOCOL_TYPES = {
     LISTEN: 'listen' as const,

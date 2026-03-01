@@ -1,8 +1,19 @@
 # @decentralchain/browser-bus
 
+[![CI](https://github.com/Decentral-America/browser-bus/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/browser-bus/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@decentralchain/browser-bus)](https://www.npmjs.com/package/@decentralchain/browser-bus)
+[![license](https://img.shields.io/npm/l/@decentralchain/browser-bus)](./LICENSE)
+[![Node.js](https://img.shields.io/node/v/@decentralchain/browser-bus)](./package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+
 Cross-window browser communication library for DecentralChain DApps and wallet applications.
 
-Enables secure message passing between browser windows, tabs, and iframes using the postMessage API. Used for DApp-to-wallet communication, transaction signing popups, and multi-tab synchronization.
+Enables secure message passing between browser windows, tabs, and iframes using the `postMessage` API. Used for DApp-to-wallet communication, transaction signing popups, and multi-tab synchronization.
+
+## Requirements
+
+- **Node.js** >= 22
+- **npm** >= 10
 
 ## Installation
 
@@ -10,52 +21,53 @@ Enables secure message passing between browser windows, tabs, and iframes using 
 npm install @decentralchain/browser-bus
 ```
 
-## Usage
+## Quick Start
 
 ### Parent window with iframe
 
-On the parent window side:
 ```typescript
 import { Bus, WindowAdapter } from '@decentralchain/browser-bus';
 
 const url = 'https://some-iframe-content-url.com';
 const iframe = document.createElement('iframe');
 
-WindowAdapter.createSimpleWindowAdapter(iframe).then(adapter => {
-    const bus = new Bus(adapter);
+WindowAdapter.createSimpleWindowAdapter(iframe).then((adapter) => {
+  const bus = new Bus(adapter);
 
-    bus.once('ready', () => {
-        // Received message from iframe
-    });
+  bus.once('ready', () => {
+    // Received message from iframe
+  });
 });
-iframe.src = url; // Preferably assign the URL after calling WindowAdapter.createSimpleWindowAdapter
+iframe.src = url;
 document.body.appendChild(iframe);
 ```
 
-On the iframe side:
+### Iframe side
+
 ```typescript
 import { Bus, WindowAdapter } from '@decentralchain/browser-bus';
 
-WindowAdapter.createSimpleWindowAdapter().then(adapter => {
-    const bus = new Bus(adapter);
+WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
+  const bus = new Bus(adapter);
 
-    bus.dispatchEvent('ready', null); // Send message to parent window
+  bus.dispatchEvent('ready', null);
 });
 ```
 
-## API
+## API Reference
 
-### Bus
+### `Bus`
 
 Creates a bus instance for sending and receiving events and requests.
 
-Constructor parameters:
-- `adapter` — an `Adapter` instance responsible for the messaging protocol implementation
+**Constructor:**
+
+- `adapter` — an `Adapter` instance for the messaging transport
 - `timeout` (optional) — default response timeout in milliseconds (default: 5000)
 
 #### `dispatchEvent(name, data)`
 
-Send an event. All connected Bus instances subscribed to this event will receive the message.
+Send an event to all connected Bus instances.
 
 ```typescript
 bus.dispatchEvent('some-event-name', jsonLikeData);
@@ -63,26 +75,19 @@ bus.dispatchEvent('some-event-name', jsonLikeData);
 
 #### `request(name, data?, timeout?)`
 
-Send a request to another Bus instance. Returns a Promise that resolves with the response.
-
-Parameters:
-- `name` — request method name
-- `data` (optional) — data to send with the request
-- `timeout` (optional) — response timeout in ms (default: 5000)
+Send a request and receive a response. Returns a `Promise`.
 
 ```typescript
-bus.request('some-method', jsonLikeData, 100).then(data => {
-    // data — response from the other Bus
-});
+const result = await bus.request('some-method', jsonLikeData, 100);
 ```
 
 #### `on(name, handler)`
 
-Subscribe to events.
+Subscribe to an event.
 
 ```typescript
-bus.on('some-event', data => {
-    // data — event payload
+bus.on('some-event', (data) => {
+  // handle event
 });
 ```
 
@@ -91,8 +96,8 @@ bus.on('some-event', data => {
 Subscribe to an event once.
 
 ```typescript
-bus.once('some-event', data => {
-    // data — event payload
+bus.once('some-event', (data) => {
+  // fires only once
 });
 ```
 
@@ -101,33 +106,92 @@ bus.once('some-event', data => {
 Unsubscribe from events.
 
 ```typescript
-bus.off('some-event', handler); // Unsubscribe specific handler from 'some-event'
-bus.off('some-event');          // Unsubscribe all handlers from 'some-event'
-bus.off(null, handler);         // Unsubscribe handler from all events
-bus.off();                      // Unsubscribe from everything
+bus.off('some-event', handler); // Unsubscribe specific handler
+bus.off('some-event'); // Unsubscribe all from 'some-event'
+bus.off(); // Unsubscribe from everything
 ```
 
 #### `registerRequestHandler(name, handler)`
 
-Register a handler for requests from another Bus instance.
+Register a handler for incoming requests.
 
 ```typescript
-// In iframe code
 bus.registerRequestHandler('get-random', () => Math.random());
-
-// In main application
-bus.request('get-random').then(num => {
-    // Received response from iframe
-});
 ```
 
-Handlers may also return Promises:
+Handlers may return Promises:
 
 ```typescript
 bus.registerRequestHandler('get-data', () => Promise.resolve(someData));
 ```
 
+### `WindowAdapter`
+
+Adapter implementation for cross-window communication via `postMessage`.
+
+#### `WindowAdapter.createSimpleWindowAdapter(iframe?, options?)`
+
+Factory method that creates a `WindowAdapter` for simple parent/iframe communication.
+
+### `Adapter`
+
+Abstract base class for custom transport implementations.
+
+## Development
+
+### Prerequisites
+
+- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **npm** >= 10
+
+### Setup
+
+```bash
+git clone https://github.com/Decentral-America/browser-bus.git
+cd browser-bus
+npm install
+```
+
+### Scripts
+
+| Command                     | Description                              |
+| --------------------------- | ---------------------------------------- |
+| `npm run build`             | Build distribution files                 |
+| `npm test`                  | Run tests with Vitest                    |
+| `npm run test:watch`        | Tests in watch mode                      |
+| `npm run test:coverage`     | Tests with V8 coverage                   |
+| `npm run typecheck`         | TypeScript type checking                 |
+| `npm run lint`              | ESLint                                   |
+| `npm run lint:fix`          | ESLint with auto-fix                     |
+| `npm run format`            | Format with Prettier                     |
+| `npm run validate`          | Full CI validation pipeline              |
+| `npm run bulletproof`       | Format + lint fix + typecheck + test     |
+| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test |
+
+### Quality Gates
+
+- ESLint with strict TypeScript rules
+- Prettier formatting
+- 90%+ code coverage thresholds
+- Bundle size budget enforcement
+- Package export validation (publint + attw)
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
+
 ## License
 
-MIT
-
+[MIT](./LICENSE)

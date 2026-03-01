@@ -1,19 +1,28 @@
-import { Adapter } from '../adapters/Adapter';
-import { uniqueId, console } from '../utils';
+import type { Adapter } from '../adapters/Adapter.js';
+import { uniqueId } from '../utils/utils/index.js';
+import { console } from '../utils/console/index.js';
 
-export const enum EventType {
-  Event,
-  Action,
-  Response,
+/** Message type discriminator. */
+export enum EventType {
+  Event = 0,
+  Action = 1,
+  Response = 2,
 }
 
-export const enum ResponseStatus {
-  Success,
-  Error,
+/** Response status discriminator. */
+export enum ResponseStatus {
+  Success = 0,
+  Error = 1,
 }
 
+/**
+ * A message bus that enables typed event dispatch and request/response patterns
+ * across browser window boundaries via an {@link Adapter} transport.
+ */
 export class Bus<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic event map
   T extends Record<string, any> = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler map
   H extends Record<string, (data: any) => any> = any,
 > {
   public id: string = uniqueId('bus');
@@ -24,35 +33,41 @@ export class Bus<
   private readonly _requestHandlers: H;
 
   constructor(adapter: Adapter, defaultTimeout?: number) {
-    this._timeout = defaultTimeout || 5000;
+    this._timeout = defaultTimeout ?? 5000;
     this._adapter = adapter;
-    this._adapter.addListener((data) => this._onMessage(data));
-    this._eventHandlers = Object.create(null);
-    this._activeRequestHash = Object.create(null);
-    this._requestHandlers = Object.create(null);
+    this._adapter.addListener((data) => {
+      this._onMessage(data);
+    });
+    this._eventHandlers = Object.create(null) as Record<string, IEventHandlerData[]>;
+    this._activeRequestHash = Object.create(null) as Record<string, ISentActionData>;
+    this._requestHandlers = Object.create(null) as H;
 
     console.info(`Create Bus with id "${this.id}"`);
   }
 
+  /** Dispatch an event to all connected bus instances. */
   public dispatchEvent<K extends keyof T>(name: K, data: T[K]): this {
     this._adapter.send(Bus._createEvent(name as string, data));
     console.info(`Dispatch event "${String(name)}"`, data);
     return this;
   }
 
+  /** Send a request to the remote bus and wait for a response. */
   public request<E extends keyof H>(
     name: E,
     data?: Parameters<H[E]>[0],
     timeout?: number,
   ): Promise<ReturnType<H[E]> extends Promise<infer P> ? P : ReturnType<H[E]>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic resolve type
     return new Promise<any>((resolve, reject) => {
       const id = uniqueId(`${this.id}-action`);
-      const wait = timeout || this._timeout;
+      const wait = timeout ?? this._timeout;
 
-      let timer: number | NodeJS.Timeout;
+      let timer: ReturnType<typeof setTimeout> | undefined;
 
-      if ((timeout || this._timeout) !== -1) {
+      if ((timeout ?? this._timeout) !== -1) {
         timer = setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
           delete this._activeRequestHash[id];
           const error = new Error(
             `Timeout error for request with name "${String(name)}" and timeout ${wait}!`,
@@ -64,17 +79,17 @@ export class Bus<
 
       const cancelTimeout = () => {
         if (timer) {
-          clearTimeout(timer as number);
+          clearTimeout(timer);
         }
       };
 
       this._activeRequestHash[id] = {
-        reject: (error: any) => {
+        reject: (error: unknown) => {
           cancelTimeout();
           console.error(`Error request with name "${String(name)}"`, error);
-          reject(error);
+          reject(error instanceof Error ? error : new Error(String(error)));
         },
-        resolve: (data: T) => {
+        resolve: (data: unknown) => {
           cancelTimeout();
           console.info(`Request with name "${String(name)}" success resolved!`, data);
           resolve(data);
@@ -86,23 +101,28 @@ export class Bus<
     });
   }
 
+  /** Subscribe to an event by name. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- context type
   public on<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
     return this._addEventHandler(name as string, handler, context, false);
   }
 
+  /** Subscribe to an event once — the handler is removed after the first fire. */
   public once<K extends keyof T>(
     name: K,
     handler: IOneArgFunction<T[K], void>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- context type
     context?: any,
   ): this {
     return this._addEventHandler(name as string, handler, context, true);
   }
 
+  /** Unsubscribe from events. */
   public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this;
   public off<K extends keyof T>(name?: K, handler?: IOneArgFunction<T[K], void>): this;
   public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this {
     if (!name) {
-      Object.keys(this._eventHandlers).forEach((name) => this.off(name, handler));
+      Object.keys(this._eventHandlers).forEach((n) => this.off(n, handler));
       return this;
     }
 
@@ -122,13 +142,15 @@ export class Bus<
     );
 
     if (!this._eventHandlers[name].length) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._eventHandlers[name];
     }
 
     return this;
   }
 
-  public registerRequestHandler<E extends keyof H>(name: E, handler: H[E]): this {
+  /** Register a handler for incoming requests. */
+  public registerRequestHandler(name: keyof H, handler: H[keyof H]): this {
     if (this._requestHandlers[name]) {
       throw new Error('Duplicate request handler!');
     }
@@ -138,18 +160,22 @@ export class Bus<
     return this;
   }
 
-  public unregisterHandler<E extends keyof H>(name: E): this {
+  /** Remove a previously registered request handler. */
+  public unregisterHandler(name: keyof H): this {
     if (this._requestHandlers[name]) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._requestHandlers[name];
     }
     return this;
   }
 
+  /** Create a new Bus with the same handlers but a different adapter. */
   public changeAdapter(adapter: Adapter): Bus {
     const bus = new Bus(adapter, this._timeout);
 
     Object.keys(this._eventHandlers).forEach((name) => {
-      this._eventHandlers[name].forEach((info) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- keys() guarantees existence
+      this._eventHandlers[name]!.forEach((info) => {
         if (info.once) {
           bus.once(name, info.handler, info.context);
         } else {
@@ -158,13 +184,17 @@ export class Bus<
       });
     });
 
-    Object.keys(this._requestHandlers).forEach((name) => {
-      bus.registerRequestHandler(name, this._requestHandlers[name]);
+    Object.keys(this._requestHandlers as Record<string, unknown>).forEach((name) => {
+      bus.registerRequestHandler(
+        name,
+        (this._requestHandlers as Record<string, unknown>)[name] as H[keyof H],
+      );
     });
 
     return bus;
   }
 
+  /** Destroy this bus and its adapter. */
   public destroy(): void {
     console.info('Destroy Bus');
     this.off();
@@ -173,14 +203,12 @@ export class Bus<
 
   private _addEventHandler(
     name: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler
     handler: IOneArgFunction<any, void>,
-    context: any,
+    context: unknown,
     once: boolean,
   ): this {
-    if (!this._eventHandlers[name]) {
-      this._eventHandlers[name] = [];
-    }
-
+    this._eventHandlers[name] ??= [];
     this._eventHandlers[name].push({ handler, once, context });
 
     return this;
@@ -201,7 +229,7 @@ export class Bus<
         break;
       case EventType.Response:
         console.info(
-          `Start response with name "${message.id}" and status "${message.status}"`,
+          `Start response with name "${message.id}" and status "${String(message.status)}"`,
           message.content,
         );
         this._fireEndAction(message);
@@ -220,16 +248,19 @@ export class Bus<
       });
     };
 
-    if (!this._requestHandlers[String(message.name)]) {
-      sendError(new Error(`Has no handler for "${String(message.name)}" action!`));
-      return void 0;
+    const handlerName = String(message.name);
+    if (!this._requestHandlers[handlerName]) {
+      sendError(new Error(`Has no handler for "${handlerName}" action!`));
+      return;
     }
 
     try {
-      const result = this._requestHandlers[String(message.name)](message.data);
+      const result: unknown = (this._requestHandlers[handlerName] as (data: unknown) => unknown)(
+        message.data,
+      );
 
       if (Bus._isPromise(result)) {
-        result.then((data) => {
+        result.then((data: unknown) => {
           this._adapter.send({
             id: message.id,
             type: EventType.Response,
@@ -251,25 +282,28 @@ export class Bus<
   }
 
   private _fireEndAction(message: IResponseData) {
-    if (this._activeRequestHash[message.id]) {
+    const activeRequest = this._activeRequestHash[message.id];
+    if (activeRequest) {
       switch (message.status) {
         case ResponseStatus.Error:
-          this._activeRequestHash[message.id].reject(Bus._messageToData(message.content));
+          activeRequest.reject(Bus._messageToData(message.content as IInternalMessage));
           break;
         case ResponseStatus.Success:
-          this._activeRequestHash[message.id].resolve(Bus._messageToData(message.content));
+          activeRequest.resolve(Bus._messageToData(message.content as IInternalMessage));
           break;
       }
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._activeRequestHash[message.id];
     }
   }
 
-  private _fireEvent(name: string, value: any): void {
-    if (!this._eventHandlers[name]) {
-      return void 0;
+  private _fireEvent(name: string, value: unknown): void {
+    const handlers = this._eventHandlers[name];
+    if (!handlers) {
+      return;
     }
 
-    this._eventHandlers[name] = this._eventHandlers[name].slice().filter((handlerInfo) => {
+    this._eventHandlers[name] = handlers.slice().filter((handlerInfo) => {
       try {
         handlerInfo.handler.call(handlerInfo.context, value);
       } catch (e) {
@@ -279,11 +313,12 @@ export class Bus<
     });
 
     if (!this._eventHandlers[name].length) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._eventHandlers[name];
     }
   }
 
-  private static _createEvent(eventName: string, data: any): IEventData {
+  private static _createEvent(eventName: string, data: unknown): IEventData {
     return {
       type: EventType.Event,
       name: eventName,
@@ -291,69 +326,92 @@ export class Bus<
     };
   }
 
-  private static _isPromise(some: any): some is Promise<any> {
-    return some && some.then && typeof some.then === 'function';
+  private static _isPromise(some: unknown): some is Promise<unknown> {
+    return (
+      typeof some === 'object' &&
+      some !== null &&
+      'then' in some &&
+      typeof (some as Record<string, unknown>)['then'] === 'function'
+    );
   }
 
-  private static _dataToMessage(data: any): IInternalMessage {
+  private static _dataToMessage(data: unknown): IInternalMessage {
     const type = data instanceof Error ? 'error' : 'data';
-    const content = type === 'error' ? data.message : data;
+    const content: unknown = data instanceof Error ? data.message : data;
     return { type, content };
   }
 
-  private static _messageToData(message: IInternalMessage): any {
-    if (!message.type || !['error', 'data'].includes(message.type) || !('content' in message)) {
+  private static _messageToData(message: unknown): unknown {
+    if (
+      typeof message !== 'object' ||
+      message === null ||
+      !('type' in message) ||
+      !('content' in message)
+    ) {
       return message;
     }
-    if (message.type === 'error') {
-      return new Error(message.content);
+    const msg = message as IInternalMessage;
+    if (!['error', 'data'].includes(msg.type)) {
+      return message;
     }
-    return message.content;
+    if (msg.type === 'error') {
+      return new Error(msg.content as string);
+    }
+    return msg.content;
   }
 }
 
-export interface IOneArgFunction<T, R> {
-  (data: T): R;
-}
+/** A single-argument function type. */
+export type IOneArgFunction<T, R> = (data: T) => R;
 
+/** Union of all message content types sent through the bus. */
 export type TMessageContent = IEventData | IRequestData | IResponseData;
+
+/** Channel identifier type. */
 export type TChanelId = string | number;
 
+/** Event message shape. */
 export interface IEventData {
   type: EventType.Event;
   chanelId?: TChanelId | undefined;
-  name: keyof any;
+  name: string | number | symbol;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined event data
   data?: any;
 }
 
+/** Request (action) message shape. */
 export interface IRequestData {
   id: string | number;
   chanelId?: TChanelId | undefined;
   type: EventType.Action;
-  name: keyof any;
+  name: string | number | symbol;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined request data
   data?: any;
 }
 
+/** Response message shape. */
 export interface IResponseData {
   id: string | number;
   chanelId?: TChanelId | undefined;
   type: EventType.Response;
   status: ResponseStatus;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined response data
   content: any;
 }
 
 interface ISentActionData {
-  resolve: Function;
-  reject: Function;
+  resolve: (data: unknown) => void;
+  reject: (error: unknown) => void;
 }
 
 interface IEventHandlerData {
-  context: any;
+  context: unknown;
   once: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler callback
   handler: IOneArgFunction<any, void>;
 }
 
 interface IInternalMessage {
   type: 'data' | 'error';
-  content: any;
+  content: unknown;
 }
