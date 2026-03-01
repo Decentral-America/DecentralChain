@@ -3,134 +3,140 @@ import { AdapterType } from '../config';
 import { SIGN_TYPE } from '../prepareTx';
 
 export interface IUserApi {
-    type: string;
-    isAvailable: () => boolean;
-    getAddress: () => string;
-    getPublicKey: () => string;
-    signRequest?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-    signTransaction?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-    signOrder?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-    signData?: (bytes: Array<number> | Uint8Array) => Promise<string>;
+  type: string;
+  isAvailable: () => boolean;
+  getAddress: () => string;
+  getPublicKey: () => string;
+  signRequest?: (bytes: Array<number> | Uint8Array) => Promise<string>;
+  signTransaction?: (bytes: Array<number> | Uint8Array) => Promise<string>;
+  signOrder?: (bytes: Array<number> | Uint8Array) => Promise<string>;
+  signData?: (bytes: Array<number> | Uint8Array) => Promise<string>;
 }
 
 export class CustomAdapter<T extends IUserApi> extends Adapter {
+  //@ts-ignore
+  public currentUser: T;
+  public static type = AdapterType.Custom;
 
-    //@ts-ignore
-    public currentUser: T;
-    public static type = AdapterType.Custom;
-
-    //@ts-ignore
-    constructor(userApi: T) {
-        super();
-        this.currentUser = userApi;
-        this.type = userApi.type;
-        if (!this.currentUser) {
-            throw 'No selected userApi';
-        }
-
-        this._isDestroyed = false;
+  //@ts-ignore
+  constructor(userApi: T) {
+    super();
+    this.currentUser = userApi;
+    this.type = userApi.type;
+    if (!this.currentUser) {
+      throw 'No selected userApi';
     }
 
-    public isAvailable(): Promise<void> {
-        return this.currentUser.isAvailable() ? Promise.resolve() : Promise.reject();
-    }
+    this._isDestroyed = false;
+  }
 
-    public getSyncAddress(): string {
-        return this.currentUser.getAddress();
-    }
+  public isAvailable(): Promise<void> {
+    return this.currentUser.isAvailable() ? Promise.resolve() : Promise.reject();
+  }
 
-    public getSyncPublicKey(): string {
-        return this.currentUser.getPublicKey();
-    }
+  public getSyncAddress(): string {
+    return this.currentUser.getAddress();
+  }
 
-    public getPublicKey() {
-        return Promise.resolve(this.getSyncPublicKey());
-    }
+  public getSyncPublicKey(): string {
+    return this.currentUser.getPublicKey();
+  }
 
-    public getAddress() {
-        return Promise.resolve(this.getSyncAddress());
-    }
+  public getPublicKey() {
+    return Promise.resolve(this.getSyncPublicKey());
+  }
 
-    public getSeed() {
-        return Promise.reject(Error('Method "getSeed" is not available!'));
-    }
+  public getAddress() {
+    return Promise.resolve(this.getSyncAddress());
+  }
 
-    public getAdapterVersion() {
-        return 1;
-    }
+  public getSeed() {
+    return Promise.reject(Error('Method "getSeed" is not available!'));
+  }
 
-    public signRequest(bytes: Uint8Array): Promise<string> {
-        if (this.currentUser.signRequest) {
-            return this.currentUser.signRequest(bytes);
-        } else {
-            throw 'No method to sign request';
-        }
-    }
+  public getAdapterVersion() {
+    return 1;
+  }
 
-    public signTransaction(bytes: Uint8Array, precision: Record<string, number>, signData: any): Promise<string> {
-        if (this.currentUser.signTransaction) {
-            return this.currentUser.signTransaction(bytes);
-        } else {
-            throw 'No method to sign transactions';
-        }
+  public signRequest(bytes: Uint8Array): Promise<string> {
+    if (this.currentUser.signRequest) {
+      return this.currentUser.signRequest(bytes);
+    } else {
+      throw 'No method to sign request';
     }
+  }
 
-    public signOrder(bytes: Uint8Array, precision: Record<string, number>, data: any): Promise<string> {
-        if (this.currentUser.signOrder) {
-            return this.currentUser.signOrder(bytes);
-        } else {
-            throw 'No method to sign order';
-        }
+  public signTransaction(
+    bytes: Uint8Array,
+    _precision: Record<string, number>,
+    _signData: any,
+  ): Promise<string> {
+    if (this.currentUser.signTransaction) {
+      return this.currentUser.signTransaction(bytes);
+    } else {
+      throw 'No method to sign transactions';
     }
+  }
 
-    public signData(bytes: Uint8Array): Promise<string> {
-        if (this.currentUser.signData) {
-            return this.currentUser.signData(bytes);
-        } else {
-            throw 'No method to sign custom data';
-        }
+  public signOrder(
+    bytes: Uint8Array,
+    _precision: Record<string, number>,
+    _data: any,
+  ): Promise<string> {
+    if (this.currentUser.signOrder) {
+      return this.currentUser.signOrder(bytes);
+    } else {
+      throw 'No method to sign order';
     }
+  }
 
-    public getEncodedSeed() {
-        return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
+  public signData(bytes: Uint8Array): Promise<string> {
+    if (this.currentUser.signData) {
+      return this.currentUser.signData(bytes);
+    } else {
+      throw 'No method to sign custom data';
     }
+  }
 
-    public getPrivateKey() {
-        return Promise.reject('No private key');
-    }
+  public getEncodedSeed() {
+    return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
+  }
 
-    public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
-        return {
-            [SIGN_TYPE.AUTH]: [1],
-            [SIGN_TYPE.MATCHER_ORDERS]: [1],
-            [SIGN_TYPE.DCC_CONFIRMATION]: [1],
-            [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
-            [SIGN_TYPE.CANCEL_ORDER]: [1],
-            [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
-            [SIGN_TYPE.ISSUE]: [2],
-            [SIGN_TYPE.TRANSFER]: [2],
-            [SIGN_TYPE.REISSUE]: [2],
-            [SIGN_TYPE.BURN]: [2],
-            [SIGN_TYPE.EXCHANGE]: [0, 1, 2],
-            [SIGN_TYPE.LEASE]: [2],
-            [SIGN_TYPE.CANCEL_LEASING]: [2],
-            [SIGN_TYPE.CREATE_ALIAS]: [2],
-            [SIGN_TYPE.MASS_TRANSFER]: [1],
-            [SIGN_TYPE.DATA]: [1],
-            [SIGN_TYPE.SET_SCRIPT]: [1],
-            [SIGN_TYPE.SPONSORSHIP]: [1],
-            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
-            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
-            [SIGN_TYPE.UPDATE_ASSET_INFO]: [1]
-        };
-    }
+  public getPrivateKey() {
+    return Promise.reject('No private key');
+  }
 
-    public static initOptions(options: any) {
-        Adapter.initOptions(options);
-    }
+  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+    return {
+      [SIGN_TYPE.AUTH]: [1],
+      [SIGN_TYPE.MATCHER_ORDERS]: [1],
+      [SIGN_TYPE.DCC_CONFIRMATION]: [1],
+      [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
+      [SIGN_TYPE.CANCEL_ORDER]: [1],
+      [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
+      [SIGN_TYPE.ISSUE]: [2],
+      [SIGN_TYPE.TRANSFER]: [2],
+      [SIGN_TYPE.REISSUE]: [2],
+      [SIGN_TYPE.BURN]: [2],
+      [SIGN_TYPE.EXCHANGE]: [0, 1, 2],
+      [SIGN_TYPE.LEASE]: [2],
+      [SIGN_TYPE.CANCEL_LEASING]: [2],
+      [SIGN_TYPE.CREATE_ALIAS]: [2],
+      [SIGN_TYPE.MASS_TRANSFER]: [1],
+      [SIGN_TYPE.DATA]: [1],
+      [SIGN_TYPE.SET_SCRIPT]: [1],
+      [SIGN_TYPE.SPONSORSHIP]: [1],
+      [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
+      [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
+      [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
+    };
+  }
 
-    public static isAvailable() {
-        return Promise.resolve(true);
-    }
+  public static initOptions(options: any) {
+    Adapter.initOptions(options);
+  }
+
+  public static isAvailable() {
+    return Promise.resolve(true);
+  }
 }
-
