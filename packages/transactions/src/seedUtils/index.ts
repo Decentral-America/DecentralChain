@@ -72,7 +72,7 @@ export class Seed {
 
     try {
       phrase = decryptSeed(encryptedSeedPhrase, password, encryptionRounds);
-    } catch (e) {
+    } catch (_e) {
       throw new Error(wrongPasswordMessage);
     }
 

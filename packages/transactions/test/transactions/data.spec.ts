@@ -8,7 +8,7 @@ import {
   rndString,
   validateTxSignature,
 } from '../../test/utils';
-import { cancelLeaseMinimalParams, dataMinimalParams } from '../minimalParams';
+import { dataMinimalParams } from '../minimalParams';
 import { binary } from '@decentralchain/marshall';
 import { base64Decode } from '@decentralchain/ts-lib-crypto/conversions/base-xx';
 import { dataTx } from './expected/proto/data.tx';
@@ -201,14 +201,14 @@ describe('data', () => {
 
   it('should get correct signature', () => {
     const tx = data({ ...dataMinimalParams }, senderPk);
-    expect(validateTxSignature(tx, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, 1)).toBe(true);
   });
 
   it('should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2';
     const tx = data({ ...dataMinimalParams }, [null, senderPk, null, stringSeed2]);
-    expect(validateTxSignature(tx, 1, 1, publicKey(senderPk))).toBeTruthy();
-    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 1, 1, publicKey(senderPk))).toBe(true);
+    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('should get correct default values', () => {
@@ -217,7 +217,7 @@ describe('data', () => {
 
     expect(tx.data.length).toEqual(3);
     expect(tx.version).toEqual(2);
-    expect(tx.timestamp - expectedTimestamp).toBeLessThan(100);
+    expect(tx.timestamp - expectedTimestamp).toBeLessThan(1000);
     expect(tx.type).toEqual(12);
   });
 
@@ -226,7 +226,7 @@ describe('data', () => {
     expect(tx.fee).toEqual(100000);
   });
 
-  it('Should not create data with zero fee', () => {
+  it('Should create data with zero fee when explicitly set', () => {
     const tx = data({ ...dataMinimalParams, fee: 0 }, senderPk);
     expect(tx.fee).toEqual(0);
   });

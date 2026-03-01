@@ -3,8 +3,6 @@ import {
   orEq,
   isDccOrAssetId,
   isRecipient,
-  isNumber,
-  isNumberLike,
   isAttachment,
   isArray,
   getError,

@@ -3,11 +3,6 @@ import { TPrivateKey, TSeedTypes } from './types';
 import { publicKey, base58Decode } from '@decentralchain/ts-lib-crypto';
 import { ExchangeTransactionOrder } from '@decentralchain/ts-types';
 
-export const mapObj = <T, U, K extends string>(obj: Record<K, T>, f: (v: T) => U): Record<K, U> =>
-  Object.entries<T>(obj)
-    .map(([k, v]) => [k, f(v)] as [string, U])
-    .reduce((acc, [k, v]) => ({ ...(acc as any), [k]: v }), {} as Record<K, U>);
-
 export function getSenderPublicKey(
   seedsAndIndexes: [string | TPrivateKey, number?][],
   params: Partial<WithSender>,
@@ -16,7 +11,7 @@ export function getSenderPublicKey(
     throw new Error('Please provide either seed or senderPublicKey');
   else {
     return params.senderPublicKey == null
-      ? publicKey(seedsAndIndexes[0][0])
+      ? publicKey(seedsAndIndexes[0]![0])
       : params.senderPublicKey;
   }
 }
@@ -85,8 +80,8 @@ export function chainIdFromRecipient(recipient: string) {
     return recipient.charCodeAt(6);
   } else {
     try {
-      return base58Decode(recipient)[1];
-    } catch (e) {
+      return base58Decode(recipient)[1]!;
+    } catch (_e) {
       throw new Error(`Invalid recipient: ${recipient}`);
     }
   }

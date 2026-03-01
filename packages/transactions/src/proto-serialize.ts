@@ -34,11 +34,9 @@ import {
   TransferTransaction,
   UpdateAssetInfoTransaction,
   GenesisTransaction,
-  // InvokeExpressionTransaction
 } from '@decentralchain/ts-types';
 import { base64Prefix, chainIdFromRecipient } from './generic';
 import Long from 'long';
-import { lease } from './transactions/lease';
 import { TTx, TTransaction, WithChainId } from './transactions';
 
 const invokeScriptCallSchema = {
@@ -110,7 +108,6 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
     | 'setAssetScript'
     | 'invokeScript'
     | 'updateAssetInfo';
-  // | 'invokeExpression'
 
   const res: any = {
     version: t.version,
@@ -168,8 +165,8 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
       res.price = convertNumber(t.exchange!.price!);
       res.buyMatcherFee = convertNumber(t.exchange!.buyMatcherFee!);
       res.sellMatcherFee = convertNumber(t.exchange!.sellMatcherFee!);
-      res.order1 = orderFromProto(t.exchange!.orders![0]);
-      res.order2 = orderFromProto(t.exchange!.orders![1]);
+      res.order1 = orderFromProto(t.exchange!.orders![0]!);
+      res.order2 = orderFromProto(t.exchange!.orders![1]!);
       break;
     case 'lease':
       res.recipient = recipientFromProto(t.lease!.recipient!, t.chainId);
@@ -245,9 +242,6 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
       res.name = t.updateAssetInfo!.name;
       res.description = t.updateAssetInfo!.description;
       break;
-    // case 'invokeExpression':
-    //     res.expression = t.invokeExpression?.expression == null ? null : base64Prefix(base64Encode(t.invokeExpression?.expression))
-    //     break
     default:
       throw new Error(`Unsupported tx type ${t.data}`);
   }
@@ -405,12 +399,6 @@ const getUpdateAssetInfoData = (
   };
 };
 
-// const getInvokeExpressionData = (t: InvokeExpressionTransaction): dccProto.waves.IInvokeExpressionTransactionData => {
-//     return {
-//         expression: t.expression == null ? null : scriptToProto(t.expression),
-//     }
-// }
-
 const getTxData = (
   t: Exclude<TTransaction, GenesisTransaction>,
 ): any /*dccProto.waves.ITransaction*/ => {
@@ -462,9 +450,6 @@ const getTxData = (
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
       txData = getUpdateAssetInfoData(t);
       break;
-    // case TRANSACTION_TYPE.INVOKE_EXPRESSION:
-    //     txData = getInvokeExpressionData(t)
-    //     break
   }
 
   return txData;
@@ -500,10 +485,11 @@ const orderToProto = (o: any): dccProto.waves.IOrder => {
   if (o.version === 4 && 'priceMode' in o) {
     if (o.priceMode === 0 || o.priceMode === 'default') {
       priceMode = undefined;
+    } else {
+      o.priceMode === 'assetDecimals'
+        ? (priceMode = dccProto.waves.Order.PriceMode.ASSET_DECIMALS)
+        : (priceMode = dccProto.waves.Order.PriceMode.FIXED_DECIMALS);
     }
-    o.priceMode === 'assetDecimals'
-      ? (priceMode = dccProto.waves.Order.PriceMode.ASSET_DECIMALS)
-      : (priceMode = dccProto.waves.Order.PriceMode.FIXED_DECIMALS);
   } else priceMode = undefined;
 
   const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() == 'dcc';
@@ -615,7 +601,6 @@ const nameByType = {
   15: 'setAssetScript' as const,
   16: 'invokeScript' as const,
   17: 'updateAssetInfo' as const,
-  // 18: 'invokeExpression' as 'invokeExpression',
 };
 const typeByName = {
   genesis: 1 as const,
@@ -635,7 +620,6 @@ const typeByName = {
   setAssetScript: 15 as const,
   invokeScript: 16 as const,
   updateAssetInfo: 17 as const,
-  // 'invokeExpression': 18 as 18,
 };
 
 const proof2Uint8Array = (proof: string): Uint8Array => {

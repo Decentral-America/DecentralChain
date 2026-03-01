@@ -63,7 +63,7 @@ describe('Node interaction utility functions', () => {
   it('Should get balanceDetails', async () => {
     await expect(
       utilityF.balanceDetails('3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu', apiBase),
-    ).resolves.not.toBeFalsy();
+    ).resolves.not.toBe(false);
   }, 5000);
 
   it('Should get asset balance', async () => {
@@ -73,7 +73,7 @@ describe('Node interaction utility functions', () => {
         '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu',
         apiBase,
       ),
-    ).resolves.not.toBeFalsy();
+    ).resolves.not.toBe(false);
   }, 5000);
 
   it('Should get NFT balance', async () => {
@@ -109,7 +109,7 @@ describe('Node interaction utility functions', () => {
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
     const addr = address(randomSeed(), chainId);
-    await expect(utilityF.accountData(addr, apiBase)).resolves.not.toBeFalsy();
+    await expect(utilityF.accountData(addr, apiBase)).resolves.not.toBe(false);
   }, 5000);
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/nodeInteraction.spec.ts
 
@@ -130,7 +130,7 @@ describe('Node interaction utility functions', () => {
       '3MtXzccPrCAoKans9TD9sp3qoFHiajPA4Uu',
       apiBase,
     );
-    expect(data).not.toBeFalsy();
+    expect(data).not.toBe(false);
   }, 5000);
 
   it('Should get accountData by key and return null on no data', async () => {

@@ -84,7 +84,7 @@ export function massTransfer(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(
       paramsOrTx.chainId,
-      chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient),
+      chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient) ?? 0,
     ),
     id: '',
 <<<<<<< HEAD

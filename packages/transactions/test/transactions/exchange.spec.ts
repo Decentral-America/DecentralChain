@@ -1084,7 +1084,7 @@ describe('exchange', () => {
     };
 
     // @ts-ignore
-    console.log(exchange({ ...txOk }, seed1));
+    exchange({ ...txOk }, seed1);
   });
 
   it('Should build exchange tx ver1-1-1', () => {
@@ -1123,8 +1123,6 @@ describe('exchange', () => {
       version: 1,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk, chainId: txOk.chainId.charCodeAt() });
   });
@@ -1165,8 +1163,6 @@ describe('exchange', () => {
       version: 2,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1207,8 +1203,6 @@ describe('exchange', () => {
       version: 2,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1249,95 +1243,13 @@ describe('exchange', () => {
       version: 2,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
 
-  it.skip('Should build exchange tx ver2-1-3', () => {
-    const order1 = {
-      version: 1,
-      amount: 100,
-      price: 500000000,
-      matcherFee: 100,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
-      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
-      orderType: 'buy' as const,
-    };
+  it.todo('Should build exchange tx ver2-1-3 — needs order V3 fixture');
 
-    const order2 = {
-      version: 3,
-      matcherFee: 100,
-      matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
-      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
-      orderType: 'sell' as const,
-    };
-
-    const txOk = {
-      order1: order(order1, seed1),
-      order2: order(order2, seed2),
-      price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
-      sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
-      version: 2,
-    };
-
-    // @ts-ignore
-    //console.log(
-    const tx = exchange({ ...txOk }, seed1);
-    expect(tx).toMatchObject({ ...txOk });
-  });
-
-  it.skip('Should build exchange tx ver2-2-3', () => {
-    const order1 = {
-      version: 2,
-      amount: 100,
-      price: 500000000,
-      matcherFee: 100,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
-      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
-      orderType: 'buy' as const,
-    };
-
-    const order2 = {
-      version: 3,
-      matcherFee: 100,
-      matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
-      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
-      orderType: 'sell' as const,
-    };
-
-    const txOk = {
-      order1: order(order1, seed1),
-      order2: order(order2, seed2),
-      price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
-      sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
-      version: 2,
-    };
-
-    // @ts-ignore
-    //console.log(
-    const tx = exchange({ ...txOk }, seed1);
-    expect(tx).toMatchObject({ ...txOk });
-  });
+  it.todo('Should build exchange tx ver2-2-3 — needs order V3 fixture');
 
   it('Should build exchange tx ver3-4-4', () => {
     const order1 = {
@@ -1375,8 +1287,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1417,8 +1327,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1459,8 +1367,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1501,8 +1407,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1543,8 +1447,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
@@ -1585,8 +1487,6 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-ignore
-    //console.log(
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });

@@ -39,7 +39,7 @@ const mapType = <T>(
 const convertValue = (
   type: 'integer' | 'string' | 'binary' | 'boolean',
   value: Uint8Array | string | number | boolean,
-  opt: string,
+  _opt: string,
 ) => {
   return type === 'binary' && (Uint8Array.prototype.isPrototypeOf(value) || Array.isArray(value))
     ? 'base64:' + Buffer.from(value as unknown as any[]).toString('base64')
