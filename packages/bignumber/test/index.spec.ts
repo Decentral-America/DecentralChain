@@ -304,7 +304,7 @@ describe('BigNumber', () => {
         const value = BigNumber.MIN_UNSIGNED_VALUE.sub(1).toString();
 
         expect(() => new BigNumber(value).toBytes({ isSigned: false })).toThrowError(
-          'Cant create bytes from negative number in signed mode',
+          "Can't create bytes from negative number in unsigned mode!",
         );
       });
     });
