@@ -185,7 +185,7 @@ export class Money {
 
   /** Create a new Money with different coins but the same asset. */
   public cloneWithCoins(coins: TMoneyInput): Money {
-    return new Money(new BigNumber(coins), this.asset);
+    return new Money(coins, this.asset);
   }
 
   /** Create a new Money from a token amount, using this instance's asset. */
@@ -305,7 +305,7 @@ export class Money {
 
   private static _tokensToCoins(tokens: TMoneyInput, precision: number): BigNumber {
     const divider = Money._getDivider(precision);
-    const fixed = new BigNumber(tokens).toFixed(precision);
+    const fixed = toBigNumber(tokens).toFixed(precision);
     return new BigNumber(fixed).mul(divider);
   }
 

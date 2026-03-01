@@ -63,6 +63,27 @@ export class Asset {
   constructor(assetObject: IAssetInfo) {
     const remapped = config.get('remapAsset')(assetObject);
 
+    // ── Validate critical fields ──────────────────────────────────
+    if (typeof remapped.id !== 'string' || remapped.id.length === 0) {
+      throw new Error('Invalid asset id: must be a non-empty string');
+    }
+    if (typeof remapped.name !== 'string' || remapped.name.length === 0) {
+      throw new Error('Invalid asset name: must be a non-empty string');
+    }
+    if (typeof remapped.sender !== 'string' || remapped.sender.length === 0) {
+      throw new Error('Invalid asset sender: must be a non-empty string');
+    }
+    if (!Number.isInteger(remapped.precision) || remapped.precision < 0) {
+      throw new Error(
+        `Invalid precision: ${String(remapped.precision)} — must be a non-negative integer`,
+      );
+    }
+    if (!Number.isInteger(remapped.height) || remapped.height < 0) {
+      throw new Error(
+        `Invalid height: ${String(remapped.height)} — must be a non-negative integer`,
+      );
+    }
+
     this.quantity = toBigNumber(remapped.quantity);
     this.minSponsoredFee =
       remapped.minSponsoredFee != null ? toBigNumber(remapped.minSponsoredFee) : null;
