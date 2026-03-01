@@ -103,6 +103,9 @@ export const ASSETS_VERSION_MAP = {
           ),
           processDescription(id),
         );
+      /* v8 ignore next 2 -- unreachable: isValidStatus guard in parseAssetData */
+      default:
+        throw new Error(`Unhandled asset status: ${String(status)}`);
     }
   },
 } as const;
