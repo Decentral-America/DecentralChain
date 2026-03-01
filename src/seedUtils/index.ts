@@ -9,16 +9,15 @@ import {
   base16Encode,
   encryptSeed,
   decryptSeed,
-  randomSeed
+  randomSeed,
 } from '@decentralchain/ts-lib-crypto'
 import { serializePrimitives } from '@decentralchain/marshall'
 
 export class Seed {
-
   public readonly phrase: string
   public readonly address: string
   public readonly keyPair: {
-    publicKey: string,
+    publicKey: string
     privateKey: string
   }
 
@@ -26,7 +25,6 @@ export class Seed {
     if (phrase.length < 12) {
       throw new Error('Your seed length is less than allowed in config')
     }
-
 
     this.phrase = phrase
     this.address = address(phrase, chainId)
@@ -43,7 +41,11 @@ export class Seed {
     return Seed.encryptSeedPhrase(this.phrase, password, encryptionRounds)
   }
 
-  public static encryptSeedPhrase(seedPhrase: string, password: string, encryptionRounds: number = 5000): string {
+  public static encryptSeedPhrase(
+    seedPhrase: string,
+    password: string,
+    encryptionRounds = 5000,
+  ): string {
     if (password && password.length < 8) {
       // logger.warn('Your password may be too weak');
     }
@@ -59,8 +61,11 @@ export class Seed {
     return encryptSeed(seedPhrase, password, encryptionRounds)
   }
 
-  public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, encryptionRounds: number = 5000): string {
-
+  public static decryptSeedPhrase(
+    encryptedSeedPhrase: string,
+    password: string,
+    encryptionRounds = 5000,
+  ): string {
     const wrongPasswordMessage = 'The password is wrong'
 
     let phrase
@@ -76,16 +81,17 @@ export class Seed {
     }
 
     return phrase
-
   }
 
-  public static create(words: number = 15): Seed {
+  public static create(words = 15): Seed {
     const phrase = generateNewSeed(words)
     const minimumSeedLength = 12
 
     if (phrase.length < minimumSeedLength) {
       // If you see that error you should increase the number of words in the generated seed
-      throw new Error(`The resulted seed length is less than the minimum length (${minimumSeedLength})`)
+      throw new Error(
+        `The resulted seed length is less than the minimum length (${minimumSeedLength})`,
+      )
     }
 
     return new Seed(phrase)
@@ -96,21 +102,20 @@ export class Seed {
 
     if (phrase.length < minimumSeedLength) {
       // If you see that error you should increase the number of words or set it lower in the config
-      throw new Error(`The resulted seed length is less than the minimum length (${minimumSeedLength})`)
+      throw new Error(
+        `The resulted seed length is less than the minimum length (${minimumSeedLength})`,
+      )
     }
 
     return new Seed(phrase)
   }
-
 }
-
 
 export function generateNewSeed(length = 15) {
   return randomSeed(length)
 }
 
-
-export function strengthenPassword(password: string, rounds: number = 5000): string {
+export function strengthenPassword(password: string, rounds = 5000): string {
   while (rounds--) {
     const bytes = serializePrimitives.STRING(password)
     password = base16Encode(sha256(bytes))
@@ -118,7 +123,4 @@ export function strengthenPassword(password: string, rounds: number = 5000): str
   return password
 }
 
-export {
-  encryptSeed,
-  decryptSeed
-}
+export { encryptSeed, decryptSeed }
