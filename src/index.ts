@@ -1,8 +1,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { serializeCustomData } from './requests/custom-data';
-
 export { massTransfer } from './transactions/mass-transfer';
 export { reissue } from './transactions/reissue';
 export { burn } from './transactions/burn';
@@ -42,6 +40,7 @@ export { makeTx, makeTxBytes } from './make-tx'
 } from './general';
 export { waitForTx, broadcast } from './nodeInteraction';
 export { makeTx, makeTxBytes } from './make-tx';
+<<<<<<< HEAD
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // export { invokeExpression } from './transactions/invoke-expression'
 =======
@@ -49,6 +48,8 @@ export { makeTx, makeTxBytes } from './make-tx';
 =======
 // export { invokeExpression } from './transactions/invoke-expression'
 >>>>>>> f33083a0 (updated dependencies)
+=======
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 
 // Export interfaces
 export type {
@@ -84,12 +85,10 @@ export type { TSeedTypes, TOption } from './types';
 // internal libraries access
 import * as crypto from '@decentralchain/ts-lib-crypto';
 import * as marshall from '@decentralchain/marshall';
-// import * as nodeApiJs from '@decentralchain/node-api-js'
 
 const libs = {
   crypto,
   marshall,
-  // nodeApiJs
 };
 
 import * as seedUtils from './seedUtils';

@@ -133,8 +133,11 @@ export type TTxParams<LONG = string | number> =
   | ISponsorshipParams<LONG>
   | ITransferParams<LONG>
   | IUpdateAssetInfoParams<LONG>;
+<<<<<<< HEAD
 // | IInvokeExpressionParams<LONG>
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
@@ -420,6 +423,7 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> f33083a0 (updated dependencies)
 // /**
@@ -439,6 +443,8 @@ export type TTransaction = Exclude<Transaction, GenesisTransaction | PaymentTran
 =======
 >>>>>>> f33083a0 (updated dependencies)
 =======
+=======
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 export type TTransaction = Exclude<
   Transaction,
   GenesisTransaction | PaymentTransaction | EthereumTransaction

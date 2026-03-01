@@ -309,19 +309,7 @@ describe('transactions v3', () => {
     TIMEOUT,
   );
 
-  //  //todo add transfers with bytes
-  //  it('correctly serialized transfers with attachments', () => {
-  //    transfers.forEach(({ Bytes, Json }, i) => {
-  //      const myBytes = libs.crypto.base16Encode(txToProtoBytes(Json as any))
-  //      const sbytes = libs.crypto.base16Encode(libs.crypto.base64Decode(Bytes))
-  //      if (!sbytes.includes(myBytes)) {
-  //        console.error(`${i}\nExpected: ${sbytes}\nActual  : ${myBytes}`)
-  //      } else {
-  //        console.log(`${i} Success: \n${sbytes}\n${myBytes}\``)
-  //      }
-  //      expect(sbytes).toContain(myBytes)
-  //    })
-  // })
+  it.todo('correctly serializes transfers with byte attachments');
 });
 
 const a = {

@@ -26,7 +26,7 @@ describe('massTransfer', () => {
 
   it('Should get correct signature', () => {
     const tx = massTransfer({ ...massTransferMinimalParams }, stringSeed);
-    expect(validateTxSignature(tx, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, 1)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
@@ -37,8 +37,8 @@ describe('massTransfer', () => {
       null,
       stringSeed2,
     ]);
-    expect(validateTxSignature(tx, 1, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 1, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('Should throw on transfers with minimal quantity of receivers', () => {

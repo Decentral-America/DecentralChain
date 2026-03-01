@@ -21,20 +21,20 @@ describe('lease', () => {
 
   it('Should get correct signature', () => {
     const tx = lease({ ...leaseMinimalParams }, stringSeed);
-    expect(validateTxSignature(tx, 2)).toBeTruthy();
+    expect(validateTxSignature(tx, 2)).toBe(true);
   });
 
   it('Should sign already signed', () => {
     let tx = lease({ ...leaseMinimalParams }, stringSeed);
     tx = lease(tx, stringSeed);
-    expect(validateTxSignature(tx, 2, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, 2, 1)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2';
     const tx = lease({ ...leaseMinimalParams }, [null, stringSeed, null, stringSeed2]);
-    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('Should create with custom fee', () => {

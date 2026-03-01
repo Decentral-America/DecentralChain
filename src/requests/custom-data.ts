@@ -13,10 +13,10 @@ import { schemas, serializePrimitives } from '@decentralchain/marshall';
 import { binary } from '@decentralchain/marshall';
 import { validate } from '../validators';
 import { TPrivateKey } from '../types';
-import { DataFiledType, DataTransactionEntry } from '@decentralchain/ts-types';
+import { DataTransactionEntry } from '@decentralchain/ts-types';
 import { DataTransactionDeleteRequest } from '@decentralchain/ts-types/src/parts';
 
-export interface ICustomDataV1 {
+interface ICustomDataV1 {
   version: 1;
   /**
    * base64 encoded UInt8Array
@@ -26,7 +26,7 @@ export interface ICustomDataV1 {
   publicKey?: string;
 }
 
-export interface ICustomDataV2 {
+interface ICustomDataV2 {
   version: 2;
   data: Exclude<DataTransactionEntry, DataTransactionDeleteRequest>[];
   publicKey?: string;

@@ -15,7 +15,7 @@ describe('signTx', () => {
     it('type: ' + tx.type, () => {
       const signed = signTx(tx, stringSeed);
       const bytes = serialize(signed);
-      expect(verifySignature(publicKey(stringSeed), bytes, signed.proofs[1]!)).toBeTruthy();
+      expect(verifySignature(publicKey(stringSeed), bytes, signed.proofs[1]!)).toBe(true);
     });
   });
 

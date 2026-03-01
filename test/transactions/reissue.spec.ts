@@ -20,14 +20,14 @@ describe('reissue', () => {
 
   it('Should get correct signature', () => {
     const tx = reissue({ ...reissueMinimalParams }, stringSeed);
-    expect(validateTxSignature(tx, 2)).toBeTruthy();
+    expect(validateTxSignature(tx, 2)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2';
     const tx = reissue({ ...reissueMinimalParams }, [null, stringSeed, null, stringSeed2]);
-    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('Should create with zero fee', () => {

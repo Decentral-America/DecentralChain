@@ -3,7 +3,6 @@ import {
   isEq,
   orEq,
   isNumber,
-  isNumberLike,
   isArray,
   getError,
   validateByShema,

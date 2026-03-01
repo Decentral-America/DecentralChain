@@ -22,7 +22,6 @@ describe('setSponsorship', () => {
         { ...sponsorshipMinimalParams, minSponsoredAssetFee: 0 },
         stringSeed,
       );
-      console.log(spTx);
       return spTx;
     }).toThrowError(errorMessageByTemplate('minSponsoredAssetFee', 0));
   });

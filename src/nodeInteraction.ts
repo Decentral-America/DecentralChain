@@ -109,14 +109,11 @@ export async function waitForTx(
   return promise();
 }
 
-const process400 = (resp: any) =>
-  resp.status === 400 ? Promise.reject(Object.assign(new Error(), resp.data)) : resp;
-
 export async function waitForTxWithNConfirmations(
   txId: string,
   confirmations: number,
   options: INodeRequestOptions,
-  requestOptions?: RequestInit,
+  _requestOptions?: RequestInit,
 ): Promise<TxStatus> {
   const { timeout } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options };
 
@@ -124,7 +121,7 @@ export async function waitForTxWithNConfirmations(
   const to = delay(timeout);
   to.then(() => (expired = true));
 
-  let tx = await waitForTx(txId, options, requestOptions);
+  let tx = await waitForTx(txId, options, _requestOptions);
 
   let txHeight = (tx as any).height;
   const currentHeight = (tx as any).height;
@@ -132,7 +129,7 @@ export async function waitForTxWithNConfirmations(
   while (txHeight + confirmations > currentHeight) {
     if (expired) throw new Error('Tx wait stopped: timeout');
     await waitForHeight(txHeight + confirmations, options);
-    tx = await waitForTx(txId, options, requestOptions);
+    tx = await waitForTx(txId, options, _requestOptions);
     txHeight = (tx as any).height;
   }
 
@@ -142,7 +139,7 @@ export async function waitForTxWithNConfirmations(
 export async function waitNBlocks(
   blocksCount: number,
   options: INodeRequestOptions = DEFAULT_NODE_REQUEST_OPTIONS,
-  requestOptions?: RequestInit,
+  _requestOptions?: RequestInit,
 ) {
   const { apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options };
   const height = await currentHeight(apiBase);
