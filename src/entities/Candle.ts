@@ -56,6 +56,18 @@ export class Candle {
   constructor(candleObject: ICandleInfo) {
     const remapped = config.get('remapCandle')(candleObject);
 
+    // ── Validate integer fields ───────────────────────────────────
+    if (!Number.isInteger(remapped.maxHeight) || remapped.maxHeight < 0) {
+      throw new Error(
+        `Invalid maxHeight: ${String(remapped.maxHeight)} — must be a non-negative integer`,
+      );
+    }
+    if (!Number.isInteger(remapped.txsCount) || remapped.txsCount < 0) {
+      throw new Error(
+        `Invalid txsCount: ${String(remapped.txsCount)} — must be a non-negative integer`,
+      );
+    }
+
     this.open = toBigNumber(remapped.open);
     this.close = toBigNumber(remapped.close);
     this.high = toBigNumber(remapped.high);
