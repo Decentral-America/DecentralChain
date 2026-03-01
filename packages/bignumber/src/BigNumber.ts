@@ -240,7 +240,7 @@ export class BigNumber {
     }
 
     if (!isSigned && this.isNegative()) {
-      throw new Error('Cant create bytes from negative number in signed mode!');
+      throw new Error("Can't create bytes from negative number in unsigned mode!");
     }
 
     if (isLong && isSigned && !this.isInSignedRange()) {
