@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BigNumber } from '@decentralchain/bignumber';
 import { getAssetData } from '../assetData';
-import { Asset, Money, OrderPrice, AssetPair, config } from '../../src/index';
+import { Asset, Money, OrderPrice, AssetPair, Candle, config } from '../../src/index';
 import { toBigNumber } from '../../src/utils';
 
 /**
@@ -244,5 +244,123 @@ describe('Financial precision edge cases', () => {
     const d = Money.fromTokens(5, fakeEIGHT);
     const result = c.times(d);
     expect(result.toCoins()).toBe('100000000000000000');
+  });
+});
+
+describe('Security: Asset field validation', () => {
+  it('should reject empty asset id', () => {
+    expect(() => new Asset(getAssetData({ id: '' }))).toThrow('Invalid asset id');
+  });
+
+  it('should reject empty asset name', () => {
+    expect(() => new Asset(getAssetData({ name: '' }))).toThrow('Invalid asset name');
+  });
+
+  it('should reject empty asset sender', () => {
+    expect(() => new Asset(getAssetData({ sender: '' }))).toThrow('Invalid asset sender');
+  });
+
+  it('should reject negative precision', () => {
+    expect(() => new Asset(getAssetData({ precision: -1 }))).toThrow('Invalid precision');
+  });
+
+  it('should reject fractional precision', () => {
+    expect(() => new Asset(getAssetData({ precision: 2.5 }))).toThrow('Invalid precision');
+  });
+
+  it('should reject NaN precision', () => {
+    expect(() => new Asset(getAssetData({ precision: NaN }))).toThrow('Invalid precision');
+  });
+
+  it('should reject negative height', () => {
+    expect(() => new Asset(getAssetData({ height: -1 }))).toThrow('Invalid height');
+  });
+
+  it('should reject fractional height', () => {
+    expect(() => new Asset(getAssetData({ height: 1.5 }))).toThrow('Invalid height');
+  });
+
+  it('should accept precision 0', () => {
+    expect(() => new Asset(getAssetData({ precision: 0 }))).not.toThrow();
+  });
+
+  it('should accept height 0', () => {
+    expect(() => new Asset(getAssetData({ height: 0 }))).not.toThrow();
+  });
+});
+
+describe('Security: Candle field validation', () => {
+  it('should reject negative maxHeight', () => {
+    expect(
+      () =>
+        new Candle({
+          time: new Date(),
+          open: '1',
+          close: '1',
+          high: '1',
+          low: '1',
+          volume: '1',
+          quoteVolume: '1',
+          weightedAveragePrice: '1',
+          maxHeight: -1,
+          txsCount: 0,
+        }),
+    ).toThrow('Invalid maxHeight');
+  });
+
+  it('should reject fractional txsCount', () => {
+    expect(
+      () =>
+        new Candle({
+          time: new Date(),
+          open: '1',
+          close: '1',
+          high: '1',
+          low: '1',
+          volume: '1',
+          quoteVolume: '1',
+          weightedAveragePrice: '1',
+          maxHeight: 0,
+          txsCount: 1.5,
+        }),
+    ).toThrow('Invalid txsCount');
+  });
+
+  it('should reject NaN maxHeight', () => {
+    expect(
+      () =>
+        new Candle({
+          time: new Date(),
+          open: '1',
+          close: '1',
+          high: '1',
+          low: '1',
+          volume: '1',
+          quoteVolume: '1',
+          weightedAveragePrice: '1',
+          maxHeight: NaN,
+          txsCount: 0,
+        }),
+    ).toThrow('Invalid maxHeight');
+  });
+});
+
+describe('Security: Money defense-in-depth', () => {
+  it('cloneWithTokens should reject NaN input', () => {
+    setup();
+    const money = Money.fromTokens(1, fakeEIGHT);
+    expect(() => money.cloneWithTokens('garbage')).toThrow('Invalid numeric value');
+  });
+
+  it('cloneWithCoins should reject NaN input', () => {
+    setup();
+    const money = Money.fromTokens(1, fakeEIGHT);
+    expect(() => money.cloneWithCoins('garbage')).toThrow('Invalid numeric value');
+  });
+
+  it('cloneWithCoins should reject Infinity', () => {
+    setup();
+    const money = Money.fromTokens(1, fakeEIGHT);
+    expect(() => money.cloneWithCoins(Infinity)).toThrow('Non-finite numeric value');
   });
 });
