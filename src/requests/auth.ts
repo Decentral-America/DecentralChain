@@ -1,31 +1,31 @@
 /**
  * @module index
  */
-import { base58Encode, blake2b, concat, signBytes, address } from '@decentralchain/ts-lib-crypto'
-import { serializePrimitives } from '@decentralchain/marshall'
-const { STRING, LEN, SHORT } = serializePrimitives
-import { getSenderPublicKey, convertToPairs } from '../generic'
-import { IAuthParams, IAuth } from '../transactions'
-import { validate } from '../validators'
-import { TPrivateKey } from '../types'
+import { base58Encode, blake2b, concat, signBytes, address } from '@decentralchain/ts-lib-crypto';
+import { serializePrimitives } from '@decentralchain/marshall';
+const { STRING, LEN, SHORT } = serializePrimitives;
+import { getSenderPublicKey, convertToPairs } from '../generic';
+import { IAuthParams, IAuth } from '../transactions';
+import { validate } from '../validators';
+import { TPrivateKey } from '../types';
 
 export const serializeAuthData = (auth: { host: string; data: string }) =>
   concat(
     LEN(SHORT)(STRING)('DccWalletAuthentication'),
     LEN(SHORT)(STRING)(auth.host || ''),
     LEN(SHORT)(STRING)(auth.data || ''),
-  )
+  );
 
 export function auth(
   params: IAuthParams,
   seed?: string | TPrivateKey,
   chainId?: string | number,
 ): IAuth {
-  const seedsAndIndexes = convertToPairs(seed)
+  const seedsAndIndexes = convertToPairs(seed);
   const publicKey =
-    params.publicKey || getSenderPublicKey(seedsAndIndexes, { senderPublicKey: undefined })
+    params.publicKey || getSenderPublicKey(seedsAndIndexes, { senderPublicKey: undefined });
 
-  validate.auth(params)
+  validate.auth(params);
 
   const rx = {
     hash: '',
@@ -34,12 +34,12 @@ export function auth(
     data: params.data,
     publicKey,
     address: address({ publicKey }, chainId || 'L'),
-  }
+  };
 
-  const bytes = serializeAuthData(rx)
+  const bytes = serializeAuthData(rx);
 
-  rx.signature = (seed != null && signBytes(seed, bytes)) || ''
-  rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)))
+  rx.signature = (seed != null && signBytes(seed, bytes)) || '';
+  rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
-  return rx
+  return rx;
 }

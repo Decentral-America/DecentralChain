@@ -1,28 +1,28 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { serializeCustomData } from './requests/custom-data'
+import { serializeCustomData } from './requests/custom-data';
 
-export { massTransfer } from './transactions/mass-transfer'
-export { reissue } from './transactions/reissue'
-export { burn } from './transactions/burn'
-export { exchange } from './transactions/exchange'
-export { lease } from './transactions/lease'
-export { cancelLease } from './transactions/cancel-lease'
-export { data } from './transactions/data'
-export { issue } from './transactions/issue'
-export { transfer } from './transactions/transfer'
-export { alias } from './transactions/alias'
-export { setScript } from './transactions/set-script'
-export { setAssetScript } from './transactions/set-asset-script'
-export { sponsorship } from './transactions/sponsorship'
-export { order } from './requests/order'
-export { cancelOrder } from './requests/cancel-order'
-export { customData, serializeCustomData } from './requests/custom-data'
-export { auth } from './requests/auth'
-export { dccAuth } from './requests/dccAuth'
-export { invokeScript } from './transactions/invoke-script'
-export { updateAssetInfo } from './transactions/update-asset-info'
+export { massTransfer } from './transactions/mass-transfer';
+export { reissue } from './transactions/reissue';
+export { burn } from './transactions/burn';
+export { exchange } from './transactions/exchange';
+export { lease } from './transactions/lease';
+export { cancelLease } from './transactions/cancel-lease';
+export { data } from './transactions/data';
+export { issue } from './transactions/issue';
+export { transfer } from './transactions/transfer';
+export { alias } from './transactions/alias';
+export { setScript } from './transactions/set-script';
+export { setAssetScript } from './transactions/set-asset-script';
+export { sponsorship } from './transactions/sponsorship';
+export { order } from './requests/order';
+export { cancelOrder } from './requests/cancel-order';
+export { customData, serializeCustomData } from './requests/custom-data';
+export { auth } from './requests/auth';
+export { dccAuth } from './requests/dccAuth';
+export { invokeScript } from './transactions/invoke-script';
+export { updateAssetInfo } from './transactions/update-asset-info';
 export {
   signTx,
   verify,
@@ -32,11 +32,17 @@ export {
   verifyAuthData,
   verifyCustomData,
   verifyDccAuthData,
+<<<<<<< HEAD
 } from './general'
 export { waitForTx, broadcast } from './nodeInteraction'
 export { makeTx, makeTxBytes } from './make-tx'
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+} from './general';
+export { waitForTx, broadcast } from './nodeInteraction';
+export { makeTx, makeTxBytes } from './make-tx';
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // export { invokeExpression } from './transactions/invoke-expression'
 =======
 >>>>>>> 697d643a (minor fixes)
@@ -45,7 +51,7 @@ export { makeTx, makeTxBytes } from './make-tx'
 >>>>>>> f33083a0 (updated dependencies)
 
 // Export interfaces
-export {
+export type {
   TTx,
   TTxParams,
   IAliasParams,
@@ -69,26 +75,26 @@ export {
   WithSender,
   WithProofs,
   WithTxType,
-} from './transactions'
+} from './transactions';
 
-export { INodeRequestOptions, IStateChangeResponse } from './nodeInteraction'
+export type { INodeRequestOptions, IStateChangeResponse } from './nodeInteraction';
 
-export { TSeedTypes, TOption } from './types'
+export type { TSeedTypes, TOption } from './types';
 
 // internal libraries access
-import * as crypto from '@decentralchain/ts-lib-crypto'
-import * as marshall from '@decentralchain/marshall'
+import * as crypto from '@decentralchain/ts-lib-crypto';
+import * as marshall from '@decentralchain/marshall';
 // import * as nodeApiJs from '@decentralchain/node-api-js'
 
 const libs = {
   crypto,
   marshall,
   // nodeApiJs
-}
+};
 
-import * as seedUtils from './seedUtils'
-import * as nodeInteraction from './nodeInteraction'
-import * as validators from './validators'
-import * as protoSerialize from './proto-serialize'
+import * as seedUtils from './seedUtils';
+import * as nodeInteraction from './nodeInteraction';
+import * as validators from './validators';
+import * as protoSerialize from './proto-serialize';
 
-export { libs, seedUtils, nodeInteraction, validators, protoSerialize }
+export { libs, seedUtils, nodeInteraction, validators, protoSerialize };
