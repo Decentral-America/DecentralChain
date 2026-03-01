@@ -1,18 +1,20 @@
-import { TYPES } from '../constants';
-import { ICancelLeaseTransaction } from '@decentralchain/ts-types';
-import { factory } from '../core/factory';
-import { getDefaultTransform, IDefaultGuiTx } from './general';
-import { prop } from '../utils';
-import { TWithPartialFee } from '../types';
+import type { ICancelLeaseTransaction } from '@decentralchain/ts-types';
+import type { TWithPartialFee } from '../types/index.js';
+import { type TYPES } from '../constants/index.js';
+import { factory } from '../core/factory.js';
+import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { prop } from '../utils/index.js';
 
-
-export const cancelLease = factory<IDCCGuiCancelLease, TWithPartialFee<ICancelLeaseTransaction<string>>>({
-    ...getDefaultTransform(),
-    leaseId: prop('leaseId'),
-    chainId: prop('chainId')
+export const cancelLease = factory<
+  IDCCGuiCancelLease,
+  TWithPartialFee<ICancelLeaseTransaction<string>>
+>({
+  ...getDefaultTransform(),
+  leaseId: prop('leaseId'),
+  chainId: prop('chainId'),
 });
 
 export interface IDCCGuiCancelLease extends IDefaultGuiTx<typeof TYPES.CANCEL_LEASE> {
-    leaseId: string;
-    chainId: number;
+  leaseId: string;
+  chainId: number;
 }

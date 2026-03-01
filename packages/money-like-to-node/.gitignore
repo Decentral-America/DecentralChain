@@ -1,31 +1,22 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-**/*.js
-**/*.js.map
-**/*.d.ts
-!src/**/*.d.ts
-
 # IDE
-.idea/
-.vscode/
+.idea
+.vscode
 *.swp
 *.swo
-*~
+
+# Build output
+dist
+coverage
+*.tsbuildinfo
+
+# Dependencies
+node_modules
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Test / Coverage
-coverage/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Env
-.env
-.env.local
+# Misc
+.size-snapshot.json
+.rpt2_cache
+*.local

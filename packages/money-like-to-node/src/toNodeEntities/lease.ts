@@ -1,18 +1,17 @@
-import { TYPES } from '../constants';
-import { ILeaseTransaction } from '@decentralchain/ts-types';
-import { factory } from '../core/factory';
-import { TMoney, TWithPartialFee } from '../types';
-import { getDefaultTransform, IDefaultGuiTx } from './general';
-import { getCoins, pipe, prop } from '../utils';
-
+import type { ILeaseTransaction } from '@decentralchain/ts-types';
+import type { TMoney, TWithPartialFee } from '../types/index.js';
+import { type TYPES } from '../constants/index.js';
+import { factory } from '../core/factory.js';
+import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { getCoins, pipe, prop } from '../utils/index.js';
 
 export const lease = factory<IDCCGuiLease, TWithPartialFee<ILeaseTransaction<string>>>({
-    ...getDefaultTransform(),
-    amount: pipe<IDCCGuiLease, TMoney, string>(prop('amount'), getCoins),
-    recipient: prop('recipient')
+  ...getDefaultTransform(),
+  amount: pipe<IDCCGuiLease, TMoney, string>(prop('amount'), getCoins),
+  recipient: prop('recipient'),
 });
 
 export interface IDCCGuiLease extends IDefaultGuiTx<typeof TYPES.LEASE> {
-    amount: TMoney;
-    recipient: string;
+  amount: TMoney;
+  recipient: string;
 }

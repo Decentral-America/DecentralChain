@@ -1,47 +1,47 @@
-export const isBase64 = (value: string): boolean => {
-    const regExp = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
-    return regExp.test(value);
-};
-
-export function isString(value: any): boolean {
-    return typeof value === 'string';
+export function isString(value: unknown): boolean {
+  return typeof value === 'string';
 }
 
-export const required = <T>(value: T | null | undefined): boolean => {
-    return value != null;
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- T constrains the validator's input shape
+const required = <T>(value: T | null | undefined): boolean => {
+  return value != null;
 };
 
-export const charsInDictionary = (dictionary: string) => (value: string) => value.split('').every(char => dictionary.includes(char));
+export const charsInDictionary = (dictionary: string) => (value: string) =>
+  value.split('').every((char) => dictionary.includes(char));
 
-export const createValidator = <T>(validateFunction: (data: T) => boolean, message: string): IValidator<T> => (data: T) => {
+export const createValidator = <T>(
+  validateFunction: (data: T) => boolean,
+  message: string,
+): IValidator<T> => {
+  return (data: T) => {
     if (validateFunction(data)) {
-        return null;
+      return null;
     } else {
-        return message;
+      return message;
     }
+  };
 };
 
-export const requiredValidator: <T>(property: string) => IValidator<T> = (property: string) => createValidator(required, `Property "${property}" is required!`);
+export const requiredValidator: <T>(property: string) => IValidator<T> = (property: string) =>
+  createValidator(required, `Property "${property}" is required!`);
 
-export function validate<R>(...validators: Array<IValidator<R>>): (data: R) => R {
-    return (data: R) => {
+export function validate<R>(...validators: IValidator<R>[]): (data: R) => R {
+  return (data: R) => {
+    const errors = validators.reduce<string[]>((errs, validator) => {
+      const message = validator(data);
+      if (message) {
+        errs.push(message);
+      }
+      return errs;
+    }, []);
 
-        const errors = validators.reduce<Array<string>>((errors, validator) => {
-            const message = validator(data);
-            if (message) {
-                errors.push(message);
-            }
-            return errors;
-        }, []);
+    if (errors.length) {
+      throw new Error(`Validation error! Details: ${JSON.stringify(errors, null, 4)}`);
+    }
 
-        if (errors.length) {
-            throw new Error(`Validation error! Details: ${JSON.stringify(errors, null, 4)}`);
-        }
-
-        return data;
-    };
+    return data;
+  };
 }
 
-interface IValidator<T> {
-    (data: T): string | null;
-}
+type IValidator<T> = (data: T) => string | null;

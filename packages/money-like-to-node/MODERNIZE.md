@@ -83,9 +83,9 @@ NEEDS_TYPES_NODE: false
 
 # ── Dependencies ──────────────────────────────────────────────────
 PRODUCTION_DEPS:
-  - '@decentralchain/ts-types: ^1.0.0'   # currently aliased as npm:@waves/ts-types@^0.3.3
+  - '@decentralchain/ts-types: ^1.0.0' # currently aliased as npm:@waves/ts-types@^0.3.3
 DEV_ONLY_DEPS:
-  - '@decentralchain/data-entities: ^1.0.0'  # test-only, currently aliased as npm:@waves/data-entities@^1.10.1
+  - '@decentralchain/data-entities: ^1.0.0' # test-only, currently aliased as npm:@waves/data-entities@^1.10.1
 
 # ── Previous Version Info ─────────────────────────────────────────
 PREVIOUS_SCOPE: '@waves'
@@ -180,23 +180,23 @@ The following Waves references remain in the current codebase and **must be reso
 
 These are final. Do not deviate.
 
-| Decision           | Choice                         | Rationale                                         |
-| ------------------ | ------------------------------ | ------------------------------------------------- |
-| Module system      | ESM-first (`"type": "module"`) | Industry standard 2025+                           |
-| Package manager    | npm (latest)                   | Universal, no extra tooling                       |
-| Test runner        | Vitest                         | Fast, ESM-native, Jest-compatible API             |
-| Coverage           | `@vitest/coverage-v8`          | V8-native, fast, threshold enforcement            |
-| Linter             | ESLint (flat config)           | `eslint.config.mjs` with `@eslint/js`             |
-| TS ESLint          | `typescript-eslint` (strict)   | Type-aware rules for TS projects                  |
-| Formatter          | Prettier                       | Via `eslint-config-prettier` to avoid conflicts   |
-| Git hooks          | Husky v9+                      | `prepare` script auto-installs                    |
-| Staged linting     | lint-staged                    | Runs Prettier + ESLint on staged files only       |
-| Package validation | publint + attw                 | Ensures correct exports for all consumers         |
-| Bundle size        | size-limit                     | Enforced budget per entry point                   |
-| CI                 | GitHub Actions                 | Matrix across Node versions                       |
-| Dependency updates | Dependabot                     | Weekly, grouped by dev/prod                       |
-| Changelog          | Keep a Changelog format        | Manual or Changesets                              |
-| Build (TypeScript) | tsup                           | ESM + CJS + optional IIFE, DTS generation         |
+| Decision           | Choice                         | Rationale                                       |
+| ------------------ | ------------------------------ | ----------------------------------------------- |
+| Module system      | ESM-first (`"type": "module"`) | Industry standard 2025+                         |
+| Package manager    | npm (latest)                   | Universal, no extra tooling                     |
+| Test runner        | Vitest                         | Fast, ESM-native, Jest-compatible API           |
+| Coverage           | `@vitest/coverage-v8`          | V8-native, fast, threshold enforcement          |
+| Linter             | ESLint (flat config)           | `eslint.config.mjs` with `@eslint/js`           |
+| TS ESLint          | `typescript-eslint` (strict)   | Type-aware rules for TS projects                |
+| Formatter          | Prettier                       | Via `eslint-config-prettier` to avoid conflicts |
+| Git hooks          | Husky v9+                      | `prepare` script auto-installs                  |
+| Staged linting     | lint-staged                    | Runs Prettier + ESLint on staged files only     |
+| Package validation | publint + attw                 | Ensures correct exports for all consumers       |
+| Bundle size        | size-limit                     | Enforced budget per entry point                 |
+| CI                 | GitHub Actions                 | Matrix across Node versions                     |
+| Dependency updates | Dependabot                     | Weekly, grouped by dev/prod                     |
+| Changelog          | Keep a Changelog format        | Manual or Changesets                            |
+| Build (TypeScript) | tsup                           | ESM + CJS + optional IIFE, DTS generation       |
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -364,13 +364,13 @@ SOFTWARE.
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
+        "default": "./dist/index.mjs",
       },
       "require": {
         "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
+        "default": "./dist/index.cjs",
+      },
+    },
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -381,11 +381,11 @@ SOFTWARE.
   "publishConfig": { "access": "public", "provenance": true },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/money-like-to-node.git"
+    "url": "git+https://github.com/Decentral-America/money-like-to-node.git",
   },
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
+    "url": "https://github.com/sponsors/Decentral-America",
   },
   "homepage": "https://github.com/Decentral-America/money-like-to-node#readme",
   "bugs": { "url": "https://github.com/Decentral-America/money-like-to-node/issues" },
@@ -408,18 +408,18 @@ SOFTWARE.
     "prepare": "husky",
     "prepack": "npm run build",
     "postversion": "npm publish",
-    "postpublish": "git push"
+    "postpublish": "git push",
   },
   "lint-staged": {
     "*.ts": ["prettier --write", "eslint --fix"],
-    "*.json": ["prettier --write"]
+    "*.json": ["prettier --write"],
   },
   "size-limit": [
     {
       "path": "./dist/index.mjs",
       "limit": "10 kB",
-      "import": "{ toNode, convert }"
-    }
+      "import": "{ toNode, convert }",
+    },
   ],
   "keywords": [
     "decentralchain",
@@ -428,35 +428,35 @@ SOFTWARE.
     "transaction",
     "converter",
     "blockchain",
-    "node-api"
+    "node-api",
   ],
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/ts-types": "^1.0.0"
+    "@decentralchain/ts-types": "^1.0.0",
   },
   "devDependencies": {
     // ⚠️  IMPORTANT: Resolve ALL versions below to the latest stable at execution time.
     //    Run `npm info <package> version` or check npmjs.com for each.
     //    Dated references (as of Feb 2026) are provided as sanity-check baselines only.
-    "@arethetypeswrong/cli": "{{LATEST}}",         // ~0.18.2 as of Feb 2026
-    "@decentralchain/data-entities": "{{LATEST}}",  // test-only dependency
-    "@eslint/js": "{{LATEST}}",                    // ~10.0.1 as of Feb 2026
-    "@size-limit/preset-small-lib": "{{LATEST}}",  // ~12.0.0 as of Feb 2026
-    "@vitest/coverage-v8": "{{LATEST}}",           // ~4.0.18 as of Feb 2026
-    "eslint": "{{LATEST}}",                        // ~10.0.2 as of Feb 2026
-    "eslint-config-prettier": "{{LATEST}}",        // ~10.1.8 as of Feb 2026
-    "globals": "{{LATEST}}",                       // ~17.3.0 as of Feb 2026
-    "husky": "{{LATEST}}",                         // ~9.1.7 as of Feb 2026
-    "lint-staged": "{{LATEST}}",                   // ~16.2.7 as of Feb 2026
-    "prettier": "{{LATEST}}",                      // ~3.8.1 as of Feb 2026
-    "publint": "{{LATEST}}",                       // ~0.3.17 as of Feb 2026
-    "size-limit": "{{LATEST}}",                    // ~12.0.0 as of Feb 2026
-    "tsup": "{{LATEST}}",                          // ~8.5.1 as of Feb 2026
-    "typescript": "{{LATEST}}",                    // ~5.9.3 as of Feb 2026
-    "typescript-eslint": "{{LATEST}}",             // ~8.56.1 as of Feb 2026
-    "vitest": "{{LATEST}}"                         // ~4.0.18 as of Feb 2026
-  }
+    "@arethetypeswrong/cli": "{{LATEST}}", // ~0.18.2 as of Feb 2026
+    "@decentralchain/data-entities": "{{LATEST}}", // test-only dependency
+    "@eslint/js": "{{LATEST}}", // ~10.0.1 as of Feb 2026
+    "@size-limit/preset-small-lib": "{{LATEST}}", // ~12.0.0 as of Feb 2026
+    "@vitest/coverage-v8": "{{LATEST}}", // ~4.0.18 as of Feb 2026
+    "eslint": "{{LATEST}}", // ~10.0.2 as of Feb 2026
+    "eslint-config-prettier": "{{LATEST}}", // ~10.1.8 as of Feb 2026
+    "globals": "{{LATEST}}", // ~17.3.0 as of Feb 2026
+    "husky": "{{LATEST}}", // ~9.1.7 as of Feb 2026
+    "lint-staged": "{{LATEST}}", // ~16.2.7 as of Feb 2026
+    "prettier": "{{LATEST}}", // ~3.8.1 as of Feb 2026
+    "publint": "{{LATEST}}", // ~0.3.17 as of Feb 2026
+    "size-limit": "{{LATEST}}", // ~12.0.0 as of Feb 2026
+    "tsup": "{{LATEST}}", // ~8.5.1 as of Feb 2026
+    "typescript": "{{LATEST}}", // ~5.9.3 as of Feb 2026
+    "typescript-eslint": "{{LATEST}}", // ~8.56.1 as of Feb 2026
+    "vitest": "{{LATEST}}", // ~4.0.18 as of Feb 2026
+  },
 }
 ```
 
@@ -1000,13 +1000,13 @@ import { toNode } from '@decentralchain/money-like-to-node';
 
 // Convert a GUI transfer transaction to node format
 const nodeTransaction = toNode({
-  type: 4,              // TRANSFER
-  version: 1,
-  senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
-  timestamp: Date.now(),
-  fee: { coins: '1000000', assetId: 'DCC' },
-  amount: { coins: '100000', assetId: 'DCC' },
-  recipient: 'address...',
+type: 4, // TRANSFER
+version: 1,
+senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
+timestamp: Date.now(),
+fee: { coins: '1000000', assetId: 'DCC' },
+amount: { coins: '100000', assetId: 'DCC' },
+recipient: 'address...',
 });
 \`\`\`
 
@@ -1020,23 +1020,23 @@ Converts a single GUI transaction entity or exchange order into the node API for
 - **Returns**: The transaction/order in node format with all monetary values as strings
 
 Supported transaction types:
-| Type | Name             | Type ID |
+| Type | Name | Type ID |
 |------|------------------|---------|
-| 3    | Issue            | `TYPES.ISSUE` |
-| 4    | Transfer         | `TYPES.TRANSFER` |
-| 5    | Reissue          | `TYPES.REISSUE` |
-| 6    | Burn             | `TYPES.BURN` |
-| 7    | Exchange         | `TYPES.EXCHANGE` |
-| 8    | Lease            | `TYPES.LEASE` |
-| 9    | Cancel Lease     | `TYPES.CANCEL_LEASE` |
-| 10   | Alias            | `TYPES.ALIAS` |
-| 11   | Mass Transfer    | `TYPES.MASS_TRANSFER` |
-| 12   | Data             | `TYPES.DATA` |
-| 13   | Set Script       | `TYPES.SET_SCRIPT` |
-| 14   | Sponsorship      | `TYPES.SPONSORSHIP` |
-| 15   | Set Asset Script | `TYPES.SET_ASSET_SCRIPT` |
-| 16   | Invoke Script    | `TYPES.INVOKE_SCRIPT` |
-| 17   | Update Asset Info| `TYPES.UPDATE_ASSET_INFO` |
+| 3 | Issue | `TYPES.ISSUE` |
+| 4 | Transfer | `TYPES.TRANSFER` |
+| 5 | Reissue | `TYPES.REISSUE` |
+| 6 | Burn | `TYPES.BURN` |
+| 7 | Exchange | `TYPES.EXCHANGE` |
+| 8 | Lease | `TYPES.LEASE` |
+| 9 | Cancel Lease | `TYPES.CANCEL_LEASE` |
+| 10 | Alias | `TYPES.ALIAS` |
+| 11 | Mass Transfer | `TYPES.MASS_TRANSFER` |
+| 12 | Data | `TYPES.DATA` |
+| 13 | Set Script | `TYPES.SET_SCRIPT` |
+| 14 | Sponsorship | `TYPES.SPONSORSHIP` |
+| 15 | Set Asset Script | `TYPES.SET_ASSET_SCRIPT` |
+| 16 | Invoke Script | `TYPES.INVOKE_SCRIPT` |
+| 17 | Update Asset Info| `TYPES.UPDATE_ASSET_INFO` |
 
 ### `convert(tx, factory)`
 
@@ -1072,17 +1072,17 @@ npm install
 
 ### Scripts
 
-| Command                     | Description                              |
-| --------------------------- | ---------------------------------------- |
-| `npm run build`             | Build distribution files via tsup        |
-| `npm test`                  | Run tests with Vitest                    |
-| `npm run test:watch`        | Tests in watch mode                      |
-| `npm run test:coverage`     | Tests with V8 coverage                   |
-| `npm run typecheck`         | TypeScript type checking                 |
-| `npm run lint`              | ESLint                                   |
-| `npm run format`            | Format with Prettier                     |
-| `npm run validate`          | Full CI validation pipeline              |
-| `npm run bulletproof`       | Format + lint fix + typecheck + test     |
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `npm run build`         | Build distribution files via tsup    |
+| `npm test`              | Run tests with Vitest                |
+| `npm run test:watch`    | Tests in watch mode                  |
+| `npm run test:coverage` | Tests with V8 coverage               |
+| `npm run typecheck`     | TypeScript type checking             |
+| `npm run lint`          | ESLint                               |
+| `npm run format`        | Format with Prettier                 |
+| `npm run validate`      | Full CI validation pipeline          |
+| `npm run bulletproof`   | Format + lint fix + typecheck + test |
 
 ### Quality Gates
 
@@ -1194,15 +1194,15 @@ Apply to EVERY source file:
 
 ### Naming Conventions
 
-| Element          | Convention                            | Example                   |
-| ---------------- | ------------------------------------- | ------------------------- |
-| Files            | camelCase (existing convention)       | `cancelLease.ts`          |
-| Classes          | PascalCase                            | N/A (no classes)          |
-| Functions        | camelCase                             | `getAssetId`, `getCoins`  |
-| Constants        | UPPER_SNAKE_CASE                      | `TYPES`, `ALIAS`          |
-| Types/Interfaces | PascalCase, prefix I/T                | `IDCCGuiAlias`, `TLong`   |
-| Private methods  | camelCase with `_` prefix             | N/A                       |
-| Test files       | `*.spec.ts`                           | `toNode.spec.ts`          |
+| Element          | Convention                      | Example                  |
+| ---------------- | ------------------------------- | ------------------------ |
+| Files            | camelCase (existing convention) | `cancelLease.ts`         |
+| Classes          | PascalCase                      | N/A (no classes)         |
+| Functions        | camelCase                       | `getAssetId`, `getCoins` |
+| Constants        | UPPER_SNAKE_CASE                | `TYPES`, `ALIAS`         |
+| Types/Interfaces | PascalCase, prefix I/T          | `IDCCGuiAlias`, `TLong`  |
+| Private methods  | camelCase with `_` prefix       | N/A                      |
+| Test files       | `*.spec.ts`                     | `toNode.spec.ts`         |
 
 ### Test Requirements
 

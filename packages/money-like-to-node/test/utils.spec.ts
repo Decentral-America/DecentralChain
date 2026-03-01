@@ -1,35 +1,34 @@
-import { head, getCoins, getAssetId, curry } from '../src/utils';
+import { describe, it, expect } from 'vitest';
+import { head, getCoins, getAssetId, curry } from '../src/utils/index.js';
 import { Money, BigNumber } from '@decentralchain/data-entities';
-import { DCC_ASSET } from './transactionData';
-
+import { DCC_ASSET } from './transactionData.js';
 
 describe('Utils test', () => {
+  it('head', () => {
+    expect(head([1, 2])).toBe(1);
+  });
 
-    it('head', () => {
-        expect(head([1, 2])).toBe(1);
-    });
+  it('getCoins', () => {
+    expect(getCoins(new Money('100', DCC_ASSET))).toBe('100');
+    expect(typeof getCoins(new Money('100', DCC_ASSET))).toBe('string');
+    expect(getCoins(new BigNumber('100'))).toBe('100');
+    expect(typeof getCoins(new BigNumber('100'))).toBe('string');
+  });
 
-    it('getCoins', () => {
-        expect(getCoins(new Money('100', DCC_ASSET))).toBe('100');
-        expect(typeof getCoins(new Money('100', DCC_ASSET))).toBe('string');
-        expect(getCoins(new BigNumber('100'))).toBe('100');
-        expect(typeof getCoins(new BigNumber('100'))).toBe('string');
-    });
+  it('getAssetId', () => {
+    expect(getAssetId(new Money('100', DCC_ASSET))).toBe('DCC');
+  });
 
-    it('getCoins', () => {
-        expect(getAssetId(new Money('100', DCC_ASSET))).toBe('DCC');
-    });
+  it('curry', () => {
+    const f: <T, K extends keyof T>(key: K) => (data: T) => T[K] = curry(
+      <T, K extends keyof T>(prop: K, data: T): T[K] => data[prop],
+    ) as any;
+    const getType = f<{ type?: number }, 'type'>('type');
 
-    it('curry', () => {
-        const f: <T, K extends keyof T>(key: K) => (data: T) => T[K] =
-            curry(<T, K extends keyof T>(prop: K, data: T): T[K] => data[prop]) as any;
-        const getType = f<{ type?: number }, 'type'>('type');
+    const one = getType({ type: 1 });
+    const empty = getType({});
 
-        const one = getType({ type: 1 });
-        const empty = getType({});
-
-        expect(one).toBe(1);
-        expect(empty).toBe(undefined);
-    });
-
+    expect(one).toBe(1);
+    expect(empty).toBe(undefined);
+  });
 });
