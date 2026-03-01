@@ -28,20 +28,20 @@ describe('transfer', () => {
 
   it('Should get correct signature', () => {
     const tx = transfer({ ...transferMinimalParams }, stringSeed);
-    expect(validateTxSignature(tx, 2)).toBeTruthy();
+    expect(validateTxSignature(tx, 2)).toBe(true);
   });
 
   it('Should get correct signature via private key', () => {
     const tx = transfer({ ...transferMinimalParams }, privateKey);
-    expect(validateTxSignature(tx, 2)).toBeTruthy();
+    expect(validateTxSignature(tx, 2)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
     const stringSeed2 = 'example seed 2';
     const tx = transfer({ ...transferMinimalParams }, [null, stringSeed, null, stringSeed2]);
 
-    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('Should build with custom fee and amount', () => {

@@ -88,8 +88,6 @@ describe('invokeScript', () => {
       },
       [stringSeed2],
     );
-
-    console.log(protoBytesToTx(txToProtoBytes(tx)));
   });
 
   it('should build from minimal set of params with payment', () => {
@@ -254,13 +252,13 @@ describe('invokeScript', () => {
 
   it('Should get correct signature', () => {
     const tx = invokeScript({ ...invokeScriptMinimalParams }, stringSeed);
-    expect(validateTxSignature(tx, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, 1)).toBe(true);
   });
 
   it('Should sign already signed', () => {
     let tx = invokeScript({ ...invokeScriptMinimalParams }, stringSeed);
     tx = invokeScript(tx, stringSeed);
-    expect(validateTxSignature(tx, 1, 1)).toBeTruthy();
+    expect(validateTxSignature(tx, 1, 1)).toBe(true);
   });
 
   it('Should get correct multiSignature', () => {
@@ -273,8 +271,8 @@ describe('invokeScript', () => {
       [null, stringSeed, null, stringSeed2],
     );
 
-    expect(validateTxSignature(tx, 1, 1, publicKey(stringSeed))).toBeTruthy();
-    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBeTruthy();
+    expect(validateTxSignature(tx, 1, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBe(true);
   });
 
   it('Should create with custom fee', () => {
@@ -344,16 +342,7 @@ describe('invokeScript', () => {
     expect(tx).toMatchObject({ ...testInvokeScriptParams });
   });
 
-  it.skip('Should create invoke tx for default function', async () => {
-    const tx = invokeScript(
-      { dApp: '3Mu1vW3Q63v3n3T1wiZkcnWwiwEGLWkeEpo', chainId: 84, fee: 100500000 },
-      stringSeed,
-    );
-    expect(tx.dApp).toEqual('3Mu1vW3Q63v3n3T1wiZkcnWwiwEGLWkeEpo');
-    expect(tx.call).toBe(null);
-    await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
-  });
+  it.todo('Should create invoke tx for default function — needs fixture update');
 });
 
 describe('serialize/deserialize invoke tx', () => {

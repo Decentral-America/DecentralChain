@@ -8,6 +8,9 @@
 dist
 coverage
 *.tsbuildinfo
+dcc-transactions.min.js
+esbuild-browser.mjs
+test-bundle.cjs
 
 # Dependencies
 node_modules

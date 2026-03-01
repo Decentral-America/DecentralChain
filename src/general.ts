@@ -61,7 +61,6 @@ import {updateAssetInfo} from './transactions/update-asset-info'
   DataTransaction,
   ExchangeTransaction,
   ExchangeTransactionOrder,
-  // InvokeExpressionTransaction,
   InvokeScriptTransaction,
   IssueTransaction,
   LeaseTransaction,
@@ -92,6 +91,7 @@ import { updateAssetInfo } from './transactions/update-asset-info'
 =======
 } from './transactions';
 import { updateAssetInfo } from './transactions/update-asset-info';
+<<<<<<< HEAD
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // import {invokeExpression} from './transactions/invoke-expression'
 =======
@@ -131,6 +131,12 @@ export const txTypeMap: { [type: number]: { sign: (tx: Transaction<TLong> | TTxP
 >>>>>>> f33083a0 (updated dependencies)
 =======
 export const txTypeMap: {
+=======
+
+type TLong = string | number;
+
+const txTypeMap: {
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
   [type: number]: {
     sign: (
       tx: Transaction<TLong> | (TTxParams & WithTxType),
@@ -169,11 +175,14 @@ export const txTypeMap: {
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {
     sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed),
   },
+<<<<<<< HEAD
   // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
 <<<<<<< HEAD
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 }
 =======
+=======
+>>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 };
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
@@ -186,9 +195,10 @@ export function signTx(
   tx: Transaction | (TTxParams & WithTxType),
   seed: TSeedTypes,
 ): SignedTransaction<Transaction> {
-  if (!txTypeMap[tx.type]) throw new Error(`Unknown tx type: ${tx.type}`);
+  const entry = txTypeMap[tx.type];
+  if (!entry) throw new Error(`Unknown tx type: ${tx.type}`);
 
-  return txTypeMap[tx.type].sign(tx, seed);
+  return entry.sign(tx, seed);
 }
 
 /**

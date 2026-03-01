@@ -1,5 +1,4 @@
 import {
-  isEq,
   orEq,
   isDccOrAssetId,
   isNumber,
