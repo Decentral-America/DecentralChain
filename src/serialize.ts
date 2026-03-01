@@ -89,8 +89,8 @@ export const serializerFromSchema =
       serializer = serializerFromSchema(typeSchema, fromLongConverter);
       itemBytes = serializer(obj.value);
       return concat(keyBytes, BYTE(typeCode), itemBytes);
-    } else {
-      throw new Error(`Serializer Error: Unknown schema type: ${schema.type}`);
+    } /* v8 ignore next 3 - defensive guard for future schema types */ else {
+      throw new Error(`Serializer Error: Unknown schema type: ${(schema as TSchema).type}`);
     }
   };
 
