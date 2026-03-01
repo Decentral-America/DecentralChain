@@ -94,7 +94,7 @@ describe('RSA', () => {
   });
 
   test('rsaKeyPairSync with custom bits and exponent', () => {
-    const pair = rsaKeyPairSync(1024, 0x10001);
+    const pair = rsaKeyPairSync(2048, 0x10001);
     expect(pair.rsaPublic).toBeInstanceOf(Uint8Array);
     expect(pair.rsaPrivate).toBeInstanceOf(Uint8Array);
     expect(pair.rsaPublic.length).toBeGreaterThan(0);
@@ -102,7 +102,7 @@ describe('RSA', () => {
   });
 
   test('rsaKeyPair async with custom bits', async () => {
-    const pair = await rsaKeyPair(1024, 0x10001);
+    const pair = await rsaKeyPair(2048, 0x10001);
     expect(pair.rsaPublic).toBeInstanceOf(Uint8Array);
     expect(pair.rsaPrivate).toBeInstanceOf(Uint8Array);
   });
