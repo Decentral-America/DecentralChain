@@ -1,7 +1,7 @@
 import {
-  DataTransactionEntry,
-  ExchangeTransactionOrder,
-  TransactionMap,
+  type DataTransactionEntry,
+  type ExchangeTransactionOrder,
+  type TransactionMap,
 } from '@decentralchain/ts-types';
 
 type TGetLongKeys<T> = {
@@ -25,7 +25,7 @@ type TFieldsToReplace =
     : A
   : never;
 
-const FIELDS: Array<TFieldsToReplace> = [
+const FIELDS: TFieldsToReplace[] = [
   'amount',
   'matcherFee',
   'price',
@@ -42,7 +42,7 @@ export default function <T extends Record<string, any>>(data: T): string {
     function (key, value) {
       if (FIELDS.includes(key as TFieldsToReplace)) {
         return `!${value}!`;
-      } else if (key === 'value' && this['type'] === 'integer') {
+      } else if (key === 'value' && this.type === 'integer') {
         return `!${value}!`;
       } else {
         return value;

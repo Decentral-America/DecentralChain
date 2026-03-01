@@ -1,7 +1,7 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
 import query from '../../tools/query';
-import { DataTransactionEntry } from '@decentralchain/ts-types';
+import { type DataTransactionEntry } from '@decentralchain/ts-types';
 
 export function fetchDataKey(
   base: string,
@@ -55,7 +55,7 @@ export function fetchScriptInfo(
   base: string,
   address: string,
   options: RequestInit = Object.create(null),
-): Promise<IScriptInfo<TLong>> {
+): Promise<IScriptInfo> {
   return request({
     base,
     url: `/addresses/scriptInfo/${address}`,
@@ -68,7 +68,7 @@ export function data(
   address: string,
   params: IDataQueryParams = Object.create(null),
   options: RequestInit = Object.create(null),
-): Promise<Array<DataTransactionEntry<TLong>>> {
+): Promise<DataTransactionEntry<TLong>[]> {
   return request({
     base,
     url: `/addresses/data/${address}${query(params)}`,
@@ -120,7 +120,7 @@ export function fetchEffectiveBalance(
   });
 }
 
-export function fetchSeq(base: string, from: number, to: number): Promise<Array<string>> {
+export function fetchSeq(base: string, from: number, to: number): Promise<string[]> {
   return request({
     base,
     url: `/addresses/seq/${from}/${to}`,
@@ -141,7 +141,7 @@ export function fetchPublicKey(base: string, publicKey: string): Promise<IPublic
   });
 }
 
-export function fetchAddresses(base: string): Promise<Array<string>> {
+export function fetchAddresses(base: string): Promise<string[]> {
   return request({
     base,
     url: '/addresses',
@@ -174,29 +174,18 @@ export interface IScriptInfo<LONG = TLong> {
 
 export interface IDataQueryParams {
   matches?: string;
-  keys?: string | Array<string>;
+  keys?: string | string[];
 }
 
 export interface IBalanceDetails<LONG> {
   address: string;
-  /**
-   * Весь принадлежащий мне баланс, включая исходящий лизинг
-   * Available + LeaseOut
-   */
+  /** Total balance including outgoing leases. Regular = Available + LeaseOut. */
   regular: LONG;
-  /**
-   * Минимальный эффективный баланс за последнюю 1000 блоков
-   */
+  /** Minimum effective balance over the last 1000 blocks. */
   generating: LONG;
-  /**
-   * Мой баланс без исходящего лизинга
-   * Баланс, который можно тратить
-   */
+  /** Spendable balance excluding outgoing leases. */
   available: LONG;
-  /**
-   * Баланс для генерации блоков (включая входящий лизинг и исключая исходящий)
-   * Available + LeaseIn - LeaseOut
-   */
+  /** Balance for block generation (includes incoming leases, excludes outgoing). Effective = Available + LeaseIn - LeaseOut. */
   effective: LONG;
 }
 

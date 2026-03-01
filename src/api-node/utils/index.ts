@@ -1,7 +1,7 @@
 import request from '../../tools/request';
 import stringify from '../../tools/stringify';
-import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
-import { TLong } from '../../interface';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
 
 /**
  * GET /utils/seed
@@ -185,15 +185,22 @@ export function fetchScriptDecompile(base: string, body: string): Promise<IScrip
 /**
  * POST /utils/sign/{privateKey}
  * Return FastCryptographicHash of specified message
+ *
+ * @deprecated SECURITY WARNING: This endpoint transmits the private key in the
+ * URL path. URLs are routinely logged by proxies, CDNs, and web-server access
+ * logs. Avoid calling this function in production; prefer client-side signing.
  */
 export function fetchSignPrivateKey(
   base: string,
   privateKey: string,
   body: string,
 ): Promise<ISignPrivateKey> {
+  if (typeof privateKey !== 'string' || privateKey.length === 0) {
+    throw new TypeError('privateKey must be a non-empty string');
+  }
   return request({
     base,
-    url: `/utils/sign/${privateKey}`,
+    url: `/utils/sign/${encodeURIComponent(privateKey)}`,
     options: {
       method: 'POST',
       body,
@@ -217,7 +224,7 @@ export function fetchNodeTime(base: string): Promise<INodeTime> {
 
 interface IScriptMeta {
   version?: string;
-  callableFuncTypes?: Array<Record<string, Record<string, 'Int' | 'String' | 'Binary'>>>;
+  callableFuncTypes?: Record<string, Record<string, 'Int' | 'String' | 'Binary'>>[];
 }
 
 interface IScriptDecompile {
@@ -257,7 +264,7 @@ interface IHashSecure {
 }
 
 interface ITransactionSerialize {
-  bytes: Array<number>;
+  bytes: number[];
 }
 
 interface ISignPrivateKey {
