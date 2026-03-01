@@ -1,4 +1,4 @@
-import { type TBinaryIn, type TChainId, PUBLIC_KEY_LENGTH } from './interface';
+import { type TBinaryIn, type TChainId, PUBLIC_KEY_LENGTH, ADDRESS_LENGTH } from './interface';
 import { ChainId } from '../extensions/chain-id';
 import { _fromIn } from '../conversions/param';
 import { _hashChain } from './hashing';
@@ -15,7 +15,9 @@ export const verifyAddress = (
   try {
     const addressBytes = _fromIn(addr);
 
-    if (addressBytes[0] != 1 || (chainId ? addressBytes[1] != ChainId.toNumber(chainId) : false))
+    if (addressBytes.length !== ADDRESS_LENGTH) return false;
+
+    if (addressBytes[0] !== 1 || (chainId ? addressBytes[1] !== ChainId.toNumber(chainId) : false))
       return false;
 
     const key = addressBytes.slice(0, 22);
@@ -23,7 +25,7 @@ export const verifyAddress = (
     const keyHash = _hashChain(key).slice(0, 4);
 
     for (let i = 0; i < 4; i++) {
-      if (check[i] != keyHash[i]) return false;
+      if (check[i] !== keyHash[i]) return false;
     }
 
     if (optional?.publicKey) {

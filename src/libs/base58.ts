@@ -53,7 +53,7 @@ export default {
     for (let i = 0; i < string.length; i++) {
       const c = string[i]!;
       if (!(c in ALPHABET_MAP)) {
-        throw `There is no character "${c}" in the Base58 sequence!`;
+        throw new Error(`There is no character "${c}" in the Base58 sequence!`);
       }
 
       for (let j = 0; j < bytes.length; j++) {

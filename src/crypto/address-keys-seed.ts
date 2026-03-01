@@ -36,12 +36,14 @@ export const buildAddress = (
 
 const buildSeedHash = (seedBytes: Uint8Array, nonce?: number): TBytes => {
   const nonceArray = [0, 0, 0, 0];
-  if (nonce && nonce > 0) {
-    let remainder = nonce;
-    for (let i = 3; i >= 0; i--) {
-      nonceArray[3 - i] = Math.floor(remainder / 2 ** (i * 8));
-      remainder = remainder % 2 ** (i * 8);
+  if (nonce !== undefined && nonce !== 0) {
+    if (!Number.isInteger(nonce) || nonce < 0 || nonce > 0xffffffff) {
+      throw new RangeError(`Nonce must be an integer in [0, 2^32 - 1], got ${nonce}`);
     }
+    nonceArray[0] = (nonce >>> 24) & 0xff;
+    nonceArray[1] = (nonce >>> 16) & 0xff;
+    nonceArray[2] = (nonce >>> 8) & 0xff;
+    nonceArray[3] = nonce & 0xff;
   }
   const seedBytesWithNonce = concat(nonceArray, seedBytes);
   const seedHash = _hashChain(seedBytesWithNonce);

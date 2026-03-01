@@ -8,7 +8,13 @@ import { concat, split } from './concat-split';
 import curve25519 from '../libs/curve25519';
 import { stringToBytes, bytesToString } from '../conversions/string-bytes';
 
-/** Encrypt data using AES with the specified mode. */
+/**
+ * Encrypt data using AES with the specified mode.
+ *
+ * An IV/nonce is **required** for CBC, CTR, CFB, and GCM modes.
+ * Omitting it is a critical security error (nonce reuse / deterministic encryption).
+ * ECB does not use an IV.
+ */
 export const aesEncrypt = (
   data: TBinaryIn,
   key: TBinaryIn,
@@ -18,19 +24,30 @@ export const aesEncrypt = (
   const keyBytes = _fromIn(key);
   const dataBytes = _fromIn(data);
   const ivBytes = iv ? _fromIn(iv) : undefined;
-  const zeroIV = new Uint8Array(16);
 
   switch (mode) {
     case 'CBC':
-      return cbc(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+      if (!ivBytes)
+        throw new Error('AES-CBC requires an IV. Omitting the IV is a critical security error.');
+      return cbc(keyBytes, ivBytes).encrypt(dataBytes);
     case 'CTR':
-      return ctr(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+      if (!ivBytes)
+        throw new Error(
+          'AES-CTR requires a nonce/IV. Omitting it causes deterministic encryption.',
+        );
+      return ctr(keyBytes, ivBytes).encrypt(dataBytes);
     case 'ECB':
       return ecb(keyBytes).encrypt(dataBytes);
     case 'CFB':
-      return cfb(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+      if (!ivBytes)
+        throw new Error('AES-CFB requires an IV. Omitting the IV is a critical security error.');
+      return cfb(keyBytes, ivBytes).encrypt(dataBytes);
     case 'GCM':
-      return gcm(keyBytes, ivBytes ?? zeroIV).encrypt(dataBytes);
+      if (!ivBytes)
+        throw new Error(
+          'AES-GCM requires a unique nonce. Reusing a nonce completely breaks GCM security.',
+        );
+      return gcm(keyBytes, ivBytes).encrypt(dataBytes);
     case 'OFB':
       throw new Error(
         'OFB mode is no longer supported. Use CTR (streaming), CBC (block), or GCM (authenticated) instead.',
@@ -40,7 +57,12 @@ export const aesEncrypt = (
   }
 };
 
-/** Decrypt AES-encrypted data with the specified mode. */
+/**
+ * Decrypt AES-encrypted data with the specified mode.
+ *
+ * An IV/nonce is **required** for CBC, CTR, CFB, and GCM modes.
+ * ECB does not use an IV.
+ */
 export const aesDecrypt = (
   encryptedData: TBinaryIn,
   key: TBinaryIn,
@@ -50,19 +72,22 @@ export const aesDecrypt = (
   const keyBytes = _fromIn(key);
   const dataBytes = _fromIn(encryptedData);
   const ivBytes = iv ? _fromIn(iv) : undefined;
-  const zeroIV = new Uint8Array(16);
 
   switch (mode) {
     case 'CBC':
-      return cbc(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+      if (!ivBytes) throw new Error('AES-CBC requires an IV for decryption.');
+      return cbc(keyBytes, ivBytes).decrypt(dataBytes);
     case 'CTR':
-      return ctr(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+      if (!ivBytes) throw new Error('AES-CTR requires a nonce/IV for decryption.');
+      return ctr(keyBytes, ivBytes).decrypt(dataBytes);
     case 'ECB':
       return ecb(keyBytes).decrypt(dataBytes);
     case 'CFB':
-      return cfb(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+      if (!ivBytes) throw new Error('AES-CFB requires an IV for decryption.');
+      return cfb(keyBytes, ivBytes).decrypt(dataBytes);
     case 'GCM':
-      return gcm(keyBytes, ivBytes ?? zeroIV).decrypt(dataBytes);
+      if (!ivBytes) throw new Error('AES-GCM requires a nonce for decryption.');
+      return gcm(keyBytes, ivBytes).decrypt(dataBytes);
     case 'OFB':
       throw new Error(
         'OFB mode is no longer supported. Use CTR (streaming), CBC (block), or GCM (authenticated) instead.',
@@ -122,7 +147,15 @@ export const sharedKey = (
   publicKeyTo: TBinaryIn,
   prefix: TRawStringIn,
 ): TBytes => {
-  const sharedKey = curve25519.sharedKey(_fromIn(privateKeyFrom), _fromIn(publicKeyTo));
+  const raw = curve25519.sharedKey(_fromIn(privateKeyFrom), _fromIn(publicKeyTo));
+
+  // Reject small-subgroup / all-zeros DH result — indicates a malicious or invalid public key.
+  if (raw.every((b) => b === 0)) {
+    throw new Error(
+      'Invalid ECDH result: shared secret is the zero point (malicious or invalid public key).',
+    );
+  }
+
   const prefixHash = sha256(_fromRawIn(prefix));
-  return hmacSHA256(sharedKey, prefixHash);
+  return hmacSHA256(raw, prefixHash);
 };

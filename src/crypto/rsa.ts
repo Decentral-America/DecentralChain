@@ -17,10 +17,10 @@ const DEFAULT_RSA_E = 0x10001; // 65537
 /**
  * Map of our digest algorithm names to Node.js OpenSSL algorithm strings.
  * `crypto.createSign`/`createVerify` accept these directly.
+ *
+ * MD5 and SHA1 are intentionally excluded — they are cryptographically broken.
  */
 const DIGEST_MAP: Record<RSADigestAlgorithm, string> = {
-  MD5: 'md5',
-  SHA1: 'sha1',
   SHA224: 'sha224',
   SHA256: 'sha256',
   SHA384: 'sha384',
@@ -111,7 +111,12 @@ export const rsaSign = (
   message: TBytes,
   digest: RSADigestAlgorithm = 'SHA256',
 ): TBytes => {
-  const algo = DIGEST_MAP[digest];
+  const algo = DIGEST_MAP[digest] as string | undefined;
+  if (!algo) {
+    throw new Error(
+      `Unsupported or unsafe RSA digest algorithm: "${digest}". Use SHA256 or stronger.`,
+    );
+  }
   const key = importPrivateKey(rsaPrivateKey);
 
   const signer = createSign(algo);
@@ -126,7 +131,12 @@ export const rsaVerify = (
   signature: TBytes,
   digest: RSADigestAlgorithm = 'SHA256',
 ): boolean => {
-  const algo = DIGEST_MAP[digest];
+  const algo = DIGEST_MAP[digest] as string | undefined;
+  if (!algo) {
+    throw new Error(
+      `Unsupported or unsafe RSA digest algorithm: "${digest}". Use SHA256 or stronger.`,
+    );
+  }
   const key = importPublicKey(rsaPublicKey);
 
   const verifier = createVerify(algo);

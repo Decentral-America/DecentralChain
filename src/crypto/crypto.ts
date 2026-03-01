@@ -54,7 +54,7 @@ type TDCCCrypto<
 export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | undefined = undefined>(
   options?: TOptions<TOut, S>,
 ): TDCCCrypto<TOutputTypesMap[TOut], S> => {
-  if (options?.seed == '') throw new Error('Empty seed is not allowed.');
+  if (options?.seed === '') throw new Error('Empty seed is not allowed.');
 
   /*
    * TypeScript conditional type extraction requires `any` — using `unknown`
