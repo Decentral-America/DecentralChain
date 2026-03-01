@@ -1,5 +1,5 @@
-import { Transaction } from '@decentralchain/ts-types';
-import { TLong } from '../../interface';
+import { type Transaction } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
 import { prop, switchTransactionByType, toArray } from '../utils';
 import { NAME_MAP } from '../../constants';
 
@@ -23,7 +23,7 @@ const getAssetIdList = switchTransactionByType({
   [NAME_MAP.updateAsset]: (tx) => [tx.assetId],
 });
 
-export default function (tx: Transaction<TLong> | Array<Transaction<TLong>>): Array<string> {
+export default function (tx: Transaction<TLong> | Transaction<TLong>[]): string[] {
   const idList = toArray(tx)
     .reduce((acc, tx) => acc.concat(getAssetIdList(tx) || []), [])
     .filter((x) => x != null);

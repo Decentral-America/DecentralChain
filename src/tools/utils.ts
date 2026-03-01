@@ -1,5 +1,5 @@
-import { TransactionMap, Transaction } from '@decentralchain/ts-types';
-import { TLong } from '../interface';
+import { type TransactionMap, type Transaction } from '@decentralchain/ts-types';
+import { type TLong } from '../interface';
 
 export function isObject(obj: any) {
   if (typeof obj === 'object' && obj !== null) {
@@ -14,11 +14,11 @@ export function isObject(obj: any) {
   return false;
 }
 
-export function toArray<T>(data: T | Array<T>): Array<T> {
+export function toArray<T>(data: T | T[]): T[] {
   return Array.isArray(data) ? data : [data];
 }
 
-export function head<T>(data: Array<T>): T | undefined {
+export function head<T>(data: T[]): T | undefined {
   return data[0];
 }
 
@@ -32,14 +32,13 @@ export function prop<T extends Record<string, any>, P extends keyof T>(key: P): 
   return (data) => data[key];
 }
 
-export const keys = <T extends Record<string | number, any>>(obj: T): Array<keyof T> =>
+export const keys = <T extends Record<string | number, any>>(obj: T): (keyof T)[] =>
   Object.keys(obj);
 
-export const entries = <T extends Record<string | number, any>>(
-  obj: T,
-): Array<[keyof T, T[keyof T]]> => keys(obj).map((name) => [name, obj[name]]);
+export const entries = <T extends Record<string | number, any>>(obj: T): [keyof T, T[keyof T]][] =>
+  keys(obj).map((name) => [name, obj[name]]);
 
-export const values = <T extends Record<string | number, any>>(obj: T): Array<T[keyof T]> =>
+export const values = <T extends Record<string | number, any>>(obj: T): T[keyof T][] =>
   keys(obj).map((key) => obj[key]);
 
 export const assign = <
@@ -49,7 +48,7 @@ export const assign = <
   target: T,
   merge: R,
 ): T & R => {
-  return entries(merge).reduce((acc, [key, value]: any) => {
+  return entries(merge).reduce((_acc, [key, value]: any) => {
     target[key] = value;
     return target;
   }, target) as any;
@@ -72,33 +71,32 @@ export const deepAssign = <T extends Record<string | number, any>[]>(
     return target;
   }, objects[0] || {}) as any;
 
-export function map<T, U>(process: (data: T, index: number) => U): (list: Array<T>) => Array<U> {
+export function map<T, U>(process: (data: T, index: number) => U): (list: T[]) => U[] {
   return (list) => list.map(process);
 }
 
-export function filter<T>(
-  process: (data: T, index: number) => boolean,
-): (list: Array<T>) => Array<T>;
+export function filter<T>(process: (data: T, index: number) => boolean): (list: T[]) => T[];
 export function filter<T, S extends T>(
   process: (data: T, index: number) => data is S,
-): (list: Array<T>) => Array<S>;
-export function filter<T>(
-  process: (data: T, index: number) => boolean,
-): (list: Array<T>) => Array<T> {
+): (list: T[]) => S[];
+export function filter<T>(process: (data: T, index: number) => boolean): (list: T[]) => T[] {
   return (list) => list.filter(process);
 }
 
 export function indexBy<T extends Record<string, any>, P extends (data: T) => string | number>(
   process: (data: T) => T[keyof T],
-  data: Array<T>,
+  data: T[],
 ): Record<ReturnType<P>, T> {
-  return data.reduce<Record<ReturnType<P>, T>>((acc, item) => {
-    acc[process(item)] = item;
-    return acc;
-  }, {} as any);
+  return data.reduce<Record<ReturnType<P>, T>>(
+    (acc, item) => {
+      acc[process(item)] = item;
+      return acc;
+    },
+    {} as Record<ReturnType<P>, T>,
+  );
 }
 
-export const uniq = (list: Array<string | null>): Array<string | null> => {
+export const uniq = (list: (string | null)[]): (string | null)[] => {
   return keys(
     list.reduce<Record<string, string>>((acc, item) => {
       if (item != null) acc[item] = item;
@@ -111,11 +109,9 @@ type TChoices = {
   [Key in keyof TransactionMap<TLong>]?: (data: TransactionMap<TLong>[Key]) => any;
 };
 
-export interface ISwitchTransactionResult<R extends TChoices> {
-  <T extends Transaction<TLong>>(
-    tx: T,
-  ): R[T['type']] extends (data: TransactionMap<TLong>[T['type']]) => infer A ? A : undefined;
-}
+export type ISwitchTransactionResult<R extends TChoices> = <T extends Transaction<TLong>>(
+  tx: T,
+) => R[T['type']] extends (data: TransactionMap<TLong>[T['type']]) => infer A ? A : undefined;
 
 export function switchTransactionByType<R extends TChoices>(
   choices: R,
@@ -126,7 +122,7 @@ export function switchTransactionByType<R extends TChoices>(
       : undefined;
 }
 
-export const pipe: IPipe = (...args: Array<(data: any) => any>): ((data: any) => any) => {
+export const pipe: IPipe = (...args: ((data: any) => any)[]): ((data: any) => any) => {
   return (data) => args.reduce((acc, item) => item(acc), data);
 };
 

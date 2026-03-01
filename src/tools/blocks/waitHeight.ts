@@ -2,7 +2,16 @@ import { fetchHeadersLast, fetchHeight } from '../../api-node/blocks';
 import { wait } from '../utils';
 import detectInterval from './detectInterval';
 
-const storage: Record<string, number> = Object.create(null);
+/** Cache entry with TTL to avoid serving stale interval data. */
+interface ICacheEntry {
+  interval: number;
+  /** Timestamp (ms) when this entry was stored. */
+  storedAt: number;
+}
+
+/** Interval cache: keyed by base URL, entries expire after 10 minutes. */
+const storage: Record<string, ICacheEntry> = Object.create(null);
+const CACHE_TTL_MS = 10 * 60 * 1000;
 
 export default function (base: string, current?: number): Promise<{ height: number }> {
   return Promise.all([
@@ -32,11 +41,12 @@ function inRange(current: number, min: number, max: number): number {
 }
 
 function getInterval(base: string): Promise<number> {
-  if (storage[base]) {
-    return Promise.resolve(storage[base]);
+  const cached = storage[base];
+  if (cached && Date.now() - cached.storedAt < CACHE_TTL_MS) {
+    return Promise.resolve(cached.interval);
   } else {
     return detectInterval(base).then((interval) => {
-      storage[base] = interval;
+      storage[base] = { interval, storedAt: Date.now() };
       return interval;
     });
   }

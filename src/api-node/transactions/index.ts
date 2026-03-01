@@ -1,17 +1,17 @@
-import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
-import { IWithApplicationStatus, TLong } from '../../interface';
+import { TRANSACTION_STATUSES, type TTransactionStatuses } from '../../constants';
+import { type IWithApplicationStatus, type TLong } from '../../interface';
 import { fetchHeight } from '../blocks';
-import request, { RequestInit } from '../../tools/request';
+import request from '../../tools/request';
 import query from '../../tools/query';
 import { deepAssign } from '../../tools/utils';
 import stringify from '../../tools/stringify';
 import {
-  SignedTransaction,
-  Transaction,
-  TransactionMap,
-  WithApiMixin,
+  type SignedTransaction,
+  type Transaction,
+  type TransactionMap,
+  type WithApiMixin,
 } from '@decentralchain/ts-types';
-import { addStateUpdateField, TTransaction } from '../../tools/transactions/transactions';
+import { addStateUpdateField, type TTransaction } from '../../tools/transactions/transactions';
 
 /**
  * GET /transactions/unconfirmed/size
@@ -59,10 +59,10 @@ export function fetchCalculateFee<T extends keyof TransactionMap<TLong>>(
   });
 }
 
-export type TFeeInfo<LONG = TLong> = {
+export interface TFeeInfo<LONG = TLong> {
   feeAssetId: string | null;
   feeAmount: LONG;
-};
+}
 
 /**
  * GET /transactions/unconfirmed
@@ -71,7 +71,7 @@ export type TFeeInfo<LONG = TLong> = {
 export function fetchUnconfirmed(
   base: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<Transaction<TLong> & WithApiMixin>> {
+): Promise<(Transaction<TLong> & WithApiMixin)[]> {
   return request({
     base,
     url: '/transactions/unconfirmed',
@@ -80,25 +80,26 @@ export function fetchUnconfirmed(
 }
 
 /**
- * Список транзакций по адресу
- * @param address
- * @param limit      максимальное количество транзакций в результате
- * @param after      искать транзакции после ID указанного в after
- * @param retry      количество попыток на выполнение запроса
+ * Fetch transactions for a given address.
+ * @param address   The address to query transactions for.
+ * @param limit     Maximum number of transactions to return.
+ * @param after     Return transactions after this transaction ID.
+ * @param _retry    Number of retry attempts for the request (unused, reserved).
  */
 export function fetchTransactions(
   base: string,
   address: string,
   limit: number,
   after?: string,
-  retry?: number,
+  _retry?: number,
   options: RequestInit = Object.create(null),
-): Promise<Array<Transaction<TLong> & WithApiMixin>> {
-  return request<Array<Array<TTransaction<TLong> & WithApiMixin>>>({
+): Promise<(Transaction<TLong> & WithApiMixin)[]> {
+  return request<(TTransaction<TLong> & WithApiMixin)[][]>({
     base,
     url: `/transactions/address/${address}/limit/${limit}${query({ after })}`,
     options,
   }).then(([list]) => {
+    if (!list) return [];
     list.forEach((transaction) => addStateUpdateField(transaction));
     return list;
   });
@@ -143,7 +144,7 @@ export function fetchInfo(
   }).then((transaction) => addStateUpdateField(transaction));
 }
 
-export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
+export function fetchStatus(base: string, list: string[]): Promise<ITransactionsStatus> {
   const DEFAULT_STATUS: ITransactionStatus = {
     id: '',
     confirmations: -1,
@@ -152,7 +153,7 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
     status: TRANSACTION_STATUSES.NOT_FOUND,
   };
 
-  const loadAllTxInfo: Array<Promise<ITransactionStatus>> = list.map((id) =>
+  const loadAllTxInfo: Promise<ITransactionStatus>[] = list.map((id) =>
     fetchUnconfirmedInfo(base, id)
       .then(() => ({
         ...DEFAULT_STATUS,
@@ -188,7 +189,7 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
 
 export interface ITransactionsStatus {
   height: number;
-  statuses: Array<ITransactionStatus>;
+  statuses: ITransactionStatus[];
 }
 
 export interface ITransactionStatus {

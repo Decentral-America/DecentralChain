@@ -1,6 +1,6 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
-import { Transaction, WithApiMixin } from '@decentralchain/ts-types';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 
 /**
  * GET /blocks/headers/seq/{from}/{to}
@@ -14,7 +14,7 @@ export function fetchHeadersSeq(
   from: number,
   to: number,
   options: RequestInit = Object.create(null),
-): Promise<Array<IBlockHeader>> {
+): Promise<IBlockHeader[]> {
   return request({
     base,
     url: `/blocks/headers/seq/${from}/${to}`,
@@ -117,7 +117,7 @@ export function fetchSeq(
   from: number,
   to: number,
   options: RequestInit = Object.create(null),
-): Promise<Array<IBlock>> {
+): Promise<IBlock[]> {
   return request({
     base,
     url: `/blocks/seq/${from}/${to}`,
@@ -173,7 +173,7 @@ export function fetchBlocksByAddress(
   from: number,
   to: number,
   options: RequestInit = Object.create(null),
-): Promise<Array<IBlock>> {
+): Promise<IBlock[]> {
   return request({
     base,
     url: `/blocks/address/${address}/${from}/${to}`,
@@ -248,7 +248,7 @@ export interface IBlockHeader {
   generatorPublicKey: string;
   version: number;
   reference: string;
-  features: Array<string>;
+  features: string[];
   totalFee: TLong;
   desiredReward: number;
   transactionCount: number;
@@ -262,5 +262,5 @@ export interface IBlockHeader {
 
 export interface IBlock extends IBlockHeader {
   fee: TLong;
-  transactions: Array<Transaction<TLong> & WithApiMixin>;
+  transactions: (Transaction<TLong> & WithApiMixin)[];
 }

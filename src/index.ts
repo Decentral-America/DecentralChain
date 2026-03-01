@@ -11,7 +11,7 @@ export const create = createFn;
 
 export default createFn;
 
-export {
+export type {
   ICallableFuncArgumentType,
   TCallableFuncArgumentsArray,
   TCallableFuncArgumentsRecord,

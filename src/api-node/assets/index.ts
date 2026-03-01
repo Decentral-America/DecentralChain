@@ -1,10 +1,10 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import {
-  AssetDecimals,
-  IssueTransaction,
-  SignedTransaction,
+  type AssetDecimals,
+  type IssueTransaction,
+  type SignedTransaction,
   TRANSACTION_TYPE,
-  WithApiMixin,
+  type WithApiMixin,
 } from '@decentralchain/ts-types';
 import request from '../../tools/request';
 import { toArray } from '../../tools/utils';
@@ -20,14 +20,14 @@ export function fetchDetails(
 ): Promise<TAssetDetails>;
 export function fetchDetails(
   base: string,
-  assetId: Array<string>,
+  assetId: string[],
   options?: RequestInit,
-): Promise<Array<TAssetDetails>>;
-export function fetchDetails<T extends string | Array<string>>(
+): Promise<TAssetDetails[]>;
+export function fetchDetails<T extends string | string[]>(
   base: string,
   assetId: T,
   options: RequestInit = Object.create(null),
-): Promise<TAssetDetails | Array<TAssetDetails>> {
+): Promise<TAssetDetails | TAssetDetails[]> {
   const isOnce = !Array.isArray(assetId);
   return Promise.all(
     toArray(assetId).map((id) =>
@@ -37,7 +37,7 @@ export function fetchDetails<T extends string | Array<string>>(
         options,
       }),
     ),
-  ).then((list) => (isOnce ? list[0] : list));
+  ).then((list) => (isOnce ? list[0]! : list));
 }
 
 /**
@@ -46,14 +46,14 @@ export function fetchDetails<T extends string | Array<string>>(
  */
 export function fetchAssetsDetails(
   base: string,
-  assetIds: Array<string>,
+  assetIds: string[],
   options: RequestInit = Object.create(null),
-): Promise<Array<TAssetDetails | TErrorResponse>> {
+): Promise<(TAssetDetails | TErrorResponse)[]> {
   const params = assetIds.map((assetId) => `id=${assetId}`).join('&');
 
   const query = assetIds.length ? `?${params}` : '';
 
-  return request<Array<TAssetDetails | TErrorResponse>>({
+  return request<(TAssetDetails | TErrorResponse)[]>({
     base,
     url: `/assets/details${query}`,
     options,
@@ -85,8 +85,8 @@ export function fetchAssetsAddressLimit(
   address: string,
   limit: number,
   options: RequestInit = Object.create(null),
-): Promise<Array<TAssetDetails>> {
-  return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
+): Promise<TAssetDetails[]> {
+  return request({ base, url: `/assets/nft/${address}/limit/${limit}`, options });
 }
 
 /**
@@ -104,7 +104,7 @@ export function fetchAssetsNft(
   base: string,
   { address, limit, after }: IFetchAssetsNftParams,
   options: RequestInit = Object.create(null),
-): Promise<Array<TAssetDetails>> {
+): Promise<TAssetDetails[]> {
   const url = new URL(`assets/nft/${address}/limit/${limit}`, base);
 
   if (after) {
@@ -148,6 +148,7 @@ export async function fetchAssetsBalance(
     }
 
     const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
+    if (assetIndex === undefined) return;
     const assetBalance = balancesResponse.balances[assetIndex];
 
     if (!assetBalance) {
@@ -199,12 +200,12 @@ export interface IBalanceAddressAssetId<LONG = TLong> {
   balance: LONG;
 }
 
-export type TAssetsBalance = {
+export interface TAssetsBalance {
   address: string;
-  balances: Array<TAssetBalance>;
-};
+  balances: TAssetBalance[];
+}
 
-export type TAssetBalance<LONG = TLong> = {
+export interface TAssetBalance<LONG = TLong> {
   assetId: string;
   balance: LONG;
   reissuable: true;
@@ -212,9 +213,9 @@ export type TAssetBalance<LONG = TLong> = {
   sponsorBalance: LONG | null;
   quantity: LONG;
   issueTransaction: SignedTransaction<IssueTransaction & WithApiMixin>;
-};
+}
 
-export type TAssetDetails<LONG = TLong> = {
+export interface TAssetDetails<LONG = TLong> {
   assetId: string;
   issueHeight: number;
   issueTimestamp: number;
@@ -228,9 +229,9 @@ export type TAssetDetails<LONG = TLong> = {
   scripted: boolean;
   minSponsoredAssetFee: LONG | null;
   originTransactionId: string;
-};
+}
 
-export type TErrorResponse = {
+export interface TErrorResponse {
   error: number;
   message: string;
-};
+}

@@ -1,4 +1,4 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
 
 /**
@@ -17,7 +17,7 @@ export function fetchRewards(
   });
 }
 
-export type TRewards<LONG> = {
+export interface TRewards<LONG> {
   height: number;
   totalDccAmount: LONG;
   currentReward: LONG;
@@ -31,4 +31,4 @@ export type TRewards<LONG> = {
     increase: number;
     decrease: number;
   };
-};
+}
