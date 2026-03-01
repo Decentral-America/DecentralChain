@@ -23,8 +23,6 @@ export type AESMode = 'CBC' | 'CFB' | 'CTR' | 'OFB' | 'ECB' | 'GCM';
 
 /** Supported RSA digest algorithms for signing and verification. */
 export type RSADigestAlgorithm =
-  | 'MD5'
-  | 'SHA1'
   | 'SHA224'
   | 'SHA256'
   | 'SHA384'
@@ -33,6 +31,12 @@ export type RSADigestAlgorithm =
   | 'SHA3-256'
   | 'SHA3-384'
   | 'SHA3-512';
+
+/**
+ * @deprecated MD5 and SHA1 are cryptographically broken and have been removed.
+ * Use SHA256 or stronger.
+ */
+export type RSADigestAlgorithmUnsafe = 'MD5' | 'SHA1';
 
 /** Map from typed array name to its concrete random output type. */
 export interface TRandomTypesMap {
