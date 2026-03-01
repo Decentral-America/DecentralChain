@@ -6,8 +6,9 @@ export namespace config {
       PRODUCTION: 0,
       ERRORS: 1,
       VERBOSE: 2,
-    };
-    // eslint-disable-next-line prefer-const
+    } as const;
+
+    // eslint-disable-next-line prefer-const -- must be mutable for runtime log level configuration
     export let logLevel: number = LOG_LEVEL.PRODUCTION;
 
     export const methodsData: Record<TConsoleMethods, { save: boolean; logLevel: number }> = {

@@ -1,10 +1,17 @@
-export class UniqPrimitiveCollection<T extends keyof any> {
-  public size: number = 0;
-  private hash: Record<keyof any, boolean> = Object.create(null);
+/**
+ * A collection of unique primitive values (strings, numbers, or symbols).
+ * Used for efficient origin and channel ID filtering.
+ */
+export class UniqPrimitiveCollection<T extends string | number | symbol> {
+  public size = 0;
+  private readonly hash: Record<string | number | symbol, boolean> = Object.create(null) as Record<
+    string | number | symbol,
+    boolean
+  >;
 
-  constructor(list?: Array<T>) {
+  constructor(list?: T[]) {
     if (list) {
-      list.forEach(this.add, this);
+      list.forEach((item) => this.add(item));
     }
   }
 
@@ -18,7 +25,7 @@ export class UniqPrimitiveCollection<T extends keyof any> {
     return key in this.hash;
   }
 
-  public toArray(): Array<T> {
-    return Object.keys(this.hash) as Array<T>;
+  public toArray(): T[] {
+    return Object.keys(this.hash) as T[];
   }
 }
