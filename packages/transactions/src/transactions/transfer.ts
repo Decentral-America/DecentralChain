@@ -1,8 +1,8 @@
 /**
  * @module index
  */
-import { ITransferParams, WithId, WithProofs, WithSender } from '../transactions'
-import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
+import { ITransferParams, WithId, WithProofs, WithSender } from '../transactions';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
   addProof,
   chainIdFromRecipient,
@@ -11,31 +11,31 @@ import {
   getSenderPublicKey,
   networkByte,
   normalizeAssetId,
-} from '../generic'
-import { validate } from '../validators'
-import { TSeedTypes } from '../types'
-import { binary } from '@decentralchain/marshall'
-import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
-import { TRANSACTION_TYPE, TransferTransaction } from '@decentralchain/ts-types'
+} from '../generic';
+import { validate } from '../validators';
+import { TSeedTypes } from '../types';
+import { binary } from '@decentralchain/marshall';
+import { txToProtoBytes } from '../proto-serialize';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { TRANSACTION_TYPE, TransferTransaction } from '@decentralchain/ts-types';
 
 /* @echo DOCS */
 export function transfer(
   params: ITransferParams,
   seed: TSeedTypes,
-): TransferTransaction & WithId & WithProofs
+): TransferTransaction & WithId & WithProofs;
 export function transfer(
   paramsOrTx: (ITransferParams & WithSender) | TransferTransaction,
   seed?: TSeedTypes,
-): TransferTransaction & WithId & WithProofs
+): TransferTransaction & WithId & WithProofs;
 export function transfer(
   paramsOrTx: any,
   seed?: TSeedTypes,
 ): TransferTransaction & WithId & WithProofs {
-  const type = TRANSACTION_TYPE.TRANSFER
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.TRANSFER
-  const seedsAndIndexes = convertToPairs(seed)
-  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
+  const type = TRANSACTION_TYPE.TRANSFER;
+  const version = paramsOrTx.version || DEFAULT_VERSIONS.TRANSFER;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: TransferTransaction & WithId & WithProofs = {
     type,
@@ -51,14 +51,14 @@ export function transfer(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(paramsOrTx.chainId, chainIdFromRecipient(paramsOrTx.recipient)),
     id: '',
-  }
+  };
 
-  validate.transfer(tx)
+  validate.transfer(tx);
 
-  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx)
+  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
-  tx.id = base58Encode(blake2b(bytes))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  tx.id = base58Encode(blake2b(bytes));
 
-  return tx
+  return tx;
 }

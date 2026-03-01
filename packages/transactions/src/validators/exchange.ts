@@ -1,5 +1,5 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
-import { orderValidator } from './order'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { orderValidator } from './order';
 import {
   isEq,
   orEq,
@@ -14,7 +14,7 @@ import {
   validatePipe,
   isRequired,
   isNaturalNumberOrZeroLike,
-} from './validators'
+} from './validators';
 
 const exchangeScheme = {
   type: isEq(TRANSACTION_TYPE.EXCHANGE),
@@ -29,6 +29,6 @@ const exchangeScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const exchangeValidator = validateByShema(exchangeScheme, getError)
+export const exchangeValidator = validateByShema(exchangeScheme, getError);

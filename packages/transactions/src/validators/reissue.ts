@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -13,7 +13,7 @@ import {
   isPublicKey,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const reissueScheme = {
   type: isEq(TRANSACTION_TYPE.REISSUE),
@@ -26,6 +26,6 @@ const reissueScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const reissueValidator = validateByShema(reissueScheme, getError)
+export const reissueValidator = validateByShema(reissueScheme, getError);

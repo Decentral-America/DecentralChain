@@ -1,0 +1,294 @@
+<<<<<<< HEAD:test/integration/matcher.test.ts
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+import {cancelOrder, cancelSubmittedOrder, order, submitOrder} from '../../src'
+import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} from './config'
+
+describe('Matcher requests', () => {
+    let assetId = '7SGJvTYmBKJEz2G1h2WVfAKYrg1G5FYfPpwUqFmircG'
+=======
+import { cancelOrder, cancelSubmittedOrder, order, submitOrder } from '../../src'
+import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} from './config'
+
+describe('Matcher requests', () => {
+  let assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf'
+>>>>>>> 697d643a (minor fixes)
+=======
+import {cancelOrder, cancelSubmittedOrder, order, submitOrder} from '../../src'
+import {MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString} from './config'
+
+describe('Matcher requests', () => {
+    let assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf'
+>>>>>>> f33083a0 (updated dependencies)
+=======
+import { cancelOrder, cancelSubmittedOrder, order, submitOrder } from '../../src'
+import { MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString } from './config'
+
+describe('Matcher requests', () => {
+  const assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf'
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+import { cancelOrder, cancelSubmittedOrder, order, submitOrder } from '../../src';
+import { MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString } from './config';
+
+describe('Matcher requests', () => {
+  const assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf';
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
+
+  beforeAll(async () => {
+    const nonce = randomHexString(6);
+    vi.setConfig({ testTimeout: 60000 });
+
+    console.log('Assets setup successful ' + assetId);
+  }, TIMEOUT);
+
+  it(
+    'should submit and cancel order',
+    async () => {
+      const oParams = {
+        orderType: 'buy' as const,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        price: 1000000000,
+        amount: 10,
+        matcherFee: 1000000,
+        priceAsset: null,
+        amountAsset: assetId,
+      };
+
+<<<<<<< HEAD:test/integration/matcher.test.ts
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
+    it('should submit and cancel order', async () => {
+        const oParams = {
+            orderType: 'buy' as 'buy',
+            matcherPublicKey: MATCHER_PUBLIC_KEY,
+            price: 1000000000,
+            amount: 10,
+            matcherFee: 1000000,
+            priceAsset: null,
+            amountAsset: assetId,
+        }
+<<<<<<< HEAD
+=======
+  it('should submit and cancel order', async () => {
+    const oParams = {
+      orderType: 'buy' as 'buy',
+      matcherPublicKey: MATCHER_PUBLIC_KEY,
+      price: 10000000000000,
+      amount: 1000,
+      matcherFee: 8000000,
+      priceAsset: null,
+      amountAsset: assetId,
+    }
+>>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
+=======
+      const ord = order(oParams, MASTER_SEED)
+      console.log('ord', JSON.stringify(ord, undefined, ' '))
+      const submitResp = await submitOrder(ord, MATCHER_URL)
+      expect(submitResp.status).toEqual('OrderAccepted')
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+      const ord = order(oParams, MASTER_SEED);
+      console.log('ord', JSON.stringify(ord, undefined, ' '));
+      const submitResp = await submitOrder(ord, MATCHER_URL);
+      expect(submitResp.status).toEqual('OrderAccepted');
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
+
+      const co = cancelOrder({ orderId: ord.id }, MASTER_SEED);
+      const cancelResp = await cancelSubmittedOrder(
+        co,
+        ord.assetPair.amountAsset,
+        ord.assetPair.priceAsset,
+        MATCHER_URL,
+      );
+      expect(cancelResp.status).toEqual('OrderCanceled');
+    },
+    TIMEOUT,
+  );
+
+  it(
+    'should submit and cancel order',
+    async () => {
+      const oParams = {
+        orderType: 'buy' as const,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        price: 1000000000,
+        amount: 10,
+        matcherFee: 1000000,
+        priceAsset: null,
+        amountAsset: assetId,
+        version: 4,
+      };
+
+      const ord = order(oParams, MASTER_SEED);
+      console.log('ord', JSON.stringify(ord, undefined, ' '));
+      // const submitResp = await submitOrder(ord, MATCHER_URL)
+      // expect(submitResp.status).toEqual('OrderAccepted')
+      //
+      // const co = cancelOrder({orderId: ord.id}, MASTER_SEED)
+      // const cancelResp = await cancelSubmittedOrder(co, ord.assetPair.amountAsset, ord.assetPair.priceAsset, MATCHER_URL)
+      // expect(cancelResp.status).toEqual('OrderCanceled')
+    },
+    TIMEOUT,
+  );
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f33083a0 (updated dependencies)
+    it('should submit and cancel order', async () => {
+        const oParams = {
+            orderType: 'buy' as 'buy',
+            matcherPublicKey: MATCHER_PUBLIC_KEY,
+            price: 1000000000,
+            amount: 10,
+            matcherFee: 1000000,
+            priceAsset: null,
+            amountAsset: assetId,
+            version: 4
+        }
+<<<<<<< HEAD
+=======
+  it('should submit and cancel market order', async () => {
+    const oParams = {
+      orderType: 'buy' as 'buy',
+      matcherPublicKey: MATCHER_PUBLIC_KEY,
+      price: 10000000000000,
+      amount: 1000,
+      matcherFee: 8000000,
+      priceAsset: null,
+      amountAsset: assetId,
+    }
+>>>>>>> 697d643a (minor fixes)
+=======
+>>>>>>> f33083a0 (updated dependencies)
+=======
+  it(
+    'should submit and cancel market order',
+    async () => {
+      const oParams = {
+        orderType: 'buy' as const,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        price: 100000000,
+        amount: 10,
+        matcherFee: 1000000,
+        priceAsset: null,
+        amountAsset: assetId,
+<<<<<<< HEAD:test/integration/matcher.test.ts
+      }
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+      };
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
+
+      const ord = order(oParams, MASTER_SEED);
+      const submitResp = await submitOrder(ord, { market: false, matcherUrl: MATCHER_URL });
+      expect(submitResp.status).toEqual('OrderAccepted');
+
+      const co = cancelOrder({ orderId: ord.id }, MASTER_SEED);
+      const cancelResp = await cancelSubmittedOrder(
+        co,
+        ord.assetPair.amountAsset,
+        ord.assetPair.priceAsset,
+        MATCHER_URL,
+      );
+      expect(cancelResp.status).toEqual('OrderCanceled');
+    },
+    TIMEOUT,
+  );
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        const ord = order(oParams, MASTER_SEED)
+        const submitResp = await submitOrder(ord, {market: false, matcherUrl: MATCHER_URL})
+        expect(submitResp.status).toEqual('OrderAccepted')
+
+        const co = cancelOrder({orderId: ord.id}, MASTER_SEED)
+        const cancelResp = await cancelSubmittedOrder(co, ord.assetPair.amountAsset, ord.assetPair.priceAsset, MATCHER_URL)
+        expect(cancelResp.status).toEqual('OrderCanceled')
+    }, TIMEOUT)
+=======
+  it('order validation', async () => {
+    const order1 = order({
+      matcherPublicKey: MATCHER_PUBLIC_KEY,
+      //matcherPublicKey: publicKey(seed),
+      orderType: 'buy',
+      matcherFee: 8000000,
+      amountAsset: assetId,
+      priceAsset: null,
+      amount: 1,
+      price: 100000000,
+    }, MASTER_SEED)
+
+    const order2 = order({
+      matcherPublicKey: MATCHER_PUBLIC_KEY,
+      //matcherPublicKey: publicKey(seed),
+      orderType: 'sell',
+      matcherFee: 8000000,
+      amountAsset: assetId,
+      priceAsset: null,
+      amount: 1,
+      price: 100000000,
+    }, MASTER_SEED)
+>>>>>>> 697d643a (minor fixes)
+=======
+        const ord = order(oParams, MASTER_SEED)
+        const submitResp = await submitOrder(ord, {market: false, matcherUrl: MATCHER_URL})
+        expect(submitResp.status).toEqual('OrderAccepted')
+
+        const co = cancelOrder({orderId: ord.id}, MASTER_SEED)
+        const cancelResp = await cancelSubmittedOrder(co, ord.assetPair.amountAsset, ord.assetPair.priceAsset, MATCHER_URL)
+        expect(cancelResp.status).toEqual('OrderCanceled')
+    }, TIMEOUT)
+>>>>>>> f33083a0 (updated dependencies)
+=======
+  it(
+    'order validation',
+    async () => {
+      const order1 = order(
+        {
+          matcherPublicKey: MATCHER_PUBLIC_KEY,
+          //matcherPublicKey: publicKey(seed),
+          orderType: 'buy',
+          matcherFee: 1000000,
+          amountAsset: assetId,
+          priceAsset: null,
+          amount: 1,
+          price: 100000000,
+        },
+        MASTER_SEED,
+      );
+
+      const order2 = order(
+        {
+          matcherPublicKey: MATCHER_PUBLIC_KEY,
+          //matcherPublicKey: publicKey(seed),
+          orderType: 'sell',
+          matcherFee: 1000000,
+          amountAsset: assetId,
+          priceAsset: null,
+          amount: 1,
+          price: 100000000,
+        },
+        MASTER_SEED,
+<<<<<<< HEAD:test/integration/matcher.test.ts
+      )
+>>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+      );
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
+
+      await submitOrder(order1, MATCHER_URL);
+      await submitOrder(order2, MATCHER_URL);
+    },
+    TIMEOUT,
+  );
+});

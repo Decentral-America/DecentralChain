@@ -1,34 +1,69 @@
 {
   "name": "@decentralchain/waves-transactions",
-  "version": "4.2.8",
-  "description": "Build and sign(multi-sign) transactions for DecentralChain.",
-  "keywords": [
-    "dcc",
-    "crypto",
-    "transactions",
-    "protocol",
-    "binary",
-    "cryptography",
-    "signature"
+  "version": "5.0.0",
+  "description": "Build and sign (multi-sign) transactions for DecentralChain blockchain.",
+  "type": "module",
+  "packageManager": "npm@11.6.2",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/waves-transactions.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/waves-transactions#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/waves-transactions/issues"
+  },
   "scripts": {
-    "preversion": "npm run build",
-    "postversion": "npm publish",
-    "build-docs": "typedoc --out docs src && cd docs && touch .nojekyll",
-    "postpublish": "git push origin head",
-    "build": "ts-node build/build.ts && webpack --config webpack.config.js --env",
-    "format": "prettier --write \"{src,test,usage,build}/**/*.ts\" \"*.json\"",
-    "format:check": "prettier --check \"{src,test,usage,build}/**/*.ts\" \"*.json\"",
-    "lint": "eslint \"{src,test,usage,build}/**/*.ts\"",
-    "lint:fix": "eslint \"{src,test,usage,build}/**/*.ts\" --fix",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
-    "test:unit": "jest --no-coverage --testPathIgnorePatterns=\"integration|nodeInteraction|test.test|proto-serialize\"",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test:unit",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test:unit",
-    "prepare": "husky"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
   },
   "lint-staged": {
     "*.ts": [
@@ -39,51 +74,25 @@
       "prettier --write"
     ]
   },
-  "files": [
-    "/dist",
-    "/src"
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "150 kB"
+    }
   ],
-  "author": {
-    "name": "decentralchain"
-  },
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "transactions",
+    "crypto",
+    "blockchain",
+    "protocol",
+    "binary",
+    "cryptography",
+    "signature"
+  ],
+  "author": "DecentralChain",
   "license": "MIT",
-  "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/jest": "^23.3.9",
-    "@types/long": "^4.0.0",
-    "@types/node": "^10.12.3",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "copy-webpack-plugin": "^4.5.2",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.2",
-    "husky": "^9.1.7",
-    "jest": "^24.7.1",
-    "jsdoc-to-markdown": "^5.0.0",
-    "lint-staged": "^16.3.1",
-    "nativescript-typedoc-theme": "0.0.7",
-    "ncp": "^2.0.0",
-    "preprocess": "^3.1.0",
-    "prettier": "^3.8.1",
-    "rimraf": "^2.6.2",
-    "terser-webpack-plugin": "^1.2.3",
-    "ts-jest": "^24.0.2",
-    "ts-jsdoc": "^3.0.1",
-    "ts-loader": "^5.3.3",
-    "ts-node": "^7.0.1",
-    "typed-ts-events": "^1.1.1",
-    "typedoc": "^0.19.2",
-    "typedoc-clarity-theme": "^1.1.0",
-    "typedoc-plugin-external-module-name": "^2.1.0",
-    "typescript": "^3.7.2",
-    "typescript-json-schema": "^0.43.0",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.1.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Decentral-America/waves-transactions"
-  },
   "dependencies": {
     "@decentralchain/marshall": "^0.14.0",
 <<<<<<< HEAD
@@ -103,10 +112,32 @@
     "@decentralchain/protobuf-serialization": "npm:@waves/protobuf-serialization@1.4.3",
     "@decentralchain/ts-lib-crypto": "npm:@waves/ts-lib-crypto@^1.4.4",
     "@decentralchain/ts-types": "npm:@waves/ts-types@^1.2.0",
+<<<<<<< HEAD
     "@types/babel__traverse": "^7.14.2",
 >>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
+=======
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
     "axios": "^0.19.0",
 >>>>>>> 697d643a (minor fixes)
     "long": "^4.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@types/node": "22.15.29",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }

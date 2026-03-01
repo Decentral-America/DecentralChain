@@ -1,6 +1,6 @@
-import { invokeScript } from '../dist/index'
+import { invokeScript } from '../dist/index';
 
-const seed = 'create genesis wallet devnet-0'
+const seed = 'create genesis wallet devnet-0';
 
 const params = {
   call: {
@@ -24,7 +24,7 @@ const params = {
   //timestamp: Date.now(),
   //fee: 100000,
   //chainId:
-}
+};
 
-const signedInvokeScriptTx = invokeScript(params, seed)
-console.log(signedInvokeScriptTx)
+const signedInvokeScriptTx = invokeScript(params, seed);
+console.log(signedInvokeScriptTx);

@@ -162,4 +162,4 @@ export const invokeScriptTx = {
             'proofs': ['2RfTMxn8U9KYB3FRKyGNXRp5mbNCPutXi4HpF43ZnNEmMDfLiv68YsJyKodaD1akVHX8KEtKb7C6U1vsjhAeDChP'],
         },
     },*/,
-}
+};

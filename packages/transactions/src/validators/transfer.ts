@@ -13,8 +13,8 @@ import {
   defaultValue,
   isPublicKey,
   isNaturalNumberOrZeroLike,
-} from './validators'
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+} from './validators';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 const transferScheme = {
 <<<<<<< HEAD
@@ -55,7 +55,11 @@ const transferScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNaturalNumberOrZeroLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+<<<<<<< HEAD
 }
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+};
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
-export const transferValidator = validateByShema(transferScheme, getError)
+export const transferValidator = validateByShema(transferScheme, getError);

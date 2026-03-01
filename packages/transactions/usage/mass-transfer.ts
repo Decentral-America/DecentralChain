@@ -1,6 +1,6 @@
-import { massTransfer } from '../dist/index'
+import { massTransfer } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   transfers: [
@@ -16,7 +16,7 @@ const params = {
   //senderPublicKey: 'by default derived from seed',
   //timestamp: Date.now(),
   //fee: 100000 + transfers.length * 50000,
-}
+};
 
-const signedMassTransferTx = massTransfer(params, seed)
-console.log(signedMassTransferTx)
+const signedMassTransferTx = massTransfer(params, seed);
+console.log(signedMassTransferTx);

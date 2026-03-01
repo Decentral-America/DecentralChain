@@ -1,6 +1,6 @@
-import { sponsorship } from '../dist/index'
+import { sponsorship } from '../dist/index';
 
-const seed = 'example seed phrase'
+const seed = 'example seed phrase';
 
 const params = {
   assetId: 'G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo',
@@ -9,7 +9,7 @@ const params = {
   //timestamp: Date.now(),
   //fee: 100000,
   //chainId: 'L',
-}
+};
 
-const signedSponsorshipTx = sponsorship(params, seed)
-console.log(signedSponsorshipTx)
+const signedSponsorshipTx = sponsorship(params, seed);
+console.log(signedSponsorshipTx);
