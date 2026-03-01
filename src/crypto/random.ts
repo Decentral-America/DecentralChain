@@ -5,7 +5,6 @@ import { stringToBytes } from '../conversions/string-bytes';
 
 const _random = (count: number) => stringToBytes(forgeRand.getBytesSync(count), 'raw');
 
-/** Generate random data in the specified typed format. */
 /** Generate random data of the specified length and return type. */
 export const random = <T extends keyof TRandomTypesMap>(
   count: number,

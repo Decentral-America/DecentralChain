@@ -1,9 +1,10 @@
-import { privateKey, publicKey, randomSeed } from '../src';
+import { privateKey, publicKey } from '../src';
 import { test, expect } from 'vitest';
 
-test('Should get public key from private', () => {
-  const seed = randomSeed();
-  const pk = publicKey(seed);
+// Use deterministic seed for reproducible failures in CI
+const SEED = 'pub-priv-keys deterministic test seed';
 
-  expect(pk).toEqual(publicKey({ privateKey: privateKey(seed) }));
+test('Should get public key from private', () => {
+  const pk = publicKey(SEED);
+  expect(pk).toEqual(publicKey({ privateKey: privateKey(SEED) }));
 });

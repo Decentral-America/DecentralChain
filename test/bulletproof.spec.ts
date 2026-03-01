@@ -230,7 +230,7 @@ describe('Signing & Verification', () => {
     Uint8Array.from(new Array(1024).fill(0xab)), // large
   ];
 
-  SEEDS.slice(0, 3).forEach((seed, si) => {
+  SEEDS.forEach((seed, si) => {
     messages.forEach((msg, mi) => {
       test(`seed[${si}] × message[${mi}]: sign-verify roundtrip`, () => {
         const sig = signBytes(seed, msg);
@@ -675,11 +675,13 @@ describe('Backward Compatibility (Chain W)', () => {
   });
 
   test('keys are chain-independent (same across W and L)', () => {
-    // Keys don't depend on chain ID at all
-    expect(publicKey(seed)).toBe(publicKey(seed));
-    expect(privateKey(seed)).toBe(privateKey(seed));
-    // Even with seedWithNonce
-    expect(publicKey(seedWithNonce(seed, 1))).toBe(publicKey(seedWithNonce(seed, 1)));
+    // Keys don't depend on chain ID — verify against hardcoded known-good values
+    expect(publicKey(seed)).toBe('H3WNt2YE5E9hgmVyRqwMbxZQ346gHuhgsXR8uDrX9BhJ');
+    expect(privateKey(seed)).toBe('amNTBLVr1yNqr9qos4P1KUpdjaMY9WUxYGuRZfkNZzz');
+    // seedWithNonce is deterministic — same input always produces same output
+    const noncedPk = publicKey(seedWithNonce(seed, 1));
+    expect(noncedPk).toBe(publicKey(seedWithNonce(seed, 1)));
+    expect(noncedPk).not.toBe(publicKey(seed)); // nonce changes the derived key
   });
 
   test('signature from chain-L seed verifies against chain-W address holder', () => {
