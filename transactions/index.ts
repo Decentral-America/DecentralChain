@@ -16,7 +16,7 @@ import {
   WithApplicationStatus,
   WithId,
   WithVersion,
-} from '../src';
+} from '../src/index.js';
 
 export type BaseTransaction<LONG = Long, TYPE extends TransactionType = TransactionType> = {
   type: TYPE;
@@ -43,7 +43,8 @@ export type Transaction<LONG = Long> =
   | ExchangeTransaction<LONG>
   | SetAssetScriptTransaction<LONG>
   | InvokeScriptTransaction<LONG>
-  | UpdateAssetInfoTransaction<LONG>;
+  | UpdateAssetInfoTransaction<LONG>
+  | EthereumTransaction<LONG>;
 
 export type TransactionMap<LONG = Long> = {
   [TRANSACTION_TYPE.GENESIS]: GenesisTransaction<LONG>;
@@ -63,6 +64,7 @@ export type TransactionMap<LONG = Long> = {
   [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransaction<LONG>;
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction<LONG>;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
+  [TRANSACTION_TYPE.ETHEREUM]: EthereumTransaction<LONG>;
 };
 
 export type TransactionVersionsMap<LONG = Long> = {
@@ -83,10 +85,7 @@ export type TransactionVersionsMap<LONG = Long> = {
   [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: SetAssetScriptTransactionMap<LONG>;
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransactionMap<LONG>;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
-};
-
-type Omit<A extends Record<string, any>, B extends keyof A> = {
-  [Key in Exclude<keyof A, B>]: A[Key];
+  [TRANSACTION_TYPE.ETHEREUM]: EthereumTransactionMap<LONG>;
 };
 
 export type GenesisTransactionFields<LONG = Long> = {
@@ -199,7 +198,7 @@ export type EthereumTransactionFields<LONG = Long> = {
         amount: LONG;
         asset: string | null;
       }
-    | {};
+    | { type?: never };
   bytes: string;
 };
 //--------------------------------------------------------------------------------------------------------------------
@@ -358,9 +357,9 @@ export type CancelLeaseTransactionV3<LONG> = WithVersion<
 >;
 
 export type CancelLeaseTransactionMap<LONG = Long> = {
-  1: LeaseTransactionV1<LONG>;
-  2: LeaseTransactionV2<LONG>;
-  3: LeaseTransactionV3<LONG>;
+  1: CancelLeaseTransactionV1<LONG>;
+  2: CancelLeaseTransactionV2<LONG>;
+  3: CancelLeaseTransactionV3<LONG>;
 };
 
 //AliasTransaction
@@ -710,7 +709,12 @@ export type UpdateAssetInfoTransactionFromNode<LONG = Long> = SignedTransaction<
     feeAssetId: null;
   };
 
-export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG> &
+export type EthereumTransaction<LONG = Long> = EthereumTransactionV1<LONG>;
+
+export type EthereumTransactionFromNode<LONG = Long> = SignedTransaction<
+  EthereumTransaction<LONG>
+> &
+  WithId &
   WithApiMixin &
   WithApplicationStatus & {
     feeAssetId: null;
@@ -763,4 +767,4 @@ export type TransactionFromNode<LONG = Long> =
   | SetAssetScriptTransactionFromNode<LONG>
   | InvokeScriptTransactionFromNode<LONG>
   | UpdateAssetInfoTransactionFromNode<LONG>
-  | EthereumTransaction<LONG>;
+  | EthereumTransactionFromNode<LONG>;
