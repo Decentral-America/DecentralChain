@@ -170,6 +170,7 @@ export const invokeScriptTx = {
   fee: 500000,
   type: 16,
   version: 1,
+  chainId: 76,
   call: {
     function: 'bet',
     args: [
@@ -187,7 +188,7 @@ export const invokeScriptTx = {
   payment: [
     {
       amount: 100500000,
-      assetId: '',
+      assetId: null,
     },
   ],
   id: 'E1fPNBHLTRrd1k1iZbnxjc2CjTcwYpuoBf5rBAVB6TMN',

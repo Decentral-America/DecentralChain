@@ -55,7 +55,7 @@ export function reissue(
   seed?: TSeedTypes,
 ): ReissueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.REISSUE;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.REISSUE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.REISSUE;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

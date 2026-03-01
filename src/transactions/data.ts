@@ -54,7 +54,7 @@ export function data(
 ): DataTransaction & WithId & WithProofs;
 export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.DATA;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.DATA;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.DATA;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -108,7 +108,7 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
   } else {
     const protoEntries = dataEntriesWithTypes.map(dataEntryToProto);
     const dataBytes = dccProto.waves.DataTransactionData.encode({ data: protoEntries }).finish();
-    computedFee = Math.ceil(dataBytes.length / 1024) * 100000;
+    computedFee = Math.max(100000, Math.ceil(dataBytes.length / 1024) * 100000);
   }
 
   const tx: DataTransaction & WithId & WithProofs = {

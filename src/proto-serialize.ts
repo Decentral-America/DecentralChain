@@ -327,7 +327,7 @@ const getReissueData = (t: ReissueTransaction): dccProto.waves.IReissueTransacti
   reissuable: t.reissuable ? true : undefined,
 });
 const getBurnData = (t: BurnTransaction): dccProto.waves.IBurnTransactionData => ({
-  assetAmount: amountToProto(t.amount || (t as any).amount, t.assetId),
+  assetAmount: amountToProto(t.amount, t.assetId),
 });
 const getExchangeData = (t: any): dccProto.waves.IExchangeTransactionData => ({
   amount: Long.fromValue(t.amount),
@@ -522,7 +522,7 @@ const orderFromProto = (
   po: dccProto.waves.IOrder,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
   let priceMode;
-  if (po.version === 4 && po.priceMode) {
+  if (po.version === 4 && po.priceMode != null) {
     po.priceMode === 1 ? (priceMode = 'fixedDecimals') : (priceMode = 'assetDecimals');
   }
 

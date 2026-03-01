@@ -53,7 +53,7 @@ export function cancelLease(
   seed?: TSeedTypes,
 ): CancelLeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.CANCEL_LEASE;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.CANCEL_LEASE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.CANCEL_LEASE;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

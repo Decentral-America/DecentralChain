@@ -52,7 +52,7 @@ export function lease(
 ): LeaseTransaction & WithId & WithProofs;
 export function lease(paramsOrTx: any, seed?: TSeedTypes): LeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.LEASE;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.LEASE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.LEASE;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

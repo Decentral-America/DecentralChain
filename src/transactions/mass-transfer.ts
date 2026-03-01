@@ -33,7 +33,7 @@ export function massTransfer(
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.MASS_TRANSFER;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.MASS_TRANSFER;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.MASS_TRANSFER;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -84,7 +84,7 @@ export function massTransfer(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(
       paramsOrTx.chainId,
-      chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient) ?? 0,
+      chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient),
     ),
     id: '',
 <<<<<<< HEAD

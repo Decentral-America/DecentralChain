@@ -3,6 +3,7 @@ import {
   isEq,
   orEq,
   isNumber,
+  isNaturalNumberLike,
   isArray,
   getError,
   validateByShema,
@@ -21,6 +22,7 @@ const dataScheme = {
   data: (data: Array<unknown>) =>
     isArray(data) && data.every((item) => isValidData(item) || isValidDeleteRequest(item)),
   fee: isNaturalNumberOrZeroLike,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

@@ -225,11 +225,21 @@ export function verify(
 ): boolean {
   publicKey = publicKey || obj.senderPublicKey;
   const bytes = serialize(obj);
-  const signature = obj.version == null ? (obj as any).signature : (obj as any).proofs[proofN];
+  if (obj.version == null) {
+    const signature = (obj as any).signature;
+    return verifySignature(publicKey, bytes, signature);
+  }
+  if (proofN < 0 || proofN >= (obj as any).proofs.length) {
+    throw new Error(
+      `Proof index ${proofN} is out of bounds (${(obj as any).proofs.length} proofs available)`,
+    );
+  }
+  const signature = (obj as any).proofs[proofN];
   return verifySignature(publicKey, bytes, signature);
 }
 
 export function verifyCustomData(data: TSignedData): boolean {
+  if (!data.publicKey || !data.signature) return false;
   const bytes = serializeCustomData(data);
   return verifySignature(data.publicKey as string, bytes, data.signature as string);
 }
@@ -239,7 +249,7 @@ export function verifyAuthData(
   params: IAuthParams,
   chainId?: string | number,
 ): boolean {
-  chainId = chainId || 'L';
+  chainId = chainId ?? 'L';
   const bytes = serializeAuthData(params);
   const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (
@@ -252,7 +262,7 @@ export function verifyDccAuthData(
   params: { publicKey: string; timestamp: number },
   chainId?: string | number,
 ): boolean {
-  chainId = chainId || 'L';
+  chainId = chainId ?? 'L';
   const bytes = serializeDccAuthData(params);
   const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (

@@ -36,7 +36,7 @@ export function invokeScript(
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.INVOKE_SCRIPT;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.INVOKE_SCRIPT;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.INVOKE_SCRIPT;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -60,7 +60,7 @@ export function invokeScript(
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
   seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
-  tx.id = base58Encode(base58Encode(blake2b(bytes)));
+  tx.id = base58Encode(blake2b(bytes));
 
   return tx;
 }

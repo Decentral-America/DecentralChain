@@ -8,7 +8,6 @@ import {
   isEq,
   isNaturalNumberLike,
   isNaturalNumberOrZeroLike,
-  isNumberLike,
   isPublicKey,
   isRecipient,
   isRequired,
@@ -29,13 +28,15 @@ const invokeScheme = {
   dApp: isRecipient,
 
   call: ifElse(
-    isRequired(false),
+    orEq([null, undefined]),
     defaultValue(true),
     validatePipe(
       pipe(prop('function'), isString),
       pipe(prop('function'), prop('length'), gte(0)),
       pipe(prop('args'), isArray),
-      (data: Array<unknown>) => data.every(validatePipe(isRequired(true), isValidDataPair)),
+      pipe(prop('args'), (args: Array<unknown>) =>
+        args.every(validatePipe(isRequired(true), isValidDataPair)),
+      ),
     ),
   ),
 <<<<<<< HEAD
@@ -62,7 +63,10 @@ const invokeScheme = {
 =======
   payment: validatePipe(isArray, (data: Array<unknown>) =>
     data.every(
-      validatePipe(pipe(prop('amount'), isNumberLike), pipe(prop('assetId'), isDccOrAssetId)),
+      validatePipe(
+        pipe(prop('amount'), isNaturalNumberOrZeroLike),
+        pipe(prop('assetId'), isDccOrAssetId),
+      ),
     ),
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
   ),

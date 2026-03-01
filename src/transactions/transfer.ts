@@ -33,7 +33,7 @@ export function transfer(
   seed?: TSeedTypes,
 ): TransferTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.TRANSFER;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.TRANSFER;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.TRANSFER;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

@@ -213,11 +213,7 @@ export const isPublicKeyForEthSuppTx = ifElse(
   ),
 );
 
-export const isDccOrAssetId = ifElse(
-  orEq(['', null, undefined, 'DCC']),
-  defaultValue(true),
-  isHash,
-);
+export const isDccOrAssetId = ifElse(orEq([null, undefined, 'DCC']), defaultValue(true), isHash);
 
 export const isAssetId = isHash;
 

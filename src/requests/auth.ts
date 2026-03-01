@@ -33,7 +33,7 @@ export function auth(
     host: params.host,
     data: params.data,
     publicKey,
-    address: address({ publicKey }, chainId || 'L'),
+    address: address({ publicKey }, chainId ?? 'L'),
   };
 
   const bytes = serializeAuthData(rx);
