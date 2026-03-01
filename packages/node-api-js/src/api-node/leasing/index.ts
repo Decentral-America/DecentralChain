@@ -1,4 +1,4 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
 
 /**
@@ -9,7 +9,7 @@ export function fetchActive(
   base: string,
   address: string,
   options: RequestInit = Object.create(null),
-): Promise<Array<ILeaseInfo>> {
+): Promise<ILeaseInfo[]> {
   return request({ base, url: `/leasing/active/${address}`, options });
 }
 
@@ -21,15 +21,16 @@ export function fetchLeasingInfo(
   base: string,
   ids: string[],
   options: RequestInit = Object.create(null),
-): Promise<Array<ILeaseInfo>> {
-  const searchParams = `{"ids":[${ids.map((id) => `"${id}"`).join(',')}]}`;
+): Promise<ILeaseInfo[]> {
+  // Use JSON.stringify to prevent injection via malicious id values
+  const body = JSON.stringify({ ids });
 
   return request({
     base,
     url: `/leasing/info/`,
     options: {
       ...options,
-      body: searchParams,
+      body,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

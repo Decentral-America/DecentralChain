@@ -1,4 +1,4 @@
-import { TLong } from '../../interface';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
 
 /**
@@ -10,7 +10,7 @@ import request from '../../tools/request';
 export function fetchActivationStatus(base: string): Promise<IActivationStatus<TLong>> {
   return request({
     base,
-    url: 'activation/status',
+    url: '/activation/status',
   });
 }
 
@@ -19,7 +19,7 @@ export interface IActivationStatus<LONG> {
   votingInterval: number;
   votingThreshold: number;
   nextCheck: LONG;
-  features: Array<IFeatures<TLong>>;
+  features: IFeatures<TLong>[];
 }
 
 export interface IFeatures<_LONG> {
