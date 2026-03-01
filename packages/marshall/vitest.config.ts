@@ -7,7 +7,10 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
-      exclude: ['src/index.ts'],
+      exclude: [
+        'src/index.ts',
+        'src/libs/parseJsonBigNumber.ts', // vendored third-party code
+      ],
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 90,

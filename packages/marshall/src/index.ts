@@ -5,7 +5,7 @@ import {
   serializeTx,
   type TFromLongConverter,
 } from './serialize';
-import { parseOrder, parserFromSchema, parseTx, type TToLongConverter } from './parse';
+import { parseHeader, parseOrder, parserFromSchema, parseTx, type TToLongConverter } from './parse';
 import * as json from './jsonMethods';
 import * as serializePrimitives from './serializePrimitives';
 import * as parsePrimitives from './parsePrimitives';
@@ -30,6 +30,7 @@ const binary = {
   parserFromSchema,
   parseTx,
   parseOrder,
+  parseHeader,
 };
 
 export type { TFromLongConverter } from './serialize';

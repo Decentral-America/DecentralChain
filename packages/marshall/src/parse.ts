@@ -110,8 +110,8 @@ export const parserFromSchema =
         value = toLongConverter(value);
       }
       return { value, shift: shift };
-    } else {
-      throw new Error(`Parser Error: Unknown schema type: ${schema.type}`);
+    } /* v8 ignore next 3 - defensive guard for future schema types */ else {
+      throw new Error(`Parser Error: Unknown schema type: ${(schema as TSchema).type}`);
     }
   };
 
