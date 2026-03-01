@@ -55,7 +55,7 @@ export function sponsorship(
   seed?: TSeedTypes,
 ): SponsorshipTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SPONSORSHIP;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.SPONSORSHIP;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SPONSORSHIP;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

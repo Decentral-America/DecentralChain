@@ -124,13 +124,14 @@ export async function waitForTxWithNConfirmations(
   let tx = await waitForTx(txId, options, _requestOptions);
 
   let txHeight = (tx as any).height;
-  const currentHeight = (tx as any).height;
+  let chainHeight = (tx as any).height;
 
-  while (txHeight + confirmations > currentHeight) {
+  while (txHeight + confirmations > chainHeight) {
     if (expired) throw new Error('Tx wait stopped: timeout');
     await waitForHeight(txHeight + confirmations, options);
     tx = await waitForTx(txId, options, _requestOptions);
     txHeight = (tx as any).height;
+    chainHeight = await currentHeight(options.apiBase || DEFAULT_NODE_REQUEST_OPTIONS.apiBase);
   }
 
   return tx;

@@ -19,7 +19,7 @@ export function burn(
 ): BurnTransaction & WithId & WithProofs;
 export function burn(paramsOrTx: any, seed?: TSeedTypes): BurnTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.BURN;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.BURN;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.BURN;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 

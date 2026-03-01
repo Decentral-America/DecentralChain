@@ -70,7 +70,7 @@ export function setAssetScript(
   seed?: TSeedTypes,
 ): SetAssetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_ASSET_SCRIPT;
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.SET_ASSET_SCRIPT;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SET_ASSET_SCRIPT;
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   if (paramsOrTx.script == null) throw new Error('Asset script cannot be empty');
