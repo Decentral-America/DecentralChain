@@ -82,7 +82,7 @@ describe('Create data and signature check', () => {
         
         it('check matcher orders signature', () => checkTx(SIGN_TYPE.MATCHER_ORDERS, 1).check());
         
-        it('check waves auth signature', () => checkTx(SIGN_TYPE.DCC_CONFIRMATION, 1).check());
+        it('check dcc auth signature', () => checkTx(SIGN_TYPE.DCC_CONFIRMATION, 1).check());
     
         it('check matcher cancel order signature 0', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 0).check());
         

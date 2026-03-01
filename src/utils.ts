@@ -1,7 +1,7 @@
 ///<reference path="../ramda-usage.d.ts"/>
 
 
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import path = require('ramda/src/path');
 import {
     IExchangeTransactionOrder,
@@ -9,7 +9,7 @@ import {
     IDataTransaction,
     IMassTransferTransaction,
     IIssueTransaction
-} from '@waves/ts-types';
+} from '@decentralchain/ts-types';
 import { DCC_ID } from './prepareTx';
 
 

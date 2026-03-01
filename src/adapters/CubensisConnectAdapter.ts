@@ -278,9 +278,9 @@ export class CubensisConnectAdapter extends Adapter {
             return CubensisConnectAdapter._api.initialPromise;
         }
 
-        const wavesApi = CubensisConnectAdapter._getApiCb();
-        if (wavesApi) {
-           return wavesApi.initialPromise.then((api: ICubensisConnect) => {
+        const dccApi = CubensisConnectAdapter._getApiCb();
+        if (dccApi) {
+           return dccApi.initialPromise.then((api: ICubensisConnect) => {
                 this._api = api;
                 this._api.on('update', CubensisConnectAdapter._updateState);
                 this._api.publicState().then(state => {

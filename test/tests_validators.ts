@@ -1,8 +1,8 @@
 import { SeedAdapter } from '../src/adapters';
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { seedUtils } from '@decentralchain/waves-transactions';
 
 const Seed = seedUtils.Seed;
