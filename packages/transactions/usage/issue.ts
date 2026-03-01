@@ -1,6 +1,6 @@
-import { issue } from '../dist/index'
+import { issue } from '../dist/index';
 
-const seed = 'seed phrase of fifteen words'
+const seed = 'seed phrase of fifteen words';
 
 const params = {
   name: 'HotPotato TOKEN',
@@ -12,7 +12,7 @@ const params = {
   //timestamp: Date.now(),
   //fee: 100000000,
   //chainId: 'L'
-}
+};
 
-const signedIssueTx = issue(params, seed)
-console.log(signedIssueTx)
+const signedIssueTx = issue(params, seed);
+console.log(signedIssueTx);

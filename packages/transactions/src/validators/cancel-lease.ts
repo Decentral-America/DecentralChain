@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -11,7 +11,7 @@ import {
   isPublicKey,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const cancelLeaseScheme = {
   type: isEq(TRANSACTION_TYPE.CANCEL_LEASE),
@@ -22,6 +22,6 @@ const cancelLeaseScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const cancelLeaseValidator = validateByShema(cancelLeaseScheme, getError)
+export const cancelLeaseValidator = validateByShema(cancelLeaseScheme, getError);

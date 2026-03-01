@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs'
-import { runInNewContext } from 'vm'
+import { readFileSync } from 'fs';
+import { runInNewContext } from 'vm';
 
-const pp = require('preprocess')
+const pp = require('preprocess');
 
 const txs = [
   { file: 'burn', interface: 'IBurnTransaction' },
@@ -16,7 +16,7 @@ const txs = [
   { file: 'set-script', interface: 'ISetScriptTransaction' },
   { file: 'sponsorship', interface: 'ISponsorshipTransaction' },
   { file: 'invoke-script', interface: 'IInvokeScriptTransaction' },
-]
+];
 
 const _DOCS = `/**
  * Creates and signs [[<!-- @echo TRANSACTION_TYPE -->]].
@@ -36,7 +36,7 @@ const _DOCS = `/**
 <!-- @echo OUTPUT -->
  * \`\`\`
  *
- */`
+ */`;
 
 function use(filename: string) {
   const box: any = {
@@ -44,43 +44,43 @@ function use(filename: string) {
     require: (r: any) => require(r),
     console: {
       log: (str: any) => {
-        box.output = { id: str.id, ...str }
+        box.output = { id: str.id, ...str };
       },
     },
-  }
-  let file = readFileSync(filename, { encoding: 'utf8' })
-  const regex = /import\s+\{\s*(\w+)\s*\}\s*from\s+('|")[\w\.\/]+('|")/gm
+  };
+  let file = readFileSync(filename, { encoding: 'utf8' });
+  const regex = /import\s+\{\s*(\w+)\s*\}\s*from\s+('|")[\w\.\/]+('|")/gm;
   file = file.replace(regex, (s, a) => {
-    return `const { ${a} } = require('@decentralchain/waves-transactions')`
-  })
+    return `const { ${a} } = require('@decentralchain/waves-transactions')`;
+  });
 
-  runInNewContext(file, box)
-  const lines = file.split('\n')
-  lines.pop()
-  const contents = lines.map((l) => ' * ' + l).join('\n')
+  runInNewContext(file, box);
+  const lines = file.split('\n');
+  lines.pop();
+  const contents = lines.map((l) => ' * ' + l).join('\n');
   const output = JSON.stringify(box.output, undefined, 2)
     .split('\n')
     .map((l) => ' * ' + l)
-    .join('\n')
+    .join('\n');
 
-  return { contents, output }
+  return { contents, output };
 }
 
 txs.forEach((t) => {
-  const x = use(`./usage/${t.file}.ts`)
+  const x = use(`./usage/${t.file}.ts`);
 
   const DOCS = pp.preprocess(_DOCS, {
     TRANSACTION_TYPE: t.interface,
     USAGE_JS: x.contents,
     OUTPUT: x.output,
-  })
+  });
 
   pp.preprocessFile(
     `./src/transactions/${t.file}.ts`,
     `./src/transactions/${t.file}.ts`,
     { DOCS },
     (err: any) => {
-      console.log(err)
+      console.log(err);
     },
-  )
-})
+  );
+});

@@ -2,6 +2,7 @@
  * @module index
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {ISponsorshipParams, WithId, WithProofs, WithSender} from '../transactions'
 <<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
@@ -28,24 +29,35 @@ import { validate } from '../validators'
 import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
 import { SponsorshipTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
+=======
+import { ISponsorshipParams, WithId, WithProofs, WithSender } from '../transactions';
+import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
+import { addProof, getSenderPublicKey, convertToPairs, fee, networkByte } from '../generic';
+import { TSeedTypes } from '../types';
+import { binary } from '@decentralchain/marshall';
+import { validate } from '../validators';
+import { txToProtoBytes } from '../proto-serialize';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { SponsorshipTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
 /* @echo DOCS */
 export function sponsorship(
   params: ISponsorshipParams,
   seed: TSeedTypes,
-): SponsorshipTransaction & WithId & WithProofs
+): SponsorshipTransaction & WithId & WithProofs;
 export function sponsorship(
   paramsOrTx: (ISponsorshipParams & WithSender) | SponsorshipTransaction,
   seed?: TSeedTypes,
-): SponsorshipTransaction & WithId & WithProofs
+): SponsorshipTransaction & WithId & WithProofs;
 export function sponsorship(
   paramsOrTx: any,
   seed?: TSeedTypes,
 ): SponsorshipTransaction & WithId & WithProofs {
-  const type = TRANSACTION_TYPE.SPONSORSHIP
-  const version = paramsOrTx.version || DEFAULT_VERSIONS.SPONSORSHIP
-  const seedsAndIndexes = convertToPairs(seed)
-  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx)
+  const type = TRANSACTION_TYPE.SPONSORSHIP;
+  const version = paramsOrTx.version || DEFAULT_VERSIONS.SPONSORSHIP;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -74,14 +86,14 @@ export function sponsorship(
     chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
-  }
+  };
 
-  validate.sponsorship(tx)
+  validate.sponsorship(tx);
 
-  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx)
+  const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
-  tx.id = base58Encode(blake2b(bytes))
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  tx.id = base58Encode(blake2b(bytes));
 
-  return tx
+  return tx;
 }
