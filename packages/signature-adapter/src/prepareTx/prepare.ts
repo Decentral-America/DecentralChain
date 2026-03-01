@@ -1,5 +1,5 @@
-import { Money, AssetPair, OrderPrice } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
+import { Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
 import { libs } from '@decentralchain/waves-transactions';
 import { VALIDATORS } from './fieldValidator';
 

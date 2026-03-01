@@ -1,10 +1,10 @@
 import { IAdapterSignMethods } from './interfaces';
 import { libs, protoPerialize } from '@decentralchain/waves-transactions';
-import * as wavesTransactions from '@decentralchain/waves-transactions';
-import { toNode as mlToNode } from '@waves/money-like-to-node';
+import * as dccTransactions from '@decentralchain/waves-transactions';
+import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
-import { Money } from '@waves/data-entities';
+import { Money } from '@decentralchain/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
@@ -97,7 +97,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             1: (txData) => {
                 const { host, data } = txData;
-                const pBytes = LEN(SHORT)(STRING)('WavesWalletAuthentication');
+                const pBytes = LEN(SHORT)(STRING)('DCCWalletAuthentication');
                 const hostBytes = LEN(SHORT)(STRING)(host || '');
                 const dataBytes = LEN(SHORT)(STRING)(data || '');
 
@@ -165,7 +165,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: data => {
             const price =  processors.toOrderPrice(data);
             data = { ...data, price: Money.fromCoins(price, data.price.asset) };
-            return toNode(data, wavesTransactions.order);
+            return toNode(data, dccTransactions.order);
         },
         adapter: 'signOrder'
     },
@@ -191,7 +191,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             ...data,
             recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient),
             attachment: processors.attachment(data.attachment),
-        }, wavesTransactions.transfer)),
+        }, dccTransactions.transfer)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.ISSUE]: {
@@ -205,7 +205,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 quantity: data.amount || data.quantity,
                 script: processScript(data.script),
             },
-            wavesTransactions.issue
+            dccTransactions.issue
         ),
         adapter: 'signTransaction'
     },
@@ -216,7 +216,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         toNode: data => {
             const quantity = data.amount || data.quantity;
-            return toNode({ ...data, quantity }, wavesTransactions.reissue);
+            return toNode({ ...data, quantity }, dccTransactions.reissue);
         },
         adapter: 'signTransaction'
     },
@@ -227,7 +227,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         toNode: data => {
             const quantity = data.amount || data.quantity;
-            return burnToNode({ ...data, quantity }, wavesTransactions.burn);
+            return burnToNode({ ...data, quantity }, dccTransactions.burn);
         },
         adapter: 'signTransaction'
     },
@@ -236,7 +236,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             1: protoPerialize.txToProtoBytes,
         },
         toNode: data => {
-            return toNode(data, wavesTransactions.updateAssetInfo);
+            return toNode(data, dccTransactions.updateAssetInfo);
         },
         adapter: 'signTransaction'
     },
@@ -255,7 +255,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             const order2Sign = data.sellOrder.signature || data.sellOrder.proofs[0];
             const order2proofs = data.sellOrder.proofs ? data.sellOrder.proofs : data.sellOrder.signature;
             const order2 = { ...tx.sellOrder, signature: order2Sign, proofs: order2proofs };
-            return wavesTransactions.exchange({ ...tx, order1, order2 });
+            return dccTransactions.exchange({ ...tx, order1, order2 });
         },
         adapter: 'signTransaction'
     },
@@ -267,7 +267,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: (data, networkByte: number) => (toNode({
             ...data,
             recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient),
-        }, wavesTransactions.lease)),
+        }, dccTransactions.lease)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
@@ -275,7 +275,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             2: binary.serializeTx,
             3: txToProtoBytes,
         },
-        toNode: data => toNode(data, wavesTransactions.cancelLease),
+        toNode: data => toNode(data, dccTransactions.cancelLease),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
@@ -283,7 +283,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             2: binary.serializeTx,
             3: txToProtoBytes,
         },
-        toNode: data => ({ ...toNode(data, wavesTransactions.alias), chainId: data.chainId }),
+        toNode: data => ({ ...toNode(data, dccTransactions.alias), chainId: data.chainId }),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
@@ -300,7 +300,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 return { ...item, recipient };
             },),
             attachment: processors.attachment(data.attachment)
-        }, wavesTransactions.massTransfer)),
+        }, dccTransactions.massTransfer)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.DATA]: {
@@ -309,7 +309,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             1: binary.serializeTx,
             2: txToProtoBytes,
         },
-        toNode: data => toNode(data, wavesTransactions.data),
+        toNode: data => toNode(data, dccTransactions.data),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
@@ -323,7 +323,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 ...data,
                 script: processScript(data.script)
             },
-            wavesTransactions.setScript
+            dccTransactions.setScript
         ),
         adapter: 'signTransaction'
     },
@@ -333,7 +333,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             1: binary.serializeTx,
             2: txToProtoBytes,
         },
-        toNode: data => toNode(data, wavesTransactions.sponsorship),
+        toNode: data => toNode(data, dccTransactions.sponsorship),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_ASSET_SCRIPT]: {
@@ -346,7 +346,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 ...data,
                 script: processScript(data.script),
             },
-            wavesTransactions.setAssetScript,
+            dccTransactions.setAssetScript,
         ),
         adapter: 'signTransaction'
     },
@@ -359,7 +359,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: (data, networkByte: number) => (toNode({
             ...data,
             dApp: processors.recipient(String.fromCharCode(networkByte))(data.dApp)
-        }, wavesTransactions.invokeScript)),
+        }, dccTransactions.invokeScript)),
         adapter: 'signTransaction'
     },
 };

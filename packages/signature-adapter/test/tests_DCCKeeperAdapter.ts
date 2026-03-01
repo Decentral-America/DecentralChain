@@ -1,7 +1,7 @@
 import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 
 const testAsset = new Asset({
     precision: 5,
@@ -20,7 +20,7 @@ const keeperMock = {
     //@ts-ignore
     auth: async (data) => ({
         'data': 'test',
-        'prefix': 'WavesWalletAuthentication',
+        'prefix': 'DCCWalletAuthentication',
         'host': 'www.yandex.ru',
         'name': 'test',
         'address': '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
