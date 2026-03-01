@@ -19,8 +19,25 @@
     "build-docs": "typedoc --out docs src && cd docs && touch .nojekyll",
     "postpublish": "git push origin head",
     "build": "ts-node build/build.ts && webpack --config webpack.config.js --env",
-    "fix-style": "tslint --fix -c tslint.json '{src,test,usage}/**/*{.ts,.tsx}'",
-    "test": "jest"
+    "format": "prettier --write \"{src,test,usage,build}/**/*.ts\" \"*.json\"",
+    "format:check": "prettier --check \"{src,test,usage,build}/**/*.ts\" \"*.json\"",
+    "lint": "eslint \"{src,test,usage,build}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,test,usage,build}/**/*.ts\" --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:unit": "jest --no-coverage --testPathIgnorePatterns=\"integration|nodeInteraction|test.test|proto-serialize\"",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test:unit",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test:unit",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
   },
   "files": [
     "/dist",
@@ -35,19 +52,25 @@
     "@types/jest": "^23.3.9",
     "@types/long": "^4.0.0",
     "@types/node": "^10.12.3",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "copy-webpack-plugin": "^4.5.2",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "husky": "^9.1.7",
     "jest": "^24.7.1",
     "jsdoc-to-markdown": "^5.0.0",
+    "lint-staged": "^16.3.1",
     "nativescript-typedoc-theme": "0.0.7",
     "ncp": "^2.0.0",
     "preprocess": "^3.1.0",
+    "prettier": "^3.8.1",
     "rimraf": "^2.6.2",
     "terser-webpack-plugin": "^1.2.3",
     "ts-jest": "^24.0.2",
     "ts-jsdoc": "^3.0.1",
     "ts-loader": "^5.3.3",
     "ts-node": "^7.0.1",
-    "tslint": "^5.20.1",
     "typed-ts-events": "^1.1.1",
     "typedoc": "^0.19.2",
     "typedoc-clarity-theme": "^1.1.0",

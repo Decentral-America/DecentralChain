@@ -41,15 +41,14 @@ const _DOCS = `/**
 function use(filename: string) {
   const box: any = {
     output: undefined,
-    require: (r: any) =>
-      require(r),
+    require: (r: any) => require(r),
     console: {
       log: (str: any) => {
         box.output = { id: str.id, ...str }
       },
     },
   }
-  var file = readFileSync(filename, { encoding: 'utf8' })
+  let file = readFileSync(filename, { encoding: 'utf8' })
   const regex = /import\s+\{\s*(\w+)\s*\}\s*from\s+('|")[\w\.\/]+('|")/gm
   file = file.replace(regex, (s, a) => {
     return `const { ${a} } = require('@decentralchain/waves-transactions')`
@@ -58,13 +57,16 @@ function use(filename: string) {
   runInNewContext(file, box)
   const lines = file.split('\n')
   lines.pop()
-  const contents = lines.map(l => ' * ' + l).join('\n')
-  const output = JSON.stringify(box.output, undefined, 2).split('\n').map(l => ' * ' + l).join('\n')
+  const contents = lines.map((l) => ' * ' + l).join('\n')
+  const output = JSON.stringify(box.output, undefined, 2)
+    .split('\n')
+    .map((l) => ' * ' + l)
+    .join('\n')
 
   return { contents, output }
 }
 
-txs.forEach(t => {
+txs.forEach((t) => {
   const x = use(`./usage/${t.file}.ts`)
 
   const DOCS = pp.preprocess(_DOCS, {
@@ -73,7 +75,12 @@ txs.forEach(t => {
     OUTPUT: x.output,
   })
 
-  pp.preprocessFile(`./src/transactions/${t.file}.ts`, `./src/transactions/${t.file}.ts`, { DOCS }, (err: any) => {
-    console.log(err)
-  })
+  pp.preprocessFile(
+    `./src/transactions/${t.file}.ts`,
+    `./src/transactions/${t.file}.ts`,
+    { DOCS },
+    (err: any) => {
+      console.log(err)
+    },
+  )
 })

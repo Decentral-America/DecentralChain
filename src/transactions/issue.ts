@@ -1,19 +1,32 @@
 /**
  * @module index
  */
-import {IIssueParams, WithId, WithProofs, WithSender} from '../transactions'
-import {base58Encode, blake2b, signBytes} from '@decentralchain/ts-lib-crypto'
-import {addProof, base64Prefix, convertToPairs, fee, getSenderPublicKey, networkByte} from '../generic'
-import {TSeedTypes} from '../types'
-import {binary} from '@decentralchain/marshall'
-import {validate} from '../validators'
-import {txToProtoBytes} from '../proto-serialize'
-import {DEFAULT_VERSIONS} from '../defaultVersions'
-import {IssueTransaction, TRANSACTION_TYPE} from '@decentralchain/ts-types'
+import { IIssueParams, WithId, WithProofs, WithSender } from '../transactions'
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
+import {
+  addProof,
+  base64Prefix,
+  convertToPairs,
+  fee,
+  getSenderPublicKey,
+  networkByte,
+} from '../generic'
+import { TSeedTypes } from '../types'
+import { binary } from '@decentralchain/marshall'
+import { validate } from '../validators'
+import { txToProtoBytes } from '../proto-serialize'
+import { DEFAULT_VERSIONS } from '../defaultVersions'
+import { IssueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 
 /* @echo DOCS */
-export function issue(params: IIssueParams, seed: TSeedTypes): IssueTransaction & WithId & WithProofs
-export function issue(paramsOrTx: IIssueParams & WithSender | IssueTransaction, seed?: TSeedTypes): IssueTransaction & WithId & WithProofs
+export function issue(
+  params: IIssueParams,
+  seed: TSeedTypes,
+): IssueTransaction & WithId & WithProofs
+export function issue(
+  paramsOrTx: (IIssueParams & WithSender) | IssueTransaction,
+  seed?: TSeedTypes,
+): IssueTransaction & WithId & WithProofs
 export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.ISSUE
   const version = paramsOrTx.version || DEFAULT_VERSIONS.ISSUE
@@ -37,11 +50,11 @@ export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & Wi
     id: '',
   }
 
-  validate.issue(tx);
+  validate.issue(tx)
 
-  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
+  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx)
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i))
   tx.id = base58Encode(blake2b(bytes))
 
   return tx

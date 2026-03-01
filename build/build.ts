@@ -17,7 +17,11 @@ async function build() {
     await run('tsc', p('tmp'))
     await create(p('tmp/node_modules/@decentralchain/'))
     await copy(p('tmp/dist'), p('tmp/node_modules/@decentralchain/waves-transactions'))
-    await copyJson(p('../package.json'), p('tmp/node_modules/@decentralchain/waves-transactions/package.json'), { main: 'index.js', types: 'index.d.ts' })
+    await copyJson(
+      p('../package.json'),
+      p('tmp/node_modules/@decentralchain/waves-transactions/package.json'),
+      { main: 'index.js', types: 'index.d.ts' },
+    )
     await remove(p('tmp/dist'))
     await run('ts-node usage/index.ts', p('tmp'))
     await run('typedoc', p('tmp'))
