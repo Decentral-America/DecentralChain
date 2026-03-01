@@ -1,30 +1,114 @@
 {
   "name": "@decentralchain/protobuf-serialization",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "Generated types and methods for encoding and decoding protobuf messages for DecentralChain blockchain transactions.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "rm -rf dist && mkdir dist && npm run compileProtoc && npm run createTypeDeclarations && npm run compileProtoc -- --no-comments",
-    "createTypeDeclarations": "pbts -o dist/index.d.ts --no-comments dist/index.js",
-    "compileProtoc": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w commonjs -o dist/index.js \"proto/waves/**/*.proto\""
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./proto/*": "./proto/*"
   },
   "files": [
     "dist",
-    "proto"
+    "proto",
+    "LICENSE",
+    "README.md"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "npm@11.6.2",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Decentral-America/protobuf-serialization.git"
   },
-  "author": "DecentralChain",
-  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/protobuf-serialization#readme",
   "bugs": {
     "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
   },
-  "homepage": "https://github.com/Decentral-America/protobuf-serialization#readme",
+  "scripts": {
+    "generate": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w es6 --path proto -o dist/index.js \"proto/waves/**/*.proto\"",
+    "generate:types": "pbts -o dist/index.d.ts --no-comments dist/index.js",
+    "build": "rm -rf dist && mkdir dist && npm run generate && npm run generate:types && npm run generate -- --no-comments",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check:publint": "publint",
+    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "check:size": "size-limit",
+    "validate": "npm audit --audit-level=moderate && npm run format:check && npm run lint && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run build && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run build && npm run typecheck && npm run test",
+    "prepublishOnly": "npm run validate",
+    "prepack": "npm run build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.js",
+      "limit": "500 kB"
+    }
+  ],
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "protobuf",
+    "serialization",
+    "blockchain",
+    "grpc",
+    "protocol-buffers"
+  ],
+  "author": "DecentralChain",
+  "license": "MIT",
   "dependencies": {
-    "@types/long": "^4.0.0",
-    "protobufjs": "^6.8.8"
+    "long": "^5.3.2",
+    "protobufjs": "^7.5.4"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "protobufjs-cli": "2.0.0",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
   }
 }
