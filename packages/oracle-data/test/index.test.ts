@@ -1168,4 +1168,75 @@ describe('Data provider tests', () => {
       );
     });
   });
+
+  describe('Security: Prototype Pollution Prevention', () => {
+    it('toHash is not vulnerable to __proto__ key injection', () => {
+      const malicious: TDataTxField[] = [
+        { key: '__proto__', type: DATA_ENTRY_TYPES.STRING, value: 'pwned' },
+        { key: DATA_PROVIDER_KEYS.VERSION, type: DATA_ENTRY_TYPES.INTEGER, value: 0 },
+      ];
+      const hash = toHash<TDataTxField>('key')(malicious);
+
+      // The __proto__ entry should be a normal own property, NOT prototype mutation
+      const plain: Record<string, unknown> = {};
+      expect(Object.getPrototypeOf(hash)).toBeNull();
+      expect('value' in plain).toBe(false); // global Object.prototype not polluted
+    });
+
+    it('getProviderData is safe with __proto__ in input fields', () => {
+      const malicious: TDataTxField[] = [
+        { key: '__proto__', type: DATA_ENTRY_TYPES.STRING, value: 'pwned' },
+        ...PROVIDER_FIELDS,
+      ];
+      const result = getProviderData(malicious);
+      expect(result.status).toEqual(RESPONSE_STATUSES.OK);
+      expect(result.content).toEqual(PROVIDER_DATA);
+    });
+
+    it('getProviderAssets is safe with __proto__ in input fields', () => {
+      const malicious: TDataTxField[] = [
+        { key: '__proto__', type: DATA_ENTRY_TYPES.STRING, value: 'pwned' },
+        ...PROVIDER_FIELDS,
+        ...VERIFIED_ASSET_FIELDS,
+      ];
+      const result = getProviderAssets(malicious);
+      expect(result.length).toEqual(1);
+      expect(result[0].status).toEqual(RESPONSE_STATUSES.OK);
+    });
+
+    it('getFieldsDiff is safe with __proto__ in input fields', () => {
+      const malicious: TDataTxField[] = [
+        { key: '__proto__', type: DATA_ENTRY_TYPES.STRING, value: 'pwned' },
+        { key: 'normal', type: DATA_ENTRY_TYPES.STRING, value: 'old' },
+      ];
+      const next: TDataTxField[] = [
+        { key: '__proto__', type: DATA_ENTRY_TYPES.STRING, value: 'still-pwned' },
+        { key: 'normal', type: DATA_ENTRY_TYPES.STRING, value: 'new' },
+      ];
+      const diff = getFieldsDiff(malicious, next);
+      // Both __proto__ and normal changed
+      expect(diff.length).toEqual(2);
+    });
+  });
+
+  describe('Edge Case: Empty Description Handling', () => {
+    it('Empty langList does not cause phantom description lookups', () => {
+      const fields: TDataTxField[] = [
+        {
+          key: DATA_PROVIDER_KEYS.VERSION,
+          type: DATA_ENTRY_TYPES.INTEGER,
+          value: DATA_PROVIDER_VERSIONS.BETA,
+        },
+        { key: DATA_PROVIDER_KEYS.NAME, type: DATA_ENTRY_TYPES.STRING, value: 'Test' },
+        { key: DATA_PROVIDER_KEYS.LINK, type: DATA_ENTRY_TYPES.STRING, value: 'https://test.com' },
+        { key: DATA_PROVIDER_KEYS.EMAIL, type: DATA_ENTRY_TYPES.STRING, value: 'a@b.com' },
+        { key: DATA_PROVIDER_KEYS.LANG_LIST, type: DATA_ENTRY_TYPES.STRING, value: '' },
+      ];
+      const result = getProviderData(fields);
+      // Should NOT produce a description error for phantom lang ''
+      const errors = result.status === RESPONSE_STATUSES.ERROR ? result.errors : [];
+      const descErrors = errors.filter((e) => e.path.startsWith('description.'));
+      expect(descErrors.length).toEqual(0);
+    });
+  });
 });
