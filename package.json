@@ -103,7 +103,7 @@
     "@decentralchain/transactions": "npm:@decentralchain/waves-transactions@4.2.6",
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "22.19.13",
+    "@types/node": "25.3.3",
     "@vitest/coverage-v8": "4.0.18",
     "eslint": "10.0.2",
     "eslint-config-prettier": "10.1.8",
