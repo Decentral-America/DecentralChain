@@ -1,26 +1,26 @@
-import { binary } from '@decentralchain/marshall'
-import { address, verifySignature } from '@decentralchain/ts-lib-crypto'
-import request from '@decentralchain/node-api-js/cjs/tools/request'
-import stringify from '@decentralchain/node-api-js/cjs/tools/stringify'
-import { TSeedTypes } from './types'
-import { issue } from './transactions/issue'
-import { transfer } from './transactions/transfer'
-import { reissue } from './transactions/reissue'
-import { burn } from './transactions/burn'
-import { lease } from './transactions/lease'
-import { cancelLease } from './transactions/cancel-lease'
-import { data } from './transactions/data'
-import { massTransfer } from './transactions/mass-transfer'
-import { alias } from './transactions/alias'
-import { setScript } from './transactions/set-script'
-import { isOrder } from './generic'
-import { setAssetScript } from './transactions/set-asset-script'
-import { exchange } from './transactions/exchange'
-import { sponsorship } from './transactions/sponsorship'
-import { invokeScript } from './transactions/invoke-script'
-import { serializeCustomData, TSignedData } from './requests/custom-data'
-import { serializeAuthData } from './requests/auth'
-import { serializeDccAuthData } from './requests/dccAuth'
+import { binary } from '@decentralchain/marshall';
+import { address, verifySignature } from '@decentralchain/ts-lib-crypto';
+import request from '@decentralchain/node-api-js/cjs/tools/request';
+import stringify from '@decentralchain/node-api-js/cjs/tools/stringify';
+import { TSeedTypes } from './types';
+import { issue } from './transactions/issue';
+import { transfer } from './transactions/transfer';
+import { reissue } from './transactions/reissue';
+import { burn } from './transactions/burn';
+import { lease } from './transactions/lease';
+import { cancelLease } from './transactions/cancel-lease';
+import { data } from './transactions/data';
+import { massTransfer } from './transactions/mass-transfer';
+import { alias } from './transactions/alias';
+import { setScript } from './transactions/set-script';
+import { isOrder } from './generic';
+import { setAssetScript } from './transactions/set-asset-script';
+import { exchange } from './transactions/exchange';
+import { sponsorship } from './transactions/sponsorship';
+import { invokeScript } from './transactions/invoke-script';
+import { serializeCustomData, TSignedData } from './requests/custom-data';
+import { serializeAuthData } from './requests/auth';
+import { serializeDccAuthData } from './requests/dccAuth';
 import {
 <<<<<<< HEAD
     AliasTransaction,
@@ -76,7 +76,7 @@ import {updateAssetInfo} from './transactions/update-asset-info'
   TRANSACTION_TYPE,
   TransferTransaction,
   UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types'
+} from '@decentralchain/ts-types';
 import {
   IAuthParams,
   ICancelOrder,
@@ -85,9 +85,14 @@ import {
   WithProofs,
   WithSender,
   WithTxType,
+<<<<<<< HEAD
 } from './transactions'
 import { updateAssetInfo } from './transactions/update-asset-info'
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
+=======
+} from './transactions';
+import { updateAssetInfo } from './transactions/update-asset-info';
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // import {invokeExpression} from './transactions/invoke-expression'
 =======
 >>>>>>> 697d643a (minor fixes)
@@ -96,7 +101,7 @@ import {updateAssetInfo} from './transactions/update-asset-info'
 // import {invokeExpression} from './transactions/invoke-expression'
 >>>>>>> f33083a0 (updated dependencies)
 
-type TLong = string | number
+type TLong = string | number;
 
 <<<<<<< HEAD
 export const txTypeMap: { [type: number]: { sign: (tx: Transaction<TLong> | TTxParams & WithTxType, seed: TSeedTypes) => SignedTransaction<Transaction<TLong>> } } = {
@@ -130,8 +135,8 @@ export const txTypeMap: {
     sign: (
       tx: Transaction<TLong> | (TTxParams & WithTxType),
       seed: TSeedTypes,
-    ) => SignedTransaction<Transaction<TLong>>
-  }
+    ) => SignedTransaction<Transaction<TLong>>;
+  };
 } = {
   [TRANSACTION_TYPE.ISSUE]: { sign: (x, seed) => issue(x as IssueTransaction<TLong>, seed) },
   [TRANSACTION_TYPE.TRANSFER]: {
@@ -165,8 +170,12 @@ export const txTypeMap: {
     sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed),
   },
   // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
+<<<<<<< HEAD
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 }
+=======
+};
+>>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
 /**
  * Signs arbitrary transaction. Can also create signed transaction if provided params have type field
@@ -177,9 +186,9 @@ export function signTx(
   tx: Transaction | (TTxParams & WithTxType),
   seed: TSeedTypes,
 ): SignedTransaction<Transaction> {
-  if (!txTypeMap[tx.type]) throw new Error(`Unknown tx type: ${tx.type}`)
+  if (!txTypeMap[tx.type]) throw new Error(`Unknown tx type: ${tx.type}`);
 
-  return txTypeMap[tx.type].sign(tx, seed)
+  return txTypeMap[tx.type].sign(tx, seed);
 }
 
 /**
@@ -189,8 +198,8 @@ export function signTx(
 export function serialize(
   obj: Transaction | SignedIExchangeTransactionOrder<ExchangeTransactionOrder>,
 ): Uint8Array {
-  if (isOrder(obj)) return binary.serializeOrder(obj)
-  return binary.serializeTx(obj)
+  if (isOrder(obj)) return binary.serializeOrder(obj);
+  return binary.serializeTx(obj);
 }
 
 /**
@@ -204,15 +213,15 @@ export function verify(
   proofN = 0,
   publicKey?: string,
 ): boolean {
-  publicKey = publicKey || obj.senderPublicKey
-  const bytes = serialize(obj)
-  const signature = obj.version == null ? (obj as any).signature : (obj as any).proofs[proofN]
-  return verifySignature(publicKey, bytes, signature)
+  publicKey = publicKey || obj.senderPublicKey;
+  const bytes = serialize(obj);
+  const signature = obj.version == null ? (obj as any).signature : (obj as any).proofs[proofN];
+  return verifySignature(publicKey, bytes, signature);
 }
 
 export function verifyCustomData(data: TSignedData): boolean {
-  const bytes = serializeCustomData(data)
-  return verifySignature(data.publicKey as string, bytes, data.signature as string)
+  const bytes = serializeCustomData(data);
+  return verifySignature(data.publicKey as string, bytes, data.signature as string);
 }
 
 export function verifyAuthData(
@@ -220,12 +229,12 @@ export function verifyAuthData(
   params: IAuthParams,
   chainId?: string | number,
 ): boolean {
-  chainId = chainId || 'L'
-  const bytes = serializeAuthData(params)
-  const myAddress = address({ publicKey: authData.publicKey }, chainId)
+  chainId = chainId || 'L';
+  const bytes = serializeAuthData(params);
+  const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (
     myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)
-  )
+  );
 }
 
 export function verifyDccAuthData(
@@ -233,12 +242,12 @@ export function verifyDccAuthData(
   params: { publicKey: string; timestamp: number },
   chainId?: string | number,
 ): boolean {
-  chainId = chainId || 'L'
-  const bytes = serializeDccAuthData(params)
-  const myAddress = address({ publicKey: authData.publicKey }, chainId)
+  chainId = chainId || 'L';
+  const bytes = serializeDccAuthData(params);
+  const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (
     myAddress === authData.address && verifySignature(authData.publicKey, bytes, authData.signature)
-  )
+  );
 }
 
 /**
@@ -249,7 +258,7 @@ export function verifyDccAuthData(
 export function submitOrder(
   ord: ExchangeTransactionOrder & WithProofs & WithSender,
   options: { matcherUrl: string; market?: boolean },
-): Promise<any>
+): Promise<any>;
 /**
  * Sends order to matcher
  * @param ord - transaction to send
@@ -258,15 +267,15 @@ export function submitOrder(
 export function submitOrder(
   ord: ExchangeTransactionOrder & WithProofs & WithSender,
   matcherUrl: string,
-): Promise<any>
+): Promise<any>;
 export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSender, opts: any) {
-  let endpoint, matcherUrl: string
+  let endpoint, matcherUrl: string;
   if (typeof opts === 'string') {
-    matcherUrl = opts
-    endpoint = 'matcher/orderbook'
+    matcherUrl = opts;
+    endpoint = 'matcher/orderbook';
   } else {
-    matcherUrl = opts.matcherUrl
-    endpoint = opts.market ? 'matcher/orderbook/market' : 'matcher/orderbook'
+    matcherUrl = opts.matcherUrl;
+    endpoint = opts.market ? 'matcher/orderbook/market' : 'matcher/orderbook';
   }
   return request({
     base: matcherUrl,
@@ -276,7 +285,7 @@ export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSen
       body: stringify(ord),
       headers: { 'Content-Type': 'application/json' },
     },
-  })
+  });
 }
 
 /**
@@ -293,7 +302,7 @@ export function cancelSubmittedOrder(
   priceAsset: string | null,
   matcherUrl: string,
 ) {
-  const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`
+  const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`;
   return request({
     base: matcherUrl,
     url: endpoint,
@@ -302,5 +311,5 @@ export function cancelSubmittedOrder(
       body: stringify(co),
       headers: { 'Content-Type': 'application/json' },
     },
-  })
+  });
 }

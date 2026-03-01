@@ -11,8 +11,8 @@ import {
   defaultValue,
   isPublicKey,
   isNaturalNumberOrZeroLike,
-} from './validators'
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+} from './validators';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 const aliasScheme = {
   type: isEq(TRANSACTION_TYPE.ALIAS),
@@ -23,6 +23,6 @@ const aliasScheme = {
   chainId: isNumber,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const aliasValidator = validateByShema(aliasScheme, getError)
+export const aliasValidator = validateByShema(aliasScheme, getError);

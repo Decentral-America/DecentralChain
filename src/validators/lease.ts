@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types'
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
   defaultValue,
   getError,
@@ -12,7 +12,7 @@ import {
   isRecipient,
   orEq,
   validateByShema,
-} from './validators'
+} from './validators';
 
 const leaseScheme = {
   type: isEq(TRANSACTION_TYPE.LEASE),
@@ -23,6 +23,6 @@ const leaseScheme = {
   fee: isNaturalNumberOrZeroLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
-}
+};
 
-export const leaseValidator = validateByShema(leaseScheme, getError)
+export const leaseValidator = validateByShema(leaseScheme, getError);
