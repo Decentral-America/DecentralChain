@@ -557,6 +557,176 @@ describe("protobuf roundtrip encoding", () => {
     });
   });
 
+  describe("InvokeExpressionTransactionData", () => {
+    it("should encode and decode an invoke expression transaction", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x06),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(500_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        invokeExpression: {
+          expression: new Uint8Array([0x01, 0x02, 0x03, 0x04]),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const invokeExpr = assertDefined(decoded.invokeExpression);
+      expect(new Uint8Array(assertDefined(invokeExpr.expression))).toEqual(
+        new Uint8Array([0x01, 0x02, 0x03, 0x04]),
+      );
+    });
+
+    it("should handle empty expression bytes", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x07),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(500_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        invokeExpression: {
+          expression: new Uint8Array([]),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const invokeExpr = assertDefined(decoded.invokeExpression);
+      expect(invokeExpr.expression).toBeDefined();
+    });
+  });
+
+  describe("CommitToGenerationTransactionData", () => {
+    it("should encode and decode a commit to generation transaction", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x08),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        commitToGeneration: {
+          generationPeriodStart: 42,
+          endorserPublicKey: new Uint8Array(48).fill(0xaa),
+          commitmentSignature: new Uint8Array(96).fill(0xbb),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const commit = assertDefined(decoded.commitToGeneration);
+      expect(commit.generationPeriodStart).toBe(42);
+      expect(new Uint8Array(assertDefined(commit.endorserPublicKey))).toEqual(
+        new Uint8Array(48).fill(0xaa),
+      );
+      expect(new Uint8Array(assertDefined(commit.commitmentSignature))).toEqual(
+        new Uint8Array(96).fill(0xbb),
+      );
+    });
+
+    it("should handle zero generation_period_start", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x09),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        commitToGeneration: {
+          generationPeriodStart: 0,
+          endorserPublicKey: new Uint8Array(48).fill(0xcc),
+          commitmentSignature: new Uint8Array(96).fill(0xdd),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const commit = assertDefined(decoded.commitToGeneration);
+      // 0 is proto3 default — field may not be present on the wire
+      expect(
+        commit.generationPeriodStart === 0 ||
+          commit.generationPeriodStart === undefined,
+      ).toBe(true);
+    });
+  });
+
+  describe("InvokeScriptResult", () => {
+    it("should encode and decode a result with data entries and transfers", () => {
+      const original = {
+        data: [
+          { key: "counter", intValue: Long.fromNumber(100) },
+          { key: "flag", boolValue: true },
+        ],
+        transfers: [
+          {
+            address: new Uint8Array(26).fill(0x01),
+            amount: {
+              assetId: new Uint8Array([]),
+              amount: Long.fromNumber(5_000_000),
+            },
+          },
+        ],
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      expect(decoded.data).toHaveLength(2);
+      expect(decoded.data[0].key).toBe("counter");
+      expect(assertDefined(decoded.data[0].intValue).toNumber()).toBe(100);
+      expect(decoded.transfers).toHaveLength(1);
+      const transferAmt = assertDefined(decoded.transfers[0].amount);
+      expect(assertDefined(transferAmt.amount).toNumber()).toBe(5_000_000);
+    });
+
+    it("should encode and decode error messages", () => {
+      const original = {
+        errorMessage: {
+          code: 1,
+          text: "InvokeScript execution failed",
+        },
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const err = assertDefined(decoded.errorMessage);
+      expect(err.code).toBe(1);
+      expect(err.text).toBe("InvokeScript execution failed");
+    });
+  });
+
+  describe("TransactionStateSnapshot", () => {
+    it("should encode and decode balance snapshots", () => {
+      const original = {
+        balances: [
+          {
+            address: new Uint8Array(26).fill(0x01),
+            amount: {
+              assetId: new Uint8Array([]),
+              amount: Long.fromNumber(10_000_000),
+            },
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.balances).toHaveLength(1);
+      const bal = assertDefined(decoded.balances[0].amount);
+      expect(assertDefined(bal.amount).toNumber()).toBe(10_000_000);
+    });
+  });
+
   describe("events (BlockchainUpdated)", () => {
     it("should encode and decode a BlockchainUpdated message", () => {
       const original = {
@@ -620,6 +790,8 @@ describe("protobuf namespace structure", () => {
       waves.SetAssetScriptTransactionData,
       waves.InvokeScriptTransactionData,
       waves.UpdateAssetInfoTransactionData,
+      waves.InvokeExpressionTransactionData,
+      waves.CommitToGenerationTransactionData,
     ];
 
     for (const type of txTypes) {
