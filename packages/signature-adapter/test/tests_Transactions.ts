@@ -1,6 +1,6 @@
 import { SeedAdapter } from '../src/adapters';
-import { Money } from '@waves/data-entities';
-import { WavesAsset } from './assets';
+import { Money } from '@decentralchain/data-entities';
+import { DCCAsset } from './assets';
 
 const testSeed = 'some test seed words without money on mainnet';
 
@@ -27,8 +27,8 @@ describe('Test invoke', () => {
             },
             'dApp': '3MqQ9ihYKGehfUnXYf5WmkYSZUD71ByeCQe',
             'feeAssetId': null,
-            'fee': Money.fromCoins(500000, WavesAsset),
-            'payment': [Money.fromCoins('1400500000', WavesAsset)
+            'fee': Money.fromCoins(500000, DCCAsset),
+            'payment': [Money.fromCoins('1400500000', DCCAsset)
             ],
             'type': 16,
             'version': 1,

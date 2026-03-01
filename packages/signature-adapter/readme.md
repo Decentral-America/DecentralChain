@@ -1,20 +1,31 @@
-# JS library for signing data
+# @decentralchain/signature-adapter
+
+Unified signing abstraction layer for the DecentralChain wallet.
+
+Provides a common interface for signing transactions using different methods:
+
+- **SeedAdapter** — Sign with a seed phrase
+- **LedgerAdapter** — Sign on a Ledger Nano S/X hardware wallet
+- **PrivateKeyAdapter** — Sign with a raw private key
+- **CubensisConnectAdapter** — Sign via the CubensisConnect browser extension
+- **CustomAdapter** — Custom signing implementation
 
 ## Installation
 
 ```bash
-$ npm install --save @waves/signature-adapter
+$ npm install --save @decentralchain/signature-adapter
 ```
 
 ## Usage
+
 ```typescript
-import { SeedAdapter, SIGN_TYPE } from '@waves/signature-adapter';
-import { Money, Asset } from '@waves/data-entities';
+import { SeedAdapter, SIGN_TYPE } from '@decentralchain/signature-adapter';
+import { Money, Asset } from '@decentralchain/data-entities';
 
 const asset = new Asset({
    ticker: 'DCC',
    id: 'DCC',
-   name: 'Waves',
+   name: 'DCC',
    precision: 8,
    description: '',
    height: 0,
@@ -41,124 +52,99 @@ signable.getDataForApi().then(data => fetch('node-url', {
    method: 'POST',
    body: JSON.stringify(data)
 }));
-
 ```
 
-Adapters are used to sign data. There are two types of adapters:
-SeedAdapter - is an adapter for usage with seed in string representation
-LedgerAdapter - is an adapter for usage with Ledger hardware wallet
+## Adapters
 
-#### SeedAdapter
-SeedAdapter accepts either a seed phrase or an object containing information about the seed phrase on create
+Adapters are used to sign data. Available types:
+
+### SeedAdapter
+
+Accepts either a seed phrase or an object containing information about the seed phrase.
+
 Object structure:
-encryptedSeed {string} - seed phrase encoded with passwords
-password {string} - password that is encrypted seed phrase
-encryptionRounds {number} - encryption complexity
+- `encryptedSeed` {string} — seed phrase encoded with passwords
+- `password` {string} — password that is encrypted seed phrase
+- `encryptionRounds` {number} — encryption complexity
 
-For change network byte use @waves/signature-generator config:
+For changing the network byte:
 
 ```typescript
-import { config } from '@waves/signature-generator';
+import { Adapter } from '@decentralchain/signature-adapter';
 
-config.set('networkByte', 'T'.charCodeAt(0))
+Adapter.initOptions({ networkCode: 'L'.charCodeAt(0) });
 ```
 
-*If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters. See the documentation @waves/signature-generator for more details*
+*If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters.*
 
-Example of creation SeedAdapter with seed phrase:
+Example:
 
 ```typescript
-import { SeedAdapter } from '@waves/signature-adapter';
+import { SeedAdapter } from '@decentralchain/signature-adapter';
 
 const adapter = new SeedAdapter('some seed phrase more 15 chars');
 ```
 
-#### LedgerAdapter
-SeedAdapter accepts an object that contains information about an address and wallet ID in Ledger on create
+### LedgerAdapter
+
+Accepts an object containing address and wallet ID in Ledger.
+
 Object structure:
-* publicKey {string} - public key for the address
-* address {string} - address
-* id {number} - wallet ID in Ledger
+- `publicKey` {string} — public key for the address
+- `address` {string} — address
+- `id` {number} — wallet ID in Ledger
 
-To get an objects for creating an instance of LedgerAdapter there is a static method of the class "getUserList".
+To get objects for creating an instance use the static method `getUserList`:
 
-- getUserList(from?: number, to?: number): Promise<Array<{publicKey: string, address: string, id: number}>>;
-
-Where ‘from’ is wallet ID in the Ledger from which to start receiving data, ‘to’ - the number to finish.
-
-Example:
 ```typescript
-import { LedgerAdapter } from '@waves/signature-adapter';
+import { LedgerAdapter } from '@decentralchain/signature-adapter';
 
 LedgerAdapter.getUserList().then(([userData]) => new LedgerAdapter(userData));
 ```
 
-## Common methods for both types of adapters
+## Common methods for all adapters
 
-- isAvailable(): Promise\<void\>;
-Returns promise which returns an error in case the adapter is unavailable.
-
-- getPublicKey(): Promise\<string\>;
-Returns a public key
-
-- getAddress(): Promise\<string\>;
-Returns an address
-
-- getPrivateKey(): Promise\<string\>;
-Returns a private key or an error If adapter is not able to return it (in case of  LedgerAdapter)
-
-- signRequest(bytes: Uint8Array): Promise\<string\>;
-Accepts byte array for signing, returns promise with a signature. This method is used for signing any data except transactions and orders
-
-- signTransaction(bytes: Uint8Array): Promise\<string\>;
-Accepts byte array for signing, returns promise with a signature. This method is used for signing transactions
-
-- signOrder(bytes: Uint8Array): Promise\<string\>;
-Accepts byte array for signing, returns promise with a signature. This method is used for signing orders
-
-- signData(bytes: Uint8Array): Promise\<string\>;
-Accepts byte array for signing, returns promise with a signature. This method is used for signing any data
-*This method is not recommended for signing transactions due to incorrect confirmation display on Ledger* 
-
-- getSeed(): Promise\<string\>;
-Returns the seed phrase or an error If adapter is not able to return it (in case of  LedgerAdapter)
-
-- makeSignable(signData): Signable;
-Accepts data for signature (Visit [interfaces](https://github.com/wavesplatform/waves-signature-adapter/blob/master/src/prepareTx/interfaces.ts) for more information about “TSignData” interface) and returns an instance of the Signable class
-
-
+- `isAvailable(): Promise<void>` — Returns promise which errors if the adapter is unavailable
+- `getPublicKey(): Promise<string>` — Returns a public key
+- `getAddress(): Promise<string>` — Returns an address
+- `getPrivateKey(): Promise<string>` — Returns a private key or an error
+- `signRequest(bytes: Uint8Array): Promise<string>` — Signs any data except transactions/orders
+- `signTransaction(bytes: Uint8Array): Promise<string>` — Signs transactions
+- `signOrder(bytes: Uint8Array): Promise<string>` — Signs orders
+- `signData(bytes: Uint8Array): Promise<string>` — Signs any data
+- `getSeed(): Promise<string>` — Returns the seed phrase or an error
+- `makeSignable(signData): Signable` — Creates a Signable instance (see [interfaces](src/prepareTx/interfaces.ts))
 
 ## Signable
 
-- getTxData(): {object};
-Returns a copy of the object data transferred for signature
+- `getTxData(): object` — Returns a copy of the data transferred for signature
+- `getSignData(): Promise<object>` — Returns data for signing
+- `addProof(proof: string): Signable` — Adds a signature to the proof list
+- `getId(): Promise<string>` — Returns hash of all data used for signature
+- `sign(): Promise<Signable>` — Initiates signing and returns promise
+- `getSignature(): Promise<string>` — Returns promise with signature
+- `getBytes(): Promise<Uint8Array>` — Returns bytes for signing
+- `getMyProofs(): Promise<Array<string>>` — Returns signatures for this adapter's public key
+- `hasMySignature(): Promise<boolean>` — Checks for "own" signature presence
+- `addMyProof(): Promise<string>` — Adds own signature if not present
+- `getDataForApi(): Promise<object>` — Returns node-ready data with signatures
 
-- getSignData(): Promise\<object\>;
-Returns data for signing as received for making signature [@waves/signature-generator](https://github.com/wavesplatform/waves-signature-generator)
+## Chain IDs
 
-- addProof(proof: string): Signable;
-Accepts the signature for adding it to the signature list. Signature list is used for "getDataForApi" method
+| Network | Byte | Char |
+| ------- | ---- | ---- |
+| Mainnet | 76   | L    |
+| Testnet | 84   | T    |
 
-- getId(): Promise\<string\>;
-Returns promise with hash of all data used for signature
+## Dependencies
 
-- sign(): Promise\<Signable\>;
-Method initiates signing and returns promise that waits the completion of signing. This method adds only one signature for the lifetime of one instance of the Signable class. When you call it again it returns a previously created promise
+- `@decentralchain/bignumber`
+- `@decentralchain/ts-types`
+- `@decentralchain/data-entities`
+- `@decentralchain/ledger`
+- `@decentralchain/money-like-to-node`
+- `@decentralchain/waves-transactions`
 
-- getSignature(): Promise\<string\>;
-Acts same as sign() method, but returns promise with signature
+## License
 
-- getBytes(): Promise\<Uint8Array\>;
-Returns bytes for signing
-
-- getMyProofs(): Promise\<Array\<string\>\>;
-Returns array of signatures that belongs to public key of the adapter from which the instance of class Signable was created
-
-- hasMySignature(): Promise\<boolean\>;
-Returns promise with boolean status about presence of “own” signature (Same as in “getMyProofs” method)
-
-- addMyProof(): Promise\<string\>;
-This method checks the presence of “own” signature. If signature exists it returns the last “own” signature, otherwise its signs and returns the new signature
-
-- getDataForApi():Promise\<object\>;
-Calls the method “addMyProof” to guarantee the presence of one “own” signature. Returns the data that is prepared to send into node. Adds the list of signatures 
+MIT

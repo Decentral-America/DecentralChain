@@ -1,8 +1,8 @@
-import { Asset, Money } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
 import { seedUtils } from '@decentralchain/waves-transactions';
 import { Signable, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
-import { IExchangeTransactionOrder } from '@waves/ts-types';
+import { IExchangeTransactionOrder } from '@decentralchain/ts-types';
 
 const Seed = seedUtils.Seed;
 
