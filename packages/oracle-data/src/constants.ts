@@ -16,7 +16,6 @@ export enum DATA_PROVIDER_VERSIONS {
 export enum RESPONSE_STATUSES {
   ERROR = 'error',
   OK = 'ok',
-  EMPTY = 'empty',
 }
 
 /** Data entry type identifiers. */
