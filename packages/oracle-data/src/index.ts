@@ -85,4 +85,6 @@ export {
   DATA_PROVIDER_DESCRIPTION_PATTERN,
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
+  isValidStatus,
+  isValidAssetId,
 } from './constants.js';

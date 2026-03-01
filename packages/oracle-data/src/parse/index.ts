@@ -10,6 +10,7 @@ import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
   type DATA_PROVIDER_VERSIONS,
+  isValidStatus,
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
   RESPONSE_STATUSES,
@@ -63,6 +64,9 @@ export function parseAssetData(hash: Record<string, TDataTxField>): TResponse<TP
           getDataName(ORACLE_ASSET_FIELD_PATTERN.STATUS, id),
           DATA_ENTRY_TYPES.INTEGER,
         ) as STATUS_LIST;
+        if (!isValidStatus(status)) {
+          throw new Error(`Invalid asset status: ${String(status)}`);
+        }
         const parser = ASSETS_VERSION_MAP[version];
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
         if (!parser) {
