@@ -439,7 +439,13 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
     // If we were called with a replacer function, call it
     if (typeof rep === 'function') {
+      const preReplacer = val;
       val = rep.call(holder, key, val);
+      // If the replacer changed the value, it is no longer raw BigNumber output;
+      // treat it as a normal value to avoid emitting unquoted strings as JSON.
+      if (isBigNumber && val !== preReplacer) {
+        isBigNumber = false;
+      }
     }
 
     // What happens next depends on the value's type.
@@ -538,53 +544,82 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
       | null,
     space?: number | string,
   ): string => {
-    let i: number;
-    gap = '';
-    indent = '';
+    // Save state for re-entrancy safety (e.g. replacer calling stringify again)
+    const savedGap = gap;
+    const savedIndent = indent;
+    const savedRep = rep;
+    const savedSeen = seen;
 
-    // Initialize circular reference tracking
-    seen = new WeakSet<object>();
+    try {
+      let i: number;
+      gap = '';
+      indent = '';
 
-    // If the space parameter is a number, make an indent string containing that
-    // many spaces. Cap at 10 to match native JSON.stringify behavior.
-    if (typeof space === 'number') {
-      const n = Math.min(10, Math.max(0, Math.floor(space)));
-      for (i = 0; i < n; i += 1) {
-        indent += ' ';
+      // Initialize circular reference tracking
+      seen = new WeakSet<object>();
+
+      // If the space parameter is a number, make an indent string containing that
+      // many spaces. Cap at 10 to match native JSON.stringify behavior.
+      if (typeof space === 'number') {
+        const n = Math.min(10, Math.max(0, Math.floor(space)));
+        for (i = 0; i < n; i += 1) {
+          indent += ' ';
+        }
+      } else if (typeof space === 'string') {
+        indent = space.slice(0, 10);
       }
-    } else if (typeof space === 'string') {
-      indent = space.slice(0, 10);
-    }
 
-    // If there is a replacer, it must be a function or an array.
-    // Otherwise, throw an error.
-    rep = replacer ?? undefined;
-    if (
-      replacer &&
-      typeof replacer !== 'function' &&
-      (typeof replacer !== 'object' || typeof replacer.length !== 'number')
-    ) {
-      throw new Error('JSON.stringify');
-    }
+      // If there is a replacer, it must be a function or an array.
+      // Otherwise, throw an error.
+      rep = replacer ?? undefined;
+      if (
+        replacer &&
+        typeof replacer !== 'function' &&
+        (typeof replacer !== 'object' || typeof replacer.length !== 'number')
+      ) {
+        throw new Error('JSON.stringify');
+      }
 
-    // Make a fake root object containing our value under the key of "".
-    // Return the result of stringifying the value.
-    return str('', { '': val }) ?? '';
+      // Make a fake root object containing our value under the key of "".
+      // Return the result of stringifying the value.
+      return str('', { '': val }) ?? '';
+    } finally {
+      // Restore state so any outer stringify() call can continue safely
+      gap = savedGap;
+      indent = savedIndent;
+      rep = savedRep;
+      seen = savedSeen;
+    }
   };
 
   const parse: JsonHandler['parse'] = (
     source: string,
     reviver?: (this: Record<string, unknown>, key: string, value: unknown) => unknown,
   ): unknown => {
-    text = source;
-    at = 0;
-    ch = ' ';
-    depth = 0;
+    // Save state for re-entrancy safety (e.g. options.parse or reviver calling parse again)
+    const savedAt = at;
+    const savedCh = ch;
+    const savedText = text;
+    const savedDepth = depth;
 
-    const result = value();
-    white();
-    if (ch) {
-      error('Syntax error');
+    let result: unknown;
+    try {
+      text = source;
+      at = 0;
+      ch = ' ';
+      depth = 0;
+
+      result = value();
+      white();
+      if (ch) {
+        error('Syntax error');
+      }
+    } finally {
+      // Restore state so any outer parse() call can continue safely
+      at = savedAt;
+      ch = savedCh;
+      text = savedText;
+      depth = savedDepth;
     }
 
     if (typeof reviver === 'function') {
