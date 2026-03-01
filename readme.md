@@ -23,35 +23,37 @@ import { SeedAdapter, SIGN_TYPE } from '@decentralchain/signature-adapter';
 import { Money, Asset } from '@decentralchain/data-entities';
 
 const asset = new Asset({
-   ticker: 'DCC',
-   id: 'DCC',
-   name: 'DCC',
-   precision: 8,
-   description: '',
-   height: 0,
-   timestamp: new Date('2016-04-11T21:00:00.000Z'),
-   sender: '',
-   quantity: 10000000000000000,
-   reissuable: false
+  ticker: 'DCC',
+  id: 'DCC',
+  name: 'DCC',
+  precision: 8,
+  description: '',
+  height: 0,
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
+  sender: '',
+  quantity: 10000000000000000,
+  reissuable: false,
 });
 
 const transferTransactionData = {
-   recipient: 'some address or alias',
-   amount: Money.fromTokens(1, asset),
-   attachment: 'Some attachment text less 140 bytes',
-   fee: Money.fromTokens(0.001, asset)
+  recipient: 'some address or alias',
+  amount: Money.fromTokens(1, asset),
+  attachment: 'Some attachment text less 140 bytes',
+  fee: Money.fromTokens(0.001, asset),
 };
 
 const adapter = new SeedAdapter('some seed phrase with 15 or more chars');
 const signable = adapter.makeSignable({
-   type: SIGN_TYPE.TRANSFER,
-   data: transferTransactionData
+  type: SIGN_TYPE.TRANSFER,
+  data: transferTransactionData,
 });
 
-signable.getDataForApi().then(data => fetch('node-url', {
-   method: 'POST',
-   body: JSON.stringify(data)
-}));
+signable.getDataForApi().then((data) =>
+  fetch('node-url', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+);
 ```
 
 ## Adapters
@@ -63,6 +65,7 @@ Adapters are used to sign data. Available types:
 Accepts either a seed phrase or an object containing information about the seed phrase.
 
 Object structure:
+
 - `encryptedSeed` {string} — seed phrase encoded with passwords
 - `password` {string} — password that is encrypted seed phrase
 - `encryptionRounds` {number} — encryption complexity
@@ -75,7 +78,7 @@ import { Adapter } from '@decentralchain/signature-adapter';
 Adapter.initOptions({ networkCode: 'L'.charCodeAt(0) });
 ```
 
-*If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters.*
+_If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters._
 
 Example:
 
@@ -90,6 +93,7 @@ const adapter = new SeedAdapter('some seed phrase more 15 chars');
 Accepts an object containing address and wallet ID in Ledger.
 
 Object structure:
+
 - `publicKey` {string} — public key for the address
 - `address` {string} — address
 - `id` {number} — wallet ID in Ledger
