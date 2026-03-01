@@ -290,6 +290,7 @@ describe('Validators', () => {
         attachment: null,
         fee: 100000,
         feeAssetId: 'DCC',
+        chainId: 76,
         timestamp: Date.now(),
       } as any;
 

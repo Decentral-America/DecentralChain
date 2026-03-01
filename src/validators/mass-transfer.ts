@@ -7,6 +7,7 @@ import {
   isArray,
   isAttachment,
   isEq,
+  isNaturalNumberLike,
   isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
@@ -27,7 +28,7 @@ const massTransferScheme = {
   version: orEq([undefined, 1, 2]),
   transfers: validatePipe(
     isArray,
-    pipe(prop('length'), gte(0)),
+    pipe(prop('length'), gte(1)),
     pipe(prop('length'), lte(100)),
     (data: Array<unknown>) =>
       data.every(
@@ -41,6 +42,7 @@ const massTransferScheme = {
   assetId: isDccOrAssetId,
   attachment: isAttachment,
   fee: isNaturalNumberOrZeroLike,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

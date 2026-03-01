@@ -6,6 +6,7 @@ import {
   isArray,
   isAssetId,
   isEq,
+  isNaturalNumberLike,
   isNaturalNumberOrNullLike,
   isNaturalNumberOrZeroLike,
   isNumber,
@@ -21,6 +22,7 @@ const sponsorshipScheme = {
   assetId: isAssetId,
   minSponsoredAssetFee: isNaturalNumberOrNullLike,
   fee: isNaturalNumberOrZeroLike,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

@@ -21,6 +21,7 @@ const leaseScheme = {
   recipient: isRecipient,
   amount: isNaturalNumberLike,
   fee: isNaturalNumberOrZeroLike,
+  chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
