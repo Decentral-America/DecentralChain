@@ -319,7 +319,46 @@ describe('Adapter', () => {
         });
       });
 
+      it('omits call when absent and includes fee when provided', () => {
+        const txNoCall: SignerInvokeTx = {
+          type: TRANSACTION_TYPE.INVOKE_SCRIPT,
+          dApp: '3My2kBJaGfeM2koiZroaYdd3y8rAgfV2EAx',
+          fee: 500000,
+          feeAssetId: null,
+          payment: [],
+        };
+        const result = keeperTxFactory(txNoCall);
+        expect(result.data).not.toHaveProperty('call');
+        expect(result.data).toHaveProperty('fee');
+      });
+
       feeShouldBeValid(txInvokeScript);
+    });
+
+    describe('edge cases', () => {
+      it('moneyFactory defaults assetId to DCC when null', () => {
+        const txTransfer: SignerTransferTx = {
+          type: TRANSACTION_TYPE.TRANSFER,
+          recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD',
+          assetId: null,
+          amount: 100,
+          attachment: '',
+        };
+        const result = keeperTxFactory(txTransfer);
+        expect(result.data.amount).toEqual({ coins: 100, assetId: 'DCC' });
+      });
+
+      it('sponsorshipAdapter defaults minSponsoredAssetFee to 0 when undefined', () => {
+        const txSp: SignerSponsorshipTx = {
+          type: TRANSACTION_TYPE.SPONSORSHIP,
+          assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        } as SignerSponsorshipTx;
+        const result = keeperTxFactory(txSp);
+        expect(result.data.minSponsoredAssetFee).toEqual({
+          coins: 0,
+          assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        });
+      });
     });
   });
 
