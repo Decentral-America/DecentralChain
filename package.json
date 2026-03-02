@@ -27,15 +27,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/dcc-signature-adapter.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-signature-adapter.git"
   },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/dcc-signature-adapter#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-signature-adapter#readme",
   "bugs": {
-    "url": "https://github.com/Decentral-America/dcc-signature-adapter/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-signature-adapter/issues"
   },
   "scripts": {
     "build": "tsup",
