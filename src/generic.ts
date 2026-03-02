@@ -91,7 +91,7 @@ export function chainIdFromRecipient(recipient: string) {
     try {
       return base58Decode(recipient)[1]!;
     } catch (_e) {
-      throw new Error(`Invalid recipient: ${recipient}`);
+      throw new Error(`Invalid recipient: ${recipient}`, { cause: _e });
     }
   }
 }
