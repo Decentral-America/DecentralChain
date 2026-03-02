@@ -21,7 +21,7 @@
  */
 
 import { listen } from '@ledgerhq/logs';
-import { DCC } from './dcc.js';
+import { DCC } from './DCC.js';
 import type {
   DCCLedgerOptions,
   LedgerTransport,
@@ -62,6 +62,19 @@ export class DCCLedger {
   private _error: unknown;
   private readonly _transport: LedgerTransportFactory;
   private _unsubscribeLog: (() => void) | null = null;
+
+  /**
+   * Fire-and-forget a reconnect attempt.
+   *
+   * All background reconnects MUST go through this helper so that
+   * promise rejections are always caught — an unhandled rejection
+   * in Node.js will terminate the process.
+   */
+  private _backgroundReconnect(): void {
+    void this.tryConnect().catch(() => {
+      /* Reconnect is best-effort; errors already logged inside tryConnect. */
+    });
+  }
 
   /**
    * Create a new DCCLedger instance.
@@ -167,7 +180,7 @@ export class DCCLedger {
       const userData = await dcc.getWalletPublicKey(path, false);
       return { ...userData, id, path };
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -183,7 +196,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.getVersion();
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -197,6 +210,13 @@ export class DCCLedger {
    * @returns Array of user objects in order.
    */
   async getPaginationUsersData(from: number, limit: number): Promise<User[]> {
+    if (!Number.isInteger(from) || from < 0) {
+      throw new RangeError(`'from' must be a non-negative integer, got ${String(from)}`);
+    }
+    if (!Number.isInteger(limit) || limit < 0) {
+      throw new RangeError(`'limit' must be a non-negative integer, got ${String(limit)}`);
+    }
+
     const usersData: User[] = [];
 
     try {
@@ -205,7 +225,7 @@ export class DCCLedger {
         usersData.push(userData);
       }
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -226,7 +246,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.signTransaction(path, sData);
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -245,7 +265,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.signOrder(path, sData);
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -264,7 +284,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.signSomeData(path, sData);
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -283,7 +303,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.signRequest(path, sData);
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -304,7 +324,7 @@ export class DCCLedger {
       const dcc = await this.getTransport();
       return await dcc.signMessage(path, sData);
     } catch (e: unknown) {
-      void this.tryConnect();
+      this._backgroundReconnect();
       this._error = e;
       throw e;
     }
@@ -323,13 +343,12 @@ export class DCCLedger {
    * @returns `true` if a basic key derivation succeeds; `false` otherwise.
    */
   async probeDevice(): Promise<boolean> {
-    if (!this.ready) {
-      await this.tryConnect();
-    }
-
     this._error = null;
 
     try {
+      if (!this.ready) {
+        await this.tryConnect();
+      }
       await this.getUserDataById(1);
     } catch (e: unknown) {
       this._error = e;
