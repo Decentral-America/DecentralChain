@@ -9,7 +9,6 @@ export { AdapterType } from './adapterType';
 export const adapterPriorityList = [
   AdapterType.CubensisConnect,
   AdapterType.Ledger,
-  AdapterType.Tresor,
   AdapterType.Seed,
   AdapterType.PrivateKey,
   AdapterType.Custom,
