@@ -1,62 +1,93 @@
 {
   "name": "@decentralchain/ts-types",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Shared TypeScript type definitions for the DecentralChain SDK",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
     }
   },
-  "types": "dist/src/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "decentralchain",
+    "dcc",
     "blockchain",
     "typescript",
-    "types"
+    "types",
+    "transactions",
+    "sdk"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Decentral-America/ts-types.git"
+    "url": "git+https://github.com/Decentral-America/ts-types.git"
   },
   "homepage": "https://github.com/Decentral-America/ts-types",
   "bugs": {
     "url": "https://github.com/Decentral-America/ts-types/issues"
   },
+  "author": "DecentralChain",
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
-    "build": "tsc",
-    "format": "prettier --write \"**/*.{ts,json,css}\"",
-    "format:check": "prettier --check \"**/*.{ts,json,css}\"",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "build": "tsup",
+    "clean": "rm -rf dist coverage",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"*.{json,md,mjs,ts}\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"*.{json,md,mjs,ts}\"",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "typecheck": "tsc --noEmit",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
+    "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && publint && attw --pack --ignore-rules cjs-resolves-to-esm && size-limit",
+    "prepublishOnly": "npm run validate",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
-    "eslint": "^9.0.0",
-    "eslint-config-prettier": "^10.0.0",
-    "globals": "^16.0.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^16.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.0.0",
-    "typescript-eslint": "^8.0.0"
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   },
   "lint-staged": {
     "*.ts": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.json": [
+    "*.{json,md,mjs}": [
       "prettier --write"
     ]
-  }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "10 kB"
+    }
+  ]
 }
