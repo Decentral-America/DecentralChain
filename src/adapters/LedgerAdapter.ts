@@ -1,5 +1,5 @@
 import { Adapter } from './Adapter';
-import { AdapterType } from '../config';
+import { AdapterType } from '../adapterType';
 // TODO: Change to `import { DCCLedger } from '@decentralchain/ledger'` once DCC-10 is complete
 import { WavesLedger as DCCLedger } from '@decentralchain/ledger';
 import { SIGN_TYPE } from '../prepareTx';
@@ -7,7 +7,7 @@ import { SIGN_TYPE } from '../prepareTx';
 export class LedgerAdapter extends Adapter {
   //@ts-ignore
   private _currentUser;
-  public static type = AdapterType.Ledger;
+  public static override type = AdapterType.Ledger;
   //@ts-ignore
   private static _ledger: DCCLedger;
   //@ts-ignore
@@ -25,7 +25,7 @@ export class LedgerAdapter extends Adapter {
     this._isDestroyed = false;
   }
 
-  public isAvailable() {
+  public override isAvailable() {
     return this._isMyLedger();
   }
 
@@ -108,7 +108,7 @@ export class LedgerAdapter extends Adapter {
     return Promise.reject('No private key');
   }
 
-  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+  public getSignVersions(): Record<SIGN_TYPE, number[]> {
     return {
       [SIGN_TYPE.AUTH]: [1],
       [SIGN_TYPE.MATCHER_ORDERS]: [1],
@@ -152,16 +152,16 @@ export class LedgerAdapter extends Adapter {
     return promise;
   }
 
-  public static getUserList(from: number = 1, to: number = 1) {
+  public static override getUserList(from = 1, to = 1) {
     return LedgerAdapter._ledger.getPaginationUsersData(from, to) as any;
   }
 
-  public static initOptions(options: IDCCLedger) {
+  public static override initOptions(options: IDCCLedger) {
     Adapter.initOptions(options);
     this._ledger = new DCCLedger(options);
   }
 
-  public static isAvailable() {
+  public static override isAvailable() {
     if (!LedgerAdapter._hasConnectionPromise) {
       LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
     }

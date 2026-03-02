@@ -1,23 +1,21 @@
-///<reference path="../ramda-usage.d.ts"/>
-
 import { BigNumber } from '@decentralchain/bignumber';
-import path = require('ramda/src/path');
+import path from 'ramda/src/path';
 import {
-  IExchangeTransactionOrder,
-  TTransaction,
-  IDataTransaction,
-  IMassTransferTransaction,
-  IIssueTransaction,
+  type IExchangeTransactionOrder,
+  type TTransaction,
+  type IDataTransaction,
+  type IMassTransferTransaction,
+  type IIssueTransaction,
 } from '@decentralchain/ts-types';
 import { DCC_ID } from './prepareTx';
 
-export function find<T>(some: Partial<T>, list: Array<T>) {
+export function find<T>(some: Partial<T>, list: T[]) {
   const keys = Object.keys(some);
-  //@ts-ignore
+  // @ts-expect-error - dynamic key access on partial type
   const isEqual = (a) => keys.every((n) => a[n] === some[n]);
-  for (let i = 0; i < list.length; i++) {
-    if (isEqual(list[i])) {
-      return list[i];
+  for (const item of list) {
+    if (isEqual(item)) {
+      return item;
     }
   }
   return null;
@@ -31,8 +29,8 @@ export function normalizeAssetId(assetId: string) {
   return assetId || DCC_ID;
 }
 
-export function last<T>(list: Array<T>): T {
-  return list[list.length - 1];
+export function last<T>(list: T[]): T {
+  return list[list.length - 1] as T;
 }
 
 export const TRANSACTION_TYPE = {
@@ -62,7 +60,7 @@ export function currentCreateOrderFactory(
 ): (
   order: IExchangeTransactionOrder<BigNumber>,
   hasMatcherScript?: boolean,
-  smartAssetIdList?: Array<string>,
+  smartAssetIdList?: string[],
 ) => BigNumber {
   return (order, hasScript = false, smartAssetIdList = []) => {
     const accountFee: BigNumber = hasScript
@@ -70,7 +68,7 @@ export function currentCreateOrderFactory(
       : new BigNumber(0);
     const extraFee: BigNumber = Object.values(order.assetPair)
       .map((id) => {
-        return id && smartAssetIdList.includes(id as string)
+        return id && smartAssetIdList.includes(id)
           ? new BigNumber(config.smart_asset_extra_fee)
           : new BigNumber(0);
       })
@@ -86,13 +84,13 @@ export function currentFeeFactory(
   tx: TTransaction<BigNumber>,
   bytes: Uint8Array,
   hasAccountScript: boolean,
-  smartAssetIdList?: Array<string>,
+  smartAssetIdList?: string[],
 ) => BigNumber {
   return (
     tx: TTransaction<BigNumber>,
     bytes: Uint8Array,
     hasAccountScript: boolean,
-    smartAssetIdList?: Array<string>,
+    smartAssetIdList?: string[],
   ) => {
     const accountFee = hasAccountScript
       ? new BigNumber(config.smart_account_extra_fee)
@@ -146,7 +144,7 @@ function getIssueFee(
 function getSmartAssetFeeByAssetId(
   assetId: string | null,
   config: IFeeConfig,
-  smartAssetIdList: Array<string>,
+  smartAssetIdList: string[],
 ): BigNumber {
   return assetId && smartAssetIdList.includes(assetId)
     ? new BigNumber(config.smart_asset_extra_fee)
@@ -165,7 +163,7 @@ function getDataFee(
 function getMassTransferFee(
   tx: IMassTransferTransaction<BigNumber>,
   config: IFeeConfig,
-  smartAssetIdList: Array<string>,
+  smartAssetIdList: string[],
 ): BigNumber {
   const transferPrice = new BigNumber(
     getConfigProperty(tx.type, 'price_per_transfer', config) || 0,
@@ -179,7 +177,10 @@ function getMassTransferFee(
   let price = transferPrice.mul(transfersCount);
 
   if (!price.div(minPriceStep).isInt()) {
-    price = price.div(minPriceStep).roundTo(0, BigNumber.ROUND_MODE.ROUND_UP).mul(minPriceStep);
+    price = price
+      .div(minPriceStep)
+      .roundTo(0, 0 as number)
+      .mul(minPriceStep);
   }
 
   return price.add(smartAssetExtraFee);
@@ -195,7 +196,7 @@ function getConfigProperty<T extends keyof IFeeConfigItem>(
     | undefined;
   return (
     isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value
-  ) as IFeeConfigItem[T];
+  );
 }
 
 export interface IFeeConfig {
