@@ -24,23 +24,19 @@ export class SeedAdapter extends Adapter {
       seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
     }
 
-    try {
-      if (seed.startsWith('base58:')) {
-        const encodedSeed = seed.replace('base58:', '');
-        try {
-          const decodedSeed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));
-          if (libs.crypto.base58Encode(libs.crypto.stringToBytes(decodedSeed)) !== encodedSeed) {
-            throw new Error("Can't decode seed to string");
-          }
-          seed = decodedSeed;
-        } catch {
-          seed = libs.crypto.base58Decode(encodedSeed);
+    if (typeof seed === 'string' && seed.startsWith('base58:')) {
+      const encodedSeed = seed.replace('base58:', '');
+      try {
+        const decodedSeed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));
+        if (libs.crypto.base58Encode(libs.crypto.stringToBytes(decodedSeed)) !== encodedSeed) {
+          throw new Error("Can't decode seed to string");
         }
-        this.encodedSeed = encodedSeed;
-        this.isEncoded = true;
+        seed = decodedSeed;
+      } catch {
+        seed = libs.crypto.base58Decode(encodedSeed);
       }
-    } catch {
-      /* ignored */
+      this.encodedSeed = encodedSeed;
+      this.isEncoded = true;
     }
 
     if (!this.encodedSeed) {
