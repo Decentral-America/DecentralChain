@@ -1,5 +1,5 @@
-import { Adapter, IUser, ISeedUser } from './Adapter';
-import { AdapterType } from '../config';
+import { Adapter, type IUser, type ISeedUser } from './Adapter';
+import { AdapterType } from '../adapterType';
 import { seedUtils, libs } from '@decentralchain/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
@@ -7,10 +7,10 @@ const Seed = seedUtils.Seed;
 const signWithPrivateKey = libs.crypto.signBytes;
 
 export class SeedAdapter extends Adapter {
-  public isEncoded: boolean = false;
+  public isEncoded = false;
   private readonly encodedSeed: string | null = null;
   private seed: seedUtils.Seed;
-  public static type = AdapterType.Seed;
+  public static override type = AdapterType.Seed;
 
   constructor(data: string | IUser, networkCode?: string | number) {
     super(networkCode);
@@ -19,13 +19,13 @@ export class SeedAdapter extends Adapter {
     if (typeof data === 'string') {
       seed = data;
     } else {
-      const user = <ISeedUser>data;
+      const user = data as ISeedUser;
       const encryptionRounds = user.encryptionRounds;
       seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
     }
 
     try {
-      if (/^base58:/.test(seed)) {
+      if (seed.startsWith("base58:")) {
         const encodedSeed = seed.replace('base58:', '');
         try {
           const decodedSeed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));
@@ -65,7 +65,7 @@ export class SeedAdapter extends Adapter {
     this._isDestroyed = false;
   }
 
-  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+  public getSignVersions(): Record<SIGN_TYPE, number[]> {
     return {
       [SIGN_TYPE.AUTH]: [1],
       [SIGN_TYPE.MATCHER_ORDERS]: [1],
@@ -92,7 +92,7 @@ export class SeedAdapter extends Adapter {
   }
 
   public getEncodedSeed(): Promise<string> {
-    return Promise.resolve(this.encodedSeed as string);
+    return Promise.resolve(this.encodedSeed!);
   }
 
   public getSyncAddress(): string {
@@ -141,7 +141,7 @@ export class SeedAdapter extends Adapter {
     return Promise.resolve(signWithPrivateKey(this.seed.keyPair, bytes));
   }
 
-  public static isAvailable() {
+  public static override isAvailable() {
     return Promise.resolve(true);
   }
 }

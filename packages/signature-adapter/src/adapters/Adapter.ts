@@ -1,5 +1,5 @@
-import { AdapterType } from '../config';
-import { SIGN_TYPE, TSignData } from '../prepareTx';
+import { AdapterType } from '../adapterType';
+import { type SIGN_TYPE, type TSignData } from '../prepareTx';
 import { libs, serializeCustomData } from '@decentralchain/waves-transactions';
 import { Signable } from '../Signable';
 const { stringToBytes } = libs.crypto;
@@ -40,7 +40,7 @@ export abstract class Adapter {
 
   public abstract getSyncPublicKey(): string;
 
-  public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;
+  public abstract getSignVersions(): Record<SIGN_TYPE, number[]>;
 
   public abstract getPublicKey(): Promise<string>;
 
@@ -72,7 +72,7 @@ export abstract class Adapter {
     Adapter._code = options.networkCode;
   }
 
-  public signCustomData(data: string | Array<number> | Uint8Array) {
+  public signCustomData(data: string | number[] | Uint8Array) {
     const bytes = typeof data === 'string' ? stringToBytes(data) : Uint8Array.from(data);
     const serializeData = { version: 1, binary: libs.crypto.base64Encode(bytes) } as any;
     const binary = serializeCustomData(serializeData);
@@ -107,7 +107,7 @@ export abstract class Adapter {
 
   public static type: AdapterType = AdapterType.Seed;
 
-  public static getUserList(): Promise<Array<any>> {
+  public static getUserList(): Promise<any[]> {
     return Promise.resolve([]);
   }
 
@@ -121,7 +121,7 @@ export interface IAdapterConstructor {
 
   type: AdapterType;
 
-  getUserList(): Promise<Array<string>>;
+  getUserList(): Promise<string[]>;
 
   isAvailable(): Promise<boolean>;
 }
@@ -141,6 +141,6 @@ export interface IPrivateKeyUser {
 export type IUser = ISeedUser | IPrivateKeyUser;
 
 export interface IProofData {
-  profs?: Array<string>;
+  profs?: string[];
   signature?: string;
 }
