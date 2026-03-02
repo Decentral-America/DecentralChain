@@ -40,6 +40,16 @@ export class BigNumber {
     } else {
       this.bn = BigNumber.toBigNumberJs(long);
     }
+    if (this.bn.isNaN()) {
+      throw new Error(
+        `Invalid BigNumber value: ${typeof long === 'object' ? String(long) : JSON.stringify(long)}`,
+      );
+    }
+    if (!this.bn.isFinite()) {
+      throw new Error(
+        `Infinite values are not permitted in financial operations: ${typeof long === 'object' ? String(long) : JSON.stringify(long)}`,
+      );
+    }
   }
 
   /** Returns a deep copy of this BigNumber. */
@@ -62,9 +72,15 @@ export class BigNumber {
     return new BigNumber(this.bn.times(BigNumber.toBigNumberJs(long)));
   }
 
-  /** Returns a new BigNumber equal to this / `long`. */
+  /** Returns a new BigNumber equal to this / `long`.
+   * @throws {Error} If `long` is zero — division by zero is not permitted in financial operations.
+   */
   public div(long: TLong): BigNumber {
-    return new BigNumber(this.bn.div(BigNumber.toBigNumberJs(long)));
+    const divisor = BigNumber.toBigNumberJs(long);
+    if (divisor.isZero()) {
+      throw new Error('Division by zero is not permitted');
+    }
+    return new BigNumber(this.bn.div(divisor));
   }
 
   /** Returns a new BigNumber equal to this raised to the power of `exp`. */
@@ -72,8 +88,13 @@ export class BigNumber {
     return new BigNumber(this.bn.pow(BigNumber.toBigNumberJs(exp)));
   }
 
-  /** Returns a new BigNumber equal to the square root of this value. */
-  public sqrt() {
+  /** Returns a new BigNumber equal to the square root of this value.
+   * @throws {Error} If this value is negative — square root of negative numbers is not permitted.
+   */
+  public sqrt(): BigNumber {
+    if (this.isNegative()) {
+      throw new Error('Square root of a negative number is not permitted');
+    }
     return new BigNumber(this.bn.sqrt());
   }
 
@@ -82,9 +103,15 @@ export class BigNumber {
     return new BigNumber(this.bn.abs());
   }
 
-  /** Returns a new BigNumber equal to this modulo `divider`. */
+  /** Returns a new BigNumber equal to this modulo `divider`.
+   * @throws {Error} If `divider` is zero — modulo by zero is not permitted.
+   */
   public mod(divider: TLong): BigNumber {
-    return new BigNumber(this.bn.mod(BigNumber.toBigNumberJs(divider)));
+    const divisor = BigNumber.toBigNumberJs(divider);
+    if (divisor.isZero()) {
+      throw new Error('Modulo by zero is not permitted');
+    }
+    return new BigNumber(this.bn.mod(divisor));
   }
 
   /**
@@ -300,18 +327,33 @@ export class BigNumber {
     return isNegative ? result.mul(-1).sub(1) : result;
   }
 
-  /** Returns a new BigNumber equal to the maximum of the given values. */
+  /** Returns a new BigNumber equal to the maximum of the given values.
+   * @throws {Error} If no values are provided.
+   */
   public static max(...items: TLong[]): BigNumber {
+    if (items.length === 0) {
+      throw new Error('BigNumber.max() requires at least one argument');
+    }
     return BigNumber.toBigNumber(items).reduce((max, item) => (max.gte(item) ? max : item));
   }
 
-  /** Returns a new BigNumber equal to the minimum of the given values. */
+  /** Returns a new BigNumber equal to the minimum of the given values.
+   * @throws {Error} If no values are provided.
+   */
   public static min(...items: TLong[]): BigNumber {
+    if (items.length === 0) {
+      throw new Error('BigNumber.min() requires at least one argument');
+    }
     return BigNumber.toBigNumber(items).reduce((min, item) => (min.lte(item) ? min : item));
   }
 
-  /** Returns a new BigNumber equal to the sum of the given values. */
+  /** Returns a new BigNumber equal to the sum of the given values.
+   * @throws {Error} If no values are provided.
+   */
   public static sum(...items: TLong[]): BigNumber {
+    if (items.length === 0) {
+      throw new Error('BigNumber.sum() requires at least one argument');
+    }
     return BigNumber.toBigNumber(items).reduce((acc, item) => acc.add(item));
   }
 
