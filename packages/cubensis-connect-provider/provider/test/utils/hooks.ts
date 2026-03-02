@@ -1,14 +1,12 @@
-import { Builder, By, until, WebDriver } from 'selenium-webdriver';
+import type { WebDriver } from 'selenium-webdriver';
+import { Builder, By, until } from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 import * as net from 'net';
-import * as mocha from 'mocha';
+import type * as mocha from 'mocha';
 import * as path from 'path';
 import * as httpServer from 'http-server';
-import {
-  GenericContainer,
-  StartedTestContainer,
-  TestContainers,
-} from 'testcontainers';
+import type { StartedTestContainer } from 'testcontainers';
+import { GenericContainer, TestContainers } from 'testcontainers';
 import * as fs from 'fs';
 
 declare module 'mocha' {
@@ -30,15 +28,12 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
   const CubensisConnectDir = path.resolve(rootDir, 'dist');
   const testAppDir = path.resolve(rootDir, 'test-app', 'dist');
 
-  if (
-    !fs.existsSync(CubensisConnectDir) ||
-    fs.readdirSync(CubensisConnectDir).length === 0
-  ) {
+  if (!fs.existsSync(CubensisConnectDir) || fs.readdirSync(CubensisConnectDir).length === 0) {
     throw new Error(
       `
       You should build or download latest Cubensis Connect for e2e tests.
       See more at .github/workflows/tests.yml
-      `
+      `,
     );
   }
 
@@ -47,7 +42,7 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
       `
       You should build test application first.
       See more at .github/workflows/tests.yml
-      `
+      `,
     );
   }
 
@@ -67,7 +62,7 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
       (port: number) =>
         new Promise((resolve, reject) => {
           net
-            .createServer(from => {
+            .createServer((from) => {
               const to = net.createConnection({
                 port: this.selenium.getMappedPort(port),
               });
@@ -83,8 +78,8 @@ export async function mochaGlobalSetup(this: GlobalFixturesContext) {
             .once('error', reject)
             .listen(port)
             .unref();
-        })
-    )
+        }),
+    ),
   );
 }
 
@@ -104,17 +99,15 @@ export const mochaHooks = () => ({
       .setChromeOptions(
         new chrome.Options().addArguments(
           `--load-extension=/app/cubensis_connect`,
-          '--disable-dev-shm-usage'
-        )
+          '--disable-dev-shm-usage',
+        ),
       )
       .build();
 
     // detect Cubensis Connect extension URL
     await this.driver.get('chrome://system');
     for (const ext of (
-      await this.driver
-        .wait(until.elementLocated(By.css('div#extensions-value')))
-        .getText()
+      await this.driver.wait(until.elementLocated(By.css('div#extensions-value'))).getText()
     ).split('\n')) {
       const [id, name] = ext.split(' : ');
       if (name.toLowerCase() === 'Cubensis Connect'.toLowerCase()) {
@@ -127,7 +120,7 @@ export const mochaHooks = () => ({
   },
 
   afterAll(this: mocha.Context, done: mocha.Done) {
-    this.driver && this.driver.quit();
+    if (this.driver) this.driver.quit();
     done();
   },
 });

@@ -3,11 +3,28 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "provider:test": "npm run test -workspace=provider",
-    "provider:coverage": "npm run coverage -workspace=provider",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "typecheck": "tsc --noEmit -p provider/tsconfig.json",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
     "provider:build": "npm run build -workspace=provider",
     "ui:build": "npm run build -workspace=test-app",
-    "ui:start": "npm run start -workspace=test-app"
+    "ui:start": "npm run start -workspace=test-app",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   },
   "workspaces": [
     "provider",
@@ -15,7 +32,22 @@
   ],
   "engineStrict": true,
   "engines": {
-    "node": "^16",
-    "npm": "^8"
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
   }
 }

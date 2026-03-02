@@ -1,4 +1,4 @@
-import {
+import type {
   AuthEvents,
   ConnectOptions,
   Handler,
@@ -9,12 +9,7 @@ import {
   UserData,
 } from '@decentralchain/signer';
 import { EventEmitter } from 'typed-ts-events';
-import {
-  base16Encode,
-  base64Encode,
-  randomBytes,
-  stringToBytes,
-} from '@waves/ts-lib-crypto';
+import { base16Encode, base64Encode, randomBytes, stringToBytes } from '@waves/ts-lib-crypto';
 import { keeperTxFactory, signerTxFactory } from './adapter';
 import { ensureNetwork } from './decorators';
 import { calculateFee } from './utils';
@@ -28,8 +23,7 @@ export class ProviderCubensis implements Provider {
     NETWORK_BYTE: '?'.charCodeAt(0),
     NODE_URL: 'https://mainnet-node.decentralchain.io',
   };
-  private readonly _emitter: EventEmitter<AuthEvents> =
-    new EventEmitter<AuthEvents>();
+  private readonly _emitter: EventEmitter<AuthEvents> = new EventEmitter<AuthEvents>();
   private readonly _maxRetries = 10;
 
   constructor() {
@@ -38,7 +32,7 @@ export class ProviderCubensis implements Provider {
 
   public on<EVENT extends keyof AuthEvents>(
     event: EVENT,
-    handler: Handler<AuthEvents[EVENT]>
+    handler: Handler<AuthEvents[EVENT]>,
   ): Provider {
     this._emitter.on(event, handler);
 
@@ -47,7 +41,7 @@ export class ProviderCubensis implements Provider {
 
   public once<EVENT extends keyof AuthEvents>(
     event: EVENT,
-    handler: Handler<AuthEvents[EVENT]>
+    handler: Handler<AuthEvents[EVENT]>,
   ): Provider {
     this._emitter.once(event, handler);
 
@@ -56,7 +50,7 @@ export class ProviderCubensis implements Provider {
 
   public off<EVENT extends keyof AuthEvents>(
     event: EVENT,
-    handler: Handler<AuthEvents[EVENT]>
+    handler: Handler<AuthEvents[EVENT]>,
   ): Provider {
     this._emitter.off(event, handler);
 
@@ -71,10 +65,8 @@ export class ProviderCubensis implements Provider {
         return reject(new Error('CubensisConnect is not installed.'));
       }
 
-      if (!!window.CubensisConnect) {
-        return window.CubensisConnect.initialPromise.then(api =>
-          resolve((this._api = api))
-        );
+      if (window.CubensisConnect) {
+        return window.CubensisConnect.initialPromise.then((api) => resolve((this._api = api)));
       } else setTimeout(() => poll(resolve, reject, ++attempt), 100);
     };
 
@@ -83,16 +75,16 @@ export class ProviderCubensis implements Provider {
 
   @ensureNetwork
   public login(): Promise<UserData> {
-    return this._api.auth(this._authData).then(auth => {
+    return this._api.auth(this._authData).then((auth) => {
       this.user = { address: auth.address, publicKey: auth.publicKey };
-      this._emitter.trigger('login', this.user);
+      (this._emitter as any).trigger('login', this.user); // eslint-disable-line @typescript-eslint/no-explicit-any
       return this.user;
     });
   }
 
   public logout(): Promise<void> {
     this.user = null;
-    this._emitter.trigger('logout', void 0);
+    (this._emitter as any).trigger('logout', void 0); // eslint-disable-line @typescript-eslint/no-explicit-any
     return Promise.resolve();
   }
 
@@ -103,7 +95,7 @@ export class ProviderCubensis implements Provider {
         version: 1,
         binary: 'base64:' + base64Encode(stringToBytes(String(data))),
       })
-      .then(data => data.signature);
+      .then((data) => data.signature);
   }
 
   @ensureNetwork
@@ -113,39 +105,33 @@ export class ProviderCubensis implements Provider {
         version: 2,
         data: data as CubensisConnect.TTypedData[],
       })
-      .then(data => data.signature);
+      .then((data) => data.signature);
   }
 
   public async sign<T extends SignerTx>(toSign: T[]): Promise<SignedTx<T>>;
   @ensureNetwork
-  public async sign<T extends Array<SignerTx>>(
-    toSign: T
-  ): Promise<SignedTx<T>> {
-    const toSignWithFee = await Promise.all(
-      toSign.map(tx => this._txWithFee(tx))
-    );
+  public async sign<T extends Array<SignerTx>>(toSign: T): Promise<SignedTx<T>> {
+    const toSignWithFee = await Promise.all(toSign.map((tx) => this._txWithFee(tx)));
 
-    if (toSignWithFee.length == 1) {
+    if (toSignWithFee.length === 1) {
       return this._api
-        .signTransaction(keeperTxFactory(toSignWithFee[0]))
-        .then(data => [signerTxFactory(data)]) as Promise<SignedTx<T>>;
+        .signTransaction(keeperTxFactory(toSignWithFee[0]!))
+        .then((data) => [signerTxFactory(data)]) as Promise<SignedTx<T>>;
     }
 
     return this._api
       .signTransactionPackage(
-        toSignWithFee.map(tx =>
-          keeperTxFactory(tx)
-        ) as CubensisConnect.TSignTransactionPackageData
+        toSignWithFee.map((tx) =>
+          keeperTxFactory(tx),
+        ) as CubensisConnect.TSignTransactionPackageData,
       )
-      .then(data => data.map(tx => signerTxFactory(tx))) as Promise<
-      SignedTx<T>
-    >;
+      .then((data) => data.map((tx) => signerTxFactory(tx))) as Promise<SignedTx<T>>;
   }
 
   private _publicKeyPromise(): Promise<string | undefined> {
     return this.user?.publicKey
       ? Promise.resolve(this.user.publicKey)
-      : this._api.publicState().then(state => state.account?.publicKey);
+      : this._api.publicState().then((state) => state.account?.publicKey);
   }
 
   private async _txWithFee(tx: SignerTx): Promise<SignerTx> {
