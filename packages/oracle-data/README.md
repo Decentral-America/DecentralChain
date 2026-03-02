@@ -12,8 +12,8 @@ Provides structured access to on-chain oracle data entries — defining how orac
 
 ## Requirements
 
-- **Node.js** >= 22
-- **npm** >= 10
+- **Node.js** >= 24
+- **npm** >= 11
 
 ## Installation
 
@@ -90,8 +90,8 @@ const autoFields = getFields(dataOrAsset);
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
-- **npm** >= 10 (latest LTS recommended)
+- **Node.js** >= 24 (see `.node-version`)
+- **npm** >= 11 (latest stable recommended)
 
 ### Setup
 
