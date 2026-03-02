@@ -42,7 +42,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit 2>&1 | grep -v 'node_modules/' | grep -v '^$'; if tsc --noEmit 2>&1 | grep -v 'node_modules/' | grep -q 'error TS'; then exit 1; fi",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -59,7 +59,11 @@
     "postpublish": "git push"
   },
   "lint-staged": {
-    "*.{ts,js,mjs,json,md}": [
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml,css}": [
       "prettier --write"
     ]
   },
