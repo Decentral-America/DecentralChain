@@ -11,6 +11,10 @@
     "sourceMap": false,
     "strict": true,
     "target": "es6",
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
     "types": ["@decentralchain/cubensisconnect-types"]
   }
 }

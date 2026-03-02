@@ -1,4 +1,4 @@
-import {
+import type {
   SignedTx,
   SignerAliasTx,
   SignerBurnTx,
@@ -23,12 +23,12 @@ function isAlias(source: string): boolean {
 }
 
 function addressFactory(address: string): string {
-  return !isAlias(address) ? address : address.split(':')[2];
+  return !isAlias(address) ? address : (address.split(':')[2] ?? address);
 }
 
 function moneyFactory(
   amount: number | string,
-  assetId: string | null = 'DCC'
+  assetId: string | null = 'DCC',
 ): CubensisConnect.IMoneyCoins {
   return {
     coins: amount,
@@ -40,10 +40,7 @@ function defaultsFactory(tx: SignerTx): CubensisConnect.ITransactionBase {
   const { fee } = tx;
   let feeAssetId;
 
-  if (
-    tx.type === TRANSACTION_TYPE.TRANSFER ||
-    tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT
-  ) {
+  if (tx.type === TRANSACTION_TYPE.TRANSFER || tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
     ({ feeAssetId } = tx);
   }
 
@@ -109,9 +106,7 @@ function leaseAdapter(tx: SignerLeaseTx): CubensisConnect.TLeaseTxData {
   return { type: TRANSACTION_TYPE.LEASE, data };
 }
 
-function leaseCancelAdapter(
-  tx: SignerCancelLeaseTx
-): CubensisConnect.TLeaseCancelTxData {
+function leaseCancelAdapter(tx: SignerCancelLeaseTx): CubensisConnect.TLeaseCancelTxData {
   const { leaseId } = tx;
   const data: CubensisConnect.ILeaseCancelTx = {
     ...defaultsFactory(tx),
@@ -129,14 +124,12 @@ function aliasAdapter(tx: SignerAliasTx): CubensisConnect.TCreateAliasTxData {
   return { type: TRANSACTION_TYPE.ALIAS, data };
 }
 
-function massTransferAdapter(
-  tx: SignerMassTransferTx
-): CubensisConnect.TMassTransferTxData {
+function massTransferAdapter(tx: SignerMassTransferTx): CubensisConnect.TMassTransferTxData {
   const { assetId, transfers, attachment } = tx;
   const data: CubensisConnect.IMassTransferTx = {
     ...defaultsFactory(tx),
     totalAmount: moneyFactory(0, assetId),
-    transfers: transfers.map(transfer => ({
+    transfers: transfers.map((transfer) => ({
       recipient: addressFactory(transfer.recipient),
       amount: transfer.amount,
     })),
@@ -163,20 +156,16 @@ function setScriptAdapter(tx: SignerSetScriptTx): CubensisConnect.TSetScriptTxDa
   return { type: TRANSACTION_TYPE.SET_SCRIPT, data };
 }
 
-function sponsorshipAdapter(
-  tx: SignerSponsorshipTx
-): CubensisConnect.TSponsoredFeeTxData {
+function sponsorshipAdapter(tx: SignerSponsorshipTx): CubensisConnect.TSponsoredFeeTxData {
   const { assetId, minSponsoredAssetFee } = tx;
   const data: CubensisConnect.ISponsoredFeeTx = {
     ...defaultsFactory(tx),
-    minSponsoredAssetFee: moneyFactory(minSponsoredAssetFee, assetId),
+    minSponsoredAssetFee: moneyFactory(minSponsoredAssetFee ?? 0, assetId),
   };
   return { type: TRANSACTION_TYPE.SPONSORSHIP, data };
 }
 
-function setAssetScriptAdapter(
-  tx: SignerSetAssetScriptTx
-): CubensisConnect.TSetAssetScriptTxData {
+function setAssetScriptAdapter(tx: SignerSetAssetScriptTx): CubensisConnect.TSetAssetScriptTxData {
   const { assetId, script } = tx;
   const data: CubensisConnect.ISetAssetScriptTx = {
     ...defaultsFactory(tx),
@@ -186,9 +175,7 @@ function setAssetScriptAdapter(
   return { type: TRANSACTION_TYPE.SET_ASSET_SCRIPT, data };
 }
 
-function invokeScriptAdapter(
-  tx: SignerInvokeTx
-): CubensisConnect.TScriptInvocationTxData {
+function invokeScriptAdapter(tx: SignerInvokeTx): CubensisConnect.TScriptInvocationTxData {
   const { dApp, fee, feeAssetId, payment, call } = tx;
   const data: CubensisConnect.IScriptInvocationTx = {
     ...defaultsFactory(tx),
@@ -201,36 +188,18 @@ function invokeScriptAdapter(
 }
 
 export function keeperTxFactory(tx: SignerIssueTx): CubensisConnect.TIssueTxData;
-export function keeperTxFactory(
-  tx: SignerTransferTx
-): CubensisConnect.TTransferTxData;
-export function keeperTxFactory(
-  tx: SignerReissueTx
-): CubensisConnect.TReissueTxData;
+export function keeperTxFactory(tx: SignerTransferTx): CubensisConnect.TTransferTxData;
+export function keeperTxFactory(tx: SignerReissueTx): CubensisConnect.TReissueTxData;
 export function keeperTxFactory(tx: SignerBurnTx): CubensisConnect.TBurnTxData;
 export function keeperTxFactory(tx: SignerLeaseTx): CubensisConnect.TLeaseTxData;
-export function keeperTxFactory(
-  tx: SignerCancelLeaseTx
-): CubensisConnect.TLeaseCancelTxData;
-export function keeperTxFactory(
-  tx: SignerAliasTx
-): CubensisConnect.TCreateAliasTxData;
-export function keeperTxFactory(
-  tx: SignerMassTransferTx
-): CubensisConnect.TMassTransferTxData;
+export function keeperTxFactory(tx: SignerCancelLeaseTx): CubensisConnect.TLeaseCancelTxData;
+export function keeperTxFactory(tx: SignerAliasTx): CubensisConnect.TCreateAliasTxData;
+export function keeperTxFactory(tx: SignerMassTransferTx): CubensisConnect.TMassTransferTxData;
 export function keeperTxFactory(tx: SignerDataTx): CubensisConnect.TDataTxData;
-export function keeperTxFactory(
-  tx: SignerSetScriptTx
-): CubensisConnect.TSetScriptTxData;
-export function keeperTxFactory(
-  tx: SignerSponsorshipTx
-): CubensisConnect.TSponsoredFeeTxData;
-export function keeperTxFactory(
-  tx: SignerSetAssetScriptTx
-): CubensisConnect.TSetAssetScriptTxData;
-export function keeperTxFactory(
-  tx: SignerInvokeTx
-): CubensisConnect.TScriptInvocationTxData;
+export function keeperTxFactory(tx: SignerSetScriptTx): CubensisConnect.TSetScriptTxData;
+export function keeperTxFactory(tx: SignerSponsorshipTx): CubensisConnect.TSponsoredFeeTxData;
+export function keeperTxFactory(tx: SignerSetAssetScriptTx): CubensisConnect.TSetAssetScriptTxData;
+export function keeperTxFactory(tx: SignerInvokeTx): CubensisConnect.TScriptInvocationTxData;
 export function keeperTxFactory(tx: SignerTx): CubensisConnect.TSignTransactionData;
 export function keeperTxFactory(tx) {
   switch (tx.type) {
