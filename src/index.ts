@@ -1,59 +1,12 @@
-export * from '../transactions/index.js';
-export * from './parts.js';
+// ── @decentralchain/ts-types ─────────────────────────────────────────────────
+// Canonical type definitions for the DecentralChain SDK.
+//
+// Re-exports are organised into three modules:
+//   constants  — runtime const values (TRANSACTION_TYPE, DATA_FIELD_TYPE, etc.)
+//   parts      — primitive / utility / order types
+//   transactions — transaction types and node representations
+// ─────────────────────────────────────────────────────────────────────────────
 
-export const GENESIS_TYPE = 1 as const;
-export const PAYMENT_TYPE = 2 as const;
-export const ISSUE_TYPE = 3 as const;
-export const TRANSFER_TYPE = 4 as const;
-export const REISSUE_TYPE = 5 as const;
-export const BURN_TYPE = 6 as const;
-export const EXCHANGE_TYPE = 7 as const;
-export const LEASE_TYPE = 8 as const;
-export const CANCEL_LEASE_TYPE = 9 as const;
-export const ALIAS_TYPE = 10 as const;
-export const MASS_TRANSFER_TYPE = 11 as const;
-export const DATA_TYPE = 12 as const;
-export const SET_SCRIPT_TYPE = 13 as const;
-export const SPONSORSHIP_TYPE = 14 as const;
-export const SET_ASSET_SCRIPT_TYPE = 15 as const;
-export const INVOKE_SCRIPT_TYPE = 16 as const;
-export const UPDATE_ASSET_INFO_TYPE = 17 as const;
-export const ETHEREUM = 18 as const;
-
-export const INTEGER_DATA_TYPE = 'integer' as const;
-export const BOOLEAN_DATA_TYPE = 'boolean' as const;
-export const STRING_DATA_TYPE = 'string' as const;
-export const BINARY_DATA_TYPE = 'binary' as const;
-
-export const TRANSACTION_TYPE = {
-  GENESIS: GENESIS_TYPE,
-  PAYMENT: PAYMENT_TYPE,
-  ISSUE: ISSUE_TYPE,
-  TRANSFER: TRANSFER_TYPE,
-  REISSUE: REISSUE_TYPE,
-  BURN: BURN_TYPE,
-  EXCHANGE: EXCHANGE_TYPE,
-  LEASE: LEASE_TYPE,
-  CANCEL_LEASE: CANCEL_LEASE_TYPE,
-  ALIAS: ALIAS_TYPE,
-  MASS_TRANSFER: MASS_TRANSFER_TYPE,
-  DATA: DATA_TYPE,
-  SET_SCRIPT: SET_SCRIPT_TYPE,
-  SPONSORSHIP: SPONSORSHIP_TYPE,
-  SET_ASSET_SCRIPT: SET_ASSET_SCRIPT_TYPE,
-  INVOKE_SCRIPT: INVOKE_SCRIPT_TYPE,
-  UPDATE_ASSET_INFO: UPDATE_ASSET_INFO_TYPE,
-  ETHEREUM: ETHEREUM,
-};
-
-export const DATA_FIELD_TYPE = {
-  INTEGER: INTEGER_DATA_TYPE,
-  BOOLEAN: BOOLEAN_DATA_TYPE,
-  STRING: STRING_DATA_TYPE,
-  BINARY: BINARY_DATA_TYPE,
-};
-
-export type TransactionType = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
-export type DataFieldType = (typeof DATA_FIELD_TYPE)[keyof typeof DATA_FIELD_TYPE];
-/** @deprecated Use `DataFieldType` instead — this name contains a typo. */
-export type DataFiledType = DataFieldType;
+export * from './constants.js';
+export type * from './parts.js';
+export type * from './transactions.js';
