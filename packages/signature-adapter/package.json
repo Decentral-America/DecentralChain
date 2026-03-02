@@ -66,11 +66,7 @@
     "postpublish": "git push"
   },
   "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.json": [
+    "*.{ts,js,mjs,json,md}": [
       "prettier --write"
     ]
   },
