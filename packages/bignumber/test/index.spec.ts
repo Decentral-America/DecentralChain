@@ -196,13 +196,20 @@ describe('BigNumber', () => {
     expect(new BigNumber(0).gte('0')).toBeTruthy();
   });
 
-  it('isNaN', () => {
-    expect(new BigNumber(NaN).isNaN()).toBeTruthy();
+  it('isNaN — constructor rejects NaN inputs', () => {
+    expect(() => new BigNumber(NaN)).toThrowError('Invalid BigNumber value');
+    expect(() => new BigNumber('not-a-number')).toThrowError('[BigNumber Error]');
+    expect(() => new BigNumber('')).toThrowError('[BigNumber Error]');
   });
 
   it('isFinite', () => {
     expect(new BigNumber(1).isFinite()).toBeTruthy();
-    expect(new BigNumber(Infinity).isFinite()).toBeFalsy();
+    expect(() => new BigNumber(Infinity)).toThrowError(
+      'Infinite values are not permitted in financial operations',
+    );
+    expect(() => new BigNumber(-Infinity)).toThrowError(
+      'Infinite values are not permitted in financial operations',
+    );
   });
 
   it('isZero', () => {
@@ -756,6 +763,152 @@ describe('BigNumber', () => {
         expect(negZero.isZero()).toBeTruthy();
         expect(negZero.isPositive()).toBeFalsy();
         expect(negZero.isNegative()).toBeFalsy();
+      });
+    });
+
+    describe('Financial safety guards', () => {
+      describe('Division by zero', () => {
+        it('throws on division by zero (integer)', () => {
+          expect(() => new BigNumber(100).div(0)).toThrowError('Division by zero is not permitted');
+        });
+
+        it('throws on division by zero (string)', () => {
+          expect(() => new BigNumber(100).div('0')).toThrowError(
+            'Division by zero is not permitted',
+          );
+        });
+
+        it('throws on division by zero BigNumber', () => {
+          expect(() => new BigNumber(100).div(new BigNumber(0))).toThrowError(
+            'Division by zero is not permitted',
+          );
+        });
+
+        it('allows division by non-zero', () => {
+          expect(new BigNumber(100).div(5).toFixed()).toBe('20');
+        });
+      });
+
+      describe('Modulo by zero', () => {
+        it('throws on modulo by zero', () => {
+          expect(() => new BigNumber(10).mod(0)).toThrowError('Modulo by zero is not permitted');
+        });
+
+        it('throws on modulo by zero string', () => {
+          expect(() => new BigNumber(10).mod('0')).toThrowError('Modulo by zero is not permitted');
+        });
+
+        it('allows modulo by non-zero', () => {
+          expect(new BigNumber(10).mod(3).toFixed()).toBe('1');
+        });
+      });
+
+      describe('Square root of negative', () => {
+        it('throws on sqrt of negative number', () => {
+          expect(() => new BigNumber(-4).sqrt()).toThrowError(
+            'Square root of a negative number is not permitted',
+          );
+        });
+
+        it('allows sqrt of zero', () => {
+          expect(new BigNumber(0).sqrt().toFixed()).toBe('0');
+        });
+
+        it('allows sqrt of positive', () => {
+          expect(new BigNumber(9).sqrt().toFixed()).toBe('3');
+        });
+      });
+
+      describe('Constructor rejects invalid inputs', () => {
+        it('rejects NaN', () => {
+          expect(() => new BigNumber(NaN)).toThrowError('Invalid BigNumber value');
+        });
+
+        it('rejects non-numeric strings', () => {
+          expect(() => new BigNumber('abc')).toThrowError('[BigNumber Error]');
+        });
+
+        it('rejects empty string', () => {
+          expect(() => new BigNumber('')).toThrowError('[BigNumber Error]');
+        });
+
+        it('rejects Infinity', () => {
+          expect(() => new BigNumber(Infinity)).toThrowError(
+            'Infinite values are not permitted in financial operations',
+          );
+        });
+
+        it('rejects negative Infinity', () => {
+          expect(() => new BigNumber(-Infinity)).toThrowError(
+            'Infinite values are not permitted in financial operations',
+          );
+        });
+
+        it('rejects Infinity string', () => {
+          expect(() => new BigNumber('Infinity')).toThrowError(
+            'Infinite values are not permitted in financial operations',
+          );
+        });
+
+        it('rejects -Infinity string', () => {
+          expect(() => new BigNumber('-Infinity')).toThrowError(
+            'Infinite values are not permitted in financial operations',
+          );
+        });
+
+        it('accepts valid numeric strings', () => {
+          expect(new BigNumber('123.456').toFixed()).toBe('123.456');
+        });
+
+        it('accepts valid negative strings', () => {
+          expect(new BigNumber('-99').toFixed()).toBe('-99');
+        });
+      });
+
+      describe('Empty arguments to aggregate functions', () => {
+        it('max() throws with no arguments', () => {
+          expect(() => BigNumber.max()).toThrowError(
+            'BigNumber.max() requires at least one argument',
+          );
+        });
+
+        it('min() throws with no arguments', () => {
+          expect(() => BigNumber.min()).toThrowError(
+            'BigNumber.min() requires at least one argument',
+          );
+        });
+
+        it('sum() throws with no arguments', () => {
+          expect(() => BigNumber.sum()).toThrowError(
+            'BigNumber.sum() requires at least one argument',
+          );
+        });
+
+        it('max() works with single argument', () => {
+          expect(BigNumber.max(5).toFixed()).toBe('5');
+        });
+
+        it('min() works with single argument', () => {
+          expect(BigNumber.min(5).toFixed()).toBe('5');
+        });
+
+        it('sum() works with single argument', () => {
+          expect(BigNumber.sum(5).toFixed()).toBe('5');
+        });
+      });
+
+      describe('fromBytes edge cases', () => {
+        it('fromBytes with empty bytes and isLong=false', () => {
+          const result = BigNumber.fromBytes([], { isLong: false });
+          expect(result.toFixed()).toBe('0');
+        });
+
+        it('roundtrip toBytes/fromBytes for variable-length encoding', () => {
+          const original = new BigNumber(255);
+          const bytes = original.toBytes({ isLong: false, isSigned: false });
+          const restored = BigNumber.fromBytes(bytes, { isLong: false, isSigned: false });
+          expect(restored.toFixed()).toBe('255');
+        });
       });
     });
   });
