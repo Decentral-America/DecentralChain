@@ -48,11 +48,11 @@ describe('Default transformer', () => {
       minSponsoredFee: '0',
     };
     const input = { __type: ApiTypes.Asset, data: assetData };
-    // Since Asset constructor may throw on incomplete data in tests,
-    // we just verify the transformer is invoked without error for null
-    const nullInput = { __type: ApiTypes.Asset, data: null };
-    const nullResult = transformer(nullInput);
-    expect(nullResult).toBeNull();
+    const result = transformer(input);
+    // Asset constructor returns an object with matching id
+    expect(result).toBeDefined();
+    expect(result).not.toBeNull();
+    expect(result.id).toBe('test-asset');
   });
 
   it('returns null for asset type when data is null', () => {
@@ -82,10 +82,7 @@ describe('Default transformer', () => {
       ],
     };
     const result = transformer(input);
-    expect(result).toEqual([
-      { address: 'a', alias: 'b' },
-      { id: 'tx1' },
-    ]);
+    expect(result).toEqual([{ address: 'a', alias: 'b' }, { id: 'tx1' }]);
   });
 
   it('returns null when input is null', () => {
