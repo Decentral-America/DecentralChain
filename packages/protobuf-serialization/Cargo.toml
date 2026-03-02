@@ -4,7 +4,7 @@ version = "1.5.2"
 edition = "2021"
 
 [dependencies]
-tonic = "0.13"
+tonic = "0.14"
 # SECURITY: Do NOT re-enable "no-recursion-limit". It disables stack-overflow
 # protection and allows a malicious deeply-nested message to crash the process.
 prost = "0.14"
