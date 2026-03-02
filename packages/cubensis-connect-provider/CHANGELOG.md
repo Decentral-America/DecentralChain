@@ -3,6 +3,31 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [1.0.1] - 2025-07-25
+
+### Security
+
+- Added `AbortController` timeout (10 s) on `calculateFee` fetch to prevent
+  indefinite hangs.
+- Added HTTPS enforcement warning when node URL is not HTTPS.
+- Added `.catch()` on `CubensisConnect.initialPromise` to prevent unhandled
+  promise rejections in `connect()`.
+- Added `no-console` ESLint rule (`warn` level, allowing `console.warn` and
+  `console.error`).
+- Added `npm audit --audit-level=high` step in CI pipeline.
+
+### Changed
+
+- Removed legacy `@waves` references from JSDoc comments.
+- Removed stale `exclude` entry for deleted `ui.spec.ts` in vitest config.
+- Cleaned up redundant patterns in knip config.
+
+### Added
+
+- Edge-case adapter tests for null/undefined fallback branches.
+- Security-focused tests for HTTPS warning, AbortSignal, and connect rejection.
+- KNOWN_ISSUES.md documenting `@waves/parse-json-bignumber` transitive dep.
+
 ## [1.0.0] - 2026-03-02
 
 ### Changed

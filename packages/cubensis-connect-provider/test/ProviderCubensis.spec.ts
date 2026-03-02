@@ -100,6 +100,16 @@ describe('ProviderCubensis', () => {
 
       await expect(provider.connect(TEST_OPTIONS)).resolves.toBeUndefined();
     });
+
+    it('rejects when initialPromise rejects', async () => {
+      // Override the extension mock to have a rejecting initialPromise
+      (window as unknown as Record<string, unknown>).CubensisConnect = {
+        initialPromise: Promise.reject(new Error('Extension init failed')),
+      };
+
+      const p = new ProviderCubensis();
+      await expect(p.connect(TEST_OPTIONS)).rejects.toThrow('Extension init failed');
+    });
   });
 
   describe('login()', () => {

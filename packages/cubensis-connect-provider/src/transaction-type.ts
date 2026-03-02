@@ -2,7 +2,7 @@
  * @module @decentralchain/provider-cubensis
  *
  * DecentralChain transaction type constants.
- * Inlined from the protocol specification to avoid external @waves dependencies.
+ * Inlined from the DecentralChain protocol specification.
  */
 
 /** Transaction type numeric identifiers for the DecentralChain protocol. */
