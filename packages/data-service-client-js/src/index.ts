@@ -41,15 +41,9 @@ export default class DataServiceClient {
     // Strip trailing slash to prevent double-slash in constructed URLs
     options.rootUrl = options.rootUrl.replace(/\/+$/, '');
     // Add defaults
-    if (!options.transform) {
-      options.transform = defaultTransform;
-    }
-    if (!options.fetch) {
-      options.fetch = defaultFetch;
-    }
-    if (!options.parse) {
-      options.parse = defaultParse;
-    }
+    options.transform ??= defaultTransform;
+    options.fetch ??= defaultFetch;
+    options.parse ??= defaultParse;
 
     // Create methods
     this.getAssets = createGetAssets(options);
