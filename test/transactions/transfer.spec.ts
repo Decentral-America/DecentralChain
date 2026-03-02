@@ -1,18 +1,12 @@
-import {
-  base16Encode,
-  base64Decode,
-  publicKey,
-  verifySignature,
-} from '@decentralchain/ts-lib-crypto';
-import { sponsorship, transfer } from '../../src';
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { transfer } from '../../src';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
-  deleteProofsAndId,
   errorMessageByTemplate,
   validateTxSignature,
 } from '../../test/utils';
-import { sponsorshipMinimalParams, transferMinimalParams } from '../minimalParams';
+import { transferMinimalParams } from '../minimalParams';
 import { transferTx } from './expected/proto/transfer.tx';
 import { transferBinaryTx } from './expected/binary/transfer.tx';
 

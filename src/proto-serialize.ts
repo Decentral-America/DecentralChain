@@ -473,6 +473,9 @@ export const signedTxToProto = (t: TTx): dccProto.waves.ISignedTransaction => {
   const txData = getTxData(t);
 
   return {
+    // NOTE: The protobuf schema defines this field as 'wavesTransaction' for
+    // protocol compatibility. This is a protobuf wire-format name inherited
+    // from the upstream protocol specification, not a branding reference.
     wavesTransaction: {
       ...common,
       [common.data]: txData,

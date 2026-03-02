@@ -47,11 +47,15 @@ export class Seed {
     encryptionRounds = 5000,
   ): string {
     if (password && password.length < 8) {
-      // logger.warn('Your password may be too weak');
+      console.warn(
+        '@decentralchain/transactions: Encryption password is shorter than 8 characters — consider using a stronger password.',
+      );
     }
 
     if (encryptionRounds < 1000) {
-      // logger.warn('Encryption rounds may be too few');
+      console.warn(
+        '@decentralchain/transactions: Encryption rounds below 1000 — brute-force risk is elevated.',
+      );
     }
 
     if (seedPhrase.length < 12) {
@@ -73,7 +77,7 @@ export class Seed {
     try {
       phrase = decryptSeed(encryptedSeedPhrase, password, encryptionRounds);
     } catch (_e) {
-      throw new Error(wrongPasswordMessage);
+      throw new Error(wrongPasswordMessage, { cause: _e });
     }
 
     if (phrase === '' || phrase.length < 12) {

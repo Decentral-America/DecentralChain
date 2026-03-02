@@ -1,10 +1,4 @@
-import {
-  base16Decode,
-  base16Encode,
-  base64Decode,
-  base64Encode,
-  publicKey,
-} from '@decentralchain/ts-lib-crypto';
+import { publicKey } from '@decentralchain/ts-lib-crypto';
 import { alias } from '../../src';
 import { aliasMinimalParams } from '../minimalParams';
 import {
@@ -32,8 +26,11 @@ import { binary } from '@decentralchain/marshall'
 } from '../utils';
 import { aliasTx } from './expected/proto/alias.tx';
 import { aliasBinaryTx } from './expected/binary/alias.tx';
+<<<<<<< HEAD
 import { binary } from '@decentralchain/marshall';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/alias.spec.ts
+=======
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 
 describe('alias', () => {
   const stringSeed = 'adsa';
