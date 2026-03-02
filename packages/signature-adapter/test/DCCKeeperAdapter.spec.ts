@@ -17,7 +17,7 @@ const testAsset = new Asset({
 });
 
 const keeperMock = {
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   auth: async (_data) => ({
     data: 'test',
     prefix: 'DCCWalletAuthentication',
@@ -28,7 +28,7 @@ const keeperMock = {
     signature:
       '3xvbSznhRTgDP5vMSoPpqwVf29hSdDQLFpdbtVaMHCyzuFFEgSodB7MXZTescxcYiVtR9wCgTGmZPWTApMVMg6qP',
   }),
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   signTransaction: async (data) => {
     switch (data.type) {
       case TRANSACTION_TYPE_NUMBER.SPONSORSHIP:
@@ -49,11 +49,11 @@ const keeperMock = {
     }
     return JSON.stringify({ proofs: ['test', 'realProof'] });
   },
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   signOrder: async (_data) => {},
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   signCancelOrder: async (_data) => {},
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   signRequest: async (_data) => {},
   publicState: async () => ({
     locked: false,
@@ -62,9 +62,9 @@ const keeperMock = {
       publicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
     },
   }),
-  //@ts-ignore
+  // @ts-expect-error - mock impl
   on: (_key: string, _cb) => {},
-  initialPromise: Promise.reject(),
+  initialPromise: Promise.resolve() as any,
 };
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;

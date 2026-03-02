@@ -1,22 +1,28 @@
 # @decentralchain/signature-adapter
 
-Unified signing abstraction layer for the DecentralChain wallet.
+[![CI](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@decentralchain/signature-adapter)](https://www.npmjs.com/package/@decentralchain/signature-adapter)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org/)
 
-Provides a common interface for signing transactions using different methods:
+Multi-provider transaction signing adapter for the DecentralChain blockchain.
 
-- **SeedAdapter** — Sign with a seed phrase
-- **LedgerAdapter** — Sign on a Ledger Nano S/X hardware wallet
-- **PrivateKeyAdapter** — Sign with a raw private key
-- **CubensisConnectAdapter** — Sign via the CubensisConnect browser extension
-- **CustomAdapter** — Custom signing implementation
+Provides a unified interface for signing transactions across multiple key-management backends: seed phrases, private keys, Cubensis Connect (browser extension), Ledger hardware wallets, and Tresor hardware wallets.
+
+## Requirements
+
+| Dependency | Version |
+| ---------- | ------- |
+| Node.js    | >= 22   |
+| npm        | >= 10   |
 
 ## Installation
 
 ```bash
-$ npm install --save @decentralchain/signature-adapter
+npm install @decentralchain/signature-adapter
 ```
 
-## Usage
+## Quick Start
 
 ```typescript
 import { SeedAdapter, SIGN_TYPE } from '@decentralchain/signature-adapter';
@@ -58,7 +64,13 @@ signable.getDataForApi().then((data) =>
 
 ## Adapters
 
-Adapters are used to sign data. Available types:
+| Adapter                  | Type                          | Description                  |
+| ------------------------ | ----------------------------- | ---------------------------- |
+| `SeedAdapter`            | `AdapterType.Seed`            | Signs with a seed phrase     |
+| `PrivateKeyAdapter`      | `AdapterType.PrivateKey`      | Signs with a raw private key |
+| `CubensisConnectAdapter` | `AdapterType.CubensisConnect` | Browser extension signing    |
+| `LedgerAdapter`          | `AdapterType.Ledger`          | Ledger hardware wallet       |
+| `TresorAdapter`          | `AdapterType.Tresor`          | Tresor hardware wallet       |
 
 ### SeedAdapter
 
@@ -70,17 +82,7 @@ Object structure:
 - `password` {string} — password that is encrypted seed phrase
 - `encryptionRounds` {number} — encryption complexity
 
-For changing the network byte:
-
-```typescript
-import { Adapter } from '@decentralchain/signature-adapter';
-
-Adapter.initOptions({ networkCode: 'L'.charCodeAt(0) });
-```
-
-_If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters._
-
-Example:
+_Minimum seed phrase length is 15 characters._
 
 ```typescript
 import { SeedAdapter } from '@decentralchain/signature-adapter';
@@ -92,13 +94,9 @@ const adapter = new SeedAdapter('some seed phrase more 15 chars');
 
 Accepts an object containing address and wallet ID in Ledger.
 
-Object structure:
-
 - `publicKey` {string} — public key for the address
 - `address` {string} — address
 - `id` {number} — wallet ID in Ledger
-
-To get objects for creating an instance use the static method `getUserList`:
 
 ```typescript
 import { LedgerAdapter } from '@decentralchain/signature-adapter';
@@ -106,7 +104,17 @@ import { LedgerAdapter } from '@decentralchain/signature-adapter';
 LedgerAdapter.getUserList().then(([userData]) => new LedgerAdapter(userData));
 ```
 
-## Common methods for all adapters
+### Network Configuration
+
+```typescript
+import { Adapter } from '@decentralchain/signature-adapter';
+
+Adapter.initOptions({ networkCode: 'L'.charCodeAt(0) });
+```
+
+## Common Adapter API
+
+All adapters implement a shared interface:
 
 - `isAvailable(): Promise<void>` — Returns promise which errors if the adapter is unavailable
 - `getPublicKey(): Promise<string>` — Returns a public key
@@ -133,6 +141,26 @@ LedgerAdapter.getUserList().then(([userData]) => new LedgerAdapter(userData));
 - `addMyProof(): Promise<string>` — Adds own signature if not present
 - `getDataForApi(): Promise<object>` — Returns node-ready data with signatures
 
+## Utilities
+
+```typescript
+import {
+  getAvailableList,
+  getAdapterByType,
+  isValidAddress,
+  AdapterType,
+} from '@decentralchain/signature-adapter';
+
+// Get all available adapter classes
+const adapters = await getAvailableList();
+
+// Get adapter class by type
+const AdapterClass = getAdapterByType(AdapterType.Seed);
+
+// Validate a blockchain address
+const valid = isValidAddress('3P...');
+```
+
 ## Chain IDs
 
 | Network | Byte | Char |
@@ -140,15 +168,58 @@ LedgerAdapter.getUserList().then(([userData]) => new LedgerAdapter(userData));
 | Mainnet | 76   | L    |
 | Testnet | 84   | T    |
 
-## Dependencies
+## Package Outputs
 
-- `@decentralchain/bignumber`
-- `@decentralchain/ts-types`
-- `@decentralchain/data-entities`
-- `@decentralchain/ledger`
-- `@decentralchain/money-like-to-node`
-- `@decentralchain/waves-transactions`
+| Format | Entry            | Types              |
+| ------ | ---------------- | ------------------ |
+| ESM    | `dist/index.mjs` | `dist/index.d.ts`  |
+| CJS    | `dist/index.cjs` | `dist/index.d.cts` |
+
+## Development
+
+```bash
+git clone https://github.com/Decentral-America/dcc-signature-adapter.git
+cd dcc-signature-adapter
+npm install
+```
+
+### Scripts
+
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `npm run build`         | Build with tsup (ESM + CJS)          |
+| `npm test`              | Run tests with Vitest                |
+| `npm run test:watch`    | Tests in watch mode                  |
+| `npm run test:coverage` | Tests with V8 coverage               |
+| `npm run typecheck`     | TypeScript type checking             |
+| `npm run lint`          | ESLint                               |
+| `npm run lint:fix`      | ESLint with auto-fix                 |
+| `npm run format`        | Format with Prettier                 |
+| `npm run format:check`  | Check formatting                     |
+| `npm run validate`      | Full CI validation pipeline          |
+| `npm run bulletproof`   | Format + lint fix + typecheck + test |
+| `npm run check:publint` | Validate package.json exports        |
+| `npm run check:exports` | Verify export map resolution         |
+| `npm run check:size`    | Bundle size check                    |
+
+### Quality Gates
+
+- **TypeScript** strict mode with all flags enabled
+- **ESLint** type-aware rules (strict + stylistic)
+- **Prettier** consistent formatting
+- **Vitest** with V8 coverage thresholds
+- **publint** + **attw** package validation
+- **size-limit** bundle size enforcement
+- **Husky** pre-commit hooks
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Security
+
+See [SECURITY.md](./SECURITY.md).
 
 ## License
 
-MIT
+[MIT](./LICENSE) © DecentralChain

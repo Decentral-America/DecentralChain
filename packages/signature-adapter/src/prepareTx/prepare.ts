@@ -1,4 +1,4 @@
-import { Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
+import { type Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
 import { libs } from '@decentralchain/waves-transactions';
 import { VALIDATORS } from './fieldValidator';
@@ -11,7 +11,7 @@ const normalizeAssetId = (id) => (id === DCC_ID ? '' : id);
 
 interface ICall {
   function: string;
-  args?: Array<any>;
+  args?: any[];
 }
 
 export namespace prepare {
@@ -23,11 +23,11 @@ export namespace prepare {
 
       return {
         function: (callData && callData.function) || '',
-        args: (callData && callData.args) || [],
+        args: (callData?.args) || [],
       };
     }
 
-    export function payments(payments: Array<Money>) {
+    export function payments(payments: Money[]) {
       return (payments || []).map((pay) => {
         return {
           amount: toBigNumber(pay).toString(),
@@ -36,7 +36,7 @@ export namespace prepare {
       });
     }
 
-    export function paymentsToNode(payments: Array<Money>) {
+    export function paymentsToNode(payments: Money[]) {
       return (payments || []).map((pay) => {
         return {
           amount: toBigNumber(pay),
@@ -69,7 +69,7 @@ export namespace prepare {
           if (some instanceof BigNumber) {
             return some;
           } else {
-            return (some as Money).getCoins();
+            return (some).getCoins();
           }
       }
     }
@@ -116,7 +116,7 @@ export namespace prepare {
       return data.length <= 30 ? `alias:${networkByte}:${data}` : data;
     };
 
-    export function attachment(data: string | Array<number> | Uint8Array) {
+    export function attachment(data: string | number[] | Uint8Array) {
       data = data || '';
       let value = data;
 
@@ -177,7 +177,7 @@ export namespace prepare {
     if (!Array.isArray(fromKey)) {
       return data[fromKey];
     }
-    return data[fromKey.find((key) => data[key]) || fromKey[0]];
+    return data[(fromKey.find((key) => data[key]) ?? fromKey[0])!];
   };
 
   export interface IWrappedFunction {
@@ -186,7 +186,7 @@ export namespace prepare {
     cb: Function;
   }
 
-  export function schema(...args: Array<IWrappedFunction | string>) {
+  export function schema(...args: (IWrappedFunction | string)[]) {
     //@ts-ignore
     return (data) =>
       args
@@ -209,21 +209,21 @@ export namespace prepare {
 
   //@ts-ignore
   export function signSchema(
-    args: Array<{
+    args: {
       name: any;
       field: any;
       processor: any;
       optional: any;
       type: any;
       optionalData: any;
-    }>,
+    }[],
   ) {
     //@ts-ignore
     return (data, validate = false) => {
-      const errors: Array<any> = [];
+      const errors: any[] = [];
       const prepareData = args
         .map((item) => {
-          const wrapped = <IWrappedFunction>(
+          const wrapped = (
             wrap(item.name, item.field, item.processor || processors.noProcess)
           );
           const value = wrapped.from ? findValue(wrapped.from, data) : data;

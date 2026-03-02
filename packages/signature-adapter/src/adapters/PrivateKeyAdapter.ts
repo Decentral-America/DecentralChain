@@ -1,5 +1,5 @@
-import { Adapter, IPrivateKeyUser, IUser } from './Adapter';
-import { AdapterType } from '../config';
+import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
+import { AdapterType } from '../adapterType';
 import { seedUtils, libs } from '@decentralchain/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
@@ -8,10 +8,10 @@ const address = libs.crypto.address;
 const signWithPrivateKey = libs.crypto.signBytes;
 
 export class PrivateKeyAdapter extends Adapter {
-  private privateKey: string = '';
-  private address: string = '';
-  private publicKey: string = '';
-  public static type = AdapterType.PrivateKey;
+  private privateKey = '';
+  private address = '';
+  private publicKey = '';
+  public static override type = AdapterType.PrivateKey;
 
   constructor(data: string | IUser, networkCode?: string | number) {
     super(networkCode);
@@ -33,7 +33,7 @@ export class PrivateKeyAdapter extends Adapter {
     this._isDestroyed = false;
   }
 
-  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+  public getSignVersions(): Record<SIGN_TYPE, number[]> {
     return {
       [SIGN_TYPE.AUTH]: [1],
       [SIGN_TYPE.MATCHER_ORDERS]: [1],
@@ -107,7 +107,7 @@ export class PrivateKeyAdapter extends Adapter {
     return Promise.resolve(signWithPrivateKey({ privateKey: this.privateKey }, bytes));
   }
 
-  public static isAvailable() {
+  public static override isAvailable() {
     return Promise.resolve(true);
   }
 }

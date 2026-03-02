@@ -1,6 +1,6 @@
-import { SIGN_TYPE } from './constants';
-import { Money } from '@decentralchain/data-entities';
-import { BigNumber } from '@decentralchain/bignumber';
+import { type SIGN_TYPE } from './constants';
+import { type Money } from '@decentralchain/data-entities';
+import { type BigNumber } from '@decentralchain/bignumber';
 
 export interface IARGS_ENTRY {
   type: string;
@@ -134,7 +134,7 @@ export interface IScriptInvocation extends ICreateTxData {
   dApp: string;
   call: {
     function: string;
-    args?: Array<IARGS_ENTRY>;
+    args?: IARGS_ENTRY[];
   } | null;
 }
 
@@ -144,19 +144,19 @@ export interface IAuthData {
   data: string;
   timestamp?: number;
   version?: number;
-  proofs?: Array<string>;
+  proofs?: string[];
 }
 
 export interface ICoinomatData {
   timestamp: number;
   version?: number;
-  proofs?: Array<string>;
+  proofs?: string[];
 }
 
 export interface IGetOrders {
   timestamp: number;
   version?: number;
-  proofs?: Array<string>;
+  proofs?: string[];
 }
 
 export interface ICreateOrder {
@@ -169,7 +169,7 @@ export interface ICreateOrder {
   expiration: number;
   matcherFee: string;
   timestamp: number;
-  proofs?: Array<string>;
+  proofs?: string[];
   version?: number;
 }
 
@@ -177,14 +177,14 @@ export interface ICancelOrder {
   orderId: string;
   version?: number;
   timestamp?: number;
-  proofs?: Array<string>;
+  proofs?: string[];
 }
 
 export interface ICreateTxData {
   fee: Money;
   timestamp: number;
   sender?: string;
-  proofs?: Array<string>;
+  proofs?: string[];
   version?: number;
 }
 
@@ -251,7 +251,7 @@ export interface IMassTransfer extends ICreateTxData {
    */
   totalAmount: Money;
   assetId: string;
-  transfers: Array<{ recipient: string; amount: string | number | BigNumber | Money }>;
+  transfers: { recipient: string; amount: string | number | BigNumber | Money }[];
   attachment?: string;
 }
 
@@ -262,7 +262,7 @@ export interface IDATA_ENTRY {
 }
 
 export interface IData extends ICreateTxData {
-  data: Array<IDATA_ENTRY>;
+  data: IDATA_ENTRY[];
   fee: Money;
 }
 

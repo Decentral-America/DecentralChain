@@ -1,39 +1,69 @@
 {
   "name": "@decentralchain/signature-adapter",
-  "version": "6.1.7",
-  "types": "dist/index.d.ts",
-  "main": "dist/index.js",
-  "license": "MIT",
-  "repository": {
-    "type": "GIT",
-    "url": "https://github.com/Decentral-America/dcc-signature-adapter"
+  "version": "7.0.0",
+  "description": "Multi-provider transaction signing adapter for DecentralChain blockchain",
+  "type": "module",
+  "packageManager": "npm@11.6.2",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
-  "dependencies": {
-    "@decentralchain/bignumber": "npm:@waves/bignumber@^1.0.0",
-    "@decentralchain/data-entities": "npm:@waves/data-entities@^2.0.3",
-    "@decentralchain/ledger": "npm:@waves/ledger@^4.0.0",
-    "@decentralchain/money-like-to-node": "npm:@waves/money-like-to-node@0.1.3",
-    "@decentralchain/ts-types": "npm:@waves/ts-types@^0.2.0",
-    "@decentralchain/waves-transactions": "4.2.3",
-    "@types/ramda": "0.25.34",
-    "ramda": "^0.25.0"
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/dcc-signature-adapter.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/dcc-signature-adapter#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/dcc-signature-adapter/issues"
   },
   "scripts": {
-    "test": "jest",
-    "compile": "tsc",
-    "browserify": "node_modules/.bin/browserify dist/index.js -s dccSignatureAdapter -u @decentralchain/waves-crypto -u @decentralchain/bignumber -u @decentralchain/waves-transactions -u @decentralchain/data-entities -u @decentralchain/marshall -u @decentralchain/ledger -o dist/signature-adapter.js",
-    "build": "npm run compile && npm run browserify && npm run uglify",
-    "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
-    "postpublish": "git push origin HEAD",
-    "postversion": "npm publish",
-    "prepare": "husky",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit 2>&1 | grep -v 'node_modules/' | grep -v '^$'; if tsc --noEmit 2>&1 | grep -v 'node_modules/' | grep -q 'error TS'; then exit 1; fi",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
   },
   "lint-staged": {
     "*.ts": [
@@ -44,42 +74,51 @@
       "prettier --write"
     ]
   },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/jest": "^29.5.0",
-    "@types/node": "^14.18.63",
-    "@types/node-fetch": "^2.5.5",
-    "browserify": "^16.5.1",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "jest": "^29.7.0",
-    "lint-staged": "^16.3.1",
-    "node-fetch": "^2.6.1",
-    "prettier": "^3.8.1",
-    "ts-jest": "^29.1.0",
-    "typescript": "^5.4.0",
-    "typescript-eslint": "^8.56.1",
-    "uglify-js": "^3.4.7"
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "150 kB"
+    }
+  ],
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "signature",
+    "adapter",
+    "ledger",
+    "transaction",
+    "blockchain",
+    "signing",
+    "wallet"
+  ],
+  "author": "DecentralChain",
+  "license": "MIT",
+  "dependencies": {
+    "@decentralchain/bignumber": "npm:@waves/bignumber@^1.0.0",
+    "@decentralchain/data-entities": "npm:@waves/data-entities@^2.0.3",
+    "@decentralchain/ledger": "npm:@waves/ledger@^4.0.0",
+    "@decentralchain/money-like-to-node": "npm:@waves/money-like-to-node@0.1.3",
+    "@decentralchain/ts-types": "npm:@waves/ts-types@^0.2.0",
+    "@decentralchain/waves-transactions": "4.2.3",
+    "ramda": "^0.30.1"
   },
-  "jest": {
-    "collectCoverage": true,
-    "testEnvironment": "jest-environment-node",
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "testMatch": [
-      "**/test/tests_*.+(ts|tsx|js)"
-    ]
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@types/ramda": "0.30.2",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }

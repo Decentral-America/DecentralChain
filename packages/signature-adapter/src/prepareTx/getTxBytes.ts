@@ -1,4 +1,4 @@
-import { SIGN_TYPE, SIGN_TYPES, TSignData } from './';
+import { type SIGN_TYPE, SIGN_TYPES, type TSignData } from './';
 import { getValidateSchema } from './schemas';
 import { prepare } from './prepare';
 
@@ -15,6 +15,6 @@ export default function (forSign: TSignData, networkByte: number): Uint8Array {
   };
 
   const convert = SIGN_TYPES[forSign.type as SIGN_TYPE].toNode || null;
-  const signData = (convert && convert(dataForBytes, networkByte)) || dataForBytes;
-  return SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[Number(version)](signData);
+  const signData = (convert?.(dataForBytes, networkByte)) || dataForBytes;
+  return SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[Number(version)]!(signData);
 }
