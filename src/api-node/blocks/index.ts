@@ -1,5 +1,6 @@
 import { type TLong } from '../../interface';
 import request from '../../tools/request';
+import { pathSegment } from '../../tools/utils';
 import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 
 /**
@@ -13,11 +14,11 @@ export function fetchHeadersSeq(
   base: string,
   from: number,
   to: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlockHeader[]> {
   return request({
     base,
-    url: `/blocks/headers/seq/${from}/${to}`,
+    url: `/blocks/headers/seq/${pathSegment(from)}/${pathSegment(to)}`,
     options,
   });
 }
@@ -29,7 +30,7 @@ export function fetchHeadersSeq(
  */
 export function fetchHeadersLast(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlockHeader> {
   return request({
     base,
@@ -47,7 +48,7 @@ export function fetchHeadersLast(
 export function fetchHeightById(base: string, id: string): Promise<{ height: number }> {
   return request({
     base,
-    url: `/blocks/height/${id}`,
+    url: `/blocks/height/${pathSegment(id)}`,
   });
 }
 
@@ -60,11 +61,11 @@ export function fetchHeightById(base: string, id: string): Promise<{ height: num
 export function fetchHeadersAt(
   base: string,
   height: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlockHeader> {
   return request({
     base,
-    url: `/blocks/headers/at/${height}`,
+    url: `/blocks/headers/at/${pathSegment(height)}`,
     options,
   });
 }
@@ -78,11 +79,11 @@ export function fetchHeadersAt(
 export function fetchHeadersById(
   base: string,
   id: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/headers/${id}`,
+    url: `/blocks/headers/${pathSegment(id)}`,
     options,
   });
 }
@@ -96,11 +97,11 @@ export function fetchHeadersById(
 export function fetchBlockAt(
   base: string,
   height: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/at/${height}`,
+    url: `/blocks/at/${pathSegment(height)}`,
     options,
   });
 }
@@ -116,11 +117,11 @@ export function fetchSeq(
   base: string,
   from: number,
   to: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock[]> {
   return request({
     base,
-    url: `/blocks/seq/${from}/${to}`,
+    url: `/blocks/seq/${pathSegment(from)}/${pathSegment(to)}`,
     options,
   });
 }
@@ -134,11 +135,11 @@ export function fetchSeq(
 export function fetchBlockById(
   base: string,
   id: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/${id}`,
+    url: `/blocks/${pathSegment(id)}`,
     options,
   });
 }
@@ -150,7 +151,7 @@ export function fetchBlockById(
  */
 export function fetchFirst(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock> {
   return request({
     base,
@@ -172,11 +173,11 @@ export function fetchBlocksByAddress(
   address: string,
   from: number,
   to: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock[]> {
   return request({
     base,
-    url: `/blocks/address/${address}/${from}/${to}`,
+    url: `/blocks/address/${pathSegment(address)}/${pathSegment(from)}/${pathSegment(to)}`,
     options,
   });
 }
@@ -188,7 +189,7 @@ export function fetchBlocksByAddress(
  */
 export function fetchLast(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlock> {
   return request({
     base,
@@ -207,7 +208,7 @@ export function fetchLast(
 export function fetchDelay(base: string, id: string, blockNum: number): Promise<{ delay: number }> {
   return request({
     base,
-    url: `/blocks/delay/${id}/${blockNum}`,
+    url: `/blocks/delay/${pathSegment(id)}/${pathSegment(blockNum)}`,
   });
 }
 
@@ -229,11 +230,11 @@ export function fetchHeight(base: string): Promise<{ height: number }> {
 export function fetchHeightByTimestamp(
   base: string,
   timestamp: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<{ height: number }> {
   return request({
     base,
-    url: `/blocks/heightByTimestamp/${timestamp}`,
+    url: `/blocks/heightByTimestamp/${pathSegment(timestamp)}`,
     options,
   });
 }

@@ -5,14 +5,14 @@ import request from '../../tools/request';
 
 export function fetchNodeStatus(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<INodeStatus> {
   return request({ base, url: '/node/status', options });
 }
 
 export function fetchNodeVersion(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<INodeVersion> {
   return request({ base, url: '/node/version', options });
 }

@@ -7,7 +7,7 @@ import {
   type WithApiMixin,
 } from '@decentralchain/ts-types';
 import request from '../../tools/request';
-import { toArray } from '../../tools/utils';
+import { pathSegment, toArray } from '../../tools/utils';
 
 /**
  * GET /assets/details/{assetId}
@@ -26,18 +26,23 @@ export function fetchDetails(
 export function fetchDetails<T extends string | string[]>(
   base: string,
   assetId: T,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TAssetDetails | TAssetDetails[]> {
   const isOnce = !Array.isArray(assetId);
   return Promise.all(
     toArray(assetId).map((id) =>
       request<TAssetDetails>({
         base,
-        url: `/assets/details/${id}`,
+        url: `/assets/details/${pathSegment(id)}`,
         options,
       }),
     ),
-  ).then((list) => (isOnce ? list[0]! : list));
+  ).then((list) => {
+    if (!isOnce) return list;
+    const first = list[0];
+    if (!first) throw new Error('Expected asset details');
+    return first;
+  });
 }
 
 /**
@@ -47,15 +52,15 @@ export function fetchDetails<T extends string | string[]>(
 export function fetchAssetsDetails(
   base: string,
   assetIds: string[],
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<(TAssetDetails | TErrorResponse)[]> {
-  const params = assetIds.map((assetId) => `id=${assetId}`).join('&');
+  const params = assetIds.map((assetId) => `id=${encodeURIComponent(assetId)}`).join('&');
 
-  const query = assetIds.length ? `?${params}` : '';
+  const queryStr = assetIds.length ? `?${params}` : '';
 
   return request<(TAssetDetails | TErrorResponse)[]>({
     base,
-    url: `/assets/details${query}`,
+    url: `/assets/details${queryStr}`,
     options,
   });
 }
@@ -65,11 +70,11 @@ export function fetchAssetDistribution(
   assetId: string,
   height: number,
   limit: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IAssetDistribution> {
   return request({
     base,
-    url: `/assets/${assetId}/distribution/${height}/limit/${limit}`,
+    url: `/assets/${pathSegment(assetId)}/distribution/${pathSegment(height)}/limit/${pathSegment(limit)}`,
     options,
   });
 }
@@ -84,9 +89,9 @@ export function fetchAssetsAddressLimit(
   base: string,
   address: string,
   limit: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TAssetDetails[]> {
-  return request({ base, url: `/assets/nft/${address}/limit/${limit}`, options });
+  return request({ base, url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}`, options });
 }
 
 /**
@@ -103,25 +108,21 @@ interface IFetchAssetsNftParams {
 export function fetchAssetsNft(
   base: string,
   { address, limit, after }: IFetchAssetsNftParams,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TAssetDetails[]> {
-  const url = new URL(`assets/nft/${address}/limit/${limit}`, base);
+  const afterQuery = after ? `?after=${encodeURIComponent(after)}` : '';
 
-  if (after) {
-    url.searchParams.append('after', after);
-  }
-
-  return request({ base, url: `${url.pathname}${url.search}`, options });
+  return request({ base, url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}${afterQuery}`, options });
 }
 
 export async function fetchAssetsBalance(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TAssetsBalance> {
   const balancesResponse = await request<TAssetsBalance>({
     base,
-    url: `/assets/balance/${address}`,
+    url: `/assets/balance/${pathSegment(address)}`,
     options,
   });
 
@@ -173,7 +174,7 @@ export async function fetchAssetsBalance(
       version: 3,
       type: TRANSACTION_TYPE.ISSUE,
       chainId: 0,
-    } as any;
+    } as unknown as NonNullable<TAssetBalance['issueTransaction']>;
   });
 
   return balancesResponse;
@@ -183,9 +184,9 @@ export function fetchBalanceAddressAssetId(
   base: string,
   address: string,
   assetId: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceAddressAssetId> {
-  return request({ base, url: `/assets/balance/${address}/${assetId}`, options });
+  return request({ base, url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`, options });
 }
 
 export interface IAssetDistribution {
@@ -212,7 +213,7 @@ export interface TAssetBalance<LONG = TLong> {
   minSponsoredAssetFee: LONG | null;
   sponsorBalance: LONG | null;
   quantity: LONG;
-  issueTransaction: SignedTransaction<IssueTransaction & WithApiMixin>;
+  issueTransaction?: SignedTransaction<IssueTransaction & WithApiMixin> | undefined;
 }
 
 export interface TAssetDetails<LONG = TLong> {

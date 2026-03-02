@@ -1,17 +1,18 @@
 import { type TLong } from '../../interface';
 import request from '../../tools/request';
 import query from '../../tools/query';
+import { pathSegment } from '../../tools/utils';
 import { type DataTransactionEntry } from '@decentralchain/ts-types';
 
 export function fetchDataKey(
   base: string,
   address: string,
   key: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<DataTransactionEntry<TLong>> {
   return request({
     base,
-    url: `/addresses/data/${address}/${encodeURIComponent(key)}`,
+    url: `/addresses/data/${pathSegment(address)}/${encodeURIComponent(key)}`,
     options,
   });
 }
@@ -22,18 +23,18 @@ export function fetchScriptInfoMeta(
 ): Promise<IScriptInfoMetaResponse> {
   return request({
     base,
-    url: `/addresses/scriptInfo/${address}/meta`,
+    url: `/addresses/scriptInfo/${pathSegment(address)}/meta`,
   });
 }
 
 export function fetchBalanceDetails(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceDetails<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/details/${address}`,
+    url: `/addresses/balance/details/${pathSegment(address)}`,
     options,
   });
 }
@@ -42,11 +43,11 @@ export function fetchBalanceConfirmations(
   base: string,
   address: string,
   confirmations: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/${address}/${confirmations}`,
+    url: `/addresses/balance/${pathSegment(address)}/${pathSegment(confirmations)}`,
     options,
   });
 }
@@ -54,11 +55,11 @@ export function fetchBalanceConfirmations(
 export function fetchScriptInfo(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IScriptInfo> {
   return request({
     base,
-    url: `/addresses/scriptInfo/${address}`,
+    url: `/addresses/scriptInfo/${pathSegment(address)}`,
     options,
   });
 }
@@ -66,12 +67,12 @@ export function fetchScriptInfo(
 export function data(
   base: string,
   address: string,
-  params: IDataQueryParams = Object.create(null),
-  options: RequestInit = Object.create(null),
+  params: IDataQueryParams = {},
+  options: RequestInit = {},
 ): Promise<DataTransactionEntry<TLong>[]> {
   return request({
     base,
-    url: `/addresses/data/${address}${query(params)}`,
+    url: `/addresses/data/${pathSegment(address)}${query(params)}`,
     options,
   });
 }
@@ -79,18 +80,18 @@ export function data(
 export function fetchValidate(base: string, address: string): Promise<IValidateResponse> {
   return request({
     base,
-    url: `/addresses/validate/${address}`,
+    url: `/addresses/validate/${pathSegment(address)}`,
   });
 }
 
 export function fetchBalance(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/${address}`,
+    url: `/addresses/balance/${pathSegment(address)}`,
     options,
   });
 }
@@ -99,11 +100,11 @@ export function fetchEffectiveBalanceConfirmations(
   base: string,
   address: string,
   confirmations: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/effectiveBalance/${address}/${confirmations}`,
+    url: `/addresses/effectiveBalance/${pathSegment(address)}/${pathSegment(confirmations)}`,
     options,
   });
 }
@@ -111,11 +112,11 @@ export function fetchEffectiveBalanceConfirmations(
 export function fetchEffectiveBalance(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/effectiveBalance/${address}`,
+    url: `/addresses/effectiveBalance/${pathSegment(address)}`,
     options,
   });
 }
@@ -123,21 +124,26 @@ export function fetchEffectiveBalance(
 export function fetchSeq(base: string, from: number, to: number): Promise<string[]> {
   return request({
     base,
-    url: `/addresses/seq/${from}/${to}`,
+    url: `/addresses/seq/${pathSegment(from)}/${pathSegment(to)}`,
   });
 }
 
+/**
+ * @deprecated SECURITY WARNING: This endpoint exposes the wallet seed over the network.
+ * It requires the node's API key and should NEVER be called against production nodes.
+ * Prefer local key management. Will be removed in a future major version.
+ */
 export function fetchSeed(base: string, address: string): Promise<string> {
   return request({
     base,
-    url: `/addresses/seed/${address}`,
+    url: `/addresses/seed/${pathSegment(address)}`,
   });
 }
 
 export function fetchPublicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
   return request({
     base,
-    url: `/addresses/publicKey/${publicKey}`,
+    url: `/addresses/publicKey/${pathSegment(publicKey)}`,
   });
 }
 

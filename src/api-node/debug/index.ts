@@ -1,6 +1,7 @@
 import request from '../../tools/request';
 import { type TLong } from '../../interface';
 import query from '../../tools/query';
+import { pathSegment } from '../../tools/utils';
 import {
   type AssetDecimals,
   type DataTransactionEntry,
@@ -16,11 +17,11 @@ import {
 export function fetchBalanceHistory(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBalanceHistory[]> {
   return request({
     base,
-    url: `/debug/balances/history/${address}`,
+    url: `/debug/balances/history/${pathSegment(address)}`,
     options,
   });
 }
@@ -102,11 +103,11 @@ export function fetchStateChangesByAddress(
   address: string,
   limit: number,
   after?: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<(Transaction<TLong> & WithId & IWithStateChanges)[]> {
   return request({
     base,
-    url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,
+    url: `/debug/stateChanges/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
     options,
   });
 }
@@ -119,11 +120,11 @@ export function fetchStateChangesByAddress(
 export function fetchStateChangesByTxId(
   base: string,
   txId: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
   return request({
     base,
-    url: `/debug/stateChanges/info/${txId}`,
+    url: `/debug/stateChanges/info/${pathSegment(txId)}`,
     options,
   });
 }

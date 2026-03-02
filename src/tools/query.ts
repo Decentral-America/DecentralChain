@@ -6,9 +6,12 @@ import { toArray } from './utils';
  * All keys and values are percent-encoded via `encodeURIComponent` to prevent
  * query-string injection (e.g. values containing `&`, `=`, or `#`).
  */
-export default function <T extends Record<string, any>>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- required for contravariant parameter matching with object literals
+type Params = Record<string, any>;
+
+export default function <T extends Params>(
   params: T,
-  evolver: TEvolver<T> = Object.create(null),
+  evolver: TEvolver<T> = {},
 ): string {
   const query = Object.keys(params)
     .map<[keyof T, T[keyof T]]>((key) => [key as keyof T, params[key] as T[keyof T]])
@@ -28,6 +31,6 @@ export default function <T extends Record<string, any>>(
   return query.length ? `?${query}` : '';
 }
 
-type TEvolver<T extends Record<string, any>> = {
+type TEvolver<T extends Params> = {
   [Key in keyof T]?: (value: T[Key]) => string | undefined;
 };

@@ -1,5 +1,5 @@
 export type TLong = string | number;
 
 export interface IWithApplicationStatus {
-  applicationStatus?: 'succeed' | 'script_execution_failed';
+  applicationStatus?: 'succeeded' | 'script_execution_failed';
 }

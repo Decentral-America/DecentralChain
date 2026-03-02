@@ -19,16 +19,14 @@ for (let i = 0; i < ALPHABET.length; i++) {
   ALPHABET_MAP[char] = i;
 }
 
-function base58Decode(string: string): Uint8Array {
-  if (string.length === 0) {
+function base58Decode(input: string): Uint8Array {
+  if (input.length === 0) {
     return new Uint8Array(0);
   }
-  let carry: number, j: number;
-  let i: number;
   const bytes: number[] = [0];
-  i = 0;
-  while (i < string.length) {
-    const c = string[i]!;
+
+  for (let i = 0; i < input.length; i++) {
+    const c = input.charAt(i);
     const charValue = ALPHABET_MAP[c];
     if (charValue === undefined) {
       throw new Error(
@@ -37,28 +35,23 @@ function base58Decode(string: string): Uint8Array {
           "' is not in the Base58 alphabet.",
       );
     }
-    j = 0;
-    while (j < bytes.length) {
-      bytes[j]! *= 58;
-      j++;
+    for (let j = 0; j < bytes.length; j++) {
+      bytes[j] = (bytes[j] ?? 0) * 58;
     }
-    bytes[0]! += charValue;
-    carry = 0;
-    j = 0;
-    while (j < bytes.length) {
-      bytes[j]! += carry;
-      carry = bytes[j]! >> 8;
-      bytes[j]! &= 0xff;
-      ++j;
+    bytes[0] = (bytes[0] ?? 0) + charValue;
+    let carry = 0;
+    for (let j = 0; j < bytes.length; j++) {
+      const sum = (bytes[j] ?? 0) + carry;
+      carry = sum >> 8;
+      bytes[j] = sum & 0xff;
     }
-    while (carry) {
+    while (carry > 0) {
       bytes.push(carry & 0xff);
       carry >>= 8;
     }
-    i++;
   }
-  i = 0;
-  while (string[i] === '1' && i < string.length - 1) {
+  let i = 0;
+  while (input[i] === '1' && i < input.length - 1) {
     bytes.push(0);
     i++;
   }

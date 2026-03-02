@@ -44,14 +44,17 @@ type BroadcastWrapped = {
   ): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>;
 };
 
-type TWrapRecord<T extends Record<string, (base: string, ...args: any[]) => any>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- required for contravariant function parameter matching
+type ApiFunction = (base: string, ...args: any[]) => any;
+
+type TWrapRecord<T extends Record<string, ApiFunction>> = {
   [Key in keyof T]: TWrapApi<T[Key]>;
 };
-type TWrapApi<T extends (base: string, ...args: any[]) => any> = T extends (
+type TWrapApi<T extends ApiFunction> = T extends (
   base: string,
   ...args: infer NEXT
-) => any
-  ? (...args: NEXT) => ReturnType<T>
+) => infer R
+  ? (...args: NEXT) => R
   : never;
 
 export function create(base: string) {
@@ -112,7 +115,7 @@ export function create(base: string) {
   };
 }
 
-function wrapRecord<T extends Record<string, (base: string, ...args: any[]) => any>>(
+function wrapRecord<T extends Record<string, ApiFunction>>(
   base: string,
   hash: T,
 ): TWrapRecord<T> {
@@ -122,9 +125,9 @@ function wrapRecord<T extends Record<string, (base: string, ...args: any[]) => a
   }, {} as TWrapRecord<T>);
 }
 
-function wrapRequest<T extends (base: string, ...args: any[]) => any>(
+function wrapRequest<T extends ApiFunction>(
   base: string,
   callback: T,
 ): TWrapApi<T> {
-  return callback.bind(null, base) as any;
+  return callback.bind(null, base) as TWrapApi<T>;
 }

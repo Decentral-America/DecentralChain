@@ -16,10 +16,10 @@ const DEFAULT_BROADCAST_OPTIONS: IOptions = {
   requestInterval: 0,
 };
 
-export type TMap<MAP extends Record<string | number, any>, Key extends keyof MAP> = MAP[Key];
+export type TMap<MAP extends Record<string | number, unknown>, Key extends keyof MAP> = MAP[Key];
 export type TMapTuple<
-  T extends Record<string | number, any>[],
-  TO_MAP extends Record<string | number, Record<string | number, any>>,
+  T extends Record<string | number, unknown>[],
+  TO_MAP extends Record<string | number, Record<string | number, unknown>>,
   KEY,
 > = {
   [K in keyof T]: KEY extends keyof T[K]
@@ -44,8 +44,8 @@ export default function (
   base: string,
   list: SignedTransaction<Transaction<TLong>> | SignedTransaction<Transaction<TLong>>[],
   options?: Partial<IOptions>,
-): Promise<any> {
-  const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options || {}) };
+): Promise<unknown> {
+  const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options ?? {}) };
   const isOnce = !Array.isArray(list);
   const confirmations = opt.confirmations > 0 ? 1 : 0;
 
@@ -55,7 +55,14 @@ export default function (
       : simpleBroadcast(base, toArray(list))
   )
     .then((list) => (opt.confirmations <= 0 ? list : wait(base, list, opt)))
-    .then((list) => (isOnce ? head(list)! : list));
+    .then((list) => {
+      if (isOnce) {
+        const first = head(list);
+        if (!first) throw new Error('Expected at least one broadcast result');
+        return first;
+      }
+      return list;
+    });
 }
 
 type TWithApiMixinList<T> = T extends Transaction<TLong>[]

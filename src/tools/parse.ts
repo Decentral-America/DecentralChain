@@ -3,13 +3,20 @@
  * that risk IEEE-754 precision loss, and wraps them in quotes so they survive
  * JSON.parse as strings rather than being silently truncated.
  *
- * Pattern breakdown:
- *   ("\w+"):\s*           — the JSON key in quotes, followed by colon + optional whitespace
- *   (-?\d{14,}(?:\.\d+)?) — large integer (14+ digits) with optional decimal part
- *   (-?\d+\.\d{14,})      — OR a decimal whose fractional part has 14+ digits
+ * Two patterns are applied:
+ *
+ * 1. Keyed values — `"key": 12345678901234567`
+ *    Pattern: ("\w+"):\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})
+ *
+ * 2. Bare values in arrays / top-level — `[12345678901234567]` or `[1, 12345678901234567]`
+ *    Pattern: (?<=[[,])\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})
+ *    Uses a lookbehind for `[` or `,` so it only matches array elements.
  */
-const reg = /("\w+"):\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})(?=\s*[,}\]])/g;
+const keyedReg = /("\w+"):\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})(?=\s*[,}\]])/g;
+const bareReg = /(?<=[[,])\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})(?=\s*[,\]])/g;
 
 export default function (json: string): unknown {
-  return JSON.parse(json.replace(reg, '$1:"$2"')) as unknown;
+  return JSON.parse(
+    json.replace(keyedReg, '$1:"$2"').replace(bareReg, (match, num: string) => match.replace(num, `"${num}"`)),
+  ) as unknown;
 }

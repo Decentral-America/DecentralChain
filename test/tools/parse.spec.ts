@@ -48,4 +48,25 @@ describe('parse – large-number preservation', () => {
     expect(result[0].fee).toBe(100000);
     expect(result[0].amount).toBe('99999999999999999');
   });
+
+  it('preserves bare large numbers in arrays (no key)', () => {
+    const json = '[12345678901234567,100]';
+    const result = parse(json) as [string, number];
+    expect(result[0]).toBe('12345678901234567');
+    expect(typeof result[0]).toBe('string');
+    expect(result[1]).toBe(100);
+  });
+
+  it('preserves large negative numbers in arrays', () => {
+    const json = '[-99999999999999999]';
+    const result = parse(json) as [string];
+    expect(result[0]).toBe('-99999999999999999');
+  });
+
+  it('leaves small bare array numbers as numbers', () => {
+    const json = '[42,1234567890123]';
+    const result = parse(json) as [number, number];
+    expect(typeof result[0]).toBe('number');
+    expect(typeof result[1]).toBe('number');
+  });
 });

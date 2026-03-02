@@ -1,5 +1,6 @@
 import { type TLong } from '../../interface';
 import request from '../../tools/request';
+import { pathSegment } from '../../tools/utils';
 
 /**
  * GET /leasing/active/{address}
@@ -8,9 +9,9 @@ import request from '../../tools/request';
 export function fetchActive(
   base: string,
   address: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<ILeaseInfo[]> {
-  return request({ base, url: `/leasing/active/${address}`, options });
+  return request({ base, url: `/leasing/active/${pathSegment(address)}`, options });
 }
 
 /**
@@ -20,7 +21,7 @@ export function fetchActive(
 export function fetchLeasingInfo(
   base: string,
   ids: string[],
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<ILeaseInfo[]> {
   // Use JSON.stringify to prevent injection via malicious id values
   const body = JSON.stringify({ ids });

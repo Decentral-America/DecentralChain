@@ -21,11 +21,11 @@ export class Watch extends EventEmitter<IEvents> {
   ) {
     super();
     this.address = address;
-    this._interval = interval || 1000;
+    this._interval = interval ?? 1000;
     this._base = base;
     this._lastBlock = {
-      lastId: tx?.id || '',
-      height: tx?.height || 0,
+      lastId: tx?.id ?? '',
+      height: tx?.height ?? 0,
       transactions: tx ? [tx] : [],
     };
 
@@ -86,7 +86,7 @@ export class Watch extends EventEmitter<IEvents> {
           if (!this._lastBlock.height) {
             this._lastBlock = {
               height: last,
-              lastId: prevTxs.length ? prevTxs[0]!.id : '',
+              lastId: prevTxs.length ? (prevTxs[0]?.id ?? '') : '',
               transactions: lastTxs,
             };
             this.trigger('change-state', list);
@@ -101,7 +101,7 @@ export class Watch extends EventEmitter<IEvents> {
             if (this._lastBlock.height !== last) {
               this._lastBlock = {
                 height: last,
-                lastId: prevTxs.length ? prevTxs[0]!.id : '',
+                lastId: prevTxs.length ? (prevTxs[0]?.id ?? '') : '',
                 transactions: lastTxs,
               };
             } else {
@@ -178,7 +178,7 @@ export class Watch extends EventEmitter<IEvents> {
         existing.push(tx);
       }
       return hash;
-    }, Object.create(null));
+    }, {});
   }
 
   private static _getTransactionsToDispatch(
@@ -187,8 +187,7 @@ export class Watch extends EventEmitter<IEvents> {
     lastId: string,
   ): (Transaction<TLong> & WithApiMixin)[] {
     const result: (Transaction<TLong> & WithApiMixin)[] = [];
-    for (let i = 0; i < list.length; i++) {
-      const tx = list[i]!;
+    for (const tx of list) {
       if (tx.id === lastId) {
         break;
       }

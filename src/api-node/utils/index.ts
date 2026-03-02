@@ -183,35 +183,6 @@ export function fetchScriptDecompile(base: string, body: string): Promise<IScrip
 }
 
 /**
- * POST /utils/sign/{privateKey}
- * Return FastCryptographicHash of specified message
- *
- * @deprecated SECURITY WARNING: This endpoint transmits the private key in the
- * URL path. URLs are routinely logged by proxies, CDNs, and web-server access
- * logs. Avoid calling this function in production; prefer client-side signing.
- */
-export function fetchSignPrivateKey(
-  base: string,
-  privateKey: string,
-  body: string,
-): Promise<ISignPrivateKey> {
-  if (typeof privateKey !== 'string' || privateKey.length === 0) {
-    throw new TypeError('privateKey must be a non-empty string');
-  }
-  return request({
-    base,
-    url: `/utils/sign/${encodeURIComponent(privateKey)}`,
-    options: {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  });
-}
-
-/**
  * GET /utils/time
  * Current Node time (UTC)
  */
@@ -265,11 +236,6 @@ interface IHashSecure {
 
 interface ITransactionSerialize {
   bytes: number[];
-}
-
-interface ISignPrivateKey {
-  message: string;
-  signature: string;
 }
 
 interface INodeTime {
