@@ -3,7 +3,7 @@
 [![CI](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@decentralchain/signature-adapter)](https://www.npmjs.com/package/@decentralchain/signature-adapter)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org/)
 
 Multi-provider transaction signing adapter for the DecentralChain blockchain.
 
@@ -13,7 +13,7 @@ Provides a unified interface for signing transactions across multiple key-manage
 
 | Dependency | Version |
 | ---------- | ------- |
-| Node.js    | >= 22   |
+| Node.js    | >= 24   |
 | npm        | >= 10   |
 
 ## Installation
@@ -170,10 +170,9 @@ const valid = isValidAddress('3P...');
 
 ## Package Outputs
 
-| Format | Entry            | Types              |
-| ------ | ---------------- | ------------------ |
-| ESM    | `dist/index.mjs` | `dist/index.d.ts`  |
-| CJS    | `dist/index.cjs` | `dist/index.d.cts` |
+| Format | Entry           | Types             |
+| ------ | --------------- | ----------------- |
+| ESM    | `dist/index.js` | `dist/index.d.ts` |
 
 ## Development
 
@@ -187,7 +186,7 @@ npm install
 
 | Command                 | Description                          |
 | ----------------------- | ------------------------------------ |
-| `npm run build`         | Build with tsup (ESM + CJS)          |
+| `npm run build`         | Build with tsup (ESM)                |
 | `npm test`              | Run tests with Vitest                |
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |
