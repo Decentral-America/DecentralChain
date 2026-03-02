@@ -1,20 +1,24 @@
-import {
+import { createRequest } from '../createRequest';
+import type {
   ILibRequest,
   TCreateGetFn,
   ITransaction,
   ITransferTxFilters,
   IGetTransferTxs,
 } from '../types';
-
-import { createMethod } from './createMethod';
-import { createRequest } from '../createRequest';
 import { hasDangerousKeys, isValidLimit, isValidSort } from '../utils';
 
+import { createMethod } from './createMethod';
+
 // One
-const validateId = id =>
-  typeof id === 'string' ? Promise.resolve(id) : Promise.reject(new Error('ArgumentsError: id should be string'));
-const generateRequestOne = (rootUrl: string) => (id: string): ILibRequest =>
-  createRequest(`${rootUrl}/transactions/transfer/${encodeURIComponent(id)}`);
+const validateId = (id: unknown) =>
+  typeof id === 'string'
+    ? Promise.resolve(id)
+    : Promise.reject(new Error('ArgumentsError: id should be string'));
+const generateRequestOne =
+  (rootUrl: string) =>
+  (id: string): ILibRequest =>
+    createRequest(`${rootUrl}/transactions/transfer/${encodeURIComponent(id)}`);
 
 //Many
 const isFilters = (filters: any): filters is ITransferTxFilters => {
@@ -33,7 +37,7 @@ const isFilters = (filters: any): filters is ITransferTxFilters => {
     typeof filters === 'object' &&
     !Array.isArray(filters) &&
     !hasDangerousKeys(filters) &&
-    Object.keys(filters).every(k => possibleFilters.includes(k)) &&
+    Object.keys(filters).every((k) => possibleFilters.includes(k)) &&
     isValidLimit(filters.limit) &&
     isValidSort(filters.sort)
   );
@@ -43,11 +47,12 @@ const validateFilters = (filters: any) =>
     ? Promise.resolve(filters)
     : Promise.reject(new Error('ArgumentsError: invalid filters object'));
 
-const generateRequestMany = (rootUrl: string) => (
-  filters: ITransferTxFilters
-): ILibRequest => createRequest(`${rootUrl}/transactions/transfer`, filters);
+const generateRequestMany =
+  (rootUrl: string) =>
+  (filters: ITransferTxFilters): ILibRequest =>
+    createRequest(`${rootUrl}/transactions/transfer`, filters);
 
-const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = libOptions => {
+const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = (libOptions) => {
   const getTransferTxsOne = createMethod<ITransaction[]>({
     validate: validateId,
     generateRequest: generateRequestOne,
@@ -64,12 +69,10 @@ const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = libOptions => {
     }),
   });
 
-  const getTransferTxs: IGetTransferTxs = (
-    idOrFilters: string | ITransferTxFilters = {}
-  ) =>
+  const getTransferTxs: IGetTransferTxs = (idOrFilters?: string | ITransferTxFilters) =>
     typeof idOrFilters === 'string'
       ? getTransferTxsOne(idOrFilters)
-      : getTransferTxsMany(idOrFilters);
+      : getTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
 
   return getTransferTxs;
 };
