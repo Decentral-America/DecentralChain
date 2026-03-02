@@ -28,10 +28,7 @@ export function fetchHeadersSeq(
  * Last block header
  * @param base
  */
-export function fetchHeadersLast(
-  base: string,
-  options: RequestInit = {},
-): Promise<IBlockHeader> {
+export function fetchHeadersLast(base: string, options: RequestInit = {}): Promise<IBlockHeader> {
   return request({
     base,
     url: `/blocks/headers/last`,
@@ -149,10 +146,7 @@ export function fetchBlockById(
  * Get genesis block
  * @param base
  */
-export function fetchFirst(
-  base: string,
-  options: RequestInit = {},
-): Promise<IBlock> {
+export function fetchFirst(base: string, options: RequestInit = {}): Promise<IBlock> {
   return request({
     base,
     url: `/blocks/first`,
@@ -187,10 +181,7 @@ export function fetchBlocksByAddress(
  * Last block
  * @param base
  */
-export function fetchLast(
-  base: string,
-  options: RequestInit = {},
-): Promise<IBlock> {
+export function fetchLast(base: string, options: RequestInit = {}): Promise<IBlock> {
   return request({
     base,
     url: '/blocks/last',

@@ -9,10 +9,7 @@ import { toArray } from './utils';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required for contravariant parameter matching with object literals
 type Params = Record<string, any>;
 
-export default function <T extends Params>(
-  params: T,
-  evolver: TEvolver<T> = {},
-): string {
+export default function <T extends Params>(params: T, evolver: TEvolver<T> = {}): string {
   const query = Object.keys(params)
     .map<[keyof T, T[keyof T]]>((key) => [key as keyof T, params[key] as T[keyof T]])
     .map(([key, value]) => [

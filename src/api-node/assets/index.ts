@@ -91,7 +91,11 @@ export function fetchAssetsAddressLimit(
   limit: number,
   options: RequestInit = {},
 ): Promise<TAssetDetails[]> {
-  return request({ base, url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}`, options });
+  return request({
+    base,
+    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}`,
+    options,
+  });
 }
 
 /**
@@ -112,7 +116,11 @@ export function fetchAssetsNft(
 ): Promise<TAssetDetails[]> {
   const afterQuery = after ? `?after=${encodeURIComponent(after)}` : '';
 
-  return request({ base, url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}${afterQuery}`, options });
+  return request({
+    base,
+    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}${afterQuery}`,
+    options,
+  });
 }
 
 export async function fetchAssetsBalance(
@@ -186,7 +194,11 @@ export function fetchBalanceAddressAssetId(
   assetId: string,
   options: RequestInit = {},
 ): Promise<IBalanceAddressAssetId> {
-  return request({ base, url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`, options });
+  return request({
+    base,
+    url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`,
+    options,
+  });
 }
 
 export interface IAssetDistribution {
