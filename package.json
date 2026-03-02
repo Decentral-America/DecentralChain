@@ -19,7 +19,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public",
@@ -121,9 +121,8 @@
     "@arethetypeswrong/cli": "0.18.2",
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "22.15.29",
+    "@types/node": "24.11.0",
     "@vitest/coverage-v8": "4.0.18",
-    "buffer": "6.0.3",
     "eslint": "10.0.2",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.4.0",
