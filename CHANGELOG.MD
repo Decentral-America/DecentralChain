@@ -3,6 +3,34 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [5.0.1] - 2025-07-26
+
+### Security
+
+- Added `npm audit --audit-level=high` step to CI pipeline.
+- Added runtime warnings in `seedUtils` for weak passwords (<8 chars) and low encryption rounds (<1000).
+- Preserved original error causes via `{ cause }` in `seedUtils/decryptSeedPhrase` and `generic/chainIdFromRecipient`.
+- Documented `wavesTransaction` protobuf wire-format field in `proto-serialize.ts`.
+
+### Changed
+
+- Raised code coverage thresholds from 50% to 70% (statements, branches, functions, lines).
+- Tightened ESLint: `@typescript-eslint/no-unused-vars` → `error`, added `no-console` rule, added `varsIgnorePattern: '^_'`.
+- Removed stale `preserve-caught-error: 'off'` ESLint override.
+- Updated CI matrix from Node 22/24 to Node 24/26.
+
+### Removed
+
+- 44 unused imports across 8 test files (exchange, data, invoke-script, transfer, burn, lease, alias, mass-transfer).
+- CJS `require('fs')` from `exchange.spec.ts`.
+- Unused `buffer` devDependency.
+- 14 unused named exports from test helpers (`exampleTxs.ts`, `minimalParams.ts`).
+
+### Added
+
+- Comprehensive `seedUtils` test suite (16 new tests): Seed class construction, encryption/decryption round-trip, `strengthenPassword`, `generateNewSeed`, error cases.
+- Coverage improved: seedUtils 2.77% → 88.88%, overall 79% → 82.7%.
+
 ## [5.0.0] - 2026-03-01
 
 ### Changed
