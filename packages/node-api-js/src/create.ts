@@ -50,10 +50,7 @@ type ApiFunction = (base: string, ...args: any[]) => any;
 type TWrapRecord<T extends Record<string, ApiFunction>> = {
   [Key in keyof T]: TWrapApi<T[Key]>;
 };
-type TWrapApi<T extends ApiFunction> = T extends (
-  base: string,
-  ...args: infer NEXT
-) => infer R
+type TWrapApi<T extends ApiFunction> = T extends (base: string, ...args: infer NEXT) => infer R
   ? (...args: NEXT) => R
   : never;
 
@@ -115,19 +112,13 @@ export function create(base: string) {
   };
 }
 
-function wrapRecord<T extends Record<string, ApiFunction>>(
-  base: string,
-  hash: T,
-): TWrapRecord<T> {
+function wrapRecord<T extends Record<string, ApiFunction>>(base: string, hash: T): TWrapRecord<T> {
   return Object.keys(hash).reduce<TWrapRecord<T>>((acc, methodName: keyof T) => {
     acc[methodName] = wrapRequest(base, hash[methodName]);
     return acc;
   }, {} as TWrapRecord<T>);
 }
 
-function wrapRequest<T extends ApiFunction>(
-  base: string,
-  callback: T,
-): TWrapApi<T> {
+function wrapRequest<T extends ApiFunction>(base: string, callback: T): TWrapApi<T> {
   return callback.bind(null, base) as TWrapApi<T>;
 }

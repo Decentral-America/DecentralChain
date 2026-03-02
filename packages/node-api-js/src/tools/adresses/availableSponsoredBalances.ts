@@ -16,11 +16,11 @@ function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
   return (balance) =>
     Boolean(
       balance.minSponsoredAssetFee &&
-        BigNumber.toBigNumber(balance.sponsorBalance ?? 0).gte(dccFee) &&
-        BigNumber.toBigNumber(balance.minSponsoredAssetFee)
-          .mul(dccFee)
-          .div(MIN_FEE_UNITS)
-          .lte(balance.balance),
+      BigNumber.toBigNumber(balance.sponsorBalance ?? 0).gte(dccFee) &&
+      BigNumber.toBigNumber(balance.minSponsoredAssetFee)
+        .mul(dccFee)
+        .div(MIN_FEE_UNITS)
+        .lte(balance.balance),
     );
 }
 

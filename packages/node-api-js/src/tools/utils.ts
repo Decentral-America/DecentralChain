@@ -46,18 +46,14 @@ export function prop<T extends object, P extends keyof T>(key: P): (data: T) => 
   return (data) => data[key];
 }
 
-export const keys = <T extends object>(obj: T): (keyof T)[] =>
-  Object.keys(obj) as (keyof T)[];
+export const keys = <T extends object>(obj: T): (keyof T)[] => Object.keys(obj) as (keyof T)[];
 
 export const entries = <T extends object>(obj: T): [keyof T, T[keyof T]][] =>
   keys(obj).map((name) => [name, obj[name]]);
 
-export const values = <T extends object>(obj: T): T[keyof T][] =>
-  keys(obj).map((key) => obj[key]);
+export const values = <T extends object>(obj: T): T[keyof T][] => keys(obj).map((key) => obj[key]);
 
-export const deepAssign = <T extends object[]>(
-  ...objects: T
-): TUnionToIntersection<T[number]> =>
+export const deepAssign = <T extends object[]>(...objects: T): TUnionToIntersection<T[number]> =>
   objects.reduce<Record<string, unknown>>((target, merge) => {
     const result: Record<string, unknown> = { ...target };
     keys(merge).forEach((key) => {
@@ -93,13 +89,10 @@ export function indexBy<T extends object>(
   process: (data: T) => string | number,
   data: T[],
 ): Record<string | number, T> {
-  return data.reduce<Record<string | number, T>>(
-    (acc, item) => {
-      acc[process(item)] = item;
-      return acc;
-    },
-    {},
-  );
+  return data.reduce<Record<string | number, T>>((acc, item) => {
+    acc[process(item)] = item;
+    return acc;
+  }, {});
 }
 
 export const uniq = (list: (string | null)[]): (string | null)[] => {

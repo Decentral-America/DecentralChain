@@ -3,17 +3,11 @@ import request from '../../tools/request';
 // @TODO: When correct API key
 // POST /node/stop
 
-export function fetchNodeStatus(
-  base: string,
-  options: RequestInit = {},
-): Promise<INodeStatus> {
+export function fetchNodeStatus(base: string, options: RequestInit = {}): Promise<INodeStatus> {
   return request({ base, url: '/node/status', options });
 }
 
-export function fetchNodeVersion(
-  base: string,
-  options: RequestInit = {},
-): Promise<INodeVersion> {
+export function fetchNodeVersion(base: string, options: RequestInit = {}): Promise<INodeVersion> {
   return request({ base, url: '/node/version', options });
 }
 
