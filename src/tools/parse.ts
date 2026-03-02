@@ -17,6 +17,8 @@ const bareReg = /(?<=[[,])\s*(-?\d{14,}(?:\.\d+)?|-?\d+\.\d{14,})(?=\s*[,\]])/g;
 
 export default function (json: string): unknown {
   return JSON.parse(
-    json.replace(keyedReg, '$1:"$2"').replace(bareReg, (match, num: string) => match.replace(num, `"${num}"`)),
+    json
+      .replace(keyedReg, '$1:"$2"')
+      .replace(bareReg, (match, num: string) => match.replace(num, `"${num}"`)),
   ) as unknown;
 }

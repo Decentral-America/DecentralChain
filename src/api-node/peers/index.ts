@@ -5,10 +5,7 @@ import { type TLong } from '../../interface';
  * GET /peers/all
  * Peer list
  */
-export function fetchAll(
-  base: string,
-  options: RequestInit = {},
-): Promise<IAllResponse> {
+export function fetchAll(base: string, options: RequestInit = {}): Promise<IAllResponse> {
   return request({
     base,
     url: '/peers/all',
@@ -35,10 +32,7 @@ export function fetchConnected(
  * GET /peers/blacklisted
  * Blacklisted peers list
  */
-export function fetchBlackListed(
-  base: string,
-  options: RequestInit = {},
-): Promise<IBlackPeer[]> {
+export function fetchBlackListed(base: string, options: RequestInit = {}): Promise<IBlackPeer[]> {
   return request({
     base,
     url: '/peers/blacklisted',
@@ -50,10 +44,7 @@ export function fetchBlackListed(
  * GET /peers/suspended
  * Suspended peers list
  */
-export function fetchSuspended(
-  base: string,
-  options: RequestInit = {},
-): Promise<ISuspendedPeer[]> {
+export function fetchSuspended(base: string, options: RequestInit = {}): Promise<ISuspendedPeer[]> {
   return request({
     base,
     url: '/peers/suspended',
