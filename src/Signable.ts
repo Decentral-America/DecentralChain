@@ -90,8 +90,9 @@ export class Signable {
 
     try {
       this._preparedData = prepare.signSchema(prepareMap)(this._forSign.data, true);
-    } catch (e: any) {
-      throw new SignError(e.message, ERRORS.VALIDATION_FAILED);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      throw new SignError(message, ERRORS.VALIDATION_FAILED, e);
     }
 
     this._bytePromise = this.getSignData().then((signData) =>

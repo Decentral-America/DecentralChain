@@ -33,7 +33,7 @@ export class CubensisConnectAdapter extends Adapter {
   public static adapter: CubensisConnectAdapter;
   private static _onUpdateCb: ((...args: any[]) => any)[] = [];
   private static _state: any;
-  private _onDestroyCb: Array<() => void> = [];
+  private _onDestroyCb: (() => void)[] = [];
   private _needDestroy = false;
   private _address: string;
   private _pKey: string;
@@ -71,19 +71,21 @@ export class CubensisConnectAdapter extends Adapter {
       if (data.locked) {
         return ignoreLocked
           ? Promise.resolve()
-          : Promise.reject({ code: 4, msg: 'Cubensis is locked' });
+          : Promise.reject(Object.assign(new Error('Cubensis is locked'), { code: 4 }));
       }
 
       if (data.account?.address === this._address) {
         return Promise.resolve();
       }
-    } catch (err: any) {
-      if (err.code === 3) {
-        return Promise.reject({ ...err });
+    } catch (err: unknown) {
+      if (err instanceof Error && (err as Error & { code?: number }).code === 3) {
+        return Promise.reject(err);
       }
     }
 
-    return Promise.reject({ code: 5, msg: 'Cubensis has another active account' });
+    return Promise.reject(
+      Object.assign(new Error('Cubensis has another active account'), { code: 5 }),
+    );
   }
 
   public async isLocked() {
@@ -204,21 +206,21 @@ export class CubensisConnectAdapter extends Adapter {
   }
 
   public getPrivateKey() {
-    return Promise.reject('No private key');
+    return Promise.reject(new Error('No private key'));
   }
 
   public static override async isAvailable(networkCode?: number) {
     await CubensisConnectAdapter._initExtension();
 
     if (!this._api) {
-      throw { code: 0, message: 'Install CubensisConnect' };
+      throw Object.assign(new Error('Install CubensisConnect'), { code: 0 });
     }
 
     if (!(networkCode || Adapter._code)) {
-      throw { code: 5, message: 'Set adapter network code' };
+      throw Object.assign(new Error('Set adapter network code'), { code: 5 });
     }
 
-    let error, data;
+    let error: (Error & { code?: number }) | undefined, data;
     try {
       data = await this._api.publicState();
       CubensisConnectAdapter._updateState(data);
@@ -227,17 +229,17 @@ export class CubensisConnectAdapter extends Adapter {
         CubensisConnectAdapter._txVersion = data.txVersion;
       }
     } catch {
-      error = { code: 1, message: 'No permissions' };
+      error = Object.assign(new Error('No permissions'), { code: 1 });
     }
 
     if (!error && data) {
       if (!data.account) {
-        error = { code: 2, message: 'No accounts in cubensisconnect' };
+        error = Object.assign(new Error('No accounts in cubensisconnect'), { code: 2 });
       } else if (
         !data.account.address ||
         !isValidAddress(data.account.address, networkCode || Adapter._code)
       ) {
-        error = { code: 3, message: 'Selected network incorrect' };
+        error = Object.assign(new Error('Selected network incorrect'), { code: 3 });
       }
     }
 
@@ -297,6 +299,8 @@ export class CubensisConnectAdapter extends Adapter {
     if (equals(CubensisConnectAdapter._state, state)) {
       return;
     }
+
+    CubensisConnectAdapter._state = state;
 
     for (const cb of CubensisConnectAdapter._onUpdateCb) {
       cb(state);

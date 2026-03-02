@@ -165,7 +165,7 @@ export namespace prepare {
   }
 
   export function wrap(from: string | null, to: string, cb: any): IWrappedFunction {
-    if (typeof cb != 'function') {
+    if (typeof cb !== 'function') {
       //@ts-ignore
       return { from, to, cb: () => cb };
     }
