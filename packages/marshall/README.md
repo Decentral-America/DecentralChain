@@ -12,7 +12,7 @@ Marshall provides binary serialization/deserialization and JSON conversion for D
 
 ## Requirements
 
-- **Node.js** >= 22 (24 recommended)
+- **Node.js** >= 24
 - **npm** >= 11
 
 ## Installation
@@ -83,7 +83,7 @@ const txFromJson = json.parseTx(jsonString, Long.fromString);
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 11
 
 ### Setup
@@ -98,7 +98,7 @@ npm install
 
 | Command                     | Description                              |
 | --------------------------- | ---------------------------------------- |
-| `npm run build`             | Build distribution files (ESM + CJS)     |
+| `npm run build`             | Build distribution files (ESM)           |
 | `npm test`                  | Run tests with Vitest                    |
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
