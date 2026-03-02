@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as mocha from 'mocha';
+import type * as mocha from 'mocha';
 import { By, until } from 'selenium-webdriver';
 import {
   ALIAS,
@@ -20,10 +20,11 @@ import {
   SPONSORSHIP,
   TRANSFER,
 } from './utils/transactions';
-import { Signer, SignerTx, UserData } from '@decentralchain/signer';
+import type { Signer, SignerTx, UserData } from '@decentralchain/signer';
 import { App, CreateNewAccount, Network, Settings } from './utils/actions';
-import { ProviderCubensis } from '../src';
-import { ERRORS, SignerError } from '@decentralchain/signer/dist/cjs/SignerError';
+import type { ProviderCubensis } from '../src';
+import type { SignerError } from '@decentralchain/signer/dist/cjs/SignerError';
+import { ERRORS } from '@decentralchain/signer/dist/cjs/SignerError';
 
 const m = 60000;
 
@@ -43,11 +44,7 @@ describe('Signer integration', function () {
   before(async function () {
     await App.initVault.call(this);
     await Network.switchTo.call(this, 'Testnet');
-    await CreateNewAccount.importAccount.call(
-      this,
-      'rich',
-      'DCCprivate node seed with DCCtokens'
-    );
+    await CreateNewAccount.importAccount.call(this, 'rich', 'DCCprivate node seed with DCCtokens');
     await Settings.setMaxSessionTimeout.call(this);
 
     // prepare browse keeper and test-app tabs
@@ -69,7 +66,7 @@ describe('Signer integration', function () {
     expect(
       await this.driver.executeScript(function () {
         return window.signer.currentProvider instanceof window.ProviderCubensis;
-      })
+      }),
     ).to.be.true;
   });
 
@@ -90,23 +87,17 @@ describe('Signer integration', function () {
     await this.driver.switchTo().window(CubensisConnect);
     // site permission request
     await this.driver.wait(
-      until.elementLocated(By.xpath("//div[contains(@class, '-originAuthTx')]"))
+      until.elementLocated(By.xpath("//div[contains(@class, '-originAuthTx')]")),
     );
-    let acceptBtn = await this.driver.findElement(
-      By.css('.app button[type=submit]')
-    );
+    let acceptBtn = await this.driver.findElement(By.css('.app button[type=submit]'));
     await acceptBtn.click();
     // site auth request
-    await this.driver.wait(
-      until.elementLocated(By.xpath("//div[contains(@class, '-authTx')]"))
-    );
-    acceptBtn = await this.driver.findElement(
-      By.css('.app button[type=submit]')
-    );
+    await this.driver.wait(until.elementLocated(By.xpath("//div[contains(@class, '-authTx')]")));
+    acceptBtn = await this.driver.findElement(By.css('.app button[type=submit]'));
     await acceptBtn.click();
     // close window
     const closeBtn = await this.driver.wait(
-      until.elementLocated(By.css('[data-testid="closeTransaction"]'))
+      until.elementLocated(By.css('[data-testid="closeTransaction"]')),
     );
     await closeBtn.click();
 
@@ -122,12 +113,10 @@ describe('Signer integration', function () {
     await Network.switchTo.call(this, 'Mainnet');
 
     await this.driver.switchTo().window(testApp);
-    const error: SignerError = await this.driver.executeAsyncScript(
-      function () {
-        const done = arguments[arguments.length - 1];
-        window.signer.login().then(done).catch(done);
-      }
-    );
+    const error: SignerError = await this.driver.executeAsyncScript(function () {
+      const done = arguments[arguments.length - 1];
+      window.signer.login().then(done).catch(done);
+    });
     expect(error.code).to.be.equal(ERRORS.ENSURE_PROVIDER);
     expect(error.type).to.be.equal('provider');
 
@@ -139,7 +128,7 @@ describe('Signer integration', function () {
     this: mocha.Context,
     method: string,
     tx: SignerTx | SignerTx[],
-    formSelector: By
+    formSelector: By,
   ) {
     await this.driver.switchTo().window(testApp);
     await this.driver.executeScript(
@@ -147,19 +136,17 @@ describe('Signer integration', function () {
         window.result = window.signer[method](tx).sign();
       },
       tx,
-      method
+      method,
     );
 
     // tx request
     await this.driver.switchTo().window(CubensisConnect);
     await this.driver.wait(until.elementLocated(formSelector));
-    const acceptBtn = await this.driver.findElement(
-      By.css('.app button[type=submit]')
-    );
+    const acceptBtn = await this.driver.findElement(By.css('.app button[type=submit]'));
     await acceptBtn.click();
     // close window
     const closeBtn = await this.driver.wait(
-      until.elementLocated(By.css('[data-testid="closeTransaction"]'))
+      until.elementLocated(By.css('[data-testid="closeTransaction"]')),
     );
     await closeBtn.click();
 
@@ -178,10 +165,7 @@ describe('Signer integration', function () {
         'proofs',
         'version',
       ];
-      expect(signedTx).to.include.all.keys(
-        ...commonFields,
-        ...Object.keys(tx[idx])
-      );
+      expect(signedTx).to.include.all.keys(...commonFields, ...Object.keys(tx[idx]));
     });
   };
 
@@ -190,7 +174,7 @@ describe('Signer integration', function () {
       this,
       'issue',
       ISSUE,
-      By.xpath("//div[contains(@class, '-issueTx')]")
+      By.xpath("//div[contains(@class, '-issueTx')]"),
     );
   });
 
@@ -199,7 +183,7 @@ describe('Signer integration', function () {
       this,
       'transfer',
       TRANSFER,
-      By.xpath("//div[contains(@class, '-transferTx')]")
+      By.xpath("//div[contains(@class, '-transferTx')]"),
     );
   });
 
@@ -208,7 +192,7 @@ describe('Signer integration', function () {
       this,
       'reissue',
       REISSUE,
-      By.xpath("//div[contains(@class, '-reissueTx')]")
+      By.xpath("//div[contains(@class, '-reissueTx')]"),
     );
   });
 
@@ -217,7 +201,7 @@ describe('Signer integration', function () {
       this,
       'burn',
       BURN,
-      By.xpath("//div[contains(@class, '-burnTx')]")
+      By.xpath("//div[contains(@class, '-burnTx')]"),
     );
   });
 
@@ -226,7 +210,7 @@ describe('Signer integration', function () {
       this,
       'lease',
       LEASE,
-      By.xpath("//div[contains(@class, '-leaseTx')]")
+      By.xpath("//div[contains(@class, '-leaseTx')]"),
     );
   });
 
@@ -235,7 +219,7 @@ describe('Signer integration', function () {
       this,
       'cancelLease',
       CANCEL_LEASE,
-      By.xpath("//div[contains(@class, '-cancelLeaseTx')]")
+      By.xpath("//div[contains(@class, '-cancelLeaseTx')]"),
     );
   });
 
@@ -244,7 +228,7 @@ describe('Signer integration', function () {
       this,
       'alias',
       ALIAS,
-      By.xpath("//div[contains(@class, '-aliasTx')]")
+      By.xpath("//div[contains(@class, '-aliasTx')]"),
     );
   });
 
@@ -253,7 +237,7 @@ describe('Signer integration', function () {
       this,
       'massTransfer',
       MASS_TRANSFER,
-      By.xpath("//div[contains(@class, '-massTransferTx')]")
+      By.xpath("//div[contains(@class, '-massTransferTx')]"),
     );
   });
 
@@ -262,7 +246,7 @@ describe('Signer integration', function () {
       this,
       'data',
       DATA,
-      By.xpath("//div[contains(@class, '-dataTx')]")
+      By.xpath("//div[contains(@class, '-dataTx')]"),
     );
   });
 
@@ -271,7 +255,7 @@ describe('Signer integration', function () {
       this,
       'setScript',
       SET_SCRIPT,
-      By.xpath("//div[contains(@class, '-setScriptTx')]")
+      By.xpath("//div[contains(@class, '-setScriptTx')]"),
     );
   });
 
@@ -280,7 +264,7 @@ describe('Signer integration', function () {
       this,
       'sponsorship',
       SPONSORSHIP,
-      By.xpath("//div[contains(@class, '-sponsorshipTx')]")
+      By.xpath("//div[contains(@class, '-sponsorshipTx')]"),
     );
   });
 
@@ -289,7 +273,7 @@ describe('Signer integration', function () {
       this,
       'setAssetScript',
       SET_ASSET_SCRIPT,
-      By.xpath("//div[contains(@class, '-assetScriptTx')]")
+      By.xpath("//div[contains(@class, '-assetScriptTx')]"),
     );
   });
 
@@ -298,13 +282,13 @@ describe('Signer integration', function () {
       this,
       'batch',
       [ISSUE, TRANSFER, REISSUE, BURN, LEASE, CANCEL_LEASE, ALIAS],
-      By.xpath("//div[contains(@class, '-dataTx')]")
+      By.xpath("//div[contains(@class, '-dataTx')]"),
     );
     await signedTxShouldBeValid.call(
       this,
       'batch',
       [MASS_TRANSFER, DATA, SET_SCRIPT, SPONSORSHIP, SET_ASSET_SCRIPT],
-      By.xpath("//div[contains(@class, '-dataTx')]")
+      By.xpath("//div[contains(@class, '-dataTx')]"),
     );
   });
 
@@ -314,7 +298,7 @@ describe('Signer integration', function () {
         this,
         'invoke',
         INVOKE_DEFAULT_CALL,
-        By.xpath("//div[contains(@class, '-scriptInvocationTx')]")
+        By.xpath("//div[contains(@class, '-scriptInvocationTx')]"),
       );
     });
 
@@ -323,7 +307,7 @@ describe('Signer integration', function () {
         this,
         'invoke',
         INVOKE_NO_ARGS_SINGLE_PAYMENTS,
-        By.xpath("//div[contains(@class, '-scriptInvocationTx')]")
+        By.xpath("//div[contains(@class, '-scriptInvocationTx')]"),
       );
     });
 
@@ -332,7 +316,7 @@ describe('Signer integration', function () {
         this,
         'invoke',
         INVOKE_NO_ARGS_MANY_PAYMENTS,
-        By.xpath("//div[contains(@class, '-scriptInvocationTx')]")
+        By.xpath("//div[contains(@class, '-scriptInvocationTx')]"),
       );
     });
 
@@ -341,7 +325,7 @@ describe('Signer integration', function () {
         this,
         'invoke',
         INVOKE_NATIVE_ARGS_NO_PAYMENTS,
-        By.xpath("//div[contains(@class, '-scriptInvocationTx')]")
+        By.xpath("//div[contains(@class, '-scriptInvocationTx')]"),
       );
     });
 
@@ -350,7 +334,7 @@ describe('Signer integration', function () {
         this,
         'invoke',
         INVOKE_LIST_ARGS_NO_PAYMENTS,
-        By.xpath("//div[contains(@class, '-scriptInvocationTx')]")
+        By.xpath("//div[contains(@class, '-scriptInvocationTx')]"),
       );
     });
   });
