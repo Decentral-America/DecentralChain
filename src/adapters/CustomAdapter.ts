@@ -31,7 +31,9 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
   }
 
   public override isAvailable(): Promise<void> {
-    return this.currentUser.isAvailable() ? Promise.resolve() : Promise.reject();
+    return this.currentUser.isAvailable()
+      ? Promise.resolve()
+      : Promise.reject(new Error('Custom adapter is not available'));
   }
 
   public getSyncAddress(): string {
