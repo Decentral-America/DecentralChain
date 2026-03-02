@@ -67,10 +67,10 @@ describe('transfer', () => {
     expect(tx.attachment).toEqual(att);
   });
 
-  // fixme?
-  it('Should build with zero fee', () => {
-    const tx = transfer({ ...transferMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not build with zero fee', () => {
+    expect(() => transfer({ ...transferMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create with negative fee', () => {

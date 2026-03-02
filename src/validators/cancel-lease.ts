@@ -7,7 +7,6 @@ import {
   isAssetId,
   isEq,
   isNaturalNumberLike,
-  isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
   orEq,
@@ -20,7 +19,7 @@ const cancelLeaseScheme = {
   version: orEq([undefined, 2, 3]),
   leaseId: isAssetId,
   chainId: isNaturalNumberLike,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
