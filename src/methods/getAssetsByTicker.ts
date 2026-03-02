@@ -10,9 +10,15 @@ import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
 
 const validateTicker = (ticker: string): Promise<string> => {
-  return typeof ticker !== 'string'
-    ? Promise.reject(new Error('ArgumentsError: Ticker should be string'))
-    : Promise.resolve(ticker);
+  if (typeof ticker !== 'string') {
+    return Promise.reject(new Error('ArgumentsError: Ticker should be string'));
+  }
+  if (ticker.trim().length === 0) {
+    return Promise.reject(
+      new Error('ArgumentsError: Ticker must not be empty string')
+    );
+  }
+  return Promise.resolve(ticker);
 };
 
 const createRequestForMany = (rootUrl: string) => (

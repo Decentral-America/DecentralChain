@@ -8,6 +8,7 @@ import {
 
 import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
+import { hasDangerousKeys, isValidLimit, isValidSort } from '../utils';
 
 // One
 const validateId = id =>
@@ -32,7 +33,10 @@ const isFilters = (filters: any): filters is IExchangeTxFilters => {
     filters !== null &&
     typeof filters === 'object' &&
     !Array.isArray(filters) &&
-    Object.keys(filters).every(k => possibleFilters.includes(k))
+    !hasDangerousKeys(filters) &&
+    Object.keys(filters).every(k => possibleFilters.includes(k)) &&
+    isValidLimit(filters.limit) &&
+    isValidSort(filters.sort)
   );
 };
 const validateFilters = (filters: any) =>
