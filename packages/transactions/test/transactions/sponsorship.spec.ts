@@ -46,9 +46,10 @@ describe('setSponsorship', () => {
     ).toThrowError(errorMessageByTemplate('assetId', ''));
   });
 
-  it('Should create sponsorship transaction with zero fee', () => {
-    const tx = sponsorship({ ...sponsorshipMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create sponsorship transaction with zero fee', () => {
+    expect(() => sponsorship({ ...sponsorshipMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create sponsorship transaction with negative fee', () => {
