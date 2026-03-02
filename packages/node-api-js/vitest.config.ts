@@ -15,13 +15,32 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
-      exclude: ['src/index.ts'],
+      exclude: [
+        'src/index.ts',
+        // Pure type declarations — no runtime code to cover
+        'src/interface.ts',
+        // API-node modules require a running DecentralChain node;
+        // covered by integration tests (vitest.integration.config.ts)
+        'src/api-node/**',
+        // Network-dependent tools — covered by integration tests
+        'src/tools/adresses/watch.ts',
+        'src/tools/adresses/getAssetsByTransaction.ts',
+        'src/tools/adresses/getTransactionsWithAssets.ts',
+        'src/tools/adresses/availableSponsoredBalances.ts',
+        'src/tools/blocks/detectInterval.ts',
+        'src/tools/blocks/getNetworkByte.ts',
+        'src/tools/blocks/getNetworkCode.ts',
+        'src/tools/blocks/waitHeight.ts',
+        'src/tools/transactions/broadcast.ts',
+        'src/tools/transactions/wait.ts',
+        'src/tools/transactions/transactions.ts',
+      ],
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
-        branches: 70,
-        functions: 50,
-        lines: 60,
-        statements: 60,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+        statements: 80,
       },
     },
     reporters: ['default'],
