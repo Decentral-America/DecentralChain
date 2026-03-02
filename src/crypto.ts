@@ -1,7 +1,7 @@
 /**
  * @module @decentralchain/provider-cubensis
  *
- * Lightweight cryptographic utilities inlined to avoid dependency on @waves/ts-lib-crypto.
+ * Lightweight cryptographic utilities using native Web Crypto API.
  * Uses native Web Crypto API (available in all modern browsers and Node.js 22+).
  */
 

@@ -109,12 +109,18 @@ export class ProviderCubensis implements Provider {
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (window.CubensisConnect) {
-        void window.CubensisConnect.initialPromise.then(
-          (api: CubensisConnect.TCubensisConnectApi) => {
+        void window.CubensisConnect.initialPromise
+          .then((api: CubensisConnect.TCubensisConnectApi) => {
             this._api = api;
             resolve();
-          },
-        );
+          })
+          .catch((err: unknown) => {
+            reject(
+              err instanceof Error
+                ? err
+                : new Error('CubensisConnect initialization failed', { cause: err }),
+            );
+          });
       } else {
         setTimeout(() => {
           poll(resolve, reject, ++attempt);
