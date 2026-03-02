@@ -21,7 +21,7 @@ import { orderToProtoBytes } from '../proto-serialize';
  *
  * ### Usage
  * ```js
- * const { order } = require('@decentralchain/waves-transactions')
+ * const { order } = require('@decentralchain/decentralchain-transactions')
  *
  * const seed = 'b716885e9ba64442b4f1263c8e2d8671e98b800c60ec4dc2a27c83e5f9002b18'
  *
