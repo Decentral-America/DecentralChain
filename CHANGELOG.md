@@ -10,7 +10,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`).
 - **BREAKING**: Upgraded `protobufjs` from v6 to v8 (generated code uses ES module syntax).
 - **BREAKING**: Upgraded `long` from v4 to v5.
-- Minimum Node.js version is now 22.
+- Minimum Node.js version is now 22 (24 recommended).
 - Proto generation now outputs ES modules (`-w es6`) instead of CommonJS.
 - Moved `@types/long` from dependencies to removal (long v5 includes its own types).
 - Updated proto file language options (`java_package`, `csharp_namespace`, `go_package`) to DecentralChain branding.
