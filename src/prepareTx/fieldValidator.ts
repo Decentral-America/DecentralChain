@@ -173,7 +173,7 @@ const money = (options: IFieldOptions) => {
   switch (true) {
     case !(value instanceof Money):
       return error(options, ERROR_MSG.WRONG_TYPE);
-    case value instanceof Money && (value).getCoins().isNaN():
+    case value instanceof Money && value.getCoins().isNaN():
       return error(options, ERROR_MSG.WRONG_NUMBER);
   }
 };
@@ -202,13 +202,13 @@ const numberLike = (options: IFieldOptions, min?: string | number, max?: string 
 
   switch (true) {
     case value instanceof BigNumber:
-      if ((value).isNaN()) {
+      if (value.isNaN()) {
         error(options, ERROR_MSG.WRONG_TYPE);
       }
       checkInterval(value);
       break;
     case value instanceof Money: {
-      const coins = (value).getCoins();
+      const coins = value.getCoins();
 
       if (coins.isNaN()) {
         error(options, ERROR_MSG.WRONG_NUMBER);

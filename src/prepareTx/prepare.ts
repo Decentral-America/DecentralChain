@@ -23,7 +23,7 @@ export namespace prepare {
 
       return {
         function: (callData && callData.function) || '',
-        args: (callData?.args) || [],
+        args: callData?.args || [],
       };
     }
 
@@ -69,7 +69,7 @@ export namespace prepare {
           if (some instanceof BigNumber) {
             return some;
           } else {
-            return (some).getCoins();
+            return some.getCoins();
           }
       }
     }
@@ -223,9 +223,7 @@ export namespace prepare {
       const errors: any[] = [];
       const prepareData = args
         .map((item) => {
-          const wrapped = (
-            wrap(item.name, item.field, item.processor || processors.noProcess)
-          );
+          const wrapped = wrap(item.name, item.field, item.processor || processors.noProcess);
           const value = wrapped.from ? findValue(wrapped.from, data) : data;
 
           const validateOptions = {

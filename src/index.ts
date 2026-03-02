@@ -11,7 +11,7 @@ export * from './utils';
 import { type Adapter } from './adapters';
 import { adapterPriorityList, adapterList, type AdapterType } from './config';
 
-export function getAvailableList(): Promise<typeof Adapter[]> {
+export function getAvailableList(): Promise<(typeof Adapter)[]> {
   return Promise.all(
     adapterPriorityList.map(async (type) => {
       const adapter = getAdapterByType(type);

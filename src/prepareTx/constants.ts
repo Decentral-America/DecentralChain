@@ -32,7 +32,6 @@ const processScript = (srcScript: string | null) => {
 };
 
 export enum TRANSACTION_TYPE_NUMBER {
-  SEND_OLD = 2,
   ISSUE = 3,
   TRANSFER = 4,
   REISSUE = 5,

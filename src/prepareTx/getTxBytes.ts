@@ -15,6 +15,6 @@ export default function (forSign: TSignData, networkByte: number): Uint8Array {
   };
 
   const convert = SIGN_TYPES[forSign.type as SIGN_TYPE].toNode || null;
-  const signData = (convert?.(dataForBytes, networkByte)) || dataForBytes;
+  const signData = convert?.(dataForBytes, networkByte) || dataForBytes;
   return SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[Number(version)]!(signData);
 }

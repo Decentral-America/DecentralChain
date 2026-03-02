@@ -9,7 +9,7 @@ const { base58Decode } = libs.crypto;
 export const txs = {
   [SIGN_TYPE.ISSUE]: {
     2: {
-      name: 'issure',
+      name: 'issue',
       data: {
         name: 'JUNKGOLD',
         senderPublicKey: 'E3ao18QtWEzm7hAbKQaoZNBRw6coj2NAy7opqbrqURFr',
@@ -27,7 +27,7 @@ export const txs = {
         '3Wgh9tuRdDwQXhAe63iabC5VojkPiJfKPm4tNaawGfpuGncTnT4zMTKzAH3QCjsZQ2c4sqDCyUjDpAAYBGeZLYFb',
     },
     3: {
-      name: 'issure',
+      name: 'issue',
       data: {
         name: 'JUNKGOLD',
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
