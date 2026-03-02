@@ -16,12 +16,12 @@ Provides **safe arithmetic** for blockchain token amounts that exceed JavaScript
 - Byte serialization for blockchain wire format (signed/unsigned, long/variable-length)
 - Immutable — all operations return new instances
 - Full TypeScript support with strict types
-- ESM and CJS builds
+- Pure ESM package
 - Zero configuration — works in Node.js and browsers
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - **npm** >= 11
 
 ## Installation
@@ -231,7 +231,7 @@ Available via `BigNumber.ROUND_MODE`:
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 11
 
 ### Setup
