@@ -87,4 +87,22 @@ describe('Default transformer', () => {
       { id: 'tx1' },
     ]);
   });
+
+  it('returns null when input is null', () => {
+    expect(transformer(null)).toBeNull();
+  });
+
+  it('returns undefined when input is undefined', () => {
+    expect(transformer(undefined)).toBeUndefined();
+  });
+
+  it('throws when list type has non-array data', () => {
+    const input = { __type: ApiTypes.List, data: null };
+    expect(() => transformer(input)).toThrow('expected array for list type');
+  });
+
+  it('throws when list type has data as string', () => {
+    const input = { __type: ApiTypes.List, data: 'not-an-array' };
+    expect(() => transformer(input)).toThrow('expected array for list type');
+  });
 });

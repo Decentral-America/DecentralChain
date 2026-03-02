@@ -1,9 +1,10 @@
-const parser = require('parse-json-bignumber')();
+import parseJsonBignumber from 'parse-json-bignumber';
+const parser = (parseJsonBignumber as any)();
 import DataServiceClient from '../index';
 import { AssetPair, Asset } from '@decentralchain/data-entities';
 
 const fetch = jest.fn(() => Promise.resolve('{"data":[{ "data": 1 }]}'));
-const NODE_URL = 'NODE_URL';
+const NODE_URL = 'http://localhost:3000';
 const MATCHER = '3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP';
 const client = new DataServiceClient({
   rootUrl: NODE_URL,
@@ -29,9 +30,7 @@ describe('Asssets endpoint: ', () => {
 
   it('fetch is called with correct params#3', async () => {
     const ids = [];
-    await client.getAssets(...ids);
-
-    expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
+    await expect(client.getAssets(...ids)).rejects.toBeInstanceOf(Error);
   });
 
   it('fetch is called with correct params#4', async () => {
@@ -187,10 +186,10 @@ describe('ExchangeTxs endpoint: ', () => {
           amountAsset: 'asset1',
           priceAsset: 'priceAsset',
           limit: 5,
-          sort: '-some',
+          sort: 'desc',
         },
       ],
-      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-02-01&timeEnd=2016-03-01&matcher=matcher&sender=sender&amountAsset=asset1&priceAsset=priceAsset&limit=5&sort=-some`,
+      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-02-01&timeEnd=2016-03-01&matcher=matcher&sender=sender&amountAsset=asset1&priceAsset=priceAsset&limit=5&sort=desc`,
     },
   ];
   const badCases: Case[] = [
@@ -246,7 +245,7 @@ describe('TransferTxs endpoint: ', () => {
           timeStart: '2016-02-01',
           timeEnd: '2016-03-01',
           limit: 5,
-          sort: '-some',
+          sort: 'desc',
         },
       ],
     },
@@ -344,6 +343,23 @@ describe('Constructor: ', () => {
     );
   });
 
+  it('throws if rootUrl is not a valid HTTP/HTTPS URL', () => {
+    expect(() => new DataServiceClient({ rootUrl: 'javascript:alert(1)' })).toThrow(
+      'Invalid rootUrl'
+    );
+    expect(() => new DataServiceClient({ rootUrl: 'ftp://evil.com' })).toThrow(
+      'Invalid rootUrl'
+    );
+    expect(() => new DataServiceClient({ rootUrl: 'not-a-url' })).toThrow(
+      'Invalid rootUrl'
+    );
+  });
+
+  it('accepts valid HTTP and HTTPS URLs', () => {
+    expect(() => new DataServiceClient({ rootUrl: 'http://localhost:3000' })).not.toThrow();
+    expect(() => new DataServiceClient({ rootUrl: 'https://api.example.com' })).not.toThrow();
+  });
+
   it('applies default fetch, parse, and transform when not provided', () => {
     const instance = new DataServiceClient({ rootUrl: 'http://example.com' });
     expect(instance).toBeDefined();
@@ -379,7 +395,7 @@ describe('Pagination: ', () => {
       )
     );
     const customClient = new DataServiceClient({
-      rootUrl: NODE_URL,
+      rootUrl: 'http://localhost',
       parse: parser,
       fetch: customFetch,
     });
@@ -461,7 +477,7 @@ describe('Custom transformer: ', () => {
       transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
-      rootUrl: NODE_URL,
+      rootUrl: 'http://localhost',
       parse: parser,
       fetch: customFetchMock('assets'),
       transform: customTransformer,
@@ -483,7 +499,7 @@ describe('Custom transformer: ', () => {
       transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
-      rootUrl: NODE_URL,
+      rootUrl: 'http://localhost',
       parse: parser,
       fetch: customFetchMock('candles'),
       transform: customTransformer,
@@ -570,5 +586,126 @@ describe('Security: URL-encodes path and query segments', () => {
     const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
     expect(lastCall[0]).toContain('sender=addr%26inject%3Dtrue');
     expect(lastCall[0]).not.toContain('sender=addr&inject=true');
+  });
+});
+
+describe('Security: limit and sort validation', () => {
+  it('rejects negative limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: -1 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects zero limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: 0 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects non-integer limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: 1.5 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects excessively large limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: 99999 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects Infinity limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: Infinity })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects NaN limit', async () => {
+    await expect(
+      client.getExchangeTxs({ limit: NaN })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects arbitrary sort values', async () => {
+    await expect(
+      client.getExchangeTxs({ sort: 'DROP TABLE' } as any)
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects sort=-some (must be asc/desc)', async () => {
+    await expect(
+      client.getExchangeTxs({ sort: '-some' } as any)
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('accepts valid sort=asc', async () => {
+    const result = await client.getExchangeTxs({ sort: 'asc' });
+    expect(result).toBeDefined();
+  });
+
+  it('accepts valid sort=desc', async () => {
+    const result = await client.getExchangeTxs({ sort: 'desc' });
+    expect(result).toBeDefined();
+  });
+
+  it('applies same limit validation to transfer txs', async () => {
+    await expect(
+      client.getTransferTxs({ limit: -1 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('applies same limit validation to mass transfer txs', async () => {
+    await expect(
+      client.getMassTransferTxs({ limit: -1 })
+    ).rejects.toBeInstanceOf(Error);
+  });
+});
+
+describe('Security: prototype pollution protection', () => {
+  it('rejects filters with __proto__ key', async () => {
+    const malicious = JSON.parse('{"__proto__": {"isAdmin": true}, "sender": "x"}');
+    await expect(
+      client.getExchangeTxs(malicious)
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects filters with constructor key', async () => {
+    await expect(
+      client.getExchangeTxs({ constructor: {} } as any)
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects filters with prototype key', async () => {
+    await expect(
+      client.getTransferTxs({ prototype: {} } as any)
+    ).rejects.toBeInstanceOf(Error);
+  });
+});
+
+describe('Security: empty input validation', () => {
+  it('rejects getAssets with no arguments', async () => {
+    await expect(client.getAssets()).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects getAssets with empty string', async () => {
+    await expect(client.getAssets('')).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects getAssets with whitespace-only string', async () => {
+    await expect(client.getAssets('   ')).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects getAssetsByTicker with empty string', async () => {
+    await expect(client.getAssetsByTicker('')).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects aliases.getByIdList with empty array', async () => {
+    await expect(client.aliases.getByIdList([])).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects aliases.getByIdList with empty string items', async () => {
+    await expect(
+      client.aliases.getByIdList(['valid', ''])
+    ).rejects.toBeInstanceOf(Error);
   });
 });

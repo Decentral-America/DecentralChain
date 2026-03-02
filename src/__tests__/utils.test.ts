@@ -1,4 +1,4 @@
-import { createQS, pipeP } from '../utils';
+import { createQS, pipeP, isValidUrl, isValidLimit, isValidSort, hasDangerousKeys, defaultParse } from '../utils';
 
 describe('Create querystring util', () => {
   it('works #1', () => {
@@ -18,6 +18,23 @@ describe('Create querystring util', () => {
     const qs = createQS(obj);
     expect(qs).toBe('?a=true&b=1&c=string&e=9&e=8&e=7');
   });
+  it('ignores null fields', () => {
+    const obj = { a: true, b: null, c: 'string' };
+    const qs = createQS(obj);
+    expect(qs).toBe('?a=true&c=string');
+  });
+  it('ignores empty arrays (no malformed ?& prefix)', () => {
+    const obj = { ids: [], name: 'test' };
+    const qs = createQS(obj);
+    expect(qs).toBe('?name=test');
+    // Must not produce ?&name=test
+    expect(qs).not.toContain('?&');
+  });
+  it('returns empty string for all-empty input', () => {
+    const obj = { ids: [], other: undefined };
+    const qs = createQS(obj);
+    expect(qs).toBe('');
+  });
 });
 
 describe('PipeP ', () => {
@@ -32,5 +49,93 @@ describe('PipeP ', () => {
   it("doesn't wrap 1 arg in array", async () => {
     const result = await fn(1);
     expect(result).toEqual([1, 3]);
+  });
+});
+
+describe('isValidUrl', () => {
+  it('accepts http URLs', () => {
+    expect(isValidUrl('http://example.com')).toBe(true);
+    expect(isValidUrl('http://localhost:3000')).toBe(true);
+  });
+  it('accepts https URLs', () => {
+    expect(isValidUrl('https://api.example.com/v1')).toBe(true);
+  });
+  it('rejects non-http protocols', () => {
+    expect(isValidUrl('ftp://example.com')).toBe(false);
+    expect(isValidUrl('javascript:alert(1)')).toBe(false);
+    expect(isValidUrl('data:text/html,<h1>hi</h1>')).toBe(false);
+  });
+  it('rejects invalid URLs', () => {
+    expect(isValidUrl('not-a-url')).toBe(false);
+    expect(isValidUrl('')).toBe(false);
+  });
+});
+
+describe('isValidLimit', () => {
+  it('allows undefined and null', () => {
+    expect(isValidLimit(undefined)).toBe(true);
+    expect(isValidLimit(null)).toBe(true);
+  });
+  it('allows positive integers within range', () => {
+    expect(isValidLimit(1)).toBe(true);
+    expect(isValidLimit(100)).toBe(true);
+    expect(isValidLimit(10000)).toBe(true);
+  });
+  it('rejects zero, negative, non-integer, and excessive values', () => {
+    expect(isValidLimit(0)).toBe(false);
+    expect(isValidLimit(-1)).toBe(false);
+    expect(isValidLimit(1.5)).toBe(false);
+    expect(isValidLimit(10001)).toBe(false);
+    expect(isValidLimit(Infinity)).toBe(false);
+    expect(isValidLimit(NaN)).toBe(false);
+    expect(isValidLimit('5')).toBe(false);
+  });
+});
+
+describe('isValidSort', () => {
+  it('allows undefined and null', () => {
+    expect(isValidSort(undefined)).toBe(true);
+    expect(isValidSort(null)).toBe(true);
+  });
+  it('allows asc and desc', () => {
+    expect(isValidSort('asc')).toBe(true);
+    expect(isValidSort('desc')).toBe(true);
+  });
+  it('rejects other values', () => {
+    expect(isValidSort('ASC')).toBe(false);
+    expect(isValidSort('-some')).toBe(false);
+    expect(isValidSort('DROP TABLE')).toBe(false);
+    expect(isValidSort(1)).toBe(false);
+  });
+});
+
+describe('hasDangerousKeys', () => {
+  it('detects __proto__', () => {
+    expect(hasDangerousKeys(JSON.parse('{"__proto__": {}}'))).toBe(true);
+  });
+  it('detects constructor', () => {
+    expect(hasDangerousKeys({ constructor: {} })).toBe(true);
+  });
+  it('detects prototype', () => {
+    expect(hasDangerousKeys({ prototype: {} })).toBe(true);
+  });
+  it('passes safe objects', () => {
+    expect(hasDangerousKeys({ sender: 'addr', limit: 5 })).toBe(false);
+  });
+});
+
+describe('defaultParse', () => {
+  it('parses valid JSON', () => {
+    expect(defaultParse('{"a":1}')).toEqual({ a: 1 });
+  });
+  it('throws on empty string', () => {
+    expect(() => defaultParse('')).toThrow('empty or non-string');
+  });
+  it('throws on non-string input', () => {
+    expect(() => defaultParse(null as any)).toThrow('empty or non-string');
+    expect(() => defaultParse(undefined as any)).toThrow('empty or non-string');
+  });
+  it('throws on invalid JSON with context', () => {
+    expect(() => defaultParse('<html>error</html>')).toThrow('invalid JSON');
   });
 });
