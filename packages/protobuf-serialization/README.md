@@ -180,7 +180,7 @@ This runs `pbjs` to generate ES module JavaScript from the proto schemas, then `
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.nvmrc`)
+- **Node.js** >= 24 (see `.nvmrc`)
 - **npm** >= 10
 
 ### Setup
