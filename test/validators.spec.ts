@@ -28,7 +28,7 @@ describe('Check validators', () => {
   let adapter: SeedAdapter;
 
   beforeEach(() => {
-    adapter = new SeedAdapter(testSeed);
+    adapter = new SeedAdapter(testSeed, '?');
   });
 
   describe('check order validations', () => {

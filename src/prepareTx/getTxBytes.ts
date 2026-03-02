@@ -5,7 +5,11 @@ import { prepare } from './prepare';
 export default function (forSign: TSignData, networkByte: number): Uint8Array {
   const prepareMap = getValidateSchema(networkByte)[forSign.type];
   const version =
-    forSign.data.version || Object.keys(SIGN_TYPES[forSign.type].getBytes).sort().pop();
+    forSign.data.version ||
+    Object.keys(SIGN_TYPES[forSign.type].getBytes)
+      .map(Number)
+      .sort((a, b) => a - b)
+      .pop();
 
   const dataForBytes = {
     ...prepare.signSchema(prepareMap)(forSign.data),
