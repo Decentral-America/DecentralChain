@@ -279,6 +279,8 @@ export class CubensisConnectAdapter extends Adapter {
     }
 
     CubensisConnectAdapter._getApiCb = extensionCb;
+    // Reset the cached API so _initExtension() re-evaluates the new callback
+    CubensisConnectAdapter._api = undefined as any;
   }
 
   public static onUpdate(cb: any) {

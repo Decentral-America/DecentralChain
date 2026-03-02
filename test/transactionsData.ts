@@ -1,7 +1,7 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@decentralchain/data-entities';
 import { BtcAsset, TORCorp, INSTANTCOIN, DCCAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
-import { libs } from '@decentralchain/waves-transactions';
+import { libs } from '@decentralchain/decentralchain-transactions';
 import { BigNumber } from '@decentralchain/bignumber';
 
 const { base58Decode } = libs.crypto;
@@ -9,6 +9,7 @@ const { base58Decode } = libs.crypto;
 export const txs = {
   [SIGN_TYPE.ISSUE]: {
     2: {
+      network: 'W',
       name: 'issue',
       data: {
         name: 'JUNKGOLD',
@@ -27,6 +28,7 @@ export const txs = {
         '3Wgh9tuRdDwQXhAe63iabC5VojkPiJfKPm4tNaawGfpuGncTnT4zMTKzAH3QCjsZQ2c4sqDCyUjDpAAYBGeZLYFb',
     },
     3: {
+      network: 'W',
       name: 'issue',
       data: {
         name: 'JUNKGOLD',
@@ -47,6 +49,7 @@ export const txs = {
   },
   [SIGN_TYPE.REISSUE]: {
     2: {
+      network: 'W',
       name: 'reissue',
       data: {
         assetId: 'CUrS6BkWPJVniWE7zh8LyN7PYehMa5WxSKUz3jaGdU2C',
@@ -62,6 +65,7 @@ export const txs = {
         '5Gs7WhnoTALmA2rff6EyA3xM2tH8TFtfKgmEJdMEfFnDUiDnppTCWKgvXrdHRVBeE7g8yq6KJSxa2ZJ6C73BR7zg',
     },
     3: {
+      network: 'W',
       name: 'reissue',
       data: {
         assetId: 'CUrS6BkWPJVniWE7zh8LyN7PYehMa5WxSKUz3jaGdU2C',
@@ -79,6 +83,7 @@ export const txs = {
   },
   [SIGN_TYPE.BURN]: {
     2: {
+      network: 'W',
       name: 'burn',
       data: {
         senderPublicKey: 'BzeniWrmnD1qjoFjVnrYbSXwoiYNpKvaTkhpgwySM31Q',
@@ -93,6 +98,7 @@ export const txs = {
         '5dZqaWVrEtC4QFdwsrTQmfnL4ivPdLA8Trmz8FvhNYax4V1apQxfMqaxEHmVKhyyTCX73ahzuFMx3AjbypFYpjg4',
     },
     3: {
+      network: 'W',
       name: 'burn',
       data: {
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
@@ -109,6 +115,7 @@ export const txs = {
   },
   [SIGN_TYPE.TRANSFER]: {
     2: {
+      network: 'W',
       name: 'transfer',
       data: {
         amount: Money.fromCoins(150200000, BtcAsset),
@@ -116,15 +123,16 @@ export const txs = {
         fee: Money.fromCoins(10000, TORCorp),
         recipient: '3PAs2qSeUAfgqSKS8LpZPKGYEjJKcud9Djr',
         sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
-        senderPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh',
+        senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
         timestamp: new Date(1553167249572),
         version: 2,
       },
-      id: 'ETVSu3zPHGTh3JEyVGe48jEDgFYhm4KwMeKgvQdAQUyz',
+      id: 'EntJ941aSMFo2buvPFDLBWVbjHkDbkUmVTpN8rwmth8E',
       proof:
-        '5mUv1RbNy3ToQyTMWtRT2WSLLBHoAFaWxXqrk1vjv38ytEPgZG5U694JgyeJKKuxKz8ZvUfFYUhYAZLatPn7Bumo',
+        '2sB1UGqYeSczgV5jgN5YSke6WQ5QR4CmX7Ser1NnRCa7VUU28tq3Vs5H6WnECJQgh7wL5cMrvFdmxCt2XLLxsZvf',
     },
     3: {
+      network: 'W',
       name: 'transfer',
       data: {
         amount: Money.fromCoins(150200000, BtcAsset),
@@ -136,13 +144,14 @@ export const txs = {
         timestamp: new Date(1553167249572),
         version: 3,
       },
-      id: 'WZjJQMMSRMcBrXrD4RGcuxfFXF7U7kuAa19hZhhXVhZ',
+      id: '9MwayPaf8xBsrpsh7arPDa6MPW7jrCp4iQJvVqZ69wzT',
       proof:
-        '49ay6SEP9yX5csaJhhHNc5DprhvM6NtNrC8YTCys3sjkVKhhzPJFUzvkur9sN4kynaadj4soWD8LK5U2u1t6bMhj',
+        '5i1VcUEW9pu5pvfQ9nSy9RCLNwktzNtF1AozJV5t35afJh1UCCdpuuLzocBamBQ7MEjJcVDaRAXPwZBegCdNRZdJ',
     },
   },
   [SIGN_TYPE.LEASE]: {
     2: {
+      network: 'W',
       name: 'lease',
       data: {
         recipient: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
@@ -157,6 +166,7 @@ export const txs = {
         '2WyNnqkU2edRB1qAVgVsxSpm89wMoC9Zg1W52MShXsjtyEnNA5WRHmBXNSxNR8GERU34Bpeh4diqnKJdpt6Jcs3i',
     },
     3: {
+      network: 'W',
       name: 'lease',
       data: {
         recipient: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
@@ -173,6 +183,7 @@ export const txs = {
   },
   [SIGN_TYPE.CANCEL_LEASING]: {
     2: {
+      network: 'W',
       name: 'cancel leasing',
       data: {
         senderPublicKey: '4KZsRyZ9LVNBz6PM4CMLvEVm5oz3JepjUDuFumHx7oGJ',
@@ -186,6 +197,7 @@ export const txs = {
         'dPz1HUk8FyxF6pBdPAy9QgTBwuZVrrs8aVnDpcovEpfp7P6ojSQbugnUR47ZviZitF4ASEzcxPyXMhSTg2VB3Vu',
     },
     3: {
+      network: 'W',
       name: 'cancel leasing',
       data: {
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
@@ -201,6 +213,7 @@ export const txs = {
   },
   [SIGN_TYPE.CREATE_ALIAS]: {
     2: {
+      network: 'W',
       name: 'create alias',
       data: {
         timestamp: new Date('2019-05-22T22:06:36.873Z'),
@@ -214,6 +227,7 @@ export const txs = {
         '78VKQC7nvmMC6rfSDKX7kqoJ8UUAffeF8ScU6GevsMKHL2mgRDPiL2zLGumETZxCurdbDABDCzxNTwAAyTozFCD',
     },
     3: {
+      network: 'W',
       name: 'create alias',
       data: {
         timestamp: new Date('2019-05-22T22:06:36.873Z'),
@@ -229,6 +243,7 @@ export const txs = {
   },
   [SIGN_TYPE.MASS_TRANSFER]: {
     1: {
+      network: 'W',
       name: 'mass transfer',
       data: {
         totalAmount: Money.fromCoins(1000, INSTANTCOIN),
@@ -256,6 +271,7 @@ export const txs = {
         '45rAeooSYbb4UtxfBfBxnQR6vBdud6KiLG77vMCUX6ibKKT4APeVFPZhbMT35JG8sxLhXc55WRw2iKbxZSuFWBDy',
     },
     2: {
+      network: 'W',
       name: 'mass transfer',
       data: {
         totalAmount: Money.fromCoins(1000, INSTANTCOIN),
@@ -278,13 +294,14 @@ export const txs = {
         timestamp: 1558529580270,
         version: 2,
       },
-      id: 'AwVbDAKd86Wvg5ZGmF3g7c2cfY6HdMryAx6FykjvRPs3',
+      id: '2xAwcjGTWoWBTGYEGEhCgLqDvsE8AJYx3P3wW7yxEQEW',
       proof:
-        '2dnP6gjzVQpRYT4R2hnAQjcYL71FPZJoTfc74CvHqt25UYRgTFryk9azr1RypWXfnfiyzr6qN18ut8Vwc7GMQHh2',
+        '4NXG8Z3VWpixr9qewJ6kgwJo7zb4v5mofQWCvLqASUEG9wGSme8fa1mv8MN22rd1XKGis47dEHVR4JNfdZ2z1M7t',
     },
   },
   [SIGN_TYPE.DATA]: {
     1: {
+      network: 'W',
       name: 'data',
       data: {
         version: 1,
@@ -304,6 +321,7 @@ export const txs = {
         'XFcT3ptaMDkMFMCDUUT7r7LuyaXi45AwUnTFauYVUzFVw27AT5oEAbYrzMZyGWnUeiav2BHwXctK7yd3SMhLVNP',
     },
     2: {
+      network: 'W',
       name: 'data',
       data: {
         version: 2,
@@ -325,6 +343,7 @@ export const txs = {
   },
   [SIGN_TYPE.EXCHANGE]: {
     0: {
+      network: 'W',
       name: 'exchange',
       data: {
         senderPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
@@ -382,6 +401,7 @@ export const txs = {
         '5CNVuHcLak6GjTWvVo3t92y1ZDKeRHdSgedHP5VTg65fC8fAN2RrxDhWNmTP3QktvSQUGi7Z3WjUtVztmHnp7Afk',
     },
     2: {
+      network: 'W',
       name: 'exchange',
       data: {
         type: 7,
@@ -441,6 +461,7 @@ export const txs = {
   },
   [SIGN_TYPE.SPONSORSHIP]: {
     1: {
+      network: 'W',
       name: 'sponsorship',
       data: {
         timestamp: '2019-05-23T01:51:16.417Z',
@@ -454,6 +475,7 @@ export const txs = {
         '43L7KoZy3CUj5XunfbNiEqVbYcaeZrsztUa3qDWGUDFjGSTJDkNqhukFaQmcVFdgFKeh6VU1zCaqeYm9Q1kXfcuV',
     },
     2: {
+      network: 'W',
       name: 'sponsorship',
       data: {
         timestamp: '2019-05-23T01:51:16.417Z',
@@ -469,6 +491,7 @@ export const txs = {
   },
   [SIGN_TYPE.SET_SCRIPT]: {
     1: {
+      network: 'W',
       name: 'set script',
       data: {
         timestamp: '2019-05-19T16:57:14.262Z',
@@ -483,6 +506,7 @@ export const txs = {
         '5MUYQnEZMXa3dqdN1c6r8CwJTG3qy9UxTg5g3gTuj2M6dRsPx3Bf23Jxx7sYa1UKtYmGbVYNu5qDPhzSafYSKE33',
     },
     2: {
+      network: 'W',
       name: 'set script',
       data: {
         timestamp: '2019-05-19T16:57:14.262Z',
@@ -499,6 +523,7 @@ export const txs = {
   },
   [SIGN_TYPE.SET_ASSET_SCRIPT]: {
     1: {
+      network: 'W',
       name: 'set asset script',
       data: {
         senderPublicKey: '3Zogxgq7Gcw82HVnxBopx7qhWMjJYt55t98XC1hDSMR5',
@@ -514,6 +539,7 @@ export const txs = {
         '2eNxhqTGaBjLAwiyovQyfMoMMWddNzw2VHdbYbsY9jde8c8HeQ4rwE8cWTG4vdyacsNSv35vTJsoBrbWjSvARR3C',
     },
     2: {
+      network: 'W',
       name: 'set asset script',
       data: {
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
@@ -597,21 +623,23 @@ export const txs = {
   //////////////NOT TX////////////////
   [SIGN_TYPE.AUTH]: {
     1: {
+      network: 'W',
       name: 'auth request',
       data: {
         host: 'chrome-ext.wvservices.com',
         name: 'test app',
         data: 'test random data',
-        senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
+        senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
       },
-      id: 'G6VKU9BqJmrp1gjyPf618WTZeMg8PYQBkTCtqx9gbC8g',
+      id: '7dkH46Y2gnKrewpNdz2nwQG2pHZkmsH8PJ66S5y51uqg',
       proof:
-        '3ijDFHgMbdBgXkxddV8VMv5ocuKvgWvH4QM65h6E93ixDJiUGVCQnzVcKqBVmV4n6BkVT828C28bCp8hVo38ySxP',
+        '35aiw81R8ik6Kf7oi9NseauStwoPKgABJx9EossZc53vtd5V4ysZ3CvD8fthFA6ETNj61u9f7EiSRqcVV3DisAJG',
     },
   },
 
   [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
     1: {
+      network: 'W',
       name: 'coinomat confirmation request',
       data: {
         timestamp: 1559227375,
@@ -625,6 +653,7 @@ export const txs = {
 
   [SIGN_TYPE.MATCHER_ORDERS]: {
     1: {
+      network: 'W',
       name: 'matcher orders request',
       data: {
         timestamp: 1560812209521,
@@ -637,6 +666,7 @@ export const txs = {
   },
   [SIGN_TYPE.DCC_CONFIRMATION]: {
     1: {
+      network: 'W',
       name: 'dcc confirmation request',
       data: {
         timestamp: 1560812209521,
@@ -650,6 +680,7 @@ export const txs = {
   },
   [SIGN_TYPE.CANCEL_ORDER]: {
     0: {
+      network: 'W',
       name: 'cancel order',
       data: {
         id: 'GwaYg9pVvFonAXM2afaojQuDJyssJVEJPUjnY1bqhvfs',
@@ -660,6 +691,7 @@ export const txs = {
       id: 'EipnRjs8AeYYRKGRPUTy2rxMVaBjt1atJjFDD6vFqtN7',
     },
     1: {
+      network: 'W',
       name: 'cancel order request',
       data: {
         id: '2LRmS354UfyAgSf1Z6gataNmFRYZXjVeGeg8mEgvUt29',
@@ -673,8 +705,9 @@ export const txs = {
 
   [SIGN_TYPE.CREATE_ORDER]: {
     1: {
+      network: 'W',
       data: {
-        senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
+        senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
         orderType: 'sell',
         price: Money.fromTokens('0.00030665', BtcAsset),
         amount: Money.fromTokens('0.05186534', DCCAsset),
@@ -684,11 +717,12 @@ export const txs = {
         version: 1,
         timestamp: 1559290022165,
       },
-      id: 'EYFuGbfHCpqjao4WYdvnqnTfyaJkvdv2cvwa9b7eXX7x',
+      id: '9x1BuAfBnyRTUsmPwiccdQnK3hQQdyUGZnuNzKNvmQUy',
       proof:
-        '66H7o9oQvtU79Gk7JryH8LmFz94Mv2TBVKyRX3KavJNsysvuLZppRhb5JpEhrRvHu8wsQQPxfSS2XtNQusHr1Z9h',
+        '134KdUGNaPbDoqDfwqRBZytmhsJpY85ftrqicbJ7AeTxxjwusruWS9EZ88v5Go4WJTydH1rzG3mrrn8G19aBzLH',
     },
     2: {
+      network: 'W',
       data: {
         version: 2,
         senderPublicKey: 'Cb92PCaMeimQmmK1dSaoUro3j8YhskKhH89JWdmsCkQX',
@@ -705,6 +739,7 @@ export const txs = {
         '63N2ogYfxnWA2CYKAKzGrRCR7DDmnqCS1rhfRsseWGFufZvHXkmeiYYBp83CbtKzKAawtzviLYUeYhDuLfw3v3KA',
     },
     3: {
+      network: 'W',
       data: {
         version: 3,
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',

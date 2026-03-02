@@ -1,6 +1,6 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
 import { txs } from './transactionsData';
-import { libs } from '@decentralchain/waves-transactions';
+import { libs } from '@decentralchain/decentralchain-transactions';
 
 const { verifySignature } = libs.crypto;
 
@@ -12,7 +12,7 @@ const checkTx = (type: keyof typeof txs, version: number) => {
   return {
     name: `Test ${txData.name} v.${version} transaction.`,
     check: () => {
-      const adapter = new SeedAdapter(TEST_SEED, txData.network ?? '?');
+      const adapter = new SeedAdapter(TEST_SEED, txData.network ?? 'W');
       const signable = adapter.makeSignable({
         type,
         data: { ...data, version } as any,
