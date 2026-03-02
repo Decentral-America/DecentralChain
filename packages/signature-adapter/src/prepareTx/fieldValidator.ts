@@ -117,7 +117,7 @@ const attachment = (options: IFieldOptions) => {
     string(options);
 
     switch (true) {
-      case typeof value != 'string':
+      case typeof value !== 'string':
         error(options, ERROR_MSG.WRONG_TYPE);
         break;
       case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:

@@ -105,7 +105,7 @@ export class LedgerAdapter extends Adapter {
   }
 
   public getPrivateKey() {
-    return Promise.reject(Error('No private key'));
+    return Promise.reject(new Error('No private key'));
   }
 
   public getSignVersions(): Record<SIGN_TYPE, number[]> {
