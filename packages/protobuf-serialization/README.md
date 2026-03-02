@@ -7,7 +7,7 @@
 
 Protobuf schema definitions and generated bindings for the DecentralChain blockchain protocol.
 
-This repository contains the canonical `.proto` schema files for DecentralChain blockchain transactions, blocks, events, and gRPC APIs. It provides pre-generated bindings for multiple languages: JavaScript/TypeScript (npm), Java (Maven), Rust (Cargo), C#, and Python.
+This repository contains the canonical `.proto` schema files for DecentralChain blockchain transactions, blocks, events, and gRPC APIs. It provides pre-generated bindings for multiple languages: JavaScript/TypeScript (npm), Java (Maven), Rust (Cargo), and Python.
 
 ## Requirements
 
@@ -126,19 +126,6 @@ Add dependency to your `Cargo.toml`:
 ```toml
 [dependencies]
 decentralchain-protobuf-schemas = { git = "https://github.com/Decentral-America/protobuf-serialization" }
-```
-
-### C#
-
-1. Add `App.config`, `packages.config` to your C# solution
-2. Add to your `.csproj` file:
-
-```xml
-<ItemGroup>
-  <Protobuf Include="proto\waves\*.proto" OutputDir="waves\%(RelativePath)" GrpcServices="None" />
-  <Protobuf Include="proto\waves\events\*.proto" OutputDir="waves\events\%(RelativePath)" GrpcServices="None" />
-  <Protobuf Include="proto\waves\node\grpc\*.proto" OutputDir="waves\node\grpc\%(RelativePath)" GrpcServices="Both" />
-</ItemGroup>
 ```
 
 ### Python
