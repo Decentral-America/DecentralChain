@@ -7,7 +7,7 @@ import { type TLong } from '../../interface';
  */
 export function fetchAll(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IAllResponse> {
   return request({
     base,
@@ -22,7 +22,7 @@ export function fetchAll(
  */
 export function fetchConnected(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IAllConnectedResponse> {
   return request({
     base,
@@ -37,7 +37,7 @@ export function fetchConnected(
  */
 export function fetchBlackListed(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<IBlackPeer[]> {
   return request({
     base,
@@ -52,7 +52,7 @@ export function fetchBlackListed(
  */
 export function fetchSuspended(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<ISuspendedPeer[]> {
   return request({
     base,

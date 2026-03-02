@@ -10,13 +10,13 @@ interface ICacheEntry {
 }
 
 /** Interval cache: keyed by base URL, entries expire after 10 minutes. */
-const storage: Record<string, ICacheEntry> = Object.create(null);
+const storage: Record<string, ICacheEntry> = {};
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 export default function (base: string, current?: number): Promise<{ height: number }> {
   return Promise.all([
     getInterval(base),
-    current == undefined ? fetchHeight(base).then(({ height }) => height + 1) : current,
+    current ?? fetchHeight(base).then(({ height }) => height + 1),
   ]).then(([interval, current]) => loop(interval, current));
 
   function loop(interval: number, current: number): Promise<{ height: number }> {
