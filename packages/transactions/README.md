@@ -9,7 +9,7 @@
 
 Provides builder functions for all transaction types, cryptographic signing with seed phrases or private keys, and broadcasting to DecentralChain nodes.
 
-- **ESM + CJS** dual-format package
+- **ESM-only** package
 - **TypeScript-first** — ships declaration files
 - **Tree-shakeable** — zero side effects
 
@@ -197,7 +197,7 @@ function waitForTx(txId: string, options: { apiBase: string; timeout?: number })
 
 | Command                | Purpose                              |
 | ---------------------- | ------------------------------------ |
-| `npm run build`        | Build ESM + CJS bundles via tsup     |
+| `npm run build`        | Build ESM bundle via tsup            |
 | `npm test`             | Run tests via Vitest                 |
 | `npm run test:watch`   | Run tests in watch mode              |
 | `npm run typecheck`    | Type-check with `tsc --noEmit`       |
