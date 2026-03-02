@@ -14,7 +14,7 @@ export const defaultFetch = (url: string, options?: RequestInit): Promise<string
       }, DEFAULT_TIMEOUT_MS)
     : null;
 
-  return (window as any)
+  return globalThis
     .fetch(url, fetchOptions)
     .then((res: Response) => {
       if (timeoutId !== null) clearTimeout(timeoutId);
@@ -28,14 +28,15 @@ export const defaultFetch = (url: string, options?: RequestInit): Promise<string
               ),
             );
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       if (timeoutId !== null) clearTimeout(timeoutId);
-      if (err.name === 'AbortError') {
+      const error = err instanceof Error ? err : new Error(String(err));
+      if (error.name === 'AbortError') {
         return Promise.reject(
           new Error(`Request to ${url} timed out after ${DEFAULT_TIMEOUT_MS}ms`),
         );
       }
-      return Promise.reject(new Error(`Network error fetching ${url}: ${err.message}`));
+      return Promise.reject(new Error(`Network error fetching ${url}: ${error.message}`));
     });
 };
 
