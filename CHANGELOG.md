@@ -8,7 +8,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 ### Changed
 
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`).
-- Minimum Node.js version is now 22.
+- Minimum Node.js version is now 24.
 - Replaced Jest with Vitest.
 - Replaced tsc + browserify with tsup.
 - Upgraded all dependencies to latest versions.
@@ -19,11 +19,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - TypeScript strict mode with full type checking.
 - ESLint flat config with Prettier integration.
 - Husky + lint-staged pre-commit hooks.
-- GitHub Actions CI pipeline (Node 22, 24).
+- GitHub Actions CI pipeline (Node 24, 26).
 - Dependabot for automated dependency updates.
 - Code coverage with threshold enforcement (90%+).
 - CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md.
-- tsup-based dual ESM/CJS build output.
+- tsup-based ESM-only build output.
 
 ### Removed
 
