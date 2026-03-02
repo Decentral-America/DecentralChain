@@ -91,8 +91,7 @@ export const emptyError =
     if (value == null) {
       throw new Error(message);
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any -- value is narrowed to non-null T
-    return value as any;
+    return value as T;
   };
 
 export function isOrder(data: TDCCGuiEntity | IDCCGuiExchangeOrder): data is IDCCGuiExchangeOrder {
@@ -145,6 +144,7 @@ interface IComparator {
 interface IHas {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches any object shape
   (prop: string | number | symbol, data: any): boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches any object shape
   (prop: string | number | symbol): (data: any) => boolean;
 }
 

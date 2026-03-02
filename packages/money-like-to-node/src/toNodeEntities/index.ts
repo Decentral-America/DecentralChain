@@ -27,7 +27,7 @@ export type { IDCCGuiAlias } from './alias.js';
 export type { TDCCGuiBurn } from './burn.js';
 export type { IDCCGuiCancelLease } from './cancelLease.js';
 export type { IDCCGuiData } from './data.js';
-export type { IDCCGuiExchange, IDCCGuiExchangeOrder } from './exchange.js';
+export type { IDCCGuiExchange } from './exchange.js';
 export type { IDCCGuiIssue } from './issue.js';
 export type { TDCCGuiReissue } from './reissue.js';
 export type { IDCCGuiLease } from './lease.js';
