@@ -14,22 +14,24 @@ const MIN_FEE_UNITS = 100_000;
 
 function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
   return (balance) =>
-    (balance.minSponsoredAssetFee &&
-      BigNumber.toBigNumber(balance.sponsorBalance || 0).gte(dccFee) &&
-      BigNumber.toBigNumber(dccFee)
-        .div(MIN_FEE_UNITS)
-        .mul(balance.minSponsoredAssetFee)
-        .lte(balance.balance)) ||
-    false;
+    Boolean(
+      balance.minSponsoredAssetFee &&
+        BigNumber.toBigNumber(balance.sponsorBalance ?? 0).gte(dccFee) &&
+        BigNumber.toBigNumber(balance.minSponsoredAssetFee)
+          .mul(dccFee)
+          .div(MIN_FEE_UNITS)
+          .lte(balance.balance),
+    );
 }
 
 function currentFee(dccFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo {
-  const count = BigNumber.toBigNumber(dccFee).div(MIN_FEE_UNITS);
-
   return (balance) => ({
     assetId: balance.assetId,
     dccFee,
-    assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee!).mul(count).toFixed(),
+    assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee ?? 0)
+      .mul(dccFee)
+      .div(MIN_FEE_UNITS)
+      .toFixed(),
   });
 }
 

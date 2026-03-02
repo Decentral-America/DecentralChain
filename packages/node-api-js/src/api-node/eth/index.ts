@@ -16,7 +16,7 @@ export function fetchEthAssetDetails(
 export function fetchEthAssetDetails(
   base: string,
   ethAssetId: string | string[],
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TAssetDetails[] | TAssetDetails> {
   const id = toArray(ethAssetId);
 
@@ -24,5 +24,10 @@ export function fetchEthAssetDetails(
     base,
     url: `/eth/assets${query({ id })}`,
     options,
-  }).then((list) => (Array.isArray(ethAssetId) ? list : list[0]!));
+  }).then((list) => {
+    if (Array.isArray(ethAssetId)) return list;
+    const first = list[0];
+    if (!first) throw new Error('Expected asset details');
+    return first;
+  });
 }
