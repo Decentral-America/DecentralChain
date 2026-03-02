@@ -1,5 +1,6 @@
 import { type TLong } from '../../interface';
 import request from '../../tools/request';
+import { pathSegment } from '../../tools/utils';
 
 /**
  * GET /blockchain/rewards
@@ -8,11 +9,11 @@ import request from '../../tools/request';
 export function fetchRewards(
   base: string,
   height?: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TRewards<TLong>> {
   return request({
     base,
-    url: height ? `/blockchain/rewards/${height}` : '/blockchain/rewards',
+    url: height ? `/blockchain/rewards/${pathSegment(height)}` : '/blockchain/rewards',
     options,
   });
 }

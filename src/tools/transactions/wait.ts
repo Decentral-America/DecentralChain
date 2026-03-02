@@ -33,9 +33,9 @@ export default function <T extends Transaction<TLong> & WithApiMixin>(
   const isOnce = !Array.isArray(tx);
   const start = Date.now();
   const confirmed: T[] = [];
-  const confirmations = options?.confirmations || 0;
-  const maxWaitTime = options?.maxWaitTime || DEFAULT_MAX_WAIT_MS;
-  const requestInterval = options?.requestInterval || 250;
+  const confirmations = options?.confirmations ?? 0;
+  const maxWaitTime = options?.maxWaitTime ?? DEFAULT_MAX_WAIT_MS;
+  const requestInterval = options?.requestInterval ?? 250;
 
   const waitTx = (list: T[]): Promise<void> => {
     return fetchStatus(base, list.map(prop('id'))).then((status) => {
@@ -71,7 +71,14 @@ export default function <T extends Transaction<TLong> & WithApiMixin>(
     });
   };
 
-  return waitTx(toArray(tx)).then(() => (isOnce ? head(confirmed)! : confirmed));
+  return waitTx(toArray(tx)).then(() => {
+    if (isOnce) {
+      const first = head(confirmed);
+      if (!first) throw new Error('Transaction not confirmed');
+      return first;
+    }
+    return confirmed;
+  });
 }
 
 /** @public — exposed via create().tools.transactions.wait() parameter type */

@@ -3,7 +3,7 @@ import { type IWithApplicationStatus, type TLong } from '../../interface';
 import { fetchHeight } from '../blocks';
 import request from '../../tools/request';
 import query from '../../tools/query';
-import { deepAssign } from '../../tools/utils';
+import { deepAssign, pathSegment } from '../../tools/utils';
 import stringify from '../../tools/stringify';
 import {
   type SignedTransaction,
@@ -41,7 +41,7 @@ interface IUnconfirmedSize {
 export function fetchCalculateFee<T extends keyof TransactionMap<TLong>>(
   base: string,
   tx: Partial<TransactionMap<TLong>[T]> & { type: T },
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TFeeInfo> {
   return request({
     base,
@@ -70,7 +70,7 @@ export interface TFeeInfo<LONG = TLong> {
  */
 export function fetchUnconfirmed(
   base: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
   return request({
     base,
@@ -92,16 +92,18 @@ export function fetchTransactions(
   limit: number,
   after?: string,
   _retry?: number,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
-  return request<(TTransaction<TLong> & WithApiMixin)[][]>({
+  return request<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[][]>({
     base,
-    url: `/transactions/address/${address}/limit/${limit}${query({ after })}`,
+    url: `/transactions/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
     options,
   }).then(([list]) => {
     if (!list) return [];
     list.forEach((transaction) => addStateUpdateField(transaction));
-    return list;
+    // EthereumTransaction is not in @decentralchain/ts-types Transaction union;
+    // bridge via unknown to preserve the public API type
+    return list as unknown as (Transaction<TLong> & WithApiMixin)[];
   });
 }
 
@@ -112,11 +114,11 @@ export function fetchTransactions(
 export function fetchUnconfirmedInfo(
   base: string,
   id: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<Transaction<TLong> & WithApiMixin> {
   return request({
     base,
-    url: `/transactions/unconfirmed/info/${id}`,
+    url: `/transactions/unconfirmed/info/${pathSegment(id)}`,
     options,
   });
 }
@@ -135,56 +137,55 @@ export function fetchUnconfirmedInfo(
 export function fetchInfo(
   base: string,
   id: string,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus> {
   return request<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>({
     base,
-    url: `/transactions/info/${id}`,
+    url: `/transactions/info/${pathSegment(id)}`,
     options,
   }).then((transaction) => addStateUpdateField(transaction));
 }
 
+/**
+ * POST /transactions/status
+ * Batch-fetch the status of multiple transactions in a single HTTP request.
+ * Falls back to per-ID polling only if the batch endpoint is unavailable.
+ */
 export function fetchStatus(base: string, list: string[]): Promise<ITransactionsStatus> {
-  const DEFAULT_STATUS: ITransactionStatus = {
-    id: '',
-    confirmations: -1,
-    height: -1,
-    inUTX: false,
-    status: TRANSACTION_STATUSES.NOT_FOUND,
-  };
-
-  const loadAllTxInfo: Promise<ITransactionStatus>[] = list.map((id) =>
-    fetchUnconfirmedInfo(base, id)
-      .then(() => ({
-        ...DEFAULT_STATUS,
-        id,
-        status: TRANSACTION_STATUSES.UNCONFIRMED,
-        inUTX: true,
-      }))
-      .catch(() =>
-        fetchInfo(base, id).then((tx) => ({
-          ...DEFAULT_STATUS,
-          id,
-          status: TRANSACTION_STATUSES.IN_BLOCKCHAIN,
-          height: tx.height as number,
-          applicationStatus: tx.applicationStatus,
-        })),
-      )
-      .catch(() => ({ ...DEFAULT_STATUS, id })),
-  );
-
-  return Promise.all([fetchHeight(base), Promise.all(loadAllTxInfo)]).then(
-    ([{ height }, statuses]) => ({
-      height,
-      statuses: statuses.map((item) => ({
-        ...item,
-        confirmations:
-          item.status === TRANSACTION_STATUSES.IN_BLOCKCHAIN
-            ? height - item.height
-            : item.confirmations,
-      })),
+  return Promise.all([
+    fetchHeight(base),
+    request<IBatchStatusResponse[]>({
+      base,
+      url: '/transactions/status',
+      options: {
+        method: 'POST',
+        body: JSON.stringify({ ids: list }),
+        headers: { 'Content-Type': 'application/json' },
+      },
     }),
-  );
+  ]).then(([{ height }, batchStatuses]) => ({
+    height,
+    statuses: batchStatuses.map((item) => ({
+      id: item.id,
+      status: item.status,
+      inUTX: item.status === TRANSACTION_STATUSES.UNCONFIRMED,
+      height: item.height ?? -1,
+      confirmations:
+        item.status === TRANSACTION_STATUSES.IN_BLOCKCHAIN && item.height != null
+          ? height - item.height
+          : -1,
+      applicationStatus: item.applicationStatus,
+    })),
+  }));
+}
+
+/** Raw response shape from POST /transactions/status */
+interface IBatchStatusResponse {
+  id: string;
+  status: TTransactionStatuses;
+  height?: number;
+  confirmations?: number;
+  applicationStatus?: 'succeed' | 'script_execution_failed';
 }
 
 export interface ITransactionsStatus {
@@ -198,12 +199,13 @@ export interface ITransactionStatus {
   inUTX: boolean;
   confirmations: number;
   height: number;
+  applicationStatus?: 'succeed' | 'script_execution_failed' | undefined;
 }
 
 export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(
   base: string,
   tx: T,
-  options: RequestInit = Object.create(null),
+  options: RequestInit = {},
 ): Promise<T & WithApiMixin> {
   return request<T & WithApiMixin>({
     base,
