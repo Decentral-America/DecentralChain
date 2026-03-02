@@ -682,3 +682,136 @@ describe('Security: empty input validation', () => {
     await expect(client.aliases.getByIdList(['valid', ''])).rejects.toBeInstanceOf(Error);
   });
 });
+
+describe('Configuration error handling', () => {
+  it('rejects when fetch option is not a function', async () => {
+    const brokenClient = new DataServiceClient({
+      rootUrl: 'http://localhost:3000',
+      fetch: 'not-a-function' as any,
+      parse: parser,
+    });
+    await expect(brokenClient.getAssets('testId')).rejects.toThrow(
+      'Configuration error: fetch option must be a function',
+    );
+  });
+
+  it('rejects when parse option is not a function', async () => {
+    const brokenClient = new DataServiceClient({
+      rootUrl: 'http://localhost:3000',
+      fetch: vi.fn(() => Promise.resolve('{"data":[]}')),
+      parse: 'not-a-function' as any,
+    });
+    await expect(brokenClient.getAssets('testId')).rejects.toThrow(
+      'Configuration error: parse option must be a function',
+    );
+  });
+
+  it('rejects when transform option is not a function', async () => {
+    const brokenClient = new DataServiceClient({
+      rootUrl: 'http://localhost:3000',
+      fetch: vi.fn(() => Promise.resolve('{"data":[]}')),
+      parse: (text: string) => JSON.parse(text),
+      transform: 'not-a-function' as any,
+    });
+    await expect(brokenClient.getAssets('testId')).rejects.toThrow(
+      'Configuration error: transform option must be a function',
+    );
+  });
+});
+
+describe('createRequest edge cases', () => {
+  it('rejects empty methodUrl via getAssetsByTicker validation', async () => {
+    await expect(client.getAssetsByTicker(undefined as any)).rejects.toThrow();
+  });
+
+  it('rejects numeric ticker', async () => {
+    await expect(client.getAssetsByTicker(123 as any)).rejects.toThrow();
+  });
+});
+
+describe('Candles validation edge cases', () => {
+  it('rejects candles with empty asset IDs', async () => {
+    await expect(
+      client.getCandles('', 'priceAsset', {
+        timeStart: '2024-01-01',
+        interval: '1d',
+        matcher: 'matcher',
+      }),
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects candles with extra unknown properties', async () => {
+    await expect(
+      client.getCandles('amount', 'price', {
+        timeStart: '2024-01-01',
+        interval: '1d',
+        matcher: 'matcher',
+        unknownProp: true,
+      } as any),
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects candles with missing required params', async () => {
+    await expect(
+      client.getCandles('amount', 'price', {
+        timeStart: '2024-01-01',
+      } as any),
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  it('rejects candles with prototype pollution in params', async () => {
+    await expect(
+      client.getCandles(
+        'amount',
+        'price',
+        JSON.parse('{"__proto__":{},"timeStart":"2024-01-01","interval":"1d","matcher":"m"}'),
+      ),
+    ).rejects.toBeInstanceOf(Error);
+  });
+});
+
+describe('Pairs validation edge cases', () => {
+  it('rejects pairs with empty matcher', async () => {
+    await expect(client.getPairs('')([] as any)).rejects.toThrow(
+      'matcher must be a non-empty string',
+    );
+  });
+
+  it('rejects pairs with whitespace-only matcher', async () => {
+    await expect(client.getPairs('   ')([] as any)).rejects.toThrow(
+      'matcher must be a non-empty string',
+    );
+  });
+});
+
+describe('Transfer and mass-transfer tx edge cases', () => {
+  it('getTransferTxs accepts undefined (defaults to empty filters)', async () => {
+    const result = await client.getTransferTxs(undefined);
+    expect(result).toHaveProperty('data');
+  });
+
+  it('getMassTransferTxs accepts empty filters', async () => {
+    const result = await client.getMassTransferTxs(undefined);
+    expect(result).toHaveProperty('data');
+  });
+
+  it('getTransferTxs rejects with wrong filter keys', async () => {
+    await expect(client.getTransferTxs({ badKey: 'value' } as any)).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getMassTransferTxs rejects with wrong filter keys', async () => {
+    await expect(client.getMassTransferTxs({ badKey: 'value' } as any)).rejects.toBeInstanceOf(
+      Error,
+    );
+  });
+
+  it('getTransferTxs rejects invalid limit', async () => {
+    await expect(client.getTransferTxs({ limit: -5 })).rejects.toBeInstanceOf(Error);
+  });
+
+  it('getMassTransferTxs rejects invalid sort', async () => {
+    await expect(client.getMassTransferTxs({ sort: 'INVALID' } as any)).rejects.toBeInstanceOf(
+      Error,
+    );
+  });
+});

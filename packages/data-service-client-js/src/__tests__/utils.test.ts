@@ -6,6 +6,7 @@ import {
   isValidSort,
   hasDangerousKeys,
   defaultParse,
+  defaultFetch,
 } from '../utils';
 
 describe('Create querystring util', () => {
@@ -145,5 +146,79 @@ describe('defaultParse', () => {
   });
   it('throws on invalid JSON with context', () => {
     expect(() => defaultParse('<html>error</html>')).toThrow('invalid JSON');
+  });
+});
+
+describe('defaultFetch', () => {
+  const originalFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it('returns text on successful response', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('{"data": "ok"}'),
+    });
+    const result = await defaultFetch('http://example.com/api');
+    expect(result).toBe('{"data": "ok"}');
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'http://example.com/api',
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+  });
+
+  it('rejects with HTTP error on non-ok response', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      text: () => Promise.resolve('Resource not found'),
+    });
+    await expect(defaultFetch('http://example.com/missing')).rejects.toThrow(
+      'HTTP 404 Not Found: Resource not found',
+    );
+  });
+
+  it('rejects with network error on fetch failure', async () => {
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('DNS resolution failed'));
+    await expect(defaultFetch('http://example.com/api')).rejects.toThrow(
+      'Network error fetching http://example.com/api: DNS resolution failed',
+    );
+  });
+
+  it('rejects with timeout error on AbortError', async () => {
+    const abortError = new Error('The operation was aborted');
+    abortError.name = 'AbortError';
+    globalThis.fetch = vi.fn().mockRejectedValue(abortError);
+    await expect(defaultFetch('http://example.com/slow')).rejects.toThrow(
+      'Request to http://example.com/slow timed out',
+    );
+  });
+
+  it('passes request options through to fetch', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('ok'),
+    });
+    await defaultFetch('http://example.com', { method: 'POST', body: '{}' });
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'http://example.com',
+      expect.objectContaining({ method: 'POST', body: '{}' }),
+    );
+  });
+
+  it('truncates long HTTP error bodies to 500 chars', async () => {
+    const longBody = 'x'.repeat(1000);
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      text: () => Promise.resolve(longBody),
+    });
+    await expect(defaultFetch('http://example.com/api')).rejects.toThrow(
+      /HTTP 500 Internal Server Error: x{500}$/,
+    );
   });
 });
