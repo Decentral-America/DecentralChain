@@ -12,7 +12,7 @@ Enables secure message passing between browser windows, tabs, and iframes using 
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - **npm** >= 10
 
 ## Installation
@@ -141,7 +141,7 @@ Abstract base class for custom transport implementations.
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 10
 
 ### Setup
