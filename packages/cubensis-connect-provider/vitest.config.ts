@@ -3,19 +3,21 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    include: ['provider/test/**/*.spec.ts'],
-    exclude: ['provider/test/ui.spec.ts', 'provider/test/utils/hooks.ts'],
+    include: ['test/**/*.spec.ts'],
+    exclude: ['test/ui.spec.ts'],
     coverage: {
       provider: 'v8',
-      include: ['provider/src/**/*.ts'],
-      exclude: ['provider/test/**', 'test-app/**', 'node_modules/**', 'dist/**'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/index.ts'],
+      reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
-        branches: 70,
-        functions: 70,
-        lines: 70,
-        statements: 70,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+        statements: 90,
       },
-      reporter: ['default'],
     },
+    reporters: ['default'],
+    typecheck: { enabled: true },
   },
 });
