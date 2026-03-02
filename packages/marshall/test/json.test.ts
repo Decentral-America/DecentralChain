@@ -27,6 +27,22 @@ describe('Orders json to and from', () => {
       expect(parsed).toMatchObject(ord);
     });
   });
+
+  it('should reject unknown order version in parseOrder', () => {
+    const invalidOrderJson = '{"version":99,"orderType":"buy","price":10}';
+    expect(() => json.parseOrder(invalidOrderJson)).toThrow('Unknown order version: 99');
+  });
+
+  it('should reject unknown order version in stringifyOrder', () => {
+    const invalidOrder = { version: 99, orderType: 'buy', price: 10 };
+    expect(() => json.stringifyOrder(invalidOrder)).toThrow('Unknown order version: 99');
+  });
+
+  it('should default to order v1 when version is not present', () => {
+    const orderNoVersion = { ...exampleOrders[0] };
+    delete (orderNoVersion as any).version;
+    expect(() => json.stringifyOrder(orderNoVersion)).not.toThrow();
+  });
 });
 
 describe('All tx json to and from', () => {
