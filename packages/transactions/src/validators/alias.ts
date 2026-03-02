@@ -10,7 +10,6 @@ import {
   isValidAliasName,
   defaultValue,
   isPublicKey,
-  isNaturalNumberOrZeroLike,
 } from './validators';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
@@ -19,7 +18,7 @@ const aliasScheme = {
   version: orEq([undefined, 2, 3]),
   senderPublicKey: isPublicKey,
   alias: isValidAliasName,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   chainId: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),

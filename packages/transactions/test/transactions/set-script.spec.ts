@@ -80,11 +80,10 @@ describe('setScript', () => {
     expect(signedTx.chainId).toEqual(76);
   });
 
-  it('Should generate correct signed setScript transaction with zero fee', () => {
-    const txParams = { script: compiledContract, fee: 0 };
-    const signedTx = setScript(txParams, seed);
-
-    expect(signedTx.fee).toEqual(0);
+  it('Should not create setScript transaction with zero fee', () => {
+    expect(() => setScript({ script: compiledContract, fee: 0 }, seed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create correct signed setScript transaction with negative fee', () => {

@@ -71,11 +71,10 @@ describe('setAssetScript', () => {
     expect(validateTxSignature(signedTx, 1, 2, publicKey(seed2))).toBe(true);
   });
 
-  it('Should generate correct signed setAssetScript transaction with zero fee', () => {
-    const txParams = { ...setAssetScriptMinimalParams, fee: 0 };
-    const signedTx = setAssetScript(txParams, seed);
-
-    expect(signedTx.fee).toEqual(0);
+  it('Should not create setAssetScript transaction with zero fee', () => {
+    expect(() => setAssetScript({ ...setAssetScriptMinimalParams, fee: 0 }, seed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not generate correct signed setAssetScript transaction with negative fee', () => {
