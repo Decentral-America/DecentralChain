@@ -74,7 +74,8 @@ const createGetMassTransferTxs: TCreateGetFn<IGetMassTransferTxs> = (libOptions)
   ) =>
     typeof idOrFilters === 'string'
       ? getMassTransferTxsOne(idOrFilters)
-      : getMassTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+      : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- null must be rejected by validators
+        getMassTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
 
   return getMassTransferTxs;
 };
