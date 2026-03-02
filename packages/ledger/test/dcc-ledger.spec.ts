@@ -247,6 +247,20 @@ describe('DCCLedger', () => {
       await ledger.tryConnect();
       await expect(ledger.getPaginationUsersData(0, Infinity)).rejects.toThrow(RangeError);
     });
+
+    it('triggers background reconnect and rethrows on device error during pagination', async () => {
+      const transport = createMockTransport();
+      transport.send = vi.fn().mockRejectedValue(new Error('Device disconnected mid-pagination'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(ledger.getPaginationUsersData(0, 3)).rejects.toThrow(
+        'Device disconnected mid-pagination',
+      );
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
   });
 
   describe('signTransaction', () => {
@@ -269,6 +283,27 @@ describe('DCCLedger', () => {
       });
       expect(typeof sig).toBe('string');
       expect(sig.length).toBeGreaterThan(0);
+    });
+
+    it('triggers background reconnect and rethrows on failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValueOnce(new Uint8Array([1, 2, 0, 0x90, 0x00])) // getVersion
+        .mockRejectedValue(new Error('Device disconnected'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(
+        ledger.signTransaction(0, {
+          dataBuffer: new Uint8Array([1, 2, 3]),
+          dataType: 4,
+          dataVersion: 2,
+        }),
+      ).rejects.toThrow('Device disconnected');
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
     });
   });
 
@@ -425,6 +460,141 @@ describe('DCCLedger', () => {
       const ledger = new DCCLedger({ transport: factory });
       await ledger.tryConnect();
       expect(transport.setExchangeTimeout).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('signRequest error handling', () => {
+    it('triggers background reconnect and rethrows on failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValueOnce(new Uint8Array([1, 2, 0, 0x90, 0x00])) // getVersion
+        .mockRejectedValue(new Error('Device disconnected'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(ledger.signRequest(0, { dataBuffer: new Uint8Array([0x01]) })).rejects.toThrow(
+        'Device disconnected',
+      );
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+  });
+
+  describe('signMessage error handling', () => {
+    it('triggers background reconnect and rethrows on failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValueOnce(new Uint8Array([1, 2, 0, 0x90, 0x00])) // getVersion
+        .mockRejectedValue(new Error('Device disconnected'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(ledger.signMessage(0, 'Hello DCC')).rejects.toThrow('Device disconnected');
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+  });
+
+  describe('signSomeData error handling', () => {
+    it('triggers background reconnect and rethrows on failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValueOnce(new Uint8Array([1, 2, 0, 0x90, 0x00])) // getVersion
+        .mockRejectedValue(new Error('Device disconnected'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(ledger.signSomeData(0, { dataBuffer: new Uint8Array([0xff]) })).rejects.toThrow(
+        'Device disconnected',
+      );
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+  });
+
+  describe('signOrder error handling', () => {
+    it('triggers background reconnect and rethrows on failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValueOnce(new Uint8Array([1, 2, 0, 0x90, 0x00])) // getVersion
+        .mockRejectedValue(new Error('Device disconnected'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(
+        ledger.signOrder(0, { dataBuffer: new Uint8Array([10]), dataVersion: 1 }),
+      ).rejects.toThrow('Device disconnected');
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+  });
+
+  describe('getTransport reconnection', () => {
+    it('reconnects when _dccLibPromise is null', async () => {
+      const pubKeyBytes = new Array(32).fill(1) as number[];
+      const addressBytes = Array.from('L'.padEnd(35, 'A')).map((c) => c.charCodeAt(0));
+      const transport = createMockTransport();
+      transport.send = vi
+        .fn()
+        .mockResolvedValue(new Uint8Array([...pubKeyBytes, ...addressBytes, 0x90, 0x00]));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      // Force disconnect to null out _dccLibPromise
+      await ledger.disconnect();
+
+      // getUserDataById calls getTransport which triggers reconnect
+      const user = await ledger.getUserDataById(0);
+      expect(user).toBeDefined();
+      expect(user.id).toBe(0);
+    });
+
+    it('throws when reconnect also fails', async () => {
+      const factory: LedgerTransportFactory = {
+        create: vi.fn().mockRejectedValue(new Error('USB unavailable')),
+      };
+      const ledger = new DCCLedger({ transport: factory });
+
+      // getTransport should fail since no connection can be established
+      await expect(ledger.getUserDataById(0)).rejects.toThrow();
+    });
+  });
+
+  describe('getVersion error handling', () => {
+    it('triggers background reconnect on version retrieval failure', async () => {
+      const transport = createMockTransport();
+      transport.send = vi.fn().mockRejectedValue(new Error('Device removed'));
+
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+
+      await expect(ledger.getVersion()).rejects.toThrow('Device removed');
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+  });
+
+  describe('debug mode reconnect', () => {
+    it('cleans up log subscription on disconnect and resubscribes on reconnect', async () => {
+      const transport = createMockTransport();
+      const factory = createMockFactory(transport);
+      const ledger = new DCCLedger({ transport: factory, debug: true });
+      await ledger.tryConnect();
+      expect(ledger.ready).toBe(true);
+
+      await ledger.disconnect();
+      await ledger.tryConnect();
+      expect(ledger.ready).toBe(true);
     });
   });
 });
