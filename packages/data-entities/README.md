@@ -12,7 +12,7 @@ Provides type-safe, immutable data classes for working with Assets, Money, Order
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - **npm** >= 10
 
 ## Installation
@@ -107,7 +107,7 @@ config.set('remapAsset', (asset) => ({ ...asset, name: asset.name.toUpperCase() 
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 10
 
 ### Setup
@@ -127,8 +127,8 @@ npm install
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
 | `npm run typecheck`         | TypeScript type checking                 |
-| `npm run lint`              | ESLint                                   |
-| `npm run lint:fix`          | ESLint with auto-fix                     |
+| `npm run lint`              | ESLint with auto-fix                     |
+| `npm run lint:check`        | ESLint (check only)                      |
 | `npm run format`            | Format with Prettier                     |
 | `npm run validate`          | Full CI validation pipeline              |
 | `npm run bulletproof`       | Format + lint fix + typecheck + test     |
