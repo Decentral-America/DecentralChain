@@ -12,7 +12,7 @@ A TypeScript client library for interacting with the DecentralChain data service
 
 ## Requirements
 
-- **Node.js** >= 22 (24 recommended)
+- **Node.js** >= 24 (LTS)
 - **npm** >= 10
 
 ## Installation
@@ -156,7 +156,7 @@ The pipeline is: **fetch** → **parse** → **transform**
 
 ### Prerequisites
 
-- Node.js >= 22 (see `.node-version` for recommended version)
+- Node.js >= 24 (LTS)
 - npm >= 10
 
 ### Setup
