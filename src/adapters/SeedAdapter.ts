@@ -1,6 +1,6 @@
 import { Adapter, type IUser, type ISeedUser } from './Adapter';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/waves-transactions';
+import { seedUtils, libs } from '@decentralchain/decentralchain-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const Seed = seedUtils.Seed;

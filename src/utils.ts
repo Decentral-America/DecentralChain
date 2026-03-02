@@ -25,8 +25,11 @@ export function isEmpty(some: unknown): some is undefined {
   return some == null;
 }
 
-export function normalizeAssetId(assetId: string) {
-  return assetId || DCC_ID;
+export function normalizeAssetId(assetId: string | null | undefined): string {
+  if (assetId != null && typeof assetId === 'string' && assetId.length > 0) {
+    return assetId;
+  }
+  return DCC_ID;
 }
 
 export function last<T>(list: T[]): T {
@@ -157,6 +160,9 @@ function getDataFee(
   config: IFeeConfig,
 ): BigNumber {
   const kbPrice = getConfigProperty(tx.type, 'price_per_kb', config) || 0;
+  if (bytes.length === 0) {
+    return new BigNumber(kbPrice);
+  }
   return new BigNumber(kbPrice).mul(Math.floor(1 + (bytes.length - 1) / 1024));
 }
 

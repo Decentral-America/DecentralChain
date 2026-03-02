@@ -1,12 +1,13 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { seedUtils } from '@decentralchain/waves-transactions';
+import { seedUtils, libs } from '@decentralchain/decentralchain-transactions';
 import { Signable, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
 import { IExchangeTransactionOrder } from '@decentralchain/ts-types';
 
 const Seed = seedUtils.Seed;
 
 const seed = Seed.create();
+const seedAddress = libs.crypto.address(seed.phrase, 'W');
 
 const CONFIG = {
   smart_asset_extra_fee: new BigNumber(400000),
@@ -55,7 +56,7 @@ const DCC_ASSET = new Asset({
   height: 0,
   name: 'DecentralCoin',
   reissuable: false,
-  sender: seed.address,
+  sender: seedAddress,
   timestamp: new Date(),
   ticker: 'DCC',
 });
@@ -68,7 +69,7 @@ const TEST_ASSET = new Asset({
   height: 100,
   name: 'Test',
   reissuable: false,
-  sender: seed.address,
+  sender: seedAddress,
   timestamp: new Date(),
   ticker: undefined,
 });
@@ -80,7 +81,7 @@ const TEST_LIST: Array<ITestItem> = [
       data: {
         timestamp: Date.now(),
         fee: new Money(CONFIG.calculate_fee_rules.default.fee, DCC_ASSET),
-        recipient: seed.address,
+        recipient: seedAddress,
         amount: new Money(1, TEST_ASSET),
       },
     },
@@ -94,7 +95,7 @@ const TEST_LIST: Array<ITestItem> = [
       data: {
         timestamp: Date.now(),
         fee: new Money(CONFIG.calculate_fee_rules.default.fee, DCC_ASSET),
-        recipient: seed.address,
+        recipient: seedAddress,
         amount: new Money(1, TEST_ASSET),
       },
     },
@@ -108,7 +109,7 @@ const TEST_LIST: Array<ITestItem> = [
       data: {
         timestamp: Date.now(),
         fee: new Money(CONFIG.calculate_fee_rules.default.fee, DCC_ASSET),
-        recipient: seed.address,
+        recipient: seedAddress,
         amount: new Money(1, TEST_ASSET),
       },
     },
@@ -252,7 +253,7 @@ const TEST_LIST: Array<ITestItem> = [
         timestamp: Date.now(),
         fee: new Money(CONFIG.calculate_fee_rules.default.fee, DCC_ASSET),
         amount: new BigNumber(500),
-        recipient: seed.address,
+        recipient: seedAddress,
         version: 2,
       },
     },
@@ -267,7 +268,7 @@ const TEST_LIST: Array<ITestItem> = [
         timestamp: Date.now(),
         fee: new Money(CONFIG.calculate_fee_rules.default.fee, DCC_ASSET),
         amount: new BigNumber(500),
-        recipient: seed.address,
+        recipient: seedAddress,
         version: 2,
       },
     },
@@ -342,7 +343,7 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -362,7 +363,7 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -382,7 +383,7 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -402,11 +403,11 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -426,11 +427,11 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -450,11 +451,11 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -474,15 +475,15 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -502,15 +503,15 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -530,15 +531,15 @@ const TEST_LIST: Array<ITestItem> = [
         transfers: [
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
           {
             amount: 1,
-            recipient: seed.address,
+            recipient: seedAddress,
           },
         ],
       },
@@ -689,7 +690,7 @@ describe('Current fee list', () => {
     const scriptInfo = item.hasScript ? 'with script' : 'without script';
 
     it(`Test item with type ${item.data.type}, ${scriptInfo}, № ${index + 1}`, async () => {
-      const signable = new Signable(item.data, new SeedAdapter('dsafsdaf dsa fsdf sa', '?'));
+      const signable = new Signable(item.data, new SeedAdapter('dsafsdaf dsa fsdf sa', 'W'));
       const fee = await signable.getFee(CONFIG, item.hasScript, item.smartAssetIdList);
       expect(fee.toFixed()).toBe(item.fee.toFixed());
     });

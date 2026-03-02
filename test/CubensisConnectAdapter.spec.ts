@@ -11,7 +11,7 @@ const testAsset = new Asset({
   height: 100,
   name: 'Test',
   reissuable: false,
-  sender: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
+  sender: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
   timestamp: new Date(),
   ticker: undefined,
 });
@@ -23,8 +23,8 @@ const keeperMock = {
     prefix: 'DCCWalletAuthentication',
     host: 'www.yandex.ru',
     name: 'test',
-    address: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
-    publicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
+    address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+    publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
     signature:
       '3xvbSznhRTgDP5vMSoPpqwVf29hSdDQLFpdbtVaMHCyzuFFEgSodB7MXZTescxcYiVtR9wCgTGmZPWTApMVMg6qP',
   }),
@@ -58,8 +58,8 @@ const keeperMock = {
   publicState: async () => ({
     locked: false,
     account: {
-      address: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
-      publicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
+      address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+      publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
     },
   }),
   // @ts-expect-error - mock impl
@@ -69,7 +69,7 @@ const keeperMock = {
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
-CubensisConnectAdapter.initOptions({ networkCode: '?'.charCodeAt(0), extension: keeperMock });
+CubensisConnectAdapter.initOptions({ networkCode: 'W'.charCodeAt(0), extension: keeperMock });
 
 describe('CubensisConnect adapter test', () => {
   it('Test connect to extension', async () => {
@@ -100,7 +100,7 @@ describe('CubensisConnect adapter test', () => {
     const data = {
       type: 4,
       data: {
-        fee: new Money(0.1, testAsset),
+        fee: Money.fromTokens('0.1', testAsset),
         amount: new Money(1, testAsset),
         recipient: 'test',
         attachment: '',
@@ -119,7 +119,7 @@ describe('CubensisConnect adapter test', () => {
     const data = {
       type: 4,
       data: {
-        fee: new Money(0.1, testAsset),
+        fee: Money.fromTokens('0.1', testAsset),
         amount: new Money(1, testAsset),
         recipient: 'test',
         attachment: new Uint8Array([1, 2, 3, 4]),

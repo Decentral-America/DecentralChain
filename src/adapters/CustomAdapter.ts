@@ -24,7 +24,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     this.currentUser = userApi;
     this.type = userApi.type;
     if (!this.currentUser) {
-      throw 'No selected userApi';
+      throw new Error('No selected userApi');
     }
 
     this._isDestroyed = false;
@@ -62,7 +62,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     if (this.currentUser.signRequest) {
       return this.currentUser.signRequest(bytes);
     } else {
-      throw 'No method to sign request';
+      throw new Error('No method to sign request');
     }
   }
 
@@ -74,7 +74,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     if (this.currentUser.signTransaction) {
       return this.currentUser.signTransaction(bytes);
     } else {
-      throw 'No method to sign transactions';
+      throw new Error('No method to sign transactions');
     }
   }
 
@@ -86,7 +86,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     if (this.currentUser.signOrder) {
       return this.currentUser.signOrder(bytes);
     } else {
-      throw 'No method to sign order';
+      throw new Error('No method to sign order');
     }
   }
 
@@ -94,7 +94,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     if (this.currentUser.signData) {
       return this.currentUser.signData(bytes);
     } else {
-      throw 'No method to sign custom data';
+      throw new Error('No method to sign custom data');
     }
   }
 
@@ -103,7 +103,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
   }
 
   public getPrivateKey() {
-    return Promise.reject('No private key');
+    return Promise.reject(Error('No private key'));
   }
 
   public getSignVersions(): Record<SIGN_TYPE, number[]> {

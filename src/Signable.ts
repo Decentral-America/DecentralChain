@@ -18,7 +18,7 @@ import {
 import { type Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-import { libs } from '@decentralchain/waves-transactions';
+import { libs } from '@decentralchain/decentralchain-transactions';
 import { convert } from '@decentralchain/money-like-to-node';
 import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
@@ -132,8 +132,8 @@ export class Signable {
       ...this._forSign.data,
       type: this._forSign.type,
     };
-    const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
-    const signData = convert?.(dataForBytes, this._adapter.getNetworkByte());
+    const toNodeFn = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
+    const signData = toNodeFn?.(dataForBytes, this._adapter.getNetworkByte());
 
     return signData || dataForBytes;
   }
@@ -192,6 +192,12 @@ export class Signable {
   }
 
   public addProof(signature: string): this {
+    if (!signature || typeof signature !== 'string' || signature.trim().length === 0) {
+      throw new SignError(
+        'Invalid signature: must be a non-empty string',
+        ERRORS.VALIDATION_FAILED,
+      );
+    }
     if (this._proofs.length >= Signable.MAX_PROOFS) {
       throw new SignError(
         `Maximum proof count (${Signable.MAX_PROOFS}) reached`,
@@ -293,7 +299,7 @@ export class Signable {
   private _makeSignPromise(): this {
     if (!this._signPromise) {
       this._signPromise = this._bytePromise.then((bytes) => {
-        if (this._signMethod == 'signRequest')
+        if (this._signMethod === 'signRequest')
           return this._adapter.signRequest(bytes, this._forSign);
         else
           return this._adapter[this._signMethod](

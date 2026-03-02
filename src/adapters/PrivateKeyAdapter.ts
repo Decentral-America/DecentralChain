@@ -1,6 +1,6 @@
 import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/waves-transactions';
+import { seedUtils, libs } from '@decentralchain/decentralchain-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const publicKey = libs.crypto.publicKey;
