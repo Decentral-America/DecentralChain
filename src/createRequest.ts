@@ -3,6 +3,11 @@ import { HttpMethods, ILibRequest } from './types';
 
 export const createRequest = (methodUrl: string, params?: any): ILibRequest => {
   const URL_MAX_LENGTH = 2000;
+
+  if (typeof methodUrl !== 'string' || methodUrl.trim().length === 0) {
+    throw new Error('createRequest: methodUrl must be a non-empty string');
+  }
+
   if (typeof params === 'undefined') {
     return { url: methodUrl, method: HttpMethods.Get };
   }
