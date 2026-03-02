@@ -1,10 +1,10 @@
 import create from './libs/parseJsonBigNumber';
 
 const { parse } = create();
-import { getTransactionSchema, orderSchemaV1, orderSchemaV2 } from './schemas';
+import { getTransactionSchema, orderVersionMap } from './schemas';
 import { type TSchema } from './schemaTypes';
 import { LONG } from './serializePrimitives';
-import { convertLongFields, convertTxLongFields } from './index';
+import { convertLongFields, convertTxLongFields } from './convert';
 import { type TToLongConverter } from './parse';
 import { type TFromLongConverter } from './serialize';
 
@@ -211,7 +211,9 @@ export function stringifyTx<LONG>(tx: any, fromLongConverter?: TFromLongConverte
  */
 export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
   const ord = parse(str);
-  const schema = ord.version === 2 ? orderSchemaV2 : orderSchemaV1;
+  const version = (ord.version as number) || 1;
+  const schema = orderVersionMap[version];
+  if (schema == null) throw new Error(`Unknown order version: ${version}`);
   return toLongConverter ? convertLongFields(ord, schema, toLongConverter) : ord;
 }
 
@@ -225,7 +227,9 @@ export function stringifyOrder<LONG>(
   ord: any,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
-  const schema = ord.version === 2 ? orderSchemaV2 : orderSchemaV1;
+  const version = (ord.version as number) || 1;
+  const schema = orderVersionMap[version];
+  if (schema == null) throw new Error(`Unknown order version: ${version}`);
   const ordWithStrings = convertLongFields(ord, schema, undefined, fromLongConverter);
   return stringifyWithSchema(ordWithStrings, schema);
 }

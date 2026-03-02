@@ -459,4 +459,4 @@ const create = function (options?: Options) {
   return { parse, stringify };
 };
 
-export = create;
+export default create;
