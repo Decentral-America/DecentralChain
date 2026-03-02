@@ -66,7 +66,7 @@ export const massTransferMinimalParams: IMassTransferParams = {
   transfers: [
     {
       recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
-      amount: 0,
+      amount: 1,
     },
   ],
 };

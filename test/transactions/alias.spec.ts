@@ -72,9 +72,10 @@ describe('alias', () => {
     expect(tx.fee).toEqual(12345);
   });
 
-  it('Should create with zero fee', () => {
-    const tx = alias({ ...aliasMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create with zero fee', () => {
+    expect(() => alias({ ...aliasMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create with negative fee', () => {

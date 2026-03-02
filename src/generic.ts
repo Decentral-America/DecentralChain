@@ -25,7 +25,8 @@ export function addProof(tx: WithProofs, proof: string, index?: number) {
     tx.proofs = [...tx.proofs, proof];
     return tx;
   }
-  if (index >= 8) throw new Error(`Proof index ${index} exceeds maximum (7)`);
+  if (!Number.isInteger(index) || index < 0 || index >= 8)
+    throw new Error(`Proof index must be an integer between 0 and 7, got: ${index}`);
   if (tx.proofs != null && !!tx.proofs[index])
     throw new Error(`Proof at index ${index} already exists.`);
   for (let i = tx.proofs.length; i < index; i++) tx.proofs.push('');
@@ -48,7 +49,7 @@ export function convertToPairs(seedObj?: TSeedTypes): [string | TPrivateKey, num
       .map((k) => parseInt(k))
       .filter((k) => !isNaN(k))
       .sort();
-    return keys.map((k) => [seedObj[k], k] as [string, number]);
+    return keys.map((k) => [seedObj[k], k] as [string, number]).filter(([s]) => s != null);
   }
 }
 
@@ -71,13 +72,15 @@ export function networkByte(p: number | string | undefined, def: number): number
 export function fee(params: IBasicParams, def: number) {
   if (params.fee != null) return params.fee;
   if (!params.additionalFee) return def;
+  if (params.additionalFee < 0)
+    throw new Error(`additionalFee cannot be negative, got: ${params.additionalFee}`);
   return def + params.additionalFee;
 }
 
 export function normalizeAssetId(assetId: string | null) {
   if (assetId === '') throw new Error('Asset ID cannot be an empty string. Use null for DCC.');
   assetId = assetId || null;
-  return assetId === 'DCC' ? null : assetId;
+  return assetId != null && assetId.toUpperCase() === 'DCC' ? null : assetId;
 }
 
 export function chainIdFromRecipient(recipient: string) {

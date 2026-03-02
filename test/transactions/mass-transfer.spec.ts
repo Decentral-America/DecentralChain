@@ -88,8 +88,9 @@ describe('massTransfer', () => {
     const transfersList = [];
     const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: 0 };
     transfersList.push(t);
-    const tx = massTransfer({ transfers: transfersList }, stringSeed);
-    expect(tx.transfers).toMatchObject({ ...transfersList });
+    expect(() => massTransfer({ transfers: transfersList }, stringSeed)).toThrowError(
+      'tx "transfers", has wrong data: [{"recipient":"3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1","amount":0}]. Check tx data.',
+    );
   });
 
   it('Should throw on transfers with negative amount', () => {

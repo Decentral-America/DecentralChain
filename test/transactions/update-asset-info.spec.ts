@@ -31,9 +31,10 @@ describe('updateAssetInfo', () => {
     ).toThrowError(errorMessageByTemplate('name', 'this_is_17_bytes_'));
   });
 
-  it('Should create update asset info transaction with zero fee', () => {
-    const tx = updateAssetInfo({ ...updateAssetInfoMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create update asset info transaction with zero fee', () => {
+    expect(() =>
+      updateAssetInfo({ ...updateAssetInfoMinimalParams, fee: 0 }, stringSeed),
+    ).toThrowError(errorMessageByTemplate('fee', 0));
   });
 
   it('Should not create update asset info transaction with negative fee', () => {

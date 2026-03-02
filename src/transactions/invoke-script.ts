@@ -71,5 +71,5 @@ const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] =>
     : payments.map((pmt) => ({ ...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId }));
 
 const callField = (paramsOrTx: any) => {
-  return paramsOrTx.call ? { args: paramsOrTx.call.args || [], ...paramsOrTx.call } : null;
+  return paramsOrTx.call ? { ...paramsOrTx.call, args: paramsOrTx.call.args || [] } : null;
 };

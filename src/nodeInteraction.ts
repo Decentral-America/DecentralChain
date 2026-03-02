@@ -100,11 +100,29 @@ export async function waitForTx(
         to.cancel();
         return x as any; //todo: fix types
       })
-      .catch((_) =>
-        delay(1000).then((_) =>
+      .catch((e: any) => {
+        // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
+        const status = e?.response?.status ?? e?.status ?? e?.code;
+        if (
+          status === 400 ||
+          status === 401 ||
+          status === 403 ||
+          status === 405 ||
+          status === 422
+        ) {
+          to.cancel();
+          return Promise.reject(
+            new Error(
+              `waitForTx failed with non-retriable error (HTTP ${status}): ${e?.message ?? e}`,
+            ),
+          );
+        }
+        // 404 means tx not yet in a block — keep polling
+        // 500/502/503 could be transient — keep polling
+        return delay(1000).then((_) =>
           expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : promise(),
-        ),
-      );
+        );
+      });
 
   return promise();
 }
@@ -171,8 +189,12 @@ export async function balance(
   address: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<number> {
-  return addresses_route.fetchBalance(nodeUrl, address, requestOptions).then((d) => +d.balance);
+): Promise<string | number> {
+  return addresses_route.fetchBalance(nodeUrl, address, requestOptions).then((d) => {
+    const raw = d.balance;
+    const n = Number(raw);
+    return Number.isSafeInteger(n) ? n : String(raw);
+  });
 }
 
 /**

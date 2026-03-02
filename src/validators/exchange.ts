@@ -26,7 +26,7 @@ const exchangeScheme = {
   price: isNaturalNumberLike,
   buyMatcherFee: isNaturalNumberOrZeroLike,
   sellMatcherFee: isNaturalNumberOrZeroLike,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

@@ -226,9 +226,10 @@ describe('data', () => {
     expect(tx.fee).toEqual(100000);
   });
 
-  it('Should create data with zero fee when explicitly set', () => {
-    const tx = data({ ...dataMinimalParams, fee: 0 }, senderPk);
-    expect(tx.fee).toEqual(0);
+  it('Should not create data with zero fee', () => {
+    expect(() => data({ ...dataMinimalParams, fee: 0 }, senderPk)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create data with negative fee', () => {

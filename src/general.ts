@@ -227,14 +227,17 @@ export function verify(
   const bytes = serialize(obj);
   if (obj.version == null) {
     const signature = (obj as any).signature;
+    if (!signature) throw new Error('Transaction has no signature to verify');
     return verifySignature(publicKey, bytes, signature);
   }
-  if (proofN < 0 || proofN >= (obj as any).proofs.length) {
-    throw new Error(
-      `Proof index ${proofN} is out of bounds (${(obj as any).proofs.length} proofs available)`,
-    );
+  const proofs: string[] | undefined = (obj as any).proofs;
+  if (!Array.isArray(proofs) || proofs.length === 0) {
+    throw new Error('Transaction has no proofs to verify');
   }
-  const signature = (obj as any).proofs[proofN];
+  if (proofN < 0 || proofN >= proofs.length) {
+    throw new Error(`Proof index ${proofN} is out of bounds (${proofs.length} proofs available)`);
+  }
+  const signature = proofs[proofN]!;
   return verifySignature(publicKey, bytes, signature);
 }
 

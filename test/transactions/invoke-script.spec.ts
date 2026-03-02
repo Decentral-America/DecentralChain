@@ -280,9 +280,10 @@ describe('invokeScript', () => {
     expect(tx.fee).toEqual(100000);
   });
 
-  it('Should create invoke tx with zero fee', () => {
-    const tx = invokeScript({ ...invokeScriptMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create invoke tx with zero fee', () => {
+    expect(() => invokeScript({ ...invokeScriptMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create with negative fee', () => {

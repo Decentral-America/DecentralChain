@@ -7,7 +7,6 @@ import {
   isAssetId,
   isEq,
   isNaturalNumberLike,
-  isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
   orEq,
@@ -21,7 +20,7 @@ const burnScheme = {
   assetId: isAssetId,
   amount: isNaturalNumberLike,
   chainId: isNaturalNumberLike,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

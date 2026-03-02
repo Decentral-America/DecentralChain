@@ -30,9 +30,10 @@ describe('reissue', () => {
     expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBe(true);
   });
 
-  it('Should create with zero fee', () => {
-    const tx = reissue({ ...reissueMinimalParams, fee: 0 } as any, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create with zero fee', () => {
+    expect(() => reissue({ ...reissueMinimalParams, fee: 0 } as any, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('Should not create with negative fee', () => {
