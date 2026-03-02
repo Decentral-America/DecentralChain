@@ -1,6 +1,13 @@
 {
   "name": "@decentralchain/data-service-client-js",
   "version": "4.1.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Ivan Shmidt <bahoc47@gmail.com>",
@@ -28,8 +35,14 @@
     "typescript": "^5.0.0"
   },
   "jest": {
+    "extensionsToTreatAsEsm": [".ts", ".tsx"],
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true
+        }
+      ]
     },
     "testRegex": "(src/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "testPathIgnorePatterns": [
