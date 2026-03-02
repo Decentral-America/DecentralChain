@@ -8,7 +8,7 @@ import {
   TAliases,
 } from '../types';
 
-import { isNotString } from '../utils';
+import { isNotString, hasDangerousKeys } from '../utils';
 import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
 
@@ -20,8 +20,12 @@ const validateId = (id: string): Promise<string> =>
 const validateIdList = (idList: Array<string>): Promise<Array<string>> =>
     !Array.isArray(idList)
         ? Promise.reject(new Error('ArgumentsError: aliasId should be Array'))
+        : idList.length === 0
+        ? Promise.reject(new Error('ArgumentsError: alias list must not be empty'))
         : idList.some(id => typeof id !== 'string')
         ? Promise.reject(new Error('ArgumentsError: each alias in list should be string'))
+        : idList.some(id => id.trim().length === 0)
+        ? Promise.reject(new Error('ArgumentsError: alias id must not be empty string'))
         : Promise.resolve(idList);
 
 const validateByAddressParams = ([
@@ -36,16 +40,18 @@ const createRequestForId = (rootUrl: string) => (id: TAliasId): ILibRequest =>
   createRequest(`${rootUrl}/aliases/${encodeURIComponent(id)}`);
 
 const createRequestForIdList = (rootUrl: string) => (idList: Array<TAliasId>): ILibRequest =>
-    createRequest(`${rootUrl}/aliases/?aliases=${idList.map(id => encodeURIComponent(id)).join(',')}`);
+    createRequest(`${rootUrl}/aliases`, { aliases: idList });
 
 const createRequestForAddress = (rootUrl: string) => ([
   address,
-  { showBroken },
-]: TAliasesByAddressParams): ILibRequest =>
-  createRequest(`${rootUrl}/aliases`, {
+  options,
+]: TAliasesByAddressParams): ILibRequest => {
+  const safeOptions = options != null ? options : {};
+  return createRequest(`${rootUrl}/aliases`, {
     address,
-    showBroken,
+    showBroken: safeOptions.showBroken,
   });
+};
 
 const createGetAliases: TCreateGetFn<TAliases> = (libOptions: ILibOptions) => ({
   getById: createMethod<TAlias[]>({
@@ -58,12 +64,12 @@ const createGetAliases: TCreateGetFn<TAliases> = (libOptions: ILibOptions) => ({
       generateRequest: createRequestForIdList,
       libOptions,
   }),
-  getByAddress: (address, options = {}) =>
+  getByAddress: (address, options?) =>
     createMethod<TAlias[]>({
       validate: validateByAddressParams,
       generateRequest: createRequestForAddress,
       libOptions,
-    })(address, options),
+    })(address, options != null ? options : {}),  
 });
 
 export default createGetAliases;

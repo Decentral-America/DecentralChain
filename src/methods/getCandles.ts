@@ -10,6 +10,7 @@ import {
 
 import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
+import { hasDangerousKeys } from '../utils';
 
 type TCandlesParamsKey = keyof TCandlesParams;
 
@@ -20,13 +21,21 @@ const possibleParams: Array<TCandlesParamsKey> = [
   'matcher',
 ];
 
+const requiredParams: Array<TCandlesParamsKey> = [
+  'timeStart',
+  'interval',
+  'matcher',
+];
+
 const isCandlesParams = (params: any): params is TCandlesParams =>
   params !== null &&
   typeof params === 'object' &&
   !Array.isArray(params) &&
+  !hasDangerousKeys(params) &&
   Object.keys(params).every((k: TCandlesParamsKey) =>
     possibleParams.includes(k)
-  );
+  ) &&
+  requiredParams.every(k => k in params && params[k] !== undefined);
 
 const isFilters = (filters: any): filters is TCandlesRequestFilters =>
   Array.isArray(filters) &&
@@ -44,8 +53,20 @@ const createRequestForCandles = (rootUrl: string) => ([
   amountAssetId,
   priceAssetId,
   params,
-]: TCandlesRequestFilters): ILibRequest =>
-  createRequest(`${rootUrl}/candles/${encodeURIComponent(amountAssetId)}/${encodeURIComponent(priceAssetId)}`, params);
+]: TCandlesRequestFilters): ILibRequest => {
+  if (
+    typeof amountAssetId !== 'string' ||
+    amountAssetId.trim().length === 0 ||
+    typeof priceAssetId !== 'string' ||
+    priceAssetId.trim().length === 0
+  ) {
+    throw new Error('ArgumentsError: asset IDs must be non-empty strings');
+  }
+  return createRequest(
+    `${rootUrl}/candles/${encodeURIComponent(amountAssetId)}/${encodeURIComponent(priceAssetId)}`,
+    params
+  );
+};
 
 const createGetCandles: TCreateGetFn<TGetCandles> = (libOptions: ILibOptions) =>
   createMethod<Candle[]>({
