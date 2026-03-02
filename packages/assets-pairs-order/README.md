@@ -12,7 +12,7 @@ When trading Asset A for Asset B, the DEX needs to decide which is the **amount 
 
 ## Requirements
 
-- Node.js >= 22
+- Node.js >= 24
 - ESM environment (`"type": "module"` in your package.json, or `.mjs` files)
 
 ## Installation
