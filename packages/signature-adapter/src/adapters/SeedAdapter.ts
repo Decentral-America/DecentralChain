@@ -25,7 +25,7 @@ export class SeedAdapter extends Adapter {
     }
 
     try {
-      if (seed.startsWith("base58:")) {
+      if (seed.startsWith('base58:')) {
         const encodedSeed = seed.replace('base58:', '');
         try {
           const decodedSeed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));

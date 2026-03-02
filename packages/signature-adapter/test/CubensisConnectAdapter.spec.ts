@@ -73,36 +73,27 @@ CubensisConnectAdapter.initOptions({ networkCode: '?'.charCodeAt(0), extension: 
 
 describe('CubensisConnect adapter test', () => {
   it('Test connect to extension', async () => {
-    try {
-      const users = await CubensisConnectAdapter.getUserList();
-      const adapter = new CubensisConnectAdapter(users[0]);
-      await adapter.isAvailable();
-    } catch (e) {
-      console.error(e);
-      expect('Fail create adapter').toBe('Done');
-    }
+    const users = await CubensisConnectAdapter.getUserList();
+    const adapter = new CubensisConnectAdapter(users[0]);
+    await expect(adapter.isAvailable()).resolves.not.toThrow();
   });
 
   it('Test connect to extension by cb', async () => {
     let mock: any = null;
     CubensisConnectAdapter.setApiExtension(() => mock);
 
-    try {
+    // Should fail when mock is null
+    await expect(async () => {
       const users = await CubensisConnectAdapter.getUserList();
       const adapter = new CubensisConnectAdapter(users[0]);
       await adapter.isAvailable();
-      expect('Fail init Adapter').toBe('Done');
-    } catch {
-      mock = keeperMock;
-    }
+    }).rejects.toThrow();
 
-    try {
-      const users = await CubensisConnectAdapter.getUserList();
-      const adapter = new CubensisConnectAdapter(users[0]);
-      await adapter.isAvailable();
-    } catch {
-      expect('Fail create adapter').toBe('Done');
-    }
+    // Now set the real mock and it should succeed
+    mock = keeperMock;
+    const users = await CubensisConnectAdapter.getUserList();
+    const adapter = new CubensisConnectAdapter(users[0]);
+    await expect(adapter.isAvailable()).resolves.not.toThrow();
   });
 
   it('Test sign transfer', async () => {
@@ -116,16 +107,12 @@ describe('CubensisConnect adapter test', () => {
       },
     };
 
-    try {
-      CubensisConnectAdapter.setApiExtension(keeperMock);
-      const users = await CubensisConnectAdapter.getUserList();
-      const adapter = new CubensisConnectAdapter(users[0]);
-      const signable = adapter.makeSignable(data as any);
-      const result = (await signable.getDataForApi()) as any;
-      expect(result.proofs[0]).toBe('realProof');
-    } catch (e) {
-      expect(e).toBe('Done');
-    }
+    CubensisConnectAdapter.setApiExtension(keeperMock);
+    const users = await CubensisConnectAdapter.getUserList();
+    const adapter = new CubensisConnectAdapter(users[0]);
+    const signable = adapter.makeSignable(data as any);
+    const result = (await signable.getDataForApi()) as any;
+    expect(result.proofs[0]).toBe('realProof');
   });
 
   it('Test convert UInt8Array transfer', async () => {
@@ -139,15 +126,11 @@ describe('CubensisConnect adapter test', () => {
       },
     };
 
-    try {
-      CubensisConnectAdapter.setApiExtension(keeperMock);
-      const users = await CubensisConnectAdapter.getUserList();
-      const adapter = new CubensisConnectAdapter(users[0]);
-      const signable = adapter.makeSignable(data as any);
-      const result = (await signable.getDataForApi()) as any;
-      expect(result.proofs[0]).toBe('realProof');
-    } catch (e) {
-      expect(e).toBe('Done');
-    }
+    CubensisConnectAdapter.setApiExtension(keeperMock);
+    const users = await CubensisConnectAdapter.getUserList();
+    const adapter = new CubensisConnectAdapter(users[0]);
+    const signable = adapter.makeSignable(data as any);
+    const result = (await signable.getDataForApi()) as any;
+    expect(result.proofs[0]).toBe('realProof');
   });
 });

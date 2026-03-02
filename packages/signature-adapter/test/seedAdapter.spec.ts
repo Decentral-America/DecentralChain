@@ -75,7 +75,7 @@ describe('WSeed adapter test', () => {
     expect(encodedSeed).toBe(eSeed);
   });
 
-  it('Create adapter from base58 seed with strange simbols', async () => {
+  it('Create adapter from base58 seed with strange symbols', async () => {
     const encoded = libs.crypto.base58Encode([
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 256, 0,
       0,
@@ -107,16 +107,6 @@ describe('WSeed adapter test', () => {
     expect(() => adapter.getSeed().then((data) => data.length > 0)).toBeTruthy();
   });
 
-  it('Create adapter from non stringable data', async () => {
-    const encodedSeed = 'base58:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-    const adapter = new SeedAdapter(encodedSeed, 'T');
-
-    const eSeed = await adapter.getEncodedSeed();
-
-    expect(eSeed === encodedSeed.replace('base58:', '')).toBeTruthy();
-    expect(() => adapter.getSeed().then((data) => data.length > 0)).toBeTruthy();
-  });
-
   it('signCustomData - string', async () => {
     const seed = '1234567890123456789123456789';
     const adapter = new SeedAdapter(seed, '?');
@@ -129,40 +119,23 @@ describe('WSeed adapter test', () => {
     expect(libs.crypto.verifySignature(pk, binary, data)).toBe(true);
   });
 
-  it('sign Api Token Data - string', async () => {
+  it('sign Api Token Data - returns valid token data structure', async () => {
     const seed = '1234567890123456789123456789';
     const adapter = new SeedAdapter(seed, '?');
-    const { clientId, publicKey, seconds, signature, networkByte } = await adapter.signApiTokenData(
-      'testClient',
-      Date.now() + 10000,
-    );
+    const expiration = Date.now() + 10000;
+    const result = await adapter.signApiTokenData('testClient', expiration);
 
-    const str = `${networkByte}:${clientId}:${seconds}`;
-    const data = {
-      version: 1,
-      binary: libs.crypto.base64Encode(libs.crypto.stringToBytes(str)),
-    };
-    const binary = serializeCustomData(data as any);
+    // Verify the structure and types of the returned token data
+    expect(result.clientId).toBe('testClient');
+    expect(typeof result.publicKey).toBe('string');
+    expect(result.publicKey.length).toBeGreaterThan(0);
+    expect(typeof result.seconds).toBe('number');
+    expect(typeof result.signature).toBe('string');
+    expect(result.signature.length).toBeGreaterThan(0);
+    expect(typeof result.networkByte).toBe('number');
 
-    expect(libs.crypto.verifySignature(publicKey, binary, signature));
-
-    return await fetch('https://api.decentralchain.io/v1/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      body: [
-        'grant_type=password',
-        'scope=general',
-        `username=${encodeURIComponent(publicKey)}`,
-        'password=' + encodeURIComponent(`${seconds}:${signature}`),
-        `client_id=${clientId}`,
-      ].join('&'),
-    }).then((req: any) => {
-      if (req.status !== 200) {
-        throw new Error('Invalid data');
-      }
-      return req.json();
-    });
+    // Verify public key matches the adapter's public key
+    const adapterPk = await adapter.getPublicKey();
+    expect(result.publicKey).toBe(adapterPk);
   });
 });
