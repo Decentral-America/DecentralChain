@@ -18,8 +18,8 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+        'error',
+        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
@@ -30,8 +30,8 @@ export default defineConfig([
       'no-prototype-builtins': 'off',
       'no-useless-escape': 'warn',
       'no-useless-assignment': 'warn',
-      'preserve-caught-error': 'off',
       'prefer-const': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
 
