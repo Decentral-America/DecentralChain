@@ -17,7 +17,10 @@ const parseValueByType = (
     case DATA_FIELD_TYPE.INTEGER:
       return getCoins(item.value);
     default:
-      return null;
+      throw new Error(
+        `Unknown data entry type "${String((item as { type?: unknown }).type)}" for key "${item.key}". ` +
+          `Expected: integer, boolean, string, or binary.`,
+      );
   }
 };
 
