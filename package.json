@@ -1,53 +1,123 @@
 {
-  "name": "provider-cubensis",
-  "private": true,
-  "version": "0.0.1",
+  "name": "@decentralchain/provider-cubensis",
+  "version": "1.0.0",
+  "description": "CubensisConnect provider for DCC Signer — browser wallet integration for DecentralChain",
+  "type": "module",
+  "packageManager": "npm@11.6.2",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/provider-cubensis.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/provider-cubensis#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/provider-cubensis/issues"
+  },
   "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
-    "typecheck": "tsc --noEmit -p provider/tsconfig.json",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
-    "provider:build": "npm run build -workspace=provider",
-    "ui:build": "npm run build -workspace=test-app",
-    "ui:start": "npm run start -workspace=test-app",
-    "prepare": "husky"
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+    "*.ts": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.{json,md,yml,yaml,css}": [
+    "*.json": [
       "prettier --write"
     ]
   },
-  "workspaces": [
-    "provider",
-    "test-app"
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "15 kB",
+      "import": "{ ProviderCubensis }"
+    }
   ],
-  "engineStrict": true,
-  "engines": {
-    "node": ">=16",
-    "npm": ">=8"
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "signer",
+    "provider",
+    "cubensis-connect",
+    "blockchain",
+    "wallet"
+  ],
+  "author": "DecentralChain",
+  "license": "MIT",
+  "dependencies": {
+    "@decentralchain/cubensisconnect-types": "0.2.1",
+    "@decentralchain/marshall": "0.14.0",
+    "typed-ts-events": "3.0.1"
+  },
+  "peerDependencies": {
+    "@decentralchain/signer": "^1.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.3.1",
-    "prettier": "^3.8.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1",
-    "vitest": "^4.0.18"
+    "@arethetypeswrong/cli": "0.18.2",
+    "@decentralchain/signer": "1.1.0-beta",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "jsdom": "28.1.0",
+    "lint-staged": "16.3.1",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }
