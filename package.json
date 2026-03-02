@@ -40,7 +40,7 @@
     "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
   },
   "scripts": {
-    "generate": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w es6 --path proto -o dist/index.js \"proto/waves/**/*.proto\"",
+    "generate": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w es6 --root decentralchain --path proto -o dist/index.js \"proto/waves/**/*.proto\"",
     "generate:types": "pbts -o dist/index.d.ts --no-comments dist/index.js",
     "build": "rm -rf dist && mkdir dist && npm run generate && npm run generate:types && npm run generate -- --no-comments",
     "typecheck": "tsc --noEmit",
