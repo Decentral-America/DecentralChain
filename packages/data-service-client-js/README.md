@@ -3,7 +3,7 @@
 ## Usage
 
 ```typescript
-const DataServiceClient = require('@decentralchain/data-service-client-js').default;
+import DataServiceClient from '@decentralchain/data-service-client-js';
 
 // Initialization
 const client = new DataServiceClient({
