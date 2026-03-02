@@ -49,7 +49,7 @@ const createRequestForIdList =
 const createRequestForAddress =
   (rootUrl: string) =>
   ([address, options]: TAliasesByAddressParams): ILibRequest => {
-    const safeOptions = options != null ? options : {};
+    const safeOptions = options ?? {};
     return createRequest(`${rootUrl}/aliases`, {
       address,
       showBroken: safeOptions.showBroken,
@@ -72,7 +72,7 @@ const createGetAliases: TCreateGetFn<TAliases> = (libOptions: ILibOptions) => ({
       validate: validateByAddressParams,
       generateRequest: createRequestForAddress,
       libOptions,
-    })(address, options != null ? options : {}),
+    })(address, options ?? {}),
 });
 
 export default createGetAliases;
