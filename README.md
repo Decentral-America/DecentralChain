@@ -12,7 +12,7 @@ Standard `JSON.parse()` silently corrupts large integers (numbers larger than `N
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 
 ## Installation
 
@@ -89,7 +89,7 @@ import create, { type IOptions, type JsonHandler } from '@decentralchain/parse-j
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 10
 
 ### Setup
