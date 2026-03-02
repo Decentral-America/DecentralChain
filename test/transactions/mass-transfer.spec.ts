@@ -1,12 +1,12 @@
-import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
-import { massTransfer, reissue } from '../../src';
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { massTransfer } from '../../src';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
   validateTxSignature,
 } from '../../test/utils';
-import { massTransferMinimalParams, reissueMinimalParams } from '../minimalParams';
+import { massTransferMinimalParams } from '../minimalParams';
 import { massTransferTx } from './expected/proto/mass-transfer.tx';
 import { massTransferBinaryTx } from './expected/binary/mass-transfer.tx';
 

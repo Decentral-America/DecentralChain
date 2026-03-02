@@ -119,7 +119,7 @@ export const transferMinimalParams: ITransferParams = {
   amount: 1,
 };
 
-export const setScriptMinimalParams: ISetScriptParams = {
+const setScriptMinimalParams: ISetScriptParams = {
   script: 'AQa3b8tH',
 };
 
@@ -139,7 +139,7 @@ export const updateAssetInfoMinimalParams: IUpdateAssetInfoParams = {
   assetId: 'syXBywr2HVY7wxqkaci1jKY73KMpoLh46cp1peJAZNJ',
 };
 
-export const minimalParams = {
+const minimalParams = {
   [TRANSACTION_TYPE.ISSUE]: issueMinimalParams,
   [TRANSACTION_TYPE.TRANSFER]: transferMinimalParams,
   [TRANSACTION_TYPE.REISSUE]: reissueMinimalParams,
