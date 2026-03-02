@@ -22,7 +22,12 @@ export const BASE64_STRING: TSerializer<string> = (value: string) =>
 export const STRING: TSerializer<Option<string>> = (value: Option<string>) =>
   value ? stringToUint8Array(value) : empty;
 
-export const BYTE: TSerializer<number> = (value: number) => Uint8Array.from([value]);
+export const BYTE: TSerializer<number> = (value: number) => {
+  if (!Number.isInteger(value) || value < 0 || value > 255) {
+    throw new Error(`BYTE value out of range: expected 0–255, got ${value}`);
+  }
+  return Uint8Array.from([value]);
+};
 
 export const BOOL: TSerializer<boolean> = (value: boolean) => BYTE(value ? 1 : 0);
 
@@ -30,11 +35,17 @@ export const BYTES: TSerializer<Uint8Array | number[]> = (value: Uint8Array | nu
   Uint8Array.from(value);
 
 export const SHORT: TSerializer<number> = (value: number) => {
+  if (!Number.isInteger(value) || value < 0 || value > 65535) {
+    throw new Error(`SHORT value out of range: expected 0–65535, got ${value}`);
+  }
   const s = Long.fromNumber(value, true);
   return Uint8Array.from(s.toBytesBE().slice(6));
 };
 
 export const INT: TSerializer<number> = (value: number) => {
+  if (!Number.isInteger(value) || value < 0 || value > 4294967295) {
+    throw new Error(`INT value out of range: expected 0–4294967295, got ${value}`);
+  }
   const i = Long.fromNumber(value, true);
   return Uint8Array.from(i.toBytesBE().slice(4));
 };
