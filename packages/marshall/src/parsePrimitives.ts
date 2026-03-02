@@ -20,30 +20,56 @@ export const P_OPTION =
     return { value: result.value, shift: result.shift + 1 };
   };
 
-export const P_BYTE: TParser<number> = (bytes, start = 0) => ({ value: bytes[start]!, shift: 1 });
+export const P_BYTE: TParser<number> = (bytes, start = 0) => {
+  if (start >= bytes.length) {
+    throw new Error(`P_BYTE: buffer underflow at offset ${start} (length ${bytes.length})`);
+  }
+  return { value: bytes[start]!, shift: 1 };
+};
 
-export const P_SHORT: TParser<number> = (bytes, start = 0) => ({
-  value: 256 * bytes[start]! + bytes[start + 1]!,
-  shift: 2,
-});
+export const P_SHORT: TParser<number> = (bytes, start = 0) => {
+  if (start + 1 >= bytes.length) {
+    throw new Error(`P_SHORT: buffer underflow at offset ${start} (length ${bytes.length})`);
+  }
+  return {
+    value: 256 * bytes[start]! + bytes[start + 1]!,
+    shift: 2,
+  };
+};
 
-export const P_INT: TParser<number> = (bytes, start = 0) => ({
-  value:
-    2 ** 24 * bytes[start]! +
-    2 ** 16 * bytes[start + 1]! +
-    2 ** 8 * bytes[start + 2]! +
-    bytes[start + 3]!,
-  shift: 4,
-});
+export const P_INT: TParser<number> = (bytes, start = 0) => {
+  if (start + 3 >= bytes.length) {
+    throw new Error(`P_INT: buffer underflow at offset ${start} (length ${bytes.length})`);
+  }
+  return {
+    value:
+      2 ** 24 * bytes[start]! +
+      2 ** 16 * bytes[start + 1]! +
+      2 ** 8 * bytes[start + 2]! +
+      bytes[start + 3]!,
+    shift: 4,
+  };
+};
 
-export const P_LONG: TParser<string> = (bytes, start = 0) => ({
-  value: Long.fromBytesBE(Array.from(bytes.slice(start, start + 8))).toString(),
-  shift: 8,
-});
+export const P_LONG: TParser<string> = (bytes, start = 0) => {
+  if (start + 7 >= bytes.length) {
+    throw new Error(`P_LONG: buffer underflow at offset ${start} (length ${bytes.length})`);
+  }
+  return {
+    value: Long.fromBytesBE(Array.from(bytes.slice(start, start + 8))).toString(),
+    shift: 8,
+  };
+};
 
 export const P_BOOLEAN = (bytes: Uint8Array, start = 0) => {
-  const value = !!bytes[start];
-  return { value, shift: 1 };
+  if (start >= bytes.length) {
+    throw new Error(`P_BOOLEAN: buffer underflow at offset ${start} (length ${bytes.length})`);
+  }
+  const raw = bytes[start]!;
+  if (raw !== 0 && raw !== 1) {
+    throw new Error(`P_BOOLEAN: invalid boolean byte ${raw} at offset ${start} (expected 0 or 1)`);
+  }
+  return { value: raw === 1, shift: 1 };
 };
 
 export const P_STRING_FIXED =

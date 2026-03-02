@@ -17,7 +17,7 @@ import {
   ALIAS,
   empty,
 } from '../src/serializePrimitives';
-import { byteToAddressOrAlias } from '../src/parsePrimitives';
+import { byteToAddressOrAlias, P_BYTE, P_SHORT, P_INT, P_BOOLEAN } from '../src/parsePrimitives';
 
 const string = 'TestString';
 const bytes = [84, 101, 115, 116, 83, 116, 114, 105, 110, 103];
@@ -55,7 +55,8 @@ describe('Basic serialization', () => {
   it('SHORT', () => {
     expect(SHORT(1)).toEqual(Uint8Array.from([0, 1]));
     expect(SHORT(2 ** 16 - 1)).toEqual(Uint8Array.from([255, 255]));
-    expect(SHORT(2 ** 16)).toEqual(Uint8Array.from([0, 0]));
+    expect(() => SHORT(2 ** 16)).toThrow('SHORT value out of range');
+    expect(() => SHORT(-1)).toThrow('SHORT value out of range');
   });
 
   it('BOOL', () => {
@@ -164,5 +165,59 @@ describe('LONG serialization - financial precision boundaries', () => {
     // Negative values use two's complement
     const bytes = LONG(-1);
     expect(bytes).toEqual(Uint8Array.from([255, 255, 255, 255, 255, 255, 255, 255]));
+  });
+});
+
+describe('Serializer overflow protection - financial safety', () => {
+  it('BYTE should reject values above 255', () => {
+    expect(() => BYTE(256)).toThrow('BYTE value out of range');
+  });
+
+  it('BYTE should reject negative values', () => {
+    expect(() => BYTE(-1)).toThrow('BYTE value out of range');
+  });
+
+  it('BYTE should reject non-integer values', () => {
+    expect(() => BYTE(1.5)).toThrow('BYTE value out of range');
+  });
+
+  it('INT should reject values above 2^32 - 1', () => {
+    expect(() => INT(4294967296)).toThrow('INT value out of range');
+  });
+
+  it('INT should reject negative values', () => {
+    expect(() => INT(-1)).toThrow('INT value out of range');
+  });
+
+  it('INT should accept maximum valid value', () => {
+    expect(INT(4294967295)).toEqual(Uint8Array.from([255, 255, 255, 255]));
+  });
+
+  it('SHORT should accept maximum valid value', () => {
+    expect(SHORT(65535)).toEqual(Uint8Array.from([255, 255]));
+  });
+});
+
+describe('Parser buffer underflow protection', () => {
+  it('P_BYTE should throw on empty buffer', () => {
+    expect(() => P_BYTE(new Uint8Array(0))).toThrow('buffer underflow');
+  });
+
+  it('P_SHORT should throw on truncated buffer', () => {
+    expect(() => P_SHORT(new Uint8Array([1]))).toThrow('buffer underflow');
+  });
+
+  it('P_INT should throw on truncated buffer', () => {
+    expect(() => P_INT(new Uint8Array([1, 2]))).toThrow('buffer underflow');
+  });
+
+  it('P_BOOLEAN should reject invalid boolean byte', () => {
+    expect(() => P_BOOLEAN(new Uint8Array([2]))).toThrow('invalid boolean byte');
+    expect(() => P_BOOLEAN(new Uint8Array([255]))).toThrow('invalid boolean byte');
+  });
+
+  it('P_BOOLEAN should accept valid boolean bytes', () => {
+    expect(P_BOOLEAN(new Uint8Array([0])).value).toBe(false);
+    expect(P_BOOLEAN(new Uint8Array([1])).value).toBe(true);
   });
 });
