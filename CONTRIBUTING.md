@@ -8,7 +8,7 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 
 ## Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 10 (latest LTS recommended)
 
 ## Setup
