@@ -489,6 +489,392 @@ describe("protobuf roundtrip encoding", () => {
       expect(assertDefined(transfers[2].recipient).alias).toBe("carol");
       expect(assertDefined(transfers[2].amount).toNumber()).toBe(3_000_000);
     });
+
+    it("should encode and decode GenesisTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x00),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(0),
+        },
+        timestamp: Long.fromNumber(1460678400000),
+        version: 1,
+        genesis: {
+          recipientAddress: new Uint8Array(26).fill(0x01),
+          amount: Long.fromNumber(10_000_000_000_000_000),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const genesis = assertDefined(decoded.genesis);
+      expect(assertDefined(genesis.amount).toString()).toBe(
+        "10000000000000000",
+      );
+      expect(new Uint8Array(assertDefined(genesis.recipientAddress))).toEqual(
+        new Uint8Array(26).fill(0x01),
+      );
+    });
+
+    it("should encode and decode PaymentTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0a),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        payment: {
+          recipientAddress: new Uint8Array(26).fill(0x02),
+          amount: Long.fromNumber(50_000_000),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const payment = assertDefined(decoded.payment);
+      expect(assertDefined(payment.amount).toNumber()).toBe(50_000_000);
+      expect(new Uint8Array(assertDefined(payment.recipientAddress))).toEqual(
+        new Uint8Array(26).fill(0x02),
+      );
+    });
+
+    it("should encode and decode ExchangeTransactionData", () => {
+      const buyOrder = {
+        chainId: 84,
+        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        assetPair: {
+          amountAssetId: new Uint8Array(32).fill(0xaa),
+          priceAssetId: new Uint8Array(32).fill(0xbb),
+        },
+        orderSide: waves.Order.Side.BUY,
+        amount: Long.fromNumber(100_000_000),
+        price: Long.fromNumber(5_000_000),
+        timestamp: Long.fromNumber(1000000000),
+        expiration: Long.fromNumber(1000086400),
+        matcherFee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(300_000),
+        },
+        version: 4,
+        senderPublicKey: new Uint8Array(32).fill(0x22),
+        proofs: [new Uint8Array(64).fill(0xee)],
+      };
+
+      const sellOrder = {
+        chainId: 84,
+        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        assetPair: {
+          amountAssetId: new Uint8Array(32).fill(0xaa),
+          priceAssetId: new Uint8Array(32).fill(0xbb),
+        },
+        orderSide: waves.Order.Side.SELL,
+        amount: Long.fromNumber(100_000_000),
+        price: Long.fromNumber(5_000_000),
+        timestamp: Long.fromNumber(1000000001),
+        expiration: Long.fromNumber(1000086401),
+        matcherFee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(300_000),
+        },
+        version: 4,
+        senderPublicKey: new Uint8Array(32).fill(0x33),
+        proofs: [new Uint8Array(64).fill(0xff)],
+      };
+
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x11),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(300_000),
+        },
+        timestamp: Long.fromNumber(1000000002),
+        version: 3,
+        exchange: {
+          amount: Long.fromNumber(50_000_000),
+          price: Long.fromNumber(5_000_000),
+          buyMatcherFee: Long.fromNumber(150_000),
+          sellMatcherFee: Long.fromNumber(150_000),
+          orders: [buyOrder, sellOrder],
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const exchange = assertDefined(decoded.exchange);
+      expect(assertDefined(exchange.amount).toNumber()).toBe(50_000_000);
+      expect(assertDefined(exchange.price).toNumber()).toBe(5_000_000);
+      expect(assertDefined(exchange.buyMatcherFee).toNumber()).toBe(150_000);
+      expect(assertDefined(exchange.sellMatcherFee).toNumber()).toBe(150_000);
+      const orders = assertDefined(exchange.orders);
+      expect(orders).toHaveLength(2);
+      expect(orders[0].orderSide).toBe(waves.Order.Side.BUY);
+      expect(orders[1].orderSide).toBe(waves.Order.Side.SELL);
+      expect(assertDefined(orders[0].amount).toNumber()).toBe(100_000_000);
+      expect(assertDefined(orders[1].price).toNumber()).toBe(5_000_000);
+    });
+
+    it("should encode and decode LeaseTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0b),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 3,
+        lease: {
+          recipient: { publicKeyHash: new Uint8Array(20).fill(0xcc) },
+          amount: Long.fromNumber(100_000_000),
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const lease = assertDefined(decoded.lease);
+      expect(assertDefined(lease.amount).toNumber()).toBe(100_000_000);
+      const recipient = assertDefined(lease.recipient);
+      expect(
+        new Uint8Array(/** @type {Uint8Array} */ (recipient.publicKeyHash)),
+      ).toEqual(new Uint8Array(20).fill(0xcc));
+    });
+
+    it("should encode and decode LeaseCancelTransactionData", () => {
+      const leaseId = new Uint8Array(32).fill(0xdd);
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0c),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 3,
+        leaseCancel: {
+          leaseId,
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const cancel = assertDefined(decoded.leaseCancel);
+      expect(new Uint8Array(assertDefined(cancel.leaseId))).toEqual(leaseId);
+    });
+
+    it("should encode and decode BurnTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0d),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 3,
+        burn: {
+          assetAmount: {
+            assetId: new Uint8Array(32).fill(0xee),
+            amount: Long.fromNumber(500_000_000),
+          },
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const burn = assertDefined(decoded.burn);
+      const assetAmt = assertDefined(burn.assetAmount);
+      expect(assertDefined(assetAmt.amount).toNumber()).toBe(500_000_000);
+      expect(new Uint8Array(assertDefined(assetAmt.assetId))).toEqual(
+        new Uint8Array(32).fill(0xee),
+      );
+    });
+
+    it("should encode and decode ReissueTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0e),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 3,
+        reissue: {
+          assetAmount: {
+            assetId: new Uint8Array(32).fill(0xff),
+            amount: Long.fromNumber(1_000_000_000),
+          },
+          reissuable: false,
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const reissue = assertDefined(decoded.reissue);
+      expect(reissue.reissuable).toBe(false);
+      const assetAmt = assertDefined(reissue.assetAmount);
+      expect(assertDefined(assetAmt.amount).toNumber()).toBe(1_000_000_000);
+    });
+
+    it("should encode and decode SetScriptTransactionData", () => {
+      const scriptBytes = new Uint8Array(128).fill(0xab);
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x0f),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(1_000_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 2,
+        setScript: {
+          script: scriptBytes,
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const setScript = assertDefined(decoded.setScript);
+      expect(new Uint8Array(assertDefined(setScript.script))).toEqual(
+        scriptBytes,
+      );
+    });
+
+    it("should encode and decode SetAssetScriptTransactionData", () => {
+      const assetId = new Uint8Array(32).fill(0xab);
+      const scriptBytes = new Uint8Array(64).fill(0xcd);
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x10),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 2,
+        setAssetScript: {
+          assetId,
+          script: scriptBytes,
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const setAssetScript = assertDefined(decoded.setAssetScript);
+      expect(new Uint8Array(assertDefined(setAssetScript.assetId))).toEqual(
+        assetId,
+      );
+      expect(new Uint8Array(assertDefined(setAssetScript.script))).toEqual(
+        scriptBytes,
+      );
+    });
+
+    it("should encode and decode SponsorFeeTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x11),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 2,
+        sponsorFee: {
+          minFee: {
+            assetId: new Uint8Array(32).fill(0xaa),
+            amount: Long.fromNumber(100_000),
+          },
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const sponsorFee = assertDefined(decoded.sponsorFee);
+      const minFee = assertDefined(sponsorFee.minFee);
+      expect(assertDefined(minFee.amount).toNumber()).toBe(100_000);
+      expect(new Uint8Array(assertDefined(minFee.assetId))).toEqual(
+        new Uint8Array(32).fill(0xaa),
+      );
+    });
+
+    it("should encode and decode InvokeScriptTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x12),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(500_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 2,
+        invokeScript: {
+          dApp: { alias: "my-dapp" },
+          functionCall: new Uint8Array([0x01, 0x09, 0x01, 0x00]),
+          payments: [
+            {
+              assetId: new Uint8Array([]),
+              amount: Long.fromNumber(1_000_000),
+            },
+            {
+              assetId: new Uint8Array(32).fill(0xbb),
+              amount: Long.fromNumber(2_000_000),
+            },
+          ],
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const invoke = assertDefined(decoded.invokeScript);
+      const dApp = assertDefined(invoke.dApp);
+      expect(dApp.alias).toBe("my-dapp");
+      expect(new Uint8Array(assertDefined(invoke.functionCall))).toEqual(
+        new Uint8Array([0x01, 0x09, 0x01, 0x00]),
+      );
+      const invokePayments = assertDefined(invoke.payments);
+      expect(invokePayments).toHaveLength(2);
+      expect(assertDefined(invokePayments[0].amount).toNumber()).toBe(
+        1_000_000,
+      );
+      expect(assertDefined(invokePayments[1].amount).toNumber()).toBe(
+        2_000_000,
+      );
+      expect(new Uint8Array(assertDefined(invokePayments[1].assetId))).toEqual(
+        new Uint8Array(32).fill(0xbb),
+      );
+    });
+
+    it("should encode and decode UpdateAssetInfoTransactionData", () => {
+      const original = {
+        chainId: 84,
+        senderPublicKey: new Uint8Array(32).fill(0x13),
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 1,
+        updateAssetInfo: {
+          assetId: new Uint8Array(32).fill(0xcc),
+          name: "UpdatedToken",
+          description: "Updated description for the token",
+        },
+      };
+
+      const buffer = waves.Transaction.encode(original).finish();
+      const decoded = waves.Transaction.decode(buffer);
+      const update = assertDefined(decoded.updateAssetInfo);
+      expect(update.name).toBe("UpdatedToken");
+      expect(update.description).toBe("Updated description for the token");
+      expect(new Uint8Array(assertDefined(update.assetId))).toEqual(
+        new Uint8Array(32).fill(0xcc),
+      );
+    });
   });
 
   describe("SignedTransaction", () => {
@@ -739,6 +1125,512 @@ describe("protobuf roundtrip encoding", () => {
       expect(new Uint8Array(decoded.id)).toEqual(new Uint8Array(32).fill(0x01));
       expect(decoded.height).toBe(1000);
     });
+
+    it("should encode and decode a BlockchainUpdated with Append containing state updates", () => {
+      const original = {
+        id: new Uint8Array(32).fill(0x02),
+        height: 2000,
+        append: {
+          transactionIds: [
+            new Uint8Array(32).fill(0xaa),
+            new Uint8Array(32).fill(0xbb),
+          ],
+          stateUpdate: {
+            balances: [
+              {
+                address: new Uint8Array(26).fill(0x01),
+                amountAfter: {
+                  assetId: new Uint8Array([]),
+                  amount: Long.fromNumber(99_000_000),
+                },
+                amountBefore: Long.fromNumber(100_000_000),
+              },
+            ],
+          },
+        },
+      };
+
+      const buffer = waves.events.BlockchainUpdated.encode(original).finish();
+      const decoded = waves.events.BlockchainUpdated.decode(buffer);
+      expect(decoded.height).toBe(2000);
+      const append = assertDefined(decoded.append);
+      expect(append.transactionIds).toHaveLength(2);
+      const stateUpdate = assertDefined(append.stateUpdate);
+      const suBalances = assertDefined(stateUpdate.balances);
+      expect(suBalances).toHaveLength(1);
+      expect(assertDefined(suBalances[0].amountBefore).toNumber()).toBe(
+        100_000_000,
+      );
+      const amountAfter = assertDefined(suBalances[0].amountAfter);
+      expect(assertDefined(amountAfter.amount).toNumber()).toBe(99_000_000);
+    });
+
+    it("should encode and decode a Rollback update", () => {
+      const original = {
+        id: new Uint8Array(32).fill(0x03),
+        height: 1500,
+        rollback: {
+          type: waves.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
+          removedTransactionIds: [new Uint8Array(32).fill(0xcc)],
+        },
+      };
+
+      const buffer = waves.events.BlockchainUpdated.encode(original).finish();
+      const decoded = waves.events.BlockchainUpdated.decode(buffer);
+      const rollback = assertDefined(decoded.rollback);
+      expect(rollback.type).toBe(
+        waves.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
+      );
+      expect(rollback.removedTransactionIds).toHaveLength(1);
+    });
+  });
+
+  describe("MicroBlock", () => {
+    it("should encode and decode a MicroBlock", () => {
+      const original = {
+        version: 5,
+        reference: new Uint8Array(64).fill(0x01),
+        updatedBlockSignature: new Uint8Array(64).fill(0x02),
+        senderPublicKey: new Uint8Array(32).fill(0x03),
+        transactions: [],
+      };
+
+      const buffer = waves.MicroBlock.encode(original).finish();
+      const decoded = waves.MicroBlock.decode(buffer);
+      expect(decoded.version).toBe(5);
+      expect(new Uint8Array(decoded.reference)).toEqual(
+        new Uint8Array(64).fill(0x01),
+      );
+      expect(new Uint8Array(decoded.senderPublicKey)).toEqual(
+        new Uint8Array(32).fill(0x03),
+      );
+    });
+
+    it("should encode and decode a SignedMicroBlock", () => {
+      const microBlock = {
+        version: 5,
+        reference: new Uint8Array(64).fill(0x01),
+        updatedBlockSignature: new Uint8Array(64).fill(0x02),
+        senderPublicKey: new Uint8Array(32).fill(0x03),
+        transactions: [],
+      };
+
+      const original = {
+        microBlock,
+        signature: new Uint8Array(64).fill(0xee),
+        totalBlockId: new Uint8Array(32).fill(0xff),
+      };
+
+      const buffer = waves.SignedMicroBlock.encode(original).finish();
+      const decoded = waves.SignedMicroBlock.decode(buffer);
+      expect(new Uint8Array(decoded.signature)).toEqual(
+        new Uint8Array(64).fill(0xee),
+      );
+      expect(new Uint8Array(decoded.totalBlockId)).toEqual(
+        new Uint8Array(32).fill(0xff),
+      );
+      const inner = assertDefined(decoded.microBlock);
+      expect(inner.version).toBe(5);
+    });
+  });
+
+  describe("BlockSnapshot", () => {
+    it("should encode and decode a BlockSnapshot", () => {
+      const original = {
+        blockId: new Uint8Array(32).fill(0x01),
+        snapshots: [
+          {
+            balances: [
+              {
+                address: new Uint8Array(26).fill(0x02),
+                amount: {
+                  assetId: new Uint8Array([]),
+                  amount: Long.fromNumber(50_000_000),
+                },
+              },
+            ],
+            transactionStatus: waves.TransactionStatus.SUCCEEDED,
+          },
+        ],
+      };
+
+      const buffer = waves.BlockSnapshot.encode(original).finish();
+      const decoded = waves.BlockSnapshot.decode(buffer);
+      expect(new Uint8Array(decoded.blockId)).toEqual(
+        new Uint8Array(32).fill(0x01),
+      );
+      expect(decoded.snapshots).toHaveLength(1);
+      expect(decoded.snapshots[0].balances).toHaveLength(1);
+    });
+  });
+
+  describe("TransactionStateSnapshot (detailed)", () => {
+    it("should encode and decode lease balance snapshots", () => {
+      const original = {
+        leaseBalances: [
+          {
+            address: new Uint8Array(26).fill(0x10),
+            in: Long.fromNumber(5_000_000),
+            out: Long.fromNumber(3_000_000),
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.leaseBalances).toHaveLength(1);
+      expect(assertDefined(decoded.leaseBalances[0].in).toNumber()).toBe(
+        5_000_000,
+      );
+      expect(assertDefined(decoded.leaseBalances[0].out).toNumber()).toBe(
+        3_000_000,
+      );
+    });
+
+    it("should encode and decode new leases", () => {
+      const original = {
+        newLeases: [
+          {
+            leaseId: new Uint8Array(32).fill(0x11),
+            senderPublicKey: new Uint8Array(32).fill(0x22),
+            recipientAddress: new Uint8Array(26).fill(0x33),
+            amount: Long.fromNumber(100_000_000),
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.newLeases).toHaveLength(1);
+      expect(assertDefined(decoded.newLeases[0].amount).toNumber()).toBe(
+        100_000_000,
+      );
+    });
+
+    it("should encode and decode cancelled leases", () => {
+      const original = {
+        cancelledLeases: [
+          {
+            leaseId: new Uint8Array(32).fill(0x44),
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.cancelledLeases).toHaveLength(1);
+      expect(
+        new Uint8Array(assertDefined(decoded.cancelledLeases[0].leaseId)),
+      ).toEqual(new Uint8Array(32).fill(0x44));
+    });
+
+    it("should encode and decode asset statics (NewAsset)", () => {
+      const original = {
+        assetStatics: [
+          {
+            assetId: new Uint8Array(32).fill(0x55),
+            issuerPublicKey: new Uint8Array(32).fill(0x66),
+            decimals: 8,
+            nft: false,
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.assetStatics).toHaveLength(1);
+      expect(decoded.assetStatics[0].decimals).toBe(8);
+      expect(decoded.assetStatics[0].nft).toBe(false);
+    });
+
+    it("should encode and decode order fills", () => {
+      const original = {
+        orderFills: [
+          {
+            orderId: new Uint8Array(32).fill(0x77),
+            volume: Long.fromNumber(50_000_000),
+            fee: Long.fromNumber(300_000),
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.orderFills).toHaveLength(1);
+      expect(assertDefined(decoded.orderFills[0].volume).toNumber()).toBe(
+        50_000_000,
+      );
+      expect(assertDefined(decoded.orderFills[0].fee).toNumber()).toBe(300_000);
+    });
+
+    it("should encode and decode account data entries", () => {
+      const original = {
+        accountData: [
+          {
+            address: new Uint8Array(26).fill(0x88),
+            entries: [
+              { key: "balance", intValue: Long.fromNumber(999_000) },
+              { key: "active", boolValue: true },
+            ],
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const acctData = assertDefined(decoded.accountData);
+      expect(acctData).toHaveLength(1);
+      const entries = assertDefined(acctData[0].entries);
+      expect(entries).toHaveLength(2);
+      expect(entries[0].key).toBe("balance");
+      expect(assertDefined(entries[0].intValue).toNumber()).toBe(999_000);
+    });
+
+    it("should encode and decode sponsorships", () => {
+      const original = {
+        sponsorships: [
+          {
+            assetId: new Uint8Array(32).fill(0x99),
+            minFee: Long.fromNumber(100_000),
+          },
+        ],
+      };
+
+      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      expect(decoded.sponsorships).toHaveLength(1);
+      expect(assertDefined(decoded.sponsorships[0].minFee).toNumber()).toBe(
+        100_000,
+      );
+    });
+
+    it("should encode and decode all TransactionStatus enum values", () => {
+      for (const value of Object.values(waves.TransactionStatus)) {
+        if (typeof value !== "number") continue;
+        const original = { transactionStatus: value };
+        const buffer = waves.TransactionStateSnapshot.encode(original).finish();
+        const decoded = waves.TransactionStateSnapshot.decode(buffer);
+        // SUCCEEDED (0) is the proto3 default — it may not appear on the wire
+        if (value === 0) {
+          expect(
+            decoded.transactionStatus === 0 ||
+              decoded.transactionStatus === undefined,
+          ).toBe(true);
+        } else {
+          expect(decoded.transactionStatus).toBe(value);
+        }
+      }
+    });
+  });
+
+  describe("InvokeScriptResult (detailed)", () => {
+    it("should encode and decode issues, reissues, and burns", () => {
+      const original = {
+        issues: [
+          {
+            assetId: new Uint8Array(32).fill(0x01),
+            name: "InvokeToken",
+            description: "Token issued by invoke",
+            amount: Long.fromNumber(1_000_000_000),
+            decimals: 6,
+            reissuable: true,
+            script: new Uint8Array([]),
+            nonce: Long.fromNumber(1),
+          },
+        ],
+        reissues: [
+          {
+            assetId: new Uint8Array(32).fill(0x02),
+            amount: Long.fromNumber(500_000_000),
+            isReissuable: true,
+          },
+        ],
+        burns: [
+          {
+            assetId: new Uint8Array(32).fill(0x03),
+            amount: Long.fromNumber(100_000_000),
+          },
+        ],
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      expect(decoded.issues).toHaveLength(1);
+      expect(decoded.issues[0].name).toBe("InvokeToken");
+      expect(assertDefined(decoded.issues[0].amount).toNumber()).toBe(
+        1_000_000_000,
+      );
+      expect(decoded.reissues).toHaveLength(1);
+      expect(assertDefined(decoded.reissues[0].amount).toNumber()).toBe(
+        500_000_000,
+      );
+      expect(decoded.burns).toHaveLength(1);
+      expect(assertDefined(decoded.burns[0].amount).toNumber()).toBe(
+        100_000_000,
+      );
+    });
+
+    it("should encode and decode leases and lease cancels", () => {
+      const original = {
+        leases: [
+          {
+            recipient: { alias: "lease-target" },
+            amount: Long.fromNumber(10_000_000),
+            nonce: Long.fromNumber(42),
+            leaseId: new Uint8Array(32).fill(0x04),
+          },
+        ],
+        leaseCancels: [
+          {
+            leaseId: new Uint8Array(32).fill(0x05),
+          },
+        ],
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      expect(decoded.leases).toHaveLength(1);
+      expect(assertDefined(decoded.leases[0].amount).toNumber()).toBe(
+        10_000_000,
+      );
+      expect(assertDefined(decoded.leases[0].recipient).alias).toBe(
+        "lease-target",
+      );
+      expect(decoded.leaseCancels).toHaveLength(1);
+      expect(
+        new Uint8Array(assertDefined(decoded.leaseCancels[0].leaseId)),
+      ).toEqual(new Uint8Array(32).fill(0x05));
+    });
+
+    it("should encode and decode sponsor fees", () => {
+      const original = {
+        sponsorFees: [
+          {
+            minFee: {
+              assetId: new Uint8Array(32).fill(0x06),
+              amount: Long.fromNumber(50_000),
+            },
+          },
+        ],
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      expect(decoded.sponsorFees).toHaveLength(1);
+      const minFee = assertDefined(decoded.sponsorFees[0].minFee);
+      expect(assertDefined(minFee.amount).toNumber()).toBe(50_000);
+    });
+
+    it("should encode and decode nested invocations", () => {
+      const original = {
+        invokes: [
+          {
+            dApp: new Uint8Array(26).fill(0x07),
+            call: {
+              function: "deposit",
+              args: [
+                { integerValue: Long.fromNumber(100) },
+                { stringValue: "hello" },
+                { booleanValue: true },
+                { binaryValue: new Uint8Array([0xca, 0xfe]) },
+              ],
+            },
+            payments: [
+              {
+                assetId: new Uint8Array([]),
+                amount: Long.fromNumber(1_000_000),
+              },
+            ],
+            stateChanges: {
+              data: [{ key: "result", intValue: Long.fromNumber(200) }],
+            },
+          },
+        ],
+      };
+
+      const buffer = waves.InvokeScriptResult.encode(original).finish();
+      const decoded = waves.InvokeScriptResult.decode(buffer);
+      expect(decoded.invokes).toHaveLength(1);
+      const inv = decoded.invokes[0];
+      const call = assertDefined(inv.call);
+      expect(call.function).toBe("deposit");
+      const callArgs = assertDefined(call.args);
+      expect(callArgs).toHaveLength(4);
+      expect(assertDefined(callArgs[0].integerValue).toNumber()).toBe(100);
+      expect(callArgs[1].stringValue).toBe("hello");
+      expect(callArgs[2].booleanValue).toBe(true);
+      expect(inv.payments).toHaveLength(1);
+      const stateChanges = assertDefined(inv.stateChanges);
+      const scData = assertDefined(stateChanges.data);
+      expect(scData).toHaveLength(1);
+      expect(scData[0].key).toBe("result");
+    });
+  });
+
+  describe("DAppMeta", () => {
+    it("should encode and decode DAppMeta with callable signatures", () => {
+      const original = {
+        version: 2,
+        funcs: [
+          { types: new Uint8Array([0x01, 0x02, 0x03]) },
+          { types: new Uint8Array([0x04, 0x05]) },
+        ],
+        compactNameAndOriginalNamePairList: [
+          { compactName: "a", originalName: "deposit" },
+          { compactName: "b", originalName: "withdraw" },
+        ],
+        originalNames: ["deposit", "withdraw"],
+      };
+
+      const buffer = waves.DAppMeta.encode(original).finish();
+      const decoded = waves.DAppMeta.decode(buffer);
+      expect(decoded.version).toBe(2);
+      expect(decoded.funcs).toHaveLength(2);
+      expect(new Uint8Array(assertDefined(decoded.funcs[0].types))).toEqual(
+        new Uint8Array([0x01, 0x02, 0x03]),
+      );
+      expect(decoded.compactNameAndOriginalNamePairList).toHaveLength(2);
+      expect(decoded.compactNameAndOriginalNamePairList[0].originalName).toBe(
+        "deposit",
+      );
+      expect(decoded.originalNames).toEqual(["deposit", "withdraw"]);
+    });
+  });
+
+  describe("FinalizationVoting and EndorseBlock", () => {
+    it("should encode and decode FinalizationVoting", () => {
+      const original = {
+        endorserIndexes: [0, 1, 2, 5],
+        finalizedBlockHeight: 1000,
+        aggregatedEndorsementSignature: new Uint8Array(96).fill(0xaa),
+      };
+
+      const buffer = waves.FinalizationVoting.encode(original).finish();
+      const decoded = waves.FinalizationVoting.decode(buffer);
+      expect(decoded.endorserIndexes).toEqual([0, 1, 2, 5]);
+      expect(decoded.finalizedBlockHeight).toBe(1000);
+      expect(new Uint8Array(decoded.aggregatedEndorsementSignature)).toEqual(
+        new Uint8Array(96).fill(0xaa),
+      );
+    });
+
+    it("should encode and decode EndorseBlock", () => {
+      const original = {
+        endorserIndex: 3,
+        finalizedBlockId: new Uint8Array(32).fill(0x01),
+        finalizedBlockHeight: 999,
+        endorsedBlockId: new Uint8Array(32).fill(0x02),
+        signature: new Uint8Array(96).fill(0xbb),
+      };
+
+      const buffer = waves.EndorseBlock.encode(original).finish();
+      const decoded = waves.EndorseBlock.decode(buffer);
+      expect(decoded.endorserIndex).toBe(3);
+      expect(decoded.finalizedBlockHeight).toBe(999);
+      expect(new Uint8Array(decoded.signature)).toEqual(
+        new Uint8Array(96).fill(0xbb),
+      );
+    });
   });
 });
 
@@ -870,5 +1762,273 @@ describe("protobuf error handling", () => {
     // Truncate to half the buffer
     const truncated = fullBuffer.slice(0, Math.floor(fullBuffer.length / 2));
     expect(() => waves.Amount.decode(truncated)).toThrow();
+  });
+
+  it("should throw on corrupt SignedTransaction buffer", () => {
+    const corrupt = new Uint8Array([0x0a, 0xff, 0xff, 0xff, 0x0f]);
+    expect(() => waves.SignedTransaction.decode(corrupt)).toThrow();
+  });
+
+  it("should throw on corrupt Transaction buffer", () => {
+    const corrupt = new Uint8Array([0x08, 0x54, 0x80, 0xff, 0xff]);
+    expect(() => waves.Transaction.decode(corrupt)).toThrow();
+  });
+});
+
+describe("financial safety edge cases", () => {
+  it("should preserve min int64 (negative overflow boundary)", () => {
+    const minLong = Long.MIN_VALUE;
+    const original = {
+      assetId: new Uint8Array([]),
+      amount: minLong,
+    };
+
+    const buffer = waves.Amount.encode(original).finish();
+    const decoded = waves.Amount.decode(buffer);
+    expect(decoded.amount.toString()).toBe(minLong.toString());
+  });
+
+  it("should handle SignedTransaction with ethereum_transaction bytes", () => {
+    // Simulated RLP-encoded Ethereum transaction
+    const ethTxBytes = new Uint8Array(256).fill(0xab);
+    const original = {
+      ethereumTransaction: ethTxBytes,
+      proofs: [],
+    };
+
+    const buffer = waves.SignedTransaction.encode(original).finish();
+    const decoded = waves.SignedTransaction.decode(buffer);
+    expect(new Uint8Array(assertDefined(decoded.ethereumTransaction))).toEqual(
+      ethTxBytes,
+    );
+  });
+
+  it("should preserve exact byte content for cryptographic fields (signatures and keys)", () => {
+    // Ensure no byte mutation occurs on signature-critical fields
+    const senderPk = new Uint8Array(32);
+    const proof = new Uint8Array(64);
+    for (let i = 0; i < 32; i++) senderPk[i] = i;
+    for (let i = 0; i < 64; i++) proof[i] = 255 - i;
+
+    const signedTx = {
+      wavesTransaction: {
+        chainId: 87, // W for mainnet
+        senderPublicKey: senderPk,
+        fee: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(100_000),
+        },
+        timestamp: Long.fromNumber(1000000000),
+        version: 3,
+        transfer: {
+          recipient: { alias: "test" },
+          amount: {
+            assetId: new Uint8Array([]),
+            amount: Long.fromNumber(1),
+          },
+          attachment: new Uint8Array([]),
+        },
+      },
+      proofs: [proof],
+    };
+
+    const buffer = waves.SignedTransaction.encode(signedTx).finish();
+    const decoded = waves.SignedTransaction.decode(buffer);
+    const inner = assertDefined(decoded.wavesTransaction);
+    expect(new Uint8Array(assertDefined(inner.senderPublicKey))).toEqual(
+      senderPk,
+    );
+    expect(new Uint8Array(decoded.proofs[0])).toEqual(proof);
+    // Also verify mainnet chain ID survives
+    expect(inner.chainId).toBe(87);
+  });
+
+  it("should handle ExchangeTransactionData with extreme price values", () => {
+    const original = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(300_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 3,
+      exchange: {
+        amount: Long.fromString("9007199254740993"), // > MAX_SAFE_INTEGER
+        price: Long.fromString("999999999999999999"),
+        buyMatcherFee: Long.MAX_VALUE,
+        sellMatcherFee: Long.fromNumber(0),
+        orders: [],
+      },
+    };
+
+    const buffer = waves.Transaction.encode(original).finish();
+    const decoded = waves.Transaction.decode(buffer);
+    const exchange = assertDefined(decoded.exchange);
+    expect(assertDefined(exchange.amount).toString()).toBe("9007199254740993");
+    expect(assertDefined(exchange.price).toString()).toBe("999999999999999999");
+    expect(assertDefined(exchange.buyMatcherFee).toString()).toBe(
+      Long.MAX_VALUE.toString(),
+    );
+    expect(assertDefined(exchange.sellMatcherFee).toNumber()).toBe(0);
+  });
+
+  it("should produce deterministic encoding for complex transactions", () => {
+    const tx = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(500_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 2,
+      dataTransaction: {
+        data: [
+          { key: "a", intValue: Long.fromNumber(1) },
+          { key: "b", boolValue: true },
+          { key: "c", stringValue: "test" },
+          { key: "d", binaryValue: new Uint8Array([0xff]) },
+        ],
+      },
+    };
+
+    const buf1 = waves.Transaction.encode(tx).finish();
+    const buf2 = waves.Transaction.encode(tx).finish();
+    const buf3 = waves.Transaction.encode(tx).finish();
+    expect(buf1).toEqual(buf2);
+    expect(buf2).toEqual(buf3);
+  });
+
+  it("should handle MassTransfer with max recipients count", () => {
+    const transfers = Array.from({ length: 100 }, (_, i) => ({
+      recipient: { alias: `r${i}` },
+      amount: Long.fromNumber((i + 1) * 1_000_000),
+    }));
+
+    const original = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(5_100_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 2,
+      massTransfer: {
+        assetId: new Uint8Array([]),
+        transfers,
+        attachment: new Uint8Array([]),
+      },
+    };
+
+    const buffer = waves.Transaction.encode(original).finish();
+    const decoded = waves.Transaction.decode(buffer);
+    const mt = assertDefined(decoded.massTransfer);
+    const mtTransfers = assertDefined(mt.transfers);
+    expect(mtTransfers).toHaveLength(100);
+    // Verify first and last
+    expect(assertDefined(mtTransfers[0].amount).toNumber()).toBe(1_000_000);
+    expect(assertDefined(mtTransfers[99].amount).toNumber()).toBe(100_000_000);
+    expect(assertDefined(mtTransfers[99].recipient).alias).toBe("r99");
+  });
+
+  it("should handle DataEntry with empty key (proto3 allows it)", () => {
+    const original = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(500_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 2,
+      dataTransaction: {
+        data: [{ key: "", intValue: Long.fromNumber(0) }],
+      },
+    };
+
+    const buffer = waves.Transaction.encode(original).finish();
+    const decoded = waves.Transaction.decode(buffer);
+    const dataTx = assertDefined(decoded.dataTransaction);
+    // Empty string is proto3 default — key may or may not be present
+    expect(dataTx.data).toHaveLength(1);
+  });
+
+  it("should handle DataEntry with delete semantics (no value set)", () => {
+    const original = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(500_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 2,
+      dataTransaction: {
+        data: [{ key: "to-delete" }], // No value field = delete entry
+      },
+    };
+
+    const buffer = waves.Transaction.encode(original).finish();
+    const decoded = waves.Transaction.decode(buffer);
+    const dataTx = assertDefined(decoded.dataTransaction);
+    const dataEntries = assertDefined(dataTx.data);
+    expect(dataEntries).toHaveLength(1);
+    expect(dataEntries[0].key).toBe("to-delete");
+    // protobufjs represents unset oneOf value fields as null, not undefined.
+    // This is correct proto3 behavior — a DataEntry with no value set
+    // is the canonical delete semantics on the DecentralChain blockchain.
+    expect(dataEntries[0].intValue).toBeNull();
+    expect(dataEntries[0].boolValue).toBeNull();
+    expect(dataEntries[0].binaryValue).toBeNull();
+    expect(dataEntries[0].stringValue).toBeNull();
+  });
+
+  it("should not silently swallow unknown oneOf fields in Transaction.data", () => {
+    // Encode a transfer, then decode — only the transfer oneOf should be present
+    const original = {
+      chainId: 84,
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      fee: {
+        assetId: new Uint8Array([]),
+        amount: Long.fromNumber(100_000),
+      },
+      timestamp: Long.fromNumber(1000000000),
+      version: 3,
+      transfer: {
+        recipient: { alias: "x" },
+        amount: {
+          assetId: new Uint8Array([]),
+          amount: Long.fromNumber(1),
+        },
+        attachment: new Uint8Array([]),
+      },
+    };
+
+    const buffer = waves.Transaction.encode(original).finish();
+    const decoded = waves.Transaction.decode(buffer);
+    // Transfer should be set
+    expect(decoded.transfer).toBeDefined();
+    // protobufjs represents unset oneOf variants as null.
+    // Verify no cross-contamination between oneOf transaction data fields.
+    expect(decoded.genesis).toBeNull();
+    expect(decoded.payment).toBeNull();
+    expect(decoded.issue).toBeNull();
+    expect(decoded.reissue).toBeNull();
+    expect(decoded.burn).toBeNull();
+    expect(decoded.exchange).toBeNull();
+    expect(decoded.lease).toBeNull();
+    expect(decoded.leaseCancel).toBeNull();
+    expect(decoded.createAlias).toBeNull();
+    expect(decoded.massTransfer).toBeNull();
+    expect(decoded.dataTransaction).toBeNull();
+    expect(decoded.setScript).toBeNull();
+    expect(decoded.sponsorFee).toBeNull();
+    expect(decoded.setAssetScript).toBeNull();
+    expect(decoded.invokeScript).toBeNull();
+    expect(decoded.updateAssetInfo).toBeNull();
+    expect(decoded.invokeExpression).toBeNull();
+    expect(decoded.commitToGeneration).toBeNull();
   });
 });

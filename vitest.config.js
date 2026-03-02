@@ -7,14 +7,15 @@ export default defineConfig({
       provider: "v8",
       include: ["dist/**/*.js"],
       reporter: ["text", "lcov", "json-summary"],
-      // Coverage thresholds are intentionally low for this project because
+      // Coverage thresholds are intentionally moderate for this project because
       // the source code is entirely generated from protobuf schemas via pbjs.
-      // Quality is ensured via encode/decode roundtrip tests, not line coverage.
+      // Quality is ensured via comprehensive encode/decode roundtrip tests that
+      // exercise every protobuf message type and all oneOf transaction variants.
       thresholds: {
-        branches: 5,
-        functions: 5,
-        lines: 5,
-        statements: 5,
+        branches: 15,
+        functions: 15,
+        lines: 15,
+        statements: 15,
       },
     },
   },
