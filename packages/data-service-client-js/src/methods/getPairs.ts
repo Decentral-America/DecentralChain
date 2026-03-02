@@ -9,6 +9,7 @@ import {
 import { AssetPair } from '@decentralchain/data-entities';
 import { createMethod } from './createMethod';
 import { createRequest } from '../createRequest';
+import { isNotString } from '../utils';
 
 const isAssetPair = pair => {
   switch (true) {
@@ -33,6 +34,11 @@ const isValidPairsFilters = (request: any): request is TPairsRequest => {
 const validateRequest = (matcher: any) => (
   pairs: any
 ): Promise<TPairsRequest> => {
+  if (isNotString(matcher) || matcher.trim().length === 0) {
+    return Promise.reject(
+      new Error('ArgumentsError: matcher must be a non-empty string')
+    );
+  }
   const request = [matcher, pairs];
   return isValidPairsFilters(request)
     ? Promise.resolve(request)
