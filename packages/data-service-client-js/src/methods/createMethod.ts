@@ -18,13 +18,35 @@ const createMethod = <T>({
     return pipeP(
       validate,
       generateRequest(libOptions.rootUrl),
-      ({ url, ...options }) => libOptions.fetch(url, options),
-      libOptions.parse,
-      rawData =>
-        pipeP(
+      ({ url, ...options }) => {
+        if (typeof libOptions.fetch !== 'function') {
+          return Promise.reject(
+            new Error('Configuration error: fetch option must be a function')
+          );
+        }
+        return libOptions.fetch(url, options);
+      },
+      (text: string) => {
+        if (typeof libOptions.parse !== 'function') {
+          return Promise.reject(
+            new Error('Configuration error: parse option must be a function')
+          );
+        }
+        return libOptions.parse(text);
+      },
+      rawData => {
+        if (typeof libOptions.transform !== 'function') {
+          return Promise.reject(
+            new Error(
+              'Configuration error: transform option must be a function'
+            )
+          );
+        }
+        return pipeP(
           libOptions.transform,
           addPagination({ method, args, addPaginationToArgs, rawData })
-        )(rawData)
+        )(rawData);
+      }
     )(...args);
   }
   return method;
