@@ -283,9 +283,10 @@ describe('issue', () => {
     expect(tx.fee).toEqual(500000);
   });
 
-  it('should create correctly with zero fee', () => {
-    const tx = issue({ ...issueMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('should not create with zero fee', () => {
+    expect(() => issue({ ...issueMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
   it('should not create correctly with negative fee', () => {
