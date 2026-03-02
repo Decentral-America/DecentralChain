@@ -1,18 +1,18 @@
-import parseJsonBignumber from 'parse-json-bignumber';
-const parser = (parseJsonBignumber as any)();
-import DataServiceClient from '../index';
 import { AssetPair, Asset } from '@decentralchain/data-entities';
+import parseJsonBignumber from 'parse-json-bignumber';
 
-const fetch = jest.fn(() => Promise.resolve('{"data":[{ "data": 1 }]}'));
+import DataServiceClient from '../index';
+
+const parser = (parseJsonBignumber as any)().parse;
+const fetch = vi.fn(() => Promise.resolve('{"data":[{ "data": 1 }]}'));
 const NODE_URL = 'http://localhost:3000';
-const MATCHER = '3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP';
 const client = new DataServiceClient({
   rootUrl: NODE_URL,
   parse: parser,
   fetch,
 });
 
-describe('Asssets endpoint: ', () => {
+describe('Assets endpoint: ', () => {
   it('fetch is called with correct params#1', async () => {
     const ids = [
       '4CYRBpSmNKqmw1PoKFoZADv5FaciyJcusqrHyPrAQ4Ca',
@@ -29,7 +29,7 @@ describe('Asssets endpoint: ', () => {
   });
 
   it('fetch is called with correct params#3', async () => {
-    const ids = [];
+    const ids: string[] = [];
     await expect(client.getAssets(...ids)).rejects.toBeInstanceOf(Error);
   });
 
@@ -50,9 +50,7 @@ describe('Asssets endpoint: ', () => {
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any[] = [1, null, NaN, undefined, {}];
     await Promise.all(
-      wrongTypes.map(async t =>
-        await expect(client.getAssets(t)).rejects.toBeDefined()
-      )
+      wrongTypes.map(async (t) => await expect(client.getAssets(t)).rejects.toBeDefined()),
     );
   });
 });
@@ -61,21 +59,18 @@ describe('Pairs endpoint: ', () => {
   it('fetch is called with correct params#1', async () => {
     const pair1 = new AssetPair(
       'DCC' as any,
-      '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS' as any
+      '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS' as any,
     );
     const pair2 = new AssetPair(
       'DCC' as any,
-      '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu' as any
+      '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu' as any,
     );
-    await client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')([
-      pair1,
-      pair2,
-    ]);
+    await client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')([pair1, pair2]);
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
 
   it('fetch is called with correct params#2', async () => {
-    const pairs = [];
+    const pairs: any[] = [];
     await client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(pairs);
 
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
@@ -94,11 +89,11 @@ describe('Pairs endpoint: ', () => {
     ];
     await Promise.all(
       wrongTypes.map(
-        async t =>
+        async (t: any) =>
           await expect(
-            client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(t)
-          ).rejects.toBeDefined()
-      )
+            client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(t),
+          ).rejects.toBeDefined(),
+      ),
     );
   });
 });
@@ -120,10 +115,10 @@ describe('Aliases endpoint: ', () => {
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any = [1, null, NaN, undefined, {}];
     await Promise.all(
-      wrongTypes.map(async t => {
+      wrongTypes.map(async (t: any) => {
         await expect(client.aliases.getByAddress(t)).rejects.toBeDefined();
         await expect(client.aliases.getById(t)).rejects.toBeDefined();
-      })
+      }),
     );
   });
 });
@@ -149,10 +144,12 @@ describe('Candles endpoint: ', () => {
   it('throws, if called with wrong types', async () => {
     const wrongTypes: any = [null, NaN, {}];
     await Promise.all(
-      wrongTypes.map(async t => {
-        await expect(client.getCandles(null, null, null)).rejects.toBeDefined();
-        await expect(client.getCandles(null, null, t)).rejects.toBeDefined();
-      })
+      wrongTypes.map(async (t: any) => {
+        await expect(
+          client.getCandles(null as any, null as any, null as any),
+        ).rejects.toBeDefined();
+        await expect(client.getCandles(null as any, null as any, t)).rejects.toBeDefined();
+      }),
     );
   });
 });
@@ -207,13 +204,13 @@ describe('ExchangeTxs endpoint: ', () => {
     },
   ];
 
-  goodCases.forEach((c, i) => {
+  goodCases.forEach((c) => {
     it(`works with (${c.label})`, async () => {
-      const result = await client.getExchangeTxs(c.params[0]);
+      await client.getExchangeTxs(c.params[0]);
       expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
     });
   });
-  badCases.forEach((c, i) => {
+  badCases.forEach((c) => {
     it(`fails with (${c.label})`, async () => {
       await expect(client.getExchangeTxs(c.params[0])).rejects.toBeDefined();
     });
@@ -265,13 +262,13 @@ describe('TransferTxs endpoint: ', () => {
     },
   ];
 
-  goodCases.forEach((c, i) => {
+  goodCases.forEach((c) => {
     it(`works with (${c.label})`, async () => {
-      const result = await client.getTransferTxs(c.params[0]);
+      await client.getTransferTxs(c.params[0]);
       expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
     });
   });
-  badCases.forEach((c, i) => {
+  badCases.forEach((c) => {
     it(`fails with (${c.label})`, async () => {
       await expect(client.getTransferTxs(c.params[0])).rejects.toBeDefined();
     });
@@ -339,20 +336,16 @@ describe('MassTransferTxs endpoint: ', () => {
 describe('Constructor: ', () => {
   it('throws if no rootUrl is provided', () => {
     expect(() => new DataServiceClient({} as any)).toThrow(
-      'No rootUrl was presented in options object'
+      'No rootUrl was presented in options object',
     );
   });
 
   it('throws if rootUrl is not a valid HTTP/HTTPS URL', () => {
     expect(() => new DataServiceClient({ rootUrl: 'javascript:alert(1)' })).toThrow(
-      'Invalid rootUrl'
+      'Invalid rootUrl',
     );
-    expect(() => new DataServiceClient({ rootUrl: 'ftp://evil.com' })).toThrow(
-      'Invalid rootUrl'
-    );
-    expect(() => new DataServiceClient({ rootUrl: 'not-a-url' })).toThrow(
-      'Invalid rootUrl'
-    );
+    expect(() => new DataServiceClient({ rootUrl: 'ftp://evil.com' })).toThrow('Invalid rootUrl');
+    expect(() => new DataServiceClient({ rootUrl: 'not-a-url' })).toThrow('Invalid rootUrl');
   });
 
   it('accepts valid HTTP and HTTPS URLs', () => {
@@ -381,18 +374,14 @@ describe('Aliases getByIdList: ', () => {
   });
 
   it('throws if called with non-array', async () => {
-    await expect(
-      (client.aliases.getByIdList as any)('not-an-array')
-    ).rejects.toBeDefined();
+    await expect((client.aliases.getByIdList as any)('not-an-array')).rejects.toBeDefined();
   });
 });
 
 describe('Pagination: ', () => {
   it('works', async () => {
-    const customFetch = jest.fn(() =>
-      Promise.resolve(
-        '{"__type": "list","lastCursor": "cursor", "data": [{ "data": 1 }]}'
-      )
+    const customFetch = vi.fn(() =>
+      Promise.resolve('{"__type": "list","lastCursor": "cursor", "data": [{ "data": 1 }]}'),
     );
     const customClient = new DataServiceClient({
       rootUrl: 'http://localhost',
@@ -410,7 +399,7 @@ describe('Pagination: ', () => {
     });
     expect(result2).toHaveProperty('data');
     expect(result2).toHaveProperty('fetchMore');
-    const result3 = await result2.fetchMore(1);
+    const result3 = await result2.fetchMore!(1);
     expect(result3).toHaveProperty('data');
     expect(result3).toHaveProperty('fetchMore');
     expect(customFetch.mock.calls.slice(-2)).toMatchSnapshot();
@@ -463,18 +452,24 @@ describe('Custom transformer: ', () => {
       ],
     }),
   };
-  const customFetchMock = type =>
-    jest.fn(() => Promise.resolve(fetchMocks[type]));
+  const customFetchMock = (type: keyof typeof fetchMocks) =>
+    vi.fn(() => Promise.resolve(fetchMocks[type]));
 
   it('works for list of assets', async () => {
     const transformMocks = {
-      list: jest.fn(d => d.map(customTransformer)),
-      asset: jest.fn(),
-      pair: jest.fn(),
+      list: vi.fn((d) => d.map(customTransformer)),
+      asset: vi.fn(),
+      pair: vi.fn(),
     };
 
-    const customTransformer = ({ __type, data, ...etc }) =>
-      transformMocks[__type](data);
+    const customTransformer = ({
+      __type,
+      data,
+    }: {
+      __type: keyof typeof transformMocks;
+      data: any;
+      [key: string]: any;
+    }) => transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
       rootUrl: 'http://localhost',
@@ -482,7 +477,7 @@ describe('Custom transformer: ', () => {
       fetch: customFetchMock('assets'),
       transform: customTransformer,
     });
-    const assets = await customClient.getAssets('1', '2');
+    await customClient.getAssets('1', '2');
     expect(transformMocks.list).toHaveBeenCalledTimes(1);
     expect(transformMocks.asset).toHaveBeenCalledTimes(2);
     expect(transformMocks.pair).toHaveBeenCalledTimes(0);
@@ -490,13 +485,19 @@ describe('Custom transformer: ', () => {
 
   it('works for list of candles', async () => {
     const transformMocks = {
-      list: jest.fn(d => d.map(customTransformer)),
-      pair: jest.fn(),
-      candle: jest.fn(),
+      list: vi.fn((d) => d.map(customTransformer)),
+      pair: vi.fn(),
+      candle: vi.fn(),
     };
 
-    const customTransformer = ({ __type, data, ...etc }) =>
-      transformMocks[__type](data);
+    const customTransformer = ({
+      __type,
+      data,
+    }: {
+      __type: keyof typeof transformMocks;
+      data: any;
+      [key: string]: any;
+    }) => transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
       rootUrl: 'http://localhost',
@@ -505,7 +506,7 @@ describe('Custom transformer: ', () => {
       transform: customTransformer,
     });
 
-    const candles = await customClient.getCandles('DCC', 'BTC', {
+    await customClient.getCandles('DCC', 'BTC', {
       timeStart: new Date(),
       interval: '1d',
       matcher: 'matcher',
@@ -518,21 +519,19 @@ describe('Custom transformer: ', () => {
 
 describe('Long params transforms into POST request', () => {
   it('works', async () => {
-    const ids = new Array(300)
-      .fill(1)
-      .map(() => 'AENTt5heWujAzcw7PmGXi1ekRc7CAmNm87Q1xZMYXGLa');
+    const ids = new Array(300).fill(1).map(() => 'AENTt5heWujAzcw7PmGXi1ekRc7CAmNm87Q1xZMYXGLa');
     await client.getAssets(...ids);
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
   it('works for pairs', async () => {
-    const pairs = new Array(300).fill(1).map(
+    const pairs: AssetPair[] = new Array(300).fill(1).map(
       () =>
         new AssetPair(
           new Asset({ id: 'DCC' } as any),
           new Asset({
             id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-          } as any)
-        )
+          } as any),
+        ),
     );
     await client.getPairs('3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP')(pairs);
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
@@ -541,15 +540,15 @@ describe('Long params transforms into POST request', () => {
 
 describe('Security: rejection errors are proper Error objects', () => {
   it('getExchangeTxs rejects null with Error', async () => {
-    await expect(client.getExchangeTxs(null)).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs(null as any)).rejects.toBeInstanceOf(Error);
   });
 
   it('getTransferTxs rejects null with Error', async () => {
-    await expect(client.getTransferTxs(null)).rejects.toBeInstanceOf(Error);
+    await expect(client.getTransferTxs(null as any)).rejects.toBeInstanceOf(Error);
   });
 
   it('getMassTransferTxs rejects null with Error', async () => {
-    await expect(client.getMassTransferTxs(null)).rejects.toBeInstanceOf(Error);
+    await expect(client.getMassTransferTxs(null as any)).rejects.toBeInstanceOf(Error);
   });
 
   it('getExchangeTxs rejects number with Error', async () => {
@@ -557,33 +556,33 @@ describe('Security: rejection errors are proper Error objects', () => {
   });
 
   it('getCandles rejects with Error', async () => {
-    await expect(client.getCandles(null, null, null)).rejects.toBeInstanceOf(Error);
+    await expect(client.getCandles(null as any, null as any, null as any)).rejects.toBeInstanceOf(
+      Error,
+    );
   });
 
   it('aliases.getByIdList rejects non-string items with Error', async () => {
-    await expect(
-      (client.aliases.getByIdList as any)([1, 2, 3])
-    ).rejects.toBeInstanceOf(Error);
+    await expect((client.aliases.getByIdList as any)([1, 2, 3])).rejects.toBeInstanceOf(Error);
   });
 });
 
 describe('Security: URL-encodes path and query segments', () => {
   it('encodes special characters in exchange tx id', async () => {
     await client.getExchangeTxs('id/with?special#chars');
-    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1] ?? [];
     expect(lastCall[0]).toContain('id%2Fwith%3Fspecial%23chars');
     expect(lastCall[0]).not.toContain('id/with?special#chars');
   });
 
   it('encodes special characters in transfer tx id', async () => {
     await client.getTransferTxs('id with spaces');
-    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1] ?? [];
     expect(lastCall[0]).toContain('id%20with%20spaces');
   });
 
   it('encodes query string values properly', async () => {
     await client.getExchangeTxs({ sender: 'addr&inject=true' });
-    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1];
+    const lastCall: any[] = fetch.mock.calls[fetch.mock.calls.length - 1] ?? [];
     expect(lastCall[0]).toContain('sender=addr%26inject%3Dtrue');
     expect(lastCall[0]).not.toContain('sender=addr&inject=true');
   });
@@ -591,51 +590,37 @@ describe('Security: URL-encodes path and query segments', () => {
 
 describe('Security: limit and sort validation', () => {
   it('rejects negative limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: -1 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: -1 })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects zero limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: 0 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: 0 })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects non-integer limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: 1.5 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: 1.5 })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects excessively large limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: 99999 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: 99999 })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects Infinity limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: Infinity })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: Infinity })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects NaN limit', async () => {
-    await expect(
-      client.getExchangeTxs({ limit: NaN })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ limit: NaN })).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects arbitrary sort values', async () => {
-    await expect(
-      client.getExchangeTxs({ sort: 'DROP TABLE' } as any)
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ sort: 'DROP TABLE' } as any)).rejects.toBeInstanceOf(
+      Error,
+    );
   });
 
   it('rejects sort=-some (must be asc/desc)', async () => {
-    await expect(
-      client.getExchangeTxs({ sort: '-some' } as any)
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ sort: '-some' } as any)).rejects.toBeInstanceOf(Error);
   });
 
   it('accepts valid sort=asc', async () => {
@@ -649,36 +634,26 @@ describe('Security: limit and sort validation', () => {
   });
 
   it('applies same limit validation to transfer txs', async () => {
-    await expect(
-      client.getTransferTxs({ limit: -1 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getTransferTxs({ limit: -1 })).rejects.toBeInstanceOf(Error);
   });
 
   it('applies same limit validation to mass transfer txs', async () => {
-    await expect(
-      client.getMassTransferTxs({ limit: -1 })
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getMassTransferTxs({ limit: -1 })).rejects.toBeInstanceOf(Error);
   });
 });
 
 describe('Security: prototype pollution protection', () => {
   it('rejects filters with __proto__ key', async () => {
     const malicious = JSON.parse('{"__proto__": {"isAdmin": true}, "sender": "x"}');
-    await expect(
-      client.getExchangeTxs(malicious)
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs(malicious)).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects filters with constructor key', async () => {
-    await expect(
-      client.getExchangeTxs({ constructor: {} } as any)
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getExchangeTxs({ constructor: {} } as any)).rejects.toBeInstanceOf(Error);
   });
 
   it('rejects filters with prototype key', async () => {
-    await expect(
-      client.getTransferTxs({ prototype: {} } as any)
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.getTransferTxs({ prototype: {} } as any)).rejects.toBeInstanceOf(Error);
   });
 });
 
@@ -704,8 +679,6 @@ describe('Security: empty input validation', () => {
   });
 
   it('rejects aliases.getByIdList with empty string items', async () => {
-    await expect(
-      client.aliases.getByIdList(['valid', ''])
-    ).rejects.toBeInstanceOf(Error);
+    await expect(client.aliases.getByIdList(['valid', ''])).rejects.toBeInstanceOf(Error);
   });
 });

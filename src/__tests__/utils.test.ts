@@ -1,4 +1,12 @@
-import { createQS, pipeP, isValidUrl, isValidLimit, isValidSort, hasDangerousKeys, defaultParse } from '../utils';
+import {
+  createQS,
+  pipeP,
+  isValidUrl,
+  isValidLimit,
+  isValidSort,
+  hasDangerousKeys,
+  defaultParse,
+} from '../utils';
 
 describe('Create querystring util', () => {
   it('works #1', () => {
@@ -39,8 +47,8 @@ describe('Create querystring util', () => {
 
 describe('PipeP ', () => {
   const fn = pipeP(
-    a => [a],
-    b => [...b, 3]
+    (a) => [a],
+    (b) => [...b, 3],
   );
   it('wraps 2 args in array', async () => {
     const result = await fn(1, 2);
