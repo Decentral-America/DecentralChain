@@ -1,20 +1,24 @@
-import {
+import { createRequest } from '../createRequest';
+import type {
   ILibRequest,
   TCreateGetFn,
   ITransaction,
   IMassTransferTxFilters,
   IGetMassTransferTxs,
 } from '../types';
-
-import { createMethod } from './createMethod';
-import { createRequest } from '../createRequest';
 import { hasDangerousKeys, isValidLimit, isValidSort } from '../utils';
 
+import { createMethod } from './createMethod';
+
 // One
-const validateId = id =>
-  typeof id === 'string' ? Promise.resolve(id) : Promise.reject(new Error('ArgumentsError: id should be string'));
-const generateRequestOne = (rootUrl: string) => (id: string): ILibRequest =>
-  createRequest(`${rootUrl}/transactions/mass-transfer/${encodeURIComponent(id)}`);
+const validateId = (id: unknown) =>
+  typeof id === 'string'
+    ? Promise.resolve(id)
+    : Promise.reject(new Error('ArgumentsError: id should be string'));
+const generateRequestOne =
+  (rootUrl: string) =>
+  (id: string): ILibRequest =>
+    createRequest(`${rootUrl}/transactions/mass-transfer/${encodeURIComponent(id)}`);
 
 //Many
 const isFilters = (filters: any): filters is IMassTransferTxFilters => {
@@ -33,7 +37,7 @@ const isFilters = (filters: any): filters is IMassTransferTxFilters => {
     typeof filters === 'object' &&
     !Array.isArray(filters) &&
     !hasDangerousKeys(filters) &&
-    Object.keys(filters).every(k => possibleFilters.includes(k)) &&
+    Object.keys(filters).every((k) => possibleFilters.includes(k)) &&
     isValidLimit(filters.limit) &&
     isValidSort(filters.sort)
   );
@@ -43,14 +47,12 @@ const validateFilters = (filters: any) =>
     ? Promise.resolve(filters)
     : Promise.reject(new Error('ArgumentsError: invalid filters object'));
 
-const generateRequestMany = (rootUrl: string) => (
-  filters: IMassTransferTxFilters
-): ILibRequest =>
-  createRequest(`${rootUrl}/transactions/mass-transfer`, filters);
+const generateRequestMany =
+  (rootUrl: string) =>
+  (filters: IMassTransferTxFilters): ILibRequest =>
+    createRequest(`${rootUrl}/transactions/mass-transfer`, filters);
 
-const createGetMassTransferTxs: TCreateGetFn<
-  IGetMassTransferTxs
-> = libOptions => {
+const createGetMassTransferTxs: TCreateGetFn<IGetMassTransferTxs> = (libOptions) => {
   const getMassTransferTxsOne = createMethod<ITransaction[]>({
     validate: validateId,
     generateRequest: generateRequestOne,
@@ -68,11 +70,11 @@ const createGetMassTransferTxs: TCreateGetFn<
   });
 
   const getMassTransferTxs: IGetMassTransferTxs = (
-    idOrFilters: string | IMassTransferTxFilters = {}
+    idOrFilters?: string | IMassTransferTxFilters,
   ) =>
     typeof idOrFilters === 'string'
       ? getMassTransferTxsOne(idOrFilters)
-      : getMassTransferTxsMany(idOrFilters);
+      : getMassTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
 
   return getMassTransferTxs;
 };

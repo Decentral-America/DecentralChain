@@ -1,4 +1,7 @@
-import {
+import { AssetPair } from '@decentralchain/data-entities';
+
+import { createRequest } from '../createRequest';
+import type {
   TCreateGetFn,
   ILibOptions,
   ILibRequest,
@@ -6,16 +9,15 @@ import {
   TPairsRequest,
   TPairJSON,
 } from '../types';
-import { AssetPair } from '@decentralchain/data-entities';
-import { createMethod } from './createMethod';
-import { createRequest } from '../createRequest';
 import { isNotString } from '../utils';
 
-const isAssetPair = pair => {
+import { createMethod } from './createMethod';
+
+const isAssetPair = (pair: unknown) => {
   switch (true) {
     case typeof pair === 'string':
       return pair.split('/').length === 2;
-    case typeof pair === 'object':
+    case typeof pair === 'object' && pair !== null:
       return AssetPair.isAssetPair(pair);
     default:
       return false;
@@ -31,36 +33,29 @@ const isValidPairsFilters = (request: any): request is TPairsRequest => {
   );
 };
 
-const validateRequest = (matcher: any) => (
-  pairs: any
-): Promise<TPairsRequest> => {
-  if (isNotString(matcher) || matcher.trim().length === 0) {
-    return Promise.reject(
-      new Error('ArgumentsError: matcher must be a non-empty string')
-    );
-  }
-  const request = [matcher, pairs];
-  return isValidPairsFilters(request)
-    ? Promise.resolve(request)
-    : Promise.reject(
-        new Error(
-          'ArgumentsError: AssetPair should be object with amountAsset, priceAsset'
-        )
-      );
-};
+const validateRequest =
+  (matcher: any) =>
+  (pairs: any): Promise<TPairsRequest> => {
+    if (isNotString(matcher) || matcher.trim().length === 0) {
+      return Promise.reject(new Error('ArgumentsError: matcher must be a non-empty string'));
+    }
+    const request = [matcher, pairs];
+    return isValidPairsFilters(request)
+      ? Promise.resolve(request)
+      : Promise.reject(
+          new Error('ArgumentsError: AssetPair should be object with amountAsset, priceAsset'),
+        );
+  };
 
-const createRequestForMany = (nodeUrl: string) => ([
-  matcher,
-  pairs,
-]: TPairsRequest): ILibRequest =>
-  createRequest(`${nodeUrl}/pairs`, {
-    pairs: pairs.map(p => p.toString()),
-    matcher,
-  });
+const createRequestForMany =
+  (nodeUrl: string) =>
+  ([matcher, pairs]: TPairsRequest): ILibRequest =>
+    createRequest(`${nodeUrl}/pairs`, {
+      pairs: pairs.map((p) => p.toString()),
+      matcher,
+    });
 
-const getPairs: TCreateGetFn<TGetPairs> = (libOptions: ILibOptions) => (
-  matcher: string
-) =>
+const getPairs: TCreateGetFn<TGetPairs> = (libOptions: ILibOptions) => (matcher: string) =>
   createMethod<TPairJSON[]>({
     validate: validateRequest(matcher),
     generateRequest: createRequestForMany,

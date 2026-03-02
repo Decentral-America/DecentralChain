@@ -1,16 +1,13 @@
-import { defaultFetch, defaultParse, isValidUrl } from './utils';
-import defaultTransform from './transform';
-
+import createGetAliases from './methods/getAliases';
 import createGetAssets from './methods/getAssets';
 import createGetAssetsByTicker from './methods/getAssetsByTicker';
 import createGetCandles from './methods/getCandles';
-import createGetPairs from './methods/getPairs';
 import createGetExchangeTxs from './methods/getExchangeTxs';
-import createGetTransferTxs from './methods/getTransferTxs';
 import createGetMassTransferTxs from './methods/getMassTransferTxs';
-import createGetAliases from './methods/getAliases';
-
-import {
+import createGetPairs from './methods/getPairs';
+import createGetTransferTxs from './methods/getTransferTxs';
+import defaultTransform from './transform';
+import type {
   ILibOptions,
   IGetExchangeTxs,
   IGetTransferTxs,
@@ -21,6 +18,7 @@ import {
   TGetCandles,
   TGetPairs,
 } from './types';
+import { defaultFetch, defaultParse, isValidUrl } from './utils';
 
 export default class DataServiceClient {
   public getPairs: TGetPairs;
@@ -33,16 +31,12 @@ export default class DataServiceClient {
   public aliases: TAliases;
 
   constructor(params: ILibOptions) {
-    let options = { ...params };
+    const options = { ...params };
     if (!options.rootUrl) {
-      throw new Error(
-        'No rootUrl was presented in options object. Check constructor call.'
-      );
+      throw new Error('No rootUrl was presented in options object. Check constructor call.');
     }
     if (!isValidUrl(options.rootUrl)) {
-      throw new Error(
-        'Invalid rootUrl: must be an absolute HTTP or HTTPS URL.'
-      );
+      throw new Error('Invalid rootUrl: must be an absolute HTTP or HTTPS URL.');
     }
     // Strip trailing slash to prevent double-slash in constructed URLs
     options.rootUrl = options.rootUrl.replace(/\/+$/, '');

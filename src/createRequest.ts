@@ -1,5 +1,6 @@
+import type { ILibRequest } from './types';
+import { HttpMethods } from './types';
 import { createQS } from './utils';
-import { HttpMethods, ILibRequest } from './types';
 
 export const createRequest = (methodUrl: string, params?: any): ILibRequest => {
   const URL_MAX_LENGTH = 2000;
