@@ -12,7 +12,7 @@ The DecentralChain protocol uses well-established cryptographic primitives inclu
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - **npm** >= 10
 
 ## Installation
@@ -212,7 +212,7 @@ A UMD bundle is built at `dist/index.umd.min.js` exposing `DCCCrypto` globally:
 
 ### Prerequisites
 
-- Node.js >= 22 (24 recommended)
+- Node.js >= 24
 - npm >= 10
 
 ### Setup
