@@ -19,7 +19,7 @@ export class LedgerAdapter extends Adapter {
     this._currentUser = user;
 
     if (!this._currentUser) {
-      throw 'No selected user';
+      throw new Error('No selected user');
     }
 
     this._isDestroyed = false;
@@ -105,7 +105,7 @@ export class LedgerAdapter extends Adapter {
   }
 
   public getPrivateKey() {
-    return Promise.reject('No private key');
+    return Promise.reject(Error('No private key'));
   }
 
   public getSignVersions(): Record<SIGN_TYPE, number[]> {
@@ -141,12 +141,12 @@ export class LedgerAdapter extends Adapter {
       .then((user) => {
         if (user.address !== this._currentUser.address) {
           this._isDestroyed = true;
-          throw { error: 'Invalid ledger' };
+          throw new Error('Invalid ledger: address mismatch');
         }
       });
 
-    promise.catch((e: any) => {
-      console.warn(e);
+    promise.catch((e: unknown) => {
+      console.warn('Ledger validation failed:', e instanceof Error ? e.message : e);
     });
 
     return promise;
