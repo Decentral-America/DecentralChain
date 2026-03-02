@@ -194,9 +194,7 @@ function getConfigProperty<T extends keyof IFeeConfigItem>(
   const value = path(['calculate_fee_rules', type, propertyName], config) as
     | IFeeConfigItem[T]
     | undefined;
-  return (
-    isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value
-  );
+  return isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value;
 }
 
 export interface IFeeConfig {

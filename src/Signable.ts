@@ -188,7 +188,7 @@ export class Signable {
   }
 
   public addProof(signature: string): this {
-    if (this._proofs.includes(signature)) {
+    if (!this._proofs.includes(signature)) {
       this._proofs.push(signature);
     }
 
@@ -213,7 +213,7 @@ export class Signable {
 
   public sign(): Promise<Signable> {
     this._makeSignPromise();
-    return (this._signPromise!).then(() => this);
+    return this._signPromise!.then(() => this);
   }
 
   public getSignature(): Promise<string> {
@@ -300,9 +300,7 @@ export class Signable {
       const payment = data?.payment ?? [];
       return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
     }
-    return data.amount?.asset?.precision
-      ? data.amount.asset.precision
-      : 0;
+    return data.amount?.asset?.precision ? data.amount.asset.precision : 0;
   }
 
   private _getAmount2Precision() {

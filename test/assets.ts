@@ -3,7 +3,7 @@ import { Asset } from '@decentralchain/data-entities';
 export const DCCAsset = new Asset({
   ticker: 'DCC',
   id: 'DCC',
-  name: 'DecenralCoin',
+  name: 'DecentralCoin',
   precision: 8,
   description: '',
   height: 0,
@@ -51,20 +51,6 @@ export const INSTANTCOIN = new Asset({
   description:
     'INSTANTCOIN a token that is been build on the DCC platform. Subscribe on the website & social media for more upcoming updates.',
   height: 851542,
-});
-
-export const Beatz = new Asset({
-  ticker: '',
-  id: 'GouQ4XCiunWv8A8zJ6BCB9yyWHyFHREiqkuNYiATjJeW',
-  sender: '3PEFMbGZ94pn68oAM5xA4xep9Q6FHTwYAfC',
-  timestamp: new Date(1558582610441),
-  name: 'Beatz',
-  quantity: 1000000000000000000,
-  reissuable: false,
-  precision: 8,
-  description:
-    'Beatz by DCC will contribute to the future of Web 3.0 by building a decentralized music platform allowing all users from across the globe to publish their music whether your at home in your shower or a world class music studio you can publish your music and allow users from around the world to purchase it via Beatz by DCC .',
-  height: 1538724,
 });
 
 export const Aracoin = new Asset({
