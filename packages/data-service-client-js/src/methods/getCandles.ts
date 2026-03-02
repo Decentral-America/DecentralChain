@@ -1,5 +1,7 @@
-import { Candle } from '@decentralchain/data-entities';
-import {
+import type { Candle } from '@decentralchain/data-entities';
+
+import { createRequest } from '../createRequest';
+import type {
   ILibOptions,
   ILibRequest,
   TCreateGetFn,
@@ -7,35 +9,23 @@ import {
   TCandlesRequestFilters,
   TGetCandles,
 } from '../types';
+import { hasDangerousKeys } from '../utils';
 
 import { createMethod } from './createMethod';
-import { createRequest } from '../createRequest';
-import { hasDangerousKeys } from '../utils';
 
 type TCandlesParamsKey = keyof TCandlesParams;
 
-const possibleParams: Array<TCandlesParamsKey> = [
-  'timeStart',
-  'timeEnd',
-  'interval',
-  'matcher',
-];
+const possibleParams: TCandlesParamsKey[] = ['timeStart', 'timeEnd', 'interval', 'matcher'];
 
-const requiredParams: Array<TCandlesParamsKey> = [
-  'timeStart',
-  'interval',
-  'matcher',
-];
+const requiredParams: TCandlesParamsKey[] = ['timeStart', 'interval', 'matcher'];
 
 const isCandlesParams = (params: any): params is TCandlesParams =>
   params !== null &&
   typeof params === 'object' &&
   !Array.isArray(params) &&
   !hasDangerousKeys(params) &&
-  Object.keys(params).every((k: TCandlesParamsKey) =>
-    possibleParams.includes(k)
-  ) &&
-  requiredParams.every(k => k in params && params[k] !== undefined);
+  Object.keys(params).every((k) => possibleParams.includes(k as TCandlesParamsKey)) &&
+  requiredParams.every((k) => k in params && params[k] !== undefined);
 
 const isFilters = (filters: any): filters is TCandlesRequestFilters =>
   Array.isArray(filters) &&
@@ -49,24 +39,22 @@ const validateFilters = (filters: any) =>
     ? Promise.resolve(filters)
     : Promise.reject(new Error('ArgumentsError: invalid candles filters'));
 
-const createRequestForCandles = (rootUrl: string) => ([
-  amountAssetId,
-  priceAssetId,
-  params,
-]: TCandlesRequestFilters): ILibRequest => {
-  if (
-    typeof amountAssetId !== 'string' ||
-    amountAssetId.trim().length === 0 ||
-    typeof priceAssetId !== 'string' ||
-    priceAssetId.trim().length === 0
-  ) {
-    throw new Error('ArgumentsError: asset IDs must be non-empty strings');
-  }
-  return createRequest(
-    `${rootUrl}/candles/${encodeURIComponent(amountAssetId)}/${encodeURIComponent(priceAssetId)}`,
-    params
-  );
-};
+const createRequestForCandles =
+  (rootUrl: string) =>
+  ([amountAssetId, priceAssetId, params]: TCandlesRequestFilters): ILibRequest => {
+    if (
+      typeof amountAssetId !== 'string' ||
+      amountAssetId.trim().length === 0 ||
+      typeof priceAssetId !== 'string' ||
+      priceAssetId.trim().length === 0
+    ) {
+      throw new Error('ArgumentsError: asset IDs must be non-empty strings');
+    }
+    return createRequest(
+      `${rootUrl}/candles/${encodeURIComponent(amountAssetId)}/${encodeURIComponent(priceAssetId)}`,
+      params,
+    );
+  };
 
 const createGetCandles: TCreateGetFn<TGetCandles> = (libOptions: ILibOptions) =>
   createMethod<Candle[]>({
