@@ -14,7 +14,7 @@ DecentralChain node API. It supports all 17 transaction types plus exchange orde
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - **npm** >= 10
 
 ## Installation
@@ -89,7 +89,7 @@ import { convert } from '@decentralchain/money-like-to-node';
 
 ### Prerequisites
 
-- Node.js >= 22 (24 recommended)
+- Node.js >= 24
 - npm >= 10
 
 ### Setup
