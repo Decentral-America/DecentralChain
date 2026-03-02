@@ -15,6 +15,7 @@ export function getAvailableList(): Promise<(typeof Adapter)[]> {
   return Promise.all(
     adapterPriorityList.map(async (type) => {
       const adapter = getAdapterByType(type);
+      if (!adapter) return null;
       const available = await adapter.isAvailable();
 
       return available ? adapter : null;

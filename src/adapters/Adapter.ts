@@ -13,7 +13,13 @@ export abstract class Adapter {
   protected constructor(networkCode?: string | number) {
     networkCode = typeof networkCode === 'string' ? networkCode.charCodeAt(0) : networkCode;
     this.type = (this as any).constructor.type;
-    this._code = networkCode || Adapter._code || '?'.charCodeAt(0);
+    const resolvedCode = networkCode || Adapter._code;
+    if (!resolvedCode) {
+      throw new Error(
+        'Network code is required. Call Adapter.initOptions({ networkCode }) or pass networkCode to the constructor.',
+      );
+    }
+    this._code = resolvedCode;
   }
 
   public makeSignable(forSign: TSignData): Signable {
@@ -29,7 +35,7 @@ export abstract class Adapter {
   }
 
   public getNetworkByte(): number {
-    return this._code || Adapter._code;
+    return this._code ?? Adapter._code;
   }
 
   public isDestroyed(): boolean {
@@ -89,7 +95,7 @@ export abstract class Adapter {
     publicKey: string;
     seconds: number;
   }> {
-    const netByte = typeof this._code === 'string' ? this._code : String.fromCharCode(this._code);
+    const netByte = String.fromCharCode(this._code);
     return this.getPublicKey().then((publicKey) => {
       const seconds = Math.floor(timestamp / 1000);
       const data = `${netByte}:${clientId}:${String(seconds)}`;
