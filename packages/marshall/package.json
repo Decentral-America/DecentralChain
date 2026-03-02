@@ -19,7 +19,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public",
@@ -59,7 +59,7 @@
     "check:publint": "publint",
     "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
     "check:size": "size-limit",
-    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "validate": "npm audit --audit-level=high && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
     "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "prepare": "husky",
@@ -83,12 +83,6 @@
     }
   ],
   "author": "DecentralChain",
-  "contributors": [
-    {
-      "name": "Sergey B",
-      "email": "siemarell@gmail.com"
-    }
-  ],
   "license": "MIT",
   "dependencies": {
     "base64-js": "^1.3.0",
@@ -98,7 +92,7 @@
     "@arethetypeswrong/cli": "0.18.2",
     "@eslint/js": "^10.0.1",
     "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "^25.3.2",
+    "@types/node": "24.11.0",
     "@vitest/coverage-v8": "^4.0.18",
     "bignumber.js": "^10.0.2",
     "eslint": "^10.0.2",
