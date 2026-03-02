@@ -8,7 +8,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 ### Changed
 
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`).
-- Minimum Node.js version is now 22.
+- Minimum Node.js version is now 24.
 - Replaced Jest with Vitest.
 - Replaced webpack with tsup.
 - Upgraded all dependencies to latest versions.
