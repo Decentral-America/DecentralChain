@@ -4,8 +4,10 @@ version = "1.5.2"
 edition = "2021"
 
 [dependencies]
-tonic = "0.10"
-prost = { version = "0.12", features = ["no-recursion-limit"] }
+tonic = "0.13"
+# SECURITY: Do NOT re-enable "no-recursion-limit". It disables stack-overflow
+# protection and allows a malicious deeply-nested message to crash the process.
+prost = "0.13"
 
 [build-dependencies]
-tonic-build = "0.10"
+tonic-build = "0.13"
