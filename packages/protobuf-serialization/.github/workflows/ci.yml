@@ -13,6 +13,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# SECURITY: For production use, pin all actions to full-length commit SHAs
+# instead of tags (e.g., actions/checkout@<sha>) to prevent supply-chain attacks.
+# See: https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions
+# Dependabot will automatically propose SHA updates for pinned actions.
 jobs:
   quality:
     name: Quality Gate (Node ${{ matrix.node-version }})
