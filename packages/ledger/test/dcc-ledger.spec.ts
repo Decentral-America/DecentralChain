@@ -201,6 +201,52 @@ describe('DCCLedger', () => {
       expect(users[0]!.id).toBe(0);
       expect(users[1]!.id).toBe(1);
     });
+
+    it('returns empty array when limit is 0', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      const users = await ledger.getPaginationUsersData(0, 0);
+      expect(users).toEqual([]);
+    });
+
+    it('throws RangeError when from is negative', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      await expect(ledger.getPaginationUsersData(-1, 5)).rejects.toThrow(RangeError);
+      await expect(ledger.getPaginationUsersData(-1, 5)).rejects.toThrow("'from'");
+    });
+
+    it('throws RangeError when from is not an integer', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      await expect(ledger.getPaginationUsersData(0.5, 5)).rejects.toThrow(RangeError);
+      await expect(ledger.getPaginationUsersData(NaN, 5)).rejects.toThrow(RangeError);
+    });
+
+    it('throws RangeError when limit is negative', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      await expect(ledger.getPaginationUsersData(0, -1)).rejects.toThrow(RangeError);
+      await expect(ledger.getPaginationUsersData(0, -1)).rejects.toThrow("'limit'");
+    });
+
+    it('throws RangeError when limit is NaN', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      await expect(ledger.getPaginationUsersData(0, NaN)).rejects.toThrow(RangeError);
+    });
+
+    it('throws RangeError when limit is Infinity', async () => {
+      const factory = createMockFactory();
+      const ledger = new DCCLedger({ transport: factory });
+      await ledger.tryConnect();
+      await expect(ledger.getPaginationUsersData(0, Infinity)).rejects.toThrow(RangeError);
+    });
   });
 
   describe('signTransaction', () => {
@@ -326,6 +372,18 @@ describe('DCCLedger', () => {
       const ledger = new DCCLedger({ transport: factory });
       await ledger.tryConnect();
 
+      const result = await ledger.probeDevice();
+      expect(result).toBe(false);
+      expect(ledger.getLastError()).toBeInstanceOf(Error);
+    });
+
+    it('returns false (not throws) when tryConnect fails on unready device', async () => {
+      const factory: LedgerTransportFactory = {
+        create: vi.fn().mockRejectedValue(new Error('USB unavailable')),
+      };
+      const ledger = new DCCLedger({ transport: factory });
+
+      // Device is not ready — probeDevice should catch the connect error, not throw
       const result = await ledger.probeDevice();
       expect(result).toBe(false);
       expect(ledger.getLastError()).toBeInstanceOf(Error);
