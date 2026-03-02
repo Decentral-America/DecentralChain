@@ -1,6 +1,6 @@
 import { type IAdapterSignMethods } from './interfaces';
-import { libs, protoPerialize } from '@decentralchain/waves-transactions';
-import * as dccTransactions from '@decentralchain/waves-transactions';
+import { libs, protoSerialize } from '@decentralchain/decentralchain-transactions';
+import * as dccTransactions from '@decentralchain/decentralchain-transactions';
 import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
 import { prepare } from './prepare';
 const { processors } = prepare;
@@ -8,7 +8,7 @@ import { Money } from '@decentralchain/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
-const { txToProtoBytes } = protoPerialize;
+const { txToProtoBytes } = protoSerialize;
 
 const toNode = (data: any, convert?: Function) => {
   const r = mlToNode(data);
@@ -224,7 +224,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
   },
   [SIGN_TYPE.UPDATE_ASSET_INFO]: {
     getBytes: {
-      1: protoPerialize.txToProtoBytes,
+      1: protoSerialize.txToProtoBytes,
     },
     toNode: (data) => {
       return toNode(data, dccTransactions.updateAssetInfo);
@@ -240,6 +240,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     toNode: (data) => {
       const tx = toNode(data);
+      // Version 0 is an internal identifier for legacy exchange v1 serialization
+      if (tx.version === 0 || tx.version === '0') {
+        tx.version = 1;
+      }
       const order1Sign = data.buyOrder.signature || data.buyOrder.proofs[0];
       const order1proofs = data.buyOrder.proofs ? data.buyOrder.proofs : data.buyOrder.signature;
       const order1 = { ...tx.buyOrder, signature: order1Sign, proofs: order1proofs };

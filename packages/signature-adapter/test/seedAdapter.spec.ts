@@ -1,5 +1,5 @@
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
-import { libs, serializeCustomData } from '@decentralchain/waves-transactions';
+import { libs, serializeCustomData } from '@decentralchain/decentralchain-transactions';
 
 describe('WSeed adapter test', () => {
   it('Create adapter from simple seed', async () => {
@@ -109,7 +109,7 @@ describe('WSeed adapter test', () => {
 
   it('signCustomData - string', async () => {
     const seed = '1234567890123456789123456789';
-    const adapter = new SeedAdapter(seed, '?');
+    const adapter = new SeedAdapter(seed, 'W');
     const data = await adapter.signCustomData('test');
     const pk = await adapter.getPublicKey();
     const binary = serializeCustomData({
@@ -121,7 +121,7 @@ describe('WSeed adapter test', () => {
 
   it('sign Api Token Data - returns valid token data structure', async () => {
     const seed = '1234567890123456789123456789';
-    const adapter = new SeedAdapter(seed, '?');
+    const adapter = new SeedAdapter(seed, 'W');
     const expiration = Date.now() + 10000;
     const result = await adapter.signApiTokenData('testClient', expiration);
 
