@@ -1,8 +1,8 @@
 import { Adapter } from './Adapter';
-import { AdapterType } from '../config';
-import { SIGN_TYPE, TSignData } from '../prepareTx';
+import { AdapterType } from '../adapterType';
+import { SIGN_TYPE, type TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
-import equals = require('ramda/src/equals');
+import equals from 'ramda/src/equals';
 
 const DEFAULT_TX_VERSIONS = {
   [SIGN_TYPE.AUTH]: [1],
@@ -29,9 +29,9 @@ const DEFAULT_TX_VERSIONS = {
 };
 
 export class CubensisConnectAdapter extends Adapter {
-  public static type = AdapterType.CubensisConnect;
+  public static override type = AdapterType.CubensisConnect;
   public static adapter: CubensisConnectAdapter;
-  private static _onUpdateCb: Array<(...args: Array<any>) => any> = [];
+  private static _onUpdateCb: ((...args: any[]) => any)[] = [];
   private static _state: any;
   private _onDestoryCb = [];
   private _needDestroy = false;
@@ -43,7 +43,7 @@ export class CubensisConnectAdapter extends Adapter {
   private static _api: ICubensisConnect;
 
   private handleUpdate = (state: any) => {
-    if (!state.locked && (!state.account || state.account.address !== this._address)) {
+    if (!state.locked && (state.account?.address !== this._address)) {
       this._needDestroy = true;
       this._isDestroyed = true;
       //@ts-ignore
@@ -63,7 +63,7 @@ export class CubensisConnectAdapter extends Adapter {
     this._isDestroyed = false;
   }
 
-  public async isAvailable(ignoreLocked = false): Promise<void> {
+  public override async isAvailable(ignoreLocked = false): Promise<void> {
     try {
       await CubensisConnectAdapter.isAvailable(this.getNetworkByte());
       const data = await CubensisConnectAdapter._api.publicState();
@@ -75,7 +75,7 @@ export class CubensisConnectAdapter extends Adapter {
           : Promise.reject({ code: 4, msg: 'Cubensis is locked' });
       }
 
-      if (data.account && data.account.address === this._address) {
+      if (data.account?.address === this._address) {
         return Promise.resolve();
       }
     } catch (err: any) {
@@ -98,7 +98,7 @@ export class CubensisConnectAdapter extends Adapter {
     }
   }
 
-  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+  public getSignVersions(): Record<SIGN_TYPE, number[]> {
     return CubensisConnectAdapter._txVersion;
   }
 
@@ -140,7 +140,7 @@ export class CubensisConnectAdapter extends Adapter {
   public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
     await this.isAvailable(true);
     signData = signData || _ || {};
-    if (signData && signData.type === 'customData') {
+    if (signData?.type === 'customData') {
       return (await CubensisConnectAdapter._api.signCustomData(signData)).signature;
     }
 
@@ -151,8 +151,8 @@ export class CubensisConnectAdapter extends Adapter {
 
   //@ts-ignore
   public async signTransaction(
-    bytes: Uint8Array,
-    precisions: Record<string, number>,
+    _bytes: Uint8Array,
+    _precisions: Record<string, number>,
     signData: any,
   ): Promise<string> {
     await this.isAvailable(true);
@@ -165,8 +165,8 @@ export class CubensisConnectAdapter extends Adapter {
 
   //@ts-ignore
   public async signOrder(
-    bytes: Uint8Array,
-    precisions: Record<string, number>,
+    _bytes: Uint8Array,
+    _precisions: Record<string, number>,
     signData: any,
   ): Promise<string> {
     await this.isAvailable(true);
@@ -201,7 +201,7 @@ export class CubensisConnectAdapter extends Adapter {
     return Promise.reject('No private key');
   }
 
-  public static async isAvailable(networkCode?: number) {
+  public static override async isAvailable(networkCode?: number) {
     await CubensisConnectAdapter._initExtension();
 
     if (!this._api) {
@@ -242,7 +242,7 @@ export class CubensisConnectAdapter extends Adapter {
     return true;
   }
 
-  public static async getUserList() {
+  public static override async getUserList() {
     await CubensisConnectAdapter.isAvailable();
     return CubensisConnectAdapter._api.publicState().then((data) => {
       CubensisConnectAdapter._updateState(data);
@@ -318,7 +318,7 @@ export class CubensisConnectAdapter extends Adapter {
 
   private static _serializedData(data: any) {
     return JSON.parse(
-      JSON.stringify(data, (key, value) =>
+      JSON.stringify(data, (_key, value) =>
         value instanceof Uint8Array ? Array.from(value) : value,
       ),
     );
@@ -326,7 +326,7 @@ export class CubensisConnectAdapter extends Adapter {
 }
 
 interface ICubensisConnect {
-  getSignVersions?: () => Record<SIGN_TYPE, Array<number>>;
+  getSignVersions?: () => Record<SIGN_TYPE, number[]>;
   auth: (data: IAuth) => Promise<IAuthData>;
   signTransaction: (data: TSignData) => Promise<any>;
   signOrder: (data: any) => Promise<any>;

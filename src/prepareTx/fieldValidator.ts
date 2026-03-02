@@ -173,7 +173,7 @@ const money = (options: IFieldOptions) => {
   switch (true) {
     case !(value instanceof Money):
       return error(options, ERROR_MSG.WRONG_TYPE);
-    case value instanceof Money && (<Money>value).getCoins().isNaN():
+    case value instanceof Money && (value).getCoins().isNaN():
       return error(options, ERROR_MSG.WRONG_NUMBER);
   }
 };
@@ -202,13 +202,13 @@ const numberLike = (options: IFieldOptions, min?: string | number, max?: string 
 
   switch (true) {
     case value instanceof BigNumber:
-      if ((<BigNumber>value).isNaN()) {
+      if ((value).isNaN()) {
         error(options, ERROR_MSG.WRONG_TYPE);
       }
       checkInterval(value);
       break;
     case value instanceof Money: {
-      const coins = (<Money>value).getCoins();
+      const coins = (value).getCoins();
 
       if (coins.isNaN()) {
         error(options, ERROR_MSG.WRONG_NUMBER);
@@ -259,7 +259,7 @@ const address = (options: IFieldOptions) => {
   const { value } = options;
   const validateAddress = (address: string) => {
     try {
-      return isValidAddress(address, options.optionalData as number);
+      return isValidAddress(address, options.optionalData!);
     } catch {
       return false;
     }
@@ -319,7 +319,7 @@ const timestamp = (options: IFieldOptions) => {
   const { value } = options;
 
   if (isNaN(value) || (value && !(value instanceof Date || typeof value === 'number' || +value))) {
-    if (typeof value !== 'string' || isNaN(Date.parse(value as string))) {
+    if (typeof value !== 'string' || isNaN(Date.parse(value))) {
       return error(options, ERROR_MSG.WRONG_TIMESTAMP);
     }
   }
@@ -558,14 +558,14 @@ const publicKey = (options: IFieldOptions) => {
   if (!value || typeof value !== 'string') {
     error(options, ERROR_MSG.PUB_KEY);
   }
-  let pk;
+  let pk: Uint8Array | undefined;
   try {
     pk = base58Decode(value);
   } catch {
     error(options, ERROR_MSG.BASE58);
   }
 
-  if (pk && pk.length === 32) {
+  if (pk?.length === 32) {
     return void 0;
   }
 
@@ -579,7 +579,7 @@ const script = (options: IFieldOptions) => {
 const asset_script = (options: IFieldOptions) => {
   const { value } = options;
 
-  if (!value || !value.replace('base64:', '')) {
+  if (!value?.replace('base64:', '')) {
     error(options, ERROR_MSG.EMPTY_BASE64);
   }
 

@@ -1,6 +1,5 @@
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { libs, serializeCustomData } from '@decentralchain/waves-transactions';
-import fetch from 'node-fetch';
 
 describe('WSeed adapter test', () => {
   it('Create adapter from simple seed', async () => {

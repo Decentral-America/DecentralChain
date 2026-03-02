@@ -2,15 +2,9 @@ import { SeedAdapter } from './adapters/SeedAdapter';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
 import { CustomAdapter, CubensisConnectAdapter } from './adapters';
 import { PrivateKeyAdapter } from './adapters/PrivateKeyAdapter';
+import { AdapterType } from './adapterType';
 
-export const enum AdapterType {
-  Seed = 'seed',
-  PrivateKey = 'privateKey',
-  CubensisConnect = 'cubensisConnect',
-  Ledger = 'ledger',
-  Tresor = 'tresor',
-  Custom = 'custom',
-}
+export { AdapterType } from './adapterType';
 
 export const adapterPriorityList = [
   AdapterType.CubensisConnect,

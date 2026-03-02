@@ -1,5 +1,5 @@
 import { Adapter } from './Adapter';
-import { AdapterType } from '../config';
+import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
 
 export interface IUserApi {
@@ -7,16 +7,16 @@ export interface IUserApi {
   isAvailable: () => boolean;
   getAddress: () => string;
   getPublicKey: () => string;
-  signRequest?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-  signTransaction?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-  signOrder?: (bytes: Array<number> | Uint8Array) => Promise<string>;
-  signData?: (bytes: Array<number> | Uint8Array) => Promise<string>;
+  signRequest?: (bytes: number[] | Uint8Array) => Promise<string>;
+  signTransaction?: (bytes: number[] | Uint8Array) => Promise<string>;
+  signOrder?: (bytes: number[] | Uint8Array) => Promise<string>;
+  signData?: (bytes: number[] | Uint8Array) => Promise<string>;
 }
 
 export class CustomAdapter<T extends IUserApi> extends Adapter {
   //@ts-ignore
   public currentUser: T;
-  public static type = AdapterType.Custom;
+  public static override type = AdapterType.Custom;
 
   //@ts-ignore
   constructor(userApi: T) {
@@ -30,7 +30,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     this._isDestroyed = false;
   }
 
-  public isAvailable(): Promise<void> {
+  public override isAvailable(): Promise<void> {
     return this.currentUser.isAvailable() ? Promise.resolve() : Promise.reject();
   }
 
@@ -106,7 +106,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     return Promise.reject('No private key');
   }
 
-  public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+  public getSignVersions(): Record<SIGN_TYPE, number[]> {
     return {
       [SIGN_TYPE.AUTH]: [1],
       [SIGN_TYPE.MATCHER_ORDERS]: [1],
@@ -132,11 +132,11 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     };
   }
 
-  public static initOptions(options: any) {
+  public static override initOptions(options: any) {
     Adapter.initOptions(options);
   }
 
-  public static isAvailable() {
+  public static override isAvailable() {
     return Promise.resolve(true);
   }
 }
