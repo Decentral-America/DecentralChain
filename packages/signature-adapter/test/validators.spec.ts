@@ -3,7 +3,7 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
 import { BigNumber } from '@decentralchain/bignumber';
-import { seedUtils } from '@decentralchain/waves-transactions';
+import { seedUtils } from '@decentralchain/decentralchain-transactions';
 
 const Seed = seedUtils.Seed;
 
@@ -28,7 +28,7 @@ describe('Check validators', () => {
   let adapter: SeedAdapter;
 
   beforeEach(() => {
-    adapter = new SeedAdapter(testSeed, '?');
+    adapter = new SeedAdapter(testSeed, 'W');
   });
 
   describe('check order validations', () => {

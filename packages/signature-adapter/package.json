@@ -6,18 +6,11 @@
   "packageManager": "npm@11.6.2",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
@@ -72,7 +65,7 @@
   },
   "size-limit": [
     {
-      "path": "./dist/index.mjs",
+      "path": "./dist/index.js",
       "limit": "150 kB"
     }
   ],
@@ -92,10 +85,10 @@
   "dependencies": {
     "@decentralchain/bignumber": "npm:@waves/bignumber@^1.0.0",
     "@decentralchain/data-entities": "npm:@waves/data-entities@^2.0.3",
+    "@decentralchain/decentralchain-transactions": "file:../../../../../../tmp/decentralchain-transactions/decentralchain-decentralchain-transactions-5.0.0.tgz",
     "@decentralchain/ledger": "npm:@waves/ledger@^4.0.0",
     "@decentralchain/money-like-to-node": "npm:@waves/money-like-to-node@0.1.3",
     "@decentralchain/ts-types": "npm:@waves/ts-types@^0.2.0",
-    "@decentralchain/waves-transactions": "4.2.3",
     "ramda": "^0.30.1"
   },
   "devDependencies": {

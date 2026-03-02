@@ -1,6 +1,6 @@
 import { AdapterType } from '../adapterType';
 import { type SIGN_TYPE, type TSignData } from '../prepareTx';
-import { libs, serializeCustomData } from '@decentralchain/waves-transactions';
+import { libs, serializeCustomData } from '@decentralchain/decentralchain-transactions';
 import { Signable } from '../Signable';
 const { stringToBytes } = libs.crypto;
 
@@ -95,6 +95,12 @@ export abstract class Adapter {
     publicKey: string;
     seconds: number;
   }> {
+    if (!clientId || typeof clientId !== 'string') {
+      return Promise.reject(new Error('clientId must be a non-empty string'));
+    }
+    if (!Number.isFinite(timestamp) || timestamp <= 0) {
+      return Promise.reject(new Error('timestamp must be a positive finite number'));
+    }
     const netByte = String.fromCharCode(this._code);
     return this.getPublicKey().then((publicKey) => {
       const seconds = Math.floor(timestamp / 1000);
