@@ -3,13 +3,11 @@
   "version": "3.0.0",
   "description": "Domain model classes for DecentralChain blockchain entities",
   "type": "module",
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
@@ -21,7 +19,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public",
@@ -41,20 +39,21 @@
   },
   "scripts": {
     "build": "tsup",
+    "clean": "rm -rf dist coverage",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:publint": "publint",
-    "check:exports": "attw --pack . --ignore-rules no-resolution",
+    "check:exports": "attw --pack --ignore-rules cjs-resolves-to-esm",
     "check:size": "size-limit",
-    "validate": "npm audit --audit-level=high && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
     "prepare": "husky",
     "prepack": "npm run build",
     "postversion": "npm publish",
@@ -65,7 +64,7 @@
       "prettier --write",
       "eslint --fix"
     ],
-    "*.json": [
+    "*.{json,md,mjs}": [
       "prettier --write"
     ]
   },

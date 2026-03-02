@@ -8,7 +8,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 ### Changed
 
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`).
-- **BREAKING**: Minimum Node.js version is now 22.
+- **BREAKING**: Minimum Node.js version is now 24.
 - **BREAKING**: `IAssetJSON` no longer extends `IAssetInfo` — standalone interface with exact types.
 - **BREAKING**: `ICandleJSON` no longer extends `ICandleInfo` — standalone interface with exact types.
 - Replaced Mocha + Chai with Vitest.
