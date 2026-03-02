@@ -1,4 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║  DEPRECATED — DO NOT USE IN PRODUCTION                                  ║
+  ║                                                                          ║
+  ║  This C# project is a legacy artifact with critical issues:              ║
+  ║  1. Targets .NET Framework 4.6.1 (EOL, no security patches)             ║
+  ║  2. Grpc.Core 1.22.0 (2019, deprecated — use Grpc.Net.Client)           ║
+  ║  3. Google.Protobuf DLL version mismatch:                               ║
+  ║     - packages.config declares 3.20.1                                    ║
+  ║     - csproj HintPath references 3.9.0 DLL (will fail at runtime)       ║
+  ║  4. Proto Include paths are broken (missing ../ prefix for events/)      ║
+  ║  5. Missing proto includes for: events/grpc/*, lang/*, state_snapshot,   ║
+  ║     reward_share, invoke_script_result                                   ║
+  ║  6. Protobuf_NoWarnMissingExpected=true suppresses compilation warnings  ║
+  ║                                                                          ║
+  ║  For new C# integrations, create a modern .NET 8+ project with          ║
+  ║  Grpc.Net.Client and Google.Protobuf >= 3.25.0.                          ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+-->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Grpc.Tools.1.22.0\build\Grpc.Tools.props" Condition="Exists('..\packages\Grpc.Tools.1.22.0\build\Grpc.Tools.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
