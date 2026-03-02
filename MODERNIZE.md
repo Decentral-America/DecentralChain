@@ -55,7 +55,7 @@ AUTHOR: 'DecentralChain'
 SOURCE_LANG: 'typescript'
 
 # ── Build Target ──────────────────────────────────────────────────
-FORMATS: ['esm', 'cjs']
+FORMATS: ['esm']
 UMD_GLOBAL_NAME: ''
 
 # ── Node.js ───────────────────────────────────────────────────────
