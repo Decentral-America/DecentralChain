@@ -1,7 +1,7 @@
 {
-  "name": "@decentralchain/waves-transactions",
+  "name": "@decentralchain/decentralchain-transactions",
   "version": "5.0.0",
-  "description": "Build and sign (multi-sign) transactions for DecentralChain blockchain.",
+  "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
   "type": "module",
   "packageManager": "npm@11.6.2",
   "exports": {
@@ -34,15 +34,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/waves-transactions.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-transactions.git"
   },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/waves-transactions#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-transactions#readme",
   "bugs": {
-    "url": "https://github.com/Decentral-America/waves-transactions/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-transactions/issues"
   },
   "scripts": {
     "build": "tsup",

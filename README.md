@@ -1,9 +1,9 @@
-# @decentralchain/waves-transactions
+# @decentralchain/decentralchain-transactions
 
-[![CI](https://github.com/Decentral-America/waves-transactions/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/waves-transactions/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@decentralchain/waves-transactions)](https://www.npmjs.com/package/@decentralchain/waves-transactions)
+[![CI](https://github.com/Decentral-America/decentralchain-transactions/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/decentralchain-transactions/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@decentralchain/decentralchain-transactions)](https://www.npmjs.com/package/@decentralchain/decentralchain-transactions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node](https://img.shields.io/node/v/@decentralchain/waves-transactions)](https://nodejs.org)
+[![Node](https://img.shields.io/node/v/@decentralchain/decentralchain-transactions)](https://nodejs.org)
 
 > Transaction builder, signer, and broadcaster for the DecentralChain blockchain.
 
@@ -16,13 +16,13 @@ Provides builder functions for all transaction types, cryptographic signing with
 ## Installation
 
 ```bash
-npm install @decentralchain/waves-transactions
+npm install @decentralchain/decentralchain-transactions
 ```
 
 ## Quick Start
 
 ```typescript
-import { transfer, broadcast } from '@decentralchain/waves-transactions';
+import { transfer, broadcast } from '@decentralchain/decentralchain-transactions';
 
 const seed = 'your twelve word seed phrase here';
 
@@ -58,7 +58,7 @@ const result = await broadcast(tx, 'https://nodes.decentralchain.io');
 ### Transfer
 
 ```typescript
-import { transfer, broadcast } from '@decentralchain/waves-transactions';
+import { transfer, broadcast } from '@decentralchain/decentralchain-transactions';
 
 const seed = 'your seed phrase';
 
@@ -76,7 +76,7 @@ await broadcast(signedTx, 'https://nodes.decentralchain.io');
 ### Issue Token
 
 ```typescript
-import { issue, broadcast } from '@decentralchain/waves-transactions';
+import { issue, broadcast } from '@decentralchain/decentralchain-transactions';
 
 const seed = 'your seed phrase';
 
@@ -98,7 +98,7 @@ await broadcast(signedTx, 'https://nodes.decentralchain.io');
 ### Data Transaction
 
 ```typescript
-import { data, broadcast } from '@decentralchain/waves-transactions';
+import { data, broadcast } from '@decentralchain/decentralchain-transactions';
 
 const seed = 'your seed phrase';
 
@@ -120,7 +120,7 @@ await broadcast(signedTx, 'https://nodes.decentralchain.io');
 ## Node Interaction
 
 ```typescript
-import { nodeInteraction } from '@decentralchain/waves-transactions';
+import { nodeInteraction } from '@decentralchain/decentralchain-transactions';
 
 const nodeUrl = 'https://nodes.decentralchain.io';
 

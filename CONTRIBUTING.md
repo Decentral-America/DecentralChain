@@ -1,4 +1,4 @@
-# Contributing to @decentralchain/waves-transactions
+# Contributing to @decentralchain/decentralchain-transactions
 
 Thank you for your interest in contributing!
 
@@ -14,8 +14,8 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 ## Setup
 
 ```bash
-git clone https://github.com/Decentral-America/waves-transactions.git
-cd waves-transactions
+git clone https://github.com/Decentral-America/decentralchain-transactions.git
+cd decentralchain-transactions
 npm install
 ```
 
