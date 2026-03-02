@@ -12,7 +12,7 @@ Communicate with Ledger Nano S/X devices to derive public keys and sign transact
 
 ## Requirements
 
-- **Node.js** >= 22
+- **Node.js** >= 24
 - A Ledger Nano S or Nano X with the DCC application installed
 - A compatible transport (`@ledgerhq/hw-transport-webusb`, `@ledgerhq/hw-transport-web-ble`, etc.)
 
@@ -131,7 +131,7 @@ Build the BIP-44 derivation path for an account index.
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (see `.node-version`)
 - **npm** >= 10
 
 ### Setup
