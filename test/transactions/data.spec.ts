@@ -1,5 +1,5 @@
 import { base64Encode, publicKey } from '@decentralchain/ts-lib-crypto';
-import { broadcast, cancelLease, data, IDataParams, libs, makeTxBytes, WithId } from '../../src';
+import { data } from '../../src';
 import { txToProtoBytes } from '../../src/proto-serialize';
 import {
   checkBinarySerializeDeserialize,

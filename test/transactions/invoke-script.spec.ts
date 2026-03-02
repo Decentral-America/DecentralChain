@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:test/transactions/invoke-script.test.ts
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -23,6 +24,12 @@ import { invokeScriptMinimalParams } from '../minimalParams';
 import { invokeScript, setScript, waitForTx } from '../../src';
 import { IInvokeScriptParams } from '../../src';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/invoke-script.spec.ts
+=======
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { invokeScriptMinimalParams } from '../minimalParams';
+import { invokeScript } from '../../src';
+import type { IInvokeScriptParams } from '../../src';
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
@@ -56,9 +63,12 @@ import { broadcast } from '../../src'
 } from '../utils';
 import { invokeScriptTx } from './expected/proto/invoke-script.tx';
 import { invokeScriptBinaryTx } from './expected/binary/invoke-script.tx';
+<<<<<<< HEAD
 import { API_BASE, TIMEOUT } from '../integration/config';
 import { broadcast } from '../../src';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/invoke-script.spec.ts
+=======
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 
 describe('invokeScript', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';

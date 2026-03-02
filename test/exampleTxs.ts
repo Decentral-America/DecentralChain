@@ -1,4 +1,4 @@
-export const issueTx = {
+const issueTx = {
   type: 3,
   version: 2,
   decimals: 8,
@@ -16,7 +16,7 @@ export const issueTx = {
   description: 'tratata',
 };
 
-export const transferTx = {
+const transferTx = {
   type: 4,
   version: 2,
   fee: 100000,
@@ -30,7 +30,7 @@ export const transferTx = {
   amount: 10000,
 };
 
-export const reissueTx = {
+const reissueTx = {
   type: 5,
   version: 2,
   chainId: 76,
@@ -46,7 +46,7 @@ export const reissueTx = {
   reissuable: false,
 };
 
-export const burnTx = {
+const burnTx = {
   type: 6,
   version: 2,
   chainId: 76,
@@ -61,7 +61,7 @@ export const burnTx = {
   amount: '9223372036854775807',
 };
 
-export const leaseTx = {
+const leaseTx = {
   type: 8,
   version: 2,
   fee: '9223372036854775807',
@@ -75,7 +75,7 @@ export const leaseTx = {
   amount: 10000,
 };
 
-export const cancelLeaseTx = {
+const cancelLeaseTx = {
   type: 9,
   version: 2,
   fee: 100000,
@@ -89,7 +89,7 @@ export const cancelLeaseTx = {
   leaseId: '656pBWMAPfVMu1gbSZ5dd5WTRQzWNo2phfJsD2rDBKfh',
 };
 
-export const aliasTx = {
+const aliasTx = {
   type: 10,
   version: 2,
   fee: '9223372036854775807',
@@ -102,7 +102,7 @@ export const aliasTx = {
   alias: 'my_test_alias',
 };
 
-export const massTransferTx = {
+const massTransferTx = {
   type: 11,
   version: 1,
   fee: '9223372036854775807',
@@ -119,7 +119,7 @@ export const massTransferTx = {
   ],
 };
 
-export const dataTx = {
+const dataTx = {
   type: 12,
   version: 1,
   senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
@@ -136,7 +136,7 @@ export const dataTx = {
   ],
 };
 
-export const setScriptTx = {
+const setScriptTx = {
   type: 13,
   version: 1,
   fee: 1000000,
@@ -150,7 +150,7 @@ export const setScriptTx = {
   script: 'base64:AQa3b8tH',
 };
 
-export const setAssetScriptTx = {
+const setAssetScriptTx = {
   type: 15,
   version: 1,
   fee: 1000000,
@@ -165,7 +165,7 @@ export const setAssetScriptTx = {
   assetId: 'Cei6h7evZcdR5qdbdjAABWdnuyHrp43Yb6MxN6ZViqFR',
 };
 
-export const invokeScriptTx = {
+const invokeScriptTx = {
   senderPublicKey: 'JE7VAUzZC4ZzkFMjbjxYmTNDULkXJEAxtqqG4DnimgVW',
   fee: 500000,
   type: 16,
