@@ -8,7 +8,6 @@ import {
   isBoolean,
   isEq,
   isNaturalNumberLike,
-  isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
   orEq,
@@ -23,7 +22,7 @@ const reissueScheme = {
   quantity: isNaturalNumberLike,
   reissuable: isBoolean,
   chainId: isNaturalNumberLike,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

@@ -70,7 +70,7 @@ const invokeScheme = {
     ),
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
   ),
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   feeAssetId: isDccOrAssetId,
   chainId: isNaturalNumberLike,
   timestamp: isNaturalNumberLike,

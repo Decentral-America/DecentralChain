@@ -39,7 +39,8 @@ export function setScript(
     throw new Error('Script field cannot be undefined. Use null explicitly to remove script');
 
   const scriptBytes = scriptToProto(paramsOrTx.script);
-  const computedFee = scriptBytes != null ? Math.ceil(scriptBytes.length / 1024) * 100000 : 500000;
+  const computedFee =
+    scriptBytes != null ? Math.max(100000, Math.ceil(scriptBytes.length / 1024) * 100000) : 500000;
 
   const tx: SetScriptTransaction & WithId & WithProofs = {
     type,

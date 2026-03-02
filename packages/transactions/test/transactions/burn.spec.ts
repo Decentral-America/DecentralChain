@@ -131,9 +131,10 @@ describe('burn', () => {
     expect(tx.fee).toEqual(12345);
   });
 
-  it('Should create with zero fee', () => {
-    const tx = burn({ ...burnMinimalParams, fee: 0 }, stringSeed);
-    expect(tx.fee).toEqual(0);
+  it('Should not create with zero fee', () => {
+    expect(() => burn({ ...burnMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
   });
 
 <<<<<<< HEAD

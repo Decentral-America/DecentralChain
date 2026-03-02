@@ -9,7 +9,6 @@ import {
   isBoolean,
   isEq,
   isNaturalNumberLike,
-  isNaturalNumberOrZeroLike,
   isNumber,
   isPublicKey,
   isRequired,
@@ -32,7 +31,7 @@ const issueScheme = {
   reissuable: isBoolean,
   script: ifElse(isRequired(true), isBase64, defaultValue(true)),
   chainId: isNaturalNumberLike,
-  fee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };

@@ -6,18 +6,11 @@
   "packageManager": "npm@11.6.2",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
@@ -76,7 +69,7 @@
   },
   "size-limit": [
     {
-      "path": "./dist/index.mjs",
+      "path": "./dist/index.js",
       "limit": "150 kB"
     }
   ],

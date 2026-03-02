@@ -55,9 +55,10 @@ const recipientFromProto = (recipient: dccProto.waves.IRecipient, chainId: numbe
 };
 
 function convertNumber(n: Long) {
-  const maxJsNumber = 2 ** 53 - 1;
+  const MAX_SAFE = Long.fromNumber(Number.MAX_SAFE_INTEGER);
+  const MIN_SAFE = Long.fromNumber(Number.MIN_SAFE_INTEGER);
 
-  return n.toNumber() > maxJsNumber ? n.toString() : n.toNumber();
+  return n.greaterThan(MAX_SAFE) || n.lessThan(MIN_SAFE) ? n.toString() : n.toNumber();
 }
 
 export function txToProtoBytes(obj: TTransaction): Uint8Array {
