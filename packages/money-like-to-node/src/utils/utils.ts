@@ -35,9 +35,21 @@ export function getCoins(money: TMoney | TLong | undefined | null): string | nul
     } else if ('toFixed' in money) {
       result = money.toFixed();
     } else {
+      if (typeof money.coins === 'number' && !Number.isSafeInteger(money.coins)) {
+        throw new Error(
+          `Unsafe integer detected in coins: ${String(money.coins)}. ` +
+            `Use string or BigNumber for values exceeding Number.MAX_SAFE_INTEGER (${String(Number.MAX_SAFE_INTEGER)}).`,
+        );
+      }
       result = String(money.coins);
     }
   } else {
+    if (typeof money === 'number' && !Number.isSafeInteger(money)) {
+      throw new Error(
+        `Unsafe integer detected: ${String(money)}. ` +
+          `Use string or BigNumber for values exceeding Number.MAX_SAFE_INTEGER (${String(Number.MAX_SAFE_INTEGER)}).`,
+      );
+    }
     result = String(money);
   }
   return result;

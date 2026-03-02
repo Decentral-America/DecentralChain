@@ -1,6 +1,6 @@
 import { type TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
-export const TYPES: typeof TRANSACTION_TYPE = {
+export const TYPES: typeof TRANSACTION_TYPE = Object.freeze({
   GENESIS: 1 as const,
   PAYMENT: 2 as const,
   ISSUE: 3 as const,
@@ -18,10 +18,14 @@ export const TYPES: typeof TRANSACTION_TYPE = {
   SET_ASSET_SCRIPT: 15 as const,
   INVOKE_SCRIPT: 16 as const,
   UPDATE_ASSET_INFO: 17 as const,
-};
+});
 
-export const ALIAS = {
+export const ALIAS = Object.freeze({
   AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz',
   MAX_ALIAS_LENGTH: 30,
   MIN_ALIAS_LENGTH: 4,
-} as const;
+}) as {
+  readonly AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz';
+  readonly MAX_ALIAS_LENGTH: 30;
+  readonly MIN_ALIAS_LENGTH: 4;
+};
