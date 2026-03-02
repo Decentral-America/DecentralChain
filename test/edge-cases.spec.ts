@@ -824,3 +824,467 @@ describe('CRITICAL: toNode data with integer value 0', () => {
     expect(result.data[1]?.value).toBe('-1');
   });
 });
+
+// ---------------------------------------------------------------------------
+// 10. CRITICAL: Unsafe Integer Detection (Prevents Silent Money Corruption)
+// ---------------------------------------------------------------------------
+describe('CRITICAL: getCoins rejects unsafe integers', () => {
+  it('throws when number exceeds MAX_SAFE_INTEGER', () => {
+    expect(() => getCoins(Number.MAX_SAFE_INTEGER + 2)).toThrow('Unsafe integer detected');
+  });
+
+  it('throws when IMoneyLike coins exceeds MAX_SAFE_INTEGER as number', () => {
+    expect(() => getCoins({ coins: Number.MAX_SAFE_INTEGER + 2, assetId: 'DCC' })).toThrow(
+      'Unsafe integer detected',
+    );
+  });
+
+  it('accepts MAX_SAFE_INTEGER exactly', () => {
+    expect(getCoins(Number.MAX_SAFE_INTEGER)).toBe('9007199254740991');
+  });
+
+  it('accepts string representation of large numbers (safe path)', () => {
+    expect(getCoins('99999999999999999999999')).toBe('99999999999999999999999');
+  });
+
+  it('accepts IMoneyLike with string coins (safe path)', () => {
+    expect(getCoins({ coins: '99999999999999999999999', assetId: 'DCC' })).toBe(
+      '99999999999999999999999',
+    );
+  });
+
+  it('throws for negative unsafe integers', () => {
+    expect(() => getCoins(-Number.MAX_SAFE_INTEGER - 2)).toThrow('Unsafe integer detected');
+  });
+
+  it('accepts negative safe integers', () => {
+    expect(getCoins(-1)).toBe('-1');
+  });
+
+  it('throws for Infinity', () => {
+    expect(() => getCoins(Infinity)).toThrow('Unsafe integer detected');
+  });
+
+  it('throws for NaN', () => {
+    expect(() => getCoins(NaN)).toThrow('Unsafe integer detected');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 11. CRITICAL: data.ts throws on unknown data entry types
+// ---------------------------------------------------------------------------
+describe('CRITICAL: data.ts rejects unknown data entry types', () => {
+  it('throws on unknown data type instead of silently returning null', () => {
+    expect(() =>
+      node.data({
+        type: TYPES.DATA,
+        version: 1,
+        senderPublicKey: 'abc',
+        timestamp: 1000,
+        fee: '500',
+        data: [{ key: 'bad', type: 'unknown_type' as any, value: 'x' }],
+      }),
+    ).toThrow('Unknown data entry type');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12. Runtime Immutability of Constants
+// ---------------------------------------------------------------------------
+describe('Constants are frozen at runtime', () => {
+  it('TYPES object is frozen', () => {
+    expect(Object.isFrozen(TYPES)).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 13. convert() — Full Transaction Type Coverage
+// ---------------------------------------------------------------------------
+describe('convert() — full transaction type coverage', () => {
+  const toStr = (val: number) => String(val);
+
+  it('converts issue transaction', () => {
+    const tx = {
+      type: TYPES.ISSUE as 3,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      name: 'token',
+      description: 'desc',
+      decimals: 2,
+      quantity: 5000,
+      reissuable: true,
+      chainId: 87,
+      script: null,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.quantity).toBe('5000');
+  });
+
+  it('converts transfer transaction', () => {
+    const tx = {
+      type: TYPES.TRANSFER as 4,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      amount: 500,
+      recipient: 'dest',
+      assetId: 'DCC',
+      feeAssetId: 'DCC',
+      attachment: '',
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.amount).toBe('500');
+  });
+
+  it('converts reissue transaction', () => {
+    const tx = {
+      type: TYPES.REISSUE as 5,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'BTC',
+      quantity: 2000,
+      reissuable: false,
+      chainId: 87,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.quantity).toBe('2000');
+  });
+
+  it('converts lease transaction', () => {
+    const tx = {
+      type: TYPES.LEASE as 8,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      amount: 9999,
+      recipient: 'node',
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.amount).toBe('9999');
+  });
+
+  it('converts cancel lease transaction', () => {
+    const tx = {
+      type: TYPES.CANCEL_LEASE as 9,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      leaseId: 'lease123',
+      chainId: 87,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+  });
+
+  it('converts mass transfer transaction', () => {
+    const tx = {
+      type: TYPES.MASS_TRANSFER as 11,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'DCC',
+      attachment: 'memo',
+      transfers: [
+        { recipient: 'a', amount: 10 },
+        { recipient: 'b', amount: 20 },
+      ],
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.transfers).toEqual([
+      { recipient: 'a', amount: '10' },
+      { recipient: 'b', amount: '20' },
+    ]);
+  });
+
+  it('converts set script transaction', () => {
+    const tx = {
+      type: TYPES.SET_SCRIPT as 13,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      script: 'base64:script',
+      chainId: 87,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+  });
+
+  it('converts sponsorship transaction', () => {
+    const tx = {
+      type: TYPES.SPONSORSHIP as 14,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'TOKEN',
+      minSponsoredAssetFee: 50,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.minSponsoredAssetFee).toBe('50');
+  });
+
+  it('converts sponsorship with null minSponsoredAssetFee', () => {
+    const tx = {
+      type: TYPES.SPONSORSHIP as 14,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'TOKEN',
+      minSponsoredAssetFee: null,
+    };
+    const result = convert(tx as any, toStr);
+    expect(result.minSponsoredAssetFee).toBeNull();
+  });
+
+  it('converts set asset script transaction', () => {
+    const tx = {
+      type: TYPES.SET_ASSET_SCRIPT as 15,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'TOKEN',
+      script: 'base64:script',
+      chainId: 87,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+  });
+
+  it('converts invoke script transaction with call and payment', () => {
+    const tx = {
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      dApp: 'dapp',
+      call: {
+        function: 'stake',
+        args: [
+          { type: 'integer' as const, value: 42 },
+          { type: 'string' as const, value: 'hi' },
+        ],
+      },
+      payment: [{ amount: 200, assetId: 'DCC' }],
+      chainId: 87,
+      feeAssetId: 'DCC',
+    };
+    const result = convert(tx as any, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.call?.args[0]).toEqual({ type: 'integer', value: '42' });
+    expect(result.payment?.[0]?.amount).toBe('200');
+  });
+
+  it('converts invoke script with undefined payment (falsy but not null)', () => {
+    const tx = {
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      dApp: 'dapp',
+      call: null,
+      payment: undefined,
+      chainId: 87,
+      feeAssetId: 'DCC',
+    };
+    const result = convert(tx as any, toStr);
+    expect(result.payment).toBeUndefined();
+  });
+
+  it('converts update asset info transaction', () => {
+    const tx = {
+      type: TYPES.UPDATE_ASSET_INFO as 17,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      assetId: 'TOKEN',
+      name: 'New Name',
+      description: 'New Desc',
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+  });
+
+  it('converts data transaction with all entry types', () => {
+    const tx = {
+      type: TYPES.DATA as 12,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      data: [
+        { key: 'int', type: 'integer' as const, value: 99 },
+        { key: 'str', type: 'string' as const, value: 'hello' },
+        { key: 'bool', type: 'boolean' as const, value: true },
+        { key: 'bin', type: 'binary' as const, value: 'base64' },
+      ],
+    };
+    const result = convert(tx, toStr);
+    expect(result.data[0]?.value).toBe('99');
+    expect(result.data[1]?.value).toBe('hello');
+    expect(result.data[2]?.value).toBe(true);
+    expect(result.data[3]?.value).toBe('base64');
+  });
+
+  it('converts exchange transaction fully', () => {
+    const orderBase = {
+      version: 1 as const,
+      matcherPublicKey: 'matcher',
+      timestamp: 1000,
+      expiration: 2000,
+      senderPublicKey: 'sender',
+      proofs: ['p'],
+    };
+    const tx = {
+      type: TYPES.EXCHANGE as 7,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      buyOrder: { ...orderBase, orderType: 'buy' as const, price: 50, amount: 200, matcherFee: 10 },
+      sellOrder: {
+        ...orderBase,
+        orderType: 'sell' as const,
+        price: 50,
+        amount: 200,
+        matcherFee: 10,
+      },
+      price: 50,
+      amount: 200,
+      buyMatcherFee: 10,
+      sellMatcherFee: 10,
+    };
+    const result = convert(tx, toStr);
+    expect(result.fee).toBe('100');
+    expect(result.price).toBe('50');
+    expect(result.amount).toBe('200');
+    expect(result.buyMatcherFee).toBe('10');
+    expect(result.sellMatcherFee).toBe('10');
+    expect(result.buyOrder.price).toBe('50');
+    expect(result.sellOrder.amount).toBe('200');
+  });
+
+  it('converts burn with quantity fallback', () => {
+    const tx = {
+      type: TYPES.BURN as 6,
+      version: 1 as const,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: 100,
+      quantity: 777,
+    };
+    const result = convert(tx as any, toStr);
+    expect(result.amount).toBe('777');
+    expect(result.quantity).toBe('777');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 14. toNode() — Missing Entity Switch Cases
+// ---------------------------------------------------------------------------
+describe('toNode() — additional entity types', () => {
+  it('converts reissue via toNode', () => {
+    const result = toNode({
+      type: TYPES.REISSUE,
+      version: 1,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: '100',
+      assetId: 'TOKEN',
+      quantity: '5000',
+      reissuable: true,
+      chainId: 87,
+    });
+    expect(result.quantity).toBe('5000');
+    expect(result.assetId).toBe('TOKEN');
+  });
+
+  it('converts updateAssetInfo via toNode', () => {
+    const result = toNode({
+      type: TYPES.UPDATE_ASSET_INFO,
+      version: 1,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: '100',
+      assetId: 'TOKEN',
+      name: 'New',
+      description: 'Desc',
+    });
+    expect(result.name).toBe('New');
+  });
+
+  it('converts setAssetScript via toNode', () => {
+    const result = toNode({
+      type: TYPES.SET_ASSET_SCRIPT,
+      version: 1,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: '100',
+      assetId: 'TOKEN',
+      script: 'base64:abc',
+      chainId: 87,
+    });
+    expect(result.script).toBe('base64:abc');
+  });
+
+  it('converts massTransfer with assetId via toNode', () => {
+    const result = toNode({
+      type: TYPES.MASS_TRANSFER,
+      version: 1,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: '100',
+      assetId: 'TOKEN',
+      attachment: 'memo',
+      transfers: [{ recipient: 'a', amount: '10' }],
+    });
+    expect(result.assetId).toBe('TOKEN');
+    expect(result.transfers[0]?.amount).toBe('10');
+  });
+
+  it('massTransfer throws on empty transfers array (money variant)', () => {
+    expect(() =>
+      toNode({
+        type: TYPES.MASS_TRANSFER,
+        version: 1,
+        senderPublicKey: 'abc',
+        timestamp: 1000,
+        fee: '100',
+        attachment: '',
+        transfers: [],
+      } as any),
+    ).toThrow('MassTransfer transaction must have one transfer!');
+  });
+
+  it('massTransfer extracts assetId from first transfer money item', () => {
+    const result = toNode({
+      type: TYPES.MASS_TRANSFER,
+      version: 1,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      fee: '100',
+      attachment: 'memo',
+      transfers: [{ recipient: 'a', amount: new Money(10, DCC_ASSET) }],
+    } as any);
+    expect(result.assetId).toBe('DCC');
+  });
+});
