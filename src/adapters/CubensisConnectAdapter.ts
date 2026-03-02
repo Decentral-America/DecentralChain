@@ -33,7 +33,7 @@ export class CubensisConnectAdapter extends Adapter {
   public static adapter: CubensisConnectAdapter;
   private static _onUpdateCb: ((...args: any[]) => any)[] = [];
   private static _state: any;
-  private _onDestoryCb = [];
+  private _onDestroyCb = [];
   private _needDestroy = false;
   private _address: string;
   private _pKey: string;
@@ -43,12 +43,12 @@ export class CubensisConnectAdapter extends Adapter {
   private static _api: ICubensisConnect;
 
   private handleUpdate = (state: any) => {
-    if (!state.locked && (state.account?.address !== this._address)) {
+    if (!state.locked && state.account?.address !== this._address) {
       this._needDestroy = true;
       this._isDestroyed = true;
       //@ts-ignore
-      this._onDestoryCb.forEach((cb) => cb());
-      this._onDestoryCb = [];
+      this._onDestroyCb.forEach((cb) => cb());
+      this._onDestroyCb = [];
       CubensisConnectAdapter.offUpdate(this.handleUpdate);
     }
   };
@@ -109,7 +109,7 @@ export class CubensisConnectAdapter extends Adapter {
     }
 
     //@ts-ignore
-    this._onDestoryCb.push(cb);
+    this._onDestroyCb.push(cb);
   }
 
   public getSyncAddress(): string {

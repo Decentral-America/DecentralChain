@@ -64,7 +64,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -81,7 +81,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(3);
@@ -134,7 +134,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -151,7 +151,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -168,7 +168,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -185,7 +185,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -202,7 +202,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -238,7 +238,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -255,7 +255,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -278,7 +278,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -298,7 +298,7 @@ describe('Check validators', () => {
     });
   });
 
-  describe('check issure validations', () => {
+  describe('check issue validations', () => {
     const data = {
       name: 'test',
       fee: Money.fromTokens(1, testAsset),
@@ -308,7 +308,7 @@ describe('Check validators', () => {
       reissuable: true,
     };
 
-    it('issure no script valid', () => {
+    it('issue no script valid', () => {
       const signData = {
         type: SIGN_TYPE.ISSUE,
         data: { ...data },
@@ -317,7 +317,7 @@ describe('Check validators', () => {
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
     });
 
-    it('issure has script valid', () => {
+    it('issue has script valid', () => {
       const signData = {
         type: SIGN_TYPE.ISSUE,
         data: { ...data },
@@ -327,7 +327,7 @@ describe('Check validators', () => {
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
     });
 
-    it('issure invalid name', () => {
+    it('issue invalid name', () => {
       const signData = {
         type: SIGN_TYPE.ISSUE,
         data: { ...data, name: 'P' },
@@ -335,7 +335,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -358,7 +358,7 @@ describe('Check validators', () => {
       }
     });
 
-    it('issure invalid description', () => {
+    it('issue invalid description', () => {
       const signData = {
         type: SIGN_TYPE.ISSUE,
         data: { ...data, description: {} },
@@ -366,7 +366,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -383,7 +383,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData2);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -392,7 +392,7 @@ describe('Check validators', () => {
       }
     });
 
-    it('issure invalid precision', () => {
+    it('issue invalid precision', () => {
       const signData = {
         type: SIGN_TYPE.ISSUE,
         data: { ...data, precision: -1 },
@@ -400,7 +400,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -415,7 +415,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData2);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -453,7 +453,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -473,7 +473,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -493,7 +493,7 @@ describe('Check validators', () => {
 
       try {
         adapter.makeSignable(signData);
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);
@@ -516,7 +516,7 @@ describe('Check validators', () => {
           .makeSignable(signData)
           .getBytes()
           .catch((_e) => {});
-        expect('Fail').toBe('Done');
+        expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
         expect(e.length).toEqual(1);

@@ -1,0 +1,12 @@
+# Default owner for all files
+* @Decentral-America/core
+
+# Security-sensitive paths require additional review
+src/adapters/ @Decentral-America/core
+src/Signable.ts @Decentral-America/core
+src/prepareTx/ @Decentral-America/core
+
+# CI and config changes
+.github/ @Decentral-America/core
+package.json @Decentral-America/core
+tsconfig.json @Decentral-America/core
