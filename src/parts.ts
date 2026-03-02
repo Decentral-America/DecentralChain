@@ -1,5 +1,6 @@
-import { DATA_FIELD_TYPE, ExchangeTransaction } from './index.js';
+import { type DATA_FIELD_TYPE } from './constants.js';
 
+// ── Primitive Types ─────────────────────────────────────────────────────────
 export type ExchangeTransactionOrderType = 'buy' | 'sell';
 export type Base64Script = string;
 export type Base58Bytes = string;
@@ -8,11 +9,21 @@ export type Long = string | number;
 export type AssetDecimals = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Base64String = string;
 
+// ── Mixins ──────────────────────────────────────────────────────────────────
+export interface WithId {
+  id: string;
+}
+
+export interface WithApplicationStatus {
+  applicationStatus: 'succeeded' | 'script_execution_failed';
+}
+
 export type WithApiMixin = WithId & {
   sender: string;
   height: number;
 };
 
+// ── Invoke Script Types ─────────────────────────────────────────────────────
 export type InvokeScriptCall<LONG = Long> = {
   function: string;
   args: Array<InvokeScriptCallArgument<LONG>>;
@@ -61,19 +72,13 @@ export type InvokeScriptCallListArgument<
     | InvokeScriptCallIntegerArgument,
 > = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>>;
 
-export interface WithId {
-  id: string;
-}
-
-export interface WithApplicationStatus {
-  applicationStatus: 'succeeded' | 'script_execution_failed';
-}
-
+// ── Mass Transfer ───────────────────────────────────────────────────────────
 export type MassTransferItem<LONG = Long> = {
   recipient: string;
   amount: LONG;
 };
 
+// ── Data Transaction Entries ────────────────────────────────────────────────
 export type DataTransactionEntryGeneric<Type, Value> = {
   key: string;
   type: Type;
@@ -97,6 +102,24 @@ export type DataTransactionEntryBoolean = DataTransactionEntryGeneric<
   boolean
 >;
 
+export type DataTransactionEntry<LONG = Long> =
+  | DataTransactionEntryInteger<LONG>
+  | DataTransactionEntryString
+  | DataTransactionEntryBinary
+  | DataTransactionEntryBoolean
+  | DataTransactionDeleteRequest;
+
+export type DataTransactionDeleteRequest = {
+  type: null;
+  value: null | undefined;
+  key: string;
+};
+
+// ── Exchange Order Types ────────────────────────────────────────────────────
+export type WithVersion<Target extends Record<string, unknown>, Version extends number> = Target & {
+  version: Version;
+};
+
 export type ExchangeTransactionOrderData<LONG> = {
   version: number;
   orderType: ExchangeTransactionOrderType;
@@ -111,10 +134,6 @@ export type ExchangeTransactionOrderData<LONG> = {
   matcherFee: LONG;
   matcherPublicKey: string;
   senderPublicKey: string;
-};
-
-export type WithVersion<Target extends Record<string, any>, Version extends number> = Target & {
-  version: Version;
 };
 
 type ExchangeOrderWithCustomFee<Long> = ExchangeTransactionOrderData<Long> & {
@@ -149,14 +168,15 @@ export type ExchangeTransactionOrder<LONG = Long> =
   | ExchangeTransactionOrderV3<LONG>
   | ExchangeTransactionOrderV4<LONG>;
 
-export type SignedIExchangeTransactionOrder<ORDER extends ExchangeTransactionOrder<any>> = ORDER &
-  (ORDER extends { version: 1 }
-    ? {
-        signature: string;
-      }
-    : {
-        proofs: Array<string>;
-      });
+export type SignedIExchangeTransactionOrder<ORDER extends ExchangeTransactionOrder<unknown>> =
+  ORDER &
+    (ORDER extends { version: 1 }
+      ? {
+          signature: string;
+        }
+      : {
+          proofs: Array<string>;
+        });
 
 export type ExchangeTransactionOrderMap<LONG = Long> = {
   1: ExchangeTransactionOrderV1<LONG>;
@@ -165,33 +185,15 @@ export type ExchangeTransactionOrderMap<LONG = Long> = {
   4: ExchangeTransactionOrderV4<LONG>;
 };
 
-export type ExchangeTransactionOrderByTx<TX extends ExchangeTransaction> = TX extends { version: 1 }
-  ? ExchangeTransactionOrderMap[1]
-  : TX extends { version: 2 }
-    ? ExchangeTransactionOrderMap[1 | 2 | 3]
-    : ExchangeTransactionOrder;
-
-export type DataTransactionEntry<LONG = Long> =
-  | DataTransactionEntryInteger<LONG>
-  | DataTransactionEntryString
-  | DataTransactionEntryBinary
-  | DataTransactionEntryBoolean
-  | DataTransactionDeleteRequest;
-
-export type DataTransactionDeleteRequest = {
-  type: null;
-  value: null | undefined;
-  key: string;
-};
-
+// ── State Changes ───────────────────────────────────────────────────────────
 export type TStateChanges = {
-  data: DataTransactionEntry[];
-  transfers: {
+  data: Array<DataTransactionEntry>;
+  transfers: Array<{
     address: string;
     amount: Long;
     asset: string | null;
-  }[];
-  issues: {
+  }>;
+  issues: Array<{
     assetId: string;
     name: string;
     description: string;
@@ -200,35 +202,35 @@ export type TStateChanges = {
     isReissuable: boolean;
     compiledScript: null | string;
     nonce: Long;
-  }[];
-  reissues: {
+  }>;
+  reissues: Array<{
     assetId: string;
     isReissuable: boolean;
     quantity: Long;
-  }[];
-  burns: {
+  }>;
+  burns: Array<{
     assetId: string;
     quantity: Long;
-  }[];
-  sponsorFees: {
+  }>;
+  sponsorFees: Array<{
     assetId: string;
     minSponsoredAssetFee: Long;
-  }[];
-  leases: {
+  }>;
+  leases: Array<{
     leaseId: string;
     recipient: string;
     amount: Long;
-  }[];
-  leaseCancels: { leaseId: string }[];
-  invokes: {
+  }>;
+  leaseCancels: Array<{ leaseId: string }>;
+  invokes: Array<{
     dApp: string;
     call: {
       function: string;
-      args: { type: string; value: string }[];
+      args: Array<{ type: string; value: string }>;
     };
-    payment: InvokeScriptPayment[];
+    payment: Array<InvokeScriptPayment>;
     stateChanges: TStateChanges;
-  }[];
+  }>;
   error?: {
     code: number;
     text: string;
