@@ -32,8 +32,12 @@ export class Signable {
   private readonly _bytePromise: Promise<Uint8Array>;
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
+  private _addProofPromise: Promise<string> | undefined;
   private _preparedData: any;
   private _proofs: string[] = [];
+
+  /** Maximum number of proofs allowed per transaction (protocol limit). */
+  private static readonly MAX_PROOFS = 8;
 
   constructor(forSign: TSignData, adapter: Adapter) {
     const networkCode = adapter.getNetworkByte();
@@ -49,7 +53,7 @@ export class Signable {
       );
     }
 
-    this._forSign.data.timestamp = new Date(this._forSign.data.timestamp || Date.now()).getTime();
+    this._forSign.data.timestamp = new Date(this._forSign.data.timestamp ?? Date.now()).getTime();
 
     if (this._forSign.data.proofs) {
       this._proofs = this._forSign.data.proofs.slice();
@@ -181,13 +185,19 @@ export class Signable {
         });
       })
       .then((signature) => {
-        this._proofs.push(signature);
+        this.addProof(signature);
 
         return this;
       });
   }
 
   public addProof(signature: string): this {
+    if (this._proofs.length >= Signable.MAX_PROOFS) {
+      throw new SignError(
+        `Maximum proof count (${Signable.MAX_PROOFS}) reached`,
+        ERRORS.VALIDATION_FAILED,
+      );
+    }
     if (!this._proofs.includes(signature)) {
       this._proofs.push(signature);
     }
@@ -244,16 +254,26 @@ export class Signable {
   }
 
   public addMyProof(): Promise<string> {
-    return this.hasMySignature().then((hasMySignature) => {
-      if (!hasMySignature) {
-        return this.getSignature().then((signature) => {
-          this._proofs.push(signature);
-          return signature;
-        });
-      } else {
-        return this.getMyProofs().then((list) => list[list.length - 1]!);
-      }
-    });
+    if (this._addProofPromise) {
+      return this._addProofPromise;
+    }
+
+    this._addProofPromise = this.hasMySignature()
+      .then((hasMySignature) => {
+        if (!hasMySignature) {
+          return this.getSignature().then((signature) => {
+            this.addProof(signature);
+            return signature;
+          });
+        } else {
+          return this.getMyProofs().then((list) => list[list.length - 1]!);
+        }
+      })
+      .finally(() => {
+        this._addProofPromise = undefined;
+      });
+
+    return this._addProofPromise;
   }
 
   public async getDataForApi(needSign = true) {

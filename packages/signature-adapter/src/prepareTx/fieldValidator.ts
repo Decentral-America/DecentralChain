@@ -101,7 +101,7 @@ const string = (options: IFieldOptions) => {
   required(options);
   const { value, optional } = options;
 
-  if (!optional && value == null && value != null && typeof value !== 'string') {
+  if (!optional && value != null && typeof value !== 'string') {
     return error(options, ERROR_MSG.WRONG_TYPE);
   }
 };
@@ -462,7 +462,6 @@ const transfers = (options: IFieldOptions) => {
 
   if (errors.length) {
     error(options, errors);
-    error(options, errors);
   }
 };
 
@@ -647,7 +646,6 @@ const payment = (options: IFieldOptions) => {
     .filter((item: any) => item.length);
 
   if (errors.length) {
-    error(options, errors);
     error(options, errors);
   }
 };

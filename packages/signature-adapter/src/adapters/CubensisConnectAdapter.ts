@@ -33,7 +33,7 @@ export class CubensisConnectAdapter extends Adapter {
   public static adapter: CubensisConnectAdapter;
   private static _onUpdateCb: ((...args: any[]) => any)[] = [];
   private static _state: any;
-  private _onDestroyCb = [];
+  private _onDestroyCb: Array<() => void> = [];
   private _needDestroy = false;
   private _address: string;
   private _pKey: string;
@@ -46,7 +46,6 @@ export class CubensisConnectAdapter extends Adapter {
     if (!state.locked && state.account?.address !== this._address) {
       this._needDestroy = true;
       this._isDestroyed = true;
-      //@ts-ignore
       this._onDestroyCb.forEach((cb) => cb());
       this._onDestroyCb = [];
       CubensisConnectAdapter.offUpdate(this.handleUpdate);
@@ -108,7 +107,6 @@ export class CubensisConnectAdapter extends Adapter {
       return cb();
     }
 
-    //@ts-ignore
     this._onDestroyCb.push(cb);
   }
 
@@ -160,7 +158,11 @@ export class CubensisConnectAdapter extends Adapter {
       CubensisConnectAdapter._serializedData(signData),
     );
     const { proofs, signature } = JSON.parse(dataStr);
-    return signature || proofs.pop();
+    const result = signature || proofs?.pop();
+    if (!result) {
+      throw new Error('CubensisConnect returned empty signature and no proofs');
+    }
+    return result;
   }
 
   //@ts-ignore
@@ -190,7 +192,11 @@ export class CubensisConnectAdapter extends Adapter {
 
     const dataStr = await promise;
     const { proofs, signature } = JSON.parse(dataStr);
-    return signature || proofs.pop();
+    const result = signature || proofs?.pop();
+    if (!result) {
+      throw new Error('CubensisConnect returned empty signature and no proofs');
+    }
+    return result;
   }
 
   public async signData(_bytes: Uint8Array): Promise<string> {
@@ -296,8 +302,12 @@ export class CubensisConnectAdapter extends Adapter {
   }
 
   private static _initExtension() {
-    if (CubensisConnectAdapter._api || !CubensisConnectAdapter._getApiCb) {
+    if (CubensisConnectAdapter._api) {
       return CubensisConnectAdapter._api.initialPromise;
+    }
+
+    if (!CubensisConnectAdapter._getApiCb) {
+      return Promise.resolve();
     }
 
     const dccApi = CubensisConnectAdapter._getApiCb();

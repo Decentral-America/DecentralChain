@@ -12,7 +12,7 @@ const checkTx = (type: keyof typeof txs, version: number) => {
   return {
     name: `Test ${txData.name} v.${version} transaction.`,
     check: () => {
-      const adapter = new SeedAdapter(TEST_SEED, txData.network);
+      const adapter = new SeedAdapter(TEST_SEED, txData.network ?? '?');
       const signable = adapter.makeSignable({
         type,
         data: { ...data, version } as any,
