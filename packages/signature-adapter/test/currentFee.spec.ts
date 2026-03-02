@@ -688,12 +688,10 @@ describe('Current fee list', () => {
   TEST_LIST.forEach((item, index) => {
     const scriptInfo = item.hasScript ? 'with script' : 'without script';
 
-    it(`Test item with type ${item.data.type}, ${scriptInfo}, № ${index + 1}`, (done) => {
+    it(`Test item with type ${item.data.type}, ${scriptInfo}, № ${index + 1}`, async () => {
       const signable = new Signable(item.data, new SeedAdapter('dsafsdaf dsa fsdf sa'));
-      signable.getFee(CONFIG, item.hasScript, item.smartAssetIdList).then((fee) => {
-        expect(fee.toFixed()).toBe(item.fee.toFixed());
-        done();
-      });
+      const fee = await signable.getFee(CONFIG, item.hasScript, item.smartAssetIdList);
+      expect(fee.toFixed()).toBe(item.fee.toFixed());
     });
   });
 
