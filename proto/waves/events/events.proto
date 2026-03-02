@@ -188,8 +188,9 @@ message TransactionMetadata {
         repeated InvokeScriptResult.Call.Argument arguments = 3;
         repeated Amount payments = 4;
         InvokeScriptResult result = 5;
-
-        // bytes sender_address = 6;
+        // Field 6 (sender_address) was removed. Reserved to prevent
+        // wire-format incompatibility from accidental reuse.
+        reserved 6;
 
         message Argument {
             message List {
@@ -216,7 +217,9 @@ message TransactionMetadata {
     }
 
     message EthereumMetadata {
-        // bytes sender_address = 1;
+        // Field 1 (sender_address) was removed. Reserved to prevent
+        // wire-format incompatibility from accidental reuse.
+        reserved 1;
         int64 timestamp = 2;
         int64 fee = 3;
         bytes sender_public_key = 4;

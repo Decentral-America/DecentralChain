@@ -19,8 +19,10 @@ message BlockRequest {
     oneof request {
         bytes block_id = 1;
         int32 height = 2;
-        // bytes reference = 3;
+        // Field 3 (reference) was removed. Reserved to prevent wire-format
+        // incompatibility from accidental reuse.
     }
+    reserved 3;
 
     bool include_transactions = 100;
 }
