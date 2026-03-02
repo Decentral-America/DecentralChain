@@ -1,4 +1,21 @@
-import { uniq, deepAssign, toArray, head, isObject, pathSegment } from '../../src/tools/utils';
+import {
+  uniq,
+  deepAssign,
+  toArray,
+  head,
+  isObject,
+  pathSegment,
+  wait,
+  prop,
+  keys,
+  entries,
+  values,
+  map,
+  filter,
+  indexBy,
+  switchTransactionByType,
+  pipe,
+} from '../../src/tools/utils';
 
 describe('pathSegment – URL path traversal prevention', () => {
   it('encodes forward slashes to prevent path traversal', () => {
@@ -107,5 +124,125 @@ describe('deepAssign – merge behaviour', () => {
   it('overwrites scalar values', () => {
     const result = deepAssign({ a: 1 }, { a: 2 });
     expect(result.a).toBe(2);
+  });
+});
+
+describe('wait – async delay', () => {
+  it('resolves after the specified time', async () => {
+    const start = Date.now();
+    await wait(50);
+    expect(Date.now() - start).toBeGreaterThanOrEqual(40);
+  });
+});
+
+describe('prop – property accessor factory', () => {
+  it('returns a function that extracts the named property', () => {
+    const getName = prop<{ name: string; age: number }, 'name'>('name');
+    expect(getName({ name: 'Alice', age: 30 })).toBe('Alice');
+  });
+});
+
+describe('keys / entries / values – typed object utilities', () => {
+  const obj = { a: 1, b: 2, c: 3 } as const;
+
+  it('keys returns all object keys', () => {
+    expect(keys(obj)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('entries returns [key, value] pairs', () => {
+    expect(entries(obj)).toEqual([
+      ['a', 1],
+      ['b', 2],
+      ['c', 3],
+    ]);
+  });
+
+  it('values returns all object values', () => {
+    expect(values(obj)).toEqual([1, 2, 3]);
+  });
+});
+
+describe('map – curried array map', () => {
+  it('returns a function that maps over an array', () => {
+    const double = map<number, number>((n) => n * 2);
+    expect(double([1, 2, 3])).toEqual([2, 4, 6]);
+  });
+
+  it('passes index to the mapper', () => {
+    const withIndex = map<string, string>((s, i) => `${i}:${s}`);
+    expect(withIndex(['a', 'b'])).toEqual(['0:a', '1:b']);
+  });
+});
+
+describe('filter – curried array filter', () => {
+  it('returns a function that filters an array', () => {
+    const evens = filter<number>((n) => n % 2 === 0);
+    expect(evens([1, 2, 3, 4, 5])).toEqual([2, 4]);
+  });
+
+  it('passes index to the predicate', () => {
+    const oddIndex = filter<string>((_s, i) => i % 2 !== 0);
+    expect(oddIndex(['a', 'b', 'c', 'd'])).toEqual(['b', 'd']);
+  });
+});
+
+describe('indexBy – index array into record', () => {
+  it('creates a record keyed by the extractor', () => {
+    const items = [
+      { id: 1, name: 'one' },
+      { id: 2, name: 'two' },
+    ];
+    const result = indexBy((item: (typeof items)[number]) => item.id, items);
+    expect(result).toEqual({
+      1: { id: 1, name: 'one' },
+      2: { id: 2, name: 'two' },
+    });
+  });
+
+  it('last item wins on key collision', () => {
+    const items = [
+      { k: 'a', v: 1 },
+      { k: 'a', v: 2 },
+    ];
+    const result = indexBy((item: (typeof items)[number]) => item.k, items);
+    expect(result['a']?.v).toBe(2);
+  });
+});
+
+describe('switchTransactionByType – dispatch by tx type', () => {
+  it('calls the matching handler for the transaction type', () => {
+    const sw = switchTransactionByType({
+      3: (tx) => `issue:${String(tx.name)}`,
+      4: (tx) => `transfer:${String(tx.amount)}`,
+    });
+
+    const issueTx = { type: 3 as const, name: 'MyToken' } as never;
+    expect(sw(issueTx)).toBe('issue:MyToken');
+  });
+
+  it('returns undefined for unhandled types', () => {
+    const sw = switchTransactionByType({
+      3: () => 'handled',
+    });
+
+    const leaseTx = { type: 8 as const } as never;
+    expect(sw(leaseTx)).toBeUndefined();
+  });
+});
+
+describe('pipe – function composition', () => {
+  it('composes two functions left-to-right', () => {
+    const addOne = (n: number) => n + 1;
+    const double = (n: number) => n * 2;
+    const composed = pipe(addOne, double);
+    expect(composed(3)).toBe(8); // (3+1)*2
+  });
+
+  it('composes three functions left-to-right', () => {
+    const toString = (n: number) => String(n);
+    const exclaim = (s: string) => `${s}!`;
+    const wrap = (s: string) => `[${s}]`;
+    const composed = pipe(toString, exclaim, wrap);
+    expect(composed(42)).toBe('[42!]');
   });
 });
