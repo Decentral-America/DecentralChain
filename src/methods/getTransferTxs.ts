@@ -72,7 +72,8 @@ const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = (libOptions) => {
   const getTransferTxs: IGetTransferTxs = (idOrFilters?: string | ITransferTxFilters) =>
     typeof idOrFilters === 'string'
       ? getTransferTxsOne(idOrFilters)
-      : getTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+      : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- null must be rejected by validators
+        getTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
 
   return getTransferTxs;
 };
