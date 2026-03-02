@@ -19,6 +19,7 @@ export const SET_ASSET_SCRIPT_TYPE = 15 as 15;
 export const INVOKE_SCRIPT_TYPE = 16 as 16;
 export const UPDATE_ASSET_INFO_TYPE = 17 as 17;
 export const ETHEREUM = 18 as 18;
+export const COMMIT_TO_GENERATION_TYPE = 19 as 19;
 
 export const INTEGER_DATA_TYPE = 'integer' as 'integer';
 export const BOOLEAN_DATA_TYPE = 'boolean' as 'boolean';
@@ -44,6 +45,7 @@ export const TRANSACTION_TYPE = {
     INVOKE_SCRIPT: INVOKE_SCRIPT_TYPE,
     UPDATE_ASSET_INFO: UPDATE_ASSET_INFO_TYPE,
     ETHEREUM: ETHEREUM,
+    COMMIT_TO_GENERATION: COMMIT_TO_GENERATION_TYPE,
 };
 
 export const DATA_FIELD_TYPE = {
