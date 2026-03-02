@@ -1,4 +1,4 @@
-import { defaultFetch, defaultParse } from './utils';
+import { defaultFetch, defaultParse, isValidUrl } from './utils';
 import defaultTransform from './transform';
 
 import createGetAssets from './methods/getAssets';
@@ -39,6 +39,13 @@ export default class DataServiceClient {
         'No rootUrl was presented in options object. Check constructor call.'
       );
     }
+    if (!isValidUrl(options.rootUrl)) {
+      throw new Error(
+        'Invalid rootUrl: must be an absolute HTTP or HTTPS URL.'
+      );
+    }
+    // Strip trailing slash to prevent double-slash in constructed URLs
+    options.rootUrl = options.rootUrl.replace(/\/+$/, '');
     // Add defaults
     if (!options.transform) {
       options.transform = defaultTransform;
