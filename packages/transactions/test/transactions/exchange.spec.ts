@@ -1,5 +1,6 @@
 //const seed1 = 'alter bar cycle pioneer library eye calm soft swing motion limit taste supreme afford caution' //complex account
 
+<<<<<<< HEAD
 <<<<<<< HEAD:test/transactions/exchange.test.ts
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -60,6 +61,9 @@ const fs = require('fs');
 import { protoBytesToSignedTx, protoBytesToTx, txToProtoBytes } from '../../src/proto-serialize';
 import { broadcast } from '@decentralchain/node-api-js/es/api-node/transactions';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/exchange.spec.ts
+=======
+import { exchange, order } from '../../src';
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 
 const seed1 =
   'shoe used festival regular fancy electric powder symptom stool physical cabbage need accuse silly ring'; //plain acc

@@ -4,7 +4,6 @@ import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
-  longMax,
   validateTxSignature,
 } from '../utils';
 import { leaseMinimalParams } from '../minimalParams';

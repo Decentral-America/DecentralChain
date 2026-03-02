@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:test/transactions/burn.test.ts
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -37,6 +38,9 @@ import { burn } from '../../src'
 import { burnMinimalParams } from '../minimalParams'
 =======
 import { base64Decode, base64Encode, publicKey } from '@decentralchain/ts-lib-crypto';
+=======
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 import { burn } from '../../src';
 import { burnMinimalParams } from '../minimalParams';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/burn.spec.ts
@@ -55,8 +59,11 @@ import { binary } from '@decentralchain/marshall'
 } from '../../test/utils';
 import { burnTx } from './expected/proto/burn.tx';
 import { burnBinaryTx } from './expected/binary/burn.tx';
+<<<<<<< HEAD
 import { binary } from '@decentralchain/marshall';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/burn.spec.ts
+=======
+>>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 
 describe('burn', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
