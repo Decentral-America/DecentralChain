@@ -7,7 +7,7 @@ edition = "2021"
 tonic = "0.13"
 # SECURITY: Do NOT re-enable "no-recursion-limit". It disables stack-overflow
 # protection and allows a malicious deeply-nested message to crash the process.
-prost = "0.13"
+prost = "0.14"
 
 [build-dependencies]
 tonic-build = "0.14"
