@@ -1,21 +1,21 @@
 import {
   getValidateSchema,
-  IAdapterSignMethods,
+  type IAdapterSignMethods,
   prepare,
   SIGN_TYPE,
   SIGN_TYPES,
-  TSignData,
+  type TSignData,
   DCC_ID,
 } from './prepareTx';
 import {
   currentFeeFactory,
   currentCreateOrderFactory,
-  IFeeConfig,
+  type IFeeConfig,
   isEmpty,
   last,
   normalizeAssetId,
 } from './utils';
-import { Adapter } from './adapters';
+import { type Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
 import { libs } from '@decentralchain/waves-transactions';
@@ -33,7 +33,7 @@ export class Signable {
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
   private _preparedData: any;
-  private _proofs: Array<string> = [];
+  private _proofs: string[] = [];
 
   constructor(forSign: TSignData, adapter: Adapter) {
     const networkCode = adapter.getNetworkByte();
@@ -91,7 +91,7 @@ export class Signable {
     }
 
     this._bytePromise = this.getSignData().then((signData) =>
-      SIGN_TYPES[forSign.type].getBytes[version](signData),
+      SIGN_TYPES[forSign.type].getBytes[version]!(signData),
     );
   }
 
@@ -99,7 +99,7 @@ export class Signable {
     config: IFeeConfig,
     minOrderFee: BigNumber,
     hasMatcherScript: boolean,
-    smartAssetIdList?: Array<string>,
+    smartAssetIdList?: string[],
   ) {
     if (this._forSign.type === SIGN_TYPE.CREATE_ORDER) {
       const currentFee = currentCreateOrderFactory(config, minOrderFee);
@@ -107,7 +107,7 @@ export class Signable {
     }
   }
 
-  public async getFee(config: IFeeConfig, hasScript: boolean, smartAssetIdList?: Array<string>) {
+  public async getFee(config: IFeeConfig, hasScript: boolean, smartAssetIdList?: string[]) {
     const currentFee = currentFeeFactory(config);
     const txData = await this.getSignData();
     const bytes = await this.getBytes();
@@ -129,12 +129,12 @@ export class Signable {
       type: this._forSign.type,
     };
     const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
-    const signData = convert && convert(dataForBytes, this._adapter.getNetworkByte());
+    const signData = convert?.(dataForBytes, this._adapter.getNetworkByte());
 
     return signData || dataForBytes;
   }
 
-  public async getAssetIds(): Promise<Array<string>> {
+  public async getAssetIds(): Promise<string[]> {
     const transaction = await this.getSignData();
     const hash = Object.create(null);
     hash[DCC_ID] = true;
@@ -187,8 +187,8 @@ export class Signable {
       });
   }
 
-  public addProof(signature: string): Signable {
-    if (this._proofs.indexOf(signature) !== -1) {
+  public addProof(signature: string): this {
+    if (this._proofs.includes(signature)) {
       this._proofs.push(signature);
     }
 
@@ -204,7 +204,7 @@ export class Signable {
       const byteArr = Array.from(bytes);
 
       if (bytes[0] === 10) {
-        bytes = new Uint8Array([byteArr[0], ...byteArr.slice(36, -16)]);
+        bytes = new Uint8Array([byteArr[0]!, ...byteArr.slice(36, -16)]);
       }
 
       return base58Encode(blake2b(bytes));
@@ -213,19 +213,19 @@ export class Signable {
 
   public sign(): Promise<Signable> {
     this._makeSignPromise();
-    return (this._signPromise as Promise<string>).then(() => this);
+    return (this._signPromise!).then(() => this);
   }
 
   public getSignature(): Promise<string> {
     this._makeSignPromise();
-    return this._signPromise as Promise<string>;
+    return this._signPromise!;
   }
 
   public getBytes() {
     return this._bytePromise;
   }
 
-  public getMyProofs(): Promise<Array<string>> {
+  public getMyProofs(): Promise<string[]> {
     return Promise.all([this.getBytes(), this._adapter.getPublicKey()]).then(
       ([bytes, publicKey]) => {
         return this._proofs.filter((signature) => {
@@ -251,7 +251,7 @@ export class Signable {
           return signature;
         });
       } else {
-        return this.getMyProofs().then((list) => list[list.length - 1]);
+        return this.getMyProofs().then((list) => list[list.length - 1]!);
       }
     });
   }
@@ -264,13 +264,13 @@ export class Signable {
     const proofs = (this._proofs || []).slice();
 
     try {
-      return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
+      return convert({ ...data, proofs }, (item: any) => new BigNumber(item as string));
     } catch {
       return { ...data, proofs, signature: proofs[0] };
     }
   }
 
-  private _makeSignPromise(): Signable {
+  private _makeSignPromise(): this {
     if (!this._signPromise) {
       this._signPromise = this._bytePromise.then((bytes) => {
         if (this._signMethod == 'signRequest')
@@ -300,7 +300,7 @@ export class Signable {
       const payment = data?.payment ?? [];
       return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
     }
-    return data.amount && data.amount.asset && data.amount.asset.precision
+    return data.amount?.asset?.precision
       ? data.amount.asset.precision
       : 0;
   }
@@ -313,7 +313,7 @@ export class Signable {
 
   private _getFeePrecision() {
     const data = this._forSign.data as any;
-    return data.fee && data.fee.asset && data.fee.asset.precision ? data.fee.asset.precision : 0;
+    return data.fee?.asset?.precision ? data.fee.asset.precision : 0;
   }
 }
 

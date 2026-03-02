@@ -1,9 +1,9 @@
-import { IAdapterSignMethods } from './interfaces';
+import { type IAdapterSignMethods } from './interfaces';
 import { libs, protoPerialize } from '@decentralchain/waves-transactions';
 import * as dccTransactions from '@decentralchain/waves-transactions';
 import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
 import { prepare } from './prepare';
-import processors = prepare.processors;
+const { processors } = prepare;
 import { Money } from '@decentralchain/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
@@ -166,7 +166,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       orderId: data.orderId,
       sender: data.senderPublicKey,
       senderPublicKey: data.senderPublicKey,
-      signature: data.proofs && data.proofs[0],
+      signature: data.proofs?.[0],
     }),
   },
   [SIGN_TYPE.TRANSFER]: {

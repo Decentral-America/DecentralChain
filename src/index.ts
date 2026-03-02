@@ -8,10 +8,10 @@ export * from './Signable';
 export * from './constants';
 export * from './utils';
 
-import { Adapter } from './adapters';
-import { adapterPriorityList, adapterList, AdapterType } from './config';
+import { type Adapter } from './adapters';
+import { adapterPriorityList, adapterList, type AdapterType } from './config';
 
-export function getAvailableList(): Promise<Array<typeof Adapter>> {
+export function getAvailableList(): Promise<typeof Adapter[]> {
   return Promise.all(
     adapterPriorityList.map(async (type) => {
       const adapter = getAdapterByType(type);
