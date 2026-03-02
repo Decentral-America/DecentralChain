@@ -1,9 +1,18 @@
 import { Asset, IAssetJSON, Candle, ICandleJSON } from '@decentralchain/data-entities';
 import { ApiTypes } from './types';
 import { id } from './utils';
-const transformer = ({ __type, data, ...rest }) => {
+const transformer = (input: any): any => {
+  if (input === null || input === undefined) {
+    return input;
+  }
+  const { __type, data, ...rest } = input;
   switch (__type) {
     case ApiTypes.List:
+      if (!Array.isArray(data)) {
+        throw new Error(
+          `Transform error: expected array for list type, got ${typeof data}`
+        );
+      }
       return data.map(transformer);
     case ApiTypes.Asset:
       return transformAsset(data);
