@@ -2,6 +2,11 @@ import { EventEmitter } from '../utils/EventEmitter.js';
 
 /**
  * A protocol adapter that wraps the browser `postMessage` / `addEventListener` API.
+ *
+ * **Security note**: When constructing a DISPATCH protocol, always provide an explicit
+ * `targetOrigin` (e.g. `'https://wallet.decentralchain.io'`). The default `'*'`
+ * broadcasts to all origins, which is unsafe for sensitive data. Use
+ * {@link WindowAdapter.createSimpleWindowAdapter} which resolves the origin automatically.
  */
 export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
   private win: WindowProtocol.IWindow;
@@ -15,6 +20,16 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
     this.win = win;
     this.type = type;
     this.targetOrigin = targetOrigin;
+
+    // Warn developers when dispatching to wildcard origin — potential security risk
+    // for financial applications. Use an explicit origin whenever possible.
+    if (type === WindowProtocol.PROTOCOL_TYPES.DISPATCH && targetOrigin === '*') {
+      console.warn(
+        '[WindowProtocol] DISPATCH protocol created with wildcard targetOrigin "*". ' +
+          'This sends messages to ALL origins and may expose sensitive data. ' +
+          'Pass an explicit origin (e.g. "https://your-domain.com") for production use.',
+      );
+    }
 
     this.handler = (event: WindowProtocol.IMessageEvent<T>) => {
       this.trigger('message', event);
