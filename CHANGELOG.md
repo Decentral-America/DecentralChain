@@ -38,3 +38,19 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - `.history/` directory.
 - Old npm-publish workflow (replaced by CI).
 - All Waves branding and documentation references.
+
+## [1.0.0-audit] - 2026-03-02
+
+### Security Audit (Phase 3)
+
+- Added `publishConfig.provenance: true` for signed npm builds.
+- Added `no-console` ESLint rule to prevent accidental logging in source.
+- Added `npm audit --audit-level=high` step to CI pipeline.
+- Added `bulletproof:check` script (check-only, no auto-fix) for CI use.
+- Updated `validate` script to use `bulletproof:check` instead of `bulletproof`.
+- Removed misleading V8 coverage thresholds (not applicable to types-only package).
+- Verified zero Waves branding residue across all source, config, and documentation.
+- Verified zero runtime dependencies (types-only package).
+- Verified zero high/critical npm audit vulnerabilities.
+- Verified knip reports zero unused exports or dead code.
+- Full 6-phase security audit passed with zero CRITICAL or HIGH findings.

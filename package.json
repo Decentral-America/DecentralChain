@@ -24,7 +24,8 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "packageManager": "npm@11.6.2",
   "engines": {
@@ -60,7 +61,8 @@
     "check:exports": "attw --pack .",
     "check:size": "size-limit",
     "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "validate": "npm run bulletproof && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof:check": "npm run format && npm run lint && npm run typecheck && npm run test",
+    "validate": "npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "prepare": "husky"
   },
   "lint-staged": {

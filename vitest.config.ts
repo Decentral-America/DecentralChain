@@ -9,12 +9,8 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       exclude: ['src/index.ts'],
       reporter: ['text', 'lcov', 'json-summary'],
-      thresholds: {
-        branches: 90,
-        functions: 90,
-        lines: 90,
-        statements: 90,
-      },
+      // Note: V8 coverage thresholds are not meaningful for a types-only package
+      // (0 executable statements). Type safety is validated via expectTypeOf tests.
     },
     reporters: ['default'],
     typecheck: { enabled: true },
