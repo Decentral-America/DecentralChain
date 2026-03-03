@@ -1,66 +1,99 @@
 {
   "name": "@decentralchain/cubensisconnect-types",
-  "version": "0.2.1",
-  "description": "Interfaces for Cubensis Connect",
-  "types": "globals.d.ts",
-  "main": "",
+  "version": "1.0.0",
+  "description": "TypeScript type definitions for the CubensisConnect browser-extension API",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
   "files": [
-    "globals.d.ts"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
   },
-  "typeScriptVersion": "2.0",
+  "packageManager": "npm@11.6.2",
+  "engines": {
+    "node": ">=22"
+  },
+  "engineStrict": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Decentral-America/cubensisconnect-types.git"
+    "url": "git+https://github.com/Decentral-America/cubensis-connect-types.git"
   },
   "keywords": [
     "types",
-    "waves",
-    "keeper"
+    "typescript",
+    "cubensisconnect",
+    "decentralchain",
+    "blockchain",
+    "browser-extension"
   ],
-  "author": "kanishcheva@phystech.edu",
-  "license": "ISC",
+  "author": "DecentralChain",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Decentral-America/cubensisconnect-types/issues"
+    "url": "https://github.com/Decentral-America/cubensis-connect-types/issues"
   },
-  "homepage": "https://github.com/Decentral-America/cubensisconnect-types#readme",
-  "engineStrict": true,
-  "engines": {
-    "node": ">=16"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.8",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.3.1",
-    "prettier": "^3.8.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
-  },
+  "homepage": "https://github.com/Decentral-America/cubensis-connect-types#readme",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
+    "build": "tsup",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --check .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
     "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
+    "validate": "npm run bulletproof && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+    "*.ts": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.{json,md,yml,yaml,css}": [
+    "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.mjs",
+      "limit": "1 kB"
+    }
+  ],
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@eslint/js": "^10.0.1",
+    "@size-limit/preset-small-lib": "^12.0.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "prettier": "^3.8.1",
+    "publint": "^0.3.18",
+    "size-limit": "^12.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
   }
 }
