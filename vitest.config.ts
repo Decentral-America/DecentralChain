@@ -3,16 +3,20 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    reporters: ['default'],
+    include: ['test/**/*.spec.ts'],
     coverage: {
       provider: 'v8',
-      exclude: ['test/**', 'node_modules/**', 'dist/**', '.history/**', '*.config.*'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/index.ts'],
+      reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
-        branches: 70,
-        functions: 70,
-        lines: 70,
-        statements: 70,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+        statements: 90,
       },
     },
+    reporters: ['default'],
+    typecheck: { enabled: true },
   },
 });

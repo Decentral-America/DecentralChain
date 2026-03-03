@@ -1,44 +1,62 @@
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
-import prettier from 'eslint-config-prettier';
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-export default [
+export default defineConfig([
+  globalIgnores(['dist', 'node_modules', 'coverage']),
+
+  // ── Source files (type-aware) ──────────────────────────────────
   {
-    files: ['**/*.{ts,tsx,js,jsx,mjs,cjs}'],
+    files: ['src/**/*.ts'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.strictTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+      prettierConfig,
+    ],
     languageOptions: {
-      parser: tsparser,
+      ecmaVersion: 'latest',
+      globals: globals.node,
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: {
-      '@typescript-eslint': tseslint,
-    },
     rules: {
-      // Minimum required rules (all projects)
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'prefer-const': 'error',
-      'no-var': 'error',
-      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/prefer-optional-chain': 'warn',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+      ],
+      '@typescript-eslint/consistent-type-exports': 'error',
+    },
+  },
 
-      // SDK library rules
-      '@typescript-eslint/no-explicit-any': 'warn',
-    },
-  },
+  // ── Test files (relaxed) ───────────────────────────────────────
   {
-    files: ['**/*.d.ts'],
+    files: ['test/**/*.ts'],
+    extends: [js.configs.recommended, tseslint.configs.recommended, prettierConfig],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      globals: { ...globals.node },
+    },
     rules: {
-      'no-var': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
     },
   },
-  {
-    ignores: ['node_modules/**', 'dist/**', '.history/**', 'coverage/**'],
-  },
-  prettier,
-];
+]);

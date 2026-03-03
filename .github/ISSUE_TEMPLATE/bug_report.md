@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: '[BUG]'
 labels: bug
-assignees: msmolyakov
+assignees: ''
 ---
 
 **Describe the bug**
@@ -26,10 +26,12 @@ If applicable, add screenshots to help explain your problem.
 **Environment**
 Please complete the following information.
 
-- Version of the types: [e.g. "1.0.2" ]
-- Version of Waves Keeper: [e.g. "1.3.0"]
-- OS: [e.g. "Windows 10 / macOS Big Sur / Ubuntu Bionic Beaver / iOS 15"]
-- Browser version: [e.g. "Google Chrome Version 93.0.4577.63 (Official Build) (x86_64)"]
+- Version of the types: [e.g. "1.0.0"]
+- Version of CubensisConnect: [e.g. "1.3.0"]
+- Node.js version: [e.g. "24.0.0"]
+- TypeScript version: [e.g. "5.9.3"]
+- OS: [e.g. "macOS / Ubuntu / Windows"]
+- Browser version: [e.g. "Chrome 120"]
 
 **Additional context**
 Add any other context about the problem here.

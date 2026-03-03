@@ -1,19 +1,28 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "target": "ES2020",
+    "target": "ES2024",
+    "lib": ["ES2024"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2020", "DOM"],
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "skipLibCheck": true
   },
-  "include": ["globals.d.ts"],
-  "exclude": ["node_modules", "dist", ".history", "coverage"]
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.ts"]
 }
