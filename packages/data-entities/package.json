@@ -89,7 +89,7 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/bignumber": "*"
+    "@decentralchain/bignumber": "1.1.1"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
