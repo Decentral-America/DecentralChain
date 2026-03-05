@@ -1,19 +1,31 @@
-# @decentralchain/assets-pairs-order
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/assets-pairs-order/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/assets-pairs-order/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/assets-pairs-order)](https://www.npmjs.com/package/@decentralchain/assets-pairs-order)
-[![license](https://img.shields.io/npm/l/@decentralchain/assets-pairs-order)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/assets-pairs-order)](./package.json)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@decentralchain/assets-pairs-order)](https://bundlephobia.com/package/@decentralchain/assets-pairs-order)
+<h3 align="center">@decentralchain/assets-pairs-order</h3>
 
-Utility for determining the correct ordering of asset pairs on the DecentralChain DEX.
+<p align="center">
+  Deterministic asset-pair ordering for the DecentralChain decentralized exchange.
+</p>
 
-When trading Asset A for Asset B, the DEX needs to decide which is the **amount asset** and which is the **price asset**. This library resolves that ordering based on a configurable priority list, ensuring every client displays trading pairs consistently.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/assets-pairs-order"><img src="https://img.shields.io/npm/v/@decentralchain/assets-pairs-order?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/assets-pairs-order" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/assets-pairs-order"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/assets-pairs-order" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/assets-pairs-order" alt="node" /></a>
+</p>
 
-## Requirements
+---
 
-- Node.js >= 24
-- ESM environment (`"type": "module"` in your package.json, or `.mjs` files)
+## Overview
+
+When trading on the [DecentralChain DEX](https://docs.decentralchain.io/en/master/02_decentralchain/06_order.html), every asset pair must be presented as **(amount asset, price asset)**. Which asset takes which role is determined by a well-known priority list maintained by the network.
+
+`@decentralchain/assets-pairs-order` resolves that ordering deterministically so that every client, API, and UI displays the same trading pair in the same direction.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
@@ -21,152 +33,133 @@ When trading Asset A for Asset B, the DEX needs to decide which is the **amount 
 npm install @decentralchain/assets-pairs-order
 ```
 
-## Quick Start
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
-```javascript
-import { createOrderPair, MAINNET_DATA } from '@decentralchain/assets-pairs-order';
+## Quick start
 
-// Create an ordering function from the mainnet priority list
+```ts
+import { createOrderPair, MAINNET_DATA } from "@decentralchain/assets-pairs-order";
+
 const orderPair = createOrderPair(MAINNET_DATA);
 
-// Returns [amountAsset, priceAsset]
 const [amountAsset, priceAsset] = orderPair(
-  'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck', // USD
-  'DCC',
+  "Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck", // USD-N
+  "DCC",
 );
-// → ['DCC', 'Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck']
+// → ["DCC", "Ft8X1v1LTa1ABafufpaCWyVj8KkaxUWE6xBhW6sNFJck"]
 ```
 
 ### Custom priority list
 
-```javascript
-import { createOrderPair } from '@decentralchain/assets-pairs-order';
+```ts
+import { createOrderPair } from "@decentralchain/assets-pairs-order";
 
-const orderPair = createOrderPair(['assetId_LOW', 'assetId_MID', 'assetId_HIGH']);
-
-// Higher-index assets become the price asset
-const [amount, price] = orderPair('assetId_HIGH', 'assetId_LOW');
-// → ['assetId_HIGH', 'assetId_LOW']
+const orderPair = createOrderPair(["assetId_LOW", "assetId_MID", "assetId_HIGH"]);
+const [amount, price] = orderPair("assetId_HIGH", "assetId_LOW");
 ```
 
-### Fully curried call
+### Fully curried
 
-```javascript
-import { createOrderPair, MAINNET_DATA } from '@decentralchain/assets-pairs-order';
+```ts
+import { createOrderPair, MAINNET_DATA } from "@decentralchain/assets-pairs-order";
 
-// Pass all three arguments at once
-const pair = createOrderPair(MAINNET_DATA, 'assetA', 'assetB');
+const pair = createOrderPair(MAINNET_DATA, "assetA", "assetB");
 ```
 
-## API
+## API reference
 
-### `createOrderPair(data)`
+### `createOrderPair(priorityList)`
 
-Creates an ordering function from a priority list. Supports currying.
+Creates an ordering function. Supports full currying.
 
-| Parameter | Type                | Description                                                               |
-| --------- | ------------------- | ------------------------------------------------------------------------- |
-| `data`    | `readonly string[]` | Array of asset IDs ordered by priority (highest priority = highest index) |
+| Parameter      | Type                | Description                                                  |
+| -------------- | ------------------- | ------------------------------------------------------------ |
+| `priorityList` | `readonly string[]` | Asset IDs ordered by priority (highest index = highest rank) |
 
-**Returns** — `(assetId1: string, assetId2: string) => [amountAsset, priceAsset]`
+**Returns** `(assetId1: string, assetId2: string) => [amountAsset, priceAsset]`
 
-**Throws** — `TypeError` if `data` is not an array, or if asset IDs are not strings.
+**Throws** `TypeError` if arguments are not the expected types.
 
 #### Ordering rules
 
-1. **Both assets in the list** — the one with the higher index becomes the price asset
-2. **One asset in the list** — the listed asset becomes the price asset
-3. **Neither asset in the list** — ordered deterministically by Base58 byte comparison
+| Scenario                      | Rule                                                         |
+| ----------------------------- | ------------------------------------------------------------ |
+| Both assets in the list       | Higher-index asset becomes the **price** asset               |
+| One asset in the list         | The listed asset becomes the **price** asset                 |
+| Neither asset in the list     | Determined by lexicographic Base58 byte comparison            |
 
-### Pre-configured data
+### Pre-configured priority lists
 
-| Export           | Description                                                       |
-| ---------------- | ----------------------------------------------------------------- |
-| `MAINNET_DATA`   | Priority list for DecentralChain mainnet (includes USD, EUR, DCC) |
-| `TESTNET_DATA`   | Priority list for DecentralChain testnet                          |
-| `ARBITRARY_DATA` | Additional asset ordering data                                    |
+| Export           | Network                       |
+| ---------------- | ----------------------------- |
+| `MAINNET_DATA`   | DecentralChain Mainnet        |
+| `TESTNET_DATA`   | DecentralChain Testnet        |
+| `ARBITRARY_DATA` | Supplementary ordering data   |
 
-All data exports are frozen (`Object.freeze`) and immutable at runtime.
+All exports are frozen and immutable at runtime.
 
 ### TypeScript
 
-Full type definitions are included. Key types:
+Full type declarations ship with the package:
 
-```typescript
+```ts
 type TPair = readonly [amountAsset: string, priceAsset: string];
 type TOrderPair = (a: string, b: string) => TPair;
 
 interface CreateOrderPair {
-  (predefinedList: readonly string[]): TOrderPair;
-  (predefinedList: readonly string[], a: string, b: string): TPair;
+  (priorityList: readonly string[]): TOrderPair;
+  (priorityList: readonly string[], a: string, b: string): TPair;
 }
 ```
 
 ## Browser
 
-A pre-built IIFE bundle (with source map) is available at `dist/browser.js` (generated via `npm run build:browser`).
+An IIFE bundle is included for direct `<script>` usage:
 
 ```html
-<script src="path/to/browser.js"></script>
+<script src="dist/index.global.js"></script>
 <script>
   const orderPair = OrderPairs.createOrderPair(OrderPairs.MAINNET_DATA);
   const [amount, price] = orderPair(assetId1, assetId2);
 </script>
 ```
 
+## Related packages
+
+| Package                                                                                                     | Description                         |
+| ----------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                        | Core TypeScript type definitions    |
+| [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber)                      | Arbitrary-precision arithmetic      |
+| [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities)              | Asset, Money, and OrderPrice models |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions)                | Transaction builders and signers    |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js)                  | Node REST API client                |
+
 ## Development
-
-### Prerequisites
-
-- Node.js >= 22 (see `.nvmrc`)
-- npm >= 10
-
-### Setup
 
 ```bash
 git clone https://github.com/Decentral-America/assets-pairs-order.git
 cd assets-pairs-order
-nvm use          # uses .nvmrc
-npm install      # husky hooks auto-install via prepare
+npm install
 ```
 
-### Scripts
-
-| Script                      | Description                                     |
-| --------------------------- | ----------------------------------------------- |
-| `npm test`                  | Run tests with Vitest                           |
-| `npm run test:coverage`     | Run tests with V8 coverage (90% threshold)      |
-| `npm run lint`              | Lint with ESLint                                |
-| `npm run lint:fix`          | Auto-fix lint issues                            |
-| `npm run format`            | Format with Prettier                            |
-| `npm run format:check`      | Check formatting                                |
-| `npm run typecheck`         | TypeScript type checking                        |
-| `npm run bulletproof`       | Format + lint fix + typecheck + test            |
-| `npm run bulletproof:check` | CI-safe: format check + lint + typecheck + test |
-| `npm run build:browser`     | Build IIFE browser bundle with source maps      |
-
-### Quality Gates
-
-- **Pre-commit hook** (via Husky + lint-staged): auto-formats and lints staged files, runs typecheck and tests
-- **CI pipeline** (GitHub Actions): runs lint, typecheck, tests across Node 20/22/24, builds browser bundle
-- **Coverage thresholds**: 90% branches, functions, lines, and statements enforced
+| Script                      | Description                                  |
+| --------------------------- | -------------------------------------------- |
+| `npm test`                  | Run tests (Vitest)                           |
+| `npm run test:coverage`     | Coverage report (90 % threshold)              |
+| `npm run build`             | Build ESM + IIFE bundles                     |
+| `npm run typecheck`         | TypeScript type checking                     |
+| `npm run lint`              | Lint with ESLint                             |
+| `npm run format`            | Format with Prettier                         |
+| `npm run bulletproof`       | Format → lint → build → typecheck → test     |
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for our security policy and how to report vulnerabilities.
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for version history.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
