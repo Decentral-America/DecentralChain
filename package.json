@@ -10,6 +10,42 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.mjs"
       }
+    },
+    "./api-node/transactions": {
+      "import": {
+        "types": "./dist/api-node/transactions/index.d.ts",
+        "default": "./dist/api-node/transactions/index.mjs"
+      }
+    },
+    "./api-node/blocks": {
+      "import": {
+        "types": "./dist/api-node/blocks/index.d.ts",
+        "default": "./dist/api-node/blocks/index.mjs"
+      }
+    },
+    "./api-node/addresses": {
+      "import": {
+        "types": "./dist/api-node/addresses/index.d.ts",
+        "default": "./dist/api-node/addresses/index.mjs"
+      }
+    },
+    "./api-node/assets": {
+      "import": {
+        "types": "./dist/api-node/assets/index.d.ts",
+        "default": "./dist/api-node/assets/index.mjs"
+      }
+    },
+    "./api-node/rewards": {
+      "import": {
+        "types": "./dist/api-node/rewards/index.d.ts",
+        "default": "./dist/api-node/rewards/index.mjs"
+      }
+    },
+    "./api-node/debug": {
+      "import": {
+        "types": "./dist/api-node/debug/index.d.ts",
+        "default": "./dist/api-node/debug/index.mjs"
+      }
     }
   },
   "module": "./dist/index.mjs",
@@ -88,29 +124,30 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/bignumber": "npm:@waves/bignumber@^1.2.0",
-    "@decentralchain/ts-lib-crypto": "npm:@waves/ts-lib-crypto@^1.4.4",
-    "@decentralchain/ts-types": "npm:@waves/ts-types@^1.2.0",
+    "@decentralchain/bignumber": "*",
+    "@decentralchain/ts-lib-crypto": "*",
+    "@decentralchain/ts-types": "*",
     "typed-ts-events": "^3.0.1"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@decentralchain/transactions": "npm:@decentralchain/waves-transactions@4.2.6",
+    "@decentralchain/transactions": "*",
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "24.11.0",
+    "@types/node": "^25.3.3",
     "@vitest/coverage-v8": "4.0.18",
     "eslint": "10.0.2",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.4.0",
     "husky": "9.1.7",
-    "lint-staged": "16.3.1",
+    "lint-staged": "^16.3.2",
     "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.56.1",
+    "undici-types": "7.22.0",
     "vitest": "4.0.18"
   }
 }

@@ -2,7 +2,15 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig([
   {
-    entry: ['src/index.ts'],
+    entry: [
+      'src/index.ts',
+      'src/api-node/transactions/index.ts',
+      'src/api-node/blocks/index.ts',
+      'src/api-node/addresses/index.ts',
+      'src/api-node/assets/index.ts',
+      'src/api-node/rewards/index.ts',
+      'src/api-node/debug/index.ts',
+    ],
     format: ['esm'],
     dts: true,
     sourcemap: true,
