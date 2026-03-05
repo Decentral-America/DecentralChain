@@ -63,7 +63,6 @@ const create = function (options?: Options) {
   };
 
   const number = function (): any {
-    let num: number;
     let string = '';
 
     if (ch === '-') {
@@ -93,7 +92,7 @@ const create = function (options?: Options) {
       }
     }
 
-    num = +string;
+    const num = +string;
 
     if (options?.parse) {
       return options.parse(string);
@@ -179,6 +178,7 @@ const create = function (options?: Options) {
     error("Unexpected '" + ch + "'");
   };
 
+  // eslint-disable-next-line prefer-const -- forward-reference: value is declared here, used by array/object functions below, then assigned on line 240
   let value: () => any; // Place holder for the value function.
 
   const array = function (): any[] {
@@ -425,12 +425,10 @@ const create = function (options?: Options) {
   };
 
   const parse = function (source: string, reviver?: (key: string, value: any) => any): any {
-    let result: any;
-
     text = source + '';
     at = 0;
     ch = ' ';
-    result = value();
+    const result = value();
     white();
     if (ch) {
       error('Syntax error');
@@ -438,7 +436,6 @@ const create = function (options?: Options) {
 
     return typeof reviver === 'function'
       ? (function walk(holder: any, key: string): any {
-          let k: string;
           let v: any;
           const val = holder[key];
           if (val && typeof val === 'object') {
