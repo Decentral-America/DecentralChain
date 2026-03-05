@@ -1,57 +1,31 @@
-<div align="center">
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-# @decentralchain/bignumber
+<h3 align="center">@decentralchain/bignumber</h3>
 
-**Arbitrary-precision arithmetic for the DecentralChain blockchain ecosystem**
+<p align="center">
+  Arbitrary-precision arithmetic for the DecentralChain blockchain ecosystem.
+</p>
 
-[![CI](https://github.com/Decentral-America/bignumber/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/bignumber/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/bignumber)](https://www.npmjs.com/package/@decentralchain/bignumber)
-[![license](https://img.shields.io/npm/l/@decentralchain/bignumber)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/bignumber)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@decentralchain/bignumber)](https://bundlephobia.com/package/@decentralchain/bignumber)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
-
-[Installation](#installation) · [Quick Start](#quick-start) · [API Reference](#api-reference) · [DecentralChain Integration](#decentralchain-integration) · [Contributing](#contributing)
-
-</div>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/bignumber"><img src="https://img.shields.io/npm/v/@decentralchain/bignumber?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/bignumber" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/bignumber"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/bignumber" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/bignumber" alt="node" /></a>
+</p>
 
 ---
 
 ## Overview
 
-`@decentralchain/bignumber` is the official arbitrary-precision number library for the [DecentralChain](https://decentralchain.io) SDK. It provides **safe, precise arithmetic** for blockchain token amounts, transaction fees, and financial computations that exceed JavaScript's native `Number.MAX_SAFE_INTEGER` (2⁵³ − 1) limit.
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
+
+`@decentralchain/bignumber` is the official arbitrary-precision number library for the DecentralChain SDK. It provides **safe, precise arithmetic** for blockchain token amounts, transaction fees, and financial computations that exceed JavaScript's native `Number.MAX_SAFE_INTEGER` (2⁵³ − 1) limit.
 
 Built on top of the battle-tested [bignumber.js](https://github.com/MikeMcl/bignumber.js/) engine, this library wraps it with a clean, chainable, immutable API specifically designed for blockchain and decentralized finance (DeFi) use cases — including binary serialization for on-chain transaction encoding.
-
-### Why This Library?
-
-JavaScript's native `Number` type uses IEEE 754 double-precision floating point, which can only safely represent integers up to **9,007,199,254,740,991**. Blockchain platforms like DecentralChain routinely work with values that far exceed this limit:
-
-| Context | Example Value | Safe with `Number`? |
-| --- | --- | --- |
-| Token amounts (8 decimal precision) | `9223372036854775807` | ❌ |
-| Transaction fees | `100000` | ✅ |
-| Aggregate portfolio calculations | `18446744073709551615` | ❌ |
-| Cross-token arithmetic | `1000000000000000000` | ❌ |
-
-Using native JavaScript numbers for these values leads to **silent precision loss** — a critical bug in financial applications. `@decentralchain/bignumber` eliminates this risk entirely by providing arbitrary-precision arithmetic with explicit, deterministic behavior.
-
-## Features
-
-- **Arbitrary-precision integer and decimal arithmetic** — no silent rounding or precision loss
-- **Byte serialization for blockchain wire format** — signed/unsigned, long/variable-length encoding for on-chain transactions
-- **Immutable** — all operations return new instances, preventing accidental state mutation
-- **Full TypeScript support** with strict types and comprehensive JSDoc documentation
-- **Pure ESM package** — modern module format with tree-shaking support
-- **Zero configuration** — works in Node.js and browsers out of the box
-- **Lightweight** — small bundle footprint with a single runtime dependency
-- **Chainable API** — compose complex calculations in a readable, fluent style
-
-## Requirements
-
-- **Node.js** >= 24
-- **npm** >= 11
 
 ## Installation
 
@@ -390,36 +364,23 @@ This project enforces strict quality standards to ensure reliability for product
 | Formatter | [Prettier](https://prettier.io/) |
 | CI/CD | GitHub Actions |
 
+## Related Packages
+
+| Package | Description |
+| --- | --- |
+| [@decentralchain/ts-types](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [@decentralchain/marshall](https://www.npmjs.com/package/@decentralchain/marshall) | Binary serialization for blockchain data |
+| [@decentralchain/ts-lib-crypto](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
+| [@decentralchain/transactions](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builder |
+
 ## Contributing
 
-We welcome contributions from the community! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## Security
 
-If you discover a security vulnerability, please follow responsible disclosure practices. See [SECURITY.md](SECURITY.md) for the security policy and reporting instructions.
-
-## Code of Conduct
-
-This project adheres to the Contributor Covenant. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a detailed release history.
-
-## Related Packages
-
-This library is part of the broader **DecentralChain SDK** ecosystem. For more information about building on DecentralChain, visit the [Decentral-America GitHub organization](https://github.com/Decentral-America).
+See [SECURITY.md](SECURITY.md) for the security policy and reporting instructions.
 
 ## License
 
-[MIT](LICENSE) © DecentralChain
-
----
-
-<div align="center">
-
-**Built with ❤️ by the [DecentralChain](https://decentralchain.io) team**
-
-[Report a Bug](https://github.com/Decentral-America/bignumber/issues) · [Request a Feature](https://github.com/Decentral-America/bignumber/issues) · [Contribute](./CONTRIBUTING.md)
-
-</div>
+[MIT](LICENSE) — [DecentralChain](https://decentralchain.io)
