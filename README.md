@@ -269,21 +269,27 @@ const addr = address(); // No seed needed — it's embedded
 This library is essential for a wide range of DecentralChain development scenarios:
 
 ### Wallet & Account Management
+
 Generate mnemonic seed phrases, derive key pairs, and compute blockchain addresses. Use `randomSeed()` for new wallets, `keyPair()` for key derivation, and `address()` for protocol-compliant address generation.
 
 ### Transaction Signing
+
 Every transaction submitted to the DecentralChain network requires a valid Ed25519 signature. Use `signBytes()` to sign serialized transaction bytes with a seed or private key, and `verifySignature()` on the receiving end to validate authenticity.
 
 ### On-Chain Data Verification
+
 Verify the integrity of addresses with `verifyAddress()`, validate public keys with `verifyPublicKey()`, and verify Merkle proofs with `merkleVerify()` for data accountability.
 
 ### Encrypted Messaging
+
 Establish secure peer-to-peer communication channels using Diffie-Hellman key exchange (`sharedKey()`) combined with AES encryption (`messageEncrypt()` / `messageDecrypt()`).
 
 ### Token & Asset Operations
+
 When building custom tokens, NFTs, or decentralized exchanges on DecentralChain, this library provides the signing and hashing primitives needed to construct and authorize asset issuance, transfer, and exchange transactions.
 
 ### Smart Contract (dApp) Interaction
+
 Invoke DecentralChain smart contracts by signing InvokeScript transactions. Use the hashing functions (`blake2b`, `keccak`, `sha256`) for data that must match on-chain computation results.
 
 ---
@@ -299,16 +305,16 @@ Invoke DecentralChain smart contracts by signing InvokeScript transactions. Use 
 
 ### Cryptographic Primitives
 
-| Primitive | Algorithm | Usage in DecentralChain |
-| --- | --- | --- |
-| Key Generation | Curve25519 (Ed25519) | Wallet key pairs, transaction signing |
-| Hashing | Blake2b-256 | Fast hashing for address derivation, block hashing |
-| Hashing | Keccak-256 | Second-pass hashing in address derivation |
-| Hashing | SHA-256 | General-purpose hashing, seed encryption |
-| Symmetric Encryption | AES (CBC/CTR/ECB) | Seed encryption, message encryption |
-| Asymmetric Encryption | RSA (PKCS#1 v1.5) | Optional RSA signing/verification |
-| Pairing-Based | BLS12-381 | Aggregated signature schemes |
-| Key Exchange | X25519 (Diffie-Hellman) | Shared secret for encrypted messaging |
+| Primitive             | Algorithm               | Usage in DecentralChain                            |
+| --------------------- | ----------------------- | -------------------------------------------------- |
+| Key Generation        | Curve25519 (Ed25519)    | Wallet key pairs, transaction signing              |
+| Hashing               | Blake2b-256             | Fast hashing for address derivation, block hashing |
+| Hashing               | Keccak-256              | Second-pass hashing in address derivation          |
+| Hashing               | SHA-256                 | General-purpose hashing, seed encryption           |
+| Symmetric Encryption  | AES (CBC/CTR/ECB)       | Seed encryption, message encryption                |
+| Asymmetric Encryption | RSA (PKCS#1 v1.5)       | Optional RSA signing/verification                  |
+| Pairing-Based         | BLS12-381               | Aggregated signature schemes                       |
+| Key Exchange          | X25519 (Diffie-Hellman) | Shared secret for encrypted messaging              |
 
 ### Module Structure
 
@@ -335,12 +341,12 @@ src/
 
 ## 🖥️ Platform Compatibility
 
-| Platform | Support | Entry Point |
-| --- | --- | --- |
-| **Node.js** ≥ 24 | ✅ Full support | `@decentralchain/ts-lib-crypto` (ESM) |
-| **Modern Browsers** | ✅ Full support | UMD bundle (`dist/index.umd.min.js`) |
-| **Deno** | ⚠️ Experimental | ESM import via npm specifier |
-| **Bun** | ⚠️ Experimental | ESM import |
+| Platform            | Support         | Entry Point                           |
+| ------------------- | --------------- | ------------------------------------- |
+| **Node.js** ≥ 24    | ✅ Full support | `@decentralchain/ts-lib-crypto` (ESM) |
+| **Modern Browsers** | ✅ Full support | UMD bundle (`dist/index.umd.min.js`)  |
+| **Deno**            | ⚠️ Experimental | ESM import via npm specifier          |
+| **Bun**             | ⚠️ Experimental | ESM import                            |
 
 > **Note:** The library uses `node:crypto` for RSA operations. The main entry point and bytes entry point do not depend on Node.js built-ins and work in any JavaScript runtime.
 
@@ -428,11 +434,11 @@ See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 This library is part of the broader DecentralChain developer toolkit:
 
-| Package | Description |
-| --- | --- |
-| **@decentralchain/ts-lib-crypto** | Cryptographic primitives (this library) |
-| **[@decentralchain/ts-types](https://github.com/Decentral-America/ts-types)** | TypeScript type definitions for DecentralChain protocol |
-| **[@decentralchain/dcc-proto-serialization](https://github.com/Decentral-America/dcc-proto-serialization)** | Protobuf serialization for DecentralChain transactions |
+| Package                                                                                                     | Description                                             |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **@decentralchain/ts-lib-crypto**                                                                           | Cryptographic primitives (this library)                 |
+| **[@decentralchain/ts-types](https://github.com/Decentral-America/ts-types)**                               | TypeScript type definitions for DecentralChain protocol |
+| **[@decentralchain/dcc-proto-serialization](https://github.com/Decentral-America/dcc-proto-serialization)** | Protobuf serialization for DecentralChain transactions  |
 
 > Visit the [Decentral-America GitHub organization](https://github.com/Decentral-America) to explore all official packages and tools.
 
