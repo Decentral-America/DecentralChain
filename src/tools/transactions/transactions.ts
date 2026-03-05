@@ -6,8 +6,8 @@ import {
   type EthereumTransaction,
   TRANSACTION_TYPE,
   type WithApiMixin,
-} from '@decentralchain/ts-types/';
-import { type Long } from '@decentralchain/ts-types/';
+} from '@decentralchain/ts-types';
+import { type Long } from '@decentralchain/ts-types';
 import {
   type AliasTransaction,
   type BurnTransaction,
@@ -26,7 +26,7 @@ import {
   type SponsorshipTransaction,
   type TransferTransaction,
   type UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types/';
+} from '@decentralchain/ts-types';
 import { type IWithApplicationStatus, type TLong } from '../../interface';
 
 interface TStateUpdate {
