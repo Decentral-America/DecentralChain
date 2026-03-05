@@ -1,27 +1,37 @@
-# @decentralchain/money-like-to-node
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/money-like-to-node/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/money-like-to-node/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/money-like-to-node)](https://www.npmjs.com/package/@decentralchain/money-like-to-node)
-[![license](https://img.shields.io/npm/l/@decentralchain/money-like-to-node)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/money-like-to-node)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+<h3 align="center">@decentralchain/money-like-to-node</h3>
 
-Converts human-readable money-like objects to DecentralChain blockchain node API format.
+<p align="center">
+  Converts human-readable money-like objects to DecentralChain blockchain node API format.
+</p>
 
-This library transforms GUI-friendly transaction data (using Money objects, BigNumber instances, and
-money-like `{ coins, assetId }` structures) into the raw string-based format expected by the
-DecentralChain node API. It supports all 17 transaction types plus exchange orders.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/money-like-to-node"><img src="https://img.shields.io/npm/v/@decentralchain/money-like-to-node?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/money-like-to-node" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/money-like-to-node"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/money-like-to-node" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/money-like-to-node" alt="node" /></a>
+</p>
 
-## Requirements
+---
 
-- **Node.js** >= 24
-- **npm** >= 10
+## Overview
+
+This library transforms GUI-friendly transaction data (using Money objects, BigNumber instances, and money-like `{ coins, assetId }` structures) into the raw string-based format expected by the DecentralChain node API. It supports all 17 transaction types plus exchange orders.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/money-like-to-node
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -126,22 +136,23 @@ All of the following must pass before merge:
 - attw type export validation
 - size-limit bundle budget (10 kB)
 
+## Related packages
+
+| Package | Description |
+| --- | --- |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities) | Asset, Money, and OrderPrice models |
+| [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter) | Multi-provider signing adapter |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md).
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md).
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
