@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/protobuf-serialization",
   "version": "2.0.0",
-  "description": "Generated types and methods for encoding and decoding protobuf messages for DecentralChain blockchain transactions.",
+  "description": "Official Protocol Buffers schema definitions and multi-language bindings for the DecentralChain blockchain protocol — encoding/decoding transactions, blocks, events, and gRPC APIs.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -86,7 +86,15 @@
     "serialization",
     "blockchain",
     "grpc",
-    "protocol-buffers"
+    "protocol-buffers",
+    "proto",
+    "schema",
+    "transactions",
+    "dapp",
+    "smart-contracts",
+    "web3",
+    "decentralized",
+    "binary-encoding"
   ],
   "author": "DecentralChain",
   "license": "MIT",
