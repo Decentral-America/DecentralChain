@@ -1,25 +1,37 @@
-# @decentralchain/data-service-client-js
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/data-service-client-js/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/data-service-client-js/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/data-service-client-js)](https://www.npmjs.com/package/@decentralchain/data-service-client-js)
-[![license](https://img.shields.io/npm/l/@decentralchain/data-service-client-js)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/data-service-client-js)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+<h3 align="center">@decentralchain/data-service-client-js</h3>
 
-Data service client for the DecentralChain blockchain.
+<p align="center">
+  Data service client for the DecentralChain blockchain.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/data-service-client-js"><img src="https://img.shields.io/npm/v/@decentralchain/data-service-client-js?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/data-service-client-js" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/data-service-client-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/data-service-client-js" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/data-service-client-js" alt="node" /></a>
+</p>
+
+---
+
+## Overview
 
 A TypeScript client library for interacting with the DecentralChain data service API. Provides typed methods for querying assets, pairs, candles, aliases, and transactions with built-in pagination, request batching, and input validation.
 
-## Requirements
-
-- **Node.js** >= 24 (LTS)
-- **npm** >= 10
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/data-service-client-js
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -196,22 +208,23 @@ The validate pipeline checks:
 - Package validation (publint + attw)
 - Bundle size limits (size-limit)
 
+## Related packages
+
+| Package | Description |
+| --- | --- |
+| [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber) | Arbitrary-precision arithmetic |
+| [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities) | Asset, Money, and OrderPrice models |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for reporting vulnerabilities.
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for release history.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) © DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
