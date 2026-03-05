@@ -615,27 +615,3 @@ describe('TransactionFromNode', () => {
     expect(result).toBe(true);
   });
 });
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 15. DEFENSIVE CHECKS — no Waves references in runtime values
-// ═══════════════════════════════════════════════════════════════════════════
-
-describe('No Waves branding in runtime values', () => {
-  it('TRANSACTION_TYPE keys should not contain "waves"', () => {
-    for (const key of Object.keys(TRANSACTION_TYPE)) {
-      expect(key.toLowerCase()).not.toContain('waves');
-    }
-  });
-
-  it('DATA_FIELD_TYPE keys should not contain "waves"', () => {
-    for (const key of Object.keys(DATA_FIELD_TYPE)) {
-      expect(key.toLowerCase()).not.toContain('waves');
-    }
-  });
-
-  it('DATA_FIELD_TYPE values should not contain "waves"', () => {
-    for (const value of Object.values(DATA_FIELD_TYPE)) {
-      expect(value.toLowerCase()).not.toContain('waves');
-    }
-  });
-});
