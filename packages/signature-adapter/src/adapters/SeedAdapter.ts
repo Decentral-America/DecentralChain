@@ -1,10 +1,13 @@
 import { Adapter, type IUser, type ISeedUser } from './Adapter';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/decentralchain-transactions';
+import { seedUtils, libs } from '@decentralchain/transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const Seed = seedUtils.Seed;
 const signWithPrivateKey = libs.crypto.signBytes;
+
+/** Minimum acceptable encryption rounds to prevent brute-force attacks on encrypted seeds */
+const MIN_ENCRYPTION_ROUNDS = 5000;
 
 export class SeedAdapter extends Adapter {
   public isEncoded = false;
@@ -20,7 +23,11 @@ export class SeedAdapter extends Adapter {
       seed = data;
     } else {
       const user = data as ISeedUser;
-      const encryptionRounds = user.encryptionRounds;
+      const encryptionRounds = Math.max(
+        user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
+        MIN_ENCRYPTION_ROUNDS,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility with existing encrypted seeds
       seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
     }
 
@@ -45,6 +52,7 @@ export class SeedAdapter extends Adapter {
 
     this.seed = {
       encrypt: (password: string, encryptionRounds?: number) => {
+        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility
         return Seed.encryptSeedPhrase(`base58:${this.encodedSeed}`, password, encryptionRounds);
       },
       address: libs.crypto.address(seed, networkCode || this.getNetworkByte()),
@@ -104,6 +112,7 @@ export class SeedAdapter extends Adapter {
   }
 
   public getPrivateKey(): Promise<string> {
+    if (this._isDestroyed) return Promise.reject(new Error('Adapter has been destroyed'));
     return Promise.resolve(this.seed.keyPair.privateKey);
   }
 
@@ -112,6 +121,7 @@ export class SeedAdapter extends Adapter {
   }
 
   public getSeed(): Promise<string> {
+    if (this._isDestroyed) return Promise.reject(new Error('Adapter has been destroyed'));
     return typeof this.seed.phrase === 'string'
       ? Promise.resolve(this.seed.phrase)
       : Promise.reject(this.seed.phrase);

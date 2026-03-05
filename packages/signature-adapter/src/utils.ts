@@ -1,11 +1,11 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import path from 'ramda/src/path';
 import {
-  type IExchangeTransactionOrder,
-  type TTransaction,
-  type IDataTransaction,
-  type IMassTransferTransaction,
-  type IIssueTransaction,
+  type ExchangeTransactionOrder,
+  type SignableTransaction,
+  type DataTransaction,
+  type MassTransferTransaction,
+  type IssueTransaction,
 } from '@decentralchain/ts-types';
 import { DCC_ID } from './prepareTx';
 
@@ -61,7 +61,7 @@ export function currentCreateOrderFactory(
   config: IFeeConfig,
   minOrderFee: BigNumber,
 ): (
-  order: IExchangeTransactionOrder<BigNumber>,
+  order: ExchangeTransactionOrder<BigNumber>,
   hasMatcherScript?: boolean,
   smartAssetIdList?: string[],
 ) => BigNumber {
@@ -84,13 +84,13 @@ export function currentCreateOrderFactory(
 export function currentFeeFactory(
   config: IFeeConfig,
 ): (
-  tx: TTransaction<BigNumber>,
+  tx: SignableTransaction<BigNumber>,
   bytes: Uint8Array,
   hasAccountScript: boolean,
   smartAssetIdList?: string[],
 ) => BigNumber {
   return (
-    tx: TTransaction<BigNumber>,
+    tx: SignableTransaction<BigNumber>,
     bytes: Uint8Array,
     hasAccountScript: boolean,
     smartAssetIdList?: string[],
@@ -124,7 +124,7 @@ export function currentFeeFactory(
   };
 }
 
-function isNFT(tx: IIssueTransaction<BigNumber> & { precision?: number }): boolean {
+function isNFT(tx: IssueTransaction<BigNumber> & { precision?: number }): boolean {
   const { quantity, precision, decimals, reissuable } = tx;
   const nftQuantity = new BigNumber(quantity).eq(1);
   const nftPrecision = new BigNumber(precision || decimals || 0).eq(0);
@@ -132,7 +132,7 @@ function isNFT(tx: IIssueTransaction<BigNumber> & { precision?: number }): boole
 }
 
 function getIssueFee(
-  tx: IIssueTransaction<BigNumber> & { precision?: number },
+  tx: IssueTransaction<BigNumber> & { precision?: number },
   accountFee: BigNumber,
   config: IFeeConfig,
 ): BigNumber {
@@ -156,7 +156,7 @@ function getSmartAssetFeeByAssetId(
 
 function getDataFee(
   bytes: Uint8Array,
-  tx: IDataTransaction<BigNumber>,
+  tx: DataTransaction<BigNumber>,
   config: IFeeConfig,
 ): BigNumber {
   const kbPrice = getConfigProperty(tx.type, 'price_per_kb', config) || 0;
@@ -167,7 +167,7 @@ function getDataFee(
 }
 
 function getMassTransferFee(
-  tx: IMassTransferTransaction<BigNumber>,
+  tx: MassTransferTransaction<BigNumber>,
   config: IFeeConfig,
   smartAssetIdList: string[],
 ): BigNumber {

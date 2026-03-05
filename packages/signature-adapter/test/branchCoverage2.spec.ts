@@ -63,7 +63,7 @@ const { MockLedger } = vi.hoisted(() => {
 });
 
 vi.mock('@decentralchain/ledger', () => ({
-  WavesLedger: MockLedger,
+  DCCLedger: MockLedger,
 }));
 
 import { LedgerAdapter } from '../src/adapters/LedgerAdapter';

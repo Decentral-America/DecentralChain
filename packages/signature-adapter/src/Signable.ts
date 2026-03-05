@@ -18,7 +18,7 @@ import {
 import { type Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-import { libs } from '@decentralchain/decentralchain-transactions';
+import { libs } from '@decentralchain/transactions';
 import { convert } from '@decentralchain/money-like-to-node';
 import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
