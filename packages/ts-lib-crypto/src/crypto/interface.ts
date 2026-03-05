@@ -204,17 +204,6 @@ export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
   encryptSeed: (seed: string, password: string, encryptionRounds?: number) => TBase64;
   decryptSeed: (encryptedSeed: TBase64, password: string, encryptionRounds?: number) => string;
 
-  //RSA
-  rsaKeyPair: (bits?: number, e?: number) => Promise<TRSAKeyPair>;
-  rsaKeyPairSync: (bits?: number, e?: number) => TRSAKeyPair;
-  rsaSign: (rsaPrivateKey: TBytes, message: TBytes, digest?: RSADigestAlgorithm) => TBytes;
-  rsaVerify: (
-    rsaPublicKey: TBytes,
-    message: TBytes,
-    signature: TBytes,
-    digest?: RSADigestAlgorithm,
-  ) => boolean;
-
   //Merkle
   merkleVerify: (rootHash: Uint8Array, merkleProof: Uint8Array, leafData: Uint8Array) => boolean;
 
