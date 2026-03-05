@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/cubensisconnect-types
+ * @module @decentralchain/cubensis-connect-types
  *
  * TypeScript type definitions for the CubensisConnect browser extension API.
  * Provides complete type coverage for all CubensisConnect methods including
@@ -453,6 +453,8 @@ export type TScriptInvocationTxData = ISignData<16, IScriptInvocationTx>;
 
 /** Update asset info transaction data. */
 export interface IUpdateAssetInfoTx extends ITransactionBase {
+  /** Asset ID to update. */
+  readonly assetId: string;
   /** [4, 16] string — token name. */
   readonly name: string;
   /** [0, 1000] string — token description. */
@@ -463,7 +465,7 @@ export interface IUpdateAssetInfoTx extends ITransactionBase {
 export type TUpdateAssetInfoTxData = ISignData<17, IUpdateAssetInfoTx>;
 
 /** Invoke expression transaction data. */
-export interface IInvokeExpressionTx {
+export interface IInvokeExpressionTx extends ITransactionBase {
   /** Compiled call script, base64 encoded, up to 32,768 bytes. */
   readonly expression: string;
 }
