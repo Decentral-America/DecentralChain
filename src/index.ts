@@ -1,3 +1,4 @@
+export { BigNumber } from '@decentralchain/bignumber';
 export { Asset, type IAssetInfo, type IAssetJSON } from './entities/Asset';
 export { Candle, type ICandleInfo, type ICandleJSON } from './entities/Candle';
 export { Money, type IMoneyJSON, type TMoneyInput } from './entities/Money';
