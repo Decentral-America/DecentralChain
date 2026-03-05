@@ -150,7 +150,7 @@ console.log(value.isInSignedRange()); // true — safe for on-chain use
 ├─────────────────────────────────────────────────────┤
 │              DecentralChain SDK                      │
 │  ┌──────────┐  ┌──────────┐  ┌───────────────────┐  │
-│  │  Crypto  │  │   Waves  │  │  @decentralchain/ │  │
+│  │  Crypto  │  │   Core   │  │  @decentralchain/ │  │
 │  │  module  │  │  module  │  │    bignumber       │  │
 │  └──────────┘  └──────────┘  └───────────────────┘  │
 ├─────────────────────────────────────────────────────┤
