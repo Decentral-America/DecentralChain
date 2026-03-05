@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/signer",
   "version": "2.0.0",
-  "description": "DecentralChain transaction signing orchestrator — connect any provider to sign and broadcast transactions",
+  "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,7 +41,14 @@
     "blockchain",
     "transactions",
     "provider",
-    "wallet"
+    "wallet",
+    "dapp",
+    "web3",
+    "crypto",
+    "digital-assets",
+    "smart-contracts",
+    "decentralized",
+    "sdk"
   ],
   "scripts": {
     "build": "tsup",
