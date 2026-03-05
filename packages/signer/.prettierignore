@@ -1,11 +1,4 @@
-node_modules
-.idea
-_*
-es
-cjs
-coverage
-.DS_Store
-src/**/*.d.ts
 dist
-**/*.json
-src/types/api.ts
+coverage
+node_modules
+*.md

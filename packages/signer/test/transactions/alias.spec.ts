@@ -1,23 +1,22 @@
-import { ACCOUNTS, MOCK_URL } from '../test-env';
+import { ACCOUNTS, MOCK_URL, MASTER_ACCOUNT_SEED } from '../test-env';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
-import { MASTER_ACCOUNT_SEED } from '@waves/node-state/dist/constants';
 
-let waves: Signer;
+let signer: Signer;
 let provider: TestProvider = new TestProvider(MASTER_ACCOUNT_SEED);
 
 beforeEach(() => {
-    waves = new Signer({ NODE_URL: MOCK_URL });
-    provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
-    waves.setProvider(provider);
+  signer = new Signer({ NODE_URL: MOCK_URL });
+  provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
+  signer.setProvider(provider as any);
 });
 
 it('Alias', () =>
-    waves
-        .alias({
-            alias: `test@${Date.now()}`,
-        })
-        .broadcast()
-        .then(([tx]: any[]) => {
-            expect(tx.fee).toBe(0.001 * Math.pow(10, 8));
-        }));
+  signer
+    .alias({
+      alias: `test@${Date.now()}`,
+    })
+    .broadcast()
+    .then(([tx]: any[]) => {
+      expect(tx.fee).toBe(0.001 * Math.pow(10, 8));
+    }));
