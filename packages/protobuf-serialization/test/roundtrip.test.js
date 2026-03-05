@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { waves } from "../dist/index.js";
+import { waves as dccProto } from "../dist/index.js";
 import Long from "long";
 
 /**
@@ -25,11 +25,11 @@ describe("protobuf roundtrip encoding", () => {
         amount: Long.fromNumber(1_000_000),
       };
 
-      const buffer = waves.Amount.encode(original).finish();
+      const buffer = dccProto.Amount.encode(original).finish();
       expect(buffer).toBeInstanceOf(Uint8Array);
       expect(buffer.length).toBeGreaterThan(0);
 
-      const decoded = waves.Amount.decode(buffer);
+      const decoded = dccProto.Amount.decode(buffer);
       expect(decoded.amount.toNumber()).toBe(1_000_000);
       expect(new Uint8Array(decoded.assetId)).toEqual(
         new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
@@ -42,8 +42,8 @@ describe("protobuf roundtrip encoding", () => {
         amount: Long.fromNumber(0),
       };
 
-      const buffer = waves.Amount.encode(original).finish();
-      const decoded = waves.Amount.decode(buffer);
+      const buffer = dccProto.Amount.encode(original).finish();
+      const decoded = dccProto.Amount.decode(buffer);
       expect(decoded.amount.toNumber()).toBe(0);
     });
 
@@ -54,8 +54,8 @@ describe("protobuf roundtrip encoding", () => {
         amount: largeValue,
       };
 
-      const buffer = waves.Amount.encode(original).finish();
-      const decoded = waves.Amount.decode(buffer);
+      const buffer = dccProto.Amount.encode(original).finish();
+      const decoded = dccProto.Amount.decode(buffer);
       expect(decoded.amount.toString()).toBe("9007199254740993");
     });
 
@@ -65,8 +65,8 @@ describe("protobuf roundtrip encoding", () => {
         amount: Long.fromNumber(-1),
       };
 
-      const buffer = waves.Amount.encode(original).finish();
-      const decoded = waves.Amount.decode(buffer);
+      const buffer = dccProto.Amount.encode(original).finish();
+      const decoded = dccProto.Amount.decode(buffer);
       expect(decoded.amount.toNumber()).toBe(-1);
     });
 
@@ -77,8 +77,8 @@ describe("protobuf roundtrip encoding", () => {
         amount: maxLong,
       };
 
-      const buffer = waves.Amount.encode(original).finish();
-      const decoded = waves.Amount.decode(buffer);
+      const buffer = dccProto.Amount.encode(original).finish();
+      const decoded = dccProto.Amount.decode(buffer);
       expect(decoded.amount.toString()).toBe(maxLong.toString());
     });
 
@@ -88,8 +88,8 @@ describe("protobuf roundtrip encoding", () => {
         amount: Long.fromNumber(42),
       };
 
-      const buffer1 = waves.Amount.encode(original).finish();
-      const buffer2 = waves.Amount.encode(original).finish();
+      const buffer1 = dccProto.Amount.encode(original).finish();
+      const buffer2 = dccProto.Amount.encode(original).finish();
       expect(buffer1).toEqual(buffer2);
     });
   });
@@ -103,8 +103,8 @@ describe("protobuf roundtrip encoding", () => {
         publicKeyHash,
       };
 
-      const buffer = waves.Recipient.encode(original).finish();
-      const decoded = waves.Recipient.decode(buffer);
+      const buffer = dccProto.Recipient.encode(original).finish();
+      const decoded = dccProto.Recipient.decode(buffer);
       expect(decoded.publicKeyHash).toBeDefined();
       expect(
         new Uint8Array(/** @type {Uint8Array} */ (decoded.publicKeyHash)),
@@ -116,8 +116,8 @@ describe("protobuf roundtrip encoding", () => {
         alias: "test-alias",
       };
 
-      const buffer = waves.Recipient.encode(original).finish();
-      const decoded = waves.Recipient.decode(buffer);
+      const buffer = dccProto.Recipient.encode(original).finish();
+      const decoded = dccProto.Recipient.decode(buffer);
       expect(decoded.alias).toBe("test-alias");
     });
 
@@ -126,8 +126,8 @@ describe("protobuf roundtrip encoding", () => {
         alias: "",
       };
 
-      const buffer = waves.Recipient.encode(original).finish();
-      const decoded = waves.Recipient.decode(buffer);
+      const buffer = dccProto.Recipient.encode(original).finish();
+      const decoded = dccProto.Recipient.decode(buffer);
       // Empty string is the proto3 default, so alias field may not be set
       expect(decoded.alias === "" || decoded.alias === undefined).toBe(true);
     });
@@ -137,8 +137,8 @@ describe("protobuf roundtrip encoding", () => {
         alias: "a".repeat(30),
       };
 
-      const buffer = waves.Recipient.encode(original).finish();
-      const decoded = waves.Recipient.decode(buffer);
+      const buffer = dccProto.Recipient.encode(original).finish();
+      const decoded = dccProto.Recipient.decode(buffer);
       expect(decoded.alias).toBe("a".repeat(30));
     });
   });
@@ -155,8 +155,8 @@ describe("protobuf roundtrip encoding", () => {
         rewardVote: Long.fromNumber(-1),
       };
 
-      const buffer = waves.Block.Header.encode(original).finish();
-      const decoded = waves.Block.Header.decode(buffer);
+      const buffer = dccProto.Block.Header.encode(original).finish();
+      const decoded = dccProto.Block.Header.decode(buffer);
 
       expect(decoded.chainId).toBe(84);
       expect(decoded.version).toBe(5);
@@ -176,8 +176,8 @@ describe("protobuf roundtrip encoding", () => {
         featureVotes: [1, 2, 14, 15],
       };
 
-      const buffer = waves.Block.Header.encode(original).finish();
-      const decoded = waves.Block.Header.decode(buffer);
+      const buffer = dccProto.Block.Header.encode(original).finish();
+      const decoded = dccProto.Block.Header.decode(buffer);
       expect(decoded.featureVotes).toEqual([1, 2, 14, 15]);
     });
 
@@ -198,8 +198,8 @@ describe("protobuf roundtrip encoding", () => {
         transactions: [],
       };
 
-      const buffer = waves.Block.encode(block).finish();
-      const decoded = waves.Block.decode(buffer);
+      const buffer = dccProto.Block.encode(block).finish();
+      const decoded = dccProto.Block.decode(buffer);
       const decodedHeader = assertDefined(decoded.header);
       expect(decodedHeader.chainId).toBe(84);
       expect(new Uint8Array(decoded.signature)).toEqual(
@@ -216,8 +216,8 @@ describe("protobuf roundtrip encoding", () => {
         reward: Long.fromNumber(600000000),
       };
 
-      const buffer = waves.RewardShare.encode(original).finish();
-      const decoded = waves.RewardShare.decode(buffer);
+      const buffer = dccProto.RewardShare.encode(original).finish();
+      const decoded = dccProto.RewardShare.decode(buffer);
 
       expect(decoded.reward.toNumber()).toBe(600000000);
       expect(new Uint8Array(decoded.address)).toEqual(
@@ -231,8 +231,8 @@ describe("protobuf roundtrip encoding", () => {
         reward: Long.fromNumber(0),
       };
 
-      const buffer = waves.RewardShare.encode(original).finish();
-      const decoded = waves.RewardShare.decode(buffer);
+      const buffer = dccProto.RewardShare.encode(original).finish();
+      const decoded = dccProto.RewardShare.decode(buffer);
       expect(decoded.reward.toNumber()).toBe(0);
     });
   });
@@ -246,7 +246,7 @@ describe("protobuf roundtrip encoding", () => {
           amountAssetId: new Uint8Array([1, 2, 3, 4]),
           priceAssetId: new Uint8Array([5, 6, 7, 8]),
         },
-        orderSide: waves.Order.Side.BUY,
+        orderSide: dccProto.Order.Side.BUY,
         amount: Long.fromNumber(100_000_000),
         price: Long.fromNumber(50_000),
         timestamp: Long.fromNumber(Date.now()),
@@ -259,12 +259,12 @@ describe("protobuf roundtrip encoding", () => {
         senderPublicKey: new Uint8Array(32).fill(0x22),
       };
 
-      const buffer = waves.Order.encode(original).finish();
+      const buffer = dccProto.Order.encode(original).finish();
       expect(buffer.length).toBeGreaterThan(0);
 
-      const decoded = waves.Order.decode(buffer);
+      const decoded = dccProto.Order.decode(buffer);
       expect(decoded.chainId).toBe(84);
-      expect(decoded.orderSide).toBe(waves.Order.Side.BUY);
+      expect(decoded.orderSide).toBe(dccProto.Order.Side.BUY);
       expect(decoded.amount.toNumber()).toBe(100_000_000);
       expect(decoded.price.toNumber()).toBe(50_000);
       expect(decoded.version).toBe(4);
@@ -273,7 +273,7 @@ describe("protobuf roundtrip encoding", () => {
     it("should encode and decode a SELL order", () => {
       const original = {
         chainId: 84,
-        orderSide: waves.Order.Side.SELL,
+        orderSide: dccProto.Order.Side.SELL,
         amount: Long.fromNumber(500_000_000),
         price: Long.fromNumber(200_000),
         matcherPublicKey: new Uint8Array(32).fill(0x33),
@@ -291,9 +291,9 @@ describe("protobuf roundtrip encoding", () => {
         senderPublicKey: new Uint8Array(32).fill(0x55),
       };
 
-      const buffer = waves.Order.encode(original).finish();
-      const decoded = waves.Order.decode(buffer);
-      expect(decoded.orderSide).toBe(waves.Order.Side.SELL);
+      const buffer = dccProto.Order.encode(original).finish();
+      const decoded = dccProto.Order.decode(buffer);
+      expect(decoded.orderSide).toBe(dccProto.Order.Side.SELL);
       expect(decoded.amount.toNumber()).toBe(500_000_000);
     });
 
@@ -312,8 +312,8 @@ describe("protobuf roundtrip encoding", () => {
         expiration: Long.fromNumber(1),
       };
 
-      const buffer = waves.Order.encode(original).finish();
-      const decoded = waves.Order.decode(buffer);
+      const buffer = dccProto.Order.encode(original).finish();
+      const decoded = dccProto.Order.decode(buffer);
       const pair = assertDefined(decoded.assetPair);
       expect(new Uint8Array(assertDefined(pair.amountAssetId))).toEqual(
         amountAsset,
@@ -345,8 +345,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
 
       expect(decoded.chainId).toBe(84);
       expect(decoded.version).toBe(3);
@@ -379,8 +379,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const createAlias = assertDefined(decoded.createAlias);
       expect(createAlias.alias).toBe("my-alias");
     });
@@ -405,8 +405,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const dataTx = assertDefined(decoded.dataTransaction);
       const entries = assertDefined(dataTx.data);
 
@@ -443,8 +443,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const issue = assertDefined(decoded.issue);
       expect(issue.name).toBe("TestToken");
       expect(issue.decimals).toBe(8);
@@ -479,8 +479,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const mt = assertDefined(decoded.massTransfer);
       const transfers = assertDefined(mt.transfers);
       expect(transfers).toHaveLength(3);
@@ -506,8 +506,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const genesis = assertDefined(decoded.genesis);
       expect(assertDefined(genesis.amount).toString()).toBe(
         "10000000000000000",
@@ -533,8 +533,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const payment = assertDefined(decoded.payment);
       expect(assertDefined(payment.amount).toNumber()).toBe(50_000_000);
       expect(new Uint8Array(assertDefined(payment.recipientAddress))).toEqual(
@@ -550,7 +550,7 @@ describe("protobuf roundtrip encoding", () => {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        orderSide: waves.Order.Side.BUY,
+        orderSide: dccProto.Order.Side.BUY,
         amount: Long.fromNumber(100_000_000),
         price: Long.fromNumber(5_000_000),
         timestamp: Long.fromNumber(1000000000),
@@ -571,7 +571,7 @@ describe("protobuf roundtrip encoding", () => {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        orderSide: waves.Order.Side.SELL,
+        orderSide: dccProto.Order.Side.SELL,
         amount: Long.fromNumber(100_000_000),
         price: Long.fromNumber(5_000_000),
         timestamp: Long.fromNumber(1000000001),
@@ -603,8 +603,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const exchange = assertDefined(decoded.exchange);
       expect(assertDefined(exchange.amount).toNumber()).toBe(50_000_000);
       expect(assertDefined(exchange.price).toNumber()).toBe(5_000_000);
@@ -612,8 +612,8 @@ describe("protobuf roundtrip encoding", () => {
       expect(assertDefined(exchange.sellMatcherFee).toNumber()).toBe(150_000);
       const orders = assertDefined(exchange.orders);
       expect(orders).toHaveLength(2);
-      expect(orders[0].orderSide).toBe(waves.Order.Side.BUY);
-      expect(orders[1].orderSide).toBe(waves.Order.Side.SELL);
+      expect(orders[0].orderSide).toBe(dccProto.Order.Side.BUY);
+      expect(orders[1].orderSide).toBe(dccProto.Order.Side.SELL);
       expect(assertDefined(orders[0].amount).toNumber()).toBe(100_000_000);
       expect(assertDefined(orders[1].price).toNumber()).toBe(5_000_000);
     });
@@ -634,8 +634,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const lease = assertDefined(decoded.lease);
       expect(assertDefined(lease.amount).toNumber()).toBe(100_000_000);
       const recipient = assertDefined(lease.recipient);
@@ -660,8 +660,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const cancel = assertDefined(decoded.leaseCancel);
       expect(new Uint8Array(assertDefined(cancel.leaseId))).toEqual(leaseId);
     });
@@ -684,8 +684,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const burn = assertDefined(decoded.burn);
       const assetAmt = assertDefined(burn.assetAmount);
       expect(assertDefined(assetAmt.amount).toNumber()).toBe(500_000_000);
@@ -713,8 +713,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const reissue = assertDefined(decoded.reissue);
       expect(reissue.reissuable).toBe(false);
       const assetAmt = assertDefined(reissue.assetAmount);
@@ -737,8 +737,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const setScript = assertDefined(decoded.setScript);
       expect(new Uint8Array(assertDefined(setScript.script))).toEqual(
         scriptBytes,
@@ -763,8 +763,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const setAssetScript = assertDefined(decoded.setAssetScript);
       expect(new Uint8Array(assertDefined(setAssetScript.assetId))).toEqual(
         assetId,
@@ -792,8 +792,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const sponsorFee = assertDefined(decoded.sponsorFee);
       const minFee = assertDefined(sponsorFee.minFee);
       expect(assertDefined(minFee.amount).toNumber()).toBe(100_000);
@@ -828,8 +828,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const invoke = assertDefined(decoded.invokeScript);
       const dApp = assertDefined(invoke.dApp);
       expect(dApp.alias).toBe("my-dapp");
@@ -866,8 +866,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const update = assertDefined(decoded.updateAssetInfo);
       expect(update.name).toBe("UpdatedToken");
       expect(update.description).toBe("Updated description for the token");
@@ -905,8 +905,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.SignedTransaction.encode(signedTx).finish();
-      const decoded = waves.SignedTransaction.decode(buffer);
+      const buffer = dccProto.SignedTransaction.encode(signedTx).finish();
+      const decoded = dccProto.SignedTransaction.decode(buffer);
 
       const inner = assertDefined(decoded.wavesTransaction);
       expect(inner.chainId).toBe(84);
@@ -934,8 +934,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.SignedTransaction.encode(signedTx).finish();
-      const decoded = waves.SignedTransaction.decode(buffer);
+      const buffer = dccProto.SignedTransaction.encode(signedTx).finish();
+      const decoded = dccProto.SignedTransaction.decode(buffer);
       expect(decoded.proofs).toHaveLength(3);
       expect(new Uint8Array(decoded.proofs[1])).toEqual(
         new Uint8Array(64).fill(0xbb),
@@ -959,8 +959,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const invokeExpr = assertDefined(decoded.invokeExpression);
       expect(new Uint8Array(assertDefined(invokeExpr.expression))).toEqual(
         new Uint8Array([0x01, 0x02, 0x03, 0x04]),
@@ -982,8 +982,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const invokeExpr = assertDefined(decoded.invokeExpression);
       expect(invokeExpr.expression).toBeDefined();
     });
@@ -1007,8 +1007,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const commit = assertDefined(decoded.commitToGeneration);
       expect(commit.generationPeriodStart).toBe(42);
       expect(new Uint8Array(assertDefined(commit.endorserPublicKey))).toEqual(
@@ -1036,8 +1036,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.Transaction.encode(original).finish();
-      const decoded = waves.Transaction.decode(buffer);
+      const buffer = dccProto.Transaction.encode(original).finish();
+      const decoded = dccProto.Transaction.decode(buffer);
       const commit = assertDefined(decoded.commitToGeneration);
       // 0 is proto3 default — field may not be present on the wire
       expect(
@@ -1065,8 +1065,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       expect(decoded.data).toHaveLength(2);
       expect(decoded.data[0].key).toBe("counter");
       expect(assertDefined(decoded.data[0].intValue).toNumber()).toBe(100);
@@ -1083,8 +1083,8 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       const err = assertDefined(decoded.errorMessage);
       expect(err.code).toBe(1);
       expect(err.text).toBe("InvokeScript execution failed");
@@ -1105,8 +1105,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.balances).toHaveLength(1);
       const bal = assertDefined(decoded.balances[0].amount);
       expect(assertDefined(bal.amount).toNumber()).toBe(10_000_000);
@@ -1120,8 +1121,9 @@ describe("protobuf roundtrip encoding", () => {
         height: 1000,
       };
 
-      const buffer = waves.events.BlockchainUpdated.encode(original).finish();
-      const decoded = waves.events.BlockchainUpdated.decode(buffer);
+      const buffer =
+        dccProto.events.BlockchainUpdated.encode(original).finish();
+      const decoded = dccProto.events.BlockchainUpdated.decode(buffer);
       expect(new Uint8Array(decoded.id)).toEqual(new Uint8Array(32).fill(0x01));
       expect(decoded.height).toBe(1000);
     });
@@ -1150,8 +1152,9 @@ describe("protobuf roundtrip encoding", () => {
         },
       };
 
-      const buffer = waves.events.BlockchainUpdated.encode(original).finish();
-      const decoded = waves.events.BlockchainUpdated.decode(buffer);
+      const buffer =
+        dccProto.events.BlockchainUpdated.encode(original).finish();
+      const decoded = dccProto.events.BlockchainUpdated.decode(buffer);
       expect(decoded.height).toBe(2000);
       const append = assertDefined(decoded.append);
       expect(append.transactionIds).toHaveLength(2);
@@ -1170,16 +1173,17 @@ describe("protobuf roundtrip encoding", () => {
         id: new Uint8Array(32).fill(0x03),
         height: 1500,
         rollback: {
-          type: waves.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
+          type: dccProto.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
           removedTransactionIds: [new Uint8Array(32).fill(0xcc)],
         },
       };
 
-      const buffer = waves.events.BlockchainUpdated.encode(original).finish();
-      const decoded = waves.events.BlockchainUpdated.decode(buffer);
+      const buffer =
+        dccProto.events.BlockchainUpdated.encode(original).finish();
+      const decoded = dccProto.events.BlockchainUpdated.decode(buffer);
       const rollback = assertDefined(decoded.rollback);
       expect(rollback.type).toBe(
-        waves.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
+        dccProto.events.BlockchainUpdated.Rollback.RollbackType.BLOCK,
       );
       expect(rollback.removedTransactionIds).toHaveLength(1);
     });
@@ -1195,8 +1199,8 @@ describe("protobuf roundtrip encoding", () => {
         transactions: [],
       };
 
-      const buffer = waves.MicroBlock.encode(original).finish();
-      const decoded = waves.MicroBlock.decode(buffer);
+      const buffer = dccProto.MicroBlock.encode(original).finish();
+      const decoded = dccProto.MicroBlock.decode(buffer);
       expect(decoded.version).toBe(5);
       expect(new Uint8Array(decoded.reference)).toEqual(
         new Uint8Array(64).fill(0x01),
@@ -1221,8 +1225,8 @@ describe("protobuf roundtrip encoding", () => {
         totalBlockId: new Uint8Array(32).fill(0xff),
       };
 
-      const buffer = waves.SignedMicroBlock.encode(original).finish();
-      const decoded = waves.SignedMicroBlock.decode(buffer);
+      const buffer = dccProto.SignedMicroBlock.encode(original).finish();
+      const decoded = dccProto.SignedMicroBlock.decode(buffer);
       expect(new Uint8Array(decoded.signature)).toEqual(
         new Uint8Array(64).fill(0xee),
       );
@@ -1249,13 +1253,13 @@ describe("protobuf roundtrip encoding", () => {
                 },
               },
             ],
-            transactionStatus: waves.TransactionStatus.SUCCEEDED,
+            transactionStatus: dccProto.TransactionStatus.SUCCEEDED,
           },
         ],
       };
 
-      const buffer = waves.BlockSnapshot.encode(original).finish();
-      const decoded = waves.BlockSnapshot.decode(buffer);
+      const buffer = dccProto.BlockSnapshot.encode(original).finish();
+      const decoded = dccProto.BlockSnapshot.decode(buffer);
       expect(new Uint8Array(decoded.blockId)).toEqual(
         new Uint8Array(32).fill(0x01),
       );
@@ -1276,8 +1280,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.leaseBalances).toHaveLength(1);
       expect(assertDefined(decoded.leaseBalances[0].in).toNumber()).toBe(
         5_000_000,
@@ -1299,8 +1304,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.newLeases).toHaveLength(1);
       expect(assertDefined(decoded.newLeases[0].amount).toNumber()).toBe(
         100_000_000,
@@ -1316,8 +1322,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.cancelledLeases).toHaveLength(1);
       expect(
         new Uint8Array(assertDefined(decoded.cancelledLeases[0].leaseId)),
@@ -1336,8 +1343,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.assetStatics).toHaveLength(1);
       expect(decoded.assetStatics[0].decimals).toBe(8);
       expect(decoded.assetStatics[0].nft).toBe(false);
@@ -1354,8 +1362,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.orderFills).toHaveLength(1);
       expect(assertDefined(decoded.orderFills[0].volume).toNumber()).toBe(
         50_000_000,
@@ -1376,8 +1385,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       const acctData = assertDefined(decoded.accountData);
       expect(acctData).toHaveLength(1);
       const entries = assertDefined(acctData[0].entries);
@@ -1396,8 +1406,9 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-      const decoded = waves.TransactionStateSnapshot.decode(buffer);
+      const buffer =
+        dccProto.TransactionStateSnapshot.encode(original).finish();
+      const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
       expect(decoded.sponsorships).toHaveLength(1);
       expect(assertDefined(decoded.sponsorships[0].minFee).toNumber()).toBe(
         100_000,
@@ -1405,11 +1416,12 @@ describe("protobuf roundtrip encoding", () => {
     });
 
     it("should encode and decode all TransactionStatus enum values", () => {
-      for (const value of Object.values(waves.TransactionStatus)) {
+      for (const value of Object.values(dccProto.TransactionStatus)) {
         if (typeof value !== "number") continue;
         const original = { transactionStatus: value };
-        const buffer = waves.TransactionStateSnapshot.encode(original).finish();
-        const decoded = waves.TransactionStateSnapshot.decode(buffer);
+        const buffer =
+          dccProto.TransactionStateSnapshot.encode(original).finish();
+        const decoded = dccProto.TransactionStateSnapshot.decode(buffer);
         // SUCCEEDED (0) is the proto3 default — it may not appear on the wire
         if (value === 0) {
           expect(
@@ -1453,8 +1465,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       expect(decoded.issues).toHaveLength(1);
       expect(decoded.issues[0].name).toBe("InvokeToken");
       expect(assertDefined(decoded.issues[0].amount).toNumber()).toBe(
@@ -1487,8 +1499,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       expect(decoded.leases).toHaveLength(1);
       expect(assertDefined(decoded.leases[0].amount).toNumber()).toBe(
         10_000_000,
@@ -1514,8 +1526,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       expect(decoded.sponsorFees).toHaveLength(1);
       const minFee = assertDefined(decoded.sponsorFees[0].minFee);
       expect(assertDefined(minFee.amount).toNumber()).toBe(50_000);
@@ -1548,8 +1560,8 @@ describe("protobuf roundtrip encoding", () => {
         ],
       };
 
-      const buffer = waves.InvokeScriptResult.encode(original).finish();
-      const decoded = waves.InvokeScriptResult.decode(buffer);
+      const buffer = dccProto.InvokeScriptResult.encode(original).finish();
+      const decoded = dccProto.InvokeScriptResult.decode(buffer);
       expect(decoded.invokes).toHaveLength(1);
       const inv = decoded.invokes[0];
       const call = assertDefined(inv.call);
@@ -1582,8 +1594,8 @@ describe("protobuf roundtrip encoding", () => {
         originalNames: ["deposit", "withdraw"],
       };
 
-      const buffer = waves.DAppMeta.encode(original).finish();
-      const decoded = waves.DAppMeta.decode(buffer);
+      const buffer = dccProto.DAppMeta.encode(original).finish();
+      const decoded = dccProto.DAppMeta.decode(buffer);
       expect(decoded.version).toBe(2);
       expect(decoded.funcs).toHaveLength(2);
       expect(new Uint8Array(assertDefined(decoded.funcs[0].types))).toEqual(
@@ -1605,8 +1617,8 @@ describe("protobuf roundtrip encoding", () => {
         aggregatedEndorsementSignature: new Uint8Array(96).fill(0xaa),
       };
 
-      const buffer = waves.FinalizationVoting.encode(original).finish();
-      const decoded = waves.FinalizationVoting.decode(buffer);
+      const buffer = dccProto.FinalizationVoting.encode(original).finish();
+      const decoded = dccProto.FinalizationVoting.decode(buffer);
       expect(decoded.endorserIndexes).toEqual([0, 1, 2, 5]);
       expect(decoded.finalizedBlockHeight).toBe(1000);
       expect(new Uint8Array(decoded.aggregatedEndorsementSignature)).toEqual(
@@ -1623,8 +1635,8 @@ describe("protobuf roundtrip encoding", () => {
         signature: new Uint8Array(96).fill(0xbb),
       };
 
-      const buffer = waves.EndorseBlock.encode(original).finish();
-      const decoded = waves.EndorseBlock.decode(buffer);
+      const buffer = dccProto.EndorseBlock.encode(original).finish();
+      const decoded = dccProto.EndorseBlock.decode(buffer);
       expect(decoded.endorserIndex).toBe(3);
       expect(decoded.finalizedBlockHeight).toBe(999);
       expect(new Uint8Array(decoded.signature)).toEqual(
@@ -1635,19 +1647,19 @@ describe("protobuf roundtrip encoding", () => {
 });
 
 describe("protobuf namespace structure", () => {
-  it("should export the waves namespace", () => {
-    expect(waves).toBeDefined();
+  it("should export the protobuf namespace", () => {
+    expect(dccProto).toBeDefined();
   });
 
   it("should contain core message types with encode/decode methods", () => {
     const coreTypes = [
-      waves.Amount,
-      waves.Block,
-      waves.Transaction,
-      waves.SignedTransaction,
-      waves.Order,
-      waves.Recipient,
-      waves.RewardShare,
+      dccProto.Amount,
+      dccProto.Block,
+      dccProto.Transaction,
+      dccProto.SignedTransaction,
+      dccProto.Order,
+      dccProto.Recipient,
+      dccProto.RewardShare,
     ];
 
     for (const type of coreTypes) {
@@ -1658,32 +1670,32 @@ describe("protobuf namespace structure", () => {
   });
 
   it("should contain Block.Header nested type", () => {
-    expect(waves.Block.Header).toBeDefined();
-    expect(waves.Block.Header.encode).toBeTypeOf("function");
-    expect(waves.Block.Header.decode).toBeTypeOf("function");
+    expect(dccProto.Block.Header).toBeDefined();
+    expect(dccProto.Block.Header.encode).toBeTypeOf("function");
+    expect(dccProto.Block.Header.decode).toBeTypeOf("function");
   });
 
   it("should contain all transaction data types", () => {
     const txTypes = [
-      waves.GenesisTransactionData,
-      waves.PaymentTransactionData,
-      waves.TransferTransactionData,
-      waves.CreateAliasTransactionData,
-      waves.DataTransactionData,
-      waves.IssueTransactionData,
-      waves.ReissueTransactionData,
-      waves.BurnTransactionData,
-      waves.ExchangeTransactionData,
-      waves.LeaseTransactionData,
-      waves.LeaseCancelTransactionData,
-      waves.MassTransferTransactionData,
-      waves.SetScriptTransactionData,
-      waves.SponsorFeeTransactionData,
-      waves.SetAssetScriptTransactionData,
-      waves.InvokeScriptTransactionData,
-      waves.UpdateAssetInfoTransactionData,
-      waves.InvokeExpressionTransactionData,
-      waves.CommitToGenerationTransactionData,
+      dccProto.GenesisTransactionData,
+      dccProto.PaymentTransactionData,
+      dccProto.TransferTransactionData,
+      dccProto.CreateAliasTransactionData,
+      dccProto.DataTransactionData,
+      dccProto.IssueTransactionData,
+      dccProto.ReissueTransactionData,
+      dccProto.BurnTransactionData,
+      dccProto.ExchangeTransactionData,
+      dccProto.LeaseTransactionData,
+      dccProto.LeaseCancelTransactionData,
+      dccProto.MassTransferTransactionData,
+      dccProto.SetScriptTransactionData,
+      dccProto.SponsorFeeTransactionData,
+      dccProto.SetAssetScriptTransactionData,
+      dccProto.InvokeScriptTransactionData,
+      dccProto.UpdateAssetInfoTransactionData,
+      dccProto.InvokeExpressionTransactionData,
+      dccProto.CommitToGenerationTransactionData,
     ];
 
     for (const type of txTypes) {
@@ -1694,62 +1706,62 @@ describe("protobuf namespace structure", () => {
   });
 
   it("should contain Order enums", () => {
-    expect(waves.Order.Side).toBeDefined();
-    expect(waves.Order.Side.BUY).toBe(0);
-    expect(waves.Order.Side.SELL).toBe(1);
-    expect(waves.Order.PriceMode).toBeDefined();
+    expect(dccProto.Order.Side).toBeDefined();
+    expect(dccProto.Order.Side.BUY).toBe(0);
+    expect(dccProto.Order.Side.SELL).toBe(1);
+    expect(dccProto.Order.PriceMode).toBeDefined();
   });
 
   it("should contain AssetPair message", () => {
-    expect(waves.AssetPair).toBeDefined();
-    expect(waves.AssetPair.encode).toBeTypeOf("function");
-    expect(waves.AssetPair.decode).toBeTypeOf("function");
+    expect(dccProto.AssetPair).toBeDefined();
+    expect(dccProto.AssetPair.encode).toBeTypeOf("function");
+    expect(dccProto.AssetPair.decode).toBeTypeOf("function");
   });
 
   it("should contain events namespace", () => {
-    expect(waves.events).toBeDefined();
-    expect(waves.events.BlockchainUpdated).toBeDefined();
-    expect(waves.events.BlockchainUpdated.encode).toBeTypeOf("function");
-    expect(waves.events.BlockchainUpdated.decode).toBeTypeOf("function");
+    expect(dccProto.events).toBeDefined();
+    expect(dccProto.events.BlockchainUpdated).toBeDefined();
+    expect(dccProto.events.BlockchainUpdated.encode).toBeTypeOf("function");
+    expect(dccProto.events.BlockchainUpdated.decode).toBeTypeOf("function");
   });
 
   it("should contain events.grpc namespace", () => {
-    expect(waves.events.grpc).toBeDefined();
-    expect(waves.events.grpc.BlockchainUpdatesApi).toBeDefined();
+    expect(dccProto.events.grpc).toBeDefined();
+    expect(dccProto.events.grpc.BlockchainUpdatesApi).toBeDefined();
   });
 
   it("should contain node.grpc namespace with API services", () => {
-    expect(waves.node).toBeDefined();
-    expect(waves.node.grpc).toBeDefined();
-    expect(waves.node.grpc.AccountsApi).toBeDefined();
-    expect(waves.node.grpc.TransactionsApi).toBeDefined();
-    expect(waves.node.grpc.BlocksApi).toBeDefined();
-    expect(waves.node.grpc.AssetsApi).toBeDefined();
-    expect(waves.node.grpc.BlockchainApi).toBeDefined();
+    expect(dccProto.node).toBeDefined();
+    expect(dccProto.node.grpc).toBeDefined();
+    expect(dccProto.node.grpc.AccountsApi).toBeDefined();
+    expect(dccProto.node.grpc.TransactionsApi).toBeDefined();
+    expect(dccProto.node.grpc.BlocksApi).toBeDefined();
+    expect(dccProto.node.grpc.AssetsApi).toBeDefined();
+    expect(dccProto.node.grpc.BlockchainApi).toBeDefined();
   });
 
   it("should contain DataEntry message with all value types", () => {
-    expect(waves.DataEntry).toBeDefined();
-    expect(waves.DataEntry.encode).toBeTypeOf("function");
-    expect(waves.DataEntry.decode).toBeTypeOf("function");
+    expect(dccProto.DataEntry).toBeDefined();
+    expect(dccProto.DataEntry.encode).toBeTypeOf("function");
+    expect(dccProto.DataEntry.decode).toBeTypeOf("function");
   });
 
   it("should contain InvokeScriptResult for smart contract outputs", () => {
-    expect(waves.InvokeScriptResult).toBeDefined();
-    expect(waves.InvokeScriptResult.encode).toBeTypeOf("function");
-    expect(waves.InvokeScriptResult.decode).toBeTypeOf("function");
+    expect(dccProto.InvokeScriptResult).toBeDefined();
+    expect(dccProto.InvokeScriptResult.encode).toBeTypeOf("function");
+    expect(dccProto.InvokeScriptResult.decode).toBeTypeOf("function");
   });
 });
 
 describe("protobuf error handling", () => {
   it("should throw on corrupt buffer", () => {
     const corruptBuffer = new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff]);
-    expect(() => waves.Amount.decode(corruptBuffer)).toThrow();
+    expect(() => dccProto.Amount.decode(corruptBuffer)).toThrow();
   });
 
   it("should decode empty buffer to default values", () => {
     const emptyBuffer = new Uint8Array([]);
-    const decoded = waves.Amount.decode(emptyBuffer);
+    const decoded = dccProto.Amount.decode(emptyBuffer);
     expect(decoded.amount.toNumber()).toBe(0);
   });
 
@@ -1758,20 +1770,20 @@ describe("protobuf error handling", () => {
       assetId: new Uint8Array(32).fill(0xaa),
       amount: Long.fromNumber(1_000_000),
     };
-    const fullBuffer = waves.Amount.encode(original).finish();
+    const fullBuffer = dccProto.Amount.encode(original).finish();
     // Truncate to half the buffer
     const truncated = fullBuffer.slice(0, Math.floor(fullBuffer.length / 2));
-    expect(() => waves.Amount.decode(truncated)).toThrow();
+    expect(() => dccProto.Amount.decode(truncated)).toThrow();
   });
 
   it("should throw on corrupt SignedTransaction buffer", () => {
     const corrupt = new Uint8Array([0x0a, 0xff, 0xff, 0xff, 0x0f]);
-    expect(() => waves.SignedTransaction.decode(corrupt)).toThrow();
+    expect(() => dccProto.SignedTransaction.decode(corrupt)).toThrow();
   });
 
   it("should throw on corrupt Transaction buffer", () => {
     const corrupt = new Uint8Array([0x08, 0x54, 0x80, 0xff, 0xff]);
-    expect(() => waves.Transaction.decode(corrupt)).toThrow();
+    expect(() => dccProto.Transaction.decode(corrupt)).toThrow();
   });
 });
 
@@ -1783,8 +1795,8 @@ describe("financial safety edge cases", () => {
       amount: minLong,
     };
 
-    const buffer = waves.Amount.encode(original).finish();
-    const decoded = waves.Amount.decode(buffer);
+    const buffer = dccProto.Amount.encode(original).finish();
+    const decoded = dccProto.Amount.decode(buffer);
     expect(decoded.amount.toString()).toBe(minLong.toString());
   });
 
@@ -1796,8 +1808,8 @@ describe("financial safety edge cases", () => {
       proofs: [],
     };
 
-    const buffer = waves.SignedTransaction.encode(original).finish();
-    const decoded = waves.SignedTransaction.decode(buffer);
+    const buffer = dccProto.SignedTransaction.encode(original).finish();
+    const decoded = dccProto.SignedTransaction.decode(buffer);
     expect(new Uint8Array(assertDefined(decoded.ethereumTransaction))).toEqual(
       ethTxBytes,
     );
@@ -1832,8 +1844,8 @@ describe("financial safety edge cases", () => {
       proofs: [proof],
     };
 
-    const buffer = waves.SignedTransaction.encode(signedTx).finish();
-    const decoded = waves.SignedTransaction.decode(buffer);
+    const buffer = dccProto.SignedTransaction.encode(signedTx).finish();
+    const decoded = dccProto.SignedTransaction.decode(buffer);
     const inner = assertDefined(decoded.wavesTransaction);
     expect(new Uint8Array(assertDefined(inner.senderPublicKey))).toEqual(
       senderPk,
@@ -1862,8 +1874,8 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buffer = waves.Transaction.encode(original).finish();
-    const decoded = waves.Transaction.decode(buffer);
+    const buffer = dccProto.Transaction.encode(original).finish();
+    const decoded = dccProto.Transaction.decode(buffer);
     const exchange = assertDefined(decoded.exchange);
     expect(assertDefined(exchange.amount).toString()).toBe("9007199254740993");
     expect(assertDefined(exchange.price).toString()).toBe("999999999999999999");
@@ -1893,9 +1905,9 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buf1 = waves.Transaction.encode(tx).finish();
-    const buf2 = waves.Transaction.encode(tx).finish();
-    const buf3 = waves.Transaction.encode(tx).finish();
+    const buf1 = dccProto.Transaction.encode(tx).finish();
+    const buf2 = dccProto.Transaction.encode(tx).finish();
+    const buf3 = dccProto.Transaction.encode(tx).finish();
     expect(buf1).toEqual(buf2);
     expect(buf2).toEqual(buf3);
   });
@@ -1922,8 +1934,8 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buffer = waves.Transaction.encode(original).finish();
-    const decoded = waves.Transaction.decode(buffer);
+    const buffer = dccProto.Transaction.encode(original).finish();
+    const decoded = dccProto.Transaction.decode(buffer);
     const mt = assertDefined(decoded.massTransfer);
     const mtTransfers = assertDefined(mt.transfers);
     expect(mtTransfers).toHaveLength(100);
@@ -1948,8 +1960,8 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buffer = waves.Transaction.encode(original).finish();
-    const decoded = waves.Transaction.decode(buffer);
+    const buffer = dccProto.Transaction.encode(original).finish();
+    const decoded = dccProto.Transaction.decode(buffer);
     const dataTx = assertDefined(decoded.dataTransaction);
     // Empty string is proto3 default — key may or may not be present
     expect(dataTx.data).toHaveLength(1);
@@ -1970,8 +1982,8 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buffer = waves.Transaction.encode(original).finish();
-    const decoded = waves.Transaction.decode(buffer);
+    const buffer = dccProto.Transaction.encode(original).finish();
+    const decoded = dccProto.Transaction.decode(buffer);
     const dataTx = assertDefined(decoded.dataTransaction);
     const dataEntries = assertDefined(dataTx.data);
     expect(dataEntries).toHaveLength(1);
@@ -2006,8 +2018,8 @@ describe("financial safety edge cases", () => {
       },
     };
 
-    const buffer = waves.Transaction.encode(original).finish();
-    const decoded = waves.Transaction.decode(buffer);
+    const buffer = dccProto.Transaction.encode(original).finish();
+    const decoded = dccProto.Transaction.decode(buffer);
     // Transfer should be set
     expect(decoded.transfer).toBeDefined();
     // protobufjs represents unset oneOf variants as null.
