@@ -1,32 +1,32 @@
 import { WithId } from './transactions';
-import * as tx_route from '@decentralchain/node-api-js/cjs/api-node/transactions';
-import * as blocks_route from '@decentralchain/node-api-js/cjs/api-node/blocks';
-import * as addresses_route from '@decentralchain/node-api-js/cjs/api-node/addresses';
-import * as assets_route from '@decentralchain/node-api-js/cjs/api-node/assets';
-import * as rewards_route from '@decentralchain/node-api-js/cjs/api-node/rewards';
-import * as debug_route from '@decentralchain/node-api-js/cjs/api-node/debug';
-import { RequestInit } from '@decentralchain/node-api-js/cjs/tools/request';
+import * as tx_route from '@decentralchain/node-api-js/api-node/transactions';
+import * as blocks_route from '@decentralchain/node-api-js/api-node/blocks';
+import * as addresses_route from '@decentralchain/node-api-js/api-node/addresses';
+import * as assets_route from '@decentralchain/node-api-js/api-node/assets';
+import * as rewards_route from '@decentralchain/node-api-js/api-node/rewards';
+import * as debug_route from '@decentralchain/node-api-js/api-node/debug';
 import {
   DataTransactionEntry,
+  Long,
   SignedTransaction,
   Transaction,
   WithApiMixin,
 } from '@decentralchain/ts-types';
-import { TLong } from '@decentralchain/node-api-js/cjs/interface';
 
 export type CancellablePromise<T> = Promise<T> & { cancel: () => void };
 
 const delay = (timeout: number): CancellablePromise<{}> => {
-  const t: any = {};
+  let resolve: (value: {} | PromiseLike<{}>) => void;
+  let id: ReturnType<typeof setTimeout>;
 
-  const p = new Promise((resolve, _) => {
-    t.resolve = resolve;
-    t.id = setTimeout(resolve, timeout);
-  }) as any;
+  const p = new Promise<{}>((res) => {
+    resolve = res;
+    id = setTimeout(() => res({}), timeout);
+  }) as CancellablePromise<{}>;
 
-  (<any>p).cancel = () => {
-    t.resolve();
-    clearTimeout(t.id);
+  p.cancel = () => {
+    resolve({});
+    clearTimeout(id);
   };
 
   return p;
@@ -206,7 +206,7 @@ export async function balanceDetails(
   address: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-) {
+): ReturnType<typeof addresses_route.fetchBalanceDetails> {
   return addresses_route.fetchBalanceDetails(nodeUrl, address, requestOptions);
 }
 
@@ -259,9 +259,14 @@ export async function accountData(
     match = undefined;
   } else {
     address = options.address;
-    match =
-      options.match &&
-      encodeURIComponent(typeof options.match === 'string' ? options.match : options.match.source);
+    // Sanitize regex: limit length to prevent ReDoS on node side
+    if (options.match) {
+      const raw = typeof options.match === 'string' ? options.match : options.match.source;
+      if (raw.length > 255) {
+        throw new Error('accountData match pattern exceeds maximum length (255)');
+      }
+      match = encodeURIComponent(raw);
+    }
   }
 
   const data: DataTransactionEntry[] = (await addresses_route.data(
@@ -285,7 +290,7 @@ export async function accountDataByKey(
   address: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<DataTransactionEntry<TLong> | null> {
+): Promise<DataTransactionEntry<Long> | null> {
   return addresses_route.fetchDataKey(nodeUrl, address, key, requestOptions).catch((e) => {
     if (e.error === 304) return null;
     else throw e;
@@ -369,7 +374,7 @@ export async function stateChanges(
  * @param tx - transaction to send
  * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
  */
-export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(
+export function broadcast<T extends SignedTransaction<Transaction<Long>>>(
   tx: T,
   nodeUrl: string,
   requestOptions?: RequestInit,
