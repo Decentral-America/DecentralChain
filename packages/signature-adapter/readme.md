@@ -1,13 +1,29 @@
-# @decentralchain/signature-adapter
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/dcc-signature-adapter/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@decentralchain/signature-adapter)](https://www.npmjs.com/package/@decentralchain/signature-adapter)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org/)
+<h3 align="center">@decentralchain/signature-adapter</h3>
 
-Multi-provider transaction signing adapter for the DecentralChain blockchain.
+<p align="center">
+  Multi-provider transaction signing adapter for the DecentralChain blockchain.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/signature-adapter"><img src="https://img.shields.io/npm/v/@decentralchain/signature-adapter?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/signature-adapter" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/signature-adapter"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/signature-adapter" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/signature-adapter" alt="node" /></a>
+</p>
+
+---
+
+## Overview
 
 Provides a unified interface for signing transactions across multiple key-management backends: seed phrases, private keys, Cubensis Connect (browser extension), Ledger hardware wallets, and Tresor hardware wallets.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Requirements
 
@@ -211,14 +227,24 @@ npm install
 - **size-limit** bundle size enforcement
 - **Husky** pre-commit hooks
 
+## Related packages
+
+| Package                                                                                                  | Description                         |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities)           | Asset, Money, and OrderPrice models |
+| [`@decentralchain/ledger`](https://www.npmjs.com/package/@decentralchain/ledger)                         | Ledger hardware wallet integration  |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions)             | Transaction builders and signers    |
+| [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer)                         | Transaction signing orchestrator    |
+| [`@decentralchain/money-like-to-node`](https://www.npmjs.com/package/@decentralchain/money-like-to-node) | Money-like to node format converter |
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md).
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) © DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
