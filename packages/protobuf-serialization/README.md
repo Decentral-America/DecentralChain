@@ -1,77 +1,37 @@
-<div align="center">
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-# @decentralchain/protobuf-serialization
+<h3 align="center">@decentralchain/protobuf-serialization</h3>
 
-**The official Protocol Buffers schema definitions and multi-language bindings for the [DecentralChain](https://decentralchain.io) blockchain protocol.**
+<p align="center">
+  Protobuf schema definitions and generated bindings for the DecentralChain blockchain protocol.
+</p>
 
-[![CI](https://github.com/Decentral-America/protobuf-serialization/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/protobuf-serialization/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/protobuf-serialization)](https://www.npmjs.com/package/@decentralchain/protobuf-serialization)
-[![license](https://img.shields.io/npm/l/@decentralchain/protobuf-serialization)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/protobuf-serialization)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?logo=typescript&logoColor=white)](./dist/index.d.ts)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Decentral-America/protobuf-serialization/graphs/commit-activity)
-
-</div>
-
----
-
-DecentralChain is a high-performance, open-source blockchain platform designed for decentralized applications (dApps), digital asset issuance, and smart contract execution. Every transaction, block, order, and node-to-node message on the DecentralChain network is serialized using [Protocol Buffers (protobuf)](https://protobuf.dev/) — Google's language-neutral, platform-neutral mechanism for serializing structured data.
-
-This repository is the **single source of truth** for all DecentralChain protobuf schemas. It contains the canonical `.proto` schema files that define the wire format for DecentralChain blockchain transactions, blocks, events, and gRPC APIs. Pre-generated bindings are provided for multiple languages — JavaScript/TypeScript (npm), Java (Maven), Rust (Cargo), C# (.NET), and Python — so you can integrate with the DecentralChain network from virtually any tech stack.
-
-### Why Protocol Buffers?
-
-| Benefit                              | Description                                                                                                           |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| **Compact binary format**            | Protobuf messages are significantly smaller than JSON or XML, reducing bandwidth and storage costs on-chain.          |
-| **Schema-enforced contracts**        | `.proto` files act as a strict, versioned contract between nodes, clients, and services — preventing data mismatches. |
-| **Cross-language support**           | A single `.proto` definition generates idiomatic code for 10+ languages, ensuring consistency across the ecosystem.   |
-| **Backward & forward compatibility** | Fields can be added or deprecated without breaking existing consumers, critical for a long-lived blockchain protocol. |
-| **High-performance serialization**   | Encoding and decoding are faster than JSON parsing, which matters at the throughput levels DecentralChain targets.    |
-
-### Key Features
-
-- 🔗 **Canonical Schema Definitions** — The authoritative `.proto` files for every DecentralChain message type (transactions, blocks, orders, events, gRPC APIs).
-- 🌐 **Multi-Language Bindings** — Pre-generated code for JavaScript/TypeScript, Java, Scala, Rust, C#, and Python.
-- 📦 **npm Package** — Published as `@decentralchain/protobuf-serialization` with full TypeScript type declarations and tree-shakeable ESM output.
-- ⚡ **Optimized Build** — Minimal bundle with no `.create()`, `.verify()`, `.toObject()`, or delimited encoding — only `.encode()` and `.decode()` for maximum performance.
-- 🛡️ **Enterprise-Grade Quality** — CI-enforced linting, formatting, type checking, bundle size budgets, and package validation on every commit.
-- 🔌 **gRPC-Ready** — Full service definitions for the DecentralChain Node gRPC API (accounts, assets, blocks, blockchain, transactions).
-- 📡 **Blockchain Events** — Subscribe to real-time blockchain updates via the event streaming proto definitions.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/protobuf-serialization"><img src="https://img.shields.io/npm/v/@decentralchain/protobuf-serialization?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/protobuf-serialization" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/protobuf-serialization"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/protobuf-serialization" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/protobuf-serialization" alt="node" /></a>
+</p>
 
 ---
 
-## Table of Contents
+## Overview
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [API Reference](#api-reference)
-  - [Core Messages](#core-messages)
-  - [Events](#events)
-  - [Node gRPC APIs](#node-grpc-apis)
-  - [Using Raw Proto Files](#using-raw-proto-files)
-- [Multi-Language Support](#multi-language-support)
-- [Architecture Overview](#architecture-overview)
-- [Local Source Generation](#local-source-generation)
-- [Development](#development)
-- [Contributing](#contributing)
-- [Security](#security)
-- [Code of Conduct](#code-of-conduct)
-- [Changelog](#changelog)
-- [License](#license)
+This repository contains the canonical `.proto` schema files for DecentralChain blockchain transactions, blocks, events, and gRPC APIs. It provides pre-generated bindings for multiple languages: JavaScript/TypeScript (npm), Java (Maven), Rust (Cargo), C# (.NET), and Python.
 
-## Requirements
-
-- **Node.js** >= 22 (for the npm package)
-- **npm** >= 10
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/protobuf-serialization
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -137,17 +97,6 @@ Each message type provides:
 Raw `.proto` files are available at `@decentralchain/protobuf-serialization/proto/*` for custom code generation with tools like `protoc`, `grpc-tools`, `pbjs`, or language-specific protobuf compilers.
 
 ## Multi-Language Support
-
-This repository is designed to be consumed from **any** language in the DecentralChain ecosystem. Whether you are building a node extension in Rust, a backend service in Java, a dApp frontend in TypeScript, or analytics tooling in Python, you can generate or use pre-built bindings from the same canonical `.proto` definitions.
-
-| Language                    | Delivery Mechanism                             | Status                     |
-| --------------------------- | ---------------------------------------------- | -------------------------- |
-| **JavaScript / TypeScript** | npm (`@decentralchain/protobuf-serialization`) | ✅ Pre-built ESM + `.d.ts` |
-| **Java**                    | Maven (`io.decentralchain:protobuf-schemas`)   | ✅ Pre-built JAR           |
-| **Scala**                   | ScalaPB (via Maven artifact)                   | ✅ Source generation       |
-| **Rust**                    | Cargo (git dependency)                         | ✅ Build-time generation   |
-| **C#**                      | NuGet / `.csproj` reference                    | ✅ Build-time generation   |
-| **Python**                  | `grpc_tools.protoc`                            | ✅ Source generation       |
 
 ### Java
 
@@ -223,38 +172,6 @@ python -m grpc_tools.protoc \
   $(find ./proto -type f -name "*.proto")
 ```
 
-## Architecture Overview
-
-Understanding the proto schema layout helps when navigating the codebase or generating bindings for a new language.
-
-```
-proto/waves/
-├── amount.proto                        # Asset amount (asset ID + int64 value)
-├── block.proto                         # Block structure (header + transactions)
-├── transaction.proto                   # All transaction types & signed wrapper
-├── order.proto                         # DEX exchange orders
-├── recipient.proto                     # Address / alias recipient
-├── reward_share.proto                  # Block reward distribution
-├── invoke_script_result.proto          # InvokeScript execution results
-├── state_snapshot.proto                # Node state snapshots
-├── transaction_state_snapshot.proto    # Per-transaction state snapshots
-├── events/
-│   ├── events.proto                    # BlockchainUpdated event definitions
-│   └── grpc/
-│       └── blockchain_updates.proto    # gRPC streaming service for events
-├── lang/
-│   └── dapp_meta.proto                 # dApp script metadata
-└── node/
-    └── grpc/
-        ├── accounts_api.proto          # Account balance & script queries
-        ├── assets_api.proto            # Asset info & distribution queries
-        ├── blockchain_api.proto        # Chain height, score & feature queries
-        ├── blocks_api.proto            # Block retrieval & streaming
-        └── transactions_api.proto      # Transaction queries & broadcasting
-```
-
-**How it fits together:** The `.proto` files define every data structure that travels over the wire between DecentralChain nodes, clients, and gRPC consumers. The `transaction.proto` file, for example, specifies the binary layout of all 18+ transaction types (transfers, leases, data transactions, smart contract invocations, etc.). When a client submits a transaction, it is serialized using these schemas, signed, and broadcast to the network. Nodes deserialize and validate the transaction using the same schema definitions, ensuring perfect interoperability regardless of the programming language used by each participant.
-
 ## Local Source Generation
 
 ### Java
@@ -321,38 +238,23 @@ npm run check:exports   # Type exports valid
 npm run check:size      # Within size budget
 ```
 
+## Related packages
+
+| Package                                                                                      | Description                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall)         | Binary serialization/deserialization |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers     |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)         | Core TypeScript type definitions     |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js)   | Node REST API client                 |
+
 ## Contributing
 
-We welcome contributions from the community! Whether it's a bug fix, a new language binding, improved documentation, or a feature request — every contribution helps strengthen the DecentralChain ecosystem.
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines and workflow.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-The security of the DecentralChain protocol is paramount. If you discover a vulnerability in this repository, please report it responsibly.
-
-See [SECURITY.md](./SECURITY.md) for vulnerability reporting procedures.
-
-## Code of Conduct
-
-We are committed to fostering a welcoming and inclusive community.
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for release history.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) — Copyright (c) 2026-present DecentralChain
-
----
-
-<div align="center">
-
-**Built with ❤️ by the [DecentralChain](https://decentralchain.io) community**
-
-[Website](https://decentralchain.io) · [Documentation](https://docs.decentralchain.io) · [GitHub](https://github.com/Decentral-America) · [Report Bug](https://github.com/Decentral-America/protobuf-serialization/issues)
-
-</div>
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
