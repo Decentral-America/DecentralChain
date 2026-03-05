@@ -5,14 +5,28 @@ import MAINNET_RAW_DATA from './mainnet.json' with { type: 'json' };
 import TESTNET_RAW_DATA from './testnet.json' with { type: 'json' };
 import ARBITRARY_RAW_DATA from './arbitrary.json' with { type: 'json' };
 
-/** @type {readonly string[]} Priority list for DecentralChain mainnet */
-export const MAINNET_DATA = Object.freeze(MAINNET_RAW_DATA.map((d) => d.id));
+/** A tuple of [amountAsset, priceAsset] */
+export type TPair = readonly [amountAsset: string, priceAsset: string];
 
-/** @type {readonly string[]} Priority list for DecentralChain testnet */
-export const TESTNET_DATA = Object.freeze(TESTNET_RAW_DATA.map((d) => d.id));
+/** A function that orders two asset IDs into [amountAsset, priceAsset] */
+export type TOrderPair = (a: string, b: string) => TPair;
 
-/** @type {readonly string[]} Additional asset ordering data */
-export const ARBITRARY_DATA = Object.freeze(ARBITRARY_RAW_DATA.map((d) => d.id));
+/** Overloaded createOrderPair interface supporting curried and full application */
+export interface CreateOrderPair {
+  /** Partial application: returns a function that orders two assets */
+  (predefinedList: readonly string[]): TOrderPair;
+  /** Full application: returns the ordered pair directly */
+  (predefinedList: readonly string[], a: string, b: string): TPair;
+}
+
+/** Priority list for DecentralChain mainnet */
+export const MAINNET_DATA: readonly string[] = Object.freeze(MAINNET_RAW_DATA.map((d) => d.id));
+
+/** Priority list for DecentralChain testnet */
+export const TESTNET_DATA: readonly string[] = Object.freeze(TESTNET_RAW_DATA.map((d) => d.id));
+
+/** Additional asset ordering data */
+export const ARBITRARY_DATA: readonly string[] = Object.freeze(ARBITRARY_RAW_DATA.map((d) => d.id));
 
 /**
  * Determines the correct ordering of an asset pair on the DEX.
@@ -22,13 +36,13 @@ export const ARBITRARY_DATA = Object.freeze(ARBITRARY_RAW_DATA.map((d) => d.id))
  * 2. One asset in the list → the listed asset becomes the price asset
  * 3. Neither asset in the list → ordered deterministically by Base58 byte comparison
  *
- * @param {string[]} predefinedList - Array of asset IDs ordered by priority
- * @param {string} first - First asset ID
- * @param {string} second - Second asset ID
- * @returns {[string, string]} Tuple of [amountAsset, priceAsset]
+ * @param predefinedList - Array of asset IDs ordered by priority
+ * @param first - First asset ID
+ * @param second - Second asset ID
+ * @returns Tuple of [amountAsset, priceAsset]
  * @throws {TypeError} If predefinedList is not an array or asset IDs are not strings
  */
-const orderPair = (predefinedList, first, second) => {
+const orderPair = (predefinedList: readonly string[], first: string, second: string): TPair => {
   if (!Array.isArray(predefinedList)) {
     throw new TypeError(`Expected predefinedList to be an array, got ${typeof predefinedList}`);
   }
@@ -62,20 +76,19 @@ const orderPair = (predefinedList, first, second) => {
  * Creates a curried function that can be called with:
  * - `createOrderPair(data)` → returns `(a, b) => [amount, price]`
  * - `createOrderPair(data, a, b)` → returns `[amount, price]`
- *
- * @param {Function} f - Function to curry
- * @returns {Function} Curried function
  */
-const curry = (f) => {
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
+const curry = (f: (...args: any[]) => any) => {
   const totalargs = f.length;
   const partial =
-    (args, fn) =>
-    (...rest) =>
+    (args: any[], fn: (...a: any[]) => any) =>
+    (...rest: any[]) =>
       fn(...args, ...rest);
-  const fn = (...args) =>
+  const fn = (...args: any[]): any =>
     args.length < totalargs ? partial(args, fn) : f(...args.slice(0, totalargs));
   return fn;
 };
+/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
 
 /**
  * Creates an ordering function from a priority list. Supports currying.
@@ -88,7 +101,5 @@ const curry = (f) => {
  * @example
  * // Full application
  * const [amount, price] = createOrderPair(MAINNET_DATA, 'assetA', 'assetB');
- *
- * @type {import('./index.d.ts').CreateOrderPair}
  */
-export const createOrderPair = curry(orderPair);
+export const createOrderPair: CreateOrderPair = curry(orderPair) as CreateOrderPair;
