@@ -5,23 +5,87 @@
 [![license](https://img.shields.io/npm/l/@decentralchain/ts-lib-crypto)](./LICENSE)
 [![Node.js](https://img.shields.io/node/v/@decentralchain/ts-lib-crypto)](./package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@decentralchain/ts-lib-crypto)](https://bundlephobia.com/package/@decentralchain/ts-lib-crypto)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-Cryptographic library for the DecentralChain blockchain — key generation, signing, hashing, encoding.
+> **The official TypeScript cryptographic toolkit for the [DecentralChain](https://decentralchain.io) blockchain platform.**
+>
+> Key generation · Digital signatures · Hashing · Encoding · Encryption — everything you need to build secure DecentralChain applications.
 
-The DecentralChain protocol uses well-established cryptographic primitives including Curve25519 (Ed25519/X25519), Blake2b, Keccak-256, SHA-256, AES, RSA, and BLS12-381. This library provides all algorithm implementations and protocol utilities (address derivation, seed management, signature verification) needed by DecentralChain applications.
+---
+
+## Overview
+
+**@decentralchain/ts-lib-crypto** is the foundational cryptographic library that powers the DecentralChain blockchain ecosystem. It provides a comprehensive, type-safe API for all cryptographic operations required when interacting with the DecentralChain protocol — from generating wallets and signing transactions to verifying on-chain data and encrypting peer-to-peer messages.
+
+The DecentralChain protocol uses well-established cryptographic primitives including **Curve25519** (Ed25519/X25519), **Blake2b**, **Keccak-256**, **SHA-256**, **AES**, **RSA**, and **BLS12-381**. This library provides all algorithm implementations and protocol utilities (address derivation, seed management, signature verification) needed by DecentralChain applications.
+
+### How It Works with DecentralChain
+
+DecentralChain is a high-performance blockchain platform designed for decentralized applications. Every interaction with the network — creating accounts, sending transactions, issuing tokens, executing smart contracts — requires cryptographic operations. This library serves as the **protocol-level cryptographic layer** that sits between your application logic and the DecentralChain network:
+
+```
+┌─────────────────────────────────┐
+│      Your Application / dApp    │
+├─────────────────────────────────┤
+│   @decentralchain/ts-lib-crypto │  ◄── This library
+│   (keys, signatures, hashing)   │
+├─────────────────────────────────┤
+│     DecentralChain Protocol     │
+│   (transactions, blocks, state) │
+├─────────────────────────────────┤
+│     DecentralChain Network      │
+│      (nodes, consensus)         │
+└─────────────────────────────────┘
+```
+
+**Wallet creation** uses `keyPair()` and `address()` to derive Curve25519 key pairs and protocol-compliant addresses from mnemonic seeds. **Transaction signing** uses `signBytes()` to produce Ed25519 signatures that nodes validate before accepting transactions into blocks. **Address verification** uses `verifyAddress()` to confirm checksum integrity and chain ID correctness (mainnet `L` vs testnet `T`). **Data integrity** is ensured through `blake2b()` and `keccak()` — the same hash functions used internally by the DecentralChain protocol for block hashing and state verification.
+
+### ✨ Key Features
+
+- **🔐 Complete Protocol Coverage** — Every cryptographic primitive used by the DecentralChain protocol, in a single package
+- **📦 Multiple Output Formats** — Get results as Base58 strings (default) or raw `Uint8Array` bytes
+- **🏗️ Flexible API Styles** — Direct imports, factory functions, or embedded-seed patterns to match your architecture
+- **🌐 Universal Runtime** — Works in Node.js (≥ 24) and modern browsers via the UMD bundle
+- **🔒 Auditable Dependencies** — Built on the battle-tested [@noble](https://github.com/paulmillr/noble-curves) cryptographic library family (curves, hashes, ciphers)
+- **📐 Strict TypeScript** — Full type safety with strict mode enabled, exported type definitions, and zero `any` types
+- **🪶 Lightweight** — Tree-shakeable ESM build with a bundle size budget enforced via [size-limit](https://github.com/ai/size-limit)
+- **✅ Thoroughly Tested** — Comprehensive test suite with coverage thresholds enforced in CI
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Import Styles](#import-styles)
+- [API Reference](#api-reference)
+- [Use Cases](#use-cases)
+- [Architecture & Design](#architecture--design)
+- [Platform Compatibility](#platform-compatibility)
+- [Browser](#browser)
+- [Development](#development)
+- [Ecosystem](#ecosystem)
+- [Contributing](#contributing)
+- [Security](#security)
+- [License](#license)
+
+---
 
 ## Requirements
 
 - **Node.js** >= 24
 - **npm** >= 10
 
-## Installation
+## 📥 Installation
 
 ```bash
 npm install @decentralchain/ts-lib-crypto
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ```ts
 import {
@@ -46,7 +110,9 @@ const isValid = verifySignature(keys.publicKey, message, signature);
 console.log({ addr, isValid }); // { addr: '3P...', isValid: true }
 ```
 
-## Import Styles
+## 🔄 Import Styles
+
+This library offers multiple import styles to fit different application architectures and preferences.
 
 ### Direct imports (Base58 output by default)
 
@@ -81,7 +147,7 @@ const { address, signBytes } = crypto({ output: 'Base58', seed: 'my secret seed'
 const addr = address(); // No seed needed — it's embedded
 ```
 
-## API Reference
+## 📖 API Reference
 
 ### Seed Generation
 
@@ -196,7 +262,91 @@ const addr = address(); // No seed needed — it's embedded
 | `MAIN_NET_CHAIN_ID`  | 76 (`L`) |
 | `TEST_NET_CHAIN_ID`  | 84 (`T`) |
 
-## Browser
+---
+
+## 💡 Use Cases
+
+This library is essential for a wide range of DecentralChain development scenarios:
+
+### Wallet & Account Management
+Generate mnemonic seed phrases, derive key pairs, and compute blockchain addresses. Use `randomSeed()` for new wallets, `keyPair()` for key derivation, and `address()` for protocol-compliant address generation.
+
+### Transaction Signing
+Every transaction submitted to the DecentralChain network requires a valid Ed25519 signature. Use `signBytes()` to sign serialized transaction bytes with a seed or private key, and `verifySignature()` on the receiving end to validate authenticity.
+
+### On-Chain Data Verification
+Verify the integrity of addresses with `verifyAddress()`, validate public keys with `verifyPublicKey()`, and verify Merkle proofs with `merkleVerify()` for data accountability.
+
+### Encrypted Messaging
+Establish secure peer-to-peer communication channels using Diffie-Hellman key exchange (`sharedKey()`) combined with AES encryption (`messageEncrypt()` / `messageDecrypt()`).
+
+### Token & Asset Operations
+When building custom tokens, NFTs, or decentralized exchanges on DecentralChain, this library provides the signing and hashing primitives needed to construct and authorize asset issuance, transfer, and exchange transactions.
+
+### Smart Contract (dApp) Interaction
+Invoke DecentralChain smart contracts by signing InvokeScript transactions. Use the hashing functions (`blake2b`, `keccak`, `sha256`) for data that must match on-chain computation results.
+
+---
+
+## 🏛️ Architecture & Design
+
+### Design Principles
+
+- **Protocol Fidelity** — Every function mirrors the exact cryptographic operations performed by DecentralChain nodes, ensuring byte-level compatibility with the network
+- **Zero Side Effects** — All operations are pure functions that return new values; no global state is mutated
+- **Output Flexibility** — The factory-based architecture (`crypto()`) allows choosing between Base58-encoded strings and raw byte arrays at initialization time, avoiding repeated encoding/decoding overhead
+- **Minimal Dependencies** — Cryptographic primitives are provided by the [@noble](https://github.com/paulmillr/noble-curves) family of libraries — audited, constant-time, and free of native bindings
+
+### Cryptographic Primitives
+
+| Primitive | Algorithm | Usage in DecentralChain |
+| --- | --- | --- |
+| Key Generation | Curve25519 (Ed25519) | Wallet key pairs, transaction signing |
+| Hashing | Blake2b-256 | Fast hashing for address derivation, block hashing |
+| Hashing | Keccak-256 | Second-pass hashing in address derivation |
+| Hashing | SHA-256 | General-purpose hashing, seed encryption |
+| Symmetric Encryption | AES (CBC/CTR/ECB) | Seed encryption, message encryption |
+| Asymmetric Encryption | RSA (PKCS#1 v1.5) | Optional RSA signing/verification |
+| Pairing-Based | BLS12-381 | Aggregated signature schemes |
+| Key Exchange | X25519 (Diffie-Hellman) | Shared secret for encrypted messaging |
+
+### Module Structure
+
+```
+src/
+├── index.ts              # Main entry — Base58 output by default
+├── bytes.ts              # Alternative entry — Uint8Array output
+├── rsa.ts                # RSA operations (separate entry point)
+├── crypto/               # Core cryptographic implementations
+│   ├── crypto.ts         #   Factory function & output formatting
+│   ├── address-keys-seed.ts  #   Key derivation & address building
+│   ├── sign.ts           #   Ed25519 signing
+│   ├── verification.ts   #   Signature & address verification
+│   ├── hashing.ts        #   Blake2b, Keccak, SHA-256
+│   ├── encryption.ts     #   AES & seed encryption
+│   ├── bls.ts            #   BLS12-381 operations
+│   └── ...               #   Additional modules
+├── extensions/           # Protocol helpers (ChainId, Seed)
+├── conversions/          # Encoding (Base58, Base64, Base16)
+└── libs/                 # Low-level utility functions
+```
+
+---
+
+## 🖥️ Platform Compatibility
+
+| Platform | Support | Entry Point |
+| --- | --- | --- |
+| **Node.js** ≥ 24 | ✅ Full support | `@decentralchain/ts-lib-crypto` (ESM) |
+| **Modern Browsers** | ✅ Full support | UMD bundle (`dist/index.umd.min.js`) |
+| **Deno** | ⚠️ Experimental | ESM import via npm specifier |
+| **Bun** | ⚠️ Experimental | ESM import |
+
+> **Note:** The library uses `node:crypto` for RSA operations. The main entry point and bytes entry point do not depend on Node.js built-ins and work in any JavaScript runtime.
+
+---
+
+## 🌐 Browser
 
 A UMD bundle is built at `dist/index.umd.min.js` exposing `DCCCrypto` globally:
 
@@ -208,7 +358,7 @@ A UMD bundle is built at `dist/index.umd.min.js` exposing `DCCCrypto` globally:
 </script>
 ```
 
-## Development
+## 🛠️ Development
 
 ### Prerequisites
 
@@ -239,7 +389,7 @@ npm install
 
 ### Quality Gates
 
-All PRs must pass:
+All PRs must pass the following automated checks to ensure production-grade quality:
 
 ```bash
 npm run format:check    # No formatting issues
@@ -252,22 +402,42 @@ npm run check:exports   # Type exports valid
 npm run check:size      # Within size budget
 ```
 
-## Contributing
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether it's bug fixes, new features, documentation improvements, or test coverage — every contribution matters.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
 
-## Security
+## 🔒 Security
+
+The security of this library is critical — it handles private keys, seed phrases, and cryptographic operations that protect real assets on the DecentralChain network.
 
 See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 
-## Code of Conduct
+## 📜 Code of Conduct
 
 See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
-## Changelog
+## 📋 Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
-## License
+---
+
+## 🌍 Ecosystem
+
+This library is part of the broader DecentralChain developer toolkit:
+
+| Package | Description |
+| --- | --- |
+| **@decentralchain/ts-lib-crypto** | Cryptographic primitives (this library) |
+| **[@decentralchain/ts-types](https://github.com/Decentral-America/ts-types)** | TypeScript type definitions for DecentralChain protocol |
+| **[@decentralchain/dcc-proto-serialization](https://github.com/Decentral-America/dcc-proto-serialization)** | Protobuf serialization for DecentralChain transactions |
+
+> Visit the [Decentral-America GitHub organization](https://github.com/Decentral-America) to explore all official packages and tools.
+
+---
+
+## 📄 License
 
 [MIT](./LICENSE) — Copyright (c) 2026-present DecentralChain
