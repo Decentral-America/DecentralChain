@@ -94,6 +94,11 @@
     "long": "^5.3.2",
     "protobufjs": "^8.0.0"
   },
+  "overrides": {
+    "protobufjs-cli": {
+      "protobufjs": "$protobufjs"
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@eslint/js": "10.0.1",
