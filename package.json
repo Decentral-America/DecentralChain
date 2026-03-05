@@ -20,7 +20,7 @@
   ],
   "sideEffects": false,
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "packageManager": "npm@11.6.2",
   "publishConfig": {
