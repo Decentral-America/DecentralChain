@@ -1,6 +1,6 @@
 import { type IAdapterSignMethods } from './interfaces';
-import { libs, protoSerialize } from '@decentralchain/decentralchain-transactions';
-import * as dccTransactions from '@decentralchain/decentralchain-transactions';
+import { libs, protoSerialize } from '@decentralchain/transactions';
+import * as dccTransactions from '@decentralchain/transactions';
 import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
 import { prepare } from './prepare';
 const { processors } = prepare;
@@ -246,10 +246,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       }
       const order1Sign = data.buyOrder.signature || data.buyOrder.proofs[0];
       const order1proofs = data.buyOrder.proofs ? data.buyOrder.proofs : data.buyOrder.signature;
-      const order1 = { ...tx.buyOrder, signature: order1Sign, proofs: order1proofs };
+      const order1 = { ...tx.order1, signature: order1Sign, proofs: order1proofs };
       const order2Sign = data.sellOrder.signature || data.sellOrder.proofs[0];
       const order2proofs = data.sellOrder.proofs ? data.sellOrder.proofs : data.sellOrder.signature;
-      const order2 = { ...tx.sellOrder, signature: order2Sign, proofs: order2proofs };
+      const order2 = { ...tx.order2, signature: order2Sign, proofs: order2proofs };
       return dccTransactions.exchange({ ...tx, order1, order2 });
     },
     adapter: 'signTransaction',
