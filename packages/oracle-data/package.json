@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/oracle-data",
   "version": "1.0.0",
-  "description": "Oracle data parsing and encoding utilities for the DecentralChain blockchain",
+  "description": "Official TypeScript SDK for parsing, encoding, validating, and diffing oracle data on the DecentralChain blockchain — provider identity, asset verification, and data transaction field utilities",
   "type": "module",
   "packageManager": "npm@11.9.0",
   "exports": {
@@ -77,7 +77,14 @@
     "dcc",
     "oracle",
     "blockchain",
-    "data"
+    "data",
+    "data-transaction",
+    "asset-verification",
+    "oracle-provider",
+    "typescript",
+    "sdk",
+    "web3",
+    "crypto"
   ],
   "author": "DecentralChain",
   "license": "MIT",
