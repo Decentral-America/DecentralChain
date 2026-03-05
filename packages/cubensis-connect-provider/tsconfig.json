@@ -23,7 +23,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["@decentralchain/cubensisconnect-types"]
+    "types": ["@decentralchain/cubensis-connect-types"]
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src/**/*.ts"]

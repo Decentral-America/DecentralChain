@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/provider-cubensis
+ * @module @decentralchain/cubensis-connect-provider
  *
  * Adapter functions to convert between Signer and CubensisConnect transaction formats.
  */
@@ -244,7 +244,17 @@ export function keeperTxFactory(tx: SignerTx): CubensisConnect.TSignTransactionD
   }
 }
 
+/**
+ * Converts a signed transaction string from CubensisConnect format
+ * back to the Signer signed transaction format via marshall JSON parsing.
+ *
+ * @param signed - JSON string of the signed transaction from CubensisConnect
+ * @returns The parsed signed transaction object
+ * @throws {Error} If the input is not a valid non-empty string
+ */
 export function signerTxFactory(signed: string): SignedTx<SignerTx> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  if (typeof signed !== 'string' || signed.length === 0) {
+    throw new Error('Expected a non-empty signed transaction string from CubensisConnect');
+  }
   return json.parseTx(signed);
 }
