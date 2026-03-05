@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/bignumber",
   "version": "1.1.1",
-  "description": "Arbitrary-precision BigNumber wrapper for the DecentralChain SDK",
+  "description": "Official arbitrary-precision BigNumber library for the DecentralChain blockchain SDK — safe arithmetic and byte serialization for token amounts, transaction fees, and on-chain financial computations",
   "type": "module",
   "packageManager": "npm@11.9.0",
   "exports": {
@@ -82,7 +82,14 @@
     "decentralchain",
     "sdk",
     "math",
-    "decimal"
+    "decimal",
+    "defi",
+    "cryptocurrency",
+    "token",
+    "transaction",
+    "serialization",
+    "financial",
+    "precision"
   ],
   "author": "DecentralChain",
   "license": "MIT",
