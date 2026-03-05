@@ -1,5 +1,5 @@
 {
-  "name": "@decentralchain/decentralchain-transactions",
+  "name": "@decentralchain/transactions",
   "version": "5.0.0",
   "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
   "type": "module",
@@ -27,15 +27,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-transactions.git"
+    "url": "git+https://github.com/Decentral-America/transactions.git"
   },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-transactions#readme",
+  "homepage": "https://github.com/Decentral-America/transactions#readme",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-transactions/issues"
+    "url": "https://github.com/Decentral-America/transactions/issues"
   },
   "scripts": {
     "build": "tsup",
@@ -87,11 +87,11 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/marshall": "^0.14.0",
-    "@decentralchain/node-api-js": "^1.2.5-beta.18",
-    "@decentralchain/protobuf-serialization": "npm:@waves/protobuf-serialization@1.4.3",
-    "@decentralchain/ts-lib-crypto": "npm:@waves/ts-lib-crypto@^1.4.4",
-    "@decentralchain/ts-types": "npm:@waves/ts-types@^1.2.0",
+    "@decentralchain/marshall": "1.0.0",
+    "@decentralchain/node-api-js": "2.0.0",
+    "@decentralchain/protobuf-serialization": "2.0.0",
+    "@decentralchain/ts-lib-crypto": "2.0.0",
+    "@decentralchain/ts-types": "2.0.0",
     "long": "^5.3.2"
   },
   "devDependencies": {
@@ -104,7 +104,7 @@
     "eslint-config-prettier": "10.1.8",
     "globals": "17.4.0",
     "husky": "9.1.7",
-    "lint-staged": "16.3.1",
+    "lint-staged": "^16.3.2",
     "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
