@@ -9,6 +9,7 @@ import type {
   InvokeScriptPayment,
   Long,
   MassTransferItem,
+  Phantom,
   SignedIExchangeTransactionOrder,
   TStateChanges,
   WithApiMixin,
@@ -48,6 +49,16 @@ export type Transaction<LONG = Long> =
   | InvokeScriptTransaction<LONG>
   | UpdateAssetInfoTransaction<LONG>
   | EthereumTransaction<LONG>;
+
+// ── Signable Transaction Union ──────────────────────────────────────────────
+// User-signable transactions only — excludes system-generated types:
+//   Genesis (type 1)  — created at chain initialization
+//   Payment (type 2)  — deprecated, replaced by Transfer
+//   Ethereum (type 18) — uses EVM/secp256k1, not ed25519
+export type SignableTransaction<LONG = Long> = Exclude<
+  Transaction<LONG>,
+  GenesisTransaction<LONG> | PaymentTransaction<LONG> | EthereumTransaction<LONG>
+>;
 
 // ── Transaction Map ─────────────────────────────────────────────────────────
 export type TransactionMap<LONG = Long> = {
@@ -138,13 +149,13 @@ export type LeaseTransactionFields<LONG = Long> = {
   recipient: string;
 };
 
-export type CancelLeaseTransactionFields<_LONG = Long> = {
+export type CancelLeaseTransactionFields<LONG = Long> = {
   leaseId: string;
-};
+} & Phantom<'LONG', LONG>;
 
-export type AliasTransactionFields<_LONG = Long> = {
+export type AliasTransactionFields<LONG = Long> = {
   alias: string;
-};
+} & Phantom<'LONG', LONG>;
 
 export type MassTransferTransactionFields<LONG = Long> = {
   transfers: Array<MassTransferItem<LONG>>;
@@ -165,19 +176,19 @@ export type ExchangeTransactionFields<LONG = Long> = {
   sellMatcherFee: LONG;
 };
 
-export type SetScriptTransactionFields<_LONG = Long> = {
+export type SetScriptTransactionFields<LONG = Long> = {
   script: Base64Script | null;
-};
+} & Phantom<'LONG', LONG>;
 
 export type SponsorshipTransactionFields<LONG = Long> = {
   assetId: string;
   minSponsoredAssetFee: LONG | null;
 };
 
-export type SetAssetScriptTransactionFields<_LONG = Long> = {
+export type SetAssetScriptTransactionFields<LONG = Long> = {
   assetId: string;
   script: Base64Script;
-};
+} & Phantom<'LONG', LONG>;
 
 export type InvokeScriptTransactionFields<LONG = Long> = {
   dApp: string;
@@ -186,11 +197,11 @@ export type InvokeScriptTransactionFields<LONG = Long> = {
   payment: Array<InvokeScriptPayment<LONG>> | null;
 };
 
-export type UpdateAssetInfoTransactionFields<_LONG = Long> = {
+export type UpdateAssetInfoTransactionFields<LONG = Long> = {
   assetId: string;
   name: string;
   description: string;
-};
+} & Phantom<'LONG', LONG>;
 
 export type EthereumTransactionFields<LONG = Long> = {
   payload:
