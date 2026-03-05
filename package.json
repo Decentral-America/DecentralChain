@@ -124,14 +124,14 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/bignumber": "*",
-    "@decentralchain/ts-lib-crypto": "*",
-    "@decentralchain/ts-types": "*",
+    "@decentralchain/bignumber": "1.1.1",
+    "@decentralchain/ts-lib-crypto": "2.0.0",
+    "@decentralchain/ts-types": "2.0.0",
     "typed-ts-events": "^3.0.1"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@decentralchain/transactions": "*",
+    "@decentralchain/transactions": "5.0.0",
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "12.0.0",
     "@types/node": "^25.3.3",
