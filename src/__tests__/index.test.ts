@@ -1,5 +1,5 @@
 import { AssetPair, Asset } from '@decentralchain/data-entities';
-import parseJsonBignumber from 'parse-json-bignumber';
+import parseJsonBignumber from '@decentralchain/parse-json-bignumber';
 
 import DataServiceClient from '../index';
 
@@ -527,9 +527,28 @@ describe('Long params transforms into POST request', () => {
     const pairs: AssetPair[] = new Array(300).fill(1).map(
       () =>
         new AssetPair(
-          new Asset({ id: 'DCC' } as any),
+          new Asset({
+            id: 'DCC',
+            name: 'DecentralChain',
+            precision: 8,
+            description: '',
+            height: 0,
+            sender: '',
+            hasScript: false,
+            reissuable: false,
+            ticker: 'DCC',
+            quantity: '10000000000000000',
+          } as any),
           new Asset({
             id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+            name: 'Test',
+            precision: 8,
+            description: '',
+            height: 0,
+            sender: '',
+            hasScript: false,
+            reissuable: false,
+            quantity: '10000000000000000',
           } as any),
         ),
     );
