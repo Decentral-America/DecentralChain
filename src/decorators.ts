@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/provider-cubensis
+ * @module @decentralchain/cubensis-connect-provider
  *
  * Decorators for the CubensisConnect provider methods.
  */
@@ -35,13 +35,13 @@ export function ensureNetwork(
 
   descriptor.value = function (
     this: { [Key in keyof ProviderCubensis]: ProviderCubensis[Key] } & {
-      _api: CubensisConnect.TCubensisConnectApi;
+      _api: CubensisConnect.ICubensisConnectApi;
       _options: ConnectOptions;
     },
     ...args: unknown[]
   ) {
     const api = this._api;
-    return api.publicState().then((state) => {
+    return api.publicState().then((state: CubensisConnect.IPublicStateResponse) => {
       const nodeUrl = normalizeNodeUrl(state.network.server);
       const networkByte = state.network.code.charCodeAt(0);
 

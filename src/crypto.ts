@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/provider-cubensis
+ * @module @decentralchain/cubensis-connect-provider
  *
  * Lightweight cryptographic utilities using native Web Crypto API.
  * Uses native Web Crypto API (available in all modern browsers and Node.js 22+).
