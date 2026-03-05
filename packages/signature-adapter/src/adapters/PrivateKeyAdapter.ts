@@ -1,11 +1,14 @@
 import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/decentralchain-transactions';
+import { seedUtils, libs } from '@decentralchain/transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const publicKey = libs.crypto.publicKey;
 const address = libs.crypto.address;
 const signWithPrivateKey = libs.crypto.signBytes;
+
+/** Minimum acceptable encryption rounds to prevent brute-force attacks on encrypted keys */
+const MIN_ENCRYPTION_ROUNDS = 5000;
 
 export class PrivateKeyAdapter extends Adapter {
   private privateKey = '';
@@ -20,7 +23,11 @@ export class PrivateKeyAdapter extends Adapter {
       this.privateKey = data;
     } else {
       const user = data as IPrivateKeyUser;
-      const encryptionRounds = user.encryptionRounds;
+      const encryptionRounds = Math.max(
+        user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
+        MIN_ENCRYPTION_ROUNDS,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility
       this.privateKey = seedUtils.Seed.decryptSeedPhrase(
         user.encryptedPrivateKey || '',
         user.password,
@@ -80,6 +87,7 @@ export class PrivateKeyAdapter extends Adapter {
   }
 
   public getPrivateKey(): Promise<string> {
+    if (this._isDestroyed) return Promise.reject(new Error('Adapter has been destroyed'));
     return Promise.resolve(this.privateKey);
   }
 

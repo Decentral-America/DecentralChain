@@ -1,7 +1,7 @@
 import { PrivateKeyAdapter } from '../src/adapters/PrivateKeyAdapter';
 import { Adapter } from '../src/adapters/Adapter';
 import { SIGN_TYPE } from '../src/prepareTx';
-import { libs, seedUtils } from '@decentralchain/decentralchain-transactions';
+import { libs, seedUtils } from '@decentralchain/transactions';
 
 describe('PrivateKeyAdapter - extended tests', () => {
   beforeAll(() => {

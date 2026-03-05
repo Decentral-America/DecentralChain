@@ -3,7 +3,7 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
 import { BigNumber } from '@decentralchain/bignumber';
-import { seedUtils } from '@decentralchain/decentralchain-transactions';
+import { seedUtils } from '@decentralchain/transactions';
 
 const Seed = seedUtils.Seed;
 
@@ -137,7 +137,7 @@ describe('Check validators', () => {
         expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
-        expect(e.length).toEqual(1);
+        expect(e.length).toEqual(2);
         expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
         expect(e[0].field).toEqual('amount');
       }
@@ -154,7 +154,7 @@ describe('Check validators', () => {
         expect.fail('Expected to throw but did not');
       } catch (error) {
         const e = getError(error);
-        expect(e.length).toEqual(1);
+        expect(e.length).toEqual(2);
         expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
         expect(e[0].field).toEqual('fee');
       }
