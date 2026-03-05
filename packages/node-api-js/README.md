@@ -1,25 +1,37 @@
-# @decentralchain/node-api-js
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/node-api-js/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/node-api-js/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/node-api-js)](https://www.npmjs.com/package/@decentralchain/node-api-js)
-[![license](https://img.shields.io/npm/l/@decentralchain/node-api-js)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/node-api-js)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+<h3 align="center">@decentralchain/node-api-js</h3>
 
-TypeScript/JavaScript HTTP client for the DecentralChain node REST API.
+<p align="center">
+  TypeScript/JavaScript HTTP client for the DecentralChain node REST API.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/node-api-js"><img src="https://img.shields.io/npm/v/@decentralchain/node-api-js?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/node-api-js" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/node-api-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/node-api-js" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/node-api-js" alt="node" /></a>
+</p>
+
+---
+
+## Overview
 
 Provides a fully typed, ergonomic wrapper around every endpoint of a DecentralChain node. Includes utilities for address watching, transaction broadcasting with confirmations, block tools, and asset conversion helpers.
 
-## Requirements
-
-- **Node.js** >= 24
-- **npm** >= 10
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/node-api-js
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -139,22 +151,23 @@ npm run check:exports   # Type exports valid
 npm run check:size      # Within size budget
 ```
 
+## Related packages
+
+| Package | Description |
+| --- | --- |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
+| [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer) | Transaction signing orchestrator |
+| [`@decentralchain/data-service-client-js`](https://www.npmjs.com/package/@decentralchain/data-service-client-js) | Data service API client |
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md).
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md).
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
