@@ -221,7 +221,9 @@ describe('TESTNET_DATA', () => {
   });
   it('is a non-empty array of strings', () => {
     expect(TESTNET_DATA.length).toBeGreaterThan(0);
-    TESTNET_DATA.forEach((id) => expect(typeof id).toBe('string'));
+    TESTNET_DATA.forEach((id) => {
+      expect(typeof id).toBe('string');
+    });
   });
   it('orders [unknown, DCC] with DCC as price asset', () => {
     expect(testnetOrderPair('FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA', 'DCC')).toEqual([
@@ -239,7 +241,9 @@ describe('ARBITRARY_DATA', () => {
   });
   it('is a non-empty array of strings', () => {
     expect(ARBITRARY_DATA.length).toBeGreaterThan(0);
-    ARBITRARY_DATA.forEach((id) => expect(typeof id).toBe('string'));
+    ARBITRARY_DATA.forEach((id) => {
+      expect(typeof id).toBe('string');
+    });
   });
   it('orders [unknown, DCC] with DCC as price asset', () => {
     expect(arbitraryOrderPair('FxSm86qcEw8wGfpX3T7X5fsnuK5XxYA6ZfVYJja29vMA', 'DCC')).toEqual([
