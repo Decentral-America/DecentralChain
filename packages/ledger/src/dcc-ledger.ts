@@ -380,7 +380,7 @@ export class DCCLedger {
         if (this._debug) {
           this._unsubscribeLog?.();
           this._unsubscribeLog = listen((log: { type: string }) => {
-            console.log(log);
+            console.debug('[DCCLedger]', log.type, log);
           });
         }
         if (this._exchangeTimeout !== undefined) {
