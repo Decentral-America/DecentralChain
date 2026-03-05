@@ -1,7 +1,7 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@decentralchain/data-entities';
 import { BtcAsset, TORCorp, INSTANTCOIN, DCCAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
-import { libs } from '@decentralchain/decentralchain-transactions';
+import { libs } from '@decentralchain/transactions';
 import { BigNumber } from '@decentralchain/bignumber';
 
 const { base58Decode } = libs.crypto;

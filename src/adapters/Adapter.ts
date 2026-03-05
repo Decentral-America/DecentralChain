@@ -1,6 +1,6 @@
 import { AdapterType } from '../adapterType';
 import { type SIGN_TYPE, type TSignData } from '../prepareTx';
-import { libs, serializeCustomData } from '@decentralchain/decentralchain-transactions';
+import { libs, serializeCustomData } from '@decentralchain/transactions';
 import { Signable } from '../Signable';
 const { stringToBytes } = libs.crypto;
 

@@ -1,6 +1,6 @@
 import { type Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { libs } from '@decentralchain/decentralchain-transactions';
+import { libs } from '@decentralchain/transactions';
 import { VALIDATORS } from './fieldValidator';
 
 export const DCC_ID = 'DCC';

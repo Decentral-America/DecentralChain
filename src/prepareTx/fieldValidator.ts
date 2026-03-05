@@ -1,4 +1,4 @@
-import { libs } from '@decentralchain/decentralchain-transactions';
+import { libs } from '@decentralchain/transactions';
 import { Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
 

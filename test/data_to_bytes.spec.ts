@@ -1,6 +1,6 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
 import { txs } from './transactionsData';
-import { libs } from '@decentralchain/decentralchain-transactions';
+import { libs } from '@decentralchain/transactions';
 
 const { verifySignature } = libs.crypto;
 
