@@ -12,6 +12,9 @@ coverage
 # Dependencies
 node_modules
 
+# Legacy provider directory (stale artifact from pre-modernization)
+provider/
+
 # OS
 .DS_Store
 Thumbs.db
