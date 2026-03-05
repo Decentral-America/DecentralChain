@@ -1,4 +1,4 @@
-# Contributing to @decentralchain/provider-cubensis
+# Contributing to @decentralchain/cubensis-connect-provider
 
 Thank you for your interest in contributing!
 
@@ -14,8 +14,8 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 ## Setup
 
 ```bash
-git clone https://github.com/Decentral-America/provider-cubensis.git
-cd provider-cubensis
+git clone https://github.com/Decentral-America/cubensis-connect-provider.git
+cd cubensis-connect-provider
 npm install
 ```
 

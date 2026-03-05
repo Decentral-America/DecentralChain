@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/provider-cubensis
+ * @module @decentralchain/cubensis-connect-provider
  *
  * DecentralChain transaction type constants.
  * Inlined from the DecentralChain protocol specification.
