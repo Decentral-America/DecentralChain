@@ -1,7 +1,7 @@
-# @decentralchain/cubensisconnect-types
+# @decentralchain/cubensis-connect-types
 
 [![CI](https://github.com/Decentral-America/cubensis-connect-types/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/cubensis-connect-types/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/cubensisconnect-types)](https://www.npmjs.com/package/@decentralchain/cubensisconnect-types)
+[![npm version](https://img.shields.io/npm/v/@decentralchain/cubensis-connect-types)](https://www.npmjs.com/package/@decentralchain/cubensis-connect-types)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -10,7 +10,7 @@
 ## Installation
 
 ```bash
-npm install --save-dev @decentralchain/cubensisconnect-types
+npm install --save-dev @decentralchain/cubensis-connect-types
 ```
 
 ## Usage
@@ -21,9 +21,9 @@ npm install --save-dev @decentralchain/cubensisconnect-types
 import type {
   ICubensisConnectApi,
   IAuthData,
-  ISignTransactionResponse,
+  TSignTransactionData,
   TMoney,
-} from '@decentralchain/cubensisconnect-types';
+} from '@decentralchain/cubensis-connect-types';
 ```
 
 ### Global augmentation
@@ -62,37 +62,40 @@ const state = await api.publicState();
 
 ### Transactions
 
-| Type                       | Description                                         |
-| -------------------------- | --------------------------------------------------- |
-| `TSignTransactionData`     | Union of all 15 transaction types                   |
-| `ISignTransactionResponse` | Response from `signTransaction()`                   |
-| `TSignRequestData`         | Union of sign-request transaction types             |
-| `TTypedData`               | Typed-data entry (boolean, integer, string, binary) |
+| Type                          | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `TSignTransactionData`        | Union of all 15 transaction types                   |
+| `TSignTransactionPackageData` | Array type for batch signing (up to 7 transactions) |
+| `TSignRequestData`            | Sign-request data (type 1001 or 1004)               |
+| `TTypedData`                  | Typed-data entry (boolean, integer, string, binary) |
 
 ### Transaction Types
 
 | Type                      | Tx ID |
 | ------------------------- | ----- |
-| `ISignIssueData`          | 3     |
-| `ISignTransferData`       | 4     |
-| `ISignReissueData`        | 5     |
-| `ISignBurnData`           | 6     |
-| `ISignLeaseData`          | 8     |
-| `ISignCancelLeaseData`    | 9     |
-| `ISignAliasData`          | 10    |
-| `ISignMassTransferData`   | 11    |
-| `ISignDataData`           | 12    |
-| `ISignSetScriptData`      | 13    |
-| `ISignSponsorshipData`    | 14    |
-| `ISignSetAssetScriptData` | 15    |
-| `ISignInvokeScriptData`   | 16    |
+| `TIssueTxData`            | 3     |
+| `TTransferTxData`         | 4     |
+| `TReissueTxData`          | 5     |
+| `TBurnTxData`             | 6     |
+| `TLeaseTxData`            | 8     |
+| `TLeaseCancelTxData`      | 9     |
+| `TCreateAliasTxData`      | 10    |
+| `TMassTransferTxData`     | 11    |
+| `TDataTxData`             | 12    |
+| `TSetScriptTxData`        | 13    |
+| `TSponsoredFeeTxData`     | 14    |
+| `TSetAssetScriptTxData`   | 15    |
+| `TScriptInvocationTxData` | 16    |
+| `TUpdateAssetInfoTxData`  | 17    |
+| `TInvokeExpressionTxData` | 18    |
 
 ### Orders
 
-| Type                 | Description                 |
-| -------------------- | --------------------------- |
-| `ISignOrderData`     | DEX order parameters        |
-| `ISignOrderResponse` | Response from order signing |
+| Type                   | Description             |
+| ---------------------- | ----------------------- |
+| `TSignOrderData`       | DEX order signing data  |
+| `TSignCancelOrderData` | Order cancellation data |
+| `ISignOrderDataBody`   | Order body fields       |
 
 ### Custom Data
 
@@ -105,25 +108,32 @@ const state = await api.publicState();
 
 ### Common
 
-| Type        | Description                       |
-| ----------- | --------------------------------- |
-| `TMoney`    | `string \| number` — asset amount |
-| `TCallArgs` | Invoke-script call argument       |
+| Type        | Description                                         |
+| ----------- | --------------------------------------------------- |
+| `TMoney`    | `IMoneyTokens \| IMoneyCoins \| IMoneyAmount` union |
+| `TCallArgs` | Invoke-script call argument                         |
+| `ISignData` | Generic wrapper mapping tx type code to body        |
 
 ## Scripts
 
-| Script              | Purpose                               |
-| ------------------- | ------------------------------------- |
-| `npm run build`     | Compile with tsup (ESM + CJS + .d.ts) |
-| `npm run typecheck` | `tsc --noEmit` strict type check      |
-| `npm run lint`      | ESLint with type-aware rules          |
-| `npm run format`    | Prettier format check                 |
-| `npm run test`      | Vitest type-level tests               |
-| `npm run validate`  | Full CI pipeline (all checks)         |
+| Script                      | Purpose                                                |
+| --------------------------- | ------------------------------------------------------ |
+| `npm run build`             | Compile with tsup (ESM + .d.ts)                        |
+| `npm run typecheck`         | `tsc --noEmit` strict type check                       |
+| `npm run lint`              | ESLint check (no auto-fix)                             |
+| `npm run lint:fix`          | ESLint with auto-fix                                   |
+| `npm run format`            | Prettier auto-format                                   |
+| `npm run format:check`      | Prettier check (no writes)                             |
+| `npm run test`              | Vitest type-level tests                                |
+| `npm run test:watch`        | Tests in watch mode                                    |
+| `npm run test:coverage`     | Tests with V8 coverage                                 |
+| `npm run bulletproof`       | Format + lint fix + typecheck + test                   |
+| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test               |
+| `npm run validate`          | Full CI pipeline (all checks + build + publish checks) |
 
 ## Requirements
 
-- **Node.js** ≥ 22 (recommended: 24)
+- **Node.js** ≥ 24 (LTS)
 - **npm** ≥ 11
 
 ## Contributing
