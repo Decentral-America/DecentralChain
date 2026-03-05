@@ -1,21 +1,16 @@
+# https://editorconfig.org
 root = true
 
 [*]
-insert_final_newline = true
 charset = utf-8
-trim_trailing_whitespace = true
 end_of_line = lf
-max_line_length = 80
-spaces_around_operators = true
-
-[*.{js,jsx,ts,tsx}]
-indent_style = space
-indent_size = 4
-
-[*.{json}]
 indent_style = space
 indent_size = 2
-quote_type = double
+insert_final_newline = true
+trim_trailing_whitespace = true
 
-[*.{md,markdown}]
+[*.md]
 trim_trailing_whitespace = false
+
+[*.{json,yml,yaml}]
+indent_size = 2

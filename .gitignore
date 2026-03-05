@@ -1,10 +1,22 @@
-dist
-node_modules
+# IDE
 .idea
-_*
-es
-cjs
+.vscode
+*.swp
+*.swo
+
+# Build output
+dist
 coverage
+*.tsbuildinfo
+
+# Dependencies
+node_modules
+
+# OS
 .DS_Store
-src/**/*.d.ts
-src/types/api.ts
+Thumbs.db
+
+# Misc
+.size-snapshot.json
+.rpt2_cache
+*.local

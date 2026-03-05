@@ -1,140 +1,125 @@
 import { EventEmitter } from 'typed-ts-events';
-import { libs, signTx, order } from '@waves/waves-transactions';
+import { libs, signTx, order } from '@decentralchain/transactions';
 import { NETWORK_BYTE } from './test-env';
-import {
-    AuthEvents,
-    ConnectOptions,
-    Handler,
-    TOrderArgs,
-    Provider,
-    TSignedOrder,
-    SignerTx,
-    TypedData,
-    UserData,
-} from '../src';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import type {
+  AuthEvents,
+  ConnectOptions,
+  Handler,
+  TOrderArgs,
+  Provider,
+  TSignedOrder,
+  SignerTx,
+  TypedData,
+  UserData,
+} from '../src/index';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 export class TestProvider implements Provider {
-    private options: ConnectOptions = {
-        NETWORK_BYTE: NETWORK_BYTE,
-        NODE_URL: 'https://nodes.wavesnodes.com',
+  private options: ConnectOptions = {
+    NETWORK_BYTE,
+    NODE_URL: 'https://nodes.decentralchain.io',
+  };
+
+  private readonly seed: string;
+  public readonly user: UserData;
+  public debugEmitter: EventEmitter<TEvents> = new EventEmitter<TEvents>();
+  private readonly emitter: EventEmitter<AuthEvents> = new EventEmitter<AuthEvents>();
+
+  constructor(seed?: string) {
+    this.seed = seed ?? libs.crypto.randomSeed();
+
+    this.user = {
+      address: libs.crypto.address(this.seed),
+      publicKey: libs.crypto.privateKey(this.seed),
     };
-    private readonly seed: string;
-    public readonly user: UserData;
-    public debugEmitter: EventEmitter<TEvents> = new EventEmitter<TEvents>();
-    private readonly emitter: EventEmitter<AuthEvents> = new EventEmitter<
-        AuthEvents
-    >();
+  }
 
-    constructor(seed?: string) {
-        this.seed = seed || libs.crypto.randomSeed();
+  public on<EVENT extends keyof AuthEvents>(
+    event: EVENT,
+    handler: Handler<AuthEvents[EVENT]>,
+  ): Provider {
+    this.emitter.on(event, handler);
+    return this;
+  }
 
-        this.user = {
-            address: libs.crypto.address(this.seed),
-            publicKey: libs.crypto.privateKey(this.seed),
-        };
-    }
+  public once<EVENT extends keyof AuthEvents>(
+    event: EVENT,
+    handler: Handler<AuthEvents[EVENT]>,
+  ): Provider {
+    this.emitter.once(event, handler);
+    return this;
+  }
 
-    public on<EVENT extends keyof AuthEvents>(
-        event: EVENT,
-        handler: Handler<AuthEvents[EVENT]>
-    ): Provider {
-        this.emitter.on(event, handler);
+  public off<EVENT extends keyof AuthEvents>(
+    event: EVENT,
+    handler: Handler<AuthEvents[EVENT]>,
+  ): Provider {
+    this.emitter.off(event, handler);
+    return this;
+  }
 
-        return this;
-    }
+  public connect(options: ConnectOptions): Promise<void> {
+    this.options = options;
+    this.debugEmitter.trigger('connect', [options]);
+    return Promise.resolve();
+  }
 
-    public once<EVENT extends keyof AuthEvents>(
-        event: EVENT,
-        handler: Handler<AuthEvents[EVENT]>
-    ): Provider {
-        this.emitter.once(event, handler);
+  public login(): Promise<UserData> {
+    const promise = Promise.resolve({
+      address: libs.crypto.address(this.seed, this.options.NETWORK_BYTE),
+      publicKey: libs.crypto.publicKey(this.seed),
+    });
 
-        return this;
-    }
+    this.debugEmitter.trigger('login', [] as unknown as []);
+    return promise;
+  }
 
-    public off<EVENT extends keyof AuthEvents>(
-        event: EVENT,
-        handler: Handler<AuthEvents[EVENT]>
-    ): Provider {
-        this.emitter.off(event, handler);
+  public logout(): Promise<void> {
+    this.debugEmitter.trigger('logout', [] as unknown as []);
+    return Promise.resolve();
+  }
 
-        return this;
-    }
+  public sign(list: Array<SignerTx>): Promise<unknown> {
+    this.debugEmitter.trigger('sign', [list]);
 
-    public connect(options: ConnectOptions): Promise<void> {
-        this.options = options;
-        this.debugEmitter.trigger('connect', [options]);
+    const fixAlias = (tx: Record<string, unknown>) =>
+      tx.type === TRANSACTION_TYPE.ALIAS
+        ? { ...tx, alias: String(tx.alias).replace(/alias:.:/, '') }
+        : tx;
 
-        return Promise.resolve();
-    }
+    const fixIssueDescription = (tx: Record<string, unknown>) =>
+      tx.type === TRANSACTION_TYPE.ISSUE && tx.description == null
+        ? { ...tx, description: '' }
+        : tx;
 
-    public login(): Promise<UserData> {
-        const promise = Promise.resolve({
-            address: libs.crypto.address(this.seed, this.options.NETWORK_BYTE),
-            publicKey: libs.crypto.publicKey(this.seed),
-        });
+    return Promise.resolve(
+      list.map((item) =>
+        signTx(
+          fixIssueDescription(fixAlias({ chainId: this.options.NETWORK_BYTE, ...item })) as any,
+          this.seed,
+        ),
+      ),
+    ) as any;
+  }
 
-        this.debugEmitter.trigger('login', [] as any);
+  public signMessage(data: string | number): Promise<string> {
+    this.debugEmitter.trigger('signMessage', [data]);
+    // TODO
+    return Promise.resolve('TODO');
+  }
 
-        return promise;
-    }
+  public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
+    this.debugEmitter.trigger('signOrder', [data]);
+    return Promise.resolve(order(data as any) as any);
+  }
 
-    public logout(): Promise<void> {
-        this.debugEmitter.trigger('logout', [] as any);
-
-        return Promise.resolve();
-    }
-
-    public sign(list: Array<SignerTx>): Promise<any> {
-        this.debugEmitter.trigger('sign', [list]);
-        const fixAlias = (tx: any) =>
-            tx.type === TRANSACTION_TYPE.ALIAS
-                ? { ...tx, alias: tx.alias.replace(/alias:.:/, '') }
-                : tx;
-        const fixIssueDescription = (tx: any) =>
-            tx.type === TRANSACTION_TYPE.ISSUE && tx.description == null
-                ? { ...tx, description: '' }
-                : tx;
-
-        return Promise.resolve(
-            list.map((item) =>
-                signTx(
-                    fixIssueDescription(
-                        fixAlias({
-                            chainId: this.options.NETWORK_BYTE,
-                            ...item,
-                        })
-                    ) as any,
-                    this.seed
-                )
-            )
-        ) as any;
-    }
-
-    public signMessage(data: string | number): Promise<string> {
-        this.debugEmitter.trigger('signMessage', [data]);
-
-        // TODO
-        return Promise.resolve('TODO');
-    }
-
-    public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
-        this.debugEmitter.trigger('signOrder', [data]);
-
-        return Promise.resolve(order(data));
-    }
-
-    public signTypedData(data: Array<TypedData>): Promise<string> {
-        this.debugEmitter.trigger('signTypedData', [data]);
-
-        // TODO
-        return Promise.resolve('TODO');
-    }
+  public signTypedData(data: Array<TypedData>): Promise<string> {
+    this.debugEmitter.trigger('signTypedData', [data]);
+    // TODO
+    return Promise.resolve('TODO');
+  }
 }
 
 type TEvents = {
-    [Key in keyof Provider]: Provider[Key] extends (...args: infer A) => any
-        ? A
-        : never;
+  [Key in keyof Provider]: Provider[Key] extends (...args: infer A) => unknown ? A : never;
 };
