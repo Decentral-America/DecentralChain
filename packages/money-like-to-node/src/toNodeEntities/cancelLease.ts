@@ -1,4 +1,4 @@
-import type { ICancelLeaseTransaction } from '@decentralchain/ts-types';
+import type { CancelLeaseTransaction } from '@decentralchain/ts-types';
 import type { TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
@@ -7,7 +7,7 @@ import { prop } from '../utils/index.js';
 
 export const cancelLease = factory<
   IDCCGuiCancelLease,
-  TWithPartialFee<ICancelLeaseTransaction<string>>
+  TWithPartialFee<CancelLeaseTransaction<string>>
 >({
   ...getDefaultTransform(),
   leaseId: prop('leaseId'),

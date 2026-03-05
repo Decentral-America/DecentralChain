@@ -18,6 +18,7 @@ export const TYPES: typeof TRANSACTION_TYPE = Object.freeze({
   SET_ASSET_SCRIPT: 15 as const,
   INVOKE_SCRIPT: 16 as const,
   UPDATE_ASSET_INFO: 17 as const,
+  ETHEREUM: 18 as const,
 });
 
 export const ALIAS = Object.freeze({

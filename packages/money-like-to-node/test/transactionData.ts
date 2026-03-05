@@ -3,7 +3,7 @@ import type { TDCCGuiEntity } from '../src/toNodeEntities/index.js';
 import type { TWithPartialFee } from '../src/types/index.js';
 import { TYPES } from '../src/constants/index.js';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { BigNumber } from '@decentralchain/data-entities/dist/libs/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 
 export const DCC_ASSET = new Asset({
   ticker: 'DCC',
@@ -287,7 +287,7 @@ export const TEST_DATA: Array<ITestData> = [
       version: 1,
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
       timestamp: 1555398380418,
-      buyOrder: {
+      order1: {
         matcherPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9e',
         version: 1,
         assetPair: {
@@ -304,7 +304,7 @@ export const TEST_DATA: Array<ITestData> = [
         senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
         proofs: ['EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c'],
       },
-      sellOrder: {
+      order2: {
         matcherPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9e',
         version: 1,
         assetPair: {

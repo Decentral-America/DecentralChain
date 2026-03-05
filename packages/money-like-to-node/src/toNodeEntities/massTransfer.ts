@@ -1,4 +1,4 @@
-import type { IMassTransferItem, IMassTransferTransaction } from '@decentralchain/ts-types';
+import type { MassTransferItem, MassTransferTransaction } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
@@ -7,7 +7,7 @@ import { emptyError, getAssetId, getCoins, has, ifElse, map, pipe, prop } from '
 
 const remapTransferItem = factory<
   IDCCGuiMassTransferItem<TMoney | TLong>,
-  IMassTransferItem<string>
+  MassTransferItem<string>
 >({
   recipient: prop('recipient'),
   amount: pipe<IDCCGuiMassTransferItem<TMoney | TLong>, TMoney | TLong, string>(
@@ -28,7 +28,7 @@ const getFirstMassTransferItem = (
 
 export const massTransfer = factory<
   TDCCGuiMassTransfer,
-  TWithPartialFee<IMassTransferTransaction<string>>
+  TWithPartialFee<MassTransferTransaction<string>>
 >({
   ...getDefaultTransform(),
   transfers: pipe(prop('transfers'), map(remapTransferItem)),

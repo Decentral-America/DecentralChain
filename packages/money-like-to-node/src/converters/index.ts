@@ -1,32 +1,33 @@
 import type {
-  IAliasTransaction,
-  IBurnTransaction,
-  ICancelLeaseTransaction,
-  IDataTransaction,
-  IExchangeTransaction,
-  IExchangeTransactionOrderWithProofs,
-  IInvokeScriptCall,
-  IInvokeScriptPayment,
-  IInvokeScriptTransaction,
-  IIssueTransaction,
-  ILeaseTransaction,
-  IMassTransferItem,
-  IMassTransferTransaction,
-  IReissueTransaction,
-  ISetAssetScriptTransaction,
-  ISetScriptTransaction,
-  ISponsorshipTransaction,
-  ITransaction,
-  ITransferTransaction,
-  IUpdateAssetInfoTransaction,
-  TDataTransactionEntry,
-  TInvokeScriptCallArgument,
-  TTransaction,
+  AliasTransaction,
+  BurnTransaction,
+  CancelLeaseTransaction,
+  DataTransaction,
+  DataTransactionEntry,
+  ExchangeTransaction,
+  ExchangeTransactionOrder,
+  InvokeScriptCall,
+  InvokeScriptCallArgument,
+  InvokeScriptPayment,
+  InvokeScriptTransaction,
+  IssueTransaction,
+  LeaseTransaction,
+  MassTransferItem,
+  MassTransferTransaction,
+  ReissueTransaction,
+  SetAssetScriptTransaction,
+  SetScriptTransaction,
+  SignableTransaction,
+  SignedIExchangeTransactionOrder,
+  SponsorshipTransaction,
+  Transaction,
+  TransferTransaction,
+  UpdateAssetInfoTransaction,
 } from '@decentralchain/ts-types';
 import { TYPES } from '../constants/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic map over all transaction types
-interface TConvertMap<TO, T extends TTransaction<any>> {
+interface TConvertMap<TO, T extends SignableTransaction<any>> {
   [TYPES.ISSUE]: TReplaceParam<T, 'fee' | 'quantity', TO>;
   [TYPES.TRANSFER]: TReplaceParam<T, 'fee' | 'amount', TO>;
   [TYPES.REISSUE]: TReplaceParam<T, 'fee' | 'quantity', TO>;
@@ -39,19 +40,19 @@ interface TConvertMap<TO, T extends TTransaction<any>> {
   [TYPES.LEASE]: TReplaceParam<T, 'fee' | 'amount', TO>;
   [TYPES.CANCEL_LEASE]: TReplaceParam<T, 'fee', TO>;
   [TYPES.ALIAS]: TReplaceParam<T, 'fee', TO>;
-  [TYPES.MASS_TRANSFER]: T extends IMassTransferTransaction<unknown>
-    ? TReplaceParam<TReplaceParam<T, 'fee', TO>, 'transfers', IMassTransferItem<TO>[]>
+  [TYPES.MASS_TRANSFER]: T extends MassTransferTransaction<unknown>
+    ? TReplaceParam<TReplaceParam<T, 'fee', TO>, 'transfers', MassTransferItem<TO>[]>
     : never;
-  [TYPES.DATA]: T extends IDataTransaction<unknown>
-    ? TReplaceParam<TReplaceParam<T, 'fee', TO>, 'data', TDataTransactionEntry<TO>[]>
+  [TYPES.DATA]: T extends DataTransaction<unknown>
+    ? TReplaceParam<TReplaceParam<T, 'fee', TO>, 'data', DataTransactionEntry<TO>[]>
     : never;
   [TYPES.SET_SCRIPT]: TReplaceParam<T, 'fee', TO>;
   [TYPES.SPONSORSHIP]: TReplaceParam<T, 'fee' | 'minSponsoredAssetFee', TO>;
   [TYPES.SET_ASSET_SCRIPT]: TReplaceParam<T, 'fee', TO>;
   [TYPES.INVOKE_SCRIPT]: TReplaceParam<
-    TReplaceParam<TReplaceParam<T, 'fee', TO>, 'payment', IInvokeScriptPayment<TO>[]>,
+    TReplaceParam<TReplaceParam<T, 'fee', TO>, 'payment', InvokeScriptPayment<TO>[]>,
     'call',
-    IInvokeScriptCall<TO>
+    InvokeScriptCall<TO>
   >;
   [TYPES.UPDATE_ASSET_INFO]: TReplaceParam<T, 'fee', TO>;
 }
@@ -63,15 +64,15 @@ type TReplaceParam<T, KEYS, NEW_VALUE> = {
 type IFactory<FROM, TO> = (long: FROM) => TO;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic over all transaction types
-const defaultConvert = <FROM, TO, T extends ITransaction<any>>(
+const defaultConvert = <FROM, TO, T extends Transaction<any>>(
   data: T,
   factory: IFactory<FROM, TO>,
 ): TReplaceParam<T, 'fee', TO> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- ITransaction<any>.fee is typed as any
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Transaction<any>.fee is typed as any
   return Object.assign({}, data, { fee: factory(data.fee) }) as TReplaceParam<T, 'fee', TO>;
 };
 
-const issue = <FROM, TO, TX extends IIssueTransaction<FROM>>(
+const issue = <FROM, TO, TX extends IssueTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -79,7 +80,7 @@ const issue = <FROM, TO, TX extends IIssueTransaction<FROM>>(
   quantity: factory(tx.quantity),
 });
 
-const transfer = <FROM, TO, TX extends ITransferTransaction<FROM>>(
+const transfer = <FROM, TO, TX extends TransferTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -87,7 +88,7 @@ const transfer = <FROM, TO, TX extends ITransferTransaction<FROM>>(
   amount: factory(tx.amount),
 });
 
-const reissue = <FROM, TO, TX extends IReissueTransaction<FROM>>(
+const reissue = <FROM, TO, TX extends ReissueTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -99,7 +100,7 @@ const burn = <
   FROM,
   TO,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- legacy field compatibility
-  TX extends IBurnTransaction<FROM> & { amount?: any },
+  TX extends BurnTransaction<FROM> & { amount?: any },
 >(
   tx: TX,
   factory: IFactory<FROM, TO>,
@@ -111,7 +112,7 @@ const burn = <
   quantity: tx.amount != null ? factory(tx.amount) : factory((tx as any).quantity as FROM),
 });
 
-const order = <FROM, TO, O extends IExchangeTransactionOrderWithProofs<FROM>>(
+const order = <FROM, TO, O extends SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>>(
   data: O,
   factory: IFactory<FROM, TO>,
 ): TReplaceParam<O, 'price' | 'amount' | 'matcherFee', TO> =>
@@ -122,20 +123,20 @@ const order = <FROM, TO, O extends IExchangeTransactionOrderWithProofs<FROM>>(
     matcherFee: factory(data.matcherFee),
   }) as TReplaceParam<O, 'price' | 'amount' | 'matcherFee', TO>;
 
-const exchange = <FROM, TO, TX extends IExchangeTransaction<FROM>>(
+const exchange = <FROM, TO, TX extends ExchangeTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
-  buyOrder: order(tx.buyOrder, factory),
-  sellOrder: order(tx.sellOrder, factory),
+  order1: order(tx.order1, factory),
+  order2: order(tx.order2, factory),
   amount: factory(tx.amount),
   price: factory(tx.price),
   sellMatcherFee: factory(tx.sellMatcherFee),
   buyMatcherFee: factory(tx.buyMatcherFee),
 });
 
-const lease = <FROM, TO, TX extends ILeaseTransaction<FROM>>(
+const lease = <FROM, TO, TX extends LeaseTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -143,15 +144,15 @@ const lease = <FROM, TO, TX extends ILeaseTransaction<FROM>>(
   amount: factory(tx.amount),
 });
 
-const cancelLease = <FROM, TO, TX extends ICancelLeaseTransaction<FROM>>(
+const cancelLease = <FROM, TO, TX extends CancelLeaseTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => defaultConvert(tx, factory);
 
-const alias = <FROM, TO, TX extends IAliasTransaction<FROM>>(tx: TX, factory: IFactory<FROM, TO>) =>
+const alias = <FROM, TO, TX extends AliasTransaction<FROM>>(tx: TX, factory: IFactory<FROM, TO>) =>
   defaultConvert(tx, factory);
 
-const massTransfer = <FROM, TO, TX extends IMassTransferTransaction<FROM>>(
+const massTransfer = <FROM, TO, TX extends MassTransferTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -159,10 +160,7 @@ const massTransfer = <FROM, TO, TX extends IMassTransferTransaction<FROM>>(
   transfers: tx.transfers.map((item) => ({ ...item, amount: factory(item.amount) })),
 });
 
-const data = <FROM, TO, TX extends IDataTransaction<FROM>>(
-  tx: TX,
-  factory: IFactory<FROM, TO>,
-) => ({
+const data = <FROM, TO, TX extends DataTransaction<FROM>>(tx: TX, factory: IFactory<FROM, TO>) => ({
   ...defaultConvert(tx, factory),
   data: tx.data.map((item) => {
     switch (item.type) {
@@ -174,12 +172,12 @@ const data = <FROM, TO, TX extends IDataTransaction<FROM>>(
   }),
 });
 
-const setScript = <FROM, TO, TX extends ISetScriptTransaction<FROM>>(
+const setScript = <FROM, TO, TX extends SetScriptTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => defaultConvert(tx, factory);
 
-const sponsorship = <FROM, TO, TX extends ISponsorshipTransaction<FROM>>(
+const sponsorship = <FROM, TO, TX extends SponsorshipTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -187,7 +185,7 @@ const sponsorship = <FROM, TO, TX extends ISponsorshipTransaction<FROM>>(
   minSponsoredAssetFee: tx.minSponsoredAssetFee !== null ? factory(tx.minSponsoredAssetFee) : null,
 });
 
-const invokeScript = <FROM, TO, TX extends IInvokeScriptTransaction<FROM>>(
+const invokeScript = <FROM, TO, TX extends InvokeScriptTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
@@ -203,75 +201,84 @@ const invokeScript = <FROM, TO, TX extends IInvokeScriptTransaction<FROM>>(
             ({
               ...item,
               value: item.type === 'integer' ? factory(item.value) : item.value,
-            }) as TInvokeScriptCallArgument<TO>,
+            }) as InvokeScriptCallArgument<TO>,
         ),
       }
     : tx.call,
 });
 
-const updateAssetInfo = <FROM, TO, TX extends IUpdateAssetInfoTransaction<FROM>>(
+const updateAssetInfo = <FROM, TO, TX extends UpdateAssetInfoTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
 });
 
-const setAssetScript = <FROM, TO, TX extends ISetAssetScriptTransaction<FROM>>(
+const setAssetScript = <FROM, TO, TX extends SetAssetScriptTransaction<FROM>>(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => defaultConvert(tx, factory);
 
+// The implementation signature's return type is a wide union. TypeScript cannot
+// verify that TReplaceParam over a narrowed union variant (e.g. CancelLeaseV1)
+// is assignable to the parent SignableTransaction<TO> union, because of Phantom
+// type parameters that carry FROM rather than TO. The runtime logic is correct —
+// defaultConvert replaces fee with factory(fee) — so we use explicit casts.
+type ConvertResult<TO> =
+  | SignableTransaction<TO>
+  | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<TO>>;
+
 export function convert<
   FROM,
   TO,
-  TX extends TTransaction<FROM>,
+  TX extends SignableTransaction<FROM>,
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- TYPE is used in return type mapping
   TYPE extends TX['type'] = TX['type'],
 >(tx: TX, factory: IFactory<FROM, TO>): TConvertMap<TO, TX>[TYPE];
-export function convert<FROM, TO, TX extends IExchangeTransactionOrderWithProofs<FROM>>(
-  tx: TX,
-  factory: IFactory<FROM, TO>,
-): TReplaceParam<TX, 'price' | 'amount' | 'matcherFee', TO>;
+export function convert<
+  FROM,
+  TO,
+  TX extends SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>,
+>(tx: TX, factory: IFactory<FROM, TO>): TReplaceParam<TX, 'price' | 'amount' | 'matcherFee', TO>;
 export function convert<FROM, TO>(
-  tx: TTransaction<FROM> | IExchangeTransactionOrderWithProofs<FROM>,
+  tx: SignableTransaction<FROM> | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>,
   factory: IFactory<FROM, TO>,
-): TTransaction<TO> | IExchangeTransactionOrderWithProofs<TO> {
+): ConvertResult<TO> {
   if ('orderType' in tx) {
-    return order(tx, factory);
+    return order(tx, factory) as unknown as ConvertResult<TO>;
   }
 
   switch (tx.type) {
     case TYPES.ISSUE:
-      return issue(tx, factory);
+      return issue(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.TRANSFER:
-      return transfer(tx, factory);
+      return transfer(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.REISSUE:
-      return reissue(tx, factory);
+      return reissue(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.BURN:
-      return burn(tx, factory);
+      return burn(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.EXCHANGE:
-      return exchange(tx, factory);
+      return exchange(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.LEASE:
-      return lease(tx, factory);
+      return lease(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.CANCEL_LEASE:
-      return cancelLease(tx, factory);
+      return cancelLease(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.ALIAS:
-      return alias(tx, factory);
+      return alias(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.MASS_TRANSFER:
-      return massTransfer(tx, factory);
+      return massTransfer(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.DATA:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return -- complex generic data entry mapping
-      return data(tx, factory) as any;
+      return data(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.SET_SCRIPT:
-      return setScript(tx, factory);
+      return setScript(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.SPONSORSHIP:
-      return sponsorship(tx, factory) as ISponsorshipTransaction<TO>;
+      return sponsorship(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.SET_ASSET_SCRIPT:
-      return setAssetScript(tx, factory);
+      return setAssetScript(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.INVOKE_SCRIPT:
-      return invokeScript(tx, factory);
+      return invokeScript(tx, factory) as unknown as ConvertResult<TO>;
     case TYPES.UPDATE_ASSET_INFO:
-      return updateAssetInfo(tx, factory);
+      return updateAssetInfo(tx, factory) as unknown as ConvertResult<TO>;
     default:
       throw new Error('Unknown transaction type!');
   }

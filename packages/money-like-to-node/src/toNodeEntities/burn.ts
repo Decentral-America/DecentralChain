@@ -1,4 +1,4 @@
-import type { IBurnTransaction } from '@decentralchain/ts-types';
+import type { BurnTransaction } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
@@ -23,7 +23,7 @@ const burnTransform: any = {
   chainId: (prop as any)('chainId'),
 };
 
-export const burn = factory<TDCCGuiBurn, TWithPartialFee<IBurnTransaction<string>>>(
+export const burn = factory<TDCCGuiBurn, TWithPartialFee<BurnTransaction<string>>>(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- burnTransform is typed as any for complex spread
   burnTransform,
 );

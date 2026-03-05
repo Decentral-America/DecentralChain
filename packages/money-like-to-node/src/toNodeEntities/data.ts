@@ -1,4 +1,4 @@
-import type { IDataTransaction, TDataTransactionEntry } from '@decentralchain/ts-types';
+import type { DataTransaction, DataTransactionEntry } from '@decentralchain/ts-types';
 import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
 import type { TLong, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
@@ -8,7 +8,7 @@ import { getCoins, map, pipe, prop } from '../utils/index.js';
 
 const parseValueByType = (
   item: TDCCGuiDataTransactionEntry,
-): TDataTransactionEntry<string>['value'] | null => {
+): DataTransactionEntry<string>['value'] | null => {
   switch (item.type) {
     case DATA_FIELD_TYPE.BINARY:
     case DATA_FIELD_TYPE.STRING:
@@ -24,14 +24,14 @@ const parseValueByType = (
   }
 };
 
-const remapDataEntryItem = (item: TDCCGuiDataTransactionEntry): TDataTransactionEntry<string> =>
+const remapDataEntryItem = (item: TDCCGuiDataTransactionEntry): DataTransactionEntry<string> =>
   ({
     key: prop('key', item),
     type: prop('type', item),
     value: parseValueByType(item),
-  }) as TDataTransactionEntry<string>;
+  }) as DataTransactionEntry<string>;
 
-export const data = factory<IDCCGuiData, TWithPartialFee<IDataTransaction<string>>>({
+export const data = factory<IDCCGuiData, TWithPartialFee<DataTransaction<string>>>({
   ...getDefaultTransform(),
   data: pipe(prop('data'), map(remapDataEntryItem)),
 });

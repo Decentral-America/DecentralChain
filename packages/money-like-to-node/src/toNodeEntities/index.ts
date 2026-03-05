@@ -1,8 +1,9 @@
 import type {
-  IExchangeTransactionOrderWithProofs,
-  ISponsorshipTransaction,
-  TTransaction,
-  TTransactionMap,
+  ExchangeTransactionOrder,
+  SignableTransaction,
+  SignedIExchangeTransactionOrder,
+  SponsorshipTransaction,
+  TransactionMap,
 } from '@decentralchain/ts-types';
 import type { TWithPartialFee } from '../types/index.js';
 import { TYPES } from '../constants/index.js';
@@ -74,13 +75,17 @@ export const node = {
   updateAssetInfo,
 };
 
-export function toNode(item: IDCCGuiExchangeOrder): IExchangeTransactionOrderWithProofs<string>;
+export function toNode(
+  item: IDCCGuiExchangeOrder,
+): SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>>;
 export function toNode<TX extends TDCCGuiEntity, TYPE extends TX['type'] = TX['type']>(
   item: TX,
-): TWithPartialFee<TTransactionMap<string>[TYPE]>;
+): TWithPartialFee<TransactionMap<string>[TYPE]>;
 export function toNode(
   item: TDCCGuiEntity | IDCCGuiExchangeOrder,
-): TWithPartialFee<TTransaction<string>> | IExchangeTransactionOrderWithProofs<string> {
+):
+  | TWithPartialFee<SignableTransaction<string>>
+  | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>> {
   if (isOrder(item)) {
     return remapOrder(item);
   }
@@ -109,7 +114,7 @@ export function toNode(
     case TYPES.SET_SCRIPT:
       return setScript(item);
     case TYPES.SPONSORSHIP:
-      return sponsorship(item) as ISponsorshipTransaction<string>;
+      return sponsorship(item) as SponsorshipTransaction<string>;
     case TYPES.SET_ASSET_SCRIPT:
       return setAssetScript(item);
     case TYPES.INVOKE_SCRIPT:

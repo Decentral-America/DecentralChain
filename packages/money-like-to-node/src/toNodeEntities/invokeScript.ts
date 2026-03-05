@@ -1,8 +1,8 @@
 import type {
-  IInvokeScriptCall,
-  IInvokeScriptPayment,
-  IInvokeScriptTransaction,
-  TInvokeScriptCallArgument,
+  InvokeScriptCall,
+  InvokeScriptPayment,
+  InvokeScriptTransaction,
+  InvokeScriptCallArgument,
 } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
@@ -14,32 +14,33 @@ const isNull = (data: unknown) => data == null;
 const defaultNull = () => null;
 
 const processArgument = (
-  data: TInvokeScriptCallArgument<TLong>,
-): TInvokeScriptCallArgument<string> => {
+  data: InvokeScriptCallArgument<TLong>,
+): InvokeScriptCallArgument<string> => {
   if (data.type === 'integer') {
     return { type: data.type, value: getCoins(data.value) };
-  } else {
-    return data;
   }
+  // Non-integer args (string, binary, boolean, list) don't contain LONG values
+  // at runtime. The Phantom<'LONG', TLong> on list args is purely structural.
+  return data as unknown as InvokeScriptCallArgument<string>;
 };
 
-const processCall = factory<IInvokeScriptCall<TLong>, IInvokeScriptCall<string>>({
+const processCall = factory<InvokeScriptCall<TLong>, InvokeScriptCall<string>>({
   function: prop('function'),
   args: pipe<
-    IInvokeScriptCall<TLong>,
-    TInvokeScriptCallArgument<TLong>[],
-    TInvokeScriptCallArgument<string>[]
+    InvokeScriptCall<TLong>,
+    InvokeScriptCallArgument<TLong>[],
+    InvokeScriptCallArgument<string>[]
   >(prop('args'), map(processArgument)),
 });
 
-const processPayment = factory<TMoney, IInvokeScriptPayment<string>>({
+const processPayment = factory<TMoney, InvokeScriptPayment<string>>({
   amount: getCoins,
   assetId: getAssetId,
 });
 
 export const invokeScript = factory<
   IDCCGuiInvokeScript,
-  TWithPartialFee<IInvokeScriptTransaction<string>>
+  TWithPartialFee<InvokeScriptTransaction<string>>
 >({
   ...getDefaultTransform(),
   chainId: prop('chainId'),
@@ -51,21 +52,21 @@ export const invokeScript = factory<
   ),
   call: pipe<
     IDCCGuiInvokeScript,
-    IInvokeScriptCall<TLong> | null | undefined,
-    IInvokeScriptCall<string> | null
+    InvokeScriptCall<TLong> | null | undefined,
+    InvokeScriptCall<string> | null
   >(
     prop('call'),
     ifElse(
       isNull,
       defaultNull,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by isNull check
-      (call: IInvokeScriptCall<TLong> | null | undefined) => processCall(call!),
+      (call: InvokeScriptCall<TLong> | null | undefined) => processCall(call!),
     ),
   ),
   payment: pipe<
     IDCCGuiInvokeScript,
     TMoney[] | null | undefined,
-    IInvokeScriptPayment<string>[] | null
+    InvokeScriptPayment<string>[] | null
   >(
     prop('payment'),
     ifElse(
@@ -79,7 +80,7 @@ export const invokeScript = factory<
 
 export interface IDCCGuiInvokeScript extends IDefaultGuiTx<typeof TYPES.INVOKE_SCRIPT> {
   dApp: string;
-  call?: IInvokeScriptCall<TLong> | null | undefined;
+  call?: InvokeScriptCall<TLong> | null | undefined;
   payment?: TMoney[] | null | undefined;
   feeAssetId?: string | undefined;
   chainId: number;

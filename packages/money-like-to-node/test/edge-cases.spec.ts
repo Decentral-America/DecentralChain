@@ -1160,8 +1160,8 @@ describe('convert() — full transaction type coverage', () => {
       senderPublicKey: 'abc',
       timestamp: 1000,
       fee: 100,
-      buyOrder: { ...orderBase, orderType: 'buy' as const, price: 50, amount: 200, matcherFee: 10 },
-      sellOrder: {
+      order1: { ...orderBase, orderType: 'buy' as const, price: 50, amount: 200, matcherFee: 10 },
+      order2: {
         ...orderBase,
         orderType: 'sell' as const,
         price: 50,
@@ -1179,8 +1179,8 @@ describe('convert() — full transaction type coverage', () => {
     expect(result.amount).toBe('200');
     expect(result.buyMatcherFee).toBe('10');
     expect(result.sellMatcherFee).toBe('10');
-    expect(result.buyOrder.price).toBe('50');
-    expect(result.sellOrder.amount).toBe('200');
+    expect(result.order1.price).toBe('50');
+    expect(result.order2.amount).toBe('200');
   });
 
   it('converts burn with quantity fallback', () => {
