@@ -1,5 +1,12 @@
 import { type DATA_FIELD_TYPE } from './constants.js';
 
+// ── Phantom Type Utility ─────────────────────────────────────────────────────
+// Brands a type with a named generic parameter that has no runtime fields.
+// Used to satisfy noUnusedParameters without altering the structure or ABI.
+// Pattern adopted from io-ts, zod, Effect, and fp-ts branded types.
+declare const PHANTOM: unique symbol;
+export type Phantom<K extends string, T> = { readonly [PHANTOM]?: Readonly<Record<K, T>> };
+
 // ── Primitive Types ─────────────────────────────────────────────────────────
 export type ExchangeTransactionOrderType = 'buy' | 'sell';
 export type Base64Script = string;
@@ -64,13 +71,13 @@ export type InvokeScriptCallIntegerArgument<LONG = Long> = InvokeScriptCallArgum
 >;
 
 export type InvokeScriptCallListArgument<
-  _LONG,
+  LONG,
   ITEMS extends
     | InvokeScriptCallStringArgument
     | InvokeScriptCallBinaryArgument
     | InvokeScriptCallBooleanArgument
     | InvokeScriptCallIntegerArgument,
-> = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>>;
+> = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>> & Phantom<'LONG', LONG>;
 
 // ── Mass Transfer ───────────────────────────────────────────────────────────
 export type MassTransferItem<LONG = Long> = {
