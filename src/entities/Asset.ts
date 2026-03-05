@@ -4,7 +4,7 @@ import { toBigNumber } from '../utils';
 
 /** Raw asset information used to construct an Asset instance. */
 export interface IAssetInfo {
-  readonly ticker?: string;
+  readonly ticker?: string | null;
   readonly id: string;
   readonly name: string;
   readonly precision: number;
@@ -15,7 +15,7 @@ export interface IAssetInfo {
   readonly quantity: BigNumber | string | number;
   readonly reissuable: boolean;
   readonly hasScript?: boolean;
-  readonly minSponsoredFee?: BigNumber | string | number;
+  readonly minSponsoredFee?: BigNumber | string | number | null;
 }
 
 /** Serialized representation of an Asset, returned by `Asset.toJSON()`. */
@@ -70,8 +70,8 @@ export class Asset {
     if (typeof remapped.name !== 'string' || remapped.name.length === 0) {
       throw new Error('Invalid asset name: must be a non-empty string');
     }
-    if (typeof remapped.sender !== 'string' || remapped.sender.length === 0) {
-      throw new Error('Invalid asset sender: must be a non-empty string');
+    if (typeof remapped.sender !== 'string') {
+      throw new Error('Invalid asset sender: must be a string');
     }
     if (!Number.isInteger(remapped.precision) || remapped.precision < 0) {
       throw new Error(
