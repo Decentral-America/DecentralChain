@@ -82,7 +82,7 @@ const { MockLedger } = vi.hoisted(() => {
 
 // Mock the ledger module to prevent U2F transport from accessing `window` in Node
 vi.mock('@decentralchain/ledger', () => ({
-  WavesLedger: MockLedger,
+  DCCLedger: MockLedger,
 }));
 
 import { LedgerAdapter } from '../src/adapters/LedgerAdapter';

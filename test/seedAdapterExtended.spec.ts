@@ -1,5 +1,5 @@
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
-import { libs, seedUtils } from '@decentralchain/decentralchain-transactions';
+import { libs, seedUtils } from '@decentralchain/transactions';
 
 const testSeed = 'some test seed words without money on mainnet';
 
