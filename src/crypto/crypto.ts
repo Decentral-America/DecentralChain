@@ -29,7 +29,6 @@ import {
 } from './address-keys-seed';
 import { signBytes } from './sign';
 import { verifyAddress, verifyPublicKey, verifySignature } from './verification';
-import { rsaKeyPair, rsaKeyPairSync, rsaSign, rsaVerify } from './rsa';
 import { decryptSeed, encryptSeed } from './seed-ecryption';
 import { merkleVerify } from './merkle-verify';
 import { blsKeyPair, blsPublicKey, blsSign, blsVerify } from './bls';
@@ -135,10 +134,6 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
     aesEncrypt,
     encryptSeed,
     decryptSeed,
-    rsaKeyPair,
-    rsaKeyPairSync,
-    rsaSign,
-    rsaVerify,
     merkleVerify,
     split,
     concat,
