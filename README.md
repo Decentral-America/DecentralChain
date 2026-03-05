@@ -1,17 +1,37 @@
-# @decentralchain/cubensis-connect-types
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/cubensis-connect-types/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/cubensis-connect-types/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/cubensis-connect-types)](https://www.npmjs.com/package/@decentralchain/cubensis-connect-types)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+<h3 align="center">@decentralchain/cubensis-connect-types</h3>
 
-> TypeScript type definitions for the **CubensisConnect** browser-extension API.
+<p align="center">
+  TypeScript type definitions for the CubensisConnect browser-extension API.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/cubensis-connect-types"><img src="https://img.shields.io/npm/v/@decentralchain/cubensis-connect-types?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/cubensis-connect-types" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/cubensis-connect-types"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/cubensis-connect-types" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/cubensis-connect-types" alt="node" /></a>
+</p>
+
+---
+
+## Overview
+
+Zero-dependency, type-only package providing strict TypeScript types for the CubensisConnect browser extension API surface — authentication, state, all 15 transaction types, orders, custom data signing, and global Window augmentation.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install --save-dev @decentralchain/cubensis-connect-types
 ```
+
+> Requires **Node.js ≥ 24** (LTS).
 
 ## Usage
 
@@ -131,6 +151,14 @@ const state = await api.publicState();
 | `npm run bulletproof:check` | CI-safe: check format + lint + tc + test               |
 | `npm run validate`          | Full CI pipeline (all checks + build + publish checks) |
 
+## Related packages
+
+| Package                                                                                                                | Description                      |
+| ---------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| [`@decentralchain/cubensis-connect-provider`](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider) | CubensisConnect wallet provider  |
+| [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer)                                       | Transaction signing orchestrator |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                                   | Core TypeScript type definitions |
+
 ## Requirements
 
 - **Node.js** ≥ 24 (LTS)
@@ -138,12 +166,12 @@ const state = await api.publicState();
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for reporting vulnerabilities.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) © 2026-present DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
