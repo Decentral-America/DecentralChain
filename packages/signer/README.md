@@ -1,71 +1,33 @@
-<div align="center">
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-# @decentralchain/signer
+<h3 align="center">@decentralchain/signer</h3>
 
-**Transaction Signing Orchestrator for the DecentralChain Blockchain**
+<p align="center">
+  Transaction signing orchestrator for the DecentralChain blockchain.
+</p>
 
-[![npm version](https://img.shields.io/npm/v/@decentralchain/signer?color=0366d6&label=npm)](https://www.npmjs.com/package/@decentralchain/signer)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-
-Connect any provider to sign and broadcast transactions on the [DecentralChain](https://decentralchain.io) network — without ever exposing user seeds or private keys.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/signer"><img src="https://img.shields.io/npm/v/@decentralchain/signer?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/signer" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/signer"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/signer" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/signer" alt="node" /></a>
+</p>
 
 ---
-
-</div>
-
-## Why @decentralchain/signer?
-
-Building decentralized applications on DecentralChain requires a secure, reliable way to create, sign, and broadcast blockchain transactions. `@decentralchain/signer` is the official transaction orchestration layer that bridges your dApp with the DecentralChain network, providing:
-
-- **🔐 Zero-Knowledge Signing** — Your application never touches private keys. All cryptographic operations are delegated to an isolated Provider, keeping user credentials safe.
-- **🔌 Provider-Agnostic Architecture** — Swap signing backends (browser extensions, hardware wallets, custodial services, seed-based signers) without changing a single line of application code.
-- **✅ Built-in Validation** — Every transaction is validated against DecentralChain protocol rules before it reaches the Provider, catching errors early and reducing failed broadcasts.
-- **📡 Integrated Broadcasting** — Sign-then-broadcast or sign-and-broadcast in a single fluent call, with optional confirmation tracking.
-- **🔗 Fluent Pipeline API** — Chain multiple transactions together and sign or broadcast them as a batch with an intuitive, type-safe API.
-- **🛡️ Enterprise-Grade Error Handling** — Structured error codes with detailed diagnostics make debugging straightforward in production environments.
-
-## Features
-
-| Feature | Description |
-|:--------|:------------|
-| **Full Transaction Support** | All 14 DecentralChain transaction types (transfer, invoke, issue, lease, data, and more) |
-| **Type-Safe** | Written in TypeScript with complete type definitions for every transaction and response |
-| **Fluent API** | Chainable methods — `.transfer(...).sign()` or `.transfer(...).broadcast()` |
-| **Batch Operations** | Sign and broadcast multiple transactions in a single call |
-| **Event System** | Subscribe to `login` / `logout` events for reactive UI updates |
-| **Confirmation Tracking** | Wait for a specific number of block confirmations before resolving |
-| **Message & Order Signing** | Sign arbitrary messages, typed data, and DEX orders |
-| **Configurable Logging** | Three log levels (`verbose`, `production`, `error`) for development and production |
-| **Lightweight** | Zero heavy dependencies — built on the official DecentralChain SDK packages |
-
-## Table of Contents
-
-- [Why @decentralchain/signer?](#why-decentralchainsigner)
-- [Features](#features)
-- [Overview](#overview)
-- [How It Works with DecentralChain](#how-it-works-with-decentralchain)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Constructor](#constructor)
-- [Methods](#methods)
-  - [User Info](#user-info)
-  - [Create Transactions](#create-transactions)
-  - [Broadcast & Utilities](#broadcast--utilities)
-- [Provider Interface](#provider-interface)
-- [Security Model](#security-model)
-- [Error Codes](#error-codes)
-- [DecentralChain Ecosystem](#decentralchain-ecosystem)
-- [Contributing](#contributing)
-- [Support](#support)
-- [License](#license)
 
 ## Overview
 
 `@decentralchain/signer` is a TypeScript library that orchestrates transaction signing on behalf of users. It delegates the actual signing to an external **Provider** — a separate package that securely stores the user's private key or seed phrase.
 
 Your application and Signer itself never have access to the user's private data. The Provider authenticates the user and generates digital signatures. Signer validates transaction arguments, manages the provider lifecycle, and broadcasts signed transactions to the blockchain.
+
+Connect any provider to sign and broadcast transactions without exposing user seeds or private keys.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ### Architecture
 
@@ -75,61 +37,11 @@ Your application and Signer itself never have access to the user's private data.
 │               │      │  (validates,  │      │  (signs tx with  │
 │               │      │   broadcasts) │      │   user's key)    │
 └───────────────┘      └───────────────┘      └──────────────────┘
-                              │
-                              ▼
-                   ┌──────────────────┐
-                   │  DecentralChain  │
-                   │   Node / API     │
-                   └──────────────────┘
 ```
 
 ### Restrictions
 
 Signer supports all transaction types except Update Asset Info.
-
-## How It Works with DecentralChain
-
-DecentralChain is a high-performance blockchain platform designed for decentralized applications, digital assets, and smart contracts. `@decentralchain/signer` acts as the critical middleware between your application and the DecentralChain network:
-
-1. **Node Connection** — When you instantiate Signer with a `NODE_URL` (e.g. `https://nodes.decentralchain.io`), it connects to a DecentralChain node and automatically detects the network byte (Mainnet, Testnet, or custom network).
-
-2. **Provider Authentication** — The connected Provider handles user authentication. The user's private key never leaves the Provider boundary. Signer receives only the user's **public key** and **address**.
-
-3. **Transaction Lifecycle** — When your dApp calls a transaction method (e.g. `signer.transfer(...)`), the following happens:
-   - Signer **validates** the transaction parameters against DecentralChain protocol rules
-   - Signer forwards the validated transaction to the **Provider** for signing
-   - The Provider returns the **signed transaction** (with cryptographic proofs)
-   - Signer **broadcasts** the signed transaction to the DecentralChain node via the Node REST API
-   - Optionally, Signer **waits** for the transaction to be confirmed on-chain
-
-4. **Balance & Asset Queries** — Signer queries the DecentralChain Node API to retrieve DCC balances, asset information, sponsorship data, and other on-chain state.
-
-5. **Network Compatibility** — Signer works with any DecentralChain-compatible network. Point `NODE_URL` to a Mainnet node, Testnet node, or your own private network node.
-
-```
-  Your dApp                  Signer                    Provider              DecentralChain Node
-     │                         │                          │                         │
-     │  transfer({...})        │                          │                         │
-     │────────────────────────▶│                          │                         │
-     │                         │  validate params         │                         │
-     │                         │─────────┐                │                         │
-     │                         │◀────────┘                │                         │
-     │                         │                          │                         │
-     │                         │  sign(tx)                │                         │
-     │                         │─────────────────────────▶│                         │
-     │                         │                          │  sign with private key  │
-     │                         │                          │─────────┐               │
-     │                         │                          │◀────────┘               │
-     │                         │  signedTx (with proofs)  │                         │
-     │                         │◀─────────────────────────│                         │
-     │                         │                          │                         │
-     │                         │  POST /transactions/broadcast                     │
-     │                         │──────────────────────────────────────────────────▶│
-     │                         │                                   tx result       │
-     │                         │◀──────────────────────────────────────────────────│
-     │  result                 │                          │                         │
-     │◀────────────────────────│                          │                         │
-```
 
 ## Installation
 
@@ -587,28 +499,6 @@ interface Provider {
 
 > **Security note**: Providers should be implemented using an `iframe` to isolate user credentials from the host application.
 
-## Security Model
-
-Security is foundational to `@decentralchain/signer`. The library enforces a strict separation of concerns that ensures user credentials are never exposed to your application:
-
-| Layer | Responsibility | Has Access to Private Keys? |
-|:------|:---------------|:----------------------------|
-| **Your dApp** | Business logic, UI | ❌ No |
-| **Signer** | Validation, broadcasting, lifecycle management | ❌ No |
-| **Provider** | Key storage, signing, authentication | ✅ Yes (isolated) |
-
-### Key Security Principles
-
-1. **Credential Isolation** — Private keys and seed phrases live exclusively inside the Provider. Signer communicates with the Provider through a well-defined interface, never requesting raw key material.
-
-2. **iframe Sandboxing** — Providers are recommended to run inside an `iframe` with a separate origin, leveraging the browser's same-origin policy as an additional security boundary.
-
-3. **Input Validation** — Every transaction parameter is validated before being forwarded to the Provider, preventing malformed transactions from reaching the signing layer.
-
-4. **Structured Errors** — All errors include a numeric code and type classification, making it straightforward to build secure error-handling logic without leaking internal details to end users.
-
-5. **No Secret Logging** — Signer's logging system is designed to never output private keys, seeds, or other sensitive data, even at the `verbose` log level.
-
 ## Error Codes
 
 | Error Class | Code | Type | Description |
@@ -626,57 +516,24 @@ Security is foundational to `@decentralchain/signer`. The library enforces a str
 
 All errors extend `SignerError` which includes `code`, `type`, and a detailed message. See [SignerError.ts](src/SignerError.ts) for full definitions.
 
-## DecentralChain Ecosystem
-
-`@decentralchain/signer` is part of the official DecentralChain SDK. It works seamlessly with the following packages:
+## Related packages
 
 | Package | Description |
-|:--------|:------------|
-| [`@decentralchain/ts-types`](https://github.com/Decentral-America/ts-types) | TypeScript type definitions for the DecentralChain protocol |
-| [`@decentralchain/ts-lib-crypto`](https://github.com/Decentral-America/ts-lib-crypto) | Cryptographic primitives (hashing, signing, key derivation) |
-| [`@decentralchain/node-api-js`](https://github.com/Decentral-America/node-api-js) | Node REST API client for querying on-chain data |
-| [`@decentralchain/transactions`](https://github.com/Decentral-America/transactions) | Low-level transaction building and serialization |
-
-### Dependency Graph
-
-```
-@decentralchain/signer
-├── @decentralchain/node-api-js   ← Node REST API communication
-├── @decentralchain/ts-lib-crypto ← Address derivation & verification
-└── @decentralchain/ts-types      ← Shared protocol type definitions
-```
+| --- | --- |
+| [`@decentralchain/cubensis-connect-provider`](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider) | CubensisConnect wallet provider |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+| [`@decentralchain/ts-lib-crypto`](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
+| [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter) | Multi-provider signing adapter |
 
 ## Contributing
 
-We welcome contributions from the community! Here's how to get started:
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-```bash
-# Clone the repository
-git clone https://github.com/Decentral-America/signer.git
-cd signer
+## Security
 
-# Install dependencies
-npm install
-
-# Run the full quality suite (format, lint, typecheck, test)
-npm run bulletproof
-
-# Or run individual checks
-npm run format:check   # Verify code formatting
-npm run lint:check     # Run ESLint
-npm run typecheck      # TypeScript type checking
-npm run test           # Run tests with Vitest
-npm run test:coverage  # Run tests with coverage report
-```
-
-Before submitting a pull request, please ensure that `npm run bulletproof:check` passes with no errors.
-
-## Support
-
-- **Bug Reports** — [Open an issue](https://github.com/Decentral-America/signer/issues) on GitHub
-- **Source Code** — [github.com/Decentral-America/signer](https://github.com/Decentral-America/signer)
-- **Changelog** — See [CHANGELOG.md](./CHANGELOG.md) for version history
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) — Copyright (c) 2025-present DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
