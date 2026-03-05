@@ -1,4 +1,4 @@
-import type { IUpdateAssetInfoTransaction } from '@decentralchain/ts-types';
+import type { UpdateAssetInfoTransaction } from '@decentralchain/ts-types';
 import type { TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
@@ -7,7 +7,7 @@ import { prop } from '../utils/index.js';
 
 export const updateAssetInfo = factory<
   IDCCGuiUpdateAssetInfo,
-  TWithPartialFee<IUpdateAssetInfoTransaction<string>>
+  TWithPartialFee<UpdateAssetInfoTransaction<string>>
 >({
   ...getDefaultTransform(),
   assetId: prop('assetId'),

@@ -1,14 +1,23 @@
-import type { ITransaction, TTransactionType } from '@decentralchain/ts-types';
+import type { TransactionType } from '@decentralchain/ts-types';
 import type { TLong, TMoney } from '../types/index.js';
 import { getCoins, pipe, prop } from '../utils/index.js';
 import { requiredValidator, validate } from '../validators/index.js';
 
 const processTimestamp = (timestamp: number | undefined): number => timestamp ?? Date.now();
 
-type TTx<A, B extends TTransactionType> = { chainId?: number | undefined } & ITransaction<A, B>;
+// GUI output shape — the common fields every getDefaultTransform() returns.
+// Inlined because BaseTransaction has required chainId and no version field.
+interface TTx<A, B extends TransactionType> {
+  type: B;
+  version: number;
+  senderPublicKey: string;
+  timestamp: number;
+  fee: A;
+  chainId?: number | undefined;
+}
 
 export const getDefaultTransform = <
-  TYPE extends TTransactionType,
+  TYPE extends TransactionType,
   T extends IDefaultGuiTx<TYPE>,
 >(): {
   [Key in keyof TTx<string, TYPE>]: (data: T) => TTx<string, TYPE>[Key];

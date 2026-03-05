@@ -1,4 +1,4 @@
-import type { ISponsorshipTransaction } from '@decentralchain/ts-types';
+import type { SponsorshipTransaction } from '@decentralchain/ts-types';
 import type { TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
@@ -6,7 +6,7 @@ import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
 import { getAssetId, getCoins, ifElse, isStopSponsorship, pipe, prop } from '../utils/index.js';
 
 export interface IUpdatedISponsorshipTransaction<LONG> extends Omit<
-  ISponsorshipTransaction<LONG>,
+  SponsorshipTransaction<LONG>,
   'minSponsoredAssetFee'
 > {
   minSponsoredAssetFee: LONG | null;

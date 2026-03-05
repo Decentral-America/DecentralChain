@@ -1,11 +1,11 @@
-import type { IIssueTransaction } from '@decentralchain/ts-types';
+import type { IssueTransaction } from '@decentralchain/ts-types';
 import type { TLong, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
 import { getCoins, pipe, prop } from '../utils/index.js';
 
-export const issue = factory<IDCCGuiIssue, TWithPartialFee<IIssueTransaction<string>>>({
+export const issue = factory<IDCCGuiIssue, TWithPartialFee<IssueTransaction<string>>>({
   ...getDefaultTransform(),
   name: prop('name'),
   description: prop('description'),
