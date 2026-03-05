@@ -37,10 +37,12 @@ export class Seed {
     Object.freeze(this.keyPair);
   }
 
+  /** @deprecated Uses legacy KDF. See `Seed.encryptSeedPhrase` deprecation. */
   public encrypt(password: string, encryptionRounds?: number) {
     return Seed.encryptSeedPhrase(this.phrase, password, encryptionRounds);
   }
 
+  /** @deprecated Uses legacy KDF (5K SHA-256 + MD5 EVP). Migrate to V2 when available. */
   public static encryptSeedPhrase(
     seedPhrase: string,
     password: string,
@@ -65,6 +67,7 @@ export class Seed {
     return encryptSeed(seedPhrase, password, encryptionRounds);
   }
 
+  /** @deprecated Uses legacy KDF (5K SHA-256 + MD5 EVP). Migrate to V2 when available. */
   public static decryptSeedPhrase(
     encryptedSeedPhrase: string,
     password: string,
@@ -119,6 +122,7 @@ export function generateNewSeed(length = 15) {
   return randomSeed(length);
 }
 
+/** @deprecated Weak KDF — only 5,000 SHA-256 rounds. Use PBKDF2 (600K+) or Argon2id instead. */
 export function strengthenPassword(password: string, rounds = 5000): string {
   while (rounds--) {
     const bytes = serializePrimitives.STRING(password);
@@ -127,4 +131,11 @@ export function strengthenPassword(password: string, rounds = 5000): string {
   return password;
 }
 
+/**
+ * @deprecated Legacy KDF — uses 5,000 rounds of SHA-256 + MD5 EVP_BytesToKey.
+ * Modern standards require 600,000+ PBKDF2 iterations or Argon2id.
+ * Retained only for backward compatibility with seeds encrypted in the old format.
+ * Will be removed in a future major version — migrate to `encryptSeedV2` when available.
+ * @see https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+ */
 export { encryptSeed, decryptSeed };

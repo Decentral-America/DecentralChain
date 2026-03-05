@@ -17,13 +17,13 @@ import {
   TRANSACTION_TYPE,
 } from '@decentralchain/ts-types';
 
-const { BASE58_STRING, BASE64_STRING, BYTE, BYTES, COUNT, LEN, LONG, SHORT, STRING } =
+const { BASE58_STRING, BASE64_STRING, BOOL, BYTE, BYTES, COUNT, LEN, LONG, SHORT, STRING } =
   serializePrimitives;
 
 const typeMap: any = {
   integer: ['integer', 0, LONG],
   number: ['integer', 0, LONG],
-  boolean: ['boolean', 1, BYTE],
+  boolean: ['boolean', 1, BOOL],
   string: ['string', 3, LEN(SHORT)(STRING)],
   binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s)],
   _: ['binary', 2, LEN(SHORT)(BYTES)],

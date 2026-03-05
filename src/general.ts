@@ -1,7 +1,6 @@
 import { binary } from '@decentralchain/marshall';
 import { address, verifySignature } from '@decentralchain/ts-lib-crypto';
-import request from '@decentralchain/node-api-js/cjs/tools/request';
-import stringify from '@decentralchain/node-api-js/cjs/tools/stringify';
+import { request, stringify } from '@decentralchain/node-api-js';
 import { TSeedTypes } from './types';
 import { issue } from './transactions/issue';
 import { transfer } from './transactions/transfer';
@@ -224,6 +223,7 @@ export function verify(
   publicKey?: string,
 ): boolean {
   publicKey = publicKey || obj.senderPublicKey;
+  if (!publicKey) throw new Error('No public key provided and transaction has no senderPublicKey');
   const bytes = serialize(obj);
   if (obj.version == null) {
     const signature = (obj as any).signature;

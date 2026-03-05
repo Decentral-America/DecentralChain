@@ -63,7 +63,7 @@ describe('Node interaction', () => {
     } as IDataParams;
     const result = data(dataParams, 'seed');
 
-    await expect(broadcast(result, API_BASE)).rejects.toMatchObject({ error: 404 });
+    await expect(broadcast(result, API_BASE)).rejects.toMatchObject({ data: { error: 404 } });
   }, 100000);
 });
 

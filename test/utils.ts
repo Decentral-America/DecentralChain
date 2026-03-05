@@ -65,9 +65,8 @@ export function checkBinarySerializeDeserialize({ Json, Bytes }: { Json: any; By
 }
 export const longMax = '9223372036854775807';
 
-export function errorMessageByTemplate(field: string, value: any) {
-  if (typeof value == 'number') return `tx "${field}", has wrong data: ${value}. Check tx data.`;
-  else return `tx "${field}", has wrong data: "${value}". Check tx data.`;
+export function errorMessageByTemplate(field: string, _value?: any) {
+  return `tx "${field}" has invalid data. Check tx data.`;
 }
 
 export function rndString(len: number) {

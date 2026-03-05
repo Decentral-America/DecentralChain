@@ -81,16 +81,16 @@ export const isNumber = (value: unknown) =>
   (typeof value === 'number' || value instanceof Number) && !isNaN(Number(value));
 
 export const isNumberLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && !!(value || value === 0);
+  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && !!(value || value === 0);
 
 export const isNaturalNumberLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && Number(value) > 0;
+  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && Number(value) > 0;
 
 export const isNaturalNumberOrZeroLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && Number(value) >= 0;
+  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && Number(value) >= 0;
 
 export const isNaturalNumberOrNullLike = (value: unknown) =>
-  (!isNaN(Number(value)) && Number(value) > 0) || value === null;
+  (!isNaN(Number(value)) && isFinite(Number(value)) && Number(value) > 0) || value === null;
 
 export const isBoolean = (value: unknown) =>
   value != null && (typeof value === 'boolean' || value instanceof Boolean);
@@ -300,6 +300,6 @@ export const validateByShema =
     return true;
   };
 
-export const getError = (key: string, value: any) => {
-  return `tx "${key}", has wrong data: ${JSON.stringify(value)}. Check tx data.`;
+export const getError = (key: string, _value: any) => {
+  return `tx "${key}" has invalid data. Check tx data.`;
 };

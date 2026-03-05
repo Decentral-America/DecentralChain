@@ -1,27 +1,4 @@
 import {
-<<<<<<< HEAD
-    DataTransactionEntry,
-    GenesisTransaction,
-    MassTransferItem,
-    PaymentTransaction,
-    SignedTransaction,
-    Transaction,
-    TRANSACTION_TYPE,
-    TransactionType
-<<<<<<< HEAD
-} from '@waves/ts-types/src'
-import {InvokeScriptCallArgument} from '@waves/ts-types/src/parts'
-<<<<<<< HEAD
-import {EthereumTransaction, ExchangeTransactionOrderType} from '@waves/ts-types'
-=======
-import {EthereumTransaction} from '@waves/ts-types'
->>>>>>> f33083a0 (updated dependencies)
-=======
-} from '@decentralchain/ts-types/src'
-import {InvokeScriptCallArgument} from '@decentralchain/ts-types/src/parts'
-import {EthereumTransaction} from '@decentralchain/ts-types'
->>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
-=======
   DataTransactionEntry,
   GenesisTransaction,
   MassTransferItem,
@@ -30,16 +7,9 @@ import {EthereumTransaction} from '@decentralchain/ts-types'
   Transaction,
   TRANSACTION_TYPE,
   TransactionType,
-<<<<<<< HEAD
-} from '@decentralchain/ts-types/src'
-import { InvokeScriptCallArgument } from '@decentralchain/ts-types/src/parts'
-import { EthereumTransaction } from '@decentralchain/ts-types'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
-} from '@decentralchain/ts-types/src';
-import { InvokeScriptCallArgument } from '@decentralchain/ts-types/src/parts';
+  InvokeScriptCallArgument,
+} from '@decentralchain/ts-types';
 import { EthereumTransaction } from '@decentralchain/ts-types';
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
 export interface WithId {
   /**
@@ -95,30 +65,6 @@ export interface ICancelOrder {
 
 //////////////params
 export type TTxParams<LONG = string | number> =
-<<<<<<< HEAD
-    | IAliasParams<LONG>
-    | IBurnParams<LONG>
-    | IInvokeScriptParams<LONG>
-    | ICancelLeaseParams<LONG>
-    | IDataParams<LONG>
-    | IIssueParams<LONG>
-    | ILeaseParams<LONG>
-    | IMassTransferParams<LONG>
-    | IReissueParams<LONG>
-    | ISetAssetScriptParams<LONG>
-    | ISetScriptParams<LONG>
-    | ISponsorshipParams<LONG>
-    | ITransferParams<LONG>
-    | IUpdateAssetInfoParams<LONG>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    // | IInvokeExpressionParams<LONG>
-=======
->>>>>>> 697d643a (minor fixes)
-=======
-    // | IInvokeExpressionParams<LONG>
->>>>>>> f33083a0 (updated dependencies)
-=======
   | IAliasParams<LONG>
   | IBurnParams<LONG>
   | IInvokeScriptParams<LONG>
@@ -133,11 +79,6 @@ export type TTxParams<LONG = string | number> =
   | ISponsorshipParams<LONG>
   | ITransferParams<LONG>
   | IUpdateAssetInfoParams<LONG>;
-<<<<<<< HEAD
-// | IInvokeExpressionParams<LONG>
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
->>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
@@ -243,35 +184,6 @@ export interface IMassTransferParams<LONG = string | number> extends IBasicParam
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
  */
 export interface IOrderParams<LONG = string | number> {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    matcherPublicKey: string
-    price: LONG
-    amount: LONG
-    orderType: ExchangeTransactionOrderType,
-    amountAsset: string | null
-    priceAsset: string | null
-    senderPublicKey?: string
-    matcherFee?: number
-    timestamp?: number
-    expiration?: number
-    matcherFeeAssetId?: string | null
-    priceMode?: 'fixedDecimals' | 'assetDecimals'
-=======
-  matcherPublicKey: string
-  price: LONG
-  amount: LONG
-  orderType: 'buy' | 'sell'
-  amountAsset: string | null
-  priceAsset: string | null
-  senderPublicKey?: string
-  matcherFee?: number
-  timestamp?: number
-  expiration?: number
-  matcherFeeAssetId?: string | null
-  priceMode?: 'fixedDecimals' | 'assetDecimals'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
   matcherPublicKey: string;
   price: LONG;
   amount: LONG;
@@ -284,7 +196,6 @@ export interface IOrderParams<LONG = string | number> {
   expiration?: number;
   matcherFeeAssetId?: string | null;
   priceMode?: 'fixedDecimals' | 'assetDecimals';
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 }
 
 export interface ICancelOrderParams {
@@ -421,39 +332,10 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
   description: string;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f33083a0 (updated dependencies)
-// /**
-//  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
-//  */
-// export interface IInvokeExpressionParams<LONG = string | number> extends IBasicParams<LONG> {
-//     feeAssetId?: string | null
-//     expression: string,
-// }
-
-<<<<<<< HEAD
-export type TTransaction = Exclude<Transaction, GenesisTransaction | PaymentTransaction | EthereumTransaction>
-<<<<<<< HEAD
-=======
-export type TTransaction = Exclude<Transaction, GenesisTransaction | PaymentTransaction>
->>>>>>> 697d643a (minor fixes)
-=======
->>>>>>> f33083a0 (updated dependencies)
-=======
-=======
->>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 export type TTransaction = Exclude<
   Transaction,
   GenesisTransaction | PaymentTransaction | EthereumTransaction
-<<<<<<< HEAD
->
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
 >;
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
 export type TTransactionType = Exclude<
   (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE],

@@ -571,9 +571,7 @@ const massTransferItemToProto = (
   recipient: recipientToProto(mti.recipient),
   amount: mti.amount == 0 ? null : Long.fromValue(mti.amount),
 });
-export const dataEntryToProto = (
-  de: DataTransactionEntry,
-): dccProto.waves.DataTransactionData.IDataEntry => ({
+export const dataEntryToProto = (de: DataTransactionEntry): dccProto.waves.IDataEntry => ({
   key: de.key,
   intValue: de.type === 'integer' ? Long.fromValue(de.value) : undefined,
   boolValue: de.type === 'boolean' ? de.value : undefined,
