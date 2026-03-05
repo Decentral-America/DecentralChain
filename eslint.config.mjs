@@ -51,7 +51,7 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-function-type': 'warn',
 
       // Allow non-null assertions (needed with noUncheckedIndexedAccess)
-      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'off',
 
       // Codebase uses `type` aliases extensively
       '@typescript-eslint/consistent-type-definitions': 'off',

@@ -366,12 +366,22 @@ describe('AES encrypt/decrypt properties', () => {
     );
   });
 
-  test('AES decrypt with wrong key fails', () => {
+  test('AES decrypt with wrong key fails or returns wrong data', () => {
     fc.assert(
       fc.property(arbKey16, arbKey16, arbIv16, arbBytes(1, 64), (keyA, keyB, iv, plaintext) => {
         fc.pre(!bufEqual(keyA, keyB));
         const encrypted = aesEncrypt(plaintext, keyA, 'CBC', iv);
-        expect(() => aesDecrypt(encrypted, keyB, 'CBC', iv)).toThrow();
+        // AES-CBC with wrong key may not always throw — if the wrong key
+        // accidentally produces valid PKCS7 padding the decryption succeeds
+        // but yields garbage.  The security invariant: the plaintext is NEVER
+        // recoverable with the wrong key.
+        try {
+          const decrypted = aesDecrypt(encrypted, keyB, 'CBC', iv);
+          // Did not throw → the decrypted bytes must differ from the original
+          expect(bufEqual(decrypted, plaintext)).toBe(false);
+        } catch {
+          // Threw an error → that's the expected behaviour, nothing to check
+        }
       }),
       { numRuns: 30 },
     );
