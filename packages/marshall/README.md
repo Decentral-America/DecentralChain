@@ -1,28 +1,29 @@
-<div align="center">
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-# @decentralchain/marshall
+<h3 align="center">@decentralchain/marshall</h3>
 
-**The official binary serialization and data marshalling library for the [DecentralChain](https://decentralchain.io) blockchain.**
+<p align="center">
+  Serialize and parse DecentralChain blockchain data structures.
+</p>
 
-[![CI](https://github.com/Decentral-America/marshall/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/marshall/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/marshall)](https://www.npmjs.com/package/@decentralchain/marshall)
-[![license](https://img.shields.io/npm/l/@decentralchain/marshall)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/marshall)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@decentralchain/marshall)](https://bundlephobia.com/package/@decentralchain/marshall)
-[![ESM Only](https://img.shields.io/badge/module-ESM-brightgreen)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-
-[Getting Started](#installation) · [API Reference](#api-reference) · [Examples](#usage-examples) · [Contributing](#contributing)
-
-</div>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/marshall"><img src="https://img.shields.io/npm/v/@decentralchain/marshall?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/marshall" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/marshall"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/marshall" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/marshall" alt="node" /></a>
+</p>
 
 ---
 
 ## Overview
 
-Marshall is the canonical TypeScript library for **serializing and deserializing DecentralChain blockchain data structures**. It converts DecentralChain transactions and DEX (decentralized exchange) orders between their in-memory JavaScript representations, compact binary wire format, and JSON — enabling wallets, dApps, block explorers, and backend services to communicate with DecentralChain nodes.
-
 Marshall provides binary serialization/deserialization and JSON conversion for DecentralChain transactions and orders. It handles 64-bit LONG values safely and supports custom big-number converters for libraries like `long` or `bignumber.js`.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ### Why Marshall?
 
@@ -352,22 +353,24 @@ npm run check:size      # Within size budget (< 11 kB)
 
 ---
 
+## Related packages
+
+| Package | Description |
+| --- | --- |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
+| [`@decentralchain/protobuf-serialization`](https://www.npmjs.com/package/@decentralchain/protobuf-serialization) | Protocol Buffers serialization |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+| [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber) | Arbitrary-precision arithmetic |
+
 ## Contributing
 
-We welcome contributions from the community! See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines, workflow, and standards.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-Please report security vulnerabilities responsibly. See [SECURITY.md](./SECURITY.md).
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for a detailed history of changes.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) — Copyright (c) 2026-present DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
