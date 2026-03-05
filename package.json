@@ -87,12 +87,12 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
-    "@decentralchain/bignumber": "*",
-    "@decentralchain/data-entities": "*",
-    "@decentralchain/ledger": "*",
-    "@decentralchain/money-like-to-node": "*",
-    "@decentralchain/transactions": "*",
-    "@decentralchain/ts-types": "*",
+    "@decentralchain/bignumber": "1.1.1",
+    "@decentralchain/data-entities": "3.0.0",
+    "@decentralchain/ledger": "5.0.0",
+    "@decentralchain/money-like-to-node": "1.0.0",
+    "@decentralchain/transactions": "5.0.0",
+    "@decentralchain/ts-types": "2.0.0",
     "ramda": "^0.32.0"
   },
   "devDependencies": {
