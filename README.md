@@ -1,23 +1,41 @@
-# @decentralchain/transactions
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/transactions/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/transactions/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@decentralchain/transactions)](https://www.npmjs.com/package/@decentralchain/transactions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node](https://img.shields.io/node/v/@decentralchain/transactions)](https://nodejs.org)
+<h3 align="center">@decentralchain/transactions</h3>
 
-> Transaction builder, signer, and broadcaster for the DecentralChain blockchain.
+<p align="center">
+  Build and sign transactions for the DecentralChain blockchain.
+</p>
 
-Provides builder functions for all transaction types, cryptographic signing with seed phrases or private keys, and broadcasting to DecentralChain nodes.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/transactions"><img src="https://img.shields.io/npm/v/@decentralchain/transactions?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/transactions" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/transactions"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/transactions" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/transactions" alt="node" /></a>
+</p>
+
+---
+
+## Overview
+
+Transaction builder, signer, and broadcaster for the DecentralChain blockchain. Provides builder functions for all transaction types, cryptographic signing with seed phrases or private keys, and broadcasting to DecentralChain nodes.
 
 - **ESM-only** package
 - **TypeScript-first** — ships declaration files
 - **Tree-shakeable** — zero side effects
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/transactions
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -208,10 +226,24 @@ function waitForTx(txId: string, options: { apiBase: string; timeout?: number })
 | `npm run validate`     | Full quality gate (CI-equivalent)    |
 | `npm run bulletproof`  | Format + lint:fix + typecheck + test |
 
+## Related packages
+
+| Package | Description |
+| --- | --- |
+| [`@decentralchain/ts-lib-crypto`](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall) | Binary serialization/deserialization |
+| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+| [`@decentralchain/protobuf-serialization`](https://www.npmjs.com/package/@decentralchain/protobuf-serialization) | Protocol Buffers serialization |
+
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow and guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Security
+
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+[MIT](LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
