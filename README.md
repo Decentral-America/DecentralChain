@@ -1,25 +1,37 @@
-# @decentralchain/data-entities
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/data-entities/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/data-entities/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/data-entities)](https://www.npmjs.com/package/@decentralchain/data-entities)
-[![license](https://img.shields.io/npm/l/@decentralchain/data-entities)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/data-entities)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+<h3 align="center">@decentralchain/data-entities</h3>
 
-Domain model classes for DecentralChain blockchain entities.
+<p align="center">
+  Domain model classes for DecentralChain blockchain entities.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/data-entities"><img src="https://img.shields.io/npm/v/@decentralchain/data-entities?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/data-entities" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/data-entities"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/data-entities" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/data-entities" alt="node" /></a>
+</p>
+
+---
+
+## Overview
 
 Provides type-safe, immutable data classes for working with Assets, Money, OrderPrices, AssetPairs, and Candles in the DecentralChain ecosystem. All numeric values use BigNumber for arbitrary-precision arithmetic.
 
-## Requirements
-
-- **Node.js** >= 24
-- **npm** >= 10
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Installation
 
 ```bash
 npm install @decentralchain/data-entities
 ```
+
+> Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
 
 ## Quick Start
 
@@ -147,22 +159,24 @@ All of the following must pass before merge:
 - `npm run check:exports` — Type exports valid
 - `npm run check:size` — Within 10 kB budget
 
+## Related packages
+
+| Package                                                                                                          | Description                         |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber)                           | Arbitrary-precision arithmetic      |
+| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                             | Core TypeScript type definitions    |
+| [`@decentralchain/money-like-to-node`](https://www.npmjs.com/package/@decentralchain/money-like-to-node)         | Money-like to node format converter |
+| [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter)           | Multi-provider signing adapter      |
+| [`@decentralchain/data-service-client-js`](https://www.npmjs.com/package/@decentralchain/data-service-client-js) | Data service API client             |
+
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow and guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md).
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) © DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
