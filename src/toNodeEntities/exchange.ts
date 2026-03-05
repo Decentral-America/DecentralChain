@@ -1,49 +1,62 @@
 import type {
-  IExchangeTransaction,
-  IExchangeTransactionOrderWithProofs,
+  ExchangeTransaction,
+  ExchangeTransactionOrder,
+  SignedIExchangeTransactionOrder,
 } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
-import { factory } from '../core/factory.js';
 import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
-import { getAssetId, getCoins, pipe, prop } from '../utils/index.js';
+import { getAssetId, getCoins } from '../utils/index.js';
 
-const getAssetPair = factory<IDCCGuiExchangeOrder, { amountAsset: string; priceAsset: string }>({
-  amountAsset: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('amount'), getAssetId),
-  priceAsset: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('price'), getAssetId),
+const getAssetPair = (data: IDCCGuiExchangeOrder) => ({
+  amountAsset: getAssetId(data.amount),
+  priceAsset: getAssetId(data.price),
 });
 
-export const remapOrder = factory<
-  IDCCGuiExchangeOrder,
-  IExchangeTransactionOrderWithProofs<string>
->({
-  version: prop('version'),
-  matcherPublicKey: prop('matcherPublicKey'),
-  orderType: prop('orderType'),
-  timestamp: prop('timestamp'),
-  expiration: prop('expiration'),
-  senderPublicKey: prop('senderPublicKey'),
-  proofs: prop('proofs'),
-  price: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('price'), getCoins),
-  amount: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('amount'), getCoins),
-  matcherFee: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('matcherFee'), getCoins),
-  matcherFeeAssetId: pipe<IDCCGuiExchangeOrder, TMoney, string>(prop('matcherFee'), getAssetId),
-  assetPair: getAssetPair,
-  // @ts-expect-error chainId not yet in @decentralchain/ts-types IExchangeTransactionOrderWithProofs
-  chainId: prop('chainId'),
-  // @ts-expect-error priceMode not yet in @decentralchain/ts-types IExchangeTransactionOrderWithProofs
-  priceMode: prop('priceMode'),
-});
+// The order/exchange types are unions (V1 | V2 | V3 | V4) with literal version
+// fields. TypeScript distributes factory's constraint across each union member,
+// so we implement these as plain functions to keep things clean.
+export const remapOrder = (
+  data: IDCCGuiExchangeOrder,
+): SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>> => {
+  const base = {
+    version: data.version,
+    matcherPublicKey: data.matcherPublicKey,
+    orderType: data.orderType,
+    timestamp: data.timestamp,
+    expiration: data.expiration,
+    senderPublicKey: data.senderPublicKey,
+    price: getCoins(data.price),
+    amount: getCoins(data.amount),
+    matcherFee: getCoins(data.matcherFee),
+    matcherFeeAssetId: getAssetId(data.matcherFee),
+    assetPair: getAssetPair(data),
+    ...(data.chainId != null ? { chainId: data.chainId } : {}),
+    ...(data.priceMode != null ? { priceMode: data.priceMode } : {}),
+    proofs: data.proofs,
+  };
+  return base as unknown as SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>>;
+};
 
-export const exchange = factory<IDCCGuiExchange, TWithPartialFee<IExchangeTransaction<string>>>({
-  ...getDefaultTransform(),
-  buyOrder: pipe(prop('buyOrder'), remapOrder),
-  sellOrder: pipe(prop('sellOrder'), remapOrder),
-  price: pipe<IDCCGuiExchange, TLong, string>(prop('price'), getCoins),
-  amount: pipe<IDCCGuiExchange, TLong, string>(prop('amount'), getCoins),
-  buyMatcherFee: pipe<IDCCGuiExchange, TMoney, string>(prop('buyMatcherFee'), getCoins),
-  sellMatcherFee: pipe<IDCCGuiExchange, TMoney, string>(prop('sellMatcherFee'), getCoins),
-});
+const defaultTransformFns = getDefaultTransform();
+
+export const exchange = (data: IDCCGuiExchange): TWithPartialFee<ExchangeTransaction<string>> => {
+  const base = {
+    type: defaultTransformFns.type(data),
+    version: defaultTransformFns.version(data),
+    senderPublicKey: defaultTransformFns.senderPublicKey(data),
+    timestamp: defaultTransformFns.timestamp(data),
+    fee: defaultTransformFns.fee(data),
+    ...(data.chainId != null ? { chainId: data.chainId } : {}),
+    order1: remapOrder(data.buyOrder),
+    order2: remapOrder(data.sellOrder),
+    price: getCoins(data.price),
+    amount: getCoins(data.amount),
+    buyMatcherFee: getCoins(data.buyMatcherFee),
+    sellMatcherFee: getCoins(data.sellMatcherFee),
+  };
+  return base as unknown as TWithPartialFee<ExchangeTransaction<string>>;
+};
 
 export interface IDCCGuiExchange extends IDefaultGuiTx<typeof TYPES.EXCHANGE> {
   buyOrder: IDCCGuiExchangeOrder;

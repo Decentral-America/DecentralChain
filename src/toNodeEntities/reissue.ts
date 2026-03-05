@@ -1,11 +1,11 @@
-import type { IReissueTransaction } from '@decentralchain/ts-types';
+import type { ReissueTransaction } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
 import { emptyError, getAssetId, getCoins, has, ifElse, pipe, prop } from '../utils/index.js';
 
-export const reissue = factory<TDCCGuiReissue, TWithPartialFee<IReissueTransaction<string>>>({
+export const reissue = factory<TDCCGuiReissue, TWithPartialFee<ReissueTransaction<string>>>({
   ...getDefaultTransform(),
   assetId: pipe<TDCCGuiReissue, string, string>(
     ifElse<TDCCGuiReissue, string, string>(
