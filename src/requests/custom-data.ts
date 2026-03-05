@@ -13,8 +13,7 @@ import { schemas, serializePrimitives } from '@decentralchain/marshall';
 import { binary } from '@decentralchain/marshall';
 import { validate } from '../validators';
 import { TPrivateKey } from '../types';
-import { DataTransactionEntry } from '@decentralchain/ts-types';
-import { DataTransactionDeleteRequest } from '@decentralchain/ts-types/src/parts';
+import { DataTransactionEntry, DataTransactionDeleteRequest } from '@decentralchain/ts-types';
 
 interface ICustomDataV1 {
   version: 1;

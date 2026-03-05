@@ -10,7 +10,7 @@ import {
 } from '../../test/utils';
 import { dataMinimalParams } from '../minimalParams';
 import { binary } from '@decentralchain/marshall';
-import { base64Decode } from '@decentralchain/ts-lib-crypto/conversions/base-xx';
+import { base64Decode } from '@decentralchain/ts-lib-crypto';
 import { dataTx } from './expected/proto/data.tx';
 import { dataBinaryTx } from './expected/binary/data.tx';
 
@@ -267,7 +267,7 @@ describe('data', () => {
     {
       key: extraMaxKey,
       type: 'binary',
-      value: 'base16:52696465',
+      value: 'base64:UmlkZQ==',
     },
     {
       key: extraMaxKey,
