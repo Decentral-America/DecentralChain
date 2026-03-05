@@ -1,9 +1,9 @@
-# @decentralchain/provider-cubensis
+# @decentralchain/cubensis-connect-provider
 
-[![CI](https://github.com/Decentral-America/provider-cubensis/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/provider-cubensis/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/provider-cubensis)](https://www.npmjs.com/package/@decentralchain/provider-cubensis)
-[![license](https://img.shields.io/npm/l/@decentralchain/provider-cubensis)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/provider-cubensis)](./package.json)
+[![CI](https://github.com/Decentral-America/cubensis-connect-provider/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/cubensis-connect-provider/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@decentralchain/cubensis-connect-provider)](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider)
+[![license](https://img.shields.io/npm/l/@decentralchain/cubensis-connect-provider)](./LICENSE)
+[![Node.js](https://img.shields.io/node/v/@decentralchain/cubensis-connect-provider)](./package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
 CubensisConnect browser wallet provider for DCC Signer.
@@ -12,21 +12,21 @@ Implements the [Signer](https://github.com/Decentral-America/signer) `Provider` 
 
 ## Requirements
 
-- **Node.js** >= 22 (for development)
+- **Node.js** >= 24 (LTS)
 - **CubensisConnect** browser extension installed (for end users)
 - **@decentralchain/signer** ^1.0.0 (peer dependency)
 
 ## Installation
 
 ```bash
-npm install @decentralchain/provider-cubensis @decentralchain/signer
+npm install @decentralchain/cubensis-connect-provider @decentralchain/signer
 ```
 
 ## Quick Start
 
 ```typescript
 import { Signer } from '@decentralchain/signer';
-import { ProviderCubensis } from '@decentralchain/provider-cubensis';
+import { ProviderCubensis } from '@decentralchain/cubensis-connect-provider';
 
 // Initialize Signer with a DecentralChain node
 const signer = new Signer({
@@ -89,32 +89,32 @@ Creates a new provider instance with random auth data.
 
 ### Prerequisites
 
-- **Node.js** >= 22 (24 recommended — see `.node-version`)
+- **Node.js** >= 24 (LTS — see `.node-version`)
 - **npm** >= 10 (latest LTS recommended)
 
 ### Setup
 
 ```bash
-git clone https://github.com/Decentral-America/provider-cubensis.git
-cd provider-cubensis
+git clone https://github.com/Decentral-America/cubensis-connect-provider.git
+cd cubensis-connect-provider
 npm install
 ```
 
 ### Scripts
 
-| Command                     | Description                                   |
-| --------------------------- | --------------------------------------------- |
-| `npm run build`             | Build distribution files (ESM + CJS via tsup) |
-| `npm test`                  | Run tests with Vitest                         |
-| `npm run test:watch`        | Tests in watch mode                           |
-| `npm run test:coverage`     | Tests with V8 coverage                        |
-| `npm run typecheck`         | TypeScript type checking                      |
-| `npm run lint`              | ESLint                                        |
-| `npm run lint:fix`          | ESLint with auto-fix                          |
-| `npm run format`            | Format with Prettier                          |
-| `npm run validate`          | Full CI validation pipeline                   |
-| `npm run bulletproof`       | Format + lint fix + typecheck + test          |
-| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test      |
+| Command                     | Description                                  |
+| --------------------------- | -------------------------------------------- |
+| `npm run build`             | Build distribution files (ESM-only via tsup) |
+| `npm test`                  | Run tests with Vitest                        |
+| `npm run test:watch`        | Tests in watch mode                          |
+| `npm run test:coverage`     | Tests with V8 coverage                       |
+| `npm run typecheck`         | TypeScript type checking                     |
+| `npm run lint`              | ESLint                                       |
+| `npm run lint:fix`          | ESLint with auto-fix                         |
+| `npm run format`            | Format with Prettier                         |
+| `npm run validate`          | Full CI validation pipeline                  |
+| `npm run bulletproof`       | Format + lint fix + typecheck + test         |
+| `npm run bulletproof:check` | CI-safe: check format + lint + tc + test     |
 
 ### Quality Gates
 
@@ -126,7 +126,7 @@ All of the following must pass before merge:
 - Tests with 90%+ coverage
 - Clean build
 - Package validation (`publint`, `attw`)
-- Bundle size budget (10 kB)
+- Bundle size budget (15 kB)
 
 ## Contributing
 

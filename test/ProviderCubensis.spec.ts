@@ -38,11 +38,13 @@ function createMockApi(): CubensisConnect.TCubensisConnectApi {
 
 /**
  * Installs a mock CubensisConnect extension on the global window object.
- * Returns the mock API for further assertion setup.
+ * The mock mirrors the real extension: API methods live directly on the
+ * CubensisConnect object, and initialPromise resolves to void once ready.
  */
 function installMockExtension(api: CubensisConnect.TCubensisConnectApi) {
   (window as unknown as Record<string, unknown>).CubensisConnect = {
-    initialPromise: Promise.resolve(api),
+    ...api,
+    initialPromise: Promise.resolve(),
   };
 }
 

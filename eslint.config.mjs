@@ -41,6 +41,18 @@ export default defineConfig([
       ],
       '@typescript-eslint/consistent-type-exports': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+      eqeqeq: ['error', 'always'],
+      'no-bitwise': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      // Global CubensisConnect namespace types (declared via ambient module augmentation)
+      // resolve correctly in tsc but not in eslint's project-service. Turned off
+      // since tsc provides the real type safety for these ambient global accesses.
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 

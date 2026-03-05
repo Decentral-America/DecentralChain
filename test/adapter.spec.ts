@@ -61,7 +61,7 @@ describe('Adapter', () => {
       });
 
       it('fee is money-like', () => {
-        tx.fee = amount; // now tx with fee in WAVES
+        tx.fee = amount; // now tx with fee in DCC
 
         expect(keeperTxFactory(tx).data.fee).toEqual({
           coins: tx.fee,
@@ -568,6 +568,26 @@ describe('Adapter', () => {
     it('throws for unknown transaction type', () => {
       const tx = { type: 999 } as unknown as SignerTx;
       expect(() => keeperTxFactory(tx)).toThrow('Unsupported transaction type');
+    });
+  });
+
+  describe('signerTxFactory input validation', () => {
+    it('throws for empty string input', () => {
+      expect(() => signerTxFactory('')).toThrow(
+        'Expected a non-empty signed transaction string from CubensisConnect',
+      );
+    });
+
+    it('throws for non-string input', () => {
+      expect(() => signerTxFactory(null as any)).toThrow(
+        'Expected a non-empty signed transaction string from CubensisConnect',
+      );
+      expect(() => signerTxFactory(undefined as any)).toThrow(
+        'Expected a non-empty signed transaction string from CubensisConnect',
+      );
+      expect(() => signerTxFactory(123 as any)).toThrow(
+        'Expected a non-empty signed transaction string from CubensisConnect',
+      );
     });
   });
 });

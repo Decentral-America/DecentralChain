@@ -99,4 +99,123 @@ describe('calculateFee', () => {
     expect(receivedSignal).toBeInstanceOf(AbortSignal);
     expect(receivedSignal?.aborted).toBe(false);
   });
+
+  it('returns original tx when feeAmount is negative', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: -100 }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when feeAmount is zero', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 0 }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when feeAmount is NaN', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: NaN }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when feeAmount is not a number', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 'not-a-number' }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when response body is not an object', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve('invalid'),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when feeAmount is Infinity', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: Infinity }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
+
+  it('returns original tx when feeAmount is a float', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 500000.5 }),
+      }),
+    );
+
+    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const result = await calculateFee('https://node.example.com', tx);
+
+    expect(result).toEqual(tx);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid fee response'));
+  });
 });

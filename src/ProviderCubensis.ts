@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/provider-cubensis
+ * @module @decentralchain/cubensis-connect-provider
  *
  * CubensisConnect browser wallet provider for DCC Signer.
  * Implements the Provider interface to bridge Signer with the CubensisConnect browser extension.
@@ -12,6 +12,8 @@ import type {
   Provider,
   SignedTx,
   SignerTx,
+  TOrderArgs,
+  TSignedOrder,
   TypedData,
   UserData,
 } from '@decentralchain/signer';
@@ -22,6 +24,31 @@ import { ensureNetwork } from './decorators';
 import { calculateFee } from './utils';
 import { TRANSACTION_TYPE } from './transaction-type';
 
+/** Default timeout for wallet extension operations (2 minutes). */
+const EXTENSION_TIMEOUT_MS = 120_000;
+
+/**
+ * Wraps a Promise with a timeout to prevent indefinite hangs
+ * when the wallet extension becomes unresponsive.
+ */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`CubensisConnect: ${label} timed out after ${ms}ms`));
+      }, ms);
+    }),
+  ]);
+}
+
+/** EventEmitter subclass that exposes the protected `trigger` as a public `emit`. */
+class Emitter<T extends Record<string, unknown>> extends EventEmitter<T> {
+  public emit<K extends keyof T>(event: K, data: T[K]): this {
+    return this.trigger(event, data);
+  }
+}
+
 /**
  * CubensisConnect browser wallet provider for DCC Signer.
  *
@@ -31,7 +58,7 @@ import { TRANSACTION_TYPE } from './transaction-type';
  *
  * @example
  * ```ts
- * import { ProviderCubensis } from '@decentralchain/provider-cubensis';
+ * import { ProviderCubensis } from '@decentralchain/cubensis-connect-provider';
  * import { Signer } from '@decentralchain/signer';
  *
  * const signer = new Signer({ NODE_URL: 'https://mainnet-node.decentralchain.io' });
@@ -42,13 +69,13 @@ export class ProviderCubensis implements Provider {
   /** The currently authenticated user, or `null` if not logged in. */
   public user: UserData | null = null;
 
-  private readonly _authData: CubensisConnect.IAuthData;
-  private _api!: CubensisConnect.TCubensisConnectApi;
+  private _authData: CubensisConnect.IAuthData;
+  private _api!: CubensisConnect.ICubensisConnectApi;
   private _options: ConnectOptions = {
     NETWORK_BYTE: '?'.charCodeAt(0),
     NODE_URL: 'https://mainnet-node.decentralchain.io',
   };
-  private readonly _emitter: EventEmitter<AuthEvents> = new EventEmitter<AuthEvents>();
+  private readonly _emitter: Emitter<AuthEvents> = new Emitter<AuthEvents>();
   private readonly _maxRetries = 10;
 
   constructor() {
@@ -110,8 +137,8 @@ export class ProviderCubensis implements Provider {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (window.CubensisConnect) {
         void window.CubensisConnect.initialPromise
-          .then((api: CubensisConnect.TCubensisConnectApi) => {
-            this._api = api;
+          .then(() => {
+            this._api = window.CubensisConnect as CubensisConnect.ICubensisConnectApi;
             resolve();
           })
           .catch((err: unknown) => {
@@ -142,25 +169,25 @@ export class ProviderCubensis implements Provider {
    */
   @ensureNetwork
   public login(): Promise<UserData> {
-    return this._api.auth(this._authData).then((auth) => {
-      this.user = { address: auth.address, publicKey: auth.publicKey };
+    // Regenerate nonce on every login to prevent replay attacks
+    this._authData = { data: base16Encode(randomBytes(16)) };
+    return withTimeout(
+      this._api.auth(this._authData).then((auth: CubensisConnect.IAuthResponse) => {
+        this.user = { address: auth.address, publicKey: auth.publicKey };
 
-      (this._emitter as unknown as { trigger: (event: string, data: unknown) => void }).trigger(
-        'login',
-        this.user,
-      );
-      return this.user;
-    });
+        this._emitter.emit('login', this.user);
+        return this.user;
+      }),
+      EXTENSION_TIMEOUT_MS,
+      'auth',
+    );
   }
 
   /** Logs out the current user and emits a `logout` event. */
   public logout(): Promise<void> {
     this.user = null;
 
-    (this._emitter as unknown as { trigger: (event: string, data: unknown) => void }).trigger(
-      'logout',
-      void 0,
-    );
+    this._emitter.emit('logout', void 0);
     return Promise.resolve();
   }
 
@@ -172,12 +199,62 @@ export class ProviderCubensis implements Provider {
    */
   @ensureNetwork
   public signMessage(data: string | number): Promise<string> {
+    return withTimeout(
+      this._api
+        .signCustomData({
+          version: 1,
+          binary: 'base64:' + base64Encode(stringToBytes(String(data))),
+        })
+        .then((data: CubensisConnect.TSignCustomDataResponseV1) => data.signature),
+      EXTENSION_TIMEOUT_MS,
+      'signMessage',
+    );
+  }
+
+  /**
+   * Signs an exchange order using CubensisConnect.
+   *
+   * @param data - The order arguments to sign
+   * @returns The signed order with id, proofs, and senderPublicKey
+   * @throws {Error} If network mismatch or user rejects
+   */
+  @ensureNetwork
+  public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
     return this._api
-      .signCustomData({
-        version: 1,
-        binary: 'base64:' + base64Encode(stringToBytes(String(data))),
+      .signOrder({
+        type: 1002,
+        data: {
+          matcherPublicKey: data.matcherPublicKey,
+          orderType: data.orderType,
+          expiration: data.expiration,
+          amount: {
+            assetId: data.assetPair.amountAsset ?? 'DCC',
+            coins: data.amount,
+          },
+          price: {
+            assetId: data.assetPair.priceAsset ?? 'DCC',
+            coins: data.price,
+          },
+          matcherFee: {
+            assetId: data.matcherFeeAssetId ?? 'DCC',
+            coins: data.matcherFee,
+          },
+        },
       })
-      .then((data) => data.signature);
+      .then((signedStr: string) => {
+        const parsed = JSON.parse(signedStr);
+        // Basic structural validation of the signed order
+        if (
+          !parsed ||
+          typeof parsed !== 'object' ||
+          typeof parsed.id !== 'string' ||
+          !Array.isArray(parsed.proofs) ||
+          parsed.proofs.length === 0
+        ) {
+          throw new Error('Invalid signed order response from CubensisConnect');
+        }
+        return parsed as TSignedOrder;
+      });
   }
 
   /**
@@ -188,12 +265,16 @@ export class ProviderCubensis implements Provider {
    */
   @ensureNetwork
   public signTypedData(data: TypedData[]): Promise<string> {
-    return this._api
-      .signCustomData({
-        version: 2,
-        data: data as CubensisConnect.TTypedData[],
-      })
-      .then((data) => data.signature);
+    return withTimeout(
+      this._api
+        .signCustomData({
+          version: 2,
+          data: data as CubensisConnect.TTypedData[],
+        })
+        .then((data: CubensisConnect.TSignCustomDataResponseV2) => data.signature),
+      EXTENSION_TIMEOUT_MS,
+      'signTypedData',
+    );
   }
 
   /**
@@ -215,25 +296,37 @@ export class ProviderCubensis implements Provider {
       if (!firstTx) {
         throw new Error('Expected at least one transaction to sign');
       }
-      return this._api
-        .signTransaction(keeperTxFactory(firstTx))
-        .then((data) => [signerTxFactory(data)]) as Promise<SignedTx<T>>;
+      return withTimeout(
+        this._api
+          .signTransaction(keeperTxFactory(firstTx))
+          .then((data: string) => [signerTxFactory(data)]) as Promise<SignedTx<T>>,
+        EXTENSION_TIMEOUT_MS,
+        'signTransaction',
+      );
     }
 
-    return this._api
-      .signTransactionPackage(
-        toSignWithFee.map((tx) =>
-          keeperTxFactory(tx),
-        ) as CubensisConnect.TSignTransactionPackageData,
-      )
-      .then((data) => data.map((tx) => signerTxFactory(tx))) as Promise<SignedTx<T>>;
+    return withTimeout(
+      this._api
+        .signTransactionPackage(
+          toSignWithFee.map((tx) =>
+            keeperTxFactory(tx),
+          ) as CubensisConnect.TSignTransactionPackageData,
+        )
+        .then((data: string[]) => data.map((tx: string) => signerTxFactory(tx))) as Promise<
+        SignedTx<T>
+      >,
+      EXTENSION_TIMEOUT_MS,
+      'signTransactionPackage',
+    );
   }
 
   /** Resolves the current user's public key, falling back to the extension's state. */
   private _publicKeyPromise(): Promise<string | undefined> {
     return this.user?.publicKey
       ? Promise.resolve(this.user.publicKey)
-      : this._api.publicState().then((state) => state.account?.publicKey);
+      : this._api
+          .publicState()
+          .then((state: CubensisConnect.IPublicStateResponse) => state.account?.publicKey);
   }
 
   /** Ensures invoke-script transactions have a fee, calculating via node API if missing. */
