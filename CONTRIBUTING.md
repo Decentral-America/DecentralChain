@@ -1,4 +1,4 @@
-# Contributing to @decentralchain/decentralchain-transactions
+# Contributing to @decentralchain/transactions
 
 Thank you for your interest in contributing!
 
@@ -14,8 +14,8 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 ## Setup
 
 ```bash
-git clone https://github.com/Decentral-America/decentralchain-transactions.git
-cd decentralchain-transactions
+git clone https://github.com/Decentral-America/transactions.git
+cd transactions
 npm install
 ```
 
