@@ -1,42 +1,44 @@
-name: Publish snapshot package
+name: Publish to npm
+
 on:
-  push:
-    branches: [ 'master' ]
   release:
-    types: [ published ]
+    types: [published]
 
 permissions:
   contents: read
   id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  publish-snapshots:
-    environment:
-      name: NPMJS
-      url: ${{ steps.publish.outputs.url }}
-    name: Publish snapshot packages
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          registry-url: 'https://registry.npmjs.org'
-          node-version: '>=24.7.0' # Trusted publishing requires npm CLI version 11.5.1 or later.
-      - run: npm i
-      - if: ${{ github.event_name == 'push' }}
-        run: |
-          PACKAGE_NAME=$(jq --raw-output .name package.json)
-          npm version prerelease --preid=snapshot --no-git-tag-version
-          PREFIX=$(jq --raw-output .version package.json | sed 's/\.[0-9]\+$//')
-          NEXT=$(npm view $PACKAGE_NAME versions --json \
-            | jq --raw-output --arg prefix $PREFIX '[.[] | select(startswith($prefix))|capture("snapshot\\.(?<n>[0-9]+)").n|tonumber]|max + 1 // 0')
-          npm version $PREFIX.$NEXT --no-git-tag-version
-          echo "TAG=snapshot" >> $GITHUB_ENV
-      - if: ${{ github.event_name == 'release' }}
-        run: |
-          npm version $(echo ${{ github.release.tag_name }} | sed 's/^v//') --no-git-tag-version
-          echo "TAG=latest" >> $GITHUB_ENV
-      - id: publish
-        run: |
-          npm run build
-          npm publish --provenance --access public --tag $TAG
-          echo "url=https://www.npmjs.com/package/@waves/ts-lib-crypto/v/$(jq --raw-output .version package.json)" >> "$GITHUB_OUTPUT"
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --tag next --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
