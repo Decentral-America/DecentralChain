@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/assets-pairs-order",
-  "version": "5.0.0",
-  "description": "Utility for determining the correct ordering of asset pairs on the DecentralChain DEX",
+  "version": "5.0.1",
+  "description": "Deterministic asset-pair ordering for the DecentralChain decentralized exchange",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
