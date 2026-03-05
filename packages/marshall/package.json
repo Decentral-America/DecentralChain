@@ -1,7 +1,7 @@
 {
   "name": "@decentralchain/marshall",
   "version": "1.0.0",
-  "description": "Serialize and parse DecentralChain blockchain data structures",
+  "description": "Official binary serialization and data marshalling library for the DecentralChain blockchain — converts transactions and DEX orders between JavaScript objects, binary wire format, and JSON with safe 64-bit integer handling",
   "type": "module",
   "packageManager": "npm@11.9.0",
   "exports": {
@@ -30,9 +30,15 @@
     "dcc",
     "blockchain",
     "serialization",
+    "deserialization",
     "marshalling",
     "binary",
-    "parser"
+    "parser",
+    "transactions",
+    "dex",
+    "smart-contracts",
+    "typescript",
+    "esm"
   ],
   "repository": {
     "type": "git",
