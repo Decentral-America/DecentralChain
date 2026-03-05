@@ -1,14 +1,29 @@
-# @decentralchain/cubensis-connect-provider
+<p align="center">
+  <a href="https://decentralchain.io">
+    <img src="https://avatars.githubusercontent.com/u/75630395?s=200" alt="DecentralChain" width="80" />
+  </a>
+</p>
 
-[![CI](https://github.com/Decentral-America/cubensis-connect-provider/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/cubensis-connect-provider/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@decentralchain/cubensis-connect-provider)](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider)
-[![license](https://img.shields.io/npm/l/@decentralchain/cubensis-connect-provider)](./LICENSE)
-[![Node.js](https://img.shields.io/node/v/@decentralchain/cubensis-connect-provider)](./package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+<h3 align="center">@decentralchain/cubensis-connect-provider</h3>
 
-CubensisConnect browser wallet provider for DCC Signer.
+<p align="center">
+  CubensisConnect browser wallet provider for DCC Signer.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider"><img src="https://img.shields.io/npm/v/@decentralchain/cubensis-connect-provider?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/cubensis-connect-provider" alt="license" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/cubensis-connect-provider"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/cubensis-connect-provider" alt="bundle size" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/cubensis-connect-provider" alt="node" /></a>
+</p>
+
+---
+
+## Overview
 
 Implements the [Signer](https://github.com/Decentral-America/signer) `Provider` interface, bridging transaction signing, authentication, and message signing through the CubensisConnect browser extension. Users interact with their wallet seamlessly while dApps use a clean, type-safe API.
+
+**Part of the [DecentralChain](https://docs.decentralchain.io) SDK.**
 
 ## Requirements
 
@@ -128,22 +143,23 @@ All of the following must pass before merge:
 - Package validation (`publint`, `attw`)
 - Bundle size budget (15 kB)
 
+## Related packages
+
+| Package                                                                                                          | Description                          |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer)                                 | Transaction signing orchestrator     |
+| [`@decentralchain/cubensis-connect-types`](https://www.npmjs.com/package/@decentralchain/cubensis-connect-types) | CubensisConnect type definitions     |
+| [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions)                     | Transaction builders and signers     |
+| [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall)                             | Binary serialization/deserialization |
+
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow, commit conventions, and PR checklist.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for vulnerability reporting guidelines.
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for release history.
+To report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) © DecentralChain
+[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
