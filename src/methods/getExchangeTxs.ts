@@ -73,8 +73,7 @@ const createGetExchangeTxs: TCreateGetFn<IGetExchangeTxs> = (libOptions) => {
   const getExchangeTxs: IGetExchangeTxs = (idOrFilters?: string | IExchangeTxFilters) =>
     typeof idOrFilters === 'string'
       ? getExchangeTxsOne(idOrFilters)
-      : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- null must be rejected by validators
-        getExchangeTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+      : getExchangeTxsMany(idOrFilters === undefined ? {} : idOrFilters);
 
   return getExchangeTxs;
 };
