@@ -531,7 +531,9 @@ describe('IScriptInvocationTx', () => {
 });
 
 describe('IUpdateAssetInfoTx', () => {
-  it('should have name and description', () => {
+  it('should have assetId, name and description', () => {
+    expectTypeOf<IUpdateAssetInfoTx>().toHaveProperty('assetId');
+    expectTypeOf<IUpdateAssetInfoTx['assetId']>().toBeString();
     expectTypeOf<IUpdateAssetInfoTx>().toHaveProperty('name');
     expectTypeOf<IUpdateAssetInfoTx>().toHaveProperty('description');
   });
@@ -541,6 +543,12 @@ describe('IInvokeExpressionTx', () => {
   it('should have expression field', () => {
     expectTypeOf<IInvokeExpressionTx>().toHaveProperty('expression');
     expectTypeOf<IInvokeExpressionTx['expression']>().toBeString();
+  });
+
+  it('should extend ITransactionBase (has fee, senderPublicKey, timestamp)', () => {
+    expectTypeOf<IInvokeExpressionTx>().toHaveProperty('fee');
+    expectTypeOf<IInvokeExpressionTx>().toHaveProperty('senderPublicKey');
+    expectTypeOf<IInvokeExpressionTx>().toHaveProperty('timestamp');
   });
 });
 
