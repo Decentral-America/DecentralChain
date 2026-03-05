@@ -1,4 +1,4 @@
-import type { IAliasTransaction } from '@decentralchain/ts-types';
+import type { AliasTransaction } from '@decentralchain/ts-types';
 import { ALIAS, type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
@@ -11,7 +11,7 @@ import {
   validate,
 } from '../validators/index.js';
 
-export const alias = factory<IDCCGuiAlias, IAliasTransaction<string>>({
+export const alias = factory<IDCCGuiAlias, AliasTransaction<string>>({
   ...getDefaultTransform(),
   alias: pipe(
     prop('alias'),

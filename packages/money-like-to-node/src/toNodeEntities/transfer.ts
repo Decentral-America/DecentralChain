@@ -1,11 +1,11 @@
-import type { ITransferTransaction } from '@decentralchain/ts-types';
+import type { TransferTransaction } from '@decentralchain/ts-types';
 import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
 import { defaultTo, getAssetId, getCoins, pipe, prop } from '../utils/index.js';
 
-export const transfer = factory<IDCCGuiTransfer, TWithPartialFee<ITransferTransaction<string>>>({
+export const transfer = factory<IDCCGuiTransfer, TWithPartialFee<TransferTransaction<string>>>({
   ...getDefaultTransform(),
   recipient: prop('recipient'),
   amount: pipe<IDCCGuiTransfer, TMoney, string>(prop('amount'), getCoins),
