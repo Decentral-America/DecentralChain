@@ -119,7 +119,7 @@ const transferTx = {
   assetId: null,
   feeAssetId: null,
   timestamp: 1640000000000,
-  amount: 1000000000, // 10 DCC (8 decimals)
+  amount: 1000000000, // 10.00000000 DCC (amount × 10^8)
   fee: 100000,
   recipient: '3N9Q2sdkRod544ax1R3bDhYBN3LjCeQi6pw',
   attachment: '',
