@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import * as MdIcons from 'react-icons/md'; // Material Design
 import * as FaIcons from 'react-icons/fa'; // Font Awesome
 import * as FiIcons from 'react-icons/fi'; // Feather Icons
+import { logger } from '@/lib/logger';
 
 type MaterialIcons = keyof typeof MdIcons;
 type FontAwesomeIcons = keyof typeof FaIcons;
@@ -55,7 +56,7 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
     const IconComponent = icons[name as keyof typeof icons] as React.ComponentType;
 
     if (!IconComponent) {
-      console.warn(`Icon "${name}" not found in library "${library}"`);
+      logger.warn(`Icon "${name}" not found in library "${library}"`);
       return null;
     }
 
@@ -66,7 +67,7 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
         <IconComponent />
       </IconWrapper>
     );
-  }
+  },
 );
 
 Icon.displayName = 'Icon';

@@ -32,7 +32,13 @@ export default function TestimonialsStrip() {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {testimonials.map((testimonial) => (
-            <Grid item xs={12} md={4} key={testimonial.name}>
+            <Grid
+              key={testimonial.name}
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <Stack spacing={2} alignItems="center" textAlign="center">
                 <Avatar
                   src={testimonial.avatar}

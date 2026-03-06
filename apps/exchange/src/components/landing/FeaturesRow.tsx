@@ -31,7 +31,13 @@ export default function FeaturesRow() {
 
         <Grid container spacing={3}>
           {features.map((feature) => (
-            <Grid item xs={12} md={4} key={feature.title}>
+            <Grid
+              key={feature.title}
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <Card
                 sx={{
                   height: '100%',

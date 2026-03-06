@@ -8,7 +8,13 @@ export default function DiscoveryCTA() {
     <Box component="section" sx={{ py: { xs: 8, md: 10 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+          <Grid
+            order={{ xs: 2, md: 1 }}
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Box
               sx={{
                 maxWidth: 340,
@@ -33,7 +39,13 @@ export default function DiscoveryCTA() {
               }}
             />
           </Grid>
-          <Grid item xs={12} md={6} order={{ xs: 1, md: 2 }}>
+          <Grid
+            order={{ xs: 1, md: 2 }}
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Typography variant="h2" sx={{ mb: 3, fontWeight: 700 }}>
               Your gateway to decentralized finance
             </Typography>
@@ -41,9 +53,9 @@ export default function DiscoveryCTA() {
               Join thousands of traders who trust Decentral.Exchange for secure, fast, and
               decentralized trading.
             </Typography>
-            <Button 
-              variant="contained" 
-              size="large" 
+            <Button
+              variant="contained"
+              size="large"
               sx={{ borderRadius: 999, px: 3 }}
               onClick={() => navigate('/create-account')}
             >

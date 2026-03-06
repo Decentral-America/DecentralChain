@@ -24,11 +24,15 @@ export default function HeroSection() {
     >
       {/* Hero Gradient Background */}
       <Box sx={heroGradientStyles} />
-
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Grid container spacing={6} alignItems="center">
           {/* Left Column - Text Content */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Typography
               variant="h1"
               sx={{
@@ -40,8 +44,7 @@ export default function HeroSection() {
               }}
             >
               DecentralChain Wallet
-              <br />
-              & DEX Platform
+              <br />& DEX Platform
             </Typography>
 
             <Typography
@@ -53,7 +56,9 @@ export default function HeroSection() {
                 lineHeight: 1.6,
               }}
             >
-              Secure non-custodial wallet with integrated DEX trading, staking, leasing, and hardware wallet support. Trade on DecentralChain blockchain with complete control of your assets.
+              Secure non-custodial wallet with integrated DEX trading, staking, leasing, and
+              hardware wallet support. Trade on DecentralChain blockchain with complete control of
+              your assets.
             </Typography>
 
             {/* CTA Buttons */}
@@ -119,7 +124,12 @@ export default function HeroSection() {
           </Grid>
 
           {/* Right Column - Mockup Visuals */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Box
               sx={{
                 position: 'relative',

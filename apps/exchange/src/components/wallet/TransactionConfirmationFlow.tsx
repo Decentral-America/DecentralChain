@@ -9,9 +9,9 @@ import { Modal } from '@/components/modals/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { transactionService, type Transaction } from '@/services/transactionService';
 
-// Temporary type definition until @decentralchain/waves-transactions is fixed
+// Temporary type definition until @decentralchain/transactions is fixed
 type ITransferParams = any;
 
 /**
@@ -128,7 +128,7 @@ const ButtonGroup = styled.div`
  *   open={confirmOpen}
  *   onClose={() => setConfirmOpen(false)}
  *   params={{ recipient: '...', amount: 100000000 }}
- *   onSuccess={(tx) => console.log('Transaction sent:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Transaction sent:', tx.id)}
  * />
  * ```
  */
@@ -189,7 +189,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
       setStep('confirming');
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Step 4: Success

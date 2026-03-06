@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, CSSProperties } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 /**
@@ -113,7 +113,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry!.isIntersecting) {
           // Start loading the image
           setImageSrc(src);
           observer.disconnect();
@@ -122,7 +122,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
       {
         threshold,
         rootMargin,
-      }
+      },
     );
 
     if (containerRef.current) {
@@ -216,7 +216,7 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry!.isIntersecting) {
           // Load placeholder first
           if (placeholderSrc && !imageSrc) {
             setImageSrc(placeholderSrc);
@@ -241,7 +241,7 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
       {
         threshold,
         rootMargin,
-      }
+      },
     );
 
     if (containerRef.current) {

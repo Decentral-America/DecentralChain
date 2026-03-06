@@ -33,7 +33,14 @@ export default function FeatureQuads() {
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           {features.map((feature) => (
-            <Grid item xs={12} sm={6} md={3} key={feature.title}>
+            <Grid
+              key={feature.title}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3,
+              }}
+            >
               <Card sx={{ bgcolor: '#FBFCFE', border: '1px solid #EEF2F7', boxShadow: 1 }}>
                 <CardContent sx={{ p: 2.5 }}>
                   <Stack direction="row" spacing={2} alignItems="flex-start">

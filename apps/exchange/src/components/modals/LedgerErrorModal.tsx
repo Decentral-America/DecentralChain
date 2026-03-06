@@ -26,8 +26,8 @@ const LedgerErrorModal: React.FC<LedgerErrorModalProps> = ({ error, onRetry, onC
           <InstructionList>
             <li>Your Ledger device is connected via USB</li>
             <li>The device is unlocked (PIN entered)</li>
-            <li>The Waves application is open on the device</li>
-            <li>Browser support is enabled in Waves app Settings</li>
+            <li>The DCC application is open on the device</li>
+            <li>Browser support is enabled in DCC app Settings</li>
           </InstructionList>
         </Instructions>
 

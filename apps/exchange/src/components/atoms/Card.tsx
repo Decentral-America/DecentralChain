@@ -5,7 +5,7 @@
  * Migrated to Material-UI
  */
 import React from 'react';
-import MuiCard, { CardProps as MuiCardProps } from '@mui/material/Card';
+import MuiCard, { type CardProps as MuiCardProps } from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
@@ -62,7 +62,7 @@ const StyledCard = styled(MuiCard, {
         boxShadow: theme.shadows[4],
       },
     }),
-  })
+  }),
 );
 
 /**
@@ -87,8 +87,8 @@ export const CardDescription = styled(Typography)(({ theme }) => ({
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ elevation = 'md', ...props }, ref) => {
     const muiElevation = getElevation(elevation);
-    return <StyledCard ref={ref} elevation={muiElevation} {...props} />;
-  }
+    return <StyledCard ref={ref} elevation={muiElevation} {...(props as any)} />;
+  },
 );
 
 Card.displayName = 'Card';

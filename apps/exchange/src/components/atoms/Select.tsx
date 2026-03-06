@@ -158,7 +158,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       id,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = React.useId();
     const selectId = id || `select-${generatedId}`;
@@ -177,7 +177,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
             }
             required={placeholder ? true : undefined}
-            {...props}
+            {...(props as any)}
           >
             {placeholder && (
               <option value="" disabled selected>
@@ -200,7 +200,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {!error && helperText && <HelperText id={`${selectId}-helper`}>{helperText}</HelperText>}
       </SelectWrapper>
     );
-  }
+  },
 );
 
 Select.displayName = 'Select';

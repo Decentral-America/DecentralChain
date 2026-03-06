@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import BigNumber from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
+import { logger } from '@/lib/logger';
 
 /**
  * Balance Component
@@ -59,7 +60,7 @@ export interface BalanceProps {
   /** Number of decimal places (default: 8) */
   decimals?: number;
 
-  /** Asset symbol to display (e.g., "DCC", "WAVES") */
+  /** Asset symbol to display (e.g., "DCC", "DCC") */
   symbol?: string;
 
   /** Show full precision without rounding */
@@ -91,7 +92,7 @@ const parseNumber = (value: string | number | BigNumber): BigNumber => {
 
 const formatWithSeparator = (value: string, separator: string = ','): string => {
   const parts = value.split('.');
-  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+  const integerPart = parts[0]!.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
   return parts[1] ? `${integerPart}.${parts[1]}` : integerPart;
 };
 
@@ -177,7 +178,7 @@ export const Balance: React.FC<BalanceProps> = ({
       const [integer, decimal] = fixed.split('.');
 
       // Format with separator if enabled
-      const formattedInteger = showSeparator ? formatWithSeparator(integer) : integer;
+      const formattedInteger = showSeparator ? formatWithSeparator(integer!) : integer!;
 
       // Trim trailing zeros from decimal part
       const trimmedDecimal = decimal ? trimTrailingZeros(decimal) : '';
@@ -188,7 +189,7 @@ export const Balance: React.FC<BalanceProps> = ({
         decimal: trimmedDecimal ? `.${trimmedDecimal}` : '',
       };
     } catch (error) {
-      console.error('Error formatting balance:', error);
+      logger.error('Error formatting balance:', error);
       return {
         type: 'normal' as const,
         integer: '0',

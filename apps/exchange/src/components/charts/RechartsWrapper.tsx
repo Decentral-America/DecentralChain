@@ -8,7 +8,8 @@
  * The fix: Isolate Recharts in a separate component boundary with error
  * recovery, and use a key-based remounting strategy to break the cycle.
  */
-import { Component, ReactNode, ErrorInfo } from 'react';
+import { Component, type ReactNode, type ErrorInfo } from 'react';
+import { logger } from '@/lib/logger';
 
 interface RechartsWrapperProps {
   children: ReactNode;
@@ -45,9 +46,9 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
     throw error;
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (error.message.includes('Maximum update depth exceeded')) {
-      console.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
+      logger.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
         error: error.message,
         componentStack: errorInfo.componentStack,
       });
@@ -62,20 +63,20 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
     }
   }
 
-  componentDidUpdate(prevProps: RechartsWrapperProps) {
+  override componentDidUpdate(prevProps: RechartsWrapperProps) {
     // Reset error state when data changes (via dataKey prop)
     if (prevProps.dataKey !== this.props.dataKey && this.state.hasError) {
       this.setState({ hasError: false, errorCount: 0 });
     }
   }
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.resetTimer) {
       clearTimeout(this.resetTimer);
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Show loading state during recovery
       return (

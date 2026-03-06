@@ -33,7 +33,7 @@ const ModalContent = styled(Box, {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius * 2,
+  borderRadius: Number(theme.shape.borderRadius) * 2,
   boxShadow: theme.shadows[24],
   maxHeight: '90vh',
   overflow: 'hidden',

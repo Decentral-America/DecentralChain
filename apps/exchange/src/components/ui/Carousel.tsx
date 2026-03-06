@@ -136,7 +136,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       setCurrentIndex(newIndex);
       onChange?.(newIndex);
     },
-    [maxIndex, loop, onChange]
+    [maxIndex, loop, onChange],
   );
 
   // Navigation functions
@@ -186,7 +186,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       setIsDragging(true);
       setStartX(clientX);
     },
-    [enableDrag, pauseAutoPlay]
+    [enableDrag, pauseAutoPlay],
   );
 
   const handleDragMove = useCallback(
@@ -196,7 +196,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       const trackWidth = trackRef.current.offsetWidth;
       setDragOffset((diff / trackWidth) * 100);
     },
-    [isDragging, startX]
+    [isDragging, startX],
   );
 
   const handleDragEnd = useCallback(() => {
@@ -236,11 +236,11 @@ export const Carousel: React.FC<CarouselProps> = ({
 
   // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientX);
+    handleDragStart(e.touches[0]!.clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    handleDragMove(e.touches[0].clientX);
+    handleDragMove(e.touches[0]!.clientX);
   };
 
   const handleTouchEnd = () => {

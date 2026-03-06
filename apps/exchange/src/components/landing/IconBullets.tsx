@@ -45,7 +45,14 @@ export default function IconBullets() {
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           {bullets.map((bullet) => (
-            <Grid item xs={12} sm={6} md={4} key={bullet.title}>
+            <Grid
+              key={bullet.title}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 4,
+              }}
+            >
               <Stack direction="row" spacing={2} alignItems="flex-start">
                 <Avatar
                   variant="rounded"

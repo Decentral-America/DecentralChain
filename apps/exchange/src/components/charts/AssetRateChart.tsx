@@ -299,12 +299,12 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
     const pathPoints = data.map((d) => ({ x: scaleX(d.timestamp), y: scaleY(d.rate) }));
 
     // Generate smooth path (Bezier curves)
-    let pathD = `M ${pathPoints[0].x} ${pathPoints[0].y}`;
+    let pathD = `M ${pathPoints[0]!.x} ${pathPoints[0]!.y}`;
 
     if (smooth && pathPoints.length > 2) {
       for (let i = 1; i < pathPoints.length; i++) {
-        const prev = pathPoints[i - 1];
-        const curr = pathPoints[i];
+        const prev = pathPoints[i - 1]!;
+        const curr = pathPoints[i]!;
         const next = pathPoints[i + 1];
 
         if (next) {
@@ -320,14 +320,14 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
     } else {
       // Straight lines
       for (let i = 1; i < pathPoints.length; i++) {
-        pathD += ` L ${pathPoints[i].x} ${pathPoints[i].y}`;
+        pathD += ` L ${pathPoints[i]!.x} ${pathPoints[i]!.y}`;
       }
     }
 
     // Generate area path (fill under line)
-    const areaD = `${pathD} L ${pathPoints[pathPoints.length - 1].x} ${
+    const areaD = `${pathD} L ${pathPoints[pathPoints.length - 1]!.x} ${
       padding.top + innerHeight
-    } L ${pathPoints[0].x} ${padding.top + innerHeight} Z`;
+    } L ${pathPoints[0]!.x} ${padding.top + innerHeight} Z`;
 
     return {
       viewBox: `0 0 ${chartWidth} ${chartHeight}`,
@@ -431,8 +431,8 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
           data.map((d, i) => (
             <DataPoint
               key={`point-${i}`}
-              cx={points[i].x}
-              cy={points[i].y}
+              cx={points[i]!.x}
+              cy={points[i]!.y}
               r={showPoints ? 4 : 0}
               color={lineColor}
               onMouseEnter={(e) => handlePointHover(i, e)}
@@ -446,10 +446,10 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
       {showTooltip && hoveredPoint !== null && (
         <Tooltip $x={tooltipPos.x} $y={tooltipPos.y} $visible={hoveredPoint !== null}>
           <div>
-            <strong>{formatDate(data[hoveredPoint].timestamp)}</strong>
+            <strong>{formatDate(data[hoveredPoint]!.timestamp)}</strong>
           </div>
-          <div>Rate: {formatRate(data[hoveredPoint].rate)}</div>
-          {data[hoveredPoint].label && <div>{data[hoveredPoint].label}</div>}
+          <div>Rate: {formatRate(data[hoveredPoint]!.rate)}</div>
+          {data[hoveredPoint]!.label && <div>{data[hoveredPoint]!.label}</div>}
         </Tooltip>
       )}
     </ChartContainer>

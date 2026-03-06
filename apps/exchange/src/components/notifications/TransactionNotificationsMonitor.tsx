@@ -3,7 +3,8 @@
  * Listens for incoming transactions and displays toast notifications
  */
 import { useEffect, useCallback } from 'react';
-import { useIncomingTransactions, TransactionNotification } from '@/features/wallet';
+import { logger } from '@/lib/logger';
+import { useIncomingTransactions, type TransactionNotification } from '@/features/wallet';
 import { useToast } from '@/contexts/ToastContext';
 import { useAssetDetails } from '@/hooks/useAssetDetails';
 import { config } from '@/config';
@@ -115,7 +116,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
         // Show toast notification
         toast.showSuccess(
           (<TransactionNotificationItem transaction={tx} />) as unknown as string,
-          8000 // Show for 8 seconds
+          8000, // Show for 8 seconds
         );
 
         // Play a subtle notification sound if enabled
@@ -131,7 +132,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
         }
       }
     },
-    [toast]
+    [toast],
   );
 
   // Subscribe to incoming transactions
@@ -140,7 +141,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
   // Log listening status in development
   useEffect(() => {
     if (config.enableDebug) {
-      console.log('[TransactionNotifications] Listening:', isListening);
+      logger.debug('[TransactionNotifications] Listening:', isListening);
     }
   }, [isListening]);
 

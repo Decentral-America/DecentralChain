@@ -40,11 +40,13 @@ const StyledTableRow = styled(TableRow, {
   },
 }));
 
-const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' }>(({ theme, direction }) => ({
-  marginLeft: theme.spacing(1),
-  fontSize: '0.75rem',
-  color: theme.palette.primary.main,
-}));
+const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' }>(
+  ({ theme, direction: _direction }) => ({
+    marginLeft: theme.spacing(1),
+    fontSize: '0.75rem',
+    color: theme.palette.primary.main,
+  }),
+);
 
 // Interfaces
 export interface Column<T = any> {

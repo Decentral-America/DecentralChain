@@ -5,7 +5,7 @@
  * Migrated to Material-UI
  */
 import React from 'react';
-import MuiButton, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
+import MuiButton, { type ButtonProps as MuiButtonProps } from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
 
@@ -59,7 +59,7 @@ const ButtonContent = styled('span')<{ isLoading?: boolean }>(({ isLoading }) =>
   opacity: isLoading ? 0 : 1,
 }));
 
-const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
+const LoadingSpinner = styled(CircularProgress)(({ theme: _theme }) => ({
   position: 'absolute',
   left: '50%',
   top: '50%',
@@ -106,7 +106,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'aria-pressed': ariaPressed,
       ...props
     },
-    ref
+    ref,
   ) => {
     const buttonProps = getButtonProps(variant);
 
@@ -130,12 +130,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         <ButtonContent isLoading={isLoading}>
-          {isLoading && loadingText ? loadingText : children}
+          {(isLoading && loadingText ? loadingText : children) as React.ReactNode}
         </ButtonContent>
         {isLoading && <LoadingSpinner size={20} color="inherit" />}
       </StyledButton>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

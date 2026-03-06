@@ -13,7 +13,10 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { ContentCopy as CopyIcon, Send as SendIcon } from '@mui/icons-material';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
+
+// React 19 type compatibility cast
+const QRCodeSVG = QRCodeSVGBase as React.ComponentType<any>;
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
@@ -207,7 +210,7 @@ export default function QRReceive() {
         <SendAssetModalModern
           isOpen={sendModalOpen}
           onClose={() => setSendModalOpen(false)}
-          assetId="WAVES"
+          assetId="DCC"
           assetName="DCC"
           assetDecimals={8}
           availableBalance="0"

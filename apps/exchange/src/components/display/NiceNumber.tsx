@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { logger } from '@/lib/logger';
 
 /**
  * NiceNumber Component
@@ -185,7 +186,7 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
       const formatter = new Intl.NumberFormat(formatLocale, options);
       return formatter.format(numValue);
     } catch (error) {
-      console.error('Error formatting number:', error);
+      logger.error('Error formatting number:', error);
       return String(value);
     }
   }, [

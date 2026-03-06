@@ -2,7 +2,7 @@ import { Box, Container, Card, CardContent, Typography, Stack } from '@mui/mater
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { SvgIcon, SvgIconProps } from '@mui/material';
+import { SvgIcon, type SvgIconProps } from '@mui/material';
 
 // Ethereum icon component
 const EthereumIcon = (props: SvgIconProps) => (

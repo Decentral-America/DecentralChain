@@ -236,7 +236,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnOverlayClick, onClose]
+    [closeOnOverlayClick, onClose],
   );
 
   /**

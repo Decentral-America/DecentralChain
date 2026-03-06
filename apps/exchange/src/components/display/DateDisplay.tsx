@@ -3,6 +3,7 @@ import { format, formatDistance, formatRelative, isValid, parseISO, type Locale 
 import { enUS, es, fr, de, it, ja, ko, nl, pl, pt, ru, tr, zhCN, hi } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { logger } from '@/lib/logger';
 
 /**
  * DateDisplay Component
@@ -208,7 +209,7 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
           });
       }
     } catch (error) {
-      console.error('Error formatting date:', error);
+      logger.error('Error formatting date:', error);
       return dateObj.toLocaleString();
     }
   }, [dateObj, mode, formatStr, dateLocale]);

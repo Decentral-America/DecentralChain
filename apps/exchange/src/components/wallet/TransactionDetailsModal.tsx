@@ -7,10 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Modal } from '@/components/modals/Modal';
 import {
-  Transaction,
+  type Transaction,
   TransactionType,
   transactionService,
-  waveletsToWaves,
+  waveletsToCoins,
 } from '@/services/transactionService';
 
 /**
@@ -154,7 +154,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
   const formattedDate = new Date(transaction.timestamp).toLocaleString();
 
   // Convert fee from wavelets to DCC
-  const feeInDCC = waveletsToWaves(transaction.fee);
+  const feeInDCC = waveletsToCoins(transaction.fee);
 
   return (
     <Modal open={open} onClose={onClose} title="Transaction Details" size="medium">
@@ -236,7 +236,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
             </DetailRow>
             <DetailRow>
               <Label>Amount</Label>
-              <Value>{waveletsToWaves((transaction as any).amount)} DCC</Value>
+              <Value>{waveletsToCoins((transaction as any).amount)} DCC</Value>
             </DetailRow>
             {(transaction as any).assetId && (
               <DetailRow>

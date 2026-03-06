@@ -10,10 +10,13 @@
  *
  * Migrated to Material-UI
  */
-import React, { useState, useCallback, ReactNode } from 'react';
+import React, { useState, useCallback, type ReactNode } from 'react';
 import { Accordion as MuiAccordion, AccordionSummary, AccordionDetails, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FiChevronDown } from 'react-icons/fi';
+import { FiChevronDown as FiChevronDownBase } from 'react-icons/fi';
+
+// React 19 type compatibility cast
+const FiChevronDown = FiChevronDownBase as React.ComponentType<any>;
 
 const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
@@ -130,7 +133,7 @@ export const Accordion: React.FC<AccordionProps> = ({
   collapseAll = false,
 }) => {
   const [internalOpenItems, setInternalOpenItems] = useState<number[]>(
-    collapseAll ? [] : defaultOpen
+    collapseAll ? [] : defaultOpen,
   );
 
   // Determine if controlled or uncontrolled
@@ -162,7 +165,7 @@ export const Accordion: React.FC<AccordionProps> = ({
 
       onChange?.(newOpenItems);
     },
-    [allowMultiple, openItems, isControlled, onChange, items]
+    [allowMultiple, openItems, isControlled, onChange, items],
   );
 
   return (

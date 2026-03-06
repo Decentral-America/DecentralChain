@@ -3,6 +3,7 @@
  * Modal for creating a new alias for the user's address
  */
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 import {
   Dialog,
   DialogTitle,
@@ -55,7 +56,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
   // Debug logging
   useEffect(() => {
     if (balances) {
-      console.log('[CreateAliasModal] Balance data:', {
+      logger.debug('[CreateAliasModal] Balance data:', {
         regular: balances.regular,
         available: balances.available,
         balance: balances.balance,
@@ -128,12 +129,12 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
         fee,
       });
 
-      console.log(`[CreateAliasModal] Broadcasting transaction for alias: ${alias}`);
+      logger.debug(`[CreateAliasModal] Broadcasting transaction for alias: ${alias}`);
 
       // Broadcast the transaction
       await broadcast(signedTx);
 
-      console.log(`[CreateAliasModal] Transaction broadcast successful for alias: ${alias}`);
+      logger.debug(`[CreateAliasModal] Transaction broadcast successful for alias: ${alias}`);
 
       // Success! Just like Angular - add to local list and show success
       // NO POLLING - Angular doesn't poll either
@@ -141,17 +142,17 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
       setAlias('');
       onClose();
     } catch (err: unknown) {
-      console.error('[CreateAliasModal] Error creating alias:', err);
+      logger.error('[CreateAliasModal] Error creating alias:', err);
 
       // Refresh alias list in case it was actually created
-      await fetchAliases().catch((e) => console.error('Failed to refresh aliases:', e));
+      await fetchAliases().catch((e) => logger.error('Failed to refresh aliases:', e));
 
       // Provide user-friendly error messages
       let errorMessage = 'Failed to create alias. Please try again.';
 
       if (err instanceof Error) {
         const errMsg = err.message.toLowerCase();
-        console.log('[CreateAliasModal] Error message:', err.message);
+        logger.debug('[CreateAliasModal] Error message:', err.message);
 
         // Check for specific error types
         if (errMsg.includes('insufficient') || errMsg.includes('not enough balance')) {
@@ -255,7 +256,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
           )}
 
           {user?.userType === 'keeper' && isCreating && (
-            <Alert severity="info">Please confirm the transaction in Waves Keeper</Alert>
+            <Alert severity="info">Please confirm the transaction in Cubensis Connect</Alert>
           )}
         </Stack>
       </DialogContent>
