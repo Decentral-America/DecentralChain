@@ -4,6 +4,7 @@
  */
 import { broadcast } from 'data-service';
 import { nodeClient } from '@/api/client';
+import { logger } from '@/lib/logger';
 
 /**
  * Transaction Type Enum
@@ -84,18 +85,18 @@ export interface BroadcastResult {
 export const transactionService = {
   /**
    * Get transaction history for an address
-   * @param address - Waves address
+   * @param address - DCC address
    * @param limit - Number of transactions to fetch (default: 100)
    */
   getHistory: async (address: string, limit = 100): Promise<Transaction[]> => {
     try {
       const { data } = await nodeClient.get<Transaction[][]>(
-        `/transactions/address/${address}/limit/${limit}`
+        `/transactions/address/${address}/limit/${limit}`,
       );
       // API returns array of arrays, take first element
       return data[0] || [];
     } catch (error) {
-      console.error('Failed to fetch transaction history:', error);
+      logger.error('Failed to fetch transaction history:', error);
       throw error;
     }
   },
@@ -109,7 +110,7 @@ export const transactionService = {
       const { data } = await nodeClient.get<Transaction>(`/transactions/info/${txId}`);
       return data;
     } catch {
-      console.error('Failed to fetch transaction');
+      logger.error('Failed to fetch transaction');
       throw new Error('Failed to fetch transaction');
     }
   },
@@ -122,7 +123,7 @@ export const transactionService = {
       const { data } = await nodeClient.get<Transaction[]>('/transactions/unconfirmed');
       return data;
     } catch (error) {
-      console.error('Failed to fetch unconfirmed transactions:', error);
+      logger.error('Failed to fetch unconfirmed transactions:', error);
       throw error;
     }
   },
@@ -164,7 +165,7 @@ export const transactionService = {
         status: 'success',
       };
     } catch (error: unknown) {
-      console.error('Failed to broadcast transaction:', error);
+      logger.error('Failed to broadcast transaction:', error);
 
       // Extract user-friendly error message
       let errorMessage = 'Unknown error';
@@ -197,7 +198,7 @@ export const transactionService = {
   waitForConfirmation: async (
     txId: string,
     timeout = 60000,
-    interval = 1000
+    interval = 1000,
   ): Promise<Transaction> => {
     const startTime = Date.now();
 
@@ -226,11 +227,11 @@ export const transactionService = {
    * @param extraData - Additional data for fee calculation (e.g., data entries count)
    */
   calculateFee: (txType: TransactionType, extraData?: { dataEntries?: number }): number => {
-    // Base fees in wavelets (1 WAVES = 100,000,000 wavelets)
+    // Base fees in wavelets (1 DCC = 100,000,000 wavelets)
     const baseFees: Record<TransactionType, number> = {
       [TransactionType.Genesis]: 0,
       [TransactionType.Payment]: 100000,
-      [TransactionType.Issue]: 100000000, // 1 WAVES
+      [TransactionType.Issue]: 100000000, // 1 DCC
       [TransactionType.Transfer]: 100000,
       [TransactionType.Reissue]: 100000000,
       [TransactionType.Burn]: 100000,
@@ -240,7 +241,7 @@ export const transactionService = {
       [TransactionType.Alias]: 100000,
       [TransactionType.MassTransfer]: 100000, // + 50000 per transfer
       [TransactionType.Data]: 100000, // + per kb
-      [TransactionType.SetScript]: 1000000, // 0.01 WAVES
+      [TransactionType.SetScript]: 1000000, // 0.01 DCC
       [TransactionType.Sponsorship]: 100000000,
       [TransactionType.SetAssetScript]: 100000000,
       [TransactionType.InvokeScript]: 500000,
@@ -303,22 +304,22 @@ export const transactionService = {
     const date = new Date(tx.timestamp).toLocaleString();
     const fee = (tx.fee / 100000000).toFixed(8);
 
-    return `${type} | ${date} | Fee: ${fee} WAVES`;
+    return `${type} | ${date} | Fee: ${fee} DCC`;
   },
 };
 
 /**
- * Utility: Convert wavelets to WAVES
- * @param wavelets - Amount in wavelets
+ * Utility: Convert wavelets to DCC coins
+ * @param wavelets - Amount in wavelets (smallest unit)
  */
-export const waveletsToWaves = (wavelets: number): number => {
+export const waveletsToCoins = (wavelets: number): number => {
   return wavelets / 100000000;
 };
 
 /**
- * Utility: Convert WAVES to wavelets
- * @param waves - Amount in WAVES
+ * Utility: Convert DCC coins to wavelets
+ * @param coins - Amount in DCC
  */
-export const wavesToWavelets = (waves: number): number => {
-  return Math.round(waves * 100000000);
+export const coinsToWavelets = (coins: number): number => {
+  return Math.round(coins * 100000000);
 };

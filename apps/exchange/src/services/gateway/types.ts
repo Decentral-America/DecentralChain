@@ -2,7 +2,7 @@
  * Gateway Service Type Definitions
  * Type definitions for Bitcoin gateway functionality (BTC ↔ DecentralChain)
  */
-import { BigNumber } from '@waves/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 
 /**
  * Gateway configuration from network config
@@ -19,7 +19,7 @@ export interface GatewayConfig {
  * Used for depositing external assets to DecentralChain
  */
 export interface DepositDetails {
-  address: string;              // External blockchain address (BTC)
+  address: string; // External blockchain address (BTC)
   minimumAmount: BigNumber;
   maximumAmount: BigNumber;
   gatewayFee: BigNumber;
@@ -28,10 +28,10 @@ export interface DepositDetails {
   recoveryFee?: BigNumber;
   supportEmail?: string;
   operator?: string;
-  walletAddress: string;        // User's DecentralChain address
+  walletAddress: string; // User's DecentralChain address
   gatewayType: 'deposit' | 'round-robin';
   gatewayUrl: string;
-  expiry?: Date;                // For round-robin only
+  expiry?: Date; // For round-robin only
 }
 
 /**
@@ -39,8 +39,8 @@ export interface DepositDetails {
  * Used for withdrawing wrapped assets from DecentralChain to external blockchain
  */
 export interface WithdrawDetails {
-  address: string;              // Gateway's DecentralChain address
-  attachment: string;           // Target external address
+  address: string; // Gateway's DecentralChain address
+  attachment: string; // Target external address
   minimumAmount: BigNumber;
   maximumAmount: BigNumber;
   gatewayFee: BigNumber;

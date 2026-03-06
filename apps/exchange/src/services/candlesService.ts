@@ -4,8 +4,9 @@
  */
 
 import { config } from 'data-service';
+import { logger } from '@/lib/logger';
 import NetworkConfig from '@/config/networkConfig';
-import { address as buildAddress, base58Decode } from '@waves/ts-lib-crypto';
+import { address as buildAddress, base58Decode } from '@decentralchain/ts-lib-crypto';
 
 const POLL_DELAY = 800;
 const MAX_RESOLUTION = 1440;
@@ -21,7 +22,7 @@ interface Candle {
 }
 
 interface SymbolInfo {
-  _wavesData: {
+  _dccData: {
     amountAsset: { id: string };
     priceAsset: { id: string };
   };
@@ -40,8 +41,8 @@ const maxOrNull =
   (c1: Candle, c2: Candle): number | null => {
     const v1 = c1[name] as number | null;
     const v2 = c2[name] as number | null;
-    if (v1 == null) return v2;
-    return v2 == null ? v1 : Math.max(v1, v2);
+    if (v1 === null) return v2;
+    return v2 === null ? v1 : Math.max(v1, v2);
   };
 
 const minOrNull =
@@ -49,8 +50,8 @@ const minOrNull =
   (c1: Candle, c2: Candle): number | null => {
     const v1 = c1[name] as number | null;
     const v2 = c2[name] as number | null;
-    if (v1 == null) return v2;
-    return v2 == null ? v1 : Math.min(v1, v2);
+    if (v1 === null) return v2;
+    return v2 === null ? v1 : Math.min(v1, v2);
   };
 
 const nullOrSum =
@@ -58,16 +59,16 @@ const nullOrSum =
   (c1: Candle, c2: Candle): number | null => {
     const v1 = c1[name] as number | null;
     const v2 = c2[name] as number | null;
-    if (v1 == null) return v2;
-    return v2 == null ? v1 : v1 + v2;
+    if (v1 === null) return v2;
+    return v2 === null ? v1 : v1 + v2;
   };
 
 const valOrNullClose = (v1: number | null, v2: number | null): number | null => {
-  return v2 == null ? v1 : v2;
+  return v2 === null ? v1 : v2;
 };
 
 const valOrNullOpen = (v1: number | null, v2: number | null): number | null => {
-  return v1 == null ? v2 : v1;
+  return v1 === null ? v2 : v1;
 };
 
 const nullOrCb =
@@ -80,13 +81,13 @@ const nullOrCb =
 const joinCandles = (candles: Candle[]): Candle => {
   const [c1, c2 = c1] = candles;
   return {
-    txsCount: c1.txsCount + (c2?.txsCount || 0),
-    high: maxOrNull('high')(c1, c2 || c1),
-    low: minOrNull('low')(c1, c2 || c1),
-    close: nullOrCb('close', valOrNullClose)(c1, c2 || c1),
-    open: nullOrCb('open', valOrNullOpen)(c1, c2 || c1),
-    volume: nullOrSum('volume')(c1, c2 || c1),
-    time: c1.time,
+    txsCount: c1!.txsCount + (c2?.txsCount || 0),
+    high: maxOrNull('high')(c1!, c2 || c1!),
+    low: minOrNull('low')(c1!, c2 || c1!),
+    close: nullOrCb('close', valOrNullClose)(c1!, c2 || c1!),
+    open: nullOrCb('open', valOrNullOpen)(c1!, c2 || c1!),
+    volume: nullOrSum('volume')(c1!, c2 || c1!),
+    time: c1!.time,
   };
 };
 
@@ -127,42 +128,42 @@ const INTERVAL_PRESETS: Record<string, number> = {
 // Interval map with converters (matches Angular INTERVAL_MAP)
 const INTERVAL_MAP: Record<number, IntervalConfig> = {
   1: {
-    interval: INTERVAL_PRESETS['1m'],
+    interval: INTERVAL_PRESETS['1m']!,
     intervalName: '1m',
     converter: (el) => el,
   },
   5: {
-    interval: INTERVAL_PRESETS['5m'],
+    interval: INTERVAL_PRESETS['5m']!,
     intervalName: '5m',
     converter: (el) => el,
   },
   15: {
-    interval: INTERVAL_PRESETS['15m'],
+    interval: INTERVAL_PRESETS['15m']!,
     intervalName: '15m',
     converter: (el) => el,
   },
   30: {
-    interval: INTERVAL_PRESETS['30m'],
+    interval: INTERVAL_PRESETS['30m']!,
     intervalName: '30m',
     converter: (el) => el,
   },
   60: {
-    interval: INTERVAL_PRESETS['1h'],
+    interval: INTERVAL_PRESETS['1h']!,
     intervalName: '1h',
     converter: (el) => el,
   },
   120: {
-    interval: INTERVAL_PRESETS['1h'],
+    interval: INTERVAL_PRESETS['1h']!,
     intervalName: '1h',
     converter: (candles) => splitEvery(2, candles).map(joinCandles),
   },
   180: {
-    interval: INTERVAL_PRESETS['3h'],
+    interval: INTERVAL_PRESETS['3h']!,
     intervalName: '3h',
     converter: (el) => el,
   },
   240: {
-    interval: INTERVAL_PRESETS['1h'],
+    interval: INTERVAL_PRESETS['1h']!,
     intervalName: '1h',
     converter: (candles) => {
       // Split into pairs, join each pair, then split again and join again
@@ -172,17 +173,17 @@ const INTERVAL_MAP: Record<number, IntervalConfig> = {
     },
   },
   360: {
-    interval: INTERVAL_PRESETS['6h'],
+    interval: INTERVAL_PRESETS['6h']!,
     intervalName: '6h',
     converter: (el) => el,
   },
   720: {
-    interval: INTERVAL_PRESETS['12h'],
+    interval: INTERVAL_PRESETS['12h']!,
     intervalName: '12h',
     converter: (el) => el,
   },
   1440: {
-    interval: INTERVAL_PRESETS['1d'],
+    interval: INTERVAL_PRESETS['1d']!,
     intervalName: '1d',
     converter: (el) => el,
   },
@@ -201,7 +202,7 @@ class CandlesService {
   private static _getValidCandleOptions(
     from: number,
     to: number,
-    intervalMinutes: number
+    intervalMinutes: number,
   ): {
     options: Array<{ timeStart: number; timeEnd: number; interval: string }>;
     config: IntervalConfig;
@@ -213,10 +214,10 @@ class CandlesService {
     to = Math.ceil(to / minute) * minute;
 
     const config = INTERVAL_MAP[intervalMinutes];
-    
+
     if (!config) {
       // Default to 1 day if interval not found
-      const defaultConfig = INTERVAL_MAP[1440];
+      const defaultConfig = INTERVAL_MAP[1440]!;
       return {
         options: [{ timeStart: from, timeEnd: to, interval: defaultConfig.intervalName }],
         config: defaultConfig,
@@ -278,13 +279,13 @@ class CandlesService {
     symbolInfo: SymbolInfo,
     from: number,
     to: number,
-    resolution: string
+    resolution: string,
   ): Promise<Candle[]> {
     // Match Angular behavior: if from is not set, use to (for initial load)
     from = from || to;
 
-    const amountId = symbolInfo._wavesData.amountAsset.id;
-    const priceId = symbolInfo._wavesData.priceAsset.id;
+    const amountId = symbolInfo._dccData.amountAsset.id;
+    const priceId = symbolInfo._dccData.priceAsset.id;
 
     // Convert TradingView resolution to interval minutes
     const intervalMinutes = CandlesService._resolutionToMinutes(resolution);
@@ -293,11 +294,11 @@ class CandlesService {
     const { options, config: candleConfig } = CandlesService._getValidCandleOptions(
       from,
       to,
-      intervalMinutes
+      intervalMinutes,
     );
 
-    console.log(
-      `[Candles] Fetching ${options.length} batches for interval ${intervalMinutes}m (${candleConfig.intervalName})`
+    logger.debug(
+      `[Candles] Fetching ${options.length} batches for interval ${intervalMinutes}m (${candleConfig.intervalName})`,
     );
 
     try {
@@ -319,14 +320,14 @@ class CandlesService {
         config.getDataService().getCandles(amountId, priceId, {
           matcher: matcherAddress,
           ...option,
-        })
+        }),
       );
 
       // Wait for all batches and flatten results
       const responses = await Promise.all(promises);
       const rawCandles = responses.flatMap((response) => response?.data || []);
 
-      console.log('[Candles] Raw candles count:', rawCandles.length);
+      logger.debug('[Candles] Raw candles count:', rawCandles.length);
 
       // Helper to convert BigNumber/Money to number (matches Angular's convertBigNumber line 60)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -376,17 +377,17 @@ class CandlesService {
 
       // Filter and sort (matches Angular line 85 - only checks open != null)
       const finalCandles = processedCandles
-        .filter((candle) => candle.open != null)
+        .filter((candle) => candle.open !== null)
         .sort((a, b) => a.time - b.time) as Candle[];
 
-      console.log(
+      logger.debug(
         '[Candles] Processed candles count after converter and filter:',
-        finalCandles.length
+        finalCandles.length,
       );
 
       return finalCandles;
     } catch (error) {
-      console.error('[Candles] Error fetching candles:', error);
+      logger.error('[Candles] Error fetching candles:', error);
       // Wait and return empty array on error (matches Angular)
       await new Promise((resolve) => setTimeout(resolve, 5000));
       return [];
@@ -399,7 +400,7 @@ class CandlesService {
     to: number,
     resolution: string,
     handleCandles: (candles: Candle[]) => void,
-    handleError: (error: unknown) => void = () => {}
+    handleError: (error: unknown) => void = () => {},
   ) {
     CandlesService._getCandles(symbolInfo, from, to, resolution)
       .then(handleCandles)
@@ -423,14 +424,14 @@ class CandlesService {
           supports_marks: false,
           supports_timescale_marks: false,
         }),
-      0
+      0,
     );
   }
 
   resolveSymbol(
     symbolName: string,
     resolve: (symbolInfo: SymbolInfo) => void,
-    _reject: () => void
+    _reject: () => void,
   ) {
     // For DecentralChain, we need to create symbol info from pair
     // This will be called with symbol like "ASSET1/ASSET2"
@@ -452,13 +453,13 @@ class CandlesService {
       supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'],
       volume_precision: 8,
       data_status: 'streaming',
-      _wavesData: {
+      _dccData: {
         amountAsset: { id: amountAsset },
         priceAsset: { id: priceAsset },
       },
     };
 
-    setTimeout(() => resolve(symbolInfo), 0);
+    setTimeout(() => resolve(symbolInfo as SymbolInfo), 0);
   }
 
   getBars(
@@ -466,7 +467,7 @@ class CandlesService {
     resolution: string,
     periodParams: { from: number; to: number; firstDataRequest: boolean },
     onHistoryCallback: (bars: Candle[], meta: { noData: boolean }) => void,
-    onErrorCallback: (error: unknown) => void
+    onErrorCallback: (error: unknown) => void,
   ) {
     let { from, to } = periodParams;
     from = CandlesService.convertToMilliseconds(from);
@@ -487,7 +488,7 @@ class CandlesService {
       to,
       resolution,
       handleCandles,
-      onErrorCallback
+      onErrorCallback,
     );
   }
 
@@ -496,7 +497,7 @@ class CandlesService {
     resolution: string,
     onRealtimeCallback: (bar: Candle) => void,
     subscriberUID: string,
-    onResetCacheNeededCallback: () => void
+    onResetCacheNeededCallback: () => void,
   ) {
     this._subscriber = subscriberUID;
 
@@ -515,7 +516,7 @@ class CandlesService {
           resolution,
           onRealtimeCallback,
           subscriberUID,
-          onResetCacheNeededCallback
+          onResetCacheNeededCallback,
         );
       }, POLL_DELAY);
 
@@ -525,8 +526,8 @@ class CandlesService {
         const newCandles = candles.filter((candle) => candle.time > this._lastTime);
 
         if (newCandles.length > 0) {
-          console.log(
-            `[Candles] Sending ${newCandles.length} new candles (filtered ${candles.length - newCandles.length} duplicates)`
+          logger.debug(
+            `[Candles] Sending ${newCandles.length} new candles (filtered ${candles.length - newCandles.length} duplicates)`,
           );
           this._updateLastTime(newCandles);
           newCandles.forEach(onRealtimeCallback);
@@ -546,7 +547,7 @@ class CandlesService {
   }
 
   private _updateLastTime(candles: Candle[]) {
-    const lastTime = candles[candles.length - 1].time;
+    const lastTime = candles[candles.length - 1]!.time;
     if (this._lastTime && this._lastTime >= lastTime) {
       return false;
     }

@@ -3,13 +3,14 @@
  * Axios-based HTTP client with interceptors and error handling
  */
 import axios, {
-  AxiosInstance,
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
+  type AxiosInstance,
+  type AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
 } from 'axios';
 import { config } from '@/config';
+import { logger } from '@/lib/logger';
 
 /**
  * API Error Response
@@ -22,11 +23,33 @@ export interface ApiError {
 }
 
 /**
+ * Validate that a base URL uses HTTPS in production.
+ * SECURITY: Financial API calls MUST use HTTPS to prevent MitM attacks.
+ */
+function validateBaseURL(url: string): string {
+  if (!url) {
+    throw new Error('API client: baseURL is required');
+  }
+
+  const isProd = import.meta.env.PROD;
+  const isLocalhost = url.includes('localhost') || url.includes('127.0.0.1');
+
+  if (isProd && !isLocalhost && !url.startsWith('https://')) {
+    throw new Error(
+      `SECURITY: API base URL must use HTTPS in production. Got: ${url.slice(0, 30)}...`,
+    );
+  }
+
+  return url;
+}
+
+/**
  * Create API client with base configuration
  */
 function createApiClient(baseURL: string): AxiosInstance {
+  const validatedURL = validateBaseURL(baseURL);
   const client = axios.create({
-    baseURL,
+    baseURL: validatedURL,
     timeout: 30000, // 30 seconds
     headers: {
       'Content-Type': 'application/json',
@@ -42,14 +65,14 @@ function createApiClient(baseURL: string): AxiosInstance {
     (config: InternalAxiosRequestConfig) => {
       // Log requests in development
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`);
+        logger.debug(`[API Request] ${config.method?.toUpperCase()} ${config.url}`);
       }
       return config;
     },
     (error: AxiosError) => {
-      console.error('[API Request Error]', error);
+      logger.error('[API Request Error]', error);
       return Promise.reject(error);
-    }
+    },
   );
 
   /**
@@ -60,7 +83,7 @@ function createApiClient(baseURL: string): AxiosInstance {
     (response: AxiosResponse) => {
       // Log successful responses in development
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[API Response] ${response.config.url}`, response.status);
+        logger.debug(`[API Response] ${response.config.url}`, response.status);
       }
       return response;
     },
@@ -75,7 +98,7 @@ function createApiClient(baseURL: string): AxiosInstance {
 
       // Log errors (skip 404s as they're often expected)
       if (apiError.status !== 404) {
-        console.error('[API Error]', {
+        logger.error('[API Error]', {
           url: error.config?.url,
           status: apiError.status,
           message: apiError.message,
@@ -86,17 +109,17 @@ function createApiClient(baseURL: string): AxiosInstance {
       // Handle specific error codes
       if (apiError.status === 401) {
         // Unauthorized - could trigger logout or token refresh
-        console.warn('Unauthorized request - authentication required');
+        logger.warn('Unauthorized request - authentication required');
       } else if (apiError.status === 500) {
-        console.error('Server error:', error.config?.url);
+        logger.error('Server error:', error.config?.url);
       } else if (apiError.code === 'ECONNABORTED') {
-        console.error('Request timeout:', error.config?.url);
+        logger.error('Request timeout:', error.config?.url);
       } else if (apiError.code === 'ERR_NETWORK') {
-        console.error('Network error - check your connection');
+        logger.error('Network error - check your connection');
       }
 
       return Promise.reject(apiError);
-    }
+    },
   );
 
   return client;
@@ -120,7 +143,7 @@ export const apiClient = createApiClient(config.apiUrl);
  * Uses local proxy in development to avoid CORS issues
  */
 export const matcherClient = createApiClient(
-  process.env.NODE_ENV === 'development' ? '/matcher' : config.matcherUrl
+  process.env.NODE_ENV === 'development' ? '/matcher' : config.matcherUrl,
 );
 
 /**
@@ -133,7 +156,7 @@ export const matcherClient = createApiClient(
 export async function apiRequest<T = unknown>(
   client: AxiosInstance,
   endpoint: string,
-  options?: AxiosRequestConfig
+  options?: AxiosRequestConfig,
 ): Promise<T> {
   const response = await client.request<T>({
     url: endpoint,
@@ -148,7 +171,7 @@ export async function apiRequest<T = unknown>(
 export async function apiGet<T = unknown>(
   client: AxiosInstance,
   endpoint: string,
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
 ): Promise<T> {
   return apiRequest<T>(client, endpoint, { method: 'GET', params });
 }
@@ -159,7 +182,7 @@ export async function apiGet<T = unknown>(
 export async function apiPost<T = unknown>(
   client: AxiosInstance,
   endpoint: string,
-  data?: unknown
+  data?: unknown,
 ): Promise<T> {
   return apiRequest<T>(client, endpoint, { method: 'POST', data });
 }
@@ -170,7 +193,7 @@ export async function apiPost<T = unknown>(
 export async function apiPut<T = unknown>(
   client: AxiosInstance,
   endpoint: string,
-  data?: unknown
+  data?: unknown,
 ): Promise<T> {
   return apiRequest<T>(client, endpoint, { method: 'PUT', data });
 }

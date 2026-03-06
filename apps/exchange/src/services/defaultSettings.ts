@@ -10,6 +10,7 @@
  */
 
 import NetworkConfig from '@/config/networkConfig';
+import { logger } from '@/lib/logger';
 
 /**
  * Common settings shared across all accounts
@@ -21,7 +22,7 @@ export interface CommonSettings {
   lastOpenVersion: string;
   whatsNewList: string[];
   network: string;
-  oracleWaves: string;
+  oracleDCC: string;
   dontShowSpam: boolean;
   logoutAfterMin: number;
   termsAccepted: boolean;
@@ -108,7 +109,7 @@ export class DefaultSettings {
     lastOpenVersion: '',
     whatsNewList: [],
     network: NetworkConfig.code,
-    oracleWaves: NetworkConfig.oracleWaves,
+    oracleDCC: NetworkConfig.oracleDCC,
     dontShowSpam: true,
     logoutAfterMin: 5,
     termsAccepted: true,
@@ -261,7 +262,7 @@ export class DefaultSettings {
         this.settings = JSON.parse(userStr);
       }
     } catch (error) {
-      console.warn('[DefaultSettings] Failed to load from localStorage:', error);
+      logger.warn('[DefaultSettings] Failed to load from localStorage:', error);
     }
   }
 
@@ -273,7 +274,7 @@ export class DefaultSettings {
       localStorage.setItem(DefaultSettings.STORAGE_KEY_COMMON, JSON.stringify(this.commonSettings));
       localStorage.setItem(DefaultSettings.STORAGE_KEY_USER, JSON.stringify(this.settings));
     } catch (error) {
-      console.error('[DefaultSettings] Failed to save to localStorage:', error);
+      logger.error('[DefaultSettings] Failed to save to localStorage:', error);
     }
   }
 
@@ -282,7 +283,7 @@ export class DefaultSettings {
    */
   private _isCommon(path: string): boolean {
     const [start] = path.split('.');
-    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start);
+    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start!);
   }
 
   /**
@@ -352,7 +353,7 @@ export class DefaultSettings {
  */
 export function createDefaultSettings(
   settings?: Partial<UserSettings>,
-  commonSettings?: Partial<CommonSettings>
+  commonSettings?: Partial<CommonSettings>,
 ): DefaultSettings {
   const instance = new DefaultSettings(settings, commonSettings);
   instance.load();

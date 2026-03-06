@@ -2,9 +2,15 @@
  * Matcher API Service
  * Handles DEX matcher endpoints for trading operations
  */
-import { useQuery, useMutation, UseQueryResult, UseMutationResult } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  type UseQueryResult,
+  type UseMutationResult,
+} from '@tanstack/react-query';
 import { matcherClient } from '../client';
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 
 /**
  * Order Side Enum
@@ -138,7 +144,7 @@ export const useOrderBook = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<OrderBook, Error> => {
   return useQuery({
     queryKey: ['orderbook', amountAsset, priceAsset, depth],
@@ -196,14 +202,14 @@ export const useUserOrders = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
     queryKey: ['orders', address, amountAsset, priceAsset],
     queryFn: async () => {
       // For now, return empty array as this requires proper matcher authentication
       // TODO: Implement proper matcher signature authentication
-      console.warn('User orders require matcher authentication - not yet implemented');
+      logger.warn('User orders require matcher authentication - not yet implemented');
       return [];
 
       // Original implementation (requires authentication):
@@ -234,7 +240,7 @@ export const useOrderHistory = (
   activeOnly = false,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
     queryKey: ['orders', 'history', address, activeOnly],
@@ -266,14 +272,14 @@ export const useTradeHistory = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<Trade[], Error> => {
   return useQuery({
     queryKey: ['trades', amountAsset, priceAsset, limit],
     queryFn: async () => {
       // TODO: Implement using data-service getExchangeTxs
       // For now, return empty array as the matcher doesn't have a trades endpoint
-      console.warn('Trade history requires data-service integration - returning empty array');
+      logger.warn('Trade history requires data-service integration - returning empty array');
       return [];
 
       // Original implementation (incorrect - matcher doesn't have /trades endpoint):

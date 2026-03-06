@@ -1,32 +1,33 @@
 /**
- * Waves Gateway Provider
+ * DCC Gateway Provider
  *
- * Implements gateway operations for the Waves Gateway service
+ * Implements gateway operations for the DCC Gateway service
  * Handles BTC, ETH, USDT and other crypto deposits/withdrawals
- * Matches Angular's WavesGatewayService.js functionality
+ * Matches Angular's DCCGatewayService.js functionality
  */
 
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import NetworkConfig from '@/config/networkConfig';
 import type { IGatewayService, IGatewayDetails, GatewayAsset } from './types';
+import { logger } from '@/lib/logger';
 
 /**
- * Waves Gateway Provider Implementation
+ * DCC Gateway Provider Implementation
  */
-export class WavesGatewayProvider implements IGatewayService {
+export class DCCGatewayProvider implements IGatewayService {
   /**
    * Get deposit details for an asset
    * Calls the gateway's tunnel endpoint to get deposit address
    */
-  async getDepositDetails(asset: GatewayAsset, userWavesAddress: string): Promise<IGatewayDetails> {
+  async getDepositDetails(asset: GatewayAsset, userDCCAddress: string): Promise<IGatewayDetails> {
     const gatewayConfig = NetworkConfig.getGatewayConfig(asset.id);
     if (!gatewayConfig) {
-      throw new Error(`[WavesGateway] No gateway config for asset ${asset.id}`);
+      throw new Error(`[DCCGateway] No gateway config for asset ${asset.id}`);
     }
 
     try {
-      // Call Waves Gateway tunnel API (matches Angular WavesGatewayService.getDepositAddress)
-      const url = `${gatewayConfig.url}/tunnel/${userWavesAddress}`;
+      // Call DCC Gateway tunnel API (matches Angular DCCGatewayService.getDepositAddress)
+      const url = `${gatewayConfig.url}/tunnel/${userDCCAddress}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -50,7 +51,7 @@ export class WavesGatewayProvider implements IGatewayService {
         exchangeRate: data.exchangeRate ? new BigNumber(data.exchangeRate) : undefined,
       };
     } catch (error) {
-      console.error('[WavesGateway] getDepositDetails failed:', error);
+      logger.error('[DCCGateway] getDepositDetails failed:', error);
       throw error;
     }
   }
@@ -61,23 +62,23 @@ export class WavesGatewayProvider implements IGatewayService {
   async getWithdrawDetails(
     asset: GatewayAsset,
     targetAddress: string,
-    paymentId?: string
+    paymentId?: string,
   ): Promise<IGatewayDetails> {
     const gatewayConfig = NetworkConfig.getGatewayConfig(asset.id);
     if (!gatewayConfig) {
-      throw new Error(`[WavesGateway] No gateway config for asset ${asset.id}`);
+      throw new Error(`[DCCGateway] No gateway config for asset ${asset.id}`);
     }
 
     // Validate target address format using regex from config
     if (gatewayConfig.regex) {
       const regex = new RegExp(gatewayConfig.regex);
       if (!regex.test(targetAddress)) {
-        throw new Error(`[WavesGateway] Invalid ${asset.name} address format`);
+        throw new Error(`[DCCGateway] Invalid ${asset.name} address format`);
       }
     }
 
     // For withdrawals, return static details based on config
-    // (Angular WavesGatewayService.getWithdrawDetails pattern)
+    // (Angular DCCGatewayService.getWithdrawDetails pattern)
     return {
       address: targetAddress,
       attachment: paymentId,
@@ -88,7 +89,7 @@ export class WavesGatewayProvider implements IGatewayService {
   }
 
   /**
-   * Get send details (Waves Gateway specific)
+   * Get send details (DCC Gateway specific)
    * Used for direct asset transfers through gateway
    */
   async getSendDetails(asset: GatewayAsset, targetAddress: string): Promise<IGatewayDetails> {
@@ -108,6 +109,6 @@ export class WavesGatewayProvider implements IGatewayService {
 /**
  * Singleton instance
  */
-const wavesGatewayProvider = new WavesGatewayProvider();
+const gatewayProvider = new DCCGatewayProvider();
 
-export default wavesGatewayProvider;
+export default gatewayProvider;

@@ -2,7 +2,7 @@
  * Address API Service
  * Handles address-related API calls with React Query
  */
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { nodeClient } from '../client';
 
 /**
@@ -83,10 +83,10 @@ export interface AddressData {
 
 /**
  * Fetch Address Balance
- * Returns WAVES and asset balances for a given address
+ * Returns DCC and asset balances for a given address
  * Combines data from both /addresses/balance/details and /assets/balance endpoints
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param options - React Query options
  */
 export const useAddressBalance = (
@@ -94,14 +94,14 @@ export const useAddressBalance = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<AddressBalance, Error> => {
   return useQuery({
     queryKey: ['address', 'balance', address],
     queryFn: async () => {
-      // Fetch WAVES balance details
+      // Fetch DCC balance details
       const { data: balanceDetails } = await nodeClient.get<AddressBalance>(
-        `/addresses/balance/details/${address}`
+        `/addresses/balance/details/${address}`,
       );
 
       // Fetch all assets balance
@@ -150,7 +150,7 @@ export const useAddressBalance = (
  * Fetch Address Transactions
  * Returns transaction history for a given address
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param limit - Maximum number of transactions to return (default: 100)
  * @param options - React Query options
  */
@@ -160,13 +160,13 @@ export const useAddressTransactions = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<Transaction[][], Error> => {
   return useQuery({
     queryKey: ['address', 'transactions', address, limit],
     queryFn: async () => {
       const { data } = await nodeClient.get<Transaction[][]>(
-        `/transactions/address/${address}/limit/${limit}`
+        `/transactions/address/${address}/limit/${limit}`,
       );
       return data;
     },
@@ -180,7 +180,7 @@ export const useAddressTransactions = (
  * Fetch Address Data Entries
  * Returns data storage entries for a given address
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param options - React Query options
  */
 export const useAddressData = (
@@ -188,7 +188,7 @@ export const useAddressData = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<AddressData, Error> => {
   return useQuery({
     queryKey: ['address', 'data', address],
@@ -213,7 +213,7 @@ export const useTransaction = (
   txId: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<Transaction, Error> => {
   return useQuery({
     queryKey: ['transaction', txId],
@@ -230,7 +230,7 @@ export const useTransaction = (
  * Fetch Address Script Info
  * Returns script information if address has a script set
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param options - React Query options
  */
 export interface AddressScriptInfo {
@@ -245,7 +245,7 @@ export const useAddressScript = (
   address: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AddressScriptInfo, Error> => {
   return useQuery({
     queryKey: ['address', 'script', address],
@@ -259,17 +259,17 @@ export const useAddressScript = (
 };
 
 /**
- * Utility function to convert wavelets to WAVES
+ * Utility function to convert wavelets to DCC coins
  * @param wavelets - Amount in wavelets (10^8)
  */
-export const waveletsToWaves = (wavelets: number): number => {
+export const waveletsToCoins = (wavelets: number): number => {
   return wavelets / 100000000;
 };
 
 /**
- * Utility function to convert WAVES to wavelets
- * @param waves - Amount in WAVES
+ * Utility function to convert DCC coins to wavelets
+ * @param coins - Amount in DCC
  */
-export const wavesToWavelets = (waves: number): number => {
-  return Math.floor(waves * 100000000);
+export const coinsToWavelets = (coins: number): number => {
+  return Math.floor(coins * 100000000);
 };

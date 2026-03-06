@@ -9,6 +9,7 @@
  */
 
 import axios from 'axios';
+import { logger } from '@/lib/logger';
 import NetworkConfig from '@/config/networkConfig';
 
 export interface TokenInfo {
@@ -45,7 +46,7 @@ class TokenFilterService {
 
   private async _performInitialization(): Promise<void> {
     try {
-      console.log('[TokenFilter] Initializing token filters...');
+      logger.debug('[TokenFilter] Initializing token filters...');
 
       // Fetch both lists in parallel
       const [scamResponse, namesResponse] = await Promise.all([
@@ -66,12 +67,12 @@ class TokenFilterService {
       }
 
       this.initialized = true;
-      console.log('[TokenFilter] Initialized:', {
+      logger.debug('[TokenFilter] Initialized:', {
         scamTokens: this.scamList.size,
         namedTokens: this.tokenNames.size,
       });
     } catch (error) {
-      console.error('[TokenFilter] Initialization failed:', error);
+      logger.error('[TokenFilter] Initialization failed:', error);
       // Don't throw - allow app to function without filters
       // Mark as initialized anyway to prevent repeated failures
       this.initialized = true;
@@ -84,7 +85,7 @@ class TokenFilterService {
     try {
       const scamUrl = NetworkConfig.scamListUrl;
       if (!scamUrl) {
-        console.warn('[TokenFilter] scamListUrl not configured');
+        logger.warn('[TokenFilter] scamListUrl not configured');
         return null;
       }
 
@@ -100,7 +101,7 @@ class TokenFilterService {
         .filter(Boolean);
       return lines;
     } catch (error) {
-      console.error('[TokenFilter] Failed to fetch scam list:', error);
+      logger.error('[TokenFilter] Failed to fetch scam list:', error);
       return null;
     }
   }
@@ -109,7 +110,7 @@ class TokenFilterService {
     try {
       const namesUrl = NetworkConfig.tokensNameListUrl;
       if (!namesUrl) {
-        console.warn('[TokenFilter] tokensNameListUrl not configured');
+        logger.warn('[TokenFilter] tokensNameListUrl not configured');
         return null;
       }
 
@@ -129,8 +130,8 @@ class TokenFilterService {
         const parts = line.split(',').map((p) => p.trim());
         if (parts.length >= 2) {
           tokens.push({
-            assetId: parts[0],
-            name: parts[1],
+            assetId: parts[0]!,
+            name: parts[1]!,
             ticker: parts[2] || undefined,
             verified: true,
           });
@@ -139,7 +140,7 @@ class TokenFilterService {
 
       return tokens;
     } catch (error) {
-      console.error('[TokenFilter] Failed to fetch token names:', error);
+      logger.error('[TokenFilter] Failed to fetch token names:', error);
       return null;
     }
   }
