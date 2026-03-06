@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Storage Exporter Utility
  * Handles exporting and importing wallet data with encryption support
@@ -81,7 +82,7 @@ export const exportData = (keys: readonly string[] = EXPORT_KEYS): ExportData =>
         }
       }
     } catch (error) {
-      console.error(`Failed to export key "${key}":`, error);
+      logger.error(`Failed to export key "${key}":`, error);
     }
   }
 
@@ -101,7 +102,7 @@ export const exportData = (keys: readonly string[] = EXPORT_KEYS): ExportData =>
  */
 export const importData = (
   data: ExportData,
-  overwrite: boolean = true
+  overwrite: boolean = true,
 ): { success: boolean; imported: number; errors: string[] } => {
   let imported = 0;
   const errors: string[] = [];
@@ -109,13 +110,20 @@ export const importData = (
   try {
     // Validate version
     if (!data.version || data.version !== '1.0.0') {
-      console.warn('Import data version mismatch:', data.version);
+      logger.warn('Import data version mismatch:', data.version);
     }
 
-    // Import each key
+    // Import each key — ONLY keys in the EXPORT_KEYS whitelist are accepted
+    const allowedKeys = new Set<string>(EXPORT_KEYS);
     for (const [key, value] of Object.entries(data)) {
       // Skip metadata keys
       if (['timestamp', 'version', 'encrypted'].includes(key)) {
+        continue;
+      }
+
+      // Security: Only import keys that are in the allowed whitelist
+      if (!allowedKeys.has(key)) {
+        errors.push(`Rejected unknown key "${key}" — not in allowed whitelist`);
         continue;
       }
 
@@ -123,7 +131,7 @@ export const importData = (
         // Check if key exists
         const existing = localStorage.getItem(key);
         if (existing && !overwrite) {
-          console.log(`Skipping existing key: ${key}`);
+          logger.debug(`Skipping existing key: ${key}`);
           continue;
         }
 
@@ -134,7 +142,7 @@ export const importData = (
       } catch (error) {
         const err = error instanceof Error ? error.message : String(error);
         errors.push(`Failed to import key "${key}": ${err}`);
-        console.error(`Failed to import key "${key}":`, error);
+        logger.error(`Failed to import key "${key}":`, error);
       }
     }
 
@@ -144,7 +152,7 @@ export const importData = (
       errors,
     };
   } catch (error) {
-    console.error('Import failed:', error);
+    logger.error('Import failed:', error);
     return {
       success: false,
       imported,
@@ -182,9 +190,9 @@ export const downloadJSON = (filename?: string, data?: ExportData): void => {
       URL.revokeObjectURL(url);
     }, 100);
 
-    console.log(`Export downloaded: ${a.download}`);
+    logger.debug(`Export downloaded: ${a.download}`);
   } catch (error) {
-    console.error('Download failed:', error);
+    logger.error('Download failed:', error);
     throw error;
   }
 };
@@ -210,7 +218,7 @@ export const readJSONFile = (file: File): Promise<ExportData> => {
         }
 
         resolve(data);
-      } catch (error) {
+      } catch {
         reject(new Error('Failed to parse JSON file'));
       }
     };
@@ -224,53 +232,96 @@ export const readJSONFile = (file: File): Promise<ExportData> => {
 };
 
 /**
- * Simple XOR encryption for export data
+ * Derive an AES-256-GCM key from a password using PBKDF2
+ * @param password - User password
+ * @param salt - Random salt (16 bytes)
+ * @returns CryptoKey for AES-256-GCM
+ */
+const deriveExportKey = async (password: string, salt: Uint8Array): Promise<CryptoKey> => {
+  const encoder = new TextEncoder();
+  const keyMaterial = await window.crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits', 'deriveKey'],
+  );
+
+  return window.crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt as BufferSource,
+      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt'],
+  );
+};
+
+/**
+ * Encrypt export data using AES-256-GCM (Web Crypto API)
+ * Format: base64( salt[16] || iv[12] || ciphertext || authTag[16] )
  * @param data - Data to encrypt
  * @param password - Encryption password
  * @returns Encrypted data as base64 string
  */
-export const encryptData = (data: ExportData, password: string): string => {
+export const encryptData = async (data: ExportData, password: string): Promise<string> => {
+  const encoder = new TextEncoder();
   const json = JSON.stringify(data);
-  const encrypted: number[] = [];
+  const plaintext = encoder.encode(json);
 
-  // Simple XOR encryption (for demonstration - use crypto library in production)
-  for (let i = 0; i < json.length; i++) {
-    const charCode = json.charCodeAt(i);
-    const keyChar = password.charCodeAt(i % password.length);
-    encrypted.push(charCode ^ keyChar);
-  }
+  // Generate random salt and IV
+  const salt = window.crypto.getRandomValues(new Uint8Array(16));
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
 
-  // Convert to base64
-  const bytes = new Uint8Array(encrypted);
-  return btoa(String.fromCharCode(...bytes));
+  // Derive key from password
+  const key = await deriveExportKey(password, salt);
+
+  // Encrypt with AES-256-GCM (includes built-in authentication tag)
+  const encrypted = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+
+  // Combine: salt(16) + iv(12) + ciphertext+tag
+  const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+  combined.set(salt, 0);
+  combined.set(iv, salt.length);
+  combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+  return btoa(String.fromCharCode(...combined));
 };
 
 /**
- * Decrypt XOR encrypted data
+ * Decrypt AES-256-GCM encrypted data (Web Crypto API)
  * @param encryptedBase64 - Encrypted data as base64 string
  * @param password - Decryption password
  * @returns Decrypted ExportData
  */
-export const decryptData = (encryptedBase64: string, password: string): ExportData => {
+export const decryptData = async (
+  encryptedBase64: string,
+  password: string,
+): Promise<ExportData> => {
   try {
     // Decode base64
-    const binaryString = atob(encryptedBase64);
-    const encrypted = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      encrypted[i] = binaryString.charCodeAt(i);
-    }
+    const combined = Uint8Array.from(atob(encryptedBase64), (c) => c.charCodeAt(0));
 
-    // Decrypt with XOR
-    const decrypted: string[] = [];
-    for (let i = 0; i < encrypted.length; i++) {
-      const charCode = encrypted[i];
-      const keyChar = password.charCodeAt(i % password.length);
-      decrypted.push(String.fromCharCode(charCode ^ keyChar));
-    }
+    // Extract salt (16 bytes), IV (12 bytes), and ciphertext+tag (rest)
+    const salt = combined.slice(0, 16);
+    const iv = combined.slice(16, 28);
+    const ciphertext = combined.slice(28);
 
-    const json = decrypted.join('');
+    // Derive decryption key
+    const key = await deriveExportKey(password, salt);
+
+    // Decrypt with AES-256-GCM (verifies authentication tag automatically)
+    const decrypted = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+
+    const decoder = new TextDecoder();
+    const json = decoder.decode(decrypted);
     return JSON.parse(json) as ExportData;
-  } catch (error) {
+  } catch {
+    // Generic error to prevent oracle attacks — do not reveal why decryption failed
     throw new Error('Decryption failed - wrong password or corrupted data');
   }
 };
@@ -280,11 +331,11 @@ export const decryptData = (encryptedBase64: string, password: string): ExportDa
  * @param password - Encryption password
  * @param filename - Output filename
  */
-export const downloadEncrypted = (password: string, filename?: string): void => {
+export const downloadEncrypted = async (password: string, filename?: string): Promise<void> => {
   const data = exportData();
   data.encrypted = true;
 
-  const encrypted = encryptData(data, password);
+  const encrypted = await encryptData(data, password);
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
   const defaultFilename = `wallet-backup-${timestamp}.enc`;
 
@@ -302,7 +353,7 @@ export const downloadEncrypted = (password: string, filename?: string): void => 
     URL.revokeObjectURL(url);
   }, 100);
 
-  console.log(`Encrypted backup downloaded: ${a.download}`);
+  logger.debug(`Encrypted backup downloaded: ${a.download}`);
 };
 
 /**
@@ -315,10 +366,10 @@ export const readEncryptedFile = (file: File, password: string): Promise<ExportD
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
         const encrypted = event.target?.result as string;
-        const data = decryptData(encrypted, password);
+        const data = await decryptData(encrypted, password);
         resolve(data);
       } catch (error) {
         reject(error);
@@ -340,7 +391,7 @@ export const readEncryptedFile = (file: File, password: string): Promise<ExportD
  */
 export const clearAllData = (confirm: boolean = false): boolean => {
   if (!confirm) {
-    console.warn('clearAllData requires explicit confirmation');
+    logger.warn('clearAllData requires explicit confirmation');
     return false;
   }
 
@@ -348,10 +399,10 @@ export const clearAllData = (confirm: boolean = false): boolean => {
     for (const key of EXPORT_KEYS) {
       localStorage.removeItem(key);
     }
-    console.log('All wallet data cleared');
+    logger.debug('All wallet data cleared');
     return true;
   } catch (error) {
-    console.error('Failed to clear data:', error);
+    logger.error('Failed to clear data:', error);
     return false;
   }
 };
@@ -398,7 +449,7 @@ export const getStorageStats = (): {
  * @returns Validation result with errors
  */
 export const validateExportData = (
-  data: any
+  data: any,
 ): {
   valid: boolean;
   errors: string[];

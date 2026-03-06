@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Explorer Links Utility
  * Generates blockchain explorer URLs for different networks
@@ -79,9 +80,9 @@ export interface ExplorerConfig {
  * Default explorer base URLs
  */
 const EXPLORER_BASE_URLS: Record<Exclude<NetworkType, 'custom'>, string> = {
-  mainnet: 'https://wavesexplorer.com',
-  testnet: 'https://testnet.wavesexplorer.com',
-  stagenet: 'https://stagenet.wavesexplorer.com',
+  mainnet: 'https://decentralscan.com',
+  testnet: 'https://testnet.decentralscan.com',
+  stagenet: 'https://stagenet.decentralscan.com',
 };
 
 /**
@@ -90,7 +91,7 @@ const EXPLORER_BASE_URLS: Record<Exclude<NetworkType, 'custom'>, string> = {
  * @returns Explorer links object
  */
 export const getExplorerLinks = (
-  config: NetworkType | ExplorerConfig = 'mainnet'
+  config: NetworkType | ExplorerConfig = 'mainnet',
 ): ExplorerLinks => {
   // Handle string shorthand
   const network = typeof config === 'string' ? config : config.network;
@@ -105,7 +106,7 @@ export const getExplorerLinks = (
   return {
     transaction: (txId: string): string => {
       if (!txId) {
-        console.warn('Transaction ID is required');
+        logger.warn('Transaction ID is required');
         return baseUrl;
       }
       return `${baseUrl}/tx/${txId}`;
@@ -113,7 +114,7 @@ export const getExplorerLinks = (
 
     address: (address: string): string => {
       if (!address) {
-        console.warn('Address is required');
+        logger.warn('Address is required');
         return baseUrl;
       }
       return `${baseUrl}/address/${address}`;
@@ -121,7 +122,7 @@ export const getExplorerLinks = (
 
     block: (height: number): string => {
       if (height < 0) {
-        console.warn('Block height must be non-negative');
+        logger.warn('Block height must be non-negative');
         return baseUrl;
       }
       return `${baseUrl}/blocks/${height}`;
@@ -129,7 +130,7 @@ export const getExplorerLinks = (
 
     asset: (assetId: string): string => {
       if (!assetId) {
-        console.warn('Asset ID is required');
+        logger.warn('Asset ID is required');
         return baseUrl;
       }
       return `${baseUrl}/assets/${assetId}`;
@@ -137,7 +138,7 @@ export const getExplorerLinks = (
 
     alias: (alias: string): string => {
       if (!alias) {
-        console.warn('Alias is required');
+        logger.warn('Alias is required');
         return baseUrl;
       }
       // Remove 'alias:' prefix if present
@@ -147,7 +148,7 @@ export const getExplorerLinks = (
 
     data: (address: string): string => {
       if (!address) {
-        console.warn('Address is required');
+        logger.warn('Address is required');
         return baseUrl;
       }
       return `${baseUrl}/address/${address}/data`;
@@ -155,7 +156,7 @@ export const getExplorerLinks = (
 
     leasing: (address: string): string => {
       if (!address) {
-        console.warn('Address is required');
+        logger.warn('Address is required');
         return baseUrl;
       }
       return `${baseUrl}/address/${address}/leasing`;
@@ -191,7 +192,7 @@ export const stagenetExplorer = getExplorerLinks('stagenet');
  */
 export const openInExplorer = (url: string): void => {
   if (!url) {
-    console.warn('URL is required to open explorer');
+    logger.warn('URL is required to open explorer');
     return;
   }
   window.open(url, '_blank', 'noopener,noreferrer');
@@ -244,7 +245,7 @@ export const openAsset = (assetId: string, network: NetworkType = 'mainnet'): vo
  */
 export const isValidTxId = (txId: string): boolean => {
   if (!txId) return false;
-  // Waves transaction IDs are base58 strings, typically 44 characters
+  // DCC transaction IDs are base58 strings, typically 44 characters
   return /^[1-9A-HJ-NP-Za-km-z]{44}$/.test(txId);
 };
 
@@ -255,7 +256,7 @@ export const isValidTxId = (txId: string): boolean => {
  */
 export const isValidAddress = (address: string): boolean => {
   if (!address) return false;
-  // Waves addresses start with '3' followed by base58 characters, typically 35 characters
+  // DCC addresses start with '3' followed by base58 characters, typically 35 characters
   return /^3[1-9A-HJ-NP-Za-km-z]{34}$/.test(address);
 };
 
@@ -266,9 +267,9 @@ export const isValidAddress = (address: string): boolean => {
  */
 export const isValidAssetId = (assetId: string): boolean => {
   if (!assetId) return false;
-  // Waves asset IDs are base58 strings, typically 44 characters
-  // WAVES (native token) is represented as null or empty string in some contexts
-  if (assetId === 'WAVES') return true;
+  // DCC asset IDs are base58 strings, typically 44 characters
+  // DCC (native token) is represented as null or empty string in some contexts
+  if (assetId === 'DCC') return true;
   return /^[1-9A-HJ-NP-Za-km-z]{44}$/.test(assetId);
 };
 
@@ -278,7 +279,7 @@ export const isValidAssetId = (assetId: string): boolean => {
  * @returns Parsed entity information
  */
 export const parseExplorerUrl = (
-  url: string
+  url: string,
 ): { type: string; id: string; network: NetworkType } | null => {
   try {
     const urlObj = new URL(url);
@@ -295,9 +296,9 @@ export const parseExplorerUrl = (
 
     const [type, id] = pathParts;
 
-    return { type, id, network };
+    return { type: type!, id: id!, network };
   } catch (error) {
-    console.error('Failed to parse explorer URL:', error);
+    logger.error('Failed to parse explorer URL:', error);
     return null;
   }
 };
@@ -345,7 +346,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
       return success;
     }
   } catch (error) {
-    console.error('Failed to copy to clipboard:', error);
+    logger.error('Failed to copy to clipboard:', error);
     return false;
   }
 };

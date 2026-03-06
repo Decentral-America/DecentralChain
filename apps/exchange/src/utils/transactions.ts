@@ -4,6 +4,7 @@
  * Uses data-service and @decentralchain/signature-adapter
  */
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 import { SIGN_TYPE } from '@decentralchain/signature-adapter';
 
 // Standard transaction fees in wavelets (smallest unit)
@@ -57,7 +58,7 @@ export interface Transaction {
  */
 export const createTransferTransaction = async (
   params: TransferParams,
-  _seed: string
+  _seed: string,
 ): Promise<any> => {
   // Get the signature API from data-service
   // It should already be initialized with the user's seed via ds.app.login()
@@ -70,7 +71,7 @@ export const createTransferTransaction = async (
   // Convert amount to Money object using moneyFromTokens (matches Angular)
   const amountMoney = await (ds as any).moneyFromTokens(
     params.amount.toString(),
-    params.assetId || 'DCC'
+    params.assetId || 'DCC',
   );
 
   // Get the fee as Money object using wavelets (smallest unit)
@@ -81,7 +82,7 @@ export const createTransferTransaction = async (
     ? Array.from(new TextEncoder().encode(params.attachment))
     : [];
 
-  // Create transaction data object (simplified version without waves.node.transactions)
+  // Create transaction data object (simplified version without dcc.node.transactions)
   const txData = {
     recipient: params.recipient,
     amount: amountMoney,
@@ -91,7 +92,7 @@ export const createTransferTransaction = async (
     timestamp: params.timestamp || Date.now(),
   };
 
-  console.log('[createTransferTransaction] Transaction data:', txData);
+  logger.debug('[createTransferTransaction] Transaction prepared');
 
   // Create a signable transaction using the signature adapter
   const signable = signApi.makeSignable({
@@ -113,10 +114,6 @@ export const createTransferTransaction = async (
     fee: parseInt(preparedTx.fee, 10),
   };
 
-  console.log(
-    '[createTransferTransaction] Transaction prepared:',
-    JSON.stringify(txForBroadcast, null, 2)
-  );
   return txForBroadcast;
 };
 
@@ -147,7 +144,6 @@ export const createLeaseTransaction = async (params: LeaseParams, _seed: string)
   await signable.getId();
   const preparedTx = await signable.getDataForApi();
 
-  console.log('[createTransferTransaction] Transaction prepared:', preparedTx);
   return preparedTx;
 };
 
@@ -156,7 +152,7 @@ export const createLeaseTransaction = async (params: LeaseParams, _seed: string)
  */
 export const createCancelLeaseTransaction = async (
   leaseId: string,
-  _seed: string
+  _seed: string,
 ): Promise<any> => {
   const signApi = (ds as any).signature.getSignatureApi();
 
@@ -184,7 +180,7 @@ export const createCancelLeaseTransaction = async (
  */
 export const createAliasTransaction = async (
   params: { alias: string; fee: any },
-  _seed: string
+  _seed: string,
 ): Promise<any> => {
   const signApi = (ds as any).signature.getSignatureApi();
 
@@ -207,7 +203,7 @@ export const createAliasTransaction = async (
   // CRITICAL FIX: The node expects fee as a number, not a Money object
   // The fee object from getDataForApi() has structure: {bn: BigNumber}
   let feeValue: number;
-  
+
   if (typeof preparedTx.fee === 'number') {
     // Fee is already a number
     feeValue = preparedTx.fee;
@@ -233,12 +229,15 @@ export const createAliasTransaction = async (
       feeValue = parseInt(preparedTx.fee.toString(), 10);
     } else {
       // Fallback: try to convert to number
-      console.warn('[createAliasTransaction] Unexpected fee format, attempting conversion:', preparedTx.fee);
+      logger.warn(
+        '[createAliasTransaction] Unexpected fee format, attempting conversion:',
+        preparedTx.fee,
+      );
       feeValue = Number(preparedTx.fee) || 100000; // Default to 0.001 DCC if conversion fails
     }
   } else {
     // Unknown type, use default fee
-    console.warn('[createAliasTransaction] Invalid fee type, using default:', preparedTx.fee);
+    logger.warn('[createAliasTransaction] Invalid fee type, using default:', preparedTx.fee);
     feeValue = 100000; // Default to 0.001 DCC
   }
 
@@ -247,7 +246,6 @@ export const createAliasTransaction = async (
     fee: feeValue,
   };
 
-  console.log('[createAliasTransaction] Fee converted:', feeValue, 'DCC:', feeValue / 100000000);
   return txForBroadcast;
 };
 
@@ -256,16 +254,21 @@ export const createAliasTransaction = async (
  * Using native fetch instead of ds.broadcast() to avoid stringifyJSON dependency
  */
 export const broadcastTransaction = async (tx: any): Promise<{ id: string }> => {
-  console.log('[broadcastTransaction] Broadcasting transaction:', JSON.stringify(tx, null, 2));
+  // SECURITY: Never log transaction data in production (contains signatures/proofs)
 
   try {
     // Get the node URL from data-service config
     const nodeUrl = (ds as any).config.get('node');
 
+    // SECURITY: Enforce HTTPS for transaction broadcasts in production
+    const isProd = import.meta.env.PROD;
+    const isLocalhost = nodeUrl?.includes('localhost') || nodeUrl?.includes('127.0.0.1');
+    if (isProd && !isLocalhost && nodeUrl && !nodeUrl.startsWith('https://')) {
+      throw new Error('SECURITY: Node URL must use HTTPS for transaction broadcasts');
+    }
+
     // Prepare the request body
     const requestBody = JSON.stringify(tx);
-    console.log('[broadcastTransaction] Request body length:', requestBody.length);
-    console.log('[broadcastTransaction] Request URL:', `${nodeUrl}/transactions/broadcast`);
 
     // Use native fetch to broadcast the transaction
     const response = await fetch(`${nodeUrl}/transactions/broadcast`, {
@@ -277,30 +280,23 @@ export const broadcastTransaction = async (tx: any): Promise<{ id: string }> => 
       body: requestBody,
     });
 
-    console.log('[broadcastTransaction] Response status:', response.status);
-    console.log(
-      '[broadcastTransaction] Response headers:',
-      Object.fromEntries(response.headers.entries())
-    );
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.log('[broadcastTransaction] Error response text:', errorText);
+
       let error;
       try {
         error = JSON.parse(errorText);
       } catch {
         error = { message: errorText };
       }
-      console.error('[broadcastTransaction] HTTP Error:', response.status, error);
+      logger.error('[broadcastTransaction] HTTP Error:', response.status, error);
       throw error;
     }
 
     const result = await response.json();
-    console.log('[broadcastTransaction] Broadcast result:', result);
     return result;
   } catch (error: any) {
-    console.error('[broadcastTransaction] Broadcast failed:', error);
+    logger.error('[broadcastTransaction] Broadcast failed:', error);
     throw error;
   }
 };

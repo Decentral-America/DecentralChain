@@ -2,7 +2,7 @@
  * Material UI Theme Configuration
  * Maps current design tokens to MUI theme structure
  */
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
 
 export type ThemeMode = 'light' | 'dark';
 
