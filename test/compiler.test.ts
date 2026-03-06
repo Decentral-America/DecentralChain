@@ -249,8 +249,8 @@ func bar() = WriteSet([])`;
 
   test.only('reconfigure', async () => {
     const nodeUrl = 'https://nodes-testnet.wavesnodes.com/',
-      chainId = 'T',
-      address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
+      chainId = 'T';
+    let address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
 
     let repl = compiler.repl({ nodeUrl, chainId, address });
     let res = await repl.evaluate('this');
