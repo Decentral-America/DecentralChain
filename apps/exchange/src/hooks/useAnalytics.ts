@@ -221,7 +221,7 @@ export function useFormTracking(formName: string) {
  * ```
  */
 export function useButtonTracking(buttonName: string, metadata?: EventParams) {
-  return (event?: React.MouseEvent) => {
+  return (_event?: React.MouseEvent) => {
     trackEvent('Button', 'click', buttonName, undefined, metadata);
   };
 }

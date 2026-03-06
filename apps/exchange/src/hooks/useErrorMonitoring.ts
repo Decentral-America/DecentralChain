@@ -89,7 +89,7 @@ export function useBreadcrumb(category: string) {
     (message: string, data?: ErrorContext, level: ErrorSeverity = ErrorSeverity.Info) => {
       addBreadcrumb(message, category, level, data);
     },
-    [category]
+    [category],
   );
 }
 
@@ -120,7 +120,7 @@ export function useApiErrorTracking() {
         type: 'api',
         ...context,
       },
-      ErrorSeverity.Error
+      ErrorSeverity.Error,
     );
   }, []);
 }

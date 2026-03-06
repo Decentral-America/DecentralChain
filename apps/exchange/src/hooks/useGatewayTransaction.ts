@@ -4,7 +4,7 @@
  * Integrates with existing transaction signing and broadcasting infrastructure
  */
 import { useState, useCallback } from 'react';
-import { BigNumber } from '@waves/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useBroadcast } from '@/hooks/useBroadcast';
@@ -98,7 +98,7 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
         setLoading(false);
       }
     },
-    [user, signTransfer, broadcastAsync]
+    [user, signTransfer, broadcastAsync],
   );
 
   /**

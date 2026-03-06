@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/contexts/ToastContext';
+import { logger } from '@/lib/logger';
 import { useAuth } from '@/contexts/AuthContext';
 import { transactionService } from '@/services/transactionService';
 
 /**
- * Transaction type (any - matches waves-transactions)
+ * Transaction type (any - matches dcc-transactions)
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Transaction = any;
@@ -162,9 +163,9 @@ interface UseBroadcastReturn {
  */
 const waitForTxConfirmation = async (
   txId: string,
-  confirmations: number = 1,
+  _confirmations: number = 1,
   timeout: number = 60000,
-  debug: boolean = false
+  debug: boolean = false,
 ): Promise<{ height: number }> => {
   const startTime = Date.now();
   const checkInterval = 3000; // Check every 3 seconds
@@ -184,7 +185,7 @@ const waitForTxConfirmation = async (
         if (tx && tx.height) {
           // Transaction confirmed
           if (debug) {
-            console.log(`[Broadcast] Transaction confirmed: ${txId} at height ${tx.height}`);
+            logger.debug(`[Broadcast] Transaction confirmed: ${txId} at height ${tx.height}`);
           }
           resolve({ height: tx.height });
         } else {
@@ -193,7 +194,7 @@ const waitForTxConfirmation = async (
         }
       } catch (error) {
         if (debug) {
-          console.log(`[Broadcast] Checking tx ${txId}:`, error);
+          logger.debug(`[Broadcast] Checking tx ${txId}:`, error);
         }
         // Continue checking (tx might not be in mempool yet)
         setTimeout(checkTx, checkInterval);
@@ -218,8 +219,8 @@ const waitForTxConfirmation = async (
  * @example
  * // Basic broadcast
  * const { broadcast, isLoading, txId } = useBroadcast({
- *   onSuccess: (result) => console.log('Transaction ID:', result.id),
- *   onError: (error) => console.error('Broadcast failed:', error),
+ *   onSuccess: (result) => logger.debug('Transaction ID:', result.id),
+ *   onError: (error) => logger.error('Broadcast failed:', error),
  * });
  *
  * broadcast(signedTransaction);
@@ -229,7 +230,7 @@ const waitForTxConfirmation = async (
  * const { broadcastAsync } = useBroadcast({
  *   waitForConfirmation: true,
  *   confirmations: 3,
- *   onConfirmed: (result) => console.log('Confirmed at height:', result.height),
+ *   onConfirmed: (result) => logger.debug('Confirmed at height:', result.height),
  * });
  *
  * const result = await broadcastAsync(signedTransaction);
@@ -254,13 +255,20 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
   const [status, setStatus] = useState<BroadcastStatus>('idle');
   const [result, setResult] = useState<BroadcastResult | null>(null);
   const confirmationAbortRef = useRef<boolean>(false);
+  const broadcastInFlightRef = useRef<boolean>(false);
 
   const mutation = useMutation<BroadcastResult, Error, Transaction>({
     mutationFn: async (transaction: Transaction): Promise<BroadcastResult> => {
+      // Double-broadcast guard: reject concurrent broadcast attempts
+      if (broadcastInFlightRef.current) {
+        throw new Error('A transaction broadcast is already in progress. Please wait.');
+      }
+      broadcastInFlightRef.current = true;
+
       setStatus('pending');
 
       if (debug) {
-        console.log('[Broadcast] Broadcasting transaction:', transaction);
+        logger.debug('[Broadcast] Broadcasting transaction:', transaction);
       }
 
       try {
@@ -281,7 +289,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
         }
 
         if (debug) {
-          console.log('[Broadcast] Transaction broadcast successful:', response.id);
+          logger.debug('[Broadcast] Transaction broadcast successful:', response.id);
         }
 
         // Invalidate balance queries to trigger refresh
@@ -290,7 +298,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
           setTimeout(() => {
             queryClient.invalidateQueries({ queryKey: ['addressBalance', user.address] });
             if (debug) {
-              console.log('[Broadcast] Balance queries invalidated for address:', user.address);
+              logger.debug('[Broadcast] Balance queries invalidated for address:', user.address);
             }
           }, 2000); // 2 second delay to allow blockchain indexing
         }
@@ -298,14 +306,14 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
         // Wait for confirmation if requested
         if (waitForConfirmation && !confirmationAbortRef.current) {
           if (debug) {
-            console.log(`[Broadcast] Waiting for ${confirmations} confirmation(s)...`);
+            logger.debug(`[Broadcast] Waiting for ${confirmations} confirmation(s)...`);
           }
 
           const confirmationResult = await waitForTxConfirmation(
             response.id,
             confirmations,
             confirmationTimeout,
-            debug
+            debug,
           );
 
           broadcastResult.height = confirmationResult.height;
@@ -319,14 +327,16 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
           }
 
           if (debug) {
-            console.log(`[Broadcast] Transaction confirmed at height ${confirmationResult.height}`);
+            logger.debug(
+              `[Broadcast] Transaction confirmed at height ${confirmationResult.height}`,
+            );
           }
 
           // Invalidate balance again after confirmation for final update
           if (user?.address) {
             queryClient.invalidateQueries({ queryKey: ['addressBalance', user.address] });
             if (debug) {
-              console.log('[Broadcast] Balance queries invalidated after confirmation');
+              logger.debug('[Broadcast] Balance queries invalidated after confirmation');
             }
           }
         }
@@ -341,10 +351,12 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
         }
 
         if (debug) {
-          console.error('[Broadcast] Broadcast failed:', err);
+          logger.error('[Broadcast] Broadcast failed:', err);
         }
 
         throw err;
+      } finally {
+        broadcastInFlightRef.current = false;
       }
     },
     onSuccess: (result: BroadcastResult) => {
@@ -362,7 +374,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
       confirmationAbortRef.current = false;
       mutation.mutate(transaction);
     },
-    [mutation]
+    [mutation],
   );
 
   const broadcastAsync = useCallback(
@@ -370,7 +382,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
       confirmationAbortRef.current = false;
       return mutation.mutateAsync(transaction);
     },
-    [mutation]
+    [mutation],
   );
 
   const reset = useCallback(() => {
@@ -384,7 +396,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
     confirmationAbortRef.current = true;
     setStatus('confirmed'); // Mark as confirmed even if cancelled
     if (debug) {
-      console.log('[Broadcast] Confirmation wait cancelled');
+      logger.debug('[Broadcast] Confirmation wait cancelled');
     }
   }, [debug]);
 
@@ -421,13 +433,13 @@ export const useBroadcastWithToast = (options: Omit<UseBroadcastOptions, 'showTo
  * @example
  * const { broadcastAsync } = useBroadcastWithConfirmation({
  *   confirmations: 3,
- *   onConfirmed: (result) => console.log('Confirmed!', result),
+ *   onConfirmed: (result) => logger.debug('Confirmed!', result),
  * });
  *
  * const result = await broadcastAsync(signedTransaction);
  */
 export const useBroadcastWithConfirmation = (
-  options: Omit<UseBroadcastOptions, 'waitForConfirmation'> = {}
+  options: Omit<UseBroadcastOptions, 'waitForConfirmation'> = {},
 ) => {
   return useBroadcast({ ...options, waitForConfirmation: true });
 };
@@ -438,7 +450,7 @@ export const useBroadcastWithConfirmation = (
  *
  * @example
  * const { broadcastBatch, isLoading, results } = useBatchBroadcast({
- *   onBatchComplete: (results) => console.log('All broadcast:', results),
+ *   onBatchComplete: (results) => logger.debug('All broadcast:', results),
  * });
  *
  * broadcastBatch([tx1, tx2, tx3]);
@@ -448,7 +460,7 @@ export const useBatchBroadcast = (
     onBatchComplete?: (results: BroadcastResult[]) => void;
     onBatchError?: (error: Error, index: number) => void;
     debug?: boolean;
-  } = {}
+  } = {},
 ) => {
   const { onBatchComplete, onBatchError, debug = import.meta.env.DEV } = options;
 
@@ -476,9 +488,9 @@ export const useBatchBroadcast = (
           batchResults.push(result);
 
           if (debug) {
-            console.log(
+            logger.debug(
               `[BatchBroadcast] Transaction ${i + 1}/${transactions.length} broadcast:`,
-              response.id
+              response.id,
             );
           }
         } catch (error) {
@@ -487,9 +499,9 @@ export const useBatchBroadcast = (
           onBatchError?.(err, i);
 
           if (debug) {
-            console.error(
+            logger.error(
               `[BatchBroadcast] Transaction ${i + 1}/${transactions.length} failed:`,
-              err
+              err,
             );
           }
         }
@@ -505,7 +517,7 @@ export const useBatchBroadcast = (
 
       return { results: batchResults, errors: batchErrors };
     },
-    [debug, onBatchComplete, onBatchError]
+    [debug, onBatchComplete, onBatchError],
   );
 
   return {

@@ -16,7 +16,7 @@ interface UseGatewayReturn {
   getRobinAddress: (
     assetId: string,
     userAddress: string,
-    recaptcha: string
+    recaptcha: string,
   ) => Promise<{ address: string; expiry: Date }>;
   hasSupportOf: (assetId: string, type: GatewayType) => boolean;
   loading: boolean;
@@ -30,15 +30,12 @@ interface UseGatewayReturn {
  * @returns Gateway operations and state
  */
 export const useGateway = (): UseGatewayReturn => {
-  const { wavesGateway } = useConfig();
+  const { gateway } = useConfig();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Memoize gatewayService instance to prevent recreation on every render
-  const gatewayService = useMemo(
-    () => new GatewayService(wavesGateway || {}),
-    [wavesGateway]
-  );
+  const gatewayService = useMemo(() => new GatewayService(gateway || {}), [gateway]);
 
   /**
    * Get deposit details for an asset
@@ -61,7 +58,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -85,7 +82,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -109,7 +106,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -123,7 +120,7 @@ export const useGateway = (): UseGatewayReturn => {
     async (
       assetId: string,
       userAddress: string,
-      recaptcha: string
+      recaptcha: string,
     ): Promise<{ address: string; expiry: Date }> => {
       setLoading(true);
       setError(null);
@@ -138,7 +135,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -151,7 +148,7 @@ export const useGateway = (): UseGatewayReturn => {
     (assetId: string, type: GatewayType): boolean => {
       return gatewayService.hasSupportOf(assetId, type);
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**

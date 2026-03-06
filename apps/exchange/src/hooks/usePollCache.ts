@@ -4,7 +4,8 @@
  * Provides automatic caching, stale-time management, and background refetching
  */
 import { useCallback } from 'react';
-import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query';
+import { logger } from '@/lib/logger';
+import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 
 /**
  * Poll Cache Configuration Options
@@ -142,7 +143,7 @@ export interface UsePollCacheReturn<T> {
 export const usePollCache = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   const {
     interval = 30000, // Default: 30 seconds
@@ -212,7 +213,7 @@ export const usePollCache = <T>(
     (data: T | ((old: T | undefined) => T)) => {
       queryClient.setQueryData<T>(queryKey, data);
     },
-    [queryClient, queryKey]
+    [queryClient, queryKey],
   );
 
   /**
@@ -227,7 +228,7 @@ export const usePollCache = <T>(
    */
   useCallback(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[usePollCache]', {
+      logger.debug('[usePollCache]', {
         key: queryKey,
         isStale,
         isFetching,
@@ -256,7 +257,7 @@ export const usePollCache = <T>(
 export const usePollCacheFresh = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   const result = usePollCache(key, fetchFn, {
     ...options,
@@ -273,7 +274,7 @@ export const usePollCacheFresh = <T>(
 export const usePollCachePersistent = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
@@ -289,7 +290,7 @@ export const usePollCachePersistent = <T>(
 export const usePollCacheAggressive = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
@@ -307,7 +308,7 @@ export const usePollCacheAggressive = <T>(
 export const usePollCacheRealtime = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,

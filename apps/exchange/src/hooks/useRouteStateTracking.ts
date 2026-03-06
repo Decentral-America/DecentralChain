@@ -6,6 +6,7 @@
  * Matches Angular: User.applyState() lines 601-604
  */
 import { useEffect, useRef } from 'react';
+import { logger } from '@/lib/logger';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -59,7 +60,7 @@ export function useRouteStateTracking(options: UseRouteStateTrackingOptions = {}
 
     // Optionally log for debugging (only when path changes)
     if (path !== lastSavedPath.current) {
-      console.log('[RouteTracking] Saved route:', path);
+      logger.debug('[RouteTracking] Saved route:', path);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, enabled, isAuthenticated]);

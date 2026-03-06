@@ -2,10 +2,10 @@
  * useAssetDetails Hook
  * Fetches and caches asset information using React Query
  */
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 import {
   fetchAssetDetails,
-  AssetDetails,
+  type AssetDetails,
   getAssetDisplayName,
   formatAssetAmount,
   shortenAssetId,
@@ -97,7 +97,7 @@ export interface UseAssetDetailsResult {
  */
 export const useAssetDetails = (
   assetId: string | null | undefined,
-  options: UseAssetDetailsOptions = {}
+  options: UseAssetDetailsOptions = {},
 ): UseAssetDetailsResult => {
   const {
     enabled = true,
@@ -160,7 +160,7 @@ export const useAssetDetails = (
  */
 export const prefetchAssetDetails = async (
   queryClient: QueryClient,
-  assetId: string | null | undefined
+  assetId: string | null | undefined,
 ): Promise<void> => {
   if (!assetId) return;
 
@@ -190,7 +190,7 @@ export const prefetchAssetDetails = async (
  * ```
  */
 export const useMultipleAssets = (
-  assetIds: (string | null | undefined)[]
+  assetIds: (string | null | undefined)[],
 ): Map<string, UseAssetDetailsResult> => {
   // Filter unique non-null asset IDs
   const uniqueAssetIds = Array.from(new Set(assetIds.filter((id): id is string => !!id)));

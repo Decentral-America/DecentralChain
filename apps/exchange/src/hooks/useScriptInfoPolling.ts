@@ -5,6 +5,7 @@
  * Matches Angular: src/modules/app/services/User.js lines 415-427
  */
 import { useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 import type { ScriptInfo } from '@/types/auth';
 
 const POLL_INTERVAL = 10000; // 10 seconds
@@ -18,7 +19,7 @@ const INITIAL_DELAY = 30000; // 30 seconds initial delay
  */
 export const useScriptInfoPolling = (
   address: string | undefined,
-  isAuthenticated: boolean
+  isAuthenticated: boolean,
 ): ScriptInfo => {
   const [scriptInfo, setScriptInfo] = useState<ScriptInfo>({
     hasScript: false,
@@ -57,7 +58,7 @@ export const useScriptInfoPolling = (
             extraFee: extraFee || null,
             networkError: false,
           });
-          console.log('[ScriptInfo] Account has script, extraFee:', extraFee);
+          logger.debug('[ScriptInfo] Account has script, extraFee:', extraFee);
         } else {
           // No script
           setScriptInfo({
@@ -67,7 +68,7 @@ export const useScriptInfoPolling = (
           });
         }
       } catch (error) {
-        console.error('[ScriptInfo] Failed to fetch script info:', error);
+        logger.error('[ScriptInfo] Failed to fetch script info:', error);
         setScriptInfo((prev) => ({
           ...prev,
           networkError: true,
@@ -76,7 +77,7 @@ export const useScriptInfoPolling = (
     };
 
     // Delay first poll by 30 seconds (match Angular behavior)
-    console.log('[ScriptInfo] Starting polling for address:', address);
+    logger.debug('[ScriptInfo] Starting polling for address:', address);
     initialTimeoutId = setTimeout(() => {
       // First poll
       fetchScriptInfo();
@@ -93,7 +94,7 @@ export const useScriptInfoPolling = (
       if (intervalId) {
         clearInterval(intervalId);
       }
-      console.log('[ScriptInfo] Polling stopped');
+      logger.debug('[ScriptInfo] Polling stopped');
     };
   }, [address, isAuthenticated]);
 

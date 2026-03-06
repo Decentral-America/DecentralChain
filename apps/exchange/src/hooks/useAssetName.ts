@@ -16,7 +16,11 @@ import { useAssetDetails } from '@/api/services/assetsService';
 export const useAssetName = (assetId: string | null | undefined) => {
   const isDCC = !assetId || assetId === 'DCC' || assetId === '';
 
-  const { data: assetDetails, isLoading, error } = useAssetDetails(assetId || '', {
+  const {
+    data: assetDetails,
+    isLoading,
+    error,
+  } = useAssetDetails(assetId || '', {
     enabled: !isDCC,
   });
 

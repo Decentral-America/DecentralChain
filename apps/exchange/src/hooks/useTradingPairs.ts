@@ -2,7 +2,7 @@
  * useTradingPairs Hook
  *
  * Provides access to trading pairs configuration from mainnet.json
- * Matches Angular's WavesApp.tradingPairs usage in DEX components
+ * Matches Angular's DCCApp.tradingPairs usage in DEX components
  */
 
 import { useMemo } from 'react';
@@ -49,13 +49,13 @@ export interface UseTradingPairsReturn {
  *
  * // Get all pairs
  * pairs.forEach(([amount, price]) => {
- *   console.log(`${amount}/${price}`);
+ *   logger.debug(`${amount}/${price}`);
  * });
  *
  * // Find specific pair
  * const pair = getPairByAssets('DCC', 'CRC');
  * if (pair) {
- *   console.log('DCC/CRC pair exists');
+ *   logger.debug('DCC/CRC pair exists');
  * }
  * ```
  */
@@ -72,7 +72,7 @@ export function useTradingPairs(): UseTradingPairsReturn {
       (amountAssetId: string, priceAssetId: string): TradingPair | undefined => {
         return pairs.find(([amount, price]) => amount === amountAssetId && price === priceAssetId);
       },
-    [pairs]
+    [pairs],
   );
 
   // Check if pair exists
@@ -81,7 +81,7 @@ export function useTradingPairs(): UseTradingPairsReturn {
       (amountAssetId: string, priceAssetId: string): boolean => {
         return getPairByAssets(amountAssetId, priceAssetId) !== undefined;
       },
-    [getPairByAssets]
+    [getPairByAssets],
   );
 
   // Get all pairs for an asset
@@ -90,7 +90,7 @@ export function useTradingPairs(): UseTradingPairsReturn {
       (assetId: string): TradingPair[] => {
         return pairs.filter(([amount, price]) => amount === assetId || price === assetId);
       },
-    [pairs]
+    [pairs],
   );
 
   return {
