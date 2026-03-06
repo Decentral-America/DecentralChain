@@ -62,7 +62,12 @@ export const Swap: React.FC = () => {
 
           <Grid container spacing={4}>
             {/* Left Column - Feature Cards */}
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <Stack spacing={3}>
                 {/* Feature 1 */}
                 <Card
@@ -153,7 +158,12 @@ export const Swap: React.FC = () => {
             </Grid>
 
             {/* Right Column - Swap Interface */}
-            <Grid item xs={12} md={8}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 8,
+              }}
+            >
               <Paper
                 elevation={0}
                 sx={{

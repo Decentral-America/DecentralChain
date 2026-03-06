@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { InfoOutlined, Login, CheckCircle } from '@mui/icons-material';
-import { BigNumber } from '@waves/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 import { landingTheme } from '@/theme/landingTheme';
 
 // Crypto logos
@@ -128,7 +128,7 @@ export const Bridge: React.FC = () => {
   const handleWithdrawSubmit = async (
     amount: BigNumber,
     targetAddress: string,
-    attachment: string
+    attachment: string,
   ) => {
     if (!selectedAsset) return;
 
@@ -138,7 +138,7 @@ export const Bridge: React.FC = () => {
       assetId: selectedAsset.assetId,
       amount,
       targetAddress,
-      gatewayAddress: '3P...',  // This comes from getWithdrawDetails in WithdrawAsset modal
+      gatewayAddress: '3P...', // This comes from getWithdrawDetails in WithdrawAsset modal
       attachment,
     });
   };
@@ -164,7 +164,7 @@ export const Bridge: React.FC = () => {
    */
   const handleModeChange = (
     event: React.MouseEvent<HTMLElement>,
-    newMode: 'deposit' | 'withdraw' | null
+    newMode: 'deposit' | 'withdraw' | null,
   ) => {
     if (newMode !== null) {
       setMode(newMode);
@@ -225,8 +225,8 @@ export const Bridge: React.FC = () => {
               Cross-Chain Bridge
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-              Transfer assets between DecentralChain and external blockchains securely through
-              our gateway infrastructure
+              Transfer assets between DecentralChain and external blockchains securely through our
+              gateway infrastructure
             </Typography>
           </Box>
 
@@ -237,7 +237,14 @@ export const Bridge: React.FC = () => {
             </Typography>
             <Grid container spacing={2} justifyContent="center">
               {SUPPORTED_NETWORKS.map((network) => (
-                <Grid item xs={6} sm={4} md={3} key={network.id}>
+                <Grid
+                  key={network.id}
+                  size={{
+                    xs: 6,
+                    sm: 4,
+                    md: 3,
+                  }}
+                >
                   <Card
                     onClick={() => network.available && setSelectedNetwork(network.id)}
                     sx={{
@@ -247,10 +254,12 @@ export const Bridge: React.FC = () => {
                       borderColor: selectedNetwork === network.id ? network.color : 'transparent',
                       transition: 'all 0.2s',
                       position: 'relative',
-                      '&:hover': network.available ? {
-                        transform: 'translateY(-4px)',
-                        boxShadow: 4,
-                      } : {},
+                      '&:hover': network.available
+                        ? {
+                            transform: 'translateY(-4px)',
+                            boxShadow: 4,
+                          }
+                        : {},
                     }}
                   >
                     <CardContent sx={{ textAlign: 'center', py: 2 }}>
@@ -284,12 +293,7 @@ export const Bridge: React.FC = () => {
                         />
                       )}
                       {network.comingSoon && (
-                        <Chip
-                          label="Coming Soon"
-                          size="small"
-                          sx={{ mt: 1 }}
-                          variant="outlined"
-                        />
+                        <Chip label="Coming Soon" size="small" sx={{ mt: 1 }} variant="outlined" />
                       )}
                     </CardContent>
                   </Card>
@@ -325,21 +329,20 @@ export const Bridge: React.FC = () => {
           </Box>
 
           {/* Info Alert */}
-          <Alert
-            severity="info"
-            icon={<InfoOutlined />}
-            sx={{ mb: 4, maxWidth: 800, mx: 'auto' }}
-          >
+          <Alert severity="info" icon={<InfoOutlined />} sx={{ mb: 4, maxWidth: 800, mx: 'auto' }}>
             {mode === 'deposit' ? (
               <>
-                <strong>Deposit Mode:</strong> Send {SUPPORTED_NETWORKS.find(n => n.id === selectedNetwork)?.name} assets to the gateway
-                address. You'll receive wrapped tokens on DecentralChain after network
+                <strong>Deposit Mode:</strong> Send{' '}
+                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the
+                gateway address. You&apos;ll receive wrapped tokens on DecentralChain after network
                 confirmations.
               </>
             ) : (
               <>
                 <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
-                gateway. You'll receive native {SUPPORTED_NETWORKS.find(n => n.id === selectedNetwork)?.name} assets after processing.
+                gateway. You&apos;ll receive native{' '}
+                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
+                processing.
               </>
             )}
           </Alert>

@@ -50,7 +50,11 @@ const SignUpInner: React.FC = () => {
       <Container maxWidth="xl" sx={{ py: 8 }}>
         <Grid container spacing={6} alignItems="center">
           {/* Left Column - Branding & Features */}
-          <Grid item md={5}>
+          <Grid
+            size={{
+              md: 5,
+            }}
+          >
             <Box sx={{ pr: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <Box
@@ -143,7 +147,11 @@ const SignUpInner: React.FC = () => {
           </Grid>
 
           {/* Right Column - Account Creation Form */}
-          <Grid item md={7}>
+          <Grid
+            size={{
+              md: 7,
+            }}
+          >
             <Box
               sx={{
                 position: 'relative',

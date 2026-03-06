@@ -9,9 +9,10 @@ import { initializeDataService } from '@/config/dataServiceConfig';
 import tokenFilterService from '@/services/tokenFilters';
 import { stringifyJSON } from '@/utils/formatters';
 import './index.css';
+import { logger } from '@/lib/logger';
 
-// Provide WavesApp.stringifyJSON for data-service compatibility
-(window as any).WavesApp = {
+// Provide DCCApp.stringifyJSON for data-service compatibility
+(window as any).DCCApp = {
   stringifyJSON,
 };
 
@@ -29,7 +30,7 @@ initializeDataService();
 
 // Initialize token filters (scam list and token names)
 tokenFilterService.initialize().catch((error) => {
-  console.error('[Main] Token filter initialization failed:', error);
+  logger.error('[Main] Token filter initialization failed:', error);
 });
 
 // Verify configuration system is working
@@ -64,5 +65,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
       </I18nextProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -3,6 +3,7 @@
  * Modern container for authenticated routes with responsive navigation
  */
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -94,7 +95,7 @@ const StyledNavLink = styled(NavLink)(() => ({
 }));
 
 // Main content area
-const MainContent = styled(Box)(({ theme }) => ({
+const MainContent = styled(Box)<{ component?: React.ElementType }>(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3, 1),
   marginTop: '64px', // Height of AppBar
@@ -211,7 +212,7 @@ export const MainLayout = () => {
         setCopySuccess(true);
         handleUserMenuClose();
       } catch (err) {
-        console.error('Failed to copy address:', err);
+        logger.error('Failed to copy address:', err);
         // Fallback for older browsers
         try {
           const textArea = document.createElement('textarea');
@@ -225,7 +226,7 @@ export const MainLayout = () => {
           setCopySuccess(true);
           handleUserMenuClose();
         } catch (fallbackErr) {
-          console.error('Fallback copy failed:', fallbackErr);
+          logger.error('Fallback copy failed:', fallbackErr);
         }
       }
     }
@@ -545,7 +546,12 @@ export const MainLayout = () => {
                   <ListItemText>Copy Address</ListItemText>
                 </MenuItem>
 
-                <MenuItem onClick={() => { navigate('/desktop/wallet'); handleUserMenuClose(); }}>
+                <MenuItem
+                  onClick={() => {
+                    navigate('/desktop/wallet');
+                    handleUserMenuClose();
+                  }}
+                >
                   <ListItemIcon>
                     <AccountBalanceWallet fontSize="small" />
                   </ListItemIcon>
@@ -622,7 +628,7 @@ export const MainLayout = () => {
         onSuccess={(newAlias) => {
           // Show success feedback
           setAliasSuccess(true);
-          console.log(`[MainLayout] Alias created successfully: ${newAlias}`);
+          logger.debug(`[MainLayout] Alias created successfully: ${newAlias}`);
         }}
       />
 

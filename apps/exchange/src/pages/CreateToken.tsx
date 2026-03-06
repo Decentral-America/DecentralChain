@@ -4,6 +4,7 @@
  * Matches Angular version: src/modules/tokens/templates/tokens.html
  */
 import { useState, useMemo } from 'react';
+import { logger } from '@/lib/logger';
 import {
   Box,
   Typography,
@@ -149,7 +150,7 @@ export const CreateToken = () => {
   };
 
   const handleSubmit = () => {
-    console.log('Creating token:', { name, description, count, precision, reissuable, script });
+    logger.debug('Creating token:', { name, description, count, precision, reissuable, script });
     // TODO: Implement token creation logic
   };
 
@@ -196,7 +197,12 @@ export const CreateToken = () => {
           {/* Main Content */}
           <Grid container spacing={4}>
             {/* Left Column - Description with Gradient Background */}
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 5,
+              }}
+            >
               <Card
                 sx={{
                   height: '100%',
@@ -220,15 +226,15 @@ export const CreateToken = () => {
                       fontSize: 30,
                     }}
                   >
-                    {steps[activeStep].icon}
+                    {steps[activeStep]!.icon}
                   </Box>
 
                   <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-                    {steps[activeStep].title}
+                    {steps[activeStep]!.title}
                   </Typography>
 
                   <Typography variant="body1" sx={{ mb: 4, opacity: 0.95, lineHeight: 1.7 }}>
-                    {steps[activeStep].description}
+                    {steps[activeStep]!.description}
                   </Typography>
 
                   {/* Progress Indicator */}
@@ -288,7 +294,12 @@ export const CreateToken = () => {
             </Grid>
 
             {/* Right Column - Forms */}
-            <Grid item xs={12} md={7}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 7,
+              }}
+            >
               <Paper
                 elevation={0}
                 sx={{
@@ -807,11 +818,7 @@ export const CreateToken = () => {
                         {/* Fee Breakdown */}
                         <Stack spacing={1.5}>
                           {/* Token Creation Fee */}
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
                             <Stack>
                               <Typography variant="body2" fontWeight={600}>
                                 Token Creation (Issue)
@@ -849,11 +856,7 @@ export const CreateToken = () => {
                           <Divider sx={{ my: 1 }} />
 
                           {/* Total Fee */}
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
                             <Typography variant="body1" fontWeight={700}>
                               Total Cost
                             </Typography>
