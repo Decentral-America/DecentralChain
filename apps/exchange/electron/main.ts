@@ -6,7 +6,7 @@
 
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import { join } from 'path';
+import { join } from 'node:path';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -38,7 +38,7 @@ function getWindowOptions(): Electron.BrowserWindowConstructorOptions {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
-      preload: join(__dirname, 'preload.js'),
+      preload: join(import.meta.dirname, 'preload.js'),
     },
   };
 }
@@ -58,7 +58,7 @@ function createWindow(): void {
     mainWindow.webContents.openDevTools();
   } else {
     // Production mode: Load from built files
-    mainWindow.loadFile(join(__dirname, '../dist/index.html'));
+    mainWindow.loadFile(join(import.meta.dirname, '../dist/index.html'));
   }
 
   // Show window when ready to prevent flash
@@ -137,9 +137,9 @@ if (process.env.NODE_ENV === 'development') {
  * Auto-Updater Configuration
  */
 
-// Configure auto-updater
-autoUpdater.autoDownload = true; // Automatically download updates
-autoUpdater.autoInstallOnAppQuit = true; // Install on quit
+// Configure auto-updater — prompt user before downloading (security best practice)
+autoUpdater.autoDownload = false; // Require user consent before downloading
+autoUpdater.autoInstallOnAppQuit = true; // Install on quit after user-approved download
 
 // Update available
 autoUpdater.on('update-available', (info) => {
@@ -208,7 +208,7 @@ ipcMain.handle('app:check-for-updates', async () => {
 ipcMain.handle('app:install-update', () => {
   autoUpdater.quitAndInstall(
     false, // isSilent
-    true // isForceRunAfter
+    true, // isForceRunAfter
   );
 });
 
@@ -222,8 +222,8 @@ ipcMain.handle(
   'app:get-path',
   (
     event,
-    name: 'home' | 'appData' | 'userData' | 'temp' | 'exe' | 'desktop' | 'documents' | 'downloads'
+    name: 'home' | 'appData' | 'userData' | 'temp' | 'exe' | 'desktop' | 'documents' | 'downloads',
   ) => {
     return app.getPath(name);
-  }
+  },
 );
