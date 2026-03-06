@@ -71,9 +71,9 @@ export const AssetLogo: React.FC<AssetLogoProps> = ({
   // Generate logo URL
   const logoUrl =
     customUrl ||
-    (assetId === 'DCC' || assetId === 'WAVES'
-      ? `https://wavesplatform.com/img/logo-waves.svg`
-      : `https://assets-cdn.trustwallet.com/blockchains/waves/assets/${assetId}.png`);
+    (assetId === 'DCC' || assetId === 'DCC'
+      ? `https://decentralchain.io/img/logo-dcc.svg`
+      : `https://assets-cdn.trustwallet.com/blockchains/dcc/assets/${assetId}.png`);
 
   // Generate fallback text
   const fallback = fallbackText || (assetId ? assetId.slice(0, 2).toUpperCase() : '??');

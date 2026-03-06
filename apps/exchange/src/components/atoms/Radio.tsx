@@ -4,7 +4,7 @@
  * Migrated to Material-UI
  */
 import React from 'react';
-import MuiRadio, { RadioProps as MuiRadioProps } from '@mui/material/Radio';
+import MuiRadio, { type RadioProps as MuiRadioProps } from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -58,7 +58,7 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
         )}
       </RadioContainer>
     );
-  }
+  },
 );
 
 Radio.displayName = 'Radio';

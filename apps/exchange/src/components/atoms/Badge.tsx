@@ -4,7 +4,7 @@
  * Migrated to Material-UI Chip (styled as Badge)
  */
 import React from 'react';
-import MuiChip, { ChipProps as MuiChipProps } from '@mui/material/Chip';
+import MuiChip, { type ChipProps as MuiChipProps } from '@mui/material/Chip';
 import { styled } from '@mui/material/styles';
 
 export interface BadgeProps extends Omit<MuiChipProps, 'variant' | 'size'> {
@@ -18,22 +18,28 @@ type BadgeVariant = BadgeProps['variant'];
 type BadgeSize = BadgeProps['size'];
 
 const StyledBadge = styled(MuiChip, {
-  shouldForwardProp: (prop) => !['dot', 'outline', 'badgeVariant', 'badgeSize'].includes(prop as string),
-})<{ dot?: boolean; outline?: boolean; badgeVariant?: BadgeVariant; badgeSize?: BadgeSize }>(
-  ({ theme, badgeVariant, badgeSize, dot, outline }) => {
-    const colorMap = {
-      primary: theme.palette.primary.main,
-      secondary: theme.palette.secondary.main,
-      success: theme.palette.success.main,
-      error: theme.palette.error.main,
-      warning: theme.palette.warning.main,
-      info: theme.palette.info.main,
-    };
+  shouldForwardProp: (prop) =>
+    !['dot', 'outline', 'badgeVariant', 'badgeSize'].includes(prop as string),
+})<{ dot?: boolean; outline?: boolean; badgeVariant?: BadgeVariant; badgeSize?: BadgeSize }>(({
+  theme,
+  badgeVariant,
+  badgeSize,
+  dot,
+  outline,
+}) => {
+  const colorMap = {
+    primary: theme.palette.primary.main,
+    secondary: theme.palette.secondary.main,
+    success: theme.palette.success.main,
+    error: theme.palette.error.main,
+    warning: theme.palette.warning.main,
+    info: theme.palette.info.main,
+  };
 
-    const color = colorMap[badgeVariant || 'primary'];
+  const color = colorMap[badgeVariant || 'primary'];
 
   return {
-    borderRadius: theme.shape.borderRadius * 4,
+    borderRadius: Number(theme.shape.borderRadius) * 4,
     fontWeight: theme.typography.fontWeightMedium,
     lineHeight: 1,
     height: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 28 : 22,
@@ -77,7 +83,7 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
         badgeSize={size}
       />
     );
-  }
+  },
 );
 
 Badge.displayName = 'Badge';

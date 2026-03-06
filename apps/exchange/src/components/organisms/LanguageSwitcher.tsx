@@ -52,7 +52,7 @@ const SelectedLanguage = styled.button<{ $isOpen: boolean }>`
 /**
  * Globe icon
  */
-const GlobeIcon = styled(FiGlobe)`
+const GlobeIcon = styled(FiGlobe as any)`
   font-size: ${(p) => p.theme.fontSizes.md};
   color: ${(p) => p.theme.colors.primary};
 `;
@@ -60,7 +60,7 @@ const GlobeIcon = styled(FiGlobe)`
 /**
  * Chevron icon
  */
-const ChevronIcon = styled(FiChevronDown)`
+const ChevronIcon = styled(FiChevronDown as any)`
   font-size: ${(p) => p.theme.fontSizes.md};
   color: ${(p) => p.theme.colors.text};
   opacity: 0.6;

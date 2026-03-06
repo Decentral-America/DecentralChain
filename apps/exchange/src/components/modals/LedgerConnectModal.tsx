@@ -16,7 +16,7 @@ const STEPS = [
     duration: 3000,
   },
   {
-    text: 'Open the Waves application',
+    text: 'Open the DCC application',
     duration: 3000,
   },
 ];
@@ -32,7 +32,7 @@ const LedgerConnectModal: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const step = STEPS[currentStep];
+  const step = STEPS[currentStep]!;
 
   return (
     <Overlay>

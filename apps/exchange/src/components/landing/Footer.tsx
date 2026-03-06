@@ -36,7 +36,12 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Brand */}
-          <Grid item xs={12} md={4}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4,
+            }}
+          >
             <Box
               component="img"
               src="/assets/decentralexchange.svg"
@@ -48,13 +53,21 @@ export default function Footer() {
               }}
             />
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
-              Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and manage your DCC tokens securely.
+              Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and
+              manage your DCC tokens securely.
             </Typography>
           </Grid>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
-            <Grid item xs={6} sm={3} md={2} key={title}>
+            <Grid
+              key={title}
+              size={{
+                xs: 6,
+                sm: 3,
+                md: 2,
+              }}
+            >
               <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>
                 {title}
               </Typography>

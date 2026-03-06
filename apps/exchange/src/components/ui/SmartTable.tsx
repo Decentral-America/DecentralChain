@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Box, TextField, Select, MenuItem, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Table, Column } from './Table';
+import { Table, type Column } from './Table';
 
 // Styled Components
 const SmartTableContainer = styled(Box)({
@@ -101,7 +101,7 @@ export const SmartTable = <T extends Record<string, any>>({
 
     const lowerFilter = filterText.toLowerCase();
     return data.filter((row) =>
-      Object.values(row).some((value) => String(value).toLowerCase().includes(lowerFilter))
+      Object.values(row).some((value) => String(value).toLowerCase().includes(lowerFilter)),
     );
   }, [data, filterText, enableFiltering]);
 
@@ -114,9 +114,9 @@ export const SmartTable = <T extends Record<string, any>>({
       const bVal = b[sortKey];
 
       // Handle null/undefined
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
+      if (aVal === null && bVal === null) return 0;
+      if (aVal === null) return 1;
+      if (bVal === null) return -1;
 
       // Handle numbers
       if (typeof aVal === 'number' && typeof bVal === 'number') {
@@ -153,7 +153,7 @@ export const SmartTable = <T extends Record<string, any>>({
     (newPage: number) => {
       setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
     },
-    [totalPages]
+    [totalPages],
   );
 
   const handlePageSizeChange = useCallback((newSize: number) => {
@@ -271,7 +271,7 @@ export const SmartTable = <T extends Record<string, any>>({
               <Typography key={`ellipsis-${index}`} variant="body2" sx={{ px: 0.5 }}>
                 {page}
               </Typography>
-            )
+            ),
           )}
 
           <PageButton onClick={() => handlePageChange(currentPage + 1)} disabled={!hasNextPage}>
@@ -285,19 +285,19 @@ export const SmartTable = <T extends Record<string, any>>({
 
 // Convenience exports with preset configurations
 export const SmartTableSmall = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'pageSize'>
+  props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={10} />;
 
 export const SmartTableLarge = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'pageSize'>
+  props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={50} />;
 
 export const SmartTableNoFilters = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'enableFiltering'>
+  props: Omit<SmartTableProps<T>, 'enableFiltering'>,
 ) => <SmartTable {...props} enableFiltering={false} />;
 
 export const SmartTableNoPagination = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'enablePagination'>
+  props: Omit<SmartTableProps<T>, 'enablePagination'>,
 ) => <SmartTable {...props} enablePagination={false} />;
 
 export default SmartTable;

@@ -102,7 +102,7 @@ const DialogMessage = styled.p`
   line-height: 1.5;
 `;
 
-const DialogActions = styled(HStack)`
+const DialogActions = styled(HStack as any)`
   justify-content: flex-end;
   margin-top: ${(p) => p.theme.spacing.md};
 `;
@@ -212,7 +212,7 @@ export function useConfirmDialog() {
         };
       });
     },
-    []
+    [],
   );
 
   const close = React.useCallback(() => {
@@ -239,7 +239,7 @@ export function useConfirmDialog() {
         cancelText={state.cancelText}
       />
     ),
-    [state, close, handleConfirm]
+    [state, close, handleConfirm],
   );
 
   return {

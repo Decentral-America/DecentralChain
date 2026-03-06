@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { BigNumber } from 'bignumber.js';
+import { logger } from '@/lib/logger';
 
 /**
  * BalanceInput Component
@@ -145,7 +146,7 @@ export interface BalanceInputProps {
   /** Disabled state */
   disabled?: boolean;
 
-  /** Asset symbol for display (e.g., "DCC", "WAVES") */
+  /** Asset symbol for display (e.g., "DCC", "DCC") */
   assetSymbol?: string;
 
   /** Minimum value validation */
@@ -212,7 +213,7 @@ export const BalanceInput: React.FC<BalanceInputProps> = ({
 
       return result.toFixed(decimals);
     } catch (err) {
-      console.error('Error calculating max balance:', err);
+      logger.error('Error calculating max balance:', err);
       return null;
     }
   }, [maxBalance, fee, decimals]);
@@ -252,12 +253,12 @@ export const BalanceInput: React.FC<BalanceInputProps> = ({
 
         setInternalError(undefined);
         return true;
-      } catch (err) {
+      } catch {
         setInternalError('Invalid number format');
         return false;
       }
     },
-    [min, realMaxBalance]
+    [min, realMaxBalance],
   );
 
   // Handle input change
@@ -289,7 +290,7 @@ export const BalanceInput: React.FC<BalanceInputProps> = ({
       // Validate after a short delay (to avoid showing errors while typing)
       setTimeout(() => validateInput(input), 300);
     },
-    [onChange, decimals, validateInput]
+    [onChange, decimals, validateInput],
   );
 
   // Handle MAX button click

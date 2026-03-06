@@ -13,7 +13,7 @@ const BreadcrumbNav = styled.nav`
   font-size: 0.875rem;
 `;
 
-const BreadcrumbLink = styled(Link)`
+const BreadcrumbLink = styled(Link as any)`
   color: ${(props) => props.theme.colors.text};
   text-decoration: none;
   text-transform: capitalize;

@@ -206,7 +206,7 @@ export function useAlertModal() {
         (options as any).resolvePromise = resolve;
       });
     },
-    []
+    [],
   );
 
   const close = React.useCallback(() => {
@@ -225,7 +225,7 @@ export function useAlertModal() {
         buttonText={state.buttonText}
       />
     ),
-    [state, close]
+    [state, close],
   );
 
   // Convenience methods for different alert types
@@ -233,28 +233,28 @@ export function useAlertModal() {
     (title: string, message: string) => {
       return alert({ title, message, type: 'success' });
     },
-    [alert]
+    [alert],
   );
 
   const error = React.useCallback(
     (title: string, message: string) => {
       return alert({ title, message, type: 'error' });
     },
-    [alert]
+    [alert],
   );
 
   const warning = React.useCallback(
     (title: string, message: string) => {
       return alert({ title, message, type: 'warning' });
     },
-    [alert]
+    [alert],
   );
 
   const info = React.useCallback(
     (title: string, message: string) => {
       return alert({ title, message, type: 'info' });
     },
-    [alert]
+    [alert],
   );
 
   return {

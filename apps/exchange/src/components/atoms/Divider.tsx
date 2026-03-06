@@ -63,7 +63,7 @@ const DividerLabel = styled.span`
 export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
   (
     { orientation = 'horizontal', spacing, thickness = '1px', variant = 'solid', label, ...props },
-    ref
+    ref,
   ) => {
     if (label) {
       return (
@@ -75,7 +75,7 @@ export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
             thickness={thickness}
             variant={variant}
             hasLabel={true}
-            {...props}
+            {...(props as any)}
           />
           <DividerLabel>{label}</DividerLabel>
           <DividerLine
@@ -97,10 +97,10 @@ export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
         thickness={thickness}
         variant={variant}
         hasLabel={false}
-        {...props}
+        {...(props as any)}
       />
     );
-  }
+  },
 );
 
 Divider.displayName = 'Divider';

@@ -26,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { logger } from '@/lib/logger';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -84,7 +85,7 @@ export const Header = () => {
         await navigator.clipboard.writeText(user.address);
         handleMenuClose();
       } catch (err) {
-        console.error('Failed to copy address:', err);
+        logger.error('Failed to copy address:', err);
       }
     }
   };
@@ -162,7 +163,11 @@ export const Header = () => {
                   <Typography variant="caption" color="text.secondary">
                     Your Address
                   </Typography>
-                  <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
+                  <Typography
+                    variant="body2"
+                    fontFamily="monospace"
+                    sx={{ wordBreak: 'break-all' }}
+                  >
                     {user.address}
                   </Typography>
                 </Box>

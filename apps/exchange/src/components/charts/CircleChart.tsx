@@ -203,21 +203,21 @@ export const CircleChart: React.FC<CircleChartProps> = ({
  * Small size preset
  */
 export const CircleChartSmall: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={60} strokeWidth={6} />;
 
 /**
  * Medium size preset (default)
  */
 export const CircleChartMedium: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={100} strokeWidth={8} />;
 
 /**
  * Large size preset
  */
 export const CircleChartLarge: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={160} strokeWidth={12} />;
 
 /**

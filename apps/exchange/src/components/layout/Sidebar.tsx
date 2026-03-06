@@ -102,7 +102,7 @@ interface NavItemProps {
 const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
   <ListItem disablePadding sx={{ mb: 0.5 }}>
     <ListItemButton
-      component={NavLink}
+      component={NavLink as any}
       to={to}
       sx={{
         height: 48,

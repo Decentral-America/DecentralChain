@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ReactNode } from 'react';
+import React, { useState, useCallback, type ReactNode } from 'react';
 import styled from 'styled-components';
 
 /**
@@ -188,7 +188,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
       onChange?.(index);
     },
-    [isControlled, onChange, tabs]
+    [isControlled, onChange, tabs],
   );
 
   // Keyboard navigation
@@ -253,7 +253,7 @@ export const Tabs: React.FC<TabsProps> = ({
         handleTabChange(nextIndex);
       }
     },
-    [keyboardNavigation, tabs, handleTabChange]
+    [keyboardNavigation, tabs, handleTabChange],
   );
 
   return (

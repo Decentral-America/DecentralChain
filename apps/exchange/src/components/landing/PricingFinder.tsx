@@ -8,7 +8,12 @@ export default function PricingFinder() {
     <Box component="section" sx={{ py: { xs: 10, md: 12 }, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Typography
               variant="overline"
               sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: 0.12 }}
@@ -22,16 +27,21 @@ export default function PricingFinder() {
               Our smart routing algorithm automatically finds the best prices across multiple
               liquidity pools to get you the optimal rate for every swap.
             </Typography>
-            <Button 
-              variant="contained" 
-              size="large" 
+            <Button
+              variant="contained"
+              size="large"
               sx={{ borderRadius: 999, px: 3 }}
               onClick={() => navigate('/desktop/dex')}
             >
               Start Swapping
             </Button>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
             <Box
               sx={{
                 maxWidth: 340,

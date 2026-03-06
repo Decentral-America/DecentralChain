@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useKeyboardShortcuts, useHotkey } from '@/hooks';
 import { useAuth } from '@/contexts';
@@ -113,7 +114,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       'ctrl+f': () => {
         // Focus search input if exists
         const searchInput = document.querySelector<HTMLInputElement>(
-          'input[type="search"], input[placeholder*="Search"]'
+          'input[type="search"], input[placeholder*="Search"]',
         );
         if (searchInput) {
           searchInput.focus();
@@ -126,7 +127,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       enabled: isEnabled,
       allowInInputs: false,
       preventDefault: true,
-    }
+    },
   );
 
   // Escape key to close modals/dropdowns
@@ -159,7 +160,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       enabled: isEnabled,
       allowInInputs: false,
       preventDefault: false, // Allow escape to work in inputs too
-    }
+    },
   );
 
   // Show keyboard shortcuts help modal
@@ -167,7 +168,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
     if (!helpModalOpen) return;
 
     // Log keyboard shortcuts (in production, show modal)
-    console.log(`
+    logger.debug(`
 🎹 Keyboard Shortcuts:
 
 Navigation:

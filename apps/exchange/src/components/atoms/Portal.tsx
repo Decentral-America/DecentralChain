@@ -3,7 +3,7 @@
  * Renders children into a DOM node outside the parent component hierarchy
  * Used for modals, tooltips, and other overlays
  */
-import { useEffect, useState, ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface PortalProps {

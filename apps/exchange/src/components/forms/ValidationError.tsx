@@ -136,7 +136,7 @@ export const ValidationError = React.forwardRef<HTMLDivElement, ValidationErrorP
       className,
       testId = 'validation-error',
     },
-    ref
+    ref,
   ) => {
     // Determine which errors to display
     const errorMessages = React.useMemo(() => {
@@ -180,7 +180,7 @@ export const ValidationError = React.forwardRef<HTMLDivElement, ValidationErrorP
         </ErrorList>
       </ErrorWrapper>
     );
-  }
+  },
 );
 
 ValidationError.displayName = 'ValidationError';

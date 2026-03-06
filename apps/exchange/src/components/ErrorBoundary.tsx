@@ -1,4 +1,5 @@
-import { Component, ReactNode, ErrorInfo } from 'react';
+import { Component, type ReactNode, type ErrorInfo } from 'react';
+import { logger } from '@/lib/logger';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -144,9 +145,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Error caught by ErrorBoundary:', error);
-    console.error('Error Info:', errorInfo);
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    logger.error('Error caught by ErrorBoundary:', error);
+    logger.error('Error Info:', errorInfo);
 
     this.setState({
       error,
@@ -169,7 +170,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     window.location.reload();
   };
 
-  render(): ReactNode {
+  override render(): ReactNode {
     if (this.state.hasError && this.state.error) {
       // If custom fallback provided, use it
       if (this.props.fallback) {
@@ -183,8 +184,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <div style={errorIconStyle}>⚠️</div>
             <h1 style={errorTitleStyle}>Oops! Something went wrong</h1>
             <p style={errorMessageStyle}>
-              We're sorry, but something unexpected happened. The error has been logged and we'll
-              look into it.
+              We&apos;re sorry, but something unexpected happened. The error has been logged and
+              we&apos;ll look into it.
             </p>
 
             {this.state.error && (

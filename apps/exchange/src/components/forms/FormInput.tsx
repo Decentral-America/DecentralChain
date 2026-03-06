@@ -4,11 +4,13 @@
  * Provides automatic field registration, validation, and error display
  */
 import React from 'react';
-import { useFormContext, FieldValues, Path, RegisterOptions } from 'react-hook-form';
-import { Input, InputProps } from '@/components/atoms/Input';
+import { useFormContext, type FieldValues, type Path, type RegisterOptions } from 'react-hook-form';
+import { Input, type InputProps } from '@/components/atoms/Input';
 
-export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<InputProps, 'name' | 'error'> {
+export interface FormInputProps<TFieldValues extends FieldValues = FieldValues> extends Omit<
+  InputProps,
+  'name' | 'error'
+> {
   /**
    * Field name (must match schema key)
    */
@@ -121,7 +123,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       // Call custom onChange if provided
       onChange?.(e);
     },
-    [registerOnChange, onChange, transform]
+    [registerOnChange, onChange, transform],
   );
 
   const handleBlur = React.useCallback(
@@ -151,7 +153,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       // Call custom onBlur if provided
       onBlur?.(e);
     },
-    [name, registerOnBlur, onBlur, trimOnBlur, validateOnBlur, transform, setValue, trigger]
+    [name, registerOnBlur, onBlur, trimOnBlur, validateOnBlur, transform, setValue, trigger],
   );
 
   return (
@@ -172,7 +174,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
  * FormInput for numeric values (amount, price, etc.)
  */
 export function FormNumberInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'type' | 'transform'>
+  props: Omit<FormInputProps<TFieldValues>, 'type' | 'transform'>,
 ) {
   return (
     <FormInput<TFieldValues>
@@ -199,7 +201,7 @@ export function FormNumberInput<TFieldValues extends FieldValues = FieldValues>(
  * FormInput for email addresses (with automatic trimming and lowercase)
  */
 export function FormEmailInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'type' | 'transform' | 'trimOnBlur'>
+  props: Omit<FormInputProps<TFieldValues>, 'type' | 'transform' | 'trimOnBlur'>,
 ) {
   return (
     <FormInput<TFieldValues>
@@ -218,7 +220,7 @@ export function FormEmailInput<TFieldValues extends FieldValues = FieldValues>(
  * FormInput for passwords (with security enhancements)
  */
 export function FormPasswordInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'type' | 'autoComplete'>
+  props: Omit<FormInputProps<TFieldValues>, 'type' | 'autoComplete'>,
 ) {
   return (
     <FormInput<TFieldValues>
@@ -231,10 +233,10 @@ export function FormPasswordInput<TFieldValues extends FieldValues = FieldValues
 }
 
 /**
- * FormInput for Waves addresses (with automatic trimming and validation)
+ * FormInput for DCC addresses (with automatic trimming and validation)
  */
 export function FormAddressInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'trimOnBlur' | 'placeholder'>
+  props: Omit<FormInputProps<TFieldValues>, 'trimOnBlur' | 'placeholder'>,
 ) {
   return (
     <FormInput<TFieldValues> {...props} trimOnBlur={true} placeholder="3P..." maxLength={35} />
@@ -242,10 +244,10 @@ export function FormAddressInput<TFieldValues extends FieldValues = FieldValues>
 }
 
 /**
- * FormInput for Waves aliases (with automatic trimming and validation)
+ * FormInput for DCC aliases (with automatic trimming and validation)
  */
 export function FormAliasInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'trimOnBlur' | 'placeholder'>
+  props: Omit<FormInputProps<TFieldValues>, 'trimOnBlur' | 'placeholder'>,
 ) {
   return (
     <FormInput<TFieldValues>
@@ -261,7 +263,7 @@ export function FormAliasInput<TFieldValues extends FieldValues = FieldValues>(
  * FormInput for seed phrases (with security and trimming)
  */
 export function FormSeedInput<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormInputProps<TFieldValues>, 'type' | 'autoComplete' | 'trimOnBlur'>
+  props: Omit<FormInputProps<TFieldValues>, 'type' | 'autoComplete' | 'trimOnBlur'>,
 ) {
   return (
     <FormInput<TFieldValues>

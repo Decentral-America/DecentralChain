@@ -42,9 +42,9 @@ const StyledTab = styled(MuiTab, {
   minHeight: tabVariant === 'pills' ? 40 : 48,
   borderRadius:
     tabVariant === 'pills'
-      ? theme.shape.borderRadius * 4
+      ? Number(theme.shape.borderRadius) * 4
       : tabVariant === 'default'
-        ? theme.shape.borderRadius
+        ? Number(theme.shape.borderRadius)
         : 0,
   fontSize: '0.875rem',
   fontWeight: 500,

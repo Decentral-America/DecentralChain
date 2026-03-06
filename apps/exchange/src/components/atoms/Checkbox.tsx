@@ -5,7 +5,7 @@
  * Migrated to Material-UI
  */
 import React from 'react';
-import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@mui/material/Checkbox';
+import MuiCheckbox, { type CheckboxProps as MuiCheckboxProps } from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import { styled } from '@mui/material/styles';
@@ -60,7 +60,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         )}
       </CheckboxContainer>
     );
-  }
+  },
 );
 
 Checkbox.displayName = 'Checkbox';

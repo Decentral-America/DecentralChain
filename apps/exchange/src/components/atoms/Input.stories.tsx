@@ -102,35 +102,37 @@ export const PasswordInput: Story = {
   },
 };
 
+const InteractiveInput = () => {
+  const [value, setValue] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+
+    if (newValue.length > 0 && newValue.length < 3) {
+      setError('Must be at least 3 characters');
+    } else {
+      setError('');
+    }
+  };
+
+  return (
+    <div style={{ width: '300px' }}>
+      <Input
+        label="Username"
+        value={value}
+        onChange={handleChange}
+        error={error}
+        placeholder="Enter username (min 3 chars)"
+      />
+      <p style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>Length: {value.length}</p>
+    </div>
+  );
+};
+
 export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    const [error, setError] = useState('');
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      setValue(newValue);
-
-      if (newValue.length > 0 && newValue.length < 3) {
-        setError('Must be at least 3 characters');
-      } else {
-        setError('');
-      }
-    };
-
-    return (
-      <div style={{ width: '300px' }}>
-        <Input
-          label="Username"
-          value={value}
-          onChange={handleChange}
-          error={error}
-          placeholder="Enter username (min 3 chars)"
-        />
-        <p style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>Length: {value.length}</p>
-      </div>
-    );
-  },
+  render: () => <InteractiveInput />,
   parameters: {
     docs: {
       description: {
