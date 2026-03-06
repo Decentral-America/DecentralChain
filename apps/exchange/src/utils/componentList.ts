@@ -4,13 +4,14 @@
  */
 
 import {
-  ComponentType,
+  type ComponentType,
   lazy,
-  LazyExoticComponent,
-  ReactNode,
+  type LazyExoticComponent,
+  type ReactNode,
   Suspense,
   createElement,
 } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Component metadata
@@ -150,7 +151,7 @@ class ComponentListManager {
    */
   register<P = any>(
     metadata: ComponentMetadata,
-    component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>
+    component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   ): void {
     const entry: ComponentEntry<P> = {
       metadata,
@@ -180,7 +181,7 @@ class ComponentListManager {
     // Emit event
     this.emit('add', entry);
 
-    console.log(`Component registered: ${metadata.id} (${metadata.name})`);
+    logger.debug(`Component registered: ${metadata.id} (${metadata.name})`);
   }
 
   /**
@@ -191,7 +192,7 @@ class ComponentListManager {
   unregister(id: string): boolean {
     const entry = this.components.get(id);
     if (!entry) {
-      console.warn(`Component not found: ${id}`);
+      logger.warn(`Component not found: ${id}`);
       return false;
     }
 
@@ -223,7 +224,7 @@ class ComponentListManager {
     // Emit event
     this.emit('remove', entry);
 
-    console.log(`Component unregistered: ${id}`);
+    logger.debug(`Component unregistered: ${id}`);
     return true;
   }
 
@@ -242,7 +243,7 @@ class ComponentListManager {
    * @returns Component reference or null
    */
   getComponent<P = any>(
-    id: string
+    id: string,
   ): ComponentType<P> | LazyExoticComponent<ComponentType<P>> | null {
     const entry = this.components.get(id);
     return entry ? entry.component : null;
@@ -353,7 +354,7 @@ class ComponentListManager {
     this.components.clear();
     this.categories.clear();
     this.tags.clear();
-    console.log('All components cleared');
+    logger.debug('All components cleared');
   }
 
   /**
@@ -398,7 +399,7 @@ class ComponentListManager {
         try {
           handler(entry);
         } catch (error) {
-          console.error(`Error in ${event} handler:`, error);
+          logger.error(`Error in ${event} handler:`, error);
         }
       });
     }
@@ -447,7 +448,7 @@ class ComponentListManager {
  */
 export const createLazyComponent = <P = any>(
   importer: () => Promise<{ default: ComponentType<P> }>,
-  fallback?: ReactNode
+  _fallback?: ReactNode,
 ): LazyExoticComponent<ComponentType<P>> => {
   return lazy(importer);
 };
@@ -462,12 +463,12 @@ export const createLazyComponent = <P = any>(
 export const renderWithSuspense = <P = any>(
   Component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   props: P,
-  fallback?: ReactNode
+  fallback?: ReactNode,
 ): ReactNode => {
   return createElement(
     Suspense,
     { fallback: fallback || createElement('div', null, 'Loading...') },
-    createElement(Component as ComponentType<any>, props)
+    createElement(Component as ComponentType<any>, props),
   );
 };
 

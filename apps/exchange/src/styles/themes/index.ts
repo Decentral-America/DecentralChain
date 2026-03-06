@@ -2,7 +2,7 @@
  * Theme definitions for light and dark modes
  * Full theme properties will be defined in Phase 4
  */
-import { DefaultTheme } from 'styled-components';
+import { type DefaultTheme } from 'styled-components';
 
 export const lightTheme: DefaultTheme = {
   colors: {

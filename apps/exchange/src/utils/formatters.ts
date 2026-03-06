@@ -2,7 +2,7 @@
 
 /**
  * Custom JSON stringifier that handles BigNumber and other special types
- * This replicates the Angular WavesApp.stringifyJSON functionality
+ * This replicates the Angular DCCApp.stringifyJSON functionality
  */
 export const stringifyJSON = (data: any, replacer?: any, space?: string | number): string => {
   return JSON.stringify(
@@ -18,7 +18,7 @@ export const stringifyJSON = (data: any, replacer?: any, space?: string | number
       }
       return value;
     },
-    space
+    space,
   );
 };
 

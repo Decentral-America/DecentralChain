@@ -2,7 +2,7 @@
  * Responsive Design Utilities
  * Media query helpers and responsive patterns for styled-components
  */
-import { css, RuleSet } from 'styled-components';
+import { css, type RuleSet } from 'styled-components';
 
 /**
  * Media query breakpoint helpers
