@@ -3,7 +3,7 @@
  * Manages light/dark theme switching and persistence
  * Replaces Angular Themes service
  */
-import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme, darkTheme } from '@/styles/themes';
