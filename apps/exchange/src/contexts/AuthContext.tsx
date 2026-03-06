@@ -8,12 +8,13 @@
  * Uses correct storage keys (multiAccountData, multiAccountHash, multiAccountUsers)
  * Integrates with data-service (ds.app.login)
  */
-import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { User, AuthContextType } from '@/types/auth';
 import { multiAccount } from '@/services/multiAccount';
 import { useScriptInfoPolling } from '@/hooks/useScriptInfoPolling';
 import { useIdleTimer } from '@/hooks/useIdleTimer';
 import { trackEvent } from '@/lib/analytics';
+import { logger } from '@/lib/logger';
 import { isValidAddress } from '@decentralchain/signature-adapter';
 import tokenFilterService from '@/services/tokenFilters';
 import { NetworkConfig } from '@/config';
@@ -33,7 +34,7 @@ const STORAGE_KEYS = {
   MULTI_ACCOUNT_SETTINGS: 'multiAccountSettings',
 } as const;
 
-const DEFAULT_ROUNDS = 5000; // PBKDF2 rounds
+const DEFAULT_ROUNDS = 600000; // PBKDF2 rounds — OWASP 2024 recommendation for SHA-256
 
 // Session storage key for persisting active session
 const SESSION_STORAGE_KEY = 'activeSession';
@@ -66,11 +67,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (user?.settings?.theme) {
         // Apply user's saved theme
         document.documentElement.setAttribute('data-theme', user.settings.theme);
-        console.log('[Auth] Applied user theme:', user.settings.theme);
+        logger.debug('[Auth] Applied user theme:', user.settings.theme);
       } else if (user) {
         // New user - apply default theme
         document.documentElement.setAttribute('data-theme', 'default');
-        console.log('[Auth] Applied default theme for new user');
+        logger.debug('[Auth] Applied default theme for new user');
       }
       // If no user (logged out), don't change theme
     };
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         users[user.hash].settings = user.settings;
         users[user.hash].lastLogin = Date.now();
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
-        console.log('[Auth] Settings auto-saved for', user.name || user.address);
+        logger.debug('[Auth] Settings auto-saved for', user.name || user.address);
       }
     }, 500); // 500ms debounce
 
@@ -109,7 +110,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       timestamp: Date.now(),
     };
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionData));
-    console.log('[Auth] Session saved for user:', userHash);
+    logger.debug('[Auth] Session saved for user:', userHash);
   }, []);
 
   /**
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    */
   const clearSession = useCallback(() => {
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
-    console.log('[Auth] Session cleared');
+    logger.debug('[Auth] Session cleared');
   }, []);
 
   /**
@@ -128,9 +129,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     window.dispatchEvent(
       new CustomEvent('auth:login', {
         detail: { user },
-      })
+      }),
     );
-    console.log('[Auth] Login event dispatched for', user.name || user.address);
+    logger.debug('[Auth] Login event dispatched for', user.name || user.address);
   }, []);
 
   /**
@@ -139,7 +140,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    */
   const dispatchLogoutEvent = useCallback(() => {
     window.dispatchEvent(new CustomEvent('auth:logout'));
-    console.log('[Auth] Logout event dispatched');
+    logger.debug('[Auth] Logout event dispatched');
   }, []);
 
   /**
@@ -159,10 +160,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const session: SessionData = JSON.parse(sessionStr);
 
-        // Check if session is recent (within 24 hours)
-        const isRecent = Date.now() - session.timestamp < 24 * 60 * 60 * 1000;
+        // SECURITY: Hard session expiration — 4 hours max for financial applications
+        // The idle timer (15 min) provides soft lockout; this is the hard ceiling
+        const MAX_SESSION_MS = 4 * 60 * 60 * 1000; // 4 hours
+        const isRecent = Date.now() - session.timestamp < MAX_SESSION_MS;
         if (!isRecent) {
-          console.log('[Auth] Session expired');
+          logger.debug('[Auth] Session expired');
           clearSession();
           setSessionRestored(true);
           return;
@@ -171,7 +174,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // CRITICAL: Check if multiAccount is still in memory
         // On page reload, memory is cleared and this will be false
         if (!multiAccount.isSignedIn) {
-          console.log('[Auth] MultiAccount not signed in - page was reloaded, password required');
+          logger.debug('[Auth] MultiAccount not signed in - page was reloaded, password required');
           clearSession();
           setSessionRestored(true);
           return;
@@ -179,20 +182,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         // Try to access encrypted data to verify we can decrypt
         const multiAccountUsers = JSON.parse(
-          localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}'
+          localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}',
         );
 
         let allUsers;
         try {
           allUsers = multiAccount.toList(multiAccountUsers);
           if (!allUsers || allUsers.length === 0) {
-            console.log('[Auth] Cannot decrypt user data - password required');
+            logger.debug('[Auth] Cannot decrypt user data - password required');
             clearSession();
             setSessionRestored(true);
             return;
           }
         } catch (error) {
-          console.log('[Auth] Failed to decrypt user data:', error);
+          logger.debug('[Auth] Failed to decrypt user data:', error);
           clearSession();
           setSessionRestored(true);
           return;
@@ -200,7 +203,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const sessionUser = allUsers.find((u) => u.hash === session.userHash);
 
         if (!sessionUser) {
-          console.log('[Auth] Session user not found');
+          logger.debug('[Auth] Session user not found');
           clearSession();
           setSessionRestored(true);
           return;
@@ -213,12 +216,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAccounts(allUsers);
         setIsSignedIn(true);
 
-        console.log('[Auth] Session restored for', sessionUser.name || sessionUser.address, {
-          hasSeed: !!sessionUser.seed,
-          address: sessionUser.address,
-        });
-      } catch (error) {
-        console.error('[Auth] Session restore failed:', error);
+        logger.debug('[Auth] Session restored for user');
+      } catch {
+        logger.error('[Auth] Session restore failed');
         clearSession();
       } finally {
         setSessionRestored(true);
@@ -236,7 +236,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const loadAccounts = async () => {
       try {
         const multiAccountUsers = JSON.parse(
-          localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}'
+          localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}',
         );
 
         // Get account list (without sensitive data - need password for that)
@@ -252,7 +252,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         setAccounts(accountList);
       } catch (error) {
-        console.error('Failed to load accounts:', error);
+        logger.error('Failed to load accounts:', error);
       }
     };
 
@@ -276,7 +276,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Generate signature using data-service
       const signature = await ds.app.getSignIdForMatcher(timestamp);
 
-      console.log('[Auth] Matcher signature generated:', {
+      logger.debug('[Auth] Matcher signature generated:', {
         timestamp,
         signatureLength: signature?.length,
       });
@@ -286,7 +286,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signature,
       };
     } catch (error) {
-      console.error('[Auth] Matcher signature generation failed:', error);
+      logger.error('[Auth] Matcher signature generation failed:', error);
       // Return empty signature (will need to regenerate later)
       return {
         timestamp: 0,
@@ -311,12 +311,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const isExpired = matcherSign.timestamp <= now;
 
       if (isExpired) {
-        console.log('[Auth] Matcher signature expired, needs refresh');
+        logger.debug('[Auth] Matcher signature expired, needs refresh');
       }
 
       return isExpired;
     },
-    []
+    [],
   );
 
   /**
@@ -329,14 +329,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const ds = await import('data-service');
         if (ds.app.addMatcherSign) {
           await ds.app.addMatcherSign(timestamp, signature);
-          console.log('[Auth] Matcher signature added to API');
+          logger.debug('[Auth] Matcher signature added to API');
         }
       } catch (error) {
-        console.error('[Auth] Failed to add matcher signature to API:', error);
+        logger.error('[Auth] Failed to add matcher signature to API:', error);
         // Don't throw - signature is stored, API call can be retried
       }
     },
-    []
+    [],
   );
 
   /**
@@ -357,18 +357,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const customValue = userSettings?.[settingPath];
         if (customValue && ds.config.set) {
           ds.config.set(key, customValue);
-          console.log(`[Auth] Synced network.${key} =`, customValue);
+          logger.debug(`[Auth] Synced network.${key} =`, customValue);
         }
       });
 
       // Sync oracle settings
-      const oracleWaves = userSettings?.oracleWaves;
-      if (oracleWaves && ds.config.set) {
-        ds.config.set('oracleWaves', oracleWaves);
-        console.log('[Auth] Synced oracleWaves =', oracleWaves);
+      const oracleDCC = userSettings?.oracleDCC;
+      if (oracleDCC && ds.config.set) {
+        ds.config.set('oracleDCC', oracleDCC);
+        logger.debug('[Auth] Synced oracleDCC =', oracleDCC);
       }
     } catch (error) {
-      console.error('[Auth] Failed to sync network config:', error);
+      logger.error('[Auth] Failed to sync network config:', error);
       // Don't throw - use default network config
     }
   }, []);
@@ -387,7 +387,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       seedPhrase: string,
       password: string,
       name: string = 'Account 1',
-      hasBackup: boolean = false
+      hasBackup: boolean = false,
     ) => {
       setIsLoading(true);
       try {
@@ -476,14 +476,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // 13. Track analytics event
         trackEvent('User', 'Create Success');
       } catch (error) {
-        console.error('Account creation failed:', error);
+        logger.error('Account creation failed:', error);
         setIsSignedIn(false);
         throw error;
       } finally {
         setIsLoading(false);
       }
     },
-    [saveSession, generateMatcherSign, addMatcherSignToAPI, syncNetworkConfig, dispatchLoginEvent]
+    [saveSession, generateMatcherSign, addMatcherSignToAPI, syncNetworkConfig, dispatchLoginEvent],
   );
 
   /**
@@ -534,7 +534,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // 7. Check and refresh matcher signature if needed
         let matcherSign = users[userHash].matcherSign;
         if (shouldRefreshMatcherSign(matcherSign)) {
-          console.log('[Auth] Refreshing expired matcher signature on login');
+          logger.debug('[Auth] Refreshing expired matcher signature on login');
           matcherSign = await generateMatcherSign();
 
           // Add signature to matcher API
@@ -559,7 +559,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
         setAccounts(allUsers);
 
-        console.log('[Auth] User logged in:', {
+        logger.debug('[Auth] User logged in:', {
           address: targetUser.address,
           name: targetUser.name,
           hasSeed: !!targetUser.seed,
@@ -575,7 +575,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // 11. Track analytics event
         trackEvent('User', 'Sign In Success');
       } catch (error) {
-        console.error('Login failed:', error);
+        logger.error('Login failed:', error);
         setIsSignedIn(false);
         throw error;
       } finally {
@@ -589,7 +589,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       addMatcherSignToAPI,
       syncNetworkConfig,
       dispatchLoginEvent,
-    ]
+    ],
   );
 
   /**
@@ -621,7 +621,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       // Note: Don't clear localStorage - accounts remain for next login
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error:', error);
     }
   }, [clearSession, dispatchLogoutEvent]);
 
@@ -650,7 +650,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
       }
     },
-    [user]
+    [user],
   );
 
   /**
@@ -694,7 +694,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Check and refresh matcher signature if needed
         let matcherSign = users[userHash].matcherSign;
         if (shouldRefreshMatcherSign(matcherSign)) {
-          console.log('[Auth] Refreshing expired matcher signature on account switch');
+          logger.debug('[Auth] Refreshing expired matcher signature on account switch');
           matcherSign = await generateMatcherSign();
 
           // Add signature to matcher API
@@ -725,7 +725,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Save session for auto-restore
         saveSession(userHash);
       } catch (error) {
-        console.error('Switch account failed:', error);
+        logger.error('Switch account failed:', error);
         throw error;
       }
     },
@@ -736,7 +736,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       shouldRefreshMatcherSign,
       addMatcherSignToAPI,
       syncNetworkConfig,
-    ]
+    ],
   );
 
   /**
@@ -780,11 +780,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         return allUsers.find((u) => u.hash === userHash);
       } catch (error) {
-        console.error('Add account failed:', error);
+        logger.error('Add account failed:', error);
         throw error;
       }
     },
-    [isSignedIn]
+    [isSignedIn],
   );
 
   /**
@@ -818,18 +818,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           await logout();
         }
       } catch (error) {
-        console.error('Remove account failed:', error);
+        logger.error('Remove account failed:', error);
         throw error;
       }
     },
-    [isSignedIn, user]
+    [isSignedIn, user],
   );
 
   /**
    * Add Ledger Account
    * CRITICAL: Adds Ledger hardware wallet account to multiAccount system
    * Matches Angular: LedgerCtrl.login() and User.create()
-   * 
+   *
    * @param ledgerData - Ledger device data from useLedger
    * @param name - Account name
    * @param networkByte - DecentralChain network byte (from ConfigContext)
@@ -844,7 +844,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         id: string; // Address index
       },
       name: string,
-      networkByte: number
+      networkByte: number,
     ) => {
       if (!isSignedIn) {
         throw new Error('Must be signed in to add Ledger account');
@@ -902,7 +902,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           throw new Error('Failed to create Ledger account');
         }
 
-        console.log('[Auth] Ledger account added:', {
+        logger.debug('[Auth] Ledger account added:', {
           address: createdUser.address,
           name: createdUser.name,
           userType: createdUser.userType,
@@ -911,11 +911,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         return createdUser;
       } catch (error) {
-        console.error('Add Ledger account failed:', error);
+        logger.error('Add Ledger account failed:', error);
         throw error;
       }
     },
-    [isSignedIn]
+    [isSignedIn],
   );
 
   /**
@@ -935,7 +935,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // Check if idle time exceeds threshold
     if (idleMinutes >= logoutThreshold) {
-      console.log('[Auth] Auto-logout triggered after', idleMinutes, 'minutes of inactivity');
+      logger.debug('[Auth] Auto-logout triggered after', idleMinutes, 'minutes of inactivity');
       logout();
     }
   }, [idleMinutes, user, logout]); // Check whenever idle time changes
@@ -958,13 +958,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           settings[`${section}.activeState`] = route;
           users[user.hash].settings = settings;
           localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
-          console.log(`[Auth] Saved last route for ${section}:`, route);
+          logger.debug(`[Auth] Saved last route for ${section}:`, route);
         }
       } catch (error) {
-        console.error('[Auth] Failed to save last route:', error);
+        logger.error('[Auth] Failed to save last route:', error);
       }
     },
-    [user]
+    [user],
   );
 
   /**
@@ -980,7 +980,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const settingKey = `${section}.activeState`;
       return user.settings?.[settingKey] || '';
     },
-    [user]
+    [user],
   );
 
   /**
@@ -1011,9 +1011,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // Return default for section
-      return defaults[section];
+      return defaults[section]!;
     },
-    [user]
+    [user],
   );
 
   /**
@@ -1030,7 +1030,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const list = (user.settings?.[path] as string[]) || [];
       return list.includes(value);
     },
-    [user]
+    [user],
   );
 
   /**
@@ -1078,7 +1078,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       updateUser({ settings: newSettings });
     },
-    [user, updateUser]
+    [user, updateUser],
   );
 
   /**
@@ -1126,7 +1126,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       updateUser({ settings: newSettings });
     },
-    [user, updateUser]
+    [user, updateUser],
   );
 
   /**
@@ -1139,10 +1139,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const validateAddress = useCallback((address: string): boolean => {
     try {
       // DCC network byte is 63 ('?' character)
-      // Waves network byte is 87 ('W' character)
+      // DecentralChain network byte is 63 ('?' character)
       return isValidAddress(address, 63);
     } catch (error) {
-      console.error('[Auth] Address validation error:', error);
+      logger.error('[Auth] Address validation error:', error);
       return false;
     }
   }, []);
@@ -1154,7 +1154,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // Initialize token filters (scam list + verified names)
     tokenFilterService.initialize().catch((error) => {
-      console.error('[Auth] Token filter initialization failed:', error);
+      logger.error('[Auth] Token filter initialization failed:', error);
     });
   }, []); // Initialize once on mount
 
@@ -1185,9 +1185,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const refreshTokenFilters = useCallback(async (): Promise<void> => {
     try {
       await tokenFilterService.refresh();
-      console.log('[Auth] Token filters refreshed');
+      logger.debug('[Auth] Token filters refreshed');
     } catch (error) {
-      console.error('[Auth] Token filter refresh failed:', error);
+      logger.error('[Auth] Token filter refresh failed:', error);
     }
   }, []);
 

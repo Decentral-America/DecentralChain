@@ -125,7 +125,7 @@ export const useDexStore = create<DexState>()(
             userOrders: [...state.userOrders, order],
           }),
           false,
-          'dex/addUserOrder'
+          'dex/addUserOrder',
         ),
 
       removeUserOrder: (orderId) =>
@@ -134,18 +134,18 @@ export const useDexStore = create<DexState>()(
             userOrders: state.userOrders.filter((o) => o.id !== orderId),
           }),
           false,
-          'dex/removeUserOrder'
+          'dex/removeUserOrder',
         ),
 
       updateUserOrder: (orderId, updates) =>
         set(
           (state) => ({
             userOrders: state.userOrders.map((order) =>
-              order.id === orderId ? { ...order, ...updates } : order
+              order.id === orderId ? { ...order, ...updates } : order,
             ),
           }),
           false,
-          'dex/updateUserOrder'
+          'dex/updateUserOrder',
         ),
 
       clearUserOrders: () => set({ userOrders: [] }, false, 'dex/clearUserOrders'),
@@ -157,7 +157,7 @@ export const useDexStore = create<DexState>()(
             marketData: { ...state.marketData, ...data },
           }),
           false,
-          'dex/updateMarketData'
+          'dex/updateMarketData',
         ),
 
       // Loading state actions
@@ -179,11 +179,11 @@ export const useDexStore = create<DexState>()(
             isMarketDataLoading: false,
           },
           false,
-          'dex/reset'
+          'dex/reset',
         ),
     }),
-    { name: 'DEX Store' }
-  )
+    { name: 'DEX Store' },
+  ),
 );
 
 /**

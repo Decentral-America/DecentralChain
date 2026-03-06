@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, type ReactNode, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAnnouncement } from '@/components/a11y';
 
@@ -191,7 +191,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
 
   const showToast = useCallback(
     (message: string, type: ToastType = 'info', duration: number = 5000) => {
-      const id = `toast-${Date.now()}-${Math.random()}`;
+      const id = `toast-${Date.now()}-${crypto.randomUUID()}`;
       const toast: Toast = { id, message, type, duration };
 
       setToasts((prev) => [...prev, toast]);
@@ -208,35 +208,35 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
         }, duration);
       }
     },
-    [removeToast, announce]
+    [removeToast, announce],
   );
 
   const showSuccess = useCallback(
     (message: string, duration?: number) => {
       showToast(message, 'success', duration);
     },
-    [showToast]
+    [showToast],
   );
 
   const showError = useCallback(
     (message: string, duration?: number) => {
       showToast(message, 'error', duration);
     },
-    [showToast]
+    [showToast],
   );
 
   const showInfo = useCallback(
     (message: string, duration?: number) => {
       showToast(message, 'info', duration);
     },
-    [showToast]
+    [showToast],
   );
 
   const showWarning = useCallback(
     (message: string, duration?: number) => {
       showToast(message, 'warning', duration);
     },
-    [showToast]
+    [showToast],
   );
 
   return (

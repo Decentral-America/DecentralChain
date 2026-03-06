@@ -3,7 +3,8 @@
  * Centralized modal state management for app-wide dialogs
  * Provides imperative modal control with type-safe APIs
  */
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Modal state interface
@@ -118,8 +119,8 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
 
         // Check max modals limit
         if (openCount >= maxOpenModals) {
-          console.warn(
-            `Maximum number of modals (${maxOpenModals}) reached. Cannot open modal: ${id}`
+          logger.warn(
+            `Maximum number of modals (${maxOpenModals}) reached. Cannot open modal: ${id}`,
           );
           return prev;
         }
@@ -131,7 +132,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
                 acc[key] = { ...prev[key], open: false };
                 return acc;
               },
-              {} as Record<string, ModalState>
+              {} as Record<string, ModalState>,
             )
           : { ...prev };
 
@@ -152,7 +153,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
         return newModals;
       });
     },
-    [maxOpenModals, onModalCountChange]
+    [maxOpenModals, onModalCountChange],
   );
 
   /**
@@ -188,7 +189,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
         return newModals;
       });
     },
-    [onModalCountChange]
+    [onModalCountChange],
   );
 
   /**
@@ -201,7 +202,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
 
       // Close all and call their onClose callbacks
       Object.keys(prev).forEach((id) => {
-        const modal = prev[id];
+        const modal = prev[id]!;
         if (modal.open && modal.onClose) {
           modal.onClose();
         }
@@ -224,7 +225,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
     (id: string) => {
       return modals[id]?.open ?? false;
     },
-    [modals]
+    [modals],
   );
 
   /**
@@ -234,7 +235,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
     (id: string) => {
       return modals[id];
     },
-    [modals]
+    [modals],
   );
 
   /**
@@ -280,7 +281,7 @@ export const useModal = (): ModalContextType => {
  * Hook to control a specific modal
  */
 export const useModalControl = (
-  modalId: string
+  modalId: string,
 ): {
   isOpen: boolean;
   open: (props?: Record<string, any>, options?: ModalOptions) => void;
@@ -293,7 +294,7 @@ export const useModalControl = (
     isOpen: isModalOpen(modalId),
     open: useCallback(
       (props?: Record<string, any>, options?: ModalOptions) => openModal(modalId, props, options),
-      [openModal, modalId]
+      [openModal, modalId],
     ),
     close: useCallback(() => closeModal(modalId), [closeModal, modalId]),
     state: getModalState(modalId),
@@ -305,7 +306,7 @@ export const useModalControl = (
  */
 export function withModalControl<P extends object>(
   Component: React.ComponentType<P & { modalControl: ReturnType<typeof useModalControl> }>,
-  modalId: string
+  modalId: string,
 ): React.FC<P> {
   const WithModalControl: React.FC<P> = (props: P) => {
     const modalControl = useModalControl(modalId);

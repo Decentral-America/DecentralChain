@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useCallback, useRef, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useRef,
+  useEffect,
+  type ReactNode,
+} from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Event handler function type that can accept any arguments
@@ -133,14 +141,14 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         try {
           handler(...args);
         } catch (error) {
-          console.error(`Error executing handler for event "${event}":`, error);
+          logger.error(`Error executing handler for event "${event}":`, error);
         }
       });
     }
 
     // Development logging
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Event emitted: ${event}`, args);
+      logger.debug(`[EventManager] Event emitted: ${event}`, args);
     }
   }, []);
 
@@ -152,7 +160,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Development logging
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Subscribed to: ${event}`, {
+      logger.debug(`[EventManager] Subscribed to: ${event}`, {
         totalListeners: eventsRef.current.get(event)!.size,
       });
     }
@@ -164,7 +172,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (handlers) {
           handlers.delete(handler);
           if (import.meta.env.DEV) {
-            console.log(`[EventManager] Unsubscribed from: ${event}`);
+            logger.debug(`[EventManager] Unsubscribed from: ${event}`);
           }
         }
       },
@@ -176,7 +184,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (handlers) {
       handlers.delete(handler);
       if (import.meta.env.DEV) {
-        console.log(`[EventManager] Handler removed from: ${event}`);
+        logger.debug(`[EventManager] Handler removed from: ${event}`);
       }
     }
   }, []);
@@ -184,7 +192,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const clearEvent = useCallback((event: string) => {
     eventsRef.current.delete(event);
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Cleared all handlers for: ${event}`);
+      logger.debug(`[EventManager] Cleared all handlers for: ${event}`);
     }
   }, []);
 
@@ -192,7 +200,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const eventCount = eventsRef.current.size;
     eventsRef.current.clear();
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Cleared all events (${eventCount} events)`);
+      logger.debug(`[EventManager] Cleared all events (${eventCount} events)`);
     }
   }, []);
 
@@ -204,7 +212,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Return total count across all events
     return Array.from(eventsRef.current.values()).reduce(
       (total, handlers) => total + handlers.size,
-      0
+      0,
     );
   }, []);
 
@@ -246,13 +254,13 @@ export const useEventManager = (): EventContextValue => {
  * @param deps - Dependency array for handler function
  * @example
  * useEvent('transaction:confirmed', (txId) => {
- *   console.log('Transaction confirmed:', txId);
+ *   logger.debug('Transaction confirmed:', txId);
  * }, []);
  */
 export const useEvent = (
   event: string,
   handler: EventHandler,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ): void => {
   const { subscribe } = useEventManager();
 
@@ -284,13 +292,13 @@ export const useEmit = () => {
  * @param deps - Dependency array for handler function
  * @example
  * useEventOnce('wallet:connected', () => {
- *   console.log('Wallet connected for the first time!');
+ *   logger.debug('Wallet connected for the first time!');
  * }, []);
  */
 export const useEventOnce = (
   event: string,
   handler: EventHandler,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ): void => {
   const { subscribe } = useEventManager();
   const hasCalledRef = useRef(false);
@@ -327,7 +335,7 @@ export const useTypedEmit = <T = any,>() => {
     (event: string, data: T) => {
       emit(event, data);
     },
-    [emit]
+    [emit],
   );
 };
 
