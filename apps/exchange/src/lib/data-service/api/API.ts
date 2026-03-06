@@ -7,14 +7,14 @@ import { assetStorage } from '../utils/AssetStorage';
 import { height } from './node/node';
 import { get as getOrderBook } from './matcher/orderBook';
 import {
-    addSignature,
-    clearSignature,
-    getOrders,
-    getOrdersByPair,
-    signatureTimeout,
-    factory
+  addSignature,
+  clearSignature,
+  getOrders,
+  getOrdersByPair,
+  signatureTimeout,
+  factory,
 } from './matcher/getOrders';
-import * as matchersApi from './matchers/matchers'
+import * as matchersApi from './matchers/matchers';
 import * as addressModule from './address';
 import { getLastPrice } from './matcher/getLastPrice';
 import { getAddressByAlias, getAliasesByAddress, getAliasesByIdList } from './aliases/aliases';
@@ -23,34 +23,46 @@ import * as pairsModule from './pairs/pairs';
 import * as ratingModule from './rating/rating';
 import * as dataModule from './data';
 
-
 export const aliases = { getAliasesByAddress, getAddressByAlias, getAliasesByIdList };
 
 export const node = { height };
 
 export const matcher = {
-    getOrderBook, getOrdersByPair, addSignature, clearSignature, getOrders, signatureTimeout, factory, getLastPrice,
-    getFeeRates, getSettings
+  getOrderBook,
+  getOrdersByPair,
+  addSignature,
+  clearSignature,
+  getOrders,
+  signatureTimeout,
+  factory,
+  getLastPrice,
+  getFeeRates,
+  getSettings,
 };
 
 export const matchers = matchersApi;
 
 export const assets = { ...assetsApi };
 
-export const transactions = { ...transactionsApi, parseTx, parseExchangeOrder, getAssetsHashFromTx };
+export const transactions = {
+  ...transactionsApi,
+  parseTx,
+  parseExchangeOrder,
+  getAssetsHashFromTx,
+};
 
 export const utils = { ...utilsFunctions, request, assetStorage };
 
 export const pairs = {
-    ...pairsModule
+  ...pairsModule,
 };
 
 export const rating = {
-    ...ratingModule
+  ...ratingModule,
 };
 
 export const data = {
-    ...dataModule
+  ...dataModule,
 };
 
 export const address = addressModule;
