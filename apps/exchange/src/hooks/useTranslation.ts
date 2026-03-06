@@ -5,6 +5,7 @@
  */
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
+import { logger } from '@/lib/logger';
 
 /**
  * Translation function parameters
@@ -40,7 +41,7 @@ export const useTranslation = () => {
       await i18n.changeLanguage(lang);
       localStorage.setItem('language', lang);
     } catch (error) {
-      console.error('Failed to change language:', error);
+      logger.error('Failed to change language:', error);
     }
   };
 

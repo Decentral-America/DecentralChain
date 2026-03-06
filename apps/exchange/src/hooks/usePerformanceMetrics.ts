@@ -6,6 +6,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getMemoryUsage } from '@/lib/performanceMonitoring';
+import { logger } from '@/lib/logger';
 
 export interface PerformanceMetrics {
   // Web Vitals
@@ -75,7 +76,7 @@ export function usePerformanceMetrics(
   options: {
     enableMemoryTracking?: boolean;
     refreshInterval?: number;
-  } = {}
+  } = {},
 ) {
   const {
     enableMemoryTracking = true,
@@ -121,13 +122,13 @@ export function usePerformanceMetrics(
     // Get Web Vitals from performance entries
     const webVitalsEntries = performance.getEntriesByType('largest-contentful-paint');
     if (webVitalsEntries.length > 0) {
-      const lcp = webVitalsEntries[webVitalsEntries.length - 1];
+      const lcp = webVitalsEntries[webVitalsEntries.length - 1]!;
       newMetrics.lcp = Math.round(lcp.startTime * 100) / 100;
     }
 
     // Get navigation timing
     const [navigationEntry] = performance.getEntriesByType(
-      'navigation'
+      'navigation',
     ) as PerformanceNavigationTiming[];
     if (navigationEntry) {
       newMetrics.loadTime = Math.round(navigationEntry.loadEventEnd * 100) / 100;
@@ -146,7 +147,7 @@ export function usePerformanceMetrics(
       Math.round(scripts.reduce((sum, r) => sum + r.duration, 0) * 100) / 100;
 
     const stylesheets = resources.filter(
-      (r) => r.initiatorType === 'link' || r.initiatorType === 'css'
+      (r) => r.initiatorType === 'link' || r.initiatorType === 'css',
     );
     newMetrics.stylesheetCount = stylesheets.length;
     newMetrics.stylesheetDuration =
@@ -205,7 +206,7 @@ export function usePerformanceMetrics(
       performance.clearMeasures();
       performance.clearResourceTimings();
     } catch (error) {
-      console.error('[Performance] Failed to clear performance data:', error);
+      logger.error('[Performance] Failed to clear performance data:', error);
     }
   }, []);
 
@@ -245,9 +246,9 @@ export function usePerformanceMetrics(
     });
 
     try {
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-    } catch (error) {
-      console.warn('[Performance] LCP observer not supported');
+      lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch {
+      logger.warn('[Performance] LCP observer not supported');
     }
 
     return () => lcpObserver.disconnect();
@@ -283,7 +284,7 @@ export function usePerformanceMetrics(
 export function getPerformanceSummary(metrics: PerformanceMetrics) {
   const getRating = (
     value: number | null,
-    thresholds: { good: number; needsImprovement: number }
+    thresholds: { good: number; needsImprovement: number },
   ) => {
     if (value === null) return 'unknown';
     if (value <= thresholds.good) return 'good';

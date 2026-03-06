@@ -15,11 +15,11 @@ import type { User } from '@/types/auth';
  * ```tsx
  * useAuthEvents(
  *   (user) => {
- *     console.log('User logged in:', user.name);
+ *     logger.debug('User logged in:', user.name);
  *     startPolling();
  *   },
  *   () => {
- *     console.log('User logged out');
+ *     logger.debug('User logged out');
  *     stopPolling();
  *   }
  * );

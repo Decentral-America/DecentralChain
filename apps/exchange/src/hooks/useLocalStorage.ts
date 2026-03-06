@@ -3,6 +3,7 @@
  * Synchronizes state with localStorage with automatic JSON serialization
  */
 import { useState, useEffect, useCallback } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Custom hook for managing localStorage state
@@ -17,7 +18,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
       const item = localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error);
+      logger.warn(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -27,7 +28,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
+      logger.warn(`Error setting localStorage key "${key}":`, error);
     }
   }, [key, value]);
 
@@ -37,7 +38,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
       localStorage.removeItem(key);
       setValue(initialValue);
     } catch (error) {
-      console.warn(`Error removing localStorage key "${key}":`, error);
+      logger.warn(`Error removing localStorage key "${key}":`, error);
     }
   }, [key, initialValue]);
 

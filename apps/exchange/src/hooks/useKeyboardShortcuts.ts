@@ -61,7 +61,7 @@ export interface KeyboardShortcutsOptions {
  */
 function parseShortcut(shortcutString: string): KeyboardShortcut {
   const parts = shortcutString.toLowerCase().split('+');
-  const key = parts[parts.length - 1];
+  const key = parts[parts.length - 1]!;
 
   return {
     key,
@@ -144,7 +144,7 @@ function isInputElement(element: Element | null): boolean {
  */
 export function useKeyboardShortcuts(
   shortcuts: Record<string, () => void>,
-  options: KeyboardShortcutsOptions = {}
+  options: KeyboardShortcutsOptions = {},
 ): void {
   const {
     allowInInputs = false,
@@ -260,7 +260,7 @@ export function useEscapeKey(onEscape: () => void, enabled: boolean = true): voi
  */
 export function useFocusTrap(
   containerRef: React.RefObject<HTMLElement | null>,
-  enabled: boolean = true
+  enabled: boolean = true,
 ): void {
   useEffect(() => {
     if (!enabled || !containerRef.current) return;
@@ -293,19 +293,19 @@ export function useFocusTrap(
       // Shift+Tab on first element: focus last
       if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault();
-        lastElement.focus();
+        lastElement!.focus();
       }
       // Tab on last element: focus first
       else if (!event.shiftKey && document.activeElement === lastElement) {
         event.preventDefault();
-        firstElement.focus();
+        firstElement!.focus();
       }
     };
 
     // Focus first element when trap is enabled
     const focusableElements = getFocusableElements();
     if (focusableElements.length > 0) {
-      focusableElements[0].focus();
+      focusableElements[0]!.focus();
     }
 
     container.addEventListener('keydown', handleKeyDown);
@@ -349,7 +349,7 @@ export interface ArrowNavigationOptions {
 export function useArrowNavigation(
   itemCount: number,
   onIndexChange: (index: number) => void,
-  options: ArrowNavigationOptions = {}
+  options: ArrowNavigationOptions = {},
 ): void {
   const { orientation = 'vertical', loop = false, enabled = true } = options;
 

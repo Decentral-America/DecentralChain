@@ -51,7 +51,7 @@ export const useLedger = (): UseLedgerReturn => {
    * Wraps a promise with a timeout
    */
   const withTimeout = useCallback(
-    <T,>(promise: Promise<T>, timeoutMs: number = TIMEOUT_MS): Promise<T> => {
+    <T>(promise: Promise<T>, timeoutMs: number = TIMEOUT_MS): Promise<T> => {
       return Promise.race([
         promise,
         new Promise<T>((_, reject) => {
@@ -66,7 +66,7 @@ export const useLedger = (): UseLedgerReturn => {
         }
       });
     },
-    []
+    [],
   );
 
   /**
@@ -83,7 +83,7 @@ export const useLedger = (): UseLedgerReturn => {
 
       if (!available) {
         throw new Error(
-          'Ledger device not found. Please connect your device, unlock it, and open the Waves application.'
+          'Ledger device not found. Please connect your device, unlock it, and open the DCC application.',
         );
       }
 
@@ -122,8 +122,8 @@ export const useLedger = (): UseLedgerReturn => {
 
       try {
         const userList = (await withTimeout(
-          adapterRef.current.getUserList(offset, count)
-        )) as LedgerUser[];
+          adapterRef.current.getUserList(offset, count),
+        )) as unknown as LedgerUser[];
 
         setUsers(userList);
         return userList;
@@ -136,7 +136,7 @@ export const useLedger = (): UseLedgerReturn => {
         setIsLoading(false);
       }
     },
-    [withTimeout]
+    [withTimeout],
   );
 
   /**
@@ -154,7 +154,7 @@ export const useLedger = (): UseLedgerReturn => {
         // LedgerAdapter.getSignature() communicates with device and returns signature
         // Note: This is a placeholder - actual method name may differ in @decentralchain/signature-adapter
         const signature = (await withTimeout(
-          (adapterRef.current as any).getSignature(txData)
+          (adapterRef.current as any).getSignature(txData),
         )) as string;
 
         return signature;
@@ -169,7 +169,7 @@ export const useLedger = (): UseLedgerReturn => {
         setIsLoading(false);
       }
     },
-    [withTimeout]
+    [withTimeout],
   );
 
   return {

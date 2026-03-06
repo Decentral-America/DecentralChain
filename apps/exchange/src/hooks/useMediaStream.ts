@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Standard video resolutions for media stream
@@ -163,7 +164,7 @@ const buildConstraints = (
   devices: MediaDeviceInfo[],
   resolution: Resolution,
   preferBackCamera: boolean,
-  audio?: boolean | MediaTrackConstraints
+  audio?: boolean | MediaTrackConstraints,
 ): MediaStreamConstraints => {
   const constraints: MediaStreamConstraints = {
     audio: audio || false,
@@ -202,7 +203,7 @@ const buildConstraints = (
 const getUserMediaWithFallback = async (
   devices: MediaDeviceInfo[],
   preferBackCamera: boolean,
-  audio?: boolean | MediaTrackConstraints
+  audio?: boolean | MediaTrackConstraints,
 ): Promise<MediaStream> => {
   const resolutions = [RESOLUTIONS.FULL_HD, RESOLUTIONS.HD, RESOLUTIONS.VGA, RESOLUTIONS.QVGA];
 
@@ -329,7 +330,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       if (debug) {
         const videoTrack = mediaStream.getVideoTracks()[0];
         const audioTrack = mediaStream.getAudioTracks()[0];
-        console.log('[MediaStream] Stream started:', {
+        logger.debug('[MediaStream] Stream started:', {
           video: videoTrack ? videoTrack.getSettings() : 'none',
           audio: audioTrack ? audioTrack.label : 'none',
         });
@@ -344,7 +345,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       onError?.(error);
 
       if (debug) {
-        console.error('[MediaStream] Failed to start stream:', error);
+        logger.error('[MediaStream] Failed to start stream:', error);
       }
 
       return null;
@@ -356,7 +357,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       streamRef.current.getTracks().forEach((track) => {
         track.stop();
         if (debug) {
-          console.log(`[MediaStream] Stopped track: ${track.kind} - ${track.label}`);
+          logger.debug(`[MediaStream] Stopped track: ${track.kind} - ${track.label}`);
         }
       });
 
@@ -366,7 +367,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       onStreamStop?.();
 
       if (debug) {
-        console.log('[MediaStream] Stream stopped');
+        logger.debug('[MediaStream] Stream stopped');
       }
     }
   }, [debug, onStreamStop]);
@@ -400,7 +401,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
         onStreamStart?.(mediaStream);
 
         if (debug) {
-          console.log(`[MediaStream] Switched to camera: ${deviceId}`);
+          logger.debug(`[MediaStream] Switched to camera: ${deviceId}`);
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
@@ -408,17 +409,17 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
         onError?.(error);
 
         if (debug) {
-          console.error('[MediaStream] Failed to switch camera:', error);
+          logger.error('[MediaStream] Failed to switch camera:', error);
         }
       }
     },
-    [audio, resolution, debug, stopStream, onStreamStart, onError]
+    [audio, resolution, debug, stopStream, onStreamStart, onError],
   );
 
   const takeSnapshot = useCallback((): string | null => {
     if (!streamRef.current) {
       if (debug) {
-        console.warn('[MediaStream] No active stream to snapshot');
+        logger.warn('[MediaStream] No active stream to snapshot');
       }
       return null;
     }
@@ -447,7 +448,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
     const dataUrl = canvas.toDataURL('image/png');
 
     if (debug) {
-      console.log('[MediaStream] Snapshot taken:', {
+      logger.debug('[MediaStream] Snapshot taken:', {
         width: canvas.width,
         height: canvas.height,
       });
@@ -548,7 +549,7 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       setError(null);
 
       if (debug) {
-        console.log('[ScreenCapture] Capture started');
+        logger.debug('[ScreenCapture] Capture started');
       }
 
       return mediaStream;
@@ -558,7 +559,7 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       setIsActive(false);
 
       if (debug) {
-        console.error('[ScreenCapture] Failed to start capture:', error);
+        logger.error('[ScreenCapture] Failed to start capture:', error);
       }
 
       return null;
@@ -573,7 +574,7 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       setIsActive(false);
 
       if (debug) {
-        console.log('[ScreenCapture] Capture stopped');
+        logger.debug('[ScreenCapture] Capture stopped');
       }
     }
   }, [debug]);

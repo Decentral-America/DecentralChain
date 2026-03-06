@@ -4,6 +4,7 @@
  * Ensures operations execute one at a time in FIFO order
  */
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Queue Item Interface
@@ -131,7 +132,7 @@ export interface UseQueueReturn<T> {
  * ```tsx
  * const { enqueue, isProcessing, queueLength } = useQueue({
  *   maxSize: 10,
- *   onEmpty: () => console.log('Queue cleared'),
+ *   onEmpty: () => logger.debug('Queue cleared'),
  * });
  *
  * // Add tasks to queue
@@ -195,7 +196,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
 
         // Log error in development
         if (process.env.NODE_ENV === 'development') {
-          console.error('[useQueue] Task error:', err);
+          logger.error('[useQueue] Task error:', err);
         }
       }
     }
@@ -225,7 +226,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
         }
 
         const item: QueueItem<T> = {
-          id: Math.random().toString(36).substring(2, 11),
+          id: crypto.randomUUID(),
           task,
           resolve,
           reject,
@@ -245,7 +246,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
         }
       });
     },
-    [maxSize, isPaused, processQueue, onMaxSize]
+    [maxSize, isPaused, processQueue, onMaxSize],
   );
 
   /**
@@ -305,7 +306,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
    */
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[useQueue]', {
+      logger.debug('[useQueue]', {
         queueLength,
         isProcessing,
         isPaused,
@@ -332,7 +333,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
 export const useQueueWithRetry = <T = unknown>(
   maxRetries = 3,
   retryDelay = 1000,
-  options: UseQueueOptions = {}
+  options: UseQueueOptions = {},
 ): UseQueueReturn<T> => {
   const queue = useQueue<T>(options);
 
@@ -356,7 +357,7 @@ export const useQueueWithRetry = <T = unknown>(
 
       throw lastError;
     },
-    [queue, maxRetries, retryDelay]
+    [queue, maxRetries, retryDelay],
   );
 
   return {
