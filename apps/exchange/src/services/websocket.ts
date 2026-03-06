@@ -3,6 +3,7 @@
  * Real-time data updates for blockchain and DEX events
  */
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * WebSocket Connection State
@@ -231,8 +232,8 @@ class WebSocketClient {
       // Error 1006: Connection refused/failed - likely server doesn't support WebSocket
       // Stop retrying after 2 attempts to avoid console spam
       if (event.code === 1006 && this.reconnectAttempts >= 2) {
-        console.log(
-          '[WebSocket] Server does not support WebSocket connections. Real-time updates disabled, using HTTP polling instead.'
+        logger.debug(
+          '[WebSocket] Server does not support WebSocket connections. Real-time updates disabled, using HTTP polling instead.',
         );
         return;
       }
@@ -328,7 +329,7 @@ class WebSocketClient {
    */
   private log(...args: unknown[]): void {
     if (this.config.debug) {
-      console.log('[WebSocket]', ...args);
+      logger.debug('[WebSocket]', ...args);
     }
   }
 }
@@ -400,7 +401,7 @@ export const useWebSocketChannel = <T>(
   config: WebSocketConfig,
   channel: string,
   handler: (data: T) => void,
-  enabled = true
+  enabled = true,
 ) => {
   const { subscribe, unsubscribe, onMessage, isConnected } = useWebSocket(config);
 

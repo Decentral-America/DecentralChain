@@ -2,7 +2,8 @@
  * Gateway Service Utility Functions
  * Utilities for address validation, config retrieval, and error formatting
  */
-import { GatewayConfig } from './types';
+import { type GatewayConfig } from './types';
+import { logger } from '@/lib/logger';
 
 /**
  * Validates an external blockchain address using gateway regex pattern
@@ -14,7 +15,7 @@ import { GatewayConfig } from './types';
 export const validateGatewayAddress = (
   address: string,
   assetId: string,
-  gatewayConfig: Record<string, GatewayConfig>
+  gatewayConfig: Record<string, GatewayConfig>,
 ): boolean => {
   // Handle empty or missing inputs
   if (!address || !assetId) {
@@ -23,7 +24,7 @@ export const validateGatewayAddress = (
 
   const config = gatewayConfig[assetId];
   if (!config || !config.regex) {
-    console.warn(`No gateway configuration found for asset ${assetId}`);
+    logger.warn(`No gateway configuration found for asset ${assetId}`);
     return false;
   }
 
@@ -31,7 +32,7 @@ export const validateGatewayAddress = (
     const regex = new RegExp(config.regex);
     return regex.test(address);
   } catch (error) {
-    console.error('Invalid regex pattern:', error);
+    logger.error('Invalid regex pattern:', error);
     return false;
   }
 };
@@ -44,7 +45,7 @@ export const validateGatewayAddress = (
  */
 export const getGatewayConfig = (
   assetId: string,
-  gatewayConfigs: Record<string, GatewayConfig>
+  gatewayConfigs: Record<string, GatewayConfig>,
 ): GatewayConfig | null => {
   return gatewayConfigs[assetId] || null;
 };

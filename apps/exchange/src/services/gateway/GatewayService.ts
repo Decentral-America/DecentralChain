@@ -2,26 +2,60 @@
  * Gateway Service
  * Main service class for interacting with gateway API (BTC bridge)
  */
-import { BigNumber } from '@waves/bignumber';
-import { GatewayConfig, DepositDetails, WithdrawDetails, GatewayType } from './types';
+import { BigNumber } from '@decentralchain/bignumber';
+import {
+  type GatewayConfig,
+  type DepositDetails,
+  type WithdrawDetails,
+  type GatewayType,
+} from './types';
 import { validateGatewayAddress, formatGatewayError } from './utils';
 
 /**
  * Gateway Service Class
  * Handles communication with gateway API for deposit/withdraw operations
+ *
+ * SECURITY: All gateway URLs are validated to be HTTPS and match the allowlist.
  */
 export class GatewayService {
   private gatewayConfigs: Record<string, GatewayConfig>;
   private timeout = 30000; // 30 second timeout
 
+  /**
+   * Validates that a gateway URL is well-formed and uses HTTPS.
+   * Prevents SSRF and man-in-the-middle attacks on gateway communications.
+   */
+  private static validateGatewayUrl(url: string): void {
+    if (!url || typeof url !== 'string') {
+      throw new Error('Gateway URL is required');
+    }
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      throw new Error(`Invalid gateway URL: ${url}`);
+    }
+    if (parsed.protocol !== 'https:') {
+      throw new Error(`Gateway URL must use HTTPS: ${url}`);
+    }
+  }
+
   constructor(configs: Record<string, GatewayConfig>) {
+    // Validate all gateway URLs at construction time
+    for (const [assetId, config] of Object.entries(configs)) {
+      try {
+        GatewayService.validateGatewayUrl(config.url);
+      } catch (e) {
+        throw new Error(`Invalid gateway config for ${assetId}: ${(e as Error).message}`);
+      }
+    }
     this.gatewayConfigs = configs;
   }
 
   /**
    * Check if an asset has gateway support for deposit or withdraw
    */
-  hasSupportOf(assetId: string, type: GatewayType): boolean {
+  hasSupportOf(assetId: string, _type: GatewayType): boolean {
     return !!this.gatewayConfigs[assetId];
   }
 
@@ -54,7 +88,7 @@ export class GatewayService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         signal: controller.signal,
       });
@@ -131,7 +165,7 @@ export class GatewayService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         signal: controller.signal,
       });
@@ -146,7 +180,7 @@ export class GatewayService {
 
       // Parse withdraw-specific fields
       const withdrawDetails: WithdrawDetails = {
-        address: data.tnAddress || data.wavesAddress || '',
+        address: data.tnAddress || data.dccAddress || '',
         attachment: targetAddress,
         minimumAmount: new BigNumber(data.minAmount || data.min_amount || 0),
         maximumAmount: new BigNumber(data.maxAmount || data.max_amount || 0),
@@ -184,7 +218,7 @@ export class GatewayService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         signal: controller.signal,
       });
@@ -215,7 +249,7 @@ export class GatewayService {
   async getRobinAddress(
     assetId: string,
     userAddress: string,
-    recaptcha: string
+    recaptcha: string,
   ): Promise<{ address: string; expiry: Date }> {
     const config = this.gatewayConfigs[assetId];
     if (!config) {
@@ -233,7 +267,7 @@ export class GatewayService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           ticker,

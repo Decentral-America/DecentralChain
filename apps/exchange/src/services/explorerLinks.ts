@@ -31,7 +31,7 @@ export class ExplorerLinkService {
 
   /**
    * Generate address explorer link
-   * @param address - Waves address
+   * @param address - DCC address
    * @returns Full URL to address in explorer
    */
   static getAddressLink(address: string): string {
@@ -76,7 +76,7 @@ export class ExplorerLinkService {
 
   /**
    * Open address in new browser tab
-   * @param address - Waves address
+   * @param address - DCC address
    */
   static openAddress(address: string): void {
     const url = this.getAddressLink(address);

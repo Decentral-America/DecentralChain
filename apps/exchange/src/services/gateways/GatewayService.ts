@@ -5,12 +5,13 @@
  * Matches Angular's GatewayService.js pattern
  *
  * Acts as a facade that:
- * 1. Registers gateway providers (WavesGateway, Coinomat, etc.)
+ * 1. Registers gateway providers (DCCGateway, Coinomat, etc.)
  * 2. Routes requests to the appropriate provider based on asset configuration
  * 3. Provides unified API for all gateway operations
  */
 
 import NetworkConfig from '@/config/networkConfig';
+import { logger } from '@/lib/logger';
 import type {
   IGatewayService,
   IGatewayDetails,
@@ -26,7 +27,7 @@ import type {
 export class GatewayService {
   /**
    * Registered gateway providers
-   * Key: gateway ID (e.g., 'wavesgateway', 'coinomat')
+   * Key: gateway ID (e.g., 'dccgateway', 'coinomat')
    * Value: Gateway provider instance
    */
   private providers: Map<string, IGatewayService> = new Map();
@@ -38,7 +39,7 @@ export class GatewayService {
    */
   registerProvider(gatewayId: string, provider: IGatewayService): void {
     this.providers.set(gatewayId.toLowerCase(), provider);
-    console.log(`[GatewayService] Registered provider: ${gatewayId}`);
+    logger.debug(`[GatewayService] Registered provider: ${gatewayId}`);
   }
 
   /**
@@ -50,7 +51,7 @@ export class GatewayService {
     // Get gateway config from NetworkConfig (mainnet.json)
     const gatewayConfig = NetworkConfig.getGatewayConfig(asset.id);
     if (!gatewayConfig) {
-      console.warn(`[GatewayService] No gateway config found for asset: ${asset.id}`);
+      logger.warn(`[GatewayService] No gateway config found for asset: ${asset.id}`);
       return null;
     }
 
@@ -58,11 +59,11 @@ export class GatewayService {
     const gatewayId =
       (gatewayConfig as unknown as Record<string, string>).gateway_id ||
       (gatewayConfig as unknown as Record<string, string>).gateway_type ||
-      'wavesgateway';
+      'dccgateway';
 
     const provider = this.providers.get(gatewayId.toLowerCase());
     if (!provider) {
-      console.warn(`[GatewayService] No provider registered for gateway: ${gatewayId}`);
+      logger.warn(`[GatewayService] No provider registered for gateway: ${gatewayId}`);
     }
 
     return provider || null;
@@ -137,23 +138,23 @@ export class GatewayService {
   /**
    * Get deposit details for an asset
    * @param asset - Asset to deposit
-   * @param userWavesAddress - User's Waves address
+   * @param userDCCAddress - User's DCC address
    * @returns Deposit details or null if no gateway available
    */
   async getDepositDetails(
     asset: GatewayAsset,
-    userWavesAddress: string
+    userDCCAddress: string,
   ): Promise<IGatewayDetails | null> {
     const provider = this.getProvider(asset);
     if (!provider) {
-      console.error(`[GatewayService] No provider available for deposit: ${asset.id}`);
+      logger.error(`[GatewayService] No provider available for deposit: ${asset.id}`);
       return null;
     }
 
     try {
-      return await provider.getDepositDetails(asset, userWavesAddress);
+      return await provider.getDepositDetails(asset, userDCCAddress);
     } catch (error) {
-      console.error(`[GatewayService] Deposit details failed for ${asset.id}:`, error);
+      logger.error(`[GatewayService] Deposit details failed for ${asset.id}:`, error);
       throw error;
     }
   }
@@ -169,7 +170,7 @@ export class GatewayService {
   async getWithdrawDetails(
     asset: GatewayAsset,
     targetAddress: string,
-    paymentId?: string
+    paymentId?: string,
   ): Promise<IGatewayDetails> {
     // Check if gateway can be used
     if (!this.canUseGateway(asset)) {
@@ -192,20 +193,20 @@ export class GatewayService {
     try {
       return await provider.getWithdrawDetails(asset, targetAddress, paymentId);
     } catch (error) {
-      console.error(`[GatewayService] Withdraw details failed for ${asset.id}:`, error);
+      logger.error(`[GatewayService] Withdraw details failed for ${asset.id}:`, error);
       throw error;
     }
   }
 
   /**
-   * Get send details (Waves Gateway specific)
+   * Get send details (DCC Gateway specific)
    * @param asset - Asset to send
    * @param targetAddress - Target address
    * @returns Send details or null
    */
   async getSendDetails(
     asset: GatewayAsset,
-    targetAddress: string
+    targetAddress: string,
   ): Promise<IGatewayDetails | null> {
     const provider = this.getProvider(asset);
     if (!provider || !provider.getSendDetails) {
@@ -215,7 +216,7 @@ export class GatewayService {
     try {
       return await provider.getSendDetails(asset, targetAddress);
     } catch (error) {
-      console.error(`[GatewayService] Send details failed for ${asset.id}:`, error);
+      logger.error(`[GatewayService] Send details failed for ${asset.id}:`, error);
       throw error;
     }
   }
@@ -236,7 +237,7 @@ export class GatewayService {
       const regex = new RegExp(gatewayConfig.regex);
       return regex.test(address);
     } catch (error) {
-      console.error(`[GatewayService] Invalid regex for ${asset.id}:`, error);
+      logger.error(`[GatewayService] Invalid regex for ${asset.id}:`, error);
       return false;
     }
   }

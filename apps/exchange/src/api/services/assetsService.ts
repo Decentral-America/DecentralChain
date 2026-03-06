@@ -2,7 +2,7 @@
  * Assets API Service
  * Handles asset-related API calls with React Query
  */
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { nodeClient } from '../client';
 
 /**
@@ -66,7 +66,7 @@ export const useAssetDetails = (
   assetId: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDetails, Error> => {
   return useQuery({
     queryKey: ['asset', 'details', assetId],
@@ -90,7 +90,7 @@ export const useMultipleAssetDetails = (
   assetIds: string[],
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDetails[], Error> => {
   return useQuery({
     queryKey: ['assets', 'details', assetIds.sort().join(',')],
@@ -108,7 +108,7 @@ export const useMultipleAssetDetails = (
  * Fetch Asset Balance for Address
  * Returns the balance of a specific asset for an address
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param assetId - Asset ID to query
  * @param options - React Query options
  */
@@ -118,7 +118,7 @@ export const useAssetBalance = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<AssetBalance, Error> => {
   return useQuery({
     queryKey: ['asset', 'balance', address, assetId],
@@ -147,7 +147,7 @@ export const useAssetDistribution = (
   after?: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDistribution, Error> => {
   return useQuery({
     queryKey: ['asset', 'distribution', assetId, limit, after],
@@ -176,13 +176,13 @@ export const useNFTsByIssuer = (
   limit = 100,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<NFTCollection[], Error> => {
   return useQuery({
     queryKey: ['nft', 'issuer', issuer, limit],
     queryFn: async () => {
       const { data } = await nodeClient.get<NFTCollection[]>(
-        `/assets/nft/${issuer}/limit/${limit}`
+        `/assets/nft/${issuer}/limit/${limit}`,
       );
       return data;
     },
@@ -192,11 +192,11 @@ export const useNFTsByIssuer = (
 };
 
 /**
- * Utility: Check if an asset is WAVES (null assetId)
+ * Utility: Check if an asset is DCC (null assetId)
  * @param assetId - Asset ID to check
  */
-export const isWaves = (assetId: string | null | undefined): boolean => {
-  return !assetId || assetId === 'WAVES';
+export const isDCC = (assetId: string | null | undefined): boolean => {
+  return !assetId || assetId === 'DCC';
 };
 
 /**
@@ -223,7 +223,7 @@ export const parseAssetAmount = (amount: number, decimals: number): number => {
  * @param asset - Asset details or partial asset info
  */
 export const getAssetDisplayName = (
-  asset: Pick<AssetDetails, 'name' | 'assetId'> | null | undefined
+  asset: Pick<AssetDetails, 'name' | 'assetId'> | null | undefined,
 ): string => {
   if (!asset) return 'Unknown Asset';
   if (asset.name) return asset.name;

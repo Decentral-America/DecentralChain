@@ -6,7 +6,7 @@
  * This service encrypts all user seed phrases and private keys using a password
  * and stores them in a single encrypted blob in localStorage.
  */
-// Import crypto functions from @waves/ts-lib-crypto
+// Import crypto functions from @decentralchain/ts-lib-crypto
 import {
   encryptSeed,
   decryptSeed,
@@ -15,7 +15,7 @@ import {
   stringToBytes,
   address as buildAddress,
   publicKey as buildPublicKey,
-} from '@waves/ts-lib-crypto';
+} from '@decentralchain/ts-lib-crypto';
 
 interface UserData {
   userType: 'seed' | 'privateKey' | 'ledger';
@@ -73,7 +73,7 @@ class MultiAccountService {
    */
   signUp(
     password: string,
-    rounds: number = 5000
+    rounds: number = 5000,
   ): Promise<{
     multiAccountData: string;
     multiAccountHash: string;
@@ -134,7 +134,7 @@ class MultiAccountService {
   /**
    * Add User - Add a new account to the encrypted multi-account system
    * THIS IS THE CRITICAL FUNCTION - encrypts seed/privateKey
-   * 
+   *
    * IMPORTANT: Ledger accounts do NOT have seed/privateKey
    * They only store publicKey, networkByte, and Ledger-specific fields
    *
@@ -148,7 +148,7 @@ class MultiAccountService {
 
     // Build public key from seed, private key, or use provided publicKey (Ledger)
     let publicKey: string;
-    
+
     if (userData.userType === 'ledger') {
       // Ledger: publicKey must be provided from device
       if (!userData.publicKey) {
@@ -160,7 +160,7 @@ class MultiAccountService {
       publicKey = buildPublicKey(userData.seed);
     } else if (userData.privateKey) {
       // PrivateKey account
-      publicKey = buildPublicKey({ privateKey: userData.privateKey });
+      publicKey = buildPublicKey({ privateKey: userData.privateKey } as any);
     } else {
       throw new Error('Must provide seed, privateKey, or publicKey');
     }
@@ -246,7 +246,7 @@ class MultiAccountService {
           publicKey: _user.publicKey,
           address: buildAddress(
             { publicKey: _user.publicKey },
-            String.fromCharCode(_user.networkByte)
+            String.fromCharCode(_user.networkByte),
           ),
           hash: userHash,
           // Ledger-specific fields
@@ -284,7 +284,7 @@ class MultiAccountService {
     oldPassword: string,
     newPassword: string,
     rounds: number,
-    hash: string
+    hash: string,
   ): Promise<{
     multiAccountData: string;
     multiAccountHash: string;

@@ -3,6 +3,7 @@
  * Handles alias-related API calls
  */
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 
 export interface AliasInfo {
   alias: string;
@@ -33,12 +34,12 @@ export const checkAliasExists = async (alias: string): Promise<boolean> => {
  */
 export const getAddressByAlias = async (alias: string): Promise<string> => {
   try {
-    console.log(`[aliasService] Attempting to resolve alias: "${alias}"`);
+    logger.debug(`[aliasService] Attempting to resolve alias: "${alias}"`);
 
     // Use data-service API (same as Angular) for better indexing and reliability
     const result = await ds.api.aliases.getAddressByAlias(alias);
 
-    console.log(`[aliasService] Successfully resolved alias "${alias}" to:`, result);
+    logger.debug(`[aliasService] Successfully resolved alias "${alias}" to:`, result);
 
     if (!result || !result.address) {
       throw new Error(`Alias "${alias}" resolved but no address returned`);
@@ -46,7 +47,7 @@ export const getAddressByAlias = async (alias: string): Promise<string> => {
 
     return result.address;
   } catch (error: unknown) {
-    console.error(`[aliasService] Failed to resolve alias "${alias}":`, error);
+    logger.error(`[aliasService] Failed to resolve alias "${alias}":`, error);
 
     // Provide more detailed error information
     const errorMessage = error instanceof Error ? error.message : `Alias "${alias}" not found`;
@@ -68,7 +69,7 @@ export const getAliasesByAddress = async (address: string): Promise<string[]> =>
     const aliases = await ds.api.aliases.getAliasesByAddress(address);
     return aliases || [];
   } catch (error: unknown) {
-    console.error('Error fetching aliases:', error);
+    logger.error('Error fetching aliases:', error);
     return [];
   }
 };
@@ -80,7 +81,7 @@ export const getAliasesByAddress = async (address: string): Promise<string[]> =>
  * - Only lowercase letters, numbers, and special chars: -@_.
  */
 export const validateAliasFormat = (
-  alias: string
+  alias: string,
 ): {
   valid: boolean;
   errors: string[];
