@@ -180,19 +180,7 @@ func bar() = WriteSet([])`;
     ];
 
     const sig = `let sig = fromBase64String("OXVKJwtSoenRmwizPtpjh3sCNmOpU1tnXUnyzl+PEI1P9Rx20GkxkIXlysFT2WdbPn/HsfGMwGJW7YhrVkDXy4uAQxUxSgQouvfZoqGSPp1NtM8iVJOGyKiepgB3GxRzQsev2G8Ik47eNkEDVQa47ct9j198Wvnkf88yjSkK0KxR057MWAi20ipNLirW4ZHDAf1giv68mniKfKxsPWahOA/7JYkv18sxcsISQqRXM8nGI1UuSLt9ER7kIzyAk2mgPCiVlj0hoPGUytmbiUqvEM4QaJfCpR0wVO4f/fob6jwKkGT6wbtia+5xCD7bESIHH8ISDrdexZ01QyNP2r4enw==")`;
-    const _algs = [
-      'NOALG',
-      'MD5',
-      'SHA1',
-      // 'SHA224',//todo uncomment when implemented in ts-lib-crypto
-      'SHA256',
-      'SHA384',
-      'SHA512',
-      'SHA3224',
-      'SHA3256',
-      'SHA3384',
-      'SHA3512',
-    ];
+
     await evaluate(pk);
     await evaluate(msg);
     await evaluate(sig);

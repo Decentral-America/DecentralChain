@@ -70,7 +70,7 @@ function wrappedCompile(
       };
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return typeof e === 'object' ? { error: e.message } : { error: e };
   }
 }
