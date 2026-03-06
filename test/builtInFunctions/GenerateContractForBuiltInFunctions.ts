@@ -1,19 +1,21 @@
-
 export class GenerateContractForBuiltInFunctions {
+  private readonly defaultFunction;
+  private readonly ownDataFunction;
+  private dataType;
 
-    private readonly defaultFunction;
-    private readonly ownDataFunction;
-    private dataType;
+  constructor(defaultFunc: string, ownDataFunc?: string, data?: string) {
+    this.defaultFunction = defaultFunc;
+    this.ownDataFunction = ownDataFunc;
+    this.dataType = data;
+  }
 
-    constructor(defaultFunc: string, ownDataFunc?: string, data?: string) {
-        this.defaultFunction = defaultFunc;
-        this.ownDataFunction = ownDataFunc;
-        this.dataType = data;
-    }
-
-    public generateContractFromMatchingAndCase
-    (libVersion, caseForVersions, testData, getFunction = this.defaultFunction):string {
-        return `
+  public generateContractFromMatchingAndCase(
+    libVersion,
+    caseForVersions,
+    testData,
+    getFunction = this.defaultFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -28,10 +30,14 @@ export class GenerateContractForBuiltInFunctions {
             }
             ${caseForVersions}
         }`;
-    };
+  }
 
-    public generateContractOwnData(libVersion, caseForVersions, ownDataFunction = this.ownDataFunction):string {
-        return `
+  public generateContractOwnData(
+    libVersion,
+    caseForVersions,
+    ownDataFunction = this.ownDataFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -45,11 +51,15 @@ export class GenerateContractForBuiltInFunctions {
             }
             ${caseForVersions}
         }`;
-    };
+  }
 
-    public generateContractWithoutMatcher
-    (libVersion, caseForVersions, testData, getFunction = this.defaultFunction):string {
-        return `
+  public generateContractWithoutMatcher(
+    libVersion,
+    caseForVersions,
+    testData,
+    getFunction = this.defaultFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -60,11 +70,14 @@ export class GenerateContractForBuiltInFunctions {
             let val = ${getFunction}
             ${caseForVersions}
         }`;
-    };
+  }
 
-    public generateContractOwnDataWithoutMatcher
-    (libVersion, caseForVersions, ownDataFunction = this.ownDataFunction):string {
-        return `
+  public generateContractOwnDataWithoutMatcher(
+    libVersion,
+    caseForVersions,
+    ownDataFunction = this.ownDataFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -74,10 +87,14 @@ export class GenerateContractForBuiltInFunctions {
             let val = ${ownDataFunction}
             ${caseForVersions}
         }`;
-    };
+  }
 
-    public generateOnlyMatcherContract(libVersion, testData, getFunction = this.defaultFunction):string {
-        return `
+  public generateOnlyMatcherContract(
+    libVersion,
+    testData,
+    getFunction = this.defaultFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -86,23 +103,27 @@ export class GenerateContractForBuiltInFunctions {
         let x = match ${getFunction} {
             case h:${this.dataType} => h
             case _ => throw("not ${this.dataType}")
-        }`
-    }
+        }`;
+  }
 
-    public generateContract(version, foo, bar, testFunction):string {
-        return `
+  public generateContract(version, foo, bar, testFunction): string {
+    return `
         {-# STDLIB_VERSION ${version} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
         
         let foo = ${foo}
         let bar = ${bar}
-        let callerTestData = ${testFunction}`
-    }
+        let callerTestData = ${testFunction}`;
+  }
 
-    public generateContractForDAppInvocation
-    (libVersion, byteVector, payment, getFunctionName = this.defaultFunction):string {
-        return `
+  public generateContractForDAppInvocation(
+    libVersion,
+    byteVector,
+    payment,
+    getFunctionName = this.defaultFunction,
+  ): string {
+    return `
         {-# STDLIB_VERSION ${libVersion} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -130,10 +151,10 @@ export class GenerateContractForBuiltInFunctions {
             ],
                 a * 2
             )
-        }`
-    }
+        }`;
+  }
 
-    public setData(data): void {
-        this.dataType = data;
-    }
+  public setData(data): void {
+    this.dataType = data;
+  }
 }

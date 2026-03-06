@@ -1,56 +1,128 @@
 {
-  "name": "@waves/ride-js",
+  "name": "@decentralchain/ride-js",
   "version": "2.3.0",
-  "description": "Js compiler for Ride - Waves smart contract language.",
-  "main": "src/index.js",
-  "typings": "src/index.d.ts",
-  "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "test": "jest",
-    "prepublishOnly": "npm run build"
+  "description": "JS compiler for Ride - the smart-contract language for DecentralChain",
+  "type": "module",
+  "packageManager": "npm@11.6.2",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
+  "module": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": true,
   "files": [
-    "/src",
-    "/dist",
-    "!/src/.DS_Store"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wavesplatform/ride-js.git"
+    "url": "git+https://github.com/Decentral-America/ride-js.git"
   },
-  "keywords": [
-    "compiler",
-    "waves",
-    "ride",
-    "smart",
-    "contracts"
-  ],
-  "author": "Waves Team",
-  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/ride-js#readme",
   "bugs": {
-    "url": "https://github.com/wavesplatform/ride-js/issues"
+    "url": "https://github.com/Decentral-America/ride-js/issues"
   },
-  "homepage": "https://github.com/wavesplatform/ride-js#readme",
-  "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "copy-webpack-plugin": "^13.0.1",
-    "jest": "^30.0.5",
-    "ts-jest": "^29.4.1",
-    "typescript": "^5.9.2",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^6.0.1",
-    "node-polyfill-webpack-plugin": "^4.1.0"
+  "scripts": {
+    "build": "tsup && cp dist/index.d.ts dist/index.d.cts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack .",
+    "check:size": "size-limit",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
   },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.js",
+      "limit": "10 kB",
+      "ignore": [
+        "@waves/ride-lang",
+        "@waves/ride-repl",
+        "@waves/ts-lib-crypto",
+        "axios"
+      ]
+    }
+  ],
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "blockchain",
+    "ride",
+    "compiler",
+    "smart-contracts",
+    "decentralchain-sdk",
+    "ride-language",
+    "decompile",
+    "ride-compiler"
+  ],
+  "author": "DecentralChain",
+  "license": "MIT",
   "dependencies": {
-    "@waves/ride-lang": "^1.6.1",
-    "@waves/ride-repl": "^1.6.1",
-    "@waves/ts-lib-crypto": "^1.5.1-snapshot.2",
-    "axios": "^1.13.5",
-    "buffer": "^6.0.3"
+    "@waves/ride-lang": "1.6.1",
+    "@waves/ride-repl": "1.6.1",
+    "@waves/ts-lib-crypto": "1.5.1-snapshot.2",
+    "axios": "1.13.5"
   },
-  "overrides": {
-    "serialize-javascript":  "^7.0.3",
-    "test-exclude": "^8.0.0",
-    "glob": "^13.0.6"
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@eslint/js": "10.0.1",
+    "@size-limit/preset-small-lib": "12.0.1",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "knip": "5.85.0",
+    "lint-staged": "16.3.2",
+    "prettier": "3.8.1",
+    "publint": "0.3.18",
+    "size-limit": "12.0.1",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "vitest": "4.0.18"
   }
 }
