@@ -1,4 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosError,
+  type AxiosResponse,
+} from 'axios';
+import { logger } from '@/lib/logger';
 import { shouldRetry, getRetryDelay } from './errorHandler';
 
 /**
@@ -66,9 +72,9 @@ const retryInterceptor = async (error: AxiosError): Promise<any> => {
 
   // Log retry attempt in development
   if (process.env.NODE_ENV === 'development') {
-    console.log(
+    logger.debug(
       `Retrying request (attempt ${config._retryCount}/${retryConfig.maxRetries}) after ${delay}ms:`,
-      config.url
+      config.url,
     );
   }
 
@@ -100,13 +106,13 @@ export const createApiClient = (baseURL?: string, retryConfig?: RetryConfig): Ax
       }
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   );
 
   // Response interceptor with retry logic
   client.interceptors.response.use(
     (response: AxiosResponse) => response,
-    (error: AxiosError) => retryInterceptor(error)
+    (error: AxiosError) => retryInterceptor(error),
   );
 
   return client;
@@ -122,7 +128,7 @@ export const apiClient = createApiClient();
  */
 export const makeRequest = async <T = any>(
   config: AxiosRequestConfig,
-  retryConfig?: RetryConfig
+  retryConfig?: RetryConfig,
 ): Promise<T> => {
   const requestConfig: ApiRequestConfig = {
     ...config,
@@ -144,7 +150,7 @@ export const api = {
     url: string,
     data?: any,
     config?: AxiosRequestConfig,
-    retryConfig?: RetryConfig
+    retryConfig?: RetryConfig,
   ) => makeRequest<T>({ ...config, method: 'POST', url, data }, retryConfig),
 
   put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig, retryConfig?: RetryConfig) =>
@@ -154,7 +160,7 @@ export const api = {
     url: string,
     data?: any,
     config?: AxiosRequestConfig,
-    retryConfig?: RetryConfig
+    retryConfig?: RetryConfig,
   ) => makeRequest<T>({ ...config, method: 'PATCH', url, data }, retryConfig),
 
   delete: <T = any>(url: string, config?: AxiosRequestConfig, retryConfig?: RetryConfig) =>
@@ -170,7 +176,7 @@ export const createCustomApiClient = (
     timeout?: number;
     headers?: Record<string, string>;
     retryConfig?: RetryConfig;
-  }
+  },
 ): AxiosInstance => {
   const client = axios.create({
     baseURL,
@@ -188,12 +194,12 @@ export const createCustomApiClient = (
         config._retryConfig = options.retryConfig;
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     client.interceptors.response.use(
       (response: AxiosResponse) => response,
-      (error: AxiosError) => retryInterceptor(error)
+      (error: AxiosError) => retryInterceptor(error),
     );
   }
 

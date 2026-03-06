@@ -32,6 +32,7 @@
  */
 
 import { onCLS, onFCP, onLCP, onTTFB, onINP, type Metric } from 'web-vitals';
+import { logger } from '@/lib/logger';
 import { trackEvent } from '@/lib/analytics';
 import { captureMessage, ErrorSeverity } from '@/lib/errorMonitoring';
 
@@ -100,7 +101,7 @@ const reportMetric = (metric: Metric): void => {
 
   // Log to console in debug mode
   if (config.debug) {
-    console.log('[Performance]', {
+    logger.debug('[Performance]', {
       name,
       value: roundedValue,
       rating,
@@ -149,7 +150,7 @@ const reportMetric = (metric: Metric): void => {
  */
 export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig = {}): void => {
   if (isInitialized) {
-    console.warn('[Performance] Already initialized');
+    logger.warn('[Performance] Already initialized');
     return;
   }
 
@@ -166,7 +167,7 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
 
   // Don't track in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
-    console.log('[Performance] Disabled in development mode');
+    logger.debug('[Performance] Disabled in development mode');
     return;
   }
 
@@ -189,10 +190,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       onINP(reportMetric);
 
       if (config.debug) {
-        console.log('[Performance] Web Vitals tracking initialized');
+        logger.debug('[Performance] Web Vitals tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize Web Vitals:', error);
+      logger.error('[Performance] Failed to initialize Web Vitals:', error);
     }
   }
 
@@ -206,10 +207,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       });
 
       if (config.debug) {
-        console.log('[Performance] Navigation timing tracking initialized');
+        logger.debug('[Performance] Navigation timing tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize navigation timing:', error);
+      logger.error('[Performance] Failed to initialize navigation timing:', error);
     }
   }
 
@@ -223,10 +224,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       });
 
       if (config.debug) {
-        console.log('[Performance] Resource timing tracking initialized');
+        logger.debug('[Performance] Resource timing tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize resource timing:', error);
+      logger.error('[Performance] Failed to initialize resource timing:', error);
     }
   }
 
@@ -268,7 +269,7 @@ const trackNavigationTiming = (): void => {
   };
 
   if (config.debug) {
-    console.log('[Performance] Navigation timing:', metrics);
+    logger.debug('[Performance] Navigation timing:', metrics);
   }
 
   if (config.reportToAnalytics) {
@@ -319,7 +320,7 @@ const trackResourceTiming = (): void => {
   });
 
   if (config.debug) {
-    console.log('[Performance] Resource timing:', stats);
+    logger.debug('[Performance] Resource timing:', stats);
   }
 
   if (config.reportToAnalytics) {
@@ -353,10 +354,10 @@ export const markPerformance = (name: string): void => {
     window.performance.mark(name);
 
     if (config.debug) {
-      console.log('[Performance] Mark created:', name);
+      logger.debug('[Performance] Mark created:', name);
     }
   } catch (error) {
-    console.error('[Performance] Failed to create mark:', error);
+    logger.error('[Performance] Failed to create mark:', error);
   }
 };
 
@@ -373,13 +374,13 @@ export const markPerformance = (name: string): void => {
  * markPerformance('api-start');
  * const data = await api.fetch();
  * const duration = measurePerformance('api-call', 'api-start');
- * console.log(`API took ${duration}ms`);
+ * logger.debug(`API took ${duration}ms`);
  * ```
  */
 export const measurePerformance = (
   name: string,
   startMark: string,
-  endMark?: string
+  endMark?: string,
 ): number | null => {
   if (!window.performance || !window.performance.measure) {
     return null;
@@ -390,7 +391,7 @@ export const measurePerformance = (
     const duration = Math.round(measure.duration * 100) / 100;
 
     if (config.debug) {
-      console.log('[Performance] Measurement:', { name, duration });
+      logger.debug('[Performance] Measurement:', { name, duration });
     }
 
     if (config.reportToAnalytics) {
@@ -399,7 +400,7 @@ export const measurePerformance = (
 
     return duration;
   } catch (error) {
-    console.error('[Performance] Failed to measure performance:', error);
+    logger.error('[Performance] Failed to measure performance:', error);
     return null;
   }
 };
@@ -430,10 +431,10 @@ export const clearPerformance = (name?: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Performance] Cleared:', name || 'all');
+      logger.debug('[Performance] Cleared:', name || 'all');
     }
   } catch (error) {
-    console.error('[Performance] Failed to clear performance:', error);
+    logger.error('[Performance] Failed to clear performance:', error);
   }
 };
 
@@ -445,7 +446,7 @@ export const clearPerformance = (name?: string): void => {
  * @example
  * ```tsx
  * const memory = getMemoryUsage();
- * console.log(`Memory: ${memory?.usedJSHeapSize}MB`);
+ * logger.debug(`Memory: ${memory?.usedJSHeapSize}MB`);
  * ```
  */
 export const getMemoryUsage = (): {
@@ -480,7 +481,7 @@ export const getMemoryUsage = (): {
  */
 export const trackLongTasks = (): void => {
   if (!window.PerformanceObserver) {
-    console.warn('[Performance] PerformanceObserver not supported');
+    logger.warn('[Performance] PerformanceObserver not supported');
     return;
   }
 
@@ -490,7 +491,7 @@ export const trackLongTasks = (): void => {
         const duration = Math.round(entry.duration * 100) / 100;
 
         if (config.debug) {
-          console.warn('[Performance] Long task detected:', {
+          logger.warn('[Performance] Long task detected:', {
             name: entry.name,
             duration,
             startTime: entry.startTime,
@@ -511,13 +512,13 @@ export const trackLongTasks = (): void => {
       }
     });
 
-    observer.observe({ entryTypes: ['longtask'] });
+    observer.observe({ type: 'longtask', buffered: true });
 
     if (config.debug) {
-      console.log('[Performance] Long task tracking initialized');
+      logger.debug('[Performance] Long task tracking initialized');
     }
   } catch (error) {
-    console.error('[Performance] Failed to track long tasks:', error);
+    logger.error('[Performance] Failed to track long tasks:', error);
   }
 };
 

@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { logger } from '@/lib/logger';
 
 /**
  * API Error Response Interface
@@ -101,13 +102,13 @@ export const getErrorMessage = (error: unknown): string => {
 export const handleApiError = (
   error: unknown,
   showToastFn: (message: string, type: 'error') => void,
-  options: ErrorHandlerOptions = {}
+  options: ErrorHandlerOptions = {},
 ): string => {
   const { showToast = true, customMessage, logError = true } = options;
 
   // Log error in development
   if (logError && process.env.NODE_ENV === 'development') {
-    console.error('API Error:', error);
+    logger.error('API Error:', error);
   }
 
   // Get error message
@@ -168,7 +169,7 @@ export const getValidationErrors = (error: unknown): Record<string, string[]> | 
 export const shouldRetry = (
   error: unknown,
   retryCount: number,
-  maxRetries: number = 3
+  maxRetries: number = 3,
 ): boolean => {
   if (retryCount >= maxRetries) {
     return false;

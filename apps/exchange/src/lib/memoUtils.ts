@@ -1,4 +1,5 @@
-import { memo, useMemo, useCallback, DependencyList } from 'react';
+import { memo, useMemo, useCallback, type DependencyList } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Generic memoized component wrapper
@@ -6,7 +7,7 @@ import { memo, useMemo, useCallback, DependencyList } from 'react';
  */
 export const memoComponent = <P extends object>(
   Component: React.ComponentType<P>,
-  propsAreEqual?: (prevProps: Readonly<P>, nextProps: Readonly<P>) => boolean
+  propsAreEqual?: (prevProps: Readonly<P>, nextProps: Readonly<P>) => boolean,
 ): React.MemoExoticComponent<React.ComponentType<P>> => {
   return memo(Component, propsAreEqual);
 };
@@ -25,7 +26,7 @@ export const useMemoizedValue = <T>(factory: () => T, deps: DependencyList): T =
  */
 export const useMemoizedCallback = <T extends (...args: any[]) => any>(
   callback: T,
-  deps: DependencyList
+  deps: DependencyList,
 ): T => {
   return useCallback(callback, deps) as T;
 };
@@ -36,7 +37,7 @@ export const useMemoizedCallback = <T extends (...args: any[]) => any>(
  */
 export const shallowEqual = <T extends Record<string, any>>(
   prevProps: T,
-  nextProps: T
+  nextProps: T,
 ): boolean => {
   const prevKeys = Object.keys(prevProps);
   const nextKeys = Object.keys(nextProps);
@@ -89,7 +90,7 @@ export const deepEqual = <T>(prev: T, next: T): boolean => {
 export const useMemoWithEqualityCheck = <T>(
   factory: () => T,
   deps: DependencyList,
-  equalityFn: (prev: T | undefined, next: T) => boolean
+  equalityFn: (prev: T | undefined, next: T) => boolean,
 ): T => {
   const valueRef = useMemo(() => ({ current: undefined as T | undefined }), []);
   const newValue = useMemo(factory, deps);
@@ -107,7 +108,7 @@ export const useMemoWithEqualityCheck = <T>(
  */
 export const createMemoizedSelector = <TInput, TOutput>(
   selector: (input: TInput) => TOutput,
-  equalityFn?: (prev: TOutput, next: TOutput) => boolean
+  equalityFn?: (prev: TOutput, next: TOutput) => boolean,
 ) => {
   let lastInput: TInput | undefined;
   let lastOutput: TOutput | undefined;
@@ -134,7 +135,7 @@ export const createMemoizedSelector = <TInput, TOutput>(
  */
 export const useMemoizedArray = <T extends Record<string, any>>(
   array: T[],
-  compareKeys?: (keyof T)[]
+  compareKeys?: (keyof T)[],
 ): T[] => {
   return useMemo(() => {
     if (!compareKeys || compareKeys.length === 0) {
@@ -158,7 +159,7 @@ export const useMemoizedArray = <T extends Record<string, any>>(
 export const useDebouncedMemo = <T>(
   factory: () => T,
   deps: DependencyList,
-  delay: number = 300
+  delay: number = 300,
 ): T => {
   const timeoutRef = useMemo(() => ({ current: undefined as NodeJS.Timeout | undefined }), []);
   const valueRef = useMemo(() => ({ current: factory() }), []);
@@ -207,14 +208,14 @@ export const useMemoizedObject = <T extends Record<string, any>>(obj: T, keys?: 
  */
 export const withPerformanceMonitoring = <P extends object>(
   Component: React.ComponentType<P>,
-  componentName: string
+  componentName: string,
 ): React.MemoExoticComponent<React.ComponentType<P>> => {
   let renderCount = 0;
 
   return memo(Component, (prevProps, nextProps) => {
     if (process.env.NODE_ENV === 'development') {
       renderCount++;
-      console.log(`[${componentName}] Render #${renderCount}`);
+      logger.debug(`[${componentName}] Render #${renderCount}`);
 
       const changedProps: string[] = [];
       (Object.keys(prevProps) as (keyof P)[]).forEach((key) => {
@@ -224,7 +225,7 @@ export const withPerformanceMonitoring = <P extends object>(
       });
 
       if (changedProps.length > 0) {
-        console.log(`[${componentName}] Changed props:`, changedProps);
+        logger.debug(`[${componentName}] Changed props:`, changedProps);
       }
     }
 

@@ -2,9 +2,9 @@
  * React Hook Form Configuration with Zod Validation
  * Type-safe form handling and validation utilities
  */
-import { useForm, UseFormProps, FieldValues } from 'react-hook-form';
+import { useForm, type UseFormProps, type FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z, ZodSchema } from 'zod';
+import { z, type ZodSchema } from 'zod';
 
 /**
  * Custom hook for forms with Zod validation
@@ -28,7 +28,7 @@ import { z, ZodSchema } from 'zod';
  */
 export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
   schema: ZodSchema,
-  options?: Omit<UseFormProps<TFieldValues>, 'resolver'>
+  options?: Omit<UseFormProps<TFieldValues>, 'resolver'>,
 ) {
   return useForm<TFieldValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
  */
 
 /**
- * Waves Address Validation
+ * DCC Address Validation
  * Validates DecentralChain addresses (35 characters, starts with 3P)
  */
 export const addressSchema = z
@@ -94,7 +94,7 @@ export const attachmentSchema = z
  */
 export const passwordSchema = z
   .string()
-  .min(8, 'Password must be at least 8 characters')
+  .min(12, 'Password must be at least 12 characters')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(/[0-9]/, 'Password must contain at least one number')
@@ -111,14 +111,14 @@ export const seedPhraseSchema = z
       const words = val.trim().split(/\s+/);
       return words.length === 15;
     },
-    { message: 'Seed phrase must contain exactly 15 words' }
+    { message: 'Seed phrase must contain exactly 15 words' },
   )
   .refine(
     (val) => {
       const words = val.trim().split(/\s+/);
       return words.every((word) => word.length > 0);
     },
-    { message: 'Seed phrase cannot contain empty words' }
+    { message: 'Seed phrase cannot contain empty words' },
   );
 
 /**
@@ -150,7 +150,7 @@ export const sendAssetSchema = z.object({
           }
         }
       },
-      { message: 'Invalid recipient address or alias' }
+      { message: 'Invalid recipient address or alias' },
     ),
   amount: amountSchema,
   assetId: z.string().optional().nullable(), // null = DCC
@@ -185,10 +185,10 @@ export const massTransferSchema = z.object({
                 }
               }
             },
-            { message: 'Invalid address or alias' }
+            { message: 'Invalid address or alias' },
           ),
         amount: amountSchema,
-      })
+      }),
     )
     .min(1, 'At least one recipient required')
     .max(100, 'Maximum 100 recipients allowed'),
@@ -280,7 +280,7 @@ export const dataTransactionSchema = z.object({
         key: z.string().min(1, 'Key cannot be empty').max(100, 'Key cannot exceed 100 characters'),
         type: z.enum(['string', 'integer', 'boolean', 'binary']),
         value: z.union([z.string(), z.number(), z.boolean()]),
-      })
+      }),
     )
     .min(1, 'At least one data entry required'),
   fee: optionalAmountSchema,
@@ -362,7 +362,7 @@ export function getFormError(fieldErrors: unknown): string | undefined {
  */
 export function formatFormData<T extends Record<string, unknown>>(data: T): T {
   return Object.fromEntries(
-    Object.entries(data).filter(([, value]) => value !== undefined && value !== null)
+    Object.entries(data).filter(([, value]) => value !== undefined && value !== null),
   ) as T;
 }
 
