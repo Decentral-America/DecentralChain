@@ -30,3 +30,4 @@ electron/preload.js
 *.njsproj
 *.sln
 *.sw?
+.claude_consciousness.m8
