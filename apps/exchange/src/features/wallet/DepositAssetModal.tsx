@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import gatewayService from '@/services/gateways/GatewayService';
+import { logger } from '@/lib/logger';
 
 interface DepositAssetModalProps {
   isOpen: boolean;
@@ -34,8 +35,13 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
     // Fetch deposit address from gateway service
     gatewayService
       .getDepositDetails(
-        { id: assetId, name: assetName || assetId, displayName: assetName || assetId, precision: 8 },
-        user.address
+        {
+          id: assetId,
+          name: assetName || assetId,
+          displayName: assetName || assetId,
+          precision: 8,
+        },
+        user.address,
       )
       .then((details) => {
         if (details) {
@@ -45,7 +51,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
         }
       })
       .catch((err) => {
-        console.error('[DepositModal] Failed to fetch deposit address:', err);
+        logger.error('[DepositModal] Failed to fetch deposit address:', err);
         setError('Failed to load deposit information. Please try again.');
       })
       .finally(() => {
@@ -97,7 +103,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
           <InfoSection>
             <InfoItem>
               <InfoLabel>Network:</InfoLabel>
-              <InfoValue>Waves Blockchain</InfoValue>
+              <InfoValue>DecentralChain</InfoValue>
             </InfoItem>
             <InfoItem>
               <InfoLabel>Processing Time:</InfoLabel>

@@ -6,14 +6,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, tokenIssuanceSchema, TokenIssuanceFormData } from '@/lib/forms';
+import { useZodForm, tokenIssuanceSchema, type TokenIssuanceFormData } from '@/lib/forms';
 import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/atoms/Button';
 import { Checkbox } from '@/components/atoms/Checkbox';
 import { Card } from '@/components/atoms/Card';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { transactionService, type Transaction } from '@/services/transactionService';
 import { AlertModal } from '@/components/modals/AlertModal';
+import { logger } from '@/lib/logger';
 
 /**
  * Component Props
@@ -26,7 +27,7 @@ export interface IssueTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card)`
+const FormContainer = styled(Card as any)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -111,7 +112,7 @@ const FeeText = styled.p`
  * @example
  * ```tsx
  * <IssueTokenForm
- *   onSuccess={(tx) => console.log('Token issued:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Token issued:', tx.id)}
  *   onCancel={() => navigate('/wallet')}
  * />
  * ```
@@ -166,7 +167,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       // Wait for confirmation
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Success
@@ -180,7 +181,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       // Reset form on success
       form.reset();
     } catch (error) {
-      console.error('Token issuance failed:', error);
+      logger.error('Token issuance failed:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
       setErrorModalOpen(true);
     } finally {

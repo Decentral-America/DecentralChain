@@ -3,7 +3,7 @@
  * Interface for staking DCC with nodes and viewing active leases
  * Allows users to create lease transactions and cancel active leases
  */
-import { MouseEvent, useMemo, useState } from 'react';
+import { type MouseEvent, useMemo, useState } from 'react';
 import {
   Alert,
   Box,
@@ -204,7 +204,7 @@ export const Leasing = () => {
         acc[tx.id] = true;
         return acc;
       },
-      {} as Record<string, boolean>
+      {} as Record<string, boolean>,
     );
 
     const merged = [...filtered];
@@ -227,7 +227,7 @@ export const Leasing = () => {
           (tx: Lease) =>
             tx.status === 'cancelled' ||
             tx.status === 'canceled' ||
-            tx.typeName === 'cancel-leasing'
+            tx.typeName === 'cancel-leasing',
         );
       case 'all':
       default:
@@ -281,7 +281,7 @@ export const Leasing = () => {
   const allCount = allLeasingTxs?.length ?? 0;
   const activeCount =
     (allLeasingTxs as Lease[] | undefined)?.filter(
-      (tx) => tx.status === 'active' || tx.typeName === 'lease-out'
+      (tx) => tx.status === 'active' || tx.typeName === 'lease-out',
     ).length ?? 0;
   const canceledCount =
     (allLeasingTxs as Lease[] | undefined)?.filter((tx) => {
@@ -334,7 +334,9 @@ export const Leasing = () => {
 
     // Use available balance (excludes already leased amount)
     if (numeric + LEASE_FEE_DCC > availableInDcc) {
-      setAmountError(`Insufficient balance (including fee). Available: ${availableInDcc.toFixed(8)} DCC`);
+      setAmountError(
+        `Insufficient balance (including fee). Available: ${availableInDcc.toFixed(8)} DCC`,
+      );
       return false;
     }
 
@@ -440,7 +442,13 @@ export const Leasing = () => {
         )}
 
         <Grid container spacing={2.5}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -473,7 +481,13 @@ export const Leasing = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -506,7 +520,13 @@ export const Leasing = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -539,7 +559,13 @@ export const Leasing = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -572,7 +598,12 @@ export const Leasing = () => {
         </Grid>
 
         <Grid container spacing={2.5}>
-          <Grid item xs={12} md={5}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 5,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardHeader
                 title="Distribution"
@@ -581,17 +612,18 @@ export const Leasing = () => {
               <Divider />
               <CardContent>
                 <Box sx={{ height: { xs: 320, md: 360 } }}>
-                  <LeasingChart
-                    available={regularBalance}
-                    leasedOut={leasedBalance}
-                    leasedIn={0}
-                  />
+                  <LeasingChart available={regularBalance} leasedOut={leasedBalance} leasedIn={0} />
                 </Box>
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={7}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 7,
+            }}
+          >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardHeader
                 title="Start Leasing"

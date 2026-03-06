@@ -11,6 +11,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Select } from '@/components/atoms/Select';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
+import { logger } from '@/lib/logger';
 
 const TransactionsContainer = styled.div`
   width: 100%;
@@ -287,7 +288,7 @@ export const Transactions = () => {
   const totalPages = Math.ceil((filteredTransactions?.length || 0) / ITEMS_PER_PAGE);
   const paginatedTransactions = filteredTransactions?.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   // Get unique assets for filter
@@ -391,7 +392,7 @@ export const Transactions = () => {
 
       alert(`Exported ${allTransactions.length} transactions`);
     } catch (error) {
-      console.error('[Transactions] Export failed:', error);
+      logger.error('[Transactions] Export failed:', error);
       alert('Failed to export transactions. Please try again.');
     } finally {
       setIsExporting(false);
@@ -485,41 +486,41 @@ export const Transactions = () => {
         {/* Transactions Table */}
         <Card>
           <TableWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Asset</th>
-                <th>Fee</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedTransactions?.map((tx) => (
-                <tr key={tx.id}>
-                  <td>
-                    <TransactionType $type={tx.type}>
-                      {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-                    </TransactionType>
-                  </td>
-                  <td>
-                    <Amount $positive={tx.amount >= 0}>
-                      {tx.amount >= 0 ? '+' : ''}
-                      {tx.amount.toFixed(8)}
-                    </Amount>
-                  </td>
-                  <td>{tx.asset}</td>
-                  <td>{tx.fee.toFixed(8)}</td>
-                  <td>{new Date(tx.timestamp).toLocaleString()}</td>
-                  <td>
-                    <span style={{ textTransform: 'capitalize' }}>{tx.status}</span>
-                  </td>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Asset</th>
+                  <th>Fee</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {paginatedTransactions?.map((tx) => (
+                  <tr key={tx.id}>
+                    <td>
+                      <TransactionType $type={tx.type}>
+                        {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                      </TransactionType>
+                    </td>
+                    <td>
+                      <Amount $positive={tx.amount >= 0}>
+                        {tx.amount >= 0 ? '+' : ''}
+                        {tx.amount.toFixed(8)}
+                      </Amount>
+                    </td>
+                    <td>{tx.asset}</td>
+                    <td>{tx.fee.toFixed(8)}</td>
+                    <td>{new Date(tx.timestamp).toLocaleString()}</td>
+                    <td>
+                      <span style={{ textTransform: 'capitalize' }}>{tx.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </TableWrapper>
 
           {/* Pagination */}

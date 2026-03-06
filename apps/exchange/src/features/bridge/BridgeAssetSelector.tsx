@@ -5,7 +5,7 @@
  */
 import { Grid, Card, CardContent, Typography, Button, Box, Avatar, Stack } from '@mui/material';
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { useConfig } from '@/contexts/ConfigContext';
 
 interface GatewayAsset {
@@ -37,10 +37,10 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   onDeposit,
   onWithdraw,
 }) => {
-  const { wavesGateway, assets } = useConfig();
+  const { gateway, assets } = useConfig();
 
   // Build list of gateway assets with their details
-  const gatewayAssets: GatewayAsset[] = Object.keys(wavesGateway || {}).map((assetId) => {
+  const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
     const assetInfo: any = (assets as any)[assetId] || {};
     const balance = balances[assetId] || new BigNumber(0);
 
@@ -73,7 +73,14 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   return (
     <Grid container spacing={3}>
       {gatewayAssets.map((asset) => (
-        <Grid item xs={12} sm={6} md={4} key={asset.assetId}>
+        <Grid
+          key={asset.assetId}
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 4,
+          }}
+        >
           <Card
             sx={{
               height: '100%',

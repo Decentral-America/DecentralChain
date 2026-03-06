@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
 import { Card } from '@/components/atoms/Card';
+import { logger } from '@/lib/logger';
 
 // Account type - matches User from AuthContext
 interface Account {
@@ -80,7 +81,9 @@ const AccountList = styled.div`
   gap: ${(p) => p.theme.spacing.md};
 `;
 
-const AccountCard = styled(Card).attrs<{ $isSelected: boolean; $disabled?: boolean }>(() => ({}))<{
+const AccountCard = styled(Card as any).attrs<{ $isSelected: boolean; $disabled?: boolean }>(
+  () => ({}),
+)<{
   $isSelected: boolean;
   $disabled?: boolean;
 }>`
@@ -240,7 +243,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
     try {
       await onSelect(userHash);
     } catch (error) {
-      console.error('[AccountSelect] Login failed:', error);
+      logger.error('[AccountSelect] Login failed:', error);
       setIsLoading(false);
       setSelectedHash(null);
     }
@@ -278,11 +281,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
                   {account.address.substring(0, 10)}...
                   {account.address.substring(account.address.length - 8)}
                 </AccountAddress>
-                {account.userType === 'ledger' && (
-                  <LedgerBadge>
-                    🔐 Ledger
-                  </LedgerBadge>
-                )}
+                {account.userType === 'ledger' && <LedgerBadge>🔐 Ledger</LedgerBadge>}
                 {account.lastLogin && (
                   <LastLogin>Last login: {formatLastLogin(account.lastLogin)}</LastLogin>
                 )}

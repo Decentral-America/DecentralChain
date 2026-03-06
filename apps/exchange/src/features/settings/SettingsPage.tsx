@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Tabs, Tab } from '@/components/atoms/Tabs';
+import { Tabs, type Tab } from '@/components/atoms/Tabs';
 import { Card } from '@/components/atoms/Card';
 import { GeneralSettings } from './GeneralSettings';
 import { SecuritySettings } from './SecuritySettings';
@@ -39,7 +39,7 @@ const PageDescription = styled.p`
   line-height: 1.6;
 `;
 
-const TabContent = styled(Card)`
+const TabContent = styled(Card as any)`
   min-height: 400px;
 `;
 

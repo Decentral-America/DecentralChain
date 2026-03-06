@@ -4,6 +4,7 @@
  * Matches Angular modalManager.showAssetInfo functionality
  */
 import { Modal } from '@/components/organisms/Modal';
+import { logger } from '@/lib/logger';
 import { Spinner } from '@/components/atoms/Spinner';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
@@ -31,7 +32,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
 
   const handleCopy = (text: string, label: string) => {
     copyToClipboard(text);
-    console.log(`Copied ${label}: ${text}`);
+    logger.debug(`Copied ${label}: ${text}`);
   };
 
   return (
@@ -68,7 +69,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
                 {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: assetInfo.precision,
-                }
+                },
               )}
             </Value>
           </InfoRow>
@@ -117,7 +118,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
               <Label>Min Sponsored Fee:</Label>
               <Value>
                 {(Number(assetInfo.minSponsoredFee) / Math.pow(10, assetInfo.precision)).toFixed(
-                  assetInfo.precision
+                  assetInfo.precision,
                 )}{' '}
                 {assetInfo.name}
               </Value>

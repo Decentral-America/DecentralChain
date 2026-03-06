@@ -4,7 +4,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
-import { AssetCard, Asset } from './AssetCard';
+import { AssetCard, type Asset } from './AssetCard';
 import { Stack } from '@/components/atoms/Stack';
 import { Spinner } from '@/components/atoms/Spinner';
 import styled from 'styled-components';

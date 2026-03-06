@@ -2,7 +2,8 @@
  * SendAssetModalModern Component
  * Modern MUI-based modal for sending assets with recipient, amount, and fee inputs
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { logger } from '@/lib/logger';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
@@ -40,7 +41,7 @@ export interface SendAssetModalModernProps {
 export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   isOpen,
   onClose,
-  assetId = 'WAVES',
+  assetId = 'DCC',
   assetName = 'DCC',
   assetDecimals = 8,
   availableBalance = '0',
@@ -65,6 +66,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   const fee = 0.001; // Transaction fee in DCC
   const [txId, setTxId] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // SECURITY: Mutex to prevent double-send race conditions
+  const sendingRef = useRef(false);
+  const broadcastedTxIds = useRef(new Set<string>());
 
   /**
    * Debounced alias resolution effect
@@ -91,7 +96,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
       const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
       const match = aliasName.match(aliasPrefix);
       if (match) {
-        aliasName = match[1];
+        aliasName = match[1]!;
       }
 
       // Check if it matches alias format
@@ -109,9 +114,9 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
       try {
         const address = await getAddressByAlias(aliasName);
         setResolvedAddress(address);
-        console.log(`[SendAssetModalModern] Resolved alias "${aliasName}" to address: ${address}`);
+        logger.debug(`[SendAssetModalModern] Resolved alias "${aliasName}" to address: ${address}`);
       } catch (error) {
-        console.warn(`[SendAssetModalModern] Failed to resolve alias "${aliasName}":`, error);
+        logger.warn(`[SendAssetModalModern] Failed to resolve alias "${aliasName}":`, error);
         setResolvedAddress(null);
       } finally {
         setIsResolvingAlias(false);
@@ -128,32 +133,48 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
    */
   const sendMutation = useMutation({
     mutationFn: async () => {
-      if (!user?.seed) {
-        throw new Error('No user seed found');
+      // SECURITY: Prevent double-send race condition
+      if (sendingRef.current) {
+        throw new Error('Transaction already in progress');
       }
+      sendingRef.current = true;
 
-      // Validate inputs
-      if (!validateInputs()) {
-        throw new Error('Invalid inputs');
+      try {
+        if (!user?.seed) {
+          throw new Error('No user seed found');
+        }
+
+        // Validate inputs
+        if (!validateInputs()) {
+          throw new Error('Invalid inputs');
+        }
+
+        // Determine the final recipient address
+        // If it's an alias, use the resolved address; otherwise use recipient as-is
+        const finalRecipient = isAlias && resolvedAddress ? resolvedAddress : recipient;
+
+        // Create and broadcast transaction
+        const tx = await createTransferTransaction(
+          {
+            recipient: finalRecipient,
+            amount: parseFloat(amount),
+            assetId: assetId === 'DCC' ? null : assetId,
+            attachment,
+          },
+          user.seed,
+        );
+
+        const result = await broadcastTransaction(tx);
+
+        // SECURITY: Track broadcast tx ID to prevent duplicate broadcasts
+        if (result.id) {
+          broadcastedTxIds.current.add(result.id);
+        }
+
+        return result;
+      } finally {
+        sendingRef.current = false;
       }
-
-      // Determine the final recipient address
-      // If it's an alias, use the resolved address; otherwise use recipient as-is
-      const finalRecipient = isAlias && resolvedAddress ? resolvedAddress : recipient;
-
-      // Create and broadcast transaction
-      const tx = await createTransferTransaction(
-        {
-          recipient: finalRecipient,
-          amount: parseFloat(amount),
-          assetId: assetId === 'WAVES' ? null : assetId,
-          attachment,
-        },
-        user.seed
-      );
-
-      const result = await broadcastTransaction(tx);
-      return result;
     },
     onSuccess: (data) => {
       setTxId(data.id);
@@ -168,7 +189,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   });
 
   /**
-   * Validate Waves/DecentralChain address or alias
+   * Validate DCC/DecentralChain address or alias
    * @param input - Address or alias string
    * @returns boolean indicating validity
    */
@@ -186,7 +207,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
     const match = aliasName.match(aliasPrefix);
     if (match) {
-      aliasName = match[1];
+      aliasName = match[1]!;
     }
 
     // Check alias format (4-30 chars, lowercase alphanumeric + -@_.)

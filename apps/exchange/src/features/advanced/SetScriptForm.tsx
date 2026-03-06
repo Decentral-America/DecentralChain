@@ -12,11 +12,12 @@ import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card)`
+const FormCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -139,7 +140,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const RemoveScriptButton = styled(Button)`
+const RemoveScriptButton = styled(Button as any)`
   flex: 1;
 `;
 
@@ -197,7 +198,7 @@ export const SetScriptForm: React.FC = () => {
       setTransactionParams(params);
       setShowConfirmation(true);
     } catch (error) {
-      console.error('Error preparing setScript transaction:', error);
+      logger.error('Error preparing setScript transaction:', error);
       alert('Failed to prepare setScript transaction');
     }
   };
@@ -260,7 +261,7 @@ export const SetScriptForm: React.FC = () => {
               {errors.script && <HelperText error>{errors.script.message}</HelperText>}
               {!errors.script && (
                 <HelperText>
-                  Enter your compiled RIDE script in base64 format (starts with "base64:")
+                  Enter your compiled RIDE script in base64 format (starts with &quot;base64:&quot;)
                 </HelperText>
               )}
             </div>
@@ -275,7 +276,7 @@ export const SetScriptForm: React.FC = () => {
               • Scripts validate all outgoing transactions from your account
               <br />
               • Leave empty and submit to remove an existing script
-              <br />• Learn more about RIDE at docs.wavesplatform.com/en/ride/
+              <br />• Learn more about RIDE at docs.decentralchain.io/en/ride/
             </InfoBox>
 
             <ButtonGroup>

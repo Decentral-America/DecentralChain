@@ -40,7 +40,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   placeholder = 'Enter blockchain address',
   disabled = false,
 }) => {
-  const { wavesGateway } = useConfig();
+  const { gateway } = useConfig();
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState<string>('');
   const [formatHint, setFormatHint] = useState<string>('');
@@ -49,14 +49,14 @@ export const AddressInput: React.FC<AddressInputProps> = ({
    * Get format hint from gateway config
    */
   useEffect(() => {
-    const config = getGatewayConfig(assetId, wavesGateway || {});
+    const config = getGatewayConfig(assetId, gateway || {});
     if (config?.regex) {
       const hint = getAddressFormatHint(config.regex);
       setFormatHint(hint);
     } else {
       setFormatHint('');
     }
-  }, [assetId, wavesGateway]);
+  }, [assetId, gateway]);
 
   /**
    * Validate address on every change
@@ -70,7 +70,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     }
 
     // Validate address
-    const valid = validateGatewayAddress(value, assetId, wavesGateway || {});
+    const valid = validateGatewayAddress(value, assetId, gateway || {});
     setIsValid(valid);
 
     if (!valid) {
@@ -78,20 +78,18 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     } else {
       setError('');
     }
-  }, [value, assetId, wavesGateway]);
+  }, [value, assetId, gateway]);
 
   /**
    * Handle input change
    */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value.trim();
-    
+
     // Update parent with new value and current validation state
     // Validation will be updated in the next effect cycle
-    const valid = newValue
-      ? validateGatewayAddress(newValue, assetId, wavesGateway || {})
-      : false;
-    
+    const valid = newValue ? validateGatewayAddress(newValue, assetId, gateway || {}) : false;
+
     onChange(newValue, valid);
   };
 
@@ -132,7 +130,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           },
         }}
       />
-      
+
       {/* Format Hint */}
       {formatHint && !error && (
         <Typography

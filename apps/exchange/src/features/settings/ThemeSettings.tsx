@@ -11,7 +11,7 @@ import { Card } from '@/components/atoms/Card';
 /**
  * Styled Components
  */
-const SettingsCard = styled(Card)`
+const SettingsCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 

@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 import styled from 'styled-components';
 import { useSettings } from '@/contexts/SettingsContext';
 
@@ -128,7 +129,7 @@ export const GeneralSettings = () => {
         const height = await ds.api.node.height();
         setBlockHeight(height);
       } catch (error) {
-        console.error('[GeneralSettings] Failed to fetch block height:', error);
+        logger.error('[GeneralSettings] Failed to fetch block height:', error);
       }
     };
 
@@ -162,7 +163,7 @@ export const GeneralSettings = () => {
           onChange={(e) => {
             setCommonSetting('lng', e.target.value);
             // Note: i18n integration would go here
-            console.log('[GeneralSettings] Language changed to:', e.target.value);
+            logger.debug('[GeneralSettings] Language changed to:', e.target.value);
           }}
         >
           {LANGUAGES.map((lang) => (

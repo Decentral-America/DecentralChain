@@ -6,7 +6,11 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, IconButton, Tooltip, Alert } from '@mui/material';
 import { ContentCopy, CheckCircle } from '@mui/icons-material';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeCanvas as QRCodeCanvasBase } from 'qrcode.react';
+import { logger } from '@/lib/logger';
+
+// React 19 type compatibility cast
+const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<any>;
 
 interface DepositAddressProps {
   /** External blockchain address (e.g., BTC address) */
@@ -21,11 +25,7 @@ interface DepositAddressProps {
  * DepositAddress component for displaying gateway deposit addresses
  * Features QR code generation, copy-to-clipboard, and responsive design
  */
-export const DepositAddress: React.FC<DepositAddressProps> = ({
-  address,
-  assetName,
-  onCopy,
-}) => {
+export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetName, onCopy }) => {
   const [copied, setCopied] = useState(false);
   const [qrError, setQrError] = useState(false);
 
@@ -43,11 +43,11 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({
       await navigator.clipboard.writeText(address);
       setCopied(true);
       onCopy?.();
-      
+
       // Reset copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy address:', error);
+      logger.error('Failed to copy address:', error);
     }
   };
 
@@ -134,7 +134,7 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({
         >
           {address}
         </Typography>
-        
+
         <Tooltip title={copied ? 'Copied!' : 'Copy address'} arrow>
           <IconButton
             onClick={handleCopy}
@@ -148,11 +148,7 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({
       </Box>
 
       {/* Additional Information */}
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ mt: 2, display: 'block' }}
-      >
+      <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
         Scan the QR code or copy the address above
       </Typography>
     </Box>

@@ -11,14 +11,15 @@ import { z } from 'zod';
 import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
-import { Select, SelectOption } from '@/components/atoms/Select';
+import { Select, type SelectOption } from '@/components/atoms/Select';
 import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card)`
+const FormCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -45,7 +46,7 @@ const EntriesContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
-const EntryCard = styled(Card)`
+const EntryCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.md};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -64,7 +65,7 @@ const EntryTitle = styled.div`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const RemoveButton = styled(Button)`
+const RemoveButton = styled(Button as any)`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   font-size: 12px;
 `;
@@ -90,7 +91,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const AddButton = styled(Button)`
+const AddButton = styled(Button as any)`
   width: 100%;
   max-width: 200px;
 `;
@@ -220,7 +221,7 @@ export const DataTransactionForm: React.FC = () => {
       setTransactionParams(params);
       setShowConfirmation(true);
     } catch (error) {
-      console.error('Error preparing data transaction:', error);
+      logger.error('Error preparing data transaction:', error);
       alert('Failed to prepare data transaction');
     }
   };

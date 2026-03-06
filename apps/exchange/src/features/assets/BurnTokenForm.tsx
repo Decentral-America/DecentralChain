@@ -6,16 +6,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, assetBurnSchema, AssetBurnFormData } from '@/lib/forms';
+import { useZodForm, assetBurnSchema, type AssetBurnFormData } from '@/lib/forms';
 import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { transactionService, type Transaction } from '@/services/transactionService';
 import { AlertModal } from '@/components/modals/AlertModal';
 import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
 import { useAssetDetails } from '@/api/services/assetsService';
 import { Spinner } from '@/components/atoms/Spinner';
+import { logger } from '@/lib/logger';
 
 /**
  * Component Props
@@ -29,7 +30,7 @@ export interface BurnTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card)`
+const FormContainer = styled(Card as any)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -164,7 +165,7 @@ const formatQuantity = (quantity: number, decimals: number): string => {
  * ```tsx
  * <BurnTokenForm
  *   assetId="DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p"
- *   onSuccess={(tx) => console.log('Burned:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Burned:', tx.id)}
  *   onCancel={() => navigate('/assets')}
  * />
  * ```
@@ -233,7 +234,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       // Wait for confirmation
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Success
@@ -248,7 +249,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       form.reset();
       setPendingBurnData(null);
     } catch (error) {
-      console.error('Asset burn failed:', error);
+      logger.error('Asset burn failed:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
       setErrorModalOpen(true);
     } finally {

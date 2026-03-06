@@ -146,7 +146,7 @@ const WordText = styled.span`
   color: ${(p) => p.theme.colors.text};
 `;
 
-const RevealButton = styled(Button)`
+const RevealButton = styled(Button as any)`
   position: absolute;
   top: 50%;
   left: 50%;

@@ -206,7 +206,7 @@ export const BuyOrderForm: React.FC = () => {
    * Fetch user balance for price asset (the asset used to buy)
    * Use different hooks depending on whether it's DCC (native) or custom token
    */
-  const isDccPriceAsset = !selectedPair?.priceAsset || selectedPair.priceAsset === 'WAVES';
+  const isDccPriceAsset = !selectedPair?.priceAsset || selectedPair.priceAsset === 'DCC';
 
   // For DCC (native token), use useBalanceWatcher
   const { balances: dccBalances } = useBalanceWatcher({
@@ -219,7 +219,7 @@ export const BuyOrderForm: React.FC = () => {
     selectedPair?.priceAsset || '',
     {
       enabled: isAuthenticated && !isDccPriceAsset && !!selectedPair?.priceAsset && !!user?.address,
-    }
+    },
   );
 
   // Determine available balance based on asset type

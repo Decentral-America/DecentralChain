@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 
 interface BurnAssetModalProps {
   isOpen: boolean;
@@ -61,11 +62,11 @@ export function BurnAssetModal({
       onClose();
       setAmount('');
     } catch (err) {
-      console.error('[BurnAssetModal] Burn failed:', err);
+      logger.error('[BurnAssetModal] Burn failed:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to burn tokens. Please check your balance and try again.'
+          : 'Failed to burn tokens. Please check your balance and try again.',
       );
     } finally {
       setIsProcessing(false);

@@ -5,7 +5,7 @@
  */
 import React, { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
-import { useDexStore, TradingPair } from '@/stores/dexStore';
+import { useDexStore, type TradingPair } from '@/stores/dexStore';
 import { FiSearch, FiChevronDown } from 'react-icons/fi';
 import { NetworkConfig } from '@/config';
 import { useQuery } from '@tanstack/react-query';
@@ -76,7 +76,7 @@ const useAssetNameFetcher = (assetIds: string[]) => {
       enabled: !!assetId,
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 60 * 60 * 1000, // 1 hour
-    })
+    }),
   );
 
   // Update cache when asset details are loaded
@@ -107,11 +107,11 @@ const AVAILABLE_PAIRS: TradingPair[] = loadTradingPairs();
 const getDefaultPair = (): TradingPair => {
   // Try to find DCC/CRC pair as preferred default
   const dccCrcPair = AVAILABLE_PAIRS.find(
-    (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC'
+    (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
   );
 
   // Fall back to first pair if DCC/CRC not found
-  return dccCrcPair || AVAILABLE_PAIRS[0];
+  return dccCrcPair || AVAILABLE_PAIRS[0]!;
 };
 
 const DEFAULT_PAIR = getDefaultPair();
@@ -183,7 +183,7 @@ const Separator = styled.span`
 /**
  * Chevron icon
  */
-const ChevronIcon = styled(FiChevronDown)<{ $isOpen: boolean }>`
+const ChevronIcon = styled(FiChevronDown as any)<{ $isOpen: boolean }>`
   color: ${(p) => p.theme.colors.text};
   opacity: 0.7;
   transition: transform 0.2s;
@@ -250,7 +250,7 @@ const SearchInputWrapper = styled.div`
 /**
  * Search icon
  */
-const SearchIcon = styled(FiSearch)`
+const SearchIcon = styled(FiSearch as any)`
   position: absolute;
   left: ${(p) => p.theme.spacing.sm};
   color: ${(p) => p.theme.colors.text};
@@ -366,7 +366,7 @@ export const TradingPairSelector: React.FC = () => {
       if (selectedPair) {
         const updatedSelectedPair = updatedPairs.find(
           (p) =>
-            p.amountAsset === selectedPair.amountAsset && p.priceAsset === selectedPair.priceAsset
+            p.amountAsset === selectedPair.amountAsset && p.priceAsset === selectedPair.priceAsset,
         );
         if (
           updatedSelectedPair &&

@@ -188,7 +188,7 @@ export const TradeHistory: React.FC = () => {
     selectedPair?.amountAsset || '',
     selectedPair?.priceAsset || '',
     50,
-    { enabled: !!selectedPair, refetchInterval: 10000 } // Poll every 10 seconds like Angular
+    { enabled: !!selectedPair, refetchInterval: 10000 }, // Poll every 10 seconds like Angular
   );
 
   // Transform API data to component format

@@ -7,13 +7,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
-import { Select, SelectOption } from '@/components/atoms/Select';
+import { Select, type SelectOption } from '@/components/atoms/Select';
 import { Card } from '@/components/atoms/Card';
 
 /**
  * Styled Components
  */
-const SettingsCard = styled(Card)`
+const SettingsCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 

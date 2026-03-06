@@ -68,7 +68,7 @@ export const useDexOrderBook = () => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleOrderBookUpdate,
-    !!selectedPair // Only subscribe when pair is selected
+    !!selectedPair, // Only subscribe when pair is selected
   );
 
   // Reset state when pair changes
@@ -118,7 +118,7 @@ export const useDexTrades = () => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleTradeUpdate,
-    !!selectedPair
+    !!selectedPair,
   );
 
   // Reset state when pair changes
@@ -161,7 +161,7 @@ export const useDexUserOrders = (userAddress?: string) => {
         return newUpdates.slice(0, 50);
       });
     },
-    []
+    [],
   );
 
   // Subscribe to user orders channel
@@ -169,7 +169,7 @@ export const useDexUserOrders = (userAddress?: string) => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleOrderUpdate,
-    !!userAddress
+    !!userAddress,
   );
 
   // Reset state when user changes
@@ -233,8 +233,8 @@ export const calculateSpread = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0].price;
-  const bestAsk = orderBook.asks[0].price;
+  const bestBid = orderBook.bids[0]!.price;
+  const bestAsk = orderBook.asks[0]!.price;
 
   return bestAsk - bestBid;
 };
@@ -249,7 +249,7 @@ export const calculateSpreadPercentage = (orderBook: OrderBook | null): number =
   }
 
   const spread = calculateSpread(orderBook);
-  const bestAsk = orderBook.asks[0].price;
+  const bestAsk = orderBook.asks[0]!.price;
 
   if (bestAsk === 0) return 0;
 
@@ -265,8 +265,8 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0].price;
-  const bestAsk = orderBook.asks[0].price;
+  const bestBid = orderBook.bids[0]!.price;
+  const bestAsk = orderBook.asks[0]!.price;
 
   return (bestBid + bestAsk) / 2;
 };
@@ -278,7 +278,7 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
  */
 export const getTotalLiquidity = (
   orderBook: OrderBook | null,
-  depth = 10
+  depth = 10,
 ): { bidLiquidity: number; askLiquidity: number; totalLiquidity: number } => {
   if (!orderBook) {
     return { bidLiquidity: 0, askLiquidity: 0, totalLiquidity: 0 };

@@ -6,7 +6,17 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { VictoryChart, VictoryLine, VictoryAxis, VictoryTheme } from 'victory';
+import {
+  VictoryChart as VictoryChartBase,
+  VictoryLine as VictoryLineBase,
+  VictoryAxis as VictoryAxisBase,
+  VictoryTheme,
+} from 'victory';
+
+// React 19 type compatibility casts
+const VictoryChart = VictoryChartBase as React.ComponentType<any>;
+const VictoryLine = VictoryLineBase as React.ComponentType<any>;
+const VictoryAxis = VictoryAxisBase as React.ComponentType<any>;
 import { Spinner } from '@/components/atoms/Spinner';
 
 type ChartMode = 'hour' | 'day' | 'week' | 'month';
@@ -95,7 +105,7 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
             padding={{ top: 20, bottom: 50, left: 60, right: 20 }}
           >
             <VictoryAxis
-              tickFormat={(t) => formatXAxis(t)}
+              tickFormat={(t: any) => formatXAxis(t)}
               style={{
                 tickLabels: { fontSize: 12, fill: '#666' },
                 axis: { stroke: '#E0E0E0' },
@@ -103,7 +113,7 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
             />
             <VictoryAxis
               dependentAxis
-              tickFormat={(t) => formatYAxis(t)}
+              tickFormat={(t: any) => formatYAxis(t)}
               style={{
                 tickLabels: { fontSize: 12, fill: '#666' },
                 axis: { stroke: '#E0E0E0' },
@@ -132,7 +142,7 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
  */
 async function fetchHistoricalBalance(
   currentBalance: number,
-  mode: ChartMode
+  mode: ChartMode,
 ): Promise<ChartDataPoint[]> {
   // Calculate time intervals based on mode
   const now = Date.now();

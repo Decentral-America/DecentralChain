@@ -129,7 +129,7 @@ export const AccountSwitcher = () => {
     // Show confirmation before removing
     if (
       window.confirm(
-        'Are you sure you want to remove this account? This will not delete the account from the blockchain, only from this app.'
+        'Are you sure you want to remove this account? This will not delete the account from the blockchain, only from this app.',
       )
     ) {
       setRemovingAddress(address);
@@ -141,7 +141,7 @@ export const AccountSwitcher = () => {
   const handleLogout = () => {
     if (
       window.confirm(
-        'Are you sure you want to logout? You will need to import your account again to access your wallet.'
+        'Are you sure you want to logout? You will need to import your account again to access your wallet.',
       )
     ) {
       logout();
