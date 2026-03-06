@@ -16,14 +16,35 @@ export default defineConfig({
   optimizeDeps: {
     // Exclude data-service from dependency pre-bundling to avoid resolution issues
     exclude: ['data-service'],
-    // Note: @decentralchain/waves-transactions has issues with Vite and is currently excluded
+    // Force pre-bundle MUI + Emotion so CJS→ESM interop works correctly
+    include: [
+      '@mui/material',
+      '@mui/material/styles',
+      '@mui/system',
+      '@mui/icons-material',
+      '@emotion/react',
+      '@emotion/styled',
+    ],
+    // Note: @decentralchain/transactions has issues with Vite and is currently excluded
   },
   server: {
     host: true, // Expose on local network
     port: 3333,
     allowedHosts: ['cf4a81d5458a.ngrok-free.app'],
     headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://s3.tradingview.com https://*.tradingview.com; style-src 'self' 'unsafe-inline' https://s3.tradingview.com https://*.tradingview.com; img-src 'self' data: https:; connect-src 'self' https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://raw.githubusercontent.com https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io ws://localhost:* wss://localhost:*; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'self' https://s3.tradingview.com https://*.tradingview.com https://www.tradingview-widget.com https://s.tradingview.com;",
+      'Content-Security-Policy': [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://s3.tradingview.com https://*.tradingview.com",
+        "worker-src 'self' blob:",
+        "style-src 'self' 'unsafe-inline' https://s3.tradingview.com https://*.tradingview.com",
+        "img-src 'self' data: https:",
+        "connect-src 'self' https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://raw.githubusercontent.com https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io ws://localhost:* wss://localhost:*",
+        "font-src 'self' data:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-src 'self' https://s3.tradingview.com https://*.tradingview.com https://www.tradingview-widget.com https://s.tradingview.com",
+      ].join('; '),
     },
     proxy: {
       '/api': {
