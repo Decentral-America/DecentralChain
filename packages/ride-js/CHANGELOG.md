@@ -5,6 +5,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [2.3.0] - 2026-03-05
 
+### Security
+
+- **httpGet timeout**: Added 30-second timeout to `axios.get` in `interop.js` to prevent indefinite hangs (HIGH).
+- **Error logging**: Changed `console.log(e)` to `console.error(e)` in `compile()` catch block — production code must not use `console.log` (MEDIUM).
+- **CI hardening**: Added `npm audit --audit-level=high` step to CI pipeline before test execution.
+
+### Removed
+
+- Dead `_algs` array in `test/compiler.test.ts` — unused variable referencing algorithm names.
+
 ### Changed
 
 - **BREAKING**: Migrated to pure ESM (`"type": "module"`). CJS output retained for legacy compatibility.

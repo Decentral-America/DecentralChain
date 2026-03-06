@@ -55,7 +55,7 @@ globalThis.rsaVerify = function (digest, msg, sig, key) {
 };
 globalThis.httpGet = async function (data) {
   if (!data.url) return { ...data, status: 404, body: 'url is undefined' };
-  const resp = await axios.get(data.url, { validateStatus: () => true });
+  const resp = await axios.get(data.url, { validateStatus: () => true, timeout: 30_000 });
   const status = resp.status;
   let body = await resp.data;
   if (typeof body !== 'string') body = JSON.stringify(body);
