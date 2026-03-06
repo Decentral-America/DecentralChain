@@ -4,8 +4,8 @@
  */
 
 declare module 'data-service' {
-  import type { Money, AssetPair, OrderPrice } from '@waves/data-entities';
-  import type { BigNumber } from '@waves/bignumber';
+  import type { Money, AssetPair } from '@decentralchain/data-entities';
+  import type { BigNumber } from '@decentralchain/bignumber';
 
   // ========== Config ==========
   export interface IConfigParams {
@@ -20,7 +20,7 @@ declare module 'data-service' {
     assets: Record<string, string>;
     minimalSeedLength: number;
     remappedAssetNames: Record<string, string>;
-    oracleWaves: string;
+    oracleDCC: string;
     oracleTokenomica: string;
     tokenrating: string;
     rewriteAssets: Record<string, unknown>;
@@ -32,7 +32,10 @@ declare module 'data-service' {
     set<K extends keyof IConfigParams>(key: K, value: IConfigParams[K]): void;
     set(key: string, value: any): void;
     setConfig(props: Partial<IConfigParams>): void;
-    getDataService(): { getCandles(amountId: string, priceId: string, options: any): Promise<any>; [key: string]: any };
+    getDataService(): {
+      getCandles(amountId: string, priceId: string, options: any): Promise<any>;
+      [key: string]: any;
+    };
     timeDiff: number;
     matcherSettingsPromise: Promise<string[]>;
     change: { dispatch(key: keyof IConfigParams): void };
@@ -109,8 +112,16 @@ declare module 'data-service' {
   // ========== Broadcast ==========
   export function broadcast(tx: unknown): Promise<unknown>;
   export function createOrder(orderData: unknown): Promise<unknown>;
-  export function cancelOrder(orderId: string, senderPublicKey: string, signature: string): Promise<unknown>;
-  export function cancelAllOrders(senderPublicKey: string, signature: string, timestamp: number): Promise<unknown>;
+  export function cancelOrder(
+    orderId: string,
+    senderPublicKey: string,
+    signature: string,
+  ): Promise<unknown>;
+  export function cancelAllOrders(
+    senderPublicKey: string,
+    signature: string,
+    timestamp: number,
+  ): Promise<unknown>;
 
   // ========== Signature ==========
   export const signature: {
@@ -126,14 +137,21 @@ declare module 'data-service' {
   // ========== Utils ==========
   export function fetch<T>(url: string, options?: unknown): Promise<T>;
 
-  export function moneyFromTokens(tokens: string | number | BigNumber, assetData: any): Promise<Money>;
-  export function moneyFromCoins(coins: string | number | BigNumber, assetData: any): Promise<Money>;
+  export function moneyFromTokens(
+    tokens: string | number | BigNumber,
+    assetData: any,
+  ): Promise<Money>;
+  export function moneyFromCoins(
+    coins: string | number | BigNumber,
+    assetData: any,
+  ): Promise<Money>;
 
   // ========== Re-exports ==========
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   export const signAdapters: typeof import('@decentralchain/signature-adapter');
   export const isValidAddress: (address: string) => boolean;
   export const assetStorage: unknown;
-  export const wavesDataEntities: Record<string, unknown>;
+  export const dccDataEntities: Record<string, unknown>;
   export const dataManager: {
     dropAddress(): void;
     applyAddress(address: string): void;
