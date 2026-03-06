@@ -1,11 +1,10 @@
-import * as data from "../../testData/data";
+import { describe, test, expect } from 'vitest';
+import * as data from '../../testData/data';
+import compiler from '../../../src/index.js';
 
-const compiler = require('../../../src');
-
-describe('dataEntry',  () => {
-
-    test.only("invalid DataEntry", () => {
-        const contract = `
+describe('dataEntry', () => {
+  test.only('invalid DataEntry', () => {
+    const contract = `
         {-# STDLIB_VERSION ${data.STDLIB_VERSION_3} #-}
         {-# CONTENT_TYPE DAPP #-}
         {-# SCRIPT_TYPE ACCOUNT #-}
@@ -15,9 +14,10 @@ describe('dataEntry',  () => {
             WriteSet([
                 DataEntry("binaryValue")
             ])
-        }`
-        const compiled = compiler.compile(contract);
-        expect(compiled.error)
-            .toContain(`Compilation failed: [Function 'DataEntry' requires 2 arguments, but 1 are provided in`);
-    });
+        }`;
+    const compiled = compiler.compile(contract);
+    expect(compiled.error).toContain(
+      `Compilation failed: [Function 'DataEntry' requires 2 arguments, but 1 are provided in`,
+    );
+  });
 });
