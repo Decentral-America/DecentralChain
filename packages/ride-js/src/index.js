@@ -1,8 +1,25 @@
+/**
+ * @module @decentralchain/ride-js
+ * @description JS compiler for Ride — the smart-contract language for DecentralChain.
+ * Wraps the Scala.js-compiled Ride compiler to provide compile, decompile,
+ * REPL, and script-info utilities for Ride v1–v6 contracts.
+ */
+
 import './interop.js';
 import * as crypto from '@waves/ts-lib-crypto';
 import * as scalaJsCompiler from '@waves/ride-lang';
 import * as replJs from '@waves/ride-repl';
 
+/**
+ * Compile Ride source code to binary.
+ *
+ * @param {string} code — Ride source code to compile.
+ * @param {number} [estimatorVersion=3] — Complexity estimator version (1–3).
+ * @param {boolean} [needCompaction=false] — Whether to compact the output.
+ * @param {boolean} [removeUnusedCode=false] — Strip dead code from the result.
+ * @param {Record<string, string>} [libraries={}] — Named library sources for imports.
+ * @returns {{ result: { bytes: Uint8Array, base64: string, size: number, ast: object, complexity: number, verifierComplexity?: number, callableComplexities?: Record<string, number>, userFunctionComplexities?: Record<string, number>, globalVariableComplexities?: Record<string, number> } } | { error: string }} Compilation result or error.
+ */
 function wrappedCompile(
   code,
   estimatorVersion = 3,
@@ -58,6 +75,13 @@ function wrappedCompile(
   }
 }
 
+/**
+ * Create an interactive REPL session for evaluating Ride expressions.
+ *
+ * @param {{ nodeUrl: string, chainId: string, address: string }} [opts] —
+ *   Optional connection settings. When omitted a local offline REPL is created.
+ * @returns {{ evaluate: (expr: string) => Promise<{ result: string } | { error: any }>, reconfigure: (opts: { nodeUrl: string, chainId: string, address: string }) => ReturnType<typeof wrappedRepl>, clear: () => void, test: (str: string) => Promise<string>, info: (s: string) => string, totalInfo: () => string }} REPL instance.
+ */
 function wrappedRepl(opts) {
   const repl =
     opts != null
@@ -84,6 +108,16 @@ function wrappedRepl(opts) {
   return repl;
 }
 
+/**
+ * Flatten a nested compilation result into a single-level object.
+ *
+ * When compilation succeeds the result is unwrapped from `compiled.result`;
+ * when it fails the error is surfaced with an optional `base64` of the
+ * partially compiled bytes.
+ *
+ * @param {import('./index.d.ts').ICompilationResult | import('./index.d.ts').ICompilationError} compiled — The raw compilation output.
+ * @returns {import('./index.d.ts').IFlattenedCompilationResult} Flat result.
+ */
 const flattenCompilationResult = (compiled) => {
   let result = {};
   if (compiled.error) {
@@ -99,19 +133,39 @@ const flattenCompilationResult = (compiled) => {
   return result;
 };
 
+/** Compile Ride source code to binary. */
 export const compile = wrappedCompile;
+
+/** Create an interactive REPL session for evaluating Ride expressions. */
 export { wrappedRepl as repl };
+
+/** Get contract compilation limits for a given stdlib version. */
 export const contractLimits = scalaJsCompiler.contractLimits;
+
+/** Current Ride compiler version string. */
 export const version = (() => {
   const v = scalaJsCompiler.nodeVersion();
   return v && v.version;
 })();
+
+/** Get metadata about a compiled Ride script (version, type, public keys, etc.). */
 export const scriptInfo = scalaJsCompiler.scriptInfo;
+
+/** Get available types for a given standard library version. */
 export const getTypes = scalaJsCompiler.getTypes;
+
+/** Get variable documentation for a given standard library version. */
 export const getVarsDoc = scalaJsCompiler.getVarsDoc;
+
+/** Get function documentation for a given standard library version. */
 export const getFunctionsDoc = scalaJsCompiler.getFunctionsDoc;
+
+/** Decompile a base64-encoded compiled script back to Ride source code. */
 export const decompile = scalaJsCompiler.decompile;
+
 export { flattenCompilationResult };
+
+/** Parse and compile Ride source with additional AST information. */
 export const parseAndCompile = scalaJsCompiler.parseAndCompile;
 
 // Legacy default export for CJS compat
