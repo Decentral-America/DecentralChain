@@ -34,6 +34,7 @@
  */
 
 import ReactGA from 'react-ga4';
+import { logger } from '@/lib/logger';
 
 /**
  * Analytics configuration
@@ -97,7 +98,7 @@ let config: AnalyticsConfig = {};
  */
 export const initAnalytics = (options: AnalyticsConfig = {}): void => {
   if (isInitialized) {
-    console.warn('[Analytics] Already initialized');
+    logger.warn('[Analytics] Already initialized');
     return;
   }
 
@@ -111,7 +112,7 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
 
   // Don't track in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
-    console.log('[Analytics] Disabled in development mode');
+    logger.debug('[Analytics] Disabled in development mode');
     return;
   }
 
@@ -125,10 +126,10 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
       });
 
       if (config.debug) {
-        console.log('[Analytics] Google Analytics initialized:', config.gaId);
+        logger.debug('[Analytics] Google Analytics initialized:', config.gaId);
       }
     } catch (error) {
-      console.error('[Analytics] Failed to initialize Google Analytics:', error);
+      logger.error('[Analytics] Failed to initialize Google Analytics:', error);
     }
   }
 
@@ -143,11 +144,11 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
         });
 
         if (config.debug) {
-          console.log('[Analytics] Amplitude initialized:', config.amplitudeKey);
+          logger.debug('[Analytics] Amplitude initialized:', config.amplitudeKey);
         }
       }
     } catch (error) {
-      console.error('[Analytics] Failed to initialize Amplitude:', error);
+      logger.error('[Analytics] Failed to initialize Amplitude:', error);
     }
   }
 
@@ -199,10 +200,10 @@ export const trackPageView = (path: string, title?: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] Page view tracked:', { path, title });
+      logger.debug('[Analytics] Page view tracked:', { path, title });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track page view:', error);
+    logger.error('[Analytics] Failed to track page view:', error);
   }
 };
 
@@ -236,7 +237,7 @@ export const trackEvent = (
   action: string,
   label?: string,
   value?: number,
-  params?: EventParams
+  params?: EventParams,
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     return;
@@ -264,10 +265,10 @@ export const trackEvent = (
     }
 
     if (config.debug) {
-      console.log('[Analytics] Event tracked:', { category, action, label, value, params });
+      logger.debug('[Analytics] Event tracked:', { category, action, label, value, params });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track event:', error);
+    logger.error('[Analytics] Failed to track event:', error);
   }
 };
 
@@ -303,10 +304,10 @@ export const setUserId = (userId: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User ID set:', userId);
+      logger.debug('[Analytics] User ID set:', userId);
     }
   } catch (error) {
-    console.error('[Analytics] Failed to set user ID:', error);
+    logger.error('[Analytics] Failed to set user ID:', error);
   }
 };
 
@@ -339,10 +340,10 @@ export const setUserProperties = (properties: UserProperties): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User properties set:', properties);
+      logger.debug('[Analytics] User properties set:', properties);
     }
   } catch (error) {
-    console.error('[Analytics] Failed to set user properties:', error);
+    logger.error('[Analytics] Failed to set user properties:', error);
   }
 };
 
@@ -367,7 +368,7 @@ export const trackTransaction = (
   transactionId: string,
   value: number,
   currency: string,
-  params?: EventParams
+  params?: EventParams,
 ): void => {
   trackEvent('Transaction', 'complete', currency, value, {
     transaction_id: transactionId,
@@ -400,7 +401,7 @@ export const trackPurchase = (
   transactionId: string,
   value: number,
   currency: string,
-  items: EcommerceItem[]
+  items: EcommerceItem[],
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     return;
@@ -415,10 +416,10 @@ export const trackPurchase = (
     });
 
     if (config.debug) {
-      console.log('[Analytics] Purchase tracked:', { transactionId, value, currency, items });
+      logger.debug('[Analytics] Purchase tracked:', { transactionId, value, currency, items });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track purchase:', error);
+    logger.error('[Analytics] Failed to track purchase:', error);
   }
 };
 
@@ -445,7 +446,7 @@ export const trackTiming = (
   category: string,
   variable: string,
   value: number,
-  label?: string
+  label?: string,
 ): void => {
   trackEvent('Timing', category, label, value, {
     timing_category: category,
@@ -480,10 +481,10 @@ export const trackException = (description: string, fatal: boolean = false): voi
     });
 
     if (config.debug) {
-      console.log('[Analytics] Exception tracked:', { description, fatal });
+      logger.debug('[Analytics] Exception tracked:', { description, fatal });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track exception:', error);
+    logger.error('[Analytics] Failed to track exception:', error);
   }
 };
 
@@ -516,10 +517,10 @@ export const clearUser = (): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User data cleared');
+      logger.debug('[Analytics] User data cleared');
     }
   } catch (error) {
-    console.error('[Analytics] Failed to clear user data:', error);
+    logger.error('[Analytics] Failed to clear user data:', error);
   }
 };
 

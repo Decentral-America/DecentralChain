@@ -27,7 +27,7 @@ const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey>
     {
       name: 'PBKDF2',
       salt: salt as BufferSource,
-      iterations: 100000,
+      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
       hash: 'SHA-256',
     },
     keyMaterial,
@@ -36,7 +36,7 @@ const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey>
       length: 256,
     },
     false,
-    ['encrypt', 'decrypt']
+    ['encrypt', 'decrypt'],
   );
 };
 
@@ -61,7 +61,7 @@ const encryptData = async (data: string, password: string): Promise<string> => {
       iv,
     },
     key,
-    dataBuffer
+    dataBuffer,
   );
 
   // Combine salt + IV + encrypted data
@@ -97,32 +97,40 @@ const decrypt = async (encryptedData: string, password: string): Promise<string>
         iv,
       },
       key,
-      data
+      data,
     );
 
     // Convert to string
     const decoder = new TextDecoder();
     return decoder.decode(decrypted);
-  } catch (error) {
+  } catch {
     throw new Error('Decryption failed - invalid password or corrupted data');
   }
 };
 
 /**
- * Get encryption password from session
- * In a real app, this would be derived from user's master password
+ * Get encryption password from session.
+ * SECURITY: The encryption key MUST be derived from the user's master password
+ * via setEncryptionKey() during login. If no key is set, SecureStorage operations
+ * will throw rather than silently using a weak fallback.
+ *
+ * The key is stored in sessionStorage (cleared on tab close), which is the
+ * best browser-available option. XSS mitigation requirements:
+ *   1. Set a strict CSP header (no inline scripts, trusted origins only)
+ *   2. Sanitize all user input
+ *   3. Do NOT embed the key in DOM or global variables
+ *
+ * The key name is obfuscated to make casual scraping harder (defense-in-depth).
  */
+const SESSION_KEY_NAME = '_dcc_sk_' + btoa('session_encryption_key').slice(0, 8);
+
 const getEncryptionPassword = (): string => {
-  // For now, use a session-based key
-  // In production, this should be derived from user's master password
-  let sessionKey = sessionStorage.getItem('__session_encryption_key');
+  const sessionKey = sessionStorage.getItem(SESSION_KEY_NAME);
 
   if (!sessionKey) {
-    // Generate random session key
-    const array = new Uint8Array(32);
-    window.crypto.getRandomValues(array);
-    sessionKey = Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
-    sessionStorage.setItem('__session_encryption_key', sessionKey);
+    throw new Error(
+      'SecureStorage: No encryption key set. Call secureStorage.setEncryptionKey() after user login.',
+    );
   }
 
   return sessionKey;
@@ -151,7 +159,7 @@ class SecureStorage {
     key: string,
     value: T,
     type: StorageKeyType = 'custom',
-    encrypt: boolean = true
+    encrypt: boolean = true,
   ): Promise<void> {
     const item: SecureStorageItem<T> = {
       value,
@@ -200,7 +208,7 @@ class SecureStorage {
       const item = JSON.parse(decrypted) as SecureStorageItem<T>;
       return item.value;
     } catch (error) {
-      console.error('Failed to decrypt storage item:', error);
+      logger.error('Failed to decrypt storage item:', error);
       return null;
     }
   }
@@ -247,14 +255,14 @@ class SecureStorage {
    * Set session encryption key (for master password flow)
    */
   setEncryptionKey(key: string): void {
-    sessionStorage.setItem('__session_encryption_key', key);
+    sessionStorage.setItem(SESSION_KEY_NAME, key);
   }
 
   /**
    * Clear session encryption key (logout)
    */
   clearEncryptionKey(): void {
-    sessionStorage.removeItem('__session_encryption_key');
+    sessionStorage.removeItem(SESSION_KEY_NAME);
   }
 }
 
@@ -268,7 +276,7 @@ export const secureStorage = new SecureStorage();
  */
 export const useSecureStorage = <T = any>(
   key: string,
-  initialValue?: T
+  initialValue?: T,
 ): [T | null, (value: T) => Promise<void>, () => void] => {
   const [value, setValue] = useState<T | null>(initialValue || null);
 
@@ -295,3 +303,4 @@ export const useSecureStorage = <T = any>(
 
 // Import useState and useEffect for the hook
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/logger';
