@@ -14,8 +14,8 @@ export type TradingPair = [string, string];
  * Oracle configuration for external data providers
  */
 export interface OracleConfig {
-  /** Waves oracle address for price feeds and data services */
-  waves: string;
+  /** DCC oracle address for price feeds and data services */
+  dcc: string;
   /** Tokenomica oracle address (optional, may be empty) */
   tokenomica: string;
 }
@@ -77,7 +77,7 @@ export interface MainnetConfig {
   coinomat: string;
 
   /** Gateway configurations mapped by asset ID */
-  wavesGateway: Record<string, GatewayAssetConfig>;
+  gateway: Record<string, GatewayAssetConfig>;
 
   /** Support page URL */
   support: string;
