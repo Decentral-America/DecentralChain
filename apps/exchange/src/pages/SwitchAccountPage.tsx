@@ -160,7 +160,7 @@ export const SwitchAccountPage: React.FC = () => {
                 }}
               />
               <Typography variant="h6" color="text.secondary" gutterBottom>
-                You don't have any accounts yet.
+                You don&apos;t have any accounts yet.
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Please create or import an account first.

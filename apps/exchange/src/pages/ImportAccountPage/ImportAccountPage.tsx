@@ -51,7 +51,11 @@ const ImportAccountInner: React.FC = () => {
       <Container maxWidth="xl" sx={{ py: 8 }}>
         <Grid container spacing={6} alignItems="center">
           {/* Left Column - Branding & Features */}
-          <Grid item md={5}>
+          <Grid
+            size={{
+              md: 5,
+            }}
+          >
             <Box sx={{ pr: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <Box
@@ -71,8 +75,8 @@ const ImportAccountInner: React.FC = () => {
               </Typography>
 
               <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: 18 }}>
-                Import your existing wallet using your 15-word seed phrase and regain access to
-                your assets.
+                Import your existing wallet using your 15-word seed phrase and regain access to your
+                assets.
               </Typography>
 
               <Stack direction="column" spacing={2} sx={{ mb: 4 }}>
@@ -159,7 +163,11 @@ const ImportAccountInner: React.FC = () => {
           </Grid>
 
           {/* Right Column - Import Form */}
-          <Grid item md={7}>
+          <Grid
+            size={{
+              md: 7,
+            }}
+          >
             <Box
               sx={{
                 position: 'relative',

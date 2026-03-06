@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Box, Typography, TextField, MenuItem, Slider as MuiSlider } from '@mui/material';
 import { Button } from '../components/atoms/Button';
 import { Input } from '../components/atoms/Input';
@@ -96,7 +97,7 @@ export const TokensPage: React.FC = () => {
     e.preventDefault();
     if (!isFormValid()) return;
 
-    console.log('Creating token with data:', formData);
+    logger.debug('Creating token with data:', formData);
     // In real implementation, this would call the blockchain API
     alert('Token creation submitted! (Demo mode - not actually created)');
   };
@@ -232,8 +233,8 @@ export const TokensPage: React.FC = () => {
               </Box>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              You're creating a Non-Fungible Token (NFT) with quantity 1 and 0 decimals. This token
-              will be unique and indivisible.
+              You&apos;re creating a Non-Fungible Token (NFT) with quantity 1 and 0 decimals. This
+              token will be unique and indivisible.
             </Typography>
           </Box>
         )}
@@ -295,8 +296,8 @@ export const TokensPage: React.FC = () => {
                   Warning: Smart Asset Script
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Adding a script to your asset makes it a "smart asset". All operations with this
-                  asset will require script validation, which may add complexity and fees.
+                  Adding a script to your asset makes it a &quot;smart asset&quot;. All operations
+                  with this asset will require script validation, which may add complexity and fees.
                 </Typography>
               </Box>
             </>

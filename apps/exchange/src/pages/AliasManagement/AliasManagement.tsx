@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAliases } from '@/hooks/useAliases';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { logger } from '@/lib/logger';
 
 export const AliasManagement = () => {
   const { user } = useAuth();
@@ -37,7 +38,7 @@ export const AliasManagement = () => {
       setCopiedAlias(alias);
       setTimeout(() => setCopiedAlias(null), 2000);
     } catch (err) {
-      console.error('Failed to copy alias:', err);
+      logger.error('Failed to copy alias:', err);
     }
   };
 
@@ -46,7 +47,7 @@ export const AliasManagement = () => {
     try {
       await navigator.clipboard.writeText(user.address);
     } catch (err) {
-      console.error('Failed to copy address:', err);
+      logger.error('Failed to copy address:', err);
     }
   };
 

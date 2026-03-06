@@ -67,7 +67,7 @@ const PageContainer = styled(Box)(({ theme }) => ({
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
 }));
 
-const DemoBanner = styled(Alert)(({ theme }) => ({
+const DemoBanner = styled(Alert)(({ theme: _theme }) => ({
   borderRadius: 0,
   display: 'flex',
   alignItems: 'center',
@@ -321,14 +321,18 @@ export const DexDemoPage: React.FC = () => {
       <DemoBanner severity="warning" icon={<WarningIcon />}>
         DEMO MODE - Simulated Trading Environment - No Real Funds Used
       </DemoBanner>
-
       <ContentWrapper>
         <Fade in={isVisible} timeout={600}>
           <Box>
             {/* Pair Header */}
             <PairHeader elevation={0}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <Typography variant="h4" fontWeight={700} gutterBottom>
                     {assetId1} / {assetId2}
                   </Typography>
@@ -348,7 +352,13 @@ export const DexDemoPage: React.FC = () => {
                     )}
                   </PriceDisplay>
                 </Grid>
-                <Grid item xs={12} md={6} textAlign={{ xs: 'left', md: 'right' }}>
+                <Grid
+                  textAlign={{ xs: 'left', md: 'right' }}
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <Button
                     variant="outlined"
                     startIcon={<SwapHorizIcon />}
@@ -365,14 +375,25 @@ export const DexDemoPage: React.FC = () => {
                 {loading ? (
                   <>
                     {[1, 2, 3, 4].map((i) => (
-                      <Grid item xs={6} sm={3} key={i}>
+                      <Grid
+                        key={i}
+                        size={{
+                          xs: 6,
+                          sm: 3,
+                        }}
+                      >
                         <Skeleton variant="rectangular" height={70} sx={{ borderRadius: 1.5 }} />
                       </Grid>
                     ))}
                   </>
                 ) : (
                   <>
-                    <Grid item xs={6} sm={3}>
+                    <Grid
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
                       <StatCard elevation={0}>
                         <Typography variant="caption" color="text.secondary">
                           24h Volume
@@ -382,7 +403,12 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </StatCard>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
                       <StatCard elevation={0}>
                         <Typography variant="caption" color="text.secondary">
                           24h Change
@@ -396,7 +422,12 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </StatCard>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
                       <StatCard elevation={0}>
                         <Typography variant="caption" color="text.secondary">
                           24h High
@@ -410,7 +441,12 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </StatCard>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
                       <StatCard elevation={0}>
                         <Typography variant="caption" color="text.secondary">
                           24h Low
@@ -432,7 +468,12 @@ export const DexDemoPage: React.FC = () => {
             {/* Main Trading Interface */}
             <TradingGrid container spacing={3}>
               {/* Left Panel - Chart and Order Books */}
-              <Grid item xs={12} lg={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 9,
+                }}
+              >
                 {/* Chart Placeholder */}
                 <ChartPlaceholder elevation={0}>
                   {loading ? (
@@ -453,7 +494,12 @@ export const DexDemoPage: React.FC = () => {
                 {/* Order Books Grid */}
                 <Grid container spacing={3}>
                   {/* Buy Orders */}
-                  <Grid item xs={12} md={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 4,
+                    }}
+                  >
                     <OrderBookCard elevation={0}>
                       <Typography
                         variant="h6"
@@ -504,7 +550,12 @@ export const DexDemoPage: React.FC = () => {
                   </Grid>
 
                   {/* Recent Trades */}
-                  <Grid item xs={12} md={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 4,
+                    }}
+                  >
                     <OrderBookCard elevation={0}>
                       <Typography variant="h6" fontWeight={600} gutterBottom>
                         Recent Trades
@@ -550,7 +601,12 @@ export const DexDemoPage: React.FC = () => {
                   </Grid>
 
                   {/* Sell Orders */}
-                  <Grid item xs={12} md={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 4,
+                    }}
+                  >
                     <OrderBookCard elevation={0}>
                       <Typography
                         variant="h6"
@@ -603,7 +659,12 @@ export const DexDemoPage: React.FC = () => {
               </Grid>
 
               {/* Right Panel - Trade Form */}
-              <Grid item xs={12} lg={3}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 3,
+                }}
+              >
                 <Slide direction="left" in={isVisible} timeout={800}>
                   <Box>
                     <TradeFormCard elevation={0}>
@@ -778,7 +839,6 @@ export const DexDemoPage: React.FC = () => {
           </Box>
         </Fade>
       </ContentWrapper>
-
       {/* Snackbar for Feedback */}
       <Snackbar
         open={snackbar.open}

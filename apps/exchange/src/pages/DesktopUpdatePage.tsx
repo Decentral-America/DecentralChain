@@ -171,7 +171,7 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                     color: theme.palette.primary.main,
                   }}
                 >
-                  What's New:
+                  What&apos;s New:
                 </Typography>
                 <List dense>
                   {features.map((feature, index) => (

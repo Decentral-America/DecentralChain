@@ -13,7 +13,10 @@ import {
   SettingsProvider,
   LedgerProvider,
 } from '@/contexts';
-import { GlobalStyles } from '@/styles';
+import { GlobalStyles as GlobalStylesBase } from '@/styles';
+
+// React 19 type compatibility cast
+const GlobalStyles = GlobalStylesBase as React.ComponentType<any>;
 import { router } from '@/routes';
 import { AnnouncementProvider } from '@/components/a11y';
 import { initAnalytics } from '@/lib/analytics';

@@ -188,7 +188,7 @@ export const MigratePage: React.FC = () => {
         message: 'New account generated successfully',
         severity: 'success',
       });
-    } catch (error) {
+    } catch {
       setSnackbar({ open: true, message: 'Failed to generate new account', severity: 'error' });
     } finally {
       setLoading(false);
@@ -420,7 +420,7 @@ export const MigratePage: React.FC = () => {
               Why should I migrate my account?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-              Migration creates a new account with enhanced security. It's recommended if you
+              Migration creates a new account with enhanced security. It&apos;s recommended if you
               suspect your seed phrase may have been compromised or want to start fresh.
             </Typography>
 

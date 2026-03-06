@@ -34,7 +34,7 @@ import {
 
 /**
  * RestoreFromBackupPage Component
- * 
+ *
  * Stunning file upload experience with drag-and-drop, validation, and progress feedback
  */
 
@@ -59,9 +59,10 @@ const confetti = keyframes`
 const PageContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
   padding: theme.spacing(4),
-  background: theme.palette.mode === 'dark'
-    ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
-    : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
+  background:
+    theme.palette.mode === 'dark'
+      ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
+      : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
   position: 'relative',
   overflow: 'hidden',
   [theme.breakpoints.down('sm')]: {
@@ -72,9 +73,10 @@ const PageContainer = styled(Box)(({ theme }) => ({
 const FloatingOrb = styled(Box)(({ theme }) => ({
   position: 'absolute',
   borderRadius: '50%',
-  background: theme.palette.mode === 'dark'
-    ? 'radial-gradient(circle, rgba(31, 90, 246, 0.2) 0%, rgba(31, 90, 246, 0) 70%)'
-    : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
+  background:
+    theme.palette.mode === 'dark'
+      ? 'radial-gradient(circle, rgba(31, 90, 246, 0.2) 0%, rgba(31, 90, 246, 0) 70%)'
+      : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
   animation: `${pulse} 5s ease-in-out infinite`,
   pointerEvents: 'none',
 }));
@@ -87,16 +89,15 @@ const ContentWrapper = styled(Box)({
 });
 
 const MainCard = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark'
-    ? 'rgba(26, 31, 58, 0.9)'
-    : 'rgba(255, 255, 255, 0.9)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   backdropFilter: 'blur(20px)',
   borderRadius: theme.spacing(3),
   padding: theme.spacing(4),
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
-  boxShadow: theme.palette.mode === 'dark'
-    ? '0 8px 32px rgba(0, 0, 0, 0.4)'
-    : '0 8px 32px rgba(0, 0, 0, 0.06)',
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? '0 8px 32px rgba(0, 0, 0, 0.4)'
+      : '0 8px 32px rgba(0, 0, 0, 0.06)',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(3),
   },
@@ -116,9 +117,8 @@ const DropzoneBox = styled(Box)<{ isDragActive?: boolean }>(({ theme, isDragActi
     : 'transparent',
   '&:hover': {
     borderColor: theme.palette.primary.main,
-    background: theme.palette.mode === 'dark'
-      ? 'rgba(31, 90, 246, 0.05)'
-      : 'rgba(31, 90, 246, 0.03)',
+    background:
+      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.05)' : 'rgba(31, 90, 246, 0.03)',
     '& .upload-icon': {
       animation: `${bounce} 0.6s ease-in-out`,
     },
@@ -131,9 +131,7 @@ const FilePreviewCard = styled(Paper)(({ theme }) => ({
   gap: theme.spacing(2),
   padding: theme.spacing(2),
   marginTop: theme.spacing(2),
-  background: theme.palette.mode === 'dark'
-    ? 'rgba(31, 90, 246, 0.1)'
-    : 'rgba(31, 90, 246, 0.05)',
+  background: theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.1)' : 'rgba(31, 90, 246, 0.05)',
   border: `1px solid ${theme.palette.primary.main}`,
   borderRadius: theme.spacing(1.5),
 }));
@@ -157,11 +155,15 @@ export const RestoreFromBackupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [_success, setSuccess] = useState(false);
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' | 'info' }>({
+  const [, setSuccess] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error' | 'info';
+  }>({
     open: false,
     message: '',
-    severity: 'info'
+    severity: 'info',
   });
   const [isVisible, setIsVisible] = useState(false);
 
@@ -207,14 +209,22 @@ export const RestoreFromBackupPage: React.FC = () => {
     // Validate file type
     if (!selectedFile.name.endsWith('.json') && !selectedFile.name.endsWith('.backup')) {
       setError('Please select a valid .json or .backup file');
-      setSnackbar({ open: true, message: 'Invalid file type. Only .json or .backup files are accepted.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: 'Invalid file type. Only .json or .backup files are accepted.',
+        severity: 'error',
+      });
       return;
     }
 
     // Validate file size (max 10MB)
     if (selectedFile.size > 10 * 1024 * 1024) {
       setError('File size exceeds 10MB limit');
-      setSnackbar({ open: true, message: 'File too large. Maximum size is 10MB.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: 'File too large. Maximum size is 10MB.',
+        severity: 'error',
+      });
       return;
     }
 
@@ -250,7 +260,7 @@ export const RestoreFromBackupPage: React.FC = () => {
 
     try {
       const reader = new FileReader();
-      
+
       reader.onload = async (e) => {
         try {
           const content = e.target?.result as string;
@@ -262,13 +272,13 @@ export const RestoreFromBackupPage: React.FC = () => {
           }
 
           // Simulate restore process
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          await new Promise((resolve) => setTimeout(resolve, 1500));
 
           // TODO: Implement actual restore logic
           setActiveStep(3);
           setSuccess(true);
           setShowSuccess(true);
-          
+
           setTimeout(() => {
             navigate('/wallet');
           }, 3000);
@@ -312,7 +322,15 @@ export const RestoreFromBackupPage: React.FC = () => {
       <PageContainer>
         {/* Floating Orbs */}
         <FloatingOrb sx={{ width: '400px', height: '400px', top: '-100px', left: '-100px' }} />
-        <FloatingOrb sx={{ width: '350px', height: '350px', bottom: '-80px', right: '-80px', animationDelay: '2s' }} />
+        <FloatingOrb
+          sx={{
+            width: '350px',
+            height: '350px',
+            bottom: '-80px',
+            right: '-80px',
+            animationDelay: '2s',
+          }}
+        />
 
         <ContentWrapper>
           {/* Title */}
@@ -449,10 +467,7 @@ export const RestoreFromBackupPage: React.FC = () => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                             {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                           </IconButton>
                         </InputAdornment>
@@ -505,23 +520,37 @@ export const RestoreFromBackupPage: React.FC = () => {
               sx={{
                 mt: 3,
                 p: 2,
-                background: (theme) => theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.05)'
-                  : 'rgba(0, 0, 0, 0.03)',
-                border: (theme) => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+                background: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.05)'
+                    : 'rgba(0, 0, 0, 0.03)',
+                border: (theme) =>
+                  `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
               }}
             >
               <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
                 📌 Important Information:
               </Typography>
               <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
-                <Typography component="li" variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  sx={{ color: 'text.secondary', mb: 0.5 }}
+                >
                   Backup files are encrypted with your password
                 </Typography>
-                <Typography component="li" variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  sx={{ color: 'text.secondary', mb: 0.5 }}
+                >
                   Make sure you remember the correct password
                 </Typography>
-                <Typography component="li" variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  sx={{ color: 'text.secondary', mb: 0.5 }}
+                >
                   Only use backup files from trusted sources
                 </Typography>
                 <Typography component="li" variant="body2" sx={{ color: 'text.secondary' }}>
@@ -553,7 +582,10 @@ export const RestoreFromBackupPage: React.FC = () => {
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-          <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+          <Alert
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          >
             {snackbar.message}
           </Alert>
         </Snackbar>

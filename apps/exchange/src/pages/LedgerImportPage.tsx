@@ -29,6 +29,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { styled, keyframes } from '@mui/material/styles';
+import { logger } from '@/lib/logger';
 import {
   Usb as UsbIcon,
   Smartphone as SmartphoneIcon,
@@ -167,8 +168,8 @@ export const LedgerImportPage: React.FC = () => {
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Connection timeout - please check your device')),
-            25000
-          )
+            25000,
+          ),
         ),
       ]);
 
@@ -179,8 +180,8 @@ export const LedgerImportPage: React.FC = () => {
       setUsers(newUsers);
 
       if (userList && userList.length > 0) {
-        setSelectedUser(userList[0]);
-        setAccountName(`Ledger ${userList[0].id}`);
+        setSelectedUser(userList[0]!);
+        setAccountName(`Ledger ${userList[0]!.id}`);
         setActiveStep(Step.SELECT_ACCOUNT);
       }
     } catch (err) {
@@ -230,7 +231,7 @@ export const LedgerImportPage: React.FC = () => {
       // await addAccount(ledgerSignature, accountName);
 
       throw new Error(
-        'Ledger hardware wallet support is coming soon. Please use seed phrase or password authentication for now.'
+        'Ledger hardware wallet support is coming soon. Please use seed phrase or password authentication for now.',
       );
 
       // navigate('/desktop/wallet');
@@ -267,7 +268,7 @@ export const LedgerImportPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(address);
     } catch (err) {
-      console.error('Failed to copy address:', err);
+      logger.error('Failed to copy address:', err);
     }
   };
 
@@ -350,10 +351,10 @@ export const LedgerImportPage: React.FC = () => {
               <SmartphoneIcon sx={{ fontSize: 80, color: 'primary.main' }} />
             </ShimmerIcon>
             <Typography variant="h6" gutterBottom>
-              Open the Waves App
+              Open the DCC App
             </Typography>
             <Typography variant="body2" color="text.secondary" mb={3}>
-              On your Ledger device, navigate to and open the Waves application
+              On your Ledger device, navigate to and open the DCC application
             </Typography>
             <List sx={{ maxWidth: 400, mx: 'auto', mb: 3 }}>
               <ListItem>
