@@ -11,10 +11,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Decentral-America/ride-js/actions/workflows/ci.yml"><img src="https://github.com/Decentral-America/ride-js/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/npm/v/@decentralchain/ride-js?color=blue" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/ride-js" alt="license" /></a>
-  <a href="https://bundlephobia.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/ride-js" alt="bundle size" /></a>
   <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/ride-js" alt="node" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" alt="TypeScript" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/ride-js" alt="bundle size" /></a>
 </p>
 
 ---
@@ -125,15 +127,18 @@ cd ride-js
 npm install
 ```
 
-| Script                  | Description                      |
-| ----------------------- | -------------------------------- |
-| `npm test`              | Run tests (Vitest)               |
-| `npm run test:coverage` | Coverage report                  |
-| `npm run build`         | Build ESM + CJS bundle           |
-| `npm run typecheck`     | TypeScript type checking         |
-| `npm run lint`          | Lint with ESLint                 |
-| `npm run format`        | Format with Prettier             |
-| `npm run bulletproof`   | Format → lint → typecheck → test |
+| Script                      | Description                      |
+| --------------------------- | -------------------------------- |
+| `npm test`                  | Run tests (Vitest)               |
+| `npm run test:coverage`     | Coverage report                  |
+| `npm run build`             | Build ESM + CJS bundle           |
+| `npm run typecheck`         | TypeScript type checking         |
+| `npm run lint`              | Lint with auto-fix               |
+| `npm run lint:check`        | Lint (check only, no fix)        |
+| `npm run format`            | Format with Prettier             |
+| `npm run bulletproof`       | Format → lint → typecheck → test |
+| `npm run bulletproof:check` | CI-safe check (no auto-fix)      |
+| `npm run validate`          | Full CI validation pipeline      |
 
 ### Known Exceptions
 
