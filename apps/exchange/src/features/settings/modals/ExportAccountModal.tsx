@@ -8,6 +8,7 @@ import { Modal } from '@/components/organisms/Modal';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import styled from 'styled-components';
+import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -87,7 +88,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
           // Pre-select current user
           setSelectedAddresses(new Set([user.address]));
         } catch (error) {
-          console.error('Failed to parse multi-account users:', error);
+          logger.error('Failed to parse multi-account users:', error);
           setUserList([]);
         }
       }
@@ -125,7 +126,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
       // Create backup data matching Angular format
       const backupData = {
-        type: 'wavesBackup',
+        type: 'dccBackup',
         lastOpenVersion: settings.lastOpenVersion,
         data: selectedUsers,
         time: Date.now(),
@@ -144,7 +145,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
       onClose();
     } catch (error) {
-      console.error('Export failed:', error);
+      logger.error('Export failed:', error);
     }
   };
 
@@ -209,11 +210,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
           <Button variant="text" onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleExport}
-            disabled={selectedAddresses.size === 0}
-          >
+          <Button variant="primary" onClick={handleExport} disabled={selectedAddresses.size === 0}>
             Download Backup
           </Button>
         </ButtonGroup>

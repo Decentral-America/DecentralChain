@@ -38,7 +38,7 @@ export function SepaAssetModal({ isOpen, onClose, assetId, assetName }: SepaAsse
             </Step>
             <Step>
               <StepNumber>3</StepNumber>
-              <StepText>Include your Waves address in the payment reference field</StepText>
+              <StepText>Include your DCC address in the payment reference field</StepText>
             </Step>
             <Step>
               <StepNumber>4</StepNumber>
@@ -64,7 +64,7 @@ export function SepaAssetModal({ isOpen, onClose, assetId, assetName }: SepaAsse
             </InfoRow>
             <InfoRow>
               <InfoLabel>Reference:</InfoLabel>
-              <InfoValue>Your Waves address (required)</InfoValue>
+              <InfoValue>Your DCC address (required)</InfoValue>
             </InfoRow>
           </InfoGrid>
         </Section>

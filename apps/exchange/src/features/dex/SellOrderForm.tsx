@@ -205,7 +205,7 @@ export const SellOrderForm: React.FC = () => {
    * Fetch user balance for amount asset (the asset being sold)
    * Use different hooks depending on whether it's DCC (native) or custom token
    */
-  const isDccAmountAsset = !selectedPair?.amountAsset || selectedPair.amountAsset === 'WAVES';
+  const isDccAmountAsset = !selectedPair?.amountAsset || selectedPair.amountAsset === 'DCC';
 
   // For DCC (native token), use useBalanceWatcher
   const { balances: dccBalances } = useBalanceWatcher({
@@ -217,8 +217,9 @@ export const SellOrderForm: React.FC = () => {
     user?.address || '',
     selectedPair?.amountAsset || '',
     {
-      enabled: isAuthenticated && !isDccAmountAsset && !!selectedPair?.amountAsset && !!user?.address,
-    }
+      enabled:
+        isAuthenticated && !isDccAmountAsset && !!selectedPair?.amountAsset && !!user?.address,
+    },
   );
 
   // Determine available balance based on asset type
@@ -285,7 +286,7 @@ export const SellOrderForm: React.FC = () => {
 
     if (amountNum > availableBalance) {
       setError(
-        `Insufficient balance. Available: ${availableBalance.toFixed(8)} ${amountAssetName}`
+        `Insufficient balance. Available: ${availableBalance.toFixed(8)} ${amountAssetName}`,
       );
       return false;
     }
@@ -302,7 +303,7 @@ export const SellOrderForm: React.FC = () => {
         throw new Error('Validation failed');
       }
 
-      // In production, this would use @decentralchain/waves-transactions order() function
+      // In production, this would use @decentralchain/transactions order() function
       // For now, create a mock order transaction
       const orderTx = {
         type: 7, // Order transaction type

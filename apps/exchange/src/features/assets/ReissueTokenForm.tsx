@@ -6,16 +6,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, assetReissueSchema, AssetReissueFormData } from '@/lib/forms';
+import { useZodForm, assetReissueSchema, type AssetReissueFormData } from '@/lib/forms';
 import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/atoms/Button';
 import { Checkbox } from '@/components/atoms/Checkbox';
 import { Card } from '@/components/atoms/Card';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { transactionService, type Transaction } from '@/services/transactionService';
 import { AlertModal } from '@/components/modals/AlertModal';
 import { useAssetDetails } from '@/api/services/assetsService';
 import { Spinner } from '@/components/atoms/Spinner';
+import { logger } from '@/lib/logger';
 
 /**
  * Component Props
@@ -29,7 +30,7 @@ export interface ReissueTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card)`
+const FormContainer = styled(Card as any)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -160,7 +161,7 @@ const formatQuantity = (quantity: number, decimals: number): string => {
  * ```tsx
  * <ReissueTokenForm
  *   assetId="DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p"
- *   onSuccess={(tx) => console.log('Reissued:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Reissued:', tx.id)}
  *   onCancel={() => navigate('/assets')}
  * />
  * ```
@@ -222,7 +223,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
       // Wait for confirmation
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Success
@@ -236,7 +237,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
       // Reset form on success
       form.reset();
     } catch (error) {
-      console.error('Asset reissue failed:', error);
+      logger.error('Asset reissue failed:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
       setErrorModalOpen(true);
     } finally {
@@ -334,7 +335,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
                 required
                 helperText={`Additional tokens to create (will be added to current supply of ${formatQuantity(
                   asset.quantity,
-                  asset.decimals
+                  asset.decimals,
                 )})`}
               />
 

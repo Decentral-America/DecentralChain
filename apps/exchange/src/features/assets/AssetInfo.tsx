@@ -22,7 +22,7 @@ export interface AssetInfoProps {
 /**
  * Styled Components
  */
-const Container = styled(Card)`
+const Container = styled(Card as any)`
   max-width: 600px;
 `;
 

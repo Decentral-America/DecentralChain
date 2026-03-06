@@ -284,7 +284,7 @@ export const OrderBook: React.FC = () => {
   const formatWithShortMode = (
     value: string | number,
     precision: number,
-    shortModeThreshold: number | boolean
+    shortModeThreshold: number | boolean,
   ): string => {
     const num = typeof value === 'string' ? parseFloat(value) : value;
     if (isNaN(num)) return '0';
@@ -351,8 +351,8 @@ export const OrderBook: React.FC = () => {
   // Calculate spread (difference between lowest ask and highest bid)
   const spread =
     hasAsks && hasBids
-      ? ((parseFloat(orderBook.asks[0].price) - parseFloat(orderBook.bids[0].price)) /
-          parseFloat(orderBook.bids[0].price)) *
+      ? ((parseFloat(orderBook.asks[0]!.price) - parseFloat(orderBook.bids[0]!.price)) /
+          parseFloat(orderBook.bids[0]!.price)) *
         100
       : 0;
 

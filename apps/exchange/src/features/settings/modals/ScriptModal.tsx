@@ -4,6 +4,7 @@
  * Simplified placeholder - full implementation would match Angular ScriptModalCtrl
  */
 import React, { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Modal } from '@/components/organisms/Modal';
 import { Button } from '@/components/atoms/Button';
 import styled from 'styled-components';
@@ -73,16 +74,16 @@ export const ScriptModal: React.FC<ScriptModalProps> = ({ isOpen, onClose }) => 
     try {
       // TODO: Implement actual script compilation and setting
       // This would involve:
-      // 1. Compile RIDE script using waves-transactions
+      // 1. Compile RIDE script using dcc-transactions
       // 2. Create setScript transaction
       // 3. Sign and broadcast to network
       // 4. Wait for confirmation
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      console.log('Script would be set:', script);
+      logger.debug('Script would be set:', script);
       onClose();
     } catch (error) {
-      console.error('Script setting failed:', error);
+      logger.error('Script setting failed:', error);
     } finally {
       setIsLoading(false);
     }

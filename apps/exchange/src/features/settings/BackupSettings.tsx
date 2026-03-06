@@ -20,6 +20,7 @@ import {
 import { Download, CheckCircle, AccountCircle } from '@mui/icons-material';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface WalletBackup {
   version: string;
@@ -33,7 +34,7 @@ interface WalletBackup {
 }
 
 export const BackupSettings: React.FC = () => {
-  const { user: _user } = useAuth();
+  useAuth(); // ensure auth context is available
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isExporting, setIsExporting] = useState(false);
@@ -61,7 +62,7 @@ export const BackupSettings: React.FC = () => {
         keyMaterial,
         { name: 'AES-GCM', length: 256 },
         false,
-        ['encrypt']
+        ['encrypt'],
       );
 
       // Encrypt data with AES-GCM
@@ -69,7 +70,7 @@ export const BackupSettings: React.FC = () => {
       const encrypted = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
         key,
-        encoder.encode(JSON.stringify(data))
+        encoder.encode(JSON.stringify(data)),
       );
 
       // Combine IV and encrypted data
@@ -79,7 +80,7 @@ export const BackupSettings: React.FC = () => {
 
       return btoa(String.fromCharCode(...combined));
     } catch (error) {
-      console.error('Encryption error:', error);
+      logger.error('Encryption error:', error);
       throw new Error('Failed to encrypt backup');
     }
   };
@@ -101,8 +102,8 @@ export const BackupSettings: React.FC = () => {
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password.length < 12) {
+      setError('Password must be at least 12 characters');
       return;
     }
 
@@ -176,7 +177,7 @@ export const BackupSettings: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create backup';
       setError(errorMessage);
-      console.error('Backup export error:', err);
+      logger.error('Backup export error:', err);
     } finally {
       setIsExporting(false);
     }

@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 
 interface ReissueAssetModalProps {
   isOpen: boolean;
@@ -65,11 +66,11 @@ export function ReissueAssetModal({
       onClose();
       setAmount('');
     } catch (err) {
-      console.error('[ReissueAssetModal] Reissue failed:', err);
+      logger.error('[ReissueAssetModal] Reissue failed:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to reissue tokens. Please check your permissions and try again.'
+          : 'Failed to reissue tokens. Please check your permissions and try again.',
       );
     } finally {
       setIsProcessing(false);

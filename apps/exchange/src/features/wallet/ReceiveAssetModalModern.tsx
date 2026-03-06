@@ -21,7 +21,10 @@ import {
   CallReceived as ReceiveIcon,
   ContentCopy as CopyIcon,
 } from '@mui/icons-material';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
+
+// React 19 type compatibility cast
+const QRCodeSVG = QRCodeSVGBase as React.ComponentType<any>;
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 

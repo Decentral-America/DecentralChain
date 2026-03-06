@@ -4,6 +4,7 @@
  * Uses custom DecentralChain datafeed for real-time candle data
  */
 import React, { useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 import styled from 'styled-components';
 import { useDexStore } from '@/stores/dexStore';
 import { candlesService } from '@/services/candlesService';
@@ -51,11 +52,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = '/trading-view/charting_library.min.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from public folder');
+          logger.debug('[TradingView] Loaded from public folder');
           resolvePublic();
         };
         script.onerror = () => {
-          console.warn('[TradingView] Failed to load from public folder, trying proxy...');
+          logger.warn('[TradingView] Failed to load from public folder, trying proxy...');
           rejectPublic(new Error('public folder load failed'));
         };
         document.head.appendChild(script);
@@ -69,11 +70,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = '/trading-view/charting_library.standalone.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from proxy');
+          logger.debug('[TradingView] Loaded from proxy');
           resolveProxy();
         };
         script.onerror = () => {
-          console.warn('[TradingView] Failed to load from proxy, trying external CDN...');
+          logger.warn('[TradingView] Failed to load from proxy, trying external CDN...');
           rejectProxy(new Error('proxy load failed'));
         };
         document.head.appendChild(script);
@@ -87,11 +88,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = 'https://charts.decentral.exchange/charting_library.min.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from external CDN');
+          logger.debug('[TradingView] Loaded from external CDN');
           resolveCDN();
         };
         script.onerror = () => {
-          console.error('[TradingView] All loading attempts failed');
+          logger.error('[TradingView] All loading attempts failed');
           rejectCDN(new Error('All TradingView loading sources failed'));
         };
         document.head.appendChild(script);
@@ -104,7 +105,7 @@ const loadTradingViewLibrary = (): Promise<void> => {
       .catch(() =>
         tryLoadFromProxy()
           .then(resolve)
-          .catch(() => tryLoadFromCDN().then(resolve).catch(reject))
+          .catch(() => tryLoadFromCDN().then(resolve).catch(reject)),
       );
   });
 
@@ -129,7 +130,7 @@ export const TradingViewChart: React.FC = () => {
     const initChart = async () => {
       try {
         setLoadingState('loading');
-        
+
         // Load library
         await loadTradingViewLibrary();
 
@@ -176,13 +177,13 @@ export const TradingViewChart: React.FC = () => {
         });
 
         chartRef.current.onChartReady(() => {
-          console.log('[TradingView] Chart ready for:', symbol);
+          logger.debug('[TradingView] Chart ready for:', symbol);
           if (isMounted) {
             setLoadingState('success');
           }
         });
       } catch (error) {
-        console.error('[TradingView] Failed to initialize:', error);
+        logger.error('[TradingView] Failed to initialize:', error);
         if (isMounted) {
           setLoadingState('error');
           setErrorMessage(error instanceof Error ? error.message : 'Failed to load chart');
@@ -216,7 +217,7 @@ export const TradingViewChart: React.FC = () => {
           </Typography>
         </Box>
       )}
-      
+
       {loadingState === 'error' && (
         <Alert severity="error" sx={{ width: '100%', maxWidth: 400 }}>
           <Typography variant="subtitle2" fontWeight={600} gutterBottom>

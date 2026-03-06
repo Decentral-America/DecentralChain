@@ -13,11 +13,12 @@ import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card)`
+const FormCard = styled(Card as any)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 600px;
   margin: 0 auto;
@@ -164,7 +165,7 @@ export const AliasForm: React.FC = () => {
       setTransactionParams(params);
       setShowConfirmation(true);
     } catch (error) {
-      console.error('Error preparing alias transaction:', error);
+      logger.error('Error preparing alias transaction:', error);
       alert('Failed to prepare alias transaction');
     }
   };
@@ -185,7 +186,7 @@ export const AliasForm: React.FC = () => {
 
         <WarningBox>
           <strong>⚠️ Important:</strong> Aliases are permanent and cannot be changed or deleted
-          after registration. Make sure you choose a name you're happy with!
+          after registration. Make sure you choose a name you&apos;re happy with!
         </WarningBox>
 
         <form onSubmit={handleSubmit(onSubmit)}>

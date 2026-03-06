@@ -6,6 +6,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import type { Session, SessionState, SessionEvent, SessionConfig } from './types';
 import { DEFAULT_SESSION_CONFIG } from './types';
+import { logger } from '@/lib/logger';
 
 interface SessionContextValue extends SessionState {
   createSession: (user: {
@@ -42,7 +43,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Setup BroadcastChannel for cross-tab synchronization
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') {
-      console.warn('BroadcastChannel not supported in this browser');
+      logger.warn('BroadcastChannel not supported in this browser');
       return;
     }
 
@@ -109,7 +110,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
       }
     } catch (error) {
-      console.error('Error loading sessions from storage:', error);
+      logger.error('Error loading sessions from storage:', error);
     }
   };
 
@@ -122,7 +123,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.removeItem(ACTIVE_SESSION_KEY);
       }
     } catch (error) {
-      console.error('Error persisting sessions to storage:', error);
+      logger.error('Error persisting sessions to storage:', error);
     }
   };
 
@@ -153,7 +154,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setActiveSession((prev) => (prev ? { ...prev, isLocked: true } : null));
         }
         setSessions((prev) =>
-          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: true } : s))
+          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: true } : s)),
         );
         break;
 
@@ -162,7 +163,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setActiveSession((prev) => (prev ? { ...prev, isLocked: false } : null));
         }
         setSessions((prev) =>
-          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: false } : s))
+          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: false } : s)),
         );
         break;
 
@@ -193,7 +194,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
     }): Promise<Session> => {
       const newSession: Session = {
-        id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `session_${Date.now()}_${crypto.randomUUID().slice(0, 9)}`,
         userId: user.address,
         address: user.address,
         userType: user.userType,
@@ -213,7 +214,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       return newSession;
     },
-    []
+    [],
   );
 
   const switchSession = useCallback(
@@ -231,7 +232,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         session,
       });
     },
-    [sessions]
+    [sessions],
   );
 
   const lockSession = useCallback(() => {
@@ -249,7 +250,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [activeSession]);
 
   const unlockSession = useCallback(
-    async (password: string): Promise<boolean> => {
+    async (_password: string): Promise<boolean> => {
       if (!activeSession) return false;
 
       try {
@@ -274,11 +275,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         return true;
       } catch (error) {
-        console.error('Error unlocking session:', error);
+        logger.error('Error unlocking session:', error);
         return false;
       }
     },
-    [activeSession]
+    [activeSession],
   );
 
   const destroySession = useCallback(
@@ -294,7 +295,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         sessionId,
       });
     },
-    [activeSession]
+    [activeSession],
   );
 
   const refreshActivity = useCallback(() => {

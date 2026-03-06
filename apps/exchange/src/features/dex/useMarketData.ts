@@ -57,7 +57,7 @@ export interface AllMarketsUpdate {
  * const { marketData, isLive, lastUpdate } = useMarketData();
  *
  * if (isLive) {
- *   console.log('Current price:', marketData?.currentPrice);
+ *   logger.debug('Current price:', marketData?.currentPrice);
  * }
  * ```
  */
@@ -94,7 +94,7 @@ export const useMarketData = () => {
         priceChangePercent24h: data.priceChangePercent24h,
       });
     },
-    [updateMarketData]
+    [updateMarketData],
   );
 
   // Subscribe to market data channel
@@ -102,7 +102,7 @@ export const useMarketData = () => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleMarketUpdate,
-    !!selectedPair // Only subscribe when pair is selected
+    !!selectedPair, // Only subscribe when pair is selected
   );
 
   // Reset state when pair changes
@@ -129,7 +129,7 @@ export const useMarketData = () => {
  * const { markets, topGainers, topLosers } = useAllMarkets();
  *
  * topGainers.forEach(market => {
- *   console.log(`${market.pair}: +${market.change24h}%`);
+ *   logger.debug(`${market.pair}: +${market.change24h}%`);
  * });
  * ```
  */
@@ -152,7 +152,7 @@ export const useAllMarkets = () => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleAllMarketsUpdate,
-    true // Always enabled
+    true, // Always enabled
   );
 
   // Calculate top gainers (sorted by price change descending)
@@ -220,7 +220,7 @@ export const usePairTicker = (amountAsset?: string, priceAsset?: string) => {
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleTickerUpdate,
-    !!(amountAsset && priceAsset)
+    !!(amountAsset && priceAsset),
   );
 
   // Reset state when pair changes

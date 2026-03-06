@@ -5,7 +5,6 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDexStore } from '@/stores/dexStore';
 import { useUserOrders, useCancelOrder } from '@/api/services/matcherService';
@@ -13,6 +12,7 @@ import { Button } from '@/components/atoms/Button';
 import { Badge } from '@/components/atoms/Badge';
 import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/organisms/Modal';
+import { logger } from '@/lib/logger';
 
 /**
  * Container
@@ -201,8 +201,7 @@ const statusColors: Record<string, 'primary' | 'success' | 'error' | 'warning'> 
  */
 export const UserOrders: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const { selectedPair, removeUserOrder } = useDexStore();
-  const queryClient = useQueryClient();
+  const { selectedPair } = useDexStore();
 
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
@@ -246,10 +245,10 @@ export const UserOrders: React.FC = () => {
    * Filter orders by tab
    */
   const activeOrders = allOrders.filter(
-    (order) => order.status === 'pending' || order.status === 'partially_filled'
+    (order) => order.status === 'pending' || order.status === 'partially_filled',
   );
   const historyOrders = allOrders.filter(
-    (order) => order.status === 'filled' || order.status === 'cancelled'
+    (order) => order.status === 'filled' || order.status === 'cancelled',
   );
 
   const displayOrders = activeTab === 'active' ? activeOrders : historyOrders;
@@ -268,27 +267,19 @@ export const UserOrders: React.FC = () => {
 
   /**
    * Confirm cancel
+   * SECURITY: Order cancellation requires a valid signature.
+   * Without transaction signing support, cancellation is blocked to
+   * prevent sending unsigned requests to the matcher.
    */
   const confirmCancel = () => {
     if (cancellingOrderId && user?.address) {
-      cancelOrderMutation.mutate(
-        {
-          orderId: cancellingOrderId,
-          sender: user.address,
-          signature: '', // TODO: Sign cancellation with user's private key
-        },
-        {
-          onSuccess: () => {
-            removeUserOrder(cancellingOrderId);
-            queryClient.invalidateQueries({ queryKey: ['orders', user.address] });
-            setCancellingOrderId(null);
-          },
-          onError: (err: Error) => {
-            console.error('Failed to cancel order:', err);
-            setCancellingOrderId(null);
-          },
-        }
+      // Block unsigned cancel — matcher should reject empty signatures,
+      // but we enforce it client-side as defense in depth
+      logger.error(
+        'Order cancellation blocked: transaction signing not yet implemented. ' +
+          'Cannot send unsigned cancel requests to matcher.',
       );
+      setCancellingOrderId(null);
     }
   };
 

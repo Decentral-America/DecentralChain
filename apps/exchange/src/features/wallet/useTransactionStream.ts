@@ -41,7 +41,7 @@ export interface TransactionStreamOptions {
  */
 export const useTransactionStream = (
   onNewTransaction?: (tx: TransactionNotification) => void,
-  options?: TransactionStreamOptions
+  options?: TransactionStreamOptions,
 ) => {
   const { user } = useAuth();
   const address = user?.address;
@@ -81,7 +81,7 @@ export const useTransactionStream = (
       // Trigger callback
       onNewTransaction?.(data);
     },
-    [onNewTransaction, options?.filterTypes, options?.minConfirmations]
+    [onNewTransaction, options?.filterTypes, options?.minConfirmations],
   );
 
   // Subscribe to transaction channel
@@ -89,7 +89,7 @@ export const useTransactionStream = (
     { url: wsUrl, debug: config.enableDebug },
     channel,
     handleTransaction,
-    !!address && options?.enabled !== false
+    !!address && options?.enabled !== false,
   );
 
   // Update listening status
@@ -128,7 +128,7 @@ export const useIncomingTransactions = (onIncoming?: (tx: TransactionNotificatio
         onIncoming?.(tx);
       }
     },
-    [address, onIncoming]
+    [address, onIncoming],
   );
 
   return useTransactionStream(handleTransaction, {
@@ -154,7 +154,7 @@ export const useOutgoingTransactions = (onOutgoing?: (tx: TransactionNotificatio
         onOutgoing?.(tx);
       }
     },
-    [address, onOutgoing]
+    [address, onOutgoing],
   );
 
   return useTransactionStream(handleTransaction);
@@ -180,7 +180,7 @@ export const useTransactionConfirmations = (transactionId: string, requiredConfi
         }
       }
     },
-    [transactionId, requiredConfirmations]
+    [transactionId, requiredConfirmations],
   );
 
   useTransactionStream(handleTransaction);
@@ -231,7 +231,7 @@ export const usePendingTransactions = () => {
  */
 export const isIncomingTransaction = (
   tx: TransactionNotification,
-  userAddress: string
+  userAddress: string,
 ): boolean => {
   return tx.recipient === userAddress && tx.sender !== userAddress;
 };
@@ -243,7 +243,7 @@ export const isIncomingTransaction = (
  */
 export const isOutgoingTransaction = (
   tx: TransactionNotification,
-  userAddress: string
+  userAddress: string,
 ): boolean => {
   return tx.sender === userAddress;
 };
@@ -255,7 +255,7 @@ export const isOutgoingTransaction = (
  */
 export const getTransactionDirection = (
   tx: TransactionNotification,
-  userAddress: string
+  userAddress: string,
 ): 'incoming' | 'outgoing' | 'self' | 'unknown' => {
   if (tx.sender === userAddress && tx.recipient === userAddress) {
     return 'self';
@@ -276,7 +276,7 @@ export const getTransactionDirection = (
  */
 export const formatTransactionAmount = (
   tx: TransactionNotification,
-  userAddress: string
+  userAddress: string,
 ): string => {
   if (!tx.amount) return '0';
 

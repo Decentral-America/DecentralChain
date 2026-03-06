@@ -3,17 +3,18 @@
  * Provides candle data from DecentralChain matcher
  */
 import {
-  IBasicDataFeed,
-  LibrarySymbolInfo,
-  ResolutionString,
-  Bar,
-  HistoryCallback,
-  SubscribeBarsCallback,
-  ErrorCallback,
-  OnReadyCallback,
-  ResolveCallback,
-  SearchSymbolsCallback,
+  type IBasicDataFeed,
+  type LibrarySymbolInfo,
+  type ResolutionString,
+  type Bar,
+  type HistoryCallback,
+  type SubscribeBarsCallback,
+  type ErrorCallback,
+  type OnReadyCallback,
+  type ResolveCallback,
+  type SearchSymbolsCallback,
 } from 'charting_library';
+import { logger } from '@/lib/logger';
 
 interface DecentralChainCandle {
   time: number;
@@ -59,7 +60,7 @@ const fetchCandles = async (
   priceAsset: string,
   from: number,
   to: number,
-  interval: string
+  interval: string,
 ): Promise<DecentralChainCandle[]> => {
   try {
     // Get matcher address from config (you may need to adjust this)
@@ -77,7 +78,7 @@ const fetchCandles = async (
     const data = await response.json();
     return data.candles || [];
   } catch (error) {
-    console.error('Error fetching candles:', error);
+    logger.error('Error fetching candles:', error);
     return [];
   }
 };
@@ -89,9 +90,8 @@ export const createDatafeed = (
   amountAsset: string,
   priceAsset: string,
   amountAssetName: string,
-  priceAssetName: string
+  priceAssetName: string,
 ): IBasicDataFeed => {
-
   return {
     onReady: (callback: OnReadyCallback) => {
       setTimeout(() => callback(configurationData), 0);
@@ -101,7 +101,7 @@ export const createDatafeed = (
       userInput: string,
       exchange: string,
       symbolType: string,
-      onResult: SearchSymbolsCallback
+      onResult: SearchSymbolsCallback,
     ) => {
       onResult([
         {
@@ -115,7 +115,7 @@ export const createDatafeed = (
       ]);
     },
 
-    resolveSymbol: (symbolName: string, onResolve: ResolveCallback, onError: ErrorCallback) => {
+    resolveSymbol: (symbolName: string, onResolve: ResolveCallback, _onError: ErrorCallback) => {
       const symbolInfo: LibrarySymbolInfo = {
         name: symbolName,
         ticker: symbolName,
@@ -148,7 +148,7 @@ export const createDatafeed = (
         countBack?: number;
       },
       onResult: HistoryCallback,
-      onError: ErrorCallback
+      onError: ErrorCallback,
     ) => {
       try {
         const { from, to } = periodParams;
@@ -159,7 +159,7 @@ export const createDatafeed = (
           priceAsset,
           from * 1000, // Convert to milliseconds
           to * 1000,
-          interval
+          interval,
         );
 
         if (candles.length === 0) {
@@ -181,7 +181,7 @@ export const createDatafeed = (
 
         onResult(bars, { noData: false });
       } catch (error) {
-        console.error('Error in getBars:', error);
+        logger.error('Error in getBars:', error);
         onError(error instanceof Error ? error.message : String(error));
       }
     },
@@ -191,14 +191,14 @@ export const createDatafeed = (
       resolution: ResolutionString,
       onTick: SubscribeBarsCallback,
       listenerGuid: string,
-      onResetCacheNeededCallback: () => void
+      _onResetCacheNeededCallback: () => void,
     ) => {
       // TODO: Implement real-time updates via WebSocket
-      console.log('subscribeBars:', listenerGuid);
+      logger.debug('subscribeBars:', listenerGuid);
     },
 
     unsubscribeBars: (listenerGuid: string) => {
-      console.log('unsubscribeBars:', listenerGuid);
+      logger.debug('unsubscribeBars:', listenerGuid);
     },
   };
 };

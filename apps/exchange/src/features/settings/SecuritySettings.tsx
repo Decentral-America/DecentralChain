@@ -20,6 +20,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { ExportAccountModal, ChangePasswordModal, DeleteAccountModal, ScriptModal } from './modals';
+import { logger } from '@/lib/logger';
 
 // ==================== Styled Components ====================
 
@@ -213,7 +214,7 @@ export const SecuritySettings: React.FC = () => {
         ]);
 
         // Validate encoded seed matches actual seed (Angular validation logic)
-        // TODO: Re-enable seed validation once @decentralchain/waves-transactions is properly configured
+        // TODO: Re-enable seed validation once @decentralchain/transactions is properly configured
         const canSeed = encoded && seed && typeof seed === 'string';
         // if (canSeed) {
         //   try {
@@ -221,7 +222,7 @@ export const SecuritySettings: React.FC = () => {
         //     const encodedBytes = libs.crypto.base58Decode(encoded as string).join(',');
         //     canSeed = seedBytes === encodedBytes;
         //   } catch (e) {
-        //     console.error('[SecuritySettings] Seed validation error:', e);
+        //     logger.error('[SecuritySettings] Seed validation error:', e);
         //     canSeed = false;
         //   }
         // }
@@ -236,7 +237,7 @@ export const SecuritySettings: React.FC = () => {
         // Check if account has script (would come from user data)
         setHasScript(user?.hasScript || false);
       } catch (error) {
-        console.error('[SecuritySettings] Failed to load secret data:', error);
+        logger.error('[SecuritySettings] Failed to load secret data:', error);
       }
     };
 

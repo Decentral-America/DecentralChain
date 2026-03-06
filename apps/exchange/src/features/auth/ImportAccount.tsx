@@ -2,7 +2,7 @@
  * ImportAccount Component
  * Imports existing wallet via seed phrase
  */
-import { useState, FormEvent, useEffect, useRef } from 'react';
+import { useState, type FormEvent, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,7 @@ import { Card, CardBody } from '@/components/atoms/Card';
 import { Stack } from '@/components/atoms/Stack';
 import { Icon, CommonIcons } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
+import { logger } from '@/lib/logger';
 
 const FormContainer = styled.div`
   width: 100%;
@@ -147,7 +148,7 @@ export const ImportAccount = () => {
   const navigationTarget = useRef<string>('/desktop/wallet');
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported = 
+  const isLedgerSupported =
     (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
@@ -234,7 +235,7 @@ export const ImportAccount = () => {
           ? err.message
           : 'Invalid seed phrase or password. Please check and try again.';
       setError(errorMessage);
-      console.error('Import error:', err);
+      logger.error('Import error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -255,9 +256,7 @@ export const ImportAccount = () => {
             <InfoIcon>
               <Icon name={CommonIcons.Info} size={20} color="white" />
             </InfoIcon>
-            <span>
-              Make sure you&apos;re in a private location before entering sensitive data
-            </span>
+            <span>Make sure you&apos;re in a private location before entering sensitive data</span>
           </InfoBox>
 
           {/* Import mode toggle */}
@@ -265,7 +264,10 @@ export const ImportAccount = () => {
             <ModeTab $active={importMode === 'seed'} onClick={() => setImportMode('seed')}>
               📝 Seed Phrase
             </ModeTab>
-            <ModeTab $active={importMode === 'privatekey'} onClick={() => setImportMode('privatekey')}>
+            <ModeTab
+              $active={importMode === 'privatekey'}
+              onClick={() => setImportMode('privatekey')}
+            >
               🔑 Private Key
             </ModeTab>
           </ModeToggle>
@@ -331,9 +333,11 @@ export const ImportAccount = () => {
                 label="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={isFirstAccount ? "Create a master password" : "Enter your master password"}
+                placeholder={
+                  isFirstAccount ? 'Create a master password' : 'Enter your master password'
+                }
                 disabled={isLoading}
-                autoComplete={isFirstAccount ? "new-password" : "current-password"}
+                autoComplete={isFirstAccount ? 'new-password' : 'current-password'}
                 required
               />
 
