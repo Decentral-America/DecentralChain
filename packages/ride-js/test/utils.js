@@ -1,9 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const fs = require('fs');
-const path = require('path');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const getRideSrc = function(filename) {
-    return fs.readFileSync(path.resolve(__dirname, filename), 'utf8');
+export function getRide(filename) {
+  return fs.readFileSync(path.resolve(__dirname, filename), 'utf8');
 }
-
-module.exports.getRide = getRideSrc;

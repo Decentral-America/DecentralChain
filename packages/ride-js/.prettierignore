@@ -1,0 +1,11 @@
+dist
+coverage
+node_modules
+*.cjs
+*.mjs
+*.d.ts
+*.d.cts
+*.map
+LICENSE
+CHANGELOG.md
+package-lock.json

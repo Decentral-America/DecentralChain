@@ -1,43 +1,35 @@
-name: Publish NPM package
+name: Publish to npm
+
 on:
-  push:
-    branches: [ 'master' ]
-  release:
-    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'npm dist-tag'
+        required: true
+        default: 'next'
+        type: choice
+        options:
+          - next
+          - latest
 
 permissions:
   contents: read
   id-token: write
+
 jobs:
-  publish-snapshots:
-    environment:
-      name: NPMJS
-      url: ${{ steps.publish.outputs.url }}
-    name: Publish snapshot packages
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
+          node-version: 24
+          cache: npm
           registry-url: 'https://registry.npmjs.org'
-          node-version: '>=24.7.0' # Trusted publishing requires npm CLI version 11.5.1 or later.
-      - run: npm i
-      - if: ${{ github.event_name == 'push' }}
-        run: |
-          PACKAGE_NAME=$(jq --raw-output .name package.json)
-          PREFIX=$(jq --raw-output .version package.json)-snapshot
-          NEXT=$(npm view $PACKAGE_NAME versions --json \
-            | jq --raw-output --arg prefix $PREFIX '[.[] | select(startswith($prefix))|capture("snapshot\\.(?<n>[0-9]+)").n|tonumber]|max + 1 // 0')
-          npm version $PREFIX.$NEXT --no-git-tag-version
-          echo "TAG=snapshot" >> $GITHUB_ENV
-      - if: ${{ github.event_name == 'release' }}
-        run: |
-          npm version $(echo ${{ github.release.tag_name }} | sed 's/^v//') --no-git-tag-version
-          echo "TAG=latest" >> $GITHUB_ENV
-      - run: npm test
-      - id: publish
-        run: |
-          npm run build
-          cd dist
-          npm publish --provenance --access public --tag $TAG
-          echo "url=https://www.npmjs.com/package/@waves/ts-lib-crypto/v/$(jq --raw-output .version package.json)" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+      - run: npm run validate
+      - run: npm publish --tag ${{ github.event.inputs.tag }} --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
