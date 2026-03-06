@@ -25,7 +25,12 @@ export const ImportLedger: React.FC = () => {
         <Container maxWidth="xl" sx={{ py: 8 }}>
           <Grid container spacing={6} alignItems="center">
             {/* Left Column - Branding & Features */}
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 5,
+              }}
+            >
               <Box sx={{ pr: { md: 4 } }}>
                 {/* Logo/Title */}
                 <Box sx={{ mb: 3 }}>
@@ -81,8 +86,8 @@ export const ImportLedger: React.FC = () => {
                         Hardware Security
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Private keys stored in secure element chip, never exposed to the internet
-                        or your computer.
+                        Private keys stored in secure element chip, never exposed to the internet or
+                        your computer.
                       </Typography>
                     </Box>
                   </Stack>
@@ -170,7 +175,12 @@ export const ImportLedger: React.FC = () => {
             </Grid>
 
             {/* Right Column - Import Form */}
-            <Grid item xs={12} md={7}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 7,
+              }}
+            >
               <Box
                 sx={{
                   bgcolor: 'background.paper',

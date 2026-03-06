@@ -24,6 +24,7 @@ import { SeedBackup } from '@/features/auth/SeedBackup';
 import { useAuth } from '@/contexts/AuthContext';
 import { NetworkConfig } from '@/config';
 import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import { logger } from '@/lib/logger';
 
 // Animations
 const gradientShift = keyframes`
@@ -82,7 +83,7 @@ const FloatingShape = styled(Box, {
     animation: `${float} ${6 + delay}s ease-in-out infinite`,
     animationDelay: `${delay}s`,
     zIndex: 0,
-  })
+  }),
 );
 
 const GlowOrb = styled(Box, {
@@ -133,7 +134,7 @@ const AccountCard = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const AccountAvatar = styled(Box)(({ theme }) => ({
+const AccountAvatar = styled(Box)(({ theme: _theme }) => ({
   width: 48,
   height: 48,
   borderRadius: '50%',
@@ -158,7 +159,7 @@ interface User {
 export const SaveSeedPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { user: _currentUser, getActiveState } = useAuth();
+  const { getActiveState } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   // State
@@ -197,11 +198,11 @@ export const SaveSeedPage: React.FC = () => {
         const users: User[] = JSON.parse(usersData);
         setUserList(users);
         if (users.length > 0) {
-          setSelectedAddress(users[0].address);
+          setSelectedAddress(users[0]!.address);
         }
       }
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', error);
     }
   };
 
@@ -251,7 +252,7 @@ export const SaveSeedPage: React.FC = () => {
       setSeed(seedPhrase);
       setIsRevealed(true);
     } catch (error) {
-      console.error('Error revealing seed:', error);
+      logger.error('Error revealing seed:', error);
       setPassword('');
       setShowPasswordError(true);
 
@@ -308,8 +309,8 @@ export const SaveSeedPage: React.FC = () => {
                   No Accounts Found
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                  You don't have any accounts with seed phrases to backup. Please create or import
-                  an account first.
+                  You don&apos;t have any accounts with seed phrases to backup. Please create or
+                  import an account first.
                 </Typography>
                 <Button variant="primary" onClick={() => navigate('/signup')}>
                   Create Account
@@ -417,7 +418,7 @@ export const SaveSeedPage: React.FC = () => {
                             fontWeight: 700,
                           }}
                         >
-                          {user.name?.[0]?.toUpperCase() || user.address[0].toUpperCase()}
+                          {user.name?.[0]?.toUpperCase() || user.address[0]!.toUpperCase()}
                         </Box>
                         <Box>
                           <Typography variant="body2" fontWeight={600}>
@@ -436,7 +437,8 @@ export const SaveSeedPage: React.FC = () => {
               {selectedUser && (
                 <AccountCard>
                   <AccountAvatar>
-                    {selectedUser.name?.[0]?.toUpperCase() || selectedUser.address[0].toUpperCase()}
+                    {selectedUser.name?.[0]?.toUpperCase() ||
+                      selectedUser.address[0]!.toUpperCase()}
                   </AccountAvatar>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="body1" fontWeight={600}>
@@ -485,8 +487,8 @@ export const SaveSeedPage: React.FC = () => {
               <Alert severity="warning" sx={{ mb: 3 }}>
                 <AlertTitle>Security Warning</AlertTitle>
                 Never share your seed phrase with anyone. Anyone with access to your seed phrase can
-                access and steal your funds. Make sure you're in a private location before revealing
-                your seed phrase.
+                access and steal your funds. Make sure you&apos;re in a private location before
+                revealing your seed phrase.
               </Alert>
 
               <Button

@@ -166,7 +166,7 @@ export const Dashboard = () => {
   const handleSendAsset = (asset: (typeof allAssets)[0]) => {
     const amount = asset.amount / Math.pow(10, asset.decimals);
     setSelectedAsset({
-      assetId: asset.assetId === 'DCC' ? 'WAVES' : asset.assetId,
+      assetId: asset.assetId === 'DCC' ? 'DCC' : asset.assetId,
       assetName: asset.name,
       assetDecimals: asset.decimals,
       availableBalance: amount.toString(),
@@ -283,7 +283,12 @@ export const Dashboard = () => {
         {/* Portfolio Summary Cards */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {/* Total Balance Card */}
-          <Grid item xs={12} md={4}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4,
+            }}
+          >
             <Card
               sx={{
                 background: 'white',
@@ -354,7 +359,13 @@ export const Dashboard = () => {
           </Grid>
 
           {/* Assets Count Card */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4,
+            }}
+          >
             <Card
               sx={{
                 height: '100%',
@@ -387,7 +398,13 @@ export const Dashboard = () => {
           </Grid>
 
           {/* Recent Transactions Card */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4,
+            }}
+          >
             <Card
               sx={{
                 height: '100%',
@@ -422,7 +439,12 @@ export const Dashboard = () => {
 
         <Grid container spacing={3}>
           {/* Left Column - Quick Actions & Top Assets */}
-          <Grid item xs={12} lg={8}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 8,
+            }}
+          >
             {/* Quick Actions */}
             <Card
               sx={{
@@ -439,7 +461,13 @@ export const Dashboard = () => {
                 </Typography>
                 <Grid container spacing={2}>
                   {quickActions.map((action) => (
-                    <Grid item xs={6} sm={3} key={action.title}>
+                    <Grid
+                      key={action.title}
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
                       <Card
                         sx={{
                           background: 'white',
@@ -620,7 +648,12 @@ export const Dashboard = () => {
           </Grid>
 
           {/* Right Column - Recent Activity */}
-          <Grid item xs={12} lg={4}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 4,
+            }}
+          >
             <Card
               sx={{
                 borderRadius: '12px',
@@ -786,7 +819,6 @@ export const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
-
       <CreateAliasModal
         open={createAliasOpen}
         onClose={() => setCreateAliasOpen(false)}
@@ -794,7 +826,6 @@ export const Dashboard = () => {
           setCreateAliasOpen(false);
         }}
       />
-
       {/* Send Asset Modal */}
       {selectedAsset && (
         <SendAssetModalModern

@@ -263,7 +263,7 @@ export const StandPage: React.FC = () => {
 
   const handleShowSnackbar = (
     message: string,
-    severity: 'success' | 'info' | 'warning' | 'error' = 'success'
+    severity: 'success' | 'info' | 'warning' | 'error' = 'success',
   ) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -312,7 +312,6 @@ export const StandPage: React.FC = () => {
       <FloatingShape sx={{ width: 300, height: 300, top: '10%', left: '5%' }} delay={0} />
       <FloatingShape sx={{ width: 200, height: 200, top: '60%', right: '10%' }} delay={2} />
       <FloatingShape sx={{ width: 250, height: 250, bottom: '10%', left: '15%' }} delay={4} />
-
       <ContentWrapper>
         <Fade in={isVisible} timeout={600}>
           <HeroSection>
@@ -358,7 +357,12 @@ export const StandPage: React.FC = () => {
             <TabPanel value={tabValue} index={0}>
               <Grid container spacing={4}>
                 {/* Buttons */}
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <ShowcaseCard
                     elevation={0}
                     sx={{
@@ -447,7 +451,12 @@ export const StandPage: React.FC = () => {
                 </Grid>
 
                 {/* Inputs & Controls */}
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <ShowcaseCard
                     elevation={0}
                     sx={{
@@ -542,13 +551,20 @@ export const StandPage: React.FC = () => {
             <TabPanel value={tabValue} index={1}>
               <Grid container spacing={4}>
                 {/* Color Swatches */}
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SectionTitle>
                     <PaletteIcon /> Theme Colors
                   </SectionTitle>
                   <Grid container spacing={3}>
                     {colors.map((color) => (
-                      <Grid item xs={6} sm={4} md={2} key={color.name}>
+                      <Grid
+                        key={color.name}
+                        size={{
+                          xs: 6,
+                          sm: 4,
+                          md: 2,
+                        }}
+                      >
                         <Tooltip title={`Click to copy ${color.value}`} arrow>
                           <Box>
                             <ColorSwatch
@@ -580,7 +596,12 @@ export const StandPage: React.FC = () => {
                 </Grid>
 
                 {/* Progress Indicators */}
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <SectionTitle>Circular Progress</SectionTitle>
                   <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
                     <Box sx={{ textAlign: 'center' }}>
@@ -610,7 +631,12 @@ export const StandPage: React.FC = () => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                >
                   <SectionTitle>Linear Progress</SectionTitle>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <Box>
@@ -639,7 +665,7 @@ export const StandPage: React.FC = () => {
                 </Grid>
 
                 {/* Chips */}
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SectionTitle>Chips</SectionTitle>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                     <Chip label="Default" />
@@ -680,7 +706,7 @@ export const StandPage: React.FC = () => {
                       size="small"
                       onClick={() =>
                         handleCopyCode(
-                          `import { Button } from '@mui/material';\n\n<Button variant="contained" color="primary">\n  Click Me\n</Button>`
+                          `import { Button } from '@mui/material';\n\n<Button variant="contained" color="primary">\n  Click Me\n</Button>`,
                         )
                       }
                     >
@@ -713,7 +739,7 @@ export const StandPage: React.FC = () => {
                       size="small"
                       onClick={() =>
                         handleCopyCode(
-                          `import { TextField } from '@mui/material';\n\n<TextField\n  label="Username"\n  variant="outlined"\n  fullWidth\n  helperText="Enter your username"\n/>`
+                          `import { TextField } from '@mui/material';\n\n<TextField\n  label="Username"\n  variant="outlined"\n  fullWidth\n  helperText="Enter your username"\n/>`,
                         )
                       }
                     >
@@ -749,7 +775,7 @@ export const StandPage: React.FC = () => {
                       size="small"
                       onClick={() =>
                         handleCopyCode(
-                          `import { createTheme } from '@mui/material/styles';\n\nconst theme = createTheme({\n  palette: {\n    primary: { main: '#1f5af6' },\n    secondary: { main: '#6c757d' },\n  },\n});`
+                          `import { createTheme } from '@mui/material/styles';\n\nconst theme = createTheme({\n  palette: {\n    primary: { main: '#1f5af6' },\n    secondary: { main: '#6c757d' },\n  },\n});`,
                         )
                       }
                     >
@@ -784,7 +810,7 @@ const theme = createTheme({
                       size="small"
                       onClick={() =>
                         handleCopyCode(
-                          `<iframe\n  src="https://wallet.decentralchain.io/stand"\n  width="100%"\n  height="600"\n  frameborder="0"\n></iframe>`
+                          `<iframe\n  src="https://wallet.decentralchain.io/stand"\n  width="100%"\n  height="600"\n  frameborder="0"\n></iframe>`,
                         )
                       }
                     >
@@ -804,7 +830,6 @@ const theme = createTheme({
           </ShowcaseCard>
         </Slide>
       </ContentWrapper>
-
       {/* Snackbar for Feedback */}
       <Snackbar
         open={snackbar.open}

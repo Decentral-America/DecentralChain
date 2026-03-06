@@ -4,7 +4,7 @@
  * Only accessible via direct URL: /dccadmin
  */
 import { useState, useEffect } from 'react';
-import { AdminTradingPair } from '@/hooks/useAdminTradingPairs';
+import { type AdminTradingPair } from '@/hooks/useAdminTradingPairs';
 import {
   Box,
   Container,
@@ -31,6 +31,7 @@ import {
   Switch,
   FormControlLabel,
 } from '@mui/material';
+import { logger } from '@/lib/logger';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -41,7 +42,7 @@ import {
   Cancel as CancelIcon,
 } from '@mui/icons-material';
 
-interface TradingPair extends AdminTradingPair {}
+type TradingPair = AdminTradingPair;
 
 interface PairFormData {
   amountAssetId: string;
@@ -90,7 +91,7 @@ export const DexPairAdmin = () => {
       try {
         setPairs(JSON.parse(stored));
       } catch (error) {
-        console.error('Failed to load trading pairs:', error);
+        logger.error('Failed to load trading pairs:', error);
       }
     } else {
       // Initialize with default DCC/USDT pair
@@ -212,7 +213,7 @@ export const DexPairAdmin = () => {
               sortOrder: formData.sortOrder,
               updatedAt: now,
             }
-          : pair
+          : pair,
       );
       savePairs(updatedPairs);
       setSnackbar({
@@ -269,7 +270,7 @@ export const DexPairAdmin = () => {
     const updatedPairs = pairs.map((pair) =>
       pair.id === pairId
         ? { ...pair, enabled: !pair.enabled, updatedAt: new Date().toISOString() }
-        : pair
+        : pair,
     );
     savePairs(updatedPairs);
   };
@@ -278,7 +279,7 @@ export const DexPairAdmin = () => {
     const updatedPairs = pairs.map((pair) =>
       pair.id === pairId
         ? { ...pair, featured: !pair.featured, updatedAt: new Date().toISOString() }
-        : pair
+        : pair,
     );
     savePairs(updatedPairs);
   };
@@ -331,7 +332,7 @@ export const DexPairAdmin = () => {
                 <TableRow>
                   <TableCell colSpan={8} align="center">
                     <Typography variant="body2" color="text.secondary" py={4}>
-                      No trading pairs configured. Click "Add Pair" to create one.
+                      No trading pairs configured. Click &quot;Add Pair&quot; to create one.
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -345,9 +346,7 @@ export const DexPairAdmin = () => {
                           <Typography variant="body1" fontWeight={600}>
                             {pair.amountAsset.ticker}/{pair.priceAsset.ticker}
                           </Typography>
-                          {pair.featured && (
-                            <Chip label="Featured" size="small" color="primary" />
-                          )}
+                          {pair.featured && <Chip label="Featured" size="small" color="primary" />}
                         </Stack>
                       </TableCell>
                       <TableCell>
@@ -430,9 +429,7 @@ export const DexPairAdmin = () => {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {editingPair ? 'Edit Trading Pair' : 'Add New Trading Pair'}
-        </DialogTitle>
+        <DialogTitle>{editingPair ? 'Edit Trading Pair' : 'Add New Trading Pair'}</DialogTitle>
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 2 }}>
             {/* Amount Asset Section */}
@@ -445,9 +442,7 @@ export const DexPairAdmin = () => {
                   label="Asset ID *"
                   fullWidth
                   value={formData.amountAssetId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, amountAssetId: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, amountAssetId: e.target.value })}
                   placeholder="e.g., DCC or full asset ID"
                 />
                 <Stack direction="row" spacing={2}>
@@ -464,9 +459,7 @@ export const DexPairAdmin = () => {
                     label="Name"
                     fullWidth
                     value={formData.amountAssetName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, amountAssetName: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, amountAssetName: e.target.value })}
                     placeholder="e.g., DecentralChain"
                   />
                   <TextField
@@ -496,9 +489,7 @@ export const DexPairAdmin = () => {
                   label="Asset ID *"
                   fullWidth
                   value={formData.priceAssetId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priceAssetId: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, priceAssetId: e.target.value })}
                   placeholder="e.g., USDT or full asset ID"
                 />
                 <Stack direction="row" spacing={2}>
@@ -506,18 +497,14 @@ export const DexPairAdmin = () => {
                     label="Ticker *"
                     fullWidth
                     value={formData.priceAssetTicker}
-                    onChange={(e) =>
-                      setFormData({ ...formData, priceAssetTicker: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, priceAssetTicker: e.target.value })}
                     placeholder="e.g., USDT"
                   />
                   <TextField
                     label="Name"
                     fullWidth
                     value={formData.priceAssetName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, priceAssetName: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, priceAssetName: e.target.value })}
                     placeholder="e.g., Tether USD"
                   />
                   <TextField
@@ -558,9 +545,7 @@ export const DexPairAdmin = () => {
                     control={
                       <Switch
                         checked={formData.enabled}
-                        onChange={(e) =>
-                          setFormData({ ...formData, enabled: e.target.checked })
-                        }
+                        onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
                       />
                     }
                     label="Enabled"
@@ -569,9 +554,7 @@ export const DexPairAdmin = () => {
                     control={
                       <Switch
                         checked={formData.featured}
-                        onChange={(e) =>
-                          setFormData({ ...formData, featured: e.target.checked })
-                        }
+                        onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                       />
                     }
                     label="Featured"
@@ -585,11 +568,7 @@ export const DexPairAdmin = () => {
           <Button startIcon={<CancelIcon />} onClick={handleCloseDialog}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            onClick={handleSavePair}
-          >
+          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSavePair}>
             {editingPair ? 'Update' : 'Create'}
           </Button>
         </DialogActions>

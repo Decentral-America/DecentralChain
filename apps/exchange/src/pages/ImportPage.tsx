@@ -66,7 +66,7 @@ const MethodCard = styled(Paper)(({ theme }) => ({
 }));
 
 // Icon container
-const IconBox = styled(Box)(({ theme }) => ({
+const IconBox = styled(Box)(({ theme: _theme }) => ({
   width: 80,
   height: 80,
   margin: '0 auto 20px',
@@ -111,8 +111,8 @@ const importMethods = [
   },
   {
     id: 'keeper',
-    title: 'Waves Keeper Extension',
-    description: 'Import from Waves Keeper browser extension',
+    title: 'Cubensis Connect Extension',
+    description: 'Import from Cubensis Connect browser extension',
     icon: <Extension sx={{ fontSize: 40 }} />,
     route: '/auth/keeper',
   },
@@ -164,7 +164,13 @@ export const ImportPage: React.FC = () => {
           {/* Import Methods Grid */}
           <Grid container spacing={3} sx={{ mb: 5 }}>
             {importMethods.map((method, index) => (
-              <Grid item xs={12} sm={6} key={method.id}>
+              <Grid
+                key={method.id}
+                size={{
+                  xs: 12,
+                  sm: 6,
+                }}
+              >
                 <Slide direction="up" in={isVisible} timeout={700 + index * 100}>
                   <MethodCard elevation={0} onClick={() => handleMethodClick(method.route)}>
                     <IconBox>{method.icon}</IconBox>
@@ -223,7 +229,7 @@ export const ImportPage: React.FC = () => {
                 mb: 2,
               }}
             >
-              Don't have an account yet?
+              Don&apos;t have an account yet?
             </Typography>
             <Button
               variant="text"

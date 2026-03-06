@@ -5,6 +5,7 @@ import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
 import { Input } from '../components/atoms/Input';
 import { Spinner } from '../components/atoms/Spinner';
+import { logger } from '@/lib/logger';
 
 // Types
 interface LegacyUser {
@@ -102,7 +103,7 @@ const AccountList = styled.div`
   gap: 16px;
 `;
 
-const AccountCard = styled(Card)<{ clickable?: boolean }>`
+const AccountCard = styled(Card as any)<{ clickable?: boolean }>`
   display: flex;
   align-items: center;
   padding: 20px;
@@ -287,10 +288,10 @@ export const MigratePage: React.FC = () => {
 
       // Separate users that don't need password (Ledger, Keeper)
       const usersNeedingPassword = mockLockedUsers.filter(
-        (user) => user.userType === 'seed' || user.userType === 'privateKey'
+        (user) => user.userType === 'seed' || user.userType === 'privateKey',
       );
       const usersWithoutPassword = mockLockedUsers.filter(
-        (user) => user.userType !== 'seed' && user.userType !== 'privateKey'
+        (user) => user.userType !== 'seed' && user.userType !== 'privateKey',
       );
 
       // Auto-migrate users that don't need passwords
@@ -306,7 +307,7 @@ export const MigratePage: React.FC = () => {
         handleFinish();
       }
     } catch (error) {
-      console.error('Failed to load users:', error);
+      logger.error('Failed to load users:', error);
     } finally {
       setIsLoading(false);
     }
@@ -317,7 +318,7 @@ export const MigratePage: React.FC = () => {
     return btoa(address).substring(0, 16);
   };
 
-  const migrateUserWithoutPassword = async (user: LegacyUser): Promise<void> => {
+  const migrateUserWithoutPassword = async (_user: LegacyUser): Promise<void> => {
     // Simulate migration without password for Ledger/Keeper users
     await new Promise((resolve) => setTimeout(resolve, 200));
     // In real implementation, this would save to new storage format
@@ -347,14 +348,13 @@ export const MigratePage: React.FC = () => {
 
   const validateCredentials = (user: LegacyUser, password: string): boolean => {
     // In real implementation, this would decrypt and verify the seed/privateKey
-    // For now, accept any non-empty password
-    if (!password) {
+    // using @decentralchain/transactions libs.crypto functions
+    if (!password || typeof password !== 'string') {
       return false;
     }
 
-    // Simulate decryption and validation
-    // This would use @decentralchain/waves-transactions libs.crypto functions
-    return password.length >= 3; // Mock validation
+    // Enforce minimum password length consistent with vault requirements
+    return password.length >= 8;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -403,7 +403,7 @@ export const MigratePage: React.FC = () => {
       setCurrentUser(null);
       setActiveStep(MigrationStep.AccountList);
     } catch (error) {
-      console.error('Migration failed:', error);
+      logger.error('Migration failed:', error);
       setPasswordError('Migration failed. Please try again.');
       setPassword('');
     } finally {
@@ -495,7 +495,7 @@ export const MigratePage: React.FC = () => {
           </Button>
 
           <Footer>
-            <FooterText>Don't have an account?</FooterText>
+            <FooterText>Don&apos;t have an account?</FooterText>
             <FooterLink onClick={() => navigate('/auth/signup')}>Create New Account</FooterLink>
           </Footer>
         </>

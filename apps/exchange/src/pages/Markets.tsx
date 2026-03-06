@@ -18,10 +18,16 @@ export const Markets = () => {
       <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
         Markets
       </Typography>
-
       <Grid container spacing={3}>
         {marketData.map((market) => (
-          <Grid item xs={12} sm={6} md={3} key={market.pair}>
+          <Grid
+            key={market.pair}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Paper
               sx={{
                 p: 2.5,

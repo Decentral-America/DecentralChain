@@ -214,7 +214,13 @@ export const DesktopPage: React.FC = () => {
             {/* Features */}
             <Grid container spacing={2} sx={{ mb: 4 }}>
               {features.map((feature, index) => (
-                <Grid item xs={12} sm={4} key={index}>
+                <Grid
+                  key={index}
+                  size={{
+                    xs: 12,
+                    sm: 4,
+                  }}
+                >
                   <Slide direction="up" in={isVisible} timeout={900 + index * 100}>
                     <FeatureCard elevation={0}>
                       <Box

@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 // Animations
 const gradientShift = keyframes`
@@ -86,7 +87,7 @@ const FloatingShape = styled(Box, {
     animation: `${float} ${6 + delay}s ease-in-out infinite`,
     animationDelay: `${delay}s`,
     zIndex: 0,
-  })
+  }),
 );
 
 const GlowOrb = styled(Box, {
@@ -164,12 +165,12 @@ const steps = ['Upload Backup', 'Enter Password', 'Restore Accounts'];
 export const RestoreFromBackupPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { login: _login, getActiveState } = useAuth();
+  const { getActiveState } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   // State
   const [activeStep, setActiveStep] = useState(0);
-  const [_backupFile, setBackupFile] = useState<File | null>(null);
+  const [, setBackupFile] = useState<File | null>(null);
   const [backupData, setBackupData] = useState<WalletBackup | null>(null);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -206,7 +207,7 @@ export const RestoreFromBackupPage: React.FC = () => {
 
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      handleFileSelect(files[0]);
+      handleFileSelect(files[0]!);
     }
   }, []);
 
@@ -233,14 +234,14 @@ export const RestoreFromBackupPage: React.FC = () => {
       setActiveStep(1);
     } catch (err) {
       setError('Invalid backup file. Please check the file and try again.');
-      console.error('Backup parse error:', err);
+      logger.error('Backup parse error:', err);
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      handleFileSelect(files[0]);
+      handleFileSelect(files[0]!);
     }
   };
 
@@ -267,7 +268,7 @@ export const RestoreFromBackupPage: React.FC = () => {
         keyMaterial,
         { name: 'AES-GCM', length: 256 },
         false,
-        ['decrypt']
+        ['decrypt'],
       );
 
       // Decrypt data
@@ -278,7 +279,7 @@ export const RestoreFromBackupPage: React.FC = () => {
       const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
 
       return JSON.parse(decoder.decode(decrypted));
-    } catch (error) {
+    } catch {
       throw new Error('Decryption failed. Please check your password.');
     }
   };
@@ -336,7 +337,7 @@ export const RestoreFromBackupPage: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to restore backup';
       setError(errorMessage);
-      console.error('Restore error:', err);
+      logger.error('Restore error:', err);
     } finally {
       setIsProcessing(false);
     }

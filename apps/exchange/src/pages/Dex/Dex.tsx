@@ -129,7 +129,7 @@ export const Dex = () => {
     {
       enabled: !!selectedPair,
       refetchInterval: 5000, // Poll every 5 seconds like Angular (1000ms)
-    }
+    },
   );
 
   // Update store when order book data changes
@@ -186,17 +186,31 @@ export const Dex = () => {
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} alignItems="center">
                 {/* Pair Selector */}
-                <Grid item xs={12} md={2.5} sx={{ overflow: 'visible', zIndex: 1000 }}>
+                <Grid
+                  sx={{ overflow: 'visible', zIndex: 1000 }}
+                  size={{
+                    xs: 12,
+                    md: 2.5,
+                  }}
+                >
                   <TradingPairSelector />
                 </Grid>
 
                 {/* Price Display */}
-                <Grid item xs={6} md={2}>
+                <Grid
+                  size={{
+                    xs: 6,
+                    md: 2,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       Last Price
                     </Typography>
-                    <PriceDisplay trend={priceTrend} sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
+                    <PriceDisplay
+                      trend={priceTrend}
+                      sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}
+                    >
                       {formattedPrice}
                       {priceTrend === 'up' ? (
                         <TrendingUp sx={{ fontSize: '1.5rem' }} />
@@ -208,7 +222,12 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Change */}
-                <Grid item xs={6} md={1.5}>
+                <Grid
+                  size={{
+                    xs: 6,
+                    md: 1.5,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Change
@@ -225,7 +244,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h High - hidden on xs */}
-                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Grid
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                  size={{
+                    xs: 4,
+                    md: 2,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h High
@@ -242,7 +267,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Low - hidden on xs */}
-                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Grid
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                  size={{
+                    xs: 4,
+                    md: 2,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Low
@@ -259,7 +290,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Volume */}
-                <Grid item xs={12} sm={4} md={2}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 4,
+                    md: 2,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Volume
@@ -282,10 +319,18 @@ export const Dex = () => {
         {/* Main Trading Area - 2 Column Layout */}
         <Grid container spacing={2}>
           {/* LEFT - Chart takes 70% width for prominence */}
-          <Grid item xs={12} lg={8.5}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 8.5,
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
               {/* Large Chart Section */}
-              <TradingPanel elevation={0} sx={{ flex: 1, minHeight: { xs: 300, sm: 400, md: 550 } }}>
+              <TradingPanel
+                elevation={0}
+                sx={{ flex: 1, minHeight: { xs: 300, sm: 400, md: 550 } }}
+              >
                 <PanelHeader>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
@@ -363,7 +408,12 @@ export const Dex = () => {
           </Grid>
 
           {/* RIGHT - Buy/Sell & Trades Sidebar */}
-          <Grid item xs={12} lg={3.5}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 3.5,
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {/* Buy/Sell Card with Toggle */}
               <TradingPanel elevation={0} sx={{ minHeight: { xs: 'auto', md: 560 } }}>

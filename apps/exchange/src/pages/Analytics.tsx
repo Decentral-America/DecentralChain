@@ -23,7 +23,7 @@ export const Analytics = () => {
   const { data: transactions, isLoading: isLoadingTransactions } = useAddressTransactions(
     user?.address || '',
     100,
-    { enabled: !!user?.address }
+    { enabled: !!user?.address },
   );
 
   // Calculate total portfolio value in DCC
@@ -116,10 +116,16 @@ export const Analytics = () => {
       <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
         Analytics
       </Typography>
-
       <Grid container spacing={3}>
         {stats.map((stat, idx) => (
-          <Grid item xs={12} sm={6} md={3} key={idx}>
+          <Grid
+            key={idx}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Paper
               sx={{
                 p: 2.5,
@@ -170,7 +176,6 @@ export const Analytics = () => {
           </Grid>
         ))}
       </Grid>
-
       <Paper
         sx={{
           mt: 3,
