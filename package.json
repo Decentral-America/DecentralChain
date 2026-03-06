@@ -50,27 +50,27 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:publint": "publint",
     "check:exports": "attw --pack .",
     "check:size": "size-limit",
-    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "validate": "npm run format:check && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
+    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
     "prepare": "husky",
     "prepack": "npm run build",
     "postversion": "npm publish",
-    "postpublish": "git push"
+    "postpublish": "git push",
+    "lint:check": "eslint ."
   },
   "lint-staged": {
-    "*.{js,ts}": [
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.json": [
+    "*.{json,md,yml,yaml,css}": [
       "prettier --write"
     ]
   },
