@@ -6,16 +6,10 @@
  * with localStorage persistence and change notifications.
  */
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  ReactNode,
-} from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { NetworkConfig } from '../config/networkConfig';
+import { logger } from '@/lib/logger';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -57,7 +51,7 @@ interface CommonSettings {
     tokensNameListUrl: string;
     blockHeight: string;
   };
-  oracleWaves: string;
+  oracleDCC: string;
   scamListUrl: string;
   tokensNameListUrl: string;
 }
@@ -174,7 +168,7 @@ const getDefaultCommonSettings = (): CommonSettings => {
       tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
       blockHeight: '', // This would be fetched dynamically
     },
-    oracleWaves: NetworkConfig.oracleWaves,
+    oracleDCC: NetworkConfig.oracleDCC,
     scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
     tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
   };
@@ -283,7 +277,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           setUserSettings(defaults);
           localStorage.setItem(
             `${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`,
-            JSON.stringify(defaults)
+            JSON.stringify(defaults),
           );
         }
       } else {
@@ -294,7 +288,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       const theme = storedCommon ? JSON.parse(storedCommon).theme : 'default';
       document.documentElement.setAttribute('data-theme', theme || 'default');
     } catch (error) {
-      console.error('[Settings] Load failed:', error);
+      logger.error('[Settings] Load failed:', error);
       // Use defaults on error
       setCommonSettings(getDefaultCommonSettings());
       setUserSettings(user ? getDefaultUserSettings() : null);
@@ -311,7 +305,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     <K extends keyof CommonSettings>(key: K): CommonSettings[K] => {
       return commonSettings[key];
     },
-    [commonSettings]
+    [commonSettings],
   );
 
   /**
@@ -327,7 +321,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       // Trigger side effects
       applySideEffects(key as string, value);
     },
-    [commonSettings]
+    [commonSettings],
   );
 
   /**
@@ -338,7 +332,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     <K extends keyof UserSettings>(key: K): UserSettings[K] | undefined => {
       return userSettings?.[key];
     },
-    [userSettings]
+    [userSettings],
   );
 
   /**
@@ -348,7 +342,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const setUserSetting = useCallback(
     <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
       if (!user || !userSettings) {
-        console.warn('[Settings] Cannot set user setting: No user logged in');
+        logger.warn('[Settings] Cannot set user setting: No user logged in');
         return;
       }
 
@@ -356,7 +350,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       setUserSettings(updated);
       localStorage.setItem(`${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`, JSON.stringify(updated));
     },
-    [user, userSettings]
+    [user, userSettings],
   );
 
   /**
@@ -372,9 +366,9 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           break;
 
         case 'network':
-        case 'oracleWaves':
+        case 'oracleDCC':
         case 'scamListUrl':
-        case 'tokensNameListUrl':
+        case 'tokensNameListUrl': {
           // Update data-service config
           const ds = await import('data-service');
           if (ds.config.setConfig) {
@@ -390,15 +384,16 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
             ds.config.setConfig(updates);
           }
           break;
+        }
 
         case 'dontShowSpam':
           // Spam filter toggle - handled by components
-          console.log('[Settings] Spam filter toggled:', value);
+          logger.debug('[Settings] Spam filter toggled:', value);
           break;
 
         case 'lng':
           // Language change - would trigger i18n update
-          console.log('[Settings] Language changed:', value);
+          logger.debug('[Settings] Language changed:', value);
           break;
 
         default:
@@ -406,7 +401,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           break;
       }
     } catch (error) {
-      console.error('[Settings] Side effect failed for', key, error);
+      logger.error('[Settings] Side effect failed for', key, error);
     }
   };
 
@@ -426,16 +421,16 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         setUserSettings(defaultUser);
         localStorage.setItem(
           `${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`,
-          JSON.stringify(defaultUser)
+          JSON.stringify(defaultUser),
         );
       }
 
       // Re-apply theme
       document.documentElement.setAttribute('data-theme', defaultCommon.theme);
 
-      console.log('[Settings] Reset to defaults');
+      logger.debug('[Settings] Reset to defaults');
     } catch (error) {
-      console.error('[Settings] Reset to defaults failed:', error);
+      logger.error('[Settings] Reset to defaults failed:', error);
     }
   }, [user]);
 
