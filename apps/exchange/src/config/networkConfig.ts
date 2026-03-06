@@ -2,7 +2,7 @@
  * NetworkConfig Service
  *
  * Centralized configuration access service that provides type-safe access to mainnet.json
- * This replaces Angular's window.WavesApp.network global pattern with a clean service interface
+ * This replaces Angular's window.DCCApp.network global pattern with a clean service interface
  *
  * All methods are static to avoid unnecessary instantiation
  * All accessors are read-only as mainnet.json is immutable runtime configuration
@@ -132,11 +132,11 @@ export class NetworkConfig {
   }
 
   /**
-   * Waves oracle address for price feeds and data services
+   * DCC oracle address for price feeds and data services
    * Example: "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP"
    */
-  static get oracleWaves(): string {
-    return this.config.oracles.waves;
+  static get oracleDCC(): string {
+    return this.config.oracles.dcc;
   }
 
   /**
@@ -223,7 +223,7 @@ export class NetworkConfig {
    * @returns Gateway config or undefined if not found
    */
   static getGatewayConfig(assetId: string): GatewayAssetConfig | undefined {
-    return this.config.wavesGateway?.[assetId];
+    return this.config.gateway?.[assetId];
   }
 
   /**
@@ -231,7 +231,7 @@ export class NetworkConfig {
    * @returns Record of asset ID -> gateway config
    */
   static getAllGatewayConfigs(): Record<string, GatewayAssetConfig> {
-    return { ...this.config.wavesGateway }; // Return copy
+    return { ...this.config.gateway }; // Return copy
   }
 
   /**
@@ -240,7 +240,7 @@ export class NetworkConfig {
    * @returns true if gateway exists for this asset
    */
   static hasGateway(assetId: string): boolean {
-    return !!this.config.wavesGateway?.[assetId];
+    return !!this.config.gateway?.[assetId];
   }
 
   // ========== Network-Specific Utilities ==========
@@ -266,7 +266,7 @@ export class NetworkConfig {
   /**
    * Get specific configuration value by key path
    * Useful for dynamic config access
-   * @param key - Dot-notation path (e.g., "oracles.waves")
+   * @param key - Dot-notation path (e.g., "oracles.dcc")
    * @returns Configuration value or undefined
    */
   static get(key: string): unknown {

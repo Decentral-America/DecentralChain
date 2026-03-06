@@ -11,9 +11,9 @@ export interface Asset {
 }
 
 /**
- * Waves Gateway configuration for external blockchain integrations
+ * DCC Gateway configuration for external blockchain integrations
  */
-export interface WavesGatewayConfig {
+export interface GatewayConfig {
   url: string;
   isThirdParty: boolean;
   regex: string;
@@ -23,7 +23,7 @@ export interface WavesGatewayConfig {
  * Oracle addresses for price feeds and data
  */
 export interface Oracles {
-  waves: string;
+  dcc: string;
   tokenomica: string;
 }
 
@@ -78,6 +78,6 @@ export interface ConfigContextType {
   matcherPriorityList: Asset[];
 
   // Gateway and oracle configuration
-  wavesGateway: Record<string, WavesGatewayConfig>;
+  gateway: Record<string, GatewayConfig>;
   oracles: Oracles;
 }

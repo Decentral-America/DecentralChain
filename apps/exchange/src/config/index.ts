@@ -5,6 +5,7 @@
  */
 
 import NetworkConfig from './networkConfig';
+import { logger } from '@/lib/logger';
 
 export interface Config {
   // Environment flags
@@ -99,6 +100,6 @@ export { NetworkConfig };
  */
 export const devLog = (...args: unknown[]): void => {
   if (config.enableDebug || config.isDevelopment) {
-    console.log('[DEV]', ...args);
+    logger.debug('[DEV]', ...args);
   }
 };
