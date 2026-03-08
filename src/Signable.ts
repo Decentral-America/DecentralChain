@@ -89,14 +89,17 @@ export class Signable {
     this._signMethod = SIGN_TYPES[forSign.type].adapter;
 
     try {
-      this._preparedData = prepare.signSchema(prepareMap)(this._forSign.data as unknown as Record<string, unknown>, true);
+      this._preparedData = prepare.signSchema(prepareMap)(
+        this._forSign.data as unknown as Record<string, unknown>,
+        true,
+      );
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
       throw new SignError(message, ERRORS.VALIDATION_FAILED, e);
     }
 
-    this._bytePromise = this.getSignData().then(
-      (signData) => SIGN_TYPES[forSign.type].getBytes[version]!(signData),
+    this._bytePromise = this.getSignData().then((signData) =>
+      SIGN_TYPES[forSign.type].getBytes[version]!(signData),
     );
   }
 
@@ -325,9 +328,7 @@ export class Signable {
     const data = this._forSign.data as any;
     if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
       const payment = data.payment ?? [];
-      return payment.length && payment[0]?.asset
-        ? payment[0].asset.precision
-        : 0;
+      return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
     }
     return data.amount?.asset?.precision ?? 0;
   }
@@ -335,9 +336,7 @@ export class Signable {
   private _getAmount2Precision() {
     const data = this._forSign.data as any;
     const payment = data.payment ?? [];
-    return payment.length === 2 && payment[1]?.asset
-      ? payment[1].asset.precision
-      : 0;
+    return payment.length === 2 && payment[1]?.asset ? payment[1].asset.precision : 0;
   }
 
   private _getFeePrecision() {

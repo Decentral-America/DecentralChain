@@ -10,7 +10,7 @@ import { Money } from '@decentralchain/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
-const { txToProtoBytes } = protoSerialize;
+const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 
 const toNode = (
   data: Record<string, unknown>,
@@ -40,6 +40,7 @@ const processScript = (srcScript: string | null) => {
 };
 
 export enum TRANSACTION_TYPE_NUMBER {
+  SEND_OLD = 2,
   ISSUE = 3,
   TRANSFER = 4,
   REISSUE = 5,
@@ -55,6 +56,7 @@ export enum TRANSACTION_TYPE_NUMBER {
   SET_ASSET_SCRIPT = 15,
   SCRIPT_INVOCATION = 16,
   UPDATE_ASSET_INFO = 17,
+  ETHEREUM_TX = 18,
 }
 
 export enum SIGN_TYPE {
@@ -79,6 +81,7 @@ export enum SIGN_TYPE {
   SET_ASSET_SCRIPT = 15,
   SCRIPT_INVOCATION = 16,
   UPDATE_ASSET_INFO = 17,
+  ETHEREUM_TX = 18,
 }
 
 export interface ITypesMap {
@@ -155,6 +158,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeOrder,
       2: binary.serializeOrder,
       3: binary.serializeOrder,
+      4: orderToProtoBytes as (data: Record<string, unknown>) => Uint8Array,
     },
     toNode: (data) => {
       const price = processors.toOrderPrice(data);
@@ -380,6 +384,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         dccTransactions.invokeScript,
       ),
+    adapter: 'signTransaction',
+  },
+  [SIGN_TYPE.ETHEREUM_TX]: {
+    getBytes: {},
     adapter: 'signTransaction',
   },
 };

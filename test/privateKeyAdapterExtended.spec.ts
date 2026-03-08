@@ -102,7 +102,7 @@ describe('PrivateKeyAdapter - extended tests', () => {
     const versions = adapter.getSignVersions();
     expect(versions[SIGN_TYPE.AUTH]).toEqual([1]);
     expect(versions[SIGN_TYPE.TRANSFER]).toEqual([3, 2]);
-    expect(versions[SIGN_TYPE.CREATE_ORDER]).toEqual([1, 2, 3]);
+    expect(versions[SIGN_TYPE.CREATE_ORDER]).toEqual([1, 2, 3, 4]);
     expect(versions[SIGN_TYPE.CANCEL_ORDER]).toEqual([0, 1]);
     expect(versions[SIGN_TYPE.EXCHANGE]).toEqual([0, 1, 3, 2]);
   });
