@@ -1,5 +1,5 @@
-import { BigNumber } from '../src/index.js';
 import Long from 'long';
+import { BigNumber } from '../src/index.js';
 
 describe('BigNumber', () => {
   it('clone', () => {
