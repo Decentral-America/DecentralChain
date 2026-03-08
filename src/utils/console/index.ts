@@ -1,10 +1,10 @@
-import { config } from '../../config/index.js';
+import { consoleConfig, type TConsoleMethods } from '../../config/index.js';
 import { keys } from '../utils/index.js';
 
 /* v8 ignore start -- runtime feature detection: only one branch taken per environment */
-const consoleModule = (function (root: { console: Console }) {
-  return root.console;
-})(typeof self !== 'undefined' ? self : globalThis);
+const consoleModule = ((root: { console: Console }) => root.console)(
+  typeof self !== 'undefined' ? self : globalThis,
+);
 /* v8 ignore stop */
 
 const storage: Record<string, unknown[][]> = Object.create(null) as Record<string, unknown[][]>;
@@ -20,13 +20,14 @@ function saveEvent(type: string, args: unknown[]) {
   }
 }
 
-function generateConsole(): Record<config.console.TConsoleMethods, (...args: unknown[]) => void> {
-  const result: Record<config.console.TConsoleMethods, (...args: unknown[]) => void> =
-    Object.create(null) as Record<config.console.TConsoleMethods, (...args: unknown[]) => void>;
-  for (const method of keys(config.console.methodsData)) {
+function generateConsole(): Record<TConsoleMethods, (...args: unknown[]) => void> {
+  const result: Record<TConsoleMethods, (...args: unknown[]) => void> = Object.create(
+    null,
+  ) as Record<TConsoleMethods, (...args: unknown[]) => void>;
+  for (const method of keys(consoleConfig.methodsData)) {
     result[method] = (...args: unknown[]) => {
-      if (config.console.logLevel < config.console.methodsData[method].logLevel) {
-        if (config.console.methodsData[method].save) {
+      if (consoleConfig.logLevel < consoleConfig.methodsData[method].logLevel) {
+        if (consoleConfig.methodsData[method].save) {
           addNamespace(method);
           saveEvent(method, args);
         }
@@ -40,7 +41,7 @@ function generateConsole(): Record<config.console.TConsoleMethods, (...args: unk
 
 export const console = {
   ...generateConsole(),
-  getSavedMessages(type: config.console.TConsoleMethods): unknown[][] {
+  getSavedMessages(type: TConsoleMethods): unknown[][] {
     return storage[type] ?? [];
   },
 };

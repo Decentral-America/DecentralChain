@@ -1,6 +1,6 @@
-import type { Adapter } from '../adapters/Adapter.js';
-import { uniqueId } from '../utils/utils/index.js';
+import { type Adapter } from '../adapters/Adapter.js';
 import { console } from '../utils/console/index.js';
+import { uniqueId } from '../utils/utils/index.js';
 
 /** Message type discriminator. */
 export enum EventType {
@@ -20,9 +20,9 @@ export enum ResponseStatus {
  * across browser window boundaries via an {@link Adapter} transport.
  */
 export class Bus<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic event map
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   T extends Record<string, any> = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler map
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   H extends Record<string, (data: any) => any> = any,
 > {
   public id: string = uniqueId('bus');
@@ -58,7 +58,7 @@ export class Bus<
     data?: Parameters<H[E]>[0],
     timeout?: number,
   ): Promise<ReturnType<H[E]> extends Promise<infer P> ? P : ReturnType<H[E]>> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic resolve type
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     return new Promise<any>((resolve, reject) => {
       const id = uniqueId(`${this.id}-action`);
       const wait = timeout ?? this._timeout;
@@ -67,7 +67,6 @@ export class Bus<
 
       if ((timeout ?? this._timeout) !== -1) {
         timer = setTimeout(() => {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
           delete this._activeRequestHash[id];
           const error = new Error(
             `Timeout error for request with name "${String(name)}" and timeout ${wait}!`,
@@ -102,7 +101,7 @@ export class Bus<
   }
 
   /** Subscribe to an event by name. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- context type
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   public on<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
     return this._addEventHandler(name as string, handler, context, false);
   }
@@ -111,7 +110,7 @@ export class Bus<
   public once<K extends keyof T>(
     name: K,
     handler: IOneArgFunction<T[K], void>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- context type
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     context?: any,
   ): this {
     return this._addEventHandler(name as string, handler, context, true);
@@ -122,7 +121,9 @@ export class Bus<
   public off<K extends keyof T>(name?: K, handler?: IOneArgFunction<T[K], void>): this;
   public off(name?: string, handler?: IOneArgFunction<T[keyof T], void>): this {
     if (!name) {
-      Object.keys(this._eventHandlers).forEach((n) => this.off(n, handler));
+      Object.keys(this._eventHandlers).forEach((n) => {
+        this.off(n, handler);
+      });
       return this;
     }
 
@@ -142,7 +143,6 @@ export class Bus<
     );
 
     if (!this._eventHandlers[name].length) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._eventHandlers[name];
     }
 
@@ -163,7 +163,6 @@ export class Bus<
   /** Remove a previously registered request handler. */
   public unregisterHandler(name: keyof H): this {
     if (this._requestHandlers[name]) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._requestHandlers[name];
     }
     return this;
@@ -174,7 +173,7 @@ export class Bus<
     const bus = new Bus(adapter, this._timeout);
 
     Object.keys(this._eventHandlers).forEach((name) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- keys() guarantees existence
+      // biome-ignore lint/style/noNonNullAssertion: asserted safe
       this._eventHandlers[name]!.forEach((info) => {
         if (info.once) {
           bus.once(name, info.handler, info.context);
@@ -206,7 +205,6 @@ export class Bus<
       if (entry) {
         entry.reject(new Error('Bus destroyed'));
       }
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._activeRequestHash[id];
     }
 
@@ -215,7 +213,7 @@ export class Bus<
 
   private _addEventHandler(
     name: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     handler: IOneArgFunction<any, void>,
     context: unknown,
     once: boolean,
@@ -304,7 +302,6 @@ export class Bus<
           activeRequest.resolve(Bus._messageToData(message.content as IInternalMessage));
           break;
       }
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._activeRequestHash[message.id];
     }
   }
@@ -325,7 +322,6 @@ export class Bus<
     });
 
     if (!this._eventHandlers[name].length) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._eventHandlers[name];
     }
   }
@@ -343,7 +339,7 @@ export class Bus<
       typeof some === 'object' &&
       some !== null &&
       'then' in some &&
-      typeof (some as Record<string, unknown>)['then'] === 'function'
+      typeof (some as Record<string, unknown>).then === 'function'
     );
   }
 
@@ -400,7 +396,7 @@ export interface IEventData {
   type: EventType.Event;
   channelId?: TChannelId | undefined;
   name: string | number | symbol;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined event data
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   data?: any;
 }
 
@@ -410,7 +406,7 @@ export interface IRequestData {
   channelId?: TChannelId | undefined;
   type: EventType.Action;
   name: string | number | symbol;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined request data
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   data?: any;
 }
 
@@ -420,7 +416,7 @@ export interface IResponseData {
   channelId?: TChannelId | undefined;
   type: EventType.Response;
   status: ResponseStatus;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- user-defined response data
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   content: any;
 }
 
@@ -432,7 +428,7 @@ interface ISentActionData {
 interface IEventHandlerData {
   context: unknown;
   once: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic handler callback
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   handler: IOneArgFunction<any, void>;
 }
 
