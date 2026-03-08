@@ -1,25 +1,26 @@
 import create from './libs/parseJsonBigNumber';
 
 const { parse } = create();
-import { getTransactionSchema, orderVersionMap } from './schemas';
-import { type TSchema } from './schemaTypes';
-import { LONG } from './serializePrimitives';
+
 import { convertLongFields, convertTxLongFields } from './convert';
 import { type TToLongConverter } from './parse';
+import { getTransactionSchema, orderVersionMap } from './schemas';
+import { type DATA_FIELD_TYPE, type TSchema } from './schemaTypes';
 import { type TFromLongConverter } from './serialize';
+import { LONG } from './serializePrimitives';
 
-function resolvePath(path: string[], obj: any): any {
+function resolvePath(path: string[], obj: unknown): unknown {
   if (path.length === 0) return obj;
-  if (typeof obj !== 'object') return undefined;
+  if (typeof obj !== 'object' || obj === null) return undefined;
 
-  return resolvePath(path.slice(1), obj[path[0]!]);
+  return resolvePath(path.slice(1), (obj as Record<string, unknown>)[path[0] as string]);
 }
 
 const isLongProp = (
   fullPath: string[],
   fullSchema: TSchema | undefined,
-  targetObject: any,
-): any => {
+  targetObject: unknown,
+): boolean => {
   function go(path: string[], schema?: TSchema): boolean {
     if (schema == null) return false;
 
@@ -37,15 +38,20 @@ const isLongProp = (
 
     if (schema.type === 'dataTxField') {
       if (path[0] !== 'value') return false;
-      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject);
-      const dataSchema = schema.items.get(dataObj.type);
+      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as Record<
+        string,
+        unknown
+      >;
+      const dataSchema = schema.items.get(dataObj.type as DATA_FIELD_TYPE);
       return go(path.slice(1), dataSchema);
     }
 
     if (schema.type === 'anyOf') {
-      // Find object and get it's schema
-      const obj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject);
-      const objType = obj[schema.discriminatorField];
+      const obj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as Record<
+        string,
+        unknown
+      >;
+      const objType = obj[schema.discriminatorField] as string;
       const objSchema = schema.itemByKey(objType);
       if (!objSchema) return false;
 
@@ -72,11 +78,11 @@ const isLongProp = (
  * @param obj
  * @param schema
  */
-export function stringifyWithSchema(obj: any, schema?: TSchema): string {
+export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
   const path: string[] = [];
-  const stack: any[] = [];
+  const stack: unknown[] = [];
 
-  function stringifyValue(value: any): string | undefined {
+  function stringifyValue(value: unknown): string | undefined {
     if (typeof value === 'string') {
       if (isLongProp(path, schema, obj)) {
         return value;
@@ -106,20 +112,20 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     }
 
     if (value && typeof value === 'object') {
-      return stringifyObject(value);
+      return stringifyObject(value as Record<string, unknown>);
     }
 
     return undefined;
   }
 
-  function stringifyArray(array: any[]): string {
+  function stringifyArray(array: unknown[]): string {
     let str = '[';
 
     const stackIndex = stack.length;
     stack[stackIndex] = array;
 
     for (let i = 0; i < array.length; i++) {
-      const key = i + '';
+      const key = `${i}`;
       const item = array[i];
 
       if (typeof item !== 'undefined' && typeof item !== 'function' && typeof item !== 'symbol') {
@@ -141,7 +147,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     return str;
   }
 
-  function stringifyObject(object: any): string {
+  function stringifyObject(object: Record<string, unknown>): string {
     let first = true;
     let str = '{';
 
@@ -149,7 +155,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     stack[stackIndex] = object;
 
     for (const key in object) {
-      if (Object.prototype.hasOwnProperty.call(object, key)) {
+      if (Object.hasOwn(object, key)) {
         const value = object[key];
 
         if (includeProperty(value)) {
@@ -159,7 +165,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
             str += ',';
           }
 
-          str += '"' + key + '":';
+          str += `"${key}":`;
 
           path[stackIndex] = key;
           str += stringifyValue(value);
@@ -174,7 +180,7 @@ export function stringifyWithSchema(obj: any, schema?: TSchema): string {
     return str;
   }
 
-  function includeProperty(value: any) {
+  function includeProperty(value: unknown) {
     return typeof value !== 'undefined' && typeof value !== 'function' && typeof value !== 'symbol';
   }
 
@@ -197,7 +203,10 @@ export function parseTx<LONG = string>(str: string, toLongConverter?: TToLongCon
  * @param tx
  * @param fromLongConverter
  */
-export function stringifyTx<LONG>(tx: any, fromLongConverter?: TFromLongConverter<LONG>): string {
+export function stringifyTx<LONG>(
+  tx: Record<string, unknown>,
+  fromLongConverter?: TFromLongConverter<LONG>,
+): string {
   const { type, version } = tx;
   const schema = getTransactionSchema(type, version);
   const txWithStrings = convertLongFields(tx, schema, undefined, fromLongConverter);
@@ -224,7 +233,7 @@ export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLong
  * @param fromLongConverter
  */
 export function stringifyOrder<LONG>(
-  ord: any,
+  ord: Record<string, unknown>,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
   const version = (ord.version as number) || 1;
