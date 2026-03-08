@@ -75,18 +75,18 @@ export function fetchEstimate(base: string, body: string): Promise<IEstimate> {
  * POST /utils/script/evaluate
  * Evaluates the provided expression, taking into account the deployed dApp contract
  */
- export function fetchEvaluate(base: string, address: string, expr: string): Promise<IEvaluate> {
-    return request({
-        base,
-        url: `/utils/script/evaluate/${address}`,
-        options: {
-            method: 'POST',
-            body: JSON.stringify({ expr }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-    })
+export function fetchEvaluate(base: string, address: string, expr: string): Promise<IEvaluate> {
+  return request({
+    base,
+    url: `/utils/script/evaluate/${address}`,
+    options: {
+      method: 'POST',
+      body: JSON.stringify({ expr }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  });
 }
 
 /**
@@ -218,10 +218,10 @@ export interface IEstimate extends ICompileCode {
 }
 
 export interface IEvaluate {
-    address: string;
-    expr: string;
-    result: object;
-    complexity: number;
+  address: string;
+  expr: string;
+  result: object;
+  complexity: number;
 }
 
 interface ICompileWithImportsBody {

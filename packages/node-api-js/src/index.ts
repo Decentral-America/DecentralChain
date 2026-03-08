@@ -25,3 +25,12 @@ export type {
   TCallableFuncArgumentsArray,
   TCallableFuncArgumentsRecord,
 } from './api-node/addresses';
+
+export type {
+  TRANSACTION_NAME_MAP,
+  TRANSACTION_TYPE_MAP,
+} from './interface';
+export {
+  isCallableFuncArrayArguments,
+  isCallableFuncRecordArguments,
+} from './interface';

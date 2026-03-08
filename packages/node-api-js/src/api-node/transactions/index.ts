@@ -149,6 +149,22 @@ export function fetchInfo(
 }
 
 /**
+ * GET /transactions/info?id=...&id=...
+ * Batch-fetch transaction info by multiple IDs in a single request.
+ */
+export function fetchMultipleInfo(
+  base: string,
+  ids: string[],
+  options: RequestInit = {},
+): Promise<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[]> {
+  return request<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[]>({
+    base,
+    url: `/transactions/info${query({ id: ids })}`,
+    options,
+  });
+}
+
+/**
  * POST /transactions/status
  * Batch-fetch the status of multiple transactions in a single HTTP request.
  * Falls back to per-ID polling only if the batch endpoint is unavailable.
