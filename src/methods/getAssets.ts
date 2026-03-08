@@ -1,7 +1,13 @@
-import type { Asset } from '@decentralchain/data-entities';
+import { type Asset } from '@decentralchain/data-entities';
 
 import { createRequest } from '../createRequest';
-import type { ILibOptions, ILibRequest, TAssetId, TGetAssets, TCreateGetFn } from '../types';
+import {
+  type ILibOptions,
+  type ILibRequest,
+  type TAssetId,
+  type TCreateGetFn,
+  type TGetAssets,
+} from '../types';
 import { isNotString } from '../utils';
 
 import { createMethod } from './createMethod';

@@ -52,7 +52,7 @@ describe('Default transformer', () => {
     // Asset constructor returns an object with matching id
     expect(result).toBeDefined();
     expect(result).not.toBeNull();
-    expect(result.id).toBe('test-asset');
+    expect((result as Record<string, unknown>)['id']).toBe('test-asset');
   });
 
   it('returns null for asset type when data is null', () => {

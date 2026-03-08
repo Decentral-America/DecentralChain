@@ -1,12 +1,12 @@
 import {
   createQS,
-  pipeP,
-  isValidUrl,
+  defaultFetch,
+  defaultParse,
+  hasDangerousKeys,
   isValidLimit,
   isValidSort,
-  hasDangerousKeys,
-  defaultParse,
-  defaultFetch,
+  isValidUrl,
+  pipeP,
 } from '../utils';
 
 describe('Create querystring util', () => {

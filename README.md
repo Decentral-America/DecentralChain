@@ -188,20 +188,20 @@ npm install
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |
 | `npm run typecheck`     | TypeScript type checking             |
-| `npm run lint`          | ESLint (type-aware)                  |
-| `npm run lint:fix`      | ESLint with auto-fix                 |
-| `npm run format`        | Format with Prettier                 |
+| `npm run lint`          | Biome lint (type-aware)                  |
+| `npm run lint:fix`      | Biome lint with auto-fix                 |
+| `npm run format`        | Format with Biome                 |
 | `npm run validate`      | Full CI validation pipeline          |
 | `npm run bulletproof`   | Format + lint fix + typecheck + test |
 
 ### Quality Gates
 
-Pre-commit hooks run `lint-staged` + `typecheck` automatically.
+Pre-commit hooks run `lefthook` + `typecheck` automatically.
 
 The validate pipeline checks:
 
-- Formatting (Prettier)
-- Linting (ESLint with type-aware rules)
+- Formatting (Biome)
+- Linting (Biome with strict rules)
 - Type checking (TypeScript strict mode)
 - Tests with coverage thresholds (90%+)
 - Build (tsup ESM output)

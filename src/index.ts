@@ -7,16 +7,16 @@ import createGetMassTransferTxs from './methods/getMassTransferTxs';
 import createGetPairs from './methods/getPairs';
 import createGetTransferTxs from './methods/getTransferTxs';
 import defaultTransform from './transform';
-import type {
-  ILibOptions,
-  IGetExchangeTxs,
-  IGetTransferTxs,
-  IGetMassTransferTxs,
-  TAliases,
-  TGetAssets,
-  TGetAssetsByTicker,
-  TGetCandles,
-  TGetPairs,
+import {
+  type IGetExchangeTxs,
+  type IGetMassTransferTxs,
+  type IGetTransferTxs,
+  type ILibOptions,
+  type TAliases,
+  type TGetAssets,
+  type TGetAssetsByTicker,
+  type TGetCandles,
+  type TGetPairs,
 } from './types';
 import { defaultFetch, defaultParse, isValidUrl } from './utils';
 

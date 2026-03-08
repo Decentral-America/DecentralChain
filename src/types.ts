@@ -1,5 +1,5 @@
-import type { BigNumber } from '@decentralchain/bignumber';
-import type { Asset, Candle, AssetPair } from '@decentralchain/data-entities';
+import { type BigNumber } from '@decentralchain/bignumber';
+import { type Asset, type AssetPair, type Candle } from '@decentralchain/data-entities';
 
 export enum ApiTypes {
   List = 'list',
@@ -22,8 +22,8 @@ export interface ILibRequest {
 export interface ILibOptions {
   rootUrl: string;
   parse?: TParser;
-  fetch?: TFunction<any>;
-  transform?: TFunction<any>;
+  fetch?: TFunction<unknown>;
+  transform?: TFunction<unknown>;
 }
 
 export type TResponse<T> = Promise<{
@@ -31,13 +31,11 @@ export type TResponse<T> = Promise<{
   fetchMore?: TFunction<TResponse<T>>;
 }>;
 export type TCreateGetFn<T> = (libOptions: ILibOptions) => T;
+// biome-ignore lint/suspicious/noExplicitAny: Generic function type requires any[] for contravariant parameter position
 export type TFunction<T> = (...args: any[]) => T;
-export type TParser = (text: string) => any;
+export type TParser = (text: string) => unknown;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ITransaction {
-  // @TODO add txs interfaces
-}
+export type ITransaction = object;
 export interface IExchangeTxFilters {
   timeStart?: string | Date | number;
   timeEnd?: string | Date | number;

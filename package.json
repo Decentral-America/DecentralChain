@@ -45,29 +45,21 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "check:publint": "publint",
     "check:exports": "attw --pack . --profile esm-only",
     "check:size": "size-limit",
-    "validate": "npm audit --audit-level=high && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
-    "prepare": "husky",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "prepare": "lefthook install",
     "prepack": "npm run build",
     "postversion": "npm publish",
-    "postpublish": "git push"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.json": [
-      "prettier --write"
-    ]
+    "postpublish": "git push",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "size-limit": [
     {
@@ -91,21 +83,15 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
     "@decentralchain/parse-json-bignumber": "2.0.0",
-    "@eslint/js": "10.0.1",
+    "@evilmartians/lefthook": "^1.11.0",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "10.0.2",
-    "eslint-config-prettier": "10.1.8",
-    "globals": "17.4.0",
-    "husky": "9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.56.1",
     "vitest": "4.0.18"
   }
 }

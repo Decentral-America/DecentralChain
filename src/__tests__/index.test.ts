@@ -1,4 +1,4 @@
-import { AssetPair, Asset } from '@decentralchain/data-entities';
+import { Asset, AssetPair } from '@decentralchain/data-entities';
 import parseJsonBignumber from '@decentralchain/parse-json-bignumber';
 
 import DataServiceClient from '../index';
@@ -399,7 +399,7 @@ describe('Pagination: ', () => {
     });
     expect(result2).toHaveProperty('data');
     expect(result2).toHaveProperty('fetchMore');
-    const result3 = await result2.fetchMore!(1);
+    const result3 = await result2.fetchMore?.(1);
     expect(result3).toHaveProperty('data');
     expect(result3).toHaveProperty('fetchMore');
     expect(customFetch.mock.calls.slice(-2)).toMatchSnapshot();
