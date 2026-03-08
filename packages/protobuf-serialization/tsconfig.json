@@ -6,7 +6,14 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
+
+    /* Type Checking — maximum strictness */
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true
