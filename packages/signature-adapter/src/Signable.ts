@@ -33,7 +33,7 @@ export class Signable {
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
   private _addProofPromise: Promise<string> | undefined;
-  private _preparedData: Record<string, unknown>;
+  private _preparedData: Record<string, any>;
   private _proofs: string[] = [];
 
   /** Maximum number of proofs allowed per transaction (protocol limit). */
@@ -89,14 +89,14 @@ export class Signable {
     this._signMethod = SIGN_TYPES[forSign.type].adapter;
 
     try {
-      this._preparedData = prepare.signSchema(prepareMap)(this._forSign.data, true);
+      this._preparedData = prepare.signSchema(prepareMap)(this._forSign.data as unknown as Record<string, unknown>, true);
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
       throw new SignError(message, ERRORS.VALIDATION_FAILED, e);
     }
 
-    this._bytePromise = this.getSignData().then((signData) =>
-      SIGN_TYPES[forSign.type].getBytes[version]?.(signData),
+    this._bytePromise = this.getSignData().then(
+      (signData) => SIGN_TYPES[forSign.type].getBytes[version]!(signData),
     );
   }
 
@@ -116,14 +116,14 @@ export class Signable {
     const currentFee = currentFeeFactory(config);
     const txData = await this.getSignData();
     const bytes = await this.getBytes();
-    return currentFee(txData, bytes, hasScript, smartAssetIdList);
+    return currentFee(txData as any, bytes, hasScript, smartAssetIdList);
   }
 
   public getTxData(): TSignData['data'] {
     return { ...this._forSign.data };
   }
 
-  public async getSignData() {
+  public async getSignData(): Promise<Record<string, any>> {
     const senderPublicKey = await this._adapter.getPublicKey();
     const sender = await this._adapter.getAddress();
     const dataForBytes = {
@@ -291,7 +291,7 @@ export class Signable {
     const proofs = (this._proofs || []).slice();
 
     try {
-      return convert({ ...data, proofs }, (item: unknown) => new BigNumber(item as string));
+      return convert({ ...data, proofs } as any, (item: unknown) => new BigNumber(item as string));
     } catch {
       return { ...data, proofs, signature: proofs[0] };
     }
@@ -322,31 +322,27 @@ export class Signable {
   }
 
   private _getAmountPrecision() {
-    const data = this._forSign.data as Record<string, unknown>;
-    if ((data as { type?: number }).type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
-      const payment = (data as Record<string, unknown[]>)?.payment ?? [];
-      return payment.length && (payment[0] as Record<string, unknown>)?.asset
-        ? (payment[0] as Record<string, Record<string, number>>).asset.precision
+    const data = this._forSign.data as any;
+    if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
+      const payment = data.payment ?? [];
+      return payment.length && payment[0]?.asset
+        ? payment[0].asset.precision
         : 0;
     }
-    return (data.amount as Record<string, Record<string, number>> | undefined)?.asset?.precision
-      ? (data.amount as Record<string, Record<string, number>>).asset.precision
-      : 0;
+    return data.amount?.asset?.precision ?? 0;
   }
 
   private _getAmount2Precision() {
-    const data = this._forSign.data as Record<string, unknown>;
-    const payment = (data as Record<string, unknown[]>)?.payment ?? [];
-    return payment.length === 2 && (payment[1] as Record<string, unknown>)?.asset
-      ? (payment[1] as Record<string, Record<string, number>>).asset.precision
+    const data = this._forSign.data as any;
+    const payment = data.payment ?? [];
+    return payment.length === 2 && payment[1]?.asset
+      ? payment[1].asset.precision
       : 0;
   }
 
   private _getFeePrecision() {
-    const data = this._forSign.data as Record<string, unknown>;
-    return (data.fee as Record<string, Record<string, number>> | undefined)?.asset?.precision
-      ? (data.fee as Record<string, Record<string, number>>).asset.precision
-      : 0;
+    const data = this._forSign.data as any;
+    return data.fee?.asset?.precision ?? 0;
   }
 }
 
