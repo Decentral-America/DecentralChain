@@ -1,5 +1,5 @@
-import { SeedAdapter } from '../src/adapters';
 import { Money } from '@decentralchain/data-entities';
+import { SeedAdapter } from '../src/adapters';
 import { DCCAsset } from './assets';
 
 const testSeed = 'some test seed words without money on mainnet';
