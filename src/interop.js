@@ -1,38 +1,22 @@
-import * as crypto from '@waves/ts-lib-crypto';
-import axios from 'axios';
+import * as crypto from '@decentralchain/ts-lib-crypto';
+import { rsaVerify as _rsaVerify } from '@decentralchain/ts-lib-crypto/rsa';
 
-globalThis.base58Encode = function (bytes) {
-  return crypto.base58Encode(new Uint8Array(bytes));
-};
-globalThis.base58Decode = function (data) {
-  return crypto.base58Decode(data).buffer;
-};
-globalThis.base64Encode = function (bytes) {
-  return crypto.base64Encode(new Uint8Array(bytes));
-};
-globalThis.base64Decode = function (data) {
-  return crypto.base64Decode(data);
-};
-globalThis.keccak256 = function (bytes) {
-  return Uint8Array.from(crypto.keccak(new Uint8Array(bytes))).buffer;
-};
-globalThis.sha256 = function (bytes) {
-  return Buffer.from(crypto.sha256(new Uint8Array(bytes)), 'hex');
-};
-globalThis.blake2b256 = function (bytes) {
-  return crypto.blake2b(new Uint8Array(bytes)).buffer;
-};
-globalThis.curve25519verify = function (msg, sig, key) {
-  return crypto.verifySignature(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig));
-};
-globalThis.merkleVerify = function (rootHash, merkleProof, leafData) {
-  return crypto.merkleVerify(
+globalThis.base58Encode = (bytes) => crypto.base58Encode(new Uint8Array(bytes));
+globalThis.base58Decode = (data) => crypto.base58Decode(data).buffer;
+globalThis.base64Encode = (bytes) => crypto.base64Encode(new Uint8Array(bytes));
+globalThis.base64Decode = (data) => crypto.base64Decode(data);
+globalThis.keccak256 = (bytes) => Uint8Array.from(crypto.keccak(new Uint8Array(bytes))).buffer;
+globalThis.sha256 = (bytes) => Buffer.from(crypto.sha256(new Uint8Array(bytes)), 'hex');
+globalThis.blake2b256 = (bytes) => crypto.blake2b(new Uint8Array(bytes)).buffer;
+globalThis.curve25519verify = (msg, sig, key) =>
+  crypto.verifySignature(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig));
+globalThis.merkleVerify = (rootHash, merkleProof, leafData) =>
+  crypto.merkleVerify(
     new Uint8Array(rootHash),
     new Uint8Array(merkleProof),
     new Uint8Array(leafData),
   );
-};
-globalThis.rsaVerify = function (digest, msg, sig, key) {
+globalThis.rsaVerify = (digest, msg, sig, key) => {
   let alg = digest.toString();
   switch (digest.toString()) {
     case 'SHA3224':
@@ -48,16 +32,15 @@ globalThis.rsaVerify = function (digest, msg, sig, key) {
       alg = 'SHA3-512';
       break;
     case 'NONE':
-      alg = undefined;
+      alg = 'NONE';
       break;
   }
-  return crypto.rsaVerify(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig), alg);
+  return _rsaVerify(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig), alg);
 };
-globalThis.httpGet = async function (data) {
+globalThis.httpGet = async (data) => {
   if (!data.url) return { ...data, status: 404, body: 'url is undefined' };
-  const resp = await axios.get(data.url, { validateStatus: () => true, timeout: 30_000 });
+  const resp = await fetch(data.url, { signal: AbortSignal.timeout(30_000) });
   const status = resp.status;
-  let body = await resp.data;
-  if (typeof body !== 'string') body = JSON.stringify(body);
+  const body = await resp.text();
   return { ...data, status, body };
 };

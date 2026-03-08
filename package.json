@@ -3,21 +3,14 @@
   "version": "2.3.0",
   "description": "JS compiler for Ride - the smart-contract language for DecentralChain",
   "type": "module",
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "module": "./dist/index.js",
-  "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "sideEffects": true,
   "files": [
@@ -45,34 +38,26 @@
     "url": "https://github.com/Decentral-America/ride-js/issues"
   },
   "scripts": {
-    "build": "tsup && cp dist/index.d.ts dist/index.d.cts",
+    "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "check:publint": "publint",
-    "check:exports": "attw --pack .",
+    "check:exports": "attw --pack . --profile esm-only",
     "check:size": "size-limit",
-    "validate": "npm run format:check && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
-    "prepare": "husky",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "prepare": "lefthook install",
     "prepack": "npm run build",
     "postversion": "npm publish",
     "postpublish": "git push",
-    "lint:check": "eslint ."
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --write"
-    ]
+    "lint:fix": "biome check --write ."
   },
   "size-limit": [
     {
@@ -81,8 +66,7 @@
       "ignore": [
         "@waves/ride-lang",
         "@waves/ride-repl",
-        "@waves/ts-lib-crypto",
-        "axios"
+        "@decentralchain/ts-lib-crypto"
       ]
     }
   ],
@@ -101,28 +85,21 @@
   "author": "DecentralChain",
   "license": "MIT",
   "dependencies": {
+    "@decentralchain/ts-lib-crypto": "file:../ts-lib-crypto",
     "@waves/ride-lang": "1.6.1",
-    "@waves/ride-repl": "1.6.1",
-    "@waves/ts-lib-crypto": "1.5.1-snapshot.2",
-    "axios": "1.13.5"
+    "@waves/ride-repl": "1.6.1"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@eslint/js": "10.0.1",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "2.1.2",
     "@size-limit/preset-small-lib": "12.0.1",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "10.0.2",
-    "eslint-config-prettier": "10.1.8",
-    "globals": "17.4.0",
-    "husky": "9.1.7",
     "knip": "5.85.0",
-    "lint-staged": "16.3.2",
-    "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.1",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.56.1",
     "vitest": "4.0.18"
   }
 }
