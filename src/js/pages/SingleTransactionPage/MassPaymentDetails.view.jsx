@@ -1,0 +1,68 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import EndpointRef from '../../components/EndpointRef';
+import Money from '../../shared/Money';
+
+const TransferListItem = ({ transfer }) => {
+  return (
+    <tr>
+      <td data-label="Recipient">
+        <div className="line no-wrap">
+          <EndpointRef endpoint={transfer.recipient} />
+        </div>
+      </td>
+      <td data-label="Amount">
+        <div className="line">{transfer.amount.toString()}</div>
+      </td>
+    </tr>
+  );
+};
+
+TransferListItem.propTypes = {
+  transfer: PropTypes.shape({
+    recipient: PropTypes.string.isRequired,
+    amount: PropTypes.instanceOf(Money).isRequired,
+  }),
+};
+
+const TransferList = ({ transfers }) => {
+  return (
+    <table className="table-sm-transform">
+      <thead>
+        <tr>
+          <th>Recipient</th>
+          <th className="width-30">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {transfers.map((item) => {
+          return <TransferListItem key={`${item.recipient}-${item.amount}`} transfer={item} />;
+        })}
+      </tbody>
+    </table>
+  );
+};
+
+TransferList.propTypes = {
+  transfers: PropTypes.arrayOf(TransferListItem.propTypes.transfer),
+};
+
+export class MassPaymentDetails extends React.PureComponent {
+  static propTypes = {
+    tx: PropTypes.object.isRequired,
+  };
+
+  render() {
+    const { tx } = this.props;
+    if (tx.type !== 11) return null;
+
+    return (
+      <React.Fragment>
+        <div className="headline2">
+          <span className="title">Transfers</span>
+        </div>
+        <TransferList transfers={tx.transfers} />
+      </React.Fragment>
+    );
+  }
+}

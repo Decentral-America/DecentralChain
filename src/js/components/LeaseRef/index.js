@@ -1,1 +1,1 @@
-export {RoutedLeaseRef as default} from './LeaseRef.view';
+export { RoutedLeaseRef as default } from './LeaseRef.view';

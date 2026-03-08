@@ -1,19 +1,22 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# Dependencies
+node_modules/
 
-# dependencies
-/node_modules
-
-# production
-/build
+# Build output
 dist/
+coverage/
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-# we use yarn here!
-package-lock.json
-
-/.idea
+# IDE
+.idea/
 *.iml
-*.log
+.vscode/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+*.local

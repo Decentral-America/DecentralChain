@@ -1,11 +1,10 @@
-FROM node:15 AS build
+FROM node:24-alpine AS build
 
-ARG CONF_SWITCH
-ENV CONF_SWITCH ${CONF_SWITCH:-buildOfficialProd}
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . ./
-RUN yarn install
-RUN ./node_modules/.bin/gulp ${CONF_SWITCH}
+RUN npm run build:prod
 
 FROM nginx:stable-alpine
 RUN rm -rf /etc/nginx/conf.d/*
@@ -16,6 +15,4 @@ EXPOSE 8080
 
 COPY launch.sh ./
 RUN chmod +x launch.sh
-CMD ./launch.sh
-
-#CMD ["nginx", "-g", "daemon off;"]
+CMD ["./launch.sh"]

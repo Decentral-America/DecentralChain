@@ -1,6 +1,6 @@
-# Waves Explorer
+# DecentralChain Explorer
 
-Waves Blockchain Explorer is available on https://wavesexplorer.com
+DecentralChain Blockchain Explorer is available on https://decentralscan.com
 
 ## Setup
 
@@ -22,11 +22,11 @@ yarn install
 yarn start
 ```
 
-Your browser will open local version of Waves Explorer automatically.
+Your browser will open local version of DecentralChain Explorer automatically.
 
 ## Build
 
-Build process creates ./dist directory with Waves Explorer distribution that supports mainnet, testnet and a custom network. 
+Build process creates ./dist directory with DecentralChain Explorer distribution that supports mainnet, testnet and a custom network. 
 To create the distribution, run from the project directory:
 ```
 gulp buildOfficialProd

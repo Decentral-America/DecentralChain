@@ -1,68 +1,70 @@
-import {thirdPartyApi} from '../shared/api/ThirdPartyApi';
-import {ConfigurableService} from './ConfigurableService';
+import { thirdPartyApi } from '../shared/api/ThirdPartyApi';
+import { ConfigurableService } from './ConfigurableService';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 export class SpamDetectionService extends ConfigurableService {
-    constructor(storageService, configurationService, networkId) {
-        super(configurationService, networkId);
-        this.storageService = storageService;
-        this.updating = false;
-        this.active = !!this.spamListUrl();
+  constructor(storageService, configurationService, networkId) {
+    super(configurationService, networkId);
+    this.storageService = storageService;
+    this.updating = false;
+    this.active = !!this.spamListUrl();
 
-        if (this.active) {
-            this.cache = storageService.loadAntispamCache() || {
-                spamAssets: {}
-            };
-        }
+    if (this.active) {
+      this.cache = storageService.loadAntispamCache() || {
+        spamAssets: {},
+      };
+    }
+  }
+
+  isSpam = (assetId) => {
+    if (!this.active) {
+      return false;
     }
 
-    isSpam = (assetId) => {
-        if (!this.active) {
-            return false;
-        }
+    const result = !!this.cache.spamAssets[assetId];
 
-        const result = !!this.cache.spamAssets[assetId];
+    this.updateCacheIfNeeded();
 
-        this.updateCacheIfNeeded();
+    return result;
+  };
 
-        return result;
-    };
+  updateCacheIfNeeded = () => {
+    if (this.updating) return;
 
-    updateCacheIfNeeded = () => {
-        if (this.updating)
-            return;
+    if (!this.cache.expirationTime || this.cache.expirationTime <= Date.now()) {
+      this.updating = true;
 
-        if (!this.cache.expirationTime || this.cache.expirationTime <= new Date().getTime()) {
-            this.updating = true;
-
-            const api = thirdPartyApi(this.spamListUrl());
-            api.antispamList().then(listResponse => {
-                this.cache.spamAssets = this.parseAssetList(listResponse.data);
-                // cache should expire in one day
-                this.cache.expirationTime = new Date().getTime() + MILLISECONDS_PER_DAY;
-                this.storageService.saveAntispamCache(this.cache);
-            }).finally(() => {
-                this.updating = false;
-            });
-        }
-    };
-
-    parseAssetList = (listAsString) => {
-        const lines = listAsString.split('\n');
-        const result = {};
-        lines.forEach(line => {
-            const parts = line.split(',');
-            if (parts.length > 0) {
-                const assetId = parts[0].trim();
-                if (assetId) {
-                    result[assetId] = true;
-                }
-            }
+      const api = thirdPartyApi(this.spamListUrl());
+      api
+        .antispamList()
+        .then((listResponse) => {
+          this.cache.spamAssets = this.parseAssetList(listResponse);
+          // cache should expire in one day
+          this.cache.expirationTime = Date.now() + MILLISECONDS_PER_DAY;
+          this.storageService.saveAntispamCache(this.cache);
+        })
+        .finally(() => {
+          this.updating = false;
         });
+    }
+  };
 
-        return result;
-    };
+  parseAssetList = (listAsString) => {
+    const lines = listAsString.split('\n');
+    const result = {};
+    lines.forEach((line) => {
+      const parts = line.split(',');
+      if (parts.length > 0) {
+        const assetId = parts[0].trim();
+        if (assetId) {
+          result[assetId] = true;
+        }
+      }
+    });
 
-    spamListUrl = () => this.configuration().spamListUrl;
+    return result;
+  };
+
+  spamListUrl = () => this.configuration().spamListUrl;
 }

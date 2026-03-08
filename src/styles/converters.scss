@@ -21,7 +21,7 @@
         cursor: pointer;
     }
 
-    &-waves-title {
+    &-dcc-title {
         display: flex;
         align-items: center;
         margin-right: 16px;
@@ -30,7 +30,7 @@
         &::before {
             width: 24px;
             height: 24px;
-            content: url('../images/waves-icon.svg');
+            content: url('../images/dcc-icon.svg');
             margin-right: 8px;
         }
     }

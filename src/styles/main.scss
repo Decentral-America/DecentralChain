@@ -171,7 +171,8 @@ body {
         }
 
         > .logo {
-            background: url('../images/waves-124.svg') no-repeat 0 3px;
+            background: url('../images/decentralscan.svg') no-repeat 0 3px;
+            background-size: contain;
             min-height: 44px;
 
             a {
@@ -183,8 +184,8 @@ body {
             }
 
             &::after {
-                content: "Explorer";
-                left: 132px;
+                content: "";
+                left: 50px;
                 bottom: -8px;
                 position: relative;
                 @include mixins.font(headline1);
@@ -332,13 +333,13 @@ body {
                 @include mixins.font(headline2, disabled500);
 
                 &:hover {
-                    color: map.get(variables.$colors, black);
+                    color: map.get(variables.$colors, basic500);
                 }
             }
 
             &.current {
                 a {
-                    color: map.get(variables.$colors, black);
+                    color: map.get(variables.$colors, white);
                 }
 
                 &::before {
@@ -356,7 +357,7 @@ body {
     }
 
     > .menu-footer {
-        @include mixins.font(body, basic500);
+        @include mixins.font(body, white);
         & {
             bottom: map.get(variables.$layout, padding-top);
         }
@@ -405,7 +406,7 @@ body {
 }
 
 .card {
-    background-color: map.get(variables.$colors, white);
+    background-color: map.get(variables.$colors, darkCard);
     border-radius: 4px;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.14);
 
@@ -496,7 +497,7 @@ body {
 
             &.grey {
                 background: map.get(variables.$colors, iceBlue);
-                color: black;
+                color: white;
             }
 
             &:not(:disabled) {

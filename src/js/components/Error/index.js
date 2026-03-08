@@ -1,1 +1,1 @@
-export {Error as default, ERROR_TYPES} from './Error.view';
+export { ERROR_TYPES, ErrorView as default } from './Error.view';
