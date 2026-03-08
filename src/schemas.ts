@@ -1,4 +1,29 @@
 import {
+  byteNewAliasToString,
+  byteToAddressOrAlias,
+  byteToScript,
+  P_BASE58_FIXED,
+  P_BASE58_VAR,
+  P_BASE64,
+  P_BOOLEAN,
+  P_BYTE,
+  P_INT,
+  P_LONG,
+  P_OPTION,
+  P_SHORT,
+  P_STRING_VAR,
+} from './parsePrimitives';
+import {
+  anyOf,
+  DATA_FIELD_TYPE,
+  type TDataTxItem,
+  type TObject,
+  type TObjectField,
+  type TPrimitive,
+  type TSchema,
+} from './schemaTypes';
+import { serializerFromSchema } from './serialize';
+import {
   ADDRESS_OR_ALIAS,
   BASE58_STRING,
   BASE64_STRING,
@@ -12,31 +37,6 @@ import {
   SHORT,
   STRING,
 } from './serializePrimitives';
-import {
-  byteNewAliasToString,
-  byteToAddressOrAlias,
-  P_BOOLEAN,
-  byteToScript,
-  P_LONG,
-  P_OPTION,
-  P_BYTE,
-  P_BASE58_FIXED,
-  P_BASE58_VAR,
-  P_SHORT,
-  P_STRING_VAR,
-  P_BASE64,
-  P_INT,
-} from './parsePrimitives';
-import {
-  type TObject,
-  type TSchema,
-  DATA_FIELD_TYPE,
-  type TDataTxItem,
-  type TObjectField,
-  anyOf,
-  type TPrimitive,
-} from './schemaTypes';
-import { serializerFromSchema } from './serialize';
 
 export enum TRANSACTION_TYPE {
   GENESIS = 1,
@@ -66,6 +66,7 @@ const intConverter = {
   toBytes: INT,
   fromBytes: P_INT,
 };
+// biome-ignore lint/style/noNamespace: txFields groups related field constructors used throughout this file; refactoring to a plain object would break the established pattern with no benefit
 export namespace txFields {
   //Field constructors
   export const longField = (name: string): TObjectField => [
@@ -476,7 +477,7 @@ export const exchangeSchemaV1: TSchema = {
       'order1',
       {
         fromBytes: () => ({ value: undefined, shift: 4 }),
-        toBytes: (order: any) =>
+        toBytes: (order: Record<string, unknown>) =>
           INT(serializerFromSchema(orderSchemaV0WithSignature)(order).length),
       },
     ],
@@ -484,7 +485,7 @@ export const exchangeSchemaV1: TSchema = {
       'order2',
       {
         fromBytes: () => ({ value: undefined, shift: 4 }),
-        toBytes: (order: any) =>
+        toBytes: (order: Record<string, unknown>) =>
           INT(serializerFromSchema(orderSchemaV0WithSignature)(order).length),
       },
     ],
@@ -720,7 +721,7 @@ export const orderVersionMap: Record<number, TObject> = {
 };
 
 export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): TSchema {
-  const schemas = (schemasByTypeMap as any)[type];
+  const schemas = (schemasByTypeMap as Record<number, Record<number, TSchema>>)[type];
   if (typeof schemas !== 'object') {
     throw new Error(`Incorrect tx type: ${type}`);
   }

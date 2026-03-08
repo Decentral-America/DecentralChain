@@ -1,5 +1,5 @@
-import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, type TParser } from './parsePrimitives';
 import { range } from './libs/utils';
+import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, type TParser } from './parsePrimitives';
 import { getTransactionSchema, orderSchemaV2 } from './schemas';
 import { type TSchema } from './schemaTypes';
 
@@ -11,12 +11,12 @@ export type TToLongConverter<LONG> = (val: string) => LONG;
  * @param toLongConverter
  */
 export const parserFromSchema =
-  <LONG = string>(schema: TSchema, toLongConverter?: TToLongConverter<LONG>): TParser<any> =>
+  <LONG = string>(schema: TSchema, toLongConverter?: TToLongConverter<LONG>): TParser<unknown> =>
   (bytes: Uint8Array, start = 0) => {
     let cursor: number = start;
 
     if (schema.type === 'array') {
-      const result: any[] = [];
+      const result: unknown[] = [];
       const { value: len, shift } = (schema.fromBytes || P_SHORT)(bytes, start);
       cursor += shift;
 
@@ -41,7 +41,7 @@ export const parserFromSchema =
         cursor += lenInfo.shift;
       }
 
-      const result: any = {};
+      const result: Record<string, unknown> = {};
       schema.schema.forEach((field) => {
         const [name, schema] = field;
         const parser = parserFromSchema(schema, toLongConverter);

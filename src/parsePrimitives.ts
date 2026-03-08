@@ -1,6 +1,6 @@
+import * as Base64 from 'base64-js';
 import Long from 'long';
 import base58 from './libs/base58';
-import * as Base64 from 'base64-js';
 
 const textDecoder = new TextDecoder();
 
@@ -24,7 +24,7 @@ export const P_BYTE: TParser<number> = (bytes, start = 0) => {
   if (start >= bytes.length) {
     throw new Error(`P_BYTE: buffer underflow at offset ${start} (length ${bytes.length})`);
   }
-  return { value: bytes[start]!, shift: 1 };
+  return { value: bytes[start] as number, shift: 1 };
 };
 
 export const P_SHORT: TParser<number> = (bytes, start = 0) => {
@@ -32,7 +32,7 @@ export const P_SHORT: TParser<number> = (bytes, start = 0) => {
     throw new Error(`P_SHORT: buffer underflow at offset ${start} (length ${bytes.length})`);
   }
   return {
-    value: 256 * bytes[start]! + bytes[start + 1]!,
+    value: 256 * (bytes[start] as number) + (bytes[start + 1] as number),
     shift: 2,
   };
 };
@@ -43,10 +43,10 @@ export const P_INT: TParser<number> = (bytes, start = 0) => {
   }
   return {
     value:
-      2 ** 24 * bytes[start]! +
-      2 ** 16 * bytes[start + 1]! +
-      2 ** 8 * bytes[start + 2]! +
-      bytes[start + 3]!,
+      2 ** 24 * (bytes[start] as number) +
+      2 ** 16 * (bytes[start + 1] as number) +
+      2 ** 8 * (bytes[start + 2] as number) +
+      (bytes[start + 3] as number),
     shift: 4,
   };
 };
@@ -65,7 +65,7 @@ export const P_BOOLEAN = (bytes: Uint8Array, start = 0) => {
   if (start >= bytes.length) {
     throw new Error(`P_BOOLEAN: buffer underflow at offset ${start} (length ${bytes.length})`);
   }
-  const raw = bytes[start]!;
+  const raw = bytes[start] as number;
   if (raw !== 0 && raw !== 1) {
     throw new Error(`P_BOOLEAN: invalid boolean byte ${raw} at offset ${start} (expected 0 or 1)`);
   }
@@ -131,7 +131,7 @@ export const byteToAddressOrAlias = (bytes: Uint8Array, start: number = 0) => {
     const aliasData = byteToStringWithLength(bytes, start + 2);
     return {
       shift: aliasData.shift + 2,
-      value: `alias:${String.fromCharCode(bytes[start + 1]!)}:${aliasData.value}`,
+      value: `alias:${String.fromCharCode(bytes[start + 1] as number)}:${aliasData.value}`,
     };
   } else {
     return byteToBase58(bytes, start, 26);

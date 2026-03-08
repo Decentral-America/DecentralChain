@@ -1,7 +1,7 @@
-import { getTransactionSchema } from './schemas';
-import { serializerFromSchema, type TFromLongConverter } from './serialize';
 import { parserFromSchema, type TToLongConverter } from './parse';
+import { getTransactionSchema } from './schemas';
 import { type TSchema } from './schemaTypes';
+import { serializerFromSchema, type TFromLongConverter } from './serialize';
 
 /**
  * Converts all LONG fields to another type with toConverter using schema. If no toConverter is provided LONG fields will be converted to strings.
@@ -12,7 +12,7 @@ import { type TSchema } from './schemaTypes';
  * @param fromConverter - used to convert LONG to string. If not provided, toString will be called
  */
 export function convertLongFields<T = string, R = string>(
-  obj: any,
+  obj: Record<string, unknown>,
   schema: TSchema,
   toConverter?: TToLongConverter<T>,
   fromConverter?: TFromLongConverter<R>,
@@ -33,7 +33,7 @@ export function convertLongFields<T = string, R = string>(
  * @returns A new transaction object with converted LONG fields
  */
 export function convertTxLongFields<T = string, R = string>(
-  tx: any,
+  tx: Record<string, unknown>,
   toConverter?: TToLongConverter<T>,
   fromConverter?: TFromLongConverter<R>,
 ) {

@@ -1,5 +1,5 @@
-import { json } from '../src/';
 import Long from 'long';
+import { json } from '../src/';
 import { exampleOrders, exampleTxs } from './exampleTxs';
 
 describe('Basic serialization', () => {
@@ -166,6 +166,7 @@ describe('stringifyWithSchema edge cases', () => {
     const result = json.stringifyWithSchema(objWithBigInt as any);
     const parsed = JSON.parse(result);
     // BigInt should be serialized as a number (or string if it includes decimal behavior)
+    // biome-ignore lint/correctness/noPrecisionLoss: intentional — testing that BigInt values round-trip through JSON serialization
     expect(parsed.amount).toBe(9007199254740993);
     expect(parsed.count).toBe(42);
   });

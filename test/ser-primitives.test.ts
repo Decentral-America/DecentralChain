@@ -1,23 +1,23 @@
+import { byteToAddressOrAlias, P_BOOLEAN, P_BYTE, P_INT, P_SHORT } from '../src/parsePrimitives';
 import {
-  LONG,
-  SHORT,
-  BYTE,
-  BYTES,
-  STRING,
-  INT,
-  BOOL,
-  OPTION,
-  COUNT,
-  LEN,
-  BASE58_STRING,
-  BASE64_STRING,
-  one,
-  zero,
   ADDRESS_OR_ALIAS,
   ALIAS,
+  BASE58_STRING,
+  BASE64_STRING,
+  BOOL,
+  BYTE,
+  BYTES,
+  COUNT,
   empty,
+  INT,
+  LEN,
+  LONG,
+  OPTION,
+  one,
+  SHORT,
+  STRING,
+  zero,
 } from '../src/serializePrimitives';
-import { byteToAddressOrAlias, P_BYTE, P_SHORT, P_INT, P_BOOLEAN } from '../src/parsePrimitives';
 
 const string = 'TestString';
 const bytes = [84, 101, 115, 116, 83, 116, 114, 105, 110, 103];
@@ -31,6 +31,7 @@ describe('Basic serialization', () => {
     expect(LONG('18446744073709551615')).toEqual(
       Uint8Array.from([255, 255, 255, 255, 255, 255, 255, 255]),
     );
+    // biome-ignore lint/correctness/noPrecisionLoss: intentional — testing that oversized numbers are rejected
     expect(() => LONG(18446744073709551615)).toThrow('is too big to be precisely represented');
   });
 
