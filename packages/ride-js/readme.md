@@ -131,11 +131,11 @@ npm install
 | --------------------------- | -------------------------------- |
 | `npm test`                  | Run tests (Vitest)               |
 | `npm run test:coverage`     | Coverage report                  |
-| `npm run build`             | Build ESM + CJS bundle           |
+| `npm run build`             | Build ESM bundle                 |
 | `npm run typecheck`         | TypeScript type checking         |
 | `npm run lint`              | Lint with auto-fix               |
 | `npm run lint:check`        | Lint (check only, no fix)        |
-| `npm run format`            | Format with Prettier             |
+| `npm run format`            | Format with Biome             |
 | `npm run bulletproof`       | Format → lint → typecheck → test |
 | `npm run bulletproof:check` | CI-safe check (no auto-fix)      |
 | `npm run validate`          | Full CI validation pipeline      |
