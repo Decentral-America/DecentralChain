@@ -1,7 +1,7 @@
-import { base16Encode, base64Decode, verifySignature } from '@decentralchain/ts-lib-crypto';
 import { binary } from '@decentralchain/marshall';
+import { base16Encode, base64Decode, verifySignature } from '@decentralchain/ts-lib-crypto';
 
-import { makeTx, TTx } from '../src';
+import { makeTx, type TTx } from '../src';
 
 import { protoBytesToTx, txToProtoBytes } from '../src/proto-serialize';
 
@@ -13,7 +13,7 @@ function validateTxSignature(
 ): boolean {
   const bytes = tx.version > protoBytesMinVersion ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  return verifySignature(publicKey || tx.senderPublicKey, bytes, tx.proofs[proofNumber]!);
+  return verifySignature(publicKey || tx.senderPublicKey, bytes, tx.proofs[proofNumber] as string);
 }
 
 export { validateTxSignature };
@@ -71,6 +71,6 @@ export function errorMessageByTemplate(field: string, _value?: any) {
 
 export function rndString(len: number) {
   const chars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
-  const rndStr = [...Array(len)].map((i) => chars[(Math.random() * chars.length) | 0]).join('');
+  const rndStr = [...Array(len)].map((_i) => chars[(Math.random() * chars.length) | 0]).join('');
   return rndStr;
 }

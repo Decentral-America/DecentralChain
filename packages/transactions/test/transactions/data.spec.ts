@@ -1,4 +1,5 @@
-import { base64Encode, publicKey } from '@decentralchain/ts-lib-crypto';
+import { binary } from '@decentralchain/marshall';
+import { base64Decode, base64Encode, publicKey } from '@decentralchain/ts-lib-crypto';
 import { data } from '../../src';
 import { txToProtoBytes } from '../../src/proto-serialize';
 import {
@@ -9,10 +10,8 @@ import {
   validateTxSignature,
 } from '../../test/utils';
 import { dataMinimalParams } from '../minimalParams';
-import { binary } from '@decentralchain/marshall';
-import { base64Decode } from '@decentralchain/ts-lib-crypto';
-import { dataTx } from './expected/proto/data.tx';
 import { dataBinaryTx } from './expected/binary/data.tx';
+import { dataTx } from './expected/proto/data.tx';
 
 describe('data', () => {
   const senderPk = { privateKey: 'Ct524rFrsuNZV3sUq2PfV84edzNK6AyA2i7qPHuyF63V' };
@@ -212,7 +211,7 @@ describe('data', () => {
   });
 
   it('should get correct default values', () => {
-    const expectedTimestamp = new Date().getTime();
+    const expectedTimestamp = Date.now();
     const tx = data({ ...dataMinimalParams } as any, senderPk);
 
     expect(tx.data.length).toEqual(3);
@@ -343,17 +342,17 @@ describe('data', () => {
 });
 
 describe('serialize/deserialize data tx', () => {
-  Object.entries(dataTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(dataTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize data binary tx', () => {
-  Object.entries(dataBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(dataBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

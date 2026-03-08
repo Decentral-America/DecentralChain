@@ -1,5 +1,5 @@
-import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
 import { binary } from '@decentralchain/marshall';
+import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
 import { order } from '../../src/index';
 import { orderMinimalParams } from '../minimalParams';
 
@@ -15,9 +15,9 @@ describe('order', () => {
 
   it('should get correct signature', () => {
     const tx = order({ ...orderMinimalParams }, stringSeed);
-    expect(verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[0]!)).toBe(
-      true,
-    );
+    expect(
+      verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[0] as string),
+    ).toBe(true);
   });
 
   it('should get correct multiSignature', () => {
@@ -28,11 +28,11 @@ describe('order', () => {
       null,
       stringSeed2,
     ]);
-    expect(verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[1]!)).toBe(
-      true,
-    );
-    expect(verifySignature(publicKey(stringSeed2), binary.serializeOrder(tx), tx.proofs[3]!)).toBe(
-      true,
-    );
+    expect(
+      verifySignature(publicKey(stringSeed), binary.serializeOrder(tx), tx.proofs[1] as string),
+    ).toBe(true);
+    expect(
+      verifySignature(publicKey(stringSeed2), binary.serializeOrder(tx), tx.proofs[3] as string),
+    ).toBe(true);
   });
 });

@@ -1,19 +1,19 @@
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
-  isEq,
-  orEq,
-  isDccOrAssetId,
-  isRecipient,
-  isAttachment,
-  isArray,
-  getError,
-  validateByShema,
-  ifElse,
   defaultValue,
-  isPublicKey,
+  getError,
+  ifElse,
+  isArray,
+  isAttachment,
+  isDccOrAssetId,
+  isEq,
   isNaturalNumberLike,
   isNaturalNumberOrZeroLike,
+  isPublicKey,
+  isRecipient,
+  orEq,
+  validateByShema,
 } from './validators';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 const transferScheme = {
 <<<<<<< HEAD

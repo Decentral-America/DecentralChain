@@ -1,8 +1,11 @@
 /**
  * @module index
  */
-import { ITransferParams, WithId, WithProofs, WithSender } from '../transactions';
+
+import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { TRANSACTION_TYPE, type TransferTransaction } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
   chainIdFromRecipient,
@@ -12,12 +15,15 @@ import {
   networkByte,
   normalizeAssetId,
 } from '../generic';
-import { validate } from '../validators';
-import { TSeedTypes } from '../types';
-import { binary } from '@decentralchain/marshall';
 import { txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { TRANSACTION_TYPE, TransferTransaction } from '@decentralchain/ts-types';
+import {
+  type ITransferParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function transfer(
@@ -29,7 +35,7 @@ export function transfer(
   seed?: TSeedTypes,
 ): TransferTransaction & WithId & WithProofs;
 export function transfer(
-  paramsOrTx: any,
+  paramsOrTx: ITransferParams & Partial<TransferTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): TransferTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.TRANSFER;
@@ -57,7 +63,9 @@ export function transfer(
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

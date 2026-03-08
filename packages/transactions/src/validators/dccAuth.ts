@@ -1,4 +1,4 @@
-import { getError, validateByShema, isNumber, isPublicKey } from './validators';
+import { getError, isNumber, isPublicKey, validateByShema } from './validators';
 
 const authScheme = {
   publicKey: isPublicKey,

@@ -1,26 +1,27 @@
 /**
  * @module index
  */
-import * as dccProto from '@decentralchain/protobuf-serialization';
+
 import { binary, serializePrimitives } from '@decentralchain/marshall';
+import * as dccProto from '@decentralchain/protobuf-serialization';
 import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
-import { IDataParams, WithId, WithProofs, WithSender } from '../transactions';
-import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
-import { TSeedTypes } from '../types';
-import { validate } from '../validators';
-import { dataEntryToProto, txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
-  DataFiledType,
-  DataTransaction,
-  DataTransactionEntry,
+  type DataFiledType,
+  type DataTransaction,
+  type DataTransactionEntry,
   TRANSACTION_TYPE,
 } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { dataEntryToProto, txToProtoBytes } from '../proto-serialize';
+import { type IDataParams, type WithId, type WithProofs, type WithSender } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 const { BASE58_STRING, BASE64_STRING, BOOL, BYTE, BYTES, COUNT, LEN, LONG, SHORT, STRING } =
   serializePrimitives;
 
-const typeMap: any = {
+const typeMap: Record<string, [string, number, (value: unknown) => Uint8Array]> = {
   integer: ['integer', 0, LONG],
   number: ['integer', 0, LONG],
   boolean: ['boolean', 1, BOOL],
@@ -33,7 +34,7 @@ const mapType = <T>(
   value: T,
   type: string | undefined | null,
 ): [DataFiledType, number, (value: T) => Uint8Array] => {
-  return type ? typeMap[type] : typeMap[typeof value] || typeMap['_'];
+  return type ? typeMap[type] : typeMap[typeof value] || typeMap._;
 };
 
 const convertValue = (
@@ -41,8 +42,8 @@ const convertValue = (
   value: Uint8Array | string | number | boolean,
   _opt: string,
 ) => {
-  return type === 'binary' && (Uint8Array.prototype.isPrototypeOf(value) || Array.isArray(value))
-    ? 'base64:' + Buffer.from(value as unknown as any[]).toString('base64')
+  return type === 'binary' && (value instanceof Uint8Array || Array.isArray(value))
+    ? `base64:${Buffer.from(value as unknown as ArrayLike<number>).toString('base64')}`
     : value;
 };
 
@@ -52,7 +53,10 @@ export function data(
   paramsOrTx: (IDataParams & WithSender) | DataTransaction,
   seed?: TSeedTypes,
 ): DataTransaction & WithId & WithProofs;
-export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & WithId & WithProofs {
+export function data(
+  paramsOrTx: IDataParams & Partial<DataTransaction & WithProofs>,
+  seed?: TSeedTypes,
+): DataTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.DATA;
   const version = paramsOrTx.version ?? DEFAULT_VERSIONS.DATA;
   const seedsAndIndexes = convertToPairs(seed);
@@ -60,31 +64,36 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
 
   if (!Array.isArray(paramsOrTx.data)) throw new Error('["data should be array"]');
 
-  if (paramsOrTx.data.some((x: any) => x.value === null) && paramsOrTx.version === 1)
+  if (
+    paramsOrTx.data.some((x: { value?: unknown }) => x.value === null) &&
+    paramsOrTx.version === 1
+  )
     throw new Error('The value of the "value" field can only be null in a version greater than 1.');
 
   const _timestamp = paramsOrTx.timestamp || Date.now();
 
-  const dataEntriesWithTypes = ((paramsOrTx.data as any) ?? []).map((x: DataTransactionEntry) => {
-    if (x.value == null) return x;
-    if ((<any>x).type) {
-      if (validate.dataFieldValidator(x)) {
-        return {
-          ...x,
-          value: convertValue(x.type, x.value, 'defined'),
-        };
-      } else
-        throw new Error(`type "${x.type}" does not match value "${x.value}"(${typeof x.value})`);
-    } else {
-      const type = mapType(x.value, x.type)[0];
+  const dataEntriesWithTypes = ((paramsOrTx.data as DataTransactionEntry[]) ?? []).map(
+    (x: DataTransactionEntry) => {
+      if (x.value == null) return x;
+      if ((x as DataTransactionEntry).type) {
+        if (validate.dataFieldValidator(x)) {
+          return {
+            ...x,
+            value: convertValue(x.type, x.value, 'defined'),
+          };
+        } else
+          throw new Error(`type "${x.type}" does not match value "${x.value}"(${typeof x.value})`);
+      } else {
+        const type = mapType(x.value, x.type)[0];
 
-      return {
-        type,
-        key: x.key,
-        value: convertValue(type, x.value, 'not defined'),
-      };
-    }
-  });
+        return {
+          type,
+          key: x.key,
+          value: convertValue(type, x.value, 'not defined'),
+        };
+      }
+    },
+  );
 
   const schema = (x: DataTransactionEntry) => {
     return concat(
@@ -94,7 +103,7 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
     );
   };
 
-  let computedFee;
+  let computedFee: number;
   if (version < 2) {
     const bytes = concat(
       BYTE(TRANSACTION_TYPE.DATA),
@@ -127,7 +136,9 @@ export function data(paramsOrTx: any, seed?: TSeedTypes): DataTransaction & With
 
   const bytes1 = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes1), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes1), i);
+  });
   tx.id = base58Encode(blake2b(bytes1));
 
   return tx;

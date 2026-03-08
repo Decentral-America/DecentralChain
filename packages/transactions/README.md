@@ -219,9 +219,9 @@ function waitForTx(txId: string, options: { apiBase: string; timeout?: number })
 | `npm test`             | Run tests via Vitest                 |
 | `npm run test:watch`   | Run tests in watch mode              |
 | `npm run typecheck`    | Type-check with `tsc --noEmit`       |
-| `npm run lint`         | Lint via ESLint (flat config)        |
+| `npm run lint`         | Lint via Biome        |
 | `npm run lint:fix`     | Auto-fix lint issues                 |
-| `npm run format`       | Format via Prettier                  |
+| `npm run format`       | Format via Biome                  |
 | `npm run format:check` | Check formatting                     |
 | `npm run validate`     | Full quality gate (CI-equivalent)    |
 | `npm run bulletproof`  | Format + lint:fix + typecheck + test |

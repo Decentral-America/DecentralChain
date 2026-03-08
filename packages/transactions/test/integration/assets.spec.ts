@@ -1,15 +1,16 @@
+import { address, publicKey } from '@decentralchain/ts-lib-crypto';
 import {
   alias,
   broadcast,
   burn,
   exchange,
-  IBurnParams,
-  IIssueParams,
-  IMassTransferParams,
-  IReissueParams,
-  ISetAssetScriptParams,
+  type IBurnParams,
+  type IIssueParams,
+  type IMassTransferParams,
+  type IReissueParams,
+  type ISetAssetScriptParams,
+  type ITransferParams,
   issue,
-  ITransferParams,
   massTransfer,
   order,
   reissue,
@@ -17,9 +18,8 @@ import {
   transfer,
   waitForTx,
 } from '../../src';
-import { address, publicKey } from '@decentralchain/ts-lib-crypto';
-import { MASTER_SEED, CHAIN_ID, TIMEOUT, API_BASE, randomHexString } from './config';
 import { issueMinimalParams } from '../minimalParams';
+import { API_BASE, CHAIN_ID, MASTER_SEED, randomHexString, TIMEOUT } from './config';
 
 describe('Assets', () => {
 <<<<<<< HEAD:test/integration/assets.test.ts
@@ -297,7 +297,6 @@ describe('Assets', () => {
         try {
           // ISSUE ASSET
           const account2 = 'exchange test';
-          let assetId: string;
           const txParams: IIssueParams = {
             name: 'Test token',
             description: 'no description',
@@ -308,7 +307,7 @@ describe('Assets', () => {
           };
 
           const issueTx = issue(txParams, account1);
-          assetId = issueTx.id;
+          const assetId = issueTx.id;
           await broadcast(issueTx, API_BASE);
           // GIVE DCC TO TEST ACC
           // const transferTx = transfer({ recipient: address(account2, CHAIN_ID), amount: 100000000, chainId: CHAIN_ID }, MASTER_SEED)

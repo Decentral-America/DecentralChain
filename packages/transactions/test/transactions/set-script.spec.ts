@@ -6,8 +6,8 @@ import {
   errorMessageByTemplate,
   validateTxSignature,
 } from '../utils';
-import { setScriptTx } from './expected/proto/set-script.tx';
 import { setScriptBinaryTx } from './expected/binary/set-script.tx';
+import { setScriptTx } from './expected/proto/set-script.tx';
 
 describe('setScript', () => {
   const seed = 'test seed';
@@ -52,7 +52,7 @@ describe('setScript', () => {
     const txParams = { script: compiledContract, senderPublicKey: publicKey(seed) };
     const tx = setScript(txParams);
 
-    expect(tx.script).toEqual('base64:' + txParams.script);
+    expect(tx.script).toEqual(`base64:${txParams.script}`);
     expect(tx.senderPublicKey).toEqual(publicKey(seed));
   });
 
@@ -94,19 +94,19 @@ describe('setScript', () => {
 });
 
 describe('serialize/deserialize set script tx', () => {
-  Object.entries(setScriptTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(setScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize set script binary tx', () => {
-  Object.entries(setScriptBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(setScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('Commission calculation for a big script.', () => {

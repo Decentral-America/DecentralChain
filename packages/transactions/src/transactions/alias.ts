@@ -1,15 +1,16 @@
 /**
  * @module index
  */
-import { IAliasParams, WithId, WithProofs, WithSender } from '../transactions';
+
 import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { txToProtoBytes } from '../proto-serialize';
-import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
-import { TSeedTypes } from '../types';
-import { validate } from '../validators';
+import { type AliasTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { AliasTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import { type IAliasParams, type WithId, type WithProofs, type WithSender } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function alias(
@@ -20,7 +21,10 @@ export function alias(
   paramsOrTx: (IAliasParams & WithSender) | AliasTransaction,
   seed?: TSeedTypes,
 ): AliasTransaction & WithId & WithProofs;
-export function alias(paramsOrTx: any, seed?: TSeedTypes): AliasTransaction & WithId & WithProofs {
+export function alias(
+  paramsOrTx: IAliasParams & Partial<AliasTransaction & WithProofs>,
+  seed?: TSeedTypes,
+): AliasTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.ALIAS;
   const version = paramsOrTx.version ?? DEFAULT_VERSIONS.ALIAS;
   const seedsAndIndexes = convertToPairs(seed);
@@ -77,7 +81,9 @@ export function alias(paramsOrTx: any, seed?: TSeedTypes): AliasTransaction & Wi
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
   const idBytes = version > 2 ? bytes : [bytes[0], ...bytes.slice(36, -16)];
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
 
   tx.id = base58Encode(blake2b(Uint8Array.from(idBytes)));
 

@@ -1,22 +1,22 @@
-import {
-  IAliasParams,
-  IBurnParams,
-  ICancelLeaseParams,
-  IInvokeScriptParams,
-  IDataParams,
-  IIssueParams,
-  ILeaseParams,
-  IMassTransferParams,
-  IOrderParams,
-  IReissueParams,
-  ISetAssetScriptParams,
-  ISetScriptParams,
-  ITransferParams,
-  ICancelOrderParams,
-  ISponsorshipParams,
-  IUpdateAssetInfoParams,
-} from '../src/transactions';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import {
+  type IAliasParams,
+  type IBurnParams,
+  type ICancelLeaseParams,
+  type ICancelOrderParams,
+  type IDataParams,
+  type IInvokeScriptParams,
+  type IIssueParams,
+  type ILeaseParams,
+  type IMassTransferParams,
+  type IOrderParams,
+  type IReissueParams,
+  type ISetAssetScriptParams,
+  type ISetScriptParams,
+  type ISponsorshipParams,
+  type ITransferParams,
+  type IUpdateAssetInfoParams,
+} from '../src/transactions';
 
 export const aliasMinimalParams: IAliasParams = {
   alias: 'mytestalias',
@@ -139,7 +139,7 @@ export const updateAssetInfoMinimalParams: IUpdateAssetInfoParams = {
   assetId: 'syXBywr2HVY7wxqkaci1jKY73KMpoLh46cp1peJAZNJ',
 };
 
-const minimalParams = {
+const _minimalParams = {
   [TRANSACTION_TYPE.ISSUE]: issueMinimalParams,
   [TRANSACTION_TYPE.TRANSFER]: transferMinimalParams,
   [TRANSACTION_TYPE.REISSUE]: reissueMinimalParams,

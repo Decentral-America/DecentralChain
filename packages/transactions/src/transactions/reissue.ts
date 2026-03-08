@@ -3,6 +3,7 @@
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {IReissueParams, WithId, WithProofs, WithSender} from '../transactions'
 <<<<<<< HEAD
 import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
@@ -34,12 +35,28 @@ import { IReissueParams, WithId, WithProofs, WithSender } from '../transactions'
 import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
 import { TSeedTypes } from '../types';
+=======
+
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
-import { txToProtoBytes } from '../proto-serialize';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type ReissueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
+<<<<<<< HEAD
 import { ReissueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
+=======
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import {
+  type IReissueParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 /* @echo DOCS */
 export function reissue(
@@ -51,7 +68,7 @@ export function reissue(
   seed?: TSeedTypes,
 ): ReissueTransaction & WithId & WithProofs;
 export function reissue(
-  paramsOrTx: any,
+  paramsOrTx: IReissueParams & Partial<ReissueTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): ReissueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.REISSUE;
@@ -101,7 +118,9 @@ export function reissue(
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

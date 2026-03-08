@@ -2,6 +2,7 @@
  * @module index
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ICancelLeaseParams, WithId, WithProofs, WithSender } from '../transactions'
 import { binary } from '@decentralchain/marshall'
 <<<<<<< HEAD
@@ -29,15 +30,28 @@ import { DEFAULT_VERSIONS } from '../defaultVersions'
 import { CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 =======
 import { ICancelLeaseParams, WithId, WithProofs, WithSender } from '../transactions';
+=======
+
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { binary } from '@decentralchain/marshall';
-import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
-import { addProof, getSenderPublicKey, convertToPairs, networkByte, fee } from '../generic';
-import { TSeedTypes } from '../types';
-import { validate } from '../validators';
-import { txToProtoBytes } from '../proto-serialize';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
+<<<<<<< HEAD
 import { CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
+=======
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import {
+  type ICancelLeaseParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 /* @echo DOCS */
 export function cancelLease(
@@ -49,7 +63,7 @@ export function cancelLease(
   seed?: TSeedTypes,
 ): CancelLeaseTransaction & WithId & WithProofs;
 export function cancelLease(
-  paramsOrTx: any,
+  paramsOrTx: ICancelLeaseParams & Partial<CancelLeaseTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): CancelLeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.CANCEL_LEASE;
@@ -73,7 +87,9 @@ export function cancelLease(
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

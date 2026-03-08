@@ -1,15 +1,15 @@
 import {
-  isEq,
-  isArray,
   getError,
-  validateByShema,
   ifElse,
-  prop,
+  isArray,
   isBase64,
-  validatePipe,
+  isEq,
   isRequired,
   isValidDataPair,
   pipe,
+  prop,
+  validateByShema,
+  validatePipe,
 } from './validators';
 
 const customDataV1Scheme = {

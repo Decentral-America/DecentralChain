@@ -1,15 +1,16 @@
 /**
  * @module index
  */
-import { WithId, WithProofs } from '../transactions';
+
 import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
-import { TSeedTypes } from '../types';
-import { validate } from '../validators';
-import { txToProtoBytes } from '../proto-serialize';
+import { type ExchangeTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { ExchangeTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import { type WithId, type WithProofs } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function exchange(
@@ -42,7 +43,9 @@ export function exchange(
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
 
   return { ...tx, id: base58Encode(blake2b(bytes)) };
 }

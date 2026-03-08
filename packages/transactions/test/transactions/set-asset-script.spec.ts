@@ -6,9 +6,9 @@ import {
   errorMessageByTemplate,
   validateTxSignature,
 } from '../../test/utils';
-import { setAssetScriptTx } from './expected/proto/set-asset-script.tx';
 import { setAssetScriptMinimalParams } from '../minimalParams';
 import { setAssetScriptBinaryTx } from './expected/binary/set-asset_script.tx';
+import { setAssetScriptTx } from './expected/proto/set-asset-script.tx';
 
 describe('setAssetScript', () => {
   const seed = 'test seed';
@@ -94,22 +94,22 @@ describe('setAssetScript', () => {
     const txParams = { ...setAssetScriptMinimalParams, script: compiledContract };
     const signedTx = setAssetScript(txParams, seed);
 
-    expect(signedTx.script).toEqual('base64:' + compiledContract);
+    expect(signedTx.script).toEqual(`base64:${compiledContract}`);
   });
 });
 
 describe('serialize/deserialize SetAssetScript proto tx', () => {
-  Object.entries(setAssetScriptTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(setAssetScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize SetAssetScript binary tx', () => {
-  Object.entries(setAssetScriptBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(setAssetScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

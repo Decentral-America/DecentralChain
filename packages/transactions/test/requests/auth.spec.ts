@@ -1,7 +1,6 @@
-import { auth, serializeAuthData } from '../../src/requests/auth';
+import { address, base58Encode, blake2b } from '@decentralchain/ts-lib-crypto';
 import { verifyAuthData } from '../../src/general';
-import { base58Encode, blake2b } from '@decentralchain/ts-lib-crypto';
-import { address } from '@decentralchain/ts-lib-crypto';
+import { auth, serializeAuthData } from '../../src/requests/auth';
 
 describe('auth', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';

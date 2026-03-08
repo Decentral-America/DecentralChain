@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:test/proto-serialize.test.ts
 <<<<<<< HEAD
 import {exampleTxs} from './exampleTxs'
@@ -59,24 +60,28 @@ import { deleteProofsAndId } from './utils'
 =======
 import { exampleTxs } from './exampleTxs';
 import { broadcast, libs, waitForTx, WithId } from '../src';
+=======
+import { address } from '@decentralchain/ts-lib-crypto';
+import { broadcast, libs, waitForTx } from '../src';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { protoBytesToTx, txToProtoBytes } from '../src/proto-serialize';
-import { transfer } from '../src/transactions/transfer';
-import { issue } from '../src/transactions/issue';
-import { reissue } from '../src/transactions/reissue';
 import { alias } from '../src/transactions/alias';
 import { burn } from '../src/transactions/burn';
-import { data } from '../src/transactions/data';
-import { lease } from '../src/transactions/lease';
 import { cancelLease } from '../src/transactions/cancel-lease';
-import { setScript } from '../src/transactions/set-script';
-import { setAssetScript } from '../src/transactions/set-asset-script';
+import { data } from '../src/transactions/data';
 import { invokeScript } from '../src/transactions/invoke-script';
-import { sponsorship } from '../src/transactions/sponsorship';
-import { txs } from './example-proto-tx';
+import { issue } from '../src/transactions/issue';
+import { lease } from '../src/transactions/lease';
 import { massTransfer } from '../src/transactions/mass-transfer';
+import { reissue } from '../src/transactions/reissue';
+import { setAssetScript } from '../src/transactions/set-asset-script';
+import { setScript } from '../src/transactions/set-script';
+import { sponsorship } from '../src/transactions/sponsorship';
+import { transfer } from '../src/transactions/transfer';
 import { updateAssetInfo } from '../src/transactions/update-asset-info';
+import { txs } from './example-proto-tx';
+import { exampleTxs } from './exampleTxs';
 import { randomHexString, TIMEOUT } from './integration/config';
-import { address } from '@decentralchain/ts-lib-crypto';
 import { issueMinimalParams } from './minimalParams';
 import { deleteProofsAndId } from './utils';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/proto-serialize.spec.ts
@@ -96,7 +101,7 @@ let assetId = '';
 describe('serialize/deserialize', () => {
   const txss = Object.keys(exampleTxs).map((x) => (<any>exampleTxs)[x] as any);
   txss.forEach((tx) => {
-    it('type: ' + tx.type, () => {
+    it(`type: ${tx.type}`, () => {
       // deleteProofsAndId(tx)
       //const parsed = protoBytesToTx(txToProtoBytes(tx))
 <<<<<<< HEAD:test/proto-serialize.test.ts
@@ -140,7 +145,7 @@ describe('serialize/deserialize', () => {
   it(
     'correctly serialized transactions',
     () => {
-      Object.entries(txs).forEach(([name, { Bytes, Json }]) => {
+      Object.entries(txs).forEach(([_name, { Bytes, Json }]) => {
         const actualBytes = libs.crypto.base16Encode(txToProtoBytes(Json as any));
         const expectedBytes = libs.crypto.base16Encode(libs.crypto.base64Decode(Bytes));
         expect(expectedBytes).toBe(actualBytes);
@@ -160,7 +165,7 @@ describe('transactions v3', () => {
   beforeAll(async () => {
     const nonce = randomHexString(6);
     vi.setConfig({ testTimeout: 60000 });
-    SEED = 'account1' + nonce;
+    SEED = `account1${nonce}`;
     const mtt = massTransfer(
       {
         transfers: [{ recipient: address(SEED, CHAIN_ID), amount: 0.1 * wvs }],
@@ -189,7 +194,7 @@ describe('transactions v3', () => {
   it(
     'broadcasts new transactions',
     async () => {
-      const itx = issue(
+      const _itx = issue(
         {
           quantity: 100000,
           description: 'my token',
@@ -199,8 +204,11 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const ttx = transfer({ amount: 10000, recipient: libs.crypto.address(SEED, CHAIN_ID) }, SEED);
-      const reitx = reissue(
+      const _ttx = transfer(
+        { amount: 10000, recipient: libs.crypto.address(SEED, CHAIN_ID) },
+        SEED,
+      );
+      const _reitx = reissue(
         {
           assetId: assetId,
           quantity: 100,
@@ -209,21 +217,21 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const btx = burn({ assetId: assetId, amount: 2, chainId: CHAIN_ID }, SEED);
+      const _btx = burn({ assetId: assetId, amount: 2, chainId: CHAIN_ID }, SEED);
       const dtx = data(
         { data: [{ type: 'string', key: 'foo', value: 'bar' }], chainId: CHAIN_ID },
         SEED,
       );
-      const dtx2delete = data({ data: [{ key: 'foo' }], chainId: CHAIN_ID }, SEED);
-      const ltx = lease(
-        { amount: 1000, recipient: libs.crypto.address(SEED + 'foo', CHAIN_ID) },
+      const _dtx2delete = data({ data: [{ key: 'foo' }], chainId: CHAIN_ID }, SEED);
+      const _ltx = lease(
+        { amount: 1000, recipient: libs.crypto.address(`${SEED}foo`, CHAIN_ID) },
         SEED,
       );
-      const canltx = cancelLease(
+      const _canltx = cancelLease(
         { leaseId: '6pDDM84arAdJ4Ts7cY7JaDbhjBHMbPdYsr3WyiDSDzbt', chainId: CHAIN_ID },
         SEED,
       );
-      const mttx = massTransfer(
+      const _mttx = massTransfer(
         {
           attachment: '123',
           chainId: CHAIN_ID,
@@ -231,8 +239,8 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const atx = alias({ alias: 'super-alias2', chainId: CHAIN_ID }, SEED);
-      const ssTx = setScript(
+      const _atx = alias({ alias: 'super-alias2', chainId: CHAIN_ID }, SEED);
+      const _ssTx = setScript(
         {
           //script: 'AwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAIBQAAAAJ0eAAAAA9zZW5kZXJQdWJsaWNLZXmIg5mo',
           script: null,
@@ -241,7 +249,7 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const sastx = setAssetScript(
+      const _sastx = setAssetScript(
         {
           assetId: assetId,
           chainId: CHAIN_ID,
@@ -249,7 +257,7 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const spontx = sponsorship(
+      const _spontx = sponsorship(
         {
           chainId: CHAIN_ID,
           assetId: assetId,
@@ -257,7 +265,7 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const istx = invokeScript(
+      const _istx = invokeScript(
         {
           dApp: libs.crypto.address(SEED, CHAIN_ID),
           chainId: CHAIN_ID,
@@ -265,7 +273,7 @@ describe('transactions v3', () => {
         },
         SEED,
       );
-      const uaitx = updateAssetInfo(
+      const _uaitx = updateAssetInfo(
         {
           assetId: assetId,
           name: 'new NAme',
@@ -312,7 +320,7 @@ describe('transactions v3', () => {
   it.todo('correctly serializes transfers with byte attachments');
 });
 
-const a = {
+const _a = {
   type: 4,
   version: 3,
   senderPublicKey: '8rbsYsY3pnPveg13yDcoQ8WrS2tciNQS55rAKcC6gJut',

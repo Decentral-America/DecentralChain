@@ -1,17 +1,18 @@
 /**
  * @module index
  */
-import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
-import { addProof, getSenderPublicKey, convertToPairs, isOrder, networkByte } from '../generic';
-import { IOrderParams, WithId, WithProofs, WithSender } from '../transactions';
-import { TSeedTypes } from '../types';
+
 import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
-  ExchangeTransactionOrder,
-  SignedIExchangeTransactionOrder,
+  type ExchangeTransactionOrder,
+  type SignedIExchangeTransactionOrder,
 } from '@decentralchain/ts-types';
+import { addProof, convertToPairs, getSenderPublicKey, isOrder, networkByte } from '../generic';
 import { orderToProtoBytes } from '../proto-serialize';
+import { type IOrderParams, type WithId, type WithProofs, type WithSender } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /**
  * Creates and signs [[TOrder]].
@@ -67,7 +68,7 @@ export function order(
   seed?: TSeedTypes,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>;
 export function order(
-  paramsOrOrder: any,
+  paramsOrOrder: (IOrderParams & WithSender) | (ExchangeTransactionOrder & WithProofs & WithSender),
   seed?: TSeedTypes,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> {
   const amountAsset = isOrder(paramsOrOrder)
@@ -115,24 +116,26 @@ export function order(
 
   if (ord.version === 4) {
     ord.priceMode = paramsOrOrder.priceMode || 'fixedDecimals';
-    // @ts-ignore
+    // @ts-expect-error
     ord.chainId = networkByte(paramsOrOrder.chainId, 76);
     if (paramsOrOrder.eip712Signature) ord.eip712Signature = paramsOrOrder.eip712Signature;
   }
 
   const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(ord, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(ord, signBytes(s, bytes), i);
+  });
 
   validate.order(ord);
 
   ord.id = base58Encode(blake2b(bytes));
 
   // OrderV1 uses signature instead of proofs
-  // @ts-ignore
+  // @ts-expect-error
   if (ord.version === undefined || ord.version === 1)
-    // @ts-ignore – version narrowing causes `never` on proofs
-    (ord as any).signature = ord.proofs?.[0] ?? '';
+    // @ts-expect-error – version narrowing causes `never` on proofs
+    (ord as Record<string, unknown>).signature = ord.proofs?.[0] ?? '';
 
   return ord;
 }

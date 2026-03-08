@@ -1,19 +1,19 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { orderValidator } from './order';
 import {
-  isEq,
-  orEq,
-  isNumber,
-  isArray,
-  getError,
-  validateByShema,
-  ifElse,
   defaultValue,
-  isPublicKey,
-  validatePipe,
-  isRequired,
+  getError,
+  ifElse,
+  isArray,
+  isEq,
   isNaturalNumberLike,
   isNaturalNumberOrZeroLike,
+  isNumber,
+  isPublicKey,
+  isRequired,
+  orEq,
+  validateByShema,
+  validatePipe,
 } from './validators';
 
 const exchangeScheme = {

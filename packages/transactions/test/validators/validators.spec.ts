@@ -1,6 +1,6 @@
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { validators } from '../../src/index';
 import { validate } from '../../src/validators';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 describe('Validators', () => {
   describe('Atomic validators', () => {
