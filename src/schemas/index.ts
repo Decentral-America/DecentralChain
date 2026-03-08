@@ -5,7 +5,7 @@ import {
   ORACLE_ASSET_FIELD_PATTERN,
   STATUS_LIST,
 } from '../constants.js';
-import type { IProviderData, TProviderAsset } from '../interface.js';
+import { type IProviderData, type TProviderAsset } from '../interface.js';
 import { addAssetId, processDescription, processField, schema } from '../response/index.js';
 import {
   addAssetVersion,
