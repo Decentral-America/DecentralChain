@@ -140,10 +140,10 @@ const state = await api.publicState();
 | --------------------------- | ------------------------------------------------------ |
 | `npm run build`             | Compile with tsup (ESM + .d.ts)                        |
 | `npm run typecheck`         | `tsc --noEmit` strict type check                       |
-| `npm run lint`              | ESLint check (no auto-fix)                             |
-| `npm run lint:fix`          | ESLint with auto-fix                                   |
-| `npm run format`            | Prettier auto-format                                   |
-| `npm run format:check`      | Prettier check (no writes)                             |
+| `npm run lint`              | Biome lint check (no auto-fix)                             |
+| `npm run lint:fix`          | Biome lint with auto-fix                                   |
+| `npm run format`            | Biome auto-format                                   |
+| `npm run format:check`      | Biome format check (no writes)                             |
 | `npm run test`              | Vitest type-level tests                                |
 | `npm run test:watch`        | Tests in watch mode                                    |
 | `npm run test:coverage`     | Tests with V8 coverage                                 |
