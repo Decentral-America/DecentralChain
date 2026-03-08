@@ -34,30 +34,6 @@ export function updateAssetInfo(
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
-<<<<<<< HEAD
-    const tx: UpdateAssetInfoTransaction & WithId & WithProofs = {
-        type,
-        version,
-        senderPublicKey,
-        name: paramsOrTx.name,
-        description: paramsOrTx.description,
-        assetId: paramsOrTx.assetId,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        fee: fee(paramsOrTx, 100000),
-=======
-        fee: fee(paramsOrTx, 100000000000),
-        feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
->>>>>>> 697d643a (minor fixes)
-=======
-        fee: fee(paramsOrTx, 100000),
->>>>>>> f33083a0 (updated dependencies)
-        timestamp: paramsOrTx.timestamp || Date.now(),
-        proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, 76),
-        id: '',
-    }
-=======
   const tx: UpdateAssetInfoTransaction & WithId & WithProofs = {
     type,
     version,
@@ -70,12 +46,7 @@ export function updateAssetInfo(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(paramsOrTx.chainId, 76),
     id: '',
-<<<<<<< HEAD
-  }
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
   };
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
   validate.updateAssetInfo(tx);
 

@@ -22,19 +22,7 @@ import { issueMinimalParams } from '../minimalParams';
 import { API_BASE, CHAIN_ID, MASTER_SEED, randomHexString, TIMEOUT } from './config';
 
 describe('Assets', () => {
-<<<<<<< HEAD:test/integration/assets.test.ts
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  let account1: string, account2: string
-  let assetId = ''
->>>>>>> 697d643a (minor fixes)
-=======
->>>>>>> f33083a0 (updated dependencies)
-  const wvs = 10 ** 8
-=======
   const wvs = 10 ** 8;
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/assets.spec.ts
 
   const account1 =
     'jungle property method used observe any mirror dial road famous wonder satisfy curve pledge piece';
@@ -45,40 +33,8 @@ describe('Assets', () => {
   const address2 = address(account2, CHAIN_ID);
 
   beforeAll(async () => {
-<<<<<<< HEAD:test/integration/assets.test.ts
-<<<<<<< HEAD
-<<<<<<< HEAD
-    jest.setTimeout(60000)
-=======
-    const nonce = randomHexString(6)
->>>>>>> 697d643a (minor fixes)
-
-    const mtt = massTransfer({
-      transfers: [
-<<<<<<< HEAD
-        { recipient: address(account1, CHAIN_ID), amount: 5.016 * wvs },
-        { recipient: address(account2, CHAIN_ID), amount: 0.1 * wvs },
-      ],
-=======
-        { recipient: address(account1, CHAIN_ID), amount: 6000 * wvs},
-        { recipient: address(account2, CHAIN_ID), amount: 5500 * wvs }
-      ]
->>>>>>> 697d643a (minor fixes)
-=======
-    jest.setTimeout(60000)
-=======
     vi.setConfig({ testTimeout: 60000 });
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/assets.spec.ts
 
-<<<<<<< HEAD
-    const mtt = massTransfer({
-      transfers: [
-        { recipient: address(account1, CHAIN_ID), amount: 5.016 * wvs },
-        { recipient: address(account2, CHAIN_ID), amount: 0.1 * wvs },
-      ],
->>>>>>> f33083a0 (updated dependencies)
-    }, MASTER_SEED)
-=======
     const mtt = massTransfer(
       {
         transfers: [
@@ -87,18 +43,10 @@ describe('Assets', () => {
         ],
       },
       MASTER_SEED,
-<<<<<<< HEAD:test/integration/assets.test.ts
-    )
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-    await broadcast(mtt, API_BASE)
-    await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT })
-  }, TIMEOUT)
-=======
     );
     await broadcast(mtt, API_BASE);
     await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT });
   }, TIMEOUT);
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/assets.spec.ts
 
   describe('Ordinary assets', () => {
     let assetId = '';

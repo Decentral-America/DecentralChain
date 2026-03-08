@@ -1,20 +1,6 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
-<<<<<<< HEAD
-<<<<<<< HEAD
   defaultValue,
-=======
-  isEq,
-  orEq,
-  isAssetId,
-  isRecipient,
-  isNumber,
-  isNumberLike,
-  isArray,
->>>>>>> 697d643a (minor fixes)
-=======
-  defaultValue,
->>>>>>> f33083a0 (updated dependencies)
   getError,
   ifElse,
   isArray,

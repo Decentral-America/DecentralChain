@@ -1,60 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD:test/test.test.ts
-<<<<<<< HEAD
-import {issue} from '../src/transactions/issue'
-import {broadcast, waitForTx} from '../src'
-import {transfer} from '../src/transactions/transfer'
-import {massTransfer} from '../src/transactions/mass-transfer'
-import {data} from '../src/transactions/data'
-import {invokeScript} from '../src/transactions/invoke-script'
-import {address, randomSeed} from '@decentralchain/ts-lib-crypto'
-import {setScript} from '../src/transactions/set-script'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import {API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID} from './integration/config'
-=======
-import {TIMEOUT} from './integration/config'
->>>>>>> 697d643a (minor fixes)
-import {waitForTxWithNConfirmations} from '../src/nodeInteraction'
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-const nodeUrl = 'http://localhost:6869'
-const masterSeed = 'DCC private node seed with waves tokens'
-const CHAIN_ID = 82
->>>>>>> bd10b2db (update)
-=======
-const nodeUrl = 'https://testnet-node.decentralchain.io/'
-const masterSeed = 'dcc private node seed with DCC tokens'
-const CHAIN_ID = 33
->>>>>>> 697d643a (minor fixes)
-=======
-import {API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID} from './integration/config'
-import {waitForTxWithNConfirmations} from '../src/nodeInteraction'
-=======
-import { issue } from '../src/transactions/issue'
-import { broadcast, waitForTx } from '../src'
-import { transfer } from '../src/transactions/transfer'
-import { massTransfer } from '../src/transactions/mass-transfer'
-import { data } from '../src/transactions/data'
-import { invokeScript } from '../src/transactions/invoke-script'
-import { address, randomSeed } from '@decentralchain/ts-lib-crypto'
-import { setScript } from '../src/transactions/set-script'
-import { API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID } from './integration/config'
-import { waitForTxWithNConfirmations } from '../src/nodeInteraction'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-
->>>>>>> f33083a0 (updated dependencies)
-let dappAddress1 = ''
-let dappAddress2 = ''
-let assetId = ''
-jest.setTimeout(60000)
-=======
-import { issue } from '../src/transactions/issue';
-=======
 import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { broadcast, waitForTx } from '../src';
 import { waitForTxWithNConfirmations } from '../src/nodeInteraction';
 import { data } from '../src/transactions/data';
@@ -69,32 +13,8 @@ let dappAddress1 = '';
 let dappAddress2 = '';
 let assetId = '';
 vi.setConfig({ testTimeout: 60000 });
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/test.spec.ts
 
 it('issue', async () => {
-<<<<<<< HEAD
-    const tx = issue({
-        name: 'test',
-        description: 'test',
-        quantity: 1097654321,
-        chainId: CHAIN_ID,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        fee: 100000000,
-    }, MASTER_SEED)
-    const {id} = await broadcast(tx, API_BASE)
-=======
-        fee: 100000000000,
-    }, masterSeed)
-    const {id} = await broadcast(tx, nodeUrl)
->>>>>>> 697d643a (minor fixes)
-=======
-        fee: 100000000,
-    }, MASTER_SEED)
-    const {id} = await broadcast(tx, API_BASE)
->>>>>>> f33083a0 (updated dependencies)
-    assetId = id
-=======
   const tx = issue(
     {
       name: 'test',
@@ -104,18 +24,10 @@ it('issue', async () => {
       fee: 100000000,
     },
     MASTER_SEED,
-<<<<<<< HEAD:test/test.test.ts
-  )
-  const { id } = await broadcast(tx, API_BASE)
-  assetId = id
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-})
-=======
   );
   const { id } = await broadcast(tx, API_BASE);
   assetId = id;
 });
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/test.spec.ts
 
 // it('updateAssetInfo', async () => {
 //     const tx = updateAssetInfo({
