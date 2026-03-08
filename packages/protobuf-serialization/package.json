@@ -22,7 +22,7 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -42,36 +42,26 @@
   "scripts": {
     "generate": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w es6 --root decentralchain --path proto -o dist/index.js \"proto/waves/**/*.proto\"",
     "generate:types": "pbts -o dist/index.d.ts --no-comments dist/index.js",
-    "build": "rm -rf dist && mkdir dist && npm run generate && npm run generate:types && npm run generate -- --no-comments",
+    "build": "rm -rf dist && mkdir dist && npm run generate && npm run generate:types && npm run generate -- --no-comments && npm run fix:imports",
+    "fix:imports": "node -e \"import{readFileSync as r,writeFileSync as w}from'fs';const f='dist/index.js';w(f,r(f,'utf8').replace('from \\\"protobufjs/minimal\\\"','from \\\"protobufjs/minimal.js\\\"'))\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
     "check:publint": "publint",
     "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
     "check:size": "size-limit",
-    "validate": "npm audit --audit-level=moderate && npm run format:check && npm run lint && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint:fix && npm run build && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run build && npm run typecheck && npm run test",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "prepublishOnly": "npm run validate",
     "prepack": "npm run build",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{js,mjs}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.json": [
-      "prettier --write"
-    ],
-    "*.md": [
-      "prettier --write"
-    ]
+    "prepare": "lefthook install",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "size-limit": [
     {
@@ -109,15 +99,10 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@eslint/js": "10.0.1",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "^1.11.0",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "10.0.2",
-    "eslint-config-prettier": "10.1.8",
-    "globals": "17.4.0",
-    "husky": "9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "3.8.1",
     "protobufjs-cli": "2.0.0",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
