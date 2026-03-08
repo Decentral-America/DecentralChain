@@ -1,23 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import {
-  getProviderData,
-  getProviderAssets,
-  getFields,
-  getFieldsFromData,
-  getFieldsFromAsset,
-  getDifferenceByData,
-  getDifferenceByFields,
-  isValidStatus,
-  isValidAssetId,
-} from '../src/index.js';
-import type {
-  IErrorResponse,
-  IProviderData,
-  TDataTxField,
-  TScamAsset,
-  TProviderAsset,
-} from '../src/interface.js';
+import { describe, expect, it } from 'vitest';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
@@ -25,8 +7,26 @@ import {
   RESPONSE_STATUSES,
   STATUS_LIST,
 } from '../src/constants.js';
-import { toHash, getFieldsDiff, toField, toFields, isProvider } from '../src/utils/index.js';
-import { getFieldValue, getAssetIdFromKey } from '../src/response/index.js';
+import {
+  getDifferenceByData,
+  getDifferenceByFields,
+  getFields,
+  getFieldsFromAsset,
+  getFieldsFromData,
+  getProviderAssets,
+  getProviderData,
+  isValidAssetId,
+  isValidStatus,
+} from '../src/index.js';
+import {
+  type IErrorResponse,
+  type IProviderData,
+  type TDataTxField,
+  type TProviderAsset,
+  type TScamAsset,
+} from '../src/interface.js';
+import { getAssetIdFromKey, getFieldValue } from '../src/response/index.js';
+import { getFieldsDiff, isProvider, toField, toFields, toHash } from '../src/utils/index.js';
 
 const PROVIDER_DATA = {
   version: DATA_PROVIDER_VERSIONS.BETA,

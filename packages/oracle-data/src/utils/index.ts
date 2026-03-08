@@ -1,11 +1,3 @@
-import type {
-  IIntegerDataTXField,
-  IProviderAsset,
-  IProviderData,
-  IStringDataTXField,
-  TDataTxField,
-  TProviderAsset,
-} from '../interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_DESCRIPTION_PATTERN,
@@ -13,6 +5,14 @@ import {
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
 } from '../constants.js';
+import {
+  type IIntegerDataTXField,
+  type IProviderAsset,
+  type IProviderData,
+  type IStringDataTXField,
+  type TDataTxField,
+  type TProviderAsset,
+} from '../interface.js';
 
 /** Compute the diff between two arrays of data transaction fields. */
 export function getFieldsDiff(previous: TDataTxField[], next: TDataTxField[]): TDataTxField[] {
@@ -42,7 +42,6 @@ export function toHash<T extends object>(key: keyof T): (list: T[]) => Record<st
         acc[String(item[key])] = item;
         return acc;
       },
-      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter -- Object.create(null) prevents prototype pollution
       Object.create(null) as Record<string, T>,
     );
 }
@@ -73,7 +72,6 @@ export function toField(
   return (data) => {
     const value = data[dataName];
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
     if (value == null) {
       throw new Error(`Empty field ${dataName}!`);
     }
@@ -118,7 +116,7 @@ export function addVersion(version: number): () => IIntegerDataTXField {
   });
 }
 
-function checkType(value: string | number | boolean, type: DATA_ENTRY_TYPES): void | never {
+function checkType(value: string | number | boolean, type: DATA_ENTRY_TYPES): undefined | never {
   const valueType = typeof value;
   switch (type) {
     case DATA_ENTRY_TYPES.INTEGER:

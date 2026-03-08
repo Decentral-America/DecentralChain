@@ -1,11 +1,3 @@
-import type {
-  IErrorResponse,
-  IProviderData,
-  TDataTxField,
-  TProviderAsset,
-  TResponse,
-} from '../interface.js';
-import { getAssetIdFromKey, getFieldValue, isString } from '../response/index.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_KEYS,
@@ -16,6 +8,14 @@ import {
   RESPONSE_STATUSES,
   type STATUS_LIST,
 } from '../constants.js';
+import {
+  type IErrorResponse,
+  type IProviderData,
+  type TDataTxField,
+  type TProviderAsset,
+  type TResponse,
+} from '../interface.js';
+import { getAssetIdFromKey, getFieldValue, isString } from '../response/index.js';
 import { ASSETS_VERSION_MAP, DATA_PROVIDER_VERSION_MAP } from '../schemas/index.js';
 
 /** Parse oracle provider data from a hash of data transaction fields. */
@@ -27,7 +27,6 @@ export function parseOracleData(hash: Record<string, TDataTxField>): TResponse<I
       DATA_ENTRY_TYPES.INTEGER,
     ) as DATA_PROVIDER_VERSIONS;
     const parser = DATA_PROVIDER_VERSION_MAP[version];
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
     if (!parser) {
       throw new Error(`Unsupported provider version: ${String(version)}`);
     }
@@ -68,7 +67,6 @@ export function parseAssetData(hash: Record<string, TDataTxField>): TResponse<TP
           throw new Error(`Invalid asset status: ${String(status)}`);
         }
         const parser = ASSETS_VERSION_MAP[version];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive runtime check
         if (!parser) {
           throw new Error(`Unsupported asset version: ${String(version)}`);
         }

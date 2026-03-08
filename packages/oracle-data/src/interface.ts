@@ -1,8 +1,8 @@
-import type {
-  DATA_ENTRY_TYPES,
-  DATA_PROVIDER_VERSIONS,
-  RESPONSE_STATUSES,
-  STATUS_LIST,
+import {
+  type DATA_ENTRY_TYPES,
+  type DATA_PROVIDER_VERSIONS,
+  type RESPONSE_STATUSES,
+  type STATUS_LIST,
 } from './constants.js';
 
 export interface IProviderData {
