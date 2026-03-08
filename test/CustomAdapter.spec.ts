@@ -1,5 +1,5 @@
-import { CustomAdapter, type IUserApi } from '../src/adapters/CustomAdapter';
 import { Adapter } from '../src/adapters/Adapter';
+import { CustomAdapter, type IUserApi } from '../src/adapters/CustomAdapter';
 import { SIGN_TYPE } from '../src/prepareTx';
 
 describe('CustomAdapter', () => {

@@ -1,6 +1,6 @@
-import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
 import * as fieldsType from './fieldTypes';
+import { prepare } from './prepare';
 
 const { processors } = prepare;
 

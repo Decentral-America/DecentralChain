@@ -1,7 +1,7 @@
-import { Adapter, type IUser, type ISeedUser } from './Adapter';
+import { libs, seedUtils } from '@decentralchain/transactions';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/transactions';
 import { SIGN_TYPE } from '../prepareTx';
+import { Adapter, type ISeedUser, type IUser } from './Adapter';
 
 const Seed = seedUtils.Seed;
 const signWithPrivateKey = libs.crypto.signBytes;
@@ -17,7 +17,7 @@ export class SeedAdapter extends Adapter {
 
   constructor(data: string | IUser, networkCode?: string | number) {
     super(networkCode);
-    let seed;
+    let seed: string | Uint8Array;
 
     if (typeof data === 'string') {
       seed = data;
@@ -27,7 +27,6 @@ export class SeedAdapter extends Adapter {
         user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
         MIN_ENCRYPTION_ROUNDS,
       );
-      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility with existing encrypted seeds
       seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
     }
 
@@ -52,7 +51,6 @@ export class SeedAdapter extends Adapter {
 
     this.seed = {
       encrypt: (password: string, encryptionRounds?: number) => {
-        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility
         return Seed.encryptSeedPhrase(`base58:${this.encodedSeed}`, password, encryptionRounds);
       },
       address: libs.crypto.address(seed, networkCode || this.getNetworkByte()),
@@ -96,7 +94,7 @@ export class SeedAdapter extends Adapter {
   }
 
   public getEncodedSeed(): Promise<string> {
-    return Promise.resolve(this.encodedSeed!);
+    return Promise.resolve(this.encodedSeed as string);
   }
 
   public getSyncAddress(): string {

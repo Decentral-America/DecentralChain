@@ -1,7 +1,8 @@
+import { libs, serializeCustomData } from '@decentralchain/transactions';
 import { AdapterType } from '../adapterType';
 import { type SIGN_TYPE, type TSignData } from '../prepareTx';
-import { libs, serializeCustomData } from '@decentralchain/transactions';
 import { Signable } from '../Signable';
+
 const { stringToBytes } = libs.crypto;
 
 export abstract class Adapter {
@@ -12,7 +13,7 @@ export abstract class Adapter {
 
   protected constructor(networkCode?: string | number) {
     networkCode = typeof networkCode === 'string' ? networkCode.charCodeAt(0) : networkCode;
-    this.type = (this as any).constructor.type;
+    this.type = (this.constructor as typeof Adapter).type;
     const resolvedCode = networkCode || Adapter._code;
     if (!resolvedCode) {
       throw new Error(
@@ -30,7 +31,11 @@ export abstract class Adapter {
     return Promise.resolve();
   }
 
-  public onDestroy(_cb?: Function): void {
+  public static isAvailable(): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+
+  public onDestroy(_cb?: (...args: never[]) => unknown): void {
     return;
   }
 
@@ -54,18 +59,18 @@ export abstract class Adapter {
 
   public abstract getPrivateKey(): Promise<string>;
 
-  public abstract signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
+  public abstract signRequest(databytes: Uint8Array, signData?: unknown): Promise<string>;
 
   public abstract signTransaction(
     bytes: Uint8Array,
     precisions: Record<string, number>,
-    signData?: any,
+    signData?: unknown,
   ): Promise<string>;
 
   public abstract signOrder(
     bytes: Uint8Array,
     precisions: Record<string, number>,
-    signData: any,
+    signData: unknown,
   ): Promise<string>;
 
   public abstract signData(bytes: Uint8Array): Promise<string>;
@@ -80,7 +85,10 @@ export abstract class Adapter {
 
   public signCustomData(data: string | number[] | Uint8Array) {
     const bytes = typeof data === 'string' ? stringToBytes(data) : Uint8Array.from(data);
-    const serializeData = { version: 1, binary: libs.crypto.base64Encode(bytes) } as any;
+    const serializeData = {
+      version: 1,
+      binary: libs.crypto.base64Encode(bytes),
+    } as unknown as Parameters<typeof serializeCustomData>[0];
     const binary = serializeCustomData(serializeData);
     return this.signRequest(binary, { type: 'customData', ...serializeData });
   }
@@ -119,12 +127,8 @@ export abstract class Adapter {
 
   public static type: AdapterType = AdapterType.Seed;
 
-  public static getUserList(): Promise<any[]> {
+  public static getUserList(): Promise<unknown[]> {
     return Promise.resolve([]);
-  }
-
-  public static isAvailable(): Promise<boolean> {
-    return Promise.resolve(false);
   }
 }
 

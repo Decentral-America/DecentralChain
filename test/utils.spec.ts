@@ -1,8 +1,8 @@
-import { find, isEmpty, normalizeAssetId, last, TRANSACTION_TYPE } from '../src/utils';
-import { DCC_ID } from '../src/prepareTx/prepare';
-import { getAdapterByType, getAvailableList, adapterPriorityList, adapterList } from '../src/index';
-import { AdapterType } from '../src/adapterType';
 import { Adapter } from '../src/adapters/Adapter';
+import { AdapterType } from '../src/adapterType';
+import { adapterList, adapterPriorityList, getAdapterByType, getAvailableList } from '../src/index';
+import { DCC_ID } from '../src/prepareTx/prepare';
+import { find, isEmpty, last, normalizeAssetId, TRANSACTION_TYPE } from '../src/utils';
 
 describe('utils', () => {
   describe('find', () => {

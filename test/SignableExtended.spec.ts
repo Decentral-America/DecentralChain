@@ -1,7 +1,7 @@
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { SIGN_TYPE } from '../src/prepareTx';
-import { Money, Asset } from '@decentralchain/data-entities';
-import { BigNumber } from '@decentralchain/bignumber';
 
 const testSeed = 'some test seed words without money on mainnet';
 
@@ -119,7 +119,7 @@ describe('Signable - extended coverage', () => {
 
       expect(result).toBe(signable);
       expect(mockRequest).toHaveBeenCalledTimes(1);
-      const callArg = mockRequest.mock.calls[0]![0];
+      const callArg = mockRequest.mock.calls[0]?.[0];
       expect(callArg.code).toBe('123456');
       expect(typeof callArg.address).toBe('string');
     });

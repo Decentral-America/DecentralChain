@@ -66,13 +66,13 @@ vi.mock('@decentralchain/ledger', () => ({
   DCCLedger: MockLedger,
 }));
 
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { LedgerAdapter } from '../src/adapters/LedgerAdapter';
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { SIGN_TYPE, TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 import { SIGN_TYPES } from '../src/prepareTx/constants';
 import { currentFeeFactory } from '../src/utils';
-import { Money, Asset } from '@decentralchain/data-entities';
-import { BigNumber } from '@decentralchain/bignumber';
 
 const testSeed = 'some test seed words without money on mainnet';
 

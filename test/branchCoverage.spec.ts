@@ -5,14 +5,15 @@
  *
  * These tests focus specifically on previously-uncovered branches.
  */
-import { SeedAdapter } from '../src/adapters/SeedAdapter';
-import { CustomAdapter } from '../src/adapters/CustomAdapter';
-import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
+
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { Adapter } from '../src/adapters/Adapter';
+import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
+import { CustomAdapter } from '../src/adapters/CustomAdapter';
+import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { SIGN_TYPE, TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 import { VALIDATORS } from '../src/prepareTx/fieldValidator';
-import { Money, Asset } from '@decentralchain/data-entities';
-import { BigNumber } from '@decentralchain/bignumber';
 
 const testSeed = 'some test seed words without money on mainnet';
 

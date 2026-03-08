@@ -1,7 +1,7 @@
-import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
+import { libs, seedUtils } from '@decentralchain/transactions';
 import { AdapterType } from '../adapterType';
-import { seedUtils, libs } from '@decentralchain/transactions';
 import { SIGN_TYPE } from '../prepareTx';
+import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
 
 const publicKey = libs.crypto.publicKey;
 const address = libs.crypto.address;
@@ -27,7 +27,6 @@ export class PrivateKeyAdapter extends Adapter {
         user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
         MIN_ENCRYPTION_ROUNDS,
       );
-      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Legacy KDF required for backward compatibility
       this.privateKey = seedUtils.Seed.decryptSeedPhrase(
         user.encryptedPrivateKey || '',
         user.password,

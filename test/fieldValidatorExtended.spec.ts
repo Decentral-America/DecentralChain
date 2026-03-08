@@ -1,6 +1,6 @@
-import { VALIDATORS, isValidAddress } from '../src/prepareTx/fieldValidator';
-import { Money, Asset } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { isValidAddress, VALIDATORS } from '../src/prepareTx/fieldValidator';
 
 const dccAsset = new Asset({
   precision: 8,

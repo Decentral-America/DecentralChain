@@ -1,7 +1,7 @@
-import getTxBytes from '../src/prepareTx/getTxBytes';
-import { SIGN_TYPE } from '../src/prepareTx';
-import { Money, Asset } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { SIGN_TYPE } from '../src/prepareTx';
+import getTxBytes from '../src/prepareTx/getTxBytes';
 
 const testAsset = new Asset({
   precision: 8,

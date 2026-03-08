@@ -1,8 +1,8 @@
-import { Adapter } from './Adapter';
+import equals from 'ramda/src/equals';
 import { AdapterType } from '../adapterType';
 import { SIGN_TYPE, type TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
-import equals from 'ramda/src/equals';
+import { Adapter } from './Adapter';
 
 const DEFAULT_TX_VERSIONS = {
   [SIGN_TYPE.AUTH]: [1],
@@ -31,8 +31,8 @@ const DEFAULT_TX_VERSIONS = {
 export class CubensisConnectAdapter extends Adapter {
   public static override type = AdapterType.CubensisConnect;
   public static adapter: CubensisConnectAdapter;
-  private static _onUpdateCb: ((...args: any[]) => any)[] = [];
-  private static _state: any;
+  private static _onUpdateCb: ((...args: unknown[]) => unknown)[] = [];
+  private static _state: unknown;
   private _onDestroyCb: (() => void)[] = [];
   private _needDestroy = false;
   private _address: string;
@@ -42,22 +42,27 @@ export class CubensisConnectAdapter extends Adapter {
 
   private static _api: ICubensisConnect;
 
-  private handleUpdate = (state: any) => {
+  private handleUpdate = (state: ICubensisConnectState) => {
     if (!state.locked && state.account?.address !== this._address) {
       this._needDestroy = true;
       this._isDestroyed = true;
-      this._onDestroyCb.forEach((cb) => cb());
+      this._onDestroyCb.forEach((cb) => {
+        cb();
+      });
       this._onDestroyCb = [];
       CubensisConnectAdapter.offUpdate(this.handleUpdate);
     }
   };
 
-  constructor({ address, publicKey }: any, networkCode?: number | string) {
+  constructor(
+    { address, publicKey }: { address: string; publicKey: string },
+    networkCode?: number | string,
+  ) {
     super(networkCode);
     this._address = address;
     this._pKey = publicKey;
     CubensisConnectAdapter._initExtension();
-    //@ts-ignore
+    //@ts-expect-error
     CubensisConnectAdapter.onUpdate(this.handleUpdate);
     this._isDestroyed = false;
   }
@@ -88,6 +93,47 @@ export class CubensisConnectAdapter extends Adapter {
     );
   }
 
+  public static override async isAvailable(networkCode?: number) {
+    await CubensisConnectAdapter._initExtension();
+
+    if (!CubensisConnectAdapter._api) {
+      throw Object.assign(new Error('Install CubensisConnect'), { code: 0 });
+    }
+
+    if (!(networkCode || Adapter._code)) {
+      throw Object.assign(new Error('Set adapter network code'), { code: 5 });
+    }
+
+    let error: (Error & { code?: number }) | undefined, data: ICubensisConnectState | undefined;
+    try {
+      data = await CubensisConnectAdapter._api.publicState();
+      CubensisConnectAdapter._updateState(data);
+
+      if (data.txVersion) {
+        CubensisConnectAdapter._txVersion = data.txVersion;
+      }
+    } catch {
+      error = Object.assign(new Error('No permissions'), { code: 1 });
+    }
+
+    if (!error && data) {
+      if (!data.account) {
+        error = Object.assign(new Error('No accounts in cubensisconnect'), { code: 2 });
+      } else if (
+        !data.account.address ||
+        !isValidAddress(data.account.address, networkCode || Adapter._code)
+      ) {
+        error = Object.assign(new Error('Selected network incorrect'), { code: 3 });
+      }
+    }
+
+    if (error) {
+      throw error;
+    }
+
+    return true;
+  }
+
   public async isLocked() {
     await CubensisConnectAdapter.isAvailable();
     const data = await CubensisConnectAdapter._api.publicState();
@@ -103,8 +149,8 @@ export class CubensisConnectAdapter extends Adapter {
     return CubensisConnectAdapter._txVersion;
   }
 
-  //@ts-ignore
-  public onDestroy(cb) {
+  //@ts-expect-error
+  public onDestroy(cb: () => void) {
     if (this._needDestroy) {
       return cb();
     }
@@ -136,10 +182,14 @@ export class CubensisConnectAdapter extends Adapter {
     return Promise.reject(Error('Method "getSeed" is not available!'));
   }
 
-  //@ts-ignore
-  public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
+  //@ts-expect-error
+  public async signRequest(
+    _bytes: Uint8Array,
+    _?: unknown,
+    signData?: Record<string, unknown>,
+  ): Promise<string> {
     await this.isAvailable(true);
-    signData = signData || _ || {};
+    signData = (signData || _ || {}) as Record<string, unknown>;
     if (signData?.type === 'customData') {
       return (await CubensisConnectAdapter._api.signCustomData(signData)).signature;
     }
@@ -149,17 +199,17 @@ export class CubensisConnectAdapter extends Adapter {
     );
   }
 
-  //@ts-ignore
+  //@ts-expect-error
   public async signTransaction(
     _bytes: Uint8Array,
     _precisions: Record<string, number>,
-    signData: any,
+    signData: unknown,
   ): Promise<string> {
     await this.isAvailable(true);
     const dataStr = await CubensisConnectAdapter._api.signTransaction(
       CubensisConnectAdapter._serializedData(signData),
     );
-    const { proofs, signature } = JSON.parse(dataStr);
+    const { proofs, signature } = JSON.parse(dataStr) as { proofs?: string[]; signature?: string };
     const result = signature || proofs?.pop();
     if (!result) {
       throw new Error('CubensisConnect returned empty signature and no proofs');
@@ -167,14 +217,14 @@ export class CubensisConnectAdapter extends Adapter {
     return result;
   }
 
-  //@ts-ignore
+  //@ts-expect-error
   public async signOrder(
     _bytes: Uint8Array,
     _precisions: Record<string, number>,
-    signData: any,
+    signData: Record<string, unknown>,
   ): Promise<string> {
     await this.isAvailable(true);
-    let promise;
+    let promise: Promise<string> | undefined;
     switch (signData.type) {
       case SIGN_TYPE.CREATE_ORDER:
         promise = CubensisConnectAdapter._api.signOrder(
@@ -193,7 +243,10 @@ export class CubensisConnectAdapter extends Adapter {
     }
 
     const dataStr = await promise;
-    const { proofs, signature } = JSON.parse(dataStr);
+    const { proofs, signature } = JSON.parse(dataStr as string) as {
+      proofs?: string[];
+      signature?: string;
+    };
     const result = signature || proofs?.pop();
     if (!result) {
       throw new Error('CubensisConnect returned empty signature and no proofs');
@@ -209,47 +262,6 @@ export class CubensisConnectAdapter extends Adapter {
     return Promise.reject(new Error('No private key'));
   }
 
-  public static override async isAvailable(networkCode?: number) {
-    await CubensisConnectAdapter._initExtension();
-
-    if (!this._api) {
-      throw Object.assign(new Error('Install CubensisConnect'), { code: 0 });
-    }
-
-    if (!(networkCode || Adapter._code)) {
-      throw Object.assign(new Error('Set adapter network code'), { code: 5 });
-    }
-
-    let error: (Error & { code?: number }) | undefined, data;
-    try {
-      data = await this._api.publicState();
-      CubensisConnectAdapter._updateState(data);
-
-      if (data.txVersion) {
-        CubensisConnectAdapter._txVersion = data.txVersion;
-      }
-    } catch {
-      error = Object.assign(new Error('No permissions'), { code: 1 });
-    }
-
-    if (!error && data) {
-      if (!data.account) {
-        error = Object.assign(new Error('No accounts in cubensisconnect'), { code: 2 });
-      } else if (
-        !data.account.address ||
-        !isValidAddress(data.account.address, networkCode || Adapter._code)
-      ) {
-        error = Object.assign(new Error('Selected network incorrect'), { code: 3 });
-      }
-    }
-
-    if (error) {
-      throw error;
-    }
-
-    return true;
-  }
-
   public static override async getUserList() {
     await CubensisConnectAdapter.isAvailable();
     return CubensisConnectAdapter._api.publicState().then((data) => {
@@ -258,21 +270,21 @@ export class CubensisConnectAdapter extends Adapter {
     });
   }
 
-  //@ts-ignore
-  public static initOptions(options) {
+  //@ts-expect-error
+  public static initOptions(options: { networkCode: number; extension?: unknown }) {
     Adapter.initOptions(options);
-    this.setApiExtension(options.extension);
-    this._initExtension();
+    CubensisConnectAdapter.setApiExtension(options.extension);
+    CubensisConnectAdapter._initExtension();
     try {
-      this._api.publicState().then(CubensisConnectAdapter._updateState);
+      CubensisConnectAdapter._api.publicState().then(CubensisConnectAdapter._updateState);
     } catch {
       /* ignored */
     }
   }
 
-  //@ts-ignore
-  public static setApiExtension(extension) {
-    let extensionCb;
+  //@ts-expect-error
+  public static setApiExtension(extension: unknown) {
+    let extensionCb: (() => ICubensisConnect) | undefined;
 
     if (typeof extension === 'function') {
       extensionCb = extension;
@@ -282,20 +294,20 @@ export class CubensisConnectAdapter extends Adapter {
 
     CubensisConnectAdapter._getApiCb = extensionCb;
     // Reset the cached API so _initExtension() re-evaluates the new callback
-    CubensisConnectAdapter._api = undefined as any;
+    CubensisConnectAdapter._api = undefined as unknown as ICubensisConnect;
   }
 
-  public static onUpdate(cb: any) {
+  public static onUpdate(cb: (...args: unknown[]) => unknown) {
     CubensisConnectAdapter._onUpdateCb.push(cb);
   }
 
-  public static offUpdate(func: any) {
+  public static offUpdate(func: (...args: unknown[]) => unknown) {
     CubensisConnectAdapter._onUpdateCb = CubensisConnectAdapter._onUpdateCb.filter(
       (f) => f !== func,
     );
   }
 
-  private static _updateState(state: any) {
+  private static _updateState(state: ICubensisConnectState) {
     if (equals(CubensisConnectAdapter._state, state)) {
       return;
     }
@@ -319,9 +331,9 @@ export class CubensisConnectAdapter extends Adapter {
     const dccApi = CubensisConnectAdapter._getApiCb();
     if (dccApi) {
       return dccApi.initialPromise.then((api: ICubensisConnect) => {
-        this._api = api;
-        this._api.on('update', CubensisConnectAdapter._updateState);
-        this._api.publicState().then((state) => {
+        CubensisConnectAdapter._api = api;
+        CubensisConnectAdapter._api.on('update', CubensisConnectAdapter._updateState);
+        CubensisConnectAdapter._api.publicState().then((state) => {
           if (state.txVersion) {
             CubensisConnectAdapter._txVersion = state.txVersion;
           }
@@ -332,7 +344,7 @@ export class CubensisConnectAdapter extends Adapter {
     }
   }
 
-  private static _serializedData(data: any) {
+  private static _serializedData(data: unknown) {
     return JSON.parse(
       JSON.stringify(data, (_key, value) =>
         value instanceof Uint8Array ? Array.from(value) : value,
@@ -344,20 +356,29 @@ export class CubensisConnectAdapter extends Adapter {
 interface ICubensisConnect {
   getSignVersions?: () => Record<SIGN_TYPE, number[]>;
   auth: (data: IAuth) => Promise<IAuthData>;
-  signTransaction: (data: TSignData) => Promise<any>;
-  signOrder: (data: any) => Promise<any>;
-  signCancelOrder: (data: any) => Promise<any>;
-  signRequest: (data: any) => Promise<string>;
-  signCustomData: (data: any) => Promise<{
+  signTransaction: (data: TSignData) => Promise<string>;
+  signOrder: (data: unknown) => Promise<string>;
+  signCancelOrder: (data: unknown) => Promise<string>;
+  signRequest: (data: unknown) => Promise<string>;
+  signCustomData: (data: unknown) => Promise<{
     version: number;
     binary: string;
     publicKey: string;
     hash: string;
     signature: string;
   }>;
-  publicState: () => Promise<any>;
-  on: (name: string, cb: any) => Promise<any>;
+  publicState: () => Promise<ICubensisConnectState>;
+  on: (name: string, cb: (state: ICubensisConnectState) => void) => void;
   initialPromise: Promise<ICubensisConnect>;
+}
+
+interface ICubensisConnectState {
+  locked?: boolean;
+  account?: { address: string; publicKey?: string };
+  txVersion?: typeof import('../prepareTx').SIGN_TYPE extends infer S
+    ? Record<S extends number ? S : never, number[]>
+    : never;
+  [key: string]: unknown;
 }
 
 interface IAuth {

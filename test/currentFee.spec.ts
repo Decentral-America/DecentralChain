@@ -1,8 +1,14 @@
-import { Asset, Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { seedUtils, libs } from '@decentralchain/transactions';
-import { Signable, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
-import { IExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { libs, seedUtils } from '@decentralchain/transactions';
+import { type IExchangeTransactionOrder } from '@decentralchain/ts-types';
+import {
+  currentCreateOrderFactory,
+  SeedAdapter,
+  SIGN_TYPE,
+  Signable,
+  type TSignData,
+} from '../src';
 
 const Seed = seedUtils.Seed;
 

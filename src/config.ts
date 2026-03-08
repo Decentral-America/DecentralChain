@@ -1,7 +1,7 @@
-import { SeedAdapter } from './adapters/SeedAdapter';
+import { CubensisConnectAdapter, CustomAdapter } from './adapters';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
-import { CustomAdapter, CubensisConnectAdapter } from './adapters';
 import { PrivateKeyAdapter } from './adapters/PrivateKeyAdapter';
+import { SeedAdapter } from './adapters/SeedAdapter';
 import { AdapterType } from './adapterType';
 
 export { AdapterType } from './adapterType';

@@ -1,6 +1,6 @@
-import { prepare } from '../src/prepareTx/prepare';
-import { Money, Asset } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { prepare } from '../src/prepareTx/prepare';
 
 const { processors } = prepare;
 
@@ -56,8 +56,8 @@ describe('prepare.processors', () => {
       const pay = Money.fromCoins(100000, dccAsset);
       const result = processors.payments([pay]);
       expect(result.length).toBe(1);
-      expect(result[0]!.amount).toBe('100000');
-      expect(result[0]!.assetId).toBe('');
+      expect(result[0]?.amount).toBe('100000');
+      expect(result[0]?.assetId).toBe('');
     });
 
     it('handles empty/null input', () => {
@@ -69,14 +69,14 @@ describe('prepare.processors', () => {
     it('maps Money keeping BigNumber and null for DCC', () => {
       const pay = Money.fromCoins(55555, dccAsset);
       const result = processors.paymentsToNode([pay]);
-      expect(result[0]!.assetId).toBeNull();
-      expect(result[0]!.amount.toString()).toBe('55555');
+      expect(result[0]?.assetId).toBeNull();
+      expect(result[0]?.amount.toString()).toBe('55555');
     });
 
     it('keeps non-DCC assetId', () => {
       const pay = Money.fromCoins(999, testAsset);
       const result = processors.paymentsToNode([pay]);
-      expect(result[0]!.assetId).toBe(testAsset.id);
+      expect(result[0]?.assetId).toBe(testAsset.id);
     });
   });
 
@@ -149,7 +149,7 @@ describe('prepare.processors', () => {
     it('returns coins when non-zero', () => {
       const money = Money.fromCoins(100000, dccAsset);
       const result = processors.toSponsorshipFee(money);
-      expect(result!.toString()).toBe('100000');
+      expect(result?.toString()).toBe('100000');
     });
   });
 

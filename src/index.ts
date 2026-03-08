@@ -1,15 +1,15 @@
 import { find } from './utils';
 
 export * from './adapters';
+export * from './config';
+export * from './constants';
 export * from './prepareTx';
 export { isValidAddress } from './prepareTx/fieldValidator';
-export * from './config';
 export * from './Signable';
-export * from './constants';
 export * from './utils';
 
 import { type Adapter } from './adapters';
-import { adapterPriorityList, adapterList, type AdapterType } from './config';
+import { type AdapterType, adapterList, adapterPriorityList } from './config';
 
 export function getAvailableList(): Promise<(typeof Adapter)[]> {
   return Promise.all(

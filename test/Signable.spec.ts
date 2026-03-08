@@ -1,8 +1,8 @@
+import { SeedAdapter } from '../src/adapters/SeedAdapter';
+import { ERRORS } from '../src/constants';
+import { SIGN_TYPE } from '../src/prepareTx';
 import { Signable } from '../src/Signable';
 import { SignError } from '../src/SignError';
-import { ERRORS } from '../src/constants';
-import { SeedAdapter } from '../src/adapters/SeedAdapter';
-import { SIGN_TYPE } from '../src/prepareTx';
 
 const testSeed = 'some test seed words without money on mainnet';
 const networkCode = 'W';
