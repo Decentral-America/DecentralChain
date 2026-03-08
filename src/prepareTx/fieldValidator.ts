@@ -75,12 +75,10 @@ const isBase64 = (value: string): boolean => {
   return regExp.test(value);
 };
 
-//@ts-expect-error
 const getBytesFromString = (value: string) => {
   return stringToBytes(value);
 };
 
-//@ts-expect-error
 const numberToString = (num: unknown) => (num && typeof num === 'number' ? num.toString() : num);
 
 const error = ({ value, ...options }: IFieldOptions, message: string) => {
@@ -120,7 +118,7 @@ const attachment = (options: IFieldOptions) => {
       case typeof value !== 'string':
         error(options, ERROR_MSG.WRONG_TYPE);
         break;
-      case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:
+      case getBytesFromString(value as string).length > TRANSFERS.ATTACHMENT:
         error(options, ERROR_MSG.LARGE_FIELD);
         break;
     }
@@ -431,7 +429,6 @@ const transfers = (options: IFieldOptions) => {
     error(options, ERROR_MSG.REQUIRED);
   }
 
-  //@ts-expect-error
   const errors = (value || [])
     .map(
       (
@@ -463,7 +460,6 @@ const transfers = (options: IFieldOptions) => {
         }
 
         return dataErrors;
-        //@ts-expect-error
       },
     )
     .filter((item: unknown[]) => item.length);
@@ -479,7 +475,6 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
   if (!Array.isArray(value)) {
     error(options, ERROR_MSG.WRONG_TYPE);
   }
-  //@ts-expect-error
   const errors = value
     .map(
       ({ key, type, value }: { key?: string; type?: string; value?: unknown }, index: number) => {
@@ -543,7 +538,6 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
           return e;
         }
         return undefined;
-        //@ts-expect-error
       },
     )
     .filter((item: unknown) => item);
@@ -696,7 +690,7 @@ export const VALIDATORS = {
 
 interface IFieldOptions {
   key: string;
-  value: unknown;
+  value: any;
   optional: boolean;
   type: string;
   name: string;
