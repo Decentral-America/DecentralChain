@@ -1,14 +1,14 @@
-import type {
-  InvokeScriptCall,
-  InvokeScriptPayment,
-  InvokeScriptTransaction,
-  InvokeScriptCallArgument,
+import {
+  type InvokeScriptCall,
+  type InvokeScriptCallArgument,
+  type InvokeScriptPayment,
+  type InvokeScriptTransaction,
 } from '@decentralchain/ts-types';
-import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
-import { defaultTo, getAssetId, getCoins, map, pipe, prop, ifElse } from '../utils/index.js';
+import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
+import { defaultTo, getAssetId, getCoins, ifElse, map, pipe, prop } from '../utils/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const isNull = (data: unknown) => data == null;
 const defaultNull = () => null;
@@ -59,7 +59,7 @@ export const invokeScript = factory<
     ifElse(
       isNull,
       defaultNull,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by isNull check
+      // biome-ignore lint/style/noNonNullAssertion: asserted safe
       (call: InvokeScriptCall<TLong> | null | undefined) => processCall(call!),
     ),
   ),
@@ -72,7 +72,7 @@ export const invokeScript = factory<
     ifElse(
       isNull,
       defaultNull,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by isNull check
+      // biome-ignore lint/style/noNonNullAssertion: asserted safe
       (payment: TMoney[] | null | undefined) => map(processPayment)(payment!),
     ),
   ),

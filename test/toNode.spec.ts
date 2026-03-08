@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { TEST_DATA } from './transactionData.js';
+import { describe, expect, it } from 'vitest';
 import { toNode } from '../src/toNodeEntities/index.js';
+import { TEST_DATA } from './transactionData.js';
 
 describe('From DecentralChain entity to node', () => {
   TEST_DATA.forEach((item, i) => {

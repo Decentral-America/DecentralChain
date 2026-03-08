@@ -1,9 +1,9 @@
-import type { TTransaction } from '@decentralchain/ts-types';
-import type { TDCCGuiEntity } from '../src/toNodeEntities/index.js';
-import type { TWithPartialFee } from '../src/types/index.js';
-import { TYPES } from '../src/constants/index.js';
-import { Asset, Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { type TTransaction } from '@decentralchain/ts-types';
+import { TYPES } from '../src/constants/index.js';
+import { type TDCCGuiEntity } from '../src/toNodeEntities/index.js';
+import { type TWithPartialFee } from '../src/types/index.js';
 
 export const DCC_ASSET = new Asset({
   ticker: 'DCC',
