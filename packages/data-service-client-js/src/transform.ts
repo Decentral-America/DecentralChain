@@ -1,13 +1,16 @@
-import type { IAssetJSON, ICandleJSON } from '@decentralchain/data-entities';
-import { Asset, Candle } from '@decentralchain/data-entities';
+import { Asset, Candle, type IAssetJSON, type ICandleJSON } from '@decentralchain/data-entities';
 
 import { ApiTypes } from './types';
 import { id } from './utils';
-const transformer = (input: any): any => {
+
+const transformer = (input: unknown): unknown => {
   if (input === null || input === undefined) {
     return input;
   }
-  const { __type, data, ...rest } = input;
+  if (typeof input !== 'object') {
+    return input;
+  }
+  const { __type, data, ...rest } = input as Record<string, unknown>;
   switch (__type) {
     case ApiTypes.List:
       if (!Array.isArray(data)) {
@@ -15,7 +18,7 @@ const transformer = (input: any): any => {
       }
       return data.map(transformer);
     case ApiTypes.Asset:
-      return transformAsset(data);
+      return transformAsset(data as IAssetJSON);
     case ApiTypes.Alias:
       return data;
     case ApiTypes.Pair:
@@ -23,7 +26,7 @@ const transformer = (input: any): any => {
     case ApiTypes.Transaction:
       return data;
     case ApiTypes.Candle:
-      return transformCandle(data);
+      return transformCandle(data as ICandleJSON);
     default:
       return { __type, data, ...rest };
   }
