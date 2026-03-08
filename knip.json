@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "project": ["src/**/*.ts"],
-  "ignoreDependencies": ["@arethetypeswrong/cli", "husky", "prettier", "publint", "size-limit"],
-  "ignoreBinaries": ["tsup", "tsc", "prettier", "publint", "attw", "size-limit", "husky"]
+  "ignoreDependencies": ["@arethetypeswrong/cli", "publint", "size-limit"],
+  "ignoreBinaries": ["tsup", "tsc", "publint", "attw", "size-limit"]
 }
