@@ -1,8 +1,8 @@
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-const ALPHABET_MAP = ALPHABET.split('').reduce((map: any, c, i) => {
-  map[c] = i;
-  return map;
-}, {});
+const ALPHABET_MAP: Record<string, number> = {};
+for (let i = 0; i < ALPHABET.length; i++) {
+  ALPHABET_MAP[ALPHABET[i] as string] = i;
+}
 
 export default {
   encode(buffer: Uint8Array): string {
@@ -12,16 +12,16 @@ export default {
 
     for (let i = 0; i < buffer.length; i++) {
       for (let j = 0; j < digits.length; j++) {
-        digits[j]! <<= 8;
+        (digits[j] as number) <<= 8;
       }
 
-      digits[0]! += buffer[i]!;
+      (digits[0] as number) += buffer[i] as number;
       let carry = 0;
 
       for (let k = 0; k < digits.length; k++) {
-        digits[k]! += carry;
-        carry = (digits[k]! / 58) | 0;
-        digits[k]! %= 58;
+        (digits[k] as number) += carry;
+        carry = ((digits[k] as number) / 58) | 0;
+        (digits[k] as number) %= 58;
       }
 
       while (carry) {
@@ -36,9 +36,7 @@ export default {
 
     return digits
       .reverse()
-      .map(function (digit) {
-        return ALPHABET[digit];
-      })
+      .map((digit) => ALPHABET[digit])
       .join('');
   },
 
@@ -48,22 +46,22 @@ export default {
     const bytes = [0];
 
     for (let i = 0; i < string.length; i++) {
-      const c = string[i]!;
+      const c = string[i] as string;
       if (!(c in ALPHABET_MAP)) {
         throw new Error(`There is no character "${c}" in the Base58 sequence!`);
       }
 
       for (let j = 0; j < bytes.length; j++) {
-        bytes[j]! *= 58;
+        (bytes[j] as number) *= 58;
       }
 
-      bytes[0]! += ALPHABET_MAP[c] as number;
+      (bytes[0] as number) += ALPHABET_MAP[c] as number;
       let carry = 0;
 
       for (let j = 0; j < bytes.length; j++) {
-        bytes[j]! += carry;
-        carry = bytes[j]! >> 8;
-        bytes[j]! &= 0xff;
+        (bytes[j] as number) += carry;
+        carry = (bytes[j] as number) >> 8;
+        (bytes[j] as number) &= 0xff;
       }
 
       while (carry) {

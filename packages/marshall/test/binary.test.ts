@@ -1,9 +1,9 @@
-import { binary } from '../src';
-import { exampleBytesStr, exampleTxs, orderV0, orderV2 } from './exampleTxs';
-import Long from 'long';
 import BigNumber from 'bignumber.js';
+import Long from 'long';
+import { binary } from '../src';
 import { parserFromSchema } from '../src/parse';
 import { orderSchemaV1 } from '../src/schemas';
+import { exampleBytesStr, exampleTxs, orderV0, orderV2 } from './exampleTxs';
 
 describe('Tx serialize/parse', () => {
   Object.entries(exampleTxs).forEach(([type, tx]) => {

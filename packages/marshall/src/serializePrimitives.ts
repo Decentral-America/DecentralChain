@@ -1,7 +1,7 @@
-import base58 from './libs/base58';
 import * as Base64 from 'base64-js';
-import { concat } from './libs/utils';
 import Long from 'long';
+import base58 from './libs/base58';
+import { concat } from './libs/utils';
 
 const textEncoder = new TextEncoder();
 const stringToUint8Array = (str: string) => textEncoder.encode(str);
@@ -55,7 +55,7 @@ export const OPTION =
   (value: R) =>
     value == null || (typeof value === 'string' && value.length === 0)
       ? zero
-      : concat(one, s(value as any));
+      : concat(one, s(value as T));
 
 export const LEN =
   (lenSerializer: TSerializer<number>) =>
@@ -85,7 +85,6 @@ export const LONG: TSerializer<number | string> = (value: number | string) => {
     }
     l = Long.fromNumber(value);
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion -- value may be a Long object at runtime
     l = Long.fromString(String(value));
   }
   return Uint8Array.from(l.toBytesBE());
