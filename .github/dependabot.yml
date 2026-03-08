@@ -9,13 +9,9 @@ updates:
       typescript:
         patterns:
           - typescript
-          - typescript-eslint
-          - '@typescript-eslint/*'
-      eslint:
+      biome:
         patterns:
-          - eslint
-          - '@eslint/*'
-          - eslint-config-prettier
+          - '@biomejs/*'
       vitest:
         patterns:
           - vitest
