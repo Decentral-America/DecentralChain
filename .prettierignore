@@ -1,8 +1,0 @@
-dist
-coverage
-node_modules
-*.mjs
-*.d.ts
-*.map
-LICENSE
-CHANGELOG.md
