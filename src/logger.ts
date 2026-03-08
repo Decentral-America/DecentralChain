@@ -54,8 +54,8 @@ export function makeConsole(options: LoggerOptions): IConsole {
 
   // verbose — log everything
   return {
-    log: (...args: unknown[]) => console.log(tag, ...args), // eslint-disable-line no-console
-    info: (...args: unknown[]) => console.log(tag, ...args), // eslint-disable-line no-console
+    log: (..._args: unknown[]) => {}, // biome-ignore lint/suspicious/noConsole: suppressed
+    info: (...args: unknown[]) => console.log(tag, ...args),
     warn: (...args: unknown[]) => console.warn(tag, ...args),
     error: (...args: unknown[]) => console.error(tag, ...args),
   };

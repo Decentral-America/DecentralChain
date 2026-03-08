@@ -1,28 +1,28 @@
-import {
-  noop,
-  isNumber,
-  isBoolean,
-  validatePipe,
-  isRequired,
-  orEq,
-  isArray,
-  isString,
-  validateBySchema,
-  isAttachment,
-  isPublicKey,
-  isValidAssetName,
-  isValidAssetDescription,
-  isBase64,
-  isRecipient,
-  isAssetId,
-  isValidData,
-  orderValidator,
-  isValidAliasName,
-  isPositiveAmount,
-  isNonNegativeAmount,
-} from './validators.js';
 import { TRANSACTION_TYPE, type TransactionType } from '@decentralchain/ts-types';
-import type { SignerOptions } from './types/index.js';
+import { type SignerOptions } from './types/index.js';
+import {
+  isArray,
+  isAssetId,
+  isAttachment,
+  isBase64,
+  isBoolean,
+  isNonNegativeAmount,
+  isNumber,
+  isPositiveAmount,
+  isPublicKey,
+  isRecipient,
+  isRequired,
+  isString,
+  isValidAliasName,
+  isValidAssetDescription,
+  isValidAssetName,
+  isValidData,
+  noop,
+  orderValidator,
+  orEq,
+  validateBySchema,
+  validatePipe,
+} from './validators.js';
 
 const shouldValidate = (value: unknown): boolean => value !== undefined;
 

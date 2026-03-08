@@ -1,18 +1,18 @@
-import { EventEmitter } from 'typed-ts-events';
-import { libs, signTx, order } from '@decentralchain/transactions';
-import { NETWORK_BYTE } from './test-env';
-import type {
-  AuthEvents,
-  ConnectOptions,
-  Handler,
-  TOrderArgs,
-  Provider,
-  TSignedOrder,
-  SignerTx,
-  TypedData,
-  UserData,
-} from '../src/index';
+import { libs, order, signTx } from '@decentralchain/transactions';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { EventEmitter } from 'typed-ts-events';
+import {
+  type AuthEvents,
+  type ConnectOptions,
+  type Handler,
+  type Provider,
+  type SignerTx,
+  type TOrderArgs,
+  type TSignedOrder,
+  type TypedData,
+  type UserData,
+} from '../src/index';
+import { NETWORK_BYTE } from './test-env';
 
 export class TestProvider implements Provider {
   private options: ConnectOptions = {

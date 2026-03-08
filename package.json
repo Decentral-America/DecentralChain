@@ -32,8 +32,13 @@
     "url": "https://github.com/Decentral-America/signer/issues"
   },
   "homepage": "https://github.com/Decentral-America/signer#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
   "license": "MIT",
   "author": "DecentralChain",
+  "packageManager": "npm@11.9.0",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -52,46 +57,50 @@
   ],
   "scripts": {
     "build": "tsup",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:publint": "publint",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:size": "size-limit",
     "prepublishOnly": "npm run build",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --write"
-    ]
+    "prepack": "npm run build",
+    "prepare": "lefthook install",
+    "postversion": "npm publish",
+    "postpublish": "git push",
+    "lint:fix": "biome check --write .",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
   },
   "dependencies": {
     "@decentralchain/node-api-js": "2.0.0",
     "@decentralchain/ts-lib-crypto": "2.0.0",
     "@decentralchain/ts-types": "2.0.0"
   },
+  "size-limit": [
+    {
+      "path": "./dist/index.js",
+      "limit": "15 kB"
+    }
+  ],
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
     "@decentralchain/transactions": "5.0.0",
-    "@eslint/js": "^10.0.1",
+    "@evilmartians/lefthook": "^1.11.0",
+    "@size-limit/preset-small-lib": "12.0.0",
     "@types/node": "^25.3.3",
     "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "^3.5.3",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
     "tsup": "^8.4.0",
     "typed-ts-events": "^3.0.1",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0",
     "vitest": "^4.0.18"
   }
 }

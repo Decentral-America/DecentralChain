@@ -1,8 +1,8 @@
-import type { Signer } from './Signer.js';
-import type { SignerOptions } from './types/index.js';
-import { SignerError, ERRORS } from './SignerError.js';
-import type { IConsole } from './logger.js';
-import type { ErrorHandler } from './helpers.js';
+import { type ErrorHandler } from './helpers.js';
+import { type IConsole } from './logger.js';
+import { type Signer } from './Signer.js';
+import { ERRORS, SignerError } from './SignerError.js';
+import { type SignerOptions } from './types/index.js';
 
 type TSigner = { [Key in keyof Signer]: Signer[Key] } & {
   _logger: IConsole;
@@ -69,7 +69,7 @@ export const checkAuth = (
   const origin = descriptor.value;
 
   descriptor.value = function (this: TSigner, ...args: unknown[]): unknown {
-    if (this.currentProvider!.user == null) {
+    if (this.currentProvider?.user == null) {
       const handler = getErrorHandler(this);
       const error = handler(ERRORS.NOT_AUTHORIZED, [_propertyKey]);
       throw error;

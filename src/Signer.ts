@@ -1,58 +1,57 @@
-import { DEFAULT_OPTIONS } from './constants.js';
-import type {
-  AliasArgs,
-  AuthEvents,
-  Balance,
-  BroadcastedTx,
-  BroadcastOptions,
-  BurnArgs,
-  CancelLeaseArgs,
-  DataArgs,
-  ExchangeArgs,
-  Handler,
-  InvokeArgs,
-  IssueArgs,
-  LeaseArgs,
-  MassTransferArgs,
-  TOrderArgs,
-  Provider,
-  ReissueArgs,
-  SetAssetScriptArgs,
-  SetScriptArgs,
-  TSignedOrder,
-  SignedTx,
-  SignerAliasTx,
-  SignerBurnTx,
-  SignerCancelLeaseTx,
-  SignerDataTx,
-  SignerExchangeTx,
-  SignerInvokeTx,
-  SignerIssueTx,
-  SignerLeaseTx,
-  SignerMassTransferTx,
-  SignerOptions,
-  SignerReissueTx,
-  SignerSetAssetScriptTx,
-  SignerSetScriptTx,
-  SignerSponsorshipTx,
-  SignerTransferTx,
-  SignerTx,
-  SponsorshipArgs,
-  TransferArgs,
-  TypedData,
-  UserData,
-} from './types/index.js';
-import type { IConsole } from './logger.js';
-import { makeConsole, makeOptions } from './logger.js';
+import { broadcastTx, getNetworkByte, waitForTx } from '@decentralchain/node-api-js';
 import { fetchBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
 import { fetchAssetsBalance } from '@decentralchain/node-api-js/api-node/assets';
-import { getNetworkByte, broadcastTx, waitForTx } from '@decentralchain/node-api-js';
-import type { ChainApi1stCall } from './types/api.js';
-import { type Transaction, TRANSACTION_TYPE, type TransactionType } from '@decentralchain/ts-types';
-import { argsValidators, validateProviderInterface, validateSignerOptions } from './validation.js';
-import { ERRORS } from './SignerError.js';
-import { type ErrorHandler, errorHandlerFactory } from './helpers.js';
+import { TRANSACTION_TYPE, type Transaction, type TransactionType } from '@decentralchain/ts-types';
+import { DEFAULT_OPTIONS } from './constants.js';
 import { catchProviderError, checkAuth, ensureProvider } from './decorators.js';
+import { type ErrorHandler, errorHandlerFactory } from './helpers.js';
+import { type IConsole, makeConsole, makeOptions } from './logger.js';
+import { ERRORS } from './SignerError.js';
+import { type ChainApi1stCall } from './types/api.js';
+import {
+  type AliasArgs,
+  type AuthEvents,
+  type Balance,
+  type BroadcastedTx,
+  type BroadcastOptions,
+  type BurnArgs,
+  type CancelLeaseArgs,
+  type DataArgs,
+  type ExchangeArgs,
+  type Handler,
+  type InvokeArgs,
+  type IssueArgs,
+  type LeaseArgs,
+  type MassTransferArgs,
+  type Provider,
+  type ReissueArgs,
+  type SetAssetScriptArgs,
+  type SetScriptArgs,
+  type SignedTx,
+  type SignerAliasTx,
+  type SignerBurnTx,
+  type SignerCancelLeaseTx,
+  type SignerDataTx,
+  type SignerExchangeTx,
+  type SignerInvokeTx,
+  type SignerIssueTx,
+  type SignerLeaseTx,
+  type SignerMassTransferTx,
+  type SignerOptions,
+  type SignerReissueTx,
+  type SignerSetAssetScriptTx,
+  type SignerSetScriptTx,
+  type SignerSponsorshipTx,
+  type SignerTransferTx,
+  type SignerTx,
+  type SponsorshipArgs,
+  type TOrderArgs,
+  type TransferArgs,
+  type TSignedOrder,
+  type TypedData,
+  type UserData,
+} from './types/index.js';
+import { argsValidators, validateProviderInterface, validateSignerOptions } from './validation.js';
 
 /**
  * Convert a raw integer-string balance (e.g. "100000000") into a human-readable
@@ -133,7 +132,7 @@ export class Signer {
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
   ): Signer {
-    this.currentProvider!.on(event, handler);
+    this.currentProvider?.on(event, handler);
     this._logger.info(`Handler for "${event}" has been added.`);
     return this;
   }
@@ -143,7 +142,7 @@ export class Signer {
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
   ): Signer {
-    this.currentProvider!.once(event, handler);
+    this.currentProvider?.once(event, handler);
     this._logger.info(`One-Time handler for "${event}" has been added.`);
     return this;
   }
@@ -153,7 +152,7 @@ export class Signer {
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
   ): Signer {
-    this.currentProvider!.off(event, handler);
+    this.currentProvider?.off(event, handler);
     this._logger.info(`Handler for "${event}" has been removed.`);
     return this;
   }
@@ -174,8 +173,7 @@ export class Signer {
     toBroadcast: SignedTx<T> | Array<SignedTx<T>>,
     options?: BroadcastOptions,
   ): Promise<BroadcastedTx<SignedTx<T>> | BroadcastedTx<Array<SignedTx<T>>>> {
-     
-    return broadcastTx(this._options.NODE_URL, toBroadcast as any, options) as any;
+    return broadcastTx(this._options.NODE_URL, toBroadcast as unknown, options) as unknown;
   }
 
   /** Retrieve the network byte for the configured node. */
@@ -201,7 +199,9 @@ export class Signer {
   public async setProvider(provider: Provider): Promise<void> {
     // Reentrancy guard – prevent concurrent setProvider calls from corrupting state
     if (this._settingProvider) {
-      throw new Error('setProvider is already in progress. Wait for the previous call to complete.');
+      throw new Error(
+        'setProvider is already in progress. Wait for the previous call to complete.',
+      );
     }
     this._settingProvider = true;
 
@@ -259,7 +259,7 @@ export class Signer {
   @checkAuth
   public getBalance(): Promise<Array<Balance>> {
     return Promise.all([
-      fetchBalanceDetails(this._options.NODE_URL, this._userData!.address).then((data) => ({
+      fetchBalanceDetails(this._options.NODE_URL, this._userData?.address).then((data) => ({
         assetId: 'DCC',
         assetName: 'DCC',
         decimals: 8,
@@ -269,7 +269,7 @@ export class Signer {
         sponsorship: null,
         isSmart: false,
       })),
-      fetchAssetsBalance(this._options.NODE_URL, this._userData!.address).then((data) =>
+      fetchAssetsBalance(this._options.NODE_URL, this._userData?.address).then((data) =>
         data.balances.map((item) => {
           const issueTx = item.issueTransaction;
           return {
@@ -277,12 +277,12 @@ export class Signer {
             assetName: issueTx?.name ?? '',
             decimals: issueTx?.decimals ?? 0,
             amount: String(item.balance),
-            isMyAsset: issueTx?.sender === this._userData!.address,
+            isMyAsset: issueTx?.sender === this._userData?.address,
             tokens: safeTokens(String(item.balance), issueTx?.decimals ?? 0),
             isSmart: !!issueTx?.script,
             sponsorship:
               item.sponsorBalance != null &&
-              Number(item.sponsorBalance) > Math.pow(10, 8) &&
+              Number(item.sponsorBalance) > 10 ** 8 &&
               Number(item.minSponsoredAssetFee ?? 0) < Number(item.balance)
                 ? item.minSponsoredAssetFee
                 : null,
@@ -308,7 +308,8 @@ export class Signer {
    */
   @ensureProvider
   public login(): Promise<UserData> {
-    return this.currentProvider!.login()
+    return this.currentProvider
+      ?.login()
       .then((data) => {
         this._logger.info('Logged in.');
         this._userData = data;
@@ -330,7 +331,7 @@ export class Signer {
     await this._connectPromise;
 
     try {
-      await this.currentProvider!.logout();
+      await this.currentProvider?.logout();
       this._userData = undefined;
       this._logger.info('Logged out.');
     } catch (e: unknown) {
@@ -457,8 +458,7 @@ export class Signer {
     tx: T | T[],
     confirmations: number,
   ): Promise<T | T[]> {
-     
-    return waitForTx(this._options.NODE_URL, tx as any, { confirmations });
+    return waitForTx(this._options.NODE_URL, tx as unknown, { confirmations });
   }
 
   // ---------------------------------------------------------------------------
@@ -585,7 +585,6 @@ export class Signer {
     prevCallTxList: SignerTx[],
     signerTx: T,
   ): ChainApi1stCall<T> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this;
     const txs = prevCallTxList.length ? [...prevCallTxList, signerTx] : [signerTx];
     const chainArgs = Array.isArray(txs) ? txs : [txs];
@@ -606,14 +605,16 @@ export class Signer {
         setScript: this._setScript(chainArgs),
         setAssetScript: this._setAssetScript(chainArgs),
         invoke: this._invoke(chainArgs),
-      } as any),
-      sign: () => this._sign<T>(txs as any),
+      } as unknown),
+      sign: () => this._sign<T>(txs as unknown as T[]),
       broadcast(options?: BroadcastOptions) {
         if (_this.currentProvider?.isSignAndBroadcastByProvider === true) {
           return _this.currentProvider.sign(txs);
         }
-         
-        return this.sign().then((signed: any) => _this.broadcast(signed, options)) as any;
+
+        return this.sign().then((signed: SignedTx<T>) =>
+          _this.broadcast(signed, options),
+        ) as unknown;
       },
     };
   }
@@ -656,10 +657,7 @@ export class Signer {
           ({ method: scope, invalidFields }) =>
             `Validation error for ${scope} transaction. Invalid arguments: ${invalidFields?.join(', ')}`,
         ),
-        ...unknownTxs.map(
-          (tx) =>
-            `Validation error: unknown transaction type ${String(tx.type)}`,
-        ),
+        ...unknownTxs.map((tx) => `Validation error: unknown transaction type ${String(tx.type)}`),
       ],
     };
   }
@@ -683,8 +681,7 @@ export class Signer {
 
     if (validation.isValid) {
       return this._connectPromise.then(
-         
-        (provider) => provider.sign(toSign as any) as any,
+        (provider) => provider.sign(toSign as unknown as SignerTx[]) as unknown,
       );
     }
 

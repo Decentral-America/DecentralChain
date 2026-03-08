@@ -1,6 +1,6 @@
-import { ACCOUNTS, MOCK_URL } from '../test-env';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
+import { ACCOUNTS, MOCK_URL } from '../test-env';
 
 const signer = new Signer({ NODE_URL: MOCK_URL });
 const provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
