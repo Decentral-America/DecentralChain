@@ -1,11 +1,11 @@
-import type { TFunction, ILibOptions, ILibRequest, TResponse } from '../types';
+import { type ILibOptions, type ILibRequest, type TFunction, type TResponse } from '../types';
 import { pipeP } from '../utils';
 
 interface TCreateMethodParams {
-  validate: TFunction<any>;
+  validate: TFunction<unknown>;
   generateRequest: TFunction<TFunction<ILibRequest>>;
   libOptions: ILibOptions;
-  addPaginationToArgs?: TFunction<any>;
+  addPaginationToArgs?: TFunction<unknown>;
 }
 
 const createMethod = <T>({
@@ -14,7 +14,7 @@ const createMethod = <T>({
   libOptions,
   addPaginationToArgs,
 }: TCreateMethodParams): TFunction<TResponse<T>> => {
-  function method(...args: any[]) {
+  function method(...args: unknown[]) {
     return pipeP(
       validate,
       generateRequest(libOptions.rootUrl),
@@ -43,26 +43,26 @@ const createMethod = <T>({
       },
     )(...args);
   }
-  return method;
+  return method as TFunction<TResponse<T>>;
 };
 
 interface PaginationContext {
-  method: TFunction<any>;
-  args: any[];
-  addPaginationToArgs?: TFunction<any> | undefined;
-  rawData: any;
+  method: TFunction<unknown>;
+  args: unknown[];
+  addPaginationToArgs?: TFunction<unknown> | undefined;
+  rawData: Record<string, unknown>;
 }
 
 const addPagination =
   ({ method, args, addPaginationToArgs, rawData }: PaginationContext) =>
-  (data: any) => {
-    if (!data || !addPaginationToArgs || !rawData?.lastCursor) {
+  (data: unknown) => {
+    if (!data || !addPaginationToArgs || !rawData?.['lastCursor']) {
       return { data };
     }
     return {
       data,
       fetchMore: (count: number) =>
-        method(addPaginationToArgs({ args, cursor: rawData.lastCursor, count })),
+        method(addPaginationToArgs({ args, cursor: rawData['lastCursor'], count })),
     };
   };
 

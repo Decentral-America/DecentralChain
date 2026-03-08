@@ -1,10 +1,10 @@
 import { createRequest } from '../createRequest';
-import type {
-  ILibRequest,
-  TCreateGetFn,
-  ITransaction,
-  IExchangeTxFilters,
-  IGetExchangeTxs,
+import {
+  type IExchangeTxFilters,
+  type IGetExchangeTxs,
+  type ILibRequest,
+  type ITransaction,
+  type TCreateGetFn,
 } from '../types';
 import { hasDangerousKeys, isValidLimit, isValidSort } from '../utils';
 
@@ -21,7 +21,7 @@ const generateRequestOne =
     createRequest(`${rootUrl}/transactions/exchange/${encodeURIComponent(id)}`);
 
 //Many
-const isFilters = (filters: any): filters is IExchangeTxFilters => {
+const isFilters = (filters: unknown): filters is IExchangeTxFilters => {
   const possibleFilters = [
     'timeStart',
     'timeEnd',
@@ -39,11 +39,11 @@ const isFilters = (filters: any): filters is IExchangeTxFilters => {
     !Array.isArray(filters) &&
     !hasDangerousKeys(filters) &&
     Object.keys(filters).every((k) => possibleFilters.includes(k)) &&
-    isValidLimit(filters.limit) &&
-    isValidSort(filters.sort)
+    isValidLimit((filters as Record<string, unknown>)['limit']) &&
+    isValidSort((filters as Record<string, unknown>)['sort'])
   );
 };
-const validateFilters = (filters: any) =>
+const validateFilters = (filters: unknown) =>
   isFilters(filters)
     ? Promise.resolve(filters)
     : Promise.reject(new Error('ArgumentsError: invalid filters object'));
