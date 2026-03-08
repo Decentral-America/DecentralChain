@@ -1,6 +1,6 @@
+import { expect, test } from 'vitest';
 import { crypto, MAIN_NET_CHAIN_ID } from '../src';
 import { decryptSeed, encryptSeed } from '../src/crypto/seed-ecryption';
-import { expect, test } from 'vitest';
 
 const {
   seedWithNonce,

@@ -1,4 +1,4 @@
-import { signBytes, privateKey } from '@decentralchain/ts-lib-crypto';
+import { privateKey, signBytes } from '@decentralchain/ts-lib-crypto';
 
 const bytes = 'Fk1sjwdPSwZ4bPwvpCGPH6';
 const seed =

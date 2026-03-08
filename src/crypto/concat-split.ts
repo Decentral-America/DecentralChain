@@ -1,5 +1,5 @@
-import { type TBinaryIn, type TBytes } from './interface';
 import { _fromIn } from '../conversions/param';
+import { type TBinaryIn, type TBytes } from './interface';
 
 /** Concatenate multiple binary inputs into a single `Uint8Array`. */
 export const concat = (...arrays: TBinaryIn[]): TBytes => {

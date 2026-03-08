@@ -1,5 +1,5 @@
-import { bytesToString, stringToBytes } from '../src/conversions/string-bytes';
 import { describe, expect, test } from 'vitest';
+import { bytesToString, stringToBytes } from '../src/conversions/string-bytes';
 
 describe('stringToBytes / bytesToString', () => {
   test('correctly encode and decode utf-8 strings', () => {

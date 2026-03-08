@@ -1,9 +1,9 @@
-import { type TBinaryIn, type TBytes } from './interface';
-import { _fromIn } from '../conversions/param';
-import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
 import { blake2b as nobleBlake2b } from '@noble/hashes/blake2.js';
-import { keccak_256 } from '@noble/hashes/sha3.js';
 import { hmac } from '@noble/hashes/hmac.js';
+import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { _fromIn } from '../conversions/param';
+import { type TBinaryIn, type TBytes } from './interface';
 
 /** Hash chain: keccak(blake2b(input)). Used internally for address derivation. */
 export const _hashChain = (input: TBinaryIn): TBytes => keccak(blake2b(_fromIn(input)));

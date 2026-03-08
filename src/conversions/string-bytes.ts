@@ -1,6 +1,6 @@
-import { type TBytes, type TBinaryIn } from '../crypto/interface';
+import { type TBinaryIn, type TBytes } from '../crypto/interface';
+import { strToUtf8Array, utf8ArrayToStr } from '../libs/Utf8';
 import { _fromIn } from './param';
-import { utf8ArrayToStr, strToUtf8Array } from '../libs/Utf8';
 
 /** Convert a string to bytes using the specified encoding (default: UTF-8). */
 export const stringToBytes = (str: string, encoding: 'utf8' | 'raw' = 'utf8'): TBytes => {
