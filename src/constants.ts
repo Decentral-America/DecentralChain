@@ -40,7 +40,7 @@ export enum DATA_PROVIDER_KEYS {
 export const DATA_PROVIDER_DESCRIPTION_PATTERN = 'data_provider_description_<LANG>';
 
 /** Pattern templates for oracle asset field keys. */
-export const enum ORACLE_ASSET_FIELD_PATTERN {
+export enum ORACLE_ASSET_FIELD_PATTERN {
   VERSION = 'version_<ASSET_ID>',
   STATUS = 'status_<ASSET_ID>',
   LOGO = 'logo_<ASSET_ID>',

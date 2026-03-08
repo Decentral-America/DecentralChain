@@ -1,4 +1,3 @@
-import type { IProviderAsset, IResponseError, TDataTxField, TResponse } from '../interface.js';
 import {
   DATA_ENTRY_TYPES,
   DATA_PROVIDER_DESCRIPTION_PATTERN,
@@ -7,6 +6,12 @@ import {
   PATTERNS,
   RESPONSE_STATUSES,
 } from '../constants.js';
+import {
+  type IProviderAsset,
+  type IResponseError,
+  type TDataTxField,
+  type TResponse,
+} from '../interface.js';
 
 /** Build a schema parser from a series of field processors. */
 export function schema<T extends object>(
@@ -42,7 +47,7 @@ export function processField<T>(
     return (store, hash) => {
       try {
         const value = getFieldValue(hash, from, type);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- runtime-validated field assignment
+        // biome-ignore lint/suspicious/noExplicitAny: runtime-validated field assignment
         (store as any)[to] = value;
         return store;
       } catch (e: unknown) {
@@ -97,7 +102,7 @@ export function processDescription(id?: string, required?: boolean) {
       });
 
       if (Object.keys(description).length > 0) {
-        store['description'] = description;
+        store.description = description;
       }
     } catch (e: unknown) {
       if (required ?? true) {

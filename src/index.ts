@@ -1,13 +1,13 @@
-import type {
-  IProviderData,
-  TDataOrFields,
-  TDataTxField,
-  TProviderAsset,
-  TResponse,
+import {
+  type IProviderData,
+  type TDataOrFields,
+  type TDataTxField,
+  type TProviderAsset,
+  type TResponse,
 } from './interface.js';
 import { parseAssetData, parseOracleData } from './parse/index.js';
-import { getFieldsDiff, isProvider, toHash } from './utils/index.js';
 import { DATA_TO_FIELDS } from './schemas/index.js';
+import { getFieldsDiff, isProvider, toHash } from './utils/index.js';
 
 /** Parse oracle provider data from an array of data transaction fields. */
 export function getProviderData(dataTxFields: TDataTxField[]): TResponse<IProviderData> {
@@ -58,33 +58,33 @@ function toFields(some: TDataOrFields): TDataTxField[] {
   return Array.isArray(some) ? some : getFields(some);
 }
 
-export type {
-  IProviderData,
-  IProviderAsset,
-  ISuccessResponse,
-  IErrorResponse,
-  TResponse,
-  IResponseError,
-  IBaseDataTx,
-  IStringDataTXField,
-  IIntegerDataTXField,
-  IBooleanDataTXField,
-  IBinaryDataTXField,
-  TDataTxField,
-  TSuspicious,
-  TScamAsset,
-  TProviderAsset,
-  TDataOrFields,
-} from './interface.js';
 export {
-  STATUS_LIST,
-  DATA_PROVIDER_VERSIONS,
-  RESPONSE_STATUSES,
   DATA_ENTRY_TYPES,
-  DATA_PROVIDER_KEYS,
   DATA_PROVIDER_DESCRIPTION_PATTERN,
+  DATA_PROVIDER_KEYS,
+  DATA_PROVIDER_VERSIONS,
+  isValidAssetId,
+  isValidStatus,
   ORACLE_ASSET_FIELD_PATTERN,
   PATTERNS,
-  isValidStatus,
-  isValidAssetId,
+  RESPONSE_STATUSES,
+  STATUS_LIST,
 } from './constants.js';
+export type {
+  IBaseDataTx,
+  IBinaryDataTXField,
+  IBooleanDataTXField,
+  IErrorResponse,
+  IIntegerDataTXField,
+  IProviderAsset,
+  IProviderData,
+  IResponseError,
+  IStringDataTXField,
+  ISuccessResponse,
+  TDataOrFields,
+  TDataTxField,
+  TProviderAsset,
+  TResponse,
+  TScamAsset,
+  TSuspicious,
+} from './interface.js';
