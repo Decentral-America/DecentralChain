@@ -1,8 +1,8 @@
+import { broadcast, libs, transfer, waitForTx } from '@decentralchain/transactions';
+import { type Transaction, type WithId } from '@decentralchain/ts-types';
+import { type TLong } from '../../../src/interface';
 import create from '../../../src/tools/adresses/watch';
 import { CHAIN_ID, NODE_URL, STATE } from '../../_state';
-import { broadcast, libs, transfer, waitForTx } from '@decentralchain/transactions';
-import { Transaction, WithId } from '@decentralchain/ts-types';
-import { TLong } from '../../../src/interface';
 
 let watcher: ReturnType<typeof create> extends Promise<infer T> ? T : never = null as any;
 let address: string = '';

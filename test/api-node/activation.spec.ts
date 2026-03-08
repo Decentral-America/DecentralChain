@@ -1,7 +1,7 @@
-import { NODE_URL } from '../_state';
 import { create } from '../../src';
-import { IFeatures } from '../../src/api-node/activation';
-import { TLong } from '../../src/interface';
+import { type IFeatures } from '../../src/api-node/activation';
+import { type TLong } from '../../src/interface';
+import { NODE_URL } from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
