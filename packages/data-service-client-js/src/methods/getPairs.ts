@@ -1,15 +1,14 @@
 import { AssetPair } from '@decentralchain/data-entities';
 
 import { createRequest } from '../createRequest';
-import type {
-  TCreateGetFn,
-  ILibOptions,
-  ILibRequest,
-  TGetPairs,
-  TPairsRequest,
-  TPairJSON,
+import {
+  type ILibOptions,
+  type ILibRequest,
+  type TCreateGetFn,
+  type TGetPairs,
+  type TPairJSON,
+  type TPairsRequest,
 } from '../types';
-import { isNotString } from '../utils';
 
 import { createMethod } from './createMethod';
 
@@ -24,7 +23,7 @@ const isAssetPair = (pair: unknown) => {
   }
 };
 
-const isValidPairsFilters = (request: any): request is TPairsRequest => {
+const isValidPairsFilters = (request: unknown): request is TPairsRequest => {
   return (
     Array.isArray(request) &&
     request.length === 2 &&
@@ -34,9 +33,9 @@ const isValidPairsFilters = (request: any): request is TPairsRequest => {
 };
 
 const validateRequest =
-  (matcher: any) =>
-  (pairs: any): Promise<TPairsRequest> => {
-    if (isNotString(matcher) || matcher.trim().length === 0) {
+  (matcher: unknown) =>
+  (pairs: unknown): Promise<TPairsRequest> => {
+    if (typeof matcher !== 'string' || matcher.trim().length === 0) {
       return Promise.reject(new Error('ArgumentsError: matcher must be a non-empty string'));
     }
     const request = [matcher, pairs];

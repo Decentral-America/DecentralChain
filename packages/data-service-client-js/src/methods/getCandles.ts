@@ -1,13 +1,13 @@
-import type { Candle } from '@decentralchain/data-entities';
+import { type Candle } from '@decentralchain/data-entities';
 
 import { createRequest } from '../createRequest';
-import type {
-  ILibOptions,
-  ILibRequest,
-  TCreateGetFn,
-  TCandlesParams,
-  TCandlesRequestFilters,
-  TGetCandles,
+import {
+  type ILibOptions,
+  type ILibRequest,
+  type TCandlesParams,
+  type TCandlesRequestFilters,
+  type TCreateGetFn,
+  type TGetCandles,
 } from '../types';
 import { hasDangerousKeys } from '../utils';
 
@@ -19,22 +19,22 @@ const possibleParams: TCandlesParamsKey[] = ['timeStart', 'timeEnd', 'interval',
 
 const requiredParams: TCandlesParamsKey[] = ['timeStart', 'interval', 'matcher'];
 
-const isCandlesParams = (params: any): params is TCandlesParams =>
+const isCandlesParams = (params: unknown): params is TCandlesParams =>
   params !== null &&
   typeof params === 'object' &&
   !Array.isArray(params) &&
   !hasDangerousKeys(params) &&
   Object.keys(params).every((k) => possibleParams.includes(k as TCandlesParamsKey)) &&
-  requiredParams.every((k) => k in params && params[k] !== undefined);
+  requiredParams.every((k) => k in params && (params as Record<string, unknown>)[k] !== undefined);
 
-const isFilters = (filters: any): filters is TCandlesRequestFilters =>
+const isFilters = (filters: unknown): filters is TCandlesRequestFilters =>
   Array.isArray(filters) &&
   filters.length === 3 &&
   typeof filters[0] === 'string' &&
   typeof filters[1] === 'string' &&
   isCandlesParams(filters[2]);
 
-const validateFilters = (filters: any) =>
+const validateFilters = (filters: unknown) =>
   isFilters(filters)
     ? Promise.resolve(filters)
     : Promise.reject(new Error('ArgumentsError: invalid candles filters'));

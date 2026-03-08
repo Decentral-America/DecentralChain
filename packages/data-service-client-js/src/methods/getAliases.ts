@@ -1,12 +1,12 @@
 import { createRequest } from '../createRequest';
-import type {
-  ILibOptions,
-  ILibRequest,
-  TCreateGetFn,
-  TAliasesByAddressParams,
-  TAliasId,
-  TAlias,
-  TAliases,
+import {
+  type ILibOptions,
+  type ILibRequest,
+  type TAlias,
+  type TAliases,
+  type TAliasesByAddressParams,
+  type TAliasId,
+  type TCreateGetFn,
 } from '../types';
 import { isNotString } from '../utils';
 

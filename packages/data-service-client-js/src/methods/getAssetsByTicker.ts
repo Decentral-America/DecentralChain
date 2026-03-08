@@ -1,7 +1,12 @@
-import type { Asset } from '@decentralchain/data-entities';
+import { type Asset } from '@decentralchain/data-entities';
 
 import { createRequest } from '../createRequest';
-import type { TCreateGetFn, ILibOptions, ILibRequest, TGetAssetsByTicker } from '../types';
+import {
+  type ILibOptions,
+  type ILibRequest,
+  type TCreateGetFn,
+  type TGetAssetsByTicker,
+} from '../types';
 
 import { createMethod } from './createMethod';
 
