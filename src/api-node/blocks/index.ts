@@ -250,6 +250,16 @@ export interface IBlockHeader {
     'base-target': number;
     'generation-signature': string;
   };
+  stateHash?: string;
+  rewardShares?: Record<string, TLong>;
+  challengedHeader?: {
+    headerSignature: string;
+    features: number[];
+    generator: string;
+    generatorPublicKey: string;
+    desiredReward: TLong;
+    stateHash: string;
+  };
 }
 
 export interface IBlock extends IBlockHeader {

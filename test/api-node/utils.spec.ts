@@ -27,13 +27,13 @@ it('decompile code', async () => {
 });
 
 it('evaluate', async () => {
-    const targetAddress = STATE.ACCOUNTS.FOR_SCRIPT.address;
-    const expr = 'call()';
-    const response = await api.utils.fetchEvaluate(targetAddress, expr);
-    expect(response.address).toEqual(targetAddress);
-    expect(response.complexity).toEqual(1);
-    expect(response.expr).toEqual(expr);
-    expect(response.result).toEqual({ type: 'Array', value: [] });
+  const targetAddress = STATE.ACCOUNTS.FOR_SCRIPT.address;
+  const expr = 'call()';
+  const response = await api.utils.fetchEvaluate(targetAddress, expr);
+  expect(response.address).toEqual(targetAddress);
+  expect(response.complexity).toEqual(1);
+  expect(response.expr).toEqual(expr);
+  expect(response.result).toEqual({ type: 'Array', value: [] });
 });
 
 it('time', async () => {
