@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
 import { BigNumber } from '@decentralchain/bignumber';
-import { getAssetData } from '../assetData';
-import { Asset, Money, OrderPrice, AssetPair, Candle, config } from '../../src/index';
+import { describe, expect, it } from 'vitest';
+import { Asset, AssetPair, Candle, config, Money, OrderPrice } from '../../src/index';
 import { toBigNumber } from '../../src/utils';
+import { getAssetData } from '../assetData';
 
 /**
  * Security & Correctness Tests

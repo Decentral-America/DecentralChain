@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { getAssetData } from '../assetData';
-import { Asset, Money } from '../../src/index';
 import { BigNumber } from '@decentralchain/bignumber';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { Asset, Money } from '../../src/index';
+import { getAssetData } from '../assetData';
 
 let fakeEIGHT: Asset;
 let fakeFOUR: Asset;

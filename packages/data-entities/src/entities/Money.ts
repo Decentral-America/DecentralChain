@@ -1,6 +1,6 @@
-import { type Asset } from './Asset';
 import { BigNumber } from '@decentralchain/bignumber';
 import { toBigNumber } from '../utils';
+import { type Asset } from './Asset';
 
 /** Serialized representation of a Money instance, returned by `Money.toJSON()`. */
 export interface IMoneyJSON {

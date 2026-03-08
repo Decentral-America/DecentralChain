@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { getAssetData } from '../assetData';
-import { Asset, config } from '../../src/index';
-import { type IAssetInfo } from '../../src/entities/Asset';
 import { BigNumber } from '@decentralchain/bignumber';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { type IAssetInfo } from '../../src/entities/Asset';
+import { Asset, config } from '../../src/index';
+import { getAssetData } from '../assetData';
 
 let defaultAssetInfo1: IAssetInfo;
 let defaultAssetInfo2: IAssetInfo;
@@ -74,7 +74,7 @@ describe('Asset', () => {
     it('should convert minSponsoredFee to BigNumber when provided', () => {
       const asset = new Asset(getAssetData({ minSponsoredFee: 500 }));
       expect(asset.minSponsoredFee).toBeInstanceOf(BigNumber);
-      expect(asset.minSponsoredFee!.toFixed(0)).toBe('500');
+      expect(asset.minSponsoredFee?.toFixed(0)).toBe('500');
     });
   });
 

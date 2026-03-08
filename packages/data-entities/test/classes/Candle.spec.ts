@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { Candle, config } from '../../src/index';
-import { type ICandleInfo } from '../../src/entities/Candle';
 import { BigNumber } from '@decentralchain/bignumber';
+import { describe, expect, it } from 'vitest';
+import { type ICandleInfo } from '../../src/entities/Candle';
+import { Candle, config } from '../../src/index';
 
 function getCandleData(overrides: Partial<ICandleInfo> = {}): ICandleInfo {
   return {

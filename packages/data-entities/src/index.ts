@@ -1,7 +1,7 @@
 export { BigNumber } from '@decentralchain/bignumber';
-export { Asset, type IAssetInfo, type IAssetJSON } from './entities/Asset';
-export { Candle, type ICandleInfo, type ICandleJSON } from './entities/Candle';
-export { Money, type IMoneyJSON, type TMoneyInput } from './entities/Money';
-export { OrderPrice, type IOrderPriceJSON } from './entities/OrderPrice';
-export { AssetPair, type IAssetPairJSON } from './entities/AssetPair';
 export { config, type IConfig } from './config';
+export { Asset, type IAssetInfo, type IAssetJSON } from './entities/Asset';
+export { AssetPair, type IAssetPairJSON } from './entities/AssetPair';
+export { Candle, type ICandleInfo, type ICandleJSON } from './entities/Candle';
+export { type IMoneyJSON, Money, type TMoneyInput } from './entities/Money';
+export { type IOrderPriceJSON, OrderPrice } from './entities/OrderPrice';
