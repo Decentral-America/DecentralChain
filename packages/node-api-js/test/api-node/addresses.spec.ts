@@ -1,6 +1,6 @@
-import { MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
-import { IScriptInfo, fetchScriptInfo } from '../../src/api-node/addresses';
+import { fetchScriptInfo, type IScriptInfo } from '../../src/api-node/addresses';
+import { MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 const largeNumbeConvertHeader = {
@@ -12,7 +12,7 @@ const checkSmartAccount = (info: IScriptInfo, address: string) => {
   expect(typeof info.complexity).toBe('number');
   expect(typeof info.verifierComplexity).toBe('number');
   expect(typeof info.callableComplexities).toBe('object');
-  expect(info.extraFee).toBe(0.004 * Math.pow(10, 8));
+  expect(info.extraFee).toBe(0.004 * 10 ** 8);
   expect(typeof info.script).toBe('string');
   expect(typeof info.scriptText).toBe('string');
 };
@@ -47,9 +47,9 @@ it('data by key', async () => {
 //     const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
 //
 //     expect(addressData).toBeInstanceOf(Array)
-//     // @ts-ignore
+//     // @ts-expect-error
 //     expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-//     // @ts-ignore
+//     // @ts-expect-error
 //     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
 // });
 

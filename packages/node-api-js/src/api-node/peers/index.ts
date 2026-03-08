@@ -1,5 +1,5 @@
-import request from '../../tools/request';
 import { type TLong } from '../../interface';
+import request from '../../tools/request';
 
 /**
  * GET /peers/all
@@ -52,7 +52,7 @@ export function fetchSuspended(base: string, options: RequestInit = {}): Promise
   });
 }
 
-// @TODO:
+// NOTE: Requires node API key
 // POST /peers/clearblacklist
 // POST /peers/connect
 

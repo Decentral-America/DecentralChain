@@ -1,6 +1,6 @@
-import { type TLong } from '../../interface';
 import { BigNumber } from '@decentralchain/bignumber';
 import { fetchAssetsBalance, type TAssetBalance } from '../../api-node/assets';
+import { type TLong } from '../../interface';
 import { filter, map, pipe, prop } from '../utils';
 
 export default function (base: string, address: string, dccFee: TLong): Promise<TAssetFeeInfo[]> {
@@ -16,11 +16,11 @@ function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
   return (balance) =>
     Boolean(
       balance.minSponsoredAssetFee &&
-      BigNumber.toBigNumber(balance.sponsorBalance ?? 0).gte(dccFee) &&
-      BigNumber.toBigNumber(balance.minSponsoredAssetFee)
-        .mul(dccFee)
-        .div(MIN_FEE_UNITS)
-        .lte(balance.balance),
+        BigNumber.toBigNumber(balance.sponsorBalance ?? 0).gte(dccFee) &&
+        BigNumber.toBigNumber(balance.minSponsoredAssetFee)
+          .mul(dccFee)
+          .div(MIN_FEE_UNITS)
+          .lte(balance.balance),
     );
 }
 

@@ -133,8 +133,8 @@ npm install
 | `npm run test:watch`       | Tests in watch mode                   |
 | `npm run test:coverage`    | Tests with V8 coverage                |
 | `npm run typecheck`        | TypeScript type checking              |
-| `npm run lint`             | ESLint                                |
-| `npm run format`           | Format with Prettier                  |
+| `npm run lint`             | Biome lint |
+| `npm run format`           | Format with Biome                  |
 | `npm run validate`         | Full CI validation pipeline           |
 | `npm run bulletproof`      | Format + lint fix + typecheck + test  |
 

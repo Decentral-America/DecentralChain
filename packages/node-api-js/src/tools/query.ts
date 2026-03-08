@@ -6,7 +6,7 @@ import { toArray } from './utils';
  * All keys and values are percent-encoded via `encodeURIComponent` to prevent
  * query-string injection (e.g. values containing `&`, `=`, or `#`).
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- required for contravariant parameter matching with object literals
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 type Params = Record<string, any>;
 
 export default function <T extends Params>(params: T, evolver: TEvolver<T> = {}): string {
@@ -14,7 +14,7 @@ export default function <T extends Params>(params: T, evolver: TEvolver<T> = {})
     .map<[keyof T, T[keyof T]]>((key) => [key as keyof T, params[key] as T[keyof T]])
     .map(([key, value]) => [
       key,
-      Object.prototype.hasOwnProperty.call(evolver, key)
+      Object.hasOwn(evolver, key)
         ? (evolver[key] as (data: T[keyof T]) => string | undefined)(value)
         : value,
     ])

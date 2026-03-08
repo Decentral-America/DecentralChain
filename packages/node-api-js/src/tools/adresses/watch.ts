@@ -1,8 +1,8 @@
-import { fetchTransactions } from '../../api-node/transactions';
 import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+import { EventEmitter } from 'typed-ts-events';
+import { fetchTransactions } from '../../api-node/transactions';
 import { type TLong } from '../../interface';
 import { indexBy, keys, prop } from '../utils';
-import { EventEmitter } from 'typed-ts-events';
 
 /** @public — exposed via create().tools.addresses.watch() return type */
 export class Watch extends EventEmitter<IEvents> {
