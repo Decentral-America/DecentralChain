@@ -1,24 +1,23 @@
-import type {
-  AssetDecimals,
-  Base58Bytes,
-  Base64Script,
-  DataTransactionEntry,
-  ExchangeTransactionOrder,
-  ExchangeTransactionOrderMap,
-  InvokeScriptCall,
-  InvokeScriptPayment,
-  Long,
-  MassTransferItem,
-  Phantom,
-  SignedIExchangeTransactionOrder,
-  TStateChanges,
-  WithApiMixin,
-  WithApplicationStatus,
-  WithId,
-  WithVersion,
+import { type TRANSACTION_TYPE, type TransactionType } from './constants.js';
+import {
+  type AssetDecimals,
+  type Base58Bytes,
+  type Base64Script,
+  type DataTransactionEntry,
+  type ExchangeTransactionOrder,
+  type ExchangeTransactionOrderMap,
+  type InvokeScriptCall,
+  type InvokeScriptPayment,
+  type Long,
+  type MassTransferItem,
+  type Phantom,
+  type SignedIExchangeTransactionOrder,
+  type TStateChanges,
+  type WithApiMixin,
+  type WithApplicationStatus,
+  type WithId,
+  type WithVersion,
 } from './parts.js';
-import type { TransactionType } from './constants.js';
-import { type TRANSACTION_TYPE } from './constants.js';
 
 // ── Base Transaction ────────────────────────────────────────────────────────
 export type BaseTransaction<LONG = Long, TYPE extends TransactionType = TransactionType> = {
