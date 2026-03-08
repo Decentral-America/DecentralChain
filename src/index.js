@@ -6,9 +6,9 @@
  */
 
 import './interop.js';
-import * as crypto from '@waves/ts-lib-crypto';
 import * as scalaJsCompiler from '@waves/ride-lang';
 import * as replJs from '@waves/ride-repl';
+import * as crypto from '@decentralchain/ts-lib-crypto';
 
 /**
  * Compile Ride source code to binary.
@@ -145,7 +145,7 @@ export const contractLimits = scalaJsCompiler.contractLimits;
 /** Current Ride compiler version string. */
 export const version = (() => {
   const v = scalaJsCompiler.nodeVersion();
-  return v && v.version;
+  return v?.version;
 })();
 
 /** Get metadata about a compiled Ride script (version, type, public keys, etc.). */
@@ -177,7 +177,7 @@ const api = {
   },
   get version() {
     const v = scalaJsCompiler.nodeVersion();
-    return v && v.version;
+    return v?.version;
   },
   scriptInfo: scalaJsCompiler.scriptInfo,
   getTypes: scalaJsCompiler.getTypes,
