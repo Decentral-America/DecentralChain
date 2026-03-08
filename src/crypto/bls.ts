@@ -1,10 +1,10 @@
 // bls.ts
 import { bls12_381 } from '@noble/curves/bls12-381.js';
+import { bytesToNumberBE } from '@noble/curves/utils.js';
 import { hkdf } from '@noble/hashes/hkdf.js';
 import { sha256 } from '@noble/hashes/sha2.js';
-import { bytesToNumberBE } from '@noble/curves/utils.js';
-import { type TBinaryIn, type TBLSKeyPair, type TBytes } from './interface';
 import { _fromIn } from '../conversions/param';
+import { type TBinaryIn, type TBLSKeyPair, type TBytes } from './interface';
 
 const DST = new TextEncoder().encode('BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_');
 const BLS_KEYGEN_SALT_BASE = new TextEncoder().encode('BLS-SIG-KEYGEN-SALT-');

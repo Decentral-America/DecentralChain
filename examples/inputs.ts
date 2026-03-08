@@ -1,4 +1,5 @@
 import { address } from '@decentralchain/ts-lib-crypto';
+
 const seedString =
   'uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine';
 const seedBytesAsArray = [

@@ -75,11 +75,11 @@ export function md5(input: Uint8Array): Uint8Array<ArrayBuffer> {
         g = (7 * i) % 16;
       }
 
-      F = (F + A + K[i]! + M[g]!) >>> 0;
+      F = (F + A + (K[i] as number) + (M[g] as number)) >>> 0;
       A = D;
       D = C;
       C = B;
-      B = (B + leftRotate(F, S[i]!)) >>> 0;
+      B = (B + leftRotate(F, S[i] as number)) >>> 0;
     }
 
     a0 = (a0 + A) >>> 0;

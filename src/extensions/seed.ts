@@ -1,5 +1,5 @@
-import { type TSeed, type INonceSeed } from '../crypto/interface';
 import { _fromRawIn } from '../conversions/param';
+import { type INonceSeed, type TSeed } from '../crypto/interface';
 
 /** Seed utilities for type-checking and binary conversion. */
 export const Seed = {

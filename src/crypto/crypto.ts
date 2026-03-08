@@ -1,37 +1,37 @@
 import {
-  type IDCCCrypto,
-  type TBinaryOut,
-  type TSeed,
-  type ISeedRelated,
-  type ISeedEmbeded,
-  type TKeyPair,
-} from './interface';
-import { randomBytes, randomSeed, random } from './random';
-import { aesEncrypt, aesDecrypt, messageDecrypt, messageEncrypt, sharedKey } from './encryption';
-import {
-  base58Encode,
-  base64Decode,
-  base64Encode,
   base16Decode,
   base16Encode,
   base58Decode,
+  base58Encode,
+  base64Decode,
+  base64Encode,
 } from '../conversions/base-xx';
 import { bytesToString, stringToBytes } from '../conversions/string-bytes';
-import { concat, split } from './concat-split';
-import { sha256, keccak, blake2b } from './hashing';
 import {
-  privateKey,
   address,
-  publicKey,
-  keyPair,
-  seedWithNonce,
   buildAddress,
+  keyPair,
+  privateKey,
+  publicKey,
+  seedWithNonce,
 } from './address-keys-seed';
+import { blsKeyPair, blsPublicKey, blsSign, blsVerify } from './bls';
+import { concat, split } from './concat-split';
+import { aesDecrypt, aesEncrypt, messageDecrypt, messageEncrypt, sharedKey } from './encryption';
+import { blake2b, keccak, sha256 } from './hashing';
+import {
+  type IDCCCrypto,
+  type ISeedEmbeded,
+  type ISeedRelated,
+  type TBinaryOut,
+  type TKeyPair,
+  type TSeed,
+} from './interface';
+import { merkleVerify } from './merkle-verify';
+import { random, randomBytes, randomSeed } from './random';
+import { decryptSeed, encryptSeed } from './seed-ecryption';
 import { signBytes } from './sign';
 import { verifyAddress, verifyPublicKey, verifySignature } from './verification';
-import { decryptSeed, encryptSeed } from './seed-ecryption';
-import { merkleVerify } from './merkle-verify';
-import { blsKeyPair, blsPublicKey, blsSign, blsVerify } from './bls';
 
 interface TOutputTypesMap {
   Bytes: Uint8Array;
@@ -61,38 +61,42 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
    * because generic callables cannot be narrowed through casts (TS2352).
    * These are inherent TypeScript limitations in higher-order generic wrappers.
    */
-  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
+  // biome-ignore lint/suspicious/noExplicitAny: suppressed
   type ArgsFirstRest<TFunc> = TFunc extends (a: infer A, ...args: infer U) => any ? [A, U] : never;
+  // biome-ignore lint/suspicious/noExplicitAny: conditional type inference requires any
   type ArgsAll<TFunc> = TFunc extends (...args: infer U) => any ? U : never;
+  // biome-ignore lint/suspicious/noExplicitAny: conditional type inference requires any
   type Return<TFunc> = TFunc extends (...args: any) => infer R ? R : unknown;
 
   const c =
-    <TFunc extends Function>(f: TFunc, first: ArgsFirstRest<TFunc>[0]) =>
-    (...args: ArgsFirstRest<TFunc>[1]) =>
-      f(first, ...args) as Return<TFunc>;
+    // biome-ignore lint/complexity/noBannedTypes: generic callable constraint requires Function
+      <TFunc extends Function>(f: TFunc, first: ArgsFirstRest<TFunc>[0]) =>
+      (...args: ArgsFirstRest<TFunc>[1]) =>
+        f(first, ...args) as Return<TFunc>;
 
   const toOut =
-    <F extends Function>(f: F) =>
-    (...args: ArgsAll<F>): TOutputTypesMap[TOut] => {
-      const r = f(...args);
-      if (!options || options.output === 'Base58') {
-        return base58Encode(r) as TOutputTypesMap[TOut];
-      } else {
-        return r as TOutputTypesMap[TOut];
-      }
-    };
+    // biome-ignore lint/complexity/noBannedTypes: generic callable constraint requires Function
+      <F extends Function>(f: F) =>
+      (...args: ArgsAll<F>): TOutputTypesMap[TOut] => {
+        const r = f(...args);
+        if (!options || options.output === 'Base58') {
+          return base58Encode(r) as TOutputTypesMap[TOut];
+        } else {
+          return r as TOutputTypesMap[TOut];
+        }
+      };
 
   const toOutKey =
-    <F extends Function>(f: F) =>
-    (...args: ArgsAll<F>): TKeyPair<TOutputTypesMap[TOut]> => {
-      const r = f(...args) as TKeyPair;
-      return (
-        !options || options.output === 'Base58'
-          ? { privateKey: base58Encode(r.privateKey), publicKey: base58Encode(r.publicKey) }
-          : r
-      ) as TKeyPair<TOutputTypesMap[TOut]>;
-    };
-  /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
+    // biome-ignore lint/complexity/noBannedTypes: generic callable constraint requires Function
+      <F extends Function>(f: F) =>
+      (...args: ArgsAll<F>): TKeyPair<TOutputTypesMap[TOut]> => {
+        const r = f(...args) as TKeyPair;
+        return (
+          !options || options.output === 'Base58'
+            ? { privateKey: base58Encode(r.privateKey), publicKey: base58Encode(r.publicKey) }
+            : r
+        ) as TKeyPair<TOutputTypesMap[TOut]>;
+      };
 
   const s = options?.seed ?? undefined;
 

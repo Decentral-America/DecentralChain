@@ -1,9 +1,9 @@
-import { type TBinaryIn, type TChainId, PUBLIC_KEY_LENGTH, ADDRESS_LENGTH } from './interface';
-import { ChainId } from '../extensions/chain-id';
 import { _fromIn } from '../conversions/param';
-import { _hashChain } from './hashing';
-import { address } from './address-keys-seed';
+import { ChainId } from '../extensions/chain-id';
 import curve25519 from '../libs/curve25519';
+import { address } from './address-keys-seed';
+import { _hashChain } from './hashing';
+import { ADDRESS_LENGTH, PUBLIC_KEY_LENGTH, type TBinaryIn, type TChainId } from './interface';
 
 /** Verify a DecentralChain address against optional chain ID and public key. */
 export const verifyAddress = (

@@ -34,7 +34,3 @@ const seed = randomSeed(); //figure soap board earth measure stay can nature wil
 
   keyPair();
 }
-
-{
-  //For OOP fans
-}

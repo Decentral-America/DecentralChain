@@ -1,9 +1,9 @@
 import {
-  type TBase64,
-  type TBytes,
-  type TBinaryIn,
-  type TBase58,
   type TBase16,
+  type TBase58,
+  type TBase64,
+  type TBinaryIn,
+  type TBytes,
 } from '../crypto/interface';
 import base58 from '../libs/base58';
 import { _fromIn } from './param';

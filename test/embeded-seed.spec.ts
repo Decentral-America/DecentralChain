@@ -1,5 +1,5 @@
-import { crypto } from '../src';
 import { expect, test } from 'vitest';
+import { crypto } from '../src';
 
 const seed =
   'vast local exotic manage click stone boil analyst various truth swift decade cherry cram innocent';

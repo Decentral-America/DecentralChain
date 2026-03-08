@@ -1,9 +1,9 @@
-import { type TSeed, type TPrivateKey, type TBinaryIn, type TBytes } from './interface';
-import curve25519 from '../libs/curve25519';
 import { _fromIn } from '../conversions/param';
-import { isPrivateKey } from './util';
+import curve25519 from '../libs/curve25519';
 import { privateKey } from './address-keys-seed';
+import { type TBinaryIn, type TBytes, type TPrivateKey, type TSeed } from './interface';
 import { randomBytes } from './random';
+import { isPrivateKey } from './util';
 
 /** Sign bytes with a seed or private key using Curve25519. */
 export const signBytes = (

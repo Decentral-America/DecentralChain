@@ -1,4 +1,4 @@
-import { type TChainId, MAIN_NET_CHAIN_ID, TEST_NET_CHAIN_ID } from '../crypto/interface';
+import { MAIN_NET_CHAIN_ID, type TChainId, TEST_NET_CHAIN_ID } from '../crypto/interface';
 
 /** Chain ID utility for converting and checking network identifiers. */
 export const ChainId = {

@@ -1,4 +1,4 @@
-import { type TBinaryIn, type TPublicKey, type TPrivateKey } from './interface';
+import { type TBinaryIn, type TPrivateKey, type TPublicKey } from './interface';
 
 /** Type guard: check if a value is a `TPublicKey` wrapper. */
 export const isPublicKey = <T extends TBinaryIn>(val: unknown): val is TPublicKey<T> =>

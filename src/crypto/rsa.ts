@@ -1,13 +1,16 @@
-import { type RSADigestAlgorithm, type TBytes, type TRSAKeyPair } from './interface';
-import { base64Decode } from '../conversions/base-xx';
 import {
-  generateKeyPairSync,
-  createPublicKey,
+  constants,
   createPrivateKey,
+  createPublicKey,
   createSign,
   createVerify,
+  generateKeyPairSync,
   type KeyObject,
+  privateEncrypt,
+  publicDecrypt,
 } from 'node:crypto';
+import { base64Decode } from '../conversions/base-xx';
+import { type RSADigestAlgorithm, type TBytes, type TRSAKeyPair } from './interface';
 
 /** Minimum RSA key size enforced by this library (NIST SP 800-57). */
 const MIN_RSA_BITS = 2048;
@@ -20,7 +23,7 @@ const DEFAULT_RSA_E = 0x10001; // 65537
  *
  * MD5 and SHA1 are intentionally excluded — they are cryptographically broken.
  */
-const DIGEST_MAP: Record<RSADigestAlgorithm, string> = {
+const DIGEST_MAP: Record<Exclude<RSADigestAlgorithm, 'NONE'>, string> = {
   SHA224: 'sha224',
   SHA256: 'sha256',
   SHA384: 'sha384',
@@ -105,39 +108,74 @@ export const rsaKeyPair = (
 
 /* ── Sign / Verify ───────────────────────────────────────────────── */
 
-/** Create an RSA PKCS#1 v1.5 signature. */
+/**
+ * Create an RSA PKCS#1 v1.5 signature.
+ *
+ * When `digest` is `'NONE'`, the message bytes are signed raw — no hashing
+ * and no DigestInfo ASN.1 wrapping. This matches DecentralChain VM semantics
+ * for `rsaVerify(NOALG, …)` where the caller pre-hashes (or not) themselves.
+ */
 export const rsaSign = (
   rsaPrivateKey: TBytes,
   message: TBytes,
   digest: RSADigestAlgorithm = 'SHA256',
 ): TBytes => {
+  const key = importPrivateKey(rsaPrivateKey);
+
+  if (digest === 'NONE') {
+    return new Uint8Array(
+      privateEncrypt(
+        { key, padding: constants.RSA_PKCS1_PADDING },
+        Buffer.from(message),
+      ),
+    );
+  }
+
   const algo = DIGEST_MAP[digest] as string | undefined;
   if (!algo) {
     throw new Error(
       `Unsupported or unsafe RSA digest algorithm: "${digest}". Use SHA256 or stronger.`,
     );
   }
-  const key = importPrivateKey(rsaPrivateKey);
 
   const signer = createSign(algo);
   signer.update(message);
   return new Uint8Array(signer.sign({ key, padding: 1 /* RSA_PKCS1_PADDING */ }));
 };
 
-/** Verify an RSA PKCS#1 v1.5 signature. */
+/**
+ * Verify an RSA PKCS#1 v1.5 signature.
+ *
+ * When `digest` is `'NONE'`, raw PKCS#1 v1.5 verification is performed —
+ * decrypting the signature with the public key and comparing the recovered
+ * plaintext byte-for-byte against the message.
+ */
 export const rsaVerify = (
   rsaPublicKey: TBytes,
   message: TBytes,
   signature: TBytes,
   digest: RSADigestAlgorithm = 'SHA256',
 ): boolean => {
+  const key = importPublicKey(rsaPublicKey);
+
+  if (digest === 'NONE') {
+    try {
+      const recovered = publicDecrypt(
+        { key, padding: constants.RSA_PKCS1_PADDING },
+        Buffer.from(signature),
+      );
+      return Buffer.from(message).equals(recovered);
+    } catch {
+      return false;
+    }
+  }
+
   const algo = DIGEST_MAP[digest] as string | undefined;
   if (!algo) {
     throw new Error(
       `Unsupported or unsafe RSA digest algorithm: "${digest}". Use SHA256 or stronger.`,
     );
   }
-  const key = importPublicKey(rsaPublicKey);
 
   const verifier = createVerify(algo);
   verifier.update(message);

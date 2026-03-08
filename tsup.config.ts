@@ -1,7 +1,6 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig([
-  // ── ESM (for Node / bundlers) ───────────────────────────────────
   {
     entry: ['src/index.ts', 'src/bytes.ts'],
     format: ['esm'],
@@ -17,7 +16,6 @@ export default defineConfig([
       return { js: '.mjs' };
     },
   },
-  // ── RSA (Node.js only — separate to avoid node:crypto in browser) ──
   {
     entry: ['src/rsa.ts'],
     format: ['esm'],
@@ -31,20 +29,6 @@ export default defineConfig([
     external: ['node:crypto'],
     outExtension() {
       return { js: '.mjs' };
-    },
-  },
-  // ── UMD / IIFE (browser global) ───────────────────────────────
-  {
-    entry: ['src/index.ts'],
-    format: ['iife'],
-    globalName: 'DCCCrypto',
-    outDir: 'dist',
-    minify: true,
-    sourcemap: true,
-    target: 'es2024',
-    platform: 'node',
-    outExtension() {
-      return { js: '.umd.min.js' };
     },
   },
 ]);

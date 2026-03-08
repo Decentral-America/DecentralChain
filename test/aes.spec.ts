@@ -1,5 +1,5 @@
-import { crypto } from '../src';
 import { expect, test } from 'vitest';
+import { crypto } from '../src';
 
 const { aesDecrypt, aesEncrypt, sharedKey, bytesToString, keyPair, randomBytes, stringToBytes } =
   crypto({ output: 'Base58' });

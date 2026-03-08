@@ -1,4 +1,4 @@
-import { seedWithNonce, randomSeed, address } from '@decentralchain/ts-lib-crypto';
+import { address, randomSeed, seedWithNonce } from '@decentralchain/ts-lib-crypto';
 
 const nonce = 1;
 const seedphrase = randomSeed(); // uncle push human bus echo drastic garden joke sand warfare sentence fossil title color combine

@@ -1,6 +1,6 @@
-import { blake2b } from './hashing';
-import { concat } from './concat-split';
 import { equalBytes } from '@noble/curves/utils.js';
+import { concat } from './concat-split';
+import { blake2b } from './hashing';
 
 /**
  * Verify a Merkle proof against a root hash and leaf data.
@@ -29,7 +29,7 @@ export function merkleVerify(
     if (offset + 1 >= merkleProof.length)
       throw new Error('Failed to parse merkleProof: Truncated proof entry (missing size byte)');
     const side = merkleProof[offset] === 0 ? 'L' : 'R';
-    const size = merkleProof[offset + 1]!;
+    const size = merkleProof[offset + 1] as number;
     if (size < 1) throw new Error('Failed to parse merkleProof: Wrong hash size');
     if (offset + 2 + size > merkleProof.length)
       throw new Error(

@@ -1,8 +1,8 @@
+import { describe, expect, test } from 'vitest';
 import { base64Decode } from '../src/conversions/base-xx';
-import { merkleVerify } from '../src/crypto/merkle-verify';
-import { blake2b } from '../src/crypto/hashing';
 import { concat } from '../src/crypto/concat-split';
-import { describe, test, expect } from 'vitest';
+import { blake2b } from '../src/crypto/hashing';
+import { merkleVerify } from '../src/crypto/merkle-verify';
 
 describe('merkleVerify', () => {
   const rootHash = base64Decode('eh9fm3HeHZ3XA/UfMpC9HSwLVMyBLgkAJL0MIVBIoYk=');
