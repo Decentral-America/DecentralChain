@@ -11,6 +11,7 @@
       "import": "./dist/index.mjs"
     }
   },
+  "sideEffects": false,
   "files": [
     "dist",
     "LICENSE",
@@ -20,7 +21,7 @@
     "access": "public",
     "provenance": true
   },
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.9.0",
   "engines": {
     "node": ">=24"
   },
@@ -39,6 +40,10 @@
   ],
   "author": "DecentralChain",
   "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
   "bugs": {
     "url": "https://github.com/Decentral-America/cubensis-connect-types/issues"
   },
@@ -46,30 +51,21 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:publint": "publint",
     "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
     "check:size": "size-limit",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "validate": "npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --write"
-    ]
+    "prepare": "lefthook install",
+    "lint:fix": "biome check --write ."
   },
   "size-limit": [
     {
@@ -79,20 +75,14 @@
   ],
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
-    "@eslint/js": "^10.0.1",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "^1.11.0",
     "@size-limit/preset-small-lib": "^12.0.0",
     "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "^3.8.1",
     "publint": "^0.3.18",
     "size-limit": "^12.0.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1",
     "vitest": "^4.0.18"
   }
 }
