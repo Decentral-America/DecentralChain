@@ -47,7 +47,8 @@ export type Transaction<LONG = Long> =
   | SetAssetScriptTransaction<LONG>
   | InvokeScriptTransaction<LONG>
   | UpdateAssetInfoTransaction<LONG>
-  | EthereumTransaction<LONG>;
+  | EthereumTransaction<LONG>
+  | CommitToGenerationTransaction<LONG>;
 
 // ── Signable Transaction Union ──────────────────────────────────────────────
 // User-signable transactions only — excludes system-generated types:
@@ -79,6 +80,7 @@ export type TransactionMap<LONG = Long> = {
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction<LONG>;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
   [TRANSACTION_TYPE.ETHEREUM]: EthereumTransaction<LONG>;
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: CommitToGenerationTransaction<LONG>;
 };
 
 // ── Transaction Versions Map ────────────────────────────────────────────────
@@ -101,6 +103,7 @@ export type TransactionVersionsMap<LONG = Long> = {
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransactionMap<LONG>;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
   [TRANSACTION_TYPE.ETHEREUM]: EthereumTransactionMap<LONG>;
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: CommitToGenerationTransactionMap<LONG>;
 };
 
 // ── Transaction Field Types ─────────────────────────────────────────────────
@@ -216,6 +219,12 @@ export type EthereumTransactionFields<LONG = Long> = {
       }
     | { type?: never };
   bytes: string;
+};
+
+export type CommitToGenerationTransactionFields = {
+  generationPeriodStart: number;
+  endorserPublicKey: string;
+  commitmentSignature: string;
 };
 
 // ── Versioned Transaction Types ─────────────────────────────────────────────
@@ -492,6 +501,15 @@ export type EthereumTransactionMap<LONG = Long> = {
   1: EthereumTransactionV1<LONG>;
 };
 
+// CommitToGenerationTransaction
+export type CommitToGenerationTransactionV1<LONG> = WithVersion<
+  CommitToGenerationTransactionFields & BaseTransaction<LONG, 19>,
+  1
+>;
+export type CommitToGenerationTransactionMap<LONG = Long> = {
+  1: CommitToGenerationTransactionV1<LONG>;
+};
+
 // ── Final Transaction Types ─────────────────────────────────────────────────
 export type GenesisTransaction<LONG = Long> = GenesisTransactionV1<LONG>;
 
@@ -720,6 +738,17 @@ export type EthereumTransactionFromNode<LONG = Long> = SignedTransaction<
     feeAssetId: null;
   };
 
+export type CommitToGenerationTransaction<LONG = Long> = CommitToGenerationTransactionV1<LONG>;
+
+export type CommitToGenerationTransactionFromNode<LONG = Long> = SignedTransaction<
+  CommitToGenerationTransaction<LONG>
+> &
+  WithId &
+  WithApplicationStatus &
+  WithApiMixin & {
+    feeAssetId: null;
+  };
+
 // ── Exchange Transaction Order By Tx ────────────────────────────────────────
 export type ExchangeTransactionOrderByTx<TX extends ExchangeTransaction> = TX extends {
   version: 1;
@@ -777,4 +806,5 @@ export type TransactionFromNode<LONG = Long> =
   | SetAssetScriptTransactionFromNode<LONG>
   | InvokeScriptTransactionFromNode<LONG>
   | UpdateAssetInfoTransactionFromNode<LONG>
-  | EthereumTransactionFromNode<LONG>;
+  | EthereumTransactionFromNode<LONG>
+  | CommitToGenerationTransactionFromNode<LONG>;

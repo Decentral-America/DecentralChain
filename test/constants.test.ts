@@ -8,6 +8,7 @@ import {
   BOOLEAN_DATA_TYPE,
   BURN_TYPE,
   CANCEL_LEASE_TYPE,
+  COMMIT_TO_GENERATION_TYPE,
   DATA_FIELD_TYPE,
   DATA_TYPE,
   type DataFieldType,
@@ -55,7 +56,7 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe('Transaction Type Constants', () => {
-  it('should have correct numeric values for all 18 transaction types', () => {
+  it('should have correct numeric values for all 19 transaction types', () => {
     expect(GENESIS_TYPE).toBe(1);
     expect(PAYMENT_TYPE).toBe(2);
     expect(ISSUE_TYPE).toBe(3);
@@ -74,9 +75,10 @@ describe('Transaction Type Constants', () => {
     expect(INVOKE_SCRIPT_TYPE).toBe(16);
     expect(UPDATE_ASSET_INFO_TYPE).toBe(17);
     expect(ETHEREUM).toBe(18);
+    expect(COMMIT_TO_GENERATION_TYPE).toBe(19);
   });
 
-  it('should have sequential type IDs with no gaps (1–18)', () => {
+  it('should have sequential type IDs with no gaps (1–19)', () => {
     const allTypes = [
       GENESIS_TYPE,
       PAYMENT_TYPE,
@@ -96,6 +98,7 @@ describe('Transaction Type Constants', () => {
       INVOKE_SCRIPT_TYPE,
       UPDATE_ASSET_INFO_TYPE,
       ETHEREUM,
+      COMMIT_TO_GENERATION_TYPE,
     ];
 
     for (let i = 0; i < allTypes.length; i++) {
@@ -115,8 +118,8 @@ describe('Transaction Type Constants', () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe('TRANSACTION_TYPE lookup object', () => {
-  it('should contain exactly 18 entries', () => {
-    expect(Object.keys(TRANSACTION_TYPE)).toHaveLength(18);
+  it('should contain exactly 19 entries', () => {
+    expect(Object.keys(TRANSACTION_TYPE)).toHaveLength(19);
   });
 
   it('should map every name to the correct individual constant', () => {
@@ -459,6 +462,7 @@ describe('TransactionMap completeness', () => {
       'INVOKE_SCRIPT',
       'UPDATE_ASSET_INFO',
       'ETHEREUM',
+      'COMMIT_TO_GENERATION',
     ];
     expect(Object.keys(TRANSACTION_TYPE).sort()).toEqual(expectedKeys.sort());
   });
