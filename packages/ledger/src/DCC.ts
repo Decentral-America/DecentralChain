@@ -8,15 +8,15 @@
  * @module dcc
  */
 
-import { base58Encode, bytesToAscii, bytesToHex, concatBytes, uint32ToBytesBE } from './utils.js';
-import type {
-  LedgerError,
-  LedgerTransport,
-  SignData,
-  SignOrderData,
-  SignTxData,
-  UserData,
+import {
+  type LedgerError,
+  type LedgerTransport,
+  type SignData,
+  type SignOrderData,
+  type SignTxData,
+  type UserData,
 } from './types.js';
+import { base58Encode, bytesToAscii, bytesToHex, concatBytes, uint32ToBytesBE } from './utils.js';
 
 /** Internal protocol configuration. */
 /**
@@ -26,20 +26,20 @@ import type {
  * meaningful diagnostics instead of raw hex.
  */
 const STATUS_MESSAGES: Readonly<Record<number, string>> = {
-  0x9000: 'OK',
-  0x9100: 'User cancelled',
-  0x9102: 'Deprecated sign protocol',
-  0x9103: 'Incorrect precision value',
-  0x9104: 'Incorrect transaction type/version',
-  0x9105: 'Protobuf decoding failed',
-  0x9106: 'Byte decoding failed',
-  0x6982: 'Security status not satisfied',
-  0x6985: 'Conditions not satisfied',
-  0x6986: 'Device is locked',
-  0x6990: 'Buffer overflow',
-  0x6a86: 'Incorrect P1/P2',
-  0x6d00: 'Instruction not supported',
-  0x6e00: 'CLA not supported',
+  36864: 'OK',
+  37120: 'User cancelled',
+  37122: 'Deprecated sign protocol',
+  37123: 'Incorrect precision value',
+  37124: 'Incorrect transaction type/version',
+  37125: 'Protobuf decoding failed',
+  37126: 'Byte decoding failed',
+  27010: 'Security status not satisfied',
+  27013: 'Conditions not satisfied',
+  27014: 'Device is locked',
+  27024: 'Buffer overflow',
+  27270: 'Incorrect P1/P2',
+  27904: 'Instruction not supported',
+  28160: 'CLA not supported',
 };
 
 const DCC_CONFIG = {
