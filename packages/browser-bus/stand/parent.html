@@ -22,8 +22,7 @@
 
         bus.dispatchEvent('How are you?', PARENT_DATA);
 
-        bus.once('hi-from-iframe', (data) => {
-          console.log('On event "hi-from-iframe":', data);
+        bus.once('hi-from-iframe', (_data) => {
         });
       });
 
@@ -31,7 +30,7 @@
       document.body.appendChild(iframe);
 
       // connection with window tab
-      document.addEventListener('click', function () {
+      document.addEventListener('click', () => {
         const win = window.open('./iframe.html');
 
         WindowAdapter.createSimpleWindowAdapter(win).then((adapter) => {
@@ -39,8 +38,7 @@
 
           bus.dispatchEvent('How are your, window?', PARENT_DATA);
 
-          bus.once('hi-from-window', (data) => {
-            console.log('On event "hi-from-window":', data);
+          bus.once('hi-from-window', (_data) => {
           });
         });
       });

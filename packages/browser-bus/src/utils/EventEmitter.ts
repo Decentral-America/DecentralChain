@@ -4,13 +4,13 @@
  */
 
 interface HandlerEntry {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous handler storage
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   handler: (...args: any[]) => any;
   context: unknown;
   once: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic event map base constraint
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 export class EventEmitter<T extends Record<string, any>> {
   private readonly _events: Record<string, HandlerEntry[]> = Object.create(null) as Record<
     string,
@@ -49,35 +49,25 @@ export class EventEmitter<T extends Record<string, any>> {
     });
 
     if (remaining.length === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._events[key];
     } else {
       this._events[key] = remaining;
     }
   }
 
-  public on<K extends keyof T>(
-    eventName: K,
-    handler: EventEmitter.IHandler<T[K]>,
-    context?: unknown,
-  ): void {
+  public on<K extends keyof T>(eventName: K, handler: IHandler<T[K]>, context?: unknown): void {
     this._register(eventName, handler, context, false);
   }
 
-  public once<K extends keyof T>(
-    eventName: K,
-    handler: EventEmitter.IHandler<T[K]>,
-    context?: unknown,
-  ): void {
+  public once<K extends keyof T>(eventName: K, handler: IHandler<T[K]>, context?: unknown): void {
     this._register(eventName, handler, context, true);
   }
 
   public off(): void;
-  public off<K extends keyof T>(eventName: K, handler?: EventEmitter.IHandler<T[K]>): void;
-  public off<K extends keyof T>(eventName?: K, handler?: EventEmitter.IHandler<T[K]>): void {
+  public off<K extends keyof T>(eventName: K, handler?: IHandler<T[K]>): void;
+  public off<K extends keyof T>(eventName?: K, handler?: IHandler<T[K]>): void {
     if (eventName === undefined) {
       for (const key of Object.keys(this._events)) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
         delete this._events[key];
       }
       return;
@@ -86,7 +76,6 @@ export class EventEmitter<T extends Record<string, any>> {
     const key = eventName as string;
 
     if (!handler) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
       delete this._events[key];
       return;
     }
@@ -95,7 +84,6 @@ export class EventEmitter<T extends Record<string, any>> {
     if (entries) {
       const remaining = entries.filter((item) => item.handler !== handler);
       if (remaining.length === 0) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keyed hash cleanup
         delete this._events[key];
       } else {
         this._events[key] = remaining;
@@ -105,19 +93,17 @@ export class EventEmitter<T extends Record<string, any>> {
 
   private _register<K extends keyof T>(
     eventName: K,
-    handler: EventEmitter.IHandler<T[K]>,
+    handler: IHandler<T[K]>,
     context: unknown,
     once: boolean,
   ): void {
     const key = eventName as string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- handler variance cast
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     const entry: HandlerEntry = { handler: handler as any, context, once };
     this._events[key] ??= [];
     this._events[key].push(entry);
   }
 }
 
-export namespace EventEmitter {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- handler return type must be flexible
-  export type IHandler<T> = (data: Readonly<T>) => any;
-}
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+export type IHandler<T> = (data: Readonly<T>) => any;
