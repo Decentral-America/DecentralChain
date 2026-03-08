@@ -1,6 +1,6 @@
-import { ACCOUNTS, MOCK_URL, MASTER_ACCOUNT_SEED } from '../test-env';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
+import { ACCOUNTS, MASTER_ACCOUNT_SEED, MOCK_URL } from '../test-env';
 
 let signer: Signer;
 let provider: TestProvider = new TestProvider(MASTER_ACCOUNT_SEED);
@@ -18,5 +18,5 @@ it('Alias', () =>
     })
     .broadcast()
     .then(([tx]: any[]) => {
-      expect(tx.fee).toBe(0.001 * Math.pow(10, 8));
+      expect(tx.fee).toBe(0.001 * 10 ** 8);
     }));
