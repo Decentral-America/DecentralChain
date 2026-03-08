@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { Bus, EventType, config, console } from '../src/index.js';
-import type { TMessageContent } from '../src/index.js';
-import { MockAdapter } from './mock/MockAdapter.js';
 import { Signal } from 'ts-utils';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { Bus, config, console, EventType, type TMessageContent } from '../src/index.js';
+import { MockAdapter } from './mock/MockAdapter.js';
 
 describe('Bus', () => {
   let adapter: MockAdapter;
@@ -64,9 +63,9 @@ describe('Bus', () => {
   });
 
   describe('console', () => {
-    const consoleModule = (function (root: { console: Console }) {
-      return root.console;
-    })(typeof self !== 'undefined' ? self : globalThis);
+    const consoleModule = ((root: { console: Console }) => root.console)(
+      typeof self !== 'undefined' ? self : globalThis,
+    );
 
     const originError = consoleModule.error;
     const originInfo = consoleModule.info;
@@ -101,7 +100,7 @@ describe('Bus', () => {
           const message = console.getSavedMessages('error');
           const infoMessages = console.getSavedMessages('info');
           expect(infoMessages).toHaveLength(0);
-          expect(String(message[0]![0])).toBe(
+          expect(String(message[0]?.[0])).toBe(
             'Error: Timeout error for request with name "some" and timeout 10!',
           );
           done();
@@ -190,12 +189,12 @@ describe('Bus', () => {
     it('on', () => {
       let count = 0;
 
-      bus.on(event.name, function (data) {
+      bus.on(event.name, (data) => {
         count++;
         expect(data).toBe(event.data);
       });
 
-      bus.on(event.name, function (data) {
+      bus.on(event.name, (data) => {
         count++;
         expect(data).toBe(event.data);
       });
@@ -210,7 +209,7 @@ describe('Bus', () => {
     it('once', () => {
       let count = 0;
 
-      bus.once(event.name, function (data) {
+      bus.once(event.name, (data) => {
         count++;
         expect(data).toBe(event.data);
       });
