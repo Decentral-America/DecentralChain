@@ -32,13 +32,13 @@ test/
 
 This is a financial-grade library. Every change must pass:
 
-1. **Format** — `npm run format` (Prettier)
-2. **Lint** — `npm run lint:fix` (ESLint strict + type-checked)
+1. **Format** — `npm run format` (Biome)
+2. **Lint** — `npm run lint:fix` (Biome)
 3. **Typecheck** — `npm run typecheck` (TypeScript strict mode)
 4. **Test** — `npm run test` (Vitest, 90% coverage thresholds)
 5. **Validate** — `npm run validate` (publint + attw + size-limit)
 
-The pre-commit hook runs `lint-staged` + `typecheck` automatically.
+The pre-commit hook runs `lefthook` + `typecheck` automatically.
 
 ## Commit Process
 
