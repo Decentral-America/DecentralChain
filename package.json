@@ -10,8 +10,11 @@
     }
   },
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "keywords": [
     "decentralchain",
@@ -32,6 +35,10 @@
   },
   "author": "DecentralChain",
   "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
   "engines": {
     "node": ">=24"
   },
@@ -43,46 +50,32 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist coverage",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"*.{json,md,mjs,ts}\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"*.{json,md,mjs,ts}\"",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
-    "bulletproof": "npm run format && npm run lint && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint:check && npm run typecheck && npm run test",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && publint && attw --pack --ignore-rules cjs-resolves-to-esm && size-limit",
     "prepublishOnly": "npm run validate",
-    "prepare": "husky"
+    "prepare": "lefthook install",
+    "lint:fix": "biome check --write ."
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@eslint/js": "10.0.1",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "^1.11.0",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "10.0.2",
-    "eslint-config-prettier": "10.1.8",
-    "globals": "17.4.0",
-    "husky": "9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.56.1",
     "vitest": "4.0.18"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{json,md,mjs}": [
-      "prettier --write"
-    ]
   },
   "size-limit": [
     {
