@@ -1,12 +1,12 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ["test/**/*.test.js"],
+    include: ['test/**/*.test.js'],
     coverage: {
-      provider: "v8",
-      include: ["dist/**/*.js"],
-      reporter: ["text", "lcov", "json-summary"],
+      provider: 'v8',
+      include: ['dist/**/*.js'],
+      reporter: ['text', 'lcov', 'json-summary'],
       // Coverage thresholds are intentionally moderate for this project because
       // the source code is entirely generated from protobuf schemas via pbjs.
       // Quality is ensured via comprehensive encode/decode roundtrip tests that
