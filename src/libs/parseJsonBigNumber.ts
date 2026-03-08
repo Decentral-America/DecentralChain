@@ -10,14 +10,12 @@
 
 interface Options {
   strict?: boolean;
-  parse?: (s: string) => any;
-  isInstance?: (v: any) => boolean;
-  stringify?: (v: any) => string;
+  parse?: (s: string) => unknown;
+  isInstance?: (v: unknown) => boolean;
+  stringify?: (v: unknown) => string;
 }
 
-const create = function (options?: Options) {
-  'use strict';
-
+const create = (options?: Options) => {
   const _options = {
     strict: false,
   };
@@ -44,7 +42,7 @@ const create = function (options?: Options) {
 
   let text: string;
 
-  const error = function (m: string): never {
+  const error = (m: string): never => {
     throw {
       name: 'SyntaxError',
       message: m,
@@ -53,16 +51,16 @@ const create = function (options?: Options) {
     };
   };
 
-  const next = function (c?: string): string {
+  const next = (c?: string): string => {
     if (c && c !== ch) {
-      error("Expected '" + c + "' instead of '" + ch + "'");
+      error(`Expected '${c}' instead of '${ch}'`);
     }
     ch = text.charAt(at);
     at += 1;
     return ch;
   };
 
-  const number = function (): any {
+  const number = (): string | number => {
     let string = '';
 
     if (ch === '-') {
@@ -98,7 +96,7 @@ const create = function (options?: Options) {
       return options.parse(string);
     }
 
-    if (!isFinite(num)) {
+    if (!Number.isFinite(num)) {
       error('Bad number');
     } else {
       if (string.length > 15) {
@@ -109,7 +107,7 @@ const create = function (options?: Options) {
     }
   };
 
-  const string = function (): any {
+  const string = (): string => {
     let hex: number;
     let i: number;
     let str = '';
@@ -127,7 +125,7 @@ const create = function (options?: Options) {
             uffff = 0;
             for (i = 0; i < 4; i += 1) {
               hex = parseInt(next(), 16);
-              if (!isFinite(hex)) {
+              if (!Number.isFinite(hex)) {
                 break;
               }
               uffff = uffff * 16 + hex;
@@ -147,13 +145,13 @@ const create = function (options?: Options) {
     error('Bad string');
   };
 
-  const white = function (): void {
+  const white = (): void => {
     while (ch && ch <= ' ') {
       next();
     }
   };
 
-  const word = function (): any {
+  const word = (): boolean | null => {
     switch (ch) {
       case 't':
         next('t');
@@ -175,14 +173,13 @@ const create = function (options?: Options) {
         next('l');
         return null;
     }
-    error("Unexpected '" + ch + "'");
+    error(`Unexpected '${ch}'`);
   };
 
-  // eslint-disable-next-line prefer-const -- forward-reference: value is declared here, used by array/object functions below, then assigned on line 240
-  let value: () => any; // Place holder for the value function.
+  let value: () => unknown; // Place holder for the value function.
 
-  const array = function (): any[] {
-    const arr: any[] = [];
+  const array = (): unknown[] => {
+    const arr: unknown[] = [];
 
     if (ch === '[') {
       next('[');
@@ -206,9 +203,9 @@ const create = function (options?: Options) {
     error('Bad array');
   };
 
-  const object = function (): any {
+  const object = (): Record<string, unknown> => {
     let key: string;
-    const obj: Record<string, any> = {};
+    const obj: Record<string, unknown> = {};
 
     if (ch === '{') {
       next('{');
@@ -221,8 +218,8 @@ const create = function (options?: Options) {
         key = string();
         white();
         next(':');
-        if (_options.strict && Object.hasOwnProperty.call(obj, key)) {
-          error('Duplicate key "' + key + '"');
+        if (_options.strict && Object.hasOwn(obj, key)) {
+          error(`Duplicate key "${key}"`);
         }
         obj[key] = value();
         white();
@@ -238,7 +235,7 @@ const create = function (options?: Options) {
     error('Bad object');
   };
 
-  value = function (): any {
+  value = (): unknown => {
     white();
     switch (ch) {
       case '{':
@@ -270,30 +267,31 @@ const create = function (options?: Options) {
     '\\': '\\\\',
   };
 
-  let rep: any;
+  let rep: unknown;
 
   function quote(s: string): string {
     rx_escapable.lastIndex = 0;
     return rx_escapable.test(s)
       ? '"' +
-          s.replace(rx_escapable, function (a) {
+          s.replace(rx_escapable, (a) => {
             const c = meta[a];
             return typeof c === 'string'
               ? c
-              : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+              : `\\u${(`0000${a.charCodeAt(0).toString(16)}`).slice(-4)}`;
           }) +
           '"'
-      : '"' + s + '"';
+      : `"${s}"`;
   }
 
-  function str(key: string | number, holder: any): string | undefined {
+  function str(key: string | number, holder: Record<string | number, unknown>): string | undefined {
     let i: number;
     let k: string;
     let v: string | undefined;
     let length: number;
     const mind = gap;
     let partial: string[];
-    let val = holder[key];
+    // biome-ignore lint/suspicious/noExplicitAny: JSON stringify operates on arbitrary values with duck-typed method checks (toJSON, isFinite, length, for-in); unknown would require unsafe casts on every access
+    let val: any = holder[key];
 
     const isBigNumber = options?.isInstance?.(val);
 
@@ -304,7 +302,7 @@ const create = function (options?: Options) {
 
     // If the value has a toJSON method, call it to obtain a replacement value.
     if (isBigNumber) {
-      val = options.stringify!(val);
+      val = options.stringify?.(val);
     } else if (val && typeof val === 'object' && typeof val.toJSON === 'function') {
       val = val.toJSON(key);
     }
@@ -326,7 +324,7 @@ const create = function (options?: Options) {
 
       case 'number':
         // JSON numbers must be finite. Encode non-finite numbers as null.
-        return isFinite(val) ? String(val) : 'null';
+        return Number.isFinite(val) ? String(val) : 'null';
 
       case 'boolean':
         return String(val);
@@ -352,8 +350,8 @@ const create = function (options?: Options) {
             partial.length === 0
               ? '[]'
               : gap
-                ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
-                : '[' + partial.join(',') + ']';
+                ? `[\n${gap}${partial.join(`,\n${gap}`)}\n${mind}]`
+                : `[${partial.join(',')}]`;
           gap = mind;
           return v;
         }
@@ -373,7 +371,7 @@ const create = function (options?: Options) {
         } else {
           // Otherwise, iterate through all of the keys in the object.
           for (k in val) {
-            if (Object.prototype.hasOwnProperty.call(val, k)) {
+            if (Object.hasOwn(val, k)) {
               v = str(k, val);
               if (v) {
                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
@@ -386,8 +384,8 @@ const create = function (options?: Options) {
           partial.length === 0
             ? '{}'
             : gap
-              ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}'
-              : '{' + partial.join(',') + '}';
+              ? `{\n${gap}${partial.join(`,\n${gap}`)}\n${mind}}`
+              : `{${partial.join(',')}}`;
         gap = mind;
         return v;
     }
@@ -395,7 +393,7 @@ const create = function (options?: Options) {
     return undefined;
   }
 
-  const stringify = function (val: any, replacer?: any, space?: number | string): string {
+  const stringify = (val: unknown, replacer?: unknown, space?: number | string): string => {
     let i: number;
     gap = '';
     indent = '';
@@ -424,8 +422,8 @@ const create = function (options?: Options) {
     );
   };
 
-  const parse = function (source: string, reviver?: (key: string, value: any) => any): any {
-    text = source + '';
+  const parse = (source: string, reviver?: (key: string, value: unknown) => unknown): unknown => {
+    text = `${source}`;
     at = 0;
     ch = ' ';
     const result = value();
@@ -435,16 +433,16 @@ const create = function (options?: Options) {
     }
 
     return typeof reviver === 'function'
-      ? (function walk(holder: any, key: string): any {
-          let v: any;
+      ? (function walk(holder: Record<string, unknown>, key: string): unknown {
+          let v: unknown;
           const val = holder[key];
           if (val && typeof val === 'object') {
-            Object.keys(val).forEach(function (k) {
-              v = walk(val, k);
+            Object.keys(val as Record<string, unknown>).forEach((k) => {
+              v = walk(val as Record<string, unknown>, k);
               if (v !== undefined) {
-                val[k] = v;
+                (val as Record<string, unknown>)[k] = v;
               } else {
-                delete val[k];
+                delete (val as Record<string, unknown>)[k];
               }
             });
           }

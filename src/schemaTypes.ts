@@ -20,14 +20,14 @@ export type TObject = {
 export type TArray = {
   type: 'array';
   items: TSchema;
-  toBytes?: any;
-  fromBytes?: any;
+  toBytes?: (len: number) => Uint8Array;
+  fromBytes?: (bytes: Uint8Array, start?: number) => { value: number; shift: number };
 };
 
 export interface IAnyOf {
   type: 'anyOf';
-  toBytes?: any;
-  fromBytes?: any;
+  toBytes?: (value: number) => Uint8Array;
+  fromBytes?: (bytes: Uint8Array, start?: number) => { value: number; shift: number };
   discriminatorField: string; // defaults to 'type'
   discriminatorBytePos: number; // defaults to 0
   valueField?: string; // defaults to whole object
@@ -37,8 +37,8 @@ export interface IAnyOf {
 
 export type TPrimitive = {
   type?: 'primitive';
-  toBytes: (...args: any) => any;
-  fromBytes: (bytes: Uint8Array, start?: number) => any;
+  toBytes: (...args: unknown[]) => Uint8Array;
+  fromBytes: (bytes: Uint8Array, start?: number) => { value: unknown; shift: number };
 };
 
 // Data tx field serializes differently. It has type AFTER key field!!!
@@ -57,8 +57,8 @@ type TAnyOfOptions = {
 
 class AnyOfClass implements IAnyOf {
   public type = 'anyOf' as const;
-  public toBytes?: any;
-  public fromBytes?: any;
+  public toBytes?: (value: number) => Uint8Array;
+  public fromBytes?: (bytes: Uint8Array, start?: number) => { value: number; shift: number };
   public withLength?: TPrimitive;
   public discriminatorField = 'type';
   public discriminatorBytePos = 0; // defaults to 0

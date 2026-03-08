@@ -1,10 +1,10 @@
-import { serializeOrder, serializerFromSchema, serializeTx } from './serialize';
-import { parseHeader, parseOrder, parserFromSchema, parseTx } from './parse';
+import { convertLongFields, convertTxLongFields } from './convert';
 import * as json from './jsonMethods';
-import * as serializePrimitives from './serializePrimitives';
+import { parseHeader, parseOrder, parserFromSchema, parseTx } from './parse';
 import * as parsePrimitives from './parsePrimitives';
 import * as schemas from './schemas';
-import { convertLongFields, convertTxLongFields } from './convert';
+import { serializeOrder, serializerFromSchema, serializeTx } from './serialize';
+import * as serializePrimitives from './serializePrimitives';
 
 /**
  * Binary serialization and parsing utilities for DecentralChain transactions and orders.
@@ -27,8 +27,8 @@ const binary = {
   parseHeader,
 };
 
-export type { TFromLongConverter } from './serialize';
 export type { TToLongConverter } from './parse';
+export type { TFromLongConverter } from './serialize';
 
 export {
   json,
