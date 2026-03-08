@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Cross-window browser communication library for DecentralChain DApps and wallet applications",
   "type": "module",
-  "packageManager": "npm@10.9.2",
+  "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
       "import": {
@@ -45,29 +45,21 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "check:publint": "publint",
     "check:exports": "attw --pack . --ignore-rules no-resolution",
     "check:size": "size-limit",
-    "validate": "npm audit --audit-level=high && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "npm run format && npm run lint:fix && npm run typecheck && npm run test",
-    "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
-    "prepare": "husky",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "prepare": "lefthook install",
     "prepack": "npm run build",
     "postversion": "npm publish",
-    "postpublish": "git push"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.json": [
-      "prettier --write"
-    ]
+    "postpublish": "git push",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "size-limit": [
     {
@@ -85,26 +77,20 @@
     "dapp",
     "wallet"
   ],
-  "author": "Decentral-America",
+  "author": "DecentralChain",
   "license": "MIT",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@eslint/js": "10.0.1",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "^1.11.0",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "10.0.2",
-    "eslint-config-prettier": "10.1.8",
-    "globals": "17.4.0",
-    "husky": "9.1.7",
     "jsdom": "28.1.0",
-    "lint-staged": "^16.3.2",
-    "prettier": "3.8.1",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
     "ts-utils": "6.1.0",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.56.1",
     "vitest": "4.0.18"
   }
 }
