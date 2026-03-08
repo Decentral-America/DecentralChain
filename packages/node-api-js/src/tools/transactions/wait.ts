@@ -1,8 +1,8 @@
-import { type TLong } from '../../interface';
-import { head, indexBy, prop, toArray, wait } from '../utils';
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 import { fetchStatus } from '../../api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../constants';
-import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
+import { head, indexBy, prop, toArray, wait } from '../utils';
 
 /**
  * Default maximum wait time (5 minutes).

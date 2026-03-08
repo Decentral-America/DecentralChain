@@ -1,4 +1,4 @@
-import { keccak, blake2b, base58Encode, base16Decode } from '@decentralchain/ts-lib-crypto';
+import { base16Decode, base58Encode, blake2b, keccak } from '@decentralchain/ts-lib-crypto';
 
 const ETH_ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;
 

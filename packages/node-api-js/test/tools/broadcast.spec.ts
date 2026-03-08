@@ -1,10 +1,14 @@
-import create from '../../src';
-import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 import { libs, transfer } from '@decentralchain/transactions';
-import { SignedTransaction, TransferTransaction, WithId } from '@decentralchain/ts-types';
-import { TLong } from '../../src/interface';
-import { wait } from '../../src/tools/utils';
+import {
+  type SignedTransaction,
+  type TransferTransaction,
+  type WithId,
+} from '@decentralchain/ts-types';
+import create from '../../src';
 import { TRANSACTION_STATUSES } from '../../src/constants';
+import { type TLong } from '../../src/interface';
+import { wait } from '../../src/tools/utils';
+import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 
 const api = create(NODE_URL);
 

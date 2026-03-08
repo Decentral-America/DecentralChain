@@ -1,6 +1,6 @@
-import { NODE_URL } from '../_state';
 import { create } from '../../src';
-import { fetchHeadersAt, fetchHeadersLast, IBlockHeader } from '../../src/api-node/blocks';
+import { fetchHeadersAt, fetchHeadersLast, type IBlockHeader } from '../../src/api-node/blocks';
+import { NODE_URL } from '../_state';
 
 const api = create(NODE_URL);
 

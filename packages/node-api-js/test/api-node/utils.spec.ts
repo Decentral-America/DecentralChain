@@ -1,6 +1,6 @@
+import { issue } from '@decentralchain/transactions';
 import { create } from '../../src';
 import { CHAIN_ID, DAP_SCRIPT, MASTER_ACCOUNT, NODE_URL } from '../_state';
-import { issue } from '@decentralchain/transactions';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 

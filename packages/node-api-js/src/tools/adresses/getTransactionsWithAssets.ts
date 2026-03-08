@@ -1,8 +1,8 @@
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 import { type TAssetDetails } from '../../api-node/assets';
 import { fetchTransactions } from '../../api-node/transactions';
-import getAssetsByTransaction from './getAssetsByTransaction';
-import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 import { type TLong } from '../../interface';
+import getAssetsByTransaction from './getAssetsByTransaction';
 
 export default function (
   base: string,

@@ -1,7 +1,7 @@
 import dccAddress2eth from '../../src/tools/adresses/dccAddress2eth';
-import ethTxId2dcc from '../../src/tools/transactions/ethTxId2dcc';
-import dccAsset2Eth from '../../src/tools/assets/dccAsset2eth';
 import ethAddress2dcc from '../../src/tools/adresses/ethAddress2dcc';
+import dccAsset2Eth from '../../src/tools/assets/dccAsset2eth';
+import ethTxId2dcc from '../../src/tools/transactions/ethTxId2dcc';
 
 describe('dccAddress2eth – input validation', () => {
   it('throws on empty string', () => {

@@ -1,8 +1,8 @@
-import { type TLong } from '../../interface';
-import request from '../../tools/request';
-import query from '../../tools/query';
-import { pathSegment } from '../../tools/utils';
 import { type DataTransactionEntry } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
+import query from '../../tools/query';
+import request from '../../tools/request';
+import { pathSegment } from '../../tools/utils';
 
 export function fetchDataKey(
   base: string,
@@ -154,7 +154,7 @@ export function fetchAddresses(base: string): Promise<string[]> {
   });
 }
 
-// @TODO: when correct API key is received
+// NOTE: Requires node API key
 //  /addresses/verifyText/{address}
 //  /addresses/signText/{address}
 //  /addresses/sign/{address}

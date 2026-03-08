@@ -1,17 +1,17 @@
-import { TRANSACTION_STATUSES, type TTransactionStatuses } from '../../constants';
-import { type IWithApplicationStatus, type TLong } from '../../interface';
-import { fetchHeight } from '../blocks';
-import request from '../../tools/request';
-import query from '../../tools/query';
-import { deepAssign, pathSegment } from '../../tools/utils';
-import stringify from '../../tools/stringify';
 import {
   type SignedTransaction,
   type Transaction,
   type TransactionMap,
   type WithApiMixin,
 } from '@decentralchain/ts-types';
+import { TRANSACTION_STATUSES, type TTransactionStatuses } from '../../constants';
+import { type IWithApplicationStatus, type TLong } from '../../interface';
+import query from '../../tools/query';
+import request from '../../tools/request';
+import stringify from '../../tools/stringify';
 import { addStateUpdateField, type TTransaction } from '../../tools/transactions/transactions';
+import { deepAssign, pathSegment } from '../../tools/utils';
+import { fetchHeight } from '../blocks';
 
 /**
  * GET /transactions/unconfirmed/size
@@ -28,7 +28,7 @@ interface IUnconfirmedSize {
   size: number;
 }
 
-// @TODO: when correct API key is received
+// NOTE: Requires node API key
 /**
  * POST /transactions/sign/{signerAddress}
  * Sign a transaction with a non-default private key
@@ -100,7 +100,9 @@ export function fetchTransactions(
     options,
   }).then(([list]) => {
     if (!list) return [];
-    list.forEach((transaction) => addStateUpdateField(transaction));
+    list.forEach((transaction) => {
+      addStateUpdateField(transaction);
+    });
     // EthereumTransaction is not in @decentralchain/ts-types Transaction union;
     // bridge via unknown to preserve the public API type
     return list as unknown as (Transaction<TLong> & WithApiMixin)[];
@@ -123,7 +125,7 @@ export function fetchUnconfirmedInfo(
   });
 }
 
-// @TODO when correct API key is received
+// NOTE: Requires node API key
 /**
  * POST /transactions/sign
  * Sign a transaction

@@ -1,7 +1,7 @@
+import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 import { type TLong } from '../../interface';
 import request from '../../tools/request';
 import { pathSegment } from '../../tools/utils';
-import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 
 /**
  * GET /blocks/headers/seq/{from}/{to}

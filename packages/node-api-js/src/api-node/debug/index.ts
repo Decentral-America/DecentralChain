@@ -1,13 +1,13 @@
-import request from '../../tools/request';
-import { type TLong } from '../../interface';
-import query from '../../tools/query';
-import { pathSegment } from '../../tools/utils';
 import {
   type AssetDecimals,
   type DataTransactionEntry,
   type Transaction,
   type WithId,
 } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
+import query from '../../tools/query';
+import request from '../../tools/request';
+import { pathSegment } from '../../tools/utils';
 
 /**
  * DecentralChain balance history
@@ -129,7 +129,7 @@ export function fetchStateChangesByTxId(
   });
 }
 
-// @TODO need API key:
+// NOTE: Requires node API key:
 // GET /debug/stateDcc/{height}
 // POST /debug/rollback
 // DELETE /debug/rollback-to/{id}
