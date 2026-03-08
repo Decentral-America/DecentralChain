@@ -14,11 +14,13 @@ export interface IUserApi {
 }
 
 export class CustomAdapter<T extends IUserApi> extends Adapter {
-  //@ts-expect-error
   public currentUser: T;
   public static override type = AdapterType.Custom;
 
-  //@ts-expect-error
+  public static override isAvailable(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+
   constructor(userApi: T) {
     super();
     this.currentUser = userApi;
