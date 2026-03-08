@@ -19,4 +19,4 @@ Thumbs.db
 # Misc
 .size-snapshot.json
 .rpt2_cache
-*.local
+*.local.husky
