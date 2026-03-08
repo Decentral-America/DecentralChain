@@ -3,6 +3,29 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [2.3.1] - 2026-03-06
+
+### Changed
+
+- **Tooling migration**: Replaced ESLint + Prettier + Husky + lint-staged with Biome 2.4.6 + Lefthook 2.1.2.
+- Updated `packageManager` to `npm@11.9.0`.
+- Conventional Commits enforcement via Lefthook `commit-msg` hook.
+
+### Fixed
+
+- Removed 25 focused tests (`test.only`) that were masking potential regressions.
+- Fixed `==` comparisons to `===` in `testResult.ts` (strict equality).
+- Fixed variable shadowing of globals (`parseInt`, `toString`) in test files.
+- Added explicit types for `let` declarations in `assetBalance.test.ts`.
+- Replaced `v && v.version` with `v?.version` for optional chaining consistency.
+
+### Removed
+
+- ESLint (`eslint`, `@eslint/js`, `eslint-config-prettier`, `typescript-eslint`, `globals`).
+- Prettier (`prettier`, `.prettierrc.json`, `.prettierignore`).
+- Husky (`husky`, `.husky/`).
+- lint-staged (`lint-staged`, `lint-staged` block from `package.json`).
+
 ## [2.3.0] - 2026-03-05
 
 ### Security

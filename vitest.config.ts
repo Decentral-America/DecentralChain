@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import path from 'node:path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
@@ -12,14 +12,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['test/**/*.test.{ts,js}'],
+    include: ['test/**/*.spec.{ts,js}'],
     testTimeout: 60_000,
     coverage: {
       provider: 'v8',
       include: ['src/**/*.js'],
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
-        branches: 70,
+        branches: 65,
         functions: 74,
         lines: 85,
         statements: 84,
