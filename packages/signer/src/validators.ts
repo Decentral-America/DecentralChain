@@ -35,7 +35,7 @@ export const isString = (value: unknown): value is string =>
   typeof value === 'string' || value instanceof String;
 
 export const isNumber = (value: unknown): value is number =>
-  (typeof value === 'number' || value instanceof Number) && !isNaN(Number(value));
+  (typeof value === 'number' || value instanceof Number) && !Number.isNaN(Number(value));
 
 /**
  * Validates that a value is number-like (can be coerced to a finite number).
@@ -44,7 +44,7 @@ export const isNumber = (value: unknown): value is number =>
 export const isNumberLike = (value: unknown): boolean => {
   if (value == null) return false;
   const num = Number(value);
-  return !isNaN(num) && isFinite(num) && (!!value || value === 0 || value === '0');
+  return !Number.isNaN(num) && Number.isFinite(num) && (!!value || value === 0 || value === '0');
 };
 
 export const isBoolean = (value: unknown): value is boolean =>
@@ -166,7 +166,7 @@ const validateType: Record<string, (value: unknown) => boolean> = {
 };
 
 export const isValidDataPair = (data: { type: string; value: unknown }): boolean =>
-  !!(validateType[data.type] && validateType[data.type]!(data.value));
+  !!(validateType[data.type] && validateType[data.type]?.(data.value));
 
 export const isValidData = (item: unknown): boolean => {
   if (item == null) return false;
@@ -242,7 +242,12 @@ const isValidAlias = (value: string): boolean => {
   const chainByte = parts[1];
   const name = parts[2];
   // Chain byte must be exactly 1 printable ASCII character
-  if (!chainByte || chainByte.length !== 1 || chainByte.charCodeAt(0) < 33 || chainByte.charCodeAt(0) > 126) {
+  if (
+    !chainByte ||
+    chainByte.length !== 1 ||
+    chainByte.charCodeAt(0) < 33 ||
+    chainByte.charCodeAt(0) > 126
+  ) {
     return false;
   }
   return name != null ? isValidAliasName(name) : false;

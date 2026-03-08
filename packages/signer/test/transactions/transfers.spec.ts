@@ -1,7 +1,7 @@
-import { ACCOUNTS, MOCK_URL, NETWORK_BYTE } from '../test-env';
+import { libs } from '@decentralchain/transactions';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
-import { libs } from '@decentralchain/transactions';
+import { ACCOUNTS, MOCK_URL, NETWORK_BYTE } from '../test-env';
 
 const MASTER_ADDRESS = libs.crypto.address(ACCOUNTS.SIMPLE.seed, NETWORK_BYTE);
 let signer: Signer;
