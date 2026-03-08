@@ -4,7 +4,16 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
+
+    /* Type Checking — maximum strictness */
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true

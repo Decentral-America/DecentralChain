@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { createOrderPair, MAINNET_DATA, TESTNET_DATA, ARBITRARY_DATA } from '../index.js';
+import { describe, expect, it } from 'vitest';
+import { ARBITRARY_DATA, createOrderPair, MAINNET_DATA, TESTNET_DATA } from '../index.js';
 import { compareUint8Arrays } from '../utils.js';
 
 const orderPair = createOrderPair(MAINNET_DATA);
