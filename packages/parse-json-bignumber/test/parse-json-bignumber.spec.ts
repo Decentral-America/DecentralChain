@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import create from '../src/parse-json-bignumber.js';
-import type { IOptions } from '../src/parse-json-bignumber.js';
 import BigNumber from 'bignumber.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import create, { type IOptions } from '../src/parse-json-bignumber.js';
 
 const options: IOptions<BigNumber> = {
   strict: false,
@@ -128,8 +127,8 @@ describe('lib', () => {
     it('parses object with multiple big numbers', () => {
       const json = '{"amount": 9999999999999999, "fee": 1234567890123456}';
       const result = parse(json) as Record<string, unknown>;
-      expect(result['amount']).toBe('9999999999999999');
-      expect(result['fee']).toBe('1234567890123456');
+      expect(result.amount).toBe('9999999999999999');
+      expect(result.fee).toBe('1234567890123456');
     });
 
     it('parses big number inside array', () => {
@@ -183,9 +182,9 @@ describe('lib', () => {
     // --- Reviver ---
     it('supports reviver function', () => {
       const json = '{"a": 1, "b": 2}';
-      const result = parse(json, function (_key, value) {
-        return typeof value === 'number' ? (value as number) * 10 : value;
-      });
+      const result = parse(json, (_key, value) =>
+        typeof value === 'number' ? (value as number) * 10 : value,
+      );
       expect(result).toEqual({ a: 10, b: 20 });
     });
 
@@ -234,22 +233,22 @@ describe('lib', () => {
     it('parses small number as BigNumber too', () => {
       const json = '{"a": 42}';
       const result = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(result['a'])).toBe(true);
-      expect((result['a'] as BigNumber).toNumber()).toBe(42);
+      expect(BigNumber.isBigNumber(result.a)).toBe(true);
+      expect((result.a as BigNumber).toNumber()).toBe(42);
     });
 
     it('parses negative big number', () => {
       const json = '{"a": -9999999999999999999}';
       const result = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(result['a'])).toBe(true);
-      expect((result['a'] as BigNumber).toFixed()).toBe('-9999999999999999999');
+      expect(BigNumber.isBigNumber(result.a)).toBe(true);
+      expect((result.a as BigNumber).toFixed()).toBe('-9999999999999999999');
     });
 
     it('parses float as BigNumber', () => {
       const json = '{"a": 3.14}';
       const result = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(result['a'])).toBe(true);
-      expect((result['a'] as BigNumber).toNumber()).toBe(3.14);
+      expect(BigNumber.isBigNumber(result.a)).toBe(true);
+      expect((result.a as BigNumber).toNumber()).toBe(3.14);
     });
 
     it('parses array of big numbers', () => {
@@ -257,8 +256,8 @@ describe('lib', () => {
       const result = parse(json) as BigNumber[];
       expect(BigNumber.isBigNumber(result[0])).toBe(true);
       expect(BigNumber.isBigNumber(result[1])).toBe(true);
-      expect(result[0]!.toFixed()).toBe('99999999999999999999');
-      expect(result[1]!.toFixed()).toBe('88888888888888888888');
+      expect(result[0]?.toFixed()).toBe('99999999999999999999');
+      expect(result[1]?.toFixed()).toBe('88888888888888888888');
     });
   });
 
@@ -276,8 +275,8 @@ describe('lib', () => {
       const parse = create(options).parse;
       const json = '{"a": 1, "a": 2}';
       const result = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(result['a'])).toBe(true);
-      expect((result['a'] as BigNumber).toNumber()).toBe(2);
+      expect(BigNumber.isBigNumber(result.a)).toBe(true);
+      expect((result.a as BigNumber).toNumber()).toBe(2);
     });
 
     it('allows duplicate keys with default (no options)', () => {
@@ -412,7 +411,7 @@ describe('lib', () => {
 
     // --- Replacer function ---
     it('uses replacer function', () => {
-      const result = stringify({ a: 1, b: 2, c: 3 }, function (_key: string, value: unknown) {
+      const result = stringify({ a: 1, b: 2, c: 3 }, (_key: string, value: unknown) => {
         if (_key === 'b') return undefined;
         return value;
       });
@@ -523,7 +522,7 @@ describe('lib', () => {
       const { parse, stringify } = create(options);
       const json = '{"amount":9999999999999999}';
       const parsed = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(parsed['amount'])).toBe(true);
+      expect(BigNumber.isBigNumber(parsed.amount)).toBe(true);
       expect(stringify(parsed)).toBe(json);
     });
 
@@ -545,9 +544,9 @@ describe('lib', () => {
       const json =
         '{"type":4,"sender":"3N1xca","recipient":"3MsX2p","amount":10000000000000000,"fee":100000,"timestamp":1609459200000}';
       const parsed = parse(json) as Record<string, any>;
-      expect(BigNumber.isBigNumber(parsed['amount'])).toBe(true);
-      expect(BigNumber.isBigNumber(parsed['fee'])).toBe(true);
-      expect(BigNumber.isBigNumber(parsed['timestamp'])).toBe(true);
+      expect(BigNumber.isBigNumber(parsed.amount)).toBe(true);
+      expect(BigNumber.isBigNumber(parsed.fee)).toBe(true);
+      expect(BigNumber.isBigNumber(parsed.timestamp)).toBe(true);
       expect(stringify(parsed)).toBe(json);
     });
   });
@@ -565,9 +564,9 @@ describe('lib', () => {
       const resultB = b.parse(json) as Record<string, unknown>;
 
       // default mode: string
-      expect(typeof resultA['x']).toBe('string');
+      expect(typeof resultA.x).toBe('string');
       // BigNumber mode: BigNumber
-      expect(BigNumber.isBigNumber(resultB['x'])).toBe(true);
+      expect(BigNumber.isBigNumber(resultB.x)).toBe(true);
     });
 
     it('create() returns both parse and stringify', () => {
@@ -631,7 +630,7 @@ describe('lib', () => {
       const { stringify } = create(options);
       const data = { a: new BigNumber(NaN) };
       const calls: unknown[] = [];
-      stringify(data, function (_key: string, value: unknown) {
+      stringify(data, (_key: string, value: unknown) => {
         if (_key === 'a') calls.push(value);
         return value;
       });
@@ -641,7 +640,7 @@ describe('lib', () => {
     it('replacer can transform BigNumber Infinity null to custom value', () => {
       const { stringify } = create(options);
       const data = { a: new BigNumber(Infinity) };
-      const result = stringify(data, function (_key: string, value: unknown) {
+      const result = stringify(data, (_key: string, value: unknown) => {
         if (value === null && _key === 'a') return 0;
         return value;
       });
@@ -674,19 +673,19 @@ describe('lib', () => {
         const { parse } = create();
         const result = parse('{"a": {"b": 1}}') as Record<string, unknown>;
         expect(Object.getPrototypeOf(result)).toBeNull();
-        expect(Object.getPrototypeOf(result['a'])).toBeNull();
+        expect(Object.getPrototypeOf(result.a)).toBeNull();
       });
 
       it('constructor key works on null-prototype object', () => {
         const { parse } = create();
         const result = parse('{"constructor": "safe"}') as Record<string, unknown>;
-        expect(result['constructor']).toBe('safe');
+        expect(result.constructor).toBe('safe');
       });
 
       it('prototype key works on null-prototype object', () => {
         const { parse } = create();
         const result = parse('{"prototype": 123}') as Record<string, unknown>;
-        expect(result['prototype']).toBe(123);
+        expect(result.prototype).toBe(123);
       });
     });
 
@@ -776,7 +775,7 @@ describe('lib', () => {
     describe('error context window', () => {
       it('error does not contain full source text', () => {
         const { parse } = create();
-        const longJson = '{"a": ' + '1'.repeat(1000) + '}bad';
+        const longJson = `{"a": ${'1'.repeat(1000)}}bad`;
         try {
           parse(longJson);
           expect.fail('should have thrown');
@@ -805,7 +804,7 @@ describe('lib', () => {
     describe('nesting depth limit', () => {
       it('rejects deeply nested arrays (>512)', () => {
         const { parse } = create();
-        const deep = '['.repeat(600) + '1' + ']'.repeat(600);
+        const deep = `${'['.repeat(600)}1${']'.repeat(600)}`;
         expect(() => parse(deep)).toThrow(/Nesting too deep/);
       });
 
@@ -820,7 +819,7 @@ describe('lib', () => {
 
       it('allows nesting up to 512', () => {
         const { parse } = create();
-        const deep = '['.repeat(512) + '1' + ']'.repeat(512);
+        const deep = `${'['.repeat(512)}1${']'.repeat(512)}`;
         expect(() => parse(deep)).not.toThrow();
       });
     });
@@ -963,7 +962,7 @@ describe('lib', () => {
       it('parse() from within a reviver does not corrupt outer parse state', () => {
         const instance = create();
         const json = '{"a": 1, "b": 2}';
-        const result = instance.parse(json, function (_key, value) {
+        const result = instance.parse(json, (_key, value) => {
           // Re-entrant parse inside the reviver
           if (_key === 'a') {
             return instance.parse('{"nested": 99}');
@@ -971,16 +970,16 @@ describe('lib', () => {
           return value;
         }) as Record<string, unknown>;
         // Reviver replaced "a" with the re-entrant parse result
-        expect(result['a']).toEqual({ nested: 99 });
+        expect(result.a).toEqual({ nested: 99 });
         // "b" should still be intact from the original parse
-        expect(result['b']).toBe(2);
+        expect(result.b).toBe(2);
       });
 
       it('stringify() from within a replacer does not corrupt outer stringify state', () => {
         const instance = create();
         const data = { a: 1, b: { c: 2 } };
         let innerResult = '';
-        const result = instance.stringify(data, function (_key, value) {
+        const result = instance.stringify(data, (_key, value) => {
           // Re-entrant stringify inside the replacer
           if (_key === 'a') {
             innerResult = instance.stringify({ inner: 'call' });
@@ -998,7 +997,7 @@ describe('lib', () => {
         let innerResult = '';
         const result = instance.stringify(
           data,
-          function (_key, value) {
+          (_key, value) => {
             if (_key === 'a') {
               // Inner call uses different indentation
               innerResult = instance.stringify({ x: 1 }, null, 4);
@@ -1016,7 +1015,7 @@ describe('lib', () => {
         const instance = create(options);
         const data = { a: new BigNumber('99999999999999999999'), b: new BigNumber(42) };
         let innerResult = '';
-        const result = instance.stringify(data, function (_key, value) {
+        const result = instance.stringify(data, (_key, value) => {
           if (_key === 'a') {
             innerResult = instance.stringify({ z: new BigNumber(100) });
           }
@@ -1032,7 +1031,7 @@ describe('lib', () => {
       it('replacer returning a different string quotes it (prevents invalid JSON)', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42) };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           if (_key === 'a') return 'hello';
           return value;
         });
@@ -1044,7 +1043,7 @@ describe('lib', () => {
       it('replacer returning same string preserves raw number output', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42) };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           // Return the stringified BigNumber value unchanged
           return value;
         });
@@ -1055,7 +1054,7 @@ describe('lib', () => {
       it('replacer returning a number for BigNumber produces valid JSON', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42) };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           if (_key === 'a') return 0;
           return value;
         });
@@ -1066,7 +1065,7 @@ describe('lib', () => {
       it('replacer returning boolean for BigNumber produces valid JSON', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42) };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           if (_key === 'a') return true;
           return value;
         });
@@ -1077,7 +1076,7 @@ describe('lib', () => {
       it('replacer returning null for BigNumber produces valid JSON', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42) };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           if (_key === 'a') return null;
           return value;
         });
@@ -1088,7 +1087,7 @@ describe('lib', () => {
       it('replacer returning undefined for BigNumber omits the key', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42), b: 1 };
-        const result = stringify(data, function (_key, value) {
+        const result = stringify(data, (_key, value) => {
           if (_key === 'a') return undefined;
           return value;
         });
