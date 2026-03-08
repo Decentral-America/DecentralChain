@@ -115,7 +115,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
       [SIGN_TYPE.AUTH]: [1],
       [SIGN_TYPE.MATCHER_ORDERS]: [1],
       [SIGN_TYPE.DCC_CONFIRMATION]: [1],
-      [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
+      [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3, 4],
       [SIGN_TYPE.CANCEL_ORDER]: [1],
       [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
       [SIGN_TYPE.ISSUE]: [2],
@@ -133,6 +133,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
       [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
       [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
       [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
+      [SIGN_TYPE.ETHEREUM_TX]: [1],
     };
   }
 
