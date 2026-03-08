@@ -2,7 +2,6 @@ export function isString(value: unknown): boolean {
   return typeof value === 'string';
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- T constrains the validator's input shape
 const required = <T>(value: T | null | undefined): boolean => {
   return value != null;
 };

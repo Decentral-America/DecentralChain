@@ -1,8 +1,7 @@
-import type { AliasTransaction } from '@decentralchain/ts-types';
+import { type AliasTransaction } from '@decentralchain/ts-types';
 import { ALIAS, type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
-import { prop, pipe, length, lte, gte } from '../utils/index.js';
+import { gte, length, lte, pipe, prop } from '../utils/index.js';
 import {
   charsInDictionary,
   createValidator,
@@ -10,6 +9,7 @@ import {
   requiredValidator,
   validate,
 } from '../validators/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const alias = factory<IDCCGuiAlias, AliasTransaction<string>>({
   ...getDefaultTransform(),

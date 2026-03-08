@@ -1,32 +1,32 @@
-import type {
-  AliasTransaction,
-  BurnTransaction,
-  CancelLeaseTransaction,
-  DataTransaction,
-  DataTransactionEntry,
-  ExchangeTransaction,
-  ExchangeTransactionOrder,
-  InvokeScriptCall,
-  InvokeScriptCallArgument,
-  InvokeScriptPayment,
-  InvokeScriptTransaction,
-  IssueTransaction,
-  LeaseTransaction,
-  MassTransferItem,
-  MassTransferTransaction,
-  ReissueTransaction,
-  SetAssetScriptTransaction,
-  SetScriptTransaction,
-  SignableTransaction,
-  SignedIExchangeTransactionOrder,
-  SponsorshipTransaction,
-  Transaction,
-  TransferTransaction,
-  UpdateAssetInfoTransaction,
+import {
+  type AliasTransaction,
+  type BurnTransaction,
+  type CancelLeaseTransaction,
+  type DataTransaction,
+  type DataTransactionEntry,
+  type ExchangeTransaction,
+  type ExchangeTransactionOrder,
+  type InvokeScriptCall,
+  type InvokeScriptCallArgument,
+  type InvokeScriptPayment,
+  type InvokeScriptTransaction,
+  type IssueTransaction,
+  type LeaseTransaction,
+  type MassTransferItem,
+  type MassTransferTransaction,
+  type ReissueTransaction,
+  type SetAssetScriptTransaction,
+  type SetScriptTransaction,
+  type SignableTransaction,
+  type SignedIExchangeTransactionOrder,
+  type SponsorshipTransaction,
+  type Transaction,
+  type TransferTransaction,
+  type UpdateAssetInfoTransaction,
 } from '@decentralchain/ts-types';
 import { TYPES } from '../constants/index.js';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic map over all transaction types
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 interface TConvertMap<TO, T extends SignableTransaction<any>> {
   [TYPES.ISSUE]: TReplaceParam<T, 'fee' | 'quantity', TO>;
   [TYPES.TRANSFER]: TReplaceParam<T, 'fee' | 'amount', TO>;
@@ -63,12 +63,11 @@ type TReplaceParam<T, KEYS, NEW_VALUE> = {
 
 type IFactory<FROM, TO> = (long: FROM) => TO;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic over all transaction types
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 const defaultConvert = <FROM, TO, T extends Transaction<any>>(
   data: T,
   factory: IFactory<FROM, TO>,
 ): TReplaceParam<T, 'fee', TO> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Transaction<any>.fee is typed as any
   return Object.assign({}, data, { fee: factory(data.fee) }) as TReplaceParam<T, 'fee', TO>;
 };
 
@@ -99,16 +98,16 @@ const reissue = <FROM, TO, TX extends ReissueTransaction<FROM>>(
 const burn = <
   FROM,
   TO,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- legacy field compatibility
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   TX extends BurnTransaction<FROM> & { amount?: any },
 >(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- legacy field fallback
+  // biome-ignore lint/suspicious/noExplicitAny: legacy field fallback
   amount: tx.amount != null ? factory(tx.amount) : factory((tx as any).quantity as FROM),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- legacy field fallback
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   quantity: tx.amount != null ? factory(tx.amount) : factory((tx as any).quantity as FROM),
 });
 
@@ -232,7 +231,6 @@ export function convert<
   FROM,
   TO,
   TX extends SignableTransaction<FROM>,
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- TYPE is used in return type mapping
   TYPE extends TX['type'] = TX['type'],
 >(tx: TX, factory: IFactory<FROM, TO>): TConvertMap<TO, TX>[TYPE];
 export function convert<

@@ -1,9 +1,9 @@
-import type { MassTransferItem, MassTransferTransaction } from '@decentralchain/ts-types';
-import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
+import { type MassTransferItem, type MassTransferTransaction } from '@decentralchain/ts-types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
 import { emptyError, getAssetId, getCoins, has, ifElse, map, pipe, prop } from '../utils/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const remapTransferItem = factory<
   IDCCGuiMassTransferItem<TMoney | TLong>,
@@ -22,7 +22,7 @@ const getFirstMassTransferItem = (
   if (!list.length) {
     throw new Error('MassTransfer transaction must have one transfer!');
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- length check above guarantees element exists
+  // biome-ignore lint/style/noNonNullAssertion: asserted safe
   return list[0]!;
 };
 
@@ -35,9 +35,9 @@ export const massTransfer = factory<
   assetId: pipe<TDCCGuiMassTransfer, string, string>(
     ifElse<TDCCGuiMassTransfer, string, string>(
       has('assetId'),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- union type narrowing
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
       prop<any, 'assetId'>('assetId'),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex pipe type chain
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
       pipe<any, IDCCGuiMassTransferItem<TMoney>[], IDCCGuiMassTransferItem<TMoney>, TMoney, string>(
         prop<IDCCGuiMassTransferMoney, 'transfers'>('transfers'),
         getFirstMassTransferItem,

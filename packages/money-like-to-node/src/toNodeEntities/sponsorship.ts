@@ -1,14 +1,12 @@
-import type { SponsorshipTransaction } from '@decentralchain/ts-types';
-import type { TMoney, TWithPartialFee } from '../types/index.js';
+import { type SponsorshipTransaction } from '@decentralchain/ts-types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { type TMoney, type TWithPartialFee } from '../types/index.js';
 import { getAssetId, getCoins, ifElse, isStopSponsorship, pipe, prop } from '../utils/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-export interface IUpdatedISponsorshipTransaction<LONG> extends Omit<
-  SponsorshipTransaction<LONG>,
-  'minSponsoredAssetFee'
-> {
+export interface IUpdatedISponsorshipTransaction<LONG>
+  extends Omit<SponsorshipTransaction<LONG>, 'minSponsoredAssetFee'> {
   minSponsoredAssetFee: LONG | null;
 }
 
