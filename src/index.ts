@@ -1,9 +1,9 @@
 import bs58 from 'bs58';
-import { compareUint8Arrays } from './utils.js';
+import ARBITRARY_RAW_DATA from './arbitrary.json' with { type: 'json' };
 
 import MAINNET_RAW_DATA from './mainnet.json' with { type: 'json' };
 import TESTNET_RAW_DATA from './testnet.json' with { type: 'json' };
-import ARBITRARY_RAW_DATA from './arbitrary.json' with { type: 'json' };
+import { compareUint8Arrays } from './utils.js';
 
 /** A tuple of [amountAsset, priceAsset] */
 export type TPair = readonly [amountAsset: string, priceAsset: string];
@@ -77,18 +77,16 @@ const orderPair = (predefinedList: readonly string[], first: string, second: str
  * - `createOrderPair(data)` → returns `(a, b) => [amount, price]`
  * - `createOrderPair(data, a, b)` → returns `[amount, price]`
  */
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
-const curry = (f: (...args: any[]) => any) => {
+const curry = (f: (...args: never[]) => unknown) => {
   const totalargs = f.length;
   const partial =
-    (args: any[], fn: (...a: any[]) => any) =>
-    (...rest: any[]) =>
+    (args: unknown[], fn: (...a: unknown[]) => unknown) =>
+    (...rest: unknown[]) =>
       fn(...args, ...rest);
-  const fn = (...args: any[]): any =>
-    args.length < totalargs ? partial(args, fn) : f(...args.slice(0, totalargs));
+  const fn = (...args: unknown[]): unknown =>
+    args.length < totalargs ? partial(args, fn) : f(...(args.slice(0, totalargs) as never[]));
   return fn;
 };
-/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
 
 /**
  * Creates an ordering function from a priority list. Supports currying.
