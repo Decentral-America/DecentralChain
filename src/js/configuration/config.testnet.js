@@ -1,17 +1,14 @@
-const nodeUrl = 'https://nodes-testnet.wavesnodes.com';
+const nodeUrl = 'https://testnet-node.decentralchain.io';
 
 export default {
-    networkId: 'testnet',
-    displayName: 'Testnet',
-    apiBaseUrl: nodeUrl,
-    useCustomRequestConfig: true,
-    dataServicesBaseUrl: 'https://api.testnet.wavesplatform.com/v0',
-    nodes: [
-        {url: nodeUrl, maintainer: 'Waves', showAsLink: true}
-    ],
-    faucet: {
-        url: 'https://waves-faucet-testnet.wvservices.com/faucet',
-        captchaKey: '6Le5cskZAAAAAGR6u8UvY1-wn4Gg97lUef-hFfQC',
-        address: '3Myqjf1D44wR8Vko4Tr5CwSzRNo2Vg9S7u7'
-    }
+  networkId: 'testnet',
+  displayName: 'Testnet',
+  apiBaseUrl: nodeUrl,
+  useCustomRequestConfig: true,
+  dataServicesBaseUrl: 'https://data-service.decentralchain.io/v0',
+  nodes: [
+    { url: nodeUrl, maintainer: 'DCC', showAsLink: true },
+    { url: 'https://testnet-node1.decentralchain.io', maintainer: 'DCC', showAsLink: true },
+    { url: 'https://testnet-node2.decentralchain.io', maintainer: 'DCC', showAsLink: true },
+  ],
 };

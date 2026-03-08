@@ -34,7 +34,7 @@
         &.disabled {
             cursor: default;
             border: none;
-            color: map.get(variables.$colors, basic500);
+            color: map.get(variables.$colors, white);
         }
 
         &.first {

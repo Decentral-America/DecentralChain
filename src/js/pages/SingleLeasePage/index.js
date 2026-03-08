@@ -1,1 +1,1 @@
-export {SingleLeasePage as default} from './SingleLeasePage.container';
+export { SingleLeasePage as default } from './SingleLeasePage.container';

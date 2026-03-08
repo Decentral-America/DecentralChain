@@ -1,2 +1,2 @@
-export * from './getNetworkByte'
-export * from './convertEthTx'
+export * from './convertEthTx';
+export * from './getNetworkByte';

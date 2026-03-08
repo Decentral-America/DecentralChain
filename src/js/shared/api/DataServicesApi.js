@@ -1,11 +1,9 @@
-import axios from 'axios';
-
 export const dataServicesApi = (baseUrl) => {
-    const get = (url, config) => axios.get(baseUrl + url, config);
+  const get = (url) => fetch(baseUrl + url).then((res) => res.json());
 
-    return {
-        aliases: {
-            address: (alias) => get('/aliases/' + encodeURI(alias))
-        }
-    };
+  return {
+    aliases: {
+      address: (alias) => get(`/aliases/${encodeURI(alias)}`),
+    },
+  };
 };

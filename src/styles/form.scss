@@ -32,7 +32,7 @@ input {
         line-height: 1.25;
 
         & ::placeholder {
-            @include mixins.font(headline3, basic500);
+            @include mixins.font(headline3, white);
             line-height: 1.25;
         }
 
@@ -47,20 +47,20 @@ input {
 
     &:not(.search-input) {
         &::-webkit-input-placeholder {
-            color: map.get(variables.$colors, basic500);
+            color: map.get(variables.$colors, white);
         }
         &::-moz-placeholder {
-            color: map.get(variables.$colors, basic500);
+            color: map.get(variables.$colors, white);
         }
         &:-ms-input-placeholder {
-            color: map.get(variables.$colors, basic500);
+            color: map.get(variables.$colors, white);
         }
         &:-moz-placeholder {
-            color: map.get(variables.$colors, basic500);
+            color: map.get(variables.$colors, white);
         }
     }
 }
 
 label {
-    @include mixins.font(body, basic500);
+    @include mixins.font(body, white);
 }

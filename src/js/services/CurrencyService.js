@@ -1,71 +1,59 @@
 import Currency from '../shared/Currency';
-import {ApiClientService} from './ApiClientService';
-import {VostokToWavesEnterprise} from '../shared/constants';
+import { ApiClientService } from './ApiClientService';
 
 const FAILURE = new Currency({
-    id: 'failure',
-    displayName: 'Failed to load',
-    precision: 8
-});
-
-const WavesEnterprise = new Currency({
-    id: VostokToWavesEnterprise.id,
-    displayName: VostokToWavesEnterprise.name,
-    precision: 8
+  id: 'failure',
+  displayName: 'Failed to load',
+  precision: 8,
 });
 
 export class CurrencyService extends ApiClientService {
-    constructor(configurationService, currencyCache, networkId) {
-        super(configurationService, networkId);
-        this.promisesCache = {};
-        this.currencyCache = currencyCache;
+  constructor(configurationService, currencyCache, networkId) {
+    super(configurationService, networkId);
+    this.promisesCache = {};
+    this.currencyCache = currencyCache;
+  }
+
+  put = (currency) => {
+    this.currencyCache.put(currency);
+  };
+
+  get = (assetId) => {
+    if (!assetId) {
+      return Promise.resolve(Currency.DCC);
     }
 
-    put = currency => {
-        this.currencyCache.put(currency);
-    };
+    return this.currencyCache.get(assetId).then((currency) => {
+      if (currency) {
+        return currency;
+      }
 
-    get = assetId => {
-        if (!assetId) {
-            return Promise.resolve(Currency.WAVES);
-        }
+      if (this.promisesCache[assetId]) {
+        return this.promisesCache[assetId];
+      }
 
-        // TODO: remove after token is renamed
-        if (assetId === VostokToWavesEnterprise.id) {
-            return Promise.resolve(WavesEnterprise);
-        }
+      const promise = this.getApi()
+        .assets.details(assetId)
+        .then((infoResponse) => {
+          const c = Currency.fromAssetDetails(infoResponse);
+          this.put(c);
 
-        return this.currencyCache.get(assetId)
-            .then(currency => {
-                if (currency) {
-                    return currency;
-                }
+          return c;
+        })
+        .catch((error) => {
+          console.error(error);
 
-                if (this.promisesCache[assetId]) {
-                    return this.promisesCache[assetId];
-                }
+          if (error.response) {
+            console.error(error.response.data);
+            console.error(error.response.status);
+          }
 
-                const promise = this.getApi().assets.details(assetId)
-                    .then(infoResponse => {
-                        const c = Currency.fromAssetDetails(infoResponse);
-                        this.put(c);
+          return FAILURE;
+        });
 
-                        return c;
-                    })
-                    .catch(error => {
-                        console.log(error);
+      this.promisesCache[assetId] = promise;
 
-                        if (error.response) {
-                            console.log(error.response.data);
-                            console.log(error.response.status);
-                        }
-
-                        return FAILURE;
-                    });
-
-                this.promisesCache[assetId] = promise;
-
-                return promise;
-            });
-    };
+      return promise;
+    });
+  };
 }

@@ -33,7 +33,7 @@ table {
 
     > thead {
         background-color: map.get(variables.$colors, basic50);
-        @include mixins.font(body, basic500);
+        @include mixins.font(body, white);
 
         tr {
             border: none;
@@ -91,7 +91,7 @@ table {
                         height: 100%;
                         box-sizing: border-box;
                         background-color: map.get(variables.$colors, basic50);
-                        @include mixins.font(body, basic500);
+                        @include mixins.font(body, white);
                     }
                 }
             }
