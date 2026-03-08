@@ -1,5 +1,5 @@
-import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { libs, serializeCustomData } from '@decentralchain/transactions';
+import { SeedAdapter } from '../src/adapters/SeedAdapter';
 
 describe('WSeed adapter test', () => {
   it('Create adapter from simple seed', async () => {

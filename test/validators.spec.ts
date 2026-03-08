@@ -1,9 +1,9 @@
-import { SeedAdapter } from '../src/adapters';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
+import { seedUtils } from '@decentralchain/transactions';
+import { SeedAdapter } from '../src/adapters';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
-import { BigNumber } from '@decentralchain/bignumber';
-import { seedUtils } from '@decentralchain/transactions';
 
 const Seed = seedUtils.Seed;
 

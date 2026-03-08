@@ -1,28 +1,36 @@
-import { type IAdapterSignMethods } from './interfaces';
-import { libs, protoSerialize } from '@decentralchain/transactions';
-import * as dccTransactions from '@decentralchain/transactions';
 import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
+import * as dccTransactions from '@decentralchain/transactions';
+import { libs, protoSerialize } from '@decentralchain/transactions';
+import { type IAdapterSignMethods } from './interfaces';
 import { prepare } from './prepare';
+
 const { processors } = prepare;
+
 import { Money } from '@decentralchain/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
 const { txToProtoBytes } = protoSerialize;
 
-const toNode = (data: any, convert?: Function) => {
+const toNode = (
+  data: Record<string, unknown>,
+  convert?: (r: Record<string, unknown>) => Record<string, unknown>,
+) => {
   const r = mlToNode(data);
   r.timestamp = new Date(r.timestamp).getTime();
   return convert ? convert(r) : r;
 };
 
-const burnToNode = (data: any, convert?: Function) => {
+const burnToNode = (
+  data: Record<string, unknown>,
+  convert?: (r: Record<string, unknown>) => Record<string, unknown>,
+) => {
   const r = mlToNode(data);
-  const withAmount: any = {
+  const withAmount: Record<string, unknown> = {
     ...r,
     amount: r.quantity,
   };
-  withAmount.timestamp = new Date(withAmount.timestamp).getTime();
+  withAmount.timestamp = new Date(withAmount.timestamp as number).getTime();
   return convert ? convert(withAmount) : withAmount;
 };
 
@@ -74,12 +82,12 @@ export enum SIGN_TYPE {
 }
 
 export interface ITypesMap {
-  getBytes: Record<number, (data: any) => Uint8Array>;
+  getBytes: Record<number, (data: Record<string, unknown>) => Uint8Array>;
   adapter: keyof IAdapterSignMethods;
-  toNode?: (data: any, networkByte: number) => any;
+  toNode?: (data: Record<string, unknown>, networkByte: number) => Record<string, unknown>;
 }
 
-const getCancelOrderBytes = (txData: any) => {
+const getCancelOrderBytes = (txData: Record<string, unknown>) => {
   const { orderId, id, senderPublicKey, sender } = txData;
   const pBytes = BASE58_STRING(senderPublicKey || sender);
   const orderIdBytes = BASE58_STRING(id || orderId);
@@ -296,7 +304,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         {
           ...data,
           assetId: data.assetId || data.transfers[0].amount.asset.id,
-          transfers: data.transfers.map((item: any) => {
+          transfers: data.transfers.map((item: Record<string, unknown>) => {
             const recipient = processors.recipient(String.fromCharCode(networkByte))(
               item.name || item.recipient,
             );
