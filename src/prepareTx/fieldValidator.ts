@@ -1,6 +1,6 @@
-import { libs } from '@decentralchain/transactions';
-import { Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Money } from '@decentralchain/data-entities';
+import { libs } from '@decentralchain/transactions';
 
 const { stringToBytes, base58Decode, keccak, blake2b } = libs.crypto;
 
@@ -44,7 +44,7 @@ export const ERROR_MSG = {
   NULL_VALUE: 'field is not null',
 };
 
-export const isValidAddress = function (address: string, networkByte: number) {
+export const isValidAddress = (address: string, networkByte: number) => {
   if (!address || typeof address !== 'string') {
     throw new Error('Missing or invalid address');
   }
@@ -75,13 +75,13 @@ const isBase64 = (value: string): boolean => {
   return regExp.test(value);
 };
 
-//@ts-ignore
-const getBytesFromString = (value) => {
+//@ts-expect-error
+const getBytesFromString = (value: string) => {
   return stringToBytes(value);
 };
 
-//@ts-ignore
-const numberToString = (num) => (num && typeof num === 'number' ? num.toString() : num);
+//@ts-expect-error
+const numberToString = (num: unknown) => (num && typeof num === 'number' ? num.toString() : num);
 
 const error = ({ value, ...options }: IFieldOptions, message: string) => {
   const { name: field, type } = options;
@@ -259,7 +259,7 @@ const address = (options: IFieldOptions) => {
   const { value } = options;
   const validateAddress = (address: string) => {
     try {
-      return isValidAddress(address, options.optionalData!);
+      return isValidAddress(address, options.optionalData as number);
     } catch {
       return false;
     }
@@ -318,8 +318,11 @@ const timestamp = (options: IFieldOptions) => {
   required(options);
   const { value } = options;
 
-  if (isNaN(value) || (value && !(value instanceof Date || typeof value === 'number' || +value))) {
-    if (typeof value !== 'string' || isNaN(Date.parse(value))) {
+  if (
+    Number.isNaN(value) ||
+    (value && !(value instanceof Date || typeof value === 'number' || +value))
+  ) {
+    if (typeof value !== 'string' || Number.isNaN(Date.parse(value))) {
       return error(options, ERROR_MSG.WRONG_TIMESTAMP);
     }
   }
@@ -428,37 +431,42 @@ const transfers = (options: IFieldOptions) => {
     error(options, ERROR_MSG.REQUIRED);
   }
 
-  //@ts-ignore
+  //@ts-expect-error
   const errors = (value || [])
-    .map(({ recipient, amount, name }: any, index: any) => {
-      const dataErrors = [];
+    .map(
+      (
+        { recipient, amount, name }: { recipient?: string; amount?: unknown; name?: string },
+        index: number,
+      ) => {
+        const dataErrors: unknown[] = [];
 
-      try {
-        numberLike({
-          ...options,
-          value: amount,
-          name: `${options.name}:${index}:amount`,
-          optional: false,
-        });
-      } catch (e) {
-        dataErrors.push(e);
-      }
+        try {
+          numberLike({
+            ...options,
+            value: amount,
+            name: `${options.name}:${index}:amount`,
+            optional: false,
+          });
+        } catch (e) {
+          dataErrors.push(e);
+        }
 
-      try {
-        aliasOrAddress({
-          ...options,
-          value: recipient || name,
-          name: `${options.name}:${index}:recipient`,
-          optional: false,
-        });
-      } catch (e) {
-        dataErrors.push(e);
-      }
+        try {
+          aliasOrAddress({
+            ...options,
+            value: recipient || name,
+            name: `${options.name}:${index}:recipient`,
+            optional: false,
+          });
+        } catch (e) {
+          dataErrors.push(e);
+        }
 
-      return dataErrors;
-      //@ts-ignore
-    })
-    .filter((item: any) => item.length);
+        return dataErrors;
+        //@ts-expect-error
+      },
+    )
+    .filter((item: unknown[]) => item.length);
 
   if (errors.length) {
     error(options, errors);
@@ -471,66 +479,74 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
   if (!Array.isArray(value)) {
     error(options, ERROR_MSG.WRONG_TYPE);
   }
-  //@ts-ignore
+  //@ts-expect-error
   const errors = value
-    .map(({ key, type, value }: any, index: any) => {
-      if (!noKey) {
+    .map(
+      ({ key, type, value }: { key?: string; type?: string; value?: unknown }, index: number) => {
+        if (!noKey) {
+          try {
+            string({
+              ...options,
+              value: key,
+              name: `${options.name}:${index}:key`,
+              optional: false,
+            });
+          } catch (e) {
+            return e;
+          }
+        }
+        const itemOptions = {
+          ...options,
+          name: `${options.name}:${index}:value`,
+          optional: false,
+          value,
+        };
+
         try {
-          string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
+          switch (type) {
+            case 'integer':
+              numberLike(itemOptions);
+              break;
+            case 'boolean':
+              boolean(itemOptions);
+              break;
+            case 'binary':
+              binary(itemOptions);
+              break;
+            case 'string':
+              string(itemOptions);
+              break;
+            case undefined:
+              isNull(itemOptions);
+              break;
+            case 'list':
+              if (isArgs) {
+                const listValues = {
+                  ...itemOptions,
+                  name: `${itemOptions.name}:list`,
+                  value: itemOptions.value,
+                };
+
+                if (listValues.value) {
+                  data(listValues, true);
+                  break;
+                }
+              }
+              break;
+            default:
+              error(
+                { ...options, value: key, name: `${options.name}:${index}:type` },
+                ERROR_MSG.WRONG_TYPE,
+              );
+          }
         } catch (e) {
           return e;
         }
-      }
-      const itemOptions = {
-        ...options,
-        name: `${options.name}:${index}:value`,
-        optional: false,
-        value,
-      };
-
-      try {
-        switch (type) {
-          case 'integer':
-            numberLike(itemOptions);
-            break;
-          case 'boolean':
-            boolean(itemOptions);
-            break;
-          case 'binary':
-            binary(itemOptions);
-            break;
-          case 'string':
-            string(itemOptions);
-            break;
-          case undefined:
-            isNull(itemOptions);
-            break;
-          case 'list':
-            if (isArgs) {
-              const listValues = {
-                ...itemOptions,
-                name: `${itemOptions.name}:list`,
-                value: itemOptions.value,
-              };
-
-              if (listValues.value) {
-                data(listValues, true);
-                break;
-              }
-            }
-            break;
-          default:
-            error(
-              { ...options, value: key, name: `${options.name}:${index}:type` },
-              ERROR_MSG.WRONG_TYPE,
-            );
-        }
-      } catch (e) {
-        return e;
-      }
-      //@ts-ignore
-    })
-    .filter((item: any) => item);
+        return undefined;
+        //@ts-expect-error
+      },
+    )
+    .filter((item: unknown) => item);
 
   if (errors.length) {
     error(options, errors);
@@ -632,8 +648,8 @@ const payment = (options: IFieldOptions) => {
   }
 
   const errors = (value || [])
-    .map((amount: any, index: number) => {
-      const dataErrors = [];
+    .map((amount: unknown, index: number) => {
+      const dataErrors: unknown[] = [];
 
       try {
         money({ ...options, value: amount, name: `${options.name}:${index}`, optional: false });
@@ -643,7 +659,7 @@ const payment = (options: IFieldOptions) => {
 
       return dataErrors;
     })
-    .filter((item: any) => item.length);
+    .filter((item: unknown[]) => item.length);
 
   if (errors.length) {
     error(options, errors);
@@ -680,7 +696,7 @@ export const VALIDATORS = {
 
 interface IFieldOptions {
   key: string;
-  value: any;
+  value: unknown;
   optional: boolean;
   type: string;
   name: string;

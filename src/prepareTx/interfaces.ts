@@ -1,10 +1,10 @@
-import { type SIGN_TYPE } from './constants';
-import { type Money } from '@decentralchain/data-entities';
 import { type BigNumber } from '@decentralchain/bignumber';
+import { type Money } from '@decentralchain/data-entities';
+import { type SIGN_TYPE } from './constants';
 
 export interface IARGS_ENTRY {
   type: string;
-  value: any;
+  value: unknown;
 }
 
 export type TSignData =
@@ -258,7 +258,7 @@ export interface IMassTransfer extends ICreateTxData {
 export interface IDATA_ENTRY {
   key: string;
   type: string;
-  value: any;
+  value: unknown;
 }
 
 export interface IData extends ICreateTxData {
@@ -286,9 +286,9 @@ export interface IOrder {
 }
 
 export interface IAdapterSignMethods {
-  signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
+  signRequest(databytes: Uint8Array, signData?: unknown): Promise<string>;
 
-  signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: any): Promise<string>;
+  signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: unknown): Promise<string>;
 
-  signOrder(bytes: Uint8Array, amountPrecision: number, signData: any): Promise<string>;
+  signOrder(bytes: Uint8Array, amountPrecision: number, signData: unknown): Promise<string>;
 }

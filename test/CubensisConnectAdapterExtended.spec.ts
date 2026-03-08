@@ -1,5 +1,5 @@
-import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
 import { Adapter } from '../src/adapters/Adapter';
+import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
 import { SIGN_TYPE } from '../src/prepareTx';
 
 // Mock API for CubensisConnect

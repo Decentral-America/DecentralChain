@@ -1,6 +1,6 @@
-import { Adapter } from './Adapter';
 import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
+import { Adapter } from './Adapter';
 
 export interface IUserApi {
   type: string;
@@ -14,11 +14,11 @@ export interface IUserApi {
 }
 
 export class CustomAdapter<T extends IUserApi> extends Adapter {
-  //@ts-ignore
+  //@ts-expect-error
   public currentUser: T;
   public static override type = AdapterType.Custom;
 
-  //@ts-ignore
+  //@ts-expect-error
   constructor(userApi: T) {
     super();
     this.currentUser = userApi;
@@ -71,7 +71,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
   public signTransaction(
     bytes: Uint8Array,
     _precision: Record<string, number>,
-    _signData: any,
+    _signData: unknown,
   ): Promise<string> {
     if (this.currentUser.signTransaction) {
       return this.currentUser.signTransaction(bytes);
@@ -83,7 +83,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
   public signOrder(
     bytes: Uint8Array,
     _precision: Record<string, number>,
-    _data: any,
+    _data: unknown,
   ): Promise<string> {
     if (this.currentUser.signOrder) {
       return this.currentUser.signOrder(bytes);
@@ -134,11 +134,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
     };
   }
 
-  public static override initOptions(options: any) {
+  public static override initOptions(options: { networkCode: number }) {
     Adapter.initOptions(options);
-  }
-
-  public static override isAvailable() {
-    return Promise.resolve(true);
   }
 }

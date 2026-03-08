@@ -1,5 +1,5 @@
-import { SeedAdapter } from '../src/adapters/SeedAdapter';
 import { libs, seedUtils } from '@decentralchain/transactions';
+import { SeedAdapter } from '../src/adapters/SeedAdapter';
 
 const testSeed = 'some test seed words without money on mainnet';
 
@@ -19,7 +19,7 @@ describe('SeedAdapter - extended coverage', () => {
   });
 
   it('constructs from base58-encoded seed', () => {
-    const encoded = 'base58:' + libs.crypto.base58Encode(libs.crypto.stringToBytes(testSeed));
+    const encoded = `base58:${libs.crypto.base58Encode(libs.crypto.stringToBytes(testSeed))}`;
     const adapter = new SeedAdapter(encoded, 'W');
     expect(adapter.isEncoded).toBe(true);
     expect(adapter.getSyncAddress()).toBeTruthy();
@@ -28,7 +28,7 @@ describe('SeedAdapter - extended coverage', () => {
   it('constructs from base58 bytes that cannot decode to string', () => {
     // Create a byte sequence that base58 decodes to something that round-trips differently
     const randomBytes = new Uint8Array([0, 1, 2, 128, 255, 200, 150]);
-    const encoded = 'base58:' + libs.crypto.base58Encode(randomBytes);
+    const encoded = `base58:${libs.crypto.base58Encode(randomBytes)}`;
     const adapter = new SeedAdapter(encoded, 'W');
     expect(adapter.isEncoded).toBe(true);
   });

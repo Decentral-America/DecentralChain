@@ -1,27 +1,27 @@
+import { BigNumber } from '@decentralchain/bignumber';
+import { convert } from '@decentralchain/money-like-to-node';
+import { libs } from '@decentralchain/transactions';
+import { type Adapter } from './adapters';
+import { ERRORS } from './constants';
 import {
+  DCC_ID,
   getValidateSchema,
   type IAdapterSignMethods,
   prepare,
   SIGN_TYPE,
   SIGN_TYPES,
+  TRANSACTION_TYPE_NUMBER,
   type TSignData,
-  DCC_ID,
 } from './prepareTx';
+import { SignError } from './SignError';
 import {
-  currentFeeFactory,
   currentCreateOrderFactory,
+  currentFeeFactory,
   type IFeeConfig,
   isEmpty,
   last,
   normalizeAssetId,
 } from './utils';
-import { type Adapter } from './adapters';
-import { ERRORS } from './constants';
-import { SignError } from './SignError';
-import { libs } from '@decentralchain/transactions';
-import { convert } from '@decentralchain/money-like-to-node';
-import { BigNumber } from '@decentralchain/bignumber';
-import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
 
 const { base58Encode, blake2b, verifySignature } = libs.crypto;
 
@@ -33,7 +33,7 @@ export class Signable {
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
   private _addProofPromise: Promise<string> | undefined;
-  private _preparedData: any;
+  private _preparedData: Record<string, unknown>;
   private _proofs: string[] = [];
 
   /** Maximum number of proofs allowed per transaction (protocol limit). */
@@ -96,7 +96,7 @@ export class Signable {
     }
 
     this._bytePromise = this.getSignData().then((signData) =>
-      SIGN_TYPES[forSign.type].getBytes[version]!(signData),
+      SIGN_TYPES[forSign.type].getBytes[version]?.(signData),
     );
   }
 
@@ -221,7 +221,7 @@ export class Signable {
       const byteArr = Array.from(bytes);
 
       if (bytes[0] === 10) {
-        bytes = new Uint8Array([byteArr[0]!, ...byteArr.slice(36, -16)]);
+        bytes = new Uint8Array([byteArr[0] as number, ...byteArr.slice(36, -16)]);
       }
 
       return base58Encode(blake2b(bytes));
@@ -230,12 +230,12 @@ export class Signable {
 
   public sign(): Promise<Signable> {
     this._makeSignPromise();
-    return this._signPromise!.then(() => this);
+    return this._signPromise?.then(() => this) as Promise<Signable>;
   }
 
   public getSignature(): Promise<string> {
     this._makeSignPromise();
-    return this._signPromise!;
+    return this._signPromise as Promise<string>;
   }
 
   public getBytes() {
@@ -273,7 +273,7 @@ export class Signable {
             return signature;
           });
         } else {
-          return this.getMyProofs().then((list) => list[list.length - 1]!);
+          return this.getMyProofs().then((list) => list[list.length - 1] as string);
         }
       })
       .finally(() => {
@@ -291,7 +291,7 @@ export class Signable {
     const proofs = (this._proofs || []).slice();
 
     try {
-      return convert({ ...data, proofs }, (item: any) => new BigNumber(item as string));
+      return convert({ ...data, proofs }, (item: unknown) => new BigNumber(item as string));
     } catch {
       return { ...data, proofs, signature: proofs[0] };
     }
@@ -322,27 +322,35 @@ export class Signable {
   }
 
   private _getAmountPrecision() {
-    const data = this._forSign.data as any;
-    if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
-      const payment = data?.payment ?? [];
-      return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
+    const data = this._forSign.data as Record<string, unknown>;
+    if ((data as { type?: number }).type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
+      const payment = (data as Record<string, unknown[]>)?.payment ?? [];
+      return payment.length && (payment[0] as Record<string, unknown>)?.asset
+        ? (payment[0] as Record<string, Record<string, number>>).asset.precision
+        : 0;
     }
-    return data.amount?.asset?.precision ? data.amount.asset.precision : 0;
+    return (data.amount as Record<string, Record<string, number>> | undefined)?.asset?.precision
+      ? (data.amount as Record<string, Record<string, number>>).asset.precision
+      : 0;
   }
 
   private _getAmount2Precision() {
-    const data = this._forSign.data as any;
-    const payment = data?.payment ?? [];
-    return payment.length === 2 && payment[1]?.asset ? payment[1].asset.precision : 0;
+    const data = this._forSign.data as Record<string, unknown>;
+    const payment = (data as Record<string, unknown[]>)?.payment ?? [];
+    return payment.length === 2 && (payment[1] as Record<string, unknown>)?.asset
+      ? (payment[1] as Record<string, Record<string, number>>).asset.precision
+      : 0;
   }
 
   private _getFeePrecision() {
-    const data = this._forSign.data as any;
-    return data.fee?.asset?.precision ? data.fee.asset.precision : 0;
+    const data = this._forSign.data as Record<string, unknown>;
+    return (data.fee as Record<string, Record<string, number>> | undefined)?.asset?.precision
+      ? (data.fee as Record<string, Record<string, number>>).asset.precision
+      : 0;
   }
 }
 
 export interface ISign2faOptions {
   code: string;
-  request(data: any): Promise<string>;
+  request(data: unknown): Promise<string>;
 }

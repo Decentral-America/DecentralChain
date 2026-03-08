@@ -1,7 +1,7 @@
-import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
-import { Asset, Money } from '@decentralchain/data-entities';
-import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
+import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 
 const testAsset = new Asset({
   precision: 5,

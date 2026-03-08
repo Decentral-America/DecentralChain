@@ -1,19 +1,19 @@
-import { Adapter } from './Adapter';
-import { AdapterType } from '../adapterType';
 import { DCCLedger, type DCCLedgerOptions } from '@decentralchain/ledger';
+import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
+import { Adapter } from './Adapter';
 
 export class LedgerAdapter extends Adapter {
-  //@ts-ignore
-  private _currentUser;
+  //@ts-expect-error
+  private _currentUser: { id: number; address: string; publicKey: string };
   public static override type = AdapterType.Ledger;
-  //@ts-ignore
+  //@ts-expect-error
   private static _ledger: DCCLedger;
-  //@ts-ignore
-  private static _hasConnectionPromise;
+  //@ts-expect-error
+  private static _hasConnectionPromise: Promise<boolean> | null;
 
-  //@ts-ignore
-  constructor(user) {
+  //@ts-expect-error
+  constructor(user: { id: number; address: string; publicKey: string }) {
     super();
     this._currentUser = user;
 
@@ -26,6 +26,24 @@ export class LedgerAdapter extends Adapter {
 
   public override isAvailable() {
     return this._isMyLedger();
+  }
+
+  public static override isAvailable() {
+    if (!LedgerAdapter._hasConnectionPromise) {
+      LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
+    }
+
+    return LedgerAdapter._hasConnectionPromise.then(
+      () => {
+        LedgerAdapter._hasConnectionPromise = null;
+        return true;
+        //@ts-expect-error
+      },
+      (_err: unknown) => {
+        LedgerAdapter._hasConnectionPromise = null;
+        return false;
+      },
+    );
   }
 
   public getSyncAddress(): string {
@@ -61,7 +79,7 @@ export class LedgerAdapter extends Adapter {
   public signTransaction(
     bytes: Uint8Array,
     precision: Record<string, number>,
-    signData: any,
+    signData: unknown,
   ): Promise<string> {
     if (bytes[0] === 15) {
       return this.signData(bytes);
@@ -71,8 +89,9 @@ export class LedgerAdapter extends Adapter {
         amount2Precision: precision.amount2Precision,
         amountPrecision: precision.amountPrecision,
         feePrecision: precision.feePrecision,
-        dataType: signData.type,
-        dataVersion: signData.data.version,
+        dataType: (signData as Record<string, unknown>).type as number,
+        dataVersion: ((signData as Record<string, unknown>).data as Record<string, unknown>)
+          .version as number,
         dataBuffer: bytes,
       }),
     );
@@ -81,14 +100,15 @@ export class LedgerAdapter extends Adapter {
   public signOrder(
     bytes: Uint8Array,
     precision: Record<string, number>,
-    data: any,
+    data: unknown,
   ): Promise<string> {
     return this._isMyLedger().then(() =>
       LedgerAdapter._ledger.signOrder(this._currentUser.id, {
         dataBuffer: bytes,
         amountPrecision: precision.amountPrecision,
         feePrecision: precision.feePrecision,
-        dataVersion: data.data.version,
+        dataVersion: ((data as Record<string, unknown>).data as Record<string, unknown>)
+          .version as number,
       }),
     );
   }
@@ -136,7 +156,7 @@ export class LedgerAdapter extends Adapter {
   protected _isMyLedger() {
     const promise = LedgerAdapter._ledger
       .getUserDataById(this._currentUser.id)
-      //@ts-ignore
+      //@ts-expect-error
       .then((user) => {
         if (user.address !== this._currentUser.address) {
           this._isDestroyed = true;
@@ -152,29 +172,11 @@ export class LedgerAdapter extends Adapter {
   }
 
   public static override getUserList(from = 1, to = 1) {
-    return LedgerAdapter._ledger.getPaginationUsersData(from, to) as any;
+    return LedgerAdapter._ledger.getPaginationUsersData(from, to) as Promise<unknown[]>;
   }
 
   public static override initOptions(options: DCCLedgerOptions & { networkCode: number }) {
     Adapter.initOptions(options);
-    this._ledger = new DCCLedger(options);
-  }
-
-  public static override isAvailable() {
-    if (!LedgerAdapter._hasConnectionPromise) {
-      LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
-    }
-
-    return LedgerAdapter._hasConnectionPromise.then(
-      () => {
-        LedgerAdapter._hasConnectionPromise = null;
-        return true;
-        //@ts-ignore
-      },
-      (_err: any) => {
-        LedgerAdapter._hasConnectionPromise = null;
-        return false;
-      },
-    );
+    LedgerAdapter._ledger = new DCCLedger(options);
   }
 }

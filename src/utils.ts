@@ -1,12 +1,12 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import path from 'ramda/src/path';
 import {
-  type ExchangeTransactionOrder,
-  type SignableTransaction,
   type DataTransaction,
-  type MassTransferTransaction,
+  type ExchangeTransactionOrder,
   type IssueTransaction,
+  type MassTransferTransaction,
+  type SignableTransaction,
 } from '@decentralchain/ts-types';
+import path from 'ramda/src/path';
 import { DCC_ID } from './prepareTx';
 
 export function find<T>(some: Partial<T>, list: T[]) {

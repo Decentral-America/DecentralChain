@@ -1,272 +1,301 @@
-import { type Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { AssetPair, type Money, OrderPrice } from '@decentralchain/data-entities';
 import { libs } from '@decentralchain/transactions';
 import { VALIDATORS } from './fieldValidator';
 
 export const DCC_ID = 'DCC';
 const { stringToBytes, base58Encode } = libs.crypto;
 
-//@ts-ignore
-const normalizeAssetId = (id) => (id === DCC_ID ? '' : id);
+//@ts-expect-error
+const normalizeAssetId = (id: string) => (id === DCC_ID ? '' : id);
 
 interface ICall {
   function: string;
-  args?: any[];
+  args?: unknown[];
 }
 
-export namespace prepare {
-  export namespace processors {
-    export function callFunc(callData?: ICall | null): ICall | null {
-      if (!callData) {
-        return null;
-      }
+export interface IWrappedFunction {
+  from: string;
+  to: string;
+  cb: (...args: unknown[]) => unknown;
+}
 
-      return {
-        function: (callData && callData.function) || '',
-        args: callData?.args || [],
-      };
-    }
-
-    export function payments(payments: Money[]) {
-      return (payments || []).map((pay) => {
-        return {
-          amount: toBigNumber(pay).toString(),
-          assetId: moneyToNodeAssetId(pay),
-        };
-      });
-    }
-
-    export function paymentsToNode(payments: Money[]) {
-      return (payments || []).map((pay) => {
-        return {
-          amount: toBigNumber(pay),
-          assetId: moneyToNodeAssetId(pay) || null,
-        };
-      });
-    }
-
-    export function scriptProcessor(code: string): string | null {
-      return (code || '').replace('base64:', '') ? code : null;
-    }
-
-    export function assetPair(data: any) {
-      return {
-        amountAsset: normalizeAssetId(data.amount.asset.id),
-        priceAsset: normalizeAssetId(data.price.asset.id),
-      };
-    }
-
-    export function signatureFromProof(proofs: any) {
-      return proofs[0];
-    }
-
-    export function toBigNumber(some: string | number | BigNumber | Money): BigNumber {
-      switch (typeof some) {
-        case 'string':
-        case 'number':
-          return new BigNumber(some as string);
-        case 'object':
-          if (some instanceof BigNumber) {
-            return some;
-          } else {
-            return some.getCoins();
-          }
-      }
-    }
-
-    export function toNumberString(some: any) {
-      return toBigNumber(some).toString();
-    }
-
-    export function toSponsorshipFee(money: Money): BigNumber {
-      const coins = money.getCoins();
-      if (coins.eq(0)) {
-        //@ts-ignore
-        return null;
-      } else {
-        return coins;
-      }
-    }
-
-    export function moneyToAssetId(money: Money): string {
-      return money.asset.id;
-    }
-
-    export function moneyToNodeAssetId(money: Money): string {
-      return idToNode(money.asset.id);
-    }
-
-    export function timestamp(time: string | number | Date): string | number | Date {
-      if (!+time && typeof time === 'string') {
-        return Date.parse(time);
-      }
-      return time && time instanceof Date ? time.getTime() : time;
-    }
-
-    export function orString(data: any | string): string {
-      return data || '';
-    }
-
-    export function noProcess<T>(data: T): T {
-      return data;
-    }
-
-    //@ts-ignore
-    export const recipient = (networkByte) => (data) => {
-      return data.length <= 30 ? `alias:${networkByte}:${data}` : data;
-    };
-
-    export function attachment(data: string | number[] | Uint8Array) {
-      data = data || '';
-      let value = data;
-
-      if (typeof data === 'string') {
-        value = stringToBytes(data);
-      }
-
-      return base58Encode(Uint8Array.from(value as ArrayLike<number>));
-    }
-
-    export function addValue(value: any) {
-      return typeof value === 'function' ? value : () => value;
-    }
-
-    //@ts-ignore
-    export function expiration(date?) {
-      return date || new Date().setDate(new Date().getDate() + 20);
-    }
-
-    //@ts-ignore
-    export function transfers(recipient, amount) {
-      //@ts-ignore
-      return (transfers) =>
-        transfers.map((transfer: any) => ({
-          recipient: recipient(transfer.recipient),
-          amount: amount(transfer.amount),
-        }));
-    }
-
-    //@ts-ignore
-    export function quantity(data): BigNumber {
-      return new BigNumber(data.quantity).mul(new BigNumber(10).pow(data.precision));
-    }
-
-    //@ts-ignore
-    export function base64(str): string {
-      return (str || '').replace('base64:', '');
-    }
-
-    //@ts-ignore
-    export function toOrderPrice(order) {
-      const assetPair = new AssetPair(order.amount.asset, order.price.asset);
-      const orderPrice = OrderPrice.fromTokens(order.price.toTokens(), assetPair);
-      return orderPrice.getMatcherCoins();
-    }
+function _callFunc(callData?: ICall | null): ICall | null {
+  if (!callData) {
+    return null;
   }
 
-  export function wrap(from: string | null, to: string, cb: any): IWrappedFunction {
-    if (typeof cb !== 'function') {
-      //@ts-ignore
-      return { from, to, cb: () => cb };
-    }
-    //@ts-ignore
-    return { from, to, cb };
-  }
-
-  const findValue = (fromKey: string | string[], data: Record<string, string>) => {
-    if (!Array.isArray(fromKey)) {
-      return data[fromKey];
-    }
-    return data[(fromKey.find((key) => data[key]) ?? fromKey[0])!];
+  return {
+    function: callData?.function || '',
+    args: callData?.args || [],
   };
+}
 
-  export interface IWrappedFunction {
-    from: string;
-    to: string;
-    cb: Function;
+function _payments(payments: Money[]) {
+  return (payments || []).map((pay) => {
+    return {
+      amount: _toBigNumber(pay).toString(),
+      assetId: _moneyToNodeAssetId(pay),
+    };
+  });
+}
+
+function _paymentsToNode(payments: Money[]) {
+  return (payments || []).map((pay) => {
+    return {
+      amount: _toBigNumber(pay),
+      assetId: _moneyToNodeAssetId(pay) || null,
+    };
+  });
+}
+
+function _scriptProcessor(code: string): string | null {
+  return (code || '').replace('base64:', '') ? code : null;
+}
+
+function _assetPair(data: Record<string, unknown>) {
+  return {
+    amountAsset: normalizeAssetId((data.amount as Record<string, Record<string, string>>).asset.id),
+    priceAsset: normalizeAssetId((data.price as Record<string, Record<string, string>>).asset.id),
+  };
+}
+
+function _signatureFromProof(proofs: string[]) {
+  return proofs[0];
+}
+
+function _toBigNumber(some: string | number | BigNumber | Money): BigNumber {
+  switch (typeof some) {
+    case 'string':
+    case 'number':
+      return new BigNumber(some as string);
+    case 'object':
+      if (some instanceof BigNumber) {
+        return some;
+      } else {
+        return some.getCoins();
+      }
+  }
+}
+
+function _toNumberString(some: string | number | BigNumber | Money) {
+  return _toBigNumber(some).toString();
+}
+
+function _toSponsorshipFee(money: Money): BigNumber {
+  const coins = money.getCoins();
+  if (coins.eq(0)) {
+    //@ts-expect-error
+    return null;
+  } else {
+    return coins;
+  }
+}
+
+function _moneyToAssetId(money: Money): string {
+  return money.asset.id;
+}
+
+function _moneyToNodeAssetId(money: Money): string {
+  return _idToNode(money.asset.id);
+}
+
+function _timestamp(time: string | number | Date): string | number | Date {
+  if (!+time && typeof time === 'string') {
+    return Date.parse(time);
+  }
+  return time && time instanceof Date ? time.getTime() : time;
+}
+
+function _orString(data: unknown): string {
+  return (data as string) || '';
+}
+
+function _noProcess<T>(data: T): T {
+  return data;
+}
+
+//@ts-expect-error
+const _recipient = (networkByte: string) => (data: string) => {
+  return data.length <= 30 ? `alias:${networkByte}:${data}` : data;
+};
+
+function _attachment(data: string | number[] | Uint8Array) {
+  data = data || '';
+  let value = data;
+
+  if (typeof data === 'string') {
+    value = stringToBytes(data);
   }
 
-  export function schema(...args: (IWrappedFunction | string)[]) {
-    //@ts-ignore
-    return (data) =>
-      args
-        .map((item) => {
-          return typeof item === 'string'
-            ? {
-                key: item,
-                value: processors.noProcess(data[item]),
-              }
-            : {
-                key: item.to,
-                value: item.cb(item.from ? data[item.from] : data),
-              };
-        })
-        .reduce((result, item) => {
-          result[item.key] = item.value;
-          return result;
-        }, Object.create(null));
+  return base58Encode(Uint8Array.from(value as ArrayLike<number>));
+}
+
+function _addValue(value: unknown) {
+  return typeof value === 'function' ? value : () => value;
+}
+
+//@ts-expect-error
+function _expiration(date?: number) {
+  return date || new Date().setDate(new Date().getDate() + 20);
+}
+
+//@ts-expect-error
+function _transfers(recipient: (r: string) => string, amount: (a: unknown) => unknown) {
+  //@ts-expect-error
+  return (transfers: Array<{ recipient: string; amount: unknown }>) =>
+    transfers.map((transfer: { recipient: string; amount: unknown }) => ({
+      recipient: recipient(transfer.recipient),
+      amount: amount(transfer.amount),
+    }));
+}
+
+//@ts-expect-error
+function _quantity(data: { quantity: string | number; precision: number }): BigNumber {
+  return new BigNumber(data.quantity).mul(new BigNumber(10).pow(data.precision));
+}
+
+//@ts-expect-error
+function _base64(str: string): string {
+  return (str || '').replace('base64:', '');
+}
+
+//@ts-expect-error
+function _toOrderPrice(order: Record<string, unknown>) {
+  const assetPair = new AssetPair(order.amount.asset, order.price.asset);
+  const orderPrice = OrderPrice.fromTokens(order.price.toTokens(), assetPair);
+  return orderPrice.getMatcherCoins();
+}
+
+const _processors = {
+  callFunc: _callFunc,
+  payments: _payments,
+  paymentsToNode: _paymentsToNode,
+  scriptProcessor: _scriptProcessor,
+  assetPair: _assetPair,
+  signatureFromProof: _signatureFromProof,
+  toBigNumber: _toBigNumber,
+  toNumberString: _toNumberString,
+  toSponsorshipFee: _toSponsorshipFee,
+  moneyToAssetId: _moneyToAssetId,
+  moneyToNodeAssetId: _moneyToNodeAssetId,
+  timestamp: _timestamp,
+  orString: _orString,
+  noProcess: _noProcess,
+  recipient: _recipient,
+  attachment: _attachment,
+  addValue: _addValue,
+  expiration: _expiration,
+  transfers: _transfers,
+  quantity: _quantity,
+  base64: _base64,
+  toOrderPrice: _toOrderPrice,
+};
+
+function _wrap(from: string | null, to: string, cb: unknown): IWrappedFunction {
+  if (typeof cb !== 'function') {
+    //@ts-expect-error
+    return { from, to, cb: () => cb };
   }
+  //@ts-expect-error
+  return { from, to, cb };
+}
 
-  //@ts-ignore
-  export function signSchema(
-    args: {
-      name: any;
-      field: any;
-      processor: any;
-      optional: any;
-      type: any;
-      optionalData: any;
-    }[],
-  ) {
-    //@ts-ignore
-    return (data, validate = false) => {
-      const errors: any[] = [];
-      const prepareData = args
-        .map((item) => {
-          const wrapped = wrap(item.name, item.field, item.processor || processors.noProcess);
-          const value = wrapped.from ? findValue(wrapped.from, data) : data;
+const _findValue = (fromKey: string | string[], data: Record<string, string>) => {
+  if (!Array.isArray(fromKey)) {
+    return data[fromKey];
+  }
+  return data[(fromKey.find((key) => data[key]) ?? fromKey[0]) as string];
+};
 
-          const validateOptions = {
-            key: wrapped.to,
-            value: value,
-            optional: item.optional,
-            optionalData: item.optionalData,
-            type: item.type,
-            name: item.name,
-          };
-          //@ts-ignore
-          const validator = VALIDATORS[validateOptions.type];
-          try {
-            if (validate && validator) {
-              validator(validateOptions);
+function _schema(...args: (IWrappedFunction | string)[]) {
+  //@ts-expect-error
+  return (data: Record<string, unknown>) =>
+    args
+      .map((item) => {
+        return typeof item === 'string'
+          ? {
+              key: item,
+              value: _noProcess(data[item]),
             }
-            return {
-              key: validateOptions.key,
-              value: wrapped.cb(validateOptions.value),
+          : {
+              key: item.to,
+              value: item.cb(item.from ? data[item.from] : data),
             };
-          } catch (e) {
-            errors.push(e);
-          }
+      })
+      .reduce((result, item) => {
+        result[item.key] = item.value;
+        return result;
+      }, Object.create(null));
+}
 
+//@ts-expect-error
+function _signSchema(
+  args: {
+    name: string;
+    field: string;
+    processor: unknown;
+    optional: boolean;
+    type: string;
+    optionalData: unknown;
+  }[],
+) {
+  //@ts-expect-error
+  return (data: Record<string, unknown>, validate = false) => {
+    const errors: unknown[] = [];
+    const prepareData = args
+      .map((item) => {
+        const wrapped = _wrap(item.name, item.field, item.processor || _noProcess);
+        const value = wrapped.from ? _findValue(wrapped.from, data) : data;
+
+        const validateOptions = {
+          key: wrapped.to,
+          value: value,
+          optional: item.optional,
+          optionalData: item.optionalData,
+          type: item.type,
+          name: item.name,
+        };
+        //@ts-expect-error
+        const validator = VALIDATORS[validateOptions.type];
+        try {
+          if (validate && validator) {
+            validator(validateOptions);
+          }
           return {
             key: validateOptions.key,
-            value: null,
+            value: wrapped.cb(validateOptions.value),
           };
-        })
-        .reduce((result, { key, value }) => {
-          result[key] = value;
-          return result;
-        }, Object.create(null));
+        } catch (e) {
+          errors.push(e);
+        }
 
-      if (errors.length) {
-        throw new Error(JSON.stringify(errors));
-      }
+        return {
+          key: validateOptions.key,
+          value: null,
+        };
+      })
+      .reduce((result, { key, value }) => {
+        result[key] = value;
+        return result;
+      }, Object.create(null));
 
-      return prepareData;
-    };
-  }
+    if (errors.length) {
+      throw new Error(JSON.stringify(errors));
+    }
 
-  export function idToNode(id: string): string {
-    return id === DCC_ID ? '' : id;
-  }
+    return prepareData;
+  };
 }
+
+function _idToNode(id: string): string {
+  return id === DCC_ID ? '' : id;
+}
+
+export const prepare = {
+  processors: _processors,
+  wrap: _wrap,
+  schema: _schema,
+  signSchema: _signSchema,
+  idToNode: _idToNode,
+};
