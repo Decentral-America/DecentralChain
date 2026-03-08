@@ -1,17 +1,18 @@
 /**
  * @module seedUtils
  */
+
+import { serializePrimitives } from '@decentralchain/marshall';
 import {
   address,
+  base16Encode,
+  decryptSeed,
+  encryptSeed,
   privateKey,
   publicKey,
-  sha256,
-  base16Encode,
-  encryptSeed,
-  decryptSeed,
   randomSeed,
+  sha256,
 } from '@decentralchain/ts-lib-crypto';
-import { serializePrimitives } from '@decentralchain/marshall';
 
 export class Seed {
   public readonly phrase: string;
@@ -75,7 +76,7 @@ export class Seed {
   ): string {
     const wrongPasswordMessage = 'The password is wrong';
 
-    let phrase;
+    let phrase: string;
 
     try {
       phrase = decryptSeed(encryptedSeedPhrase, password, encryptionRounds);

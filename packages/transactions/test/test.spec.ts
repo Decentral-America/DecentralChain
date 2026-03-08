@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:test/test.test.ts
 <<<<<<< HEAD
 import {issue} from '../src/transactions/issue'
@@ -51,15 +52,18 @@ let assetId = ''
 jest.setTimeout(60000)
 =======
 import { issue } from '../src/transactions/issue';
+=======
+import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { broadcast, waitForTx } from '../src';
-import { transfer } from '../src/transactions/transfer';
-import { massTransfer } from '../src/transactions/mass-transfer';
+import { waitForTxWithNConfirmations } from '../src/nodeInteraction';
 import { data } from '../src/transactions/data';
 import { invokeScript } from '../src/transactions/invoke-script';
-import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
+import { issue } from '../src/transactions/issue';
+import { massTransfer } from '../src/transactions/mass-transfer';
 import { setScript } from '../src/transactions/set-script';
-import { API_BASE, TIMEOUT, MASTER_SEED, CHAIN_ID } from './integration/config';
-import { waitForTxWithNConfirmations } from '../src/nodeInteraction';
+import { transfer } from '../src/transactions/transfer';
+import { API_BASE, CHAIN_ID, MASTER_SEED, TIMEOUT } from './integration/config';
 
 let dappAddress1 = '';
 let dappAddress2 = '';
@@ -289,7 +293,7 @@ it('setScriptTest', async () => {
 }, 1000000000);
 
 it('invoke test', async () => {
-  if (dappAddress1 == '') {
+  if (dappAddress1 === '') {
     dappAddress1 = '3MJ2PHxU4Vsf5HfLzuYrRTP3imrQVvhkWyk';
   }
 
@@ -303,9 +307,8 @@ it('invoke test', async () => {
     },
     MASTER_SEED,
   );
-  console.log('invokeTx', JSON.stringify(invokeTx, undefined, ' '));
   const { id } = await broadcast(invokeTx, API_BASE);
-  const tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
+  const _tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
 }, 100000);
 
 it('invoke with list test', async () => {
@@ -373,7 +376,7 @@ it('invoke with list test', async () => {
     MASTER_SEED,
   );
   const { id } = await broadcast(invokeTx, API_BASE);
-  const tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
+  const _tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
 }, 100000);
 
 it('transfer test', async () => {
@@ -399,12 +402,11 @@ it('transfer test', async () => {
     try {
       await broadcast(makeTx(conditions[i]), API_BASE);
     } catch (e) {
-      console.log('fail', conditions[i]);
       console.error(JSON.stringify(e, null, 4));
     }
   }
 });
 
-function sleep(ms: number) {
+function _sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

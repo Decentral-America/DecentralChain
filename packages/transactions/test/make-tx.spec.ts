@@ -1,10 +1,10 @@
-import { exampleTxs } from './exampleTxs';
 import { makeTx } from '../src';
+import { exampleTxs } from './exampleTxs';
 
 describe('makes tx', () => {
   const txs = Object.keys(exampleTxs).map((x) => (<any>exampleTxs)[x]);
   txs.forEach((tx) => {
-    it('type: ' + tx.type, () => {
+    it(`type: ${tx.type}`, () => {
       const made = makeTx(tx);
       expect(tx.type).toEqual(made.type);
       expect(typeof made.id).toBe('string');

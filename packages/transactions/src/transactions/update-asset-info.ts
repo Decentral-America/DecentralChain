@@ -1,14 +1,20 @@
 /**
  * @module index
  */
-import { IUpdateAssetInfoParams, WithId, WithProofs, WithSender } from '../transactions';
+
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
-import { validate } from '../validators';
-import { TSeedTypes } from '../types';
-import { txToProtoBytes } from '../proto-serialize';
+import { TRANSACTION_TYPE, type UpdateAssetInfoTransaction } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { TRANSACTION_TYPE, UpdateAssetInfoTransaction } from '@decentralchain/ts-types';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import {
+  type IUpdateAssetInfoParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function updateAssetInfo(
@@ -20,7 +26,7 @@ export function updateAssetInfo(
   seed?: TSeedTypes,
 ): UpdateAssetInfoTransaction & WithId & WithProofs;
 export function updateAssetInfo(
-  paramsOrTx: any,
+  paramsOrTx: IUpdateAssetInfoParams & Partial<UpdateAssetInfoTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): UpdateAssetInfoTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.UPDATE_ASSET_INFO;
@@ -75,7 +81,9 @@ export function updateAssetInfo(
 
   const bytes = txToProtoBytes(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

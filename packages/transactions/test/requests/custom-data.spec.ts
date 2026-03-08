@@ -1,8 +1,7 @@
-import { customData, serializeCustomData } from '../../src/requests/custom-data';
-import { verifyCustomData } from '../../src/general';
-
 import { base58Encode, blake2b } from '@decentralchain/ts-lib-crypto';
 import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
+import { verifyCustomData } from '../../src/general';
+import { customData, serializeCustomData } from '../../src/requests/custom-data';
 
 describe('custom-data', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';

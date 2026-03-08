@@ -7,8 +7,8 @@ import {
   validateTxSignature,
 } from '../../test/utils';
 import { transferMinimalParams } from '../minimalParams';
-import { transferTx } from './expected/proto/transfer.tx';
 import { transferBinaryTx } from './expected/binary/transfer.tx';
+import { transferTx } from './expected/proto/transfer.tx';
 
 describe('transfer', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -81,17 +81,17 @@ describe('transfer', () => {
 });
 
 describe('serialize/deserialize transfer tx', () => {
-  Object.entries(transferTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(transferTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize transfer binary tx', () => {
-  Object.entries(transferBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(transferBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import { publicKey } from '@decentralchain/ts-lib-crypto';
 import { issue } from '../../src';
+import { issueMinimalParams } from '../minimalParams';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
@@ -8,9 +9,8 @@ import {
   rndString,
   validateTxSignature,
 } from '../utils';
-import { issueMinimalParams } from '../minimalParams';
-import { issueTx } from './expected/proto/issue.tx';
 import { issueBinaryTx } from './expected/binary/issue.tx';
+import { issueTx } from './expected/proto/issue.tx';
 
 describe('issue', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -229,7 +229,7 @@ describe('issue', () => {
     const script =
       'AQQAAAAHJG1hdGNoMAUAAAACdHgDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAAD0J1cm5UcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAcGPmRSDA==';
     const tx = issue({ ...issueMinimalParams, script: script }, stringSeed);
-    expect(tx).toMatchObject({ ...issueMinimalParams, script: 'base64:' + script });
+    expect(tx).toMatchObject({ ...issueMinimalParams, script: `base64:${script}` });
   });
 
   it('should build with asset script, with prefix base64', () => {
@@ -297,17 +297,17 @@ describe('issue', () => {
 });
 
 describe('serialize/deserialize issue tx', () => {
-  Object.entries(issueTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(issueTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize binary issue tx', () => {
-  Object.entries(issueBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(issueBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

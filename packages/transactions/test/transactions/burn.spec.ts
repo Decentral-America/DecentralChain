@@ -42,8 +42,11 @@ import { base64Decode, base64Encode, publicKey } from '@decentralchain/ts-lib-cr
 import { publicKey } from '@decentralchain/ts-lib-crypto';
 >>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
 import { burn } from '../../src';
+<<<<<<< HEAD
 import { burnMinimalParams } from '../minimalParams';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/burn.spec.ts
+=======
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
@@ -57,13 +60,17 @@ import { binary } from '@decentralchain/marshall'
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
 } from '../../test/utils';
-import { burnTx } from './expected/proto/burn.tx';
+import { burnMinimalParams } from '../minimalParams';
 import { burnBinaryTx } from './expected/binary/burn.tx';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { binary } from '@decentralchain/marshall';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/burn.spec.ts
 =======
 >>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
+=======
+import { burnTx } from './expected/proto/burn.tx';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 describe('burn', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -230,14 +237,15 @@ describe('serialize/deserialize binary burn tx', () => {
 });
 
 describe('serialize/deserialize burn tx', () => {
-  Object.entries(burnTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(burnTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize binary burn tx', () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     Object.entries(burnBinaryTx).forEach(([name, {Bytes, Json}]) =>
@@ -257,5 +265,12 @@ describe('serialize/deserialize binary burn tx', () => {
 })
 =======
   );
+=======
+  Object.entries(burnBinaryTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+    });
+  });
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 });
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/burn.spec.ts
