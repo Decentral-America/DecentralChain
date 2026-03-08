@@ -1,7 +1,7 @@
-import { ACCOUNTS, MOCK_URL, NETWORK_BYTE } from '../test-env';
+import { libs } from '@decentralchain/transactions';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
-import { libs } from '@decentralchain/transactions';
+import { ACCOUNTS, MOCK_URL, NETWORK_BYTE } from '../test-env';
 
 const MASTER_ADDRESS = libs.crypto.address(ACCOUNTS.NODE.seed, NETWORK_BYTE);
 let signer: Signer;
@@ -21,7 +21,7 @@ it('Lease', async () => {
     })
     .broadcast();
 
-  expect(tx.fee).toBe(0.001 * Math.pow(10, 8));
+  expect(tx.fee).toBe(0.001 * 10 ** 8);
 });
 
 it('Cancel lease', async () => {
@@ -32,9 +32,9 @@ it('Cancel lease', async () => {
     })
     .broadcast();
 
-  expect(tx.fee).toBe(0.001 * Math.pow(10, 8));
+  expect(tx.fee).toBe(0.001 * 10 ** 8);
 
   const [cancel] = await signer.cancelLease({ leaseId: tx.id }).broadcast();
 
-  expect(cancel.fee).toBe(0.001 * Math.pow(10, 8));
+  expect(cancel.fee).toBe(0.001 * 10 ** 8);
 });
