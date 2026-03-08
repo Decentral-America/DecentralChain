@@ -4,8 +4,9 @@ import { type DATA_FIELD_TYPE } from './constants.js';
 // Brands a type with a named generic parameter that has no runtime fields.
 // Used to satisfy noUnusedParameters without altering the structure or ABI.
 // Pattern adopted from io-ts, zod, Effect, and fp-ts branded types.
-declare const PHANTOM: unique symbol;
-export type Phantom<K extends string, T> = { readonly [PHANTOM]?: Readonly<Record<K, T>> };
+// Uses a string-literal key instead of a unique symbol so downstream
+// packages can reference Phantom<> in their own .d.ts without TS4053.
+export type Phantom<K extends string, T> = { readonly __phantom__?: Readonly<Record<K, T>> };
 
 // ── Primitive Types ─────────────────────────────────────────────────────────
 export type ExchangeTransactionOrderType = 'buy' | 'sell';
