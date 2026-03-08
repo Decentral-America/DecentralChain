@@ -34,7 +34,7 @@ export const random = <T extends keyof TRandomTypesMap>(
       const u16 = new Uint16Array(count);
       for (let i = 0; i < count; i++) {
         const bytes = _random(2);
-        u16[i] = (bytes[0]! << 8) | bytes[1]!;
+        u16[i] = ((bytes[0] as number) << 8) | (bytes[1] as number);
       }
       return u16 as TRandomTypesMap[T];
     }
@@ -42,7 +42,12 @@ export const random = <T extends keyof TRandomTypesMap>(
       const u32 = new Uint32Array(count);
       for (let i = 0; i < count; i++) {
         const bytes = _random(4);
-        u32[i] = ((bytes[0]! << 24) | (bytes[1]! << 16) | (bytes[2]! << 8) | bytes[3]!) >>> 0;
+        u32[i] =
+          (((bytes[0] as number) << 24) |
+            ((bytes[1] as number) << 16) |
+            ((bytes[2] as number) << 8) |
+            (bytes[3] as number)) >>>
+          0;
       }
       return u32 as TRandomTypesMap[T];
     }

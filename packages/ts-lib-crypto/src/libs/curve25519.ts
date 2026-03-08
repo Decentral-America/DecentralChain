@@ -22,9 +22,9 @@ const BASE = ed25519.Point.BASE;
 
 /** Clamp a 32-byte scalar to Curve25519 form (in-place). */
 function clamp(k: Uint8Array): Uint8Array {
-  k[0]! &= 248;
-  k[31]! &= 127;
-  k[31]! |= 64;
+  k[0] = (k[0] as number) & 248;
+  k[31] = (k[31] as number) & 127;
+  k[31] = (k[31] as number) | 64;
   return k;
 }
 
@@ -53,7 +53,7 @@ function montgomeryToEdwards(montPk: Uint8Array, signBit: number): Uint8Array {
   const P = 2n ** 255n - 19n;
 
   let u = 0n;
-  for (let i = 0; i < 32; i++) u |= BigInt(montPk[i]!) << BigInt(8 * i);
+  for (let i = 0; i < 32; i++) u |= BigInt(montPk[i] as number) << BigInt(8 * i);
 
   const uMod = ((u % P) + P) % P;
   const num = (((uMod - 1n) % P) + P) % P;
@@ -65,10 +65,10 @@ function montgomeryToEdwards(montPk: Uint8Array, signBit: number): Uint8Array {
   const out = new Uint8Array(32);
   let tmp = y;
   for (let i = 0; i < 32; i++) {
-    out[i]! = Number(tmp & 0xffn);
+    out[i] = Number(tmp & 0xffn);
     tmp >>= 8n;
   }
-  out[31]! |= signBit;
+  out[31] = (out[31] as number) | signBit;
   return out;
 }
 
@@ -103,7 +103,7 @@ export function generateKeyPair(seed: Uint8Array): KeyPair {
   const pk = x25519.scalarMultBase(seed);
 
   // Clear sign bit from public key (Montgomery u-coordinate)
-  pk[31]! &= 127;
+  pk[31] = (pk[31] as number) & 127;
 
   return { public: pk, private: sk };
 }
@@ -135,7 +135,7 @@ export function sign(secretKey: Uint8Array, msg: Uint8Array, optRandom?: Uint8Ar
   // 1 ─ clamp & derive Edwards public key
   const sk = clamp(new Uint8Array(secretKey));
   const edPub = edwardsPublicKey(sk);
-  const signBit = edPub[31]! & 128;
+  const signBit = (edPub[31] as number) & 128;
 
   // 2 ─ nonce derivation
   let rHash: Uint8Array;
@@ -178,7 +178,7 @@ export function sign(secretKey: Uint8Array, msg: Uint8Array, optRandom?: Uint8Ar
   const sig = new Uint8Array(64);
   sig.set(R, 0);
   sig.set(numberToBytesLE(S, 32), 32);
-  sig[63]! |= signBit;
+  sig[63] = (sig[63] as number) | signBit;
 
   return sig;
 }
@@ -194,8 +194,8 @@ export function verify(publicKey: Uint8Array, msg: Uint8Array, signature: Uint8A
   if (publicKey.length !== 32) throw new Error('wrong public key length');
 
   const sig = new Uint8Array(signature);
-  const sBit = sig[63]! & 128;
-  sig[63]! &= 127; // strip sign bit
+  const sBit = (sig[63] as number) & 128;
+  sig[63] = (sig[63] as number) & 127; // strip sign bit
 
   const edPub = montgomeryToEdwards(publicKey, sBit);
 

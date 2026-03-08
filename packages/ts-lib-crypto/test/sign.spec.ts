@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { signBytes } from '../src/crypto/sign';
-import { publicKey, privateKey, verifySignature } from '../src';
+import { privateKey, publicKey, verifySignature } from '../src';
 import { randomBytes } from '../src/crypto/random';
+import { signBytes } from '../src/crypto/sign';
 
 const SEED = 'test seed for sign spec coverage';
 

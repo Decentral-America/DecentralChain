@@ -1,4 +1,4 @@
-import { address, publicKey, privateKey, keyPair } from '@decentralchain/ts-lib-crypto';
+import { address, keyPair, privateKey, publicKey } from '@decentralchain/ts-lib-crypto';
 
 const seed = 'secret seed';
 

@@ -6,36 +6,37 @@
  * exploring the input space randomly and automatically shrinking
  * counterexamples when a property fails.
  */
-import { describe, test, expect } from 'vitest';
+
 import fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 import {
-  keyPair,
-  publicKey,
-  privateKey,
   address,
+  aesDecrypt,
+  aesEncrypt,
+  base16Decode,
+  base16Encode,
+  base58Decode,
+  base58Encode,
+  base64Decode,
+  base64Encode,
+  blake2b,
+  bytesToString,
+  concat,
+  keccak,
+  keyPair,
+  privateKey,
+  publicKey,
+  randomBytes,
+  sha256,
+  sharedKey,
   signBytes,
-  verifySignature,
+  split,
+  stringToBytes,
   verifyAddress,
   verifyPublicKey,
-  sha256,
-  blake2b,
-  keccak,
-  sharedKey,
-  base58Encode,
-  base58Decode,
-  base64Encode,
-  base64Decode,
-  base16Encode,
-  base16Decode,
-  stringToBytes,
-  bytesToString,
-  aesEncrypt,
-  aesDecrypt,
-  concat,
-  split,
-  randomBytes,
+  verifySignature,
 } from '../src';
-import { messageEncrypt, messageDecrypt } from '../src/crypto/encryption';
+import { messageDecrypt, messageEncrypt } from '../src/crypto/encryption';
 
 // ── Arbitraries ─────────────────────────────────────────────────────
 
@@ -294,7 +295,7 @@ describe('Sign/Verify properties', () => {
         const sig = signBytes(seed, msg);
         const pk = publicKey(seed);
         const modified = new Uint8Array(msg);
-        modified[0] = (modified[0]! ^ 0xff) & 0xff; // flip first byte
+        modified[0] = ((modified[0] as number) ^ 0xff) & 0xff; // flip first byte
         expect(verifySignature(pk, modified, sig)).toBe(false);
       }),
       { numRuns: 30 },
