@@ -4,25 +4,25 @@
  * Adapter functions to convert between Signer and CubensisConnect transaction formats.
  */
 
-import type {
-  SignedTx,
-  SignerAliasTx,
-  SignerBurnTx,
-  SignerCancelLeaseTx,
-  SignerDataTx,
-  SignerInvokeTx,
-  SignerIssueTx,
-  SignerLeaseTx,
-  SignerMassTransferTx,
-  SignerReissueTx,
-  SignerSetAssetScriptTx,
-  SignerSetScriptTx,
-  SignerSponsorshipTx,
-  SignerTransferTx,
-  SignerTx,
+import { json } from '@decentralchain/marshall';
+import {
+  type SignedTx,
+  type SignerAliasTx,
+  type SignerBurnTx,
+  type SignerCancelLeaseTx,
+  type SignerDataTx,
+  type SignerInvokeTx,
+  type SignerIssueTx,
+  type SignerLeaseTx,
+  type SignerMassTransferTx,
+  type SignerReissueTx,
+  type SignerSetAssetScriptTx,
+  type SignerSetScriptTx,
+  type SignerSponsorshipTx,
+  type SignerTransferTx,
+  type SignerTx,
 } from '@decentralchain/signer';
 import { TRANSACTION_TYPE } from './transaction-type';
-import { json } from '@decentralchain/marshall';
 
 /** Checks if an address string is an alias (prefixed with `alias:`). */
 function isAlias(source: string): boolean {
@@ -48,7 +48,7 @@ function moneyFactory(
 /** Extracts common transaction defaults (fee) from a Signer transaction. */
 function defaultsFactory(tx: SignerTx): CubensisConnect.ITransactionBase {
   const { fee } = tx;
-  let feeAssetId;
+  let feeAssetId: string | null | undefined;
 
   if (tx.type === TRANSACTION_TYPE.TRANSFER || tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
     ({ feeAssetId } = tx);
