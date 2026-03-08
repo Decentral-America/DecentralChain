@@ -358,7 +358,7 @@ export class BigNumber {
   }
 
   /** Type guard: returns `true` if `some` is a BigNumber instance (or duck-types as one). */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: duck-type guard must accept any value
   public static isBigNumber(some: any): some is BigNumber {
     if (!some || typeof some !== 'object') {
       return false;
@@ -403,6 +403,7 @@ export class BigNumber {
   }
 }
 
+// biome-ignore lint/style/noNamespace: declaration merging for BigNumber.ROUND_MODE enum
 export namespace BigNumber {
   /** Available rounding modes, matching bignumber.js semantics. */
   export enum ROUND_MODE {
