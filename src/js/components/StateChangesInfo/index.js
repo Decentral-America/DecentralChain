@@ -1,1 +1,1 @@
-export {StateChangesInfoContainer as default} from './StateChangesInfo.container';
+export { StateChangesInfoContainer as default } from './StateChangesInfo.container';

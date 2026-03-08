@@ -1,1 +1,1 @@
-export {ConvertEthPage as default} from './ConvertEthPage.container';
+export { ConvertEthPage as default } from './ConvertEthPage.container';

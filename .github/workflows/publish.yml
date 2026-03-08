@@ -16,17 +16,15 @@ jobs:
     build-explorer:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
               with:
                 node-version: 24.x
-                cache: yarn
-            - run: |
-                yarn install
-                gulp buildOfficialProd
-                rm -rf dist/report.html
-                cp ./dist/index.html ./dist/404.html
-            - uses: actions/upload-pages-artifact@v3
+                cache: npm
+            - run: npm ci
+            - run: npm run build:prod
+            - run: cp ./dist/index.html ./dist/404.html
+            - uses: actions/upload-pages-artifact@v4
               with:
                   path: ./dist
     deploy:
