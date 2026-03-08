@@ -2,11 +2,11 @@
  * DEX WebSocket Hook
  * Real-time order book and trade updates
  */
-import { useEffect, useCallback, useState } from 'react';
-import { useWebSocketChannel, createWebSocketUrl } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { useCallback, useEffect, useState } from 'react';
+import { type OrderBook, type Trade } from '@/api/services/matcherService';
 import { config } from '@/config';
-import type { OrderBook, Trade } from '@/api/services/matcherService';
+import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Order Book Update Message
@@ -75,7 +75,7 @@ export const useDexOrderBook = () => {
   useEffect(() => {
     setOrderBook(null);
     setIsLive(false);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
     orderBook,
@@ -124,7 +124,7 @@ export const useDexTrades = () => {
   // Reset state when pair changes
   useEffect(() => {
     setTrades([]);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
     trades,
@@ -175,7 +175,7 @@ export const useDexUserOrders = (userAddress?: string) => {
   // Reset state when user changes
   useEffect(() => {
     setOrderUpdates([]);
-  }, [userAddress]);
+  }, []);
 
   return {
     orderUpdates,
@@ -233,8 +233,8 @@ export const calculateSpread = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0]!.price;
-  const bestAsk = orderBook.asks[0]!.price;
+  const bestBid = orderBook.bids[0]?.price;
+  const bestAsk = orderBook.asks[0]?.price;
 
   return bestAsk - bestBid;
 };
@@ -249,7 +249,7 @@ export const calculateSpreadPercentage = (orderBook: OrderBook | null): number =
   }
 
   const spread = calculateSpread(orderBook);
-  const bestAsk = orderBook.asks[0]!.price;
+  const bestAsk = orderBook.asks[0]?.price;
 
   if (bestAsk === 0) return 0;
 
@@ -265,8 +265,8 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0]!.price;
-  const bestAsk = orderBook.asks[0]!.price;
+  const bestBid = orderBook.bids[0]?.price;
+  const bestAsk = orderBook.asks[0]?.price;
 
   return (bestBid + bestAsk) / 2;
 };

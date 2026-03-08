@@ -3,11 +3,12 @@
  * Download encrypted wallet backup as JSON file
  * Matches Angular ExportAccounts functionality
  */
-import React, { useState, useEffect } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
@@ -75,7 +76,7 @@ export interface ExportAccountModalProps {
 export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [selectedAddresses, setSelectedAddresses] = useState<Set<string>>(new Set());
-  const [userList, setUserList] = useState<any[]>([]);
+  const [userList, setUserList] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -170,27 +171,45 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
               </span>
               <div style={{ display: 'flex', gap: '12px' }}>
                 {selectedAddresses.size !== userList.length && (
-                  <a
+                  <button
+                    type="button"
                     onClick={selectAll}
-                    style={{ fontSize: '13px', color: '#2196f3', cursor: 'pointer' }}
+                    style={{
+                      fontSize: '13px',
+                      color: '#2196f3',
+                      cursor: 'pointer',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      font: 'inherit',
+                    }}
                   >
                     Select All
-                  </a>
+                  </button>
                 )}
                 {selectedAddresses.size > 0 && (
-                  <a
+                  <button
+                    type="button"
                     onClick={unselectAll}
-                    style={{ fontSize: '13px', color: '#2196f3', cursor: 'pointer' }}
+                    style={{
+                      fontSize: '13px',
+                      color: '#2196f3',
+                      cursor: 'pointer',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      font: 'inherit',
+                    }}
                   >
                     Unselect All
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
 
             <UserList>
-              {userList.map((userItem, index) => (
-                <UserItem key={index} onClick={() => toggleSelect(userItem.address)}>
+              {userList.map((userItem) => (
+                <UserItem key={userItem.address} onClick={() => toggleSelect(userItem.address)}>
                   <Checkbox
                     type="checkbox"
                     checked={selectedAddresses.has(userItem.address)}

@@ -10,10 +10,10 @@
  * - Current Block Height display (polls every 5s)
  */
 
-import { useState, useEffect } from 'react';
-import { logger } from '@/lib/logger';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '@/contexts/SettingsContext';
+import { logger } from '@/lib/logger';
 
 // ========== Styled Components ==========
 

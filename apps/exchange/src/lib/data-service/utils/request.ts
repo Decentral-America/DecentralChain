@@ -1,9 +1,9 @@
+import { isEmpty } from 'ts-utils';
 import { get, parse } from '../config';
 import { normalizeUrl } from './utils';
-import { isEmpty } from 'ts-utils';
 
 export function request<T>(params: IRequestParams<T>): Promise<T> {
-  let promise;
+  let promise: Promise<T>;
   if (params.url) {
     params.fetchOptions = addDefaultRequestParams(params.url, params.fetchOptions);
     promise = fetch(normalizeUrl(params.url), params.fetchOptions || Object.create(null)).then(
@@ -72,7 +72,7 @@ export interface IRequestParams<T> {
   fetchOptions?: IFetchOptions;
 }
 
-declare const fetch: (url: string, options?: IFetchOptions) => Promise<any>;
+declare const fetch: (url: string, options?: IFetchOptions) => Promise<Response>;
 
 export interface IFetchOptions {
   method?: 'POST' | 'GET';

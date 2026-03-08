@@ -1,38 +1,35 @@
-import * as apiMethods from './api/API';
-import { DataManager } from './classes/DataManager';
-import * as configApi from './config';
-import * as sign from './sign';
-import * as utilsModule from './utils/utils';
-import { downloadFile, abortDownloading } from './utils/DownloadFile';
-import { request } from './utils/request';
-import { type IFetchOptions } from './utils/request';
 import * as dccDataEntitiesModule from '@decentralchain/data-entities';
-import { Money, AssetPair, OrderPrice } from '@decentralchain/data-entities';
-import { normalizeTime, toAsset } from './utils/utils';
-import { type IAssetInfo } from '@decentralchain/data-entities';
-import { get } from './config';
-import { type TAssetData, type TBigNumberData } from './interface';
-import { get as getAssetPair } from './api/pairs/pairs';
-import {
-  broadcast as broadcastF,
-  createOrderSend,
-  cancelOrderSend,
-  cancelAllOrdersSend,
-} from './broadcast/broadcast';
+import { AssetPair, type IAssetInfo, Money, OrderPrice } from '@decentralchain/data-entities';
 import * as signatureAdapters from '@decentralchain/signature-adapter';
 import {
   SIGN_TYPE,
   isValidAddress as utilsIsValidAddress,
 } from '@decentralchain/signature-adapter';
-import { type TTimeType } from './utils/utils';
-import { type IUserData } from './sign';
+import * as apiMethods from './api/API';
+import { get as getAssetPair } from './api/pairs/pairs';
+import {
+  broadcast as broadcastF,
+  cancelAllOrdersSend,
+  cancelOrderSend,
+  createOrderSend,
+} from './broadcast/broadcast';
+import { DataManager } from './classes/DataManager';
+import * as configApi from './config';
+import { get } from './config';
 import { HttpConnectProvider } from './connect/HttpConnectProvider';
 import { PostMessageConnectProvider } from './connect/PostMessageConnectProvider';
+import { type TAssetData, type TBigNumberData } from './interface';
+import * as sign from './sign';
+import { type IUserData } from './sign';
+import { abortDownloading, downloadFile } from './utils/DownloadFile';
+import { type IFetchOptions, request } from './utils/request';
+import * as utilsModule from './utils/utils';
+import { normalizeTime, type TTimeType, toAsset } from './utils/utils';
 
 export { getAdapterByType, getAvailableList } from '@decentralchain/signature-adapter';
 export { Seed } from './classes/Seed';
-export { assetStorage } from './utils/AssetStorage';
 export * from './store';
+export { assetStorage } from './utils/AssetStorage';
 
 export const dccDataEntities = {
   ...dccDataEntitiesModule,
@@ -144,7 +141,7 @@ class App {
   }
 
   public getTimeStamp(count: number, timeType: TTimeType): number {
-    return utilsModule.addTime(normalizeTime(new Date().getTime()), count, timeType).valueOf();
+    return utilsModule.addTime(normalizeTime(Date.now()), count, timeType).valueOf();
   }
 
   public getSignIdForMatcher(timestamp): Promise<string> {

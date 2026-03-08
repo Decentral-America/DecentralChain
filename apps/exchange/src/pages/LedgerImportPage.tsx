@@ -2,45 +2,47 @@
  * LedgerImportPage Component
  * Step-by-step hardware wallet connection flow with Material-UI
  */
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { LedgerAdapter } from '@decentralchain/signature-adapter';
-import { useAuth } from '../contexts/AuthContext';
 import {
+  AccountCircle as AccountCircleIcon,
+  ArrowBack as ArrowBackIcon,
+  CheckCircle as CheckCircleIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  ContentCopy as CopyIcon,
+  Smartphone as SmartphoneIcon,
+  Usb as UsbIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+import {
+  Alert,
+  Avatar,
   Box,
-  Typography,
-  Paper,
   Button,
-  Stepper,
-  Step as MuiStep,
-  StepLabel,
+  Card,
+  CardContent,
+  CircularProgress,
+  IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  LinearProgress,
-  Alert,
-  IconButton,
-  CircularProgress,
-  Tooltip,
+  Step as MuiStep,
+  Paper,
+  StepLabel,
+  Stepper,
   TextField,
-  Card,
-  CardContent,
-  Avatar,
+  Tooltip,
+  Typography,
 } from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { logger } from '@/lib/logger';
-import {
-  Usb as UsbIcon,
-  Smartphone as SmartphoneIcon,
-  CheckCircle as CheckCircleIcon,
-  AccountCircle as AccountCircleIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  ContentCopy as CopyIcon,
-  Warning as WarningIcon,
-  ArrowBack as ArrowBackIcon,
-} from '@mui/icons-material';
+import { useAuth } from '../contexts/AuthContext';
 
 const USERS_COUNT = 5;
 const CONFIRMATION_TIMEOUT = 60000; // 60 seconds
@@ -121,24 +123,7 @@ export const LedgerImportPage: React.FC = () => {
   const adapter = LedgerAdapter;
   const steps = ['Connect Device', 'Open App', 'Select Account', 'Confirm'];
 
-  // Auto-progress from Connect to Open App
-  useEffect(() => {
-    if (activeStep === Step.CONNECT_DEVICE) {
-      connectDevice();
-    }
-  }, [activeStep]);
-
-  // Timeout warning for confirmation step
-  useEffect(() => {
-    if (activeStep === Step.CONFIRM && confirmationStartTime) {
-      const timer = setTimeout(() => {
-        setTimeoutWarning(true);
-      }, CONFIRMATION_TIMEOUT);
-      return () => clearTimeout(timer);
-    }
-  }, [activeStep, confirmationStartTime]);
-
-  const connectDevice = async () => {
+  const connectDevice = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -156,7 +141,24 @@ export const LedgerImportPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Auto-progress from Connect to Open App
+  useEffect(() => {
+    if (activeStep === Step.CONNECT_DEVICE) {
+      connectDevice();
+    }
+  }, [activeStep, connectDevice]);
+
+  // Timeout warning for confirmation step
+  useEffect(() => {
+    if (activeStep === Step.CONFIRM && confirmationStartTime) {
+      const timer = setTimeout(() => {
+        setTimeoutWarning(true);
+      }, CONFIRMATION_TIMEOUT);
+      return () => clearTimeout(timer);
+    }
+  }, [activeStep, confirmationStartTime]);
 
   const loadAccounts = async () => {
     setLoading(true);
@@ -180,8 +182,8 @@ export const LedgerImportPage: React.FC = () => {
       setUsers(newUsers);
 
       if (userList && userList.length > 0) {
-        setSelectedUser(userList[0]!);
-        setAccountName(`Ledger ${userList[0]!.id}`);
+        setSelectedUser(userList[0]);
+        setAccountName(`Ledger ${userList[0]?.id}`);
         setActiveStep(Step.SELECT_ACCOUNT);
       }
     } catch (err) {

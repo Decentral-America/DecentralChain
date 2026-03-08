@@ -439,8 +439,8 @@ class StyleManagerClass {
     const computedStyles = getComputedStyle(this.root);
     let customPropsCount = 0;
     for (let i = 0; i < computedStyles.length; i++) {
-      const propName = computedStyles[i]!;
-      if (propName.startsWith('--')) {
+      const propName = computedStyles[i];
+      if (propName?.startsWith('--')) {
         customPropsCount++;
       }
     }

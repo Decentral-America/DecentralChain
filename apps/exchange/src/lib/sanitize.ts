@@ -144,7 +144,6 @@ export const sanitizeFilename = (filename: string): string => {
       // Remove null bytes
       .replace(/\0/g, '')
       // Remove control characters
-      // eslint-disable-next-line no-control-regex
       .replace(/[\x00-\x1F\x7F]/g, '')
       // Trim whitespace and dots (prevents hidden files on Unix)
       .replace(/^[\s.]+|[\s.]+$/g, '')
@@ -179,12 +178,12 @@ export const sanitizeEmail = (email: string): string => {
  */
 export const sanitizeNumber = (input: string | number, defaultValue: number = 0): number => {
   if (typeof input === 'number') {
-    return isFinite(input) ? input : defaultValue;
+    return Number.isFinite(input) ? input : defaultValue;
   }
 
   if (typeof input === 'string') {
     const parsed = parseFloat(input);
-    return isFinite(parsed) ? parsed : defaultValue;
+    return Number.isFinite(parsed) ? parsed : defaultValue;
   }
 
   return defaultValue;
@@ -303,7 +302,7 @@ export const sanitizeTransactionAmount = (amount: string): string | null => {
   const trimmed = amount.trim();
   const num = Number(trimmed);
 
-  if (isNaN(num) || !isFinite(num) || num <= 0) {
+  if (Number.isNaN(num) || !Number.isFinite(num) || num <= 0) {
     return null;
   }
 

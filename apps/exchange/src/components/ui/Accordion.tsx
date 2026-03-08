@@ -10,13 +10,14 @@
  *
  * Migrated to Material-UI
  */
-import React, { useState, useCallback, type ReactNode } from 'react';
-import { Accordion as MuiAccordion, AccordionSummary, AccordionDetails, Box } from '@mui/material';
+
+import { AccordionDetails, AccordionSummary, Box, Accordion as MuiAccordion } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import React, { type ReactNode, useCallback, useState } from 'react';
 import { FiChevronDown as FiChevronDownBase } from 'react-icons/fi';
 
 // React 19 type compatibility cast
-const FiChevronDown = FiChevronDownBase as React.ComponentType<any>;
+const FiChevronDown = FiChevronDownBase as React.ComponentType<Record<string, unknown>>;
 
 const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,

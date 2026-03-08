@@ -2,15 +2,15 @@
  * ImportAccount Component
  * Imports existing wallet via seed phrase
  */
-import { useState, type FormEvent, useEffect, useRef } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
 import { Card, CardBody } from '@/components/atoms/Card';
-import { Stack } from '@/components/atoms/Stack';
-import { Icon, CommonIcons } from '@/components/atoms/Icon';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 const FormContainer = styled.div`
@@ -149,7 +149,8 @@ export const ImportAccount = () => {
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
   const isLedgerSupported =
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   // Check if this is the first account on mount

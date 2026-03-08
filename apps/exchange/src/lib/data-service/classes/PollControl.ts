@@ -1,7 +1,7 @@
 import { type IHash } from '../interface';
 import { type Poll } from '../utils/Poll';
 
-export class PollControl<T extends IHash<Poll<any>>> {
+export class PollControl<T extends IHash<Poll<unknown>>> {
   private readonly _create: ICreatePoll<T>;
   private _hash: T;
   private paused: boolean = false;
@@ -17,27 +17,35 @@ export class PollControl<T extends IHash<Poll<any>>> {
     }
 
     if (this._hash) {
-      Object.values(this._hash).forEach((poll) => poll.restart());
+      Object.values(this._hash).forEach((poll) => {
+        poll.restart();
+      });
     }
   }
 
   public pause(): void {
     this.paused = true;
     if (this._hash) {
-      Object.values(this._hash).forEach((poll) => poll.pause());
+      Object.values(this._hash).forEach((poll) => {
+        poll.pause();
+      });
     }
   }
 
   public play(): void {
     this.paused = false;
     if (this._hash) {
-      Object.values(this._hash).forEach((poll) => poll.play());
+      Object.values(this._hash).forEach((poll) => {
+        poll.play();
+      });
     }
   }
 
   public destroy() {
     if (this._hash) {
-      Object.values(this._hash).forEach((poll) => poll.destroy());
+      Object.values(this._hash).forEach((poll) => {
+        poll.destroy();
+      });
       this._hash = null;
     }
   }
@@ -55,6 +63,4 @@ export class PollControl<T extends IHash<Poll<any>>> {
   }
 }
 
-export interface ICreatePoll<T extends IHash<Poll<any>>> {
-  (): T;
-}
+export type ICreatePoll<T extends IHash<Poll<unknown>>> = () => T;

@@ -8,9 +8,8 @@
  * Matches Angular's token filtering functionality.
  */
 
-import axios from 'axios';
-import { logger } from '@/lib/logger';
 import NetworkConfig from '@/config/networkConfig';
+import { logger } from '@/lib/logger';
 
 export interface TokenInfo {
   assetId: string;
@@ -56,7 +55,9 @@ class TokenFilterService {
 
       // Process scam list
       if (scamResponse) {
-        scamResponse.forEach((id) => this.scamList.add(id));
+        scamResponse.forEach((id) => {
+          this.scamList.add(id);
+        });
       }
 
       // Process token names
@@ -89,13 +90,13 @@ class TokenFilterService {
         return null;
       }
 
-      const response = await axios.get<string>(scamUrl, {
-        timeout: 10000,
-        responseType: 'text',
+      const response = await fetch(scamUrl, {
+        signal: AbortSignal.timeout(10000),
       });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       // Parse CSV - each line is an asset ID
-      const lines = response.data
+      const lines = (await response.text())
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
@@ -114,13 +115,13 @@ class TokenFilterService {
         return null;
       }
 
-      const response = await axios.get<string>(namesUrl, {
-        timeout: 10000,
-        responseType: 'text',
+      const response = await fetch(namesUrl, {
+        signal: AbortSignal.timeout(10000),
       });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       // Parse CSV - format: assetId,name,ticker
-      const lines = response.data
+      const lines = (await response.text())
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
@@ -130,8 +131,8 @@ class TokenFilterService {
         const parts = line.split(',').map((p) => p.trim());
         if (parts.length >= 2) {
           tokens.push({
-            assetId: parts[0]!,
-            name: parts[1]!,
+            assetId: parts[0] ?? '',
+            name: parts[1] ?? '',
             ticker: parts[2] || undefined,
             verified: true,
           });

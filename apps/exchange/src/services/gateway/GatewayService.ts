@@ -4,12 +4,12 @@
  */
 import { BigNumber } from '@decentralchain/bignumber';
 import {
-  type GatewayConfig,
   type DepositDetails,
-  type WithdrawDetails,
+  type GatewayConfig,
   type GatewayType,
+  type WithdrawDetails,
 } from './types';
-import { validateGatewayAddress, formatGatewayError } from './utils';
+import { formatGatewayError, validateGatewayAddress } from './utils';
 
 /**
  * Gateway Service Class
@@ -124,8 +124,8 @@ export class GatewayService {
       }
 
       return depositDetails;
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Gateway request timeout');
       }
       throw new Error(formatGatewayError(error));
@@ -190,8 +190,8 @@ export class GatewayService {
       };
 
       return withdrawDetails;
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Gateway request timeout');
       }
       throw new Error(formatGatewayError(error));
@@ -231,8 +231,8 @@ export class GatewayService {
 
       const data = await response.json();
       return data.address || '';
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Gateway request timeout');
       }
       throw new Error(formatGatewayError(error));
@@ -290,8 +290,8 @@ export class GatewayService {
         address: data.depositAddress || '',
         expiry: new Date(data.expiry),
       };
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Gateway request timeout');
       }
       throw new Error(formatGatewayError(error));

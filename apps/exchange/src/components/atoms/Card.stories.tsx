@@ -2,7 +2,7 @@
  * Card Component Stories
  * Demonstrates Card variants and layouts
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { Card } from './Card';
 
 const meta = {
@@ -163,6 +163,7 @@ export const Grid: Story = {
       }}
     >
       {Array.from({ length: 6 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static story placeholder
         <Card key={i} hoverable>
           <div style={{ padding: '16px', textAlign: 'center' }}>
             <h4 style={{ margin: '0 0 8px 0' }}>Card {i + 1}</h4>

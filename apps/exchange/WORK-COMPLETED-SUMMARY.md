@@ -588,7 +588,7 @@ dcc-react/src/
 - **Fix:** Adjust prop types or use type assertions
 - **Priority:** Low (cosmetic)
 
-### **Issue #3: ESLint Formatting**
+### **Issue #3: Biome Formatting**
 - **Files:** Most files
 - **Error:** Code formatting inconsistencies
 - **Impact:** Linting warnings

@@ -2,26 +2,27 @@
  * SignIn Page
  * Full-screen mobile-app experience on mobile, 2-column layout on desktop.
  */
-import React from 'react';
+
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SecurityIcon from '@mui/icons-material/Security';
+import SpeedIcon from '@mui/icons-material/Speed';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
   Box,
+  Button,
   Container,
   Grid,
-  Typography,
   Stack,
-  Button,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { landingTheme } from '@/theme/landingTheme';
-import { LoginForm } from '@/features/auth/LoginForm';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { LoginForm } from '@/features/auth/LoginForm';
+import { landingTheme } from '@/theme/landingTheme';
 
 const SignInInner: React.FC = () => {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@
  * useClipboard Hook
  * Provides copy-to-clipboard functionality with feedback
  */
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 interface UseClipboardReturn {

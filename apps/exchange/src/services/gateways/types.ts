@@ -5,7 +5,7 @@
  * Matches Angular's gateway architecture for BTC, ETH, USDT, and other crypto assets
  */
 
-import type { BigNumber } from '@decentralchain/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 
 /**
  * Asset interface (minimal definition for gateway operations)

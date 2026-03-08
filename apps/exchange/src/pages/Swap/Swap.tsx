@@ -2,33 +2,34 @@
  * Swap Page
  * Token swap interface with modern UI matching landing page theme
  */
-import React from 'react';
+
 import {
-  Box,
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Stack,
-  Avatar,
-  Paper,
-  IconButton,
-  TextField,
-} from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import {
-  SwapVert,
-  KeyboardArrowDown,
-  Settings,
   History,
   InfoOutlined,
-  TrendingUp,
-  Speed,
+  KeyboardArrowDown,
   Security,
+  Settings,
+  Speed,
+  SwapVert,
+  TrendingUp,
 } from '@mui/icons-material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import type React from 'react';
+import { landingTheme } from '@/theme/landingTheme';
 
 export const Swap: React.FC = () => {
   return (

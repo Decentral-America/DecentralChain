@@ -8,8 +8,8 @@
 
 import { BigNumber } from '@decentralchain/bignumber';
 import NetworkConfig from '@/config/networkConfig';
-import type { IGatewayService, IGatewayDetails, GatewayAsset } from './types';
 import { logger } from '@/lib/logger';
+import { type GatewayAsset, type IGatewayDetails, type IGatewayService } from './types';
 
 /**
  * DCC Gateway Provider Implementation

@@ -12,13 +12,13 @@
 
 import NetworkConfig from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
-import type {
-  IGatewayService,
-  IGatewayDetails,
-  GatewayAsset,
-  GatewayConfig,
-  GatewayError,
-  GatewayErrorCode,
+import {
+  type GatewayAsset,
+  type GatewayConfig,
+  type GatewayError,
+  type GatewayErrorCode,
+  type IGatewayDetails,
+  type IGatewayService,
 } from './types';
 
 /**

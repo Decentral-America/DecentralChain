@@ -3,20 +3,21 @@
  * Form for permanently destroying tokens to reduce supply
  * Burning tokens is irreversible and permanently removes them from circulation
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, assetBurnSchema, type AssetBurnFormData } from '@/lib/forms';
-import { FormInput } from '@/components/forms/FormInput';
+import styled from 'styled-components';
+import { useAssetDetails } from '@/api/services/assetsService';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, type Transaction } from '@/services/transactionService';
+import { Spinner } from '@/components/atoms/Spinner';
+import { FormInput } from '@/components/forms/FormInput';
 import { AlertModal } from '@/components/modals/AlertModal';
 import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
-import { useAssetDetails } from '@/api/services/assetsService';
-import { Spinner } from '@/components/atoms/Spinner';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type AssetBurnFormData, assetBurnSchema, useZodForm } from '@/lib/forms';
 import { logger } from '@/lib/logger';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 /**
  * Component Props
@@ -30,7 +31,7 @@ export interface BurnTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card as any)`
+const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -154,7 +155,7 @@ const CalculationText = styled.p`
  * Format quantity with decimals
  */
 const formatQuantity = (quantity: number, decimals: number): string => {
-  const actualQuantity = quantity / Math.pow(10, decimals);
+  const actualQuantity = quantity / 10 ** decimals;
   return actualQuantity.toLocaleString();
 };
 
@@ -192,8 +193,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
   const burnQuantity = form.watch('quantity');
   const remainingSupply =
     asset && burnQuantity
-      ? (asset.quantity - burnQuantity * Math.pow(10, asset.decimals)) /
-        Math.pow(10, asset.decimals)
+      ? (asset.quantity - burnQuantity * 10 ** asset.decimals) / 10 ** asset.decimals
       : 0;
 
   const handleBurnSubmit = (data: AssetBurnFormData) => {
@@ -212,7 +212,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       setConfirmDialogOpen(false);
 
       // Convert quantity to wavelets (smallest units)
-      const quantityInWavelets = pendingBurnData.quantity * Math.pow(10, asset.decimals);
+      const quantityInWavelets = pendingBurnData.quantity * 10 ** asset.decimals;
 
       // Prepare transaction parameters
       const burnParams = {

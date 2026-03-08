@@ -3,7 +3,7 @@
  * Centralized modal state management for app-wide dialogs
  * Provides imperative modal control with type-safe APIs
  */
-import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import React, { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
@@ -11,7 +11,7 @@ import { logger } from '@/lib/logger';
  */
 export interface ModalState {
   open: boolean;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   onClose?: () => void;
   priority?: number; // Higher priority modals appear above others
 }
@@ -23,7 +23,7 @@ export interface ModalContextType {
   /**
    * Open a modal by ID with optional props
    */
-  openModal: (id: string, props?: Record<string, any>, options?: ModalOptions) => void;
+  openModal: (id: string, props?: Record<string, unknown>, options?: ModalOptions) => void;
 
   /**
    * Close a modal by ID
@@ -113,7 +113,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
    * Open a modal
    */
   const openModal = useCallback(
-    (id: string, props?: Record<string, any>, options?: ModalOptions) => {
+    (id: string, props?: Record<string, unknown>, options?: ModalOptions) => {
       setModals((prev) => {
         const openCount = Object.values(prev).filter((m) => m.open).length;
 
@@ -202,8 +202,8 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
 
       // Close all and call their onClose callbacks
       Object.keys(prev).forEach((id) => {
-        const modal = prev[id]!;
-        if (modal.open && modal.onClose) {
+        const modal = prev[id];
+        if (modal?.open && modal.onClose) {
           modal.onClose();
         }
         newModals[id] = { ...modal, open: false };
@@ -284,7 +284,7 @@ export const useModalControl = (
   modalId: string,
 ): {
   isOpen: boolean;
-  open: (props?: Record<string, any>, options?: ModalOptions) => void;
+  open: (props?: Record<string, unknown>, options?: ModalOptions) => void;
   close: () => void;
   state: ModalState | undefined;
 } => {
@@ -293,7 +293,8 @@ export const useModalControl = (
   return {
     isOpen: isModalOpen(modalId),
     open: useCallback(
-      (props?: Record<string, any>, options?: ModalOptions) => openModal(modalId, props, options),
+      (props?: Record<string, unknown>, options?: ModalOptions) =>
+        openModal(modalId, props, options),
       [openModal, modalId],
     ),
     close: useCallback(() => closeModal(modalId), [closeModal, modalId]),

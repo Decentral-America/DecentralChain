@@ -5,9 +5,11 @@
  *
  * Migrated to Material-UI
  */
-import React, { useEffect } from 'react';
-import { Modal as MuiModal, Backdrop, Fade, Box, Typography, IconButton } from '@mui/material';
+
+import { Backdrop, Box, Fade, IconButton, Modal as MuiModal, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/atoms/Button';
 
 export interface ModalProps {

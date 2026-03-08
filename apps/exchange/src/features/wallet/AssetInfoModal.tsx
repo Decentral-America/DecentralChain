@@ -3,13 +3,14 @@
  * Displays detailed asset information including blockchain metadata
  * Matches Angular modalManager.showAssetInfo functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { logger } from '@/lib/logger';
-import { Spinner } from '@/components/atoms/Spinner';
-import styled from 'styled-components';
+
 import { useQuery } from '@tanstack/react-query';
 import * as ds from 'data-service';
+import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
 import { useClipboard } from '@/hooks/useClipboard';
+import { logger } from '@/lib/logger';
 
 interface AssetInfoModalProps {
   isOpen: boolean;
@@ -64,13 +65,10 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Total Supply:</Label>
             <Value>
-              {(Number(assetInfo.quantity) / Math.pow(10, assetInfo.precision)).toLocaleString(
-                undefined,
-                {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: assetInfo.precision,
-                },
-              )}
+              {(Number(assetInfo.quantity) / 10 ** assetInfo.precision).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: assetInfo.precision,
+              })}
             </Value>
           </InfoRow>
 
@@ -117,7 +115,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
             <InfoRow>
               <Label>Min Sponsored Fee:</Label>
               <Value>
-                {(Number(assetInfo.minSponsoredFee) / Math.pow(10, assetInfo.precision)).toFixed(
+                {(Number(assetInfo.minSponsoredFee) / 10 ** assetInfo.precision).toFixed(
                   assetInfo.precision,
                 )}{' '}
                 {assetInfo.name}

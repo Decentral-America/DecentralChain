@@ -283,7 +283,7 @@ export class DefaultSettings {
    */
   private _isCommon(path: string): boolean {
     const [start] = path.split('.');
-    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start!);
+    return Object.hasOwn(this.commonDefaults, start ?? '');
   }
 
   /**
@@ -309,7 +309,8 @@ export class DefaultSettings {
    */
   private _setToObject(obj: Record<string, unknown>, path: string, value: unknown): void {
     const keys = path.split('.');
-    const lastKey = keys.pop()!;
+    const lastKey = keys.pop();
+    if (!lastKey) return;
     let current: Record<string, unknown> = obj;
 
     for (const key of keys) {
@@ -327,7 +328,8 @@ export class DefaultSettings {
    */
   private _unsetFromObject(obj: Record<string, unknown>, path: string): void {
     const keys = path.split('.');
-    const lastKey = keys.pop()!;
+    const lastKey = keys.pop();
+    if (!lastKey) return;
     let current: Record<string, unknown> = obj;
 
     for (const key of keys) {

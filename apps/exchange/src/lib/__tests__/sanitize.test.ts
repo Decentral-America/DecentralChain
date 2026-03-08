@@ -4,14 +4,14 @@
  * Tests input sanitization utilities that prevent XSS attacks,
  * injection vulnerabilities, and path traversal.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  sanitizeText,
-  sanitizeHtml,
-  sanitizeUrl,
-  sanitizeFilename,
-  sanitizeTransactionAmount,
   sanitizeAddress,
+  sanitizeFilename,
+  sanitizeHtml,
+  sanitizeText,
+  sanitizeTransactionAmount,
+  sanitizeUrl,
 } from '@/lib/sanitize';
 
 describe('sanitizeText', () => {
@@ -116,7 +116,7 @@ describe('sanitizeFilename', () => {
   });
 
   it('limits length to 255', () => {
-    const longName = 'a'.repeat(300) + '.txt';
+    const longName = `${'a'.repeat(300)}.txt`;
     expect(sanitizeFilename(longName).length).toBeLessThanOrEqual(255);
   });
 

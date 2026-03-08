@@ -1,8 +1,16 @@
-import { Box, Container, Card, CardContent, Typography, Stack } from '@mui/material';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { SvgIcon, type SvgIconProps } from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Stack,
+  SvgIcon,
+  type SvgIconProps,
+  Typography,
+} from '@mui/material';
 
 // Ethereum icon component
 const EthereumIcon = (props: SvgIconProps) => (
@@ -35,7 +43,7 @@ const MiniChart = ({ data, positive }: { data: number[]; positive: boolean }) =>
     .join(' ');
 
   return (
-    <svg width={width} height={height} style={{ display: 'block' }}>
+    <svg width={width} height={height} style={{ display: 'block' }} aria-hidden="true">
       <polyline
         points={points}
         fill="none"

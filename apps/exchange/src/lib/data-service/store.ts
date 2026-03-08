@@ -1,6 +1,6 @@
-import { toArray } from './utils/utils';
+import { concat, differenceWith, eqProps, pipe, prop, uniqBy } from 'ramda';
 import { type IOrder } from './api/matcher/interface';
-import { pipe, concat, eqProps, uniqBy, prop, differenceWith } from 'ramda';
+import { toArray } from './utils/utils';
 
 export type TStore<T> = Array<IStoreContainerItem<T>>;
 
@@ -60,7 +60,7 @@ function createClearStoreAll<T>(container: TStore<T>, _addRemoveF: IRemoveOrderF
   };
 }
 
-function createProcessStore<T extends Record<string, any>>(
+function createProcessStore<T extends Record<string, unknown>>(
   toAddContainer: TStore<T>,
   toRemoveContainer: TStore<T>,
   idKey: string,
@@ -68,8 +68,8 @@ function createProcessStore<T extends Record<string, any>>(
   return pipe(
     (list) => concat(toAddContainer.map(prop('data')), list),
     (list) =>
-      differenceWith<T, T>(eqProps(idKey), list, toRemoveContainer.map(prop('data'))) as any,
-    uniqBy(prop(idKey) as any),
+      differenceWith<T, T>(eqProps(idKey), list, toRemoveContainer.map(prop('data'))) as Array<T>,
+    uniqBy(prop(idKey) as (item: T) => T[keyof T]),
   );
 }
 
@@ -84,6 +84,4 @@ export interface IStoreContainerItem<T> {
   expiration: number;
 }
 
-interface IRemoveOrderFunc<T> {
-  (item: T | Array<T>): T | Array<T>;
-}
+type IRemoveOrderFunc<T> = (item: T | Array<T>) => T | Array<T>;

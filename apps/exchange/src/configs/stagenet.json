@@ -53,11 +53,11 @@
     "BNT": "5oS1vs1x3pa6k9XrKuSoQHVs5zyQNakhHjXZAFUxYMS9"
   },
   "matcherPriorityList": [
-    { "ticker": "DCC", "id": "DCC"},
-    { "ticker": "BTC", "id": "yrdwwJJqTKoCt63krHFVZxJvNbUPgHcDeuJXPEGsJCx"},
-    { "ticker": "USD", "id": "HETgTyfn5grcHWGRKHi7p3hvMB4QxWVrPD8Fnfi9tfD9"},
-    { "ticker": "EUR", "id": "EqZfxiqYKkByP42hqNsvuPdXxVYMHaQDwfKgFnAz5D1x"},
-    { "ticker": "CNY", "id": "8CfhN5MmaiAW1kCG5tDXasVTSafJP8cf6TZqbPRkNGxQ"}
+    { "ticker": "DCC", "id": "DCC" },
+    { "ticker": "BTC", "id": "yrdwwJJqTKoCt63krHFVZxJvNbUPgHcDeuJXPEGsJCx" },
+    { "ticker": "USD", "id": "HETgTyfn5grcHWGRKHi7p3hvMB4QxWVrPD8Fnfi9tfD9" },
+    { "ticker": "EUR", "id": "EqZfxiqYKkByP42hqNsvuPdXxVYMHaQDwfKgFnAz5D1x" },
+    { "ticker": "CNY", "id": "8CfhN5MmaiAW1kCG5tDXasVTSafJP8cf6TZqbPRkNGxQ" }
   ],
   "exchangeLink": "https://decentral.exchange"
 }

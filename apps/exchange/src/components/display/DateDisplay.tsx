@@ -1,6 +1,6 @@
+import { format, formatDistance, formatRelative, isValid, type Locale, parseISO } from 'date-fns';
+import { de, enUS, es, fr, hi, it, ja, ko, nl, pl, pt, ru, tr, zhCN } from 'date-fns/locale';
 import React, { useMemo } from 'react';
-import { format, formatDistance, formatRelative, isValid, parseISO, type Locale } from 'date-fns';
-import { enUS, es, fr, de, it, ja, ko, nl, pl, pt, ru, tr, zhCN, hi } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { logger } from '@/lib/logger';
@@ -201,8 +201,6 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
           return formatRelative(dateObj, new Date(), {
             locale: dateLocale,
           });
-
-        case 'absolute':
         default:
           return format(dateObj, formatStr, {
             locale: dateLocale,

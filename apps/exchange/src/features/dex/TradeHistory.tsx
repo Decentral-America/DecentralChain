@@ -5,9 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useDexStore } from '@/stores/dexStore';
 import { useTradeHistory } from '@/api/services/matcherService';
 import { Spinner } from '@/components/atoms/Spinner';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Trade history container
@@ -208,7 +208,7 @@ export const TradeHistory: React.FC = () => {
    */
   const formatNumber = (value: string | number, decimals: number = 8): string => {
     const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(num)) return '0.00000000';
+    if (Number.isNaN(num)) return '0.00000000';
     return num.toFixed(decimals);
   };
 

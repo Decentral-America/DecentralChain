@@ -3,16 +3,16 @@
  * Provides candle data from DecentralChain matcher
  */
 import {
+  type Bar,
+  type ErrorCallback,
+  type HistoryCallback,
   type IBasicDataFeed,
   type LibrarySymbolInfo,
-  type ResolutionString,
-  type Bar,
-  type HistoryCallback,
-  type SubscribeBarsCallback,
-  type ErrorCallback,
   type OnReadyCallback,
+  type ResolutionString,
   type ResolveCallback,
   type SearchSymbolsCallback,
+  type SubscribeBarsCallback,
 } from 'charting_library';
 import { logger } from '@/lib/logger';
 
@@ -98,9 +98,9 @@ export const createDatafeed = (
     },
 
     searchSymbols: (
-      userInput: string,
-      exchange: string,
-      symbolType: string,
+      _userInput: string,
+      _exchange: string,
+      _symbolType: string,
       onResult: SearchSymbolsCallback,
     ) => {
       onResult([
@@ -139,7 +139,7 @@ export const createDatafeed = (
     },
 
     getBars: async (
-      symbolInfo: LibrarySymbolInfo,
+      _symbolInfo: LibrarySymbolInfo,
       resolution: ResolutionString,
       periodParams: {
         from: number;
@@ -187,9 +187,9 @@ export const createDatafeed = (
     },
 
     subscribeBars: (
-      symbolInfo: LibrarySymbolInfo,
-      resolution: ResolutionString,
-      onTick: SubscribeBarsCallback,
+      _symbolInfo: LibrarySymbolInfo,
+      _resolution: ResolutionString,
+      _onTick: SubscribeBarsCallback,
       listenerGuid: string,
       _onResetCacheNeededCallback: () => void,
     ) => {

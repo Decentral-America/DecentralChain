@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from './Modal';
 import { Button } from '@/components/atoms/Button';
+import { Modal } from './Modal';
 
 export type AlertType = 'success' | 'error' | 'warning' | 'info';
 
@@ -95,7 +95,6 @@ const IconWrapper = styled.div<{ type: AlertType }>`
           background: ${p.theme.colors.warning}20;
           color: ${p.theme.colors.warning};
         `;
-      case 'info':
       default:
         return `
           background: ${p.theme.colors.primary}20;
@@ -136,7 +135,6 @@ const getAlertIcon = (type: AlertType): string => {
       return '✕';
     case 'warning':
       return '⚠';
-    case 'info':
     default:
       return 'ℹ';
   }
@@ -193,6 +191,8 @@ export function useAlertModal() {
     type: 'info',
   });
 
+  const resolveRef = React.useRef<(() => void) | null>(null);
+
   const alert = React.useCallback(
     (options: { title: string; message: string; type?: AlertType; buttonText?: string }) => {
       return new Promise<void>((resolve) => {
@@ -203,7 +203,7 @@ export function useAlertModal() {
         });
 
         // Store resolve function
-        (options as any).resolvePromise = resolve;
+        resolveRef.current = resolve;
       });
     },
     [],
@@ -211,8 +211,9 @@ export function useAlertModal() {
 
   const close = React.useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));
-    (state as any).resolvePromise?.();
-  }, [state]);
+    resolveRef.current?.();
+    resolveRef.current = null;
+  }, []);
 
   const AlertModalComponent = React.useMemo(
     () => (

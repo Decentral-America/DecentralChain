@@ -1,5 +1,5 @@
-import { type IHash } from '../interface';
 import { type Money } from '@decentralchain/data-entities';
+import { type IHash } from '../interface';
 
 export class MoneyHash {
   private _storage: IHash<Money> = Object.create(null);

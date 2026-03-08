@@ -1,8 +1,8 @@
-import { Box, Container, Grid, Card, CardContent, Typography, Stack, Avatar } from '@mui/material';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SecurityIcon from '@mui/icons-material/Security';
 import SpeedIcon from '@mui/icons-material/Speed';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import { Avatar, Box, Card, CardContent, Container, Grid, Stack, Typography } from '@mui/material';
 
 const features = [
   {

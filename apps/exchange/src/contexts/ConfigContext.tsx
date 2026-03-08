@@ -1,12 +1,12 @@
-import { createContext, useContext, type ReactNode, useState, useCallback, useMemo } from 'react';
-import { logger } from '@/lib/logger';
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { config } from '@/config';
-import type { ConfigContextType, NetworkType } from '@/types/config';
+import { logger } from '@/lib/logger';
+import { type ConfigContextType, type NetworkType } from '@/types/config';
 
 // Import network configurations
 import mainnetConfig from '../configs/mainnet.json';
-import testnetConfig from '../configs/testnet.json';
 import stagenetConfig from '../configs/stagenet.json';
+import testnetConfig from '../configs/testnet.json';
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
@@ -103,7 +103,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
  * Access network configuration throughout the application
  * @throws {Error} If used outside ConfigProvider
  */
-// eslint-disable-next-line react-refresh/only-export-components
 export const useConfig = (): ConfigContextType => {
   const context = useContext(ConfigContext);
   if (!context) {

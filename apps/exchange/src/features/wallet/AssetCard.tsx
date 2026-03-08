@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 
-const AssetCardContainer = styled(Card as any)`
+const AssetCardContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   display: flex;
   align-items: center;
   gap: ${(p) => p.theme.spacing.md};

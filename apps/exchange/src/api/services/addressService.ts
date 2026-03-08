@@ -2,7 +2,7 @@
  * Address API Service
  * Handles address-related API calls with React Query
  */
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { nodeClient } from '../client';
 
 /**

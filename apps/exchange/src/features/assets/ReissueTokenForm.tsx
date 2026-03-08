@@ -3,20 +3,21 @@
  * Form for increasing the supply of existing reissuable tokens
  * Only works with tokens that have reissuable=true
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, assetReissueSchema, type AssetReissueFormData } from '@/lib/forms';
-import { FormInput } from '@/components/forms/FormInput';
-import { Button } from '@/components/atoms/Button';
-import { Checkbox } from '@/components/atoms/Checkbox';
-import { Card } from '@/components/atoms/Card';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, type Transaction } from '@/services/transactionService';
-import { AlertModal } from '@/components/modals/AlertModal';
+import styled from 'styled-components';
 import { useAssetDetails } from '@/api/services/assetsService';
+import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
+import { Checkbox } from '@/components/atoms/Checkbox';
 import { Spinner } from '@/components/atoms/Spinner';
+import { FormInput } from '@/components/forms/FormInput';
+import { AlertModal } from '@/components/modals/AlertModal';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type AssetReissueFormData, assetReissueSchema, useZodForm } from '@/lib/forms';
 import { logger } from '@/lib/logger';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 /**
  * Component Props
@@ -30,7 +31,7 @@ export interface ReissueTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card as any)`
+const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -150,7 +151,7 @@ const LoadingContainer = styled.div`
  * Format quantity with decimals
  */
 const formatQuantity = (quantity: number, decimals: number): string => {
-  const actualQuantity = quantity / Math.pow(10, decimals);
+  const actualQuantity = quantity / 10 ** decimals;
   return actualQuantity.toLocaleString();
 };
 
@@ -200,7 +201,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
       setErrorMessage('');
 
       // Convert quantity to wavelets (smallest units)
-      const quantityInWavelets = data.quantity * Math.pow(10, asset.decimals);
+      const quantityInWavelets = data.quantity * 10 ** asset.decimals;
 
       // Prepare transaction parameters
       const reissueParams = {

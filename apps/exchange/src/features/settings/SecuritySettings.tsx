@@ -14,13 +14,14 @@
  *
  * Matches Angular's settings.html Security tab exactly
  */
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
-import { ExportAccountModal, ChangePasswordModal, DeleteAccountModal, ScriptModal } from './modals';
 import { logger } from '@/lib/logger';
+import { ChangePasswordModal, DeleteAccountModal, ExportAccountModal, ScriptModal } from './modals';
 
 // ==================== Styled Components ====================
 

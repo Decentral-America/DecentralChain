@@ -2,7 +2,7 @@
 
 
 
-[![CI/CD](https://github.com/decentralchain/wallet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/decentralchain/wallet/actions)This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![CI/CD](https://github.com/decentralchain/wallet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/decentralchain/wallet/actions)This template provides a minimal setup to get React working in Vite with HMR and some Biome rules.
 
 [![Docker](https://img.shields.io/docker/v/decentralchain/wallet?label=docker)](https://github.com/decentralchain/wallet/pkgs/container/wallet)
 
@@ -24,7 +24,7 @@ Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with c
 
 - 🌍 **Multi-language Support** - 17 languages including English, Chinese, Japanese, Russian, German, French, Spanish
 
-- 🎨 **Light/Dark Theme** - Beautiful UI with responsive design## Expanding the ESLint configuration
+- 🎨 **Light/Dark Theme** - Beautiful UI with responsive design## Expanding the Biome configuration
 
 - 📊 **Real-time Balance Tracking** - Live updates of assets and balances
 
@@ -48,17 +48,17 @@ Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with c
 
 ### Trading & DEX
 
-- 📈 **DEX Trading** - Built-in decentralized exchange integration      // Remove tseslint.configs.recommended and replace with this
+- 📈 **DEX Trading** - Built-in decentralized exchange integration      // Remove tsbiome.configs.recommended and replace with this
 
-- 📖 **Real-time Orderbook** - Live order matching and execution      tseslint.configs.recommendedTypeChecked,
+- 📖 **Real-time Orderbook** - Live order matching and execution      tsbiome.configs.recommendedTypeChecked,
 
 - 💱 **Market/Limit Orders** - Flexible order types      // Alternatively, use this for stricter rules
 
-- 🔁 **Trade History** - Track your trading activity      tseslint.configs.strictTypeChecked,
+- 🔁 **Trade History** - Track your trading activity      tsbiome.configs.strictTypeChecked,
 
       // Optionally, add this for stylistic rules
 
-### Advanced Features      tseslint.configs.stylisticTypeChecked,
+### Advanced Features      tsbiome.configs.stylisticTypeChecked,
 
 - 🏦 **Leasing** - Stake DCC tokens and earn rewards
 
@@ -88,17 +88,17 @@ Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with c
 
 ### State Management
 
-- **Zustand** - Lightweight state managementYou can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Zustand** - Lightweight state managementYou can also install [biome-react-x](https://github.com/Rel1cx/biome-react/tree/main/packages/plugins/biome-react-x) and [biome-react-dom](https://github.com/Rel1cx/biome-react/tree/main/packages/plugins/biome-react-dom) for React-specific lint rules:
 
 - **React Query** - Server state management and caching
 
 ```js
 
-### UI/UX// eslint.config.js
+### UI/UX// biome.config.js
 
-- **Styled Components** - CSS-in-JS stylingimport reactX from 'eslint-plugin-react-x'
+- **Styled Components** - CSS-in-JS stylingimport reactX from 'biome-react-x'
 
-- **React Router v6** - Client-side routing with lazy loadingimport reactDom from 'eslint-plugin-react-dom'
+- **React Router v6** - Client-side routing with lazy loadingimport reactDom from 'biome-react-dom'
 
 - **i18next** - Internationalization (17 languages)
 
@@ -405,13 +405,13 @@ npm run test:e2e
 - `npm run dev` - Start development server
 - `npm run build` - Production build
 - `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- `npm run lint` - Run Biome lint
 - `npm run type-check` - TypeScript type checking
 
 ### Code Style
 
-- ESLint + TypeScript rules
-- Prettier for formatting
+- Biome + TypeScript rules
+- Biome for formatting
 - Conventional Commits for commit messages
 
 ### Git Workflow

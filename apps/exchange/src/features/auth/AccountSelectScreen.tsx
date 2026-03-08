@@ -7,8 +7,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
-import { Stack } from '@/components/atoms/Stack';
 import { Card } from '@/components/atoms/Card';
+import { Stack } from '@/components/atoms/Stack';
 import { logger } from '@/lib/logger';
 
 // Account type - matches User from AuthContext
@@ -81,9 +81,10 @@ const AccountList = styled.div`
   gap: ${(p) => p.theme.spacing.md};
 `;
 
-const AccountCard = styled(Card as any).attrs<{ $isSelected: boolean; $disabled?: boolean }>(
-  () => ({}),
-)<{
+const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>).attrs<{
+  $isSelected: boolean;
+  $disabled?: boolean;
+}>(() => ({}))<{
   $isSelected: boolean;
   $disabled?: boolean;
 }>`

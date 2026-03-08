@@ -3,9 +3,10 @@
  * Displays available gateway assets with deposit/withdraw action buttons
  * Filters assets to only show those with gateway support
  */
-import { Grid, Card, CardContent, Typography, Button, Box, Avatar, Stack } from '@mui/material';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+
 import { BigNumber } from '@decentralchain/bignumber';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { Avatar, Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
 import { useConfig } from '@/contexts/ConfigContext';
 
 interface GatewayAsset {
@@ -41,7 +42,8 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
 
   // Build list of gateway assets with their details
   const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
-    const assetInfo: any = (assets as any)[assetId] || {};
+    const assetInfo: Record<string, unknown> =
+      (assets as Record<string, Record<string, unknown>>)[assetId] || {};
     const balance = balances[assetId] || new BigNumber(0);
 
     return {

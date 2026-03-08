@@ -5,13 +5,12 @@
  */
 import { useState } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
+import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Stack } from '@/components/atoms/Stack';
-import { Avatar } from '@/components/atoms/Avatar';
-import { Icon } from '@/components/atoms/Icon';
-import { CommonIcons } from '@/components/atoms/Icon';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AccountSwitcherWrapper = styled.div`
   width: 100%;

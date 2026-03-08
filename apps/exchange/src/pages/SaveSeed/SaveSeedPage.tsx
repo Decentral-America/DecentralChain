@@ -3,27 +3,29 @@
  * Allows users to view and backup their seed phrase after password authentication
  * Modern Material UI implementation matching Angular saveSeed module functionality
  */
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Container,
-  Typography,
-  TextField,
-  MenuItem,
-  Alert,
   Fade,
-  Slide,
-  useTheme,
   keyframes,
-  AlertTitle,
+  MenuItem,
+  Slide,
+  TextField,
+  Typography,
+  useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/atoms/Button';
-import { SeedBackup } from '@/features/auth/SeedBackup';
-import { useAuth } from '@/contexts/AuthContext';
 import { NetworkConfig } from '@/config';
-import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAuth } from '@/contexts/AuthContext';
+import { SeedBackup } from '@/features/auth/SeedBackup';
 import { logger } from '@/lib/logger';
 
 // Animations
@@ -177,20 +179,7 @@ export const SaveSeedPage: React.FC = () => {
   const needPassword =
     !selectedUser?.userType || ['seed', 'privateKey'].includes(selectedUser.userType);
 
-  useEffect(() => {
-    setIsVisible(true);
-    // Load user list from storage
-    loadUserList();
-  }, []);
-
-  useEffect(() => {
-    if (password) {
-      setShowPasswordError(false);
-      setNetworkError(false);
-    }
-  }, [password]);
-
-  const loadUserList = async () => {
+  const loadUserList = useCallback(async () => {
     try {
       // Get users from localStorage
       const usersData = localStorage.getItem('dcc_users');
@@ -198,13 +187,26 @@ export const SaveSeedPage: React.FC = () => {
         const users: User[] = JSON.parse(usersData);
         setUserList(users);
         if (users.length > 0) {
-          setSelectedAddress(users[0]!.address);
+          setSelectedAddress(users[0]?.address);
         }
       }
     } catch (error) {
       logger.error('Error loading users:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setIsVisible(true);
+    // Load user list from storage
+    loadUserList();
+  }, [loadUserList]);
+
+  useEffect(() => {
+    if (password) {
+      setShowPasswordError(false);
+      setNetworkError(false);
+    }
+  }, [password]);
 
   const handleShowSeed = async () => {
     if (!selectedUser) return;
@@ -418,7 +420,7 @@ export const SaveSeedPage: React.FC = () => {
                             fontWeight: 700,
                           }}
                         >
-                          {user.name?.[0]?.toUpperCase() || user.address[0]!.toUpperCase()}
+                          {user.name?.[0]?.toUpperCase() || user.address[0]?.toUpperCase()}
                         </Box>
                         <Box>
                           <Typography variant="body2" fontWeight={600}>
@@ -438,7 +440,7 @@ export const SaveSeedPage: React.FC = () => {
                 <AccountCard>
                   <AccountAvatar>
                     {selectedUser.name?.[0]?.toUpperCase() ||
-                      selectedUser.address[0]!.toUpperCase()}
+                      selectedUser.address[0]?.toUpperCase()}
                   </AccountAvatar>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="body1" fontWeight={600}>

@@ -4,7 +4,7 @@
  * Matches Angular: loginSignal, logoutSignal
  */
 import { useEffect } from 'react';
-import type { User } from '@/types/auth';
+import { type User } from '@/types/auth';
 
 /**
  * Hook to listen to authentication events

@@ -4,7 +4,8 @@
  * Offers options to create a new wallet or import an existing one
  * via seed phrase or private key.
  */
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Modal } from './Modal';
 

@@ -2,8 +2,9 @@
  * Gateway Service Utility Functions
  * Utilities for address validation, config retrieval, and error formatting
  */
-import { type GatewayConfig } from './types';
+
 import { logger } from '@/lib/logger';
+import { type GatewayConfig } from './types';
 
 /**
  * Validates an external blockchain address using gateway regex pattern
@@ -55,14 +56,17 @@ export const getGatewayConfig = (
  * @param error - Error object from API call
  * @returns Formatted error message
  */
-export const formatGatewayError = (error: any): string => {
+export const formatGatewayError = (error: unknown): string => {
   // Check for API response error message
-  if (error.response?.data?.message) {
-    return error.response.data.message;
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const resp = (error as { response?: { data?: { message?: string } } }).response;
+    if (resp?.data?.message) {
+      return resp.data.message;
+    }
   }
 
   // Check for standard error message
-  if (error.message) {
+  if (error instanceof Error) {
     return error.message;
   }
 

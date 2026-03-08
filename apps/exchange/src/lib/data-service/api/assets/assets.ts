@@ -1,10 +1,11 @@
-import { Asset, Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { get as configGet, getDataService } from '../../config';
-import { request } from '../../utils/request';
-import { type IBalanceItem, type assetsApi } from './interface';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { DCC_ID } from '@decentralchain/signature-adapter';
+import { isEmpty } from 'ts-utils';
+import { get as configGet, getDataService } from '../../config';
+import { type IHash } from '../../interface';
 import { assetStorage } from '../../utils/AssetStorage';
+import { request } from '../../utils/request';
 import {
   clearTransferFee,
   normalizeAssetId,
@@ -12,15 +13,14 @@ import {
   toArray,
   toHash,
 } from '../../utils/utils';
-import { isEmpty } from 'ts-utils';
-import { type IHash } from '../../interface';
+import { type assetsApi, type IBalanceItem } from './interface';
 
 const MAX_ASSETS_IN_REQUEST = 30;
 
 export function get(id: string): Promise<Asset>;
 export function get(idList: Array<string>): Promise<Array<Asset>>;
 
-export function get(assets: string | Array<string>): Promise<any> {
+export function get(assets: string | Array<string>): Promise<Asset | Asset[]> {
   return assetStorage
     .getAssets(toArray(assets), getAssetRequestCb)
     .then((list) => {
@@ -41,7 +41,9 @@ export function get(assets: string | Array<string>): Promise<any> {
           return asset;
         }
 
-        Object.entries(rewriteAssets[asset.id]).forEach(([key, value]) => (asset[key] = value));
+        Object.entries(rewriteAssets[asset.id]).forEach(([key, value]) => {
+          asset[key] = value;
+        });
 
         return asset;
       });
@@ -63,7 +65,7 @@ export const dccAsset = new Asset({
   reissuable: false,
 });
 
-export function getNftList(address: string, limit: number): Promise<Array<any>> {
+export function getNftList(address: string, limit: number): Promise<Array<unknown>> {
   return request({
     url: `${configGet('node')}/assets/nft/${address}/limit/${limit}`,
   });
@@ -251,7 +253,10 @@ const splitRequest = (list: string[], getData) => {
 
 const getAssetRequestCb = (list: Array<string>): Promise<Array<Asset>> => {
   const ds = getDataService();
-  return splitRequest(list as any, ds.getAssets as any) //TODO delete after modify client lib
+  return splitRequest(
+    list,
+    ds.getAssets as unknown as (ids: string[]) => Promise<{ data: Array<Asset | null> }>,
+  ) //TODO delete after modify client lib
     .then((response) => {
       const assets = response.data;
       const fails = [];
@@ -264,7 +269,7 @@ const getAssetRequestCb = (list: Array<string>): Promise<Array<Asset>> => {
 
       return queueRequest(fails).then((reloadedAssets) => {
         let failCount = 0;
-        return list.map((id, index) => {
+        return list.map((_id, index) => {
           if (assets[index]) {
             return assets[index];
           } else {

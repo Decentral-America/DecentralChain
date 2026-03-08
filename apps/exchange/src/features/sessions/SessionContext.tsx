@@ -3,10 +3,16 @@
  * Manages user sessions with auto-lock, cross-tab sync, and multi-account support
  * Matches Angular sessions module functionality
  */
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import type { Session, SessionState, SessionEvent, SessionConfig } from './types';
-import { DEFAULT_SESSION_CONFIG } from './types';
+import type React from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
+import {
+  DEFAULT_SESSION_CONFIG,
+  type Session,
+  type SessionConfig,
+  type SessionEvent,
+  type SessionState,
+} from './types';
 
 interface SessionContextValue extends SessionState {
   createSession: (user: {
@@ -35,10 +41,116 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const channelRef = useRef<BroadcastChannel | null>(null);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const broadcastEvent = useCallback((event: Omit<SessionEvent, 'timestamp'>) => {
+    const fullEvent: SessionEvent = {
+      ...event,
+      timestamp: Date.now(),
+    };
+
+    channelRef.current?.postMessage(fullEvent);
+  }, []);
+
+  const loadSessionsFromStorage = useCallback(() => {
+    try {
+      const sessionsData = localStorage.getItem(STORAGE_KEY);
+      const activeSessionId = localStorage.getItem(ACTIVE_SESSION_KEY);
+
+      if (sessionsData) {
+        const loadedSessions: Session[] = JSON.parse(sessionsData);
+        setSessions(loadedSessions);
+
+        if (activeSessionId) {
+          const active = loadedSessions.find((s) => s.id === activeSessionId);
+          if (active) {
+            setActiveSession(active);
+          }
+        }
+      }
+    } catch (error) {
+      logger.error('Error loading sessions from storage:', error);
+    }
+  }, []);
+
+  const persistSessionsToStorage = useCallback(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+      if (activeSession) {
+        localStorage.setItem(ACTIVE_SESSION_KEY, activeSession.id);
+      } else {
+        localStorage.removeItem(ACTIVE_SESSION_KEY);
+      }
+    } catch (error) {
+      logger.error('Error persisting sessions to storage:', error);
+    }
+  }, [sessions, activeSession]);
+
+  const handleBroadcastMessage = useCallback((event: SessionEvent) => {
+    switch (event.type) {
+      case 'session-created':
+        if (event.session) {
+          setSessions((prev) => {
+            if (prev.find((s) => s.id === event.session?.id)) {
+              return prev;
+            }
+            return [...prev, event.session];
+          });
+        }
+        break;
+
+      case 'session-locked':
+        setSessions((prev) =>
+          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: true } : s)),
+        );
+        setActiveSession((prev) =>
+          prev?.id === event.sessionId ? { ...prev, isLocked: true } : prev,
+        );
+        break;
+
+      case 'session-unlocked':
+        setSessions((prev) =>
+          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: false } : s)),
+        );
+        setActiveSession((prev) =>
+          prev?.id === event.sessionId ? { ...prev, isLocked: false } : prev,
+        );
+        break;
+
+      case 'session-switched':
+        if (event.session) {
+          setActiveSession(event.session);
+        }
+        break;
+
+      case 'session-destroyed':
+        setSessions((prev) => prev.filter((s) => s.id !== event.sessionId));
+        setActiveSession((prev) => (prev?.id === event.sessionId ? null : prev));
+        break;
+
+      case 'activity-refresh':
+        setActiveSession((prev) =>
+          prev?.id === event.sessionId ? { ...prev, lastActivity: event.timestamp } : prev,
+        );
+        break;
+    }
+  }, []);
+
+  const lockSession = useCallback(() => {
+    if (!activeSession) return;
+
+    const lockedSession = { ...activeSession, isLocked: true };
+    setActiveSession(lockedSession);
+    setSessions((prev) => prev.map((s) => (s.id === activeSession.id ? lockedSession : s)));
+
+    broadcastEvent({
+      type: 'session-locked',
+      sessionId: activeSession.id,
+    });
+  }, [activeSession, broadcastEvent]);
+
   // Load sessions from localStorage on mount
   useEffect(() => {
     loadSessionsFromStorage();
-  }, []);
+  }, [loadSessionsFromStorage]);
 
   // Setup BroadcastChannel for cross-tab synchronization
   useEffect(() => {
@@ -56,7 +168,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => {
       channelRef.current?.close();
     };
-  }, []);
+  }, [handleBroadcastMessage]);
 
   // Auto-lock timer
   useEffect(() => {
@@ -84,109 +196,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         clearTimeout(inactivityTimerRef.current);
       }
     };
-  }, [activeSession, config.autoLock, config.inactivityTimeout]);
+  }, [activeSession, config.autoLock, config.inactivityTimeout, lockSession]);
 
   // Persist sessions to localStorage
   useEffect(() => {
     if (config.persistSessions) {
       persistSessionsToStorage();
     }
-  }, [sessions, activeSession, config.persistSessions]);
-
-  const loadSessionsFromStorage = () => {
-    try {
-      const sessionsData = localStorage.getItem(STORAGE_KEY);
-      const activeSessionId = localStorage.getItem(ACTIVE_SESSION_KEY);
-
-      if (sessionsData) {
-        const loadedSessions: Session[] = JSON.parse(sessionsData);
-        setSessions(loadedSessions);
-
-        if (activeSessionId) {
-          const active = loadedSessions.find((s) => s.id === activeSessionId);
-          if (active) {
-            setActiveSession(active);
-          }
-        }
-      }
-    } catch (error) {
-      logger.error('Error loading sessions from storage:', error);
-    }
-  };
-
-  const persistSessionsToStorage = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
-      if (activeSession) {
-        localStorage.setItem(ACTIVE_SESSION_KEY, activeSession.id);
-      } else {
-        localStorage.removeItem(ACTIVE_SESSION_KEY);
-      }
-    } catch (error) {
-      logger.error('Error persisting sessions to storage:', error);
-    }
-  };
-
-  const broadcastEvent = (event: Omit<SessionEvent, 'timestamp'>) => {
-    const fullEvent: SessionEvent = {
-      ...event,
-      timestamp: Date.now(),
-    };
-
-    channelRef.current?.postMessage(fullEvent);
-  };
-
-  const handleBroadcastMessage = (event: SessionEvent) => {
-    switch (event.type) {
-      case 'session-created':
-        if (event.session) {
-          setSessions((prev) => {
-            if (prev.find((s) => s.id === event.session!.id)) {
-              return prev;
-            }
-            return [...prev, event.session!];
-          });
-        }
-        break;
-
-      case 'session-locked':
-        if (event.sessionId === activeSession?.id) {
-          setActiveSession((prev) => (prev ? { ...prev, isLocked: true } : null));
-        }
-        setSessions((prev) =>
-          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: true } : s)),
-        );
-        break;
-
-      case 'session-unlocked':
-        if (event.sessionId === activeSession?.id) {
-          setActiveSession((prev) => (prev ? { ...prev, isLocked: false } : null));
-        }
-        setSessions((prev) =>
-          prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: false } : s)),
-        );
-        break;
-
-      case 'session-switched':
-        if (event.session) {
-          setActiveSession(event.session);
-        }
-        break;
-
-      case 'session-destroyed':
-        setSessions((prev) => prev.filter((s) => s.id !== event.sessionId));
-        if (activeSession?.id === event.sessionId) {
-          setActiveSession(null);
-        }
-        break;
-
-      case 'activity-refresh':
-        if (event.sessionId === activeSession?.id) {
-          setActiveSession((prev) => (prev ? { ...prev, lastActivity: event.timestamp } : null));
-        }
-        break;
-    }
-  };
+  }, [config.persistSessions, persistSessionsToStorage]);
 
   const createSession = useCallback(
     async (user: {
@@ -214,7 +231,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       return newSession;
     },
-    [],
+    [broadcastEvent],
   );
 
   const switchSession = useCallback(
@@ -232,22 +249,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         session,
       });
     },
-    [sessions],
+    [sessions, broadcastEvent],
   );
-
-  const lockSession = useCallback(() => {
-    if (!activeSession) return;
-
-    const lockedSession = { ...activeSession, isLocked: true };
-    setActiveSession(lockedSession);
-    setSessions((prev) => prev.map((s) => (s.id === activeSession.id ? lockedSession : s)));
-
-    // Broadcast to other tabs
-    broadcastEvent({
-      type: 'session-locked',
-      sessionId: activeSession.id,
-    });
-  }, [activeSession]);
 
   const unlockSession = useCallback(
     async (_password: string): Promise<boolean> => {
@@ -279,7 +282,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return false;
       }
     },
-    [activeSession],
+    [activeSession, broadcastEvent],
   );
 
   const destroySession = useCallback(
@@ -295,7 +298,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         sessionId,
       });
     },
-    [activeSession],
+    [activeSession, broadcastEvent],
   );
 
   const refreshActivity = useCallback(() => {
@@ -314,7 +317,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       type: 'activity-refresh',
       sessionId: activeSession.id,
     });
-  }, [activeSession]);
+  }, [activeSession, broadcastEvent]);
 
   const value: SessionContextValue = {
     activeSession,

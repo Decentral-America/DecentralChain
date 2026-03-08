@@ -3,7 +3,7 @@
  * Provides methods to sign various transaction types using @decentralchain/transactions
  * Handles all 17 transaction types with proper parameter validation
  */
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 // TODO: Re-enable when @decentralchain/transactions is fixed for Vite
 // import {
@@ -23,57 +23,57 @@ import { useState, useCallback } from 'react';
 // } from '@decentralchain/transactions';
 
 // Temporary stub functions until package is fixed
-const transfer = (_params: any, _seed: string) => {
+const transfer = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const issue = (_params: any, _seed: string) => {
+const issue = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const reissue = (_params: any, _seed: string) => {
+const reissue = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const burn = (_params: any, _seed: string) => {
+const burn = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const lease = (_params: any, _seed: string) => {
+const lease = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const cancelLease = (_params: any, _seed: string) => {
+const cancelLease = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const massTransfer = (_params: any, _seed: string) => {
+const massTransfer = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const data = (_params: any, _seed: string) => {
+const data = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const setScript = (_params: any, _seed: string) => {
+const setScript = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const sponsorship = (_params: any, _seed: string) => {
+const sponsorship = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const setAssetScript = (_params: any, _seed: string) => {
+const setAssetScript = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
-const invokeScript = (_params: any, _seed: string) => {
+const invokeScript = (_params: Record<string, unknown>, _seed: string) => {
   throw new Error('Not implemented - awaiting package fix');
 };
 
 // Temporary type definitions until package is fixed
-type ITransferParams = any;
-type IIssueParams = any;
-type IReissueParams = any;
-type IBurnParams = any;
-type ILeaseParams = any;
-type ICancelLeaseParams = any;
-type IAliasParams = any;
-type IMassTransferParams = any;
-type IDataParams = any;
-type ISetScriptParams = any;
-type ISponsorshipParams = any;
-type ISetAssetScriptParams = any;
-type IInvokeScriptParams = any;
+type ITransferParams = Record<string, unknown>;
+type IIssueParams = Record<string, unknown>;
+type IReissueParams = Record<string, unknown>;
+type IBurnParams = Record<string, unknown>;
+type ILeaseParams = Record<string, unknown>;
+type ICancelLeaseParams = Record<string, unknown>;
+type IAliasParams = Record<string, unknown>;
+type IMassTransferParams = Record<string, unknown>;
+type IDataParams = Record<string, unknown>;
+type ISetScriptParams = Record<string, unknown>;
+type ISponsorshipParams = Record<string, unknown>;
+type ISetAssetScriptParams = Record<string, unknown>;
+type IInvokeScriptParams = Record<string, unknown>;
 
 // import type {
 //   ITransferParams,
@@ -109,37 +109,39 @@ export interface SigningError {
  */
 export interface UseTransactionSigningReturn {
   // Transfer
-  signTransfer: (params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  signTransfer: (params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
 
   // Asset Management
-  signIssue: (params: Omit<IIssueParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
-  signReissue: (params: Omit<IReissueParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
-  signBurn: (params: Omit<IBurnParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  signIssue: (params: Omit<IIssueParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
+  signReissue: (params: Omit<IReissueParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
+  signBurn: (params: Omit<IBurnParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
 
   // Leasing
-  signLease: (params: Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  signLease: (params: Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
   signCancelLease: (
     params: Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>,
-  ) => Promise<any>;
+  ) => Promise<unknown>;
 
   // Address & Data
-  signAlias: (params: Omit<IAliasParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  signAlias: (params: Omit<IAliasParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
   signMassTransfer: (
     params: Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>,
-  ) => Promise<any>;
-  signData: (params: Omit<IDataParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  ) => Promise<unknown>;
+  signData: (params: Omit<IDataParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
 
   // Smart Contracts
-  signSetScript: (params: Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>) => Promise<any>;
+  signSetScript: (
+    params: Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>,
+  ) => Promise<unknown>;
   signSponsorship: (
     params: Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>,
-  ) => Promise<any>;
+  ) => Promise<unknown>;
   signSetAssetScript: (
     params: Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>,
-  ) => Promise<any>;
+  ) => Promise<unknown>;
   signInvokeScript: (
     params: Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>,
-  ) => Promise<any>;
+  ) => Promise<unknown>;
 
   // State
   isSigning: boolean;
@@ -209,10 +211,10 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
    */
   const signTransaction = useCallback(
     async <T>(
-      signingFn: (params: T, seed: string) => any,
+      signingFn: (params: T, seed: string) => unknown,
       params: T,
       transactionType: string,
-    ): Promise<any> => {
+    ): Promise<unknown> => {
       setIsSigning(true);
       setError(null);
 
@@ -226,7 +228,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
           ...params,
           chainId,
           senderPublicKey: user?.publicKey,
-        } as any;
+        } as T;
 
         const signedTx = signingFn(fullParams, seed);
 
@@ -256,7 +258,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Transfer Transaction
   const signTransfer = useCallback(
     async (params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(transfer, params as any, 'Transfer');
+      return signTransaction(transfer, params as ITransferParams, 'Transfer');
     },
     [signTransaction],
   );
@@ -264,7 +266,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Issue Transaction
   const signIssue = useCallback(
     async (params: Omit<IIssueParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(issue, params as any, 'Issue');
+      return signTransaction(issue, params as IIssueParams, 'Issue');
     },
     [signTransaction],
   );
@@ -272,7 +274,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Reissue Transaction
   const signReissue = useCallback(
     async (params: Omit<IReissueParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(reissue, params as any, 'Reissue');
+      return signTransaction(reissue, params as IReissueParams, 'Reissue');
     },
     [signTransaction],
   );
@@ -280,7 +282,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Burn Transaction
   const signBurn = useCallback(
     async (params: Omit<IBurnParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(burn, params as any, 'Burn');
+      return signTransaction(burn, params as IBurnParams, 'Burn');
     },
     [signTransaction],
   );
@@ -288,7 +290,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Lease Transaction
   const signLease = useCallback(
     async (params: Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(lease, params as any, 'Lease');
+      return signTransaction(lease, params as ILeaseParams, 'Lease');
     },
     [signTransaction],
   );
@@ -296,7 +298,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Cancel Lease Transaction
   const signCancelLease = useCallback(
     async (params: Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(cancelLease, params as any, 'CancelLease');
+      return signTransaction(cancelLease, params as ICancelLeaseParams, 'CancelLease');
     },
     [signTransaction],
   );
@@ -310,7 +312,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
       try {
         // createAliasTransaction uses data-service signature API directly
         // It doesn't need a seed parameter
-        const signedTx = await createAliasTransaction(params as any, '');
+        const signedTx = await createAliasTransaction(params as { alias: string; fee: number }, '');
         return signedTx;
       } catch (err) {
         const signingError: SigningError = {
@@ -324,13 +326,13 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
         setIsSigning(false);
       }
     },
-    [setIsSigning, setError],
+    [],
   );
 
   // Mass Transfer Transaction
   const signMassTransfer = useCallback(
     async (params: Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(massTransfer, params as any, 'MassTransfer');
+      return signTransaction(massTransfer, params as IMassTransferParams, 'MassTransfer');
     },
     [signTransaction],
   );
@@ -338,7 +340,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Data Transaction
   const signData = useCallback(
     async (params: Omit<IDataParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(data, params as any, 'Data');
+      return signTransaction(data, params as IDataParams, 'Data');
     },
     [signTransaction],
   );
@@ -346,7 +348,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Set Script Transaction
   const signSetScript = useCallback(
     async (params: Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(setScript, params as any, 'SetScript');
+      return signTransaction(setScript, params as ISetScriptParams, 'SetScript');
     },
     [signTransaction],
   );
@@ -354,7 +356,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Sponsorship Transaction
   const signSponsorship = useCallback(
     async (params: Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(sponsorship, params as any, 'Sponsorship');
+      return signTransaction(sponsorship, params as ISponsorshipParams, 'Sponsorship');
     },
     [signTransaction],
   );
@@ -362,7 +364,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Set Asset Script Transaction
   const signSetAssetScript = useCallback(
     async (params: Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(setAssetScript, params as any, 'SetAssetScript');
+      return signTransaction(setAssetScript, params as ISetAssetScriptParams, 'SetAssetScript');
     },
     [signTransaction],
   );
@@ -370,7 +372,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   // Invoke Script Transaction
   const signInvokeScript = useCallback(
     async (params: Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(invokeScript, params as any, 'InvokeScript');
+      return signTransaction(invokeScript, params as IInvokeScriptParams, 'InvokeScript');
     },
     [signTransaction],
   );

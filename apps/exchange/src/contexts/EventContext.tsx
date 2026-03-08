@@ -1,17 +1,17 @@
 import React, {
   createContext,
-  useContext,
-  useCallback,
-  useRef,
-  useEffect,
   type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
 } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
  * Event handler function type that can accept any arguments
  */
-type EventHandler<T = any> = (...args: T[]) => void;
+type EventHandler<T = unknown> = (...args: T[]) => void;
 
 /**
  * Map structure for organizing event subscriptions
@@ -35,7 +35,7 @@ interface EventContextValue {
    * @param event - Event name to emit
    * @param args - Arguments to pass to event handlers
    */
-  emit: (event: string, ...args: any[]) => void;
+  emit: (event: string, ...args: unknown[]) => void;
 
   /**
    * Subscribe to an event with a handler function
@@ -133,7 +133,7 @@ export const EventNames = {
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const eventsRef = useRef<EventMap>(new Map());
 
-  const emit = useCallback((event: string, ...args: any[]) => {
+  const emit = useCallback((event: string, ...args: unknown[]) => {
     const handlers = eventsRef.current.get(event);
     if (handlers) {
       // Execute handlers in registration order
@@ -156,12 +156,12 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (!eventsRef.current.has(event)) {
       eventsRef.current.set(event, new Set());
     }
-    eventsRef.current.get(event)!.add(handler);
+    eventsRef.current.get(event)?.add(handler);
 
     // Development logging
     if (import.meta.env.DEV) {
       logger.debug(`[EventManager] Subscribed to: ${event}`, {
-        totalListeners: eventsRef.current.get(event)!.size,
+        totalListeners: eventsRef.current.get(event)?.size,
       });
     }
 
@@ -267,8 +267,7 @@ export const useEvent = (
   useEffect(() => {
     const subscription = subscribe(event, handler);
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, subscribe, ...deps]);
+  }, [event, subscribe, ...deps, handler]);
 };
 
 /**
@@ -319,8 +318,7 @@ export const useEventOnce = (
     return () => {
       subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, subscribe, ...deps]);
+  }, [event, subscribe, ...deps, handler]);
 };
 
 /**
@@ -329,7 +327,7 @@ export const useEventOnce = (
  * const emit = useTypedEmit<{ txId: string; amount: number }>();
  * emit('transaction:confirmed', { txId: '123', amount: 100 });
  */
-export const useTypedEmit = <T = any,>() => {
+export const useTypedEmit = <T = unknown>() => {
   const { emit } = useEventManager();
   return useCallback(
     (event: string, data: T) => {

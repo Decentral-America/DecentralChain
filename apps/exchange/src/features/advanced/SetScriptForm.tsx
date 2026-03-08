@@ -3,21 +3,23 @@
  * Attach smart contract scripts to accounts for advanced functionality
  * Enables programmable account rules and custom transaction validation
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import type React from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import { z } from 'zod';
-import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import { Card } from '@/components/atoms/Card';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card as any)`
+const FormCard = styled(Card as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -140,7 +142,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const RemoveScriptButton = styled(Button as any)`
+const RemoveScriptButton = styled(Button as React.ComponentType)`
   flex: 1;
 `;
 
@@ -168,7 +170,10 @@ type SetScriptFormData = z.infer<typeof scriptSchema>;
 export const SetScriptForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<any>(null);
+  const [transactionParams, setTransactionParams] = useState<{
+    script: string | null;
+    fee: number;
+  } | null>(null);
 
   const {
     register,
@@ -268,14 +273,10 @@ export const SetScriptForm: React.FC = () => {
 
             <InfoBox>
               <strong>💡 Script Information:</strong>
-              <br />
-              • Scripts must be compiled RIDE code in base64 format
-              <br />
-              • Fee: 0.01 DCC (10x standard transaction fee)
-              <br />
-              • Scripts validate all outgoing transactions from your account
-              <br />
-              • Leave empty and submit to remove an existing script
+              <br />• Scripts must be compiled RIDE code in base64 format
+              <br />• Fee: 0.01 DCC (10x standard transaction fee)
+              <br />• Scripts validate all outgoing transactions from your account
+              <br />• Leave empty and submit to remove an existing script
               <br />• Learn more about RIDE at docs.decentralchain.io/en/ride/
             </InfoBox>
 

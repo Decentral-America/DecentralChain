@@ -2,14 +2,14 @@
  * useAliases Hook
  * Manages alias operations for the current user
  */
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  getAliasesByAddress,
   checkAliasExists,
+  getAliasesByAddress,
   validateAliasFormat,
 } from '@/api/services/aliasService';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 export const useAliases = () => {
   const { user } = useAuth();
@@ -83,7 +83,7 @@ export const useAliases = () => {
           };
         }
         return { available: true };
-      } catch (err: any) {
+      } catch (err: unknown) {
         logger.error('Error checking alias availability:', err);
         return {
           available: false,
@@ -135,7 +135,7 @@ export const useAliases = () => {
 
           try {
             // Fetch updated alias list from blockchain
-            const updatedAliases = await getAliasesByAddress(user.address!);
+            const updatedAliases = await getAliasesByAddress(user.address ?? '');
 
             // Check if new alias is in the list
             if (updatedAliases.includes(aliasName)) {

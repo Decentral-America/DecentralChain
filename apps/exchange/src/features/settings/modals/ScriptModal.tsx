@@ -3,11 +3,12 @@
  * Manage smart contract scripts for advanced users
  * Simplified placeholder - full implementation would match Angular ScriptModalCtrl
  */
-import React, { useState } from 'react';
-import { logger } from '@/lib/logger';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
+import type React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
   padding: 24px;

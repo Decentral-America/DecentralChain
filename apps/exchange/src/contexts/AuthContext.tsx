@@ -8,16 +8,17 @@
  * Uses correct storage keys (multiAccountData, multiAccountHash, multiAccountUsers)
  * Integrates with data-service (ds.app.login)
  */
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import type { User, AuthContextType } from '@/types/auth';
-import { multiAccount } from '@/services/multiAccount';
-import { useScriptInfoPolling } from '@/hooks/useScriptInfoPolling';
+
+import { isValidAddress } from '@decentralchain/signature-adapter';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { NetworkConfig } from '@/config';
 import { useIdleTimer } from '@/hooks/useIdleTimer';
+import { useScriptInfoPolling } from '@/hooks/useScriptInfoPolling';
 import { trackEvent } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
-import { isValidAddress } from '@decentralchain/signature-adapter';
+import { multiAccount } from '@/services/multiAccount';
 import tokenFilterService from '@/services/tokenFilters';
-import { NetworkConfig } from '@/config';
+import { type AuthContextType, type User } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     applyUserTheme();
-  }, [user?.hash, user?.settings?.theme]); // Watch user identity and theme changes
+  }, [user?.hash, user?.settings?.theme, user]); // Watch user identity and theme changes
 
   /**
    * Auto-save user settings changes with debouncing
@@ -99,7 +100,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timer);
-  }, [user?.settings, user?.hash, user?.name, user?.address]); // Watch settings changes
+  }, [user?.settings, user?.hash, user?.name, user?.address, user]); // Watch settings changes
 
   /**
    * Save session to sessionStorage for auto-restore on page reload
@@ -185,7 +186,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}',
         );
 
-        let allUsers;
+        let allUsers: Array<{
+          hash: string;
+          name?: string;
+          address: string;
+          [key: string]: unknown;
+        }>;
         try {
           allUsers = multiAccount.toList(multiAccountUsers);
           if (!allUsers || allUsers.length === 0) {
@@ -344,7 +350,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Matches Angular: User._addUserData() lines 858-864
    * Allows users to configure custom node URLs, matcher URLs, etc.
    */
-  const syncNetworkConfig = useCallback(async (userSettings: any) => {
+  const syncNetworkConfig = useCallback(async (userSettings: Record<string, unknown>) => {
     try {
       const ds = await import('data-service');
 
@@ -399,7 +405,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           await multiAccount.signUp(password, DEFAULT_ROUNDS);
         } else {
           // Existing accounts - sign in to decrypt
-          const hash = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH)!;
+          const hash = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH) ?? '';
           await multiAccount.signIn(multiAccountData, password, DEFAULT_ROUNDS, hash);
         }
 
@@ -547,7 +553,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
         } else {
           // Signature still valid, but ensure it's added to API
-          if (matcherSign && matcherSign.signature) {
+          if (matcherSign?.signature) {
             await addMatcherSignToAPI(matcherSign.timestamp, matcherSign.signature);
           }
         }
@@ -666,8 +672,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         // If not signed in, sign in first
         if (!isSignedIn && password) {
-          const multiAccountData = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_DATA)!;
-          const multiAccountHash = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH)!;
+          const multiAccountData = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_DATA) ?? '';
+          const multiAccountHash = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH) ?? '';
           await multiAccount.signIn(multiAccountData, password, DEFAULT_ROUNDS, multiAccountHash);
           setIsSignedIn(true);
         }
@@ -706,7 +712,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           users[userHash].matcherSign = matcherSign;
         } else {
           // Signature still valid, but ensure it's added to API
-          if (matcherSign && matcherSign.signature) {
+          if (matcherSign?.signature) {
             await addMatcherSignToAPI(matcherSign.timestamp, matcherSign.signature);
           }
         }
@@ -822,7 +828,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw error;
       }
     },
-    [isSignedIn, user],
+    [isSignedIn, user, logout],
   );
 
   /**
@@ -1011,7 +1017,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // Return default for section
-      return defaults[section]!;
+      return defaults[section] ?? '';
     },
     [user],
   );

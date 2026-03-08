@@ -1,7 +1,7 @@
+import { type BigNumber } from '@decentralchain/bignumber';
 import { Asset } from '@decentralchain/data-entities';
 import { type IHash } from '../interface';
 import { isPromise, toArray } from './utils';
-import { type BigNumber } from '@decentralchain/bignumber';
 
 type TAssetORList = Asset | Array<Asset>;
 type TIdOrList = string | Array<string>;

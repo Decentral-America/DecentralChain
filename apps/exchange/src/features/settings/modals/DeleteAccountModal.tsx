@@ -3,12 +3,13 @@
  * Permanently delete account with confirmation
  * Matches Angular DeleteAccountModalCtrl functionality
  */
-import React, { useState } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
@@ -73,7 +74,7 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-const DangerButton = styled(Button as any)`
+const DangerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   background-color: #d32f2f !important;
 
   &:hover:not(:disabled) {

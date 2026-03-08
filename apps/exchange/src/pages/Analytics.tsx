@@ -2,18 +2,19 @@
  * Analytics Page
  * Portfolio analytics and performance insights with real-time data
  */
-import { Box, Typography, Paper, Grid, Stack, Skeleton, Alert } from '@mui/material';
+
 import {
-  TrendingUp,
   AccountBalanceWallet,
   SwapHoriz,
   Timeline,
   TrendingDown,
+  TrendingUp,
 } from '@mui/icons-material';
+import { Alert, Box, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { useMemo } from 'react';
+import { useAddressTransactions } from '@/api/services/addressService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { useAddressTransactions } from '@/api/services/addressService';
-import { useMemo } from 'react';
 
 export const Analytics = () => {
   const { user } = useAuth();
@@ -117,9 +118,9 @@ export const Analytics = () => {
         Analytics
       </Typography>
       <Grid container spacing={3}>
-        {stats.map((stat, idx) => (
+        {stats.map((stat) => (
           <Grid
-            key={idx}
+            key={stat.label}
             size={{
               xs: 12,
               sm: 6,

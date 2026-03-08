@@ -4,274 +4,139 @@
  * Centralized configuration access service that provides type-safe access to mainnet.json
  * This replaces Angular's window.DCCApp.network global pattern with a clean service interface
  *
- * All methods are static to avoid unnecessary instantiation
  * All accessors are read-only as mainnet.json is immutable runtime configuration
  */
 
 import mainnetConfigJson from '../configs/mainnet.json';
-import type {
-  MainnetConfig,
-  TradingPair,
-  GatewayAssetConfig,
-  MatcherPriorityItem,
-  OracleConfig,
+import {
+  type GatewayAssetConfig,
+  type MainnetConfig,
+  type MatcherPriorityItem,
+  type OracleConfig,
+  type TradingPair,
 } from './types';
 
-export class NetworkConfig {
-  private static config: MainnetConfig = mainnetConfigJson as unknown as MainnetConfig;
+const _config: MainnetConfig = mainnetConfigJson as unknown as MainnetConfig;
 
-  /**
-   * Primary blockchain node URL for transaction broadcast and queries
-   * Example: "https://mainnet-node.decentralchain.io"
-   */
-  static get node(): string {
-    return this.config.node;
-  }
+const NetworkConfig = {
+  get node(): string {
+    return _config.node;
+  },
 
-  /**
-   * DEX matcher service URL for order matching
-   * Example: "https://mainnet-matcher.decentralchain.io/matcher"
-   */
-  static get matcher(): string {
-    return this.config.matcher;
-  }
+  get matcher(): string {
+    return _config.matcher;
+  },
 
-  /**
-   * Data service API URL for account data, transactions, balances
-   * Example: "https://data-service.decentralchain.io"
-   */
-  static get api(): string {
-    return this.config.api;
-  }
+  get api(): string {
+    return _config.api;
+  },
 
-  /**
-   * API version identifier
-   * Example: "v0"
-   */
-  static get apiVersion(): string {
-    return this.config.apiVersion;
-  }
+  get apiVersion(): string {
+    return _config.apiVersion;
+  },
 
-  /**
-   * Blockchain explorer URL for viewing transactions and addresses
-   * Example: "https://decentralscan.com"
-   */
-  static get explorer(): string {
-    return this.config.explorer;
-  }
+  get explorer(): string {
+    return _config.explorer;
+  },
 
-  /**
-   * Support page URL
-   * Example: "https://decentralchain.io/soporte"
-   */
-  static get support(): string {
-    return this.config.support;
-  }
+  get support(): string {
+    return _config.support;
+  },
 
-  /**
-   * Terms and Conditions URL
-   */
-  static get termsAndConditions(): string {
-    return this.config.termsAndConditions;
-  }
+  get termsAndConditions(): string {
+    return _config.termsAndConditions;
+  },
 
-  /**
-   * Privacy Policy URL
-   */
-  static get privacyPolicy(): string {
-    return this.config.privacyPolicy;
-  }
+  get privacyPolicy(): string {
+    return _config.privacyPolicy;
+  },
 
-  /**
-   * Network code identifier
-   * Example: "?" for mainnet
-   */
-  static get code(): string {
-    return this.config.code;
-  }
+  get code(): string {
+    return _config.code;
+  },
 
-  /**
-   * Network peers list URL
-   * Example: "https://decentralscan.com/peers"
-   */
-  static get nodeList(): string {
-    return this.config.nodeList;
-  }
+  get nodeList(): string {
+    return _config.nodeList;
+  },
 
-  /**
-   * Features configuration URL (feature flags)
-   * Example: "https://raw.githubusercontent.com/.../config.json"
-   */
-  static get featuresConfigUrl(): string {
-    return this.config.featuresConfigUrl;
-  }
+  get featuresConfigUrl(): string {
+    return _config.featuresConfigUrl;
+  },
 
-  /**
-   * Fee configuration URL (transaction fee tables)
-   * Example: "https://raw.githubusercontent.com/.../fee.json"
-   */
-  static get feeConfigUrl(): string {
-    return this.config.feeConfigUrl;
-  }
+  get feeConfigUrl(): string {
+    return _config.feeConfigUrl;
+  },
 
-  /**
-   * Application origin URL
-   * Example: "https://decentral.exchange"
-   */
-  static get origin(): string {
-    return this.config.origin;
-  }
+  get origin(): string {
+    return _config.origin;
+  },
 
-  // ========== Oracle Configuration ==========
+  get oracles(): OracleConfig {
+    return _config.oracles;
+  },
 
-  /**
-   * Get complete oracle configuration object
-   */
-  static get oracles(): OracleConfig {
-    return this.config.oracles;
-  }
+  get oracleDCC(): string {
+    return _config.oracles.dcc;
+  },
 
-  /**
-   * DCC oracle address for price feeds and data services
-   * Example: "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP"
-   */
-  static get oracleDCC(): string {
-    return this.config.oracles.dcc;
-  }
+  get oracleTokenomica(): string {
+    return _config.oracles.tokenomica;
+  },
 
-  /**
-   * Tokenomica oracle address (may be empty)
-   */
-  static get oracleTokenomica(): string {
-    return this.config.oracles.tokenomica;
-  }
+  get tokensNameListUrl(): string {
+    return _config.tokensNameListUrl;
+  },
 
-  // ========== Token/Asset Configuration ==========
+  get scamListUrl(): string {
+    return _config.scamListUrl;
+  },
 
-  /**
-   * URL for prominent token names CSV (used for asset naming)
-   * Example: "https://raw.githubusercontent.com/.../token-name-list.csv"
-   */
-  static get tokensNameListUrl(): string {
-    return this.config.tokensNameListUrl;
-  }
+  getAssetId(ticker: string): string | undefined {
+    return _config.assets[ticker];
+  },
 
-  /**
-   * URL for scam asset list CSV (used for spam filtering)
-   * Example: "https://raw.githubusercontent.com/.../scam-v1.csv"
-   */
-  static get scamListUrl(): string {
-    return this.config.scamListUrl;
-  }
-
-  /**
-   * Get well-known asset ID by ticker name
-   * @param ticker - Asset ticker (e.g., "BTC", "DCC", "CRC")
-   * @returns Asset ID or undefined if not found
-   */
-  static getAssetId(ticker: string): string | undefined {
-    return this.config.assets[ticker];
-  }
-
-  /**
-   * Get asset ticker by ID
-   * @param id - Asset ID
-   * @returns Ticker name or undefined if not found
-   */
-  static getAssetTicker(id: string): string | undefined {
-    // Reverse lookup in assets map
-    for (const [ticker, assetId] of Object.entries(this.config.assets)) {
+  getAssetTicker(id: string): string | undefined {
+    for (const [ticker, assetId] of Object.entries(_config.assets)) {
       if (assetId === id) return ticker;
     }
     return undefined;
-  }
+  },
 
-  /**
-   * Get all well-known assets as a map
-   * @returns Record of ticker -> asset ID
-   */
-  static get assets(): Record<string, string> {
-    return { ...this.config.assets }; // Return copy to prevent mutation
-  }
+  get assets(): Record<string, string> {
+    return { ..._config.assets };
+  },
 
-  // ========== Trading Pairs (DEX) ==========
+  getTradingPairs(): TradingPair[] {
+    return [..._config.tradingPairs];
+  },
 
-  /**
-   * Get all trading pairs available on the DEX
-   * Format: [[amountAsset, priceAsset], ...]
-   * @returns Array of trading pairs
-   */
-  static getTradingPairs(): TradingPair[] {
-    return [...this.config.tradingPairs]; // Return copy to prevent mutation
-  }
+  getMatcherPriorityList(): MatcherPriorityItem[] {
+    return [..._config.matcherPriorityList];
+  },
 
-  /**
-   * Get matcher priority list for DEX trading
-   * Defines the order of assets in trading pair selection
-   * @returns Array of {ticker, id} objects
-   */
-  static getMatcherPriorityList(): MatcherPriorityItem[] {
-    return [...this.config.matcherPriorityList]; // Return copy
-  }
+  getGatewayConfig(assetId: string): GatewayAssetConfig | undefined {
+    return _config.gateway?.[assetId];
+  },
 
-  // ========== Gateway Configuration ==========
+  getAllGatewayConfigs(): Record<string, GatewayAssetConfig> {
+    return { ..._config.gateway };
+  },
 
-  /**
-   * Get gateway configuration for a specific asset
-   * Used for BTC, ETH, USDT deposits and withdrawals
-   * @param assetId - Asset ID to get gateway config for
-   * @returns Gateway config or undefined if not found
-   */
-  static getGatewayConfig(assetId: string): GatewayAssetConfig | undefined {
-    return this.config.gateway?.[assetId];
-  }
+  hasGateway(assetId: string): boolean {
+    return !!_config.gateway?.[assetId];
+  },
 
-  /**
-   * Get all gateway configurations
-   * @returns Record of asset ID -> gateway config
-   */
-  static getAllGatewayConfigs(): Record<string, GatewayAssetConfig> {
-    return { ...this.config.gateway }; // Return copy
-  }
+  get networkByte(): number {
+    return _config.code.charCodeAt(0);
+  },
 
-  /**
-   * Check if an asset has gateway support
-   * @param assetId - Asset ID to check
-   * @returns true if gateway exists for this asset
-   */
-  static hasGateway(assetId: string): boolean {
-    return !!this.config.gateway?.[assetId];
-  }
+  getFullConfig(): MainnetConfig {
+    return { ..._config };
+  },
 
-  // ========== Network-Specific Utilities ==========
-
-  /**
-   * Get network byte for seed/address generation
-   * DCC Mainnet: 87 (character code of '?')
-   * @returns Network byte value
-   */
-  static get networkByte(): number {
-    return this.config.code.charCodeAt(0);
-  }
-
-  /**
-   * Get complete configuration object
-   * Useful for data-service initialization: ds.config.setConfig(NetworkConfig.getFullConfig())
-   * @returns Complete MainnetConfig object
-   */
-  static getFullConfig(): MainnetConfig {
-    return { ...this.config }; // Return deep copy
-  }
-
-  /**
-   * Get specific configuration value by key path
-   * Useful for dynamic config access
-   * @param key - Dot-notation path (e.g., "oracles.dcc")
-   * @returns Configuration value or undefined
-   */
-  static get(key: string): unknown {
+  get(key: string): unknown {
     const keys = key.split('.');
-    let value: unknown = this.config;
+    let value: unknown = _config;
 
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
@@ -282,16 +147,12 @@ export class NetworkConfig {
     }
 
     return value;
-  }
+  },
 
-  /**
-   * Check if configuration is loaded and valid
-   * @returns true if config is valid
-   */
-  static isValid(): boolean {
-    return !!(this.config && this.config.node && this.config.matcher && this.config.api);
-  }
-}
+  isValid(): boolean {
+    return !!(_config?.node && _config.matcher && _config.api);
+  },
+};
 
-// Default export for convenience
+export { NetworkConfig };
 export default NetworkConfig;

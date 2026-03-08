@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    
+
     /* Path Mappings */
     "baseUrl": ".",
     "paths": {

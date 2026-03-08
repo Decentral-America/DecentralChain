@@ -3,11 +3,12 @@
  * Change encryption password for multi-account data
  * Matches Angular PasswordModalCtrl functionality
  */
-import React, { useState } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-import { multiAccount } from '@/services/multiAccount';
+import type React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { multiAccount } from '@/services/multiAccount';
 
 const ModalBody = styled.div`
   padding: 24px;

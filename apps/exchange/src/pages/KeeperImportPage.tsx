@@ -1,46 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as signatureAdapter from '@decentralchain/signature-adapter';
-import { useAuth } from '../contexts/AuthContext';
 import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Grid,
+  CheckCircle as CheckCircleIcon,
+  ContentCopy as CopyIcon,
+  Edit as EditIcon,
+  Error as ErrorIcon,
+  ExpandMore as ExpandMoreIcon,
+  Extension as ExtensionIcon,
+  Info as InfoIcon,
+  OpenInNew as OpenInNewIcon,
+  Refresh as RefreshIcon,
+  Security as SecurityIcon,
+  AccountBalanceWallet as WalletIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Fade,
+  Grid,
+  Grow,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
-  Chip,
-  CircularProgress,
-  Fade,
+  Paper,
   Slide,
-  Grow,
   Snackbar,
-  Tooltip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   TextField,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import {
-  Extension as ExtensionIcon,
-  CheckCircle as CheckCircleIcon,
-  Security as SecurityIcon,
-  AccountBalanceWallet as WalletIcon,
-  ContentCopy as CopyIcon,
-  Edit as EditIcon,
-  ExpandMore as ExpandMoreIcon,
-  Info as InfoIcon,
-  Refresh as RefreshIcon,
-  Error as ErrorIcon,
-  Warning as WarningIcon,
-  OpenInNew as OpenInNewIcon,
-} from '@mui/icons-material';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface KeeperUser {
   address: string;
@@ -201,34 +202,7 @@ export const KeeperImportPage: React.FC = () => {
     type: string;
   };
 
-  useEffect(() => {
-    setIsVisible(true);
-    detectKeeper();
-  }, []);
-
-  useEffect(() => {
-    if (selectedUser) {
-      const existingAccount = accounts.find((acc) => acc.address === selectedUser.address);
-      if (existingAccount) {
-        setNameError('This account is already imported');
-      }
-    }
-  }, [selectedUser, accounts]);
-
-  useEffect(() => {
-    if (name && selectedUser) {
-      const nameExists = accounts.some(
-        (acc) => acc.name === name && acc.address !== selectedUser.address,
-      );
-      setNameError(nameExists ? 'An account with this name already exists' : '');
-    } else if (!name && phase === Phase.CONFIRM) {
-      setNameError('Please enter an account name');
-    } else {
-      setNameError('');
-    }
-  }, [name, selectedUser, accounts, phase]);
-
-  const detectKeeper = async () => {
+  const detectKeeper = useCallback(async () => {
     setLoading(true);
     setErrorCode(null);
 
@@ -251,7 +225,34 @@ export const KeeperImportPage: React.FC = () => {
       setErrorCode(KeeperErrorCode.NOT_INSTALLED);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setIsVisible(true);
+    detectKeeper();
+  }, [detectKeeper]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      const existingAccount = accounts.find((acc) => acc.address === selectedUser.address);
+      if (existingAccount) {
+        setNameError('This account is already imported');
+      }
+    }
+  }, [selectedUser, accounts]);
+
+  useEffect(() => {
+    if (name && selectedUser) {
+      const nameExists = accounts.some(
+        (acc) => acc.name === name && acc.address !== selectedUser.address,
+      );
+      setNameError(nameExists ? 'An account with this name already exists' : '');
+    } else if (!name && phase === Phase.CONFIRM) {
+      setNameError('Please enter an account name');
+    } else {
+      setNameError('');
+    }
+  }, [name, selectedUser, accounts, phase]);
 
   const requestPermission = async () => {
     setLoading(true);

@@ -19,7 +19,7 @@ export interface AliasInfo {
 export const checkAliasExists = async (alias: string): Promise<boolean> => {
   try {
     const result = await ds.api.aliases.getAddressByAlias(alias);
-    return result && result.address ? true : false;
+    return !!result?.address;
   } catch {
     // If alias doesn't exist, data-service will throw an error or return null
     return false;

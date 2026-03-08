@@ -7,9 +7,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Stack } from '@/components/atoms/Stack';
-import { Icon } from '@/components/atoms/Icon';
-import { CommonIcons } from '@/components/atoms/Icon';
 import { useClipboard } from '@/hooks/useClipboard';
 
 interface SeedBackupProps {
@@ -146,7 +145,7 @@ const WordText = styled.span`
   color: ${(p) => p.theme.colors.text};
 `;
 
-const RevealButton = styled(Button as any)`
+const RevealButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -246,6 +245,7 @@ For support, visit: https://decentralchain.io/support
               {revealed ? (
                 <SeedPhraseGrid>
                   {words.map((word, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase words can repeat
                     <SeedWord key={index}>
                       <WordNumber>{index + 1}.</WordNumber>
                       <WordText>{word}</WordText>

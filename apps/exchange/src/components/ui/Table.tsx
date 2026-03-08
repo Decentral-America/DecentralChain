@@ -3,17 +3,18 @@
  * Data table with sorting, clickable rows, and custom rendering
  * Migrated to Material-UI
  */
-import React from 'react';
+
 import {
   Table as MuiTable,
+  Paper,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
 
 // Styled Components
 const StyledTableCell = styled(TableCell, {
@@ -49,15 +50,15 @@ const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' }>(
 );
 
 // Interfaces
-export interface Column<T = any> {
+export interface Column<T = unknown> {
   key: string;
   label: string;
   sortable?: boolean;
-  render?: (value: any, row: T) => React.ReactNode;
+  render?: (value: unknown, row: T) => React.ReactNode;
   width?: string;
 }
 
-export interface TableProps<T = any> {
+export interface TableProps<T = unknown> {
   columns: Column<T>[];
   data: T[];
   onSort?: (key: string) => void;
@@ -70,7 +71,7 @@ export interface TableProps<T = any> {
   style?: React.CSSProperties;
 }
 
-export const Table = <T extends Record<string, any>>({
+export const Table = <T extends Record<string, unknown>>({
   columns,
   data,
   onSort,

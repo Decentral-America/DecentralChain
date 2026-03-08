@@ -2,12 +2,12 @@
  * useAssetDetails Hook
  * Fetches and caches asset information using React Query
  */
-import { useQuery, type QueryClient } from '@tanstack/react-query';
+import { type QueryClient, useQuery } from '@tanstack/react-query';
 import {
-  fetchAssetDetails,
   type AssetDetails,
-  getAssetDisplayName,
+  fetchAssetDetails,
   formatAssetAmount,
+  getAssetDisplayName,
   shortenAssetId,
 } from '@/services/assetService';
 
@@ -106,6 +106,7 @@ export const useAssetDetails = (
   } = options;
 
   // Query asset details
+  // biome-ignore lint/correctness/useHookAtTopLevel: useQuery is called inside useAssetDetails hook (arrow function)
   const query = useQuery({
     queryKey: ['asset-details', assetId],
     queryFn: () => fetchAssetDetails(assetId),
@@ -202,7 +203,7 @@ export const useMultipleAssets = (
   uniqueAssetIds.forEach((assetId) => {
     // This is intentionally calling the hook in a loop
     // React Query handles deduplication internally
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // biome-ignore lint/correctness/useHookAtTopLevel: suppressed
     const result = useAssetDetails(assetId);
     assetMap.set(assetId, result);
   });

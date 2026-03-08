@@ -3,12 +3,13 @@
  * Modal for reissuing (minting more) user-issued tokens
  * Matches Angular modalManager.showReissueModal functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
-import styled from 'styled-components';
-import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+
 import * as ds from 'data-service';
+import { useState } from 'react';
+import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 interface ReissueAssetModalProps {
@@ -36,7 +37,7 @@ export function ReissueAssetModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const displaySupply = currentSupply / Math.pow(10, decimals);
+  const displaySupply = currentSupply / 10 ** decimals;
 
   const handleReissue = async () => {
     if (!user || !amount || parseFloat(amount) <= 0) return;
@@ -45,7 +46,7 @@ export function ReissueAssetModal({
     setError(null);
 
     try {
-      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * Math.pow(10, decimals));
+      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * 10 ** decimals);
 
       // Create reissue transaction
       const tx = {

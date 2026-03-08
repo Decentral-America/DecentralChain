@@ -2,7 +2,7 @@
  * useMediaQuery Hook
  * Tracks whether a media query matches
  */
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * Custom hook to track media query matches

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { logger } from '@/lib/logger';
-import { Box, Typography, TextField, MenuItem, Slider as MuiSlider } from '@mui/material';
-import { Button } from '../components/atoms/Button';
-import { Input } from '../components/atoms/Input';
-import { Checkbox } from '../components/atoms/Checkbox';
+import { Box, MenuItem, Slider as MuiSlider, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
+import { useState } from 'react';
+import { logger } from '@/lib/logger';
+import { Button } from '../components/atoms/Button';
+import { Checkbox } from '../components/atoms/Checkbox';
+import { Input } from '../components/atoms/Input';
 
 // Types
 interface TokenForm {

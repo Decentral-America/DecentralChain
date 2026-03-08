@@ -1,12 +1,14 @@
-import { request } from '../../utils/request';
-import { get } from '../../config';
-import { getProviderAssets, getProviderData, RESPONSE_STATUSES } from '@decentralchain/oracle-data';
 import {
-  type TDataTxField,
+  getProviderAssets,
+  getProviderData,
   type IProviderData,
+  RESPONSE_STATUSES,
+  type TDataTxField,
   type TProviderAsset,
 } from '@decentralchain/oracle-data';
 import { indexBy, prop } from 'ramda';
+import { get } from '../../config';
+import { request } from '../../utils/request';
 
 export function getDataFields(address: string): Promise<Array<TDataTxField>> {
   return request({ url: `${get('node')}/addresses/data/${address}` });

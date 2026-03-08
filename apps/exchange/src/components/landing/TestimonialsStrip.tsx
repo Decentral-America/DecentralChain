@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Stack, Avatar, Typography } from '@mui/material';
+import { Avatar, Box, Container, Grid, Stack, Typography } from '@mui/material';
 
 const testimonials = [
   {

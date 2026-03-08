@@ -3,9 +3,10 @@
  * User profile images with fallback initials
  * Migrated to Material-UI Avatar
  */
-import React from 'react';
+
 import MuiAvatar, { type AvatarProps as MuiAvatarProps } from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 export interface AvatarProps extends Omit<MuiAvatarProps, 'variant'> {
   src?: string;
@@ -54,9 +55,9 @@ const getInitials = (name?: string): string => {
   if (!name) return '';
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) {
-    return parts[0]!.substring(0, 2).toUpperCase();
+    return parts[0]?.substring(0, 2).toUpperCase();
   }
-  return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase();
+  return ((parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '')).toUpperCase();
 };
 
 export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(

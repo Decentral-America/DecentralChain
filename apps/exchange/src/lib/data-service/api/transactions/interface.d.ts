@@ -35,6 +35,7 @@ export type T_TX =
   | ISetScript
   | ISetAssetScript;
 
+// biome-ignore lint/style/noNamespace: TypeScript declaration file
 export namespace txApi {
   export interface IBaseTransaction {
     type: number;

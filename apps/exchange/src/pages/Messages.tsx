@@ -2,8 +2,9 @@
  * Messages Page
  * Internal messaging and notifications
  */
-import { Box, Typography, Paper, Stack, Avatar, Chip } from '@mui/material';
+
 import { Mail, MailOutline } from '@mui/icons-material';
+import { Avatar, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
 export const Messages = () => {
   const messages = [

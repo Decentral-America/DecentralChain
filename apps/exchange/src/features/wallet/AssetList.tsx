@@ -3,11 +3,11 @@
  * Scrollable list of user assets with balances and values
  */
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/contexts/AuthContext';
-import { AssetCard, type Asset } from './AssetCard';
-import { Stack } from '@/components/atoms/Stack';
-import { Spinner } from '@/components/atoms/Spinner';
 import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
+import { type Asset, AssetCard } from './AssetCard';
 
 const AssetListContainer = styled.div`
   width: 100%;

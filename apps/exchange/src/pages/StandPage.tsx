@@ -1,41 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { styled, keyframes } from '@mui/material/styles';
 import {
-  Box,
-  Typography,
-  Paper,
-  Grid,
-  Button,
-  TextField,
-  Checkbox,
-  Switch,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  CircularProgress,
-  LinearProgress,
-  Chip,
-  Tabs,
-  Tab,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Fade,
-  Slide,
-  Snackbar,
-  Alert,
-  IconButton,
-  Tooltip,
-  Slider,
-} from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  ContentCopy as ContentCopyIcon,
   CheckCircle as CheckCircleIcon,
-  Palette as PaletteIcon,
   Code as CodeIcon,
+  ContentCopy as ContentCopyIcon,
+  ExpandMore as ExpandMoreIcon,
+  Palette as PaletteIcon,
   TouchApp as TouchAppIcon,
 } from '@mui/icons-material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  CircularProgress,
+  Fade,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Paper,
+  Radio,
+  RadioGroup,
+  Slide,
+  Slider,
+  Snackbar,
+  Switch,
+  Tab,
+  Tabs,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 // Animations
 const float = keyframes`
@@ -257,7 +258,7 @@ export const StandPage: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -534,7 +535,7 @@ export const StandPage: React.FC = () => {
                       <DemoLabel>Slider</DemoLabel>
                       <Slider
                         value={sliderValue}
-                        onChange={(e, value) => setSliderValue(value as number)}
+                        onChange={(_e, value) => setSliderValue(value as number)}
                         valueLabelDisplay="auto"
                         sx={{ mt: 2 }}
                       />

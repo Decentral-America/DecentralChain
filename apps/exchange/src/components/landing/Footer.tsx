@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Typography, Link, Stack, Divider } from '@mui/material';
+import { Box, Container, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 
 const footerLinks = {
   Resources: [

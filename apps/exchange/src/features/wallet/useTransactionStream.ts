@@ -2,10 +2,10 @@
  * Transaction Stream Hook
  * Real-time transaction notifications via WebSocket
  */
-import { useEffect, useCallback, useState } from 'react';
-import { useWebSocketChannel, createWebSocketUrl } from '@/services/websocket';
-import { useAuth } from '@/contexts';
+import { useCallback, useEffect, useState } from 'react';
 import { config } from '@/config';
+import { useAuth } from '@/contexts';
+import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
 
 /**
  * Transaction Notification
@@ -101,7 +101,7 @@ export const useTransactionStream = (
   useEffect(() => {
     setTransactions([]);
     setLastTransaction(null);
-  }, [address]);
+  }, []);
 
   return {
     transactions,

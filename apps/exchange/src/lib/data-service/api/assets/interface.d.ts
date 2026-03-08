@@ -1,6 +1,7 @@
 import { type Asset, type Money } from '@decentralchain/data-entities';
-import { type txApi as txApi } from '../transactions/interface';
+import { txApi } from '../transactions/interface';
 
+// biome-ignore lint/style/noNamespace: TypeScript declaration file
 export namespace assetsApi {
   export interface IBalanceList {
     address: string;
@@ -13,8 +14,8 @@ export namespace assetsApi {
     issueTransaction: txApi.IIssue;
     quantity: string;
     reissuable: boolean;
-    sponsorBalance: string | number | void;
-    minSponsoredAssetFee: string | number | void;
+    sponsorBalance: string | number | undefined;
+    minSponsoredAssetFee: string | number | undefined;
   }
 
   export interface IDCCBalance {

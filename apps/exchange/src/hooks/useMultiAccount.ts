@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useStorage } from './useStorage';
 import { logger } from '@/lib/logger';
+import { useStorage } from './useStorage';
 
 /**
  * Account interface representing a wallet account

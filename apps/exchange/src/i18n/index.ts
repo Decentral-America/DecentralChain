@@ -81,7 +81,8 @@ function getDefaultLanguage(): string {
   }
 
   // Try to get from browser
-  const browserLang = navigator.language || (navigator as any).userLanguage;
+  const browserLang =
+    navigator.language || (navigator as Navigator & { userLanguage?: string }).userLanguage;
 
   // Check for exact match
   if (resources[browserLang as keyof typeof resources]) {

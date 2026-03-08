@@ -203,7 +203,8 @@ export const fluidSpacing = (min: number, max: number) => css`
  * Requires container-type: inline-size on parent
  */
 export const container = {
-  query: (minWidth: number) => (styles: RuleSet | string) => css`
+  query: (minWidth: number) => (styles: RuleSet | string) =>
+    css`
     @container (min-width: ${minWidth}px) {
       ${styles}
     }

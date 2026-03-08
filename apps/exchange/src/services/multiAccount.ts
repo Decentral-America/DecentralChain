@@ -8,13 +8,13 @@
  */
 // Import crypto functions from @decentralchain/ts-lib-crypto
 import {
-  encryptSeed,
-  decryptSeed,
   base58Encode,
   blake2b,
-  stringToBytes,
   address as buildAddress,
   publicKey as buildPublicKey,
+  decryptSeed,
+  encryptSeed,
+  stringToBytes,
 } from '@decentralchain/ts-lib-crypto';
 
 interface UserData {
@@ -160,7 +160,7 @@ class MultiAccountService {
       publicKey = buildPublicKey(userData.seed);
     } else if (userData.privateKey) {
       // PrivateKey account
-      publicKey = buildPublicKey({ privateKey: userData.privateKey } as any);
+      publicKey = buildPublicKey({ privateKey: userData.privateKey } as unknown as string);
     } else {
       throw new Error('Must provide seed, privateKey, or publicKey');
     }
@@ -224,7 +224,7 @@ class MultiAccountService {
    * @param multiAccountUsers - User metadata from localStorage
    * @returns Array of complete user objects with decrypted data
    */
-  toList(multiAccountUsers: Record<string, any>): any[] {
+  toList(multiAccountUsers: Record<string, Record<string, unknown>>): Record<string, unknown>[] {
     if (!this.isSignedIn) {
       return [];
     }

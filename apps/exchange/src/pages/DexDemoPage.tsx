@@ -1,36 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { styled, keyframes } from '@mui/material/styles';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
-  Box,
-  Typography,
-  Paper,
-  Grid,
-  Button,
-  TextField,
-  InputAdornment,
-  Tabs,
-  Tab,
-  Chip,
-  Alert,
-  List,
-  ListItem,
-  Skeleton,
-  Tooltip,
-  Fade,
-  Slide,
-  Snackbar,
-  IconButton,
-} from '@mui/material';
-import {
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
-  Warning as WarningIcon,
+  Close as CloseIcon,
   ShowChart as ShowChartIcon,
   SwapHoriz as SwapHorizIcon,
+  TrendingDown as TrendingDownIcon,
+  TrendingUp as TrendingUpIcon,
   AccountBalanceWallet as WalletIcon,
-  Close as CloseIcon,
+  Warning as WarningIcon,
 } from '@mui/icons-material';
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Fade,
+  Grid,
+  IconButton,
+  InputAdornment,
+  List,
+  ListItem,
+  Paper,
+  Skeleton,
+  Slide,
+  Snackbar,
+  Tab,
+  Tabs,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // Types
 interface OrderBook {
@@ -296,7 +297,7 @@ export const DexDemoPage: React.FC = () => {
     return () => clearInterval(priceInterval);
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
@@ -373,19 +374,17 @@ export const DexDemoPage: React.FC = () => {
               {/* Market Stats */}
               <StatsGrid container spacing={2}>
                 {loading ? (
-                  <>
-                    {[1, 2, 3, 4].map((i) => (
-                      <Grid
-                        key={i}
-                        size={{
-                          xs: 6,
-                          sm: 3,
-                        }}
-                      >
-                        <Skeleton variant="rectangular" height={70} sx={{ borderRadius: 1.5 }} />
-                      </Grid>
-                    ))}
-                  </>
+                  [1, 2, 3, 4].map((i) => (
+                    <Grid
+                      key={i}
+                      size={{
+                        xs: 6,
+                        sm: 3,
+                      }}
+                    >
+                      <Skeleton variant="rectangular" height={70} sx={{ borderRadius: 1.5 }} />
+                    </Grid>
+                  ))
                 ) : (
                   <>
                     <Grid
@@ -519,32 +518,36 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </OrderBookHeader>
                       <List disablePadding sx={{ maxHeight: 350, overflow: 'auto' }}>
-                        {loading ? (
-                          <>
-                            {[...Array(8)].map((_, i) => (
+                        {loading
+                          ? Array.from({ length: 8 }, (_, i) => `buy-skel-${i}`).map((key) => (
                               <Skeleton
-                                key={i}
+                                key={key}
                                 variant="rectangular"
                                 height={32}
                                 sx={{ mb: 0.5, borderRadius: 1 }}
                               />
+                            ))
+                          : buyOrders.map((order) => (
+                              <OrderRow key={String(order.price)} ordertype="buy" disablePadding>
+                                <PriceCell ordertype="buy" variant="body2">
+                                  {order.price.toFixed(8)}
+                                </PriceCell>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {order.amount.toFixed(2)}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {order.total.toFixed(2)}
+                                </Typography>
+                              </OrderRow>
                             ))}
-                          </>
-                        ) : (
-                          buyOrders.map((order, index) => (
-                            <OrderRow key={index} ordertype="buy" disablePadding>
-                              <PriceCell ordertype="buy" variant="body2">
-                                {order.price.toFixed(8)}
-                              </PriceCell>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {order.amount.toFixed(2)}
-                              </Typography>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {order.total.toFixed(2)}
-                              </Typography>
-                            </OrderRow>
-                          ))
-                        )}
                       </List>
                     </OrderBookCard>
                   </Grid>
@@ -570,32 +573,36 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </OrderBookHeader>
                       <List disablePadding sx={{ maxHeight: 350, overflow: 'auto' }}>
-                        {loading ? (
-                          <>
-                            {[...Array(8)].map((_, i) => (
+                        {loading
+                          ? Array.from({ length: 8 }, (_, i) => `trade-skel-${i}`).map((key) => (
                               <Skeleton
-                                key={i}
+                                key={key}
                                 variant="rectangular"
                                 height={32}
                                 sx={{ mb: 0.5, borderRadius: 1 }}
                               />
+                            ))
+                          : recentTrades.map((trade) => (
+                              <OrderRow key={trade.time} ordertype={trade.type} disablePadding>
+                                <PriceCell ordertype={trade.type} variant="body2">
+                                  {trade.price.toFixed(8)}
+                                </PriceCell>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {trade.amount.toFixed(2)}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {trade.time}
+                                </Typography>
+                              </OrderRow>
                             ))}
-                          </>
-                        ) : (
-                          recentTrades.map((trade, index) => (
-                            <OrderRow key={index} ordertype={trade.type} disablePadding>
-                              <PriceCell ordertype={trade.type} variant="body2">
-                                {trade.price.toFixed(8)}
-                              </PriceCell>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {trade.amount.toFixed(2)}
-                              </Typography>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {trade.time}
-                              </Typography>
-                            </OrderRow>
-                          ))
-                        )}
                       </List>
                     </OrderBookCard>
                   </Grid>
@@ -626,32 +633,36 @@ export const DexDemoPage: React.FC = () => {
                         </Typography>
                       </OrderBookHeader>
                       <List disablePadding sx={{ maxHeight: 350, overflow: 'auto' }}>
-                        {loading ? (
-                          <>
-                            {[...Array(8)].map((_, i) => (
+                        {loading
+                          ? Array.from({ length: 8 }, (_, i) => `sell-skel-${i}`).map((key) => (
                               <Skeleton
-                                key={i}
+                                key={key}
                                 variant="rectangular"
                                 height={32}
                                 sx={{ mb: 0.5, borderRadius: 1 }}
                               />
+                            ))
+                          : sellOrders.map((order) => (
+                              <OrderRow key={String(order.price)} ordertype="sell" disablePadding>
+                                <PriceCell ordertype="sell" variant="body2">
+                                  {order.price.toFixed(8)}
+                                </PriceCell>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {order.amount.toFixed(2)}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  textAlign="right"
+                                  color="text.secondary"
+                                >
+                                  {order.total.toFixed(2)}
+                                </Typography>
+                              </OrderRow>
                             ))}
-                          </>
-                        ) : (
-                          sellOrders.map((order, index) => (
-                            <OrderRow key={index} ordertype="sell" disablePadding>
-                              <PriceCell ordertype="sell" variant="body2">
-                                {order.price.toFixed(8)}
-                              </PriceCell>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {order.amount.toFixed(2)}
-                              </Typography>
-                              <Typography variant="body2" textAlign="right" color="text.secondary">
-                                {order.total.toFixed(2)}
-                              </Typography>
-                            </OrderRow>
-                          ))
-                        )}
                       </List>
                     </OrderBookCard>
                   </Grid>

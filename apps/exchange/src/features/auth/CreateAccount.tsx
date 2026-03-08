@@ -2,21 +2,21 @@
  * CreateAccount Component
  * Generates new wallet with seed phrase display and backup confirmation
  */
-import { useState, type FormEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
-import { useClipboard } from '@/hooks/useClipboard';
-import { Button } from '@/components/atoms/Button';
-import { Card, CardBody } from '@/components/atoms/Card';
-import { Stack } from '@/components/atoms/Stack';
-import { Checkbox } from '@/components/atoms/Checkbox';
-import { Icon, CommonIcons } from '@/components/atoms/Icon';
-import { Input } from '@/components/atoms/Input';
 
 // Import Seed from data-service (matches Angular: ds.Seed)
 import { Seed } from 'data-service/classes/Seed';
+import { type FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Card, CardBody } from '@/components/atoms/Card';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
+import { useClipboard } from '@/hooks/useClipboard';
+import { logger } from '@/lib/logger';
 
 const FormContainer = styled.div`
   width: 100%;
@@ -131,7 +131,7 @@ const SeedWord = styled.div`
   }
 `;
 
-const CopyButton = styled(Button as any)`
+const CopyButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   position: absolute;
   top: ${(p) => p.theme.spacing.sm};
   right: ${(p) => p.theme.spacing.sm};
@@ -254,7 +254,8 @@ export const CreateAccount = () => {
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
   const isLedgerSupported =
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   const words = seedPhrase.phrase.split(' ');
@@ -383,7 +384,7 @@ export const CreateAccount = () => {
           <ImportLink>
             Already have a wallet?{' '}
             <a
-              href="#"
+              href="/import-account"
               onClick={(e) => {
                 e.preventDefault();
                 navigate('/import-account');
@@ -434,6 +435,7 @@ export const CreateAccount = () => {
 
             <SeedPhraseGrid>
               {words.map((word: string, index: number) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase words can repeat
                 <SeedWord key={index}>
                   <span>{index + 1}.</span>
                   {word}

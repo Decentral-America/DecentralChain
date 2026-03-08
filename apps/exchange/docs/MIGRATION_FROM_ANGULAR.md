@@ -1349,7 +1349,7 @@ export default defineConfig({
 npm run dev           # Dev server (3-5s startup) ⚡
 npm run build         # Production build (4-10s) ⚡
 npm run preview       # Preview production build
-npm run lint          # ESLint
+npm run lint          # Biome
 npm run type-check    # TypeScript check
 ```
 
@@ -1465,7 +1465,7 @@ describe('Wallet', () => {
 
 - [x] Initialize React project with Vite
 - [x] Configure TypeScript (tsconfig.json)
-- [x] Set up ESLint and Prettier
+- [x] Set up Biome and Biome
 - [x] Install core dependencies (React Router, Styled Components, etc.)
 - [x] Create folder structure (atomic design)
 - [x] Configure environment variables

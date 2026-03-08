@@ -3,10 +3,10 @@
  * Based on Angular version's CandlesService.js
  */
 
+import { base58Decode, address as buildAddress } from '@decentralchain/ts-lib-crypto';
 import { config } from 'data-service';
-import { logger } from '@/lib/logger';
 import NetworkConfig from '@/config/networkConfig';
-import { address as buildAddress, base58Decode } from '@decentralchain/ts-lib-crypto';
+import { logger } from '@/lib/logger';
 
 const POLL_DELAY = 800;
 const MAX_RESOLUTION = 1440;
@@ -79,15 +79,20 @@ const nullOrCb =
 
 // Join two candles into one (matches Angular joinCandles)
 const joinCandles = (candles: Candle[]): Candle => {
-  const [c1, c2 = c1] = candles;
+  const [first, second] = candles;
+  if (!first) {
+    return { txsCount: 0, high: null, low: null, close: null, open: null, volume: null, time: 0 };
+  }
+  const c1 = first;
+  const c2 = second ?? first;
   return {
-    txsCount: c1!.txsCount + (c2?.txsCount || 0),
-    high: maxOrNull('high')(c1!, c2 || c1!),
-    low: minOrNull('low')(c1!, c2 || c1!),
-    close: nullOrCb('close', valOrNullClose)(c1!, c2 || c1!),
-    open: nullOrCb('open', valOrNullOpen)(c1!, c2 || c1!),
-    volume: nullOrSum('volume')(c1!, c2 || c1!),
-    time: c1!.time,
+    txsCount: c1.txsCount + (c2.txsCount || 0),
+    high: maxOrNull('high')(c1, c2),
+    low: minOrNull('low')(c1, c2),
+    close: nullOrCb('close', valOrNullClose)(c1, c2),
+    open: nullOrCb('open', valOrNullOpen)(c1, c2),
+    volume: nullOrSum('volume')(c1, c2),
+    time: c1.time,
   };
 };
 
@@ -128,42 +133,42 @@ const INTERVAL_PRESETS: Record<string, number> = {
 // Interval map with converters (matches Angular INTERVAL_MAP)
 const INTERVAL_MAP: Record<number, IntervalConfig> = {
   1: {
-    interval: INTERVAL_PRESETS['1m']!,
+    interval: INTERVAL_PRESETS['1m'] ?? 0,
     intervalName: '1m',
     converter: (el) => el,
   },
   5: {
-    interval: INTERVAL_PRESETS['5m']!,
+    interval: INTERVAL_PRESETS['5m'] ?? 0,
     intervalName: '5m',
     converter: (el) => el,
   },
   15: {
-    interval: INTERVAL_PRESETS['15m']!,
+    interval: INTERVAL_PRESETS['15m'] ?? 0,
     intervalName: '15m',
     converter: (el) => el,
   },
   30: {
-    interval: INTERVAL_PRESETS['30m']!,
+    interval: INTERVAL_PRESETS['30m'] ?? 0,
     intervalName: '30m',
     converter: (el) => el,
   },
   60: {
-    interval: INTERVAL_PRESETS['1h']!,
+    interval: INTERVAL_PRESETS['1h'] ?? 0,
     intervalName: '1h',
     converter: (el) => el,
   },
   120: {
-    interval: INTERVAL_PRESETS['1h']!,
+    interval: INTERVAL_PRESETS['1h'] ?? 0,
     intervalName: '1h',
     converter: (candles) => splitEvery(2, candles).map(joinCandles),
   },
   180: {
-    interval: INTERVAL_PRESETS['3h']!,
+    interval: INTERVAL_PRESETS['3h'] ?? 0,
     intervalName: '3h',
     converter: (el) => el,
   },
   240: {
-    interval: INTERVAL_PRESETS['1h']!,
+    interval: INTERVAL_PRESETS['1h'] ?? 0,
     intervalName: '1h',
     converter: (candles) => {
       // Split into pairs, join each pair, then split again and join again
@@ -173,17 +178,17 @@ const INTERVAL_MAP: Record<number, IntervalConfig> = {
     },
   },
   360: {
-    interval: INTERVAL_PRESETS['6h']!,
+    interval: INTERVAL_PRESETS['6h'] ?? 0,
     intervalName: '6h',
     converter: (el) => el,
   },
   720: {
-    interval: INTERVAL_PRESETS['12h']!,
+    interval: INTERVAL_PRESETS['12h'] ?? 0,
     intervalName: '12h',
     converter: (el) => el,
   },
   1440: {
-    interval: INTERVAL_PRESETS['1d']!,
+    interval: INTERVAL_PRESETS['1d'] ?? 0,
     intervalName: '1d',
     converter: (el) => el,
   },
@@ -217,7 +222,10 @@ class CandlesService {
 
     if (!config) {
       // Default to 1 day if interval not found
-      const defaultConfig = INTERVAL_MAP[1440]!;
+      const defaultConfig = INTERVAL_MAP[1440];
+      if (!defaultConfig) {
+        throw new Error('Default interval config (1440) not found');
+      }
       return {
         options: [{ timeStart: from, timeEnd: to, interval: defaultConfig.intervalName }],
         config: defaultConfig,
@@ -330,7 +338,7 @@ class CandlesService {
       logger.debug('[Candles] Raw candles count:', rawCandles.length);
 
       // Helper to convert BigNumber/Money to number (matches Angular's convertBigNumber line 60)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
       const convertBigNumber = (num: any): number | null => {
         if (!num) return null;
 
@@ -348,17 +356,17 @@ class CandlesService {
 
         // If it's already a number
         if (typeof num === 'number') {
-          return isNaN(num) ? null : num;
+          return Number.isNaN(num) ? null : num;
         }
 
         // Try to convert to number as fallback
         const numValue = Number(num);
-        return isNaN(numValue) ? null : numValue;
+        return Number.isNaN(numValue) ? null : numValue;
       };
 
       // Process candles (matches Angular line 62-72)
       let processedCandles = rawCandles
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
         .map((candle: any) => ({
           txsCount: candle.txsCount || 0,
           high: convertBigNumber(candle.high),
@@ -547,7 +555,7 @@ class CandlesService {
   }
 
   private _updateLastTime(candles: Candle[]) {
-    const lastTime = candles[candles.length - 1]!.time;
+    const lastTime = candles[candles.length - 1]?.time;
     if (this._lastTime && this._lastTime >= lastTime) {
       return false;
     }

@@ -1,9 +1,9 @@
-import { type IAssetPair, type IHash } from '../interface';
-import { DCC_ID } from '@decentralchain/signature-adapter';
-import { type Asset, Money, type AssetPair, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { type Asset, type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
+import { DCC_ID } from '@decentralchain/signature-adapter';
 import { get } from '../api/assets/assets';
 import { get as configGet, timeDiff } from '../config';
+import { type IAssetPair, type IHash } from '../interface';
 
 export * from './ConfigService';
 
@@ -47,7 +47,7 @@ export function normalizeUrl(url: string): string {
   return `${urlObject.protocol}//${parts.join('')}`;
 }
 
-export function normalizeAssetId(assetId: string | void) {
+export function normalizeAssetId(assetId: string | undefined) {
   return assetId || DCC_ID;
 }
 
@@ -72,8 +72,10 @@ export function addParam<T, K, R>(cb: (data: T, param: K) => R, param: K): (data
   return (data: T) => cb(data, param);
 }
 
-export function isPromise(some: any): some is Promise<any> {
-  return typeof some.then === 'function' && typeof some.catch === 'function';
+export function isPromise(some: unknown): some is Promise<unknown> {
+  if (some == null || typeof some !== 'object') return false;
+  const obj = some as Record<string, unknown>;
+  return typeof obj.then === 'function' && typeof obj.catch === 'function';
 }
 
 export function toArray<T>(some: T | Array<T>): Array<T> {
@@ -146,13 +148,13 @@ export function toAsset(asset: Asset | string): Promise<Asset> {
 }
 
 export type TDefer<T> = {
-  resolve: (data: T) => any;
-  reject: (data: any) => any;
+  resolve: (data: T) => void;
+  reject: (data: unknown) => void;
   promise: Promise<T>;
 };
 
 export function defer<T>(): TDefer<T> {
-  let resolve, reject;
+  let resolve: (data: T) => void, reject: (data: unknown) => void;
   const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
@@ -160,8 +162,10 @@ export function defer<T>(): TDefer<T> {
   return { resolve, reject, promise };
 }
 
-export function stringifyJSON(data: any): string {
-  return (window as any).DCCApp.stringifyJSON(data);
+export function stringifyJSON(data: unknown): string {
+  return (
+    window as unknown as { DCCApp: { stringifyJSON: (d: unknown) => string } }
+  ).DCCApp.stringifyJSON(data);
 }
 
 export interface ITramsferFee {
@@ -188,8 +192,8 @@ export function getTransferFeeList() {
 
 export const delay = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
 
-export const isNativeFunction = (function () {
-  const toString = Object.prototype.toString;
+export const isNativeFunction = (() => {
+  const objectToString = Object.prototype.toString;
 
   // Используется для разложения на составляющие декомпилированного
   // исходного кода функции
@@ -205,7 +209,7 @@ export const isNativeFunction = (function () {
   const reNative = RegExp(
     '^' +
       // Применяем `Object#toString` к строке
-      String(toString)
+      String(objectToString)
         // Избавляемся от любых специальных символов регулярных выражений
         .replace(/[.*+?^${}()|[\]/\\]/g, '\\$&')
         // Заменяем упоминания `toString` на `.*?`, чтобы сохранить обобщённый вид шаблона.
@@ -215,7 +219,7 @@ export const isNativeFunction = (function () {
       '$',
   );
 
-  function isNative(value: any) {
+  function isNative(value: unknown) {
     const type = typeof value;
     return type === 'function'
       ? // Используем `Function#toString`, чтобы обойти собственный метод
@@ -225,13 +229,13 @@ export const isNativeFunction = (function () {
         // как некоторые окружения могут представлять компоненты вроде
         // типизированных массивов как методы DOM, что может не соответствовать
         // нормальному нативному паттерну.
-        (value && type === 'object' && reHostCtor.test(toString.call(value))) || false;
+        (value && type === 'object' && reHostCtor.test(objectToString.call(value))) || false;
   }
 
   return isNative;
 })();
 
-export const isNativeNotBound = (value: any) => {
+export const isNativeNotBound = (value: unknown) => {
   if (!value || typeof value.name !== 'string') {
     return false;
   }

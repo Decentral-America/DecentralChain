@@ -2,9 +2,9 @@
  * Input Component Stories
  * Demonstrates all Input variants, types, and states
  */
-import type { Meta, StoryObj } from '@storybook/react';
-import { Input } from './Input';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { useState } from 'react';
+import { Input } from './Input';
 
 const meta = {
   title: 'Atoms/Input',

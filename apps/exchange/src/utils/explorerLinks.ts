@@ -295,8 +295,9 @@ export const parseExplorerUrl = (
     if (pathParts.length < 2) return null;
 
     const [type, id] = pathParts;
+    if (!type || !id) return null;
 
-    return { type: type!, id: id!, network };
+    return { type, id, network };
   } catch (error) {
     logger.error('Failed to parse explorer URL:', error);
     return null;
@@ -330,7 +331,7 @@ export const getShortAddress = (address: string): string => {
  */
 export const copyToClipboard = async (text: string): Promise<boolean> => {
   try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(text);
       return true;
     } else {

@@ -11,7 +11,7 @@
 | Check | Result |
 |-------|--------|
 | TypeScript (`tsc -b --noEmit`) | **0 errors** |
-| ESLint | **0 errors**, 378 warnings (all `no-explicit-any`) |
+| Biome | **0 errors**, 378 warnings (all `no-explicit-any`) |
 | Tests (Vitest) | **67/67 passing** (6 suites) |
 | npm audit | **0 vulnerabilities** |
 | Waves branding | **0 references** in source |
@@ -124,7 +124,7 @@
 | Node 24 LTS enforcement | PASS — `"engines": { "node": ">=24" }` + `.nvmrc` |
 | ESM-only | PASS — `"type": "module"`, zero CJS in src/ |
 | TypeScript strict mode | PASS — 0 errors |
-| ESLint flat config | PASS — 0 errors |
+| Biome flat config | PASS — 0 errors |
 | Vitest tests | PASS — 67/67 |
 | npm audit clean | PASS — 0 vulnerabilities |
 

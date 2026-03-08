@@ -3,17 +3,17 @@
  * Allows users to select from 17 supported languages
  * Persists language choice via i18next localStorage integration
  */
-import React from 'react';
-import styled from 'styled-components';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES } from '@/i18n';
-import { Select, type SelectOption } from '@/components/atoms/Select';
+import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
+import { Select, type SelectOption } from '@/components/atoms/Select';
+import { SUPPORTED_LANGUAGES } from '@/i18n';
 
 /**
  * Styled Components
  */
-const SettingsCard = styled(Card as any)`
+const SettingsCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 

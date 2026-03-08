@@ -3,12 +3,12 @@
  * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases
  */
 import { type RouteObject } from 'react-router-dom';
-import { Wallet } from '@/pages/Wallet';
-import { Dashboard } from '@/pages/Dashboard';
 import { Portfolio } from '@/features/wallet';
-import { TransactionsModern } from '@/features/wallet/TransactionsModern';
 import { LeasingModern } from '@/features/wallet/LeasingModern';
+import { TransactionsModern } from '@/features/wallet/TransactionsModern';
 import { AliasManagement } from '@/pages/AliasManagement';
+import { Dashboard } from '@/pages/Dashboard';
+import { Wallet } from '@/pages/Wallet';
 
 /**
  * Wallet routes structure:

@@ -8,7 +8,7 @@
  * The fix: Isolate Recharts in a separate component boundary with error
  * recovery, and use a key-based remounting strategy to break the cycle.
  */
-import { Component, type ReactNode, type ErrorInfo } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { logger } from '@/lib/logger';
 
 interface RechartsWrapperProps {

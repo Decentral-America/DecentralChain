@@ -2,7 +2,7 @@
  * Loading Skeleton Components
  * Provides animated skeleton screens for better perceived performance during loading
  */
-import styled, { keyframes, css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 /**
  * Shimmer animation for skeleton loading effect
@@ -43,14 +43,16 @@ export const Skeleton = styled.div<{
     const highlightColor = props.theme.colors.hover || '#f5f5f5';
 
     return css`
-      background: ${props.variant === 'pulse'
-        ? baseColor
-        : `linear-gradient(
+      background: ${
+        props.variant === 'pulse'
+          ? baseColor
+          : `linear-gradient(
             90deg,
             ${baseColor} 0%,
             ${highlightColor} 50%,
             ${baseColor} 100%
-          )`};
+          )`
+      };
       background-size: 1000px 100%;
       animation: ${props.variant === 'pulse' ? pulse : shimmer} 2s infinite linear;
       border-radius: ${props.borderRadius || '4px'};
@@ -148,6 +150,7 @@ export const AssetSkeleton = () => (
 export const TableRowSkeleton = ({ columns = 4 }: { columns?: number }) => (
   <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
     {Array.from({ length: columns }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <SkeletonText key={i} width="100%" />
     ))}
   </div>
@@ -161,11 +164,13 @@ export const TableSkeleton = ({ rows = 5, columns = 4 }: { rows?: number; column
     {/* Header */}
     <div style={{ display: 'flex', gap: '16px', marginBottom: '8px' }}>
       {Array.from({ length: columns }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <SkeletonText key={i} width="100%" height="14px" />
       ))}
     </div>
     {/* Rows */}
     {Array.from({ length: rows }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <TableRowSkeleton key={i} columns={columns} />
     ))}
   </SkeletonContainer>
@@ -192,6 +197,7 @@ export const ChartSkeleton = () => (
 export const FormSkeleton = ({ fields = 3 }: { fields?: number }) => (
   <SkeletonContainer>
     {Array.from({ length: fields }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <div key={i}>
         <SkeletonText width="30%" height="14px" spacing="4px" />
         <Skeleton height="40px" />
@@ -229,6 +235,7 @@ export const GridSkeleton = ({ items = 6, columns = 3 }: { items?: number; colum
     }}
   >
     {Array.from({ length: items }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <CardSkeleton key={i} />
     ))}
   </div>
@@ -240,6 +247,7 @@ export const GridSkeleton = ({ items = 6, columns = 3 }: { items?: number; colum
 export const ListSkeleton = ({ items = 5 }: { items?: number }) => (
   <SkeletonContainer>
     {Array.from({ length: items }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <TransactionSkeleton key={i} />
     ))}
   </SkeletonContainer>

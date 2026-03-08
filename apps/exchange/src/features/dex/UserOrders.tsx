@@ -5,14 +5,14 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
-import { useDexStore } from '@/stores/dexStore';
-import { useUserOrders, useCancelOrder } from '@/api/services/matcherService';
-import { Button } from '@/components/atoms/Button';
+import { useCancelOrder, useUserOrders } from '@/api/services/matcherService';
 import { Badge } from '@/components/atoms/Badge';
+import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Container
@@ -58,7 +58,7 @@ const Tab = styled.button<{ $isActive: boolean }>`
   font-size: ${(p) => p.theme.fontSizes.sm};
   font-weight: ${(p) => p.theme.fontWeights.medium};
   color: ${(p) => (p.$isActive ? p.theme.colors.primary : p.theme.colors.text)};
-  background: ${(p) => (p.$isActive ? p.theme.colors.primary + '15' : 'transparent')};
+  background: ${(p) => (p.$isActive ? `${p.theme.colors.primary}15` : 'transparent')};
   border: none;
   border-bottom: 2px solid ${(p) => (p.$isActive ? p.theme.colors.primary : 'transparent')};
   cursor: pointer;

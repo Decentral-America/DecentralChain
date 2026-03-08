@@ -3,18 +3,19 @@
  * Form for creating new tokens on the DecentralChain blockchain
  * Handles validation, transaction signing, and broadcasting
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, tokenIssuanceSchema, type TokenIssuanceFormData } from '@/lib/forms';
-import { FormInput } from '@/components/forms/FormInput';
+import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
-import { Checkbox } from '@/components/atoms/Checkbox';
 import { Card } from '@/components/atoms/Card';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, type Transaction } from '@/services/transactionService';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { FormInput } from '@/components/forms/FormInput';
 import { AlertModal } from '@/components/modals/AlertModal';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type TokenIssuanceFormData, tokenIssuanceSchema, useZodForm } from '@/lib/forms';
 import { logger } from '@/lib/logger';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 /**
  * Component Props
@@ -27,7 +28,7 @@ export interface IssueTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card as any)`
+const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -142,7 +143,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       setErrorMessage('');
 
       // Convert quantity to wavelets (smallest units)
-      const quantityInWavelets = data.quantity * Math.pow(10, data.decimals);
+      const quantityInWavelets = data.quantity * 10 ** data.decimals;
 
       // Prepare transaction parameters
       const issueParams = {

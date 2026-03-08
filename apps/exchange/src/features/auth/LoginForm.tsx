@@ -4,18 +4,18 @@
  * Shows account selection if multiple accounts exist
  * Matches Angular's signInForm.js exactly
  */
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
+import { Card, CardBody } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
 import { Stack } from '@/components/atoms/Stack';
-import { Card, CardBody } from '@/components/atoms/Card';
+import { NoAccountModal } from '@/components/modals/NoAccountModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 import { AccountSelectScreen } from './AccountSelectScreen';
-import { NoAccountModal } from '@/components/modals/NoAccountModal';
 
 const FormContainer = styled.div`
   width: 100%;
@@ -75,7 +75,7 @@ const Divider = styled.div`
   }
 `;
 
-const LedgerButton = styled(Button as any)`
+const LedgerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,7 +108,8 @@ export const LoginForm = () => {
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
   const isLedgerSupported =
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   // Effect-based navigation: only navigate after user state has propagated
@@ -182,7 +183,7 @@ export const LoginForm = () => {
 
       // Exponential backoff: 0, 0, 0, 5s, 15s, 30s, 60s, 120s...
       if (newAttempts >= 3) {
-        const lockoutMs = Math.min(5000 * Math.pow(2, newAttempts - 3), 300000);
+        const lockoutMs = Math.min(5000 * 2 ** (newAttempts - 3), 300000);
         setLockoutUntil(Date.now() + lockoutMs);
         const lockoutSec = Math.ceil(lockoutMs / 1000);
         setError(`Incorrect password. Account locked for ${lockoutSec} seconds.`);
@@ -266,16 +267,23 @@ export const LoginForm = () => {
 
               <HelpText>
                 Don&apos;t have a wallet?{' '}
-                <a
-                  href="#"
-                  style={{ color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}
-                  onClick={(e) => {
-                    e.preventDefault();
+                <button
+                  type="button"
+                  style={{
+                    color: 'inherit',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    font: 'inherit',
+                  }}
+                  onClick={() => {
                     setShowNoAccountModal(true);
                   }}
                 >
                   Create or import one
-                </a>
+                </button>
               </HelpText>
             </Stack>
           </form>

@@ -2,29 +2,30 @@
  * Create Alias Modal
  * Modal for creating a new alias for the user's address
  */
-import { useState, useEffect } from 'react';
-import { logger } from '@/lib/logger';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Alert,
-  CircularProgress,
-  Typography,
-  Box,
-  Stack,
-  IconButton,
-} from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import * as ds from 'data-service';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAliases } from '@/hooks/useAliases';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { useBroadcast } from '@/hooks/useBroadcast';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import * as ds from 'data-service';
+import { useBroadcast } from '@/hooks/useBroadcast';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { logger } from '@/lib/logger';
 
 interface CreateAliasModalProps {
   open: boolean;

@@ -2,15 +2,16 @@
  * Transactions Component
  * Transaction history table with filtering and pagination
  */
-import { useState, useCallback } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/contexts/AuthContext';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Card } from '@/components/atoms/Card';
-import { Spinner } from '@/components/atoms/Spinner';
-import { Select } from '@/components/atoms/Select';
 import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
+import { Select } from '@/components/atoms/Select';
+import { Spinner } from '@/components/atoms/Spinner';
 import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 const TransactionsContainer = styled.div`
@@ -88,16 +89,16 @@ const TransactionType = styled.span<{ $type: string }>`
     switch (p.$type) {
       case 'transfer':
       case 'send':
-        return p.theme.colors.error + '20';
+        return `${p.theme.colors.error}20`;
       case 'receive':
-        return p.theme.colors.success + '20';
+        return `${p.theme.colors.success}20`;
       case 'exchange':
       case 'swap':
-        return p.theme.colors.info + '20';
+        return `${p.theme.colors.info}20`;
       case 'lease':
-        return p.theme.colors.secondary + '20';
+        return `${p.theme.colors.secondary}20`;
       default:
-        return p.theme.colors.disabled + '20';
+        return `${p.theme.colors.disabled}20`;
     }
   }};
   color: ${(p) => {

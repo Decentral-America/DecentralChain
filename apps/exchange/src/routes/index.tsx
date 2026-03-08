@@ -3,34 +3,31 @@
  * Defines all routes using React Router v6 createBrowserRouter
  */
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { ProtectedRoute } from '@/components/layout';
 import { MainLayout } from '@/layouts/MainLayout';
 import { RootLayout } from '@/layouts/RootLayout';
-import { ProtectedRoute } from '@/components/layout';
-import { walletRoutes } from './walletRoutes';
-import { dexRoutes } from './dexRoutes';
-import { settingsRoutes } from './settingsRoutes';
-
-// Direct imports for auth pages (critical entry points)
-import LandingPage from '@/pages/LandingPage';
-import { Welcome } from '@/pages/Welcome';
-import { SignUp } from '@/pages/SignUp';
-import { SignIn } from '@/pages/SignIn';
-import { ImportAccountPage } from '@/pages/ImportAccountPage';
-import { SaveSeedPage } from '@/pages/SaveSeed';
-import { RestoreFromBackupPage } from '@/pages/RestoreFromBackup';
-import { ImportLedger } from '@/pages/ImportLedger';
-
-// Additional pages
-import { Markets } from '@/pages/Markets';
-import { OrderBook } from '@/pages/OrderBook';
 import { Analytics } from '@/pages/Analytics';
-import { Messages } from '@/pages/Messages';
-import { CreateToken } from '@/pages/CreateToken';
-import { Swap } from '@/pages/Swap';
-import { Bridge } from '@/pages/Bridge';
-
 // Admin pages (hidden routes)
 import { DexPairAdmin } from '@/pages/admin/DexPairAdmin';
+import { Bridge } from '@/pages/Bridge';
+import { CreateToken } from '@/pages/CreateToken';
+import { ImportAccountPage } from '@/pages/ImportAccountPage';
+import { ImportLedger } from '@/pages/ImportLedger';
+// Direct imports for auth pages (critical entry points)
+import LandingPage from '@/pages/LandingPage';
+// Additional pages
+import { Markets } from '@/pages/Markets';
+import { Messages } from '@/pages/Messages';
+import { OrderBook } from '@/pages/OrderBook';
+import { RestoreFromBackupPage } from '@/pages/RestoreFromBackup';
+import { SaveSeedPage } from '@/pages/SaveSeed';
+import { SignIn } from '@/pages/SignIn';
+import { SignUp } from '@/pages/SignUp';
+import { Swap } from '@/pages/Swap';
+import { Welcome } from '@/pages/Welcome';
+import { dexRoutes } from './dexRoutes';
+import { settingsRoutes } from './settingsRoutes';
+import { walletRoutes } from './walletRoutes';
 
 /**
  * Application router with nested routes

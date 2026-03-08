@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { CheckCircle, Schedule, Update } from '@mui/icons-material';
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  Paper,
   Chip,
+  Container,
+  Fade,
+  keyframes,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
   styled,
+  Typography,
   useTheme,
-  Fade,
-  keyframes,
 } from '@mui/material';
-import { CheckCircle, Update, Schedule } from '@mui/icons-material';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * DesktopUpdatePage Component
@@ -107,8 +108,13 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
   const handleInstall = () => {
     if (onInstall) {
       onInstall();
-    } else if (typeof window !== 'undefined' && (window as any).electron?.installUpdate) {
-      (window as any).electron.installUpdate();
+    } else if (
+      typeof window !== 'undefined' &&
+      (window as Window & { electron?: { installUpdate?: () => void } }).electron?.installUpdate
+    ) {
+      (
+        window as Window & { electron?: { installUpdate?: () => void } }
+      ).electron?.installUpdate?.();
     }
   };
 
@@ -174,8 +180,8 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                   What&apos;s New:
                 </Typography>
                 <List dense>
-                  {features.map((feature, index) => (
-                    <ListItem key={index} disablePadding sx={{ py: 0.5 }}>
+                  {features.map((feature) => (
+                    <ListItem key={feature} disablePadding sx={{ py: 0.5 }}>
                       <ListItemIcon sx={{ minWidth: 36 }}>
                         <CheckCircle
                           sx={{

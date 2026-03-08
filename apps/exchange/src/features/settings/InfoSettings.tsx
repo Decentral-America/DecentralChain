@@ -2,7 +2,7 @@
  * Info Settings Component
  * Displays app information, version, support link, and legal links
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 import networkConfig from '@/config/networkConfig';
 

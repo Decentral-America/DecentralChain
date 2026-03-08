@@ -98,8 +98,8 @@ export const fetchMultipleAssetDetails = async (
     const assetMap = new Map<string, AssetDetails>();
 
     results.forEach((result, index) => {
-      const assetId = uniqueAssetIds[index]!;
-      if (result.status === 'fulfilled' && result.value) {
+      const assetId = uniqueAssetIds[index];
+      if (assetId && result.status === 'fulfilled' && result.value) {
         assetMap.set(assetId, result.value);
       }
       // Silently skip failed asset fetches (they'll use fallback display)
@@ -122,8 +122,8 @@ export const fetchMultipleAssetDetails = async (
 export const extractTickerFromName = (name: string): string => {
   // Try to extract ticker from patterns like "Name (TICKER)"
   const match = name.match(/\(([A-Z0-9]+)\)$/);
-  if (match) {
-    return match[1]!;
+  if (match?.[1]) {
+    return match[1];
   }
 
   // If name is short (3-5 chars), assume it's already a ticker
@@ -163,7 +163,7 @@ export const getAssetDisplayName = (assetDetails: AssetDetails | null): string =
  * @returns Formatted amount string
  */
 export const formatAssetAmount = (amount: number, decimals: number): string => {
-  const divisor = Math.pow(10, decimals);
+  const divisor = 10 ** decimals;
   const value = amount / divisor;
 
   // Show up to decimal places, but remove trailing zeros

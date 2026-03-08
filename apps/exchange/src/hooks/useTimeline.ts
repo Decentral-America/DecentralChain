@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
@@ -182,8 +182,8 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
         delay,
         startTime,
         timeout,
-        resolve: resolve!,
-        reject: reject!,
+        resolve: resolve,
+        reject: reject,
       };
 
       tasksRef.current.set(id, task);
@@ -197,6 +197,23 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       return id;
     },
     [debug, onTaskExecuted, onTaskError],
+  );
+
+  const cancel = useCallback(
+    (id: string) => {
+      const task = tasksRef.current.get(id);
+      if (task) {
+        clearTimeout(task.timeout);
+        task.reject(new Error('Task cancelled'));
+        tasksRef.current.delete(id);
+        onTaskCancelled?.(id);
+
+        if (debug) {
+          logger.debug(`[Timeline] Task cancelled: ${id}`);
+        }
+      }
+    },
+    [debug, onTaskCancelled],
   );
 
   const scheduleWithId = useCallback(
@@ -244,8 +261,8 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
         delay,
         startTime,
         timeout,
-        resolve: resolve!,
-        reject: reject!,
+        resolve: resolve,
+        reject: reject,
       };
 
       tasksRef.current.set(id, task);
@@ -258,7 +275,7 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
 
       return id;
     },
-    [debug, onTaskExecuted, onTaskError],
+    [debug, onTaskExecuted, onTaskError, cancel],
   );
 
   const wait = useCallback(
@@ -302,23 +319,6 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       });
     },
     [debug],
-  );
-
-  const cancel = useCallback(
-    (id: string) => {
-      const task = tasksRef.current.get(id);
-      if (task) {
-        clearTimeout(task.timeout);
-        task.reject(new Error('Task cancelled'));
-        tasksRef.current.delete(id);
-        onTaskCancelled?.(id);
-
-        if (debug) {
-          logger.debug(`[Timeline] Task cancelled: ${id}`);
-        }
-      }
-    },
-    [debug, onTaskCancelled],
   );
 
   const cancelAll = useCallback(() => {

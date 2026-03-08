@@ -2,11 +2,12 @@
  * Network Settings Component
  * Configures network endpoints matching Angular Network tab
  */
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import networkConfig from '@/config/networkConfig';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
-import networkConfig from '@/config/networkConfig';
 
 const NetworkSection = styled.div`
   display: flex;

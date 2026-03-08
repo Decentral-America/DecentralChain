@@ -12,8 +12,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
+        "biomejs.biome",
+        "biomejs.biome",
         "ms-vscode.vscode-typescript-next",
         "eamodio.gitlens",
         "github.vscode-pull-request-github",
@@ -27,11 +27,9 @@
         "typescript.tsdk": "node_modules/typescript/lib",
         "typescript.enablePromptUseWorkspaceTsdk": true,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit"
         },
-        "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
         "files.exclude": {
           "**/node_modules": true,
           "**/dist": true

@@ -16,6 +16,18 @@ import { type IPollAPI, Poll } from '../utils/Poll';
 import { PollControl } from './PollControl';
 import { UTXManager } from './UTXManager';
 
+interface DCCAppGlobal {
+  defaultAssets: { BTC: string };
+}
+
+interface AngularGlobal {
+  element: (el: Element) => {
+    injector: () => {
+      get: (name: string) => { get: (path: string) => unknown };
+    };
+  };
+}
+
 export class DataManager {
   public transactions: UTXManager = new UTXManager();
   public pollControl: PollControl<TPollHash>;
@@ -74,16 +86,16 @@ export class DataManager {
     oracleName: string = 'oracleDCC',
   ): TProviderAsset & { provider: string } {
     const pollHash = this.pollControl.getPollHash();
-    const lastData = <any>path([oracleName, 'lastData'], pollHash);
-    const assets = (lastData && lastData.assets) || Object.create(null);
-    const DCCApp = (window as any).DCCApp;
+    const lastData = path<IOracleData>([oracleName, 'lastData'], pollHash);
+    const assets = lastData?.assets || Object.create(null);
+    const DCCApp = (window as unknown as { DCCApp: DCCAppGlobal }).DCCApp;
 
     const gateways = {
       [DCCApp.defaultAssets.BTC]: true,
     };
 
     const gatewaysSoon =
-      (window as any).angular
+      (window as unknown as { angular: AngularGlobal }).angular
         .element(document.body)
         .injector()
         .get('configService')
@@ -113,7 +125,10 @@ export class DataManager {
     };
 
     if (id === 'DCC') {
-      return { status: STATUS_LIST.VERIFIED, description: descriptionHash.DCC } as any;
+      return {
+        status: STATUS_LIST.VERIFIED,
+        description: descriptionHash.DCC,
+      } as TProviderAsset & { provider: string };
     }
 
     if (gatewaysSoon.indexOf(id) > -1) {
@@ -140,7 +155,7 @@ export class DataManager {
   private _getPollBalanceApi(): IPollAPI<Array<IBalanceItem>> {
     const get = () => {
       const hash = this.pollControl.getPollHash();
-      const inOrdersHash = (hash && hash.orders.lastData) || Object.create(null);
+      const inOrdersHash = hash?.orders.lastData || Object.create(null);
       return balanceList(this._address, Object.create(null), inOrdersHash);
     };
     return { get, set: () => null };
@@ -165,7 +180,7 @@ export class DataManager {
       get: () => {
         return address
           ? getOracleData(address)
-          : (Promise.resolve({ assets: Object.create(null) }) as any);
+          : (Promise.resolve({ assets: Object.create(null) }) as Promise<IOracleData>);
       },
       set: () => null,
     };

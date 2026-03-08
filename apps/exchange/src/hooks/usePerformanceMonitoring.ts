@@ -6,9 +6,9 @@
 
 import { useEffect, useRef } from 'react';
 import {
+  clearPerformance,
   markPerformance,
   measurePerformance,
-  clearPerformance,
   performance as perfTracking,
 } from '@/lib/performanceMonitoring';
 

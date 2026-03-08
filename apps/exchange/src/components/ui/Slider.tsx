@@ -3,9 +3,10 @@
  * Single value selection with visual feedback
  * Migrated to Material-UI
  */
-import React from 'react';
-import { Slider as MuiSlider, Box, Typography } from '@mui/material';
+
+import { Box, Slider as MuiSlider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
 
 const SliderContainer = styled(Box)(() => ({
   width: '100%',

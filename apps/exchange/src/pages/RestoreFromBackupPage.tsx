@@ -1,36 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-  Stepper,
-  Step,
-  StepLabel,
-  Dialog,
-  DialogContent,
-  Snackbar,
-  Alert,
-  Fade,
-  Grow,
-  CircularProgress,
-  Chip,
-  Tooltip,
-} from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
-import {
+  CheckCircle as CheckCircleIcon,
+  Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
   InsertDriveFile as FileIcon,
-  Close as CloseIcon,
+  Info as InfoIcon,
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
-  CheckCircle as CheckCircleIcon,
-  Info as InfoIcon,
 } from '@mui/icons-material';
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  Fade,
+  Grow,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { keyframes, styled } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * RestoreFromBackupPage Component

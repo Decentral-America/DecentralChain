@@ -3,7 +3,8 @@
  * Reusable modal with overlay, animations, and accessibility features
  * Supports click-to-close, ESC key, and focus trap
  */
-import React, { useEffect, useRef, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Portal } from '@/components/atoms/Portal';
 import { useEscapeKey, useFocusTrap } from '@/hooks';

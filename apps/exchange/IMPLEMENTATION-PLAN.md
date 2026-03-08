@@ -441,7 +441,7 @@ console.assert(angularAddress === reactAddress, 'Address mismatch!');
 
 **Quality Checks:**
 - [ ] TypeScript errors resolved
-- [ ] ESLint warnings addressed
+- [ ] Biome warnings addressed
 - [ ] No console errors
 - [ ] Performance optimized (React.memo where needed)
 - [ ] Error boundaries in place
@@ -758,7 +758,7 @@ async function encryptBackup(data: any, password: string): Promise<string> {
 
 3. **Code Quality:**
    - TypeScript strict mode passes
-   - No ESLint errors
+   - No Biome errors
    - Proper error boundaries
    - Accessible (WCAG 2.1 AA)
 

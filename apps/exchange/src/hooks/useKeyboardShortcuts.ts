@@ -61,7 +61,7 @@ export interface KeyboardShortcutsOptions {
  */
 function parseShortcut(shortcutString: string): KeyboardShortcut {
   const parts = shortcutString.toLowerCase().split('+');
-  const key = parts[parts.length - 1]!;
+  const key = parts[parts.length - 1] ?? '';
 
   return {
     key,
@@ -293,19 +293,19 @@ export function useFocusTrap(
       // Shift+Tab on first element: focus last
       if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault();
-        lastElement!.focus();
+        lastElement?.focus();
       }
       // Tab on last element: focus first
       else if (!event.shiftKey && document.activeElement === lastElement) {
         event.preventDefault();
-        firstElement!.focus();
+        firstElement?.focus();
       }
     };
 
     // Focus first element when trap is enabled
     const focusableElements = getFocusableElements();
     if (focusableElements.length > 0) {
-      focusableElements[0]!.focus();
+      focusableElements[0]?.focus();
     }
 
     container.addEventListener('keydown', handleKeyDown);

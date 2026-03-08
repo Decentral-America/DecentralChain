@@ -4,10 +4,11 @@
  * Uses Victory Charts (React 19 compatible)
  */
 import { useMemo } from 'react';
-import { VictoryPie as VictoryPieBase, VictoryContainer } from 'victory';
+import { VictoryContainer, VictoryPie as VictoryPieBase } from 'victory';
 
 // React 19 type compatibility cast
-const VictoryPie = VictoryPieBase as React.ComponentType<any>;
+const VictoryPie = VictoryPieBase as React.ComponentType<Record<string, unknown>>;
+
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 
 interface LeasingChartProps {
@@ -77,8 +78,10 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
           colorScale={displayData.map((segment) => segment.color)}
           innerRadius={hasBalance ? 80 : 90}
           labelRadius={120}
-          labels={({ datum }: { datum: any }) =>
-            hasBalance && datum.value > 0 ? `${Math.round((datum.value / totalDcc) * 100)}%` : ''
+          labels={({ datum }: { datum: Record<string, unknown> }) =>
+            hasBalance && (datum.value as number) > 0
+              ? `${Math.round(((datum.value as number) / totalDcc) * 100)}%`
+              : ''
           }
           style={{
             labels: {

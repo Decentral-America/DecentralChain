@@ -3,10 +3,12 @@
  * Enhanced table with filtering, sorting, and pagination
  * Migrated to Material-UI
  */
-import React, { useState, useMemo, useCallback } from 'react';
-import { Box, TextField, Select, MenuItem, IconButton, Typography } from '@mui/material';
+
+import { Box, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Table, type Column } from './Table';
+import type React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { type Column, Table } from './Table';
 
 // Styled Components
 const SmartTableContainer = styled(Box)({
@@ -45,7 +47,7 @@ const PageButton = styled(IconButton, {
 }));
 
 // Interfaces
-export interface SmartTableProps<T = any> {
+export interface SmartTableProps<T = unknown> {
   columns: Column<T>[];
   data: T[];
   pageSize?: number;
@@ -60,7 +62,7 @@ export interface SmartTableProps<T = any> {
   style?: React.CSSProperties;
 }
 
-export const SmartTable = <T extends Record<string, any>>({
+export const SmartTable = <T extends Record<string, unknown>>({
   columns,
   data,
   pageSize = 20,
@@ -268,6 +270,7 @@ export const SmartTable = <T extends Record<string, any>>({
                 {page + 1}
               </PageButton>
             ) : (
+              // biome-ignore lint/suspicious/noArrayIndexKey: ellipsis entries need index to differentiate
               <Typography key={`ellipsis-${index}`} variant="body2" sx={{ px: 0.5 }}>
                 {page}
               </Typography>
@@ -284,19 +287,19 @@ export const SmartTable = <T extends Record<string, any>>({
 };
 
 // Convenience exports with preset configurations
-export const SmartTableSmall = <T extends Record<string, any>>(
+export const SmartTableSmall = <T extends Record<string, unknown>>(
   props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={10} />;
 
-export const SmartTableLarge = <T extends Record<string, any>>(
+export const SmartTableLarge = <T extends Record<string, unknown>>(
   props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={50} />;
 
-export const SmartTableNoFilters = <T extends Record<string, any>>(
+export const SmartTableNoFilters = <T extends Record<string, unknown>>(
   props: Omit<SmartTableProps<T>, 'enableFiltering'>,
 ) => <SmartTable {...props} enableFiltering={false} />;
 
-export const SmartTableNoPagination = <T extends Record<string, any>>(
+export const SmartTableNoPagination = <T extends Record<string, unknown>>(
   props: Omit<SmartTableProps<T>, 'enablePagination'>,
 ) => <SmartTable {...props} enablePagination={false} />;
 

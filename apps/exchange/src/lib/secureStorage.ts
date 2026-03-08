@@ -122,7 +122,7 @@ const decrypt = async (encryptedData: string, password: string): Promise<string>
  *
  * The key name is obfuscated to make casual scraping harder (defense-in-depth).
  */
-const SESSION_KEY_NAME = '_dcc_sk_' + btoa('session_encryption_key').slice(0, 8);
+const SESSION_KEY_NAME = `_dcc_sk_${btoa('session_encryption_key').slice(0, 8)}`;
 
 const getEncryptionPassword = (): string => {
   const sessionKey = sessionStorage.getItem(SESSION_KEY_NAME);
@@ -139,7 +139,7 @@ const getEncryptionPassword = (): string => {
 /**
  * Secure Storage Interface
  */
-export interface SecureStorageItem<T = any> {
+export interface SecureStorageItem<T = unknown> {
   value: T;
   type: StorageKeyType;
   timestamp: number;
@@ -155,7 +155,7 @@ class SecureStorage {
   /**
    * Set item in secure storage (encrypted)
    */
-  async setItem<T = any>(
+  async setItem<T = unknown>(
     key: string,
     value: T,
     type: StorageKeyType = 'custom',
@@ -183,7 +183,7 @@ class SecureStorage {
   /**
    * Get item from secure storage (decrypted)
    */
-  async getItem<T = any>(key: string): Promise<T | null> {
+  async getItem<T = unknown>(key: string): Promise<T | null> {
     const storageKey = this.storagePrefix + key;
     const stored = localStorage.getItem(storageKey);
 
@@ -274,7 +274,7 @@ export const secureStorage = new SecureStorage();
 /**
  * React hook for secure storage
  */
-export const useSecureStorage = <T = any>(
+export const useSecureStorage = <T = unknown>(
   key: string,
   initialValue?: T,
 ): [T | null, (value: T) => Promise<void>, () => void] => {
@@ -302,5 +302,5 @@ export const useSecureStorage = <T = any>(
 };
 
 // Import useState and useEffect for the hook
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';

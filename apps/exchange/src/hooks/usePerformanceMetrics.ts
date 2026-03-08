@@ -4,9 +4,9 @@
  * Hook to display current performance metrics in dev mode
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getMemoryUsage } from '@/lib/performanceMonitoring';
+import { useCallback, useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
+import { getMemoryUsage } from '@/lib/performanceMonitoring';
 
 export interface PerformanceMetrics {
   // Web Vitals
@@ -73,10 +73,7 @@ export interface PerformanceMetrics {
  * ```
  */
 export function usePerformanceMetrics(
-  options: {
-    enableMemoryTracking?: boolean;
-    refreshInterval?: number;
-  } = {},
+  options: { enableMemoryTracking?: boolean; refreshInterval?: number } = {},
 ) {
   const {
     enableMemoryTracking = true,
@@ -122,8 +119,10 @@ export function usePerformanceMetrics(
     // Get Web Vitals from performance entries
     const webVitalsEntries = performance.getEntriesByType('largest-contentful-paint');
     if (webVitalsEntries.length > 0) {
-      const lcp = webVitalsEntries[webVitalsEntries.length - 1]!;
-      newMetrics.lcp = Math.round(lcp.startTime * 100) / 100;
+      const lcp = webVitalsEntries[webVitalsEntries.length - 1];
+      if (lcp) {
+        newMetrics.lcp = Math.round(lcp.startTime * 100) / 100;
+      }
     }
 
     // Get navigation timing

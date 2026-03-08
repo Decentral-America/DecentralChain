@@ -34,8 +34,8 @@
  */
 
 import * as Sentry from '@sentry/react';
+import { type User } from '@sentry/react';
 import { logger } from '@/lib/logger';
-import type { User } from '@sentry/react';
 
 /**
  * Error monitoring configuration

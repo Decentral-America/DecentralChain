@@ -2,39 +2,40 @@
  * Application Sidebar
  * Modern sidebar with gradient pills, watchlist, and upgrade card
  */
-import { NavLink, useLocation } from 'react-router-dom';
+
 import {
+  AccountBalanceWallet,
+  Apps,
+  ArrowForward,
+  Badge,
+  CurrencyBitcoin,
+  HelpOutline,
+  Inventory2Outlined,
+  KeyboardArrowDown,
+  Mail,
+  MoreHoriz,
+  QueryStats,
+  ReceiptLong,
+  SettingsOutlined,
+  ShowChart,
+  SwapHoriz,
+  Timeline,
+} from '@mui/icons-material';
+import {
+  Avatar,
   Box,
-  Stack,
-  Typography,
+  Divider,
+  Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Avatar,
-  IconButton,
-  Drawer,
+  Stack,
+  Typography,
 } from '@mui/material';
-import {
-  Apps,
-  ReceiptLong,
-  Inventory2Outlined,
-  QueryStats,
-  Mail,
-  SettingsOutlined,
-  HelpOutline,
-  KeyboardArrowDown,
-  MoreHoriz,
-  ArrowForward,
-  CurrencyBitcoin,
-  Timeline,
-  ShowChart,
-  SwapHoriz,
-  AccountBalanceWallet,
-  Badge,
-} from '@mui/icons-material';
+import { NavLink, useLocation } from 'react-router-dom';
 
 // Logo component (Decentral Exchange branding)
 const Logo = () => (
@@ -102,7 +103,7 @@ interface NavItemProps {
 const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
   <ListItem disablePadding sx={{ mb: 0.5 }}>
     <ListItemButton
-      component={NavLink as any}
+      component={NavLink as React.ComponentType<Record<string, unknown>>}
       to={to}
       sx={{
         height: 48,

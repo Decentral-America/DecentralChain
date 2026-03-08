@@ -1,26 +1,27 @@
+import { ContentCopy as CopyIcon, Send as SendIcon } from '@mui/icons-material';
 import {
+  Alert,
   Box,
-  Container,
+  Button,
   Card,
   CardContent,
-  Typography,
-  Tabs,
-  Tab,
-  Button,
-  Stack,
-  Alert,
+  Container,
   IconButton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { ContentCopy as CopyIcon, Send as SendIcon } from '@mui/icons-material';
 import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
+import { useState } from 'react';
 
 // React 19 type compatibility cast
-const QRCodeSVG = QRCodeSVGBase as React.ComponentType<any>;
-import { useAuth } from '@/contexts/AuthContext';
-import { useClipboard } from '@/hooks/useClipboard';
-import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+const QRCodeSVG = QRCodeSVGBase as React.ComponentType<Record<string, unknown>>;
+
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+import { useClipboard } from '@/hooks/useClipboard';
 
 /**
  * QRReceive Component

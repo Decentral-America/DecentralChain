@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { trackPageView, trackEvent, trackTiming, type EventParams } from '@/lib/analytics';
+import { type EventParams, trackEvent, trackPageView, trackTiming } from '@/lib/analytics';
 
 /**
  * Track page views automatically on route changes

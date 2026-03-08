@@ -4,17 +4,17 @@
  * Desktop-only feature - requires Electron's Node.js integration
  */
 
-import { useState, useEffect, type FormEvent } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLedgerContext } from '@/contexts/LedgerContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { useConfig } from '@/contexts/ConfigContext';
-import LedgerConnectModal from '@/components/modals/LedgerConnectModal';
-import LedgerErrorModal from '@/components/modals/LedgerErrorModal';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import type { LedgerUser } from '@/hooks/useLedger';
+import LedgerConnectModal from '@/components/modals/LedgerConnectModal';
+import LedgerErrorModal from '@/components/modals/LedgerErrorModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
+import { useLedgerContext } from '@/contexts/LedgerContext';
+import { type LedgerUser } from '@/hooks/useLedger';
 import { logger } from '@/lib/logger';
 
 const USERS_PER_PAGE = 5;
@@ -43,7 +43,7 @@ export const ImportLedger = () => {
         const users = await getUserList(0, USERS_PER_PAGE);
         setVisibleUsers(users);
         if (users.length > 0) {
-          setSelectedUserId(users[0]!.id);
+          setSelectedUserId(users[0]?.id);
         }
         setShowConnectModal(false);
       } catch {
@@ -67,7 +67,7 @@ export const ImportLedger = () => {
         setVisibleUsers(userList);
 
         if (useDefaultAddress && userList.length > 0) {
-          setSelectedUserId(userList[0]!.id);
+          setSelectedUserId(userList[0]?.id);
         }
       } catch {
         setShowErrorModal(true);
@@ -97,7 +97,7 @@ export const ImportLedger = () => {
 
   const handleIdChange = async (value: string) => {
     const id = parseInt(value, 10);
-    if (isNaN(id) || id < 0) return;
+    if (Number.isNaN(id) || id < 0) return;
 
     setSelectedUserId(value);
 

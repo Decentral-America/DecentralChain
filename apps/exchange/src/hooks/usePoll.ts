@@ -3,7 +3,7 @@
  * Generic polling mechanism for any async operation with start/stop control
  * Provides automatic interval-based execution with error handling
  */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 /**

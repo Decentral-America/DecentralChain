@@ -5,9 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from './Modal';
 import { Button } from '@/components/atoms/Button';
 import { HStack } from '@/components/atoms/Stack';
+import { Modal } from './Modal';
 
 export interface ConfirmDialogProps {
   /**
@@ -102,7 +102,7 @@ const DialogMessage = styled.p`
   line-height: 1.5;
 `;
 
-const DialogActions = styled(HStack as any)`
+const DialogActions = styled(HStack as React.ComponentType)`
   justify-content: flex-end;
   margin-top: ${(p) => p.theme.spacing.md};
 `;
@@ -179,6 +179,8 @@ export function useConfirmDialog() {
     destructive?: boolean;
     confirmText?: string;
     cancelText?: string;
+    resolvePromise?: () => void;
+    rejectPromise?: () => void;
   }>({
     open: false,
     title: '',
@@ -196,20 +198,19 @@ export function useConfirmDialog() {
       cancelText?: string;
     }) => {
       return new Promise<boolean>((resolve) => {
+        const originalOnConfirm = options.onConfirm;
+
         setState({
           open: true,
           ...options,
+          resolvePromise: () => {
+            originalOnConfirm();
+            resolve(true);
+          },
+          rejectPromise: () => {
+            resolve(false);
+          },
         });
-
-        // Store resolve function
-        const originalOnConfirm = options.onConfirm;
-        (options as any).resolvePromise = () => {
-          originalOnConfirm();
-          resolve(true);
-        };
-        (options as any).rejectPromise = () => {
-          resolve(false);
-        };
       });
     },
     [],
@@ -217,11 +218,11 @@ export function useConfirmDialog() {
 
   const close = React.useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));
-    (state as any).rejectPromise?.();
+    state.rejectPromise?.();
   }, [state]);
 
   const handleConfirm = React.useCallback(() => {
-    (state as any).resolvePromise?.();
+    state.resolvePromise?.();
     state.onConfirm();
     setState((prev) => ({ ...prev, open: false }));
   }, [state]);

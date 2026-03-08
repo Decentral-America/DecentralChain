@@ -10,10 +10,9 @@
 import type { JSX as ReactJSX } from 'react';
 
 declare module 'react' {
+  // biome-ignore lint/style/noNamespace: TypeScript declaration file for React 19 JSX compat
   namespace JSX {
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Element extends ReactJSX.Element {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface IntrinsicElements extends ReactJSX.IntrinsicElements {}
   }
 }

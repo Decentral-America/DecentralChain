@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { AccountCircle, CheckCircle, PersonOutline, SwapHoriz } from '@mui/icons-material';
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  Paper,
   Chip,
-  styled,
-  useTheme,
+  Container,
   Fade,
+  Paper,
   Slide,
+  styled,
+  Typography,
+  useTheme,
 } from '@mui/material';
-import { AccountCircle, CheckCircle, SwapHoriz, PersonOutline } from '@mui/icons-material';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 /**

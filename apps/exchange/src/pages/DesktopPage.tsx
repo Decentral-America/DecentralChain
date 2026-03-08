@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { Diamond, FlashOn, Login, PersonAdd, Security } from '@mui/icons-material';
 import {
   Box,
-  Typography,
   Button,
-  Grid,
-  Paper,
   Chip,
-  styled,
-  useTheme,
   Fade,
-  Slide,
+  Grid,
   keyframes,
+  Paper,
+  Slide,
+  styled,
+  Typography,
+  useTheme,
 } from '@mui/material';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Security, FlashOn, Diamond, Login, PersonAdd } from '@mui/icons-material';
 
 /**
  * DesktopPage Component
@@ -215,7 +216,7 @@ export const DesktopPage: React.FC = () => {
             <Grid container spacing={2} sx={{ mb: 4 }}>
               {features.map((feature, index) => (
                 <Grid
-                  key={index}
+                  key={feature.title}
                   size={{
                     xs: 12,
                     sm: 4,

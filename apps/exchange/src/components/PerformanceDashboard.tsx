@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react';
-import { usePerformanceMetrics, getPerformanceSummary } from '@/hooks/usePerformanceMetrics';
+import { getPerformanceSummary, usePerformanceMetrics } from '@/hooks/usePerformanceMetrics';
 
 export function PerformanceDashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +23,7 @@ export function PerformanceDashboard() {
   if (!isOpen) {
     return (
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         style={{
           position: 'fixed',
@@ -96,6 +97,7 @@ export function PerformanceDashboard() {
           📊 Performance Dashboard
         </h3>
         <button
+          type="button"
           onClick={() => setIsOpen(false)}
           style={{
             background: 'none',
@@ -287,6 +289,7 @@ export function PerformanceDashboard() {
         }}
       >
         <button
+          type="button"
           onClick={refresh}
           style={{
             flex: 1,
@@ -304,6 +307,7 @@ export function PerformanceDashboard() {
         </button>
 
         <button
+          type="button"
           onClick={clear}
           style={{
             flex: 1,

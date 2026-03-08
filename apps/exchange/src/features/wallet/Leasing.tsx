@@ -3,7 +3,15 @@
  * Interface for staking DCC with nodes and viewing active leases
  * Allows users to create lease transactions and cancel active leases
  */
-import { type MouseEvent, useMemo, useState } from 'react';
+
+import {
+  CancelScheduleSendOutlined,
+  HistoryOutlined,
+  PlayArrowRounded,
+  RefreshOutlined,
+  ShieldOutlined,
+  TrendingUpOutlined,
+} from '@mui/icons-material';
 import {
   Alert,
   Box,
@@ -29,25 +37,18 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {
-  RefreshOutlined,
-  TrendingUpOutlined,
-  ShieldOutlined,
-  HistoryOutlined,
-  CancelScheduleSendOutlined,
-  PlayArrowRounded,
-} from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as ds from 'data-service';
+import { type MouseEvent, useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { LeasingChart } from './LeasingChart';
 import { formatDcc, shortenAddress, toTimestamp } from '@/utils/formatters';
 import {
-  createLeaseTransaction,
-  createCancelLeaseTransaction,
   broadcastTransaction,
+  createCancelLeaseTransaction,
+  createLeaseTransaction,
 } from '@/utils/transactions';
+import { LeasingChart } from './LeasingChart';
 
 const DCC_DECIMALS = 1e8;
 const LEASE_FEE_DCC = 0.001;
@@ -194,7 +195,7 @@ export const Leasing = () => {
     if (!recentTxs) return [];
 
     const LEASE_TYPES = ['lease-in', 'lease-out', 'cancel-leasing'];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     const filtered = (recentTxs as any[]).filter((tx) => LEASE_TYPES.includes(tx.typeName));
 
     if (!activeLeases?.length) return filtered;
@@ -229,7 +230,6 @@ export const Leasing = () => {
             tx.status === 'canceled' ||
             tx.typeName === 'cancel-leasing',
         );
-      case 'all':
       default:
         return list;
     }
@@ -242,13 +242,13 @@ export const Leasing = () => {
           return lease.amount;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
         const tokens = (lease as any).transfer?.amount?.getTokens?.()?.toNumber?.();
         return (tokens as number | undefined) ?? 0;
       })();
       const recipientValue =
         lease.recipient ||
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
         ((lease as any).transfer?.recipient as string | undefined) ||
         '';
       const status: 'active' | 'cancelled' | 'pending' = (():

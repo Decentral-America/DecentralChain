@@ -4,10 +4,11 @@
  * Replaces Angular w-input directive
  * Migrated to Material-UI TextField
  */
-import React from 'react';
-import TextField, { type TextFieldProps } from '@mui/material/TextField';
+
 import InputAdornment from '@mui/material/InputAdornment';
 import { styled } from '@mui/material/styles';
+import TextField, { type TextFieldProps } from '@mui/material/TextField';
+import React from 'react';
 
 export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'error'> {
   label?: string;

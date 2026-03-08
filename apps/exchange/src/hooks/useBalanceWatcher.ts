@@ -3,11 +3,12 @@
  * Monitors wallet balances with automatic polling and real-time updates
  * Provides balance data for the current account with configurable refresh intervals
  */
+
+import { type UseQueryResult } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
-import { type UseQueryResult } from '@tanstack/react-query';
+import { type AddressBalance, useAddressBalance } from '../api/services/addressService';
 import { useAuth } from '../contexts/AuthContext';
-import { useAddressBalance, type AddressBalance } from '../api/services/addressService';
 
 /**
  * Balance Watcher Configuration Options

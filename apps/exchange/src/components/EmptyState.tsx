@@ -2,7 +2,7 @@
  * Empty State Components
  * Displays helpful messages and actions when no data exists
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 import { Button } from './atoms/Button';
 
