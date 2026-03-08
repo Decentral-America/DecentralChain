@@ -6,6 +6,7 @@ import {
   type WithApiMixin,
 } from '@decentralchain/ts-types';
 import { type TLong } from '../../interface';
+import query from '../../tools/query';
 import request from '../../tools/request';
 import { pathSegment, toArray } from '../../tools/utils';
 
@@ -196,6 +197,21 @@ export function fetchBalanceAddressAssetId(
     base,
     url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`,
     options,
+  });
+}
+
+/**
+ * GET /eth/assets?id={assetId}
+ * Convert a DecentralChain asset ID to its Ethereum-compatible representation.
+ */
+export function convertEthAssetId(base: string, assetId: string): Promise<string> {
+  return request<TAssetDetails[]>({
+    base,
+    url: `/eth/assets${query({ id: assetId })}`,
+  }).then((assets) => {
+    const first = assets[0];
+    if (!first) throw new Error('Asset not found');
+    return first.assetId;
   });
 }
 
