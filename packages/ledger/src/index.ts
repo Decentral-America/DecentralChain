@@ -6,8 +6,6 @@
 
 export { DCC } from './DCC.js';
 export { DCCLedger, Ledger } from './dcc-ledger.js';
-export { base58Encode } from './utils.js';
-
 export type {
   DCCLedgerOptions,
   LedgerError,
@@ -19,3 +17,4 @@ export type {
   User,
   UserData,
 } from './types.js';
+export { base58Encode } from './utils.js';

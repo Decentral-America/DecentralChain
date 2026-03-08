@@ -166,9 +166,9 @@ npm install
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
 | `npm run typecheck`         | TypeScript type checking                 |
-| `npm run lint`              | ESLint                                   |
-| `npm run lint:fix`          | ESLint with auto-fix                     |
-| `npm run format`            | Format with Prettier                     |
+| `npm run lint`              | Biome lint |
+| `npm run lint:fix`          | Biome lint with auto-fix                     |
+| `npm run format`            | Format with Biome                     |
 | `npm run validate`          | Full CI validation pipeline              |
 | `npm run bulletproof`       | Format + lint fix + typecheck + test     |
 | `npm run bulletproof:check` | CI-safe: check format + lint + tc + test |
@@ -176,8 +176,8 @@ npm install
 ### Quality Gates
 
 - TypeScript strict mode with all strict flags enabled
-- ESLint with type-aware rules
-- Prettier formatting enforced
+- Biome with type-aware rules
+- Biome formatting enforced
 - 90% code coverage thresholds
 - Bundle size budget (10 kB gzipped)
 - Package export validation (publint + attw)

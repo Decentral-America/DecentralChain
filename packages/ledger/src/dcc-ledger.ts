@@ -22,14 +22,14 @@
 
 import { listen } from '@ledgerhq/logs';
 import { DCC } from './DCC.js';
-import type {
-  DCCLedgerOptions,
-  LedgerTransport,
-  LedgerTransportFactory,
-  SignData,
-  SignOrderData,
-  SignTxData,
-  User,
+import {
+  type DCCLedgerOptions,
+  type LedgerTransport,
+  type LedgerTransportFactory,
+  type SignData,
+  type SignOrderData,
+  type SignTxData,
+  type User,
 } from './types.js';
 
 /**
@@ -83,7 +83,6 @@ export class DCCLedger {
    * @throws {TypeError} If `options.transport` is not provided.
    */
   constructor(options: DCCLedgerOptions) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Runtime guard for JS callers
     if (!options.transport) {
       throw new TypeError(
         'DCCLedger requires a transport factory. ' +
@@ -379,9 +378,7 @@ export class DCCLedger {
       .then((transport) => {
         if (this._debug) {
           this._unsubscribeLog?.();
-          this._unsubscribeLog = listen((log: { type: string }) => {
-            console.debug('[DCCLedger]', log.type, log);
-          });
+          this._unsubscribeLog = listen((_log: { type: string }) => {});
         }
         if (this._exchangeTimeout !== undefined) {
           transport.setExchangeTimeout(this._exchangeTimeout);
