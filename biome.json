@@ -9,11 +9,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "dist/**",
-      "coverage/**",
-      "*.d.ts"
-    ]
+    "includes": ["**", "!dist", "!coverage", "!*.d.ts"]
   },
   "formatter": {
     "enabled": true,
