@@ -1,10 +1,8 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { EventType, WindowAdapter } from '../src/index.js';
-import type { IEventData, TMessageContent } from '../src/index.js';
-import { mockWindow } from './mock/Win.js';
-import type { IMockWindow } from './mock/Win.js';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { EventType, type IEventData, type TMessageContent, WindowAdapter } from '../src/index.js';
+import { PROTOCOL_TYPES, WindowProtocol } from '../src/protocols/WindowProtocol.js';
 import { EventEmitter } from '../src/utils/EventEmitter.js';
-import { WindowProtocol } from '../src/protocols/WindowProtocol.js';
+import { type IMockWindow, mockWindow } from './mock/Win.js';
 
 describe('Window adapter', () => {
   const eventData: IEventData = {
@@ -23,8 +21,8 @@ describe('Window adapter', () => {
   beforeEach(() => {
     listenWin = mockWindow();
     dispatchWin = mockWindow();
-    listen = [new WindowProtocol(listenWin, WindowProtocol.PROTOCOL_TYPES.LISTEN)];
-    dispatch = [new WindowProtocol(dispatchWin, WindowProtocol.PROTOCOL_TYPES.DISPATCH)];
+    listen = [new WindowProtocol(listenWin, PROTOCOL_TYPES.LISTEN)];
+    dispatch = [new WindowProtocol(dispatchWin, PROTOCOL_TYPES.DISPATCH)];
     adapter = new WindowAdapter(listen, dispatch, {});
   });
 
@@ -69,8 +67,8 @@ describe('Window adapter', () => {
 
   it('all origin', () => {
     listenWin = mockWindow();
-    listen = [new WindowProtocol(listenWin, WindowProtocol.PROTOCOL_TYPES.LISTEN)];
-    dispatch = [new WindowProtocol(mockWindow(), WindowProtocol.PROTOCOL_TYPES.DISPATCH)];
+    listen = [new WindowProtocol(listenWin, PROTOCOL_TYPES.LISTEN)];
+    dispatch = [new WindowProtocol(mockWindow(), PROTOCOL_TYPES.DISPATCH)];
     adapter = new WindowAdapter(listen, dispatch, { origins: '*' });
 
     let count = 0;
@@ -274,10 +272,7 @@ describe('Window adapter', () => {
   describe('WindowProtocol dispatch-type destroy', () => {
     it('destroy on dispatch protocol replaces win with fakeWin', () => {
       const win = mockWindow<TMessageContent>();
-      const protocol = new WindowProtocol<TMessageContent>(
-        win,
-        WindowProtocol.PROTOCOL_TYPES.DISPATCH,
-      );
+      const protocol = new WindowProtocol<TMessageContent>(win, PROTOCOL_TYPES.DISPATCH);
 
       let callCount = 0;
       win.onPostMessageRun.on(() => {
