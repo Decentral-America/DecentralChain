@@ -2,7 +2,7 @@ import { type DataTransactionEntry } from '@decentralchain/ts-types';
 import { type TLong } from '../../interface';
 import query from '../../tools/query';
 import request from '../../tools/request';
-import { pathSegment } from '../../tools/utils';
+import { deepAssign, pathSegment } from '../../tools/utils';
 
 export function fetchDataKey(
   base: string,
@@ -93,6 +93,31 @@ export function fetchBalance(
     base,
     url: `/addresses/balance/${pathSegment(address)}`,
     options,
+  });
+}
+
+/**
+ * POST /addresses/balance
+ * Get balances for multiple addresses in a single request.
+ */
+export function fetchMultipleBalance(
+  base: string,
+  addresses: string[],
+  options: RequestInit = {},
+): Promise<IBalanceConfirmations<TLong>[]> {
+  return request({
+    base,
+    url: '/addresses/balance',
+    options: deepAssign(
+      { ...options },
+      {
+        method: 'POST',
+        body: JSON.stringify({ addresses }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    ),
   });
 }
 
