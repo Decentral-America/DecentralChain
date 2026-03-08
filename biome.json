@@ -6,16 +6,11 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": [
-      "src/**",
-      "*.js",
-      "*.json",
-      "*.css"
-    ],
-    "ignore": [
-      "dist/**",
-      "coverage/**",
-      "*.d.ts"
+    "includes": ["**", "!dist", "!coverage", "!*.d.ts"],
+    "includes": ["**",
+      !dist",
+      !coverage",
+      !"*.d.ts"
     ]
   },
   "formatter": {
