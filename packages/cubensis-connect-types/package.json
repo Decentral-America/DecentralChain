@@ -1,27 +1,88 @@
 {
-  "name": "@waves/waveskeeper-types",
-  "version": "0.2.7",
-  "description": "Interfaces for Waves Keeper",
-  "types": "globals.d.ts",
-  "main": "",
+  "name": "@decentralchain/cubensis-connect-types",
+  "version": "1.0.0",
+  "description": "TypeScript type definitions for the CubensisConnect browser-extension API",
+  "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "sideEffects": false,
   "files": [
-    "globals.d.ts"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
-  "typeScriptVersion": "2.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "packageManager": "npm@11.9.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "engineStrict": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/wavesplatform/waveskeeper-types.git"
+    "url": "git+https://github.com/Decentral-America/cubensis-connect-types.git"
   },
   "keywords": [
     "types",
-    "waves",
-    "keeper"
+    "typescript",
+    "cubensisconnect",
+    "decentralchain",
+    "blockchain",
+    "browser-extension"
   ],
-  "author": "kanishcheva@phystech.edu",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/wavesplatform/waveskeeper-types/issues"
+  "author": "DecentralChain",
+  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/wavesplatform/waveskeeper-types#readme",
-  "dependencies": {}
+  "bugs": {
+    "url": "https://github.com/Decentral-America/cubensis-connect-types/issues"
+  },
+  "homepage": "https://github.com/Decentral-America/cubensis-connect-types#readme",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check:publint": "publint",
+    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "check:size": "size-limit",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "validate": "npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "prepare": "lefthook install",
+    "lint:fix": "biome check --write ."
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.mjs",
+      "limit": "1 kB"
+    }
+  ],
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "^1.11.0",
+    "@size-limit/preset-small-lib": "^12.0.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "publint": "^0.3.18",
+    "size-limit": "^12.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
 }
