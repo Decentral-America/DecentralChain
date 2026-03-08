@@ -1,7 +1,7 @@
-import request from '../../tools/request';
-import stringify from '../../tools/stringify';
 import { type Transaction, type WithApiMixin } from '@decentralchain/ts-types';
 import { type TLong } from '../../interface';
+import request from '../../tools/request';
+import stringify from '../../tools/stringify';
 
 /**
  * GET /utils/seed

@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
  * Unit tests for the HTTP request module.
@@ -40,7 +40,7 @@ describe('request – HTTP client', () => {
     expect(mockFetch).toHaveBeenCalledOnce();
 
     // Verify the URL was correctly resolved
-    const calledUrl = mockFetch.mock.calls[0]![0];
+    const calledUrl = mockFetch.mock.calls[0]?.[0];
     expect(calledUrl).toBe('https://nodes.example.com/blocks/height');
   });
 
@@ -83,7 +83,7 @@ describe('request – HTTP client', () => {
       base: 'https://nodes.example.com',
     });
 
-    const calledOptions = mockFetch.mock.calls[0]![1] as RequestInit;
+    const calledOptions = mockFetch.mock.calls[0]?.[1] as RequestInit;
     // Should have a timeout signal attached automatically
     expect(calledOptions.signal).toBeDefined();
   });
@@ -97,7 +97,7 @@ describe('request – HTTP client', () => {
     });
 
     // The URL passed to fetch should be on nodes.example.com, NOT evil.com
-    const calledUrl = mockFetch.mock.calls[0]![0] as string;
+    const calledUrl = mockFetch.mock.calls[0]?.[0] as string;
     const parsedUrl = new URL(calledUrl);
     expect(parsedUrl.hostname).toBe('nodes.example.com');
   });

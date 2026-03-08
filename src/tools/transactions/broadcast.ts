@@ -1,13 +1,13 @@
-import { type TLong } from '../../interface';
-import { broadcast } from '../../api-node/transactions';
-import { head, toArray } from '../utils';
-import wait from './wait';
 import {
   type SignedTransaction,
   type Transaction,
   type TransactionMap,
   type WithApiMixin,
 } from '@decentralchain/ts-types';
+import { broadcast } from '../../api-node/transactions';
+import { type TLong } from '../../interface';
+import { head, toArray } from '../utils';
+import wait from './wait';
 
 const DEFAULT_BROADCAST_OPTIONS: IOptions = {
   chain: false,

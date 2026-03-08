@@ -1,6 +1,6 @@
 // import {NODE_URL, STATE} from '../_state';
 import { create } from '../../src';
-import { ILeaseInfo } from '../../src/api-node/leasing';
+import { type ILeaseInfo } from '../../src/api-node/leasing';
 import { MASTER_ACCOUNT, NODE_URL } from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);

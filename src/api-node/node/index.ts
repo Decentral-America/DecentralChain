@@ -1,6 +1,6 @@
 import request from '../../tools/request';
 
-// @TODO: When correct API key
+// NOTE: Requires node API key
 // POST /node/stop
 
 export function fetchNodeStatus(base: string, options: RequestInit = {}): Promise<INodeStatus> {

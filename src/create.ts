@@ -1,37 +1,37 @@
+import { type Transaction, type TransactionMap, type WithApiMixin } from '@decentralchain/ts-types';
+import * as activationModule from './api-node/activation';
 import * as addressesModule from './api-node/addresses';
+import * as aliasModule from './api-node/alias';
+import * as assetsModule from './api-node/assets';
 import * as blocksModule from './api-node/blocks';
-import * as transactionsModule from './api-node/transactions';
+import * as consensusModule from './api-node/consensus';
+import * as debugModule from './api-node/debug';
+import * as ethModule from './api-node/eth';
 import * as leasingModule from './api-node/leasing';
+import * as nodeModule from './api-node/node';
 import * as peersModule from './api-node/peers';
 import * as rewardsModule from './api-node/rewards';
+import * as transactionsModule from './api-node/transactions';
 import * as utilsModule from './api-node/utils';
-import * as debugModule from './api-node/debug';
-import * as aliasModule from './api-node/alias';
-import * as consensusModule from './api-node/consensus';
-import * as activationModule from './api-node/activation';
-import * as nodeModule from './api-node/node';
-import * as assetsModule from './api-node/assets';
-import * as ethModule from './api-node/eth';
+import { type TLong } from './interface';
+import availableSponsoredBalances from './tools/adresses/availableSponsoredBalances';
+import getAssetIdListByTx from './tools/adresses/getAssetIdListByTx';
+import getAssetsByTransaction from './tools/adresses/getAssetsByTransaction';
+import getTransactionsWithAssets from './tools/adresses/getTransactionsWithAssets';
+import createWatch from './tools/adresses/watch';
+import getNetworkByte from './tools/blocks/getNetworkByte';
+import getNetworkCode from './tools/blocks/getNetworkCode';
+import parse from './tools/parse';
 import query from './tools/query';
-import resolve from './tools/resolve';
 import request from './tools/request';
+import resolve from './tools/resolve';
 import broadcast, {
   type IOptions,
   type TMap,
   type TMapTuple,
 } from './tools/transactions/broadcast';
-import getAssetsByTransaction from './tools/adresses/getAssetsByTransaction';
-import getAssetIdListByTx from './tools/adresses/getAssetIdListByTx';
-import getTransactionsWithAssets from './tools/adresses/getTransactionsWithAssets';
-import availableSponsoredBalances from './tools/adresses/availableSponsoredBalances';
 import wait from './tools/transactions/wait';
-import parse from './tools/parse';
-import getNetworkByte from './tools/blocks/getNetworkByte';
-import getNetworkCode from './tools/blocks/getNetworkCode';
-import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
-import { type Transaction, type TransactionMap, type WithApiMixin } from '@decentralchain/ts-types';
-import { type TLong } from './interface';
 
 type BroadcastWrapped = {
   <T extends Transaction<TLong>[]>(
@@ -44,7 +44,7 @@ type BroadcastWrapped = {
   ): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- required for contravariant function parameter matching
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 type ApiFunction = (base: string, ...args: any[]) => any;
 
 type TWrapRecord<T extends Record<string, ApiFunction>> = {
@@ -113,10 +113,13 @@ export function create(base: string) {
 }
 
 function wrapRecord<T extends Record<string, ApiFunction>>(base: string, hash: T): TWrapRecord<T> {
-  return Object.keys(hash).reduce<TWrapRecord<T>>((acc, methodName: keyof T) => {
-    acc[methodName] = wrapRequest(base, hash[methodName]);
-    return acc;
-  }, {} as TWrapRecord<T>);
+  return Object.keys(hash).reduce<TWrapRecord<T>>(
+    (acc, methodName: keyof T) => {
+      acc[methodName] = wrapRequest(base, hash[methodName]);
+      return acc;
+    },
+    {} as TWrapRecord<T>,
+  );
 }
 
 function wrapRequest<T extends ApiFunction>(base: string, callback: T): TWrapApi<T> {

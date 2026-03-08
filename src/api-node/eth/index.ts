@@ -1,7 +1,7 @@
-import request from '../../tools/request';
-import { type TAssetDetails } from '../assets';
-import { toArray } from '../../tools/utils';
 import query from '../../tools/query';
+import request from '../../tools/request';
+import { toArray } from '../../tools/utils';
+import { type TAssetDetails } from '../assets';
 
 export function fetchEthAssetDetails(
   base: string,

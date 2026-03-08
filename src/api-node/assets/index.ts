@@ -1,4 +1,3 @@
-import { type TLong } from '../../interface';
 import {
   type AssetDecimals,
   type IssueTransaction,
@@ -6,6 +5,7 @@ import {
   TRANSACTION_TYPE,
   type WithApiMixin,
 } from '@decentralchain/ts-types';
+import { type TLong } from '../../interface';
 import request from '../../tools/request';
 import { pathSegment, toArray } from '../../tools/utils';
 
@@ -80,9 +80,8 @@ export function fetchAssetDistribution(
 }
 
 /**
- * TODO
  * GET /assets/{assetId}/distribution
- * Asset balance distribution
+ * Asset balance distribution — requires node API key
  */
 
 export function fetchAssetsAddressLimit(
@@ -99,9 +98,8 @@ export function fetchAssetsAddressLimit(
 }
 
 /**
- * TODO
  * GET assets/nft/${address}/limit/${limit}
- * Asset balance distribution
+ * Asset balance distribution — requires node API key
  */
 interface IFetchAssetsNftParams {
   address: string;

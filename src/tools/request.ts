@@ -1,5 +1,5 @@
-import resolve from './resolve';
 import parse from './parse';
+import resolve from './resolve';
 
 /** Default request timeout in milliseconds (30 seconds). */
 const DEFAULT_TIMEOUT_MS = 30_000;

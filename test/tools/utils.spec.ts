@@ -1,20 +1,20 @@
 import {
-  uniq,
   deepAssign,
-  toArray,
-  head,
-  isObject,
-  pathSegment,
-  wait,
-  prop,
-  keys,
   entries,
-  values,
-  map,
   filter,
+  head,
   indexBy,
-  switchTransactionByType,
+  isObject,
+  keys,
+  map,
+  pathSegment,
   pipe,
+  prop,
+  switchTransactionByType,
+  toArray,
+  uniq,
+  values,
+  wait,
 } from '../../src/tools/utils';
 
 describe('pathSegment – URL path traversal prevention', () => {
@@ -205,7 +205,7 @@ describe('indexBy – index array into record', () => {
       { k: 'a', v: 2 },
     ];
     const result = indexBy((item: (typeof items)[number]) => item.k, items);
-    expect(result['a']?.v).toBe(2);
+    expect(result.a?.v).toBe(2);
   });
 });
 
@@ -239,10 +239,10 @@ describe('pipe – function composition', () => {
   });
 
   it('composes three functions left-to-right', () => {
-    const toString = (n: number) => String(n);
+    const numberToString = (n: number) => String(n);
     const exclaim = (s: string) => `${s}!`;
     const wrap = (s: string) => `[${s}]`;
-    const composed = pipe(toString, exclaim, wrap);
+    const composed = pipe(numberToString, exclaim, wrap);
     expect(composed(42)).toBe('[42!]');
   });
 });

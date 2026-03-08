@@ -8,9 +8,7 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Assertion<T = any> extends CustomMatchers<T> {}
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface AsymmetricMatchersContaining extends CustomMatchers {}
 }
 
@@ -21,9 +19,9 @@ function formatReceived(received: unknown): string {
 export function isStringOrNumber(received: any) {
   return {
     pass:
-      typeof received == 'string' ||
+      typeof received === 'string' ||
       received instanceof String ||
-      typeof received == 'number' ||
+      typeof received === 'number' ||
       received instanceof Number,
     message: () =>
       `expected null or instance of 'number' or 'string', but received ${formatReceived(received)}`,
@@ -32,7 +30,7 @@ export function isStringOrNumber(received: any) {
 
 export function isNullableString(received: any) {
   return {
-    pass: received === null || typeof received == 'string' || received instanceof String,
+    pass: received === null || typeof received === 'string' || received instanceof String,
     message: () =>
       `expected null or instance of 'string', but received ${formatReceived(received)}`,
   };
@@ -40,7 +38,7 @@ export function isNullableString(received: any) {
 
 export function isNullableNumber(received: any) {
   return {
-    pass: received === null || typeof received == 'number' || received instanceof Number,
+    pass: received === null || typeof received === 'number' || received instanceof Number,
     message: () =>
       `expected null or instance of 'number', but received ${formatReceived(received)}`,
   };
@@ -50,9 +48,9 @@ export function isNullableStringOrNumber(received: any) {
   return {
     pass:
       received === null ||
-      typeof received == 'string' ||
+      typeof received === 'string' ||
       received instanceof String ||
-      typeof received == 'number' ||
+      typeof received === 'number' ||
       received instanceof Number,
     message: () =>
       `expected null or instance of 'number' or 'string', but received ${formatReceived(received)}`,

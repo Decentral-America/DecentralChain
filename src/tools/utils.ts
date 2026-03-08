@@ -1,4 +1,4 @@
-import { type TransactionMap, type Transaction } from '@decentralchain/ts-types';
+import { type Transaction, type TransactionMap } from '@decentralchain/ts-types';
 import { type TLong } from '../interface';
 
 /**
@@ -54,8 +54,7 @@ export const entries = <T extends object>(obj: T): [keyof T, T[keyof T]][] =>
 export const values = <T extends object>(obj: T): T[keyof T][] => keys(obj).map((key) => obj[key]);
 
 export const deepAssign = <T extends object[]>(...objects: T): TUnionToIntersection<T[number]> =>
-  objects.reduce<Record<string, unknown>>((target, merge) => {
-    const result: Record<string, unknown> = { ...target };
+  objects.reduce<Record<string, unknown>>((result, merge) => {
     keys(merge).forEach((key) => {
       const resultVal: unknown = result[key as string];
       const mergeVal: unknown = merge[key];

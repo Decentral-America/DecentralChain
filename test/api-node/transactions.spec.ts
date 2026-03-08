@@ -1,11 +1,11 @@
-import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 import { libs, transfer } from '@decentralchain/transactions';
+import { type SignedTransaction, type TransferTransaction } from '@decentralchain/ts-types';
+import { type WithId } from '@decentralchain/ts-types/dist/src/parts';
 import create from '../../src';
-import { SignedTransaction, TransferTransaction } from '@decentralchain/ts-types';
-import { TLong } from '../../src/interface';
-import { TRANSACTION_STATUSES } from '../../src/constants';
 import { fetchCalculateFee } from '../../src/api-node/transactions';
-import { WithId } from '@decentralchain/ts-types/dist/src/parts';
+import { TRANSACTION_STATUSES } from '../../src/constants';
+import { type TLong } from '../../src/interface';
+import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
 
 const API = create(NODE_URL);
 
@@ -125,7 +125,7 @@ describe('Calculate fee', () => {
           STATE.ACCOUNTS.SIMPLE.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
       );
-      expect(result.feeAmount).toBe(0.001 * Math.pow(10, 8));
+      expect(result.feeAmount).toBe(0.001 * 10 ** 8);
       expect(result.feeAssetId).toBe(null);
     });
 
@@ -140,7 +140,7 @@ describe('Calculate fee', () => {
           STATE.ACCOUNTS.SMART.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
       );
-      expect(result.feeAmount).toBe(0.005 * Math.pow(10, 8));
+      expect(result.feeAmount).toBe(0.005 * 10 ** 8);
       expect(result.feeAssetId).toBe(null);
     });
 
@@ -156,7 +156,7 @@ describe('Calculate fee', () => {
           STATE.ACCOUNTS.SIMPLE.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
       );
-      expect(result.feeAmount).toBe(0.005 * Math.pow(10, 8));
+      expect(result.feeAmount).toBe(0.005 * 10 ** 8);
       expect(result.feeAssetId).toBe(null);
     });
 
@@ -172,7 +172,7 @@ describe('Calculate fee', () => {
           STATE.ACCOUNTS.SMART.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
       );
-      expect(result.feeAmount).toBe(Math.round(0.009 * Math.pow(10, 8)));
+      expect(result.feeAmount).toBe(Math.round(0.009 * 10 ** 8));
       expect(result.feeAssetId).toBe(null);
     });
   });

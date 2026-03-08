@@ -1,7 +1,7 @@
 import { type Transaction } from '@decentralchain/ts-types';
+import { NAME_MAP } from '../../constants';
 import { type TLong } from '../../interface';
 import { prop, switchTransactionByType, toArray } from '../utils';
-import { NAME_MAP } from '../../constants';
 
 const getAssetIdList = switchTransactionByType({
   [NAME_MAP.transfer]: (tx) => [tx.assetId, tx.feeAssetId],
