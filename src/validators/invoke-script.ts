@@ -39,28 +39,6 @@ const invokeScheme = {
       ),
     ),
   ),
-<<<<<<< HEAD
-  payment: validatePipe(
-      isArray,
-      (data: Array<unknown>) => data.every(
-          validatePipe(
-              pipe(prop('amount'), isNumberLike),
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-              pipe(prop('assetId'), isWavesOrAssetId)
-=======
-              pipe(prop('assetId'), isAssetId),
->>>>>>> 697d643a (minor fixes)
-=======
-              pipe(prop('assetId'), isWavesOrAssetId)
->>>>>>> f33083a0 (updated dependencies)
-=======
-              pipe(prop('assetId'), isDccOrAssetId)
->>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
-          )
-      )
-=======
   payment: validatePipe(isArray, (data: Array<unknown>) =>
     data.every(
       validatePipe(
@@ -68,7 +46,6 @@ const invokeScheme = {
         pipe(prop('assetId'), isDccOrAssetId),
       ),
     ),
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
   ),
   fee: isNaturalNumberLike,
   feeAssetId: isDccOrAssetId,
