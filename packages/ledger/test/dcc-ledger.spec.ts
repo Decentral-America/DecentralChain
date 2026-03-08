@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DCCLedger } from '../src/dcc-ledger.js';
-import type { LedgerTransport, LedgerTransportFactory } from '../src/types.js';
+import { type LedgerTransport, type LedgerTransportFactory } from '../src/types.js';
 
 /**
  * Build a Uint8Array Ledger response: payload + 2-byte status word.
@@ -198,8 +198,8 @@ describe('DCCLedger', () => {
 
       const users = await ledger.getPaginationUsersData(0, 2);
       expect(users.length).toBe(2); // from=0, limit=2 → indices 0, 1
-      expect(users[0]!.id).toBe(0);
-      expect(users[1]!.id).toBe(1);
+      expect(users[0]?.id).toBe(0);
+      expect(users[1]?.id).toBe(1);
     });
 
     it('returns empty array when limit is 0', async () => {
