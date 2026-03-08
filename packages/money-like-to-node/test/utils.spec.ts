@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { head, getCoins, getAssetId, curry } from '../src/utils/index.js';
-import { Money, BigNumber } from '@decentralchain/data-entities';
+import { BigNumber, Money } from '@decentralchain/data-entities';
+import { describe, expect, it } from 'vitest';
+import { curry, getAssetId, getCoins, head } from '../src/utils/index.js';
 import { DCC_ASSET } from './transactionData.js';
 
 describe('Utils test', () => {

@@ -1,6 +1,6 @@
-import type { TLong, TMoney } from '../types/index.js';
-import type { IDCCGuiExchangeOrder } from '../toNodeEntities/exchange.js';
-import type { TDCCGuiEntity } from '../toNodeEntities/index.js';
+import { type IDCCGuiExchangeOrder } from '../toNodeEntities/exchange.js';
+import { type TDCCGuiEntity } from '../toNodeEntities/index.js';
+import { type TLong, type TMoney } from '../types/index.js';
 
 export function getAssetId(money: TMoney): string;
 export function getAssetId(money: TLong | null | undefined): null;
@@ -55,20 +55,19 @@ export function getCoins(money: TMoney | TLong | undefined | null): string | nul
   return result;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- curry implementation requires dynamic typing
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 export const curry: ICurry = (func: (...args: any[]) => any) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic argument forwarding
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   function loop(callback: (...args: any[]) => any, ...local: any[]) {
     if (callback.length <= local.length) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument -- curry dynamic dispatch
       return callback(...local);
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- curried partial application
+      // biome-ignore lint/suspicious/noExplicitAny: curried partial application
       return (...args: any[]) => loop(func, ...local.concat(args));
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any -- curried partial application
+  // biome-ignore lint/suspicious/noExplicitAny: curried partial application
   return (...args: any[]) => loop(func, ...args);
 };
 
@@ -77,12 +76,10 @@ export const ifElse =
   (data: T): Y | N =>
     expression(data) ? resolve(data) : reject(data);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- curry returns a complex union
 export const has: IHas = curry(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches any object shape
-  (prop: string | number | symbol, data: any): boolean =>
-    Object.prototype.hasOwnProperty.call(data, prop),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- curry returns opaque type
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+  (prop: string | number | symbol, data: any): boolean => Object.hasOwn(data, prop),
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 ) as any;
 
 export const emptyError =
@@ -105,7 +102,7 @@ export const lte: IComparator = curry((a: number, b: number) => a <= b) as IComp
 export const gte: IComparator = curry((a: number, b: number) => a >= b) as IComparator;
 
 export const isStopSponsorship = (a: number | string | undefined | null): boolean =>
-  a == null || isNaN(Number(a)) || Number(a) === 0;
+  a == null || Number.isNaN(Number(a)) || Number(a) === 0;
 
 export const head = <T>(list: T[]): T | undefined => list[0];
 
@@ -114,25 +111,22 @@ export const defaultTo =
   (data: T | null | undefined): T =>
     data ?? value;
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- curry returns opaque type
 export const map: IMap = curry(
   <T, R>(cb: (item: T) => R, list: T[]): R[] => list.map(cb),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- curry returns a complex union
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 ) as any;
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- curry returns opaque type
 export const prop: IProp = curry(
   <T, K extends keyof T>(key: K, data: T): T[K] =>
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- generic T[K] resolves to any inside curry
-    Object.prototype.hasOwnProperty.call(data, key)
+    Object.hasOwn(data, key)
       ? data[key]
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- fallback for missing props
+      : // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
         (undefined as any),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- curry returns a complex union
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 ) as any;
 
 export const pipe: IPipe = (...processors: ((...args: unknown[]) => unknown)[]) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return -- pipe reduces over heterogeneous function types
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   ((initial: any) => processors.reduce((acc, cb) => cb(acc), initial)) as any;
 
 interface IComparator {
@@ -142,9 +136,9 @@ interface IComparator {
 }
 
 interface IHas {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches any object shape
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   (prop: string | number | symbol, data: any): boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches any object shape
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   (prop: string | number | symbol): (data: any) => boolean;
 }
 

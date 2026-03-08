@@ -1,10 +1,13 @@
-import type { DataTransaction, DataTransactionEntry } from '@decentralchain/ts-types';
-import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
-import type { TLong, TWithPartialFee } from '../types/index.js';
+import {
+  DATA_FIELD_TYPE,
+  type DataTransaction,
+  type DataTransactionEntry,
+} from '@decentralchain/ts-types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { type TLong, type TWithPartialFee } from '../types/index.js';
 import { getCoins, map, pipe, prop } from '../utils/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const parseValueByType = (
   item: TDCCGuiDataTransactionEntry,

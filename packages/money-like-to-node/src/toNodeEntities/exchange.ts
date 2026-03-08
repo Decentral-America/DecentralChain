@@ -1,12 +1,12 @@
-import type {
-  ExchangeTransaction,
-  ExchangeTransactionOrder,
-  SignedIExchangeTransactionOrder,
+import {
+  type ExchangeTransaction,
+  type ExchangeTransactionOrder,
+  type SignedIExchangeTransactionOrder,
 } from '@decentralchain/ts-types';
-import type { TLong, TMoney, TWithPartialFee } from '../types/index.js';
 import { type TYPES } from '../constants/index.js';
-import { type IDefaultGuiTx, getDefaultTransform } from './general.js';
+import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
 import { getAssetId, getCoins } from '../utils/index.js';
+import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const getAssetPair = (data: IDCCGuiExchangeOrder) => ({
   amountAsset: getAssetId(data.amount),
