@@ -1,4 +1,4 @@
-import type { TFunction } from './types';
+import { type TFunction } from './types';
 
 const DEFAULT_TIMEOUT_MS = 30000;
 
@@ -40,7 +40,7 @@ export const defaultFetch = (url: string, options?: RequestInit): Promise<string
     });
 };
 
-export const defaultParse = (text: string): any => {
+export const defaultParse = (text: string): unknown => {
   if (typeof text !== 'string' || text.trim().length === 0) {
     throw new Error('Parse error: received empty or non-string response');
   }
@@ -53,10 +53,10 @@ export const defaultParse = (text: string): any => {
     );
   }
 };
-export const isNotString = (value: any): boolean => typeof value !== 'string';
+export const isNotString = (value: unknown): boolean => typeof value !== 'string';
 export const pipeP =
-  (...fns: TFunction<any>[]) =>
-  (...args: any[]): Promise<any> =>
+  (...fns: TFunction<unknown>[]) =>
+  (...args: unknown[]): Promise<unknown> =>
     fns.reduce((prev, fn) => prev.then(fn), Promise.resolve(args.length === 1 ? args[0] : args));
 
 /**
