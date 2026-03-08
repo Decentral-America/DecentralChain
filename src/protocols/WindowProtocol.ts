@@ -1,5 +1,26 @@
 import { EventEmitter } from '../utils/EventEmitter.js';
 
+export const PROTOCOL_TYPES = {
+  LISTEN: 'listen' as const,
+  DISPATCH: 'dispatch' as const,
+};
+
+export interface IWindow {
+  postMessage: (typeof window)['postMessage'];
+  addEventListener: (typeof window)['addEventListener'];
+  removeEventListener: (typeof window)['removeEventListener'];
+}
+
+export interface IMessageEvent<T> extends MessageEvent {
+  data: T;
+}
+
+export interface IEvents<T> {
+  message: IMessageEvent<T>;
+}
+
+export type TProtocolType = 'listen' | 'dispatch';
+
 /**
  * A protocol adapter that wraps the browser `postMessage` / `addEventListener` API.
  *
@@ -8,13 +29,13 @@ import { EventEmitter } from '../utils/EventEmitter.js';
  * broadcasts to all origins, which is unsafe for sensitive data. Use
  * {@link WindowAdapter.createSimpleWindowAdapter} which resolves the origin automatically.
  */
-export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
-  private win: WindowProtocol.IWindow;
-  private readonly handler: (event: WindowProtocol.IMessageEvent<T>) => void;
-  private readonly type: WindowProtocol.TProtocolType;
+export class WindowProtocol<T> extends EventEmitter<IEvents<T>> {
+  private win: IWindow;
+  private readonly handler: (event: IMessageEvent<T>) => void;
+  private readonly type: TProtocolType;
   private readonly targetOrigin: string;
 
-  constructor(win: WindowProtocol.IWindow, type: WindowProtocol.TProtocolType, targetOrigin = '*') {
+  constructor(win: IWindow, type: TProtocolType, targetOrigin = '*') {
     super();
 
     this.win = win;
@@ -23,7 +44,7 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
 
     // Warn developers when dispatching to wildcard origin — potential security risk
     // for financial applications. Use an explicit origin whenever possible.
-    if (type === WindowProtocol.PROTOCOL_TYPES.DISPATCH && targetOrigin === '*') {
+    if (type === PROTOCOL_TYPES.DISPATCH && targetOrigin === '*') {
       console.warn(
         '[WindowProtocol] DISPATCH protocol created with wildcard targetOrigin "*". ' +
           'This sends messages to ALL origins and may expose sensitive data. ' +
@@ -31,11 +52,11 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
       );
     }
 
-    this.handler = (event: WindowProtocol.IMessageEvent<T>) => {
+    this.handler = (event: IMessageEvent<T>) => {
       this.trigger('message', event);
     };
 
-    if (type === WindowProtocol.PROTOCOL_TYPES.LISTEN) {
+    if (type === PROTOCOL_TYPES.LISTEN) {
       this.win.addEventListener(
         'message',
         this.handler as EventListenerOrEventListenerObject,
@@ -50,7 +71,7 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
   }
 
   public destroy(): void {
-    if (this.type === WindowProtocol.PROTOCOL_TYPES.LISTEN) {
+    if (this.type === PROTOCOL_TYPES.LISTEN) {
       this.win.removeEventListener(
         'message',
         this.handler as EventListenerOrEventListenerObject,
@@ -60,36 +81,12 @@ export class WindowProtocol<T> extends EventEmitter<WindowProtocol.IEvents<T>> {
     this.win = WindowProtocol._fakeWin;
   }
 
-  private static readonly _fakeWin: WindowProtocol.IWindow = (function () {
+  private static readonly _fakeWin: IWindow = (() => {
     const empty = () => null;
     return {
-      postMessage: empty as unknown as WindowProtocol.IWindow['postMessage'],
-      addEventListener: empty as unknown as WindowProtocol.IWindow['addEventListener'],
-      removeEventListener: empty as unknown as WindowProtocol.IWindow['removeEventListener'],
+      postMessage: empty as unknown as IWindow['postMessage'],
+      addEventListener: empty as unknown as IWindow['addEventListener'],
+      removeEventListener: empty as unknown as IWindow['removeEventListener'],
     };
   })();
-}
-
-/* v8 ignore next */
-export namespace WindowProtocol {
-  export const PROTOCOL_TYPES = {
-    LISTEN: 'listen' as const,
-    DISPATCH: 'dispatch' as const,
-  };
-
-  export interface IWindow {
-    postMessage: (typeof window)['postMessage'];
-    addEventListener: (typeof window)['addEventListener'];
-    removeEventListener: (typeof window)['removeEventListener'];
-  }
-
-  export interface IMessageEvent<T> extends MessageEvent {
-    data: T;
-  }
-
-  export interface IEvents<T> {
-    message: IMessageEvent<T>;
-  }
-
-  export type TProtocolType = 'listen' | 'dispatch';
 }

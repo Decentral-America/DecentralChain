@@ -20,7 +20,7 @@ export function pipe<T, U, E, R>(
   b: (data: U) => E,
   c: (data: E) => R,
 ): (data: T) => R;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- variadic pipe requires any
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 export function pipe(...args: ((a: any) => any)[]): (data: unknown) => unknown {
   return (data) => args.reduce((acc, cb) => cb(acc), data);
 }

@@ -1,21 +1,22 @@
-export namespace config {
-  export namespace console {
-    export type TConsoleMethods = 'log' | 'info' | 'warn' | 'error';
+export type TConsoleMethods = 'log' | 'info' | 'warn' | 'error';
 
-    export const LOG_LEVEL = {
-      PRODUCTION: 0,
-      ERRORS: 1,
-      VERBOSE: 2,
-    } as const;
+export const LOG_LEVEL = {
+  PRODUCTION: 0,
+  ERRORS: 1,
+  VERBOSE: 2,
+} as const;
 
-    // eslint-disable-next-line prefer-const -- must be mutable for runtime log level configuration
-    export let logLevel: number = LOG_LEVEL.PRODUCTION;
+export const consoleConfig = {
+  LOG_LEVEL,
+  logLevel: LOG_LEVEL.PRODUCTION as number,
+  methodsData: {
+    log: { save: false, logLevel: LOG_LEVEL.VERBOSE },
+    info: { save: false, logLevel: LOG_LEVEL.VERBOSE },
+    warn: { save: true, logLevel: LOG_LEVEL.VERBOSE },
+    error: { save: true, logLevel: LOG_LEVEL.ERRORS },
+  } as Record<TConsoleMethods, { save: boolean; logLevel: number }>,
+};
 
-    export const methodsData: Record<TConsoleMethods, { save: boolean; logLevel: number }> = {
-      log: { save: false, logLevel: LOG_LEVEL.VERBOSE },
-      info: { save: false, logLevel: LOG_LEVEL.VERBOSE },
-      warn: { save: true, logLevel: LOG_LEVEL.VERBOSE },
-      error: { save: true, logLevel: LOG_LEVEL.ERRORS },
-    };
-  }
-}
+export const config = {
+  console: consoleConfig,
+};

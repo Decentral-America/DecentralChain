@@ -17,13 +17,11 @@
       WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
         const myBus = new Bus(adapter);
 
-        myBus.once('How are your?', (data) => {
-          console.log('Once event "How are your?"', data);
+        myBus.once('How are your?', (_data) => {
         });
         myBus.dispatchEvent('hi-from-iframe', IFRAME_DATA);
 
-        myBus.once('How are your, window?', (data) => {
-          console.log('Once event "How are your?"', data);
+        myBus.once('How are your, window?', (_data) => {
         });
         myBus.dispatchEvent('hi-from-window', IFRAME_DATA);
       });

@@ -1,5 +1,5 @@
 import { Signal } from 'ts-utils';
-import type { WindowProtocol } from '../../src/protocols/WindowProtocol.js';
+import { type IWindow } from '../../src/protocols/WindowProtocol.js';
 
 class Win {
   public onPostMessageRun: Signal<any> = new Signal();
@@ -28,7 +28,9 @@ class Win {
       return void 0;
     }
 
-    this._handlers[event].forEach((cb) => cb(eventData));
+    this._handlers[event].forEach((cb) => {
+      cb(eventData);
+    });
   }
 }
 
@@ -36,7 +38,7 @@ export function mockWindow<T>(): IMockWindow<T> {
   return new Win() as any;
 }
 
-export interface IMockWindow<T> extends WindowProtocol.IWindow {
+export interface IMockWindow<T> extends IWindow {
   onPostMessageRun: Signal<IPostMessageEvent<T>>;
   runEventListeners(event: string, eventData: any): void;
 }
