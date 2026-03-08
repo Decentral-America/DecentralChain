@@ -1,6 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { TRANSACTION_TYPE } from '../src/transaction-type';
-import type { TransactionType, TransactionMap } from '../src/transaction-type';
+import { describe, expect, it } from 'vitest';
+import {
+  TRANSACTION_TYPE,
+  type TransactionMap,
+  type TransactionType,
+} from '../src/transaction-type';
 
 describe('transaction-type', () => {
   it('exports all expected transaction types', () => {
