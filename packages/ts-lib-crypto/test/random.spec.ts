@@ -94,7 +94,9 @@ describe('randomSeed', () => {
     const seed = randomSeed();
     const words = seed.split(' ');
     expect(words).toHaveLength(15);
-    words.forEach((w) => expect(w.length).toBeGreaterThan(0));
+    for (const w of words) {
+      expect(w.length).toBeGreaterThan(0);
+    }
   });
 
   it('generates a seed with custom word count', () => {

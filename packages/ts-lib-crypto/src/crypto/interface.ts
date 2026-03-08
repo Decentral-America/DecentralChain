@@ -21,8 +21,15 @@ export interface INonceSeed {
 /** AES cipher mode of operation. */
 export type AESMode = 'CBC' | 'CFB' | 'CTR' | 'OFB' | 'ECB' | 'GCM';
 
-/** Supported RSA digest algorithms for signing and verification. */
+/**
+ * Supported RSA digest algorithms for signing and verification.
+ *
+ * `'NONE'` performs raw PKCS#1 v1.5 without hashing or DigestInfo wrapping —
+ * the caller-supplied bytes are signed/verified as-is. This matches the
+ * Waves/DecentralChain VM semantics for `rsaVerify(NOALG, …)`.
+ */
 export type RSADigestAlgorithm =
+  | 'NONE'
   | 'SHA224'
   | 'SHA256'
   | 'SHA384'

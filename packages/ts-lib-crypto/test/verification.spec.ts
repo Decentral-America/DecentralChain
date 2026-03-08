@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { verifyAddress, verifySignature, verifyPublicKey } from '../src/crypto/verification';
 import { address, publicKey } from '../src';
+import { verifyAddress, verifyPublicKey, verifySignature } from '../src/crypto/verification';
 
 const SEED = 'verification edge case test seed';
 

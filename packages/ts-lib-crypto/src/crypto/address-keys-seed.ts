@@ -1,20 +1,20 @@
+import { _fromIn } from '../conversions/param';
+import { Seed } from '../extensions/seed';
+import curve25519 from '../libs/curve25519';
+import { concat } from './concat-split';
+import { _hashChain, sha256 } from './hashing';
 import {
-  type TSeed,
   type INonceSeed,
+  MAIN_NET_CHAIN_ID,
+  type TBinaryIn,
   type TBytes,
   type TChainId,
-  MAIN_NET_CHAIN_ID,
-  type TPublicKey,
-  type TBinaryIn,
   type TKeyPair,
   type TPrivateKey,
+  type TPublicKey,
+  type TSeed,
 } from './interface';
-import { Seed } from '../extensions/seed';
-import { _hashChain, sha256 } from './hashing';
-import { _fromIn } from '../conversions/param';
-import { concat } from './concat-split';
-import { isPublicKey, isPrivateKey } from './util';
-import curve25519 from '../libs/curve25519';
+import { isPrivateKey, isPublicKey } from './util';
 
 /** Create a seed-with-nonce pair for deterministic key derivation. */
 export const seedWithNonce = (seed: TSeed, nonce: number): INonceSeed => ({

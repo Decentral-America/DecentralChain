@@ -1,6 +1,6 @@
-import { crypto } from '../src/crypto/crypto';
-import { base58Decode, base58Encode } from '../src/conversions/base-xx';
 import { describe, expect, it } from 'vitest';
+import { base58Decode, base58Encode } from '../src/conversions/base-xx';
+import { crypto } from '../src/crypto/crypto';
 
 describe('BLS keygen compatibility test', () => {
   it('should derive correct keys, sign and verify message', () => {
