@@ -2,7 +2,7 @@
  * useLocalStorage Hook
  * Synchronizes state with localStorage with automatic JSON serialization
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 /**

@@ -3,9 +3,10 @@
  * Helpers for creating and signing blockchain transactions
  * Uses data-service and @decentralchain/signature-adapter
  */
+
+import { SIGN_TYPE } from '@decentralchain/signature-adapter';
 import * as ds from 'data-service';
 import { logger } from '@/lib/logger';
-import { SIGN_TYPE } from '@decentralchain/signature-adapter';
 
 // Standard transaction fees in wavelets (smallest unit)
 const TRANSFER_FEE_WAVELETS = 100000; // 0.001 DCC
@@ -48,7 +49,7 @@ export interface Transaction {
   assetId?: string | null;
   attachment?: string;
   leaseId?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -59,23 +60,20 @@ export interface Transaction {
 export const createTransferTransaction = async (
   params: TransferParams,
   _seed: string,
-): Promise<any> => {
+): Promise<Record<string, unknown>> => {
   // Get the signature API from data-service
   // It should already be initialized with the user's seed via ds.app.login()
-  const signApi = (ds as any).signature.getSignatureApi();
+  const signApi = ds.signature.getSignatureApi();
 
   if (!signApi) {
     throw new Error('Signature API not initialized. Please log in again.');
   }
 
   // Convert amount to Money object using moneyFromTokens (matches Angular)
-  const amountMoney = await (ds as any).moneyFromTokens(
-    params.amount.toString(),
-    params.assetId || 'DCC',
-  );
+  const amountMoney = await ds.moneyFromTokens(params.amount.toString(), params.assetId || 'DCC');
 
   // Get the fee as Money object using wavelets (smallest unit)
-  const feeMoney = await (ds as any).moneyFromCoins(TRANSFER_FEE_WAVELETS, 'DCC');
+  const feeMoney = await ds.moneyFromCoins(TRANSFER_FEE_WAVELETS, 'DCC');
 
   // Convert attachment string to bytes array using TextEncoder (standard browser API)
   const attachmentBytes = params.attachment
@@ -110,8 +108,8 @@ export const createTransferTransaction = async (
   // getDataForApi() returns them as strings, so we need to convert them
   const txForBroadcast = {
     ...preparedTx,
-    amount: parseInt(preparedTx.amount, 10),
-    fee: parseInt(preparedTx.fee, 10),
+    amount: parseInt(String(preparedTx.amount), 10),
+    fee: parseInt(String(preparedTx.fee), 10),
   };
 
   return txForBroadcast;
@@ -120,16 +118,19 @@ export const createTransferTransaction = async (
 /**
  * Create and sign a lease transaction using data-service signature adapter
  */
-export const createLeaseTransaction = async (params: LeaseParams, _seed: string): Promise<any> => {
-  const signApi = (ds as any).signature.getSignatureApi();
+export const createLeaseTransaction = async (
+  params: LeaseParams,
+  _seed: string,
+): Promise<Record<string, unknown>> => {
+  const signApi = ds.signature.getSignatureApi();
 
   if (!signApi) {
     throw new Error('Signature API not initialized. Please log in again.');
   }
 
   // Convert amount and fee to Money objects
-  const amount = await (ds as any).moneyFromCoins(params.amount, 'DCC');
-  const fee = await (ds as any).moneyFromCoins(params.fee || 100000, 'DCC');
+  const amount = await ds.moneyFromCoins(params.amount, 'DCC');
+  const fee = await ds.moneyFromCoins(params.fee || 100000, 'DCC');
 
   const signable = signApi.makeSignable({
     type: SIGN_TYPE.LEASE,
@@ -153,8 +154,8 @@ export const createLeaseTransaction = async (params: LeaseParams, _seed: string)
 export const createCancelLeaseTransaction = async (
   leaseId: string,
   _seed: string,
-): Promise<any> => {
-  const signApi = (ds as any).signature.getSignatureApi();
+): Promise<Record<string, unknown>> => {
+  const signApi = ds.signature.getSignatureApi();
 
   if (!signApi) {
     throw new Error('Signature API not initialized. Please log in again.');
@@ -179,10 +180,10 @@ export const createCancelLeaseTransaction = async (
  * Create and sign an alias transaction using data-service signature adapter
  */
 export const createAliasTransaction = async (
-  params: { alias: string; fee: any },
+  params: { alias: string; fee: number },
   _seed: string,
-): Promise<any> => {
-  const signApi = (ds as any).signature.getSignatureApi();
+): Promise<Record<string, unknown>> => {
+  const signApi = ds.signature.getSignatureApi();
 
   if (!signApi) {
     throw new Error('Signature API not initialized. Please log in again.');
@@ -253,12 +254,14 @@ export const createAliasTransaction = async (
  * Broadcast a signed transaction to the blockchain
  * Using native fetch instead of ds.broadcast() to avoid stringifyJSON dependency
  */
-export const broadcastTransaction = async (tx: any): Promise<{ id: string }> => {
+export const broadcastTransaction = async (
+  tx: Record<string, unknown>,
+): Promise<{ id: string }> => {
   // SECURITY: Never log transaction data in production (contains signatures/proofs)
 
   try {
     // Get the node URL from data-service config
-    const nodeUrl = (ds as any).config.get('node');
+    const nodeUrl = ds.config.get('node');
 
     // SECURITY: Enforce HTTPS for transaction broadcasts in production
     const isProd = import.meta.env.PROD;
@@ -283,7 +286,7 @@ export const broadcastTransaction = async (tx: any): Promise<{ id: string }> => 
     if (!response.ok) {
       const errorText = await response.text();
 
-      let error;
+      let error: { message: string } | Record<string, unknown>;
       try {
         error = JSON.parse(errorText);
       } catch {
@@ -295,7 +298,7 @@ export const broadcastTransaction = async (tx: any): Promise<{ id: string }> => 
 
     const result = await response.json();
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('[broadcastTransaction] Broadcast failed:', error);
     throw error;
   }

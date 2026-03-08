@@ -2,12 +2,12 @@
  * Transaction Notification Monitor
  * Listens for incoming transactions and displays toast notifications
  */
-import { useEffect, useCallback } from 'react';
-import { logger } from '@/lib/logger';
-import { useIncomingTransactions, type TransactionNotification } from '@/features/wallet';
-import { useToast } from '@/contexts/ToastContext';
-import { useAssetDetails } from '@/hooks/useAssetDetails';
+import { useCallback, useEffect } from 'react';
 import { config } from '@/config';
+import { useToast } from '@/contexts/ToastContext';
+import { type TransactionNotification, useIncomingTransactions } from '@/features/wallet';
+import { useAssetDetails } from '@/hooks/useAssetDetails';
+import { logger } from '@/lib/logger';
 
 /**
  * Format amount for notification display
@@ -15,7 +15,7 @@ import { config } from '@/config';
 const formatNotificationAmount = (amount: number | undefined, decimals: number): string => {
   if (!amount) return '0';
 
-  const divisor = Math.pow(10, decimals);
+  const divisor = 10 ** decimals;
   const value = amount / divisor;
 
   // Show up to 8 decimal places, but remove trailing zeros

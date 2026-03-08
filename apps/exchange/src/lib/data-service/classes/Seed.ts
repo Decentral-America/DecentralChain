@@ -1,17 +1,21 @@
 import { Adapter } from '@decentralchain/signature-adapter';
 import {
-  randomSeed,
   address as buildAddress,
   keyPair as buildKeyPair,
-  encryptSeed,
   decryptSeed,
+  encryptSeed,
+  randomSeed,
 } from '@decentralchain/ts-lib-crypto';
 
 // Use DCC network code (87 = 'W')
 // In Angular app, this was: window.DCCApp.network.code.charCodeAt(0)
 // For React app, we use the DCC mainnet default
 const networkCode =
-  (typeof window !== 'undefined' && (window as any).DCCApp?.network?.code?.charCodeAt(0)) || 63;
+  (typeof window !== 'undefined' &&
+    (
+      window as Window & { DCCApp?: { network?: { code?: string } } }
+    ).DCCApp?.network?.code?.charCodeAt(0)) ||
+  63;
 
 Adapter.initOptions({ networkCode });
 

@@ -1,28 +1,29 @@
-import { useEffect } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import './App.css';
-import { queryClient } from '@/lib/react-query';
 import { config } from '@/config';
 import {
   AuthProvider,
-  ThemeProvider,
   ConfigProvider,
-  ToastProvider,
-  SettingsProvider,
   LedgerProvider,
+  SettingsProvider,
+  ThemeProvider,
+  ToastProvider,
 } from '@/contexts';
+import { queryClient } from '@/lib/react-query';
 import { GlobalStyles as GlobalStylesBase } from '@/styles';
 
 // React 19 type compatibility cast
-const GlobalStyles = GlobalStylesBase as React.ComponentType<any>;
-import { router } from '@/routes';
+const GlobalStyles = GlobalStylesBase as React.ComponentType<Record<string, unknown>>;
+
 import { AnnouncementProvider } from '@/components/a11y';
-import { initAnalytics } from '@/lib/analytics';
-import { initErrorMonitoring, ErrorBoundary } from '@/lib/errorMonitoring';
-import { initPerformanceMonitoring } from '@/lib/performanceMonitoring';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
+import { initAnalytics } from '@/lib/analytics';
+import { ErrorBoundary, initErrorMonitoring } from '@/lib/errorMonitoring';
+import { initPerformanceMonitoring } from '@/lib/performanceMonitoring';
+import { router } from '@/routes';
 
 function AppContent() {
   // Initialize analytics on mount

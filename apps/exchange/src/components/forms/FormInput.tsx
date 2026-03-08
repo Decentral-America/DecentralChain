@@ -4,13 +4,11 @@
  * Provides automatic field registration, validation, and error display
  */
 import React from 'react';
-import { useFormContext, type FieldValues, type Path, type RegisterOptions } from 'react-hook-form';
+import { type FieldValues, type Path, type RegisterOptions, useFormContext } from 'react-hook-form';
 import { Input, type InputProps } from '@/components/atoms/Input';
 
-export interface FormInputProps<TFieldValues extends FieldValues = FieldValues> extends Omit<
-  InputProps,
-  'name' | 'error'
-> {
+export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
+  extends Omit<InputProps, 'name' | 'error'> {
   /**
    * Field name (must match schema key)
    */
@@ -31,8 +29,8 @@ export interface FormInputProps<TFieldValues extends FieldValues = FieldValues> 
    * Transform value before submission
    */
   transform?: {
-    input?: (value: any) => any;
-    output?: (value: any) => any;
+    input?: (value: string) => string;
+    output?: (value: string) => string;
   };
 
   /**
@@ -133,13 +131,13 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       // Trim whitespace if enabled
       if (trimOnBlur && typeof value === 'string') {
         value = value.trim();
-        setValue(name, value as any, { shouldValidate: validateOnBlur });
+        setValue(name, value as TFieldValues[typeof name], { shouldValidate: validateOnBlur });
       }
 
       // Apply output transformation
       if (transform?.output) {
         value = transform.output(value);
-        setValue(name, value as any, { shouldValidate: validateOnBlur });
+        setValue(name, value as TFieldValues[typeof name], { shouldValidate: validateOnBlur });
       }
 
       // Trigger validation on blur if enabled
@@ -181,16 +179,16 @@ export function FormNumberInput<TFieldValues extends FieldValues = FieldValues>(
       {...props}
       type="number"
       transform={{
-        input: (value: any) => {
+        input: (value: string) => {
           // Allow empty string
           if (value === '') return '';
           // Convert to number
           const num = parseFloat(value);
-          return isNaN(num) ? '' : num;
+          return Number.isNaN(num) ? '' : String(num);
         },
-        output: (value: any) => {
+        output: (value: string) => {
           const num = parseFloat(value);
-          return isNaN(num) ? undefined : num;
+          return Number.isNaN(num) ? '' : String(num);
         },
       }}
     />

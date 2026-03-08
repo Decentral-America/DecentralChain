@@ -3,9 +3,10 @@
  * Cached polling hook with smart cache invalidation using React Query
  * Provides automatic caching, stale-time management, and background refetching
  */
+
+import { type UseQueryResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { logger } from '@/lib/logger';
-import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 
 /**
  * Poll Cache Configuration Options

@@ -4,10 +4,11 @@
  * Replaces Angular w-button directive
  * Migrated to Material-UI
  */
-import React from 'react';
+
 import MuiButton, { type ButtonProps as MuiButtonProps } from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
   variant?: 'primary' | 'secondary' | 'text' | 'danger' | 'success';

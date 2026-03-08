@@ -2,29 +2,31 @@
  * ReceiveAssetModalModern Component
  * Modern MUI-based modal showing user's address and QR code for receiving assets
  */
-import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Typography,
-  Card,
-  Stack,
-  IconButton,
-  Alert,
-} from '@mui/material';
+
 import {
   Close as CloseIcon,
-  CallReceived as ReceiveIcon,
   ContentCopy as CopyIcon,
+  CallReceived as ReceiveIcon,
 } from '@mui/icons-material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
+import type React from 'react';
 
 // React 19 type compatibility cast
-const QRCodeSVG = QRCodeSVGBase as React.ComponentType<any>;
+const QRCodeSVG = QRCodeSVGBase as React.ComponentType<Record<string, unknown>>;
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 

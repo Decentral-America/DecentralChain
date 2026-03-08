@@ -4,15 +4,16 @@
  * Allows users to specify price, amount, and automatically calculates total
  * Mirrors SellOrderForm structure for consistency
  */
-import React, { useState, useEffect, useMemo } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Input } from '@/components/atoms/Input';
-import { Button } from '@/components/atoms/Button';
-import { useDexStore } from '@/stores/dexStore';
-import { useAuth } from '@/contexts/AuthContext';
-import { usePlaceOrder, useMatcherSettings } from '@/api/services/matcherService';
 import { useAssetBalance } from '@/api/services/assetsService';
+import { useMatcherSettings, usePlaceOrder } from '@/api/services/matcherService';
+import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
+import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Form container
@@ -168,7 +169,7 @@ const PercentageButton = styled.button<{ $isActive?: boolean }>`
   transition: all 0.2s;
 
   &:hover {
-    background: ${(p) => (p.$isActive ? p.theme.colors.success : p.theme.colors.success + '20')};
+    background: ${(p) => (p.$isActive ? p.theme.colors.success : `${p.theme.colors.success}20`)};
     border-color: ${(p) => p.theme.colors.success};
   }
 
@@ -283,12 +284,12 @@ export const BuyOrderForm: React.FC = () => {
     const priceNum = parseFloat(price);
     const amountNum = parseFloat(amount);
 
-    if (!price || isNaN(priceNum) || priceNum <= 0) {
+    if (!price || Number.isNaN(priceNum) || priceNum <= 0) {
       setError('Please enter a valid price');
       return false;
     }
 
-    if (!amount || isNaN(amountNum) || amountNum <= 0) {
+    if (!amount || Number.isNaN(amountNum) || amountNum <= 0) {
       setError('Please enter a valid amount');
       return false;
     }

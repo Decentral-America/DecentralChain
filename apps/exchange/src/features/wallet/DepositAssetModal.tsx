@@ -3,14 +3,15 @@
  * Modal for depositing crypto assets via gateway services
  * Matches Angular modalManager.showDepositAsset functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
+
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
-import gatewayService from '@/services/gateways/GatewayService';
 import { logger } from '@/lib/logger';
+import gatewayService from '@/services/gateways/GatewayService';
 
 interface DepositAssetModalProps {
   isOpen: boolean;

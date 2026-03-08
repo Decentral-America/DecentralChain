@@ -2,57 +2,58 @@
  * Main Layout
  * Modern container for authenticated routes with responsive navigation
  */
-import { useState } from 'react';
-import { logger } from '@/lib/logger';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+
 import {
-  Box,
+  AccountBalanceWallet,
+  AccountCircle,
+  AddCircleOutline,
+  Apps,
+  Badge,
+  ContentCopy,
+  Inventory2Outlined,
+  Logout,
+  Menu as MenuIcon,
+  QueryStats,
+  ReceiptLong,
+  Settings,
+  ShowChart,
+  SwapHoriz,
+  Timeline,
+} from '@mui/icons-material';
+import {
+  Alert,
   AppBar,
-  Toolbar,
+  Avatar,
+  Box,
+  Chip,
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  IconButton,
-  Typography,
-  Chip,
-  Avatar,
-  useTheme,
-  useMediaQuery,
-  styled,
-  Divider,
   Menu,
   MenuItem,
-  Stack,
   Snackbar,
-  Alert,
+  Stack,
+  styled,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
-import {
-  Menu as MenuIcon,
-  Settings,
-  AccountCircle,
-  Apps,
-  Inventory2Outlined,
-  ReceiptLong,
-  Timeline,
-  ShowChart,
-  QueryStats,
-  AddCircleOutline,
-  SwapHoriz,
-  AccountBalanceWallet,
-  Badge,
-  ContentCopy,
-  Logout,
-} from '@mui/icons-material';
-import { usePageTracking } from '@/hooks/useAnalytics';
+import { useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { TransactionNotificationsMonitor } from '@/components/notifications/TransactionNotificationsMonitor';
-import { useRoutePerformance } from '@/hooks/usePerformanceMonitoring';
-import { useRouteStateTracking } from '@/hooks/useRouteStateTracking';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { usePageTracking } from '@/hooks/useAnalytics';
+import { useRoutePerformance } from '@/hooks/usePerformanceMonitoring';
+import { useRouteStateTracking } from '@/hooks/useRouteStateTracking';
+import { logger } from '@/lib/logger';
 
 const DRAWER_WIDTH = 260;
 

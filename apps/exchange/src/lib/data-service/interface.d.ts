@@ -21,13 +21,9 @@ export type TLeasingStatus = 'active' | 'canceled';
 export type TBigNumberData = string | number | BigNumber;
 export type TAssetData = Asset | string;
 
-export interface IMoneyFactory {
-  (data: string | number | BigNumber, asset: Asset): Money;
-}
+export type IMoneyFactory = (data: string | number | BigNumber, asset: Asset) => Money;
 
-export interface IPriceMoneyFactory {
-  (data: string | number | BigNumber, pair: AssetPair): Money;
-}
+export type IPriceMoneyFactory = (data: string | number | BigNumber, pair: AssetPair) => Money;
 
 export interface ITokenRating {
   assetId: string;

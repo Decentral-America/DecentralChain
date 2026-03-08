@@ -3,11 +3,12 @@
  * Wrapper for react-icons with consistent styling
  * Compatible with Material-UI
  */
-import React from 'react';
+
 import { styled } from '@mui/material/styles';
-import * as MdIcons from 'react-icons/md'; // Material Design
+import React from 'react';
 import * as FaIcons from 'react-icons/fa'; // Font Awesome
 import * as FiIcons from 'react-icons/fi'; // Feather Icons
+import * as MdIcons from 'react-icons/md'; // Material Design
 import { logger } from '@/lib/logger';
 
 type MaterialIcons = keyof typeof MdIcons;

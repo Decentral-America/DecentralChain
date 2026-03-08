@@ -3,22 +3,24 @@
  * Send tokens to multiple recipients in a single transaction
  * Supports up to 100 recipients with batch optimization
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm, useFieldArray } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import type React from 'react';
+import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import { z } from 'zod';
-import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
-import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card as any)`
+const FormCard = styled(Card as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 900px;
   margin: 0 auto;
@@ -52,7 +54,7 @@ const RecipientsContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
-const RecipientCard = styled(Card as any)`
+const RecipientCard = styled(Card as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.md};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -71,7 +73,7 @@ const RecipientTitle = styled.div`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const RemoveButton = styled(Button as any)`
+const RemoveButton = styled(Button as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   font-size: 12px;
 `;
@@ -97,7 +99,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const AddButton = styled(Button as any)`
+const AddButton = styled(Button as React.ComponentType)`
   width: 100%;
   max-width: 200px;
 `;
@@ -157,7 +159,7 @@ const transferRecipientSchema = z.object({
     .regex(/^3[A-Za-z0-9]{34}$/, 'Must be a valid DecentralChain address'),
   amount: z.string().refine((val) => {
     const num = parseFloat(val);
-    return !isNaN(num) && num > 0;
+    return !Number.isNaN(num) && num > 0;
   }, 'Amount must be greater than 0'),
 });
 
@@ -187,7 +189,7 @@ type MassTransferFormData = z.infer<typeof massTransferSchema>;
 export const MassTransferForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<any>(null);
+  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
 
   const {
     register,
@@ -217,7 +219,7 @@ export const MassTransferForm: React.FC = () => {
   // Calculate total amount
   const totalAmount = transfers.reduce((sum, transfer) => {
     const amount = parseFloat(transfer.amount || '0');
-    return sum + (isNaN(amount) ? 0 : amount);
+    return sum + (Number.isNaN(amount) ? 0 : amount);
   }, 0);
 
   const handleAddRecipient = () => {
@@ -285,14 +287,10 @@ export const MassTransferForm: React.FC = () => {
 
         <InfoBox>
           <strong>💡 Mass Transfer Benefits:</strong>
-          <br />
-          • Lower fees compared to individual transfers
-          <br />
-          • Single transaction for multiple recipients (2-100)
-          <br />
-          • Fee: 0.001 DCC + 0.0005 DCC per recipient
-          <br />
-          • Supports DCC and custom tokens
+          <br />• Lower fees compared to individual transfers
+          <br />• Single transaction for multiple recipients (2-100)
+          <br />• Fee: 0.001 DCC + 0.0005 DCC per recipient
+          <br />• Supports DCC and custom tokens
           <br />• Optional attachment message (max 140 characters)
         </InfoBox>
 

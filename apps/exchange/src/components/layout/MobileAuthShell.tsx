@@ -4,9 +4,10 @@
  * Shows a sticky top bar with back button (left) and an action link (right).
  * Only renders on mobile (<md). Desktop uses the standard 2-column layout.
  */
-import React from 'react';
-import { Box, IconButton, Button, useMediaQuery, useTheme } from '@mui/material';
+
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { Box, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface MobileAuthShellProps {

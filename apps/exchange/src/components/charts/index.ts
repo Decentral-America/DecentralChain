@@ -1,16 +1,15 @@
 // Export all chart components from this directory
+
+export type { AssetRateChartProps, DataPoint } from './AssetRateChart';
+export { AssetRateChart, AssetRateChartCompact, AssetRateChartSmall } from './AssetRateChart';
+export type { ChartPlateProps } from './ChartPlate';
+export { ChartPlate, ChartPlateBordered, ChartPlateCompact, ChartPlateFlat } from './ChartPlate';
+export type { CircleChartProps, MultiCircleChartProps, MultiCircleChartValue } from './CircleChart';
 export {
   CircleChart,
-  CircleChartSmall,
-  CircleChartMedium,
   CircleChartLarge,
+  CircleChartMedium,
+  CircleChartSmall,
   CircleChartWithPercentage,
   MultiCircleChart,
 } from './CircleChart';
-export type { CircleChartProps, MultiCircleChartValue, MultiCircleChartProps } from './CircleChart';
-
-export { AssetRateChart, AssetRateChartSmall, AssetRateChartCompact } from './AssetRateChart';
-export type { AssetRateChartProps, DataPoint } from './AssetRateChart';
-
-export { ChartPlate, ChartPlateCompact, ChartPlateBordered, ChartPlateFlat } from './ChartPlate';
-export type { ChartPlateProps } from './ChartPlate';

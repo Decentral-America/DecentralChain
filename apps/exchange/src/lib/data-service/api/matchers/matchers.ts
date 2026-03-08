@@ -1,6 +1,6 @@
+import { get } from '../../config';
 import { request } from '../../utils/request';
 import { stringifyJSON } from '../../utils/utils';
-import { get } from '../../config';
 
 export function getRates(matcherAddress: string, pairs: string[][]) {
   return request({

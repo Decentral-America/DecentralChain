@@ -1,5 +1,5 @@
-import { request } from '../../utils/request';
 import { get } from '../../config';
+import { request } from '../../utils/request';
 
 export function getFeeRates() {
   return request({

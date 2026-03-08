@@ -177,7 +177,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
             }
             required={placeholder ? true : undefined}
-            {...(props as any)}
+            {...(props as Record<string, unknown>)}
           >
             {placeholder && (
               <option value="" disabled selected>

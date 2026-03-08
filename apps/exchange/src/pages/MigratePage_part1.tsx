@@ -1,35 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Checkbox,
-  FormControlLabel,
+  ArrowForward as ArrowForwardIcon,
+  HelpOutline as HelpIcon,
+  Security as SecurityIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+import {
   Alert,
-  IconButton,
+  Box,
+  Button,
+  Checkbox,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fade,
+  FormControlLabel,
+  Grow,
+  IconButton,
   List,
   ListItem,
-  Fade,
-  Grow,
+  Paper,
   Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
   Tooltip,
+  Typography,
 } from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
-import {
-  Warning as WarningIcon,
-  HelpOutline as HelpIcon,
-  ArrowForward as ArrowForwardIcon,
-  Security as SecurityIcon,
-} from '@mui/icons-material';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 enum MigrationStep {
   WARNING = 0,
@@ -126,6 +127,44 @@ export const MigratePage: React.FC = () => {
   });
   const [isVisible, setIsVisible] = useState(false);
 
+  const handleGenerateNewAccount = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const mockWords = [
+        'abandon',
+        'ability',
+        'able',
+        'about',
+        'above',
+        'absent',
+        'absorb',
+        'abstract',
+        'absurd',
+        'abuse',
+        'access',
+        'accident',
+        'account',
+        'accuse',
+        'achieve',
+      ];
+      setNewSeed(mockWords);
+      setNewAddress(`3P${'B'.repeat(33)}`);
+
+      setSnackbar({
+        open: true,
+        message: 'New account generated successfully',
+        severity: 'success',
+      });
+    } catch {
+      setSnackbar({ open: true, message: 'Failed to generate new account', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     setIsVisible(true);
 
@@ -157,49 +196,11 @@ export const MigratePage: React.FC = () => {
     }
   }, [activeStep]);
 
-  const handleGenerateNewAccount = async () => {
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const mockWords = [
-        'abandon',
-        'ability',
-        'able',
-        'about',
-        'above',
-        'absent',
-        'absorb',
-        'abstract',
-        'absurd',
-        'abuse',
-        'access',
-        'accident',
-        'account',
-        'accuse',
-        'achieve',
-      ];
-      setNewSeed(mockWords);
-      setNewAddress('3P' + 'B'.repeat(33));
-
-      setSnackbar({
-        open: true,
-        message: 'New account generated successfully',
-        severity: 'success',
-      });
-    } catch {
-      setSnackbar({ open: true, message: 'Failed to generate new account', severity: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (activeStep === MigrationStep.GENERATE_NEW && newSeed.length === 0) {
       handleGenerateNewAccount();
     }
-  }, [activeStep, newSeed.length]);
+  }, [activeStep, newSeed.length, handleGenerateNewAccount]);
 
   const steps = [
     'Backup Warning',

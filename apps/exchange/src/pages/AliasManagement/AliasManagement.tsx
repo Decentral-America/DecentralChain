@@ -2,26 +2,27 @@
  * Alias Management Page
  * View and manage all aliases for the user's address
  */
-import { useState } from 'react';
+
+import AddIcon from '@mui/icons-material/Add';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
+  Alert,
   Box,
-  Container,
-  Typography,
   Button,
   Card,
   CardContent,
-  Stack,
-  IconButton,
-  Alert,
   Chip,
   CircularProgress,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
 } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AddIcon from '@mui/icons-material/Add';
+import { useState } from 'react';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAliases } from '@/hooks/useAliases';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { logger } from '@/lib/logger';
 
 export const AliasManagement = () => {

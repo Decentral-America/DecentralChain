@@ -42,7 +42,7 @@ export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[
       .catch(() => null);
   }
   if (key === 'matcher') {
-    matcherSettingsPromise = request<any>({
+    matcherSettingsPromise = request<unknown>({
       url: `${value}/settings`,
     }).then((data) => data.priceAssets);
   }

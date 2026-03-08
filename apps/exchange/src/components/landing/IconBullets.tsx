@@ -1,10 +1,10 @@
-import { Box, Container, Grid, Stack, Avatar, Typography } from '@mui/material';
-import SecurityIcon from '@mui/icons-material/Security';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import StorageIcon from '@mui/icons-material/Storage';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import ShieldIcon from '@mui/icons-material/Shield';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import SecurityIcon from '@mui/icons-material/Security';
+import ShieldIcon from '@mui/icons-material/Shield';
+import StorageIcon from '@mui/icons-material/Storage';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Avatar, Box, Container, Grid, Stack, Typography } from '@mui/material';
 
 const bullets = [
   {

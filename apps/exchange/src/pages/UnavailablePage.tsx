@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { CheckCircle, Home, Refresh, Warning } from '@mui/icons-material';
 import {
   Box,
-  Typography,
   Button,
-  Paper,
+  Fade,
+  keyframes,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
   styled,
+  Typography,
   useTheme,
-  Fade,
-  keyframes,
 } from '@mui/material';
-import { Warning, Refresh, Home, CheckCircle } from '@mui/icons-material';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * UnavailablePage Component
@@ -160,8 +161,8 @@ export const UnavailablePage: React.FC = () => {
               Supported Browsers:
             </Typography>
             <List dense sx={{ pt: 1 }}>
-              {browsers.map((browser, index) => (
-                <ListItem key={index} disablePadding sx={{ py: 0.5 }}>
+              {browsers.map((browser) => (
+                <ListItem key={browser} disablePadding sx={{ py: 0.5 }}>
                   <ListItemIcon sx={{ minWidth: 36 }}>
                     <CheckCircle
                       sx={{

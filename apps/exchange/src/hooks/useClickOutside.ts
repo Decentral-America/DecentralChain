@@ -1,4 +1,4 @@
-import { useEffect, type RefObject, useCallback } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 
 /**
  * Options for customizing click-outside behavior
@@ -86,7 +86,7 @@ export function useClickOutside<T extends HTMLElement>(
 
       // Check if click is inside any excluded refs
       for (const excludeRef of excludeRefs) {
-        if (excludeRef.current && excludeRef.current.contains(target)) {
+        if (excludeRef.current?.contains(target)) {
           return;
         }
       }

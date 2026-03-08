@@ -4,13 +4,11 @@
  * Provides automatic field registration, validation, and error display for dropdowns
  */
 import React from 'react';
-import { useFormContext, type FieldValues, type Path, type RegisterOptions } from 'react-hook-form';
+import { type FieldValues, type Path, type RegisterOptions, useFormContext } from 'react-hook-form';
 import { Select, type SelectOption, type SelectProps } from '@/components/atoms/Select';
 
-export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues> extends Omit<
-  SelectProps,
-  'name' | 'error' | 'options'
-> {
+export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
+  extends Omit<SelectProps, 'name' | 'error' | 'options'> {
   /**
    * Field name (must match schema key)
    */
@@ -36,8 +34,8 @@ export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
    * Transform value before submission
    */
   transform?: {
-    input?: (value: any) => any;
-    output?: (value: any) => any;
+    input?: (value: string) => string;
+    output?: (value: string) => string;
   };
 
   /**
@@ -99,7 +97,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
 
       // Handle empty value
       if (value === '' && !allowEmpty) {
-        value = undefined as any;
+        value = undefined as unknown as string;
       }
 
       // Apply input transformation
@@ -124,7 +122,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       // Apply output transformation
       if (transform?.output) {
         value = transform.output(value);
-        setValue(name, value as any, { shouldValidate: validateOnBlur });
+        setValue(name, value as TFieldValues[typeof name], { shouldValidate: validateOnBlur });
       }
 
       // Trigger validation on blur if enabled

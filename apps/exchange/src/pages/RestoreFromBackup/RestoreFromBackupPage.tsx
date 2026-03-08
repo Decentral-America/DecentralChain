@@ -3,37 +3,39 @@
  * Restores wallet from encrypted backup file
  * Matches Angular fromBackup/restore module functionality
  */
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Paper,
+  AccountCircle,
+  CheckCircle,
+  CloudUpload,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
+import {
   Alert,
   AlertTitle,
-  Stepper,
-  Step,
-  StepLabel,
+  Box,
+  Container,
+  Fade,
+  keyframes,
   LinearProgress,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Fade,
+  Paper,
   Slide,
+  Step,
+  StepLabel,
+  Stepper,
+  TextField,
+  Typography,
   useTheme,
-  keyframes,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import {
-  CloudUpload,
-  CheckCircle,
-  AccountCircle,
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
@@ -155,7 +157,7 @@ interface WalletBackup {
       name?: string;
       userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
     }>;
-    settings?: any;
+    settings?: Record<string, unknown>;
     checksum: string;
   };
 }
@@ -200,18 +202,7 @@ export const RestoreFromBackupPage: React.FC = () => {
     e.stopPropagation();
   };
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      handleFileSelect(files[0]!);
-    }
-  }, []);
-
-  const handleFileSelect = async (file: File) => {
+  const handleFileSelect = useCallback(async (file: File) => {
     setError('');
 
     // Validate file type
@@ -236,16 +227,30 @@ export const RestoreFromBackupPage: React.FC = () => {
       setError('Invalid backup file. Please check the file and try again.');
       logger.error('Backup parse error:', err);
     }
-  };
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragActive(false);
+
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0 && files[0]) {
+        handleFileSelect(files[0]);
+      }
+    },
+    [handleFileSelect],
+  );
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileSelect(files[0]!);
+    if (files && files.length > 0 && files[0]) {
+      handleFileSelect(files[0]);
     }
   };
 
-  const decryptBackup = async (encryptedData: string, password: string): Promise<any> => {
+  const decryptBackup = async (encryptedData: string, password: string): Promise<unknown> => {
     try {
       // This should match Angular's decryption exactly
       // Using crypto.subtle with PBKDF2 + AES-GCM (same as Angular)

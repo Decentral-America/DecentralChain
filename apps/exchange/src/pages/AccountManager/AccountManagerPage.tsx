@@ -4,12 +4,12 @@
  * Switch between accounts without re-entering password (vault remains unlocked)
  * Matches Angular's account management functionality
  */
-import { useState, useEffect } from 'react';
-import { logger } from '@/lib/logger';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 
 const PageContainer = styled.div`

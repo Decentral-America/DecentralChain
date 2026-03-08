@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 
 /**
@@ -279,7 +279,7 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
 
         return (
           <Svg
-            key={index}
+            key={radius}
             width={size}
             height={size}
             style={{ position: 'absolute' }}

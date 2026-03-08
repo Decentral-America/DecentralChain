@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import { logger } from '@/lib/logger';
 
 /**
@@ -127,7 +128,7 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
       const numValue = typeof value === 'string' ? parseFloat(value) : value;
 
       // Check for invalid numbers
-      if (isNaN(numValue) || !isFinite(numValue)) {
+      if (Number.isNaN(numValue) || !Number.isFinite(numValue)) {
         return '0';
       }
 
@@ -179,7 +180,7 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
 
       // Handle rounding mode (only supported in newer browsers)
       if (roundingMode) {
-        (options as any).roundingMode = roundingMode;
+        (options as Record<string, unknown>).roundingMode = roundingMode;
       }
 
       // Create formatter and format number

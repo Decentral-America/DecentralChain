@@ -4,11 +4,11 @@
  * Tests that the API client validates base URLs use HTTPS in production
  * to prevent Man-in-the-Middle attacks on financial API calls.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('API Client HTTPS Enforcement', () => {
   // Test the validateBaseURL logic directly
-  // since creating the full axios client requires more setup
+  // since creating the full HTTP client requires more setup
 
   const createValidator = (isProd: boolean) => {
     return (url: string): string => {

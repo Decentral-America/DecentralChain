@@ -1,7 +1,7 @@
-import { request } from '../../utils/request';
-import { get as configGet } from '../../config';
-import { get } from '../assets/assets';
 import { Money } from '@decentralchain/data-entities';
+import { get as configGet } from '../../config';
+import { request } from '../../utils/request';
+import { get } from '../assets/assets';
 
 export function getScriptInfo(address: string): Promise<IScriptInfo<Money>> {
   return Promise.all([

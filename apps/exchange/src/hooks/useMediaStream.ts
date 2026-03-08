@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
@@ -317,7 +317,9 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
 
       if (!isMountedRef.current) {
         // Component unmounted during async operation
-        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
         return null;
       }
 
@@ -568,7 +570,9 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
 
   const stopCapture = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
       streamRef.current = null;
       setStream(null);
       setIsActive(false);

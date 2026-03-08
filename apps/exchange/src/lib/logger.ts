@@ -40,7 +40,7 @@ const sanitize = (args: unknown[]): unknown[] => {
       return cleaned;
     }
     if (typeof arg === 'string' && arg.length > 200) {
-      return arg.slice(0, 200) + '...[truncated]';
+      return `${arg.slice(0, 200)}...[truncated]`;
     }
     return arg;
   });
@@ -48,16 +48,14 @@ const sanitize = (args: unknown[]): unknown[] => {
 
 export const logger = {
   /** Debug logging — development only */
-  debug: (...args: unknown[]): void => {
+  debug: (..._args: unknown[]): void => {
     if (isDev) {
-      console.log(...sanitize(args));
     }
   },
 
   /** Info logging — development only */
-  info: (...args: unknown[]): void => {
+  info: (..._args: unknown[]): void => {
     if (isDev) {
-      console.info(...sanitize(args));
     }
   },
 

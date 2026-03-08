@@ -1,5 +1,5 @@
-import { Box, Button, Container, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Box, Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ctaGradientStyles } from '../../theme/landingTheme';
 

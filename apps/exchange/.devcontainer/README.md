@@ -12,7 +12,7 @@ This project uses VS Code Dev Containers to provide a consistent development env
 
 ### Pre-configured Tools
 
-- ESLint + Prettier for code quality
+- Biome for code quality
 - TypeScript language server
 - Git + GitHub CLI
 - styled-components syntax highlighting

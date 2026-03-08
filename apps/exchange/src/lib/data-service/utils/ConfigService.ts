@@ -1,6 +1,6 @@
-import { fetch } from '../';
-import { Signal, getPaths, get, clone } from 'ts-utils';
 import { BigNumber } from '@decentralchain/bignumber';
+import { clone, get, getPaths, Signal } from 'ts-utils';
+import { fetch } from '../';
 
 interface IFeeItem<T> {
   add_smart_asset_fee: boolean;
@@ -16,9 +16,21 @@ interface IFeeConfig<T> {
 }
 
 interface IConfig {
-  PERMISSIONS: Record<any, any>;
-  SETTINGS: Record<any, any> & { DEX: Record<any, any> & { WATCH_LIST_PAIRS: Array<string> } } & {};
+  PERMISSIONS: Record<string, unknown>;
+  SETTINGS: Record<string, unknown> & {
+    DEX: Record<string, unknown> & { WATCH_LIST_PAIRS: Array<string> };
+  } & {};
   SERVICE_TEMPORARILY_UNAVAILABLE: boolean;
+}
+
+interface IDCCApp {
+  network: {
+    featuresConfigUrl: string;
+    featuresConfig: IConfig;
+    feeConfigUrl: string;
+    feeConfig: IFeeConfig<BigNumber>;
+  };
+  parseJSON: (data: unknown) => unknown;
 }
 
 export class ConfigService {
@@ -26,17 +38,22 @@ export class ConfigService {
 
   protected feeConfig = Object.create(null) as IFeeItem<BigNumber>;
 
-  protected dccApp: any;
+  protected dccApp: IDCCApp;
 
-  protected static _instance: ConfigService | void;
+  protected static _instance: ConfigService | undefined;
 
   public change = new Signal() as Signal<string>;
 
-  public configReady: Promise<any>;
+  public configReady: Promise<unknown>;
 
-  constructor(dccApp: any) {
+  constructor(dccApp: IDCCApp) {
     if (ConfigService._instance) {
-      return ConfigService._instance;
+      this.dccApp = ConfigService._instance.dccApp;
+      this.config = ConfigService._instance.config;
+      this.feeConfig = ConfigService._instance.feeConfig;
+      this.change = ConfigService._instance.change;
+      this.configReady = ConfigService._instance.configReady;
+      return;
     }
     ConfigService._instance = this;
     this.dccApp = dccApp;
@@ -52,7 +69,7 @@ export class ConfigService {
     return clone(this.feeConfig);
   }
 
-  public fetchConfig(): Promise<any> {
+  public fetchConfig(): Promise<unknown> {
     return Promise.all([
       this._getConfig().then((config) => this._setConfig(config)),
       this._getFeeConfig().then((config) => this._setFeeConfig(config)),
@@ -77,34 +94,38 @@ export class ConfigService {
       .catch(() => Promise.resolve(this.dccApp.network.feeConfig));
   }
 
-  protected _setFeeConfig(config) {
+  protected _setFeeConfig(config: IFeeItem<BigNumber>) {
     this.feeConfig = config;
   }
 
-  protected _setConfig(config) {
+  protected _setConfig(config: IConfig) {
     const myConfig = this.config;
     this.config = config;
 
-    ConfigService.getDifferencePaths(myConfig, config).forEach((path) =>
-      this.change.dispatch(String(path)),
-    );
+    ConfigService.getDifferencePaths(myConfig, config).forEach((path) => {
+      this.change.dispatch(String(path));
+    });
   }
 
-  protected static getDifferencePaths(previous, next) {
+  protected static getDifferencePaths(previous: IConfig, next: IConfig) {
     const paths = getPaths(next);
     return paths.filter((path) => get(previous, path) !== get(next, path)).map(String);
   }
 
-  protected static parseFeeConfig(data) {
+  protected static parseFeeConfig(data: unknown): unknown {
     switch (typeof data) {
       case 'number':
       case 'string':
         return new BigNumber(data);
-      case 'object':
-        Object.entries(data).forEach(([key, value]) => {
-          data[key] = ConfigService.parseFeeConfig(value);
-        });
+      case 'object': {
+        if (data !== null) {
+          const record = data as Record<string, unknown>;
+          Object.entries(record).forEach(([key, value]) => {
+            record[key] = ConfigService.parseFeeConfig(value);
+          });
+        }
         return data;
+      }
       default:
         return data;
     }

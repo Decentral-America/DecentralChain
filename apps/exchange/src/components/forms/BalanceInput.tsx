@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import styled from 'styled-components';
 import { BigNumber } from 'bignumber.js';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { logger } from '@/lib/logger';
 
 /**

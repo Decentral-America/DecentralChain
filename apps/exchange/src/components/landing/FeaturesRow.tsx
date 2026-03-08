@@ -1,7 +1,7 @@
-import { Box, Container, Typography, Grid, Card, CardContent, Stack } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import { Box, Card, CardContent, Container, Grid, Stack, Typography } from '@mui/material';
 
 const features = [
   {

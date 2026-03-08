@@ -32,7 +32,8 @@ const LedgerConnectModal: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const step = STEPS[currentStep]!;
+  const step = STEPS[currentStep];
+  if (!step) return null;
 
   return (
     <Overlay>

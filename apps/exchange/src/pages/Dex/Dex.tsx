@@ -3,33 +3,32 @@
  * Modern crypto trading interface with advanced features
  * 3-column layout: OrderBook | Chart+Forms | Markets+Trades
  */
-import { useState, useEffect } from 'react';
+
+import { Fullscreen, Receipt, ShowChart, TrendingDown, TrendingUp } from '@mui/icons-material';
 import {
   Box,
   Grid,
-  Paper,
-  Typography,
-  Tabs,
-  Tab,
   IconButton,
-  ToggleButtonGroup,
+  Paper,
+  Tab,
+  Tabs,
   ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import { ShowChart, TrendingUp, TrendingDown, Fullscreen, Receipt } from '@mui/icons-material';
-
+import { styled, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { useOrderBook } from '@/api/services/matcherService';
+import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
+import { OrderBook } from '@/features/dex/OrderBook';
+import { SellOrderForm } from '@/features/dex/SellOrderForm';
+import { TradeHistory } from '@/features/dex/TradeHistory';
+import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 // Import DEX components
 import { TradingViewChart } from '@/features/dex/TradingViewChart';
-import { OrderBook } from '@/features/dex/OrderBook';
-import { TradeHistory } from '@/features/dex/TradeHistory';
-import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
-import { SellOrderForm } from '@/features/dex/SellOrderForm';
-import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 import { UserOrders } from '@/features/dex/UserOrders';
 import { useDexStore } from '@/stores/dexStore';
-import { useOrderBook } from '@/api/services/matcherService';
+import { landingTheme } from '@/theme/landingTheme';
 
 /**
  * Main container with clean light theme like Swap page

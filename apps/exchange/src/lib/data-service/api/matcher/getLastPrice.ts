@@ -1,7 +1,7 @@
-import { type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { request } from '../../utils/request';
+import { type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { get } from '../../config';
+import { request } from '../../utils/request';
 
 export function getLastPrice(pair: AssetPair) {
   return request({

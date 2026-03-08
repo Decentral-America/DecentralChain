@@ -31,10 +31,10 @@
  * ```
  */
 
-import { onCLS, onFCP, onLCP, onTTFB, onINP, type Metric } from 'web-vitals';
-import { logger } from '@/lib/logger';
+import { type Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 import { trackEvent } from '@/lib/analytics';
 import { captureMessage, ErrorSeverity } from '@/lib/errorMonitoring';
+import { logger } from '@/lib/logger';
 
 /**
  * Performance monitoring configuration

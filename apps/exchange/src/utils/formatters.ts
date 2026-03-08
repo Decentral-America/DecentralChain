@@ -4,7 +4,11 @@
  * Custom JSON stringifier that handles BigNumber and other special types
  * This replicates the Angular DCCApp.stringifyJSON functionality
  */
-export const stringifyJSON = (data: any, replacer?: any, space?: string | number): string => {
+export const stringifyJSON = (
+  data: unknown,
+  replacer?: ((key: string, value: unknown) => unknown) | null,
+  space?: string | number,
+): string => {
   return JSON.stringify(
     data,
     (key, value) => {

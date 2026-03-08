@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { logger } from '@/lib/logger';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
 import { Input } from '../components/atoms/Input';
 import { Spinner } from '../components/atoms/Spinner';
-import { logger } from '@/lib/logger';
 
 // Types
 interface LegacyUser {
@@ -103,7 +104,9 @@ const AccountList = styled.div`
   gap: 16px;
 `;
 
-const AccountCard = styled(Card as any)<{ clickable?: boolean }>`
+const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>)<{
+  clickable?: boolean;
+}>`
   display: flex;
   align-items: center;
   padding: 20px;
@@ -264,22 +267,25 @@ export const MigratePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMigrating, setIsMigrating] = useState(false);
 
-  // Load users on mount
-  useEffect(() => {
-    loadUsers();
+  const hashAddress = useCallback((address: string): string => {
+    // Simple hash for demonstration - in real implementation, use proper hashing
+    return btoa(address).substring(0, 16);
   }, []);
 
-  // Auto-migrate user if ID is provided
-  useEffect(() => {
-    if (migrationId && lockedUsers.length > 0) {
-      const userToMigrate = lockedUsers.find((user) => hashAddress(user.address) === migrationId);
-      if (userToMigrate) {
-        handleStartMigrate(userToMigrate);
-      }
-    }
-  }, [migrationId, lockedUsers]);
+  const handleStartMigrate = useCallback((user: LegacyUser) => {
+    setCurrentUser(user);
+    setPassword('');
+    setPasswordError('');
+    setActiveStep(MigrationStep.UnlockAccount);
+  }, []);
 
-  const loadUsers = async () => {
+  const migrateUserWithoutPassword = useCallback(async (_user: LegacyUser): Promise<void> => {
+    // Simulate migration without password for Ledger/Keeper users
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    // In real implementation, this would save to new storage format
+  }, []);
+
+  const loadUsers = useCallback(async () => {
     setIsLoading(true);
     try {
       // In real implementation, this would fetch from storage
@@ -304,32 +310,29 @@ export const MigratePage: React.FC = () => {
 
       // If no locked users, skip to wallet
       if (usersNeedingPassword.length === 0) {
-        handleFinish();
+        navigate('/wallet');
       }
     } catch (error) {
       logger.error('Failed to load users:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [navigate, migrateUserWithoutPassword]);
 
-  const hashAddress = (address: string): string => {
-    // Simple hash for demonstration - in real implementation, use proper hashing
-    return btoa(address).substring(0, 16);
-  };
+  // Load users on mount
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
-  const migrateUserWithoutPassword = async (_user: LegacyUser): Promise<void> => {
-    // Simulate migration without password for Ledger/Keeper users
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    // In real implementation, this would save to new storage format
-  };
-
-  const handleStartMigrate = (user: LegacyUser) => {
-    setCurrentUser(user);
-    setPassword('');
-    setPasswordError('');
-    setActiveStep(MigrationStep.UnlockAccount);
-  };
+  // Auto-migrate user if ID is provided
+  useEffect(() => {
+    if (migrationId && lockedUsers.length > 0) {
+      const userToMigrate = lockedUsers.find((user) => hashAddress(user.address) === migrationId);
+      if (userToMigrate) {
+        handleStartMigrate(userToMigrate);
+      }
+    }
+  }, [migrationId, lockedUsers, handleStartMigrate, hashAddress]);
 
   const handleGoBack = () => {
     if (migrationId) {
@@ -346,7 +349,7 @@ export const MigratePage: React.FC = () => {
     setPasswordError('');
   };
 
-  const validateCredentials = (user: LegacyUser, password: string): boolean => {
+  const validateCredentials = (_user: LegacyUser, password: string): boolean => {
     // In real implementation, this would decrypt and verify the seed/privateKey
     // using @decentralchain/transactions libs.crypto functions
     if (!password || typeof password !== 'string') {
@@ -444,9 +447,9 @@ export const MigratePage: React.FC = () => {
             <Section>
               <SectionTitle>Pending Migration</SectionTitle>
               <AccountList>
-                {lockedUsers.map((user, index) => (
+                {lockedUsers.map((user) => (
                   <AccountCard
-                    key={index}
+                    key={user.address}
                     clickable
                     onClick={() => handleStartMigrate(user)}
                     elevation="sm"
@@ -469,8 +472,8 @@ export const MigratePage: React.FC = () => {
             <Section>
               <SectionTitle>Unlocked Accounts</SectionTitle>
               <AccountList>
-                {unlockedUsers.map((user, index) => (
-                  <AccountCard key={index} elevation="sm">
+                {unlockedUsers.map((user) => (
+                  <AccountCard key={user.address} elevation="sm">
                     <AvatarContainer>
                       {user.name ? user.name.charAt(0).toUpperCase() : user.address.charAt(0)}
                     </AvatarContainer>
@@ -506,7 +509,22 @@ export const MigratePage: React.FC = () => {
           <Header>
             <Title>Unlock Account</Title>
             <Description>
-              Enter your password to migrate this account. <a onClick={handleGoBack}>Go back</a>
+              Enter your password to migrate this account.{' '}
+              <button
+                type="button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  font: 'inherit',
+                  color: 'inherit',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                onClick={handleGoBack}
+              >
+                Go back
+              </button>
             </Description>
           </Header>
 

@@ -14,7 +14,7 @@ This directory contains GitHub Actions workflows for automated testing, building
 
 #### Test & Lint
 - TypeScript type checking
-- ESLint code quality checks
+- Biome code quality checks
 - Run tests (if configured)
 
 #### Build
@@ -62,7 +62,7 @@ This directory contains GitHub Actions workflows for automated testing, building
 **Features:**
 - Code quality checks
 - TypeScript type checking
-- ESLint validation
+- Biome validation
 - Bundle size reporting
 - Security audit
 - Dependency outdated check

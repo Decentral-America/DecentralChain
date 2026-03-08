@@ -1,4 +1,4 @@
-import { type IncomingHttpHeaders, type Server } from 'http';
+import { type IncomingHttpHeaders, type Server } from 'node:http';
 import { request } from '../utils/request';
 import { delay } from '../utils/utils';
 import { type ConnectProvider } from './ConnectProvider';
@@ -14,7 +14,11 @@ interface SendOptions {
   attempts?: number;
 }
 
-type SimpleConnectCallback = (data: any, url: URL, headers: IncomingHttpHeaders) => Promise<any>;
+type SimpleConnectCallback = (
+  data: unknown,
+  url: URL,
+  headers: IncomingHttpHeaders,
+) => Promise<unknown>;
 
 export class HttpConnectProvider implements ConnectProvider {
   private active = true;
@@ -48,7 +52,11 @@ export class HttpConnectProvider implements ConnectProvider {
 
   public async listen(cb: SimpleConnectCallback): Promise<void> {
     this.checkActive();
-    this.server = (window as any).SimpleConnect.listen(this.options.port, cb);
+    this.server = (
+      window as unknown as {
+        SimpleConnect: { listen: (port: number, cb: SimpleConnectCallback) => Server };
+      }
+    ).SimpleConnect.listen(this.options.port, cb);
 
     if (this.options.ttl) {
       await delay(this.options.ttl);

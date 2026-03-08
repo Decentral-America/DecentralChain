@@ -2,7 +2,7 @@
  * Order Book Page
  * Shows live order book and market depth
  */
-import { Box, Typography, Paper, Stack, Chip } from '@mui/material';
+import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
 export const OrderBook = () => {
   const buyOrders = [
@@ -48,9 +48,9 @@ export const OrderBook = () => {
                 Total
               </Typography>
             </Stack>
-            {sellOrders.map((order, idx) => (
+            {sellOrders.map((order) => (
               <Stack
-                key={idx}
+                key={order.price}
                 direction="row"
                 justifyContent="space-between"
                 sx={{
@@ -88,9 +88,9 @@ export const OrderBook = () => {
                 Total
               </Typography>
             </Stack>
-            {buyOrders.map((order, idx) => (
+            {buyOrders.map((order) => (
               <Stack
-                key={idx}
+                key={order.price}
                 direction="row"
                 justifyContent="space-between"
                 sx={{

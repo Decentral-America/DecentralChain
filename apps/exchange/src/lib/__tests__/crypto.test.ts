@@ -4,8 +4,8 @@
  * Tests that the shared crypto module correctly encrypts/decrypts
  * strings using AES-256-GCM with PBKDF2 key derivation.
  */
-import { describe, it, expect } from 'vitest';
-import { encryptString, decryptString } from '@/lib/crypto';
+import { describe, expect, it } from 'vitest';
+import { decryptString, encryptString } from '@/lib/crypto';
 
 describe('Web Crypto AES-256-GCM', () => {
   it('should encrypt and decrypt a string correctly', async () => {
@@ -72,7 +72,7 @@ describe('Web Crypto AES-256-GCM', () => {
   });
 
   it('should handle long content', async () => {
-    const plaintext = 'word '.repeat(2000) + 'this is a very long seed phrase backup';
+    const plaintext = `${'word '.repeat(2000)}this is a very long seed phrase backup`;
     const password = 'LongContent!Test1';
 
     const encrypted = await encryptString(plaintext, password);

@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
-import type { ScriptInfo } from '@/types/auth';
+import { type ScriptInfo } from '@/types/auth';
 
 const POLL_INTERVAL = 10000; // 10 seconds
 const INITIAL_DELAY = 30000; // 30 seconds initial delay

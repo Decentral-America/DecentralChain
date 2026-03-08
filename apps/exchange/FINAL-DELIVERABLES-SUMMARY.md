@@ -555,7 +555,7 @@ All documented in ANGULAR-REACT-FEATURE-MAPPING.md with:
 3. **Known Issues:**
    - SaveSeedPage data-service import path needs fix
    - Some TypeScript warnings (documented)
-   - ESLint formatting (run lint:fix)
+   - Biome formatting (run lint:fix)
 
 4. **Resources:**
    - All Angular code analyzed

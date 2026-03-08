@@ -5,13 +5,12 @@
  */
 import { useState } from 'react';
 import styled from 'styled-components';
-import { encryptString, decryptString } from '@/lib/crypto';
-import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-import { Stack } from '@/components/atoms/Stack';
 import { Card } from '@/components/atoms/Card';
-import { Icon } from '@/components/atoms/Icon';
-import { CommonIcons } from '@/components/atoms/Icon';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { decryptString, encryptString } from '@/lib/crypto';
 import { logger } from '@/lib/logger';
 
 interface PasswordProtectionProps {

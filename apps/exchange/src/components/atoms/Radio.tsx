@@ -3,12 +3,13 @@
  * Styled radio button with label and selection state
  * Migrated to Material-UI
  */
-import React from 'react';
-import MuiRadio, { type RadioProps as MuiRadioProps } from '@mui/material/Radio';
+
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import MuiRadio, { type RadioProps as MuiRadioProps } from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 export interface RadioProps extends Omit<MuiRadioProps, 'type'> {
   label?: string;

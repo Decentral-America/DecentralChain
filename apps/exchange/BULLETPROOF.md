@@ -9,23 +9,23 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         GIT COMMIT TRIGGER                          │
-│                      .husky/pre-commit hook                         │
+│                      lefthook.yml pre-commit config                         │
 └────────────────────────────┬────────────────────────────────────────┘
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        lint-staged                                  │
+│                        lefthook                                  │
 │          (only processes staged files — fast)                       │
 └────────────────────────────┬────────────────────────────────────────┘
                              │
             ┌────────────────┼────────────────┐
             ▼                ▼                ▼
-        prettier          eslint        tsc --noEmit
+        biome format          biome check        tsc --noEmit
         --write           --fix        (full project)
       (staged files)   (staged files)
 ```
 
-**Pre-commit:** lint-staged formats and lints only staged files for speed.  
+**Pre-commit:** lefthook formats and lints only staged files for speed.  
 **Manual / CI:** `npm run bulletproof` checks the full project.
 
 ---
@@ -53,59 +53,59 @@ npm run build
 ### 1. Install dependencies
 
 ```bash
-npm install -D husky lint-staged prettier eslint eslint-config-prettier \
-  @eslint/js typescript-eslint eslint-plugin-react eslint-plugin-react-hooks \
-  eslint-plugin-react-refresh
+npm install -D lefthook lefthook biome format biome check biome check-config-biome format \
+  @biome check/js typescript-biome check biome check-plugin-react biome check-plugin-react-hooks \
+  biome check-plugin-react-refresh
 ```
 
-### 2. Initialize Husky
+### 2. Initialize Lefthook
 
 ```bash
-npx husky init
+npx lefthook init
 ```
 
-### 3. Add scripts and lint-staged config to `package.json`
+### 3. Add scripts and lefthook config to `package.json`
 
 ```json
 {
   "scripts": {
-    "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "format": "biome format --write \"src/**/*.{ts,tsx,json,css}\"",
+    "format:check": "biome format --check \"src/**/*.{ts,tsx,json,css}\"",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --fix",
     "typecheck": "tsc --noEmit",
     "bulletproof": "npm run format && npm run lint:fix && npm run typecheck",
     "bulletproof:check": "npm run format:check && npm run lint && npm run typecheck"
   },
-  "lint-staged": {
-    "*.{ts,tsx}": ["prettier --write", "eslint --fix"],
-    "*.{json,css}": ["prettier --write"]
+  "lefthook": {
+    "*.{ts,tsx}": ["biome format --write", "biome check --fix"],
+    "*.{json,css}": ["biome format --write"]
   }
 }
 ```
 
 ### 4. Configure pre-commit hook
 
-**File:** `.husky/pre-commit`
+**File:** `.lefthook/pre-commit`
 
 ```bash
-npx lint-staged && npm run typecheck
+npx lefthook && npm run typecheck
 ```
 
 **How it works:**
 
 - Intercepts every `git commit`
-- `lint-staged` formats and lints **only staged files** (fast, even in large projects)
+- `lefthook` formats and lints **only staged files** (fast, even in large projects)
 - `typecheck` runs on the full project (types depend on the whole codebase)
 - If **any step fails, the commit is blocked**
 
-> **Why lint-staged?** Running Prettier/ESLint on the entire `src/` every commit is slow and wasteful. lint-staged only processes files you're actually committing — instant feedback even in large codebases.
+> **Why lefthook?** Running Biome/Biome on the entire `src/` every commit is slow and wasteful. lefthook only processes files you're actually committing — instant feedback even in large codebases.
 
 ---
 
-## 1. Format Step: Prettier
+## 1. Format Step: Biome
 
-**Config:** `.prettierrc.json`
+**Config:** `.biome formatrc.json`
 
 ```json
 {
@@ -122,34 +122,34 @@ npx lint-staged && npm run typecheck
 
 | Setting                | Rationale                                                        |
 | ---------------------- | ---------------------------------------------------------------- |
-| `trailingComma: "all"` | Default since Prettier v3. Cleaner diffs, fewer merge conflicts. |
+| `trailingComma: "all"` | Default since Biome v3. Cleaner diffs, fewer merge conflicts. |
 | `singleQuote: true`    | Standard for JS/TS ecosystem                                     |
 | `printWidth: 100`      | Balanced readability for modern widescreens                      |
 | `endOfLine: "lf"`      | Prevents cross-platform line-ending issues                       |
 
 **Scope:** `*.{ts,tsx,json,css}` files in `src/`
 
-> **Note:** Do NOT use `eslint-plugin-prettier`. Running Prettier inside ESLint is slow and produces confusing errors. Keep them as separate tools — Prettier formats, ESLint lints. Use `eslint-config-prettier` only (to disable conflicting ESLint formatting rules).
+> **Note:** Do NOT use `biome check-plugin-biome format`. Running Biome inside Biome is slow and produces confusing errors. Keep them as separate tools — Biome formats, Biome lints. Use `biome check-config-biome format` only (to disable conflicting Biome formatting rules).
 
 ---
 
-## 2. Lint Step: ESLint
+## 2. Lint Step: Biome
 
-**Config:** `eslint.config.js` (ESLint 9 Flat Config)
+**Config:** `biome check.config.js` (Biome 9 Flat Config)
 
-> **Important:** ESLint 9 flat config does **not** use `--ext`. File matching is handled by the `files` globs in the config. Simply run `eslint .`.
+> **Important:** Biome 9 flat config does **not** use `--ext`. File matching is handled by the `files` globs in the config. Simply run `biome check .`.
 
 ### Recommended config structure
 
 ```js
-import js from '@eslint/js';
+import js from '@biome check/js';
 import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import react from 'eslint-plugin-react';
-import tseslint from 'typescript-eslint';
-import prettierConfig from 'eslint-config-prettier';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import reactHooks from 'biome check-plugin-react-hooks';
+import reactRefresh from 'biome check-plugin-react-refresh';
+import react from 'biome check-plugin-react';
+import tsbiome check from 'typescript-biome check';
+import biome formatConfig from 'biome check-config-biome format';
+import { defineConfig, globalIgnores } from 'biome check/config';
 
 export default defineConfig([
   globalIgnores(['dist', 'node_modules']),
@@ -157,11 +157,11 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      tsbiome check.configs.recommended,
       react.configs.flat.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
-      prettierConfig, // Must be last — disables formatting rules
+      biome formatConfig, // Must be last — disables formatting rules
     ],
     languageOptions: {
       ecmaVersion: 'latest',
@@ -175,8 +175,8 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-biome check/no-explicit-any': 'warn',
+      '@typescript-biome check/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
 ]);
@@ -190,9 +190,9 @@ export default defineConfig([
 | React Refresh | `only-export-components: warn` (allows constant exports for HMR)                  |
 | Hooks         | `rules-of-hooks: error`, `exhaustive-deps: warn` (via recommended-latest)         |
 | TypeScript    | `no-unused-vars: error` (ignores `_` prefixed args), `no-explicit-any: warn`      |
-| Formatting    | Handled by `eslint-config-prettier` (disables conflicting rules)                  |
+| Formatting    | Handled by `biome check-config-biome format` (disables conflicting rules)                  |
 
-**Auto-fix:** `eslint . --fix`
+**Auto-fix:** `biome check . --fix`
 
 ---
 
@@ -238,7 +238,7 @@ export default defineConfig([
 
 ## Tool Responsibility Matrix
 
-| Concern               | Prettier | ESLint | TypeScript |
+| Concern               | Biome | Biome | TypeScript |
 | --------------------- | :------: | :----: | :--------: |
 | Formatting            |    ✅    |        |            |
 | Code style / patterns |          |   ✅   |            |
@@ -247,7 +247,7 @@ export default defineConfig([
 | React rules / hooks   |          |   ✅   |            |
 | Import resolution     |          |        |     ✅     |
 
-**Key principle:** Each tool does ONE job. No overlap, no `eslint-plugin-prettier`.
+**Key principle:** Each tool does ONE job. No overlap, no `biome check-plugin-biome format`.
 
 ---
 
@@ -255,7 +255,7 @@ export default defineConfig([
 
 | Trigger        | What runs                   | Scope                                            |
 | -------------- | --------------------------- | ------------------------------------------------ |
-| **Git commit** | `lint-staged` + `typecheck` | Staged files (format/lint), full project (types) |
+| **Git commit** | `lefthook` + `typecheck` | Staged files (format/lint), full project (types) |
 | **Manual**     | `npm run bulletproof`       | Full project                                     |
 | **CI**         | `npm run bulletproof:check` | Full project, no auto-fixes                      |
 
@@ -352,7 +352,7 @@ export default defineConfig({
 ### 4. Update pre-commit hook
 
 ```bash
-npx lint-staged && npm run typecheck && npm run test
+npx lefthook && npm run typecheck && npm run test
 ```
 
 ---
@@ -361,39 +361,39 @@ npx lint-staged && npm run typecheck && npm run test
 
 For backend-only projects (no React), adjust the config:
 
-### ESLint (Node variant)
+### Biome (Node variant)
 
 ```js
-import js from '@eslint/js';
+import js from '@biome check/js';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
-import prettierConfig from 'eslint-config-prettier';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import tsbiome check from 'typescript-biome check';
+import biome formatConfig from 'biome check-config-biome format';
+import { defineConfig, globalIgnores } from 'biome check/config';
 
 export default defineConfig([
   globalIgnores(['dist', 'node_modules']),
   {
     files: ['**/*.ts'],
-    extends: [js.configs.recommended, tseslint.configs.recommended, prettierConfig],
+    extends: [js.configs.recommended, tsbiome check.configs.recommended, biome formatConfig],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: globals.node,
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-biome check/no-explicit-any': 'warn',
+      '@typescript-biome check/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
 ]);
 ```
 
-### lint-staged (Node variant)
+### lefthook (Node variant)
 
 ```json
 {
-  "lint-staged": {
-    "*.ts": ["prettier --write", "eslint --fix"],
-    "*.json": ["prettier --write"]
+  "lefthook": {
+    "*.ts": ["biome format --write", "biome check --fix"],
+    "*.json": ["biome format --write"]
   }
 }
 ```

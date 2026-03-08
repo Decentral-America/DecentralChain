@@ -4,7 +4,7 @@
  * Tests production-safe logger that redacts sensitive fields
  * and suppresses output in production builds.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // We need to test the sanitize behavior, so we'll test the logger module
 // In production mode, debug/info should not output
@@ -51,6 +51,7 @@ describe('logger', () => {
 
     // If in dev mode, it should have been called with redacted values
     if (import.meta.env.DEV) {
+      // biome-ignore lint/suspicious/noConsole: test verifying console.log redaction behavior
       const callArgs = (console.log as ReturnType<typeof vi.fn>).mock.calls[0];
       if (callArgs) {
         const logged = callArgs[0] as Record<string, unknown>;

@@ -3,7 +3,7 @@
  * Replaces Angular w-radio directive
  * Single selection from multiple options in a radio group
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 
 const HiddenRadio = styled.input.attrs({ type: 'radio' })`

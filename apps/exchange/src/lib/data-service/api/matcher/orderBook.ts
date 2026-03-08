@@ -1,12 +1,12 @@
-import { get as getConfig } from '../../config';
-import { get as getAssetPair } from '../pairs/pairs';
-import { addParam } from '../../utils/utils';
-import { type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
+import { type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
+import { get as getConfig } from '../../config';
 import { request } from '../../utils/request';
+import { addParam } from '../../utils/utils';
+import { get as getAssetPair } from '../pairs/pairs';
 
 export function get(asset1: string, asset2: string): Promise<IOrderBook> {
-  let timer;
+  let timer: ReturnType<typeof setTimeout>;
   const timeout = new Promise<IOrderBook>((_, reject) => {
     timer = setTimeout(() => reject(new Error('Request timeout!')), 3000);
   });

@@ -2,7 +2,7 @@
  * Button Component Stories
  * Demonstrates all Button variants, sizes, and states
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { Button } from './Button';
 
 const meta = {

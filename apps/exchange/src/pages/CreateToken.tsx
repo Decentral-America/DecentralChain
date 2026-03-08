@@ -3,55 +3,56 @@
  * Modern multi-step wizard for creating new tokens on the blockchain
  * Matches Angular version: src/modules/tokens/templates/tokens.html
  */
-import { useState, useMemo } from 'react';
-import { logger } from '@/lib/logger';
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Stack,
-  Select,
-  MenuItem,
-  FormControl,
-  Slider,
-  Switch,
-  FormControlLabel,
-  Checkbox,
-  Alert,
-  Avatar,
-  IconButton,
-  Tooltip,
-  Container,
-  Grid,
-  Stepper,
-  Step,
-  StepLabel,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-} from '@mui/material';
+
 import {
   AddCircleOutline,
-  HelpOutline,
-  Palette,
   ArrowBack,
   ArrowForward,
   CheckCircle,
-  InfoOutlined,
-  TokenOutlined,
-  SettingsOutlined,
   CodeOutlined,
+  HelpOutline,
+  InfoOutlined,
+  Palette,
   PreviewOutlined,
+  SettingsOutlined,
+  TokenOutlined,
   WarningAmber,
 } from '@mui/icons-material';
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  Chip,
+  Container,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  MenuItem,
+  Paper,
+  Select,
+  Slider,
+  Stack,
+  Step,
+  StepLabel,
+  Stepper,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import { TransactionType, transactionService } from '@/services/transactionService';
-import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { logger } from '@/lib/logger';
+import { TransactionType, transactionService } from '@/services/transactionService';
+import { landingTheme } from '@/theme/landingTheme';
 
 const steps = [
   {
@@ -226,15 +227,15 @@ export const CreateToken = () => {
                       fontSize: 30,
                     }}
                   >
-                    {steps[activeStep]!.icon}
+                    {steps[activeStep]?.icon}
                   </Box>
 
                   <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-                    {steps[activeStep]!.title}
+                    {steps[activeStep]?.title}
                   </Typography>
 
                   <Typography variant="body1" sx={{ mb: 4, opacity: 0.95, lineHeight: 1.7 }}>
-                    {steps[activeStep]!.description}
+                    {steps[activeStep]?.description}
                   </Typography>
 
                   {/* Progress Indicator */}
@@ -243,14 +244,14 @@ export const CreateToken = () => {
                       Step {activeStep + 1} of {steps.length}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                      {steps.map((_, index) => (
+                      {steps.map((step, stepIndex) => (
                         <Box
-                          key={index}
+                          key={step.label}
                           sx={{
                             flex: 1,
                             height: 4,
                             borderRadius: 2,
-                            bgcolor: index <= activeStep ? 'white' : 'rgba(255, 255, 255, 0.3)',
+                            bgcolor: stepIndex <= activeStep ? 'white' : 'rgba(255, 255, 255, 0.3)',
                             transition: 'background-color 0.3s',
                           }}
                         />

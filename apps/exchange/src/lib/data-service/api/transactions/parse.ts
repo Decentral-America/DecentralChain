@@ -1,8 +1,19 @@
-import { type Asset, AssetPair, Money } from '@decentralchain/data-entities';
 import { BigNumber } from '@decentralchain/bignumber';
-import { TRANSACTION_TYPE_NUMBER, DCC_ID } from '@decentralchain/signature-adapter';
+import { type Asset, AssetPair, Money } from '@decentralchain/data-entities';
+import { DCC_ID, TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
 import { base58Decode } from '@decentralchain/ts-lib-crypto';
+import { pipe } from 'ramda';
+import { type IHash, type TOrderType } from '../../interface';
+import { getSignatureApi } from '../../sign';
+import {
+  normalizeAssetId,
+  normalizeAssetPair,
+  normalizeRecipient,
+  toHash,
+  tokensMoneyFactory,
+} from '../../utils/utils';
 import { get } from '../assets/assets';
+import { factory, type IFactory } from '../matcher/getOrders';
 import {
   type IBurn,
   type ICancelLeasing,
@@ -14,26 +25,15 @@ import {
   type ILease,
   type IMassTransfer,
   type IReissue,
+  type IScriptInvocation,
+  type ISetAssetScript,
   type ISetScript,
   type ISponsorship,
-  type ISetAssetScript,
-  type IScriptInvocation,
   type ITransfer,
   type T_API_TX,
   type T_TX,
   type txApi,
 } from './interface';
-import {
-  normalizeAssetId,
-  normalizeAssetPair,
-  normalizeRecipient,
-  toHash,
-  tokensMoneyFactory,
-} from '../../utils/utils';
-import { type IHash, type TOrderType } from '../../interface';
-import { factory, type IFactory } from '../matcher/getOrders';
-import { getSignatureApi } from '../../sign';
-import { pipe } from 'ramda';
 
 const SCRIPT_INVOCATION_NUMBER = 16;
 
@@ -58,13 +58,15 @@ export function parseTx(
 ): Promise<Array<T_TX>> {
   const hash = Object.create(null);
   hash[DCC_ID] = true;
-  transactions.forEach((tx) => getAssetsHashFromTx(tx, hash));
+  transactions.forEach((tx) => {
+    getAssetsHashFromTx(tx, hash);
+  });
   const api = getSignatureApi();
 
   return Promise.all([
     get(Object.keys(hash)).then((assets) => toHash(assets, 'id')),
-    (api && api.getPublicKey()) || Promise.resolve(null),
-    (api && api.getSignVersions()) || Promise.resolve({}),
+    api?.getPublicKey() || Promise.resolve(null),
+    api?.getSignVersions() || Promise.resolve({}),
   ]).then(([hash, sender, versions]) => {
     return transactions.map((transaction) => {
       if ('version' in transaction && versions[transaction.type] !== null) {

@@ -6,10 +6,10 @@
  * with localStorage persistence and change notifications.
  */
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import { useAuth } from './AuthContext';
-import { NetworkConfig } from '../config/networkConfig';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
+import { NetworkConfig } from '../config/networkConfig';
+import { useAuth } from './AuthContext';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -35,7 +35,7 @@ interface CommonSettings {
   dontShowSpam: boolean;
   tradeWithScriptAssets: boolean;
   baseAssetId: string;
-  events: Record<string, any>;
+  events: Record<string, unknown>;
 
   // Network configuration
   network: {
@@ -240,11 +240,57 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
 
   /**
-   * Load settings from localStorage on mount and when user changes
+   * Apply side effects for setting changes
+   * Matches Angular's side effects (theme changes, data-service config updates, etc.)
    */
-  useEffect(() => {
-    loadSettings();
-  }, [user]);
+  const applySideEffects = useCallback(async (key: string, value: unknown) => {
+    try {
+      switch (key) {
+        case 'theme':
+          // Apply theme change to document
+          document.documentElement.setAttribute('data-theme', String(value || 'default'));
+          break;
+
+        case 'network':
+        case 'oracleDCC':
+        case 'scamListUrl':
+        case 'tokensNameListUrl': {
+          // Update data-service config
+          const ds = await import('data-service');
+          if (ds.config.setConfig) {
+            const updates: Record<string, unknown> = {};
+            if (key === 'network' && value) {
+              const network = value as { server: string; matcher: string };
+              updates.servers = {
+                nodeAddress: network.server,
+                matcherAddress: network.matcher,
+              };
+            } else {
+              updates[key] = value;
+            }
+            ds.config.setConfig(updates);
+          }
+          break;
+        }
+
+        case 'dontShowSpam':
+          // Spam filter toggle - handled by components
+          logger.debug('[Settings] Spam filter toggled:', value);
+          break;
+
+        case 'lng':
+          // Language change - would trigger i18n update
+          logger.debug('[Settings] Language changed:', value);
+          break;
+
+        default:
+          // No side effects for other settings
+          break;
+      }
+    } catch (error) {
+      logger.error('[Settings] Side effect failed for', key, error);
+    }
+  }, []);
 
   /**
    * Load settings from localStorage
@@ -298,6 +344,13 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   /**
+   * Load settings from localStorage on mount and when user changes
+   */
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  /**
    * Get common setting value
    * Matches Angular DefaultSettings.get() for common settings
    */
@@ -321,7 +374,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       // Trigger side effects
       applySideEffects(key as string, value);
     },
-    [commonSettings],
+    [commonSettings, applySideEffects],
   );
 
   /**
@@ -352,58 +405,6 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     },
     [user, userSettings],
   );
-
-  /**
-   * Apply side effects for setting changes
-   * Matches Angular's side effects (theme changes, data-service config updates, etc.)
-   */
-  const applySideEffects = async (key: string, value: any) => {
-    try {
-      switch (key) {
-        case 'theme':
-          // Apply theme change to document
-          document.documentElement.setAttribute('data-theme', value || 'default');
-          break;
-
-        case 'network':
-        case 'oracleDCC':
-        case 'scamListUrl':
-        case 'tokensNameListUrl': {
-          // Update data-service config
-          const ds = await import('data-service');
-          if (ds.config.setConfig) {
-            const updates: any = {};
-            if (key === 'network' && value) {
-              updates.servers = {
-                nodeAddress: value.server,
-                matcherAddress: value.matcher,
-              };
-            } else {
-              updates[key] = value;
-            }
-            ds.config.setConfig(updates);
-          }
-          break;
-        }
-
-        case 'dontShowSpam':
-          // Spam filter toggle - handled by components
-          logger.debug('[Settings] Spam filter toggled:', value);
-          break;
-
-        case 'lng':
-          // Language change - would trigger i18n update
-          logger.debug('[Settings] Language changed:', value);
-          break;
-
-        default:
-          // No side effects for other settings
-          break;
-      }
-    } catch (error) {
-      logger.error('[Settings] Side effect failed for', key, error);
-    }
-  };
 
   /**
    * Reset all settings to defaults

@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
-import styled from 'styled-components';
 import { BigNumber } from '@decentralchain/bignumber';
+import type React from 'react';
+import { useMemo } from 'react';
+import styled from 'styled-components';
 import { logger } from '@/lib/logger';
 
 /**
@@ -42,7 +43,7 @@ const DecimalPart = styled.span`
   font-size: 0.9em;
 `;
 
-const Symbol = styled.span`
+const SymbolText = styled.span`
   margin-left: 4px;
   font-weight: 500;
   color: ${({ theme }) => `${theme.colors.text}80`};
@@ -92,7 +93,7 @@ const parseNumber = (value: string | number | BigNumber): BigNumber => {
 
 const formatWithSeparator = (value: string, separator: string = ','): string => {
   const parts = value.split('.');
-  const integerPart = parts[0]!.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+  const integerPart = parts[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
   return parts[1] ? `${integerPart}.${parts[1]}` : integerPart;
 };
 
@@ -178,7 +179,7 @@ export const Balance: React.FC<BalanceProps> = ({
       const [integer, decimal] = fixed.split('.');
 
       // Format with separator if enabled
-      const formattedInteger = showSeparator ? formatWithSeparator(integer!) : integer!;
+      const formattedInteger = showSeparator ? formatWithSeparator(integer ?? '') : (integer ?? '');
 
       // Trim trailing zeros from decimal part
       const trimmedDecimal = decimal ? trimTrailingZeros(decimal) : '';
@@ -205,7 +206,7 @@ export const Balance: React.FC<BalanceProps> = ({
           {formatted.value}
           {formatted.suffix}
         </ShortNumber>
-        {symbol && <Symbol>{symbol}</Symbol>}
+        {symbol && <SymbolText>{symbol}</SymbolText>}
       </BalanceWrapper>
     );
   }
@@ -214,7 +215,7 @@ export const Balance: React.FC<BalanceProps> = ({
     <BalanceWrapper size={size} className={className}>
       <IntegerPart>{formatted.integer}</IntegerPart>
       {formatted.decimal && <DecimalPart>{formatted.decimal}</DecimalPart>}
-      {symbol && <Symbol>{symbol}</Symbol>}
+      {symbol && <SymbolText>{symbol}</SymbolText>}
     </BalanceWrapper>
   );
 };

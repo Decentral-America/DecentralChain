@@ -3,27 +3,28 @@
  * Modal dialog for depositing external assets (BTC) to DecentralChain
  * Displays deposit address with QR code, instructions, amounts, fees, and expiry countdown
  */
-import { useState, useEffect } from 'react';
+
+import { AccessTime, InfoOutlined } from '@mui/icons-material';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Typography,
   Alert,
-  CircularProgress,
+  Box,
   Button,
-  Divider,
   Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
   Link,
+  Typography,
 } from '@mui/material';
-import { InfoOutlined, AccessTime } from '@mui/icons-material';
-import { useGateway } from '@/hooks/useGateway';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { DepositAddress } from './DepositAddress';
-import type { DepositDetails } from '@/services/gateway/types';
+import { useGateway } from '@/hooks/useGateway';
 import { logger } from '@/lib/logger';
+import { type DepositDetails } from '@/services/gateway/types';
+import { DepositAddress } from './DepositAddress';
 
 interface DepositAssetProps {
   /** Asset to deposit */
@@ -58,6 +59,20 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
   /**
+   * Fetch deposit details from gateway
+   */
+  const loadDepositDetails = useCallback(async () => {
+    if (!user?.address) return;
+
+    try {
+      const details = await getDepositDetails(asset.id, user.address);
+      setDepositDetails(details);
+    } catch (err) {
+      logger.error('Failed to load deposit details:', err);
+    }
+  }, [user?.address, getDepositDetails, asset.id]);
+
+  /**
    * Load deposit details when modal opens
    */
   useEffect(() => {
@@ -71,21 +86,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
       setTimeRemaining(null);
       clearError();
     }
-  }, [open, asset.id, user?.address]);
-
-  /**
-   * Fetch deposit details from gateway
-   */
-  const loadDepositDetails = async () => {
-    if (!user?.address) return;
-
-    try {
-      const details = await getDepositDetails(asset.id, user.address);
-      setDepositDetails(details);
-    } catch (err) {
-      logger.error('Failed to load deposit details:', err);
-    }
-  };
+  }, [open, user?.address, clearError, loadDepositDetails]);
 
   /**
    * Setup countdown timer for round-robin addresses
@@ -94,7 +95,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
     if (depositDetails?.gatewayType === 'round-robin' && depositDetails.expiry) {
       // Initial calculation
       const calculateRemaining = () => {
-        const remaining = depositDetails.expiry!.getTime() - Date.now();
+        const remaining = depositDetails.expiry?.getTime() - Date.now();
         return Math.max(0, remaining);
       };
 

@@ -2,30 +2,31 @@
  * Application Header
  * Top navigation bar with user info, network status, and quick actions
  */
-import { useState } from 'react';
+
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AddIcon from '@mui/icons-material/Add';
+import BadgeIcon from '@mui/icons-material/Badge';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import {
-  Menu,
-  MenuItem,
+  Avatar,
+  Box,
+  Chip,
+  Divider,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Chip,
-  Avatar,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
-  Box,
 } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import BadgeIcon from '@mui/icons-material/Badge';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AddIcon from '@mui/icons-material/Add';
-import styled from 'styled-components';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { logger } from '@/lib/logger';
 
 const HeaderContainer = styled.header`

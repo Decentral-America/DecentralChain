@@ -3,7 +3,7 @@
  * Request queue management for sequential API calls
  * Ensures operations execute one at a time in FIFO order
  */
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 /**

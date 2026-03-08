@@ -1,25 +1,25 @@
-import { get as configGet, getDataService } from '../../config';
-import { request } from '../../utils/request';
-import { parseTx } from './parse';
-import {
-  type T_API_TX,
-  type T_TX,
-  type ITransfer,
-  type txApi,
-  type IIssue,
-  type IReissue,
-  type IBurn,
-  type IExchange,
-  type ILease,
-  type ICancelLeasing,
-  type ICreateAlias,
-  type IMassTransfer,
-  type IData,
-} from './interface';
-import { contains } from 'ts-utils';
+import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client-js';
 import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
 import { pipe, prop, uniqBy } from 'ramda';
-import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client-js';
+import { contains } from 'ts-utils';
+import { get as configGet, getDataService } from '../../config';
+import { request } from '../../utils/request';
+import {
+  type IBurn,
+  type ICancelLeasing,
+  type ICreateAlias,
+  type IData,
+  type IExchange,
+  type IIssue,
+  type ILease,
+  type IMassTransfer,
+  type IReissue,
+  type ITransfer,
+  type T_API_TX,
+  type T_TX,
+  type txApi,
+} from './interface';
+import { parseTx } from './parse';
 
 const DEFAULT_GET_TRANSACTIONS_OPTIONS: IGetExchangeOptions = Object.assign(Object.create(null), {
   limit: 5000,
@@ -30,8 +30,8 @@ export function list(address: string, limit = 100, after: string): Promise<Array
   return request({
     url: `${configGet('node')}/transactions/address/${address}/limit/${limit}${after ? `?after=${after}` : ''}`,
   })
-    .then(pipe(prop('0'), uniqBy(prop('id')) as any))
-    .then((transactions) => parseTx(transactions as any, false));
+    .then(pipe(prop('0'), uniqBy(prop('id')) as (list: T_API_TX[]) => T_API_TX[]))
+    .then((transactions) => parseTx(transactions as T_API_TX[], false));
 }
 
 export function getExchangeTxList(
@@ -41,7 +41,10 @@ export function getExchangeTxList(
   options = Object.assign(Object.create(null), DEFAULT_GET_TRANSACTIONS_OPTIONS, options);
 
   const getData = (
-    response: { data: ITransaction[]; fetchMore?: () => any },
+    response: {
+      data: ITransaction[];
+      fetchMore?: () => Promise<{ data: ITransaction[]; fetchMore?: () => Promise<unknown> }>;
+    },
     result: Array<ITransaction[]>,
   ) => {
     result = result.concat(response.data);
@@ -62,7 +65,10 @@ export function getExchangeTxList(
       getDataService()
         .getExchangeTxs(requestParams)
         .then((r) => getData(r, [])),
-  }).then((transactions: any) => parseTx(transactions, false, true) as any);
+  }).then(
+    (transactions: ITransaction[]) =>
+      parseTx(transactions as unknown as T_API_TX[], false, true) as unknown as IExchange[],
+  );
 }
 
 export function listUTX(address?: string): Promise<Array<T_TX>> {

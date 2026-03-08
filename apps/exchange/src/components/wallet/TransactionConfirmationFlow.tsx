@@ -3,16 +3,17 @@
  * Multi-step confirmation component for reviewing and broadcasting transactions
  * Provides visual feedback through review → signing → broadcasting → success/error states
  */
-import React, { useState, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Modal } from '@/components/modals/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, type Transaction } from '@/services/transactionService';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 // Temporary type definition until @decentralchain/transactions is fixed
-type ITransferParams = any;
+type ITransferParams = Record<string, unknown>;
 
 /**
  * Transaction Flow Steps

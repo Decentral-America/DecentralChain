@@ -5,11 +5,11 @@
 
 import {
   type ComponentType,
-  lazy,
+  createElement,
   type LazyExoticComponent,
+  lazy,
   type ReactNode,
   Suspense,
-  createElement,
 } from 'react';
 import { logger } from '@/lib/logger';
 
@@ -45,7 +45,7 @@ export interface ComponentMetadata {
   /**
    * Component props type
    */
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
 
   /**
    * Whether component is lazy-loaded
@@ -61,7 +61,7 @@ export interface ComponentMetadata {
 /**
  * Registered component entry
  */
-export interface ComponentEntry<P = any> {
+export interface ComponentEntry<P = unknown> {
   /**
    * Component metadata
    */
@@ -149,7 +149,7 @@ class ComponentListManager {
    * @param metadata - Component metadata
    * @param component - Component reference
    */
-  register<P = any>(
+  register<P = unknown>(
     metadata: ComponentMetadata,
     component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   ): void {
@@ -166,7 +166,7 @@ class ComponentListManager {
     if (!this.categories.has(metadata.category)) {
       this.categories.set(metadata.category, new Set());
     }
-    this.categories.get(metadata.category)!.add(metadata.id);
+    this.categories.get(metadata.category)?.add(metadata.id);
 
     // Update tag index
     if (metadata.tags) {
@@ -174,7 +174,7 @@ class ComponentListManager {
         if (!this.tags.has(tag)) {
           this.tags.set(tag, new Set());
         }
-        this.tags.get(tag)!.add(metadata.id);
+        this.tags.get(tag)?.add(metadata.id);
       }
     }
 
@@ -242,7 +242,7 @@ class ComponentListManager {
    * @param id - Component ID
    * @returns Component reference or null
    */
-  getComponent<P = any>(
+  getComponent<P = unknown>(
     id: string,
   ): ComponentType<P> | LazyExoticComponent<ComponentType<P>> | null {
     const entry = this.components.get(id);
@@ -446,7 +446,7 @@ class ComponentListManager {
  * @param fallback - Loading fallback
  * @returns Wrapped lazy component
  */
-export const createLazyComponent = <P = any>(
+export const createLazyComponent = <P = unknown>(
   importer: () => Promise<{ default: ComponentType<P> }>,
   _fallback?: ReactNode,
 ): LazyExoticComponent<ComponentType<P>> => {
@@ -460,7 +460,7 @@ export const createLazyComponent = <P = any>(
  * @param fallback - Loading fallback
  * @returns React element
  */
-export const renderWithSuspense = <P = any>(
+export const renderWithSuspense = <P = unknown>(
   Component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   props: P,
   fallback?: ReactNode,
@@ -468,7 +468,7 @@ export const renderWithSuspense = <P = any>(
   return createElement(
     Suspense,
     { fallback: fallback || createElement('div', null, 'Loading...') },
-    createElement(Component as ComponentType<any>, props),
+    createElement(Component as ComponentType<P>, props),
   );
 };
 

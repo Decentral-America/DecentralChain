@@ -4,13 +4,14 @@
  * Fundamental building block for content organization
  * Migrated to Material-UI
  */
-import React from 'react';
+
 import MuiCard, { type CardProps as MuiCardProps } from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import React from 'react';
 
 export interface CardProps extends Omit<MuiCardProps, 'elevation'> {
   elevation?: 'none' | 'sm' | 'md' | 'lg';
@@ -87,7 +88,9 @@ export const CardDescription = styled(Typography)(({ theme }) => ({
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ elevation = 'md', ...props }, ref) => {
     const muiElevation = getElevation(elevation);
-    return <StyledCard ref={ref} elevation={muiElevation} {...(props as any)} />;
+    return (
+      <StyledCard ref={ref} elevation={muiElevation} {...(props as Record<string, unknown>)} />
+    );
   },
 );
 

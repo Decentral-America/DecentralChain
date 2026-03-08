@@ -1,10 +1,10 @@
-import { type IHash } from '../interface';
 import { type Money } from '@decentralchain/data-entities';
-import { listUTX } from '../api/transactions/transactions';
-import { type T_TX } from '../api/transactions/interface';
-import { type IPollAPI, Poll } from '../utils/Poll';
-import { MoneyHash } from '../utils/MoneyHash';
 import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
+import { type T_TX } from '../api/transactions/interface';
+import { listUTX } from '../api/transactions/transactions';
+import { type IHash } from '../interface';
+import { MoneyHash } from '../utils/MoneyHash';
+import { type IPollAPI, Poll } from '../utils/Poll';
 
 export class UTXManager {
   private _address: string;
@@ -61,7 +61,7 @@ export class UTXManager {
   }
 
   private _updateTxMoneyHash() {
-    const moneyList = this._txList.reduce((moneyList, tx: any) => {
+    const moneyList = this._txList.reduce((moneyList, tx: Record<string, unknown>) => {
       moneyList.push(tx.fee);
 
       switch (tx.type) {

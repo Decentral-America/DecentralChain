@@ -3,13 +3,12 @@
  * Contextual information on hover
  * Migrated to Material-UI Tooltip
  */
-import { type ReactNode } from 'react';
-import MuiTooltip, { type TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip';
 
-export interface TooltipProps extends Omit<
-  MuiTooltipProps,
-  'title' | 'placement' | 'children' | 'content'
-> {
+import MuiTooltip, { type TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip';
+import { type ReactNode } from 'react';
+
+export interface TooltipProps
+  extends Omit<MuiTooltipProps, 'title' | 'placement' | 'children' | 'content'> {
   content: NonNullable<React.ReactNode>;
   children: ReactNode;
   position?: 'top' | 'bottom' | 'left' | 'right';

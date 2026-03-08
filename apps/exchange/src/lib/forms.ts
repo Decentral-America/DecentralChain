@@ -2,9 +2,10 @@
  * React Hook Form Configuration with Zod Validation
  * Type-safe form handling and validation utilities
  */
-import { useForm, type UseFormProps, type FieldValues } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z, type ZodSchema } from 'zod';
+import { type FieldValues, type UseFormProps, useForm } from 'react-hook-form';
+import { type ZodSchema, z } from 'zod';
 
 /**
  * Custom hook for forms with Zod validation
@@ -31,7 +32,7 @@ export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
   options?: Omit<UseFormProps<TFieldValues>, 'resolver'>,
 ) {
   return useForm<TFieldValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
     resolver: zodResolver(schema as any) as any,
     mode: 'onChange', // Validate on change for better UX
     reValidateMode: 'onChange', // Revalidate on every change

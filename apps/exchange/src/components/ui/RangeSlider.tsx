@@ -3,9 +3,10 @@
  * Numeric range selection with visual feedback (min/max)
  * Migrated to Material-UI
  */
-import React from 'react';
-import { Slider as MuiSlider, Box, Typography } from '@mui/material';
+
+import { Box, Slider as MuiSlider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 const SliderContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'disabled',

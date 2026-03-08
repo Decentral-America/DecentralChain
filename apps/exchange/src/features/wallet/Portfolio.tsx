@@ -1,33 +1,33 @@
-import { useMemo, useState } from 'react';
+import {
+  AccountBalanceWalletOutlined,
+  CallReceivedOutlined,
+  SearchOutlined,
+  SendOutlined,
+  ShowChartOutlined,
+  TrendingUpOutlined,
+} from '@mui/icons-material';
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
   CardContent,
+  Chip,
   CircularProgress,
   Grid,
   Stack,
   TextField,
   Typography,
-  Chip,
-  Avatar,
 } from '@mui/material';
-import {
-  SendOutlined,
-  CallReceivedOutlined,
-  TrendingUpOutlined,
-  AccountBalanceWalletOutlined,
-  ShowChartOutlined,
-  SearchOutlined,
-} from '@mui/icons-material';
-import { useAuth } from '@/contexts/AuthContext';
-import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useMemo, useState } from 'react';
 import { waveletsToCoins } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
+import { useAuth } from '@/contexts/AuthContext';
+import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { BalanceChart } from './BalanceChart';
-import { SendAssetModalModern } from './SendAssetModalModern';
 import { ReceiveAssetModalModern } from './ReceiveAssetModalModern';
+import { SendAssetModalModern } from './SendAssetModalModern';
 
 const DCC_SYMBOL = 'DCC';
 
@@ -114,7 +114,7 @@ export const Portfolio = () => {
       .map(([assetId, rawBalance]) => {
         const detail = assetDetailMap.get(assetId);
         const decimals = detail?.decimals ?? 8;
-        const amount = rawBalance / Math.pow(10, decimals);
+        const amount = rawBalance / 10 ** decimals;
         return {
           assetId,
           name: detail?.name || shortenId(assetId),

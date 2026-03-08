@@ -3,8 +3,9 @@
  * Modal for SEPA bank transfers for fiat assets
  * Matches Angular modalManager.showSepaAsset functionality
  */
-import { Modal } from '@/components/organisms/Modal';
+
 import styled from 'styled-components';
+import { Modal } from '@/components/organisms/Modal';
 
 interface SepaAssetModalProps {
   isOpen: boolean;

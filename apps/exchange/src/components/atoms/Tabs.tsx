@@ -4,11 +4,13 @@
  * Provides accessible keyboard navigation and active state styling
  * Migrated to Material-UI Tabs
  */
-import React, { useState } from 'react';
-import MuiTabs from '@mui/material/Tabs';
-import MuiTab from '@mui/material/Tab';
+
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import MuiTab from '@mui/material/Tab';
+import MuiTabs from '@mui/material/Tabs';
+import type React from 'react';
+import { useState } from 'react';
 
 export interface Tab {
   id: string;

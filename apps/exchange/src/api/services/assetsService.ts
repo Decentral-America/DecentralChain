@@ -2,7 +2,7 @@
  * Assets API Service
  * Handles asset-related API calls with React Query
  */
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { nodeClient } from '../client';
 
 /**
@@ -205,7 +205,7 @@ export const isDCC = (assetId: string | null | undefined): boolean => {
  * @param decimals - Number of decimals for the asset
  */
 export const formatAssetAmount = (amount: number, decimals: number): number => {
-  return amount / Math.pow(10, decimals);
+  return amount / 10 ** decimals;
 };
 
 /**
@@ -214,7 +214,7 @@ export const formatAssetAmount = (amount: number, decimals: number): number => {
  * @param decimals - Number of decimals for the asset
  */
 export const parseAssetAmount = (amount: number, decimals: number): number => {
-  return Math.floor(amount * Math.pow(10, decimals));
+  return Math.floor(amount * 10 ** decimals);
 };
 
 /**

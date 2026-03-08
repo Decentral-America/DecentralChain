@@ -215,7 +215,7 @@
 ### **Technical Debt:**
 - Some existing components use styled-components, others use MUI styled
 - Need to standardize on MUI styled API
-- ESLint warnings throughout (mostly formatting)
+- Biome warnings throughout (mostly formatting)
 - TypeScript strict mode has some errors
 
 ---

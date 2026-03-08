@@ -3,12 +3,14 @@
  * Full TradingView charting library implementation matching Angular version
  * Uses custom DecentralChain datafeed for real-time candle data
  */
-import React, { useEffect, useRef, useState } from 'react';
-import { logger } from '@/lib/logger';
+
+import { Alert, Box, CircularProgress, Typography } from '@mui/material';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useDexStore } from '@/stores/dexStore';
+import { logger } from '@/lib/logger';
 import { candlesService } from '@/services/candlesService';
-import { Alert, CircularProgress, Box, Typography } from '@mui/material';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Chart container
@@ -25,7 +27,7 @@ const ChartContainer = styled.div`
 `;
 
 // TradingView widget type (loaded dynamically)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 declare const TradingView: any;
 
 let counter = 0;
@@ -117,7 +119,7 @@ const loadTradingViewLibrary = (): Promise<void> => {
  */
 export const TradingViewChart: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
   const chartRef = useRef<any>(null);
   const elementIdRef = useRef(`tradingview${counter++}`);
   const { selectedPair } = useDexStore();

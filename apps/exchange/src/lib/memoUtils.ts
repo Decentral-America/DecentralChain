@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback, type DependencyList } from 'react';
+import { type DependencyList, memo, useCallback, useMemo } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
@@ -17,6 +17,7 @@ export const memoComponent = <P extends object>(
  * Wrapper around useMemo with better typing
  */
 export const useMemoizedValue = <T>(factory: () => T, deps: DependencyList): T => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deps array is passed through from caller
   return useMemo(factory, deps);
 };
 
@@ -24,10 +25,11 @@ export const useMemoizedValue = <T>(factory: () => T, deps: DependencyList): T =
  * Memoize a callback function
  * Wrapper around useCallback with better typing
  */
-export const useMemoizedCallback = <T extends (...args: any[]) => any>(
+export const useMemoizedCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   deps: DependencyList,
 ): T => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deps array is passed through from caller
   return useCallback(callback, deps) as T;
 };
 
@@ -35,7 +37,7 @@ export const useMemoizedCallback = <T extends (...args: any[]) => any>(
  * Shallow comparison for props equality check
  * Useful for React.memo when only shallow comparison is needed
  */
-export const shallowEqual = <T extends Record<string, any>>(
+export const shallowEqual = <T extends Record<string, unknown>>(
   prevProps: T,
   nextProps: T,
 ): boolean => {
@@ -76,7 +78,9 @@ export const deepEqual = <T>(prev: T, next: T): boolean => {
   }
 
   for (const key of prevKeys) {
-    if (!deepEqual((prev as any)[key], (next as any)[key])) {
+    if (
+      !deepEqual((prev as Record<string, unknown>)[key], (next as Record<string, unknown>)[key])
+    ) {
       return false;
     }
   }
@@ -93,6 +97,7 @@ export const useMemoWithEqualityCheck = <T>(
   equalityFn: (prev: T | undefined, next: T) => boolean,
 ): T => {
   const valueRef = useMemo(() => ({ current: undefined as T | undefined }), []);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deps array is passed through from caller
   const newValue = useMemo(factory, deps);
 
   if (!equalityFn(valueRef.current, newValue)) {
@@ -133,7 +138,7 @@ export const createMemoizedSelector = <TInput, TOutput>(
 /**
  * Memoize array of objects by comparing specific keys
  */
-export const useMemoizedArray = <T extends Record<string, any>>(
+export const useMemoizedArray = <T extends Record<string, unknown>>(
   array: T[],
   compareKeys?: (keyof T)[],
 ): T[] => {
@@ -162,7 +167,7 @@ export const useDebouncedMemo = <T>(
   delay: number = 300,
 ): T => {
   const timeoutRef = useMemo(() => ({ current: undefined as NodeJS.Timeout | undefined }), []);
-  const valueRef = useMemo(() => ({ current: factory() }), []);
+  const valueRef = useMemo(() => ({ current: factory() }), [factory]);
 
   useMemo(() => {
     if (timeoutRef.current) {
@@ -178,6 +183,7 @@ export const useDebouncedMemo = <T>(
         clearTimeout(timeoutRef.current);
       }
     };
+    // biome-ignore lint/correctness/useExhaustiveDependencies: deps array is passed through from caller
   }, deps);
 
   return valueRef.current;
@@ -187,7 +193,10 @@ export const useDebouncedMemo = <T>(
  * Memoize an object by keys
  * Only recompute when specified keys change
  */
-export const useMemoizedObject = <T extends Record<string, any>>(obj: T, keys?: (keyof T)[]): T => {
+export const useMemoizedObject = <T extends Record<string, unknown>>(
+  obj: T,
+  keys?: (keyof T)[],
+): T => {
   return useMemo(() => {
     if (!keys || keys.length === 0) {
       return obj;
@@ -229,6 +238,6 @@ export const withPerformanceMonitoring = <P extends object>(
       }
     }
 
-    return shallowEqual(prevProps as any, nextProps as any);
+    return shallowEqual(prevProps as Record<string, unknown>, nextProps as Record<string, unknown>);
   });
 };

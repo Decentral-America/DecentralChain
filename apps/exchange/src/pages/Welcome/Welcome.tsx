@@ -3,21 +3,22 @@
  * Landing page for wallet creation/import
  * Modern crypto-inspired design with animated elements
  */
-import { Outlet, useNavigate } from 'react-router-dom';
+
 import {
   Box,
-  Typography,
   Fade,
-  Slide,
-  Zoom,
-  useTheme,
-  useMediaQuery,
   keyframes,
+  Slide,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Zoom,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import { useEffect, useState } from 'react';
 
 // Animated gradient background
 const gradientAnimation = keyframes`

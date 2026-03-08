@@ -3,11 +3,15 @@
  * Provides access to GatewayService functionality with reactive state management
  * Integrates with ConfigContext for gateway configurations
  */
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { GatewayService } from '@/services/gateway/GatewayService';
+import {
+  type DepositDetails,
+  type GatewayType,
+  type WithdrawDetails,
+} from '@/services/gateway/types';
 import { formatGatewayError } from '@/services/gateway/utils';
-import type { DepositDetails, WithdrawDetails, GatewayType } from '@/services/gateway/types';
 
 interface UseGatewayReturn {
   getDepositDetails: (assetId: string, userAddress: string) => Promise<DepositDetails>;

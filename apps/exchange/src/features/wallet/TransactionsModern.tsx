@@ -2,8 +2,9 @@
  * Transactions Component - Modern Material-UI Version
  * Matches Portfolio styling with landing page theme
  */
-import { Box, Container, Typography, Stack } from '@mui/material';
+
 import { AccountBalanceWalletOutlined } from '@mui/icons-material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { Transactions as LegacyTransactions } from './Transactions';
 
 export const TransactionsModern = () => {

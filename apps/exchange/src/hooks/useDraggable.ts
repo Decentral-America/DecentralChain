@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, type RefObject, useRef } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Position interface for x and y coordinates
@@ -283,7 +283,8 @@ export function useDraggable<T extends HTMLElement>(
         e.preventDefault();
       }
 
-      const touch = e.touches[0]!;
+      const touch = e.touches[0];
+      if (!touch) return;
       const deltaX = touch.clientX - dragStartRef.current.x;
       const deltaY = touch.clientY - dragStartRef.current.y;
 
@@ -323,7 +324,8 @@ export function useDraggable<T extends HTMLElement>(
         e.preventDefault();
       }
 
-      const touch = e.touches[0]!;
+      const touch = e.touches[0];
+      if (!touch) return;
       dragStartRef.current = {
         x: touch.clientX,
         y: touch.clientY,

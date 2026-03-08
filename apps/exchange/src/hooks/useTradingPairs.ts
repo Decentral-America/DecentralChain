@@ -7,7 +7,7 @@
 
 import { useMemo } from 'react';
 import NetworkConfig from '@/config/networkConfig';
-import type { TradingPair, MatcherPriorityItem } from '@/config/types';
+import { type MatcherPriorityItem, type TradingPair } from '@/config/types';
 
 export interface UseTradingPairsReturn {
   /** All trading pairs from mainnet.json */

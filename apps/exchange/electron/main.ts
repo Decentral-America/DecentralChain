@@ -4,9 +4,9 @@
  * Main entry point for Electron desktop application
  */
 
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import { join } from 'node:path';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { autoUpdater } from 'electron-updater';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -122,7 +122,7 @@ app.on('window-all-closed', () => {
  * Handle certificate errors for self-signed certificates (development only)
  */
 if (process.env.NODE_ENV === 'development') {
-  app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+  app.on('certificate-error', (event, _webContents, url, _error, _certificate, callback) => {
     // Allow localhost certificates in development
     if (url.startsWith('https://localhost')) {
       event.preventDefault();
@@ -143,7 +143,6 @@ autoUpdater.autoInstallOnAppQuit = true; // Install on quit after user-approved 
 
 // Update available
 autoUpdater.on('update-available', (info) => {
-  console.log('Update available:', info);
   mainWindow?.webContents.send('app:update-available', {
     version: info.version,
     releaseDate: info.releaseDate,
@@ -152,13 +151,10 @@ autoUpdater.on('update-available', (info) => {
 });
 
 // Update not available
-autoUpdater.on('update-not-available', (info) => {
-  console.log('Update not available:', info);
-});
+autoUpdater.on('update-not-available', (_info) => {});
 
 // Download progress
 autoUpdater.on('download-progress', (progress) => {
-  console.log(`Download progress: ${progress.percent}%`);
   mainWindow?.webContents.send('app:update-progress', {
     percent: Math.round(progress.percent),
     transferred: progress.transferred,
@@ -168,7 +164,6 @@ autoUpdater.on('download-progress', (progress) => {
 
 // Update downloaded
 autoUpdater.on('update-downloaded', (info) => {
-  console.log('Update downloaded:', info);
   mainWindow?.webContents.send('app:update-downloaded', {
     version: info.version,
     releaseDate: info.releaseDate,
@@ -221,7 +216,7 @@ ipcMain.handle('app:get-version', () => {
 ipcMain.handle(
   'app:get-path',
   (
-    event,
+    _event,
     name: 'home' | 'appData' | 'userData' | 'temp' | 'exe' | 'desktop' | 'documents' | 'downloads',
   ) => {
     return app.getPath(name);

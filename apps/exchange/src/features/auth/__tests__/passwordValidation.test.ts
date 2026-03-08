@@ -4,7 +4,7 @@
  * Tests password complexity requirements for wallet creation.
  * Financial applications require strong passwords to protect encrypted seeds.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 /**
  * Password validation logic matching CreateAccount.tsx requirements:

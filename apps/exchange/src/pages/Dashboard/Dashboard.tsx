@@ -3,48 +3,49 @@
  * Overview page with portfolio summary, recent activity, and quick actions
  * Matches landing page styling with modern cards and gradients
  */
-import { useState, useMemo } from 'react';
+
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import BadgeIcon from '@mui/icons-material/Badge';
+import PersonIcon from '@mui/icons-material/Person';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import SendIcon from '@mui/icons-material/Send';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import TokenIcon from '@mui/icons-material/Token';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import {
+  Avatar,
   Box,
-  Grid,
+  Button,
   Card,
   CardContent,
-  Typography,
-  Button,
-  Stack,
   Chip,
-  Avatar,
-  Select,
-  MenuItem,
-  Tabs,
-  Tab,
+  Grid,
   IconButton,
+  MenuItem,
+  Select,
+  Stack,
+  Tab,
+  Tabs,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import { useAuth } from '@/contexts/AuthContext';
-import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { formatDistanceToNow } from 'date-fns';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
-import { useAliases } from '@/hooks/useAliases';
-import { useNavigate } from 'react-router-dom';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import SendIcon from '@mui/icons-material/Send';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import TokenIcon from '@mui/icons-material/Token';
-import BadgeIcon from '@mui/icons-material/Badge';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import PersonIcon from '@mui/icons-material/Person';
-import { formatAmount } from '@/utils/formatters';
-import { formatDistanceToNow } from 'date-fns';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { AssetNameDisplay } from '@/components/common/AssetNameDisplay';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { useAuth } from '@/contexts/AuthContext';
 import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+import { useAliases } from '@/hooks/useAliases';
+import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { landingTheme } from '@/theme/landingTheme';
+import { formatAmount } from '@/utils/formatters';
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -74,7 +75,7 @@ export const Dashboard = () => {
   const totalAssets = assetCount + (hasDCCBalance || assetCount > 0 ? 1 : 0);
 
   // Get DCC balance with full precision
-  const dccBalance = balances?.available ? balances.available / Math.pow(10, 8) : 0;
+  const dccBalance = balances?.available ? balances.available / 10 ** 8 : 0;
 
   // Calculate total portfolio value in selected currency
   const portfolioValueInDCC = useMemo(() => {
@@ -125,7 +126,7 @@ export const Dashboard = () => {
         return {
           assetId,
           amount: amount as number,
-          name: details?.name || assetId.substring(0, 8) + '...',
+          name: details?.name || `${assetId.substring(0, 8)}...`,
           decimals: details?.decimals || 8,
           isBaseAsset: false,
         };
@@ -133,8 +134,8 @@ export const Dashboard = () => {
 
       // Sort by amount descending
       tokenAssets.sort((a, b) => {
-        const aValue = a.amount / Math.pow(10, a.decimals);
-        const bValue = b.amount / Math.pow(10, b.decimals);
+        const aValue = a.amount / 10 ** a.decimals;
+        const bValue = b.amount / 10 ** b.decimals;
         return bValue - aValue;
       });
 
@@ -164,7 +165,7 @@ export const Dashboard = () => {
 
   // Handler to open send modal with selected asset
   const handleSendAsset = (asset: (typeof allAssets)[0]) => {
-    const amount = asset.amount / Math.pow(10, asset.decimals);
+    const amount = asset.amount / 10 ** asset.decimals;
     setSelectedAsset({
       assetId: asset.assetId === 'DCC' ? 'DCC' : asset.assetId,
       assetName: asset.name,
@@ -193,7 +194,7 @@ export const Dashboard = () => {
       if (tx.type === 4) {
         // Transfer
         type = isReceived ? 'Received' : 'Sent';
-        const txAmount = tx.amount ? (tx.amount as number) / Math.pow(10, 8) : 0;
+        const txAmount = tx.amount ? (tx.amount as number) / 10 ** 8 : 0;
         assetId = (tx.assetId as string) || null;
         amount = `${isReceived ? '+' : '-'}${formatAmount(txAmount)}`;
       } else if (tx.type === 7) {
@@ -203,7 +204,7 @@ export const Dashboard = () => {
       } else if (tx.type === 8) {
         // Lease
         type = 'Leased';
-        const txAmount = tx.amount ? (tx.amount as number) / Math.pow(10, 8) : 0;
+        const txAmount = tx.amount ? (tx.amount as number) / 10 ** 8 : 0;
         amount = `${formatAmount(txAmount)} DCC`;
       } else if (tx.type === 9) {
         // Lease Cancel
@@ -561,7 +562,7 @@ export const Dashboard = () => {
 
                 <Stack spacing={2}>
                   {filteredAssets.map((asset) => {
-                    const amount = asset.amount / Math.pow(10, asset.decimals);
+                    const amount = asset.amount / 10 ** asset.decimals;
                     return (
                       <Box
                         key={asset.assetId}
@@ -597,7 +598,7 @@ export const Dashboard = () => {
                             <Typography variant="caption" color="text.secondary">
                               {asset.isBaseAsset
                                 ? 'Native Token'
-                                : asset.assetId.substring(0, 8) + '...'}
+                                : `${asset.assetId.substring(0, 8)}...`}
                             </Typography>
                           </Box>
                         </Stack>
@@ -667,9 +668,9 @@ export const Dashboard = () => {
                   Recent Activity
                 </Typography>
                 <Stack spacing={2}>
-                  {recentActivity.map((activity, index) => (
+                  {recentActivity.map((activity) => (
                     <Box
-                      key={index}
+                      key={activity.txId}
                       sx={{
                         p: 2,
                         borderRadius: '10px',
@@ -757,7 +758,7 @@ export const Dashboard = () => {
                 {/* Individual Assets Breakdown */}
                 <Stack spacing={1.5}>
                   {allAssets.map((asset) => {
-                    const amount = asset.amount / Math.pow(10, asset.decimals);
+                    const amount = asset.amount / 10 ** asset.decimals;
                     return (
                       <Box
                         key={asset.assetId}
@@ -788,7 +789,7 @@ export const Dashboard = () => {
                             <Typography variant="caption" color="text.secondary">
                               {asset.isBaseAsset
                                 ? 'Native Token'
-                                : asset.assetId.substring(0, 6) + '...'}
+                                : `${asset.assetId.substring(0, 6)}...`}
                             </Typography>
                           </Box>
                         </Stack>

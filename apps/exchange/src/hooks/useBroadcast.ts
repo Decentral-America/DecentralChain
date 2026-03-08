@@ -1,14 +1,14 @@
-import { useState, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useRef, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
 import { transactionService } from '@/services/transactionService';
 
 /**
  * Transaction type (any - matches dcc-transactions)
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
 export type Transaction = any;
 
 /**
@@ -182,7 +182,7 @@ const waitForTxConfirmation = async (
         // Query transaction status
         const tx = await transactionService.getById(txId);
 
-        if (tx && tx.height) {
+        if (tx?.height) {
           // Transaction confirmed
           if (debug) {
             logger.debug(`[Broadcast] Transaction confirmed: ${txId} at height ${tx.height}`);

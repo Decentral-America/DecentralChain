@@ -1,8 +1,8 @@
 import {
   Bus,
+  type IOneArgFunction,
   WindowAdapter,
   WindowProtocol,
-  type IOneArgFunction,
 } from '@decentralchain/browser-bus';
 import { delay } from '../utils/utils';
 import { type ConnectProvider } from './ConnectProvider';

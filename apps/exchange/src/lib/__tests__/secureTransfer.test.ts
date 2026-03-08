@@ -4,8 +4,8 @@
  * Tests one-time in-memory seed transfer module that replaces
  * passing seed phrases via React Router state.
  */
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { setSeedTransfer, consumeSeedTransfer, clearSeedTransfer } from '@/lib/secureTransfer';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { clearSeedTransfer, consumeSeedTransfer, setSeedTransfer } from '@/lib/secureTransfer';
 
 describe('secureTransfer', () => {
   beforeEach(() => {

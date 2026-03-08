@@ -3,14 +3,14 @@
  * Main settings interface with tabbed navigation matching Angular's structure
  * General, Security, Network, and Info tabs
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
-import { Tabs, type Tab } from '@/components/atoms/Tabs';
 import { Card } from '@/components/atoms/Card';
+import { type Tab, Tabs } from '@/components/atoms/Tabs';
 import { GeneralSettings } from './GeneralSettings';
-import { SecuritySettings } from './SecuritySettings';
-import { NetworkSettings } from './NetworkSettings';
 import { InfoSettings } from './InfoSettings';
+import { NetworkSettings } from './NetworkSettings';
+import { SecuritySettings } from './SecuritySettings';
 
 /**
  * Styled Components
@@ -39,7 +39,7 @@ const PageDescription = styled.p`
   line-height: 1.6;
 `;
 
-const TabContent = styled(Card as any)`
+const TabContent = styled(Card as React.ComponentType<Record<string, unknown>>)`
   min-height: 400px;
 `;
 

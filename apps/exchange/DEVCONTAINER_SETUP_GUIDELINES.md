@@ -49,8 +49,8 @@ This document provides comprehensive guidelines for setting up a VS Code DevCont
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
+        "biomejs.biome",
+        "biomejs.biome",
         "ms-vscode.vscode-typescript-next",
         "Prisma.prisma",
         "eamodio.gitlens",
@@ -65,11 +65,9 @@ This document provides comprehensive guidelines for setting up a VS Code DevCont
         "typescript.tsdk": "node_modules/typescript/lib",
         "typescript.enablePromptUseWorkspaceTsdk": true,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit"
         },
-        "eslint.validate": ["javascript", "typescript"],
         "files.exclude": {
           "**/node_modules": true,
           "**/dist": true
@@ -508,7 +506,7 @@ This project uses VS Code Dev Containers to provide a consistent, production-lik
 
 ### Pre-configured Tools
 
-- ESLint + Prettier for code quality
+- Biome + Biome for code quality
 - TypeScript language server
 - Git + GitHub CLI
 - Prisma Studio for database management

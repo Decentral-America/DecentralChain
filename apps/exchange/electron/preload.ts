@@ -29,7 +29,7 @@ const electronAPI = {
   /**
    * Send message to main process
    */
-  send: (channel: string, ...args: any[]) => {
+  send: (channel: string, ...args: unknown[]) => {
     // Whitelist channels
     const validChannels = [
       'app:quit',
@@ -49,7 +49,7 @@ const electronAPI = {
   /**
    * Receive message from main process
    */
-  on: (channel: string, callback: (...args: any[]) => void) => {
+  on: (channel: string, callback: (...args: unknown[]) => void) => {
     // Whitelist channels
     const validChannels = [
       'app:update-available',
@@ -59,7 +59,8 @@ const electronAPI = {
     ];
 
     if (validChannels.includes(channel)) {
-      const subscription = (_event: Electron.IpcRendererEvent, ...args: any[]) => callback(...args);
+      const subscription = (_event: Electron.IpcRendererEvent, ...args: unknown[]) =>
+        callback(...args);
       ipcRenderer.on(channel, subscription);
 
       // Return unsubscribe function
@@ -75,7 +76,7 @@ const electronAPI = {
   /**
    * Invoke main process function (with response)
    */
-  invoke: async (channel: string, ...args: any[]) => {
+  invoke: async (channel: string, ...args: unknown[]) => {
     // Whitelist channels
     const validChannels = [
       'app:get-version',

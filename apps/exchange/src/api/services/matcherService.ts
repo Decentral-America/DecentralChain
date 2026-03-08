@@ -3,14 +3,14 @@
  * Handles DEX matcher endpoints for trading operations
  */
 import {
-  useQuery,
-  useMutation,
-  type UseQueryResult,
   type UseMutationResult,
+  type UseQueryResult,
+  useMutation,
+  useQuery,
 } from '@tanstack/react-query';
-import { matcherClient } from '../client';
 import * as ds from 'data-service';
 import { logger } from '@/lib/logger';
+import { matcherClient } from '../client';
 
 /**
  * Order Side Enum
@@ -153,13 +153,13 @@ export const useOrderBook = (
       const orderBookData = await ds.api.matcher.getOrderBook(amountAsset, priceAsset);
 
       // Convert Money objects to numbers (in token units, not smallest units)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
       const bids = orderBookData.bids.slice(0, depth).map((bid: any) => ({
         price: bid.price.getTokens().toNumber(),
         amount: bid.amount.getTokens().toNumber(),
       }));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
       const asks = orderBookData.asks.slice(0, depth).map((ask: any) => ({
         price: ask.price.getTokens().toNumber(),
         amount: ask.amount.getTokens().toNumber(),

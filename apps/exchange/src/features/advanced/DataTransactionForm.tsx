@@ -3,23 +3,25 @@
  * Create data transactions to store key-value pairs on the blockchain
  * Supports string, integer, boolean, and binary data types
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm, useFieldArray } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import type React from 'react';
+import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import { z } from 'zod';
-import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
 import { Select, type SelectOption } from '@/components/atoms/Select';
-import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card as any)`
+const FormCard = styled(Card as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -46,7 +48,7 @@ const EntriesContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
-const EntryCard = styled(Card as any)`
+const EntryCard = styled(Card as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.md};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -65,7 +67,7 @@ const EntryTitle = styled.div`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const RemoveButton = styled(Button as any)`
+const RemoveButton = styled(Button as React.ComponentType)`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   font-size: 12px;
 `;
@@ -91,7 +93,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const AddButton = styled(Button as any)`
+const AddButton = styled(Button as React.ComponentType)`
   width: 100%;
   max-width: 200px;
 `;
@@ -154,7 +156,7 @@ const dataTypeOptions: SelectOption[] = [
 export const DataTransactionForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<any>(null);
+  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
 
   const {
     register,
@@ -242,14 +244,10 @@ export const DataTransactionForm: React.FC = () => {
 
         <InfoBox>
           <strong>💡 Data Transaction Info:</strong>
-          <br />
-          • Maximum 100 entries per transaction
-          <br />
-          • Keys can be up to 400 characters
-          <br />
-          • Supports string, integer, boolean, and binary (Base64) types
-          <br />
-          • Default fee: 0.001 DCC per transaction
+          <br />• Maximum 100 entries per transaction
+          <br />• Keys can be up to 400 characters
+          <br />• Supports string, integer, boolean, and binary (Base64) types
+          <br />• Default fee: 0.001 DCC per transaction
           <br />• Data is immutable and publicly readable
         </InfoBox>
 

@@ -2,8 +2,9 @@
  * Leasing Component - Modern Material-UI Version
  * Matches Portfolio styling with landing page theme
  */
-import { Box, Container, Typography, Stack } from '@mui/material';
+
 import { TrendingUpOutlined } from '@mui/icons-material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { Leasing as LegacyLeasing } from './Leasing';
 
 export const LeasingModern = () => {

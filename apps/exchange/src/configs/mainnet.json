@@ -3,13 +3,19 @@
     ["DCC", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
     ["DCC", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
     ["DCC", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"],
-    ["25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
-    ["25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"],
+    [
+      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
+      "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"
+    ],
+    [
+      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
+      "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
+    ],
     ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"]
   ],
   "oracles": {
-      "dcc": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
-      "tokenomica": ""
+    "dcc": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
+    "tokenomica": ""
   },
   "apiVersion": "v0",
   "code": "?",
@@ -19,11 +25,11 @@
   "explorer": "https://decentralscan.com",
   "coinomat": "",
   "gateway": {
-      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
-          "url": "https://btc.decentralchain.io",
-          "isThirdParty": false,
-          "regex": "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$"
-      }
+    "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
+      "url": "https://btc.decentralchain.io",
+      "isThirdParty": false,
+      "regex": "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$"
+    }
   },
   "support": "https://decentralchain.io/soporte",
   "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
@@ -36,14 +42,14 @@
   "feeConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/fee.json",
   "tokenrating": "",
   "assets": {
-      "DCC": "DCC",
-      "CRC": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
-      "BTC": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
-      "DGFTHR": "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
+    "DCC": "DCC",
+    "CRC": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
+    "BTC": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
+    "DGFTHR": "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
   },
   "matcherPriorityList": [
-      { "ticker": "DCC", "id": "DCC" },
-      { "ticker": "CRC", "id": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"},
-      { "ticker": "BTC", "id": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK" }
+    { "ticker": "DCC", "id": "DCC" },
+    { "ticker": "CRC", "id": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo" },
+    { "ticker": "BTC", "id": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK" }
   ]
 }

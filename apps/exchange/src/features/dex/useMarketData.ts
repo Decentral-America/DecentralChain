@@ -2,10 +2,10 @@
  * Market Data WebSocket Hook
  * Real-time market price and volume updates for trading pairs
  */
-import { useEffect, useCallback, useState } from 'react';
-import { useWebSocketChannel, createWebSocketUrl } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { useCallback, useEffect, useState } from 'react';
 import { config } from '@/config';
+import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Market Update Message
@@ -109,7 +109,7 @@ export const useMarketData = () => {
   useEffect(() => {
     setMarketData(null);
     setIsLive(false);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
     marketData,
@@ -227,7 +227,7 @@ export const usePairTicker = (amountAsset?: string, priceAsset?: string) => {
   useEffect(() => {
     setTicker(null);
     setIsConnected(false);
-  }, [amountAsset, priceAsset]);
+  }, []);
 
   return {
     ticker,

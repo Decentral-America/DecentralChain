@@ -11,22 +11,22 @@ export interface ExportData {
   /**
    * User accounts data
    */
-  accounts: any[];
+  accounts: Record<string, unknown>[];
 
   /**
    * Application settings
    */
-  settings: any;
+  settings: Record<string, unknown>;
 
   /**
    * Multi-account data
    */
-  multiAccountData?: any;
+  multiAccountData?: Record<string, unknown>;
 
   /**
    * User list
    */
-  userList?: any[];
+  userList?: Record<string, unknown>[];
 
   /**
    * Export timestamp
@@ -67,7 +67,7 @@ const EXPORT_KEYS = [
  * @returns Export data object
  */
 export const exportData = (keys: readonly string[] = EXPORT_KEYS): ExportData => {
-  const data: Record<string, any> = {};
+  const data: Record<string, unknown> = {};
 
   for (const key of keys) {
     try {
@@ -449,7 +449,7 @@ export const getStorageStats = (): {
  * @returns Validation result with errors
  */
 export const validateExportData = (
-  data: any,
+  data: unknown,
 ): {
   valid: boolean;
   errors: string[];
@@ -466,16 +466,18 @@ export const validateExportData = (
     return { valid: false, errors };
   }
 
+  const record = data as Record<string, unknown>;
+
   // Check required fields
-  if (!data.version) {
+  if (!record.version) {
     errors.push('Missing version field');
   }
 
-  if (!data.timestamp) {
+  if (!record.timestamp) {
     errors.push('Missing timestamp field');
   }
 
-  if (typeof data.encrypted !== 'boolean') {
+  if (typeof record.encrypted !== 'boolean') {
     errors.push('Missing or invalid encrypted field');
   }
 

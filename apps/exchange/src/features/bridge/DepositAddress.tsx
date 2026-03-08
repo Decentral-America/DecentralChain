@@ -3,14 +3,15 @@
  * Displays gateway deposit address with QR code and copy-to-clipboard functionality
  * Used for showing external blockchain addresses where users send assets to bridge to DecentralChain
  */
-import { useState, useEffect } from 'react';
-import { Box, Typography, IconButton, Tooltip, Alert } from '@mui/material';
-import { ContentCopy, CheckCircle } from '@mui/icons-material';
+
+import { CheckCircle, ContentCopy } from '@mui/icons-material';
+import { Alert, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { QRCodeCanvas as QRCodeCanvasBase } from 'qrcode.react';
+import { useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 // React 19 type compatibility cast
-const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<any>;
+const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<Record<string, unknown>>;
 
 interface DepositAddressProps {
   /** External blockchain address (e.g., BTC address) */
@@ -33,7 +34,7 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
   useEffect(() => {
     setCopied(false);
     setQrError(false);
-  }, [address]);
+  }, []);
 
   /**
    * Handle copy address to clipboard

@@ -1,8 +1,8 @@
 import {
   type Adapter,
-  getAdapterByType,
-  adapterList,
   AdapterType,
+  adapterList,
+  getAdapterByType,
 } from '@decentralchain/signature-adapter';
 
 export interface IUserData {

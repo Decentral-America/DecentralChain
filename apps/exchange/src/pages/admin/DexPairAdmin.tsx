@@ -3,44 +3,45 @@
  * Hidden admin interface for managing trading pairs
  * Only accessible via direct URL: /dccadmin
  */
-import { useState, useEffect } from 'react';
-import { type AdminTradingPair } from '@/hooks/useAdminTradingPairs';
+
 import {
+  Add as AddIcon,
+  Cancel as CancelIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  Save as SaveIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from '@mui/icons-material';
+import {
+  Alert,
   Box,
-  Container,
-  Paper,
-  Typography,
   Button,
-  IconButton,
+  Chip,
+  Container,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  TextField,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  IconButton,
+  Paper,
+  Snackbar,
+  Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
-  Stack,
-  Alert,
-  Snackbar,
+  TextField,
   Tooltip,
-  Switch,
-  FormControlLabel,
+  Typography,
 } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { type AdminTradingPair } from '@/hooks/useAdminTradingPairs';
 import { logger } from '@/lib/logger';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-  Save as SaveIcon,
-  Cancel as CancelIcon,
-} from '@mui/icons-material';
 
 type TradingPair = AdminTradingPair;
 
@@ -470,7 +471,7 @@ export const DexPairAdmin = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        amountAssetDecimals: parseInt(e.target.value) || 8,
+                        amountAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
                     inputProps={{ min: 0, max: 18 }}
@@ -515,7 +516,7 @@ export const DexPairAdmin = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        priceAssetDecimals: parseInt(e.target.value) || 8,
+                        priceAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
                     inputProps={{ min: 0, max: 18 }}
@@ -536,7 +537,7 @@ export const DexPairAdmin = () => {
                   fullWidth
                   value={formData.sortOrder}
                   onChange={(e) =>
-                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    setFormData({ ...formData, sortOrder: parseInt(e.target.value, 10) || 0 })
                   }
                   helperText="Lower numbers appear first"
                 />

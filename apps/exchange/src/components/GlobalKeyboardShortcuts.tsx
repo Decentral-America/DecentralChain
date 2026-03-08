@@ -12,10 +12,10 @@
  */
 
 import { useEffect, useState } from 'react';
-import { logger } from '@/lib/logger';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useKeyboardShortcuts, useHotkey } from '@/hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts';
+import { useHotkey, useKeyboardShortcuts } from '@/hooks';
+import { logger } from '@/lib/logger';
 
 interface GlobalKeyboardShortcutsProps {
   /**

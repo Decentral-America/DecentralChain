@@ -1,4 +1,4 @@
-import { Component, type ReactNode, type ErrorInfo } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { logger } from '@/lib/logger';
 
 interface ErrorBoundaryProps {
@@ -206,10 +206,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             )}
 
             <div style={buttonGroupStyle}>
-              <button style={buttonPrimaryStyle} onClick={this.handleReset}>
+              <button type="button" style={buttonPrimaryStyle} onClick={this.handleReset}>
                 Try Again
               </button>
-              <button style={buttonSecondaryStyle} onClick={this.handleReload}>
+              <button type="button" style={buttonSecondaryStyle} onClick={this.handleReload}>
                 Reload Page
               </button>
             </div>

@@ -3,14 +3,15 @@
  * Form input for external blockchain addresses with real-time validation
  * Uses gateway regex patterns for address format validation
  */
-import { useState, useEffect } from 'react';
-import { TextField, InputAdornment, Box, Typography } from '@mui/material';
-import { CheckCircle, Error } from '@mui/icons-material';
+
+import { CheckCircle, Error as ErrorIcon } from '@mui/icons-material';
+import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useConfig } from '@/contexts/ConfigContext';
 import {
-  validateGatewayAddress,
-  getGatewayConfig,
   getAddressFormatHint,
+  getGatewayConfig,
+  validateGatewayAddress,
 } from '@/services/gateway/utils';
 
 interface AddressInputProps {
@@ -110,7 +111,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               {isValid ? (
                 <CheckCircle color="success" sx={{ fontSize: 24 }} />
               ) : (
-                <Error color="error" sx={{ fontSize: 24 }} />
+                <ErrorIcon color="error" sx={{ fontSize: 24 }} />
               )}
             </InputAdornment>
           ),

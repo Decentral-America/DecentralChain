@@ -2,29 +2,31 @@
  * SendAssetModalModern Component
  * Modern MUI-based modal for sending assets with recipient, amount, and fee inputs
  */
-import React, { useState, useEffect, useRef } from 'react';
-import { logger } from '@/lib/logger';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { CheckCircle, Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Box,
-  Typography,
   Alert,
-  IconButton,
+  Box,
+  Button,
   Card,
-  Stack,
-  InputAdornment,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { Close as CloseIcon, Send as SendIcon, CheckCircle } from '@mui/icons-material';
-import { useAuth } from '@/contexts/AuthContext';
-import { createTransferTransaction, broadcastTransaction } from '@/utils/transactions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getAddressByAlias, validateAliasFormat } from '@/api/services/aliasService';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
+import { broadcastTransaction, createTransferTransaction } from '@/utils/transactions';
 
 export interface SendAssetModalModernProps {
   isOpen: boolean;
@@ -95,8 +97,8 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
       let aliasName = recipient;
       const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
       const match = aliasName.match(aliasPrefix);
-      if (match) {
-        aliasName = match[1]!;
+      if (match?.[1]) {
+        aliasName = match[1];
       }
 
       // Check if it matches alias format
@@ -206,8 +208,8 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     let aliasName = input;
     const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
     const match = aliasName.match(aliasPrefix);
-    if (match) {
-      aliasName = match[1]!;
+    if (match?.[1]) {
+      aliasName = match[1];
     }
 
     // Check alias format (4-30 chars, lowercase alphanumeric + -@_.)
@@ -225,7 +227,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
    */
   const isValidAmount = (value: string): boolean => {
     const numValue = parseFloat(value);
-    if (isNaN(numValue) || numValue <= 0) {
+    if (Number.isNaN(numValue) || numValue <= 0) {
       return false;
     }
     if (numValue > parseFloat(availableBalance)) {

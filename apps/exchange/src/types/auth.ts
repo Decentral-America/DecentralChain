@@ -10,7 +10,7 @@ export interface UserSettings {
   logoutAfterMin?: number; // Auto-logout timer in minutes (0 = disabled, default: 15)
   pinnedAssetIdList?: string[]; // Pinned assets for portfolio
   'wallet.portfolio.spam'?: string[]; // Spam assets to hide
-  [key: string]: any; // Allow other settings
+  [key: string]: unknown; // Allow other settings
 }
 
 /**

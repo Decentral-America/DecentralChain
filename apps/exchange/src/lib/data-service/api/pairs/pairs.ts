@@ -1,12 +1,11 @@
-import { type Asset, AssetPair, Money } from '@decentralchain/data-entities';
+import { createOrderPair } from '@decentralchain/assets-pairs-order';
 import { BigNumber } from '@decentralchain/bignumber';
+import { type Asset, AssetPair, Money, type TMoneyInput } from '@decentralchain/data-entities';
+import { type TPairJSON } from '@decentralchain/data-service-client-js';
+import { DCC_ID } from '@decentralchain/signature-adapter';
 import { getDataService, matcherSettingsPromise } from '../../config';
 import { request } from '../../utils/request';
 import { get as getAsset } from '../assets/assets';
-import { createOrderPair } from '@decentralchain/assets-pairs-order';
-import { DCC_ID } from '@decentralchain/signature-adapter';
-import { type TPairJSON } from '@decentralchain/data-service-client-js';
-import { type TMoneyInput } from '@decentralchain/data-entities';
 
 export function get(assetId1: string | Asset, assetId2: string | Asset): Promise<AssetPair> {
   return matcherSettingsPromise.then((list) => {
@@ -44,10 +43,7 @@ const remapPairInfo =
       const high = moneyFactory(data.high);
       const low = moneyFactory(data.low);
       const volume = volumeFactory(data.volumeDCC);
-      let change24 = change24F(
-        firstPrice && firstPrice.getTokens(),
-        lastPrice && lastPrice.getTokens(),
-      );
+      let change24 = change24F(firstPrice?.getTokens(), lastPrice?.getTokens());
 
       if (change24.gt(1000)) {
         change24 = change24.roundTo(0);

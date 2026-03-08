@@ -1,7 +1,7 @@
-import { request } from '../utils/request';
 import { parse } from '../api/matcher/getOrders';
 import { get } from '../config';
-import { addOrderToStore, removeOrderFromStore, removeAllOrdersFromStore } from '../store';
+import { addOrderToStore, removeAllOrdersFromStore, removeOrderFromStore } from '../store';
+import { request } from '../utils/request';
 import { stringifyJSON } from '../utils/utils';
 
 export function broadcast(data) {
@@ -30,7 +30,7 @@ export function createOrderSend(txData) {
       body: stringifyJSON(txData),
     },
   })
-    .then((data: any) => {
+    .then((data: { message: Record<string, unknown> & { orderType: string } }) => {
       return parse([
         {
           ...data.message,

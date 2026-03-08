@@ -4,8 +4,8 @@
  * Now derives all network values from mainnet.json via NetworkConfig service
  */
 
-import NetworkConfig from './networkConfig';
 import { logger } from '@/lib/logger';
+import NetworkConfig from './networkConfig';
 
 export interface Config {
   // Environment flags

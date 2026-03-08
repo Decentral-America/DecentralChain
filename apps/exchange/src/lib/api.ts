@@ -1,11 +1,6 @@
-import axios, {
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  type AxiosError,
-  type AxiosResponse,
-} from 'axios';
+import { HttpError, type HttpResponse, type RequestConfig } from '@/api/client';
 import { logger } from '@/lib/logger';
-import { shouldRetry, getRetryDelay } from './errorHandler';
+import { getRetryDelay, shouldRetry } from './errorHandler';
 
 /**
  * Retry Configuration
@@ -13,15 +8,7 @@ import { shouldRetry, getRetryDelay } from './errorHandler';
 export interface RetryConfig {
   maxRetries?: number;
   baseDelay?: number;
-  onRetry?: (error: AxiosError, retryCount: number) => void;
-}
-
-/**
- * Extended Axios Request Config with Retry Support
- */
-export interface ApiRequestConfig extends AxiosRequestConfig {
-  _retryCount?: number;
-  _retryConfig?: RetryConfig;
+  onRetry?: (error: unknown, retryCount: number) => void;
 }
 
 /**
@@ -34,108 +21,102 @@ const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
 };
 
 /**
- * Retry interceptor for failed requests
+ * Execute a fetch request with retry logic
  */
-const retryInterceptor = async (error: AxiosError): Promise<any> => {
-  const config = error.config as ApiRequestConfig;
+async function fetchWithRetry<T = unknown>(
+  url: string,
+  init: RequestInit & { timeout?: number },
+  retryConfig: RetryConfig = {},
+  retryCount = 0,
+): Promise<HttpResponse<T>> {
+  const config = { ...DEFAULT_RETRY_CONFIG, ...retryConfig };
 
-  if (!config) {
-    return Promise.reject(error);
-  }
+  try {
+    const { timeout = 30000, ...fetchInit } = init;
+    const res = await fetch(url, {
+      ...fetchInit,
+      signal: AbortSignal.timeout(timeout),
+    });
 
-  // Initialize retry count
-  config._retryCount = config._retryCount || 0;
-
-  // Merge retry config with defaults
-  const retryConfig = {
-    ...DEFAULT_RETRY_CONFIG,
-    ...config._retryConfig,
-  };
-
-  // Check if we should retry
-  const canRetry = shouldRetry(error, config._retryCount, retryConfig.maxRetries);
-
-  if (!canRetry) {
-    return Promise.reject(error);
-  }
-
-  // Increment retry count
-  config._retryCount += 1;
-
-  // Call onRetry callback
-  if (retryConfig.onRetry) {
-    retryConfig.onRetry(error, config._retryCount);
-  }
-
-  // Calculate delay with exponential backoff
-  const delay = getRetryDelay(config._retryCount - 1, retryConfig.baseDelay);
-
-  // Log retry attempt in development
-  if (process.env.NODE_ENV === 'development') {
-    logger.debug(
-      `Retrying request (attempt ${config._retryCount}/${retryConfig.maxRetries}) after ${delay}ms:`,
-      config.url,
-    );
-  }
-
-  // Wait for delay
-  await new Promise((resolve) => setTimeout(resolve, delay));
-
-  // Retry the request
-  return apiClient(config);
-};
-
-/**
- * Create API client with retry logic
- */
-export const createApiClient = (baseURL?: string, retryConfig?: RetryConfig): AxiosInstance => {
-  const client = axios.create({
-    baseURL: baseURL || import.meta.env.VITE_API_URL || '',
-    timeout: 30000,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  // Request interceptor
-  client.interceptors.request.use(
-    (config: any) => {
-      // Merge retry config into request config
-      if (retryConfig) {
-        config._retryConfig = retryConfig;
+    if (!res.ok) {
+      let errorData: unknown;
+      try {
+        errorData = await res.json();
+      } catch {
+        errorData = await res.text();
       }
-      return config;
-    },
-    (error) => Promise.reject(error),
-  );
+      throw new HttpError(res.status, res.statusText, errorData);
+    }
 
-  // Response interceptor with retry logic
-  client.interceptors.response.use(
-    (response: AxiosResponse) => response,
-    (error: AxiosError) => retryInterceptor(error),
-  );
+    const data = (await res.json()) as T;
+    return { data, status: res.status, statusText: res.statusText, headers: res.headers };
+  } catch (error) {
+    if (shouldRetry(error, retryCount, config.maxRetries)) {
+      const nextCount = retryCount + 1;
+      config.onRetry(error, nextCount);
 
-  return client;
-};
+      const delay = getRetryDelay(retryCount, config.baseDelay);
+
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug(
+          `Retrying request (attempt ${nextCount}/${config.maxRetries}) after ${delay}ms:`,
+          url,
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return fetchWithRetry<T>(url, init, retryConfig, nextCount);
+    }
+    throw error;
+  }
+}
 
 /**
- * Default API client instance
+ * Build a full URL from base + path + params
  */
-export const apiClient = createApiClient();
+function buildUrl(baseURL: string, path: string, params?: Record<string, unknown>): string {
+  let url = path.startsWith('http') ? path : baseURL + path;
+  if (params) {
+    const searchParams = new URLSearchParams();
+    for (const [key, val] of Object.entries(params)) {
+      if (val !== undefined && val !== null) {
+        searchParams.set(key, String(val));
+      }
+    }
+    const qs = searchParams.toString();
+    if (qs) url += `${url.includes('?') ? '&' : '?'}${qs}`;
+  }
+  return url;
+}
+
+const DEFAULT_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 /**
- * Make a request with custom retry configuration
+ * Make a request with retry support
  */
-export const makeRequest = async <T = any>(
-  config: AxiosRequestConfig,
+export const makeRequest = async <T = unknown>(
+  config: RequestConfig & { baseURL?: string },
   retryConfig?: RetryConfig,
 ): Promise<T> => {
-  const requestConfig: ApiRequestConfig = {
-    ...config,
-    _retryConfig: retryConfig,
+  const baseURL = config.baseURL ?? DEFAULT_BASE_URL;
+  const url = buildUrl(baseURL, config.url ?? '', config.params);
+  const method = config.method ?? 'GET';
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...config.headers,
   };
 
-  const response = await apiClient.request<T>(requestConfig);
+  const init: RequestInit & { timeout?: number } = {
+    method,
+    headers,
+    timeout: config.timeout ?? 30000,
+  };
+
+  if (config.data !== undefined && method !== 'GET') {
+    init.body = typeof config.data === 'string' ? config.data : JSON.stringify(config.data);
+  }
+
+  const response = await fetchWithRetry<T>(url, init, retryConfig);
   return response.data;
 };
 
@@ -143,65 +124,30 @@ export const makeRequest = async <T = any>(
  * Convenience methods with retry support
  */
 export const api = {
-  get: <T = any>(url: string, config?: AxiosRequestConfig, retryConfig?: RetryConfig) =>
+  get: <T = unknown>(url: string, config?: RequestConfig, retryConfig?: RetryConfig) =>
     makeRequest<T>({ ...config, method: 'GET', url }, retryConfig),
 
-  post: <T = any>(
+  post: <T = unknown>(
     url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
+    data?: unknown,
+    config?: RequestConfig,
     retryConfig?: RetryConfig,
   ) => makeRequest<T>({ ...config, method: 'POST', url, data }, retryConfig),
 
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig, retryConfig?: RetryConfig) =>
-    makeRequest<T>({ ...config, method: 'PUT', url, data }, retryConfig),
-
-  patch: <T = any>(
+  put: <T = unknown>(
     url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
+    data?: unknown,
+    config?: RequestConfig,
+    retryConfig?: RetryConfig,
+  ) => makeRequest<T>({ ...config, method: 'PUT', url, data }, retryConfig),
+
+  patch: <T = unknown>(
+    url: string,
+    data?: unknown,
+    config?: RequestConfig,
     retryConfig?: RetryConfig,
   ) => makeRequest<T>({ ...config, method: 'PATCH', url, data }, retryConfig),
 
-  delete: <T = any>(url: string, config?: AxiosRequestConfig, retryConfig?: RetryConfig) =>
+  delete: <T = unknown>(url: string, config?: RequestConfig, retryConfig?: RetryConfig) =>
     makeRequest<T>({ ...config, method: 'DELETE', url }, retryConfig),
-};
-
-/**
- * Create a custom API client with specific configuration
- */
-export const createCustomApiClient = (
-  baseURL: string,
-  options?: {
-    timeout?: number;
-    headers?: Record<string, string>;
-    retryConfig?: RetryConfig;
-  },
-): AxiosInstance => {
-  const client = axios.create({
-    baseURL,
-    timeout: options?.timeout || 30000,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
-
-  // Add retry interceptor if retry config provided
-  if (options?.retryConfig) {
-    client.interceptors.request.use(
-      (config: any) => {
-        config._retryConfig = options.retryConfig;
-        return config;
-      },
-      (error) => Promise.reject(error),
-    );
-
-    client.interceptors.response.use(
-      (response: AxiosResponse) => response,
-      (error: AxiosError) => retryInterceptor(error),
-    );
-  }
-
-  return client;
 };

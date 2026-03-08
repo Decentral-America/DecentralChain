@@ -2,26 +2,27 @@
  * SignUp Page
  * Full-screen mobile-app experience on mobile, 2-column layout on desktop.
  */
-import React from 'react';
+
+import LoginIcon from '@mui/icons-material/Login';
+import ShieldIcon from '@mui/icons-material/Shield';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import {
   Box,
+  Button,
   Container,
   Grid,
-  Typography,
   Stack,
-  Button,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { landingTheme } from '@/theme/landingTheme';
-import { CreateAccount } from '@/features/auth/CreateAccount';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
-import ShieldIcon from '@mui/icons-material/Shield';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import LoginIcon from '@mui/icons-material/Login';
+import { CreateAccount } from '@/features/auth/CreateAccount';
+import { landingTheme } from '@/theme/landingTheme';
 
 const SignUpInner: React.FC = () => {
   const navigate = useNavigate();

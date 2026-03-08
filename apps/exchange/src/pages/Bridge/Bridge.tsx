@@ -3,36 +3,36 @@
  * Cross-chain bridge interface for gateway operations
  * Enables deposits (external → DecentralChain) and withdrawals (DecentralChain → external)
  */
-import { useState } from 'react';
+
+import { type BigNumber } from '@decentralchain/bignumber';
+import { CheckCircle, InfoOutlined, Login } from '@mui/icons-material';
 import {
-  Box,
-  Container,
-  Typography,
-  ToggleButtonGroup,
-  ToggleButton,
-  Paper,
   Alert,
+  Box,
   Button,
   Card,
   CardContent,
   Chip,
+  Container,
   Grid,
+  Paper,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { InfoOutlined, Login, CheckCircle } from '@mui/icons-material';
-import { type BigNumber } from '@decentralchain/bignumber';
-import { landingTheme } from '@/theme/landingTheme';
-
+import bnbIcon from 'cryptocurrency-icons/svg/color/bnb.svg';
 // Crypto logos
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
-import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
 import ethIcon from 'cryptocurrency-icons/svg/color/eth.svg';
-import bnbIcon from 'cryptocurrency-icons/svg/color/bnb.svg';
+import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { BridgeAssetSelector } from '@/features/bridge/BridgeAssetSelector';
 import { DepositAsset } from '@/features/bridge/DepositAsset';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
-import { useAuth } from '@/contexts/AuthContext';
+import { landingTheme } from '@/theme/landingTheme';
 
 interface SelectedAsset {
   assetId: string;
@@ -163,7 +163,7 @@ export const Bridge: React.FC = () => {
    * Handle mode toggle change
    */
   const handleModeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newMode: 'deposit' | 'withdraw' | null,
   ) => {
     if (newMode !== null) {

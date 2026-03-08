@@ -424,20 +424,7 @@
       }
     },
     "date": {
-      "month": [
-        "Jan",
-        "Feb",
-        "Maa",
-        "Apr",
-        "Mei",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Dec"
-      ]
+      "month": ["Jan", "Feb", "Maa", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
     },
     "error": {
       "updateClient": {

@@ -2,8 +2,9 @@
  * Markets Page
  * Shows cryptocurrency market overview and price charts
  */
-import { Box, Typography, Paper, Grid, Stack } from '@mui/material';
-import { TrendingUp, TrendingDown } from '@mui/icons-material';
+
+import { TrendingDown, TrendingUp } from '@mui/icons-material';
+import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export const Markets = () => {
   const marketData = [
