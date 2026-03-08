@@ -1,10 +1,15 @@
-import { broadcast, ISetScriptParams, libs, massTransfer, setScript, waitForTx } from '../../src';
 import { address, publicKey } from '@decentralchain/ts-lib-crypto';
-import { MASTER_SEED, CHAIN_ID, TIMEOUT, API_BASE, randomHexString } from './config';
-import { data, invokeScript } from '../../src';
-
-import { txToProtoBytes } from '../../src/proto-serialize';
 import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
+import {
+  broadcast,
+  data,
+  type ISetScriptParams,
+  invokeScript,
+  massTransfer,
+  setScript,
+  waitForTx,
+} from '../../src';
+import { API_BASE, CHAIN_ID, MASTER_SEED, randomHexString, TIMEOUT } from './config';
 
 describe('Smart features', () => {
   let account1: string, account2: string;
@@ -39,9 +44,14 @@ describe('Smart features', () => {
 =======
 =======
     vi.setConfig({ testTimeout: 60000 });
+<<<<<<< HEAD
     account1 = 'account1' + nonce;
     account2 = 'account2' + nonce;
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/smart.spec.ts
+=======
+    account1 = `account1${nonce}`;
+    account2 = `account2${nonce}`;
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
     const mtt = massTransfer(
       {
         transfers: [
@@ -61,7 +71,6 @@ describe('Smart features', () => {
     );
     await broadcast(mtt, API_BASE);
     await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT });
-    console.log('Smart test setup successful\n Accounts nonce = ' + nonce);
   }, TIMEOUT);
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/smart.spec.ts
 
@@ -191,7 +200,6 @@ describe('Smart features', () => {
           const tx = setScript(txParams, account2);
           await broadcast(tx, API_BASE);
           await waitForTx(tx.id, { timeout: TIMEOUT, apiBase: API_BASE });
-          console.log('dApp account script has been set');
         } catch (e) {
           console.error(e);
           throw e;

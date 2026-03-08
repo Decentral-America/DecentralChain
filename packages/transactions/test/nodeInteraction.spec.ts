@@ -1,8 +1,7 @@
-import * as utilityF from '../src/nodeInteraction';
-import { data } from '../src';
-import { broadcast } from '../src/nodeInteraction';
 import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
-import { CHAIN_ID } from './integration/config';
+import { data } from '../src';
+import * as utilityF from '../src/nodeInteraction';
+import { broadcast } from '../src/nodeInteraction';
 
 const chainId = '!';
 const apiBase = 'https://testnet-node.decentralchain.io/';

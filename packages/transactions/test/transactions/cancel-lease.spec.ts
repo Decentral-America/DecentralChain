@@ -1,14 +1,14 @@
 import { publicKey } from '@decentralchain/ts-lib-crypto';
 import { cancelLease } from '../../src';
-import { cancelLeaseMinimalParams } from '../minimalParams';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
   validateTxSignature,
 } from '../../test/utils';
-import { cancelLeaseTx } from './expected/proto/cancel-lease.tx';
+import { cancelLeaseMinimalParams } from '../minimalParams';
 import { cancelLeaseBinaryTx } from './expected/binary/cancel-lease.tx';
+import { cancelLeaseTx } from './expected/proto/cancel-lease.tx';
 
 describe('cancel-lease', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -62,17 +62,17 @@ describe('cancel-lease', () => {
 });
 
 describe('serialize/deserialize cancel lease tx', () => {
-  Object.entries(cancelLeaseTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(cancelLeaseTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize binary cancel lease tx', () => {
-  Object.entries(cancelLeaseBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(cancelLeaseBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

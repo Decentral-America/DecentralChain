@@ -24,13 +24,16 @@ import { binary } from '@decentralchain/marshall'
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
 } from '../utils';
-import { aliasTx } from './expected/proto/alias.tx';
 import { aliasBinaryTx } from './expected/binary/alias.tx';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { binary } from '@decentralchain/marshall';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/alias.spec.ts
 =======
 >>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
+=======
+import { aliasTx } from './expected/proto/alias.tx';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 describe('alias', () => {
   const stringSeed = 'adsa';
@@ -108,17 +111,17 @@ describe('alias', () => {
 });
 
 describe('serialize/deserialize alias proto tx', () => {
-  Object.entries(aliasTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(aliasTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize alias binary tx', () => {
-  Object.entries(aliasBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(aliasBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

@@ -1,13 +1,16 @@
 /**
  * @module index
  */
-import { base58Encode, blake2b, concat, signBytes, address } from '@decentralchain/ts-lib-crypto';
+
 import { serializePrimitives } from '@decentralchain/marshall';
+import { address, base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
+
 const { STRING, LEN, SHORT } = serializePrimitives;
-import { getSenderPublicKey, convertToPairs } from '../generic';
-import { IAuthParams, IAuth } from '../transactions';
+
+import { convertToPairs, getSenderPublicKey } from '../generic';
+import { type IAuth, type IAuthParams } from '../transactions';
+import { type TPrivateKey } from '../types';
 import { validate } from '../validators';
-import { TPrivateKey } from '../types';
 
 export const serializeAuthData = (auth: { host: string; data: string }) =>
   concat(

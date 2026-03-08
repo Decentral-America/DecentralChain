@@ -1,21 +1,21 @@
 import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
-import { reissue, signTx, data, burn, broadcast, IDataParams } from '../src';
+import { type Transaction } from '@decentralchain/ts-types';
+import { broadcast, burn, data, type IDataParams, reissue, signTx } from '../src';
 import { serialize, verify } from '../src/general';
-import { reissueMinimalParams, burnMinimalParams, orderMinimalParams } from './minimalParams';
-import { exampleTxs } from './exampleTxs';
 import { order } from '../src/requests/order';
+import { exampleTxs } from './exampleTxs';
 import { API_BASE } from './integration/config';
-import { Transaction } from '@decentralchain/ts-types';
+import { burnMinimalParams, orderMinimalParams, reissueMinimalParams } from './minimalParams';
 
 const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
 
 describe('signTx', () => {
   const txs = Object.keys(exampleTxs).map((x) => (<any>exampleTxs)[x] as Transaction);
   txs.forEach((tx) => {
-    it('type: ' + tx.type, () => {
+    it(`type: ${tx.type}`, () => {
       const signed = signTx(tx, stringSeed);
       const bytes = serialize(signed);
-      expect(verifySignature(publicKey(stringSeed), bytes, signed.proofs[1]!)).toBe(true);
+      expect(verifySignature(publicKey(stringSeed), bytes, signed.proofs[1] as string)).toBe(true);
     });
   });
 
