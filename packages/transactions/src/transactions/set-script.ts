@@ -52,20 +52,8 @@ export function setScript(
     type,
     version,
     senderPublicKey,
-<<<<<<< HEAD
-    chainId: networkByte(paramsOrTx.chainId, 87),
-<<<<<<< HEAD
-<<<<<<< HEAD
-    fee: fee(paramsOrTx, 1000000),
-=======
-    fee: fee(paramsOrTx, 100000000),
->>>>>>> 697d643a (minor fixes)
-=======
-=======
     chainId: networkByte(paramsOrTx.chainId, 76),
->>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
     fee: fee(paramsOrTx, computedFee),
->>>>>>> f33083a0 (updated dependencies)
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     id: '',

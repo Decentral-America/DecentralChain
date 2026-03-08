@@ -28,75 +28,6 @@ import { serializeAuthData } from './requests/auth';
 import { serializeCustomData, type TSignedData } from './requests/custom-data';
 import { serializeDccAuthData } from './requests/dccAuth';
 import {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    AliasTransaction,
-    BurnTransaction,
-    CancelLeaseTransaction,
-    DataTransaction,
-    ExchangeTransaction,
-    ExchangeTransactionOrder,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    // InvokeExpressionTransaction,
-=======
->>>>>>> 697d643a (minor fixes)
-=======
-    // InvokeExpressionTransaction,
->>>>>>> f33083a0 (updated dependencies)
-    InvokeScriptTransaction,
-    IssueTransaction,
-    LeaseTransaction,
-    MassTransferTransaction,
-    ReissueTransaction,
-    SetAssetScriptTransaction,
-    SetScriptTransaction, SignedIExchangeTransactionOrder,
-    SignedTransaction,
-    SponsorshipTransaction,
-    Transaction,
-    TRANSACTION_TYPE,
-    TransferTransaction, UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types'
-import {IAuthParams, ICancelOrder, TTransaction, TTxParams, WithProofs, WithSender, WithTxType} from './transactions'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import {updateAssetInfo} from './transactions/update-asset-info'
-=======
-  AliasTransaction,
-  BurnTransaction,
-  CancelLeaseTransaction,
-  DataTransaction,
-  ExchangeTransaction,
-  ExchangeTransactionOrder,
-  InvokeScriptTransaction,
-  IssueTransaction,
-  LeaseTransaction,
-  MassTransferTransaction,
-  ReissueTransaction,
-  SetAssetScriptTransaction,
-  SetScriptTransaction,
-  SignedIExchangeTransactionOrder,
-  SignedTransaction,
-  SponsorshipTransaction,
-  Transaction,
-  TRANSACTION_TYPE,
-  TransferTransaction,
-  UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types';
-import {
-  IAuthParams,
-  ICancelOrder,
-  TTransaction,
-  TTxParams,
-  WithProofs,
-  WithSender,
-  WithTxType,
-<<<<<<< HEAD
-} from './transactions'
-import { updateAssetInfo } from './transactions/update-asset-info'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
-=======
   type IAuthParams,
   type ICancelOrder,
   type TTransaction,
@@ -104,7 +35,6 @@ import { updateAssetInfo } from './transactions/update-asset-info'
   type WithProofs,
   type WithSender,
   type WithTxType,
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 } from './transactions';
 import { alias } from './transactions/alias';
 import { burn } from './transactions/burn';
@@ -121,56 +51,11 @@ import { setScript } from './transactions/set-script';
 import { sponsorship } from './transactions/sponsorship';
 import { transfer } from './transactions/transfer';
 import { updateAssetInfo } from './transactions/update-asset-info';
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
-// import {invokeExpression} from './transactions/invoke-expression'
-=======
->>>>>>> 697d643a (minor fixes)
-=======
-import {updateAssetInfo} from './transactions/update-asset-info'
-// import {invokeExpression} from './transactions/invoke-expression'
->>>>>>> f33083a0 (updated dependencies)
-
-type TLong = string | number;
-
-<<<<<<< HEAD
-export const txTypeMap: { [type: number]: { sign: (tx: Transaction<TLong> | TTxParams & WithTxType, seed: TSeedTypes) => SignedTransaction<Transaction<TLong>> } } = {
-    [TRANSACTION_TYPE.ISSUE]: {sign: (x, seed) => issue(x as IssueTransaction<TLong>, seed)},
-    [TRANSACTION_TYPE.TRANSFER]: {sign: (x, seed) => transfer(x as TransferTransaction<TLong>, seed)},
-    [TRANSACTION_TYPE.REISSUE]: {sign: (x, seed) => reissue(x as ReissueTransaction<TLong>, seed)},
-    [TRANSACTION_TYPE.BURN]: {sign: (x, seed) => burn(x as BurnTransaction<TLong>, seed)},
-    [TRANSACTION_TYPE.LEASE]: {sign: (x, seed) => lease(x as LeaseTransaction<TLong>, seed)},
-    [TRANSACTION_TYPE.CANCEL_LEASE]: {sign: (x, seed) => cancelLease(x as CancelLeaseTransaction, seed)},
-    [TRANSACTION_TYPE.ALIAS]: {sign: (x, seed) => alias(x as AliasTransaction, seed)},
-    [TRANSACTION_TYPE.MASS_TRANSFER]: {sign: (x, seed) => massTransfer(x as MassTransferTransaction, seed)},
-    [TRANSACTION_TYPE.DATA]: {sign: (x, seed) => data(x as DataTransaction, seed)},
-    [TRANSACTION_TYPE.SET_SCRIPT]: {sign: (x, seed) => setScript(x as SetScriptTransaction, seed)},
-    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: {sign: (x, seed) => setAssetScript(x as SetAssetScriptTransaction, seed)},
-    [TRANSACTION_TYPE.SPONSORSHIP]: {sign: (x, seed) => sponsorship(x as SponsorshipTransaction, seed)},
-    [TRANSACTION_TYPE.EXCHANGE]: {sign: (x, seed) => exchange(x as ExchangeTransaction & WithProofs, seed)},
-    [TRANSACTION_TYPE.INVOKE_SCRIPT]: {sign: (x, seed) => invokeScript(x as InvokeScriptTransaction, seed)},
-<<<<<<< HEAD
-<<<<<<< HEAD
-    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed)},
-    // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
-=======
->>>>>>> 697d643a (minor fixes)
-=======
-    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed)},
-    // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
->>>>>>> f33083a0 (updated dependencies)
-=======
-export const txTypeMap: {
-=======
-=======
 import { type TSeedTypes } from './types';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 type TLong = string | number;
 
 const txTypeMap: {
->>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
   [type: number]: {
     sign: (
       tx: Transaction<TLong> | (TTxParams & WithTxType),
@@ -209,16 +94,7 @@ const txTypeMap: {
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {
     sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed),
   },
-<<<<<<< HEAD
-  // [TRANSACTION_TYPE.INVOKE_EXPRESSION]: {sign: (x, seed) => invokeExpression(x as InvokeExpressionTransaction, seed)},
-<<<<<<< HEAD
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-}
-=======
-=======
->>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
 };
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
 /**
  * Signs arbitrary transaction. Can also create signed transaction if provided params have type field

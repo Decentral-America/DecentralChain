@@ -6,34 +6,9 @@ import {
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
   validateTxSignature,
-<<<<<<< HEAD:test/transactions/alias.test.ts
-} from '../utils'
-<<<<<<< HEAD
-import {aliasTx} from "./expected/proto/alias.tx";
-import {aliasBinaryTx} from "./expected/binary/alias.tx";
-<<<<<<< HEAD
-import {binary} from '@waves/marshall'
-=======
-import {binary} from '@decentralchain/marshall'
->>>>>>> f33083a0 (updated dependencies)
-
-=======
-import { aliasTx } from './expected/proto/alias.tx'
-import { aliasBinaryTx } from './expected/binary/alias.tx'
-import { binary } from '@decentralchain/marshall'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
 } from '../utils';
 import { aliasBinaryTx } from './expected/binary/alias.tx';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { binary } from '@decentralchain/marshall';
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/alias.spec.ts
-=======
->>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
-=======
 import { aliasTx } from './expected/proto/alias.tx';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 describe('alias', () => {
   const stringSeed = 'adsa';

@@ -90,27 +90,10 @@ describe('Node interaction utility functions', () => {
     await expect(resp).rejects.toMatchObject({ error: 199 });
   }, 5000);
 
-<<<<<<< HEAD
-    it('Should get NFT balance', async () => {
-        await expect(utilityF.assetBalance('2HgvJjAJFug1QriGTJPLK1AM2Yv3GqYnDLpUjQprf1Ut', '3Ms5T2C6pvqiZbMASjiJvPh9u57bQpcVLLp', apiBase)).resolves.toEqual(1)
-    }, 5000)
-
-    it('Should return correct error on invalid address for asset balance', async () => {
-        const resp = utilityF.assetBalance('invalidAddress', 'bad address', apiBase)
-        await expect(resp).rejects.toMatchObject({error: 199})
-    }, 5000)
-=======
   it('Should get accountData ', async () => {
-<<<<<<< HEAD:test/nodeInteraction.test.ts
-    const addr = address(randomSeed(), chainId)
-    await expect(utilityF.accountData(addr, apiBase)).resolves.not.toBeFalsy()
-  }, 5000)
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
     const addr = address(randomSeed(), chainId);
     await expect(utilityF.accountData(addr, apiBase)).resolves.not.toBe(false);
   }, 5000);
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/nodeInteraction.spec.ts
 
   it('Should get accountData and filter it by regexp', async () => {
     const data = await utilityF.accountData(
@@ -156,34 +139,10 @@ describe('Node interaction utility functions', () => {
     expect(data).toMatchObject({ address: '3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR' });
   }, 5000);
 
-<<<<<<< HEAD
-    it('Should get account script meta', async () => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        const data = await utilityF.scriptMeta('3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR', apiBase)
-        expect(data).toMatchObject({address: '3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR'})
-=======
-        const data = await utilityF.scriptMeta('3XVVT9TLt9cthFCxdBfgT1kp56d5E5reNak', apiBase)
-        console.log(data)
-        expect(data).toMatchObject({address: '3XVVT9TLt9cthFCxdBfgT1kp56d5E5reNak'})
->>>>>>> 697d643a (minor fixes)
-=======
-        const data = await utilityF.scriptMeta('3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR', apiBase)
-        expect(data).toMatchObject({address: '3N749utyWVhhnCqWh6hbqsq5zMvqVSanamR'})
->>>>>>> f33083a0 (updated dependencies)
-    }, 5000)
-=======
   it('Should reward info', async () => {
-<<<<<<< HEAD:test/nodeInteraction.test.ts
-    const data = await utilityF.rewards('https://testnet-node.decentralchain.io')
-    expect(data).toHaveProperty('currentReward')
-  }, 5000)
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
     const data = await utilityF.rewards('https://testnet-node.decentralchain.io');
     expect(data).toHaveProperty('currentReward');
   }, 5000);
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/nodeInteraction.spec.ts
 
   it('Should get invokeTx state changes', async () => {
     const data = await utilityF.stateChanges(

@@ -18,40 +18,9 @@ describe('Smart features', () => {
   beforeAll(async () => {
     const nonce = randomHexString(6);
 
-<<<<<<< HEAD:test/integration/smart.test.ts
-    jest.setTimeout(60000)
-    account1 = 'account1' + nonce
-    account2 = 'account2' + nonce
-<<<<<<< HEAD
-    const mtt = massTransfer({
-      transfers: [
-<<<<<<< HEAD
-<<<<<<< HEAD
-        { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
-        { recipient: address(account2, CHAIN_ID), amount: 1100000 },
-      ],
-=======
-        { recipient: address(account1, CHAIN_ID), amount: 10000 * wvs },
-        { recipient: address(account2, CHAIN_ID), amount: 10000 * wvs },
-      ]
->>>>>>> 697d643a (minor fixes)
-=======
-        { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
-        { recipient: address(account2, CHAIN_ID), amount: 1100000 },
-      ],
->>>>>>> f33083a0 (updated dependencies)
-    }, MASTER_SEED)
-=======
-=======
     vi.setConfig({ testTimeout: 60000 });
-<<<<<<< HEAD
-    account1 = 'account1' + nonce;
-    account2 = 'account2' + nonce;
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/smart.spec.ts
-=======
     account1 = `account1${nonce}`;
     account2 = `account2${nonce}`;
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
     const mtt = massTransfer(
       {
         transfers: [
@@ -60,19 +29,10 @@ describe('Smart features', () => {
         ],
       },
       MASTER_SEED,
-<<<<<<< HEAD:test/integration/smart.test.ts
-    )
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-    await broadcast(mtt, API_BASE)
-    await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT })
-    console.log('Smart test setup successful\n Accounts nonce = ' + nonce)
-  }, TIMEOUT)
-=======
     );
     await broadcast(mtt, API_BASE);
     await waitForTx(mtt.id, { apiBase: API_BASE, timeout: TIMEOUT });
   }, TIMEOUT);
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/smart.spec.ts
 
   describe('Data transactions', () => {
     it(
@@ -223,28 +183,8 @@ describe('Smart features', () => {
             },
             fee: 900000,
           },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-          fee: 900000
-        },
-        account1)
-=======
-          account1)
->>>>>>> 697d643a (minor fixes)
-=======
-          fee: 900000
-        },
-        account1)
->>>>>>> f33083a0 (updated dependencies)
-=======
           account1,
-<<<<<<< HEAD:test/integration/smart.test.ts
-        )
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
         );
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/smart.spec.ts
 
         await broadcast(invokeTx, API_BASE);
       },
