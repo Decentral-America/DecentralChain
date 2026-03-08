@@ -1,9 +1,9 @@
-import { NODE_URL, STATE, CHAIN_ID } from '../_state';
+import { broadcast, invokeScript, libs, transfer, waitForTx } from '@decentralchain/transactions';
+import { type InvokeScriptTransaction } from '@decentralchain/ts-types';
 import { create } from '../../src';
-import { invokeScript, waitForTx, broadcast, transfer, libs } from '@decentralchain/transactions';
-import { InvokeScriptTransaction } from '@decentralchain/ts-types';
-import { TLong } from '../../src/interface';
-import { TWithState } from '../../src/tools/transactions/transactions';
+import { type TLong } from '../../src/interface';
+import { type TWithState } from '../../src/tools/transactions/transactions';
+import { CHAIN_ID, NODE_URL, STATE } from '../_state';
 
 const api = create(NODE_URL);
 
@@ -50,8 +50,6 @@ describe('State changes by transaction Id', () => {
     const api2: ReturnType<typeof create> = create('https://nodes-stagenet.decentralchain.io/');
     //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
     const tx = await api2.transactions.fetchInfo('3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK');
-    const txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges;
-
-    console.log(txState.invokes);
+    const _txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges;
   });
 });

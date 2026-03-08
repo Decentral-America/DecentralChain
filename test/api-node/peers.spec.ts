@@ -1,5 +1,5 @@
 import { create } from '../../src';
-import { IPeerAllResponse, IPeerConnectedResponse } from '../../src/api-node/peers';
+import { type IPeerAllResponse, type IPeerConnectedResponse } from '../../src/api-node/peers';
 
 const api: ReturnType<typeof create> = create('https://mainnet-decentralchain.io/');
 
@@ -34,7 +34,7 @@ it('blacklisted peers', async () => {
   const blacklistedPeers = await api.peers.fetchBlackListed();
 
   expect(blacklistedPeers).toBeInstanceOf(Array);
-  if (blacklistedPeers.length != 0) {
+  if (blacklistedPeers.length !== 0) {
     blacklistedPeers.forEach((peer) => {
       expect(typeof peer.reason).toBe('string');
       expect(typeof peer.hostname).toBe('string');
@@ -47,7 +47,7 @@ it('suspended peers', async () => {
   const suspendedPeers = await api.peers.fetchSuspended();
 
   expect(suspendedPeers).toBeInstanceOf(Array);
-  if (suspendedPeers.length != 0) {
+  if (suspendedPeers.length !== 0) {
     suspendedPeers.forEach((peer) => {
       expect(typeof peer.hostname).toBe('string');
       expect(typeof peer.timestamp).toBe('number');

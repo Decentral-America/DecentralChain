@@ -1,5 +1,5 @@
-import { NODE_URL } from '../_state';
 import { create } from '../../src';
+import { NODE_URL } from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 

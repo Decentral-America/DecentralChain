@@ -1,7 +1,7 @@
 import { create } from '../../src';
+import { type TRewards } from '../../src/api-node/rewards';
+import { type TLong } from '../../src/interface';
 import { NODE_URL } from '../_state';
-import { TRewards } from '../../src/api-node/rewards';
-import { TLong } from '../../src/interface';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
