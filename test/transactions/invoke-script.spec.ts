@@ -26,10 +26,14 @@ import { IInvokeScriptParams } from '../../src';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/invoke-script.spec.ts
 =======
 import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { type IInvokeScriptParams, invokeScript } from '../../src';
 import { invokeScriptMinimalParams } from '../minimalParams';
+<<<<<<< HEAD
 import { invokeScript } from '../../src';
 import type { IInvokeScriptParams } from '../../src';
 >>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
+=======
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
@@ -61,14 +65,17 @@ import { broadcast } from '../../src'
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
 } from '../utils';
-import { invokeScriptTx } from './expected/proto/invoke-script.tx';
 import { invokeScriptBinaryTx } from './expected/binary/invoke-script.tx';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { API_BASE, TIMEOUT } from '../integration/config';
 import { broadcast } from '../../src';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/invoke-script.spec.ts
 =======
 >>>>>>> 1825a504 (refactor(DCC-18): harden error handling, add security warnings, and remove dead imports)
+=======
+import { invokeScriptTx } from './expected/proto/invoke-script.tx';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 describe('invokeScript', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -91,7 +98,7 @@ describe('invokeScript', () => {
   it('Should build with nullable call field', () => {
     const stringSeed2 =
       'shiver excess resource rather roast nation rib clump nerve reject skirt soccer congress pelican involve';
-    const tx = invokeScript(
+    const _tx = invokeScript(
       {
         ...invokeScriptMinimalParams,
         payment: [{ amount: 100, assetId: null }],
@@ -357,14 +364,15 @@ describe('invokeScript', () => {
 });
 
 describe('serialize/deserialize invoke tx', () => {
-  Object.entries(invokeScriptTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(invokeScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize invoke binary tx', () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     Object.entries(invokeScriptBinaryTx).forEach(([name, {Bytes, Json}]) =>
@@ -394,5 +402,12 @@ describe('serialize/deserialize invoke binary tx', () => {
 })
 =======
   );
+=======
+  Object.entries(invokeScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+    });
+  });
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 });
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/transactions/invoke-script.spec.ts

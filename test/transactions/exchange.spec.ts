@@ -1087,7 +1087,7 @@ describe('exchange', () => {
       proofs: [],
     };
 
-    // @ts-ignore
+    // @ts-expect-error
     exchange({ ...txOk }, seed1);
   });
 
@@ -1531,6 +1531,7 @@ describe('exchange', () => {
       version: 3,
     };
 
+<<<<<<< HEAD
     // @ts-ignore
 <<<<<<< HEAD:test/transactions/exchange.test.ts
     const tx = exchange({ ...txOk }, seed1)
@@ -1539,6 +1540,9 @@ describe('exchange', () => {
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 })
 =======
+=======
+    // @ts-expect-error
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });

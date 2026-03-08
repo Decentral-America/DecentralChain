@@ -1,12 +1,12 @@
+import { sponsorship } from '../../src/transactions/sponsorship';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
 } from '../../test/utils';
 import { sponsorshipMinimalParams } from '../minimalParams';
-import { sponsorship } from '../../src/transactions/sponsorship';
-import { sponsorshipTx } from './expected/proto/sponsorship.tx';
 import { sponsorshipBinaryTx } from './expected/binary/sponsorship.tx';
+import { sponsorshipTx } from './expected/proto/sponsorship.tx';
 
 describe('setSponsorship', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -60,17 +60,17 @@ describe('setSponsorship', () => {
 });
 
 describe('serialize/deserialize sponsorship tx', () => {
-  Object.entries(sponsorshipTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(sponsorshipTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize sponsorship binary tx', () => {
-  Object.entries(sponsorshipBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(sponsorshipBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

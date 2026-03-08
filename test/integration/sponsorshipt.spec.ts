@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:test/integration/sponsorshipt.test.ts
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -21,6 +22,11 @@ import { API_BASE, CHAIN_ID, MASTER_SEED, TIMEOUT } from './config';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { validate } from '../../src/validators';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/sponsorshipt.spec.ts
+=======
+import { address } from '@decentralchain/ts-lib-crypto';
+import { broadcast, issue, sponsorship, transfer, waitForTx } from '../../src';
+import { API_BASE, CHAIN_ID, MASTER_SEED, TIMEOUT } from './config';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 describe('Sponsorship', () => {
   let assetId: string;
