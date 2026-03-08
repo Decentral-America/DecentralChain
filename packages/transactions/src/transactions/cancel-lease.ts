@@ -1,46 +1,11 @@
 /**
  * @module index
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { ICancelLeaseParams, WithId, WithProofs, WithSender } from '../transactions'
-import { binary } from '@decentralchain/marshall'
-<<<<<<< HEAD
-import { signBytes, blake2b, base58Encode } from '@waves/ts-lib-crypto'
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
-<<<<<<< HEAD
->>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
-import {addProof, getSenderPublicKey, convertToPairs, networkByte, fee} from '../generic'
-=======
-import { addProof, getSenderPublicKey, convertToPairs, networkByte, fee } from '../generic'
->>>>>>> 697d643a (minor fixes)
-=======
-import {addProof, getSenderPublicKey, convertToPairs, networkByte, fee} from '../generic'
->>>>>>> f33083a0 (updated dependencies)
-=======
-import { addProof, getSenderPublicKey, convertToPairs, networkByte, fee } from '../generic'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-import { TSeedTypes } from '../types'
-import { validate } from '../validators'
-import { txToProtoBytes } from '../proto-serialize'
-import { DEFAULT_VERSIONS } from '../defaultVersions'
-import { CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
-=======
-import { ICancelLeaseParams, WithId, WithProofs, WithSender } from '../transactions';
-=======
 
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
 import { type CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
-<<<<<<< HEAD
-import { CancelLeaseTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
-=======
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
 import { txToProtoBytes } from '../proto-serialize';
 import {
@@ -51,7 +16,6 @@ import {
 } from '../transactions';
 import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 /* @echo DOCS */
 export function cancelLease(

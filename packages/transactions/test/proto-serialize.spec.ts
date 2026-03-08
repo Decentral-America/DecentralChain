@@ -1,69 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD:test/proto-serialize.test.ts
-<<<<<<< HEAD
-import {exampleTxs} from './exampleTxs'
-import {
-  alias,
-  broadcast,
-  burn,
-  cancelLease,
-  data,
-  invokeScript,
-  issue,
-  lease,
-  libs,
-  massTransfer,
-  reissue,
-  setAssetScript,
-  setScript,
-  sponsorship,
-  transfer,
-  updateAssetInfo,
-  waitForTx
-} from '../src'
-import {protoBytesToTx, txToProtoBytes} from '../src/proto-serialize'
-import {txs} from './example-proto-tx'
-import {randomHexString, TIMEOUT} from './integration/config'
-import {address} from '@decentralchain/ts-lib-crypto'
-import {issueMinimalParams} from './minimalParams'
-<<<<<<< HEAD
-import {deleteProofsAndId} from './utils'
-=======
-import {deleteProofsAndId} from "./utils";
-
->>>>>>> f33083a0 (updated dependencies)
-
-=======
-import { exampleTxs } from './exampleTxs'
-import { broadcast, libs, waitForTx, WithId } from '../src'
-import { protoBytesToTx, txToProtoBytes } from '../src/proto-serialize'
-import { transfer } from '../src/transactions/transfer'
-import { issue } from '../src/transactions/issue'
-import { reissue } from '../src/transactions/reissue'
-import { alias } from '../src/transactions/alias'
-import { burn } from '../src/transactions/burn'
-import { data } from '../src/transactions/data'
-import { lease } from '../src/transactions/lease'
-import { cancelLease } from '../src/transactions/cancel-lease'
-import { setScript } from '../src/transactions/set-script'
-import { setAssetScript } from '../src/transactions/set-asset-script'
-import { invokeScript } from '../src/transactions/invoke-script'
-import { sponsorship } from '../src/transactions/sponsorship'
-import { txs } from './example-proto-tx'
-import { massTransfer } from '../src/transactions/mass-transfer'
-import { updateAssetInfo } from '../src/transactions/update-asset-info'
-import { randomHexString, TIMEOUT } from './integration/config'
-import { address } from '@decentralchain/ts-lib-crypto'
-import { issueMinimalParams } from './minimalParams'
-import { deleteProofsAndId } from './utils'
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
-import { exampleTxs } from './exampleTxs';
-import { broadcast, libs, waitForTx, WithId } from '../src';
-=======
 import { address } from '@decentralchain/ts-lib-crypto';
 import { broadcast, libs, waitForTx } from '../src';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import { protoBytesToTx, txToProtoBytes } from '../src/proto-serialize';
 import { alias } from '../src/transactions/alias';
 import { burn } from '../src/transactions/burn';
@@ -84,7 +20,6 @@ import { exampleTxs } from './exampleTxs';
 import { randomHexString, TIMEOUT } from './integration/config';
 import { issueMinimalParams } from './minimalParams';
 import { deleteProofsAndId } from './utils';
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/proto-serialize.spec.ts
 
 const nodeUrl = 'https://testnet-node.decentralchain.io/';
 const masterSeed = 'dcc private node seed with DCC tokens';
@@ -104,43 +39,12 @@ describe('serialize/deserialize', () => {
     it(`type: ${tx.type}`, () => {
       // deleteProofsAndId(tx)
       //const parsed = protoBytesToTx(txToProtoBytes(tx))
-<<<<<<< HEAD:test/proto-serialize.test.ts
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-      const txWithoutProofAndId = deleteProofsAndId(tx)
-      const protoBytes = txToProtoBytes(txWithoutProofAndId)
-      const parsed = protoBytesToTx(protoBytes)
-      expect(parsed).toMatchObject(txWithoutProofAndId)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/proto-serialize.spec.ts
       const txWithoutProofAndId = deleteProofsAndId(tx);
       const protoBytes = txToProtoBytes(txWithoutProofAndId);
       const parsed = protoBytesToTx(protoBytes);
       expect(parsed).toMatchObject(txWithoutProofAndId);
-<<<<<<< HEAD:test/proto-serialize.test.ts
->>>>>>> f33083a0 (updated dependencies)
-    })
-  })
-
-  it('correctly serialized transactions', () => {
-    Object.entries(txs).forEach(([, { Bytes, Json }]) => {
-      const actualBytes = libs.crypto.base16Encode(txToProtoBytes(Json as any))
-      const expectedBytes = libs.crypto.base16Encode(libs.crypto.base64Decode(Bytes))
-      expect(expectedBytes).toBe(actualBytes)
-    })
-  }, TIMEOUT)
-
-=======
-    })
-  })
-=======
     });
   });
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/proto-serialize.spec.ts
 
   it(
     'correctly serialized transactions',
@@ -152,14 +56,8 @@ describe('serialize/deserialize', () => {
       });
     },
     TIMEOUT,
-<<<<<<< HEAD:test/proto-serialize.test.ts
-  )
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-})
-=======
   );
 });
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/proto-serialize.spec.ts
 
 describe('transactions v3', () => {
   beforeAll(async () => {

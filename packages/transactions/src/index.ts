@@ -10,28 +10,8 @@ export {
   verifyAuthData,
   verifyCustomData,
   verifyDccAuthData,
-<<<<<<< HEAD
-} from './general'
-export { waitForTx, broadcast } from './nodeInteraction'
-export { makeTx, makeTxBytes } from './make-tx'
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 } from './general';
 export { makeTx, makeTxBytes } from './make-tx';
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
-// export { invokeExpression } from './transactions/invoke-expression'
-=======
->>>>>>> 697d643a (minor fixes)
-=======
-// export { invokeExpression } from './transactions/invoke-expression'
->>>>>>> f33083a0 (updated dependencies)
-=======
->>>>>>> ea126e5a (audit: dead code removal, test hardening, security & strictness)
-
-=======
 export type { INodeRequestOptions, IStateChangeResponse } from './nodeInteraction';
 export { broadcast, waitForTx } from './nodeInteraction';
 export { auth } from './requests/auth';
@@ -39,7 +19,6 @@ export { cancelOrder } from './requests/cancel-order';
 export { customData, serializeCustomData } from './requests/custom-data';
 export { dccAuth } from './requests/dccAuth';
 export { order } from './requests/order';
->>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 // Export interfaces
 export type {
   IAliasParams,
