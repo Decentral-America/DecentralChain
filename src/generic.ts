@@ -1,7 +1,7 @@
-import { WithProofs, IBasicParams, WithSender } from './transactions';
-import { TPrivateKey, TSeedTypes } from './types';
-import { publicKey, base58Decode } from '@decentralchain/ts-lib-crypto';
-import { ExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { base58Decode, publicKey } from '@decentralchain/ts-lib-crypto';
+import { type ExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { type IBasicParams, type WithProofs, type WithSender } from './transactions';
+import { type TPrivateKey, type TSeedTypes } from './types';
 
 export function getSenderPublicKey(
   seedsAndIndexes: [string | TPrivateKey, number?][],
@@ -11,13 +11,13 @@ export function getSenderPublicKey(
     throw new Error('Please provide either seed or senderPublicKey');
   else {
     return params.senderPublicKey == null
-      ? publicKey(seedsAndIndexes[0]![0])
+      ? publicKey(seedsAndIndexes[0]?.[0])
       : params.senderPublicKey;
   }
 }
 
 export const base64Prefix = (str: string | null) =>
-  str == null || str.slice(0, 7) === 'base64:' ? str : 'base64:' + str;
+  str == null || str.slice(0, 7) === 'base64:' ? str : `base64:${str}`;
 
 export function addProof(tx: WithProofs, proof: string, index?: number) {
   if (index == null) {
@@ -46,15 +46,15 @@ export function convertToPairs(seedObj?: TSeedTypes): [string | TPrivateKey, num
     return seedObj.map((s, i) => [s, i] as [string, number]).filter(([s, _]) => s);
   } else {
     const keys = Object.keys(seedObj)
-      .map((k) => parseInt(k))
-      .filter((k) => !isNaN(k))
+      .map((k) => parseInt(k, 10))
+      .filter((k) => !Number.isNaN(k))
       .sort();
     return keys.map((k) => [seedObj[k], k] as [string, number]).filter(([s]) => s != null);
   }
 }
 
-export const isOrder = (p: any): p is ExchangeTransactionOrder & WithProofs & WithSender =>
-  (<ExchangeTransactionOrder & WithProofs & WithSender>p).assetPair !== undefined &&
+export const isOrder = (p: object): p is ExchangeTransactionOrder & WithProofs & WithSender =>
+  (p as ExchangeTransactionOrder & WithProofs & WithSender).assetPair !== undefined &&
   'orderType' in p &&
   'matcherPublicKey' in p;
 
@@ -86,10 +86,10 @@ export function normalizeAssetId(assetId: string | null) {
 export function chainIdFromRecipient(recipient: string) {
   const aliasMatch = /^alias:(.):.+$/.exec(recipient);
   if (aliasMatch) {
-    return aliasMatch[1]!.charCodeAt(0);
+    return aliasMatch[1]?.charCodeAt(0);
   } else {
     try {
-      return base58Decode(recipient)[1]!;
+      return base58Decode(recipient)[1] as number;
     } catch (_e) {
       throw new Error(`Invalid recipient: ${recipient}`, { cause: _e });
     }

@@ -1,14 +1,16 @@
 /**
  * @module index
  */
-import { base58Encode, blake2b, concat, signBytes, address } from '@decentralchain/ts-lib-crypto';
+
 import { serializePrimitives } from '@decentralchain/marshall';
+import { address, base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
 
 const { LONG, BASE58_STRING } = serializePrimitives;
-import { getSenderPublicKey, convertToPairs } from '../generic';
-import { IDccAuthParams, IDccAuth } from '../transactions';
+
+import { convertToPairs, getSenderPublicKey } from '../generic';
+import { type IDccAuth, type IDccAuthParams } from '../transactions';
+import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
-import { TSeedTypes } from '../types';
 
 export const serializeDccAuthData = (auth: { publicKey: string; timestamp: number }) =>
   concat(BASE58_STRING(auth.publicKey), LONG(auth.timestamp));
@@ -34,7 +36,7 @@ export function dccAuth(
 
   const bytes = serializeDccAuthData(rx);
 
-  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]![0], bytes)) || '';
+  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]?.[0], bytes)) || '';
   rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
   return rx;

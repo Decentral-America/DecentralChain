@@ -1,13 +1,16 @@
 /**
  * @module index
  */
-import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
+
 import { serializePrimitives } from '@decentralchain/marshall';
+import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
+
 const { BASE58_STRING } = serializePrimitives;
-import { getSenderPublicKey, convertToPairs } from '../generic';
-import { ICancelOrderParams, ICancelOrder } from '../transactions';
+
+import { convertToPairs, getSenderPublicKey } from '../generic';
+import { type ICancelOrder, type ICancelOrderParams } from '../transactions';
+import { type TPrivateKey } from '../types';
 import { validate } from '../validators';
-import { TPrivateKey } from '../types';
 
 export const cancelOrderParamsToBytes = (cancelOrderParams: { sender: string; orderId: string }) =>
   concat(BASE58_STRING(cancelOrderParams.sender), BASE58_STRING(cancelOrderParams.orderId));

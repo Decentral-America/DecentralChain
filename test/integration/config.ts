@@ -16,6 +16,6 @@ export const MATCHER_URL = 'https://matcher.decentralchain.io';
 
 export const TIMEOUT = 60000;
 
-// @ts-ignore
+// @ts-expect-error
 export const randomHexString = (l: number) =>
   [...randomBytes(l)].map((n) => n.toString(16)).join('');

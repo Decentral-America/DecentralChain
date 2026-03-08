@@ -1,14 +1,14 @@
 import { publicKey } from '@decentralchain/ts-lib-crypto';
 import { lease } from '../../src';
+import { leaseMinimalParams } from '../minimalParams';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
   errorMessageByTemplate,
   validateTxSignature,
 } from '../utils';
-import { leaseMinimalParams } from '../minimalParams';
-import { leaseTx } from './expected/proto/lease.tx';
 import { leaseBinaryTx } from './expected/binary/lease.tx';
+import { leaseTx } from './expected/proto/lease.tx';
 
 describe('lease', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -83,17 +83,17 @@ describe('lease', () => {
 });
 
 describe('serialize/deserialize lease tx', () => {
-  Object.entries(leaseTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(leaseTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize lease tx', () => {
-  Object.entries(leaseBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(leaseBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

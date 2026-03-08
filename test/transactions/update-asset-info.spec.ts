@@ -1,7 +1,7 @@
-import { checkProtoSerializeDeserialize, errorMessageByTemplate, rndString } from '../utils';
-import { updateAssetInfoMinimalParams } from '../minimalParams';
-import { updateAssetInfoTx } from './expected/proto/update-asset-info.tx';
 import { updateAssetInfo } from '../../src';
+import { updateAssetInfoMinimalParams } from '../minimalParams';
+import { checkProtoSerializeDeserialize, errorMessageByTemplate, rndString } from '../utils';
+import { updateAssetInfoTx } from './expected/proto/update-asset-info.tx';
 
 describe('updateAssetInfo', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -65,9 +65,9 @@ describe('updateAssetInfo', () => {
 });
 
 describe('serialize/deserialize update asset info tx', () => {
-  Object.entries(updateAssetInfoTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(updateAssetInfoTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

@@ -1,26 +1,34 @@
 import { binary } from '@decentralchain/marshall';
-import { address, verifySignature } from '@decentralchain/ts-lib-crypto';
 import { request, stringify } from '@decentralchain/node-api-js';
-import { TSeedTypes } from './types';
-import { issue } from './transactions/issue';
-import { transfer } from './transactions/transfer';
-import { reissue } from './transactions/reissue';
-import { burn } from './transactions/burn';
-import { lease } from './transactions/lease';
-import { cancelLease } from './transactions/cancel-lease';
-import { data } from './transactions/data';
-import { massTransfer } from './transactions/mass-transfer';
-import { alias } from './transactions/alias';
-import { setScript } from './transactions/set-script';
+import { address, verifySignature } from '@decentralchain/ts-lib-crypto';
+import {
+  type AliasTransaction,
+  type BurnTransaction,
+  type CancelLeaseTransaction,
+  type DataTransaction,
+  type ExchangeTransaction,
+  type ExchangeTransactionOrder,
+  type InvokeScriptTransaction,
+  type IssueTransaction,
+  type LeaseTransaction,
+  type MassTransferTransaction,
+  type ReissueTransaction,
+  type SetAssetScriptTransaction,
+  type SetScriptTransaction,
+  type SignedIExchangeTransactionOrder,
+  type SignedTransaction,
+  type SponsorshipTransaction,
+  TRANSACTION_TYPE,
+  type Transaction,
+  type TransferTransaction,
+  type UpdateAssetInfoTransaction,
+} from '@decentralchain/ts-types';
 import { isOrder } from './generic';
-import { setAssetScript } from './transactions/set-asset-script';
-import { exchange } from './transactions/exchange';
-import { sponsorship } from './transactions/sponsorship';
-import { invokeScript } from './transactions/invoke-script';
-import { serializeCustomData, TSignedData } from './requests/custom-data';
 import { serializeAuthData } from './requests/auth';
+import { serializeCustomData, type TSignedData } from './requests/custom-data';
 import { serializeDccAuthData } from './requests/dccAuth';
 import {
+<<<<<<< HEAD
 <<<<<<< HEAD
     AliasTransaction,
     BurnTransaction,
@@ -88,8 +96,32 @@ import {
 import { updateAssetInfo } from './transactions/update-asset-info'
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
+=======
+  type IAuthParams,
+  type ICancelOrder,
+  type TTransaction,
+  type TTxParams,
+  type WithProofs,
+  type WithSender,
+  type WithTxType,
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 } from './transactions';
+import { alias } from './transactions/alias';
+import { burn } from './transactions/burn';
+import { cancelLease } from './transactions/cancel-lease';
+import { data } from './transactions/data';
+import { exchange } from './transactions/exchange';
+import { invokeScript } from './transactions/invoke-script';
+import { issue } from './transactions/issue';
+import { lease } from './transactions/lease';
+import { massTransfer } from './transactions/mass-transfer';
+import { reissue } from './transactions/reissue';
+import { setAssetScript } from './transactions/set-asset-script';
+import { setScript } from './transactions/set-script';
+import { sponsorship } from './transactions/sponsorship';
+import { transfer } from './transactions/transfer';
 import { updateAssetInfo } from './transactions/update-asset-info';
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 // import {invokeExpression} from './transactions/invoke-expression'
@@ -131,6 +163,9 @@ export const txTypeMap: { [type: number]: { sign: (tx: Transaction<TLong> | TTxP
 =======
 export const txTypeMap: {
 =======
+=======
+import { type TSeedTypes } from './types';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 type TLong = string | number;
 
@@ -226,18 +261,20 @@ export function verify(
   if (!publicKey) throw new Error('No public key provided and transaction has no senderPublicKey');
   const bytes = serialize(obj);
   if (obj.version == null) {
-    const signature = (obj as any).signature;
+    const signature = (obj as Record<string, unknown>).signature;
     if (!signature) throw new Error('Transaction has no signature to verify');
-    return verifySignature(publicKey, bytes, signature);
+    return verifySignature(publicKey, bytes, signature as string);
   }
-  const proofs: string[] | undefined = (obj as any).proofs;
+  const proofs: string[] | undefined = (obj as Record<string, unknown>).proofs as
+    | string[]
+    | undefined;
   if (!Array.isArray(proofs) || proofs.length === 0) {
     throw new Error('Transaction has no proofs to verify');
   }
   if (proofN < 0 || proofN >= proofs.length) {
     throw new Error(`Proof index ${proofN} is out of bounds (${proofs.length} proofs available)`);
   }
-  const signature = proofs[proofN]!;
+  const signature = proofs[proofN] as string;
   return verifySignature(publicKey, bytes, signature);
 }
 
@@ -281,7 +318,7 @@ export function verifyDccAuthData(
 export function submitOrder(
   ord: ExchangeTransactionOrder & WithProofs & WithSender,
   options: { matcherUrl: string; market?: boolean },
-): Promise<any>;
+): Promise<unknown>;
 /**
  * Sends order to matcher
  * @param ord - transaction to send
@@ -290,9 +327,12 @@ export function submitOrder(
 export function submitOrder(
   ord: ExchangeTransactionOrder & WithProofs & WithSender,
   matcherUrl: string,
-): Promise<any>;
-export function submitOrder(ord: ExchangeTransactionOrder & WithProofs & WithSender, opts: any) {
-  let endpoint, matcherUrl: string;
+): Promise<unknown>;
+export function submitOrder(
+  ord: ExchangeTransactionOrder & WithProofs & WithSender,
+  opts: string | { matcherUrl: string; market?: boolean },
+) {
+  let endpoint: string, matcherUrl: string;
   if (typeof opts === 'string') {
     matcherUrl = opts;
     endpoint = 'matcher/orderbook';

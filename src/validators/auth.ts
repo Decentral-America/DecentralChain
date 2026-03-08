@@ -1,4 +1,4 @@
-import { getError, validateByShema, isString } from './validators';
+import { getError, isString, validateByShema } from './validators';
 
 const authScheme = {
   data: isString,

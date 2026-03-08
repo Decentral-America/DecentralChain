@@ -7,8 +7,8 @@ import {
   validateTxSignature,
 } from '../../test/utils';
 import { reissueMinimalParams } from '../minimalParams';
-import { reissueTx } from './expected/proto/reissue.tx';
 import { reissueBinaryTx } from './expected/binary/reissue.tx';
+import { reissueTx } from './expected/proto/reissue.tx';
 
 describe('reissue', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -67,17 +67,17 @@ describe('reissue', () => {
 });
 
 describe('serialize/deserialize reissue proto tx', () => {
-  Object.entries(reissueTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(reissueTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize reissue binary proto tx', () => {
-  Object.entries(reissueBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(reissueBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

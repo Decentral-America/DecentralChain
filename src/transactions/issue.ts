@@ -1,8 +1,11 @@
 /**
  * @module index
  */
-import { IIssueParams, WithId, WithProofs, WithSender } from '../transactions';
+
+import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type IssueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
   base64Prefix,
@@ -11,12 +14,10 @@ import {
   getSenderPublicKey,
   networkByte,
 } from '../generic';
-import { TSeedTypes } from '../types';
-import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
 import { txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { IssueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { type IIssueParams, type WithId, type WithProofs, type WithSender } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function issue(
@@ -27,7 +28,10 @@ export function issue(
   paramsOrTx: (IIssueParams & WithSender) | IssueTransaction,
   seed?: TSeedTypes,
 ): IssueTransaction & WithId & WithProofs;
-export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & WithId & WithProofs {
+export function issue(
+  paramsOrTx: IIssueParams & Partial<IssueTransaction & WithProofs>,
+  seed?: TSeedTypes,
+): IssueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.ISSUE;
   const version = paramsOrTx.version ?? DEFAULT_VERSIONS.ISSUE;
   const seedsAndIndexes = convertToPairs(seed);
@@ -40,7 +44,7 @@ export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & Wi
     name: paramsOrTx.name,
     description: paramsOrTx.description,
     quantity: paramsOrTx.quantity,
-    script: paramsOrTx.script == null ? null : base64Prefix(paramsOrTx.script)!,
+    script: paramsOrTx.script == null ? null : (base64Prefix(paramsOrTx.script) as string),
     decimals: paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals,
     reissuable: paramsOrTx.reissuable || false,
     fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
@@ -54,13 +58,19 @@ export function issue(paramsOrTx: any, seed?: TSeedTypes): IssueTransaction & Wi
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;
 }
 
-const checkForNFT = (paramsOrTx: any) => {
+const checkForNFT = (paramsOrTx: {
+  quantity?: string | number;
+  reissuable?: boolean;
+  decimals?: number;
+}) => {
   const reissuable = paramsOrTx.reissuable ?? false;
   const decimals = paramsOrTx.decimals ?? 8;
   return paramsOrTx.quantity === 1 && reissuable === false && decimals === 0;

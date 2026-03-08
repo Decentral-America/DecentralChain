@@ -1,19 +1,22 @@
 /**
  * @module index
  */
+
+import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
 import {
-  signBytes,
-  blake2b,
   base58Encode,
-  publicKey,
+  blake2b,
   concat,
-  TSeed,
+  publicKey,
+  signBytes,
+  type TSeed,
 } from '@decentralchain/ts-lib-crypto';
-import { schemas, serializePrimitives } from '@decentralchain/marshall';
-import { binary } from '@decentralchain/marshall';
+import {
+  type DataTransactionDeleteRequest,
+  type DataTransactionEntry,
+} from '@decentralchain/ts-types';
+import { type TPrivateKey } from '../types';
 import { validate } from '../validators';
-import { TPrivateKey } from '../types';
-import { DataTransactionEntry, DataTransactionDeleteRequest } from '@decentralchain/ts-types';
 
 interface ICustomDataV1 {
   version: 1;
@@ -72,7 +75,7 @@ export function serializeCustomData(d: TCustomData) {
     const ser = binary.serializerFromSchema(schemas.txFields.data[1]);
     return concat([255, 255, 255, 2], ser(d.data));
   } else {
-    //@ts-ignore
-    throw new Error(`Invalid CustomData version: ${d!.version}`);
+    //@ts-expect-error
+    throw new Error(`Invalid CustomData version: ${d?.version}`);
   }
 }

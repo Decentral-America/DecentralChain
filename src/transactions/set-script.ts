@@ -1,22 +1,28 @@
 /**
  * @module index
  */
-import { ISetScriptParams, WithId, WithProofs, WithSender } from '../transactions';
-import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
+
+import { binary } from '@decentralchain/marshall';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type SetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
-  getSenderPublicKey,
   base64Prefix,
   convertToPairs,
-  networkByte,
   fee,
+  getSenderPublicKey,
+  networkByte,
 } from '../generic';
-import { TSeedTypes } from '../types';
-import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
 import { scriptToProto, txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { SetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import {
+  type ISetScriptParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function setScript(
@@ -28,7 +34,7 @@ export function setScript(
   seed?: TSeedTypes,
 ): SetScriptTransaction & WithId & WithProofs;
 export function setScript(
-  paramsOrTx: any,
+  paramsOrTx: ISetScriptParams & Partial<SetScriptTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): SetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_SCRIPT;
@@ -70,7 +76,9 @@ export function setScript(
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

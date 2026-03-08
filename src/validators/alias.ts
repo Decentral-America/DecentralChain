@@ -1,17 +1,17 @@
-import {
-  isEq,
-  orEq,
-  isNumber,
-  isNaturalNumberLike,
-  isArray,
-  getError,
-  validateByShema,
-  ifElse,
-  isValidAliasName,
-  defaultValue,
-  isPublicKey,
-} from './validators';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import {
+  defaultValue,
+  getError,
+  ifElse,
+  isArray,
+  isEq,
+  isNaturalNumberLike,
+  isNumber,
+  isPublicKey,
+  isValidAliasName,
+  orEq,
+  validateByShema,
+} from './validators';
 
 const aliasScheme = {
   type: isEq(TRANSACTION_TYPE.ALIAS),

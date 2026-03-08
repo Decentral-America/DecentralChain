@@ -30,17 +30,15 @@ describe('Matcher requests', () => {
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
 import { cancelOrder, cancelSubmittedOrder, order, submitOrder } from '../../src';
-import { MATCHER_PUBLIC_KEY, MATCHER_URL, MASTER_SEED, TIMEOUT, randomHexString } from './config';
+import { MASTER_SEED, MATCHER_PUBLIC_KEY, MATCHER_URL, randomHexString, TIMEOUT } from './config';
 
 describe('Matcher requests', () => {
   const assetId = 'GS8e5BvJZawr3gEu5nSesDEhJw33tQ8EE4iWfVoH7TDf';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
 
   beforeAll(async () => {
-    const nonce = randomHexString(6);
+    const _nonce = randomHexString(6);
     vi.setConfig({ testTimeout: 60000 });
-
-    console.log('Assets setup successful ' + assetId);
   }, TIMEOUT);
 
   it(
@@ -95,7 +93,6 @@ describe('Matcher requests', () => {
 >>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
 =======
       const ord = order(oParams, MASTER_SEED);
-      console.log('ord', JSON.stringify(ord, undefined, ' '));
       const submitResp = await submitOrder(ord, MATCHER_URL);
       expect(submitResp.status).toEqual('OrderAccepted');
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup):test/integration/matcher.spec.ts
@@ -126,8 +123,7 @@ describe('Matcher requests', () => {
         version: 4,
       };
 
-      const ord = order(oParams, MASTER_SEED);
-      console.log('ord', JSON.stringify(ord, undefined, ' '));
+      const _ord = order(oParams, MASTER_SEED);
       // const submitResp = await submitOrder(ord, MATCHER_URL)
       // expect(submitResp.status).toEqual('OrderAccepted')
       //

@@ -1,17 +1,17 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import {
-  isEq,
-  orEq,
-  isNumber,
-  isNaturalNumberLike,
-  isArray,
-  getError,
-  validateByShema,
-  ifElse,
   defaultValue,
+  getError,
+  ifElse,
+  isArray,
+  isEq,
+  isNaturalNumberLike,
+  isNumber,
   isPublicKey,
   isValidData,
   isValidDeleteRequest,
+  orEq,
+  validateByShema,
 } from './validators';
 
 const dataScheme = {

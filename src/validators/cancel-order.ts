@@ -1,4 +1,4 @@
-import { getError, validateByShema, isPublicKey, isHash, isBase58 } from './validators';
+import { getError, isBase58, isHash, isPublicKey, validateByShema } from './validators';
 
 const cancelOrderScheme = {
   sender: isPublicKey,

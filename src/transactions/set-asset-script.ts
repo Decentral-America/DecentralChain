@@ -3,6 +3,7 @@
  */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {
   ISetAssetScriptParams,
   WithId, WithProofs,
@@ -25,13 +26,19 @@ import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto'
 import { ISetAssetScriptParams, WithId, WithProofs, WithSender } from '../transactions';
 import { signBytes, blake2b, base58Encode } from '@decentralchain/ts-lib-crypto';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
+=======
+
+import { binary } from '@decentralchain/marshall';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type SetAssetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 import {
   addProof,
-  getSenderPublicKey,
   base64Prefix,
   convertToPairs,
-  networkByte,
   fee,
+<<<<<<< HEAD
 <<<<<<< HEAD
 } from '../generic'
 <<<<<<< HEAD
@@ -47,14 +54,26 @@ import { txToProtoBytes } from '../proto-serialize'
 import { DEFAULT_VERSIONS } from '../defaultVersions'
 import { SetAssetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types'
 =======
+=======
+  getSenderPublicKey,
+  networkByte,
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 } from '../generic';
-import { TSeedTypes } from '../types';
-import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
 import { txToProtoBytes } from '../proto-serialize';
+<<<<<<< HEAD
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import { SetAssetScriptTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
+=======
+import {
+  type ISetAssetScriptParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 /* @echo DOCS */
 export function setAssetScript(
@@ -66,7 +85,7 @@ export function setAssetScript(
   seed?: TSeedTypes,
 ): SetAssetScriptTransaction & WithId & WithProofs;
 export function setAssetScript(
-  paramsOrTx: any,
+  paramsOrTx: ISetAssetScriptParams & Partial<SetAssetScriptTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): SetAssetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_ASSET_SCRIPT;
@@ -100,7 +119,9 @@ export function setAssetScript(
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

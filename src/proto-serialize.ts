@@ -1,3 +1,4 @@
+import { binary, schemas } from '@decentralchain/marshall';
 import * as dccProto from '@decentralchain/protobuf-serialization';
 import {
   address,
@@ -11,33 +12,33 @@ import {
   concat,
   keccak,
 } from '@decentralchain/ts-lib-crypto';
-import { binary, schemas } from '@decentralchain/marshall';
 import {
-  AliasTransaction,
-  BurnTransaction,
-  CancelLeaseTransaction,
-  DataTransaction,
-  DataTransactionEntry,
-  ExchangeTransactionOrder,
-  InvokeScriptTransaction,
-  IssueTransaction,
-  LeaseTransaction,
-  MassTransferItem,
-  MassTransferTransaction,
-  ReissueTransaction,
-  SetAssetScriptTransaction,
-  SetScriptTransaction,
-  SignedIExchangeTransactionOrder,
-  SponsorshipTransaction,
+  type AliasTransaction,
+  type BurnTransaction,
+  type CancelLeaseTransaction,
+  type DataTransaction,
+  type DataTransactionEntry,
+  type ExchangeTransaction,
+  type ExchangeTransactionOrder,
+  type GenesisTransaction,
+  type InvokeScriptTransaction,
+  type IssueTransaction,
+  type LeaseTransaction,
+  type MassTransferItem,
+  type MassTransferTransaction,
+  type ReissueTransaction,
+  type SetAssetScriptTransaction,
+  type SetScriptTransaction,
+  type SignedIExchangeTransactionOrder,
+  type SponsorshipTransaction,
   TRANSACTION_TYPE,
-  TransactionType,
-  TransferTransaction,
-  UpdateAssetInfoTransaction,
-  GenesisTransaction,
+  type TransactionType,
+  type TransferTransaction,
+  type UpdateAssetInfoTransaction,
 } from '@decentralchain/ts-types';
-import { base64Prefix, chainIdFromRecipient } from './generic';
 import Long from 'long';
-import { TTx, TTransaction, WithChainId } from './transactions';
+import { base64Prefix, chainIdFromRecipient } from './generic';
+import { type TTransaction, type TTx, type WithChainId } from './transactions';
 
 const invokeScriptCallSchema = {
   ...schemas.txFields.functionCall[1],
@@ -48,7 +49,7 @@ const recipientFromProto = (recipient: dccProto.waves.IRecipient, chainId: numbe
     return `alias:${String.fromCharCode(chainId)}:${recipient.alias}`;
   }
 
-  const rawAddress = concat([1], [chainId], recipient!.publicKeyHash!);
+  const rawAddress = concat([1], [chainId], recipient?.publicKeyHash as Uint8Array);
   const checkSum = keccak(blake2b(rawAddress)).slice(0, 4);
 
   return base58Encode(concat(rawAddress, checkSum));
@@ -110,150 +111,153 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
     | 'invokeScript'
     | 'updateAssetInfo';
 
-  const res: any = {
+  const res: Record<string, unknown> = {
     version: t.version,
-    type: typeByName[t.data! as transactionTypes] as TransactionType,
+    type: typeByName[t.data as transactionTypes] as TransactionType,
     senderPublicKey: base58Encode(t.senderPublicKey),
     timestamp: t.timestamp.toNumber(),
-    fee: convertNumber(t.fee!.amount!),
+    fee: convertNumber(t.fee?.amount as Long),
     // chainId: t.chainId
   };
 
-  if (t.fee!.hasOwnProperty('assetId')) {
-    res.feeAssetId = base58Encode(t.fee!.assetId!);
+  if (Object.hasOwn(t.fee as object, 'assetId')) {
+    res.feeAssetId = base58Encode(t.fee?.assetId as Uint8Array);
   } else {
     res.feeAssetId = null;
   }
 
-  if (t.hasOwnProperty('chainId')) {
+  if (Object.hasOwn(t, 'chainId')) {
     res.chainId = t.chainId;
   }
   switch (t.data) {
     case 'issue':
-      res.name = t.issue!.name!;
-      res.description = t.issue!.description!;
-      res.quantity = convertNumber(t.issue!.amount!);
-      res.decimals = t.issue!.decimals;
-      res.reissuable = t.issue!.reissuable;
-      res.script = t.issue!.hasOwnProperty('script')
-        ? base64Prefix(base64Encode(t.issue!.script!))
+      res.name = t.issue?.name;
+      res.description = t.issue?.description;
+      res.quantity = convertNumber(t.issue?.amount as Long);
+      res.decimals = t.issue?.decimals;
+      res.reissuable = t.issue?.reissuable;
+      res.script = Object.hasOwn(t.issue as object, 'script')
+        ? base64Prefix(base64Encode(t.issue?.script as Uint8Array))
         : null;
       break;
     case 'transfer':
-      res.amount = convertNumber(t.transfer!.amount!.amount!);
-      res.recipient = recipientFromProto(t.transfer!.recipient!, t.chainId);
-      res.attachment = t.transfer!.hasOwnProperty('attachment')
-        ? base58Encode(t.transfer!.attachment!)
+      res.amount = convertNumber(t.transfer?.amount?.amount as Long);
+      res.recipient = recipientFromProto(
+        t.transfer?.recipient as dccProto.waves.IRecipient,
+        t.chainId,
+      );
+      res.attachment = Object.hasOwn(t.transfer as object, 'attachment')
+        ? base58Encode(t.transfer?.attachment as Uint8Array)
         : '';
-      res.assetId = t.transfer!.amount!.hasOwnProperty('assetId')
-        ? base58Encode(t.transfer!.amount!.assetId!)
+      res.assetId = Object.hasOwn(t.transfer?.amount as object, 'assetId')
+        ? base58Encode(t.transfer?.amount?.assetId as Uint8Array)
         : null;
       break;
     case 'reissue':
-      res.quantity = convertNumber(t.reissue!.assetAmount!.amount!);
+      res.quantity = convertNumber(t.reissue?.assetAmount?.amount as Long);
       res.assetId =
-        t.reissue!.assetAmount!.assetId == null
+        t.reissue?.assetAmount?.assetId == null
           ? null
-          : base58Encode(t.reissue!.assetAmount!.assetId);
-      res.reissuable = t.reissue!.reissuable;
+          : base58Encode(t.reissue?.assetAmount?.assetId);
+      res.reissuable = t.reissue?.reissuable;
       break;
     case 'burn':
-      res.amount = convertNumber(t.burn!.assetAmount!.amount!);
-      res.assetId = base58Encode(t.burn!.assetAmount!.assetId!);
+      res.amount = convertNumber(t.burn?.assetAmount?.amount as Long);
+      res.assetId = base58Encode(t.burn?.assetAmount?.assetId as Uint8Array);
       break;
     case 'exchange':
-      res.amount = convertNumber(t.exchange!.amount!);
-      res.price = convertNumber(t.exchange!.price!);
-      res.buyMatcherFee = convertNumber(t.exchange!.buyMatcherFee!);
-      res.sellMatcherFee = convertNumber(t.exchange!.sellMatcherFee!);
-      res.order1 = orderFromProto(t.exchange!.orders![0]!);
-      res.order2 = orderFromProto(t.exchange!.orders![1]!);
+      res.amount = convertNumber(t.exchange?.amount as Long);
+      res.price = convertNumber(t.exchange?.price as Long);
+      res.buyMatcherFee = convertNumber(t.exchange?.buyMatcherFee as Long);
+      res.sellMatcherFee = convertNumber(t.exchange?.sellMatcherFee as Long);
+      res.order1 = orderFromProto(t.exchange?.orders?.[0] as dccProto.waves.IOrder);
+      res.order2 = orderFromProto(t.exchange?.orders?.[1] as dccProto.waves.IOrder);
       break;
     case 'lease':
-      res.recipient = recipientFromProto(t.lease!.recipient!, t.chainId);
-      res.amount = convertNumber(t.lease!.amount!);
+      res.recipient = recipientFromProto(
+        t.lease?.recipient as dccProto.waves.IRecipient,
+        t.chainId,
+      );
+      res.amount = convertNumber(t.lease?.amount as Long);
       break;
     case 'leaseCancel':
-      res.leaseId = base58Encode(t.leaseCancel!.leaseId!);
+      res.leaseId = base58Encode(t.leaseCancel?.leaseId as Uint8Array);
       break;
     case 'createAlias':
-      res.alias = t.createAlias!.alias;
+      res.alias = t.createAlias?.alias;
       break;
     case 'massTransfer':
-      res.assetId = t.massTransfer!.hasOwnProperty('assetId')
-        ? base58Encode(t.massTransfer!.assetId!)
+      res.assetId = Object.hasOwn(t.massTransfer as object, 'assetId')
+        ? base58Encode(t.massTransfer?.assetId as Uint8Array)
         : null;
-      res.attachment = t.massTransfer!.hasOwnProperty('attachment')
-        ? base58Encode(t.massTransfer!.attachment!)
+      res.attachment = Object.hasOwn(t.massTransfer as object, 'attachment')
+        ? base58Encode(t.massTransfer?.attachment as Uint8Array)
         : '';
 
-      res.transfers = t.massTransfer!.transfers!.map(({ amount, recipient }) => ({
-        amount: convertNumber(amount!),
-        recipient: recipientFromProto(recipient!, t.chainId),
+      res.transfers = t.massTransfer?.transfers?.map(({ amount, recipient }) => ({
+        amount: convertNumber(amount as Long),
+        recipient: recipientFromProto(recipient as dccProto.waves.IRecipient, t.chainId),
       }));
       break;
     case 'dataTransaction':
-      res.data = t.dataTransaction!.data!.map((de) => {
-        if (de.hasOwnProperty('binaryValue'))
+      res.data = t.dataTransaction?.data?.map((de) => {
+        if (Object.hasOwn(de, 'binaryValue'))
           return {
             key: de.key,
             type: 'binary',
-            value: base64Prefix(base64Encode(de.binaryValue!)),
+            value: base64Prefix(base64Encode(de.binaryValue as Uint8Array)),
           };
-        if (de.hasOwnProperty('boolValue'))
+        if (Object.hasOwn(de, 'boolValue'))
           return { key: de.key, type: 'boolean', value: de.boolValue };
-        if (de.hasOwnProperty('intValue'))
+        if (Object.hasOwn(de, 'intValue'))
           return {
             key: de.key,
             type: 'integer',
-            value: convertNumber(de.intValue!),
+            value: convertNumber(de.intValue as Long),
           };
-        if (de.hasOwnProperty('stringValue'))
+        if (Object.hasOwn(de, 'stringValue'))
           return { key: de.key, type: 'string', value: de.stringValue };
         return { key: de.key, value: null };
       });
       break;
     case 'setScript':
-      res.script = t.setScript!.hasOwnProperty('script')
-        ? base64Prefix(base64Encode(t.setScript!.script!))
+      res.script = Object.hasOwn(t.setScript as object, 'script')
+        ? base64Prefix(base64Encode(t.setScript?.script as Uint8Array))
         : null;
       break;
     case 'sponsorFee':
-      res.minSponsoredAssetFee = convertNumber(t.sponsorFee!.minFee!.amount!);
-      res.assetId = base58Encode(t.sponsorFee!.minFee!.assetId!);
+      res.minSponsoredAssetFee = convertNumber(t.sponsorFee?.minFee?.amount as Long);
+      res.assetId = base58Encode(t.sponsorFee?.minFee?.assetId as Uint8Array);
       break;
     case 'setAssetScript':
-      res.assetId = base58Encode(t.setAssetScript!.assetId!);
-      res.script = base64Prefix(base64Encode(t.setAssetScript!.script!));
+      res.assetId = base58Encode(t.setAssetScript?.assetId as Uint8Array);
+      res.script = base64Prefix(base64Encode(t.setAssetScript?.script as Uint8Array));
       break;
     case 'invokeScript':
-      res.dApp = recipientFromProto(t.invokeScript!.dApp!, t.chainId);
-      if (t.invokeScript!.functionCall! != null) {
+      res.dApp = recipientFromProto(t.invokeScript?.dApp as dccProto.waves.IRecipient, t.chainId);
+      if (t.invokeScript?.functionCall != null) {
         res.call = binary.parserFromSchema(invokeScriptCallSchema)(
-          t.invokeScript!.functionCall!,
-        ).value; //todo: export function call from marshall and use it directly
+          t.invokeScript?.functionCall as Uint8Array,
+        ).value; // marshall exposes only parserFromSchema; no dedicated parseInvokeScriptCall exists
       }
-      res.payment = t.invokeScript!.payments!.map((p) => ({
-        amount: convertNumber(p.amount!),
-        assetId: p.hasOwnProperty('assetId') ? base58Encode(p.assetId!) : null,
+      res.payment = t.invokeScript?.payments?.map((p) => ({
+        amount: convertNumber(p.amount as Long),
+        assetId: Object.hasOwn(p, 'assetId') ? base58Encode(p.assetId as Uint8Array) : null,
       }));
       break;
     case 'updateAssetInfo':
-      res.assetId = base58Encode(t.updateAssetInfo!.assetId!);
-      res.name = t.updateAssetInfo!.name;
-      res.description = t.updateAssetInfo!.description;
+      res.assetId = base58Encode(t.updateAssetInfo?.assetId as Uint8Array);
+      res.name = t.updateAssetInfo?.name;
+      res.description = t.updateAssetInfo?.description;
       break;
     default:
       throw new Error(`Unsupported tx type ${t.data}`);
   }
 
-  if (res.hasOwnProperty('chainId')) {
+  if (Object.hasOwn(res, 'chainId')) {
     res.sender = address({ publicKey: t.senderPublicKey }, t.chainId);
   } else {
-    const recipient =
-      res.recipient ||
-      res.dApp ||
-      (res.transfers && res.transfers[0] && res.transfers[0].recipient);
+    const recipient = res.recipient || res.dApp || res.transfers?.[0]?.recipient;
     if (recipient) {
       res.sender = address({ publicKey: t.senderPublicKey }, chainIdFromRecipient(recipient));
     }
@@ -263,7 +267,9 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
 }
 
 export function orderToProtoBytes(obj: ExchangeTransactionOrder): Uint8Array {
-  return dccProto.waves.Order.encode(orderToProto(obj as any)).finish();
+  return dccProto.waves.Order.encode(
+    orderToProto(obj as unknown as Record<string, unknown>),
+  ).finish();
 }
 
 export function protoBytesToOrder(bytes: Uint8Array) {
@@ -280,11 +286,14 @@ const getCommonFields = ({
   ...rest
 }: TTransaction) => {
   const typename = nameByType[type];
-  let chainId = (rest as any).chainId;
+  let chainId: number | undefined = (rest as unknown as WithChainId).chainId;
   if (chainId == null) {
-    const r: any = rest;
-    const recipient =
-      r.recipient || r.dApp || (r.transfers && r.transfers[0] && r.transfers[0].recipient);
+    const r = rest as unknown as Record<string, unknown>;
+    const recipient = (r.recipient ||
+      r.dApp ||
+      (r.transfers as Array<{ recipient?: string }> | undefined)?.[0]?.recipient) as
+      | string
+      | undefined;
     if (recipient) {
       chainId = chainIdFromRecipient(recipient);
     }
@@ -295,15 +304,18 @@ const getCommonFields = ({
     chainId,
     senderPublicKey: base58Decode(senderPublicKey),
     timestamp: Long.fromValue(timestamp),
-    fee: amountToProto(fee, (rest as any).feeAssetId),
+    fee: amountToProto(
+      fee,
+      (rest as unknown as Record<string, unknown>).feeAssetId as string | null | undefined,
+    ),
     data: typename,
   };
 };
 
 const getCommonSignedFields = (tx: TTx) => {
-  const fields: any = getCommonFields(tx);
+  const fields = getCommonFields(tx) as Record<string, unknown>;
 
-  if (tx.hasOwnProperty('proofs')) {
+  if (Object.hasOwn(tx, 'proofs')) {
     fields.proofs = tx.proofs;
   }
 
@@ -321,7 +333,7 @@ const getIssueData = (t: IssueTransaction): dccProto.waves.IIssueTransactionData
 const getTransferData = (t: TransferTransaction): dccProto.waves.ITransferTransactionData => ({
   recipient: recipientToProto(t.recipient),
   amount: amountToProto(t.amount, t.assetId),
-  attachment: t.attachment == null || t.attachment == '' ? undefined : base58Decode(t.attachment),
+  attachment: t.attachment == null || t.attachment === '' ? undefined : base58Decode(t.attachment),
 });
 const getReissueData = (t: ReissueTransaction): dccProto.waves.IReissueTransactionData => ({
   assetAmount: amountToProto(t.quantity, t.assetId),
@@ -330,7 +342,9 @@ const getReissueData = (t: ReissueTransaction): dccProto.waves.IReissueTransacti
 const getBurnData = (t: BurnTransaction): dccProto.waves.IBurnTransactionData => ({
   assetAmount: amountToProto(t.amount, t.assetId),
 });
-const getExchangeData = (t: any): dccProto.waves.IExchangeTransactionData => ({
+const getExchangeData = (
+  t: ExchangeTransaction & WithChainId,
+): dccProto.waves.IExchangeTransactionData => ({
   amount: Long.fromValue(t.amount),
   price: Long.fromValue(t.price),
   buyMatcherFee: Long.fromValue(t.buyMatcherFee),
@@ -356,7 +370,7 @@ const getMassTransferData = (
   t: MassTransferTransaction,
 ): dccProto.waves.IMassTransferTransactionData => ({
   assetId: t.assetId == null ? null : base58Decode(t.assetId),
-  attachment: t.attachment == null || t.attachment == '' ? undefined : base58Decode(t.attachment),
+  attachment: t.attachment == null || t.attachment === '' ? undefined : base58Decode(t.attachment),
   transfers: t.transfers.map(massTransferItemToProto),
 });
 const getDataTxData = (t: DataTransaction): dccProto.waves.IDataTransactionData => ({
@@ -381,9 +395,11 @@ const getInvokeData = (
   t: InvokeScriptTransaction,
 ): dccProto.waves.IInvokeScriptTransactionData => ({
   dApp: recipientToProto(t.dApp),
-  functionCall: binary.serializerFromSchema((schemas.invokeScriptSchemaV1 as any).schema[5][1])(
-    t.call,
-  ),
+  functionCall: binary.serializerFromSchema(
+    (schemas.invokeScriptSchemaV1 as Record<string, unknown[][]>).schema[5][1] as Parameters<
+      typeof binary.serializerFromSchema
+    >[0],
+  )(t.call),
   payments:
     t.payment == null
       ? null
@@ -402,8 +418,8 @@ const getUpdateAssetInfoData = (
 
 const getTxData = (
   t: Exclude<TTransaction, GenesisTransaction>,
-): any /*dccProto.waves.ITransaction*/ => {
-  let txData;
+): unknown /*dccProto.waves.ITransaction*/ => {
+  let txData: unknown;
 
   switch (t.type) {
     case TRANSACTION_TYPE.ISSUE:
@@ -484,40 +500,44 @@ export const signedTxToProto = (t: TTx): dccProto.waves.ISignedTransaction => {
   };
 };
 
-const orderToProto = (o: any): dccProto.waves.IOrder => {
-  let priceMode;
+const orderToProto = (o: Record<string, unknown>): dccProto.waves.IOrder => {
+  let priceMode: number | undefined;
   if (o.version === 4 && 'priceMode' in o) {
     if (o.priceMode === 0 || o.priceMode === 'default') {
       priceMode = undefined;
     } else {
-      o.priceMode === 'assetDecimals'
-        ? (priceMode = dccProto.waves.Order.PriceMode.ASSET_DECIMALS)
-        : (priceMode = dccProto.waves.Order.PriceMode.FIXED_DECIMALS);
+      if (o.priceMode === 'assetDecimals') {
+        priceMode = dccProto.waves.Order.PriceMode.ASSET_DECIMALS;
+      } else {
+        priceMode = dccProto.waves.Order.PriceMode.FIXED_DECIMALS;
+      }
     }
   } else priceMode = undefined;
 
-  const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() == 'dcc';
+  const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() === 'dcc';
+  const ap = o.assetPair as Record<string, string | null>;
   return {
-    chainId: o.chainId,
-    senderPublicKey: o.senderPublicKey ? base58Decode(o.senderPublicKey) : null,
-    matcherPublicKey: base58Decode(o.matcherPublicKey),
+    chainId: o.chainId as number,
+    senderPublicKey: o.senderPublicKey ? base58Decode(o.senderPublicKey as string) : null,
+    matcherPublicKey: base58Decode(o.matcherPublicKey as string),
     assetPair: {
-      amountAssetId: isNullOrDcc(o.assetPair.amountAsset)
-        ? null
-        : base58Decode(o.assetPair.amountAsset),
-      priceAssetId: isNullOrDcc(o.assetPair.priceAsset)
-        ? null
-        : base58Decode(o.assetPair.priceAsset),
+      amountAssetId: isNullOrDcc(ap.amountAsset) ? null : base58Decode(ap.amountAsset as string),
+      priceAssetId: isNullOrDcc(ap.priceAsset) ? null : base58Decode(ap.priceAsset as string),
     },
     orderSide: o.orderType === 'buy' ? undefined : dccProto.waves.Order.Side.SELL,
-    amount: Long.fromValue(o.amount),
-    price: Long.fromValue(o.price),
-    timestamp: Long.fromValue(o.timestamp),
-    expiration: Long.fromValue(o.expiration),
-    matcherFee: amountToProto(o.matcherFee, o.matcherFeeAssetId ? o.matcherFeeAssetId : null),
-    version: o.version,
-    proofs: o.proofs?.map(base58Decode),
-    eip712Signature: o.eip712Signature ? base16Decode(o.eip712Signature.slice(2)) : undefined,
+    amount: Long.fromValue(o.amount as string | number),
+    price: Long.fromValue(o.price as string | number),
+    timestamp: Long.fromValue(o.timestamp as string | number),
+    expiration: Long.fromValue(o.expiration as string | number),
+    matcherFee: amountToProto(
+      o.matcherFee as string | number,
+      o.matcherFeeAssetId ? (o.matcherFeeAssetId as string) : null,
+    ),
+    version: o.version as number,
+    proofs: (o.proofs as string[] | undefined)?.map(base58Decode),
+    eip712Signature: o.eip712Signature
+      ? base16Decode((o.eip712Signature as string).slice(2))
+      : undefined,
     priceMode: priceMode,
   };
 };
@@ -525,31 +545,36 @@ const orderToProto = (o: any): dccProto.waves.IOrder => {
 const orderFromProto = (
   po: dccProto.waves.IOrder,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
-  let priceMode;
+  let priceMode: string | undefined;
   if (po.version === 4 && po.priceMode != null) {
-    po.priceMode === 1 ? (priceMode = 'fixedDecimals') : (priceMode = 'assetDecimals');
+    if (po.priceMode === 1) {
+      priceMode = 'fixedDecimals';
+    } else {
+      priceMode = 'assetDecimals';
+    }
   }
 
   return {
-    version: po.version! as 1 | 2 | 3 | 4,
-    senderPublicKey: base58Encode(po.senderPublicKey!),
-    matcherPublicKey: base58Encode(po.matcherPublicKey!),
+    version: po.version as 1 | 2 | 3 | 4,
+    senderPublicKey: base58Encode(po.senderPublicKey as Uint8Array),
+    matcherPublicKey: base58Encode(po.matcherPublicKey as Uint8Array),
     assetPair: {
       amountAsset:
-        po!.assetPair!.amountAssetId == null ? null : base58Encode(po!.assetPair!.amountAssetId),
+        po?.assetPair?.amountAssetId == null ? null : base58Encode(po?.assetPair?.amountAssetId),
       priceAsset:
-        po!.assetPair!.priceAssetId == null ? null : base58Encode(po!.assetPair!.priceAssetId),
+        po?.assetPair?.priceAssetId == null ? null : base58Encode(po?.assetPair?.priceAssetId),
     },
-    // @ts-ignore
+    // @ts-expect-error
     chainId: po.chainId,
     orderType: po.orderSide === dccProto.waves.Order.Side.BUY ? 'buy' : 'sell',
-    amount: convertNumber(po.amount!),
-    price: convertNumber(po.price!),
-    timestamp: po.timestamp!.toNumber(),
-    expiration: po.expiration!.toNumber(),
-    matcherFee: convertNumber(po.matcherFee!.amount!),
-    matcherFeeAssetId: po.matcherFee!.assetId == null ? null : base58Encode(po.matcherFee!.assetId),
-    // @ts-ignore
+    amount: convertNumber(po.amount as Long),
+    price: convertNumber(po.price as Long),
+    timestamp: po.timestamp?.toNumber(),
+    expiration: po.expiration?.toNumber(),
+    matcherFee: convertNumber(po.matcherFee?.amount as Long),
+    matcherFeeAssetId:
+      po.matcherFee?.assetId == null ? null : base58Encode(po.matcherFee?.assetId as Uint8Array),
+    // @ts-expect-error
     priceMode: priceMode,
     eip712Signature: po.eip712Signature?.length
       ? `0x${base16Encode(po.eip712Signature)}`
@@ -562,14 +587,14 @@ const recipientToProto = (r: string): dccProto.waves.IRecipient => ({
   publicKeyHash: !r.startsWith('alias') ? base58Decode(r).slice(2, -4) : undefined,
 });
 const amountToProto = (a: string | number, assetId?: string | null): dccProto.waves.IAmount => ({
-  amount: a == 0 ? null : Long.fromValue(a),
+  amount: a === 0 ? null : Long.fromValue(a),
   assetId: assetId == null ? null : base58Decode(assetId),
 });
 const massTransferItemToProto = (
   mti: MassTransferItem,
 ): dccProto.waves.MassTransferTransactionData.ITransfer => ({
   recipient: recipientToProto(mti.recipient),
-  amount: mti.amount == 0 ? null : Long.fromValue(mti.amount),
+  amount: mti.amount === 0 ? null : Long.fromValue(mti.amount),
 });
 export const dataEntryToProto = (de: DataTransactionEntry): dccProto.waves.IDataEntry => ({
   key: de.key,

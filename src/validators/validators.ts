@@ -1,8 +1,8 @@
 import {
   base58Decode,
   base64Decode,
-  keccak,
   blake2b,
+  keccak,
   stringToBytes,
 } from '@decentralchain/ts-lib-crypto';
 
@@ -23,15 +23,15 @@ const ASSETS = {
 
 export const defaultValue = (value: unknown) => () => value;
 
-export const nope = (value: any) => value;
+export const nope = (value: unknown) => value;
 
 export const pipe =
-  (...args: Array<Function>) =>
+  (...args: Array<(value: unknown) => unknown>) =>
   (value: unknown) =>
     args.reduce((acc: unknown, cb) => cb(acc), value);
 
 export const validatePipe =
-  (...args: Array<Function>) =>
+  (...args: Array<(value: unknown) => unknown>) =>
   (value: unknown) => {
     let isValid = true;
 
@@ -46,14 +46,20 @@ export const validatePipe =
   };
 
 export const prop = (key: string | number) => (value: unknown) =>
-  value ? (value as any)[key] : undefined;
+  value ? (value as Record<string | number, unknown>)[key] : undefined;
 
-export const lte = (ref: any) => (value: any) => ref >= value;
+export const lte = (ref: unknown) => (value: unknown) => Number(ref) >= Number(value);
 
-export const gte = (ref: any) => (value: any) => ref <= value;
+export const gte = (ref: unknown) => (value: unknown) => Number(ref) <= Number(value);
 
-export const ifElse = (condition: Function, a: Function, b: Function) => (value: unknown) =>
-  condition(value) ? a(value) : b(value);
+export const ifElse =
+  (
+    condition: (value: unknown) => unknown,
+    a: (value: unknown) => unknown,
+    b: (value: unknown) => unknown,
+  ) =>
+  (value: unknown) =>
+    condition(value) ? a(value) : b(value);
 
 export const isEq =
   <T>(reference: T) =>
@@ -78,19 +84,29 @@ export const isRequired = (required: boolean) => (value: unknown) => !required |
 export const isString = (value: unknown) => typeof value === 'string' || value instanceof String;
 
 export const isNumber = (value: unknown) =>
-  (typeof value === 'number' || value instanceof Number) && !isNaN(Number(value));
+  (typeof value === 'number' || value instanceof Number) && !Number.isNaN(Number(value));
 
 export const isNumberLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && !!(value || value === 0);
+  value != null &&
+  !Number.isNaN(Number(value)) &&
+  Number.isFinite(Number(value)) &&
+  !!(value || value === 0);
 
 export const isNaturalNumberLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && Number(value) > 0;
+  value != null &&
+  !Number.isNaN(Number(value)) &&
+  Number.isFinite(Number(value)) &&
+  Number(value) > 0;
 
 export const isNaturalNumberOrZeroLike = (value: unknown) =>
-  value != null && !isNaN(Number(value)) && isFinite(Number(value)) && Number(value) >= 0;
+  value != null &&
+  !Number.isNaN(Number(value)) &&
+  Number.isFinite(Number(value)) &&
+  Number(value) >= 0;
 
 export const isNaturalNumberOrNullLike = (value: unknown) =>
-  (!isNaN(Number(value)) && isFinite(Number(value)) && Number(value) > 0) || value === null;
+  (!Number.isNaN(Number(value)) && Number.isFinite(Number(value)) && Number(value) > 0) ||
+  value === null;
 
 export const isBoolean = (value: unknown) =>
   value != null && (typeof value === 'boolean' || value instanceof Boolean);
@@ -100,10 +116,10 @@ export const isByteArray = (value: unknown) => {
     return false;
   }
 
-  const bytes = new Uint8Array(value as any);
+  const bytes = new Uint8Array(value as ArrayLike<number>);
   return (
-    bytes.length === (value as any).length &&
-    bytes.every((val, index) => isEq(val)((value as any)[index]))
+    bytes.length === (value as ArrayLike<number>).length &&
+    bytes.every((val, index) => isEq(val)((value as ArrayLike<number>)[index]))
   );
 };
 
@@ -149,7 +165,7 @@ export const isValidAddress = (address: unknown, network?: number) => {
     return false;
   }
 
-  if (network != null && addressBytes[1] != network) {
+  if (network != null && addressBytes[1] !== network) {
     return false;
   }
 
@@ -222,7 +238,9 @@ export const isAttachment = ifElse(
   defaultValue(true),
   ifElse(
     // if valid Data Pair
-    validatePipe(isArray, (data: any[]) => data.every(isValidDataPair)),
+    validatePipe(isArray, (data: unknown) =>
+      (data as Array<{ type: keyof typeof validateType; value: unknown }>).every(isValidDataPair),
+    ),
     defaultValue(true),
     // else if valid base58 or bytearray
     pipe(
@@ -260,9 +278,9 @@ export const isValidDeleteRequest = validatePipe(
   isRequired(true),
   pipe(
     prop('key'),
-    validatePipe(isString, (key: string) => !!key),
+    validatePipe(isString, (key: unknown) => !!key),
   ),
-  ({ type, value }: any) => type == null && value == null,
+  ({ type, value }: Record<string, unknown>) => type == null && value == null,
 );
 
 export const isValidAssetName = validatePipe(
@@ -288,8 +306,11 @@ export const exception = (msg: string) => {
 export const isRecipient = ifElse(isValidAddress, defaultValue(true), isValidAlias);
 
 export const validateByShema =
-  (shema: Record<string, Function>, errorTpl: (key: string, value?: unknown) => string) =>
-  (tx: Record<string, any>) => {
+  (
+    shema: Record<string, (value: unknown) => unknown>,
+    errorTpl: (key: string, value?: unknown) => string,
+  ) =>
+  (tx: Record<string, unknown>) => {
     Object.entries(shema).forEach(([key, cb]) => {
       const value = prop(key)(tx || {});
       if (!cb(value)) {
@@ -300,6 +321,6 @@ export const validateByShema =
     return true;
   };
 
-export const getError = (key: string, _value: any) => {
+export const getError = (key: string, _value: unknown) => {
   return `tx "${key}" has invalid data. Check tx data.`;
 };

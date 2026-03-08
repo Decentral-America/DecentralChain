@@ -3,12 +3,11 @@ import { massTransfer } from '../../src';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
-  errorMessageByTemplate,
   validateTxSignature,
 } from '../../test/utils';
 import { massTransferMinimalParams } from '../minimalParams';
-import { massTransferTx } from './expected/proto/mass-transfer.tx';
 import { massTransferBinaryTx } from './expected/binary/mass-transfer.tx';
+import { massTransferTx } from './expected/proto/mass-transfer.tx';
 
 describe('massTransfer', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
@@ -102,17 +101,17 @@ describe('massTransfer', () => {
 });
 
 describe('serialize/deserialize mass transfer tx', () => {
-  Object.entries(massTransferTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(massTransferTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });
 
 describe('serialize/deserialize mass transfer binary tx', () => {
-  Object.entries(massTransferBinaryTx).forEach(([name, { Bytes, Json }]) =>
+  Object.entries(massTransferBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
-    }),
-  );
+    });
+  });
 });

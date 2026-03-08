@@ -1,7 +1,11 @@
 /**
  * @module index
  */
-import { IMassTransferParams, WithId, WithProofs, WithSender } from '../transactions';
+
+import { binary } from '@decentralchain/marshall';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type MassTransferTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
   chainIdFromRecipient,
@@ -11,13 +15,15 @@ import {
   networkByte,
   normalizeAssetId,
 } from '../generic';
-import { TSeedTypes } from '../types';
-import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
 import { txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
-import { MassTransferTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import {
+  type IMassTransferParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function massTransfer(
@@ -29,7 +35,7 @@ export function massTransfer(
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs;
 export function massTransfer(
-  paramsOrTx: any,
+  paramsOrTx: IMassTransferParams & Partial<MassTransferTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.MASS_TRANSFER;
@@ -98,7 +104,9 @@ export function massTransfer(
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;

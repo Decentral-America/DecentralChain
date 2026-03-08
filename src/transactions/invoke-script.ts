@@ -1,8 +1,15 @@
 /**
  * @module index
  */
-import { IInvokeScriptParams, WithId, WithProofs, WithSender } from '../transactions';
+
+import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import {
+  type InvokeScriptPayment,
+  type InvokeScriptTransaction,
+  TRANSACTION_TYPE,
+} from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
   convertToPairs,
@@ -11,16 +18,15 @@ import {
   networkByte,
   normalizeAssetId,
 } from '../generic';
-import { TSeedTypes } from '../types';
-import { binary } from '@decentralchain/marshall';
-import { validate } from '../validators';
 import { txToProtoBytes } from '../proto-serialize';
-import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
-  InvokeScriptPayment,
-  InvokeScriptTransaction,
-  TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+  type IInvokeScriptParams,
+  type WithId,
+  type WithProofs,
+  type WithSender,
+} from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
 
 /* @echo DOCS */
 export function invokeScript(
@@ -32,7 +38,7 @@ export function invokeScript(
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs;
 export function invokeScript(
-  paramsOrTx: any,
+  paramsOrTx: IInvokeScriptParams & Partial<InvokeScriptTransaction & WithProofs>,
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.INVOKE_SCRIPT;
@@ -59,7 +65,9 @@ export function invokeScript(
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  seedsAndIndexes.forEach(([s, i]) => addProof(tx, signBytes(s, bytes), i));
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
   tx.id = base58Encode(blake2b(bytes));
 
   return tx;
@@ -70,6 +78,6 @@ const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] =>
     ? []
     : payments.map((pmt) => ({ ...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId }));
 
-const callField = (paramsOrTx: any) => {
+const callField = (paramsOrTx: { call?: { function: string; args?: unknown[] } | null }) => {
   return paramsOrTx.call ? { ...paramsOrTx.call, args: paramsOrTx.call.args || [] } : null;
 };

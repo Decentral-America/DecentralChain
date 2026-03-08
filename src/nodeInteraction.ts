@@ -1,28 +1,28 @@
-import { WithId } from './transactions';
-import * as tx_route from '@decentralchain/node-api-js/api-node/transactions';
-import * as blocks_route from '@decentralchain/node-api-js/api-node/blocks';
 import * as addresses_route from '@decentralchain/node-api-js/api-node/addresses';
 import * as assets_route from '@decentralchain/node-api-js/api-node/assets';
-import * as rewards_route from '@decentralchain/node-api-js/api-node/rewards';
+import * as blocks_route from '@decentralchain/node-api-js/api-node/blocks';
 import * as debug_route from '@decentralchain/node-api-js/api-node/debug';
+import { type TStateChanges } from '@decentralchain/node-api-js/api-node/debug';
+import * as rewards_route from '@decentralchain/node-api-js/api-node/rewards';
+import * as tx_route from '@decentralchain/node-api-js/api-node/transactions';
 import {
-  DataTransactionEntry,
-  Long,
-  SignedTransaction,
-  Transaction,
-  WithApiMixin,
+  type DataTransactionEntry,
+  type Long,
+  type SignedTransaction,
+  type Transaction,
+  type WithApiMixin,
 } from '@decentralchain/ts-types';
 
 export type CancellablePromise<T> = Promise<T> & { cancel: () => void };
 
-const delay = (timeout: number): CancellablePromise<{}> => {
-  let resolve: (value: {} | PromiseLike<{}>) => void;
+const delay = (timeout: number): CancellablePromise<object> => {
+  let resolve: (value: object | PromiseLike<object>) => void;
   let id: ReturnType<typeof setTimeout>;
 
-  const p = new Promise<{}>((res) => {
+  const p = new Promise<object>((res) => {
     resolve = res;
     id = setTimeout(() => res({}), timeout);
-  }) as CancellablePromise<{}>;
+  }) as CancellablePromise<object>;
 
   p.cancel = () => {
     resolve({});
@@ -32,7 +32,7 @@ const delay = (timeout: number): CancellablePromise<{}> => {
   return p;
 };
 
-const rerun = (f: () => Promise<any>, expired: boolean, t = 1000) =>
+const rerun = <T>(f: () => Promise<T>, expired: boolean, t = 1000): Promise<T> =>
   delay(t).then((_) => (expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : f()));
 
 export interface INodeRequestOptions {
@@ -54,7 +54,9 @@ export async function waitForHeight(height: number, options: INodeRequestOptions
 
   let expired = false;
   const to = delay(timeout);
-  to.then(() => (expired = true));
+  void to.then(() => {
+    expired = true;
+  });
 
   const promise = (): Promise<number> =>
     currentHeight(apiBase)
@@ -71,11 +73,8 @@ export async function waitForHeight(height: number, options: INodeRequestOptions
   return promise();
 }
 
-type PropApplicationStatus = {
-  applicationStatus?: 'succeeded' | 'script_execution_failed';
-};
-
-type TxStatus = Transaction & PropApplicationStatus;
+/** Transaction info returned by the node API — includes id, sender, height, and applicationStatus */
+type TxInfo = Awaited<ReturnType<typeof tx_route.fetchInfo>>;
 
 /**
  * Resolves when specified txId is mined into block
@@ -86,23 +85,27 @@ export async function waitForTx(
   txId: string,
   options: INodeRequestOptions,
   requestOptions?: RequestInit,
-): Promise<TxStatus> {
+): Promise<TxInfo> {
   const { timeout, apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options };
 
   let expired = false;
   const to = delay(timeout);
-  to.then(() => (expired = true));
+  void to.then(() => {
+    expired = true;
+  });
 
-  const promise = (): Promise<TxStatus> =>
+  const promise = (): Promise<TxInfo> =>
     tx_route
       .fetchInfo(apiBase, txId, requestOptions)
       .then((x) => {
         to.cancel();
-        return x as any; //todo: fix types
+        return x;
       })
-      .catch((e: any) => {
+      .catch((e: Record<string, unknown>) => {
         // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
-        const status = e?.response?.status ?? e?.status ?? e?.code;
+        const status = (e as Record<string, unknown>)?.response
+          ? (e as Record<string, { status?: number }>).response?.status
+          : ((e as Record<string, unknown>)?.status ?? (e as Record<string, unknown>)?.code);
         if (
           status === 400 ||
           status === 401 ||
@@ -132,23 +135,25 @@ export async function waitForTxWithNConfirmations(
   confirmations: number,
   options: INodeRequestOptions,
   _requestOptions?: RequestInit,
-): Promise<TxStatus> {
+): Promise<TxInfo> {
   const { timeout } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options };
 
   let expired = false;
   const to = delay(timeout);
-  to.then(() => (expired = true));
+  void to.then(() => {
+    expired = true;
+  });
 
   let tx = await waitForTx(txId, options, _requestOptions);
 
-  let txHeight = (tx as any).height;
-  let chainHeight = (tx as any).height;
+  let txHeight: number = tx.height;
+  let chainHeight: number = tx.height;
 
   while (txHeight + confirmations > chainHeight) {
     if (expired) throw new Error('Tx wait stopped: timeout');
     await waitForHeight(txHeight + confirmations, options);
     tx = await waitForTx(txId, options, _requestOptions);
-    txHeight = (tx as any).height;
+    txHeight = tx.height;
     chainHeight = await currentHeight(options.apiBase || DEFAULT_NODE_REQUEST_OPTIONS.apiBase);
   }
 
@@ -176,8 +181,8 @@ export async function transactionById(
   txId: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<Transaction & WithId & { height: number }> {
-  return tx_route.fetchInfo(nodeUrl, txId, requestOptions) as any; //todo: fix types
+): Promise<TxInfo> {
+  return tx_route.fetchInfo(nodeUrl, txId, requestOptions);
 }
 
 /**
@@ -252,8 +257,8 @@ export async function accountData(
   nodeUrl: string,
   requestOptions?: RequestInit,
 ): Promise<Record<string, DataTransactionEntry>> {
-  let address;
-  let match;
+  let address: string;
+  let match: string | undefined;
   if (typeof options === 'string') {
     address = options;
     match = undefined;
@@ -269,14 +274,18 @@ export async function accountData(
     }
   }
 
-  const data: DataTransactionEntry[] = (await addresses_route.data(
+  const data = await addresses_route.data(
     nodeUrl,
     address,
     { matches: match },
     requestOptions,
-  )) as any; //todo fix type
+  );
 
-  return data.reduce((acc, item) => ({ ...acc, [item.key]: item }), {});
+  const result: Record<string, DataTransactionEntry> = {};
+  for (const item of data) {
+    result[item.key] = item;
+  }
+  return result;
 }
 
 /**
@@ -306,8 +315,10 @@ export async function scriptInfo(
   address: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<any> {
-  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions);
+): Promise<Record<string, unknown>> {
+  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions) as Promise<
+    Record<string, unknown>
+  >;
 }
 
 /**
@@ -315,43 +326,41 @@ export async function scriptInfo(
  * @param address - DCC address as base58 string
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function scriptMeta(address: string, nodeUrl: string): Promise<any> {
-  return addresses_route.fetchScriptInfoMeta(nodeUrl, address);
+export async function scriptMeta(
+  address: string,
+  nodeUrl: string,
+): Promise<Record<string, unknown>> {
+  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as Promise<Record<string, unknown>>;
 }
 
 /**
  * Get miner’s reward status and total supply
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function rewards(nodeUrl: string): Promise<any>;
+export async function rewards(nodeUrl: string, requestOptions?: RequestInit): Promise<unknown>;
 /**
- * Get miner’s reward status at height and total supply
+ * Get miner's reward status at height and total supply
  * @param height - block number to get info
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function rewards(height: number, nodeUrl: string): Promise<any>;
-export async function rewards(...args: [number, string] | [string]): Promise<any> {
-  //TODO add requestOptions argument
+export async function rewards(height: number, nodeUrl: string, requestOptions?: RequestInit): Promise<unknown>;
+export async function rewards(
+  ...args: [number, string, RequestInit?] | [string, RequestInit?]
+): Promise<unknown> {
   let nodeUrl: string;
-  let _height: number | undefined = undefined;
-  if (args[1] !== undefined) {
-    nodeUrl = args[1];
-    _height = args[0] as number;
+  let _height: number | undefined;
+  let requestOptions: RequestInit | undefined;
+  if (typeof args[0] === 'number') {
+    [_height, nodeUrl, requestOptions] = args as [number, string, RequestInit?];
   } else {
-    nodeUrl = args[0] as string;
+    [nodeUrl, requestOptions] = args as [string, RequestInit?];
   }
 
-  return rewards_route.fetchRewards(nodeUrl, _height);
+  return rewards_route.fetchRewards(nodeUrl, _height, requestOptions);
 }
 
-export interface IStateChangeResponse {
-  data: DataTransactionEntry[];
-  transfers: {
-    address: string;
-    amount: number;
-    assetId: string | null;
-  }[];
-}
+/** @deprecated Use TStateChanges from @decentralchain/node-api-js/api-node/debug */
+export type IStateChangeResponse = TStateChanges;
 
 /**
  * Get invokeScript tx state changes
@@ -362,10 +371,9 @@ export async function stateChanges(
   transactionId: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<IStateChangeResponse> {
-  return debug_route
-    .fetchStateChangesByTxId(nodeUrl, transactionId, requestOptions)
-    .then((t: any) => t.stateChanges) as any; //todo: fix types
+): Promise<TStateChanges> {
+  const tx = await debug_route.fetchStateChangesByTxId(nodeUrl, transactionId, requestOptions);
+  return tx.stateChanges;
 }
 
 /**
@@ -379,5 +387,9 @@ export function broadcast<T extends SignedTransaction<Transaction<Long>>>(
   nodeUrl: string,
   requestOptions?: RequestInit,
 ): Promise<T & WithApiMixin> {
-  return tx_route.broadcast(nodeUrl, tx as any, requestOptions);
+  return tx_route.broadcast(
+    nodeUrl,
+    tx as unknown as Parameters<typeof tx_route.broadcast>[1],
+    requestOptions,
+  );
 }
