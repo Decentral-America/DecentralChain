@@ -43,7 +43,7 @@
     "generate": "pbjs -t static-module --force-long --no-create --no-verify --no-convert --no-delimited --no-beautify -w es6 --root decentralchain --path proto -o dist/index.js \"proto/waves/**/*.proto\"",
     "generate:types": "pbts -o dist/index.d.ts --no-comments dist/index.js",
     "build": "rm -rf dist && mkdir dist && npm run generate && npm run generate:types && npm run generate -- --no-comments && npm run fix:imports",
-    "fix:imports": "node -e \"import{readFileSync as r,writeFileSync as w}from'fs';const f='dist/index.js';w(f,r(f,'utf8').replace('from \\\"protobufjs/minimal\\\"','from \\\"protobufjs/minimal.js\\\"'))\"",
+    "fix:imports": "node -e \"import{readFileSync as r,writeFileSync as w}from'fs';let js=r('dist/index.js','utf8');js=js.replace('import * as \\$protobuf from \\\"protobufjs/minimal\\\"','import \\$protobuf from \\\"protobufjs/minimal.js\\\"');w('dist/index.js',js);let dts=r('dist/index.d.ts','utf8');dts=dts.replace('from \\\"protobufjs\\\"','from \\\"protobufjs/minimal.js\\\"');w('dist/index.d.ts',dts)\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
