@@ -5,24 +5,24 @@
  * Implements the Provider interface to bridge Signer with the CubensisConnect browser extension.
  */
 
-import type {
-  AuthEvents,
-  ConnectOptions,
-  Handler,
-  Provider,
-  SignedTx,
-  SignerTx,
-  TOrderArgs,
-  TSignedOrder,
-  TypedData,
-  UserData,
+import {
+  type AuthEvents,
+  type ConnectOptions,
+  type Handler,
+  type Provider,
+  type SignedTx,
+  type SignerTx,
+  type TOrderArgs,
+  type TSignedOrder,
+  type TypedData,
+  type UserData,
 } from '@decentralchain/signer';
 import { EventEmitter } from 'typed-ts-events';
-import { base16Encode, base64Encode, randomBytes, stringToBytes } from './crypto';
 import { keeperTxFactory, signerTxFactory } from './adapter';
+import { base16Encode, base64Encode, randomBytes, stringToBytes } from './crypto';
 import { ensureNetwork } from './decorators';
-import { calculateFee } from './utils';
 import { TRANSACTION_TYPE } from './transaction-type';
+import { calculateFee } from './utils';
 
 /** Default timeout for wallet extension operations (2 minutes). */
 const EXTENSION_TIMEOUT_MS = 120_000;
@@ -134,7 +134,6 @@ export class ProviderCubensis implements Provider {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (window.CubensisConnect) {
         void window.CubensisConnect.initialPromise
           .then(() => {
@@ -203,7 +202,7 @@ export class ProviderCubensis implements Provider {
       this._api
         .signCustomData({
           version: 1,
-          binary: 'base64:' + base64Encode(stringToBytes(String(data))),
+          binary: `base64:${base64Encode(stringToBytes(String(data)))}`,
         })
         .then((data: CubensisConnect.TSignCustomDataResponseV1) => data.signature),
       EXTENSION_TIMEOUT_MS,

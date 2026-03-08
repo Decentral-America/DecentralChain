@@ -124,9 +124,9 @@ npm install
 | `npm run test:watch`        | Tests in watch mode                          |
 | `npm run test:coverage`     | Tests with V8 coverage                       |
 | `npm run typecheck`         | TypeScript type checking                     |
-| `npm run lint`              | ESLint                                       |
-| `npm run lint:fix`          | ESLint with auto-fix                         |
-| `npm run format`            | Format with Prettier                         |
+| `npm run lint`              | Biome lint |
+| `npm run lint:fix`          | Biome lint with auto-fix                         |
+| `npm run format`            | Format with Biome                         |
 | `npm run validate`          | Full CI validation pipeline                  |
 | `npm run bulletproof`       | Format + lint fix + typecheck + test         |
 | `npm run bulletproof:check` | CI-safe: check format + lint + tc + test     |
@@ -135,8 +135,8 @@ npm install
 
 All of the following must pass before merge:
 
-- Formatting (`prettier --check`)
-- Linting (`eslint`)
+- Formatting (`biome format`)
+- Linting (`biome check`)
 - Type checking (`tsc --noEmit`)
 - Tests with 90%+ coverage
 - Clean build

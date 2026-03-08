@@ -1,5 +1,5 @@
+import { describe, expect, it } from 'vitest';
 import { ProviderCubensis } from '../src';
-import { describe, it, expect } from 'vitest';
 
 describe('Package', () => {
   it('exports ProviderCubensis as a named export', () => {

@@ -15,5 +15,5 @@
  */
 
 export { ProviderCubensis } from './ProviderCubensis';
+export type { TransactionMap, TransactionType } from './transaction-type';
 export { TRANSACTION_TYPE } from './transaction-type';
-export type { TransactionType, TransactionMap } from './transaction-type';

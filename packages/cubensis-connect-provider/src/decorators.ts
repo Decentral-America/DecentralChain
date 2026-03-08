@@ -4,8 +4,8 @@
  * Decorators for the CubensisConnect provider methods.
  */
 
-import type { ProviderCubensis } from './ProviderCubensis';
-import type { ConnectOptions } from '@decentralchain/signer';
+import { type ConnectOptions } from '@decentralchain/signer';
+import { type ProviderCubensis } from './ProviderCubensis';
 
 /**
  * Normalizes a node URL for comparison by stripping trailing slashes.

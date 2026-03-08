@@ -4,7 +4,7 @@
  * Utility functions for the CubensisConnect provider.
  */
 
-import type { SignerTx } from '@decentralchain/signer';
+import { type SignerTx } from '@decentralchain/signer';
 
 /**
  * Response shape from the DecentralChain node fee calculation endpoint.
@@ -27,7 +27,7 @@ const REQUEST_TIMEOUT_MS = 10_000;
 function isFeeInfo(value: unknown): value is FeeInfo {
   if (typeof value !== 'object' || value === null) return false;
   const obj = value as Record<string, unknown>;
-  const fee = obj['feeAmount'];
+  const fee = obj.feeAmount;
   return typeof fee === 'number' && Number.isFinite(fee) && Number.isInteger(fee) && fee > 0;
 }
 
