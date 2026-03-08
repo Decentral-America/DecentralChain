@@ -1,10 +1,10 @@
-import { NODE_URL, NETWORK_BYTE, CHAIN_ID } from '../../_state';
 import create from '../../../src';
-import getNetworkCode from '../../../src/tools/blocks/getNetworkCode';
-import getNetworkByte from '../../../src/tools/blocks/getNetworkByte';
-import detectInterval from '../../../src/tools/blocks/detectInterval';
-import waitHeight from '../../../src/tools/blocks/waitHeight';
 import { fetchHeight } from '../../../src/api-node/blocks';
+import detectInterval from '../../../src/tools/blocks/detectInterval';
+import getNetworkByte from '../../../src/tools/blocks/getNetworkByte';
+import getNetworkCode from '../../../src/tools/blocks/getNetworkCode';
+import waitHeight from '../../../src/tools/blocks/waitHeight';
+import { CHAIN_ID, NETWORK_BYTE, NODE_URL } from '../../_state';
 
 const { tools } = create(NODE_URL);
 

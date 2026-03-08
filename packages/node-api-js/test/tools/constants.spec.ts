@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { NAME_MAP, TRANSACTION_STATUSES } from '../../src/constants';
 
 describe('constants – transaction name map', () => {
