@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { isPublicKey, isPrivateKey } from '../src/crypto/util';
+import { isPrivateKey, isPublicKey } from '../src/crypto/util';
 
 describe('isPublicKey', () => {
   test('returns true for object with publicKey property', () => {

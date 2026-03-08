@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { keyPair } from '../src';
+import { bytesToString, stringToBytes } from '../src/conversions/string-bytes';
 import {
-  aesEncrypt,
   aesDecrypt,
-  messageEncrypt,
+  aesEncrypt,
   messageDecrypt,
+  messageEncrypt,
   sharedKey,
 } from '../src/crypto/encryption';
 import { randomBytes } from '../src/crypto/random';
-import { stringToBytes, bytesToString } from '../src/conversions/string-bytes';
-import { keyPair } from '../src';
 
 describe('AES encryption edge cases', () => {
   const message = 'DecentralChain encryption test';

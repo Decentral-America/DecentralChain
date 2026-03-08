@@ -1,8 +1,8 @@
+import { describe, expect, test } from 'vitest';
+import { type RSADigestAlgorithm } from '../src';
+import { base64Decode, base64Encode } from '../src/conversions/base-xx';
 import { stringToBytes } from '../src/conversions/string-bytes';
 import { pemToBytes, rsaKeyPair, rsaKeyPairSync, rsaSign, rsaVerify } from '../src/crypto/rsa';
-import { base64Decode, base64Encode } from '../src/conversions/base-xx';
-import { RSADigestAlgorithm } from '../src';
-import { describe, expect, test } from 'vitest';
 
 describe('RSA', () => {
   test('Should get correct rsa signature', () => {
@@ -37,6 +37,7 @@ describe('RSA', () => {
     const pair = rsaKeyPairSync(2048);
     const msgBytes = stringToBytes('test message for all digests');
     const algorithms: RSADigestAlgorithm[] = [
+      'NONE',
       'SHA224',
       'SHA256',
       'SHA384',
@@ -83,7 +84,7 @@ describe('RSA', () => {
     const b64 = base64Encode(pair.rsaPrivate);
     const pem =
       '-----BEGIN RSA PRIVATE KEY-----\n' +
-      b64.match(/.{1,64}/g)!.join('\n') +
+      b64.match(/.{1,64}/g)?.join('\n') +
       '\n-----END RSA PRIVATE KEY-----\n';
     const bytes = pemToBytes(pem);
     expect(bytes).toBeInstanceOf(Uint8Array);
@@ -169,5 +170,36 @@ describe('RSA', () => {
 
     // Also verify the signature is valid
     expect(rsaVerify(pair.rsaPublic, msgBytes, rsaSign(pair.rsaPrivate, msgBytes))).toBe(true);
+  });
+
+  test('NONE digest: raw PKCS#1 v1.5 sign and verify (no hashing)', () => {
+    const pair = rsaKeyPairSync();
+    const msg = stringToBytes('raw message, no digest');
+    const signature = rsaSign(pair.rsaPrivate, msg, 'NONE');
+    expect(rsaVerify(pair.rsaPublic, msg, signature, 'NONE')).toBe(true);
+  });
+
+  test('NONE digest: verification fails with wrong message', () => {
+    const pair = rsaKeyPairSync();
+    const msg = stringToBytes('correct');
+    const wrong = stringToBytes('wrong');
+    const signature = rsaSign(pair.rsaPrivate, msg, 'NONE');
+    expect(rsaVerify(pair.rsaPublic, wrong, signature, 'NONE')).toBe(false);
+  });
+
+  test('NONE digest: verification fails with wrong key', () => {
+    const pairA = rsaKeyPairSync();
+    const pairB = rsaKeyPairSync();
+    const msg = stringToBytes('hello');
+    const signature = rsaSign(pairA.rsaPrivate, msg, 'NONE');
+    expect(rsaVerify(pairB.rsaPublic, msg, signature, 'NONE')).toBe(false);
+  });
+
+  test('NONE signature is distinct from SHA256 signature for same input', () => {
+    const pair = rsaKeyPairSync();
+    const msg = stringToBytes('hello');
+    const sigNone = base64Encode(rsaSign(pair.rsaPrivate, msg, 'NONE'));
+    const sigSha256 = base64Encode(rsaSign(pair.rsaPrivate, msg, 'SHA256'));
+    expect(sigNone).not.toEqual(sigSha256);
   });
 });
