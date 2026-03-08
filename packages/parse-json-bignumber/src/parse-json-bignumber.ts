@@ -118,7 +118,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
   const next = (c?: string): string => {
     if (c && c !== ch) {
-      error("Expected '" + c + "' instead of '" + ch + "'");
+      error(`Expected '${c}' instead of '${ch}'`);
     }
 
     ch = text.charAt(at);
@@ -172,7 +172,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     const num = +numStr;
 
     // Validate BEFORE calling options.parse — never forward malformed numbers
-    if (!isFinite(num)) {
+    if (!Number.isFinite(num)) {
       return error('Bad number');
     }
 
@@ -217,7 +217,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             uffff = 0;
             for (i = 0; i < 4; i += 1) {
               hex = parseInt(next(), 16);
-              if (!isFinite(hex)) {
+              if (!Number.isFinite(hex)) {
                 return error('Bad unicode escape');
               }
               uffff = uffff * 16 + hex;
@@ -233,7 +233,6 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
           }
         } else {
           // Reject unescaped control characters per RFC 8259 §7
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ch is mutated by next(); flow analysis is stale
           if (ch < '\u0020') {
             return error('Unescaped control character in string');
           }
@@ -272,12 +271,11 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         next('l');
         return null;
       default:
-        return error("Unexpected '" + ch + "'");
+        return error(`Unexpected '${ch}'`);
     }
   };
 
   // Forward declaration — assigned after `object` and `array` are defined.
-  // eslint-disable-next-line prefer-const -- must use `let` for forward reference; assigned once after dependents
   let value: () => unknown;
 
   const array = (): unknown[] => {
@@ -332,7 +330,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         white();
         next(':');
         if (_options.strict && Object.hasOwn(obj, key)) {
-          error('Duplicate key "' + key + '"');
+          error(`Duplicate key "${key}"`);
         }
         obj[key] = value();
         white();
@@ -366,10 +364,8 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
   // ── Stringify ────────────────────────────────────────────────────
 
-  /* eslint-disable no-control-regex, no-misleading-character-class -- JSON spec requires matching these control/surrogate characters */
   const rxEscapable =
     /[\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-  /* eslint-enable no-control-regex, no-misleading-character-class */
 
   let gap: string;
   let indent: string;
@@ -400,10 +396,10 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             const c = meta[a];
             return typeof c === 'string'
               ? c
-              : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+              : `\\u${(`0000${a.charCodeAt(0).toString(16)}`).slice(-4)}`;
           }) +
           '"'
-      : '"' + s + '"';
+      : `"${s}"`;
   }
 
   function str(key: string, holder: Record<string, unknown>): string | undefined {
@@ -432,7 +428,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     } else if (
       val != null &&
       typeof val === 'object' &&
-      typeof (val as Record<string, unknown>)['toJSON'] === 'function'
+      typeof (val as Record<string, unknown>).toJSON === 'function'
     ) {
       val = (val as { toJSON: (key: string) => unknown }).toJSON(key);
     }
@@ -455,7 +451,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
 
       case 'number':
         // JSON numbers must be finite. Encode non-finite numbers as null.
-        return isFinite(val) ? String(val) : 'null';
+        return Number.isFinite(val) ? String(val) : 'null';
 
       case 'boolean':
         return String(val);
@@ -487,8 +483,8 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             partial.length === 0
               ? '[]'
               : gap
-                ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
-                : '[' + partial.join(',') + ']';
+                ? `[\n${gap}${partial.join(`,\n${gap}`)}\n${mind}]`
+                : `[${partial.join(',')}]`;
           gap = mind;
           seen.delete(val);
           return v;
@@ -525,8 +521,8 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
           partial.length === 0
             ? '{}'
             : gap
-              ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}'
-              : '{' + partial.join(',') + '}';
+              ? `{\n${gap}${partial.join(`,\n${gap}`)}\n${mind}}`
+              : `{${partial.join(',')}}`;
         gap = mind;
         seen.delete(val);
         return v;
@@ -631,7 +627,6 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
             if (walked !== undefined) {
               (val as Record<string, unknown>)[k] = walked;
             } else {
-              // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
               delete (val as Record<string, unknown>)[k];
             }
           }

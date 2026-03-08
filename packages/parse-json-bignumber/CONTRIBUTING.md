@@ -28,9 +28,9 @@ npm install
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
 | `npm run typecheck`         | TypeScript type checking                 |
-| `npm run lint`              | ESLint                                   |
-| `npm run lint:fix`          | ESLint with auto-fix                     |
-| `npm run format`            | Format with Prettier                     |
+| `npm run lint`              | Biome lint |
+| `npm run lint:fix`          | Biome lint with auto-fix                     |
+| `npm run format`            | Format with Biome                     |
 | `npm run validate`          | Full CI validation pipeline              |
 | `npm run bulletproof`       | Format + lint fix + typecheck + test     |
 | `npm run bulletproof:check` | CI-safe: check format + lint + tc + test |
@@ -57,7 +57,7 @@ refactor: simplify implementation
 ## Standards
 
 - **Strict mode** — all TypeScript strict flags enabled
-- **Prettier** — auto-formatting on commit
+- **Biome** — auto-formatting on commit
 - **Coverage** — thresholds enforced (90%+)
 - **Immutable** — operations return new instances where applicable
 
