@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { getAssetData } from '../assetData';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Asset, AssetPair } from '../../src/index';
+import { getAssetData } from '../assetData';
 
 let asset1: Asset;
 let asset2: Asset;

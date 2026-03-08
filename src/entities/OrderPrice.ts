@@ -1,6 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import { type AssetPair } from './AssetPair';
 import { toBigNumber } from '../utils';
+import { type AssetPair } from './AssetPair';
 
 /** Serialized representation of an OrderPrice, returned by `OrderPrice.toJSON()`. */
 export interface IOrderPriceJSON {
