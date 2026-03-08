@@ -75,7 +75,7 @@ const f: Fetch = ((url: string | URL | Request, options?: RequestInit) => {
     }
 
     if (path === '/transactions/broadcast') {
-      return makeResponse(true, JSON.parse(options!.body as string));
+      return makeResponse(true, JSON.parse(options?.body as string));
     }
 
     // GET /addresses/balance/details/{address}

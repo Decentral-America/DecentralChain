@@ -1,7 +1,7 @@
-import { ACCOUNTS, MOCK_URL, NETWORK_BYTE, SMART_ASSET_SCRIPT } from '../test-env';
+import { libs } from '@decentralchain/transactions';
 import Signer from '../../src/Signer';
 import { TestProvider } from '../TestProvider';
-import { libs } from '@decentralchain/transactions';
+import { ACCOUNTS, MOCK_URL, NETWORK_BYTE, SMART_ASSET_SCRIPT } from '../test-env';
 
 const signer = new Signer({ NODE_URL: MOCK_URL });
 const provider = new TestProvider(ACCOUNTS.SMART.seed);
@@ -16,7 +16,7 @@ const issue = signer
     decimals: 0,
     reissuable: false,
     script: SMART_ASSET_SCRIPT,
-    fee: 1.004 * Math.pow(10, 8),
+    fee: 1.004 * 10 ** 8,
   })
   .broadcast()
   .then(([tx]: any[]) => tx);
@@ -63,7 +63,7 @@ it('Invoke', async () => {
         function: 'foo',
         args: [],
       },
-      fee: Math.ceil(0.009 * Math.pow(10, 8)),
+      fee: Math.ceil(0.009 * 10 ** 8),
     })
     .broadcast();
 });
