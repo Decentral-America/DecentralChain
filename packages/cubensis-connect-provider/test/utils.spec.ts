@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { calculateFee } from '../src/utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TRANSACTION_TYPE } from '../src/transaction-type';
+import { calculateFee } from '../src/utils';
 
 describe('calculateFee', () => {
   beforeEach(() => {

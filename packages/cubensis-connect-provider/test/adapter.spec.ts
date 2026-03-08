@@ -1,25 +1,24 @@
-import { keeperTxFactory, signerTxFactory } from '../src/adapter';
-import type {
-  SignedTx,
-  SignerAliasTx,
-  SignerBurnTx,
-  SignerCancelLeaseTx,
-  SignerDataTx,
-  SignerInvokeTx,
-  SignerIssueTx,
-  SignerLeaseTx,
-  SignerMassTransferTx,
-  SignerReissueTx,
-  SignerSetAssetScriptTx,
-  SignerSetScriptTx,
-  SignerSponsorshipTx,
-  SignerTransferTx,
-  SignerTx,
-  SignerTxToSignedTx,
+import {
+  type SignedTx,
+  type SignerAliasTx,
+  type SignerBurnTx,
+  type SignerCancelLeaseTx,
+  type SignerDataTx,
+  type SignerInvokeTx,
+  type SignerIssueTx,
+  type SignerLeaseTx,
+  type SignerMassTransferTx,
+  type SignerReissueTx,
+  type SignerSetAssetScriptTx,
+  type SignerSetScriptTx,
+  type SignerSponsorshipTx,
+  type SignerTransferTx,
+  type SignerTx,
+  type SignerTxToSignedTx,
 } from '@decentralchain/signer';
-import { describe, it, expect } from 'vitest';
-import { TRANSACTION_TYPE } from '../src/transaction-type';
-import type { TransactionMap } from '../src/transaction-type';
+import { describe, expect, it } from 'vitest';
+import { keeperTxFactory, signerTxFactory } from '../src/adapter';
+import { TRANSACTION_TYPE, type TransactionMap } from '../src/transaction-type';
 import {
   ALIAS,
   BURN,
@@ -311,8 +310,8 @@ describe('Adapter', () => {
           data: {
             dApp: txInvokeScript.dApp,
             call: {
-              function: txInvokeScript.call!.function,
-              args: txInvokeScript.call!.args,
+              function: txInvokeScript.call?.function,
+              args: txInvokeScript.call?.args,
             },
             payment: txInvokeScript.payment,
           },
@@ -484,7 +483,7 @@ describe('Adapter', () => {
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.MASS_TRANSFER);
 
       it('amount is long', () => {
-        expect(jsonTx.transfers[0]!.amount).toBe(longMax);
+        expect(jsonTx.transfers[0]?.amount).toBe(longMax);
       });
     });
 
@@ -500,11 +499,11 @@ describe('Adapter', () => {
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.DATA);
 
       it('longMaxValue is long', () => {
-        expect(jsonTx.data[0]!.value).toBe(longMax);
+        expect(jsonTx.data[0]?.value).toBe(longMax);
       });
 
       it('longMinValue is long', () => {
-        expect(jsonTx.data[1]!.value).toBe(longMin);
+        expect(jsonTx.data[1]?.value).toBe(longMin);
       });
     });
 
@@ -559,7 +558,7 @@ describe('Adapter', () => {
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.INVOKE_SCRIPT);
 
       it('payment amount is long', () => {
-        expect(jsonTx.payment![0]!.amount).toBe(longMax);
+        expect(jsonTx.payment?.[0]?.amount).toBe(longMax);
       });
     });
   });
