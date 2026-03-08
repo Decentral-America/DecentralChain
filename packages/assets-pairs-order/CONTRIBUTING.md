@@ -21,7 +21,7 @@ cd assets-pairs-order
 npm install
 ```
 
-Husky will automatically set up Git hooks via the `prepare` script.
+Lefthook will automatically set up Git hooks via the `prepare` script.
 
 ## Development Workflow
 
@@ -62,7 +62,7 @@ Husky will automatically set up Git hooks via the `prepare` script.
 | `npm run test:coverage`     | Run tests with coverage reporting               |
 | `npm run lint`              | Check for lint errors                           |
 | `npm run lint:fix`          | Auto-fix lint errors                            |
-| `npm run format`            | Format code with Prettier                       |
+| `npm run format`            | Format code with Biome                       |
 | `npm run format:check`      | Check formatting without writing                |
 | `npm run typecheck`         | Run TypeScript type checking                    |
 | `npm run bulletproof`       | Format + lint fix + typecheck + test (auto-fix) |

@@ -261,8 +261,8 @@ npm install
 | `npm run test:coverage`     | Coverage report (90 % threshold)              |
 | `npm run build`             | Build ESM + IIFE bundles                     |
 | `npm run typecheck`         | TypeScript type checking                     |
-| `npm run lint`              | Lint with ESLint                             |
-| `npm run format`            | Format with Prettier                         |
+| `npm run lint`              | Lint with Biome                             |
+| `npm run format`            | Format with Biome                         |
 | `npm run bulletproof`       | Format → lint → build → typecheck → test     |
 
 ### Project Structure
@@ -279,7 +279,7 @@ assets-pairs-order/
 ├── dist/                 # Built output (ESM + IIFE)
 ├── tsup.config.ts        # Build configuration
 ├── vitest.config.ts      # Test configuration
-├── eslint.config.mjs     # Linting rules
+├── biome.json            # Linting & formatting rules
 └── package.json
 ```
 
