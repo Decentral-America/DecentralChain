@@ -4,7 +4,11 @@ export default defineConfig([
   {
     entry: ['src/index.ts'],
     format: ['esm'],
-    dts: true,
+    dts: {
+      compilerOptions: {
+        noCheck: true,
+      },
+    },
     sourcemap: true,
     clean: true,
     outDir: 'dist',

@@ -27,34 +27,14 @@ export function burn(
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   const tx: BurnTransaction & WithId & WithProofs = {
-=======
-  const tx: BurnTransaction & WithId & WithProofs= {
->>>>>>> 697d643a (minor fixes)
-=======
-  const tx: BurnTransaction & WithId & WithProofs = {
->>>>>>> f33083a0 (updated dependencies)
     type,
     version,
     senderPublicKey,
     assetId: paramsOrTx.assetId,
     amount: paramsOrTx.amount,
-<<<<<<< HEAD
-    chainId: networkByte(paramsOrTx.chainId, 87),
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     chainId: networkByte(paramsOrTx.chainId, 76),
->>>>>>> 71f18869 (feat(DCC-18): migrate from Waves to DecentralChain branding)
     fee: fee(paramsOrTx, 100000),
-=======
-    fee: fee(paramsOrTx, 2000000),
->>>>>>> 697d643a (minor fixes)
-=======
-    fee: fee(paramsOrTx, 100000),
->>>>>>> f33083a0 (updated dependencies)
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     id: '',

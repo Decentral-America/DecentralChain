@@ -46,38 +46,6 @@ export function massTransfer(
   if (!Array.isArray(paramsOrTx.transfers) || paramsOrTx.transfers.length === 0)
     throw new Error('Should contain at least one transfer');
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const tx: MassTransferTransaction & WithId & WithProofs = {
-=======
-    const tx: MassTransferTransaction & WithId & WithProofs= {
->>>>>>> 697d643a (minor fixes)
-=======
-    const tx: MassTransferTransaction & WithId & WithProofs = {
->>>>>>> f33083a0 (updated dependencies)
-        type,
-        version,
-        senderPublicKey,
-        assetId: normalizeAssetId(paramsOrTx.assetId),
-        transfers: paramsOrTx.transfers,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        fee: fee(paramsOrTx, 100000 + Math.ceil(0.5 * paramsOrTx.transfers.length) * 100000),
-=======
-        fee: fee(paramsOrTx, 4000000 + Math.ceil(0.5 * paramsOrTx.transfers.length) * 4000000),
->>>>>>> 697d643a (minor fixes)
-=======
-        fee: fee(paramsOrTx, 100000 + Math.ceil(0.5 * paramsOrTx.transfers.length) * 100000),
->>>>>>> f33083a0 (updated dependencies)
-        timestamp: paramsOrTx.timestamp || Date.now(),
-        attachment: paramsOrTx.attachment || '',
-        proofs: paramsOrTx.proofs || [],
-        chainId: networkByte(paramsOrTx.chainId, chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient)),
-        id: '',
-    }
-    validate.massTransfer(tx)
-=======
   const tx: MassTransferTransaction & WithId & WithProofs = {
     type,
     version,
@@ -93,14 +61,8 @@ export function massTransfer(
       chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient),
     ),
     id: '',
-<<<<<<< HEAD
-  }
-  validate.massTransfer(tx)
->>>>>>> d9e75820 (chore: add Bulletproof quality pipeline)
-=======
   };
   validate.massTransfer(tx);
->>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
