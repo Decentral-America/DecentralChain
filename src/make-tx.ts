@@ -1,39 +1,6 @@
-import {
-  IAliasParams,
-  IBurnParams,
-  ICancelLeaseParams,
-  IDataParams,
-  IInvokeScriptParams,
-  IIssueParams,
-  ILeaseParams,
-  IMassTransferParams,
-  IReissueParams,
-  ISetAssetScriptParams,
-  ISetScriptParams,
-  ISponsorshipParams,
-  ITransferParams,
-  TTransactionType,
-  WithId,
-  WithSender,
-} from './transactions';
-import { issue } from './transactions/issue';
-import { transfer } from './transactions/transfer';
-import { reissue } from './transactions/reissue';
-import { burn } from './transactions/burn';
-import { lease } from './transactions/lease';
-import { cancelLease } from './transactions/cancel-lease';
-import { alias } from './transactions/alias';
-import { massTransfer } from './transactions/mass-transfer';
-import { data } from './transactions/data';
-import { setScript } from './transactions/set-script';
-import { setAssetScript } from './transactions/set-asset-script';
-import { sponsorship } from './transactions/sponsorship';
-import { exchange } from './transactions/exchange';
-import { invokeScript } from './transactions/invoke-script';
-import { updateAssetInfo } from './transactions/update-asset-info';
-import { txToProtoBytes } from './proto-serialize';
 import { binary } from '@decentralchain/marshall';
 import {
+<<<<<<< HEAD
 <<<<<<< HEAD
     AliasTransaction,
     BurnTransaction,
@@ -82,6 +49,60 @@ import {
 =======
 } from '@decentralchain/ts-types';
 >>>>>>> 591daad2 (feat!: modernize to ESM, TypeScript 5.9, Vitest, tsup)
+=======
+  type AliasTransaction,
+  type BurnTransaction,
+  type CancelLeaseTransaction,
+  type DataTransaction,
+  type ExchangeTransaction,
+  type InvokeScriptTransaction,
+  type IssueTransaction,
+  type LeaseTransaction,
+  type MassTransferTransaction,
+  type ReissueTransaction,
+  type SetAssetScriptTransaction,
+  type SetScriptTransaction,
+  type SponsorshipTransaction,
+  TRANSACTION_TYPE,
+  type TransferTransaction,
+  type UpdateAssetInfoTransaction,
+} from '@decentralchain/ts-types';
+import { txToProtoBytes } from './proto-serialize';
+import {
+  type IAliasParams,
+  type IBurnParams,
+  type ICancelLeaseParams,
+  type IDataParams,
+  type IInvokeScriptParams,
+  type IIssueParams,
+  type ILeaseParams,
+  type IMassTransferParams,
+  type IReissueParams,
+  type ISetAssetScriptParams,
+  type ISetScriptParams,
+  type ISponsorshipParams,
+  type ITransferParams,
+  type TTransaction as TTransactionBase,
+  type TTransactionType,
+  type WithId,
+  type WithSender,
+} from './transactions';
+import { alias } from './transactions/alias';
+import { burn } from './transactions/burn';
+import { cancelLease } from './transactions/cancel-lease';
+import { data } from './transactions/data';
+import { exchange } from './transactions/exchange';
+import { invokeScript } from './transactions/invoke-script';
+import { issue } from './transactions/issue';
+import { lease } from './transactions/lease';
+import { massTransfer } from './transactions/mass-transfer';
+import { reissue } from './transactions/reissue';
+import { setAssetScript } from './transactions/set-asset-script';
+import { setScript } from './transactions/set-script';
+import { sponsorship } from './transactions/sponsorship';
+import { transfer } from './transactions/transfer';
+import { updateAssetInfo } from './transactions/update-asset-info';
+>>>>>>> e3d703a4 (chore: migrate from ESLint/Prettier/Husky to Biome/Lefthook)
 
 type TTransaction<T extends TTransactionType> = TxTypeMap[T];
 
@@ -273,35 +294,38 @@ export function makeTx<T extends TTransactionType>(
 ): TTransaction<T> & WithId {
   switch (params.type) {
     case TRANSACTION_TYPE.ISSUE:
-      return issue(params as any) as any;
+      return issue(params as unknown as IIssueParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.TRANSFER:
-      return transfer(params as any) as any;
+      return transfer(params as unknown as ITransferParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.REISSUE:
-      return reissue(params as any) as any;
+      return reissue(params as unknown as IReissueParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.BURN:
-      return burn(params as any) as any;
+      return burn(params as unknown as IBurnParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.LEASE:
-      return lease(params as any) as any;
+      return lease(params as unknown as ILeaseParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.CANCEL_LEASE:
-      return cancelLease(params as any) as any;
+      return cancelLease(params as unknown as ICancelLeaseParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.ALIAS:
-      return alias(params as any) as any;
+      return alias(params as unknown as IAliasParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.MASS_TRANSFER:
-      return massTransfer(params as any) as any;
+      return massTransfer(params as unknown as IMassTransferParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.DATA:
-      return data(params as any) as any;
+      return data(params as unknown as IDataParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.SET_SCRIPT:
-      return setScript(params as any) as any;
+      return setScript(params as unknown as ISetScriptParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
-      return setAssetScript(params as any) as any;
+      return setAssetScript(params as unknown as ISetAssetScriptParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.SPONSORSHIP:
-      return sponsorship(params as any) as any;
+      return sponsorship(params as unknown as ISponsorshipParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.EXCHANGE:
-      return exchange(params as any) as any;
+      return exchange(
+        params as unknown as ExchangeTransaction & { proofs: string[] },
+      ) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return invokeScript(params as any) as any;
+      return invokeScript(params as unknown as IInvokeScriptParams) as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return updateAssetInfo(params as any) as any;
+      return updateAssetInfo(params as unknown as UpdateAssetInfoTransaction) as TTransaction<T> &
+        WithId;
     default:
       throw new Error(`Unknown tx type: ${params.type}`);
   }
@@ -363,35 +387,63 @@ export function makeTxBytes<T extends TTransactionType>(
 ): Uint8Array {
   switch (tx.type) {
     case TRANSACTION_TYPE.ISSUE:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.TRANSFER:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.REISSUE:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.BURN:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.LEASE:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.CANCEL_LEASE:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.ALIAS:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.MASS_TRANSFER:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.DATA:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.SET_SCRIPT:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.SPONSORSHIP:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.EXCHANGE:
-      return tx.version > 2 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 2
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return tx.version > 1 ? txToProtoBytes(tx as any) : binary.serializeTx(tx);
+      return tx.version > 1
+        ? txToProtoBytes(tx as unknown as TTransactionBase)
+        : binary.serializeTx(tx);
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return txToProtoBytes(tx as any);
+      return txToProtoBytes(tx as unknown as TTransactionBase);
     default:
       throw new Error(`Unknown tx type: ${tx.type}`);
   }

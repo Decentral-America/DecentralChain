@@ -1,15 +1,15 @@
 import {
-  DataTransactionEntry,
-  GenesisTransaction,
-  MassTransferItem,
-  PaymentTransaction,
-  SignedTransaction,
-  Transaction,
-  TRANSACTION_TYPE,
-  TransactionType,
-  InvokeScriptCallArgument,
+  type DataTransactionEntry,
+  type EthereumTransaction,
+  type GenesisTransaction,
+  type InvokeScriptCallArgument,
+  type MassTransferItem,
+  type PaymentTransaction,
+  type SignedTransaction,
+  type TRANSACTION_TYPE,
+  type Transaction,
+  type TransactionType,
 } from '@decentralchain/ts-types';
-import { EthereumTransaction } from '@decentralchain/ts-types';
 
 export interface WithId {
   /**
@@ -134,11 +134,18 @@ export interface ICancelLeaseParams<LONG = string | number> extends IBasicParams
   leaseId: string;
 }
 
+/** A data-key deletion entry (type and value must be absent). */
+export interface IDeleteDataEntry {
+  key: string;
+  type?: undefined;
+  value?: undefined;
+}
+
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
  */
 export interface IDataParams<LONG = string | number> extends IBasicParams<LONG> {
-  data: Array<DataTransactionEntry | { type?: undefined; value?: undefined; key: string }>; //todo separate type for delete entry
+  data: Array<DataTransactionEntry | IDeleteDataEntry>;
 }
 
 /**
