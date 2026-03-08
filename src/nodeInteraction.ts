@@ -274,12 +274,7 @@ export async function accountData(
     }
   }
 
-  const data = await addresses_route.data(
-    nodeUrl,
-    address,
-    { matches: match },
-    requestOptions,
-  );
+  const data = await addresses_route.data(nodeUrl, address, { matches: match }, requestOptions);
 
   const result: Record<string, DataTransactionEntry> = {};
   for (const item of data) {
@@ -343,7 +338,11 @@ export async function rewards(nodeUrl: string, requestOptions?: RequestInit): Pr
  * @param height - block number to get info
  * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
  */
-export async function rewards(height: number, nodeUrl: string, requestOptions?: RequestInit): Promise<unknown>;
+export async function rewards(
+  height: number,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<unknown>;
 export async function rewards(
   ...args: [number, string, RequestInit?] | [string, RequestInit?]
 ): Promise<unknown> {
