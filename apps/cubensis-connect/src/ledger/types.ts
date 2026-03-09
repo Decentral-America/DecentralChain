@@ -2,7 +2,7 @@ import {
   type ISignData,
   type ISignOrderData,
   type ISignTxData,
-} from '@waves/ledger/lib/Waves';
+} from '@decentralchain/ledger/lib/Waves';
 
 export type LedgerSignRequest = { id: string } & (
   | { type: 'order'; data: ISignOrderData }

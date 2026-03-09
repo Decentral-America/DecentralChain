@@ -1,6 +1,6 @@
 import { JSONbn } from '_core/jsonBn';
 import { addBreadcrumb, setTag } from '@sentry/browser';
-import { type TransactionFromNode } from '@waves/ts-types';
+import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { type MessageOrder, type MessageTx } from 'messages/types';
 import { stringifyOrder, stringifyTransaction } from 'messages/utils';
 import { NetworkName } from 'networks/types';

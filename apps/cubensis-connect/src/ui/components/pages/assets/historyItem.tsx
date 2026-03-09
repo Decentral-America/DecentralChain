@@ -1,10 +1,10 @@
-import { BigNumber } from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import {
   type Long,
   TRANSACTION_TYPE,
   type TransactionFromNode,
-} from '@waves/ts-types';
+} from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { MessageIcon } from 'messages/_common/icon';
 import { useTranslation } from 'react-i18next';

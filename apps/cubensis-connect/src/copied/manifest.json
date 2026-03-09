@@ -1,10 +1,15 @@
 {
   "manifest_version": null,
-  "name": "Keeper Wallet",
-  "short_name": "Keeper",
-  "description": "Keeper Wallet is your entry point to the Waves blockchain and Waves-powered web services",
+  "name": "Cubensis Connect",
+  "short_name": "Cubensis",
+  "description": "Cubensis Connect is your entry point to the DecentralChain blockchain and DCC-powered web services",
   "version": null,
-  "author": "support@waves.tech",
+  "author": "soporte@decentralchain.io",
+  "applications": {
+    "gecko": {
+      "id": "soporte@decentralchain.io"
+    }
+  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

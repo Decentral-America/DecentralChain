@@ -1,4 +1,4 @@
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { compareAccountsByLastUsed } from 'preferences/utils';

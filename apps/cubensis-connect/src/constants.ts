@@ -20,22 +20,22 @@ export const NETWORK_CONFIG: Record<
   }
 > = {
   [NetworkName.Testnet]: {
-    matcherBaseUrl: 'https://matcher-testnet.waves.exchange/',
+    matcherBaseUrl: 'https://matcher.decentralchain.io/',
     name: NetworkName.Testnet,
-    networkCode: 'T',
-    nodeBaseUrl: 'https://nodes-testnet.wavesnodes.com/',
+    networkCode: '!',
+    nodeBaseUrl: 'https://testnet-node.decentralchain.io/',
   },
   [NetworkName.Mainnet]: {
-    matcherBaseUrl: 'https://matcher.waves.exchange/',
+    matcherBaseUrl: 'https://mainnet-matcher.decentralchain.io/',
     name: NetworkName.Mainnet,
-    networkCode: 'W',
-    nodeBaseUrl: 'https://nodes-keeper.wavesnodes.com/',
+    networkCode: '?',
+    nodeBaseUrl: 'https://mainnet-node.decentralchain.io/',
   },
   [NetworkName.Stagenet]: {
-    matcherBaseUrl: 'https://matcher-stagenet.waves.exchange/',
+    matcherBaseUrl: 'https://stagenet-matcher.decentralchain.io/',
     name: NetworkName.Stagenet,
     networkCode: 'S',
-    nodeBaseUrl: 'https://nodes-stagenet.wavesnodes.com/',
+    nodeBaseUrl: 'https://stagenet-node.decentralchain.io/',
   },
   [NetworkName.Custom]: {
     matcherBaseUrl: '',
@@ -59,6 +59,7 @@ export const DEFAULT_MAIN_CONFIG = {
     'swap.keeper-wallet.app',
     'app.power.tech',
     'wx.network',
+    'decentralchain.io',
   ],
   networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
   messages_config: {

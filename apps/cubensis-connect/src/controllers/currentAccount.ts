@@ -1,6 +1,6 @@
 import { isNotNull } from '_core/isNotNull';
-import { BigNumber } from '@waves/bignumber';
-import { type TransactionFromNode } from '@waves/ts-types';
+import { BigNumber } from '@decentralchain/bignumber';
+import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { type AssetBalance, type BalancesItem } from 'balances/types';
 import { collectBalances } from 'balances/utils';
 import { type NftAssetDetail } from 'nfts/types';
