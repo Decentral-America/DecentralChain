@@ -12,7 +12,7 @@
     "password": "密码",
     "passwordError": "密码不正确",
     "privateKeyNoBackupPhrase": "该账户通过私钥导入，因此无备份助记词",
-    "emailNoBackupPhrase": "该账户通过Waves.Exchange账户导入，无可备份助记词或私钥",
+    "emailNoBackupPhrase": "该账户通过DecentralChain Exchange账户导入，无可备份助记词或私钥",
     "privKey": "私钥",
     "pubKey": "公钥",
     "viewInExplorer": "在浏览器中查看"
@@ -216,8 +216,8 @@
     "issueSmartNFT": "发行智能NFT",
     "issueSmartToken": "发行智能资产",
     "issueToken": "发行资产",
-    "lease": "开启WAVES质押",
-    "leaseCancel": "取消WAVES质押",
+    "lease": "开启DCC质押",
+    "leaseCancel": "取消DCC质押",
     "leaseIncoming": "传入中租赁",
     "massTransfer": "批量转账",
     "massTransferReceive": "传入中批量转账",
@@ -280,7 +280,7 @@
   },
   "importEmail": {
     "importEmailTitle": "导入邮箱账户",
-    "importEmailDesc": "连接在Waves.Exchange创建的邮箱账户",
+    "importEmailDesc": "连接在DecentralChain Exchange创建的邮箱账户",
     "passwordLabel": "密码",
     "passwordRequired": "输入密码",
     "loginRequired": "确认邮箱账户",
@@ -296,7 +296,7 @@
     "incorrectCode": "验证码错误，请重新输入",
     "userDoesNotExist": "该用户不存在。",
     "incorrectUsernameOrPassword": "账户名或密码不正确。",
-    "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系Waves.Exchange客户支持：https://support.decentralchain.io/",
+    "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系DecentralChain Exchange客户支持：https://support.decentralchain.io/",
     "alreadyExists": "账户已存在"
   },
   "importKeystore": {
@@ -324,9 +324,9 @@
     "accountExistsError": "该账户在Keeper中已存在",
     "accountIdLabel": "账户ID",
     "avatarListLoading": "账户加载中...",
-    "connectInstructions": "连接Ledger设备并打开Waves应用",
+    "connectInstructions": "连接Ledger设备并打开DCC应用",
     "continueButton": "继续",
-    "couldNotGetUsersError": "无法从Ledger获得用户。请确保您的Ledger设备已解锁连接，且Waves应用已打开，然后点击<retryButton>T重试</retryButton>。",
+    "couldNotGetUsersError": "无法从Ledger获得用户。请确保您的Ledger设备已解锁连接，且DCC应用已打开，然后点击<retryButton>T重试</retryButton>。",
     "selectAccountInstructions": "选择您的地址",
     "title": "导入Ledger",
     "tryAgainButton": "重试",
@@ -354,8 +354,8 @@
     "title": "使用助记词种子"
   },
   "info": {
-    "joinUs": "加入Waves社区",
-    "keepUp": "Keeper钱包是您与集成Waves功能的三方网站资源或Dapp交互最安全的方式。使用Keeper钱包，您可以签名交易并在危险的网站中保持安全"
+    "joinUs": "加入DecentralChain社区",
+    "keepUp": "Keeper钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。使用Keeper钱包，您可以签名交易并在危险的网站中保持安全"
   },
   "langsSettings": { "confirm": "确认", "title": "变更语言" },
   "ledgerErrors": {
@@ -363,7 +363,7 @@
     "usedBySomeOtherApp": "看起来Ledger已经被其他应用使用，关闭所有可能使用Ledger的应用，并重试。"
   },
   "ledgerConnectModal": {
-    "instructions": "连接Ledger设备并打开Waves应用",
+    "instructions": "连接Ledger设备并打开DCC应用",
     "title": "连接中...",
     "tryAgainButton": "重试"
   },
@@ -405,7 +405,7 @@
     "create": "继续",
     "createPassword": "创建密码",
     "notMatch": "密码不匹配",
-    "passinfo": "您输入的密码将被保存在本地。如果您更换设备或丢失密码，您必须重复添加Keeper钱包账户的流程。Waves不会保存您的密码。",
+    "passinfo": "您输入的密码将被保存在本地。如果您更换设备或丢失密码，您必须重复添加Keeper钱包账户的流程。DecentralChain不会保存您的密码。",
     "privacyPolicy": "隐私政策",
     "protect": "保护您的账户",
     "smallPass": "密码太短",
@@ -547,7 +547,7 @@
     "nextTransaction": "下一步",
     "pendingList": "待办列表",
     "reject": "拒绝",
-    "signAccessInfo": "该应用有权访问您的Waves地址，但您的助记词种子或私钥不会被暴露。请务必不要在重定向的网站中输入您的助记词种子。",
+    "signAccessInfo": "该应用有权访问您的DCC地址，但您的助记词种子或私钥不会被暴露。请务必不要在重定向的网站中输入您的助记词种子。",
     "signButton": "签名",
     "someError": "出错了",
     "switchAccount": "切换账号",
@@ -556,7 +556,7 @@
     "transactionSend": "您已发送",
     "understand": "我理解",
     "viewTransaction": "查看交易",
-    "wavesAuthConfirmed": "签名waves授权请求"
+    "dccAuthConfirmed": "签名DCC授权请求"
   },
   "swap": {
     "amountToSendError": "因SwopFi应用状态问题，无法完成兑换。请重新尝试，或尝试增加滑点容忍。",
@@ -592,7 +592,7 @@
   "transactions": {
     "allowAccess": "允许访问",
     "allowAccessTitle": "允许访问",
-    "amountPerTransaction": "转账费为等值0.001Waves",
+    "amountPerTransaction": "转账费为等值0.001 DCC",
     "arguments": "备注",
     "assetId": "资产ID",
     "assetScriptTransaction": "设置资产脚本",
@@ -626,7 +626,7 @@
     "orderCancel": "取消订单",
     "orderId": "订单ID",
     "orderSell": "出售",
-    "originWarning": "想要访问您的Waves地址",
+    "originWarning": "想要访问您的DCC地址",
     "packTransactionGroup": "分组",
     "packTransactions": "交易",
     "packTransactionsFees": "费用",
@@ -651,7 +651,7 @@
     "showAll": "展示全部",
     "showTransactions": "展示交易",
     "signRequestMatcher": "签名匹配器请求",
-    "signRequestWavesAuth": "签名waves授权请求",
+    "signRequestDccAuth": "签名DCC授权请求",
     "updateAssetInfo": "更新资产信息",
     "issueToken": "发行代币",
     "issueSmartToken": "发行智能代币",
@@ -663,9 +663,9 @@
     "hash": "哈希",
     "txTime": "TX时间",
     "unknown": "未知",
-    "wavesAuthTimeStamp": "时间戳"
+    "dccAuthTimeStamp": "时间戳"
   },
-  "ui": { "logoTitle": "在线安全保存您的Waves密钥" },
+  "ui": { "logoTitle": "在线安全保存您的DCC密钥" },
   "notifications": {
     "allowSending": "允许发送信息",
     "toListBtn": "通知",
@@ -677,7 +677,7 @@
   "wallet": { "lease": "已租赁" },
   "welcome": {
     "getStarted": "开始",
-    "info": "Keeper钱包是您与集成Waves功能的三方网站资源或Dapp交互最安全的方式。",
+    "info": "Keeper钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。",
     "info2": "使用Keeper钱包，您可以签名交易并在危险的网站中保持安全"
   }
 }

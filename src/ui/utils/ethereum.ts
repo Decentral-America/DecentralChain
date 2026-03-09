@@ -12,12 +12,12 @@ import {
   keccak,
 } from '@keeper-wallet/waves-crypto';
 
-export function fromWavesToEthereumAddress(address: string) {
+export function fromDccToEthereumAddress(address: string) {
   const bytes = base58Decode(address);
   return `0x${base16Encode(bytes.slice(2, bytes.length - 4))}`;
 }
 
-export function fromEthereumToWavesAddress(address: string, chainId = 87) {
+export function fromEthereumToDccAddress(address: string, chainId = 87) {
   const hex = address.slice(2);
   const bytes = base16Decode(hex);
   const chainBytes = new Uint8Array([0x01, chainId]);

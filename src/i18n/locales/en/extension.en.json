@@ -14,7 +14,7 @@
     "password": "Password",
     "passwordError": "Incorrect password",
     "privateKeyNoBackupPhrase": "This account was imported using private key, so there's no backup phrase to copy",
-    "emailNoBackupPhrase": "This account was imported using the Waves.Exchange account, so there is no backup phrase or private key to copy",
+    "emailNoBackupPhrase": "This account was imported using an email account, so there is no backup phrase or private key to copy",
     "debugNoBackupPhrase": "This account is for debugging, so there's no backup phrase, private key or public key to copy",
     "privKey": "Private key",
     "pubKey": "Public key",
@@ -229,8 +229,8 @@
     "issueSmartNFT": "Issue Smart NFT",
     "issueSmartToken": "Issue Smart Asset",
     "issueToken": "Issue Asset",
-    "lease": "Start WAVES Staking",
-    "leaseCancel": "Cancel WAVES Staking",
+    "lease": "Start DCC Staking",
+    "leaseCancel": "Cancel DCC Staking",
     "leaseIncoming": "Incoming Leasing",
     "massTransfer": "Mass Transfer",
     "massTransferReceive": "Incoming Mass Transfer",
@@ -303,7 +303,7 @@
   },
   "importEmail": {
     "importEmailTitle": "Import Email Account",
-    "importEmailDesc": "Connect an email account created on Waves.Exchange",
+    "importEmailDesc": "Connect an email account",
     "passwordLabel": "Password",
     "passwordRequired": "Enter password",
     "loginRequired": "Confirm Email Account",
@@ -347,9 +347,9 @@
     "accountExistsError": "This account already exists in Cubensis Connect",
     "accountIdLabel": "Account ID",
     "avatarListLoading": "Loading accounts...",
-    "connectInstructions": "Connect Ledger device and open Waves app",
+    "connectInstructions": "Connect Ledger device and open DCC app",
     "continueButton": "Continue",
-    "couldNotGetUsersError": "Could not get more users from ledger. Please ensure that ledger is connected, unlocked and the Waves app is open, then click <retryButton>Retry</retryButton>",
+    "couldNotGetUsersError": "Could not get more users from ledger. Please ensure that ledger is connected, unlocked and the DCC app is open, then click <retryButton>Retry</retryButton>",
     "userIdInputNumbersError": "Only numbers are allowed",
     "userIdInputMaxValueError": "Account ID cannot be greater than {{ maxUserId }}",
     "selectAccountInstructions": "Choose your address",
@@ -377,8 +377,8 @@
     "title": "Import using seed"
   },
   "info": {
-    "joinUs": "Join the Waves Community",
-    "keepUp": "Cubensis Connect — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps. Using Cubensis Connect, you can sign transactions and remain safe from malicious sites."
+    "joinUs": "Join the DecentralChain Community",
+    "keepUp": "Cubensis Connect — is the safest way to interact with third-party web resources with DecentralChain-integrated functionality or DApps. Using Cubensis Connect, you can sign transactions and remain safe from malicious sites."
   },
   "langsSettings": {
     "confirm": "Confirm",
@@ -389,7 +389,7 @@
     "usedBySomeOtherApp": "Seems like ledger is already used by another application. Close all applications that may use ledger and try again."
   },
   "ledgerConnectModal": {
-    "instructions": "Connect Ledger device and open Waves app",
+    "instructions": "Connect Ledger device and open DCC app",
     "title": "Connecting...",
     "tryAgainButton": "Try Again"
   },
@@ -431,7 +431,7 @@
     "create": "Continue",
     "createPassword": "Create a password",
     "notMatch": "Passwords do not match",
-    "passinfo": "The password you entered will be stored locally. If you change device or lose your password, you will have to repeat the process of adding accounts to Cubensis Connect. Waves does not store your passwords.",
+    "passinfo": "The password you entered will be stored locally. If you change device or lose your password, you will have to repeat the process of adding accounts to Cubensis Connect. DecentralChain does not store your passwords.",
     "privacyPolicy": "Privacy Policy",
     "protect": "Protect Your Account",
     "smallPass": "Password is too short",
@@ -577,7 +577,7 @@
     "nextTransaction": "Next",
     "pendingList": "Pending list",
     "reject": "Reject",
-    "signAccessInfo": "The application will have access to your Waves address but will not expose your SEED or private key. Never enter your secret phrase (SEED) on any website you are redirected to.",
+    "signAccessInfo": "The application will have access to your DCC address but will not expose your SEED or private key. Never enter your secret phrase (SEED) on any website you are redirected to.",
     "signButton": "Sign",
     "someError": "Something went wrong",
     "switchAccount": "Switch account",
@@ -586,7 +586,7 @@
     "transactionSend": "You have sent",
     "understand": "I understand",
     "viewTransaction": "View transaction",
-    "wavesAuthConfirmed": "Sign a waves auth request!"
+    "dccAuthConfirmed": "Sign a DCC auth request!"
   },
   "swap": {
     "amountToSendError": "Could not perform swap due to SwopFi dApp state. Please try again or slightly increase slippage tolerance if possible",
@@ -623,7 +623,7 @@
   "transactions": {
     "allowAccess": "Allow access",
     "allowAccessTitle": "Allow access",
-    "amountPerTransaction": "This amount is equivalent to every 0.001 Waves in transaction fees",
+    "amountPerTransaction": "This amount is equivalent to every 0.001 DCC in transaction fees",
     "arguments": "Arguments",
     "assetId": "Asset ID",
     "assetScriptTransaction": "Set Asset Script",
@@ -657,7 +657,7 @@
     "orderCancel": "Cancel the order",
     "orderId": "Order ID",
     "orderSell": "Sell",
-    "originWarning": "wants to access your Waves Address",
+    "originWarning": "wants to access your DCC Address",
     "packTransactionGroup": "Group",
     "packTransactions": "Transactions",
     "packTransactionsFees": "Fees",
@@ -684,7 +684,7 @@
     "showAll": "Show all",
     "showTransactions": "Show transactions",
     "signRequestMatcher": "Sign a request to the Matcher",
-    "signRequestWavesAuth": "Sign a waves auth request",
+    "signRequestDccAuth": "Sign a DCC auth request",
     "updateAssetInfo": "Update Asset Info",
     "issueToken": "Issue Token",
     "issueSmartToken": "Issue Smart Token",
@@ -696,10 +696,10 @@
     "hash": "Hash",
     "txTime": "TX Time",
     "unknown": "Unknown",
-    "wavesAuthTimeStamp": "Time Stamp"
+    "dccAuthTimeStamp": "Time Stamp"
   },
   "ui": {
-    "logoTitle": "Keep your Waves keys safe online"
+    "logoTitle": "Keep your DCC keys safe online"
   },
   "notifications": {
     "allowSending": "Allow sending messages",
@@ -714,7 +714,7 @@
   },
   "welcome": {
     "getStarted": "Get Started",
-    "info": "Cubensis Connect — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps.",
+    "info": "Cubensis Connect — is the safest way to interact with third-party web resources with DecentralChain-integrated functionality or DApps.",
     "info2": "Using Cubensis Connect, you can sign transactions and remain safe from malicious sites."
   }
 }

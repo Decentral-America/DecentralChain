@@ -184,14 +184,14 @@ export class RemoteConfigController extends EventEmitter {
       )
       .then(
         (
-          wavesNetworks: Array<{
+          networkConfigs: Array<{
             configService: { url: string; featuresConfigUrl: string };
             name: string;
           }>,
         ) =>
           Promise.all(
             networks.map(async network => {
-              const envNetworkConfig = wavesNetworks.find(
+              const envNetworkConfig = networkConfigs.find(
                 c => c.name === network,
               );
               if (!envNetworkConfig) {
