@@ -359,6 +359,72 @@ describe('Adapter', () => {
         });
       });
     });
+
+    describe('default transaction fields', () => {
+      it('forwards senderPublicKey through defaultsFactory', () => {
+        const tx: SignerTransferTx = {
+          ...TRANSFER,
+          senderPublicKey: '5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR',
+        };
+        const result = keeperTxFactory(tx);
+        expect(result.data.senderPublicKey).toBe('5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR');
+      });
+
+      it('forwards timestamp through defaultsFactory', () => {
+        const tx: SignerTransferTx = {
+          ...TRANSFER,
+          timestamp: 1631600073629,
+        };
+        const result = keeperTxFactory(tx);
+        expect(result.data.timestamp).toBe(1631600073629);
+      });
+
+      it('forwards senderPublicKey and timestamp together', () => {
+        const tx: SignerInvokeTx = {
+          ...INVOKE,
+          senderPublicKey: '5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR',
+          timestamp: 1631606933494,
+        };
+        const result = keeperTxFactory(tx);
+        expect(result.data.senderPublicKey).toBe('5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR');
+        expect(result.data.timestamp).toBe(1631606933494);
+      });
+
+      it('omits senderPublicKey and timestamp when absent', () => {
+        const tx: SignerTransferTx = { ...TRANSFER };
+        delete (tx as any).senderPublicKey;
+        delete (tx as any).timestamp;
+        const result = keeperTxFactory(tx);
+        expect(result.data.senderPublicKey).toBeUndefined();
+        expect(result.data.timestamp).toBeUndefined();
+      });
+
+      it('fee is handled solely by defaultsFactory for transfer', () => {
+        const tx: SignerTransferTx = {
+          ...TRANSFER,
+          fee: 100000,
+          feeAssetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        };
+        const result = keeperTxFactory(tx);
+        expect(result.data.fee).toEqual({
+          coins: 100000,
+          assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        });
+      });
+
+      it('fee is handled solely by defaultsFactory for invoke', () => {
+        const tx: SignerInvokeTx = {
+          ...INVOKE,
+          fee: 500000,
+          feeAssetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        };
+        const result = keeperTxFactory(tx);
+        expect(result.data.fee).toEqual({
+          coins: 500000,
+          assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+        });
+      });
+    });
   });
 
   describe('converting signed tx from Keeper to Signer', () => {
