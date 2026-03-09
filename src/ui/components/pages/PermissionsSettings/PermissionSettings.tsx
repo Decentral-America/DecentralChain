@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { type PopupState } from 'popup/store/types';
 import { PureComponent } from 'react';

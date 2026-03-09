@@ -1,6 +1,6 @@
 import { isNotNull } from '_core/isNotNull';
-import { BigNumber } from '@waves/bignumber';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { BigNumber } from '@decentralchain/bignumber';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { type MessageTx } from 'messages/types';
 import ObservableStore from 'obs-store';
 import { PERMISSIONS } from 'permissions/constants';

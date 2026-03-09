@@ -29,12 +29,12 @@ const WAVES: AssetDetail = {
 };
 
 const SUSPICIOUS_LIST_URL =
-  'https://raw.githubusercontent.com/wavesplatform/waves-community/master/Scam%20tokens%20according%20to%20the%20opinion%20of%20Waves%20Community.csv';
+  'https://raw.githubusercontent.com/Decentral-America/waves-community/master/Scam%20tokens%20according%20to%20the%20opinion%20of%20Waves%20Community.csv';
 const SUSPICIOUS_PERIOD_IN_MINUTES = 60;
 const MAX_AGE = 60 * 60 * 1000;
 
-const DATA_SERVICE_URL = 'https://api.keeper-wallet.app';
-const SWAP_SERVICE_URL = 'https://swap-api.keeper-wallet.app';
+const DATA_SERVICE_URL = 'https://api.decentralchain.io';
+const SWAP_SERVICE_URL = 'https://swap-api.decentralchain.io';
 
 const INFO_PERIOD_IN_MINUTES = 60;
 const SWAPPABLE_ASSETS_UPDATE_PERIOD_IN_MINUTES = 240;

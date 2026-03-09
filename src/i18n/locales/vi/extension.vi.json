@@ -298,7 +298,7 @@
     "incorrectCode": "Sai mã. Vui lòng thử lại ",
     "userDoesNotExist": "Người dùng không tồn tại.",
     "incorrectUsernameOrPassword": "Sai tên đăng nhập hoặc mật khẩu.",
-    "incorrectUsernameOrPasswordLimit": "Bạn đã vượt quá số lần nhập sai tên người dùng hoặc mật khẩu. Nếu bạn gặp bất kỳ sự cố nào, vui lòng liên hệ với bộ phận hỗ trợ https://support.waves.exchange/.",
+    "incorrectUsernameOrPasswordLimit": "Bạn đã vượt quá số lần nhập sai tên người dùng hoặc mật khẩu. Nếu bạn gặp bất kỳ sự cố nào, vui lòng liên hệ với bộ phận hỗ trợ https://support.decentralchain.io/.",
     "alreadyExists": "Tài khoản đã tồn tại"
   },
   "importKeystore": {
@@ -407,7 +407,7 @@
     "create": "Tiếp tục",
     "createPassword": "Tạo một mật khẩu",
     "notMatch": "Các mật khẩu không khớp",
-    "passinfo": "Mật khẩu bạn đã nhập sẽ được lưu trữ cục bộ. Nếu bạn thay đổi thiết bị hoặc mất mật khẩu, bạn sẽ phải lặp lại quy trình thêm tài khoản vào Keeper Wallet. Waves không lưu trữ mật khẩu của bạn.",
+    "passinfo": "Mật khẩu bạn đã nhập sẽ được lưu trữ cục bộ. Nếu bạn thay đổi thiết bị hoặc mất mật khẩu, bạn sẽ phải lặp lại quy trình thêm tài khoản vào Cubensis Connect. Waves không lưu trữ mật khẩu của bạn.",
     "privacyPolicy": "Chính sách bảo mật",
     "protect": "Bảo vệ tài khoản của bạn",
     "smallPass": "Mật khâu quá ngắn",
@@ -684,7 +684,7 @@
   "wallet": { "lease": "Đã cho thuê" },
   "welcome": {
     "getStarted": "Bắt đầu",
-    "info": "Keeper Wallet là cách an toàn nhất để tương tác với các tài nguyên web của bên thứ ba có chức năng tích hợp Waves hoặc DApps.",
-    "info2": "Sử dụng Keeper Wallet, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại."
+    "info": "Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên web của bên thứ ba có chức năng tích hợp Waves hoặc DApps.",
+    "info2": "Sử dụng Cubensis Connect, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại."
   }
 }

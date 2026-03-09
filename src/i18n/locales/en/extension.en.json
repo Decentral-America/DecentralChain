@@ -199,13 +199,13 @@
     "warningModalConfirmButton": "I understand",
     "passwordError": "Incorrect password",
     "passwordLabel": "Password",
-    "passwordVerifyDesc": "Please enter your Keeper password to confirm that it's really you",
+    "passwordVerifyDesc": "Please enter your Cubensis Connect password to confirm that it's really you",
     "passwordVerifyImportantNote": "<attention>Attention:</attention> this password will also be used to encrypt the resulting file. If you forget it, you won't be able to restore your accounts.",
     "verifyBtn": "Enter"
   },
   "forgotPassword": {
     "attention": "Attention!",
-    "attentionMessage": "To reset the password, you need to delete all accounts from Keeper Wallet, set a new password, import each of your account again from the Seed phrase.",
+    "attentionMessage": "To reset the password, you need to delete all accounts from Cubensis Connect, set a new password, import each of your account again from the Seed phrase.",
     "warningMessage": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
     "continueMessage": "To continue, type this into the field below",
     "phrase": "DELETE ALL ACCOUNTS",
@@ -319,7 +319,7 @@
     "incorrectCode": "Wrong code. Please, try again",
     "userDoesNotExist": "User does not exist.",
     "incorrectUsernameOrPassword": "Incorrect username or password.",
-    "incorrectUsernameOrPasswordLimit": "You have exceeded incorrect username or password limit. If you have any problems, please contact support https://support.waves.exchange/.",
+    "incorrectUsernameOrPasswordLimit": "You have exceeded incorrect username or password limit. If you have any problems, please contact support https://support.decentralchain.io/.",
     "alreadyExists": "Account already exists"
   },
   "importKeystore": {
@@ -327,7 +327,7 @@
     "addressBookPasswordPlaceholder": "Password used to create file",
     "browse": "Browse...",
     "chooseAccountsDesc": "Select which accounts you want to import",
-    "chooseAccountsExistingAccountNote": "Already exists in Keeper as {{existingName}}",
+    "chooseAccountsExistingAccountNote": "Already exists in Cubensis Connect as {{existingName}}",
     "chooseAccountsImportBtn": "Import {{count}} account",
     "chooseAccountsImportBtn_plural": "Import {{count}} accounts",
     "chooseAccountsSkipBtn": "Skip",
@@ -344,7 +344,7 @@
     "passwordPlaceholder": "Password used to create Keystore"
   },
   "importLedger": {
-    "accountExistsError": "This account already exists in Keeper",
+    "accountExistsError": "This account already exists in Cubensis Connect",
     "accountIdLabel": "Account ID",
     "avatarListLoading": "Loading accounts...",
     "connectInstructions": "Connect Ledger device and open Waves app",
@@ -378,7 +378,7 @@
   },
   "info": {
     "joinUs": "Join the Waves Community",
-    "keepUp": "Keeper Wallet — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps. Using Keeper Wallet, you can sign transactions and remain safe from malicious sites."
+    "keepUp": "Cubensis Connect — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps. Using Cubensis Connect, you can sign transactions and remain safe from malicious sites."
   },
   "langsSettings": {
     "confirm": "Confirm",
@@ -431,7 +431,7 @@
     "create": "Continue",
     "createPassword": "Create a password",
     "notMatch": "Passwords do not match",
-    "passinfo": "The password you entered will be stored locally. If you change device or lose your password, you will have to repeat the process of adding accounts to Keeper Wallet. Waves does not store your passwords.",
+    "passinfo": "The password you entered will be stored locally. If you change device or lose your password, you will have to repeat the process of adding accounts to Cubensis Connect. Waves does not store your passwords.",
     "privacyPolicy": "Privacy Policy",
     "protect": "Protect Your Account",
     "smallPass": "Password is too short",
@@ -590,7 +590,7 @@
   },
   "swap": {
     "amountToSendError": "Could not perform swap due to SwopFi dApp state. Please try again or slightly increase slippage tolerance if possible",
-    "amountDifferenceTooltip": "Some vendors cache their results, so Keeper has adjusted them to give you the most up-to-date value",
+    "amountDifferenceTooltip": "Some vendors cache their results, so Cubensis Connect has adjusted them to give you the most up-to-date value",
     "closeBtnText": "Close",
     "exchangeChannelConnectionError": "Could not connect to swap service. Please try again later",
     "exchangeChannelInvalidAssetPairError": "Asset pair is not available",
@@ -714,7 +714,7 @@
   },
   "welcome": {
     "getStarted": "Get Started",
-    "info": "Keeper Wallet — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps.",
-    "info2": "Using Keeper Wallet, you can sign transactions and remain safe from malicious sites."
+    "info": "Cubensis Connect — is the safest way to interact with third-party web resources with Waves-integrated functionality or DApps.",
+    "info2": "Using Cubensis Connect, you can sign transactions and remain safe from malicious sites."
   }
 }

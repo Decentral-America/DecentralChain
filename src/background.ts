@@ -3,7 +3,7 @@ import {
   base58Encode,
   verifySignature,
 } from '@keeper-wallet/waves-crypto';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { collectBalances } from 'balances/utils';
 import EventEmitter from 'events';
 import { deepEqual } from 'fast-equals';

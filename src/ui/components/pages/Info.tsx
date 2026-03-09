@@ -18,9 +18,9 @@ class InfoComponent extends Component<WithTranslation> {
           rel="noopener noreferrer"
           className="link black"
           target="_blank"
-          href="https://forum.waves.tech"
+          href="https://forum.decentralchain.io"
         >
-          forum.waves.tech
+          forum.decentralchain.io
         </a>
 
         <div className={`${styles.social} margin-main`}>
@@ -30,7 +30,7 @@ class InfoComponent extends Component<WithTranslation> {
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://github.com/wavesplatform"
+                href="https://github.com/Decentral-America"
               ></a>
             </li>
             <li className={styles.telegram}>
@@ -85,7 +85,7 @@ class InfoComponent extends Component<WithTranslation> {
           </ul>
         </div>
 
-        <div className="basic500">&copy; Waves</div>
+        <div className="basic500">&copy; DecentralChain</div>
       </div>
     );
   }

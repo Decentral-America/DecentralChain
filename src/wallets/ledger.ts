@@ -3,8 +3,8 @@ import {
   type ISignData,
   type ISignOrderData,
   type ISignTxData,
-} from '@waves/ledger/lib/Waves';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+} from '@decentralchain/ledger/lib/Waves';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { type AssetInfoController } from 'controllers/assetInfo';
 import { type MessageTx } from 'messages/types';
 import { type NetworkName } from 'networks/types';

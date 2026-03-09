@@ -1,5 +1,5 @@
 import { captureException, withScope } from '@sentry/browser';
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { NetworkName } from 'networks/types';
 import { usePopupSelector } from 'popup/store/react';

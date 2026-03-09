@@ -194,7 +194,7 @@
   },
   "forgotPassword": {
     "attention": "注意",
-    "attentionMessage": "パスワードをリセットするには、Keeper Wallet からすべてのアカウントを削除して新パスワードを設定し、シードフレーズから各アカウントを再度インポートする必要があります。",
+    "attentionMessage": "パスワードをリセットするには、Cubensis Connect からすべてのアカウントを削除して新パスワードを設定し、シードフレーズから各アカウントを再度インポートする必要があります。",
     "warningMessage": "シードフレーズまたは秘密鍵を保存していない場合、アカウントへのアクセスを回復することはできません。",
     "continueMessage": "続けて、下のフィールドに次のように入力します。",
     "phrase": "DELETE ALL ACCOUNTS",
@@ -298,7 +298,7 @@
     "incorrectCode": "認証コードが間違っています。再入力してください。",
     "userDoesNotExist": "ユーザーが存在しません。",
     "incorrectUsernameOrPassword": "ユーザー名またはパスワードが間違っています。",
-    "incorrectUsernameOrPasswordLimit": "ユーザ名またはパスワードを間違えた回数が上限を超えました。サポートまでご連絡ください。https://support.waves.exchange/",
+    "incorrectUsernameOrPasswordLimit": "ユーザ名またはパスワードを間違えた回数が上限を超えました。サポートまでご連絡ください。https://support.decentralchain.io/",
     "alreadyExists": "アカウントは既に存在しています。"
   },
   "importKeystore": {
@@ -357,7 +357,7 @@
   },
   "info": {
     "joinUs": "Wavesコミュニティへ参加",
-    "keepUp": "Keeper WalletはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Keeper Walletを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
+    "keepUp": "Cubensis ConnectはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   },
   "langsSettings": { "confirm": "確認", "title": "言語切替" },
   "ledgerErrors": {
@@ -407,7 +407,7 @@
     "create": "続ける",
     "createPassword": "パスワードを作成",
     "notMatch": "パスワードが一致しません。",
-    "passinfo": "入力されたパスワードはローカルに保存されます。デバイスを変更したり、パスワードを紛失したりした場合は再度Keeper Walletにアカウントを追加する必要があります。Wavesはパスワードを保存しません。",
+    "passinfo": "入力されたパスワードはローカルに保存されます。デバイスを変更したり、パスワードを紛失したりした場合は再度Cubensis Connectにアカウントを追加する必要があります。Wavesはパスワードを保存しません。",
     "privacyPolicy": "プライバシーポリシー",
     "protect": "アカウントを保護",
     "smallPass": "パスワードが短すぎます。",
@@ -682,7 +682,7 @@
   "wallet": { "lease": "リース中" },
   "welcome": {
     "getStarted": "開始",
-    "info": "Keeper WalletはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。",
-    "info2": "Keeper Walletを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
+    "info": "Cubensis ConnectはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。",
+    "info2": "Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   }
 }

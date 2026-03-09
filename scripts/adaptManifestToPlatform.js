@@ -1,5 +1,5 @@
 const action = {
-  default_title: 'Keeper Wallet',
+  default_title: 'Cubensis Connect',
   default_popup: 'popup.html',
   default_icon: {
     16: 'icons/icon_16.png',
@@ -49,7 +49,7 @@ const platformValues = {
     ...manifestV2,
     browser_specific_settings: {
       gecko: {
-        id: 'support@wavesplatform.com',
+        id: 'soporte@decentralchain.io',
       },
     },
   },
@@ -58,6 +58,6 @@ const platformValues = {
 
 export default (buffer, platformName) => ({
   ...JSON.parse(buffer.toString('utf-8')),
-  version: process.env.KEEPER_VERSION,
+  version: process.env.CUBENSIS_VERSION,
   ...platformValues[platformName],
 });

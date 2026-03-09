@@ -1,5 +1,5 @@
-import type BigNumber from '@waves/bignumber';
-import { type Money } from '@waves/data-entities';
+import type BigNumber from '@decentralchain/bignumber';
+import { type Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { usePopupSelector } from 'popup/store/react';
 import { type PreferencesAccount } from 'preferences/types';

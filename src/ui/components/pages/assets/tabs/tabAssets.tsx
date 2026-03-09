@@ -1,5 +1,5 @@
-import { BigNumber } from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { type AssetsRecord } from 'assets/types';
 import { type BalanceAssets } from 'balances/types';
 import clsx from 'clsx';

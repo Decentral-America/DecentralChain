@@ -152,7 +152,7 @@ export class RemoteConfigController extends EventEmitter {
   async #updateMainConfig() {
     try {
       const response = await fetch(
-        'https://raw.githubusercontent.com/Keeper-Wallet/configs/master/main.json',
+        'https://raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json',
       );
 
       if (response.ok) {
@@ -176,7 +176,7 @@ export class RemoteConfigController extends EventEmitter {
     const { identityConfig } = this.store.getState();
     const networks = [NetworkName.Mainnet, NetworkName.Testnet];
 
-    fetch('https://configs.waves.exchange/web/networks.json')
+    fetch('https://configs.decentralchain.io/web/networks.json')
       .then(resp =>
         resp.ok
           ? resp.json()

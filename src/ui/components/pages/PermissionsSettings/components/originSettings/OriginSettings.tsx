@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';

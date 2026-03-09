@@ -7,11 +7,11 @@ import {
   createAddress,
   verifyAddress,
 } from '@keeper-wallet/waves-crypto';
-import { BigNumber } from '@waves/bignumber';
-import { binary, schemas, serializePrimitives } from '@waves/marshall';
-import { waves } from '@waves/protobuf-serialization';
-import type { InvokeScriptCallArgument } from '@waves/ts-types';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { BigNumber } from '@decentralchain/bignumber';
+import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
+import { waves } from '@decentralchain/protobuf-serialization';
+import type { InvokeScriptCallArgument } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import Long from 'long';
 
 import { JSONbn } from '../_core/jsonBn';

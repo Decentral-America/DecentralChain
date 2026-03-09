@@ -4,9 +4,9 @@ import {
   SwapClientErrorCode,
   type SwapClientInvokeTransaction,
 } from '@keeper-wallet/swap-client';
-import BigNumber from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import BigNumber from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { AssetAmountInput } from 'assets/amountInput';
 import { AssetSelect, type AssetSelectOption } from 'assets/assetSelect';
 import { type AssetDetail } from 'assets/types';

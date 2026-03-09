@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE, type TransactionFromNode } from '@waves/ts-types';
+import { TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { usePopupSelector } from 'popup/store/react';
 import { type CSSProperties, useEffect, useRef } from 'react';

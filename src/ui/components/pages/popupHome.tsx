@@ -1,5 +1,5 @@
-import BigNumber from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
+import BigNumber from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { type AssetDetail } from 'assets/types';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useEffect, useState } from 'react';

@@ -1,4 +1,4 @@
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { type AssetDetail } from 'assets/types';
 import { useTranslation } from 'react-i18next';
 

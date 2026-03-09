@@ -8,14 +8,14 @@ import {
   utf8Encode,
 } from '@keeper-wallet/waves-crypto';
 import { captureException } from '@sentry/browser';
-import { BigNumber } from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
-import { binary } from '@waves/marshall';
-import { waves } from '@waves/protobuf-serialization';
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { binary } from '@decentralchain/marshall';
+import { waves } from '@decentralchain/protobuf-serialization';
 import {
   type LeaseTransactionFromNode,
   TRANSACTION_TYPE,
-} from '@waves/ts-types';
+} from '@decentralchain/ts-types';
 import type { AssetsRecord } from 'assets/types';
 import EventEmitter from 'events';
 import Long from 'long';

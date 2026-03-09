@@ -1,5 +1,5 @@
-import { BigNumber } from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
+import { BigNumber } from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import { isAddressString, isAlias } from 'messages/utils';
 import { createNft } from 'nfts/nfts';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';

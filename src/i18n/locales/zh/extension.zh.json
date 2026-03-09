@@ -296,7 +296,7 @@
     "incorrectCode": "验证码错误，请重新输入",
     "userDoesNotExist": "该用户不存在。",
     "incorrectUsernameOrPassword": "账户名或密码不正确。",
-    "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系Waves.Exchange客户支持：https://support.waves.exchange/",
+    "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系Waves.Exchange客户支持：https://support.decentralchain.io/",
     "alreadyExists": "账户已存在"
   },
   "importKeystore": {

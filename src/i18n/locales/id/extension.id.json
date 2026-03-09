@@ -192,7 +192,7 @@
     "exportNotSupported": "Akun ini tidak dapat diekspor",
     "passwordError": "Sandi salah",
     "passwordLabel": "Password",
-    "passwordVerifyDesc": "Silakan masukkan kata sandi Keeper Anda untuk mengonfirmasi bahwa itu benar-benar Anda",
+    "passwordVerifyDesc": "Silakan masukkan kata sandi Cubensis Connect Anda untuk mengonfirmasi bahwa itu benar-benar Anda",
     "passwordVerifyImportantNote": "<attention>Attention:</attention> password ini juga akan digunakan untuk mengenkripsi file yang dihasilkan. Jika Anda lupa, Anda tidak akan dapat memulihkan akun Anda.",
     "verifyBtn": "Masuk",
     "warningModalConfirmButton": "Saya mengerti",
@@ -201,7 +201,7 @@
   },
   "forgotPassword": {
     "attention": "Perhatian!",
-    "attentionMessage": "Untuk mengatur ulang kata sandi, Anda perlu menghapus semua akun dari Keeper Wallet, mengatur kata sandi baru, mengimpor setiap akun Anda lagi dari frase Seed.",
+    "attentionMessage": "Untuk mengatur ulang kata sandi, Anda perlu menghapus semua akun dari Cubensis Connect, mengatur kata sandi baru, mengimpor setiap akun Anda lagi dari frase Seed.",
     "warningMessage": "Jika Anda belum menyimpan frase Seed atau kunci Pribadi, maka Anda tidak akan dapat memulihkan akses ke akun Anda.",
     "continueMessage": "Untuk melanjutkan, ketik ini ke dalam bidang di bawah ini",
     "phrase": "HAPUS SEMUA AKUN",
@@ -305,7 +305,7 @@
     "incorrectCode": "Salah kode. Tolong, coba lagi",
     "userDoesNotExist": "Pengguna tidak ada.",
     "incorrectUsernameOrPassword": "Nama pengguna atau kata sandi salah.",
-    "incorrectUsernameOrPasswordLimit": "beberapa kali anda telah membuat kesalahan dalam nama pengguna atau kata sandi Anda adalah https://support.waves.exchange/",
+    "incorrectUsernameOrPasswordLimit": "beberapa kali anda telah membuat kesalahan dalam nama pengguna atau kata sandi Anda adalah https://support.decentralchain.io/",
     "alreadyExists": "Akun sudah ada"
   },
   "importKeystore": {
@@ -364,7 +364,7 @@
   },
   "info": {
     "joinUs": "Join Komunitas Waves",
-    "keepUp": "Keeper Wallet adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps. Menggunakan Keeper Wallet, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
+    "keepUp": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps. Menggunakan Cubensis Connect, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
   },
   "langsSettings": {
     "confirm": "OK",
@@ -417,7 +417,7 @@
     "create": "Lanjutkan",
     "createPassword": "Buat password",
     "notMatch": "Password tdk sama",
-    "passinfo": "Kata sandi yang Anda masukkan akan disimpan secara lokal. Jika Anda mengubah perangkat atau kehilangan kata sandi, Anda harus mengulangi proses penambahan akun ke Keeper Wallet. Waves tidak menyimpan kata sandi Anda.",
+    "passinfo": "Kata sandi yang Anda masukkan akan disimpan secara lokal. Jika Anda mengubah perangkat atau kehilangan kata sandi, Anda harus mengulangi proses penambahan akun ke Cubensis Connect. Waves tidak menyimpan kata sandi Anda.",
     "privacyPolicy": "Kebijakan pribadi",
     "protect": "Lindungi Akun Anda",
     "smallPass": "Password terlalu pendek",
@@ -700,7 +700,7 @@
   },
   "welcome": {
     "getStarted": "Pendahuluan",
-    "info": "Keeper Wallet adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps.",
-    "info2": "Menggunakan Keeper Wallet, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
+    "info": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps.",
+    "info2": "Menggunakan Cubensis Connect, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
   }
 }
