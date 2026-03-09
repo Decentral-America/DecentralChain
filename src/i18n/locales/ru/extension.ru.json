@@ -12,7 +12,7 @@
     "password": "Пароль",
     "passwordError": "Неверный пароль",
     "privateKeyNoBackupPhrase": "Невозможно скопировать фразу восстановления, так как этот аккаунт был импортирован с помощью приватного ключа",
-    "emailNoBackupPhrase": "Невозможно скопировать фразу восстановления или приватный ключ, так как импорт аккаунта был произведен с помощью аккаунта Waves.Exchange",
+    "emailNoBackupPhrase": "Невозможно скопировать фразу восстановления или приватный ключ, так как импорт аккаунта был произведен с помощью аккаунта DecentralChain Exchange",
     "privKey": "Приватный ключ",
     "pubKey": "Открытый ключ",
     "viewInExplorer": "Открыть в Explorer"
@@ -220,8 +220,8 @@
     "issueSmartNFT": "Выпустить смарт-NFT",
     "issueSmartToken": "Выпустить смарт-актив",
     "issueToken": "Выпустить актив",
-    "lease": "Начать стейкинг WAVES",
-    "leaseCancel": "Отменить стейкинг WAVES",
+    "lease": "Начать стейкинг DCC",
+    "leaseCancel": "Отменить стейкинг DCC",
     "leaseIncoming": "Входящий лизинг",
     "massTransfer": "Массовый перевод",
     "massTransferReceive": "Входящий массовый перевод",
@@ -285,7 +285,7 @@
   },
   "importEmail": {
     "importEmailTitle": "Импорт Email-аккаунта",
-    "importEmailDesc": "Подключите Email-аккаунт, созданный на Waves.Exchange",
+    "importEmailDesc": "Подключите Email-аккаунт, созданный на DecentralChain Exchange",
     "passwordLabel": "Пароль",
     "passwordRequired": "Введите пароль",
     "loginRequired": "Подтвердите Email-аккаунт",
@@ -330,9 +330,9 @@
     "accountExistsError": "Этот аккаунт уже существует в Keeper",
     "accountIdLabel": "ID аккаунта",
     "avatarListLoading": "Загружаем аккаунты",
-    "connectInstructions": "Подключите устройство Ledger и откройте приложение Waves",
+    "connectInstructions": "Подключите устройство Ledger и откройте приложение DCC",
     "continueButton": "Продолжить",
-    "couldNotGetUsersError": "Не удалось получить больше пользователей из Ledger. Убедитесь, что устройство Ledger подключено и разблокировано, а приложение Waves открыто, затем нажмите <retryButton>Retry</retryButton>.",
+    "couldNotGetUsersError": "Не удалось получить больше пользователей из Ledger. Убедитесь, что устройство Ledger подключено и разблокировано, а приложение DCC открыто, затем нажмите <retryButton>Retry</retryButton>.",
     "userIdInputNumbersError": "Для ввода разрешены только цифры",
     "userIdInputMaxValueError": "Account ID не может превышать значение {{ maxUserId }}",
     "selectAccountInstructions": "Выберите ваш адрес",
@@ -360,8 +360,8 @@
     "title": "Импортировать с помощью seed-фразы"
   },
   "info": {
-    "joinUs": "Присоединиться к сообществу Waves",
-    "keepUp": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в Waves функциональностью или DApps. Используя Cubensis Connect, вы можете подписывать транзакции и оставаться в безопасности от вредоносных сайтов."
+    "joinUs": "Присоединиться к сообществу DecentralChain",
+    "keepUp": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в DecentralChain функциональностью или DApps. Используя Cubensis Connect, вы можете подписывать транзакции и оставаться в безопасности от вредоносных сайтов."
   },
   "langsSettings": { "confirm": "Подтвердить", "title": "Сменить язык" },
   "ledgerErrors": {
@@ -369,7 +369,7 @@
     "usedBySomeOtherApp": "Похоже, что Ledger уже используется другим приложением. Закройте все приложения, которые могут использовать Ledger, и повторите попытку."
   },
   "ledgerConnectModal": {
-    "instructions": "Подключите устройство Ledger и откройте приложение Waves",
+    "instructions": "Подключите устройство Ledger и откройте приложение DCC",
     "title": "Подключение...",
     "tryAgainButton": "Попробуйте еще раз"
   },
@@ -411,7 +411,7 @@
     "create": "Продолжить",
     "createPassword": "Создать пароль",
     "notMatch": "Пароли не совпадают",
-    "passinfo": "Введенный вами пароль будет храниться локально. Если вы смените устройство или потеряете пароль, вам придется повторить процесс добавления аккаунтов в Cubensis Connect. Waves не хранит ваши пароли.",
+    "passinfo": "Введенный вами пароль будет храниться локально. Если вы смените устройство или потеряете пароль, вам придется повторить процесс добавления аккаунтов в Cubensis Connect. DecentralChain не хранит ваши пароли.",
     "privacyPolicy": "Политика конфиденциальности",
     "protect": "Защитите свой аккаунт",
     "smallPass": "Пароль слишком короткий",
@@ -557,7 +557,7 @@
     "nextTransaction": "Далее",
     "pendingList": "Список ожидания",
     "reject": "Отклонить",
-    "signAccessInfo": "Приложение будет иметь доступ к вашему адресу Waves, но не будет раскрывать вашу SEED-фразу или приватный ключ. Никогда не вводите свою секретную фразу (SEED) на сайтах, на которые вас перенаправляют.",
+    "signAccessInfo": "Приложение будет иметь доступ к вашему адресу DCC, но не будет раскрывать вашу SEED-фразу или приватный ключ. Никогда не вводите свою секретную фразу (SEED) на сайтах, на которые вас перенаправляют.",
     "signButton": "Подписать",
     "someError": "Что-то пошло не так",
     "switchAccount": "Сменить аккаунт",
@@ -566,7 +566,7 @@
     "transactionSend": "Вы отправили",
     "understand": "Я понимаю",
     "viewTransaction": "Просмотреть транзакцию",
-    "wavesAuthConfirmed": "Подпишите запрос авторизации Waves!"
+    "dccAuthConfirmed": "Подпишите запрос авторизации DCC!"
   },
   "swap": {
     "amountToSendError": "Не удалось выполнить обмен из-за состояния SwopFi dApp. Пожалуйста, попробуйте еще раз или немного увеличьте допуск проскальзывания, если это возможно",
@@ -603,7 +603,7 @@
   "transactions": {
     "allowAccess": "Разрешить доступ",
     "allowAccessTitle": "Разрешить доступ",
-    "amountPerTransaction": "Эта сумма эквивалентна комиссии за транзакцию в размере 0,001 Waves.",
+    "amountPerTransaction": "Эта сумма эквивалентна комиссии за транзакцию в размере 0,001 DCC.",
     "arguments": "Аргументы",
     "assetId": "ID актива",
     "assetScriptTransaction": "Установить скрипт актива",
@@ -637,7 +637,7 @@
     "orderCancel": "Отменить заявку",
     "orderId": "ID заявки",
     "orderSell": "Продать",
-    "originWarning": "хочет получить доступ к вашему адресу Waves",
+    "originWarning": "хочет получить доступ к вашему адресу DCC",
     "packTransactionGroup": "Группа",
     "packTransactions": "Транзакции",
     "packTransactionsFees": "Комиссии",
@@ -663,7 +663,7 @@
     "showAll": "Показать все",
     "showTransactions": "Показать транзакции",
     "signRequestMatcher": "Подпишите заявку к матчеру",
-    "signRequestWavesAuth": "Подпишите запрос авторизации Waves",
+    "signRequestDccAuth": "Подпишите запрос авторизации DCC",
     "updateAssetInfo": "Обновить информацию об активе",
     "issueToken": "Выпустить токен",
     "issueSmartToken": "Выпустить смарт-токен",
@@ -675,10 +675,10 @@
     "hash": "Хэш",
     "txTime": "Время транзакции",
     "unknown": "Неизвестно",
-    "wavesAuthTimeStamp": "Временная метка"
+    "dccAuthTimeStamp": "Временная метка"
   },
   "ui": {
-    "logoTitle": "Обеспечьте безопасность своих ключей Waves онлайн"
+    "logoTitle": "Обеспечьте безопасность своих ключей DCC онлайн"
   },
   "notifications": {
     "allowSending": "Разрешить отправку сообщений",
@@ -691,7 +691,7 @@
   "wallet": { "lease": "В лизинге" },
   "welcome": {
     "getStarted": "Начать",
-    "info": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в Waves функциональностью или DApps. ",
+    "info": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в DecentralChain функциональностью или DApps. ",
     "info2": "Используя Cubensis Connect, вы можете подписывать транзакции и оставаться в безопасности от вредоносных сайтов."
   }
 }

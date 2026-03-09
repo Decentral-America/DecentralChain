@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { batchAddAccounts } from 'store/actions/user';
 import invariant from 'tiny-invariant';
-import { getNetworkByNetworkCode } from 'ui/utils/waves';
+import { getNetworkByNetworkCode } from 'ui/utils/network';
 
 import { WalletTypes } from '../../../services/Background';
 import { ImportKeystoreChooseAccounts } from './chooseAccounts';
@@ -31,6 +31,9 @@ type ExchangeKeystoreAccount = {
       id: number;
     }
   | {
+      // Stored in extension data as 'wavesKeeper' for backward compat with
+      // accounts originally imported from the Waves Keeper extension.
+      // TODO: Add migration to rename stored userType to 'cubensisConnect'
       userType: 'wavesKeeper';
     }
 );

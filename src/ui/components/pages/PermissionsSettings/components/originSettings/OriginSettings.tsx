@@ -244,7 +244,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
               value={value}
               placeholder="0"
             />
-            <div className={styles.waves}>Waves</div>
+            <div className={styles.dcc}>DCC</div>
           </div>
 
           <div className="flex margin-main-big margin-main-big-top">

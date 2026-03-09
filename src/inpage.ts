@@ -108,7 +108,9 @@ globalThis.CubensisConnect = {
   signTransaction: proxy.signTransaction,
   signTransactionPackage: proxy.signTransactionPackage,
   verifyCustomData: proxy.verifyCustomData,
-  wavesAuth: proxy.wavesAuth,
+  dccAuth: proxy.dccAuth,
+  // Backward-compatible alias for existing dApps still calling wavesAuth
+  wavesAuth: proxy.dccAuth,
   get initialPromise() {
     // eslint-disable-next-line no-console
     console.warn(
@@ -143,6 +145,7 @@ function defineDeprecatedName(name: string) {
   });
 }
 
+// TODO: Remove legacy global aliases once all known dApps have migrated to CubensisConnect
 defineDeprecatedName('WavesKeeper');
 defineDeprecatedName('Waves');
 defineDeprecatedName('KeeperWallet');

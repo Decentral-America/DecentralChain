@@ -41,6 +41,7 @@ describe('Settings', function () {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
+    // TODO: Update seed phrase when DCC test node genesis config is set up
     await AccountsHome.importAccount(
       'rich',
       'waves private node seed with waves tokens',
@@ -315,6 +316,7 @@ describe('Settings', function () {
 
         it('After deletion, requests generate permission request', async function () {
           const originToDelete =
+          // TODO: Update test origin when DCC test infrastructure replaces waves.tech
             await PermissionControlSettingsScreen.getPermissionByOrigin(
               'waves.tech',
             );

@@ -70,10 +70,10 @@ export function ActiveMessagePage() {
   }
 
   const explorerUrls = new Map([
-    ['W', 'wavesexplorer.com'],
-    ['T', 'testnet.wavesexplorer.com'],
-    ['S', 'stagenet.wavesexplorer.com'],
-    ['custom', 'wavesexplorer.com/custom'],
+    ['W', 'explorer.decentralchain.io'],
+    ['T', 'testnet.explorer.decentralchain.io'],
+    ['S', 'stagenet.explorer.decentralchain.io'],
+    ['custom', 'explorer.decentralchain.io/custom'],
   ]);
 
   const isApproved =

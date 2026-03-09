@@ -48,7 +48,7 @@ export abstract class Wallet<TData extends WalletPrivateData> {
     return this.signBytes(bytes);
   }
 
-  signWavesAuth(bytes: Uint8Array) {
+  signDccAuth(bytes: Uint8Array) {
     return this.signBytes(bytes);
   }
 
@@ -70,6 +70,7 @@ export abstract class Wallet<TData extends WalletPrivateData> {
     return createSharedKey(
       privateKey,
       base58Decode(publicKey),
+      // TODO: Wire-format key derivation suffix — changing breaks shared-key interop
       utf8Encode(`${prefix || ''}waves`),
     );
   }

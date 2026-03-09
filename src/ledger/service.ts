@@ -1,6 +1,7 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { captureException } from '@sentry/browser';
-import WavesLedger from '@decentralchain/ledger';
+// NOTE: Default export from @decentralchain/ledger is named WavesLedger in source — aliased here as DccLedger
+import DccLedger from '@decentralchain/ledger';
 import { type PreferencesAccount } from 'preferences/types';
 import invariant from 'tiny-invariant';
 import Background from 'ui/services/Background';
@@ -19,7 +20,7 @@ function delay(ms: number) {
 
 class LedgerService {
   private _connectionRetryIsNeeded: boolean | undefined;
-  private _ledger: WavesLedger | null | undefined;
+  private _ledger: DccLedger | null | undefined;
   private _networkCode: string | null = null;
   private _signRequestPromise = Promise.resolve();
   private _status = LedgerServiceStatus.Disconnected;
@@ -37,7 +38,7 @@ class LedgerService {
 
     this._networkCode = networkCode;
 
-    this._ledger = new WavesLedger({
+    this._ledger = new DccLedger({
       debug: true,
       openTimeout: 3000,
       listenTimeout: 30000,

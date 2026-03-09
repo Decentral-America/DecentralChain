@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { setAddresses } from 'store/actions/addresses';
 import {
-  fromEthereumToWavesAddress,
+  fromEthereumToDccAddress,
   isEthereumAddress,
 } from 'ui/utils/ethereum';
 
@@ -85,7 +85,7 @@ function getFormattedAddresses(
 
       return [
         isEthereumAddress(keystoreAddress)
-          ? fromEthereumToWavesAddress(keystoreAddress)
+          ? fromEthereumToDccAddress(keystoreAddress)
           : keystoreAddress,
         keystoreName,
       ];

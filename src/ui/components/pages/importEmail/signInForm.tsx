@@ -7,9 +7,10 @@ import { usePopupSelector } from '../../../../popup/store/react';
 import { Button, ErrorMessage, Input } from '../../ui';
 import * as styles from './importEmail.module.css';
 
+// TODO: Replace with DecentralChain exchange endpoints once available
 const baseByNetwork: Partial<Record<NetworkName, string>> = {
-  [NetworkName.Mainnet]: 'https://waves.exchange',
-  [NetworkName.Testnet]: 'https://testnet.waves.exchange',
+  [NetworkName.Mainnet]: 'https://exchange.decentralchain.io',
+  [NetworkName.Testnet]: 'https://testnet.exchange.decentralchain.io',
 };
 
 interface Props {
@@ -94,6 +95,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
           case 'Incorrect username or password.':
             errMessage = t('importEmail.incorrectUsernameOrPassword');
             break;
+          // TODO: This error string comes from the upstream exchange API — update when migrated to DCC exchange
           case 'You have exceeded incorrect username or password limit. If you have any problems, please contact support https://support.waves.exchange/.':
             errMessage = t('importEmail.incorrectUsernameOrPasswordLimit');
             break;

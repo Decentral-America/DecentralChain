@@ -79,7 +79,7 @@ export function PopupHome() {
       <div className={styles.activeAccount}>
         <ActiveAccountCard
           account={activeAccount}
-          wavesBalance={
+          dccBalance={
             assets.WAVES &&
             new Money(
               balances[activeAccount.address]?.available || 0,

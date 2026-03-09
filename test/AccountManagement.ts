@@ -23,11 +23,13 @@ describe('Account management', function () {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
+    // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
     await AccountsHome.importAccount(
       'poor',
       'waves private node seed without waves tokens',
     );
 
+    // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
     await AccountsHome.importAccount(
       'rich',
       'waves private node seed with waves tokens',

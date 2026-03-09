@@ -37,9 +37,9 @@ type TxStatus =
     };
 
 const explorerBaseUrlsByNetwork = {
-  [NetworkName.Mainnet]: 'wavesexplorer.com',
-  [NetworkName.Testnet]: 'testnet.wavesexplorer.com',
-  [NetworkName.Stagenet]: 'stagenet.wavesexplorer.com',
+  [NetworkName.Mainnet]: 'explorer.decentralchain.io',
+  [NetworkName.Testnet]: 'testnet.explorer.decentralchain.io',
+  [NetworkName.Stagenet]: 'stagenet.explorer.decentralchain.io',
   [NetworkName.Custom]: undefined,
 };
 

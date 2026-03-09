@@ -18,7 +18,7 @@
 }
 
 .ethereum.mirrorAddress,
-.waves.mirrorAddress {
+.dcc.mirrorAddress {
   padding: 8px;
   display: flex;
   align-items: center;
@@ -35,14 +35,14 @@
 }
 
 .ethereum.recipient::before,
-.waves.mirrorAddress::before {
+.dcc.mirrorAddress::before {
   margin-right: 5px;
   width: 14px;
   height: 14px;
   background-image: url(../../../assets/img/ethereum.svg);
 }
 
-.waves.recipient::before,
+.dcc.recipient::before,
 .ehereum.mirrorAddress::before {
   margin-right: 5px;
   width: 12px;

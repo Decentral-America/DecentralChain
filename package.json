@@ -30,7 +30,6 @@
     "@keeper-wallet/waves-crypto": "^3.0.0",
     "@popperjs/core": "^2.11.0",
     "@sentry/browser": "^7.26.0",
-    "@waves-domains/client": "^0.3.0",
     "@decentralchain/bignumber": "^1.0.0",
     "@decentralchain/data-entities": "^2.0.4",
     "@decentralchain/marshall": "^0.14.0",

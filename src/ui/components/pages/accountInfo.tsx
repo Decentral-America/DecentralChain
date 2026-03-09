@@ -55,16 +55,16 @@ export function AccountInfo() {
   const [showCopied, setShowCopied] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const wavesAsset = assets.WAVES;
+  const nativeAsset = assets.WAVES;
 
   let balance: Money | undefined;
   let leaseBalance: Money | undefined;
 
-  if (wavesAsset && account) {
+  if (nativeAsset && account) {
     const balanceItem = balances[account.address];
 
     if (balanceItem) {
-      const assetInstance = new Asset(wavesAsset);
+      const assetInstance = new Asset(nativeAsset);
 
       if (typeof balanceItem.available !== 'undefined')
         balance = new Money(balanceItem.available, assetInstance);

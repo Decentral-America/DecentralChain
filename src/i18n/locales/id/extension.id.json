@@ -14,7 +14,7 @@
     "password": "Password",
     "passwordError": "Salah sandi",
     "privateKeyNoBackupPhrase": "Akun ini diimpor menggunakan private key, jadi tidak ada Backup phrase untuk disalin",
-    "emailNoBackupPhrase": "Akun ini diimpor menggunakan waves.exchange, jadi tidak ada Backup phrase untuk disalin",
+    "emailNoBackupPhrase": "Akun ini diimpor menggunakan decentralchain.io, jadi tidak ada Backup phrase untuk disalin",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "Lihat di explorer"
@@ -226,7 +226,7 @@
     "issueSmartToken": "Keluarkan Smart Aset",
     "issueToken": "Kluarkan aset",
     "lease": "Mulai Staking Wves",
-    "leaseCancel": "Btalkan Staking Waves",
+    "leaseCancel": "Btalkan Staking DCC",
     "leaseIncoming": "Leasing mendatang",
     "massTransfer": "Mass Transfer",
     "massTransferReceive": "Mass Transfer Masuk",
@@ -289,7 +289,7 @@
   },
   "importEmail": {
     "importEmailTitle": "Import Email akun",
-    "importEmailDesc": "Hubungkan akun email yang dibuat di Waves.Exchange",
+    "importEmailDesc": "Hubungkan akun email yang dibuat di DecentralChain Exchange",
     "passwordLabel": "Password",
     "passwordRequired": "Maukkan password",
     "loginRequired": "Konfirmasi email akun",
@@ -333,9 +333,9 @@
     "accountExistsError": "Akun ini sudah ada di Keeper",
     "accountIdLabel": "ID Akun",
     "avatarListLoading": "Memuat akun...",
-    "connectInstructions": "Hubungkan perangkat Ledger dan buka aplikasi Waves",
+    "connectInstructions": "Hubungkan perangkat Ledger dan buka aplikasi DCC",
     "continueButton": "Lanjutkan",
-    "couldNotGetUsersError": "Tidak bisa mendapatkan lebih banyak pengguna dari buku besar. Harap pastikan bahwa buku besar terhubung, tidak terkunci dan aplikasi Waves terbuka, lalu klik <retryButton>Coba lagi</retryButton>",
+    "couldNotGetUsersError": "Tidak bisa mendapatkan lebih banyak pengguna dari buku besar. Harap pastikan bahwa buku besar terhubung, tidak terkunci dan aplikasi DCC terbuka, lalu klik <retryButton>Coba lagi</retryButton>",
     "userIdInputNumbersError": "Hanya angka diperbolehkan",
     "userIdInputMaxValueError": "ID Akun tidak boleh lebih dari {{ maxUserId }}",
     "selectAccountInstructions": "Pilih address Anda",
@@ -363,8 +363,8 @@
     "title": "Impor menggunakan seed"
   },
   "info": {
-    "joinUs": "Join Komunitas Waves",
-    "keepUp": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps. Menggunakan Cubensis Connect, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
+    "joinUs": "Join Komunitas DecentralChain",
+    "keepUp": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi DecentralChain atau DApps. Menggunakan Cubensis Connect, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
   },
   "langsSettings": {
     "confirm": "OK",
@@ -375,7 +375,7 @@
     "usedBySomeOtherApp": "Sepertinya ledger sudah digunakan oleh aplikasi lain. Tutup semua aplikasi yang mungkin menggunakan ledger dan coba lagi."
   },
   "ledgerConnectModal": {
-    "instructions": "Hubungkan perangkat Ledger dan buka aplikasi Waves",
+    "instructions": "Hubungkan perangkat Ledger dan buka aplikasi DCC",
     "title": "Menghubungkan...",
     "tryAgainButton": "Coba lagi"
   },
@@ -417,7 +417,7 @@
     "create": "Lanjutkan",
     "createPassword": "Buat password",
     "notMatch": "Password tdk sama",
-    "passinfo": "Kata sandi yang Anda masukkan akan disimpan secara lokal. Jika Anda mengubah perangkat atau kehilangan kata sandi, Anda harus mengulangi proses penambahan akun ke Cubensis Connect. Waves tidak menyimpan kata sandi Anda.",
+    "passinfo": "Kata sandi yang Anda masukkan akan disimpan secara lokal. Jika Anda mengubah perangkat atau kehilangan kata sandi, Anda harus mengulangi proses penambahan akun ke Cubensis Connect. DecentralChain tidak menyimpan kata sandi Anda.",
     "privacyPolicy": "Kebijakan pribadi",
     "protect": "Lindungi Akun Anda",
     "smallPass": "Password terlalu pendek",
@@ -564,7 +564,7 @@
     "nextTransaction": "Lanjut",
     "pendingList": "daftar tertunda",
     "reject": "Tolak",
-    "signAccessInfo": "Aplikasi akan memiliki akses ke alamat Waves anda tetapi tidak akan mengekspos SEED atau kunci pribadi Anda. Jangan pernah memasukkan frasa rahasia anda (SEED) di situs web mana pun yang Anda tuju.",
+    "signAccessInfo": "Aplikasi akan memiliki akses ke alamat DCC anda tetapi tidak akan mengekspos SEED atau kunci pribadi Anda. Jangan pernah memasukkan frasa rahasia anda (SEED) di situs web mana pun yang Anda tuju.",
     "signButton": "Tanda Tangan",
     "someError": "Ada yang salah",
     "switchAccount": "Ganti akun",
@@ -573,7 +573,7 @@
     "transactionSend": "Kamu telah mengirim",
     "understand": "OK",
     "viewTransaction": "Lihat transaksi",
-    "wavesAuthConfirmed": "Sign permintaan autentik waves!"
+    "dccAuthConfirmed": "Sign permintaan autentik DCC!"
   },
   "swap": {
     "amountToSendError": "Tidak dapat melakukan swap karena status dApp SwapFi. Silakan coba lagi atau sedikit tingkatkan toleransi selip jika memungkinkan",
@@ -609,7 +609,7 @@
   "transactions": {
     "allowAccess": "Izinkan akses",
     "allowAccessTitle": "Izinkan akses",
-    "amountPerTransaction": "Jumlah ini setara dengan setiap 0.001 Waves dalam biaya transaksi",
+    "amountPerTransaction": "Jumlah ini setara dengan setiap 0.001 DCC dalam biaya transaksi",
     "arguments": "Argumen",
     "assetId": "Aset ID",
     "assetScriptTransaction": "Set Skrip Aset",
@@ -643,7 +643,7 @@
     "orderCancel": "Batalkan order",
     "orderId": "Order ID",
     "orderSell": "Jual",
-    "originWarning": "ingin mengakses adress Waves Anda",
+    "originWarning": "ingin mengakses adress DCC Anda",
     "packTransactionGroup": "Grup",
     "packTransactions": "Transaksi",
     "packTransactionsFees": "Biaya",
@@ -670,7 +670,7 @@
     "showAll": "Semua",
     "showTransactions": "Transaksi",
     "signRequestMatcher": "Sign permintaan ke Matcher",
-    "signRequestWavesAuth": "Sign permintaan waves auth",
+    "signRequestDccAuth": "Sign permintaan DCC auth",
     "updateAssetInfo": "Update aset Info",
     "issueToken": "Issue Token",
     "issueSmartToken": "Issue Smart Token",
@@ -682,10 +682,10 @@
     "hash": "Hash",
     "txTime": "Waktu TX",
     "unknown": "Tidak diketahui",
-    "wavesAuthTimeStamp": "Time Stamp"
+    "dccAuthTimeStamp": "Time Stamp"
   },
   "ui": {
-    "logoTitle": "Jaga agar kunci Waves Anda tetap aman saat online"
+    "logoTitle": "Jaga agar kunci DCC Anda tetap aman saat online"
   },
   "notifications": {
     "allowSending": "Izinkan pengiriman pesan",
@@ -700,7 +700,7 @@
   },
   "welcome": {
     "getStarted": "Pendahuluan",
-    "info": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi Waves atau DApps.",
+    "info": "Cubensis Connect adalah cara teraman untuk berinteraksi dengan sumber daya web pihak ketiga dengan fungsionalitas terintegrasi DecentralChain atau DApps.",
     "info2": "Menggunakan Cubensis Connect, Anda dapat menandatangani transaksi dan tetap aman dari situs berbahaya."
   }
 }
