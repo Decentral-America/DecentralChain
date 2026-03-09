@@ -42,13 +42,13 @@ export function OtherAccountsPage() {
     )
     .sort(compareAccountsByLastUsed);
 
-  const wavesAsset = new Asset(assets.WAVES);
+  const nativeAsset = new Asset(assets.WAVES);
 
   const balancesMoney = Object.fromEntries(
     Object.entries(balances).map(([key, balance]) => [
       key,
       typeof balance?.regular !== 'undefined'
-        ? new Money(balance.regular, wavesAsset)
+        ? new Money(balance.regular, nativeAsset)
         : undefined,
     ]),
   );

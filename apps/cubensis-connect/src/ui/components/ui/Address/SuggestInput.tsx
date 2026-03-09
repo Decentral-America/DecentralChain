@@ -1,12 +1,9 @@
-import { useDebouncedValue } from '_core/useDebouncedValue';
 import { base58Decode } from '@keeper-wallet/waves-crypto';
-import { WavesDomainsClient } from '@waves-domains/client';
 import clsx from 'clsx';
 import { isAddressString } from 'messages/utils';
-import { NetworkName } from 'networks/types';
 import { usePopupSelector } from 'popup/store/react';
 import { type PreferencesAccount } from 'preferences/types';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { icontains } from 'ui/components/pages/assets/helpers';
 
@@ -17,11 +14,6 @@ import * as styles from './SuggestInput.module.css';
 
 const ALIAS_RE = /^alias:\w:/i;
 
-interface WavesDomainsResolveResult {
-  name: string;
-  address: string;
-}
-
 interface SuggestProps {
   className?: string;
   paddingRight?: number;
@@ -31,7 +23,6 @@ interface SuggestProps {
   setValue: (value: string) => void;
   setAddress: (value: string) => void;
   setShowSuggest: (show: boolean) => void;
-  wdResolveResult?: WavesDomainsResolveResult | null;
   onSuggest?: (value: string) => void;
 }
 
@@ -44,7 +35,6 @@ function Suggest({
   setValue,
   setAddress,
   setShowSuggest,
-  wdResolveResult,
   onSuggest,
 }: SuggestProps) {
   const { t } = useTranslation();
@@ -101,29 +91,6 @@ function Suggest({
               <AddressTooltip address={address} />
             </div>
           ))}
-        </>
-      )}
-      {wdResolveResult && (
-        <>
-          <p className={styles.title} style={{ paddingRight, paddingLeft }}>
-            Waves domains
-          </p>
-
-          <div
-            className={clsx(styles.item, styles.item_wavesDomains)}
-            style={{ paddingRight, paddingLeft }}
-            onMouseDown={() => {
-              setAddress(wdResolveResult.address);
-              setShowSuggest(false);
-
-              if (onSuggest) {
-                onSuggest(wdResolveResult.address);
-              }
-            }}
-          >
-            <p className={styles.name}>{wdResolveResult.name}</p>
-            <AddressTooltip address={wdResolveResult.address} />
-          </div>
         </>
       )}
     </div>
@@ -218,7 +185,6 @@ export type Props = Extract<InputProps, { multiLine?: false }> & {
 export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const { t } = useTranslation();
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
   const chainId = usePopupSelector(
     state =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -269,35 +235,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const [showSuggest, setShowSuggest] = useState(false);
   const [showSuggestModal, setShowSuggestModal] = useState(false);
 
-  const debouncedValue = useDebouncedValue(value, 500);
-  const [wdResolveResult, setWdResolveResult] =
-    useState<WavesDomainsResolveResult | null>(null);
-  useEffect(() => {
-    if (
-      ![NetworkName.Mainnet, NetworkName.Testnet].includes(currentNetwork) ||
-      !debouncedValue
-    ) {
-      setWdResolveResult(null);
-      return;
-    }
-
-    const wdClient = new WavesDomainsClient({
-      network: currentNetwork === NetworkName.Mainnet ? 'mainnet' : 'testnet',
-    });
-
-    wdClient.resolve(debouncedValue).then(resolvedAddress => {
-      setWdResolveResult(
-        resolvedAddress
-          ? { name: debouncedValue, address: resolvedAddress }
-          : null,
-      );
-    });
-  }, [currentNetwork, debouncedValue]);
-
   const isAlias = useMemo(() => ALIAS_RE.test(value), [value]);
-
-  const freshWdResolveResult =
-    wdResolveResult?.name === value ? wdResolveResult : null;
 
   const overlaidTextRef = useRef<HTMLDivElement | null>(null);
 
@@ -347,8 +285,6 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
                     ALIAS_RE,
                     `<mark class=${styles.aliasMark}>$&</mark>`,
                   )
-                : freshWdResolveResult
-                ? `<mark class=${styles.wavesDomainsMark}>${freshWdResolveResult.name}</mark>`
                 : value,
             }}
           />
@@ -390,7 +326,6 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
             setValue={setValue}
             setAddress={setAddress}
             setShowSuggest={setShowSuggest}
-            wdResolveResult={freshWdResolveResult}
             onSuggest={onSuggest}
           />
         )}

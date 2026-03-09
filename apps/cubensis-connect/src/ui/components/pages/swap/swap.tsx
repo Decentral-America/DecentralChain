@@ -45,7 +45,7 @@ export function Swap() {
 
   const minimumFee = 50_0000;
 
-  const [wavesFeeCoins, setWavesFeeCoins] = useState(minimumFee);
+  const [nativeFeeCoins, setNativeFeeCoins] = useState(minimumFee);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +55,7 @@ export function Swap() {
       .getExtraFee(selectedAccount.address, currentNetwork)
       .then(feeExtra => {
         if (!cancelled) {
-          setWavesFeeCoins(minimumFee + feeExtra);
+          setNativeFeeCoins(minimumFee + feeExtra);
         }
       });
 
@@ -114,12 +114,12 @@ export function Swap() {
       setSwapErrorMessage(null);
       setIsSwapInProgress(true);
 
-      const wavesFee = new Money(wavesFeeCoins, new Asset(assets.WAVES));
+      const nativeFee = new Money(nativeFeeCoins, new Asset(assets.WAVES));
       const feeAsset = assets[feeAssetId];
       invariant(feeAsset);
 
       try {
-        const fee = convertFeeToAsset(wavesFee, new Asset(feeAsset)).toCoins();
+        const fee = convertFeeToAsset(nativeFee, new Asset(feeAsset)).toCoins();
 
         const fullSwapTx = {
           ...tx,
@@ -285,7 +285,7 @@ export function Swap() {
         }
       }
     },
-    [assets, selectedAccount, t, wavesFeeCoins],
+    [assets, selectedAccount, t, nativeFeeCoins],
   );
 
   const { sign, isSignPending } = useSign(onConfirm);
@@ -313,7 +313,7 @@ export function Swap() {
       isSwapInProgress={isSignPending || isSwapInProgress}
       swapErrorMessage={swapErrorMessage}
       swappableAssets={swappableAssets.filter(isNotNull)}
-      wavesFeeCoins={wavesFeeCoins}
+      nativeFeeCoins={nativeFeeCoins}
       onSwap={sign}
     />
   );

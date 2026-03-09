@@ -5,7 +5,7 @@ import { NetworkName } from '../networks/types';
 import { Button } from '../ui/components/ui/buttons/Button';
 import { ErrorMessage } from '../ui/components/ui/error';
 import { Input } from '../ui/components/ui/input/Input';
-import { getMatcherPublicKey, getNetworkCode } from '../ui/utils/waves';
+import { getMatcherPublicKey, getNetworkCode } from '../ui/utils/network';
 
 interface Props {
   initialMatcher: string;

@@ -71,7 +71,7 @@ export function getFeeOptions({
   txType: MessageTx['type'];
   usdPrices: Partial<Record<string, string>>;
 }) {
-  const feeInWaves = convertFeeToAsset(initialFee, new Asset(assets.WAVES));
+  const feeInNative = convertFeeToAsset(initialFee, new Asset(assets.WAVES));
 
   if (
     txType !== TRANSACTION_TYPE.TRANSFER &&
@@ -98,7 +98,7 @@ export function getFeeOptions({
     .filter(
       ({ assetBalance, money }) =>
         assetBalance.minSponsoredAssetFee != null &&
-        new BigNumber(assetBalance.sponsorBalance).gte(feeInWaves.getCoins()) &&
+        new BigNumber(assetBalance.sponsorBalance).gte(feeInNative.getCoins()) &&
         new BigNumber(assetBalance.balance).gte(money.getCoins()),
     )
     .sort((a, b) => {

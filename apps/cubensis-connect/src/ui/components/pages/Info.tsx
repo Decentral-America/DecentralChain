@@ -37,7 +37,7 @@ class InfoComponent extends Component<WithTranslation> {
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://t.me/wavesnews"
+                href="https://t.me/decentralchain"
               ></a>
             </li>
             <li className={styles.discord}>
@@ -51,21 +51,21 @@ class InfoComponent extends Component<WithTranslation> {
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://twitter.com/wavesprotocol"
+                href="https://twitter.com/decaborchain"
               ></a>
             </li>
             <li className={styles.reddit}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://www.reddit.com/r/Wavesplatform"
+                href="https://www.reddit.com/r/DecentralChain"
               ></a>
             </li>
             <li className={styles.medium}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://medium.com/wavesprotocol"
+                href="https://medium.com/decentralchain"
               ></a>
             </li>
             <li className={styles.youtube}>
@@ -79,7 +79,7 @@ class InfoComponent extends Component<WithTranslation> {
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://vk.com/wavesprotocol"
+                href="https://vk.com/decentralchain"
               ></a>
             </li>
           </ul>

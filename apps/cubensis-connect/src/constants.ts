@@ -47,19 +47,10 @@ export const NETWORK_CONFIG: Record<
 
 export const DEFAULT_MAIN_CONFIG = {
   whitelist: [
-    'swop.fi',
-    'waves.exchange',
-    'testnet.waves.exchange',
-    'waves-dapp.com',
-    'waves-ide.com',
-    'wavesducks.com',
-    'vires.finance',
-    'v2.vires.finance',
+    'decentralchain.io',
+    'explorer.decentralchain.io',
     'web.keeper-wallet.app',
     'swap.keeper-wallet.app',
-    'app.power.tech',
-    'wx.network',
-    'decentralchain.io',
   ],
   networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
   messages_config: {
@@ -115,21 +106,22 @@ export type IgnoreErrorsContext = {
     : never;
 }[keyof IgnoreErrorsConfig];
 
+// TODO: Replace with DecentralChain identity service endpoints once available
 export const DEFAULT_IDENTITY_CONFIG = {
   testnet: {
-    apiUrl: 'https://id-testnet.waves.exchange/api',
+    apiUrl: 'https://id-testnet.decentralchain.io/api',
     cognito: {
       userPoolId: 'eu-central-1_6Bo3FEwt5',
       clientId: '7l8bv0kmvrb4s4n1topofh9d80',
-      endpoint: 'https://testnet.waves.exchange/cognito',
+      endpoint: 'https://testnet.decentralchain.io/cognito',
     },
   },
   mainnet: {
-    apiUrl: 'https://id.waves.exchange/api',
+    apiUrl: 'https://id.decentralchain.io/api',
     cognito: {
       userPoolId: 'eu-central-1_AXIpDLJQx',
       clientId: 'k63vrrmuav01s6p2d344ppnf4',
-      endpoint: 'https://waves.exchange/cognito',
+      endpoint: 'https://decentralchain.io/cognito',
     },
   },
 };

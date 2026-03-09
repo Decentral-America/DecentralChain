@@ -22,10 +22,10 @@ import {
 } from './transactionPackage/transactionPackage';
 import { type Message, type MessageOfType } from './types';
 import {
-  WavesAuthCard,
-  WavesAuthFinal,
-  WavesAuthScreen,
-} from './wavesAuth/wavesAuth';
+  DccAuthCard,
+  DccAuthFinal,
+  DccAuthScreen,
+} from './dccAuth/dccAuth';
 
 interface MessageConfig<T extends Message['type']> {
   card: React.ComponentType<{
@@ -85,10 +85,10 @@ const messageConfigs = {
     screen: TransactionPackageScreen,
     final: MessageFinal,
   },
-  wavesAuth: {
-    card: WavesAuthCard,
-    screen: WavesAuthScreen,
-    final: WavesAuthFinal,
+  dccAuth: {
+    card: DccAuthCard,
+    screen: DccAuthScreen,
+    final: DccAuthFinal,
   },
 };
 

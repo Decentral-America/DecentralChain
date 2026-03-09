@@ -1,6 +1,6 @@
 import ObservableStore from 'obs-store';
 import {
-  fromEthereumToWavesAddress,
+  fromEthereumToDccAddress,
   isEthereumAddress,
 } from 'ui/utils/ethereum';
 
@@ -39,7 +39,7 @@ export class AddressBookController {
         (acc, [address, name]) => ({
           ...acc,
           [isEthereumAddress(address)
-            ? fromEthereumToWavesAddress(address)
+            ? fromEthereumToDccAddress(address)
             : address]: name,
         }),
         {},

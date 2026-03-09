@@ -25,6 +25,7 @@ describe('Others', function () {
 
     await Network.switchToAndCheck('Testnet');
 
+    // TODO: Update seed phrase when DCC test node genesis config is set up
     await AccountsHome.importAccount(
       'rich',
       'waves private node seed with waves tokens',
@@ -54,6 +55,7 @@ describe('Others', function () {
 
   it('Send more transactions for signature when different screens are open');
 
+  // NOTE: 'WAVES' here refers to the native protocol asset ticker, not branding
   describe('Send WAVES', function () {
     before(async () => {
       await browser.openKeeperPopup();

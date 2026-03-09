@@ -1058,12 +1058,12 @@ class BackgroundService extends EventEmitter {
 
         return this.messageController.getMessageResult(message.id);
       },
-      wavesAuth: async (
+      dccAuth: async (
         {
           publicKey,
           timestamp = Date.now(),
         }: { publicKey?: string; timestamp?: number } = {},
-        options?: MessageInputOfType<'wavesAuth'>['options'],
+        options?: MessageInputOfType<'dccAuth'>['options'],
       ) => {
         const { selectedAccount } = await this.validatePermission(
           origin,
@@ -1075,7 +1075,7 @@ class BackgroundService extends EventEmitter {
           account: selectedAccount,
           data: { publicKey, timestamp },
           options,
-          type: 'wavesAuth',
+          type: 'dccAuth',
         });
 
         showNotification();

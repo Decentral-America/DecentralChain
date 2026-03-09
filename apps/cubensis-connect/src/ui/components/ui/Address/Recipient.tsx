@@ -8,8 +8,8 @@ import { usePopupSelector } from 'popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  fromEthereumToWavesAddress,
-  fromWavesToEthereumAddress,
+  fromEthereumToDccAddress,
+  fromDccToEthereumAddress,
   isEthereumAddress,
   isValidEthereumAddress,
 } from 'ui/utils/ethereum';
@@ -54,9 +54,9 @@ export function AddressRecipient({
   const [type, mirrorAddress] = useMemo(() => {
     switch (true) {
       case isValidEthereumAddress(address):
-        return ['ethereum', fromEthereumToWavesAddress(address, chainId)];
+        return ['ethereum', fromEthereumToDccAddress(address, chainId)];
       case isAddressString(address):
-        return ['waves', fromWavesToEthereumAddress(address)];
+        return ['dcc', fromDccToEthereumAddress(address)];
       default:
         return [];
     }
@@ -93,7 +93,7 @@ export function AddressRecipient({
             <Tooltip
               className={clsx(styles.mirrorAddress, {
                 [styles.ethereum]: type === 'ethereum',
-                [styles.waves]: type === 'waves',
+                [styles.dcc]: type === 'dcc',
               })}
               content={mirrorAddress}
               placement="auto-end"
@@ -105,7 +105,7 @@ export function AddressRecipient({
                     size={12}
                     className={clsx(styles.recipient, {
                       [styles.ethereum]: type === 'ethereum',
-                      [styles.waves]: type === 'waves',
+                      [styles.dcc]: type === 'dcc',
                     })}
                   />
                 </div>
