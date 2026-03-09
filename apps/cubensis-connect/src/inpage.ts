@@ -32,11 +32,11 @@ declare global {
   interface KeeperApi
     extends Omit<__BackgroundPageApiDirect, 'subscribeToPublicState'> {
     on(event: 'update', cb: (publicState: PublicState) => void): void;
-    initialPromise: Promise<typeof KeeperWallet>;
+    initialPromise: Promise<typeof CubensisConnect>;
   }
 
   // eslint-disable-next-line no-var
-  var KeeperWallet: KeeperApi;
+  var CubensisConnect: KeeperApi;
 }
 
 const proxy = createIpcCallProxy<
@@ -89,7 +89,7 @@ const publicStateUpdates = make<PublicState>(observer => {
   return () => undefined;
 });
 
-globalThis.KeeperWallet = {
+globalThis.CubensisConnect = {
   auth: proxy.auth,
   decryptMessage: proxy.decryptMessage,
   encryptMessage: proxy.encryptMessage,
@@ -112,9 +112,9 @@ globalThis.KeeperWallet = {
   get initialPromise() {
     // eslint-disable-next-line no-console
     console.warn(
-      "You don't need to use initialPromise anymore. If KeeperWallet variable is defined, you can call any api right away",
+      "You don't need to use initialPromise anymore. If CubensisConnect variable is defined, you can call any api right away",
     );
-    return Promise.resolve(globalThis.KeeperWallet);
+    return Promise.resolve(globalThis.CubensisConnect);
   },
   on: (event, cb) => {
     if (event !== 'update') {
@@ -136,12 +136,13 @@ function defineDeprecatedName(name: string) {
     get() {
       // eslint-disable-next-line no-console
       console.warn(
-        `${name} global variable is deprecated and will be removed in future releases, please update to use KeeperWallet instead`,
+        `${name} global variable is deprecated and will be removed in future releases, please update to use CubensisConnect instead`,
       );
-      return KeeperWallet;
+      return CubensisConnect;
     },
   });
 }
 
 defineDeprecatedName('WavesKeeper');
 defineDeprecatedName('Waves');
+defineDeprecatedName('KeeperWallet');

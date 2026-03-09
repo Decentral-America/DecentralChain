@@ -194,7 +194,7 @@
   },
   "forgotPassword": {
     "attention": "Dikkat!",
-    "attentionMessage": "Şifreyi sıfırlamak için Keeper Wallet üzerindeki tüm hesapları silmeniz, yeni bir şifre belirlemeniz, hesaplarınızın her birini yeniden Anahtar Kelimeler kullanarak içe aktarmanız gerekir.",
+    "attentionMessage": "Şifreyi sıfırlamak için Cubensis Connect üzerindeki tüm hesapları silmeniz, yeni bir şifre belirlemeniz, hesaplarınızın her birini yeniden Anahtar Kelimeler kullanarak içe aktarmanız gerekir.",
     "warningMessage": "Anahtar kelimelerinizi veya Özel anahtarınızı henüz kaydetmediyseniz, hesabınıza olan erişiminizi geri alamazsınız.",
     "continueMessage": "Devam etmek için bunu aşağıdaki alana yazın",
     "phrase": "TÜM HESAPLARI SİL",
@@ -298,7 +298,7 @@
     "incorrectCode": "Yanlış kod. Lütfen tekrar deneyin",
     "userDoesNotExist": "Kullanıcı bulunmamaktadır.",
     "incorrectUsernameOrPassword": " Yanlış kullanıcı adı ya da şifre.",
-    "incorrectUsernameOrPasswordLimit": "Kullanıcı adını ya da şifreyi yanlış girme limitini aştınız. Herhangi bir sorununuz varsa, lütfen https://support.waves.exchange/ adresinden destek ile iletişime geçin.",
+    "incorrectUsernameOrPasswordLimit": "Kullanıcı adını ya da şifreyi yanlış girme limitini aştınız. Herhangi bir sorununuz varsa, lütfen https://support.decentralchain.io/ adresinden destek ile iletişime geçin.",
     "alreadyExists": "Bu hesap zaten mevcut"
   },
   "importKeystore": {
@@ -357,7 +357,7 @@
   },
   "info": {
     "joinUs": "Waves Topluluğuna Katılın",
-    "keepUp": "Keeper Wallet, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Keeper Wallet'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
+    "keepUp": "Cubensis Connect, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   },
   "langsSettings": { "confirm": "Onayla", "title": "Dili değiştir" },
   "ledgerErrors": {
@@ -407,7 +407,7 @@
     "create": "Devam et",
     "createPassword": "Şifre oluştur",
     "notMatch": "Şifreler eşleşmiyor",
-    "passinfo": "Girdiğiniz şifre yerel olarak saklanacaktır. Cihazı değiştirirseniz veya şifrenizi kaybederseniz, Keeper Wallet'a hesap ekleme sürecini tekrarlamanız gerekecektir. Waves şifrelerinizi saklamaz.",
+    "passinfo": "Girdiğiniz şifre yerel olarak saklanacaktır. Cihazı değiştirirseniz veya şifrenizi kaybederseniz, Cubensis Connect'a hesap ekleme sürecini tekrarlamanız gerekecektir. Waves şifrelerinizi saklamaz.",
     "privacyPolicy": "Gizlilik Politikası",
     "protect": "Hesabınızı Koruyun",
     "smallPass": "Şifre çok kısa",
@@ -679,7 +679,7 @@
   "wallet": { "lease": "Kiraya verildi" },
   "welcome": {
     "getStarted": "Başlayın",
-    "info": "Keeper Wallet, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur.",
-    "info2": "Keeper Wallet'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
+    "info": "Cubensis Connect, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur.",
+    "info2": "Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   }
 }

@@ -1,4 +1,4 @@
-import { type DataTransactionEntry } from '@waves/ts-types';
+import { type DataTransactionEntry } from '@decentralchain/ts-types';
 import { useTranslation } from 'react-i18next';
 
 import * as styles from './dataEntries.module.css';

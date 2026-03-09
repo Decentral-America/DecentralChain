@@ -1,5 +1,5 @@
-import BigNumber from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
+import BigNumber from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { TxDetailTabs } from 'messages/_common/detailTabs';
 import { Expandable } from 'messages/_common/expandable';

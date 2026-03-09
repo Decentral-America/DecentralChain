@@ -1,4 +1,4 @@
-import type { BigNumber } from '@waves/bignumber';
+import type { BigNumber } from '@decentralchain/bignumber';
 
 export interface AssetDetail {
   description: string;

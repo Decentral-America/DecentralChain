@@ -194,7 +194,7 @@
   },
   "forgotPassword": {
     "attention": "โปรดทราบ!",
-    "attentionMessage": "ในการรีเซ็ตรหัสผ่าน คุณต้องลบบัญชีทั้งหมดออกจาก Keeper Wallet, ตั้งรหัสผ่านใหม่, นำเข้าแต่ละบัญชีของคุณอีกครั้งจาก Seed phrase",
+    "attentionMessage": "ในการรีเซ็ตรหัสผ่าน คุณต้องลบบัญชีทั้งหมดออกจาก Cubensis Connect, ตั้งรหัสผ่านใหม่, นำเข้าแต่ละบัญชีของคุณอีกครั้งจาก Seed phrase",
     "warningMessage": "หากคุณไม่ได้บันทึก Seed phrase หรือ Private key, คุณจะไม่สามารถกู้คืนการเข้าถึงบัญชีของคุณได้",
     "continueMessage": "พิมพ์สิ่งนี้ลงในช่องด้านล่าง เพื่อดำเนินการต่อ",
     "phrase": "ลบบัญชีทั้งหมด",
@@ -298,7 +298,7 @@
     "incorrectCode": "รหัสผิด กรุณาลองอีกครั้ง",
     "userDoesNotExist": "ไม่มีผู้ใช้",
     "incorrectUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-    "incorrectUsernameOrPasswordLimit": "คุณใช้ชื่อผู้ใช้หรือรหัสผ่านที่ไม่ถูกต้อง หากคุณมีปัญหาใดๆ โปรดติดต่อฝ่ายดูแล https://support.waves.exchange/",
+    "incorrectUsernameOrPasswordLimit": "คุณใช้ชื่อผู้ใช้หรือรหัสผ่านที่ไม่ถูกต้อง หากคุณมีปัญหาใดๆ โปรดติดต่อฝ่ายดูแล https://support.decentralchain.io/",
     "alreadyExists": "มีบัญชีนี้อยู่แล้ว"
   },
   "importKeystore": {
@@ -357,7 +357,7 @@
   },
   "info": {
     "joinUs": "เข้าร่วมชุมชน Waves ",
-    "keepUp": "Keeper Wallet เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps การใช้ Wallet Keeper คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
+    "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps การใช้ Wallet Keeper คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   },
   "langsSettings": { "confirm": "ยืนยัน", "title": "เปลี่ยนภาษา" },
   "ledgerErrors": {
@@ -407,7 +407,7 @@
     "create": "ดำเนินการต่อ",
     "createPassword": "สร้างรหัสผ่าน",
     "notMatch": "รหัสผ่านไม่ตรงกัน",
-    "passinfo": "รหัสผ่านที่คุณป้อนจะถูกเก็บไว้ในเครื่อง หากคุณเปลี่ยนอุปกรณ์หรือสูญเสียรหัสผ่านคุณจะต้องทำขั้นตอนการเพิ่มบัญชีไปยัง Keeper Wallet ซ้ำอีกครั้ง เนื่องจาก Waves ไม่เก็บรหัสผ่านของคุณ",
+    "passinfo": "รหัสผ่านที่คุณป้อนจะถูกเก็บไว้ในเครื่อง หากคุณเปลี่ยนอุปกรณ์หรือสูญเสียรหัสผ่านคุณจะต้องทำขั้นตอนการเพิ่มบัญชีไปยัง Cubensis Connect ซ้ำอีกครั้ง เนื่องจาก Waves ไม่เก็บรหัสผ่านของคุณ",
     "privacyPolicy": "นโยบายความเป็นส่วนตัว",
     "protect": "ปกป้องบัญชีของคุณ",
     "smallPass": "รหัสผ่านสั้นเกินไป",
@@ -682,7 +682,7 @@
   "wallet": { "lease": "Leased" },
   "welcome": {
     "getStarted": "เริ่ม",
-    "info": "Keeper Wallet เป็นวิธีที่ปลอดภัยที่สุดในการทำงานร่วมกับเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps",
-    "info2": "การใช้ Keeper Wallet คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
+    "info": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการทำงานร่วมกับเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps",
+    "info2": "การใช้ Cubensis Connect คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   }
 }
