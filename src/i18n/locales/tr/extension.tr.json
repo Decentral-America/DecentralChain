@@ -12,7 +12,7 @@
     "password": "Şifre",
     "passwordError": "Yalnış şifre",
     "privateKeyNoBackupPhrase": "Bu hesap özel anahtarlar kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı yok",
-    "emailNoBackupPhrase": "Bu hesap Waves.Exchange hesabı kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı veya özel anahtar yok",
+    "emailNoBackupPhrase": "Bu hesap DecentralChain Exchange hesabı kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı veya özel anahtar yok",
     "privKey": "Özel anahtar",
     "pubKey": "Genel anahtar",
     "viewInExplorer": "Tarayıcı'da görüntüle"
@@ -218,8 +218,8 @@
     "issueSmartNFT": "Akıllı NFT ihraç et",
     "issueSmartToken": "Akıllı varlık ihraç et",
     "issueToken": "Varlık ihraç et",
-    "lease": "WAVES stake etmeye başlayın",
-    "leaseCancel": "WAVES stake etmeyi iptal et",
+    "lease": "DCC stake etmeye başlayın",
+    "leaseCancel": "DCC stake etmeyi iptal et",
     "leaseIncoming": "Gelen Kiralama",
     "massTransfer": "Toplu Transfer",
     "massTransferReceive": "Gelen Toplu Transfer",
@@ -282,7 +282,7 @@
   },
   "importEmail": {
     "importEmailTitle": "E-posta Hesabını İçe Aktar",
-    "importEmailDesc": "Waves.Exchang üzerinde oluşturulan e-posta hesabınızı bağlayın",
+    "importEmailDesc": "DecentralChain Exchange üzerinde oluşturulan e-posta hesabınızı bağlayın",
     "passwordLabel": "Şifre",
     "passwordRequired": "Şifre girin",
     "loginRequired": "E-posta Hesabını Onaylayın",
@@ -326,9 +326,9 @@
     "accountExistsError": "Bu hesap Keeper'da zaten var",
     "accountIdLabel": "Hesap ID",
     "avatarListLoading": "Hesaplar yükleniyor...",
-    "connectInstructions": "Ledger cihazını bağlayın ve Waves uygulamasını açın",
+    "connectInstructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",
     "continueButton": "Devam et",
-    "couldNotGetUsersError": "\"Ledger\"den hesap içeri aktarılamadı. Lütfen Ledger'in bağlı, kilidinin açık ve Waves uygulamasının açık olduğundan emin olun, ardından <retryButton>Yeniden dene</retryButton> butonuna tıklayın.",
+    "couldNotGetUsersError": "\"Ledger\"den hesap içeri aktarılamadı. Lütfen Ledger'in bağlı, kilidinin açık ve DCC uygulamasının açık olduğundan emin olun, ardından <retryButton>Yeniden dene</retryButton> butonuna tıklayın.",
     "userIdInputNumbersError": "Yalnızca sayılara izin verilmektedir",
     "userIdInputMaxValueError": "Hesap No {{ maxUserId }}’den büyük olamaz",
     "selectAccountInstructions": "Adresinizi seçin",
@@ -356,8 +356,8 @@
     "title": "Anahtar kelime kullanarak içe aktar"
   },
   "info": {
-    "joinUs": "Waves Topluluğuna Katılın",
-    "keepUp": "Cubensis Connect, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
+    "joinUs": "DecentralChain Topluluğuna Katılın",
+    "keepUp": "Cubensis Connect, DecentralChain ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   },
   "langsSettings": { "confirm": "Onayla", "title": "Dili değiştir" },
   "ledgerErrors": {
@@ -365,7 +365,7 @@
     "usedBySomeOtherApp": "Ledger zaten başka bir uygulama tarafından kullanılıyor gibi görünüyor. Ledger kullanabilecek tüm uygulamaları kapatın ve tekrar deneyin."
   },
   "ledgerConnectModal": {
-    "instructions": "Ledger cihazını bağlayın ve Waves uygulamasını açın",
+    "instructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",
     "title": "Bağlanılıyor...",
     "tryAgainButton": "Tekrar deneyin"
   },
@@ -407,7 +407,7 @@
     "create": "Devam et",
     "createPassword": "Şifre oluştur",
     "notMatch": "Şifreler eşleşmiyor",
-    "passinfo": "Girdiğiniz şifre yerel olarak saklanacaktır. Cihazı değiştirirseniz veya şifrenizi kaybederseniz, Cubensis Connect'a hesap ekleme sürecini tekrarlamanız gerekecektir. Waves şifrelerinizi saklamaz.",
+    "passinfo": "Girdiğiniz şifre yerel olarak saklanacaktır. Cihazı değiştirirseniz veya şifrenizi kaybederseniz, Cubensis Connect'a hesap ekleme sürecini tekrarlamanız gerekecektir. DecentralChain şifrelerinizi saklamaz.",
     "privacyPolicy": "Gizlilik Politikası",
     "protect": "Hesabınızı Koruyun",
     "smallPass": "Şifre çok kısa",
@@ -549,7 +549,7 @@
     "nextTransaction": "Sonraki",
     "pendingList": "Bekleyen listesi",
     "reject": "Reddet",
-    "signAccessInfo": "Bu uygulama sizin Waves adresinize erişim sağlayacak ancak Anahtar Kelimelerinize (SEED) ulaşmayacak. Anahtar kelimelerinizi asla bir web sitesine veya yönlendirildiğiniz yere girmeyin.",
+    "signAccessInfo": "Bu uygulama sizin DCC adresinize erişim sağlayacak ancak Anahtar Kelimelerinize (SEED) ulaşmayacak. Anahtar kelimelerinizi asla bir web sitesine veya yönlendirildiğiniz yere girmeyin.",
     "signButton": "İmzala",
     "someError": "Bir aksilik oldu.",
     "switchAccount": "Hesabı değiştir",
@@ -558,7 +558,7 @@
     "transactionSend": "Gönderdiniz",
     "understand": "Anlıyorum",
     "viewTransaction": "İşlemi görüntüle",
-    "wavesAuthConfirmed": "Waves yetkilendirme talebini imzalayın!"
+    "dccAuthConfirmed": "DCC yetkilendirme talebini imzalayın!"
   },
   "swap": {
     "amountToSendError": "SwopFi dApp durumu nedeniyle takas gerçekleştirilemedi. Lütfen tekrar deneyin veya mümkünse kayma toleransını biraz artırın",
@@ -594,7 +594,7 @@
   "transactions": {
     "allowAccess": "Erişime izin ver",
     "allowAccessTitle": "Erişime izin ver",
-    "amountPerTransaction": "Bu miktar, işlem ücretlerindeki her 0.001 Waves'e karşılıktır.",
+    "amountPerTransaction": "Bu miktar, işlem ücretlerindeki her 0.001 DCC'e karşılıktır.",
     "arguments": "Parametreler",
     "assetId": "Varlık ID",
     "assetScriptTransaction": "Varlık komut dosyasını kur",
@@ -628,7 +628,7 @@
     "orderCancel": "Emiri iptal et",
     "orderId": "Emir ID",
     "orderSell": "Sat",
-    "originWarning": "Waves Adresinize erişmek istiyor",
+    "originWarning": "DCC Adresinize erişmek istiyor",
     "packTransactionGroup": "Grup",
     "packTransactions": "İşlemler",
     "packTransactionsFees": "Ücretler",
@@ -653,7 +653,7 @@
     "showAll": "Tümünü göster",
     "showTransactions": "İşlemleri göster",
     "signRequestMatcher": "Eşleştiriciye bir istek imzala",
-    "signRequestWavesAuth": "Waves yetkilendirme talebini imzalayın!",
+    "signRequestDccAuth": "DCC yetkilendirme talebini imzalayın!",
     "updateAssetInfo": "Varlık Bilgilerini Güncelle",
     "issueToken": "Token ihraç et",
     "issueSmartToken": "Akıllı token ihraç et",
@@ -665,9 +665,9 @@
     "hash": "Hash",
     "txTime": "TX zamanı",
     "unknown": "Bilinmeyen",
-    "wavesAuthTimeStamp": "Zaman damgası"
+    "dccAuthTimeStamp": "Zaman damgası"
   },
-  "ui": { "logoTitle": "Waves anahtarlarınızı çevrimiçi güvende tutun" },
+  "ui": { "logoTitle": "DCC anahtarlarınızı çevrimiçi güvende tutun" },
   "notifications": {
     "allowSending": "Mesaj göndermeye izin ver",
     "toListBtn": "Bildirimler",
@@ -679,7 +679,7 @@
   "wallet": { "lease": "Kiraya verildi" },
   "welcome": {
     "getStarted": "Başlayın",
-    "info": "Cubensis Connect, Waves ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur.",
+    "info": "Cubensis Connect, DecentralChain ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur.",
     "info2": "Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   }
 }

@@ -10,7 +10,7 @@ import {
   setCustomMatcher,
   setCustomNode,
 } from '../../../store/actions/network';
-import { getMatcherPublicKey, getNetworkCode } from '../../utils/waves';
+import { getMatcherPublicKey, getNetworkCode } from '../../utils/network';
 import { Button, Copy, ErrorMessage, Input, Modal } from '../ui';
 import * as styles from './styles/settings.styl';
 

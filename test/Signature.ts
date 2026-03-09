@@ -103,6 +103,7 @@ describe('Signature', function () {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
+    // TODO: Update seed phrase when DCC test node genesis config is set up
     await AccountsHome.importAccount(
       'rich',
       'waves private node seed with waves tokens',
@@ -301,6 +302,7 @@ describe('Signature', function () {
       });
       expect(result.network).toMatchObject({
         code: 'T',
+        // TODO: Update test network URLs to DCC endpoints
         server: 'https://nodes-testnet.wavesnodes.com/',
         matcher: 'https://matcher-testnet.waves.exchange/',
       });
@@ -370,6 +372,7 @@ describe('Signature', function () {
       expect(status).toBe('RESOLVED');
       const expectedApproveResult = {
         host: WHITELIST[3],
+        // TODO: Wire-format prefix — must match WavesWalletAuthentication signing prefix in production
         prefix: 'WavesWalletAuthentication',
         address: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
         publicKey: senderPublicKey,

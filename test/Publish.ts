@@ -52,7 +52,7 @@ import {
   TRANSFER,
 } from './utils/transactions';
 
-const WAVES_TOKEN_SCALE = Math.pow(10, 8);
+const DCC_TOKEN_SCALE = Math.pow(10, 8);
 type Account = { address: string; publicKey: string };
 
 describe('Publish', function () {
@@ -96,7 +96,7 @@ describe('Publish', function () {
     };
     await faucet({
       recipient: issuer.address,
-      amount: 10 * WAVES_TOKEN_SCALE,
+      amount: 10 * DCC_TOKEN_SCALE,
       nodeUrl,
       chainId,
     });

@@ -12,11 +12,12 @@ import {
 import { type NetworkController } from './network';
 import { type RemoteConfigController } from './remoteConfig';
 
-const WAVES: AssetDetail = {
+// 'WAVES' is the protocol-level native asset ID — do not rename.
+const NATIVE_ASSET: AssetDetail = {
   quantity: '10000000000000000',
-  ticker: 'WAVES',
+  ticker: 'DCC',
   id: 'WAVES',
-  name: 'Waves',
+  name: 'DecentralChain',
   precision: 8,
   description: '',
   height: 0,
@@ -25,9 +26,10 @@ const WAVES: AssetDetail = {
   timestamp: '2016-04-11T21:00:00.000Z' as any,
   sender: '',
   reissuable: false,
-  displayName: 'WAVES',
+  displayName: 'DCC',
 };
 
+// TODO: Migrate repo from waves-community to dcc-community and update path
 const SUSPICIOUS_LIST_URL =
   'https://raw.githubusercontent.com/Decentral-America/waves-community/master/Scam%20tokens%20according%20to%20the%20opinion%20of%20Waves%20Community.csv';
 const SUSPICIOUS_PERIOD_IN_MINUTES = 60;
@@ -93,16 +95,16 @@ export class AssetInfoController {
     const initState = extensionStorage.getInitState({
       assets: {
         [NetworkName.Mainnet]: {
-          WAVES,
+          WAVES: NATIVE_ASSET,
         },
         [NetworkName.Stagenet]: {
-          WAVES,
+          WAVES: NATIVE_ASSET,
         },
         [NetworkName.Testnet]: {
-          WAVES,
+          WAVES: NATIVE_ASSET,
         },
         [NetworkName.Custom]: {
-          WAVES,
+          WAVES: NATIVE_ASSET,
         },
       },
       swappableAssetIdsByVendor: {},
@@ -175,8 +177,8 @@ export class AssetInfoController {
     }
   }
 
-  getWavesAsset() {
-    return WAVES;
+  getNativeAsset() {
+    return NATIVE_ASSET;
   }
 
   getAssets() {

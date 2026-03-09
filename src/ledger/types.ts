@@ -1,3 +1,4 @@
+// NOTE: 'Waves' in path is the ledger app module name inside @decentralchain/ledger package
 import {
   type ISignData,
   type ISignOrderData,

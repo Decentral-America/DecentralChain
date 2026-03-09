@@ -46,14 +46,6 @@
   word-break: break-all;
 }
 
-.item_wavesDomains .name {
-  margin: -2px;
-  padding: 2px;
-  border-radius: 2px;
-  background: var(--color-basic50);
-  color: var(--color-submit400);
-}
-
 .tooltip {
   position: absolute;
   top: 12px;
@@ -126,10 +118,6 @@
 
 .aliasMark {
   color: #ffaf00;
-}
-
-.wavesDomainsMark {
-  color: var(--color-submit400);
 }
 
 .warningAlias {

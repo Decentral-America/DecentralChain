@@ -9,9 +9,9 @@ import { useTranslation } from 'react-i18next';
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { DateFormat } from '../../ui/components/ui';
 import { type Message, type MessageOfType } from '../types';
-import * as styles from './wavesAuth.module.css';
+import * as styles from './dccAuth.module.css';
 
-export function WavesAuthCard({
+export function DccAuthCard({
   className,
   collapsed,
   message,
@@ -37,7 +37,7 @@ export function WavesAuthCard({
               </div>
 
               <h1 className="headline1">
-                {t('transactions.signRequestWavesAuth')}
+                {t('transactions.signRequestDccAuth')}
               </h1>
             </div>
           </div>
@@ -59,11 +59,11 @@ export function WavesAuthCard({
   );
 }
 
-export function WavesAuthScreen({
+export function DccAuthScreen({
   message,
   selectedAccount,
 }: {
-  message: MessageOfType<'wavesAuth'>;
+  message: MessageOfType<'dccAuth'>;
   selectedAccount: PreferencesAccount;
 }) {
   const { t } = useTranslation();
@@ -76,13 +76,13 @@ export function WavesAuthScreen({
         className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
       >
         <div className="margin-main">
-          <WavesAuthCard message={message} />
+          <DccAuthCard message={message} />
         </div>
 
         <div>
           <div className={transactionsStyles.txRow}>
             <div className="tx-title body3 basic500">
-              {t('transactions.wavesAuthTimeStamp')}
+              {t('transactions.dccAuthTimeStamp')}
             </div>
 
             <div className="fullwidth">
@@ -121,7 +121,7 @@ export function WavesAuthScreen({
   );
 }
 
-export function WavesAuthFinal({
+export function DccAuthFinal({
   isApprove,
   isReject,
   isSend,
@@ -138,8 +138,8 @@ export function WavesAuthFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.wavesAuthConfirmed'),
-        approve: t('sign.wavesAuthConfirmed'),
+        send: t('sign.dccAuthConfirmed'),
+        approve: t('sign.dccAuthConfirmed'),
         reject: t('sign.authRejected'),
       }}
     />

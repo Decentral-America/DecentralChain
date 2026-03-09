@@ -14,7 +14,7 @@
     "password": "Contraseña",
     "passwordError": "Contraseña incorrecta",
     "privateKeyNoBackupPhrase": "Esta cuenta se importó usando una clave privada, por lo que no hay una frase de respaldo para copiar",
-    "emailNoBackupPhrase": "Esta cuenta se importó con la cuenta de Waves.Exchange, por lo que no hay una frase de respaldo ni una clave privada para copiar",
+    "emailNoBackupPhrase": "Esta cuenta se importó con la cuenta de DecentralChain Exchange, por lo que no hay una frase de respaldo ni una clave privada para copiar",
     "privKey": "Clave privada",
     "pubKey": "Clave publica",
     "viewInExplorer": "Ver en el explorador"
@@ -224,8 +224,8 @@
     "issueSmartNFT": "Emitir NFT inteligente",
     "issueSmartToken": "Emitir activo inteligente",
     "issueToken": "Emitir activo",
-    "lease": "Comience WAVES Staking",
-    "leaseCancel": "Cancelar WAVES Staking",
+    "lease": "Comience DCC Staking",
+    "leaseCancel": "Cancelar DCC Staking",
     "leaseIncoming": "Arrendamiento entrante",
     "massTransfer": "Transferencia Masiva",
     "massTransferReceive": "Transferencia masiva entrante",
@@ -288,7 +288,7 @@
   },
   "importEmail": {
     "importEmailTitle": "Importar cuenta de correo electrónico",
-    "importEmailDesc": "Conecte una cuenta de correo electrónico creada en Waves.Exchange",
+    "importEmailDesc": "Conecte una cuenta de correo electrónico creada en DecentralChain Exchange",
     "passwordLabel": "Contraseña",
     "passwordRequired": "Introducir la contraseña",
     "loginRequired": "Confirmar cuenta de correo electrónico",
@@ -332,9 +332,9 @@
     "accountExistsError": "Esta cuenta ya existe en Cubensis Connect",
     "accountIdLabel": "ID de la cuenta",
     "avatarListLoading": "Cargando cuentas...",
-    "connectInstructions": "Conecte el dispositivo Ledger y abra la aplicación Waves",
+    "connectInstructions": "Conecte el dispositivo Ledger y abra la aplicación DCC",
     "continueButton": "Continuar",
-    "couldNotGetUsersError": "No se pudieron obtener más usuarios del libro mayor. Asegúrese de que el libro mayor esté conectado, desbloqueado y que la aplicación Waves esté abierta, luego haga clic en <retryButton>Reintentar</retryButton>",
+    "couldNotGetUsersError": "No se pudieron obtener más usuarios del libro mayor. Asegúrese de que el libro mayor esté conectado, desbloqueado y que la aplicación DCC esté abierta, luego haga clic en <retryButton>Reintentar</retryButton>",
     "userIdInputNumbersError": "Solo se permiten números",
     "userIdInputMaxValueError": "El ID de la cuenta no puede ser mayor que {{ maxUserId }}",
     "selectAccountInstructions": "Elige tu dirección",
@@ -362,8 +362,8 @@
     "title": "Importar usando semilla"
   },
   "info": {
-    "joinUs": "Únase a la comunidad de Waves",
-    "keepUp": "Cubensis Connect es la forma más segura de interactuar con recursos web de terceros con la funcionalidad integrada de Waves o DApps. Con Cubensis Connect, puede firmar transacciones y mantenerse a salvo de sitios maliciosos."
+    "joinUs": "Únase a la comunidad de DecentralChain",
+    "keepUp": "Cubensis Connect es la forma más segura de interactuar con recursos web de terceros con la funcionalidad integrada de DecentralChain o DApps. Con Cubensis Connect, puede firmar transacciones y mantenerse a salvo de sitios maliciosos."
   },
   "langsSettings": {
     "confirm": "Confirmar",
@@ -374,7 +374,7 @@
     "usedBySomeOtherApp": "Parece que el ledger ya está en uso en otra aplicación. Cierre todas las aplicaciones que puedan usar el ledger y vuelva a intentarlo."
   },
   "ledgerConnectModal": {
-    "instructions": "Conecte el dispositivo Ledger y abra la aplicación Waves",
+    "instructions": "Conecte el dispositivo Ledger y abra la aplicación DCC",
     "title": "Conectando...",
     "tryAgainButton": "Intente de nuevo"
   },
@@ -416,7 +416,7 @@
     "create": "Continuar",
     "createPassword": "Crea una contraseña",
     "notMatch": "Las contraseñas no coinciden",
-    "passinfo": "La contraseña que ingresó se almacenará localmente. Si cambia de dispositivo o pierde su contraseña, deberá repetir el proceso de agregar cuentas a Cubensis Connect. Waves no almacena sus contraseñas.",
+    "passinfo": "La contraseña que ingresó se almacenará localmente. Si cambia de dispositivo o pierde su contraseña, deberá repetir el proceso de agregar cuentas a Cubensis Connect. DecentralChain no almacena sus contraseñas.",
     "privacyPolicy": "Política de privacidad",
     "protect": "Proteja su cuenta",
     "smallPass": "La contraseña es demasiado corta",
@@ -563,7 +563,7 @@
     "nextTransaction": "Siguiente",
     "pendingList": "Lista pendiente",
     "reject": "Rechazar",
-    "signAccessInfo": "La aplicación tendrá acceso a su dirección de Waves pero no expondrá su SEED o clave privada. Nunca ingrese su frase secreta (SEED) en ningún sitio web al que sea redirigido.",
+    "signAccessInfo": "La aplicación tendrá acceso a su dirección de DCC pero no expondrá su SEED o clave privada. Nunca ingrese su frase secreta (SEED) en ningún sitio web al que sea redirigido.",
     "signButton": "Firmar",
     "someError": "Algo salió mal",
     "switchAccount": "Cambiar de cuenta",
@@ -572,7 +572,7 @@
     "transactionSend": "Has enviado",
     "understand": "entiendo",
     "viewTransaction": "Ver transacción",
-    "wavesAuthConfirmed": "¡Firma una solicitud de autenticación de Waves!"
+    "dccAuthConfirmed": "¡Firma una solicitud de autenticación de DCC!"
   },
   "swap": {
     "amountToSendError": "No se pudo realizar el intercambio debido al estado de SwopFi dApp. Vuelva a intentarlo o aumente ligeramente la tolerancia al deslizamiento si es posible",
@@ -608,7 +608,7 @@
   "transactions": {
     "allowAccess": "Permitir el acceso",
     "allowAccessTitle": "Permitir el acceso",
-    "amountPerTransaction": "Esta cantidad es equivalente a cada 0.001 Waves en tarifas de transacción",
+    "amountPerTransaction": "Esta cantidad es equivalente a cada 0.001 DCC en tarifas de transacción",
     "arguments": "Argumentos",
     "assetId": "ID de activo",
     "assetScriptTransaction": "Establecer secuencia de comandos de activos",
@@ -642,7 +642,7 @@
     "orderCancel": "Cancelar el pedido",
     "orderId": "Solicitar ID",
     "orderSell": "Vender",
-    "originWarning": "quiere acceder a su dirección de Waves",
+    "originWarning": "quiere acceder a su dirección de DCC",
     "packTransactionGroup": "Grupo",
     "packTransactions": "Transacciones",
     "packTransactionsFees": "Tarifa",
@@ -669,7 +669,7 @@
     "showAll": "Mostrar todo",
     "showTransactions": "Mostrar transacciones",
     "signRequestMatcher": "Firmar una solicitud al Matcher",
-    "signRequestWavesAuth": "Firmar una solicitud de autenticación de Waves",
+    "signRequestDccAuth": "Firmar una solicitud de autenticación de DCC",
     "updateAssetInfo": "Actualizar información de activos",
     "issueToken": "Token de emisión",
     "issueSmartToken": "Emitir token inteligente",
@@ -681,10 +681,10 @@
     "hash": "Hash",
     "txTime": "Hora de TX",
     "unknown": "Desconocido",
-    "wavesAuthTimeStamp": "Marca de tiempo"
+    "dccAuthTimeStamp": "Marca de tiempo"
   },
   "ui": {
-    "logoTitle": "Mantenga seguras sus claves de Waves en línea"
+    "logoTitle": "Mantenga seguras sus claves de DCC en línea"
   },
   "notifications": {
     "allowSending": "Permitir enviar mensajes",
@@ -699,7 +699,7 @@
   },
   "welcome": {
     "getStarted": "Empezar",
-    "info": "Cubensis Connect es la forma más segura de interactuar con recursos web de terceros con la funcionalidad integrada de Waves o DApps.",
+    "info": "Cubensis Connect es la forma más segura de interactuar con recursos web de terceros con la funcionalidad integrada de DecentralChain o DApps.",
     "info2": "Con Cubensis Connect, puede firmar transacciones y mantenerse a salvo de sitios maliciosos."
   }
 }

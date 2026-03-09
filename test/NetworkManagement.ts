@@ -48,6 +48,7 @@ describe('Network management', function () {
         await browser.switchToWindow(tabAccounts);
         await browser.refresh();
 
+        // TODO: Update seed phrase when DCC test node genesis config is set up
         await AccountsHome.importAccount(
           'rich',
           'waves private node seed with waves tokens',

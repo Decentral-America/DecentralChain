@@ -1,4 +1,5 @@
 import { base58Decode } from '@keeper-wallet/waves-crypto';
+// NOTE: 'Waves' in path is the ledger app module name inside @decentralchain/ledger package
 import {
   type ISignData,
   type ISignOrderData,
