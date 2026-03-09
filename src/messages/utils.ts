@@ -9,6 +9,7 @@ import {
 } from '@keeper-wallet/waves-crypto';
 import { BigNumber } from '@decentralchain/bignumber';
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
+// NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
 import { waves } from '@decentralchain/protobuf-serialization';
 import type { InvokeScriptCallArgument } from '@decentralchain/ts-types';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
@@ -69,6 +70,10 @@ export function processAliasOrAddress(recipient: string, chainId: number) {
 }
 
 export function makeAuthBytes(data: { host: string; data: string }) {
+  // Wire-format signing prefix — must remain 'WavesWalletAuthentication' for
+  // backward-compatible signature verification with existing signed messages.
+  // TODO: Introduce a new 'DccWalletAuthentication' prefix once the network
+  // defines its own authentication protocol, and keep this as a legacy fallback.
   return Uint8Array.of(
     ...serializePrimitives.LEN(serializePrimitives.SHORT)(
       serializePrimitives.STRING,
@@ -185,7 +190,7 @@ export function makeRequestBytes(request: {
   );
 }
 
-export function makeWavesAuthBytes(data: {
+export function makeDccAuthBytes(data: {
   publicKey: string;
   timestamp: number;
 }) {

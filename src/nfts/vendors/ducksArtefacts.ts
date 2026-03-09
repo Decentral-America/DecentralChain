@@ -1,3 +1,4 @@
+// NOTE: This vendor integrates with wavesducks.com (third-party NFT project)
 import {
   type CreateParams,
   type FetchInfoParams,
