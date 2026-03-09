@@ -1,4 +1,4 @@
-import { type Money } from '@waves/data-entities';
+import { type Money } from '@decentralchain/data-entities';
 import { type MessageTx } from 'messages/types';
 import { usePopupSelector } from 'popup/store/react';
 

@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { MessageFinal } from 'messages/_common/final';
 import { MessageHeader } from 'messages/_common/header';
