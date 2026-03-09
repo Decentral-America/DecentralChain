@@ -178,6 +178,7 @@ describe('Password management', () => {
 
     before(async function () {
       await browser.switchToWindow(tabAccounts);
+      // TODO: Update seed phrase when DCC test node genesis config is set up
       await AccountsHome.importAccount(
         'rich',
         'waves private node seed with waves tokens',

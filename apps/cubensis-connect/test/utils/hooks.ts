@@ -42,6 +42,7 @@ declare module 'mocha' {
 
 export const mochaHooks = () => ({
   async beforeAll(this: mocha.Context) {
+    // TODO: Update docker hostname when DCC private test node is set up
     this.nodeUrl = 'http://waves-private-node:6869';
 
     Object.defineProperty(global, 'expect', {

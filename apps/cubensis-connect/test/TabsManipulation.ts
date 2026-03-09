@@ -99,6 +99,7 @@ describe('Tabs manipulation', function () {
       await browser.switchToWindow(tabAccounts);
       await browser.refresh();
 
+      // TODO: Update seed phrase when DCC test node genesis config is set up
       await importAccountUntilSuccess(
         'rich',
         'waves private node seed with waves tokens',
@@ -113,6 +114,7 @@ describe('Tabs manipulation', function () {
     });
 
     it('"finish" button closes "accounts" tab', async function () {
+      // TODO: Update seed phrase when DCC test node genesis config is set up
       await importAccountUntilSuccess(
         'poor',
         'waves private node seed without waves tokens',

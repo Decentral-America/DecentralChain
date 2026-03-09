@@ -198,7 +198,7 @@ export function AuthOriginScreen({
               }}
             />
 
-            <div className={styles.waves}>Waves</div>
+            <div className={styles.nativeTicker}>DCC</div>
           </div>
 
           <div className={styles.allowMessagesWrapper}>
