@@ -45,9 +45,9 @@ function moneyFactory(
   };
 }
 
-/** Extracts common transaction defaults (fee) from a Signer transaction. */
+/** Extracts common transaction defaults (fee, senderPublicKey, timestamp) from a Signer transaction. */
 function defaultsFactory(tx: SignerTx): CubensisConnect.ITransactionBase {
-  const { fee } = tx;
+  const { fee, senderPublicKey, timestamp } = tx;
   let feeAssetId: string | null | undefined;
 
   if (tx.type === TRANSACTION_TYPE.TRANSFER || tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
@@ -56,6 +56,8 @@ function defaultsFactory(tx: SignerTx): CubensisConnect.ITransactionBase {
 
   return {
     ...(fee ? { fee: moneyFactory(fee, feeAssetId) } : {}),
+    ...(senderPublicKey ? { senderPublicKey } : {}),
+    ...(timestamp ? { timestamp } : {}),
   };
 }
 
@@ -74,13 +76,12 @@ function issueAdapter(tx: SignerIssueTx): CubensisConnect.TIssueTxData {
 }
 
 function transferAdapter(tx: SignerTransferTx): CubensisConnect.TTransferTxData {
-  const { amount, assetId, fee, feeAssetId, recipient, attachment } = tx;
+  const { amount, assetId, recipient, attachment } = tx;
   const data: CubensisConnect.ITransferTx = {
     ...defaultsFactory(tx),
     amount: moneyFactory(amount, assetId),
     recipient: addressFactory(recipient),
     ...(attachment ? { attachment } : {}),
-    ...(fee ? { fee: moneyFactory(fee, feeAssetId) } : {}),
   };
   return { type: TRANSACTION_TYPE.TRANSFER, data };
 }
@@ -186,13 +187,12 @@ function setAssetScriptAdapter(tx: SignerSetAssetScriptTx): CubensisConnect.TSet
 }
 
 function invokeScriptAdapter(tx: SignerInvokeTx): CubensisConnect.TScriptInvocationTxData {
-  const { dApp, fee, feeAssetId, payment, call } = tx;
+  const { dApp, payment, call } = tx;
   const data: CubensisConnect.IScriptInvocationTx = {
     ...defaultsFactory(tx),
     dApp: addressFactory(dApp),
     payment: (payment ?? []) as CubensisConnect.TMoney[],
     ...(call ? { call: call as CubensisConnect.ICall } : {}),
-    ...(fee ? { fee: moneyFactory(fee, feeAssetId) } : {}),
   };
   return { type: TRANSACTION_TYPE.INVOKE_SCRIPT, data };
 }
