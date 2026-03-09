@@ -1,4 +1,4 @@
-import { type TransactionFromNode } from '@waves/ts-types';
+import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { type AssetDetail } from 'assets/types';
 import { type NetworkName } from 'networks/types';
 

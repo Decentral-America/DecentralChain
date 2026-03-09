@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { type AssetsRecord } from 'assets/types';
 import { deepEqual } from 'fast-equals';
 import { type Nft, NftVendorId } from 'nfts/types';

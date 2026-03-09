@@ -53,7 +53,7 @@ globalThis.fetch = (endpoint: RequestInfo | URL, options?: RequestInit) => {
   ) {
     return fetch(endpoint, {
       ...options,
-      headers: { ...options?.headers, 'X-Application': 'waveskeeper' },
+      headers: { ...options?.headers, 'X-Application': 'cubensisconnect' },
     }).then(async response => {
       if (response.status === 403) {
         const err = await response.json();

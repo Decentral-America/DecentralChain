@@ -1,4 +1,4 @@
-import { type DataTransactionEntryString } from '@waves/ts-types/src/parts';
+import { type DataTransactionEntryString } from '@decentralchain/ts-types/src/parts';
 import invariant from 'tiny-invariant';
 
 import {

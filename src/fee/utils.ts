@@ -1,6 +1,6 @@
-import BigNumber from '@waves/bignumber';
-import { Asset, Money } from '@waves/data-entities';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import BigNumber from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import type { AssetDetail, AssetsRecord } from 'assets/types';
 import type { AssetBalance, BalancesItem } from 'balances/types';
 import type {

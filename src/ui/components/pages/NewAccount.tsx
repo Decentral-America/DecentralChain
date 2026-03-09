@@ -181,7 +181,7 @@ class NewAccountComponent extends PureComponent<Props> {
             <label htmlFor="termsAccepted">
               {t('newAccount.acceptTerms')}{' '}
               <a
-                href="https://keeper-wallet.app/terms-of-use"
+                href="https://decentralchain.io/terms-of-use"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -200,7 +200,7 @@ class NewAccountComponent extends PureComponent<Props> {
             <label htmlFor="conditionsAccepted">
               {t('newAccount.acceptTerms')}{' '}
               <a
-                href="https://keeper-wallet.app/privacy-policy"
+                href="https://decentralchain.io/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
               >

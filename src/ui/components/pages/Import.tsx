@@ -7,7 +7,7 @@ import background from 'ui/services/Background';
 
 import { NETWORK_CONFIG } from '../../../constants';
 import { usePopupSelector } from '../../../popup/store/react';
-import keeperWalletLock from '../../assets/img/keeper-wallet-lock.svg';
+import keeperWalletLock from '../../assets/img/cubensis-connect-lock.svg';
 import { Button } from '../ui';
 import { generateNewWalletItems } from './NewWallet';
 import * as styles from './styles/import.styl';
