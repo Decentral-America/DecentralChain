@@ -1,3 +1,6 @@
+// NOTE: This vendor integrates with wavesducks.com (third-party NFT project).
+// URLs and biographical text referencing "Waves Ducks" / "WavesDucks" are
+// content from that third-party project and not DCC branding.
 import {
   dataEntriesToRecord,
   fetchDataEntries,

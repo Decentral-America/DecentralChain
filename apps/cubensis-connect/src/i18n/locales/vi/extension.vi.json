@@ -12,7 +12,7 @@
     "password": "Mật khẩu",
     "passwordError": "Sai mật khẩu ",
     "privateKeyNoBackupPhrase": "Tài khoản này được đăng nhập bằng private key, nên không có cụm từ sao lưu để sao chép ",
-    "emailNoBackupPhrase": "Tài khoản này được đăng nhập bằng tài khoản Waves.exchange, nên không có cụm từ sao lưu để sao chép",
+    "emailNoBackupPhrase": "Tài khoản này được đăng nhập bằng tài khoản DecentralChain, nên không có cụm từ sao lưu để sao chép",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "Xem trên trình duyệt "
@@ -218,8 +218,8 @@
     "issueSmartNFT": "Phát hành NFT thông minh",
     "issueSmartToken": "Phát hành tài sản thông minh",
     "issueToken": "Phát hành tài sản thông minh",
-    "lease": "Bắt đầu stake Waves",
-    "leaseCancel": "Hủy stake Waves",
+    "lease": "Bắt đầu stake DCC",
+    "leaseCancel": "Hủy stake DCC",
     "leaseIncoming": "Đang cho thuê",
     "massTransfer": "Chuyển hàng loạt",
     "massTransferReceive": "Đang chuyển hàng loạt",
@@ -282,7 +282,7 @@
   },
   "importEmail": {
     "importEmailTitle": "Nhập tài khoản Email",
-    "importEmailDesc": "Kết nối với 1 tài khoản đã tạo trên Waves.Exchange",
+    "importEmailDesc": "Kết nối với 1 tài khoản đã tạo trên DecentralChain Exchange",
     "passwordLabel": "Mật khẩu",
     "passwordRequired": "Nhập mật khẩu",
     "loginRequired": "Xác nhận tài khoản Email",
@@ -326,9 +326,9 @@
     "accountExistsError": "Tài khoản này đã tồn tại trong Keeper",
     "accountIdLabel": "ID tài khoản ",
     "avatarListLoading": "Đang tải tài khoản..",
-    "connectInstructions": "Kết nối với thiết bị Ledger và mở ứng dụng Waves",
+    "connectInstructions": "Kết nối với thiết bị Ledger và mở ứng dụng DCC",
     "continueButton": "Tiếp tục",
-    "couldNotGetUsersError": "Không thể có thêm người dùng từ Ledger. Hãy đảm bảo rằng ledger được kết nối, mở khóa và ứng dụng Waves đang mở, sau đó nhấp vào <retryButton> Thử lại </retryButton>",
+    "couldNotGetUsersError": "Không thể có thêm người dùng từ Ledger. Hãy đảm bảo rằng ledger được kết nối, mở khóa và ứng dụng DCC đang mở, sau đó nhấp vào <retryButton> Thử lại </retryButton>",
     "userIdInputNumbersError": "Chỉ chấp nhận số",
     "userIdInputMaxValueError": "ID tài khoản không được lớn hơn {{ maxUserId }}",
     "selectAccountInstructions": "Chọn địa chỉ của bạn",
@@ -356,8 +356,8 @@
     "title": "Import sử dụng Seed"
   },
   "info": {
-    "joinUs": "Tham gia cộng đồng Waves",
-    "keepUp": "Ví Keeper là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp Waves hoặc DApps. Sử dụng ví Keeper, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
+    "joinUs": "Tham gia cộng đồng DecentralChain",
+    "keepUp": "Ví Keeper là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp DecentralChain hoặc DApps. Sử dụng ví Keeper, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
   },
   "langsSettings": { "confirm": "Xác nhận", "title": "Thay đổi ngôn ngữ" },
   "ledgerErrors": {
@@ -365,7 +365,7 @@
     "usedBySomeOtherApp": "Có vẻ như ledger đã được sử dụng bởi một ứng dụng khác. Đóng tất cả ứng dụng mà bạn có thể sử dụng Ledger và thử lại"
   },
   "ledgerConnectModal": {
-    "instructions": "Kết nối thiết bị Ledger và mở ứng dụng Waves",
+    "instructions": "Kết nối thiết bị Ledger và mở ứng dụng DCC",
     "title": "Đang kết nối",
     "tryAgainButton": "Thử lại "
   },
@@ -407,7 +407,7 @@
     "create": "Tiếp tục",
     "createPassword": "Tạo một mật khẩu",
     "notMatch": "Các mật khẩu không khớp",
-    "passinfo": "Mật khẩu bạn đã nhập sẽ được lưu trữ cục bộ. Nếu bạn thay đổi thiết bị hoặc mất mật khẩu, bạn sẽ phải lặp lại quy trình thêm tài khoản vào Cubensis Connect. Waves không lưu trữ mật khẩu của bạn.",
+    "passinfo": "Mật khẩu bạn đã nhập sẽ được lưu trữ cục bộ. Nếu bạn thay đổi thiết bị hoặc mất mật khẩu, bạn sẽ phải lặp lại quy trình thêm tài khoản vào Cubensis Connect. DecentralChain không lưu trữ mật khẩu của bạn.",
     "privacyPolicy": "Chính sách bảo mật",
     "protect": "Bảo vệ tài khoản của bạn",
     "smallPass": "Mật khâu quá ngắn",
@@ -552,7 +552,7 @@
     "nextTransaction": "Tiếp theo ",
     "pendingList": "Danh sách đang chờ",
     "reject": "Từ chối",
-    "signAccessInfo": "Ứng dụng sẽ phải truy cập vào địa chỉ Waves của bạn nhưng không để lộ ra SEED hay private key của bạn. Không bao giờ nhận cụm từ bí mật của bạn (SEED) trên bất kỳ trang web nào bạn được chuyển hướng đến..",
+    "signAccessInfo": "Ứng dụng sẽ phải truy cập vào địa chỉ DCC của bạn nhưng không để lộ ra SEED hay private key của bạn. Không bao giờ nhận cụm từ bí mật của bạn (SEED) trên bất kỳ trang web nào bạn được chuyển hướng đến..",
     "signButton": "Ký",
     "someError": "Đã sảy ra lỗi",
     "switchAccount": "Đổi tài khoản",
@@ -561,7 +561,7 @@
     "transactionSend": "Bạn đã gửi ",
     "understand": "Tôi hiểu",
     "viewTransaction": "Xem giao dịch",
-    "wavesAuthConfirmed": "Ký một yêu cầu xác thực wave!"
+    "dccAuthConfirmed": "Ký một yêu cầu xác thực DCC!"
   },
   "swap": {
     "amountToSendError": "Không thể thực hiện Swap do trạng thái SwopFi dApp. Vui lòng thử lại hoặc tăng nhẹ khả năng chịu trượt giá nếu có thể",
@@ -597,7 +597,7 @@
   "transactions": {
     "allowAccess": "Cho phép truy cập",
     "allowAccessTitle": "Cho phép truy cập",
-    "amountPerTransaction": "Số tiền này tương đương với mỗi 0,001 Waves phí giao dịch",
+    "amountPerTransaction": "Số tiền này tương đương với mỗi 0,001 DCC phí giao dịch",
     "arguments": "Đối số",
     "assetId": "ID tài sản",
     "assetScriptTransaction": "Đặt tập lệnh tài sản",
@@ -631,7 +631,7 @@
     "orderCancel": "Hủy đặt lệnh",
     "orderId": "ID lệnh đặt",
     "orderSell": "Bán",
-    "originWarning": "Muốn truy cập tài địa chỉ Waves của bạn",
+    "originWarning": "Muốn truy cập tài địa chỉ DCC của bạn",
     "packTransactionGroup": "Nhóm",
     "packTransactions": "Giao dịch",
     "packTransactionsFees": "Phí",
@@ -656,7 +656,7 @@
     "showAll": "Hiển thị tất cả",
     "showTransactions": "Hiển thị giao dịch",
     "signRequestMatcher": "Ký yêu cầu tới Matcher",
-    "signRequestWavesAuth": "Ký yêu cầu xác thực wave",
+    "signRequestDccAuth": "Ký yêu cầu xác thực DCC",
     "updateAssetInfo": "Cập nhật thông tin tài sản",
     "issueToken": "Phát hành token",
     "issueSmartToken": "Phát hành token thông minh",
@@ -668,10 +668,10 @@
     "hash": "Hash",
     "txTime": "Thời gian TX",
     "unknown": "Không rõ",
-    "wavesAuthTimeStamp": "Dấu thời gian"
+    "dccAuthTimeStamp": "Dấu thời gian"
   },
   "ui": {
-    "logoTitle": "Giữ các khóa Waves của bạn an toàn khi trực tuyến"
+    "logoTitle": "Giữ các khóa DCC của bạn an toàn khi trực tuyến"
   },
   "notifications": {
     "allowSending": "Cho phép gửi tin nhắn",
@@ -684,7 +684,7 @@
   "wallet": { "lease": "Đã cho thuê" },
   "welcome": {
     "getStarted": "Bắt đầu",
-    "info": "Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên web của bên thứ ba có chức năng tích hợp Waves hoặc DApps.",
+    "info": "Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên web của bên thứ ba có chức năng tích hợp DecentralChain hoặc DApps.",
     "info2": "Sử dụng Cubensis Connect, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại."
   }
 }

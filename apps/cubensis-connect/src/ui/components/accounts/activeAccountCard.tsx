@@ -22,7 +22,7 @@ const UsdAmount = ({ amount }: { amount: BigNumber | null }) =>
 interface Props {
   account: PreferencesAccount;
   amountInUsd: BigNumber | null;
-  wavesBalance?: Money;
+  dccBalance?: Money;
   onClick: (account: PreferencesAccount) => void;
   onCopy: () => void;
   onOtherAccountsClick: () => void;
@@ -32,7 +32,7 @@ interface Props {
 
 export function ActiveAccountCard({
   account,
-  wavesBalance,
+  dccBalance,
   amountInUsd,
   onClick,
   onCopy,
@@ -58,7 +58,7 @@ export function ActiveAccountCard({
             <UsdAmount amount={amountInUsd} />
           ) : (
             <Balance
-              balance={wavesBalance}
+              balance={dccBalance}
               isShortFormat={false}
               showAsset
               split

@@ -57,7 +57,7 @@ interface Props {
   isSwapInProgress: boolean;
   swapErrorMessage: string | null;
   swappableAssets: AssetDetail[];
-  wavesFeeCoins: number;
+  nativeFeeCoins: number;
   onSwap: (params: OnSwapParams) => void;
 }
 
@@ -113,7 +113,7 @@ export function SwapForm({
   isSwapInProgress,
   swapErrorMessage,
   swappableAssets,
-  wavesFeeCoins,
+  nativeFeeCoins,
   onSwap,
 }: Props) {
   const dispatch = usePopupDispatch();
@@ -130,10 +130,10 @@ export function SwapForm({
   );
 
   const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const wavesFee = new Money(wavesFeeCoins, new Asset(assets.WAVES));
+  const nativeFee = new Money(nativeFeeCoins, new Asset(assets.WAVES));
 
   const feeOptions = useFeeOptions({
-    initialFee: wavesFee,
+    initialFee: nativeFee,
     txType: TRANSACTION_TYPE.INVOKE_SCRIPT,
   });
 
@@ -194,7 +194,7 @@ export function SwapForm({
     .map(({ money }) => money);
 
   if (finalFeeOptions.length === 0) {
-    finalFeeOptions.push(wavesFee);
+    finalFeeOptions.push(nativeFee);
   }
 
   const [swapVendor, setSwapVendor] = useState(SwapVendor.Keeper);
@@ -346,7 +346,7 @@ export function SwapForm({
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sponsoredAssetFee = accountBalance!.assets![feeAssetId]
-    ? convertFeeToAsset(wavesFee, feeAsset)
+    ? convertFeeToAsset(nativeFee, feeAsset)
     : null;
 
   const balanceErrorMessage =
@@ -533,7 +533,7 @@ export function SwapForm({
                 accountBalance!.assets![feeAssetId]
               ) {
                 const fee = convertFeeToAsset(
-                  wavesFee,
+                  nativeFee,
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   new Asset(assets[feeAssetId]!),
                 );

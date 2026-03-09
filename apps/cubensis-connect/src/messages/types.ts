@@ -235,7 +235,7 @@ export type MessageInputTx =
   | MessageInputTxInvokeScript
   | MessageInputTxUpdateAssetInfo;
 
-interface MessageInputWavesAuth {
+interface MessageInputDccAuth {
   publicKey?: string;
   timestamp: number;
 }
@@ -280,8 +280,8 @@ export type MessageInput = {
       title?: string | null;
     }
   | {
-      type: 'wavesAuth';
-      data: MessageInputWavesAuth;
+      type: 'dccAuth';
+      data: MessageInputDccAuth;
     }
 );
 
@@ -494,13 +494,13 @@ export enum MessageStatus {
   UnApproved = 'unapproved',
 }
 
-interface MessageWavesAuth extends MessageInputWavesAuth {
+interface MessageDccAuth extends MessageInputDccAuth {
   address: string;
   hash: string;
   publicKey: string;
 }
 
-interface MessageWavesAuthSigned extends MessageWavesAuth {
+interface MessageDccAuthSigned extends MessageDccAuth {
   signature: string;
 }
 
@@ -586,10 +586,10 @@ export type Message = {
         result?: string[];
       }
     | {
-        type: 'wavesAuth';
-        data: MessageWavesAuth;
+        type: 'dccAuth';
+        data: MessageDccAuth;
         origin?: string;
-        result?: MessageWavesAuthSigned;
+        result?: MessageDccAuthSigned;
       }
   );
 

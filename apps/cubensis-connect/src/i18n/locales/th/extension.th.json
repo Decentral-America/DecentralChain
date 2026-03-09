@@ -12,7 +12,7 @@
     "password": "รหัสผ่าน",
     "passwordError": "รหัสผ่านผิดพลาด",
     "privateKeyNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้ private key จึงไม่มี backup phrase ให้คัดลอก",
-    "emailNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้บัญชี Waves.Exchange จึงไม่มี backup phrase หรือ private key ให้คัดลอก",
+    "emailNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้บัญชี DecentralChain Exchange จึงไม่มี backup phrase หรือ private key ให้คัดลอก",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "ดูใน Explorer"
@@ -218,8 +218,8 @@
     "issueSmartNFT": "สร้าง Smart NFT",
     "issueSmartToken": "สร้างสินทรัพย์อัจฉริยะ",
     "issueToken": "สร้างสินทรัพย์",
-    "lease": "เริ่มการ stake WAVES",
-    "leaseCancel": "ยกเลิกการ stake WAVES",
+    "lease": "เริ่มการ stake DCC",
+    "leaseCancel": "ยกเลิกการ stake DCC",
     "leaseIncoming": "Leasing ที่เข้ามา",
     "massTransfer": "การโอนไปยังหลายกระเป๋าพร้อมกัน",
     "massTransferReceive": "การรับจากการโอนหลายกระเป๋าพร้อมกัน",
@@ -282,7 +282,7 @@
   },
   "importEmail": {
     "importEmailTitle": "นำเข้าบัญชีอีเมล",
-    "importEmailDesc": "เชื่อมต่อบัญชีอีเมลที่สร้างขึ้นบน Waves.Exchange",
+    "importEmailDesc": "เชื่อมต่อบัญชีอีเมลที่สร้างขึ้นบน DecentralChain Exchange",
     "passwordLabel": "รหัสผ่าน",
     "passwordRequired": "ใส่รหัสผ่าน",
     "loginRequired": "ยืนยันบัญชีอีเมล",
@@ -326,9 +326,9 @@
     "accountExistsError": "บัญชีนี้มีอยู่แล้วใน Keeper",
     "accountIdLabel": "หมายเลขบัญชี(ID)",
     "avatarListLoading": "กำลังโหลดบัญชี ...",
-    "connectInstructions": "เชื่อมต่อ Ledger และ Waves app",
+    "connectInstructions": "เชื่อมต่อ Ledger และ DCC app",
     "continueButton": "ดำเนินการต่อ",
-    "couldNotGetUsersError": "ไม่สามารถรับผู้ใช้จาก ledger โปรดตรวจสอบให้แน่ใจว่า ledger เชื่อมต่อ, ปลดล็อคและ Waves app เปิดอยู่, จากนั้นคลิก <retryButton>ลองอีกครั้ง</retryButton>",
+    "couldNotGetUsersError": "ไม่สามารถรับผู้ใช้จาก ledger โปรดตรวจสอบให้แน่ใจว่า ledger เชื่อมต่อ, ปลดล็อคและ DCC app เปิดอยู่, จากนั้นคลิก <retryButton>ลองอีกครั้ง</retryButton>",
     "userIdInputNumbersError": "อนุญาตเฉพาะตัวเลขเท่านั้น",
     "userIdInputMaxValueError": "รหัสบัญชีต้องไม่มากกว่า {{ maxUserId }}",
     "selectAccountInstructions": "เลือกที่อยู่ของคุณ",
@@ -356,8 +356,8 @@
     "title": "นำเข้าโดยใช้ seed"
   },
   "info": {
-    "joinUs": "เข้าร่วมชุมชน Waves ",
-    "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps การใช้ Wallet Keeper คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
+    "joinUs": "เข้าร่วมชุมชน DecentralChain ",
+    "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps การใช้ Wallet Keeper คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   },
   "langsSettings": { "confirm": "ยืนยัน", "title": "เปลี่ยนภาษา" },
   "ledgerErrors": {
@@ -365,7 +365,7 @@
     "usedBySomeOtherApp": "ดูเหมือนว่า ledger ถูกใช้โดยแอปพลิเคชันอื่นแล้ว กรุณาปิดแอปพลิเคชันทั้งหมดที่อาจใช้ ledger แล้วลองอีกครั้ง"
   },
   "ledgerConnectModal": {
-    "instructions": "เชื่อมต่อ ledger และ Waves app",
+    "instructions": "เชื่อมต่อ ledger และ DCC app",
     "title": "กำลังเชื่อมต่อ ...",
     "tryAgainButton": "ลองอีกครั้ง"
   },
@@ -407,7 +407,7 @@
     "create": "ดำเนินการต่อ",
     "createPassword": "สร้างรหัสผ่าน",
     "notMatch": "รหัสผ่านไม่ตรงกัน",
-    "passinfo": "รหัสผ่านที่คุณป้อนจะถูกเก็บไว้ในเครื่อง หากคุณเปลี่ยนอุปกรณ์หรือสูญเสียรหัสผ่านคุณจะต้องทำขั้นตอนการเพิ่มบัญชีไปยัง Cubensis Connect ซ้ำอีกครั้ง เนื่องจาก Waves ไม่เก็บรหัสผ่านของคุณ",
+    "passinfo": "รหัสผ่านที่คุณป้อนจะถูกเก็บไว้ในเครื่อง หากคุณเปลี่ยนอุปกรณ์หรือสูญเสียรหัสผ่านคุณจะต้องทำขั้นตอนการเพิ่มบัญชีไปยัง Cubensis Connect ซ้ำอีกครั้ง เนื่องจาก DecentralChain ไม่เก็บรหัสผ่านของคุณ",
     "privacyPolicy": "นโยบายความเป็นส่วนตัว",
     "protect": "ปกป้องบัญชีของคุณ",
     "smallPass": "รหัสผ่านสั้นเกินไป",
@@ -552,7 +552,7 @@
     "nextTransaction": "ถัดไป",
     "pendingList": "รายการที่รอดำเนินการ",
     "reject": "ปฏิเสธ",
-    "signAccessInfo": "แอปพลิเคชันจะสามารถเข้าถึงที่อยู่ Waves ของคุณได้ แต่จะไม่เปิดเผย SEED หรือ private key, อย่าป้อน secret phrase (SEED) บนเว็บไซต์ใดๆ ที่คุณถูกพาไป",
+    "signAccessInfo": "แอปพลิเคชันจะสามารถเข้าถึงที่อยู่ DCC ของคุณได้ แต่จะไม่เปิดเผย SEED หรือ private key, อย่าป้อน secret phrase (SEED) บนเว็บไซต์ใดๆ ที่คุณถูกพาไป",
     "signButton": "ลงนาม",
     "someError": "บางอย่างผิดปกติ",
     "switchAccount": "เปลี่ยนบัญชี",
@@ -561,7 +561,7 @@
     "transactionSend": "คุณได้ทำการส่งแล้ว",
     "understand": "ฉันเข้าใจ",
     "viewTransaction": "ดูการทำธุรกรรม",
-    "wavesAuthConfirmed": "ลงนามใน Waves Auth Request!"
+    "dccAuthConfirmed": "ลงนามใน DCC Auth Request!"
   },
   "swap": {
     "amountToSendError": "ไม่สามารถ swap ได้เนื่องจากสถานะ Swopfi Dapp โปรดลองอีกครั้งหรือเพิ่ม slippage tolerance เล็กน้อยหากเป็นไปได้",
@@ -597,7 +597,7 @@
   "transactions": {
     "allowAccess": "อนุญาตให้เข้าถึง",
     "allowAccessTitle": "อนุญาตให้เข้าถึง",
-    "amountPerTransaction": "จำนวนนี้เทียบเท่ากับทุก ๆ 0.001 Waves ในค่าธรรมเนียมการทำธุรกรรม",
+    "amountPerTransaction": "จำนวนนี้เทียบเท่ากับทุก ๆ 0.001 DCC ในค่าธรรมเนียมการทำธุรกรรม",
     "arguments": "ข้อโต้แย้ง",
     "assetId": "รหัสสินทรัพย์",
     "assetScriptTransaction": "ตั้งค่าสคริปต์สินทรัพย์",
@@ -631,7 +631,7 @@
     "orderCancel": "ยกเลิกคำสั่งซื้อ",
     "orderId": "รหัสสั่งซื้อ",
     "orderSell": "ขาย",
-    "originWarning": "ต้องการเข้าถึงที่อยู่ Waves ของคุณ",
+    "originWarning": "ต้องการเข้าถึงที่อยู่ DCC ของคุณ",
     "packTransactionGroup": "กลุ่ม",
     "packTransactions": "การทำธุรกรรม",
     "packTransactionsFees": "ค่าธรรมเนียม",
@@ -656,7 +656,7 @@
     "showAll": "แสดงทั้งหมด",
     "showTransactions": "แสดงธุรกรรม",
     "signRequestMatcher": "ลงนามในคำร้องขอไปยัง Matcher",
-    "signRequestWavesAuth": "ลงนามใน waves auth request",
+    "signRequestDccAuth": "ลงนามใน DCC auth request",
     "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์",
     "issueToken": "สร้างโทเค็น",
     "issueSmartToken": "สร้าง Smart Token",
@@ -668,9 +668,9 @@
     "hash": "แฮช",
     "txTime": "เวลา TX",
     "unknown": "ไม่ทราบ",
-    "wavesAuthTimeStamp": "เวลาที่เกิดธุรกรรม"
+    "dccAuthTimeStamp": "เวลาที่เกิดธุรกรรม"
   },
-  "ui": { "logoTitle": "เก็บ  Waves key ของคุณให้ปลอดภัยทางออนไลน์" },
+  "ui": { "logoTitle": "เก็บ  DCC key ของคุณให้ปลอดภัยทางออนไลน์" },
   "notifications": {
     "allowSending": "อนุญาตให้ส่งข้อความ",
     "toListBtn": "การแจ้งเตือน",
@@ -682,7 +682,7 @@
   "wallet": { "lease": "Leased" },
   "welcome": {
     "getStarted": "เริ่ม",
-    "info": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการทำงานร่วมกับเว็บของ third-party ด้วย Waves-integrated functionality หรือ DApps",
+    "info": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการทำงานร่วมกับเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps",
     "info2": "การใช้ Cubensis Connect คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   }
 }

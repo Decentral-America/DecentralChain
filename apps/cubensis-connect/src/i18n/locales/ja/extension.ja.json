@@ -12,7 +12,7 @@
     "password": "パスワード",
     "passwordError": "パスワードが正しくありません。",
     "privateKeyNoBackupPhrase": "このアカウントは秘密鍵を使用してインポートされたため、バックアップフレーズはありません。",
-    "emailNoBackupPhrase": "このアカウントはWaves.Exchangeアカウントを使用してインポートされたため、バックアップフレーズや秘密鍵をコピーする必要はありません。",
+    "emailNoBackupPhrase": "このアカウントはDecentralChain Exchangeアカウントを使用してインポートされたため、バックアップフレーズや秘密鍵をコピーする必要はありません。",
     "privKey": "秘密鍵",
     "pubKey": "公開鍵",
     "viewInExplorer": "エクスプローラーで確認"
@@ -218,8 +218,8 @@
     "issueSmartNFT": "スマートNFTを発行",
     "issueSmartToken": "スマートアセットを発行",
     "issueToken": "アセットを発行",
-    "lease": "WAVESステーキングを開始",
-    "leaseCancel": "WAVESステーキングをキャンセル",
+    "lease": "DCCステーキングを開始",
+    "leaseCancel": "DCCステーキングをキャンセル",
     "leaseIncoming": "次のリース",
     "massTransfer": "一斉送金",
     "massTransferReceive": "次の一斉送金",
@@ -282,7 +282,7 @@
   },
   "importEmail": {
     "importEmailTitle": "メールアカウントをインポート",
-    "importEmailDesc": "Waves.Exchangeで作成したメールアカウントを接続します。",
+    "importEmailDesc": "DecentralChain Exchangeで作成したメールアカウントを接続します。",
     "passwordLabel": "パスワード",
     "passwordRequired": "パスワードを入力",
     "loginRequired": "メールアカウントを確認",
@@ -326,9 +326,9 @@
     "accountExistsError": "このアカウントはすでにKeeperに存在しています",
     "accountIdLabel": "アカウントID",
     "avatarListLoading": "アカウントを読み込み中",
-    "connectInstructions": "Ledgerデバイスを接続し、Wavesアプリを開く",
+    "connectInstructions": "Ledgerデバイスを接続し、DCCアプリを開く",
     "continueButton": "続ける",
-    "couldNotGetUsersError": "Ledgerからユーザーを取得できませんでした。Ledgerを接続してロックを解除し、Wavesアプリが開いていることを確認してから<retryButton>リトライ</retryButton>をクリックしてください。",
+    "couldNotGetUsersError": "Ledgerからユーザーを取得できませんでした。Ledgerを接続してロックを解除し、DCCアプリが開いていることを確認してから<retryButton>リトライ</retryButton>をクリックしてください。",
     "userIdInputNumbersError": "数字のみ利用できます",
     "userIdInputMaxValueError": "アカウントIDは{{ maxUserId }}より大きくできません",
     "selectAccountInstructions": "アドレスを選択",
@@ -356,8 +356,8 @@
     "title": "シードでインポート"
   },
   "info": {
-    "joinUs": "Wavesコミュニティへ参加",
-    "keepUp": "Cubensis ConnectはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
+    "joinUs": "DecentralChainコミュニティへ参加",
+    "keepUp": "Cubensis ConnectはDecentralChainに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   },
   "langsSettings": { "confirm": "確認", "title": "言語切替" },
   "ledgerErrors": {
@@ -365,7 +365,7 @@
     "usedBySomeOtherApp": "Ledgerはすでに他のアプリケーションで使用されているようです。Ledgerを使用する可能性のあるアプリケーションをすべて終了してから、再度試してください。"
   },
   "ledgerConnectModal": {
-    "instructions": "Ledgerデバイスを接続し、Wavesアプリを開く",
+    "instructions": "Ledgerデバイスを接続し、DCCアプリを開く",
     "title": "接続中",
     "tryAgainButton": "再試行"
   },
@@ -407,7 +407,7 @@
     "create": "続ける",
     "createPassword": "パスワードを作成",
     "notMatch": "パスワードが一致しません。",
-    "passinfo": "入力されたパスワードはローカルに保存されます。デバイスを変更したり、パスワードを紛失したりした場合は再度Cubensis Connectにアカウントを追加する必要があります。Wavesはパスワードを保存しません。",
+    "passinfo": "入力されたパスワードはローカルに保存されます。デバイスを変更したり、パスワードを紛失したりした場合は再度Cubensis Connectにアカウントを追加する必要があります。DecentralChainはパスワードを保存しません。",
     "privacyPolicy": "プライバシーポリシー",
     "protect": "アカウントを保護",
     "smallPass": "パスワードが短すぎます。",
@@ -552,7 +552,7 @@
     "nextTransaction": "次",
     "pendingList": "保留中一覧",
     "reject": "却下",
-    "signAccessInfo": "アプリケーションはあなたのWavesアドレスにアクセスできますが、あなたのSEEDや秘密鍵を公開することはありません。リダイレクトされたウェブサイトでシードフレーズ（SEED）を絶対に入力しないでください。",
+    "signAccessInfo": "アプリケーションはあなたのDCCアドレスにアクセスできますが、あなたのSEEDや秘密鍵を公開することはありません。リダイレクトされたウェブサイトでシードフレーズ（SEED）を絶対に入力しないでください。",
     "signButton": "署名",
     "someError": "問題が発生しました。",
     "switchAccount": "アカウント切替",
@@ -561,7 +561,7 @@
     "transactionSend": "送信しました。",
     "understand": "理解しました。",
     "viewTransaction": "トランザクション確認",
-    "wavesAuthConfirmed": "Waves認証リクエストに署名する。"
+    "dccAuthConfirmed": "DCC認証リクエストに署名する。"
   },
   "swap": {
     "amountToSendError": "Swop.Fi dAppの状態によりスワップできませんでした。再試行するか、可能であればスリッページの許容範囲を少し広げてください。",
@@ -597,7 +597,7 @@
   "transactions": {
     "allowAccess": "アクセス許可",
     "allowAccessTitle": "アクセス許可",
-    "amountPerTransaction": "この金額は取引手数料の0.001 WAVESに相当します。",
+    "amountPerTransaction": "この金額は取引手数料の0.001 DCCに相当します。",
     "arguments": "メモ",
     "assetId": "アセットID",
     "assetScriptTransaction": "アセットスクリプトを設定",
@@ -631,7 +631,7 @@
     "orderCancel": "注文をキャンセル",
     "orderId": "注文ID",
     "orderSell": "売却",
-    "originWarning": "Wavesアドレスへのアクセスを希望",
+    "originWarning": "DCCアドレスへのアクセスを希望",
     "packTransactionGroup": "グループ",
     "packTransactions": "トランザクション",
     "packTransactionsFees": "手数料",
@@ -656,7 +656,7 @@
     "showAll": "全て表示",
     "showTransactions": "トランザクションを表示",
     "signRequestMatcher": "マッチャーへのリクエストに署名する",
-    "signRequestWavesAuth": "Waves認証リクエストに署名",
+    "signRequestDccAuth": "DCC認証リクエストに署名",
     "updateAssetInfo": "アセット情報を更新",
     "issueToken": "トークンを発行",
     "issueSmartToken": "スマートトークンを発行",
@@ -668,9 +668,9 @@
     "hash": "ハッシュ",
     "txTime": "TX時間",
     "unknown": "不明",
-    "wavesAuthTimeStamp": "タイムスタンプ"
+    "dccAuthTimeStamp": "タイムスタンプ"
   },
-  "ui": { "logoTitle": "Wavesキーをオンラインで安全に管理" },
+  "ui": { "logoTitle": "DCCキーをオンラインで安全に管理" },
   "notifications": {
     "allowSending": "メッセージの送信を許可",
     "toListBtn": "通知",
@@ -682,7 +682,7 @@
   "wallet": { "lease": "リース中" },
   "welcome": {
     "getStarted": "開始",
-    "info": "Cubensis ConnectはWavesに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。",
+    "info": "Cubensis ConnectはDecentralChainに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。",
     "info2": "Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   }
 }

@@ -11,6 +11,7 @@ import { captureException } from '@sentry/browser';
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { binary } from '@decentralchain/marshall';
+// NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
 import { waves } from '@decentralchain/protobuf-serialization';
 import {
   type LeaseTransactionFromNode,
@@ -28,7 +29,7 @@ import {
   makeOrderBytes,
   makeRequestBytes,
   makeTxBytes,
-  makeWavesAuthBytes,
+  makeDccAuthBytes,
   processAliasOrAddress,
   stringifyOrder,
   stringifyTransaction,
@@ -385,15 +386,15 @@ export class MessageController extends EventEmitter {
           message.status = MessageStatus.Signed;
           break;
         }
-        case 'wavesAuth': {
+        case 'dccAuth': {
           const data = {
             ...message.data,
             publicKey: message.data.publicKey || publicKey,
             timestamp: message.data.timestamp || Date.now(),
           };
 
-          const signature = await wallet.signWavesAuth(
-            makeWavesAuthBytes(data),
+          const signature = await wallet.signDccAuth(
+            makeDccAuthBytes(data),
           );
 
           message.result = {
@@ -1734,6 +1735,9 @@ export class MessageController extends EventEmitter {
           messageInput.data.host ||
           new URL(`https://${messageInput.origin}`).host;
 
+        // Wire-format signing prefix — must remain 'WavesWalletAuthentication'
+        // for backward-compatible auth verification. See messages/utils.ts.
+        // TODO: Introduce 'DccWalletAuthentication' once network defines its own auth protocol.
         const prefix = 'WavesWalletAuthentication';
 
         return {
@@ -1991,7 +1995,7 @@ export class MessageController extends EventEmitter {
           timestamp: Date.now(),
         };
       }
-      case 'wavesAuth': {
+      case 'dccAuth': {
         try {
           const data = {
             ...messageInput.data,
@@ -2004,7 +2008,7 @@ export class MessageController extends EventEmitter {
             data: {
               ...data,
               address: messageInput.account.address,
-              hash: base58Encode(blake2b(makeWavesAuthBytes(data))),
+              hash: base58Encode(blake2b(makeDccAuthBytes(data))),
             },
             ext_uuid: messageInput.options && messageInput.options.uid,
             id: nanoid(),

@@ -89,7 +89,7 @@ export class CurrentAccountController {
     });
   }
 
-  async #fetchWavesBalance(address: string) {
+  async #fetchNativeBalance(address: string) {
     const url = new URL(`addresses/balance/details/${address}`, this.getNode());
 
     const response = await fetch(url, {
@@ -215,9 +215,9 @@ export class CurrentAccountController {
 
     const { address } = activeAccount;
 
-    const [wavesBalance, myAssets, myNfts, aliases, txHistory] =
+    const [nativeBalance, myAssets, myNfts, aliases, txHistory] =
       await Promise.all([
-        this.#fetchWavesBalance(address),
+        this.#fetchNativeBalance(address),
         this.#fetchAssetsBalance(address),
         this.#fetchNfts(address),
         this.#fetchAliases(address),
@@ -280,24 +280,24 @@ export class CurrentAccountController {
       this.nftInfoController.updateNfts(myNfts),
     ]);
 
-    const wavesAssetBalance: AssetBalance = {
+    const nativeAssetBalance: AssetBalance = {
       minSponsoredAssetFee: '100000',
-      sponsorBalance: wavesBalance.available,
-      balance: wavesBalance.available,
+      sponsorBalance: nativeBalance.available,
+      balance: nativeBalance.available,
     };
 
     const balance: BalancesItem = {
       aliases,
-      available: wavesBalance.available,
-      regular: wavesBalance.regular,
-      leasedOut: new BigNumber(wavesBalance.regular)
-        .sub(wavesBalance.available)
+      available: nativeBalance.available,
+      regular: nativeBalance.regular,
+      leasedOut: new BigNumber(nativeBalance.regular)
+        .sub(nativeBalance.available)
         .toString(),
       network: currentNetwork,
       txHistory,
 
       assets: Object.fromEntries([
-        ['WAVES', wavesAssetBalance],
+        ['WAVES', nativeAssetBalance],
         ...myAssets.balances.map(info => {
           const assetBalance: AssetBalance = {
             minSponsoredAssetFee: info.minSponsoredAssetFee,
