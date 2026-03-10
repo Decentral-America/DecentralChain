@@ -1,0 +1,110 @@
+{
+  "name": "@decentralchain/swap-client",
+  "version": "1.0.0",
+  "description": "WebSocket client for DecentralChain token swap aggregation — get the best swap prices across multiple DEX vendors",
+  "type": "module",
+  "packageManager": "npm@11.9.0",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/swap-client.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/swap-client#readme",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/swap-client/issues"
+  },
+  "scripts": {
+    "generate": "pbjs -t static-module -w es6 --es6 --force-long --keep-case --no-convert --no-delimited --no-verify -o src/messages.proto.compiled.js src/messages.proto",
+    "generate:types": "pbts -o src/messages.proto.compiled.d.ts src/messages.proto.compiled.js",
+    "generate:all": "npm run generate && npm run generate:types && npm run fix:imports",
+    "fix:imports": "node -e \"import{readFileSync as r,writeFileSync as w}from'fs';let js=r('src/messages.proto.compiled.js','utf8');js=js.replace('import * as \\$protobuf from \\\"protobufjs/minimal\\\"','import \\$protobuf from \\\"protobufjs/minimal.js\\\"');w('src/messages.proto.compiled.js',js);\"",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check:publint": "publint",
+    "check:exports": "attw --pack . --ignore-rules no-resolution",
+    "check:size": "size-limit",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "prepare": "lefthook install",
+    "prepack": "npm run build",
+    "postversion": "npm publish",
+    "postpublish": "git push"
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.mjs",
+      "limit": "50 kB"
+    }
+  ],
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "swap",
+    "dex",
+    "aggregator",
+    "websocket",
+    "protobuf",
+    "token-swap",
+    "defi",
+    "blockchain",
+    "web3"
+  ],
+  "author": "DecentralChain",
+  "license": "MIT",
+  "dependencies": {
+    "@decentralchain/bignumber": "1.1.1",
+    "long": "^5.3.2",
+    "nanoid": "^5.1.5",
+    "protobufjs": "^7.4.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "2.1.3",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "jsdom": "^28.1.0",
+    "protobufjs-cli": "2.0.0",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  }
+}
