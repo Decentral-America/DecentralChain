@@ -10,7 +10,7 @@ import {
   signBytes,
   utf8Decode,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
+} from '@decentralchain/crypto';
 import {
   AuthenticationDetails,
   type ChallengeName,
@@ -20,20 +20,16 @@ import {
   CognitoUserPool,
   type ICognitoStorage,
 } from 'amazon-cognito-identity-js';
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 
 import { handleResponse } from '../_core/handleResponse';
 import { DEFAULT_IDENTITY_CONFIG } from '../constants';
-import {
-  type ExtensionStorage,
-  type StorageLocalState,
-  type StorageSessionState,
-} from '../storage/storage';
-import { type NetworkController } from './network';
-import { type PreferencesController } from './preferences';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage, StorageLocalState, StorageSessionState } from '../storage/storage';
+import type { NetworkController } from './network';
+import type { PreferencesController } from './preferences';
+import type { RemoteConfigController } from './remoteConfig';
 
 export type CodeDelivery = {
   type: 'SMS' | 'EMAIL' | string;
@@ -89,10 +85,7 @@ export type IdentityConfig = {
 
 type IdentityState = Pick<StorageLocalState, 'cognitoSessions'>;
 
-class IdentityStorage
-  extends ObservableStore<IdentityState>
-  implements ICognitoStorage
-{
+class IdentityStorage extends ObservableStore<IdentityState> implements ICognitoStorage {
   private memo: Record<string, string | null> | undefined = {};
   private password: string | null | undefined;
   private _setSession: (session: Record<string, unknown>) => void;
@@ -218,8 +211,7 @@ export class IdentityController implements IdentityApi {
   private readonly seed = generateRandomSeed();
   private userPool: CognitoUserPool | undefined = undefined;
   private user: CognitoUser | undefined = undefined;
-  private userData: { username: string; password: string } | undefined =
-    undefined;
+  private userData: { username: string; password: string } | undefined = undefined;
   private identity: IdentityUser | undefined = undefined;
   private store;
 
@@ -367,10 +359,7 @@ export class IdentityController implements IdentityApi {
     });
   }
 
-  async confirmSignIn(
-    code: string,
-    mfaType: MFAType = 'SOFTWARE_TOKEN_MFA',
-  ): Promise<void> {
+  async confirmSignIn(code: string, mfaType: MFAType = 'SOFTWARE_TOKEN_MFA'): Promise<void> {
     const { publicKey } = await this.getKeyPair();
 
     return new Promise((resolve, reject) => {
@@ -478,8 +467,7 @@ export class IdentityController implements IdentityApi {
     const currentTime = Math.ceil(Date.now() / 1000);
     const { publicKey } = await this.getKeyPair();
     const isValidTime = payload.exp - currentTime > 10;
-    const isValidPublicKey =
-      payload['custom:encryptionKey'] === base58Encode(publicKey);
+    const isValidPublicKey = payload['custom:encryptionKey'] === base58Encode(publicKey);
 
     if (isValidPublicKey && isValidTime) {
       return Promise.resolve();
@@ -561,10 +549,7 @@ export class IdentityController implements IdentityApi {
 
     const userId = selectedAccount.uuid;
 
-    const [{ privateKey }] = await Promise.all([
-      this.getKeyPair(),
-      this.restoreSession(userId),
-    ]);
+    const [{ privateKey }] = await Promise.all([this.getKeyPair(), this.restoreSession(userId)]);
 
     const signature = await signBytes(privateKey, bytes);
 
@@ -578,10 +563,7 @@ export class IdentityController implements IdentityApi {
     return base58Encode(base64Decode(response.signature));
   }
 
-  private async signByIdentity(body: {
-    payload: string;
-    signature: string;
-  }): Promise<{
+  private async signByIdentity(body: { payload: string; signature: string }): Promise<{
     signature: string;
   }> {
     const token = this.getIdToken().getJwtToken();

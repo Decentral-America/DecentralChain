@@ -1,16 +1,12 @@
-import { base58Decode } from '@keeper-wallet/waves-crypto';
+import { base58Decode } from '@decentralchain/crypto';
 // NOTE: 'Waves' in path is the ledger app module name inside @decentralchain/ledger package
-import {
-  type ISignData,
-  type ISignOrderData,
-  type ISignTxData,
-} from '@decentralchain/ledger/lib/Waves';
+import type { ISignData, ISignOrderData, ISignTxData } from '@decentralchain/ledger/lib/Waves';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetInfoController } from 'controllers/assetInfo';
-import { type MessageTx } from 'messages/types';
-import { type NetworkName } from 'networks/types';
+import type { AssetInfoController } from 'controllers/assetInfo';
+import type { MessageTx } from 'messages/types';
+import type { NetworkName } from 'networks/types';
 
-import { type WalletPrivateDataOfType } from './types';
+import type { WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';
 
 export interface LedgerApi {

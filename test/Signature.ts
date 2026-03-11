@@ -1,19 +1,14 @@
-import {
-  base58Decode,
-  base58Encode,
-  blake2b,
-  verifySignature,
-} from '@keeper-wallet/waves-crypto';
+import { base58Decode, base58Encode, blake2b, verifySignature } from '@decentralchain/crypto';
 import { BigNumber } from '@waves/bignumber';
 import { binary } from '@waves/marshall';
 import Long from 'long';
 
 import { JSONbn } from '../src/_core/jsonBn';
-import {
-  type MessageInputCancelOrder,
-  type MessageInputCustomData,
-  type MessageInputOrder,
-  type MessageInputTx,
+import type {
+  MessageInputCancelOrder,
+  MessageInputCustomData,
+  MessageInputOrder,
+  MessageInputTx,
 } from '../src/messages/types';
 import {
   makeAuthBytes,
@@ -28,6 +23,7 @@ import { AccountsHome } from './helpers/flows/AccountsHome';
 import { App } from './helpers/flows/App';
 import { Network } from './helpers/flows/Network';
 import { HomeScreen } from './helpers/HomeScreen';
+import { MessagesScreen } from './helpers/MessagesScreen';
 import { AssetScriptTransactionScreen } from './helpers/messages/AssetScriptTransactionScreen';
 import { AuthMessageScreen } from './helpers/messages/AuthMessageScreen';
 import { BurnTransactionScreen } from './helpers/messages/BurnTransactionScreen';
@@ -48,7 +44,6 @@ import { SetScriptTransactionScreen } from './helpers/messages/SetScriptTransact
 import { SponsorshipTransactionScreen } from './helpers/messages/SponsorshipTransactionScreen';
 import { TransferTransactionScreen } from './helpers/messages/TransferTransactionScreen';
 import { UpdateAssetInfoTransactionScreen } from './helpers/messages/UpdateAssetInfoTransactionScreen';
-import { MessagesScreen } from './helpers/MessagesScreen';
 import { Windows } from './helpers/Windows';
 import { CUSTOMLIST, WHITELIST } from './utils/constants';
 import { CUSTOM_DATA_V1, CUSTOM_DATA_V2 } from './utils/customData';
@@ -80,14 +75,14 @@ import {
   UPDATE_ASSET_INFO,
 } from './utils/transactions';
 
-describe('Signature', function () {
+describe('Signature', () => {
   let tabOrigin: string;
   let messageWindow: string;
 
   const senderPublicKey = 'AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV';
   const senderPublicKeyBytes = base58Decode(senderPublicKey);
 
-  before(async function () {
+  before(async () => {
     await App.initVault();
     await Network.switchToAndCheck('Testnet');
 
@@ -104,26 +99,19 @@ describe('Signature', function () {
     await browser.refresh();
 
     // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount(
-      'rich',
-      'waves private node seed with waves tokens',
-    );
+    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
 
     tabOrigin = tabAccounts;
     await browser.navigateTo(`https://${WHITELIST[3]}`);
   });
 
-  after(async function () {
+  after(async () => {
     const tabKeeper = (await browser.createWindow('tab')).handle;
     await App.closeBgTabs(tabKeeper);
     await App.resetVault();
   });
 
-  const validateCommonFields = async (
-    address: string,
-    accountName: string,
-    network: string,
-  ) => {
+  const validateCommonFields = async (address: string, accountName: string, network: string) => {
     await expect(CommonTransaction.originAddress).toHaveText(address);
     await expect(CommonTransaction.accountName).toHaveText(accountName);
     await expect(CommonTransaction.originNetwork).toHaveText(network);
@@ -137,7 +125,7 @@ describe('Signature', function () {
   }
 
   function authMessageCall() {
-    KeeperWallet.auth({ data: 'hello' });
+    CubensisConnect.auth({ data: 'hello' });
   }
 
   async function rejectTransaction({ forever = false } = {}) {
@@ -177,25 +165,22 @@ describe('Signature', function () {
     });
   }
 
-  describe('Stale messages removal', function () {
-    async function triggerMessageWindow(
-      func: () => void,
-      options = { waitForNewWindow: true },
-    ) {
+  describe('Stale messages removal', () => {
+    async function triggerMessageWindow(func: () => void, options = { waitForNewWindow: true }) {
       if (options.waitForNewWindow) {
         const { waitForNewWindows } = await Windows.captureNewWindows();
-        await ContentScript.waitForKeeperWallet();
+        await ContentScript.waitForCubensisConnect();
         await browser.execute(func);
         [messageWindow] = await waitForNewWindows(1);
       } else {
-        await ContentScript.waitForKeeperWallet();
+        await ContentScript.waitForCubensisConnect();
         await browser.execute(func);
       }
       await browser.switchToWindow(messageWindow);
       await browser.refresh();
     }
 
-    it('removes messages and closes window when tab is reloaded', async function () {
+    it('removes messages and closes window when tab is reloaded', async () => {
       await triggerMessageWindow(authMessageCall);
       await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
@@ -207,7 +192,7 @@ describe('Signature', function () {
       await browser.switchToWindow(tabOrigin);
     });
 
-    it('removes messages and closes window when the tab is closed', async function () {
+    it('removes messages and closes window when the tab is closed', async () => {
       const newTabOrigin = (await browser.createWindow('tab')).handle;
       await browser.switchToWindow(newTabOrigin);
       await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
@@ -224,7 +209,7 @@ describe('Signature', function () {
       await browser.switchToWindow(tabOrigin);
     });
 
-    it('does not close message window, if there are other messages left', async function () {
+    it('does not close message window, if there are other messages left', async () => {
       await triggerMessageWindow(authMessageCall);
       await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
@@ -245,12 +230,12 @@ describe('Signature', function () {
     });
   });
 
-  describe('Permission request from origin', function () {
+  describe('Permission request from origin', () => {
     async function performPermissionRequest() {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(() => {
-        KeeperWallet.publicState().then(
+        CubensisConnect.publicState().then(
           result => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
@@ -264,7 +249,7 @@ describe('Signature', function () {
       await browser.refresh();
     }
 
-    it('Rejected', async function () {
+    it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
       await performPermissionRequest();
@@ -273,7 +258,7 @@ describe('Signature', function () {
       await validateRejectedResult();
     });
 
-    it('Reject forever', async function () {
+    it('Reject forever', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
       await performPermissionRequest();
@@ -282,7 +267,7 @@ describe('Signature', function () {
       await validateRejectedResult({ data: 'rejected_forever' });
     });
 
-    it('Approved', async function () {
+    it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
       await performPermissionRequest();
@@ -329,12 +314,12 @@ describe('Signature', function () {
     });
   });
 
-  describe('Authentication request from origin', function () {
+  describe('Authentication request from origin', () => {
     async function performAuthRequest() {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(() => {
-        KeeperWallet.auth({ data: 'generated auth data' }).then(
+        CubensisConnect.auth({ data: 'generated auth data' }).then(
           result => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
@@ -348,7 +333,7 @@ describe('Signature', function () {
       await browser.refresh();
     }
 
-    it('Rejected', async function () {
+    it('Rejected', async () => {
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performAuthRequest();
       await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
@@ -362,7 +347,7 @@ describe('Signature', function () {
       });
     });
 
-    it('Approved', async function () {
+    it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performAuthRequest();
@@ -383,25 +368,21 @@ describe('Signature', function () {
       });
       expect(result).toMatchObject(expectedApproveResult);
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes,
-          base58Decode(result.signature),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes, base58Decode(result.signature)),
       ).toBe(true);
     });
   });
 
-  describe('Matcher request', function () {
+  describe('Matcher request', () => {
     const timestamp = Date.now();
     async function performMatcherRequest() {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
 
       await browser.execute(
         // eslint-disable-next-line @typescript-eslint/no-shadow
         (senderPublicKey: string, timestamp: number) => {
-          KeeperWallet.signRequest({
+          CubensisConnect.signRequest({
             data: {
               senderPublicKey,
               timestamp,
@@ -423,7 +404,7 @@ describe('Signature', function () {
       await browser.refresh();
     }
 
-    it('Rejected', async function () {
+    it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performMatcherRequest();
@@ -432,7 +413,7 @@ describe('Signature', function () {
       await validateRejectedResult();
     });
 
-    it('Approved', async function () {
+    it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performMatcherRequest();
@@ -444,22 +425,16 @@ describe('Signature', function () {
         ...senderPublicKeyBytes,
         ...new Uint8Array(Long.fromNumber(timestamp).toBytesBE()),
       );
-      expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes,
-          base58Decode(result),
-        ),
-      ).toBe(true);
+      expect(await verifySignature(senderPublicKeyBytes, bytes, base58Decode(result))).toBe(true);
     });
   });
 
-  describe('Transactions', function () {
+  describe('Transactions', () => {
     async function performSignTransaction(input: MessageInputTx) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute((tx: MessageInputTx) => {
-        KeeperWallet.signTransaction(tx).then(
+        CubensisConnect.signTransaction(tx).then(
           result => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
@@ -477,40 +452,28 @@ describe('Signature', function () {
       return { ...tx, data: { ...tx.data, version } };
     }
 
-    describe('Issue', function () {
-      it('Rejected', async function () {
+    describe('Issue', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(ISSUE);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(IssueTransactionScreen.issueType).toHaveText(
-          'Issue Smart Token',
-        );
+        await expect(IssueTransactionScreen.issueType).toHaveText('Issue Smart Token');
         await expect(IssueTransactionScreen.issueAmount).toHaveText(
           '92233720368.54775807 ShortToken',
         );
-        await expect(IssueTransactionScreen.issueDescription).toHaveText(
-          ISSUE.data.description,
-        );
-        await expect(IssueTransactionScreen.issueDecimals).toHaveText(
-          `${ISSUE.data.precision}`,
-        );
-        await expect(IssueTransactionScreen.issueReissuable).toHaveText(
-          'Reissuable',
-        );
-        await expect(IssueTransactionScreen.contentScript).toHaveText(
-          'base64:BQbtKNoM',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '1.004 WAVES',
-        );
+        await expect(IssueTransactionScreen.issueDescription).toHaveText(ISSUE.data.description);
+        await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
+        await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
+        await expect(IssueTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
+        await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
 
         await rejectTransaction();
         await validateRejectedResult();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(ISSUE);
@@ -550,37 +513,27 @@ describe('Signature', function () {
 
       it('Copying script to the clipboard');
 
-      describe('without script', function () {
-        it('Rejected', async function () {
+      describe('without script', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(ISSUE_WITHOUT_SCRIPT);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(IssueTransactionScreen.issueType).toHaveText(
-            'Issue Token',
-          );
+          await expect(IssueTransactionScreen.issueType).toHaveText('Issue Token');
           await expect(IssueTransactionScreen.issueAmount).toHaveText(
             '92233720368.54775807 ShortToken',
           );
-          await expect(IssueTransactionScreen.issueDescription).toHaveText(
-            ISSUE.data.description,
-          );
-          await expect(IssueTransactionScreen.issueDecimals).toHaveText(
-            `${ISSUE.data.precision}`,
-          );
-          await expect(IssueTransactionScreen.issueReissuable).toHaveText(
-            'Reissuable',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '1.004 WAVES',
-          );
+          await expect(IssueTransactionScreen.issueDescription).toHaveText(ISSUE.data.description);
+          await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
+          await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
 
           await rejectTransaction();
           await validateRejectedResult();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(ISSUE_WITHOUT_SCRIPT);
@@ -620,40 +573,28 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(ISSUE, 2));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(IssueTransactionScreen.issueType).toHaveText(
-            'Issue Smart Token',
-          );
+          await expect(IssueTransactionScreen.issueType).toHaveText('Issue Smart Token');
           await expect(IssueTransactionScreen.issueAmount).toHaveText(
             '92233720368.54775807 ShortToken',
           );
-          await expect(IssueTransactionScreen.issueDescription).toHaveText(
-            ISSUE.data.description,
-          );
-          await expect(IssueTransactionScreen.issueDecimals).toHaveText(
-            `${ISSUE.data.precision}`,
-          );
-          await expect(IssueTransactionScreen.issueReissuable).toHaveText(
-            'Reissuable',
-          );
-          await expect(IssueTransactionScreen.contentScript).toHaveText(
-            'base64:BQbtKNoM',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '1.004 WAVES',
-          );
+          await expect(IssueTransactionScreen.issueDescription).toHaveText(ISSUE.data.description);
+          await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
+          await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
+          await expect(IssueTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
 
           await rejectTransaction();
           await validateRejectedResult();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await performSignTransaction(setTxVersion(ISSUE, 2));
           await approveTransaction();
 
@@ -691,8 +632,8 @@ describe('Signature', function () {
       });
     });
 
-    describe('Transfer', function () {
-      it('Rejected', async function () {
+    describe('Transfer', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(TRANSFER);
@@ -701,19 +642,13 @@ describe('Signature', function () {
         await expect(TransferTransactionScreen.transferAmount).toHaveText(
           '-123456790 NonScriptToken',
         );
-        await expect(TransferTransactionScreen.recipient).toHaveText(
-          '3N5HNJz5otiU...BVv5HhYLdhiD',
-        );
-        await expect(TransferTransactionScreen.attachmentContent).toHaveText(
-          'base64:BQbtKNoM',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(TransferTransactionScreen.recipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
+        await expect(TransferTransactionScreen.attachmentContent).toHaveText('base64:BQbtKNoM');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(TRANSFER);
@@ -756,27 +691,21 @@ describe('Signature', function () {
       it('Attachment');
       it('Transfers to Gateways');
 
-      describe('without attachment', function () {
-        it('Rejected', async function () {
+      describe('without attachment', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(TRANSFER_WITHOUT_ATTACHMENT);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(TransferTransactionScreen.transferAmount).toHaveText(
-            '-1.23456790 WAVES',
-          );
-          await expect(TransferTransactionScreen.recipient).toHaveText(
-            'alias:T:alice',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(TransferTransactionScreen.transferAmount).toHaveText('-1.23456790 WAVES');
+          await expect(TransferTransactionScreen.recipient).toHaveText('alias:T:alice');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(TRANSFER_WITHOUT_ATTACHMENT);
@@ -812,8 +741,8 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(TRANSFER, 2));
@@ -825,17 +754,13 @@ describe('Signature', function () {
           await expect(TransferTransactionScreen.recipient).toHaveText(
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
-          await expect(TransferTransactionScreen.attachmentContent).toHaveText(
-            'base64:BQbtKNoM',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(TransferTransactionScreen.attachmentContent).toHaveText('base64:BQbtKNoM');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(TRANSFER, 2));
@@ -873,8 +798,8 @@ describe('Signature', function () {
       });
     });
 
-    describe('Reissue', function () {
-      it('Rejected', async function () {
+    describe('Reissue', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(REISSUE);
@@ -883,17 +808,13 @@ describe('Signature', function () {
         await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
           '+123456790 NonScriptToken',
         );
-        await expect(ReissueTransactionScreen.reissuableType).toHaveText(
-          'Reissuable',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(REISSUE);
@@ -927,8 +848,8 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('with money-like', function () {
-        it('Rejected', async function () {
+      describe('with money-like', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(REISSUE_WITH_MONEY_LIKE);
@@ -937,17 +858,13 @@ describe('Signature', function () {
           await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
             '+123456790 NonScriptToken',
           );
-          await expect(ReissueTransactionScreen.reissuableType).toHaveText(
-            'Reissuable',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(REISSUE_WITH_MONEY_LIKE);
@@ -982,8 +899,8 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(REISSUE, 2));
@@ -992,17 +909,13 @@ describe('Signature', function () {
           await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
             '+123456790 NonScriptToken',
           );
-          await expect(ReissueTransactionScreen.reissuableType).toHaveText(
-            'Reissuable',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(REISSUE, 2));
@@ -1038,24 +951,20 @@ describe('Signature', function () {
       });
     });
 
-    describe('Burn', function () {
-      it('Rejected', async function () {
+    describe('Burn', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(BURN);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(BurnTransactionScreen.burnAmount).toHaveText(
-          '-123456790 NonScriptToken',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(BURN);
@@ -1088,24 +997,20 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('with quantity instead of amount', function () {
-        it('Rejected', async function () {
+      describe('with quantity instead of amount', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(BURN_WITH_QUANTITY);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(BurnTransactionScreen.burnAmount).toHaveText(
-            '-123456790 NonScriptToken',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(BURN_WITH_QUANTITY);
@@ -1139,29 +1044,23 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(BURN, 2));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(CommonTransaction.originAddress).toHaveText(
-            WHITELIST[3],
-          );
+          await expect(CommonTransaction.originAddress).toHaveText(WHITELIST[3]);
           await expect(CommonTransaction.accountName).toHaveText('rich');
           await expect(CommonTransaction.originNetwork).toHaveText('Testnet');
-          await expect(BurnTransactionScreen.burnAmount).toHaveText(
-            '-123456790 NonScriptToken',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(BURN, 2));
@@ -1196,27 +1095,23 @@ describe('Signature', function () {
       });
     });
 
-    describe('Lease', function () {
-      it('Rejected', async function () {
+    describe('Lease', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(LEASE);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(LeaseTransactionScreen.leaseAmount).toHaveText(
-          '1.23456790 WAVES',
-        );
+        await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
         await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
           '3N5HNJz5otiU...BVv5HhYLdhiD',
         );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(LEASE);
@@ -1249,27 +1144,21 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('with alias', function () {
-        it('Rejected', async function () {
+      describe('with alias', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(LEASE_WITH_ALIAS);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText(
-            '1.23456790 WAVES',
-          );
-          await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
-            'alias:T:bobby',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
+          await expect(LeaseTransactionScreen.leaseRecipient).toHaveText('alias:T:bobby');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(LEASE_WITH_ALIAS);
@@ -1303,27 +1192,23 @@ describe('Signature', function () {
         });
       });
 
-      describe('with money-like', function () {
-        it('Rejected', async function () {
+      describe('with money-like', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(LEASE_WITH_MONEY_LIKE);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText(
-            '1.23456790 WAVES',
-          );
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(LEASE_WITH_MONEY_LIKE);
@@ -1357,27 +1242,23 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(LEASE, 2));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText(
-            '1.23456790 WAVES',
-          );
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(LEASE, 2));
@@ -1412,27 +1293,21 @@ describe('Signature', function () {
       });
     });
 
-    describe('Cancel lease', function () {
-      it('Rejected', async function () {
+    describe('Cancel lease', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(CANCEL_LEASE);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText(
-          '0.00000001 WAVES',
-        );
-        await expect(
-          LeaseCancelTransactionScreen.cancelLeaseRecipient,
-        ).toHaveText('alias:T:merry');
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText('0.00000001 WAVES');
+        await expect(LeaseCancelTransactionScreen.cancelLeaseRecipient).toHaveText('alias:T:merry');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(CANCEL_LEASE);
@@ -1464,27 +1339,25 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(CANCEL_LEASE, 2));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(
-            LeaseCancelTransactionScreen.cancelLeaseAmount,
-          ).toHaveText('0.00000001 WAVES');
-          await expect(
-            LeaseCancelTransactionScreen.cancelLeaseRecipient,
-          ).toHaveText('alias:T:merry');
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
+          await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText(
+            '0.00000001 WAVES',
           );
+          await expect(LeaseCancelTransactionScreen.cancelLeaseRecipient).toHaveText(
+            'alias:T:merry',
+          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(CANCEL_LEASE, 2));
@@ -1518,24 +1391,20 @@ describe('Signature', function () {
       });
     });
 
-    describe('Alias', function () {
-      it('Rejected', async function () {
+    describe('Alias', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(ALIAS);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(CreateAliasTransactionScreen.aliasValue).toHaveText(
-          'test_alias',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(ALIAS);
@@ -1571,24 +1440,20 @@ describe('Signature', function () {
       it('Minimum alias length');
       it('Maximum alias length');
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(ALIAS, 2));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(CreateAliasTransactionScreen.aliasValue).toHaveText(
-            'test_alias',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(ALIAS, 2));
@@ -1611,9 +1476,7 @@ describe('Signature', function () {
           });
           expect(parsedApproveResult).toMatchObject(expectedApproveResult);
           expect(parsedApproveResult.id).toBe(
-            base58Encode(
-              blake2b(Uint8Array.of(bytes[0], ...bytes.subarray(36, -16))),
-            ),
+            base58Encode(blake2b(Uint8Array.of(bytes[0], ...bytes.subarray(36, -16)))),
           );
           expect(
             await verifySignature(
@@ -1626,12 +1489,9 @@ describe('Signature', function () {
       });
     });
 
-    describe('MassTransfer', function () {
-      async function checkMassTransferItems(
-        items: Array<{ recipient: string; amount: string }>,
-      ) {
-        const transferItems =
-          await MassTransferTransactionScreen.getTransferItems();
+    describe('MassTransfer', () => {
+      async function checkMassTransferItems(items: Array<{ recipient: string; amount: string }>) {
+        const transferItems = await MassTransferTransactionScreen.getTransferItems();
         const actualItems = await Promise.all(
           transferItems.map(async transferItem => {
             const [recipient, amount] = await Promise.all([
@@ -1644,15 +1504,15 @@ describe('Signature', function () {
         expect(actualItems).toStrictEqual(items);
       }
 
-      it('Rejected', async function () {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(MASS_TRANSFER);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(
-          MassTransferTransactionScreen.massTransferAmount,
-        ).toHaveText('-2 NonScriptToken');
+        await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
+          '-2 NonScriptToken',
+        );
         await checkMassTransferItems([
           {
             recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
@@ -1663,17 +1523,15 @@ describe('Signature', function () {
             amount: '1',
           },
         ]);
-        await expect(
-          MassTransferTransactionScreen.massTransferAttachment,
-        ).toHaveText('base64:BQbtKNoM');
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.006 WAVES',
+        await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
+          'base64:BQbtKNoM',
         );
+        await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(MASS_TRANSFER);
@@ -1710,16 +1568,16 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('without attachment', function () {
-        it('Rejected', async function () {
+      describe('without attachment', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(MASS_TRANSFER_WITHOUT_ATTACHMENT);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(
-            MassTransferTransactionScreen.massTransferAmount,
-          ).toHaveText('-0.00000123 WAVES');
+          await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
+            '-0.00000123 WAVES',
+          );
           await checkMassTransferItems([
             {
               recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
@@ -1730,14 +1588,12 @@ describe('Signature', function () {
               amount: '0.00000003',
             },
           ]);
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.006 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(MASS_TRANSFER_WITHOUT_ATTACHMENT);
@@ -1774,16 +1630,16 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(MASS_TRANSFER, 1));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(
-            MassTransferTransactionScreen.massTransferAmount,
-          ).toHaveText('-2 NonScriptToken');
+          await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
+            '-2 NonScriptToken',
+          );
           await checkMassTransferItems([
             {
               recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
@@ -1794,17 +1650,15 @@ describe('Signature', function () {
               amount: '1',
             },
           ]);
-          await expect(
-            MassTransferTransactionScreen.massTransferAttachment,
-          ).toHaveText('base64:BQbtKNoM');
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.006 WAVES',
+          await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
+            'base64:BQbtKNoM',
           );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(MASS_TRANSFER, 1));
@@ -1843,7 +1697,7 @@ describe('Signature', function () {
       });
     });
 
-    describe('Data', function () {
+    describe('Data', () => {
       async function checkDataEntries(
         entries: Array<{ key: string; type: string; value: string }>,
       ) {
@@ -1861,7 +1715,7 @@ describe('Signature', function () {
         expect(actualItems).toStrictEqual(entries);
       }
 
-      it('Rejected', async function () {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(DATA);
@@ -1889,14 +1743,12 @@ describe('Signature', function () {
             value: 'base64:BQbtKNoM',
           },
         ]);
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(DATA);
@@ -1946,8 +1798,8 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(DATA, 1));
@@ -1975,14 +1827,12 @@ describe('Signature', function () {
               value: 'base64:BQbtKNoM',
             },
           ]);
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(DATA, 1));
@@ -2034,27 +1884,21 @@ describe('Signature', function () {
       });
     });
 
-    describe('SetScript', function () {
-      it('Rejected', async function () {
+    describe('SetScript', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SET_SCRIPT);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(SetScriptTransactionScreen.scriptTitle).toHaveText(
-          'Set Script',
-        );
-        await expect(SetScriptTransactionScreen.contentScript).toHaveText(
-          'base64:BQbtKNoM',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
+        await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SET_SCRIPT);
@@ -2090,24 +1934,20 @@ describe('Signature', function () {
       it('Set');
       it('Cancel');
 
-      describe('without script', function () {
-        it('Rejected', async function () {
+      describe('without script', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(SET_SCRIPT_WITHOUT_SCRIPT);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(SetScriptTransactionScreen.scriptTitle).toHaveText(
-            'Remove Account Script',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Remove Account Script');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(SET_SCRIPT_WITHOUT_SCRIPT);
@@ -2141,27 +1981,21 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SET_SCRIPT, 1));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(SetScriptTransactionScreen.scriptTitle).toHaveText(
-            'Set Script',
-          );
-          await expect(SetScriptTransactionScreen.contentScript).toHaveText(
-            'base64:BQbtKNoM',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
+          await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SET_SCRIPT, 1));
@@ -2195,27 +2029,21 @@ describe('Signature', function () {
       });
     });
 
-    describe('Sponsorship', function () {
-      it('Rejected', async function () {
+    describe('Sponsorship', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SPONSORSHIP);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(SponsorshipTransactionScreen.title).toHaveText(
-          'Set Sponsorship',
-        );
-        await expect(SponsorshipTransactionScreen.amount).toHaveText(
-          '123456790 NonScriptToken',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
+        await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SPONSORSHIP);
@@ -2248,27 +2076,21 @@ describe('Signature', function () {
         ).toBe(true);
       });
 
-      describe('removal', function () {
-        it('Rejected', async function () {
+      describe('removal', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(SPONSORSHIP_REMOVAL);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(SponsorshipTransactionScreen.title).toHaveText(
-            'Disable Sponsorship',
-          );
-          await expect(SponsorshipTransactionScreen.asset).toHaveText(
-            'NonScriptToken',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(SponsorshipTransactionScreen.title).toHaveText('Disable Sponsorship');
+          await expect(SponsorshipTransactionScreen.asset).toHaveText('NonScriptToken');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(SPONSORSHIP_REMOVAL);
@@ -2302,27 +2124,21 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SPONSORSHIP, 1));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(SponsorshipTransactionScreen.title).toHaveText(
-            'Set Sponsorship',
-          );
-          await expect(SponsorshipTransactionScreen.amount).toHaveText(
-            '123456790 NonScriptToken',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
+          await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SPONSORSHIP, 1));
@@ -2357,27 +2173,21 @@ describe('Signature', function () {
       });
     });
 
-    describe('SetAssetScript', function () {
-      it('Rejected', async function () {
+    describe('SetAssetScript', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SET_ASSET_SCRIPT);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(AssetScriptTransactionScreen.asset).toHaveText(
-          'NonScriptToken',
-        );
-        await expect(AssetScriptTransactionScreen.script).toHaveText(
-          'base64:BQbtKNoM',
-        );
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '1.004 WAVES',
-        );
+        await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
+        await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
+        await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(SET_ASSET_SCRIPT);
@@ -2412,27 +2222,21 @@ describe('Signature', function () {
 
       it('Copying script to the clipboard');
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SET_ASSET_SCRIPT, 1));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(AssetScriptTransactionScreen.asset).toHaveText(
-            'NonScriptToken',
-          );
-          await expect(AssetScriptTransactionScreen.script).toHaveText(
-            'base64:BQbtKNoM',
-          );
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '1.004 WAVES',
-          );
+          await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
+          await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(SET_ASSET_SCRIPT, 1));
@@ -2467,16 +2271,12 @@ describe('Signature', function () {
       });
     });
 
-    describe('InvokeScript', function () {
+    describe('InvokeScript', () => {
       async function checkArgs(args: Array<{ type: string; value: string }>) {
-        const invokeArguments =
-          await InvokeScriptTransactionScreen.getArguments();
+        const invokeArguments = await InvokeScriptTransactionScreen.getArguments();
         const actualArgs = await Promise.all(
           invokeArguments.map(async it => {
-            const [type, value] = await Promise.all([
-              it.type.getText(),
-              it.value.getText(),
-            ]);
+            const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
             return {
               type,
               value,
@@ -2487,28 +2287,21 @@ describe('Signature', function () {
       }
 
       async function checkPayments(payments: string[]) {
-        const invokePayments =
-          await InvokeScriptTransactionScreen.getPayments();
+        const invokePayments = await InvokeScriptTransactionScreen.getPayments();
 
-        const actualPayments = await Promise.all(
-          invokePayments.map(it => it.getText()),
-        );
+        const actualPayments = await Promise.all(invokePayments.map(it => it.getText()));
 
         expect(actualPayments).toStrictEqual(payments);
       }
 
-      it('Rejected', async function () {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(INVOKE_SCRIPT);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText(
-          '2 Payments',
-        );
-        await expect(InvokeScriptTransactionScreen.dApp).toHaveText(
-          '3My2kBJaGfeM...3y8rAgfV2EAx',
-        );
+        await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('2 Payments');
+        await expect(InvokeScriptTransactionScreen.dApp).toHaveText('3My2kBJaGfeM...3y8rAgfV2EAx');
         await expect(InvokeScriptTransactionScreen.function).toHaveText(
           INVOKE_SCRIPT.data.call.function,
         );
@@ -2527,14 +2320,12 @@ describe('Signature', function () {
           },
         ]);
         await checkPayments(['0.00000001 WAVES', '1 NonScriptToken']);
-        await expect(CommonTransaction.transactionFee).toHaveText(
-          '0.005 WAVES',
-        );
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(INVOKE_SCRIPT);
@@ -2575,38 +2366,32 @@ describe('Signature', function () {
       it('Default function call');
       it('Maximum number of arguments');
       it('Arguments of all types (primitives and List of unions)');
-      describe('Payment', function () {
+      describe('Payment', () => {
         it('Zero count');
         it('Maximum count');
         it('Waves / asset / smart asset');
       });
 
-      describe('without call', function () {
-        it('Rejected', async function () {
+      describe('without call', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(INVOKE_SCRIPT_WITHOUT_CALL);
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText(
-            'No Payments',
-          );
+          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('No Payments');
           await expect(InvokeScriptTransactionScreen.dApp).toHaveText(
             `alias:T:${INVOKE_SCRIPT_WITHOUT_CALL.data.dApp}`,
           );
-          await expect(InvokeScriptTransactionScreen.function).toHaveText(
-            'default',
-          );
+          await expect(InvokeScriptTransactionScreen.function).toHaveText('default');
           await checkArgs([]);
           await checkPayments([]);
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(INVOKE_SCRIPT_WITHOUT_CALL);
@@ -2642,16 +2427,14 @@ describe('Signature', function () {
         });
       });
 
-      describe('with legacy serialization', function () {
-        it('Rejected', async function () {
+      describe('with legacy serialization', () => {
+        it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(INVOKE_SCRIPT, 1));
           await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText(
-            '2 Payments',
-          );
+          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('2 Payments');
           await expect(InvokeScriptTransactionScreen.dApp).toHaveText(
             '3My2kBJaGfeM...3y8rAgfV2EAx',
           );
@@ -2673,14 +2456,12 @@ describe('Signature', function () {
             },
           ]);
           await checkPayments(['0.00000001 WAVES', '1 NonScriptToken']);
-          await expect(CommonTransaction.transactionFee).toHaveText(
-            '0.005 WAVES',
-          );
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
 
           await rejectTransaction();
         });
 
-        it('Approved', async function () {
+        it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
           await browser.navigateTo(`https://${WHITELIST[3]}`);
           await performSignTransaction(setTxVersion(INVOKE_SCRIPT, 1));
@@ -2717,8 +2498,8 @@ describe('Signature', function () {
       });
     });
 
-    describe('UpdateAssetInfo', function () {
-      it('Rejected', async function () {
+    describe('UpdateAssetInfo', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(UPDATE_ASSET_INFO);
@@ -2730,17 +2511,15 @@ describe('Signature', function () {
         await expect(UpdateAssetInfoTransactionScreen.assetName).toHaveText(
           UPDATE_ASSET_INFO.data.name,
         );
-        await expect(
-          UpdateAssetInfoTransactionScreen.assetDescription,
-        ).toHaveText(UPDATE_ASSET_INFO.data.description);
-        await expect(UpdateAssetInfoTransactionScreen.fee).toHaveText(
-          '0.001 WAVES',
+        await expect(UpdateAssetInfoTransactionScreen.assetDescription).toHaveText(
+          UPDATE_ASSET_INFO.data.description,
         );
+        await expect(UpdateAssetInfoTransactionScreen.fee).toHaveText('0.001 WAVES');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignTransaction(UPDATE_ASSET_INFO);
@@ -2776,9 +2555,9 @@ describe('Signature', function () {
     });
   });
 
-  describe('Order', function () {
+  describe('Order', () => {
     function createOrder(tx: MessageInputOrder) {
-      KeeperWallet.signOrder(tx).then(
+      CubensisConnect.signOrder(tx).then(
         result => {
           window.result = result;
         },
@@ -2789,7 +2568,7 @@ describe('Signature', function () {
     }
 
     function cancelOrder(tx: MessageInputCancelOrder) {
-      KeeperWallet.signCancelOrder(tx).then(
+      CubensisConnect.signCancelOrder(tx).then(
         result => {
           window.result = result;
         },
@@ -2804,7 +2583,7 @@ describe('Signature', function () {
       tx: MessageInputOrder,
     ) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(script, tx);
       [messageWindow] = await waitForNewWindows(1);
       await browser.switchToWindow(messageWindow);
@@ -2816,14 +2595,14 @@ describe('Signature', function () {
       tx: MessageInputCancelOrder,
     ) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(script, tx);
       [messageWindow] = await waitForNewWindows(1);
       await browser.switchToWindow(messageWindow);
       await browser.refresh();
     }
 
-    describe('Create', function () {
+    describe('Create', () => {
       describe('version 3', () => {
         describe('basic', () => {
           const INPUT = {
@@ -2846,35 +2625,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Sell: WAVES/NonScriptToken',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '-100.00000000 WAVES',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '+0 NonScriptToken',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '0 NonScriptToken',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Sell: WAVES/NonScriptToken');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('-100.00000000 WAVES');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('+0 NonScriptToken');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('0 NonScriptToken');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.03 WAVES',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.03 WAVES');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -2912,7 +2681,7 @@ describe('Signature', function () {
           });
         });
 
-        describe('with price precision conversion', function () {
+        describe('with price precision conversion', () => {
           const INPUT = {
             data: {
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
@@ -2933,35 +2702,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Buy: Tether USD/USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '+1.000000 Tether USD',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '-1.014002 USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '1.014002 USD-Nea272c',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-1.014002 USD-Nea272c');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.014002 USD-Nea272c');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.04077612 TXW-DEVa4f6df',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.04077612 TXW-DEVa4f6df');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -2999,7 +2758,7 @@ describe('Signature', function () {
           });
         });
 
-        describe('with different decimals', function () {
+        describe('with different decimals', () => {
           const INPUT = {
             data: {
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
@@ -3020,35 +2779,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Buy: Tether USD/WAVES',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '+15.637504 Tether USD',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '-18.94335225 WAVES',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '1.21140511 WAVES',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/WAVES');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('+15.637504 Tether USD');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-18.94335225 WAVES');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.21140511 WAVES');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.04077612 TXW-DEVa4f6df',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.04077612 TXW-DEVa4f6df');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -3088,7 +2837,7 @@ describe('Signature', function () {
       });
 
       describe('version 4', () => {
-        describe('with assetDecimals priceMode', function () {
+        describe('with assetDecimals priceMode', () => {
           const INPUT = {
             data: {
               version: 4,
@@ -3111,35 +2860,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Buy: Tether USD/USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '+1.000000 Tether USD',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '-1.014002 USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '1.014002 USD-Nea272c',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-1.014002 USD-Nea272c');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.014002 USD-Nea272c');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.04077612 TXW-DEVa4f6df',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.04077612 TXW-DEVa4f6df');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -3179,7 +2918,7 @@ describe('Signature', function () {
           });
         });
 
-        describe('with fixedDecimals priceMode', function () {
+        describe('with fixedDecimals priceMode', () => {
           const INPUT = {
             data: {
               version: 4,
@@ -3202,35 +2941,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Buy: Tether USD/USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '+1.000000 Tether USD',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '-1.014002 USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '1.014002 USD-Nea272c',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-1.014002 USD-Nea272c');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.014002 USD-Nea272c');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.04077612 TXW-DEVa4f6df',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.04077612 TXW-DEVa4f6df');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -3270,7 +2999,7 @@ describe('Signature', function () {
           });
         });
 
-        describe('without priceMode', function () {
+        describe('without priceMode', () => {
           const INPUT = {
             data: {
               version: 4,
@@ -3292,35 +3021,25 @@ describe('Signature', function () {
             },
           } as const;
 
-          it('Rejected', async function () {
+          it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText(
-              'Buy: Tether USD/USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderAmount).toHaveText(
-              '+1.000000 Tether USD',
-            );
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText(
-              '-1.014002 USD-Nea272c',
-            );
-            await expect(CreateOrderMessage.orderPrice).toHaveText(
-              '1.014002 USD-Nea272c',
-            );
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-1.014002 USD-Nea272c');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.014002 USD-Nea272c');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText(
-              '0.04077612 TXW-DEVa4f6df',
-            );
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.04077612 TXW-DEVa4f6df');
 
             await rejectTransaction();
           });
 
-          it('Approved', async function () {
+          it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
             await browser.navigateTo(`https://${WHITELIST[3]}`);
             await performSignOrder(createOrder, INPUT);
@@ -3362,27 +3081,25 @@ describe('Signature', function () {
       });
     });
 
-    describe('Cancel', function () {
+    describe('Cancel', () => {
       const INPUT = {
         amountAsset: '',
         data: { id: '31EeVpTAronk95TjCHdyaveDukde4nDr9BfFpvhZ3Sap' },
         priceAsset: '',
       };
 
-      it('Rejected', async function () {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCancelOrder(cancelOrder, INPUT);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(CancelOrderTransactionScreen.orderId).toHaveText(
-          INPUT.data.id,
-        );
+        await expect(CancelOrderTransactionScreen.orderId).toHaveText(INPUT.data.id);
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCancelOrder(cancelOrder, INPUT);
@@ -3406,13 +3123,10 @@ describe('Signature', function () {
     });
   });
 
-  describe('Multiple transactions package', function () {
-    async function performSignTransactionPackage(
-      tx: MessageInputTx[],
-      name: string,
-    ) {
+  describe('Multiple transactions package', () => {
+    async function performSignTransactionPackage(tx: MessageInputTx[], name: string) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(
         (
           // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -3420,7 +3134,7 @@ describe('Signature', function () {
           // eslint-disable-next-line @typescript-eslint/no-shadow
           name: string,
         ) => {
-          KeeperWallet.signTransactionPackage(tx, name).then(
+          CubensisConnect.signTransactionPackage(tx, name).then(
             result => {
               window.result = result;
             },
@@ -3439,31 +3153,25 @@ describe('Signature', function () {
 
     async function checkPackageAmounts(amounts: string[]) {
       const actualAmounts = await Promise.all(
-        await PackageTransactionScreen.packageAmounts.map(
-          async it => await it.getText(),
-        ),
+        await PackageTransactionScreen.packageAmounts.map(async it => await it.getText()),
       );
       expect(actualAmounts).toStrictEqual(amounts);
     }
 
     async function checkPackageFees(fees: string[]) {
       const actualFees = await Promise.all(
-        await PackageTransactionScreen.packageFees.map(
-          async it => await it.getText(),
-        ),
+        await PackageTransactionScreen.packageFees.map(async it => await it.getText()),
       );
       expect(actualFees).toStrictEqual(fees);
     }
 
-    it('Rejected', async function () {
+    it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performSignTransactionPackage(PACKAGE, 'Test package');
       await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-      await expect(PackageTransactionScreen.packageCountTitle).toHaveText(
-        '7 Transactions',
-      );
+      await expect(PackageTransactionScreen.packageCountTitle).toHaveText('7 Transactions');
       await checkPackageAmounts([
         '+92233720368.54775807 ShortToken',
         '-123456790 NonScriptToken',
@@ -3483,62 +3191,39 @@ describe('Signature', function () {
 
       await expect(issue.type).toHaveText('Issue Smart Token');
       await expect(issue.amount).toHaveText('92233720368.54775807 ShortToken');
-      await expect(issue.description).toHaveText(
-        'Full description of ShortToken',
-      );
+      await expect(issue.description).toHaveText('Full description of ShortToken');
       await expect(issue.decimals).toHaveText('8');
       await expect(issue.reissuable).toHaveText('Reissuable');
       await expect(issue.contentScript).toHaveText('base64:BQbtKNoM');
       await expect(issue.fee).toHaveText('1.004 WAVES');
 
-      await expect(transfer.transferAmount).toHaveText(
-        '-123456790 NonScriptToken',
-      );
-      await expect(transfer.recipient).toHaveText(
-        '3N5HNJz5otiU...BVv5HhYLdhiD',
-      );
+      await expect(transfer.transferAmount).toHaveText('-123456790 NonScriptToken');
+      await expect(transfer.recipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
       await expect(transfer.attachmentContent).toHaveText('base64:BQbtKNoM');
       await expect(transfer.fee).toHaveText('0.005 WAVES');
 
-      await expect(reissue.reissueAmount).toHaveText(
-        '+123456790 NonScriptToken',
-      );
+      await expect(reissue.reissueAmount).toHaveText('+123456790 NonScriptToken');
       await expect(reissue.fee).toHaveText('0.005 WAVES');
 
       await expect(burn.burnAmount).toHaveText('-123456790 NonScriptToken');
       await expect(burn.fee).toHaveText('0.005 WAVES');
 
       await expect(lease.leaseAmount).toHaveText('1.23456790 WAVES');
-      await expect(lease.leaseRecipient).toHaveText(
-        '3N5HNJz5otiU...BVv5HhYLdhiD',
-      );
+      await expect(lease.leaseRecipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
       await expect(lease.fee).toHaveText('0.005 WAVES');
 
-      await expect(cancelLease.cancelLeaseAmount).toHaveText(
-        '0.00000001 WAVES',
-      );
-      await expect(cancelLease.cancelLeaseRecipient).toHaveText(
-        'alias:T:merry',
-      );
+      await expect(cancelLease.cancelLeaseAmount).toHaveText('0.00000001 WAVES');
+      await expect(cancelLease.cancelLeaseRecipient).toHaveText('alias:T:merry');
       await expect(cancelLease.fee).toHaveText('0.005 WAVES');
 
-      await expect(invokeScript.invokeScriptPaymentsTitle).toHaveText(
-        '2 Payments',
-      );
-      await expect(invokeScript.invokeScriptDApp).toHaveText(
-        '3My2kBJaGfeM...3y8rAgfV2EAx',
-      );
-      await expect(invokeScript.invokeScriptFunction).toHaveText(
-        INVOKE_SCRIPT.data.call.function,
-      );
+      await expect(invokeScript.invokeScriptPaymentsTitle).toHaveText('2 Payments');
+      await expect(invokeScript.invokeScriptDApp).toHaveText('3My2kBJaGfeM...3y8rAgfV2EAx');
+      await expect(invokeScript.invokeScriptFunction).toHaveText(INVOKE_SCRIPT.data.call.function);
 
       const invokeArguments = await invokeScript.getInvokeArguments();
       const actualArgs = await Promise.all(
         invokeArguments.map(async it => {
-          const [type, value] = await Promise.all([
-            it.type.getText(),
-            it.value.getText(),
-          ]);
+          const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
           return { type, value };
         }),
       );
@@ -3558,30 +3243,23 @@ describe('Signature', function () {
       ]);
 
       const actualPayments = await Promise.all(
-        await invokeScript.invokeScriptPaymentItems.map(async it =>
-          it.getText(),
-        ),
+        await invokeScript.invokeScriptPaymentItems.map(async it => it.getText()),
       );
-      expect(actualPayments).toStrictEqual([
-        '0.00000001 WAVES',
-        '1 NonScriptToken',
-      ]);
+      expect(actualPayments).toStrictEqual(['0.00000001 WAVES', '1 NonScriptToken']);
 
       await expect(invokeScript.fee).toHaveText('0.005 WAVES');
 
       await rejectTransaction();
     });
 
-    it('Approved', async function () {
+    it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
       await browser.navigateTo(`https://${WHITELIST[3]}`);
       await performSignTransactionPackage(PACKAGE, 'Test package');
       await approveTransaction();
 
       await browser.switchToWindow(tabOrigin);
-      const approvedResult = await browser.execute<string[], []>(
-        () => window.result,
-      );
+      const approvedResult = await browser.execute<string[], []>(() => window.result);
       expect(approvedResult).toHaveLength(7);
 
       const parsedApproveResult = approvedResult.map<{
@@ -3762,13 +3440,13 @@ describe('Signature', function () {
     });
   });
 
-  describe('Custom data', function () {
+  describe('Custom data', () => {
     async function performSignCustomData(data: MessageInputCustomData) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       // eslint-disable-next-line @typescript-eslint/no-shadow
       await browser.execute((data: MessageInputCustomData) => {
-        KeeperWallet.signCustomData(data).then(
+        CubensisConnect.signCustomData(data).then(
           result => {
             window.result = JSON.stringify(result);
           },
@@ -3782,21 +3460,19 @@ describe('Signature', function () {
       await browser.refresh();
     }
 
-    describe('Version 1', function () {
-      it('Rejected', async function () {
+    describe('Version 1', () => {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCustomData(CUSTOM_DATA_V1);
         await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
 
-        await expect(DataTransactionScreen.contentScript).toHaveText(
-          'base64:AADDEE==',
-        );
+        await expect(DataTransactionScreen.contentScript).toHaveText('base64:AADDEE==');
 
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCustomData(CUSTOM_DATA_V1);
@@ -3820,7 +3496,7 @@ describe('Signature', function () {
       });
     });
 
-    describe('Version 2', function () {
+    describe('Version 2', () => {
       async function checkDataEntries(
         entries: Array<{ key: string; type: string; value: string }>,
       ) {
@@ -3842,7 +3518,7 @@ describe('Signature', function () {
         expect(actualItems).toStrictEqual(entries);
       }
 
-      it('Rejected', async function () {
+      it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCustomData(CUSTOM_DATA_V2);
@@ -3874,7 +3550,7 @@ describe('Signature', function () {
         await rejectTransaction();
       });
 
-      it('Approved', async function () {
+      it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
         await browser.navigateTo(`https://${WHITELIST[3]}`);
         await performSignCustomData(CUSTOM_DATA_V2);

@@ -5,10 +5,10 @@ import {
   createPublicKey,
   signBytes,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
-import { type NetworkName } from 'networks/types';
+} from '@decentralchain/crypto';
+import type { NetworkName } from 'networks/types';
 
-import { type WalletPrivateDataOfType } from './types';
+import type { WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';
 
 export class SeedWallet extends Wallet<WalletPrivateDataOfType<'seed'>> {
@@ -26,10 +26,8 @@ export class SeedWallet extends Wallet<WalletPrivateDataOfType<'seed'>> {
     const privateKey = await createPrivateKey(utf8Encode(seed));
     const publicKey = await createPublicKey(privateKey);
 
-    return new this({
-      address: base58Encode(
-        createAddress(publicKey, networkCode.charCodeAt(0)),
-      ),
+    return new SeedWallet({
+      address: base58Encode(createAddress(publicKey, networkCode.charCodeAt(0))),
       name,
       network,
       networkCode,

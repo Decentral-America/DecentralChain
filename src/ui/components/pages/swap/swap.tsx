@@ -1,11 +1,11 @@
-import { isNotNull } from '_core/isNotNull';
-import { useSign } from '_core/signContext';
-import { base58Encode } from '@keeper-wallet/waves-crypto';
-import { captureException } from '@sentry/browser';
 import BigNumber from '@decentralchain/bignumber';
+import { base58Encode } from '@decentralchain/crypto';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetDetail } from 'assets/types';
+import { captureException } from '@sentry/browser';
+import { isNotNull } from '_core/isNotNull';
+import { useSign } from '_core/signContext';
+import type { AssetDetail } from 'assets/types';
 import { useAssetIdByTicker } from 'assets/utils';
 import { convertFeeToAsset } from 'fee/utils';
 import { computeTxHash, makeTxBytes } from 'messages/utils';
@@ -37,8 +37,7 @@ export function Swap() {
 
   const initialFromAssetId = searchParams.get('fromAssetId') || usdnAssetId;
 
-  const initialToAssetId =
-    initialFromAssetId === usdnAssetId ? 'WAVES' : usdnAssetId;
+  const initialToAssetId = initialFromAssetId === usdnAssetId ? 'WAVES' : usdnAssetId;
 
   const [isSwapInProgress, setIsSwapInProgress] = useState(false);
   const [swapErrorMessage, setSwapErrorMessage] = useState<string | null>(null);
@@ -51,13 +50,11 @@ export function Swap() {
     let cancelled = false;
     let timeout: number;
 
-    background
-      .getExtraFee(selectedAccount.address, currentNetwork)
-      .then(feeExtra => {
-        if (!cancelled) {
-          setNativeFeeCoins(minimumFee + feeExtra);
-        }
-      });
+    background.getExtraFee(selectedAccount.address, currentNetwork).then(feeExtra => {
+      if (!cancelled) {
+        setNativeFeeCoins(minimumFee + feeExtra);
+      }
+    });
 
     return () => {
       cancelled = true;
@@ -69,17 +66,12 @@ export function Swap() {
   }, [currentNetwork, minimumFee, selectedAccount?.address]);
 
   const assets = usePopupSelector(state => state.assets);
-  const swappableAssetIdsByVendor = usePopupSelector(
-    state => state.swappableAssetIdsByVendor,
-  );
+  const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
 
   const swappableAssetEntries = useMemo(
     () =>
       Array.from(new Set(Object.values(swappableAssetIdsByVendor).flat())).map(
-        (assetId): [string, AssetDetail | undefined] => [
-          assetId,
-          assets[assetId],
-        ],
+        (assetId): [string, AssetDetail | undefined] => [assetId, assets[assetId]],
       ),
     [assets, swappableAssetIdsByVendor],
   );
@@ -88,9 +80,7 @@ export function Swap() {
     Background.updateAssets(swappableAssetEntries.map(([assetId]) => assetId));
   }, [swappableAssetEntries, dispatch]);
 
-  const accountBalance = usePopupSelector(
-    state => state.balances[selectedAccount.address],
-  );
+  const accountBalance = usePopupSelector(state => state.balances[selectedAccount.address]);
 
   const [performedSwapData, setPerformedSwapData] = useState<{
     fromMoney: Money;
@@ -169,9 +159,7 @@ export function Swap() {
         });
       } catch (err) {
         const errMessage = String(
-          err && typeof err === 'object' && 'message' in err
-            ? err.message
-            : err,
+          err && typeof err === 'object' && 'message' in err ? err.message : err,
         );
 
         let capture = true;
@@ -184,18 +172,10 @@ export function Swap() {
         if (match) {
           let [, msg] = match;
 
-          if (
-            /something\s+went\s+wrong\s+while\s+working\s+with\s+amountToSend/i.test(
-              msg,
-            )
-          ) {
+          if (/something\s+went\s+wrong\s+while\s+working\s+with\s+amountToSend/i.test(msg)) {
             msg = t('swap.amountToSendError');
             capture = false;
-          } else if (
-            /only\s+swap\s+of\s+[\d.]+\s+or\s+more\s+tokens\s+is\s+allowed/i.test(
-              msg,
-            )
-          ) {
+          } else if (/only\s+swap\s+of\s+[\d.]+\s+or\s+more\s+tokens\s+is\s+allowed/i.test(msg)) {
             capture = false;
           }
 
@@ -229,9 +209,7 @@ export function Swap() {
               eventType: 'swapAssets',
               actualAmountCoins: actualAmountCoins.toFixed(),
               expectedAmountCoins: expectedAmountCoins.toFixed(),
-              expectedActualDelta: expectedAmountCoins
-                .sub(actualAmountCoins)
-                .toFixed(),
+              expectedActualDelta: expectedAmountCoins.sub(actualAmountCoins).toFixed(),
               fromAssetId,
               fromCoins: fromCoins.toFixed(),
               minReceivedCoins: minReceivedCoins.toFixed(),
@@ -243,9 +221,7 @@ export function Swap() {
             });
           }
 
-          match = msg.match(
-            /amount to receive is lower than expected one (\d+)/i,
-          );
+          match = msg.match(/amount to receive is lower than expected one (\d+)/i);
 
           if (match) {
             capture = false;

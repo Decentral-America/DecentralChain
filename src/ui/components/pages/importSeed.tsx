@@ -5,7 +5,7 @@ import {
   createPrivateKey,
   createPublicKey,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
+} from '@decentralchain/crypto';
 import clsx from 'clsx';
 import { isAddressString, isBase58 } from 'messages/utils';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
@@ -16,16 +16,7 @@ import { newAccountSelect, selectAccount } from 'store/actions/localState';
 import invariant from 'tiny-invariant';
 
 import { NETWORK_CONFIG } from '../../../constants';
-import {
-  Button,
-  ErrorMessage,
-  Input,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '../ui';
+import { Button, ErrorMessage, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from '../ui';
 import { InlineButton } from '../ui/buttons/inlineButton';
 import * as styles from './importSeed.module.css';
 
@@ -56,18 +47,14 @@ export function ImportSeed() {
   const [encodedSeedValue, setEncodedSeedValue] = useState<string>('');
   const [privateKeyValue, setPrivateKeyValue] = useState<string>('');
 
-  const networkCode =
-    customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
+  const networkCode = customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
   const [address, setAddress] = useState<string>();
 
-  const [validationError, setValidationError] = useState<
-    React.ReactElement | string
-  >();
+  const [validationError, setValidationError] = useState<React.ReactElement | string>();
 
   const findExistingAccount = useCallback(
-    (addr: string | undefined) =>
-      addr && accounts.find(acc => acc.address === addr),
+    (addr: string | undefined) => addr && accounts.find(acc => acc.address === addr),
     [accounts],
   );
 
@@ -133,10 +120,7 @@ export function ImportSeed() {
         setValidationError(t('importSeed.seedIsAddressError'));
       } else if (/^alias:/i.test(trimmedSeedValue)) {
         setValidationError(t('importSeed.seedIsAliasError'));
-      } else if (
-        isBase58(trimmedSeedValue) &&
-        base58Decode(trimmedSeedValue).length === 32
-      ) {
+      } else if (isBase58(trimmedSeedValue) && base58Decode(trimmedSeedValue).length === 32) {
         setValidationError(
           <Trans
             i18nKey="importSeed.seedIsPublicOrPrivateKeyError"
@@ -161,9 +145,7 @@ export function ImportSeed() {
         createPrivateKey(utf8Encode(trimmedSeedValue))
           .then(createPublicKey)
           .then(publicKey => {
-            const newAddress = base58Encode(
-              createAddress(publicKey, networkCode.charCodeAt(0)),
-            );
+            const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
             validateAddress(newAddress);
             setAddress(newAddress);
@@ -192,9 +174,7 @@ export function ImportSeed() {
           createPrivateKey(base58Decode(unprefixed))
             .then(createPublicKey)
             .then(publicKey => {
-              const newAddress = base58Encode(
-                createAddress(publicKey, networkCode.charCodeAt(0)),
-              );
+              const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
               validateAddress(newAddress);
               setAddress(newAddress);
@@ -224,17 +204,13 @@ export function ImportSeed() {
         const privateKey = base58Decode(privateKeyValue);
 
         if (privateKey.length !== 32) {
-          setValidationError(
-            t('importSeed.invalidPrivateKeyLengthError', { length: 32 }),
-          );
+          setValidationError(t('importSeed.invalidPrivateKeyLengthError', { length: 32 }));
         } else {
           setIsAddressInProgress(true);
 
           createPublicKey(privateKey)
             .then(publicKey => {
-              const newAddress = base58Encode(
-                createAddress(publicKey, networkCode.charCodeAt(0)),
-              );
+              const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
               validateAddress(newAddress);
               setAddress(newAddress);
@@ -391,14 +367,9 @@ export function ImportSeed() {
           {validationError}
         </ErrorMessage>
 
-        <div className="tag1 basic500 input-title">
-          {t('importSeed.address')}
-        </div>
+        <div className="tag1 basic500 input-title">{t('importSeed.address')}</div>
 
-        <div
-          className={clsx(styles.greyLine, 'grey-line')}
-          data-testid="address"
-        >
+        <div className={clsx(styles.greyLine, 'grey-line')} data-testid="address">
           {address}
         </div>
 

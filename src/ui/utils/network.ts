@@ -1,4 +1,4 @@
-import { base58Decode } from '@keeper-wallet/waves-crypto';
+import { base58Decode } from '@decentralchain/crypto';
 import { NetworkName } from 'networks/types';
 
 function getNetworkCodeByAddress(address: string): string {

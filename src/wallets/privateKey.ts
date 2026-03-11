@@ -4,15 +4,13 @@ import {
   createAddress,
   createPublicKey,
   signBytes,
-} from '@keeper-wallet/waves-crypto';
-import { type NetworkName } from 'networks/types';
+} from '@decentralchain/crypto';
+import type { NetworkName } from 'networks/types';
 
-import { type WalletPrivateDataOfType } from './types';
+import type { WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';
 
-export class PrivateKeyWallet extends Wallet<
-  WalletPrivateDataOfType<'privateKey'>
-> {
+export class PrivateKeyWallet extends Wallet<WalletPrivateDataOfType<'privateKey'>> {
   static async create({
     name,
     network,
@@ -26,10 +24,8 @@ export class PrivateKeyWallet extends Wallet<
   }) {
     const publicKey = await createPublicKey(base58Decode(privateKey));
 
-    return new this({
-      address: base58Encode(
-        createAddress(publicKey, networkCode.charCodeAt(0)),
-      ),
+    return new PrivateKeyWallet({
+      address: base58Encode(createAddress(publicKey, networkCode.charCodeAt(0))),
       name,
       network,
       networkCode,
