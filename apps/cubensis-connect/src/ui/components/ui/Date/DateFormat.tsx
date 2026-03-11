@@ -17,22 +17,13 @@ interface Props {
   showRaw?: boolean | undefined;
 }
 
-export const DateFormat = ({
-  className,
-  date,
-  options = DEFAULT_OPTIONS,
-  showRaw,
-}: Props) => {
+export const DateFormat = ({ className, date, options = DEFAULT_OPTIONS, showRaw }: Props) => {
   const { i18n } = useTranslation();
 
   return (
     <div className={className}>
-      <span>
-        {new Intl.DateTimeFormat(i18n.language, options).format(new Date(date))}
-      </span>{' '}
-      {showRaw ? (
-        <span className={styles.timestamp}>{date.toString()}</span>
-      ) : undefined}
+      <span>{new Intl.DateTimeFormat(i18n.language, options).format(new Date(date))}</span>{' '}
+      {showRaw ? <span className={styles.timestamp}>{date.toString()}</span> : undefined}
     </div>
   );
 };

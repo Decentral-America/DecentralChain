@@ -20,8 +20,5 @@ export function useAssetIdByTicker(network: NetworkName, ticker: string) {
     return assetIds[network]?.[ticker];
   }
 
-  return (
-    Object.keys(tickers).find(id => tickers[id] === ticker) ||
-    assetIds[network]?.[ticker]
-  );
+  return Object.keys(tickers).find(id => tickers[id] === ticker) || assetIds[network]?.[ticker];
 }

@@ -1,5 +1,5 @@
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,13 +10,9 @@ import { ExportPasswordModal } from './passwordModal';
 export function ExportAccounts() {
   const navigate = useNavigate();
 
-  const allNetworksAccounts = usePopupSelector(
-    state => state.allNetworksAccounts,
-  );
+  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
 
-  const [accountsToExport, setAccountsToExport] = useState<
-    PreferencesAccount[] | null
-  >(null);
+  const [accountsToExport, setAccountsToExport] = useState<PreferencesAccount[] | null>(null);
 
   return (
     <>

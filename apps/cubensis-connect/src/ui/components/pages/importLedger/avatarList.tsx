@@ -20,7 +20,8 @@ export function LedgerAvatarList({ selectedId, size, users, onSelect }: Props) {
   return (
     <div className={styles.root}>
       {users.map(item => (
-        <div
+        <button
+          type="button"
           key={item.address}
           className={clsx(styles.item, {
             [styles.itemSelected]: selectedId === item.id,
@@ -38,7 +39,7 @@ export function LedgerAvatarList({ selectedId, size, users, onSelect }: Props) {
               </div>
             )}
           </Tooltip>
-        </div>
+        </button>
       ))}
     </div>
   );

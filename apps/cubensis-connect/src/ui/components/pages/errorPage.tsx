@@ -2,11 +2,7 @@ import { captureException } from '@sentry/browser';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  isRouteErrorResponse,
-  useNavigate,
-  useRouteError,
-} from 'react-router-dom';
+import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
 import { deleteNotifications } from 'store/actions/notifications';
 import { ExportButton, ResetButton } from 'ui/components/ui';
 import Background from 'ui/services/Background';
@@ -38,11 +34,9 @@ export function ErrorPage() {
       }
 
       if (activePopup.notify) {
-        dispatch(deleteNotifications(activePopup.notify.map(x => x.id))).then(
-          () => {
-            navigate('/messages-and-notifications');
-          },
-        );
+        dispatch(deleteNotifications(activePopup.notify.map(x => x.id))).then(() => {
+          navigate('/messages-and-notifications');
+        });
       }
     }
   }, [activePopup, dispatch, error, navigate]);
@@ -58,8 +52,8 @@ export function ErrorPage() {
           {isRouteErrorResponse(error)
             ? error.statusText
             : error instanceof Error
-            ? error.message
-            : String(error)}
+              ? error.message
+              : String(error)}
         </p>
       </div>
 

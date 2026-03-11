@@ -1,15 +1,11 @@
 import clsx from 'clsx';
-import {
-  isAddressString,
-  isAlias,
-  processAliasOrAddress,
-} from 'messages/utils';
+import { isAddressString, isAlias, processAliasOrAddress } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  fromEthereumToDccAddress,
   fromDccToEthereumAddress,
+  fromEthereumToDccAddress,
   isEthereumAddress,
   isValidEthereumAddress,
 } from 'ui/utils/ethereum';
@@ -20,7 +16,7 @@ import { AddModal } from './AddModal';
 import * as styles from './Recipient.module.css';
 import { AddressTooltip } from './Tooltip';
 
-export interface Props {
+interface Props {
   className?: string | undefined;
   recipient: string;
   chainId: number;
@@ -45,9 +41,7 @@ export function AddressRecipient({
   const accounts = usePopupSelector(state => state.accounts);
   const addresses = usePopupSelector(state => state.addresses);
 
-  const name =
-    accounts.find(account => account.address === address)?.name ||
-    addresses[address];
+  const name = accounts.find(account => account.address === address)?.name || addresses[address];
 
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -77,9 +71,7 @@ export function AddressRecipient({
             address
           )}
         </p>
-        {showAliasWarning && (
-          <p className={styles.warningAlias}>{t('address.warningAlias')}</p>
-        )}
+        {showAliasWarning && <p className={styles.warningAlias}>{t('address.warningAlias')}</p>}
       </div>
     );
   }
@@ -119,18 +111,15 @@ export function AddressRecipient({
             <Tooltip content={address} placement="top-end">
               {props => (
                 <div className={styles.recipientWrapper} {...props}>
-                  <Ellipsis
-                    text={address}
-                    size={12}
-                    className={styles.recipient}
-                  />
+                  <Ellipsis text={address} size={12} className={styles.recipient} />
                 </div>
               )}
             </Tooltip>
           )}
           <Tooltip content={t('address.addTooltip')} placement="top-end">
             {props => (
-              <i
+              <button
+                type="button"
                 className={styles.addButtonIcon}
                 onClick={() => {
                   setShowAddModal(true);
@@ -141,11 +130,7 @@ export function AddressRecipient({
           </Tooltip>
         </div>
       )}
-      <AddModal
-        showModal={showAddModal}
-        setShowModal={setShowAddModal}
-        address={address}
-      />
+      <AddModal showModal={showAddModal} setShowModal={setShowAddModal} address={address} />
     </>
   );
 }

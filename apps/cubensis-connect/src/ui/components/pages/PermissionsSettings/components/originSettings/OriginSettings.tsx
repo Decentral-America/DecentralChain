@@ -56,15 +56,13 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
 
   static getDerivedStateFromProps(props: Readonly<IProps>, state: IState): Partial<IState> {
     const { interval = null, totalAmount } = OriginSettingsComponent._getAutoSign(props.autoSign);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const selected = CONFIG.list.find(({ value }) => value === interval)!.id;
+    const selected = CONFIG.list.find(({ value }) => value === interval)?.id;
     const notifications = props.permissions.find(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       item => item && (item as any).type === 'useNotifications',
     ) as TNotification;
     const inWhiteList = (props.origins[props.originName] || []).includes('whiteList');
     let canShowNotifications = state.canShowNotifications;
-    const canUse = notifications && notifications.canUse;
+    const canUse = notifications?.canUse;
     const canUseNotify = canUse || (canUse == null && inWhiteList);
 
     if (canShowNotifications === null && canUseNotify) {
@@ -79,7 +77,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
       ...state,
       interval,
       totalAmount,
-      selected,
+      selected: selected ?? null,
       notifications,
       canShowNotifications,
     };
@@ -105,10 +103,10 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
   };
 
   selectTimeHandler = (time: number | string) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { value } = CONFIG.list.find(({ id }) => id === time)!;
-    this.setState({ interval: value, edited: true, selected: time });
-    this.calculateCanSave(value, this.state.totalAmount, this.state.canShowNotifications);
+    const found = CONFIG.list.find(({ id }) => id === time);
+    if (!found) return;
+    this.setState({ interval: found.value, edited: true, selected: time });
+    this.calculateCanSave(found.value, this.state.totalAmount, this.state.canShowNotifications);
   };
 
   calculateCanSave(
@@ -152,8 +150,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
 
   saveHandler = () => {
     const { interval, totalAmount, canShowNotifications } = this.state;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const res = new BigNumber(totalAmount!).mul(10 ** 8);
+    const res = new BigNumber(totalAmount ?? '0').mul(10 ** 8);
     const data = {
       interval: Number(interval) || null,
       totalAmount: res.isNaN() ? null : res.toFixed(0),
@@ -205,8 +202,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
             className={styles.selectTime}
             fill
             selectList={timeList}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selected={this.state.selected!}
+            selected={this.state.selected ?? ''}
             description={t('permissionSettings.modal.time')}
             onSelectItem={this.selectTimeHandler}
           />
@@ -229,8 +225,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
             <Input
               id="checkbox_noshow"
               type="checkbox"
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              checked={this.state.canShowNotifications!}
+              checked={this.state.canShowNotifications ?? false}
               onChange={this.canUseNotificationsHandler}
             />
             <label htmlFor="checkbox_noshow">{t('notifications.allowSending')}</label>

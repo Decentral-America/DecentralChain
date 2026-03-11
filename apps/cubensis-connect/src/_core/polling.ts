@@ -1,7 +1,4 @@
-export function startPolling(
-  ms: number,
-  fn: (abortSignal: AbortSignal) => Promise<void>,
-) {
+export function startPolling(ms: number, fn: (abortSignal: AbortSignal) => Promise<void>) {
   const abortController = new AbortController();
   let timeout: ReturnType<typeof setTimeout>;
 

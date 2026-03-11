@@ -9,7 +9,7 @@ import type { AssetDetail } from 'assets/types';
 import { useAssetIdByTicker } from 'assets/utils';
 import { convertFeeToAsset } from 'fee/utils';
 import { computeTxHash, makeTxBytes } from 'messages/utils';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from 'popup/store/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -27,7 +27,6 @@ export function Swap() {
 
   const { t } = useTranslation();
 
-  const dispatch = usePopupDispatch();
   const selectedAccount = usePopupSelector(state => state.selectedAccount);
   invariant(selectedAccount);
 
@@ -63,7 +62,7 @@ export function Swap() {
         window.clearTimeout(timeout);
       }
     };
-  }, [currentNetwork, minimumFee, selectedAccount?.address]);
+  }, [currentNetwork, selectedAccount?.address]);
 
   const assets = usePopupSelector(state => state.assets);
   const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
@@ -78,7 +77,7 @@ export function Swap() {
 
   useEffect(() => {
     Background.updateAssets(swappableAssetEntries.map(([assetId]) => assetId));
-  }, [swappableAssetEntries, dispatch]);
+  }, [swappableAssetEntries]);
 
   const accountBalance = usePopupSelector(state => state.balances[selectedAccount.address]);
 

@@ -8,10 +8,7 @@ interface Migration {
 const flatState: Migration = {
   migrate: async () => {
     // this should potentially fix FILE_ERROR_NO_SPACE error
-    await Browser.storage.local.remove([
-      'AssetInfoController',
-      'CurrentAccountController',
-    ]);
+    await Browser.storage.local.remove(['AssetInfoController', 'CurrentAccountController']);
 
     const state = await Browser.storage.local.get();
 
@@ -40,11 +37,11 @@ const flatState: Migration = {
 
     await Browser.storage.local.set(
       migrateFields.reduce(
-        (acc, field) => ({
-          ...acc,
-          ...(state[field] as Record<string, unknown>),
-        }),
-        {},
+        (acc, field) => {
+          Object.assign(acc, state[field] as Record<string, unknown>);
+          return acc;
+        },
+        {} as Record<string, unknown>,
       ),
     );
 
@@ -58,12 +55,7 @@ const flatState: Migration = {
       IdentityController: ['cognitoSessions'],
       IdleController: ['lastUpdateIdle'],
       MessageController: ['messages'],
-      NetworkController: [
-        'currentNetwork',
-        'customNodes',
-        'customMatchers',
-        'customCodes',
-      ],
+      NetworkController: ['currentNetwork', 'customNodes', 'customMatchers', 'customCodes'],
       NotificationsController: ['notifications'],
       PermissionsController: ['origins', 'blacklist', 'whitelist', 'inPending'],
       PreferencesController: [
@@ -81,12 +73,7 @@ const flatState: Migration = {
         'identityConfig',
         'status',
       ],
-      StatisticsController: [
-        'lastIdleKeeper',
-        'lastInstallKeeper',
-        'lastOpenKeeper',
-        'userId',
-      ],
+      StatisticsController: ['lastIdleKeeper', 'lastInstallKeeper', 'lastOpenKeeper', 'userId'],
       TrashController: ['data'],
       UiStateController: ['uiState'],
       VaultController: ['locked', 'initialized'],
@@ -96,17 +83,17 @@ const flatState: Migration = {
 
     await Browser.storage.local.set(
       Object.entries(CONTROLLERS_STATE).reduce(
-        (acc, [controller, fields]) => ({
-          ...acc,
-          [controller]: fields.reduce(
-            (controllerAcc, field) => ({
-              ...controllerAcc,
-              [field]: state[field],
-            }),
-            {},
-          ),
-        }),
-        {},
+        (acc, [controller, fields]) => {
+          acc[controller] = fields.reduce(
+            (controllerAcc, field) => {
+              controllerAcc[field] = state[field];
+              return controllerAcc;
+            },
+            {} as Record<string, unknown>,
+          );
+          return acc;
+        },
+        {} as Record<string, Record<string, unknown>>,
       ),
     );
   },
@@ -167,8 +154,4 @@ const flattenBalances: Migration = {
   },
 };
 
-export const MIGRATIONS: Migration[] = [
-  flatState,
-  removeCurrentNetworkAccounts,
-  flattenBalances,
-];
+export const MIGRATIONS: Migration[] = [flatState, removeCurrentNetworkAccounts, flattenBalances];

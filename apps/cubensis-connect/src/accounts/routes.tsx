@@ -1,4 +1,4 @@
-import { type RouteObject } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { ErrorPage } from 'ui/components/pages/errorPage';
 import { RootAccounts } from 'ui/components/RootAccounts';
 
@@ -14,10 +14,7 @@ import { ImportAddressBook } from '../ui/components/pages/importKeystore/importA
 import { ImportKeystore } from '../ui/components/pages/importKeystore/importKeystore';
 import { ImportLedger } from '../ui/components/pages/importLedger/importLedger';
 import { ImportSeed } from '../ui/components/pages/importSeed';
-import {
-  ImportSuccess,
-  ImportSuccessAddressBook,
-} from '../ui/components/pages/importSuccess';
+import { ImportSuccess, ImportSuccessAddressBook } from '../ui/components/pages/importSuccess';
 import { NewAccount } from '../ui/components/pages/NewAccount';
 import { NewWallet } from '../ui/components/pages/NewWallet';
 import { NewWalletName } from '../ui/components/pages/NewWalletName';

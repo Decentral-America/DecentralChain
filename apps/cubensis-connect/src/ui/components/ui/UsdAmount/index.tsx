@@ -26,8 +26,6 @@ export function UsdAmount({ id, tokens, className }: Props) {
   return usdPrice == null ? (
     <Loader />
   ) : (
-    <p className={className}>
-      ≈ ${new BigNumber(usdPrice).mul(tokens).abs().toFixed(2)}
-    </p>
+    <p className={className}>≈ ${new BigNumber(usdPrice).mul(tokens).abs().toFixed(2)}</p>
   );
 }

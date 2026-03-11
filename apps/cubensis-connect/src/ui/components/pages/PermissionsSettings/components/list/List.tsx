@@ -1,11 +1,11 @@
+import type { TFunction } from 'i18next';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
-import { type TFunction } from 'i18next';
-import { type TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
+import type { TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
 
-import { type TAutoAuth } from '../originSettings';
-import * as styles from './list.styl';
+import type { TAutoAuth } from '../originSettings';
 import { ListItem } from './ListItem';
+import * as styles from './list.styl';
 
 class ListComponent extends PureComponent<IProps> {
   render(): React.ReactNode {
@@ -39,10 +39,7 @@ class ListComponent extends PureComponent<IProps> {
     );
   }
 
-  getPermissionsText(
-    t: TFunction<'translation', undefined>,
-    perms: Array<string | TAutoAuth>,
-  ) {
+  getPermissionsText(t: TFunction<'translation', undefined>, perms: Array<string | TAutoAuth>) {
     let hasApproved = false;
     let hasAuto: string | boolean | TAutoAuth | undefined = false;
 
@@ -50,21 +47,15 @@ class ListComponent extends PureComponent<IProps> {
       hasApproved = perms.includes('approved');
       hasAuto =
         hasApproved &&
-        perms.find(item =>
-          typeof item !== 'object' ? false : item.type === 'allowAutoSign',
-        );
+        perms.find(item => (typeof item !== 'object' ? false : item.type === 'allowAutoSign'));
     }
 
     return (
       <>
         {t(
-          hasApproved
-            ? 'permissionsSettings.approvedOrigin'
-            : 'permissionsSettings.rejectedOrigin',
+          hasApproved ? 'permissionsSettings.approvedOrigin' : 'permissionsSettings.rejectedOrigin',
         )}
-        {hasAuto ? (
-          <span>{t('permissionsSettings.automaticOrigin')}</span>
-        ) : null}
+        {hasAuto ? <span>{t('permissionsSettings.automaticOrigin')}</span> : null}
       </>
     );
   }

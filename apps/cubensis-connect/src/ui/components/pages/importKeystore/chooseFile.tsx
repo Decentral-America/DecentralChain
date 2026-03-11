@@ -64,7 +64,7 @@ export function ImportKeystoreChooseFile({
       };
 
       reader.readAsText(keystoreFile);
-    } catch (err) {
+    } catch (_err) {
       setError(t('importKeystore.errorFormat'));
     }
   }, [keystoreFile, setError, t]);
@@ -89,8 +89,7 @@ export function ImportKeystoreChooseFile({
             type="file"
             value=""
             onChange={event => {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              setKeystoreFile(event.currentTarget.files![0] || null);
+              setKeystoreFile(event.currentTarget.files?.[0] || null);
             }}
           />
           {t('importKeystore.browse')}
@@ -100,17 +99,13 @@ export function ImportKeystoreChooseFile({
           className={clsx('body1', styles.keystoreFileName)}
           title={keystoreFile ? keystoreFile.name : undefined}
         >
-          {keystoreFile
-            ? keystoreFile.name
-            : t('importKeystore.noFileSelected')}
+          {keystoreFile ? keystoreFile.name : t('importKeystore.noFileSelected')}
         </span>
       </label>
 
       {showPassword && (
         <>
-          <div className="tag1 basic500 input-title">
-            {t('importKeystore.passwordLabel')}
-          </div>
+          <div className="tag1 basic500 input-title">{t('importKeystore.passwordLabel')}</div>
           <Input
             autoComplete="current-password"
             data-testid="passwordInput"
@@ -131,9 +126,7 @@ export function ImportKeystoreChooseFile({
       <Button
         className={styles.keystoreButton}
         data-testid="submitButton"
-        disabled={
-          loading || keystoreFile == null || (showPassword && !password)
-        }
+        disabled={loading || keystoreFile == null || (showPassword && !password)}
         loading={loading}
         type="submit"
         view="submit"

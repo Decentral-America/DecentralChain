@@ -7,6 +7,7 @@ export function MoreActions({ children }: { children: React.ReactNode }) {
 
       <div data-testid="moreBtn">
         <svg
+          aria-hidden="true"
           className={styles.moreIcon}
           height="28"
           viewBox="2 0 11 14"

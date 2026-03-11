@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { type Message } from 'messages/types';
-import { type PreferencesAccount } from 'preferences/types';
+import type { Message } from 'messages/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import * as styles from '../../ui/components/pages/styles/transactions.module.css';
@@ -19,9 +19,7 @@ export function MessageHeader({ message, selectedAccount }: Props) {
       <div className="margin-main margin-main-top flex basic500">
         {message.origin && (
           <>
-            <div className={clsx(styles.originAddress, 'flex')}>
-              {message.origin}
-            </div>
+            <div className={clsx(styles.originAddress, 'flex')}>{message.origin}</div>
 
             <div className="flex" data-testid="originNetwork">
               <i className={clsx(styles.originNetworkIcon, 'networkIcon')} />

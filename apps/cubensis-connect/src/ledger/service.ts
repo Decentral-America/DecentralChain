@@ -1,12 +1,12 @@
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
-import { captureException } from '@sentry/browser';
 // NOTE: Default export from @decentralchain/ledger is named WavesLedger in source — aliased here as DccLedger
 import DccLedger from '@decentralchain/ledger';
-import { type PreferencesAccount } from 'preferences/types';
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import { captureException } from '@sentry/browser';
+import type { PreferencesAccount } from 'preferences/types';
 import invariant from 'tiny-invariant';
 import Background from 'ui/services/Background';
 
-import { type LedgerSignRequest } from './types';
+import type { LedgerSignRequest } from './types';
 
 export enum LedgerServiceStatus {
   Disconnected = 'DISCONNECTED',
@@ -52,7 +52,6 @@ class LedgerService {
 
       if (this._connectionRetryIsNeeded) {
         await delay(1000);
-        continue;
       }
     }
   }
@@ -86,9 +85,7 @@ class LedgerService {
         this.disconnect();
       } else if (/unable to claim interface/i.test(msg)) {
         this.disconnect(LedgerServiceStatus.UsedBySomeOtherApp);
-      } else if (
-        /an operation that changes the device state is in progress/i.test(msg)
-      ) {
+      } else if (/an operation that changes the device state is in progress/i.test(msg)) {
         this._connectionRetryIsNeeded = true;
       } else {
         captureException(
@@ -100,28 +97,18 @@ class LedgerService {
     }
   }
 
-  private async sendSignRequest(
-    selectedAccount: PreferencesAccount,
-    request: LedgerSignRequest,
-  ) {
+  private async sendSignRequest(selectedAccount: PreferencesAccount, request: LedgerSignRequest) {
     try {
-      invariant(
-        selectedAccount.type === 'ledger',
-        'Active account is not a ledger account',
-      );
+      invariant(selectedAccount.type === 'ledger', 'Active account is not a ledger account');
 
       if (!ledgerService.ledger) {
         return;
       }
 
-      const userData = await ledgerService.ledger.getUserDataById(
-        selectedAccount.id,
-      );
+      const userData = await ledgerService.ledger.getUserDataById(selectedAccount.id);
 
       if (userData.address !== selectedAccount.address) {
-        throw new Error(
-          'Account saved in keeper does not match the one in ledger',
-        );
+        throw new Error('Account saved in keeper does not match the one in ledger');
       }
 
       let signature: string;
@@ -134,43 +121,29 @@ class LedgerService {
           });
           break;
         case 'request':
-          signature = await ledgerService.ledger.signRequest(
-            selectedAccount.id,
-            {
-              ...request.data,
-              dataBuffer: new Uint8Array(request.data.dataBuffer),
-            },
-          );
+          signature = await ledgerService.ledger.signRequest(selectedAccount.id, {
+            ...request.data,
+            dataBuffer: new Uint8Array(request.data.dataBuffer),
+          });
           break;
         case 'someData':
-          signature = await ledgerService.ledger.signSomeData(
-            selectedAccount.id,
-            {
-              ...request.data,
-              dataBuffer: new Uint8Array(request.data.dataBuffer),
-            },
-          );
+          signature = await ledgerService.ledger.signSomeData(selectedAccount.id, {
+            ...request.data,
+            dataBuffer: new Uint8Array(request.data.dataBuffer),
+          });
           break;
         case 'transaction':
-          signature = await ledgerService.ledger.signTransaction(
-            selectedAccount.id,
-            {
-              ...request.data,
-              dataBuffer: new Uint8Array(request.data.dataBuffer),
-            },
-          );
+          signature = await ledgerService.ledger.signTransaction(selectedAccount.id, {
+            ...request.data,
+            dataBuffer: new Uint8Array(request.data.dataBuffer),
+          });
           break;
       }
 
       await Background.ledgerSignResponse(request.id, null, signature);
     } catch (err) {
       if (err) {
-        if (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (err as any).name === 'TransportStatusError' &&
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (err as any).statusCode === 37120
-        ) {
+        if ((err as any).name === 'TransportStatusError' && (err as any).statusCode === 37120) {
           await Background.ledgerSignResponse(
             request.id,
             new Error('Request is rejected on ledger'),
@@ -183,10 +156,7 @@ class LedgerService {
     }
   }
 
-  async queueSignRequest(
-    selectedAccount: PreferencesAccount,
-    request: LedgerSignRequest,
-  ) {
+  async queueSignRequest(selectedAccount: PreferencesAccount, request: LedgerSignRequest) {
     try {
       await this._signRequestPromise;
     } finally {
