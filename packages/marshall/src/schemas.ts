@@ -352,18 +352,18 @@ export const orderSchemaV1: TObject = {
   ],
 };
 
-export const orderSchemaV2: TSchema = {
+export const orderSchemaV2: TObject = {
   type: 'object',
   schema: [txFields.version, ...orderSchemaV1.schema],
 };
 
 // In order v3 amount and price fields are flipped
-export const orderSchemaV3: TSchema = {
+export const orderSchemaV3: TObject = {
   type: 'object',
   schema: [...orderSchemaV2.schema, ['matcherFeeAssetId', txFields.optionalAssetId[1]]],
 };
 
-export const aliasSchemaV2: TSchema = {
+export const aliasSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -386,7 +386,7 @@ export const aliasSchemaV2: TSchema = {
   ],
 };
 
-export const burnSchemaV2: TSchema = {
+export const burnSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -400,7 +400,7 @@ export const burnSchemaV2: TSchema = {
   ],
 };
 
-export const cancelLeaseSchemaV2: TSchema = {
+export const cancelLeaseSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -413,7 +413,7 @@ export const cancelLeaseSchemaV2: TSchema = {
   ],
 };
 
-export const invokeScriptSchemaV1: TSchema = {
+export const invokeScriptSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -429,7 +429,7 @@ export const invokeScriptSchemaV1: TSchema = {
   ],
 };
 
-export const dataSchemaV1: TSchema = {
+export const dataSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -441,7 +441,7 @@ export const dataSchemaV1: TSchema = {
   ],
 };
 
-export const proofsSchemaV0: TSchema = {
+export const proofsSchemaV0: TObject = {
   type: 'object',
   schema: [
     [
@@ -454,7 +454,7 @@ export const proofsSchemaV0: TSchema = {
   ],
 };
 
-export const proofsSchemaV1: TSchema = {
+export const proofsSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.byteConstant(1), // proofs version
@@ -469,7 +469,7 @@ const orderSchemaV0WithSignature: TObject = {
 //ExchangeV0 needs both orders length to be present before actual order bytes.
 // That's why there are two separate rules for oder1 and order2 fields. First one serializes order and writes length.
 // Seconds serializes and writes whole order. When deserialize, second rule overwrites order fields in js object
-export const exchangeSchemaV1: TSchema = {
+export const exchangeSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -529,7 +529,7 @@ const anyOrder = anyOf(
   { discriminatorField: 'version', discriminatorBytePos: 4 },
 );
 
-export const exchangeSchemaV2: TSchema = {
+export const exchangeSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.byteConstant(0),
@@ -546,7 +546,7 @@ export const exchangeSchemaV2: TSchema = {
   ],
 };
 
-export const issueSchemaV2: TSchema = {
+export const issueSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -564,7 +564,7 @@ export const issueSchemaV2: TSchema = {
   ],
 };
 
-export const leaseSchemaV2: TSchema = {
+export const leaseSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -578,7 +578,7 @@ export const leaseSchemaV2: TSchema = {
   ],
 };
 
-export const massTransferSchemaV1: TSchema = {
+export const massTransferSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -592,7 +592,7 @@ export const massTransferSchemaV1: TSchema = {
   ],
 };
 
-export const reissueSchemaV2: TSchema = {
+export const reissueSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -607,7 +607,7 @@ export const reissueSchemaV2: TSchema = {
   ],
 };
 
-export const setAssetScriptSchemaV1: TSchema = {
+export const setAssetScriptSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -621,7 +621,7 @@ export const setAssetScriptSchemaV1: TSchema = {
   ],
 };
 
-export const setScriptSchemaV1: TSchema = {
+export const setScriptSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -634,7 +634,7 @@ export const setScriptSchemaV1: TSchema = {
   ],
 };
 
-export const sponsorshipSchemaV1: TSchema = {
+export const sponsorshipSchemaV1: TObject = {
   type: 'object',
   schema: [
     txFields.type,
@@ -647,7 +647,7 @@ export const sponsorshipSchemaV1: TSchema = {
   ],
 };
 
-export const transferSchemaV2: TSchema = {
+export const transferSchemaV2: TObject = {
   type: 'object',
   schema: [
     txFields.type,
