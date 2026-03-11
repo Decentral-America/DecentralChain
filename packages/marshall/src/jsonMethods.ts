@@ -4,7 +4,7 @@ const { parse } = create();
 
 import { convertLongFields, convertTxLongFields } from './convert';
 import { type TToLongConverter } from './parse';
-import { getTransactionSchema, orderVersionMap } from './schemas';
+import { getTransactionSchema, orderVersionMap, type TRANSACTION_TYPE } from './schemas';
 import { type DATA_FIELD_TYPE, type TSchema } from './schemaTypes';
 import { type TFromLongConverter } from './serialize';
 import { LONG } from './serializePrimitives';
@@ -42,7 +42,7 @@ const isLongProp = (
         string,
         unknown
       >;
-      const dataSchema = schema.items.get(dataObj.type as DATA_FIELD_TYPE);
+      const dataSchema = schema.items.get(dataObj['type'] as DATA_FIELD_TYPE);
       return go(path.slice(1), dataSchema);
     }
 
@@ -193,7 +193,7 @@ export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
  * @param toLongConverter
  */
 export function parseTx<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
-  const tx = parse(str);
+  const tx = parse(str) as Record<string, unknown>;
   return toLongConverter ? convertTxLongFields(tx, toLongConverter) : tx;
 }
 
@@ -208,7 +208,7 @@ export function stringifyTx<LONG>(
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
   const { type, version } = tx;
-  const schema = getTransactionSchema(type, version);
+  const schema = getTransactionSchema(type as TRANSACTION_TYPE, version as number);
   const txWithStrings = convertLongFields(tx, schema, undefined, fromLongConverter);
   return stringifyWithSchema(txWithStrings, schema);
 }
@@ -219,8 +219,8 @@ export function stringifyTx<LONG>(
  * @param toLongConverter
  */
 export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
-  const ord = parse(str);
-  const version = (ord.version as number) || 1;
+  const ord = parse(str) as Record<string, unknown>;
+  const version = (ord['version'] as number) || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   return toLongConverter ? convertLongFields(ord, schema, toLongConverter) : ord;
@@ -236,7 +236,7 @@ export function stringifyOrder<LONG>(
   ord: Record<string, unknown>,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
-  const version = (ord.version as number) || 1;
+  const version = (ord['version'] as number) || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   const ordWithStrings = convertLongFields(ord, schema, undefined, fromLongConverter);

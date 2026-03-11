@@ -1,5 +1,5 @@
 import { concat } from './libs/utils';
-import { getTransactionSchema, orderVersionMap } from './schemas';
+import { getTransactionSchema, orderVersionMap, type TRANSACTION_TYPE } from './schemas';
 import { type DATA_FIELD_TYPE, type TSchema } from './schemaTypes';
 import { BYTE, LEN, SHORT, STRING, type TSerializer } from './serializePrimitives';
 
@@ -66,7 +66,7 @@ export const serializerFromSchema =
 
       // Boolean argument type: both 'true' and 'false' share the 'boolean' string key,
       // so we disambiguate by checking the actual value
-      if (anyOfItem.strKey === 'boolean' && anyOfItem.key === 6 && rec.value === false)
+      if (anyOfItem.strKey === 'boolean' && anyOfItem.key === 6 && rec['value'] === false)
         anyOfItem.key = 7;
 
       serializer = serializerFromSchema(anyOfItem.schema, fromLongConverter);
@@ -83,15 +83,15 @@ export const serializerFromSchema =
       return schema.toBytes(obj);
     } else if (schema.type === 'dataTxField') {
       const rec = obj as Record<string, unknown>;
-      const keyBytes = LEN(SHORT)(STRING)(rec.key as string);
-      const type = rec.type as string;
+      const keyBytes = LEN(SHORT)(STRING)(rec['key'] as string);
+      const type = rec['type'] as string;
       const typeSchema = schema.items.get(type as DATA_FIELD_TYPE);
       if (typeSchema == null) {
         throw new Error(`Serializer Error: Unknown dataTxField type: ${type}`);
       }
       const typeCode = [...schema.items.values()].indexOf(typeSchema);
       serializer = serializerFromSchema(typeSchema, fromLongConverter);
-      itemBytes = serializer(rec.value);
+      itemBytes = serializer(rec['value']);
       return concat(keyBytes, BYTE(typeCode), itemBytes);
     } /* v8 ignore next 3 - defensive guard for future schema types */ else {
       throw new Error(`Serializer Error: Unknown schema type: ${(schema as TSchema).type}`);
@@ -112,11 +112,11 @@ export const serializerFromSchema =
  * ```
  */
 export function serializeTx<LONG = string | number>(
-  tx: Record<string, unknown>,
+  tx: object,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): Uint8Array {
-  const { type, version } = tx;
-  const schema = getTransactionSchema(type, version);
+  const { type, version } = tx as Record<string, unknown>;
+  const schema = getTransactionSchema(type as TRANSACTION_TYPE, version as number);
 
   return serializerFromSchema(schema, fromLongConverter)(tx);
 }
@@ -134,10 +134,10 @@ export function serializeTx<LONG = string | number>(
  * ```
  */
 export function serializeOrder<LONG = string | number>(
-  ord: Record<string, unknown>,
+  ord: object,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): Uint8Array {
-  const version = ord.version || 1;
+  const version = ((ord as Record<string, unknown>)['version'] as number) || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   return serializerFromSchema(schema, fromLongConverter)(ord);

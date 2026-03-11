@@ -107,7 +107,7 @@ export const parserFromSchema =
 
       //Capture LONG Parser and convert strings desired instance if longFactory is present
       if (parser === P_LONG && toLongConverter) {
-        value = toLongConverter(value);
+        value = toLongConverter(value as string);
       }
       return { value, shift: shift };
     } /* v8 ignore next 3 - defensive guard for future schema types */ else {
