@@ -397,16 +397,18 @@ const getSetAssetScriptData = (
   assetId: base58Decode(t.assetId),
   script: t.script == null ? null : scriptToProto(t.script),
 });
-const getInvokeData = (
-  t: InvokeScriptTransaction,
-): dccProto.waves.IInvokeScriptTransactionData => ({
-  dApp: recipientToProto(t.dApp),
-  functionCall: binary.serializerFromSchema(schemas.invokeScriptSchemaV1.schema[5]![1])(t.call),
-  payments:
-    t.payment == null
-      ? null
-      : t.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
-});
+const getInvokeData = (t: InvokeScriptTransaction): dccProto.waves.IInvokeScriptTransactionData => {
+  const callSchemaEntry = schemas.invokeScriptSchemaV1.schema[5];
+  if (!callSchemaEntry) throw new Error('Missing invoke script call schema entry');
+  return {
+    dApp: recipientToProto(t.dApp),
+    functionCall: binary.serializerFromSchema(callSchemaEntry[1])(t.call),
+    payments:
+      t.payment == null
+        ? null
+        : t.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
+  };
+};
 
 const getUpdateAssetInfoData = (
   t: UpdateAssetInfoTransaction,
