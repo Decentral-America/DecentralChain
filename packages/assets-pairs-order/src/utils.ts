@@ -8,8 +8,10 @@
 export const compareUint8Arrays = (arr1: Uint8Array, arr2: Uint8Array): boolean => {
   const len = Math.min(arr1.length, arr2.length);
   for (let i = 0; i < len; i++) {
-    if (arr1[i] > arr2[i]) return true;
-    if (arr1[i] < arr2[i]) return false;
+    const a = arr1[i] as number;
+    const b = arr2[i] as number;
+    if (a > b) return true;
+    if (a < b) return false;
   }
   return arr1.length > arr2.length;
 };
