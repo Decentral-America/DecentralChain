@@ -428,7 +428,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     } else if (
       val != null &&
       typeof val === 'object' &&
-      typeof (val as Record<string, unknown>).toJSON === 'function'
+      typeof (val as Record<string, unknown>)['toJSON'] === 'function'
     ) {
       val = (val as { toJSON: (key: string) => unknown }).toJSON(key);
     }
