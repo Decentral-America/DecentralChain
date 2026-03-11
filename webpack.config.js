@@ -1,5 +1,6 @@
 import 'dotenv-flow/config';
 
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,21 +17,10 @@ import PlatformPlugin from './scripts/PlatformPlugin.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function makeConfig({
-  entry,
-  hmr,
-  mode,
-  name,
-  optimization,
-  plugins,
-  reactRefresh,
-  target,
-}) {
+async function makeConfig({ entry, hmr, mode, name, optimization, plugins, reactRefresh, target }) {
   const dev = mode === 'development';
 
-  const { TinyBrowserHmrWebpackPlugin } = await import(
-    '@faergeek/tiny-browser-hmr-webpack-plugin'
-  );
+  const { TinyBrowserHmrWebpackPlugin } = await import('@faergeek/tiny-browser-hmr-webpack-plugin');
 
   return {
     name,
@@ -57,6 +47,7 @@ async function makeConfig({
       extensions: ['.ts', '.tsx', '.js'],
       fallback: {
         stream: 'stream-browserify',
+        util: createRequire(import.meta.url).resolve('util/'),
       },
     },
     ignoreWarnings: [/Failed to parse source map/],
@@ -70,6 +61,10 @@ async function makeConfig({
       strictExportPresence: true,
       rules: [
         {
+          test: /\.m?js$/,
+          resolve: { fullySpecified: false },
+        },
+        {
           test: /\.(css|js)$/,
           enforce: 'pre',
           use: ['source-map-loader'],
@@ -80,8 +75,7 @@ async function makeConfig({
           use: {
             loader: 'babel-loader',
             options: {
-              plugins:
-                dev && hmr && reactRefresh ? ['react-refresh/babel'] : [],
+              plugins: dev && hmr && reactRefresh ? ['react-refresh/babel'] : [],
             },
           },
         },
@@ -142,20 +136,14 @@ async function makeConfig({
       process.stdout.isTTY && new webpack.ProgressPlugin(),
       dev && hmr && new webpack.HotModuleReplacementPlugin(),
       dev && hmr && new TinyBrowserHmrWebpackPlugin({ hostname: 'localhost' }),
-      dev &&
-        hmr &&
-        reactRefresh &&
-        new ReactRefreshWebpackPlugin({ overlay: false }),
+      dev && hmr && reactRefresh && new ReactRefreshWebpackPlugin({ overlay: false }),
       !dev &&
         new BundleAnalyzerPlugin({
           analyzerMode: 'static',
           defaultSizes: 'gzip',
           generateStatsFile: true,
           openAnalyzer: false,
-          reportFilename: path.resolve(
-            __dirname,
-            `dist/webpack-bundle-analyzer/${name}.html`,
-          ),
+          reportFilename: path.resolve(__dirname, `dist/webpack-bundle-analyzer/${name}.html`),
           statsFilename: path.resolve(__dirname, `dist/stats/${name}.json`),
         }),
       new webpack.ProvidePlugin({
