@@ -4,11 +4,8 @@ on:
     types: [published]
 jobs:
   report:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: styfle/cancel-workflow-action@0.11.0
-      - uses: Keeper-Wallet/jira-action@v1
-        with:
-          component: ext
-          hooks-url: ${{ secrets.HOOKS_URL }}
-          hook-release: ${{ secrets.HOOK_RELEASE }}
+      # TODO(DCC-59): Add DCC release notification hook
+      # Previously used Keeper-Wallet/jira-action — needs DCC equivalent
