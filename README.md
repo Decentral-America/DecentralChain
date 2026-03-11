@@ -1,28 +1,18 @@
-# Keeper Wallet
+# Cubensis Connect
 
-[![""](https://badgen.net/chrome-web-store/v/lpilbniiabackdjcionkobglmddfbcjo)](https://chrome.google.com/webstore/detail/keeper-wallet/lpilbniiabackdjcionkobglmddfbcjo)
-[![""](https://badgen.net/chrome-web-store/users/lpilbniiabackdjcionkobglmddfbcjo)](https://chrome.google.com/webstore/detail/keeper-wallet/lpilbniiabackdjcionkobglmddfbcjo)
-[![""](https://badgen.net/chrome-web-store/rating/lpilbniiabackdjcionkobglmddfbcjo)](https://chrome.google.com/webstore/detail/keeper-wallet/lpilbniiabackdjcionkobglmddfbcjo)
-
-[![""](https://badgen.net/amo/v/waves-keeper)](https://addons.mozilla.org/ru/firefox/addon/waves-keeper/)
-[![""](https://badgen.net/amo/users/waves-keeper)](https://addons.mozilla.org/ru/firefox/addon/waves-keeper/)
-[![""](https://badgen.net/amo/rating/waves-keeper)](https://addons.mozilla.org/ru/firefox/addon/waves-keeper/reviews/)
-
-en | [ru](./README_ru.md)
-
-Keeper Wallet is a browser extension that enables secure interaction with Waves-enabled web services.
+Cubensis Connect is a browser extension that enables secure interaction with DecentralChain-enabled web services.
 
 Seed phrases and private keys are encrypted and stored within the extension and cannot be accessed by online dApps and services, making sure that users' funds are always protected from hackers and malicious websites. Completion of a transaction doesn't require entering any sensitive information.
 
-Keeper Wallet is designed for convenience, so users can sign transactions with just one click. Users can create multiple wallets and switch between them easily. And if a user ever forgets the password to the account, it can be recovered from the seed phrase.
+Cubensis Connect is designed for convenience, so users can sign transactions with just one click. Users can create multiple wallets and switch between them easily. And if a user ever forgets the password to the account, it can be recovered from the seed phrase.
 
-[Waves protocol documentation](https://docs.waves.tech/en/)
+[DecentralChain protocol documentation](https://docs.decentralchain.io/en/master/)
 
-## Keeper Wallet API
+## Cubensis Connect API
 
-On browser pages that operate under `http/https` (not local pages with `file://` protocol) with Keeper Wallet extension installed, `KeeperWallet` global object becomes available.
+On browser pages that operate under `http/https` (not local pages with `file://` protocol) with Cubensis Connect extension installed, `CubensisConnect` global object becomes available.
 
-In `KeeperWallet` you will find the following methods:
+In `CubensisConnect` you will find the following methods:
 
 - [publicState](#publicstate)
 - [notification](#notification)
@@ -45,20 +35,20 @@ In `KeeperWallet` you will find the following methods:
 
 All methods except for `on` operate asynchronously and return [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-In code, you can use [TypeScript types](https://github.com/wavesplatform/waveskeeper-types).
+In code, you can use [TypeScript types](https://github.com/Decentral-America/cubensis-connect-types).
 
-In Keeper Wallet, for greater security and ease of use, each new website using API has to be allowed by the user. At the first attempt to use API (except `on`), the user will see a request to allow the website to access Keeper Wallet. If the user agrees to allow access, the website is considered trusted and can use API on its pages. Otherwise, the website is blocked, and the error message `{message: "Api rejected by user", code: 12}` will be displayed in response to all requests. The user won't see new notifications. To grant access, the user has to mark the website as trusted in the interface.
+In Cubensis Connect, for greater security and ease of use, each new website using API has to be allowed by the user. At the first attempt to use API (except `on`), the user will see a request to allow the website to access Cubensis Connect. If the user agrees to allow access, the website is considered trusted and can use API on its pages. Otherwise, the website is blocked, and the error message `{message: "Api rejected by user", code: 12}` will be displayed in response to all requests. The user won't see new notifications. To grant access, the user has to mark the website as trusted in the interface.
 
 ### Description of methods
 
 #### publicState
 
-If a website is trusted, Keeper Wallet public data are returned.
+If a website is trusted, Cubensis Connect public data are returned.
 
 Example:
 
 ```js
-KeeperWallet.publicState()
+CubensisConnect.publicState()
   .then(state => {
     console.log(state); //displaying the result in the console
     /*...processing data */
@@ -74,7 +64,7 @@ or
 ```js
 const getPublicState = async () => {
   try {
-    const state = await KeeperWallet.publicState();
+    const state = await CubensisConnect.publicState();
     console.log(state); // displaying the result in the console
     /*... processing data*/
   } catch (error) {
@@ -95,17 +85,17 @@ Response:
     "account": {
         "name": "foo",
         "publicKey": "bar",
-        "address": "waves address",
+        "address": "DCC address",
         "networkCode": "network byte",
         "balance": {
-            "available": "balance in waves",
+            "available": "balance in DCC",
             "leasedOut": "leased balance"
         }
     },
     "network": {
         "code": "W",
-        "server": "https://nodes.wavesnodes.com/",
-        "matcher": "https://matcher.waves.exchange/"
+        "server": "https://mainnet-node.decentralchain.io/",
+        "matcher": "https://mainnet-matcher.decentralchain.io/"
     },
     "messages": [],
     "txVersion": {
@@ -119,18 +109,18 @@ Response:
 
 Response fields:
 
-- `initialized` – boolean: Keeper Wallet is initialized.
-- `locked` – boolean: Keeper Wallet is locked (password required).
+- `initialized` – boolean: Cubensis Connect is initialized.
+- `locked` – boolean: Cubensis Connect is locked (password required).
 - `account` – current account if the user allowed access to the website, `null` otherwise.
-- `network` – current Waves network, node and matcher addresses.
+- `network` – current DecentralChain network, node and matcher addresses.
 - `messages` – signature request statuses.
 - `txVersion` – available transaction versions for each type.
 
 Possible errors:
 
-- `{ message: "Init Keeper Wallet and add account" }` – Keeper Wallet is not initialized.
-- `{ message: "Add Keeper Wallet account" }` – Keeper Wallet accessed, but there are no accounts.
-- `{ message: "User denied message" }` – the user denied the website operation with Keeper Wallet.
+- `{ message: "Init Cubensis Connect and add account" }` – Cubensis Connect is not initialized.
+- `{ message: "Add Cubensis Connect account" }` – Cubensis Connect accessed, but there are no accounts.
+- `{ message: "User denied message" }` – the user denied the website operation with Cubensis Connect.
 
 #### notification
 
@@ -144,7 +134,7 @@ A method for sending a user a message from the site. You can send message only 1
 Example:
 
 ```js
-KeeperWallet.notification({
+CubensisConnect.notification({
   title: 'Hello!',
   message: 'Congratulation!!!',
 });
@@ -163,15 +153,15 @@ Possible errors:
 
 #### encryptMessage
 
-You can encrypt string messages to account in Waves network.
+You can encrypt string messages to account in DecentralChain network.
 You need have recipient publicKey.
 
-KeeperWallet.encryptMessage(`*string to encrypt*`, `*public key in base58 string*`, `*prefix: a secret app string for encoding*`)
+CubensisConnect.encryptMessage(`*string to encrypt*`, `*public key in base58 string*`, `*prefix: a secret app string for encoding*`)
 
 Example:
 
 ```js
-KeeperWallet.encryptMessage(
+CubensisConnect.encryptMessage(
   'My message',
   '416z9d8DQDy5MPTqDhvReRBaPb19gEyVRWvHcewpP6Nc',
   'my app',
@@ -182,22 +172,22 @@ KeeperWallet.encryptMessage(
 
 Possible errors:
 
-- `{ message: "Init Keeper Wallet and add account" }` – Keeper Wallet is not initialized.
-- `{ message: "App is locked" }` – Keeper Wallet is locked (password required).
-- `{ message: "Add Keeper Wallet account" }` – Keeper Wallet accessed, but there are no accounts.
-- `{ message: "User denied message" }` – the user denied the website operation with Keeper Wallet.
+- `{ message: "Init Cubensis Connect and add account" }` – Cubensis Connect is not initialized.
+- `{ message: "App is locked" }` – Cubensis Connect is locked (password required).
+- `{ message: "Add Cubensis Connect account" }` – Cubensis Connect accessed, but there are no accounts.
+- `{ message: "User denied message" }` – the user denied the website operation with Cubensis Connect.
 
 #### decryptMessage
 
-You can decrypt string messages from account in Waves network to you.
+You can decrypt string messages from account in DecentralChain network to you.
 You need to have user's public key and the encrypted message.
 
-KeeperWallet.decryptMessage(`*string to decrypt*`, `*public key in base58 string*`, `*prefix: a secret app string for encoding*`)
+CubensisConnect.decryptMessage(`*string to decrypt*`, `*public key in base58 string*`, `*prefix: a secret app string for encoding*`)
 
 Example:
 
 ```js
-KeeperWallet.decryptMessage(
+CubensisConnect.decryptMessage(
   '**encrypted msg**',
   '416z9d8DQDy5MPTqDhvReRBaPb19gEyVRWvHcewpP6Nc',
   'my app',
@@ -208,14 +198,14 @@ KeeperWallet.decryptMessage(
 
 Possible errors:
 
-- `{ message: "Init Keeper Wallet and add account" }` – Keeper Wallet is not initialized.
-- `{ message: "App is locked" }` – Keeper Wallet is locked (password required).
-- `{ message: "Add Keeper Wallet account" }` – Keeper Wallet accessed, but there are no accounts.
-- `{ message: "User denied message" }` – the user denied the website operation with Keeper Wallet.
+- `{ message: "Init Cubensis Connect and add account" }` – Cubensis Connect is not initialized.
+- `{ message: "App is locked" }` – Cubensis Connect is locked (password required).
+- `{ message: "Add Cubensis Connect account" }` – Cubensis Connect accessed, but there are no accounts.
+- `{ message: "User denied message" }` – the user denied the website operation with Cubensis Connect.
 
 #### on
 
-Allows subscribing to Keeper Wallet events.
+Allows subscribing to Cubensis Connect events.
 
 Supports events:
 
@@ -224,8 +214,8 @@ Supports events:
 Example:
 
 ```js
-KeeperWallet.on('update', state => {
-  //state object as from KeeperWallet.publicState
+CubensisConnect.on('update', state => {
+  //state object as from CubensisConnect.publicState
 });
 ```
 
@@ -233,13 +223,13 @@ If a website is not trusted, events won't be displayed.
 
 #### auth
 
-This is a method for obtaining a signature of authorization data while verifying Waves' user. If the the signature is valid, be sure that the given blockchain account belongs to that user.
+This is a method for obtaining a signature of authorization data while verifying DecentralChain user. If the the signature is valid, be sure that the given blockchain account belongs to that user.
 
 Example:
 
 ```js
 const authData = { data: 'Auth on my site' };
-KeeperWallet.auth(authData)
+CubensisConnect.auth(authData)
   .then(auth => {
     console.log(auth); //displaying the result on the console
     /*...processing data */
@@ -255,7 +245,7 @@ or
 ```js
 const getAuthData = async authData => {
   try {
-    const state = await KeeperWallet.auth(authData);
+    const state = await CubensisConnect.auth(authData);
     console.log(state); // displaying the result on the console
     /*... processing data */
   } catch (error) {
@@ -282,14 +272,14 @@ Example:
 const authData = {
   data: 'Generated string from server',
   name: 'My test App',
-  icon: '/img/icons/waves_logo.svg',
-  referrer: 'https://waves.exchange/',
+  icon: '/img/icons/dcc_logo.svg',
+  referrer: 'https://decentralchain.io/',
   successPath: 'login',
 };
 
-KeeperWallet.auth(authData)
+CubensisConnect.auth(authData)
   .then(data => {
-    //data – data from Keeper Wallet
+    //data – data from Cubensis Connect
     //verifying signature and saving the address...
     console.log(data);
   })
@@ -298,12 +288,12 @@ KeeperWallet.auth(authData)
   });
 ```
 
-If the verification is successful, Keeper Wallet returns to the `Promise` an object containing data for signature verification:
+If the verification is successful, Cubensis Connect returns to the `Promise` an object containing data for signature verification:
 
 - `host` – host that requested a signature.
 - `name` – name of an application that requested a signature.
 - `prefix` – prefix participating in the signature.
-- `address` – address in Waves network.
+- `address` – address in DecentralChain network.
 - `publicKey` – user's public key.
 - `signature` – user's signature.
 - `version` – API version.
@@ -323,7 +313,7 @@ We also suggest address validation in case the signature and public key is valid
 **TypeScript example code**
 
 ```typescript
-import { verifyAuthData, libs } from '@waves/waves-transactions';
+import { verifyAuthData, libs } from '@decentralchain/transactions';
 
 const authValidate = (
   data: { host: string; data: string },
@@ -338,7 +328,7 @@ const authValidate = (
 };
 
 // Obtaining the signature
-const data = await KeeperWallet.auth({ data: '123' });
+const data = await CubensisConnect.auth({ data: '123' });
 
 authValidate(data, { host: data.host, data: '123' }); // true
 ```
@@ -346,7 +336,7 @@ authValidate(data, { host: data.host, data: '123' }); // true
 **JS example code**
 
 ```js
-import { verifyAuthData, libs } from '@waves/waves-transactions';
+import { verifyAuthData, libs } from '@decentralchain/transactions';
 
 const authValidate = (signature, data, publicKey, chainId) => {
   const chain =
@@ -356,7 +346,7 @@ const authValidate = (signature, data, publicKey, chainId) => {
 };
 
 // Obtaining the signature
-const data = await KeeperWallet.auth({ data: '123' });
+const data = await CubensisConnect.auth({ data: '123' });
 
 authValidate(data, { host: data.host, data: '123' }); // true
 ```
@@ -484,7 +474,7 @@ else
 
 #### signTransaction
 
-A method for signing transactions in Waves network. See the description of supported transaction types in [Transactions](#transactions) section below.
+A method for signing transactions in DecentralChain network. See the description of supported transaction types in [Transactions](#transactions) section below.
 
 Example:
 
@@ -503,9 +493,9 @@ const txData = {
     recipient: 'test',
   },
 };
-KeeperWallet.signTransaction(txData)
+CubensisConnect.signTransaction(txData)
   .then(data => {
-    //data – a line ready for sending to Waves network's node (server)
+    //data – a line ready for sending to DecentralChain network's node (server)
   })
   .catch(error => {
     //Processing errors
@@ -514,7 +504,7 @@ KeeperWallet.signTransaction(txData)
 
 > API returns lines, not an object, as in JavaScript precision is lost in operation with 8-byte integers.
 
-In the example, we are signing a transaction for transferring WAVES to the alias `test` in Waves network.
+In the example, we are signing a transaction for transferring DCC to the alias `test` in DecentralChain network.
 
 Response:
 
@@ -562,16 +552,16 @@ const txData = {
   },
 };
 
-KeeperWallet.signAndPublishTransaction(txData)
+CubensisConnect.signAndPublishTransaction(txData)
   .then(data => {
-    //data - a line ready for sending to Waves network's node (server)
+    //data - a line ready for sending to DecentralChain network's node (server)
   })
   .catch(error => {
     //processing errors
   });
 ```
 
-Response: a reply from Waves network returns as a line containing the entire past transaction.
+Response: a reply from DecentralChain network returns as a line containing the entire past transaction.
 
 Possible errors:
 
@@ -617,7 +607,7 @@ const tx = [
   },
 ];
 
-KeeperWallet.signTransactionPackage(tx, name);
+CubensisConnect.signTransactionPackage(tx, name);
 ```
 
 Sign two transaction:
@@ -633,9 +623,9 @@ Same as in `signTransaction`.
 
 #### Transactions
 
-Every user of Waves network has a state (balances, assets, data, scripts), and every past transaction changes this data. [More about transactions](https://docs.waves.tech/en/blockchain/transaction/)
+Every user of DecentralChain network has a state (balances, assets, data, scripts), and every past transaction changes this data. [More about transactions](https://docs.decentralchain.io/en/master/blockchain/transaction/)
 
-In Keeper Wallet API transaction format is different from [Node REST API](https://docs.waves.tech/en/waves-node/node-api/). `signTransaction`, `signAndPublishTransaction`, and `signTransactionPackage` accept transactions as follows:
+In Cubensis Connect API transaction format is different from [Node REST API](https://docs.decentralchain.io/en/master/waves-node/node-api/). `signTransaction`, `signAndPublishTransaction`, and `signTransactionPackage` accept transactions as follows:
 
 ```js
 {
@@ -646,7 +636,7 @@ In Keeper Wallet API transaction format is different from [Node REST API](https:
 }
 ```
 
-Keeper Wallet supports the following types of transactions:
+Cubensis Connect supports the following types of transactions:
 
 - [Issue transaction (type 3)](#issue-transaction-type-3)
 - [Transfer transaction (type 4)](#transfer-transaction-type-4)
@@ -665,7 +655,7 @@ Keeper Wallet supports the following types of transactions:
 
 Legend keys:
 
-- \* - optional field, data is automatically supplied from `KeeperWallet`.
+- \* - optional field, data is automatically supplied from `CubensisConnect`.
 - [x,y] – length limit from x to y.
 - [,x] – length limit to x.
 - [y,] – length limit from y.
@@ -685,11 +675,11 @@ If the field contains other types than MoneyLike, for instance, string/MoneyLike
 
 ##### Transaction fee
 
-See [Transaction fee](https://docs.waves.tech/en/blockchain/transaction/transaction-fee) section in the Waves protocol documentation.
+See [Transaction fee](https://docs.decentralchain.io/en/master/blockchain/transaction/transaction-fee) section in the DecentralChain protocol documentation.
 
 ##### Issue transaction (type 3)
 
-See [Issue transaction details](https://docs.waves.tech/en/blockchain/transaction-type/issue-transaction) in the Waves protocol documentation.
+See [Issue transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/issue-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -699,14 +689,14 @@ Fields:
 - `precision`: [0 - 8] number – precision.
 - `reissuable`: true|false – reissuable.
 - `*fee`: MoneyLike – fee.
-- `*script`: string – asset script, see the [Smart Asset](https://docs.waves.tech/en/building-apps/smart-contracts/what-is-smart-asset) article.
+- `*script`: string – asset script, see the [Smart Asset](https://docs.decentralchain.io/en/master/building-apps/smart-contracts/what-is-smart-asset) article.
 - `*senderPublicKey`: string – user's public key in base58.
 - `*timestamp`: number/string – time in ms.
 
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 3,
   data: {
     name: 'Best Token',
@@ -732,7 +722,7 @@ In case of success, we issue a new asset in the quantity of 1,000,000, and your 
 
 ##### Transfer transaction (type 4)
 
-See [Transfer transaction details](https://docs.waves.tech/en/blockchain/transaction-type/transfer-transaction) in the Waves protocol documentation.
+See [Transfer transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/transfer-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -746,7 +736,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 4,
   data: {
     amount: { tokens: '3.3333333', assetId: 'WAVES' },
@@ -755,7 +745,7 @@ KeeperWallet.signAndPublishTransaction({
   },
 })
   .then(tx => {
-    console.log("Hurray! I've been able to send WAVES!!!");
+    console.log("Hurray! I've been able to send DCC!!!");
   })
   .catch(error => {
     console.error('Something went wrong', error);
@@ -764,7 +754,7 @@ KeeperWallet.signAndPublishTransaction({
 
 ##### Reissue transaction (type 5)
 
-See [Reissue transaction details](https://docs.waves.tech/en/blockchain/transaction-type/reissue-transaction) in the Waves protocol documentation.
+See [Reissue transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/reissue-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -778,7 +768,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 5,
   data: {
     quantity: 1000,
@@ -802,7 +792,7 @@ In case of success, we reissue the asset in the quantity of 1000, and user balan
 
 ##### Burn transaction (type 6)
 
-See [Burn transaction details](https://docs.waves.tech/en/blockchain/transaction-type/burn-transaction) in the Waves protocol documentation.
+See [Burn transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/burn-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -815,7 +805,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 6,
   data: {
     amount: 1000,
@@ -838,7 +828,7 @@ In case of success, 1000 coins are burned.
 
 ##### Lease transaction (type 8)
 
-See [Lease transaction details](https://docs.waves.tech/en/blockchain/transaction-type/lease-transaction) in the Waves protocol documentation.
+See [Lease transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/lease-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -851,7 +841,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 8,
   data: {
     amount: 1000,
@@ -874,7 +864,7 @@ In case of success, 0.00001000 WAVES is leased.
 
 ##### Lease Cancel transaction (type 9)
 
-See [Lease Cancel transaction details](https://docs.waves.tech/en/blockchain/transaction-type/lease-cancel-transaction) in the Waves protocol documentation.
+See [Lease Cancel transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/lease-cancel-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -886,7 +876,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 9,
   data: {
     leaseId: '6frvwF8uicAfyEfTfyC2sXqBJH7V5C8he5K4YH3BkNiS',
@@ -908,11 +898,11 @@ In case of success, the lease is cancelled.
 
 ##### Create Alias transaction (type 10)
 
-See [Create Alias transaction details](https://docs.waves.tech/en/blockchain/transaction-type/create-alias-transaction) in the Waves protocol documentation.
+See [Create Alias transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/create-alias-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
-- `alias`: [4, 30 bytes] string – alias. See [alias requirements](https://docs.waves.tech/en/blockchain/account/alias#alias-requirements).
+- `alias`: [4, 30 bytes] string – alias. See [alias requirements](https://docs.decentralchain.io/en/master/blockchain/account/alias#alias-requirements).
 - `*fee`: MoneyLike – fee.
 - `*senderPublicKey`: string - user's public key in base58.
 - `*timestamp`: number/string – time in ms.
@@ -920,7 +910,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 10,
   data: {
     alias: 'test_alias',
@@ -942,7 +932,7 @@ In case of success, an alias (another name) is created.
 
 ##### Mass Transfer transaction (type 11)
 
-See [Mass Transfer transaction details](https://docs.waves.tech/en/blockchain/transaction-type/mass-transfer-transaction) in the Waves protocol documentation.
+See [Mass Transfer transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/mass-transfer-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -957,7 +947,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 11,
   data: {
     totalAmount: { assetId: 'WAVES', coins: 0 },
@@ -983,7 +973,7 @@ In case of success, 0.00200000 WAVES will be sent to alias1 and alias2.
 
 ##### Data transaction (type 12)
 
-See [Data transaction details](https://docs.waves.tech/en/blockchain/transaction-type/data-transaction) in the Waves protocol documentation.
+See [Data transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/data-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -999,7 +989,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 12,
   data: {
     data: [
@@ -1037,7 +1027,7 @@ To delete an entry, pass the entry `key` along with `value: null`. Entry deletio
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 12,
   data: {
     version: 2,
@@ -1058,21 +1048,21 @@ KeeperWallet.signAndPublishTransaction({
 
 ##### Set Script transaction (type 13)
 
-See [Set Script transaction details](https://docs.waves.tech/en/blockchain/transaction-type/set-script-transaction) in the Waves protocol documentation.
+See [Set Script transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/set-script-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
-- `script`: string – account script or dApp script (see the [Smart Account](https://docs.waves.tech/en/building-apps/smart-contracts/what-is-smart-account) and [dApp](https://docs.waves.tech/en/building-apps/smart-contracts/what-is-a-dapp) articles in the Waves protocol documentation.
+- `script`: string – account script or dApp script (see the [Smart Account](https://docs.decentralchain.io/en/master/building-apps/smart-contracts/what-is-smart-account) and [dApp](https://docs.decentralchain.io/en/master/building-apps/smart-contracts/what-is-a-dapp) articles in the DecentralChain protocol documentation.
 - `*fee`: MoneyLike – fee.
 - `*senderPublicKey`: string – user's public key in base58.
 - `*timestamp`: number/string – time in ms.
 
-To develop and compile the script, use [Waves IDE](https://waves-ide.com/).
+To develop and compile the script, use [DecentralChain IDE](https://ide.decentralchain.io/).
 
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 13,
   data: {
     script:
@@ -1098,7 +1088,7 @@ For cancelling a script set `script: null` or `script: ''`.
 Example 2:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 13,
   data: {
     script: '',
@@ -1120,11 +1110,11 @@ In case of success, the script is removed from the account.
 
 ##### Sponsor Fee transaction (type 14)
 
-See [Sponsor Fee transaction details](https://docs.waves.tech/en/blockchain/transaction-type/sponsor-fee-transaction) in the Waves protocol documentation.
+See [Sponsor Fee transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/sponsor-fee-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
-- `minSponsoredAssetFee`: MoneyLike – amount of the sponsored asset that is equivalent to 0.001 WAVES.
+- `minSponsoredAssetFee`: MoneyLike – amount of the sponsored asset that is equivalent to 0.001 DCC.
 - `*fee`: MoneyLike – fee.
 - `*senderPublicKey`: string – user's public key in base58.
 - `*timestamp`: number/string – time in ms.
@@ -1132,7 +1122,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 14,
   data: {
     minSponsoredAssetFee: {
@@ -1157,22 +1147,22 @@ In case of success, fees for Transfer and Invoke Script transactions can be paid
 
 ##### Set Asset Script transaction (type 15)
 
-See [Set Asset Script transaction details](https://docs.waves.tech/en/blockchain/transaction-type/set-asset-script-transaction) in the Waves protocol documentation.
+See [Set Asset Script transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/set-asset-script-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
 - `assetId`: string – asset ID in base58.
-- `script`: string – asset script, see the [Smart Asset](https://docs.waves.tech/en/building-apps/smart-contracts/what-is-smart-asset) article in the Waves protocol documentation.
+- `script`: string – asset script, see the [Smart Asset](https://docs.decentralchain.io/en/master/building-apps/smart-contracts/what-is-smart-asset) article in the DecentralChain protocol documentation.
 - `*fee`: MoneyLike – fee.
 - `*senderPublicKey`: string – user's public key in base58.
 - `*timestamp` number/string – time in ms.
 
-It's impossible to remove the asset script; you can only change the script. To develop and compile the script, use [Waves IDE](https://waves-ide.com/).
+It's impossible to remove the asset script; you can only change the script. To develop and compile the script, use [DecentralChain IDE](https://ide.decentralchain.io/).
 
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 15,
   data: {
     assetId: '',
@@ -1195,7 +1185,7 @@ In case of success, the asset's script is reset.
 
 ##### Invoke Script transaction (type 16)
 
-See [Invoke Script transaction details](https://docs.waves.tech/en/blockchain/transaction-type/invoke-script-transaction) in the Waves protocol documentation.
+See [Invoke Script transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/invoke-script-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -1214,7 +1204,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 16,
   data: {
     fee: {
@@ -1247,7 +1237,7 @@ In case of success, the callable function `tellme` of Testnet account `3N27HUMt4
 An example of an invocation of a function with a list argument:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 16,
   data: {
     dApp: '3N28o4ZDhPK77QFFKoKBnN3uNeoaNSNXzXm',
@@ -1281,7 +1271,7 @@ KeeperWallet.signAndPublishTransaction({
 
 ##### Update Asset Info transaction (type 17)
 
-See [Update Asset Info transaction details](https://docs.waves.tech/en/blockchain/transaction-type/update-asset-info-transaction) in the Waves protocol documentation.
+See [Update Asset Info transaction details](https://docs.decentralchain.io/en/master/blockchain/transaction-type/update-asset-info-transaction) in the DecentralChain protocol documentation.
 
 Fields:
 
@@ -1294,7 +1284,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signAndPublishTransaction({
+CubensisConnect.signAndPublishTransaction({
   type: 17,
   data: {
     name: 'New name',
@@ -1316,7 +1306,7 @@ KeeperWallet.signAndPublishTransaction({
 
 #### signOrder
 
-Keeper Wallet's method for signing an order to the matcher (exchange service). As input, it accepts an object similar to a transaction like this:
+Cubensis Connect's method for signing an order to the matcher (exchange service). As input, it accepts an object similar to a transaction like this:
 
 ```js
 {
@@ -1326,9 +1316,9 @@ Keeper Wallet's method for signing an order to the matcher (exchange service). A
 }
 ```
 
-See [order details](https://docs.waves.tech/en/blockchain/order) in the Waves protocol documentation.
+See [order details](https://docs.decentralchain.io/en/master/blockchain/order) in the DecentralChain protocol documentation.
 
-See [how to calculate the order fee](https://docs.waves.exchange/en/waves-matcher/matcher-fee) in Waves.Exchange documentation.
+See [how to calculate the order fee](https://docs.decentralchain.io/en/master/) in DecentralChain documentation.
 
 Fields:
 
@@ -1345,7 +1335,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signOrder({
+CubensisConnect.signOrder({
   data: {
     matcherPublicKey: '9cpfKN9suPNvfeUNphzxXMjcnn974eme8ZhWUjaktzU5',
     orderType: 'sell',
@@ -1381,7 +1371,7 @@ Possible errors:
 
 #### signAndPublishOrder
 
-Keeper Wallet's method for creating an order to the matcher is identical to `signOrder`, but it also tries to send data to the matcher.
+Cubensis Connect's method for creating an order to the matcher is identical to `signOrder`, but it also tries to send data to the matcher.
 
 Response: the matcher's reply line about successful creation of an order.
 
@@ -1392,7 +1382,7 @@ Possible errors:
 
 #### signCancelOrder
 
-Keeper Wallet's method for signing cancellation of an order to the matcher. As input, it accepts an object similar to a transaction like this:
+Cubensis Connect's method for signing cancellation of an order to the matcher. As input, it accepts an object similar to a transaction like this:
 
 ```js
 {
@@ -1410,7 +1400,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signCancelOrder({
+CubensisConnect.signCancelOrder({
   data: {
     id: '31EeVpTAronk95TjCHdyaveDukde4nDr9BfFpvhZ3Sap',
   },
@@ -1427,12 +1417,12 @@ Possible errors:
 
 #### signAndPublishCancelOrder
 
-Keeper Wallet's method for cancelling an order to the matcher. It works identically to `signCancelOrder`, but also tries to send data to the matcher. You should specify two more fields: `priceAsset` and `amountAsset` from the order.
+Cubensis Connect's method for cancelling an order to the matcher. It works identically to `signCancelOrder`, but also tries to send data to the matcher. You should specify two more fields: `priceAsset` and `amountAsset` from the order.
 
 Example:
 
 ```js
-KeeperWallet.signAndPublishCancelOrder({
+CubensisConnect.signAndPublishCancelOrder({
   priceAsset: 'WAVES',
   amountAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
   data: {
@@ -1456,7 +1446,7 @@ Possible errors:
 
 #### signRequest
 
-Keeper Wallet's method for signing typified data, for signing requests on various services. As input, it accepts an object similar to a transaction like this:
+Cubensis Connect's method for signing typified data, for signing requests on various services. As input, it accepts an object similar to a transaction like this:
 
 ```js
 {
@@ -1477,7 +1467,7 @@ Fields:
 Example:
 
 ```js
-KeeperWallet.signRequest({
+CubensisConnect.signRequest({
   data: {
     timestamp: 234234242423423,
   },
@@ -1494,19 +1484,19 @@ Possible errors:
 
 #### signCustomData
 
-Keeper Wallet's method for signing a custom data for different services. It accepts an object:
+Cubensis Connect's method for signing a custom data for different services. It accepts an object:
 
 ##### Version 1
 
 - `version`: 1
 - `binary`: string 'base64:....'.
 
-Note: This method adds the `[255, 255, 255, 1]` prefix to the signed bytes. This was done to make it impossible to sign transaction data in this method, which can lead to unauthenticated transactions and phishing. For the details check [serializeCustomData](https://github.com/wavesplatform/waves-transactions/blob/master/src/requests/custom-data.ts#L63) method in waves-transactions library.
+Note: This method adds the `[255, 255, 255, 1]` prefix to the signed bytes. This was done to make it impossible to sign transaction data in this method, which can lead to unauthenticated transactions and phishing. For the details check [serializeCustomData](https://github.com/Decentral-America/transactions/blob/master/src/requests/custom-data.ts#L63) method in transactions library.
 
 Example:
 
 ```js
-KeeperWallet.signCustomData({
+CubensisConnect.signCustomData({
   version: 1,
   binary: 'base64:AADDEE==',
 });
@@ -1537,12 +1527,12 @@ Possible errors:
   - `key`: string – field name.
   - `value`: string(base64)/string/number/boolean
 
-Bytes to sign: [255, 255, 255, 2, ...(from data array to bin)]. For the details check [serializeCustomData](https://github.com/wavesplatform/waves-transactions/blob/master/src/requests/custom-data.ts#L63) method in waves-transactions library.
+Bytes to sign: [255, 255, 255, 2, ...(from data array to bin)]. For the details check [serializeCustomData](https://github.com/Decentral-America/transactions/blob/master/src/requests/custom-data.ts#L63) method in transactions library.
 
 Example:
 
 ```js
-KeeperWallet.signCustomData({
+CubensisConnect.signCustomData({
   version: 2,
   data: [{ type: 'string', key: 'name', value: 'Mr. First' }],
 });
@@ -1592,7 +1582,7 @@ or
 Example:
 
 ```js
-KeeperWallet.verifyCustomData({
+CubensisConnect.verifyCustomData({
   version: 1,
   binary: 'base64:AADDEE==',
   publicKey: '3BvAsKuGZe2LbSwKr9SA7eSXcNDKnRqN1j2K2bZaTn5X',
@@ -1612,12 +1602,12 @@ Possible errors:
 
 #### resourceIsApproved
 
-Check whether the user allowed your website to access Keeper Wallet.
+Check whether the user allowed your website to access Cubensis Connect.
 
 Example:
 
 ```js
-KeeperWallet.resourceIsApproved().then(result => {
+CubensisConnect.resourceIsApproved().then(result => {
   console.log(result);
 });
 ```
@@ -1626,12 +1616,12 @@ Response: true/false.
 
 #### resourceIsBlocked
 
-Check whether the user blocked your website in Keeper Wallet.
+Check whether the user blocked your website in Cubensis Connect.
 
 Example:
 
 ```js
-KeeperWallet.resourceIsBlocked().then(result => {
+CubensisConnect.resourceIsBlocked().then(result => {
   console.log(result);
 });
 ```
