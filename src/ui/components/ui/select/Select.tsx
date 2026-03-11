@@ -56,11 +56,7 @@ export function Select<T>({
     }
 
     function handleDocumentClick(event: MouseEvent) {
-      if (
-        event.target instanceof HTMLElement &&
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        rootRef.current!.contains(event.target)
-      ) {
+      if (event.target instanceof HTMLElement && rootRef.current?.contains(event.target)) {
         return;
       }
 
@@ -80,14 +76,15 @@ export function Select<T>({
 
   const getRef = useCallback(
     (element: HTMLDivElement) => {
-      forwardRef && (forwardRef.current = element);
+      if (forwardRef) {
+        forwardRef.current = element;
+      }
       rootRef.current = element;
     },
     [forwardRef],
   );
 
-  const selectedItem =
-    selectList.find(({ id }) => id === selected) || selectList[0];
+  const selectedItem = selectList.find(({ id }) => id === selected) || selectList[0];
 
   return (
     <div
@@ -96,11 +93,10 @@ export function Select<T>({
       })}
       ref={getRef}
     >
-      {description ? (
-        <div className="left input-title basic500 tag1">{description}</div>
-      ) : null}
+      {description ? <div className="left input-title basic500 tag1">{description}</div> : null}
 
-      <div
+      <button
+        type="button"
         className={styles.trigger}
         onClick={() => {
           setIsOpen(prevState => !prevState);
@@ -109,7 +105,7 @@ export function Select<T>({
       >
         {selectedItem.icon}
         <div className={styles.triggerText}>{selectedItem.text}</div>
-      </div>
+      </button>
 
       {isOpen && (
         <div
@@ -131,6 +127,15 @@ export function Select<T>({
                   setIsOpen(false);
                   onSelectItem(item.id, item.value);
                 }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    onSelectItem(item.id, item.value);
+                  }
+                }}
+                role="option"
+                tabIndex={0}
               >
                 {item.text}
                 {item.icon}

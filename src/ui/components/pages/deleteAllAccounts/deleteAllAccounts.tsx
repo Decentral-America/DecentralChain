@@ -17,8 +17,7 @@ export function DeleteAllAccounts() {
   const [isBlur, setBlur] = useState(false);
 
   const defaultPhrase = t('forgotPassword.phrase');
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-  const isCorrectLength = phrase?.length! >= defaultPhrase.length;
+  const isCorrectLength = (phrase?.length ?? 0) >= defaultPhrase.length;
   const hasError = phrase !== defaultPhrase;
 
   function handleInput(event: React.FormEvent<HTMLInputElement>) {
@@ -36,21 +35,14 @@ export function DeleteAllAccounts() {
 
       <h2 className="title1 margin1">{t('forgotPassword.attention')}</h2>
 
-      <div className="body1 margin1">
-        {t('forgotPassword.attentionMessage')}
-      </div>
+      <div className="body1 margin1">{t('forgotPassword.attentionMessage')}</div>
 
       <div className={clsx('plate', 'body1', 'margin1', styles.error)}>
         {t('forgotPassword.warningMessage')}
       </div>
-      <div className="margin1 margin-main-big-top">
-        {t('forgotPassword.continueMessage')}
-      </div>
+      <div className="margin1 margin-main-big-top">{t('forgotPassword.continueMessage')}</div>
 
-      <div
-        className="plate center margin1 cant-select"
-        data-testid="defaultPhrase"
-      >
+      <div className="plate center margin1 cant-select" data-testid="defaultPhrase">
         {t('forgotPassword.phrase')}
       </div>
       <div>

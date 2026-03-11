@@ -1,8 +1,7 @@
 import type { __BackgroundUiApiDirect } from 'background';
 import type { IdentityUser } from 'controllers/IdentityController';
 import type { AnalyticsEvent } from 'controllers/statistics';
-import type { MessageInputOfType, MessageTx } from 'messages/types';
-import type { MoneyLike } from 'messages/types';
+import type { MessageInputOfType, MessageTx, MoneyLike } from 'messages/types';
 import type { NetworkName } from 'networks/types';
 import type { PreferencesAccount } from 'preferences/types';
 import type { UiState } from 'store/reducers/updateState';
@@ -40,19 +39,27 @@ class Background {
   init(background: BackgroundUiApi) {
     this.background = background;
     this._connect = () => undefined;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this._defer.resolve!();
+    this._defer.resolve?.();
   }
 
   setConnect(connect: () => void) {
     this._connect = connect;
   }
 
-  async getState<K extends keyof StorageLocalState>(params?: K[]) {
+  private async getBackground(): Promise<BackgroundUiApi> {
     await this.initPromise;
     this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getState(params);
+
+    if (!this.background) {
+      throw new Error('Background not initialized');
+    }
+
+    return this.background;
+  }
+
+  async getState<K extends keyof StorageLocalState>(params?: K[]) {
+    const bg = await this.getBackground();
+    return bg.getState(params);
   }
 
   async updateIdle() {
@@ -61,445 +68,293 @@ class Background {
   }
 
   async setIdleOptions(options: { type: string }) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setIdleOptions(options);
+    const bg = await this.getBackground();
+    return bg.setIdleOptions(options);
   }
 
   async allowOrigin(origin: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.allowOrigin(origin);
+    const bg = await this.getBackground();
+    return bg.allowOrigin(origin);
   }
 
   async disableOrigin(origin: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.disableOrigin(origin);
+    const bg = await this.getBackground();
+    return bg.disableOrigin(origin);
   }
 
   async deleteOrigin(origin: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.deleteOrigin(origin);
+    const bg = await this.getBackground();
+    return bg.deleteOrigin(origin);
   }
 
-  async setAutoSign(
-    origin: string,
-    options: { interval: number; totalAmount: number },
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any
-    return (this.background!.setAutoSign as any)(origin, options);
+  async setAutoSign(origin: string, options: { interval: number; totalAmount: number }) {
+    const bg = await this.getBackground();
+    return (bg.setAutoSign as any)(origin, options);
   }
 
-  async setNotificationPermissions(options: {
-    origin: string;
-    canUse: boolean | null;
-  }) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setNotificationPermissions(options);
+  async setNotificationPermissions(options: { origin: string; canUse: boolean | null }) {
+    const bg = await this.getBackground();
+    return bg.setNotificationPermissions(options);
   }
 
   async setCurrentLocale(lng: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setCurrentLocale(lng);
+    const bg = await this.getBackground();
+    return bg.setCurrentLocale(lng);
   }
 
   async setUiState(newUiState: UiState) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setUiState(newUiState);
+    const bg = await this.getBackground();
+    return bg.setUiState(newUiState);
   }
 
   async selectAccount(address: string, network: NetworkName): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.selectAccount(address, network);
+    const bg = await this.getBackground();
+    return bg.selectAccount(address, network);
   }
 
-  async addWallet(
-    input: CreateWalletInput,
-    network: NetworkName,
-    networkCode: string,
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.addWallet(input, network, networkCode);
+  async addWallet(input: CreateWalletInput, network: NetworkName, networkCode: string) {
+    const bg = await this.getBackground();
+    return bg.addWallet(input, network, networkCode);
   }
 
   async batchAddWallets(
-    inputs: Array<
-      CreateWalletInput & { network: NetworkName; networkCode: string }
-    >,
+    inputs: Array<CreateWalletInput & { network: NetworkName; networkCode: string }>,
   ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.batchAddWallets(inputs);
+    const bg = await this.getBackground();
+    return bg.batchAddWallets(inputs);
   }
 
   async removeWallet(address: string, network: NetworkName): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.removeWallet(address, network);
+    const bg = await this.getBackground();
+    return bg.removeWallet(address, network);
   }
 
   async deleteVault() {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.deleteVault();
+    const bg = await this.getBackground();
+    return bg.deleteVault();
   }
 
   async closeNotificationWindow(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.closeNotificationWindow();
+    const bg = await this.getBackground();
+    return bg.closeNotificationWindow();
   }
 
   async showTab(url: string, name: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.showTab(url, name);
+    const bg = await this.getBackground();
+    return bg.showTab(url, name);
   }
 
   async closeCurrentTab(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.closeCurrentTab();
+    const bg = await this.getBackground();
+    return bg.closeCurrentTab();
   }
 
   async lock(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.lock();
+    const bg = await this.getBackground();
+    return bg.lock();
   }
 
   async unlock(password: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.unlock(password);
+    const bg = await this.getBackground();
+    return bg.unlock(password);
   }
 
   async initVault(password: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.initVault(password);
+    const bg = await this.getBackground();
+    return bg.initVault(password);
   }
 
   async assertPasswordIsValid(password: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await this.background!.assertPasswordIsValid(password);
+    const bg = await this.getBackground();
+    return await bg.assertPasswordIsValid(password);
   }
 
-  async getAccountSeed(
-    address: string,
-    network: NetworkName,
-    password: string,
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getAccountSeed(address, network, password);
+  async getAccountSeed(address: string, network: NetworkName, password: string) {
+    const bg = await this.getBackground();
+    return bg.getAccountSeed(address, network, password);
   }
 
-  async getAccountEncodedSeed(
-    address: string,
-    network: NetworkName,
-    password: string,
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getAccountEncodedSeed(address, network, password);
+  async getAccountEncodedSeed(address: string, network: NetworkName, password: string) {
+    const bg = await this.getBackground();
+    return bg.getAccountEncodedSeed(address, network, password);
   }
 
-  async getAccountPrivateKey(
-    address: string,
-    network: NetworkName,
-    password: string,
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getAccountPrivateKey(address, network, password);
+  async getAccountPrivateKey(address: string, network: NetworkName, password: string) {
+    const bg = await this.getBackground();
+    return bg.getAccountPrivateKey(address, network, password);
   }
 
   async editWalletName(address: string, name: string, network: NetworkName) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.editWalletName(address, name, network);
+    const bg = await this.getBackground();
+    return bg.editWalletName(address, name, network);
   }
 
   async newPassword(oldPassword: string, newPassword: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.newPassword(oldPassword, newPassword);
+    const bg = await this.getBackground();
+    return bg.newPassword(oldPassword, newPassword);
   }
 
   async clearMessages(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.clearMessages();
+    const bg = await this.getBackground();
+    return bg.clearMessages();
   }
 
   async approve(messageId: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.approve(messageId);
+    const bg = await this.getBackground();
+    return bg.approve(messageId);
   }
 
   async reject(messageId: string, forever = false): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.reject(messageId, forever);
+    const bg = await this.getBackground();
+    return bg.reject(messageId, forever);
   }
 
   async updateTransactionFee(messageId: string, fee: MoneyLike) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.updateTransactionFee(messageId, fee);
+    const bg = await this.getBackground();
+    return bg.updateTransactionFee(messageId, fee);
   }
 
   async setNetwork(network: NetworkName): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setNetwork(network);
+    const bg = await this.getBackground();
+    return bg.setNetwork(network);
   }
 
   async setCustomNode(url: string | null, network: NetworkName) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setCustomNode(url, network);
+    const bg = await this.getBackground();
+    return bg.setCustomNode(url, network);
   }
 
   async setCustomCode(code: string | null, network: NetworkName) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setCustomCode(code, network);
+    const bg = await this.getBackground();
+    return bg.setCustomCode(code, network);
   }
 
   async setCustomMatcher(url: string | null, network: NetworkName) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setCustomMatcher(url, network);
+    const bg = await this.getBackground();
+    return bg.setCustomMatcher(url, network);
   }
 
   async assetInfo(assetId: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.assetInfo(assetId || 'WAVES');
+    const bg = await this.getBackground();
+    return bg.assetInfo(assetId || 'WAVES');
   }
 
-  async updateAssets(
-    assetIds: string[],
-    options: { ignoreCache?: boolean } = {},
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await this.background!.updateAssets(assetIds, options);
+  async updateAssets(assetIds: string[], options: { ignoreCache?: boolean } = {}) {
+    const bg = await this.getBackground();
+    return await bg.updateAssets(assetIds, options);
   }
 
   async updateUsdPricesByAssetIds(assetIds: string[]) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await this.background!.updateUsdPricesByAssetIds(assetIds);
+    const bg = await this.getBackground();
+    return await bg.updateUsdPricesByAssetIds(assetIds);
   }
 
   async setAddress(address: string, name: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setAddress(address, name);
+    const bg = await this.getBackground();
+    return bg.setAddress(address, name);
   }
 
   async setAddresses(addresses: Record<string, string>): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.setAddresses(addresses);
+    const bg = await this.getBackground();
+    return bg.setAddresses(addresses);
   }
 
   async removeAddress(address: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.removeAddress(address);
+    const bg = await this.getBackground();
+    return bg.removeAddress(address);
   }
 
   async toggleAssetFavorite(assetId: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.toggleAssetFavorite(assetId);
+    const bg = await this.getBackground();
+    return bg.toggleAssetFavorite(assetId);
   }
 
   async deleteNotifications(ids: string[]) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.deleteNotifications(ids);
+    const bg = await this.getBackground();
+    return bg.deleteNotifications(ids);
   }
 
   async track(event: AnalyticsEvent) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.track(event);
+    const bg = await this.getBackground();
+    return bg.track(event);
   }
 
   async updateCurrentAccountBalance() {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await this.background!.updateCurrentAccountBalance();
+    const bg = await this.getBackground();
+    return await bg.updateCurrentAccountBalance();
   }
 
   async updateOtherAccountsBalances() {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await this.background!.updateOtherAccountsBalances();
+    const bg = await this.getBackground();
+    return await bg.updateOtherAccountsBalances();
   }
 
   async signTransaction(account: PreferencesAccount, tx: MessageTx) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.signTransaction(account, tx);
+    const bg = await this.getBackground();
+    return bg.signTransaction(account, tx);
   }
 
   async broadcastTransaction(tx: MessageTx) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.broadcastTransaction(tx);
+    const bg = await this.getBackground();
+    return bg.broadcastTransaction(tx);
   }
 
-  async signAndPublishTransaction(
-    data: MessageInputOfType<'transaction'>['data'],
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.signAndPublishTransaction(data);
+  async signAndPublishTransaction(data: MessageInputOfType<'transaction'>['data']) {
+    const bg = await this.getBackground();
+    return bg.signAndPublishTransaction(data);
   }
 
   async getExtraFee(address: string, network: NetworkName) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getExtraFee(address, network);
+    const bg = await this.getBackground();
+    return bg.getExtraFee(address, network);
   }
 
   async getMessageById(messageId: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.getMessageById(messageId);
+    const bg = await this.getBackground();
+    return bg.getMessageById(messageId);
   }
 
   async shouldIgnoreError(context: IgnoreErrorsContext, message: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.shouldIgnoreError(context, message);
+    const bg = await this.getBackground();
+    return bg.shouldIgnoreError(context, message);
   }
 
   async identityRestore(userId: string): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any
-    return (await this.background!.identityRestore(userId)) as any;
+    const bg = await this.getBackground();
+    return (await bg.identityRestore(userId)) as any;
   }
 
   async identityUpdate(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.identityUpdate();
+    const bg = await this.getBackground();
+    return bg.identityUpdate();
   }
 
   async identityClear(): Promise<void> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.identityClear();
+    const bg = await this.getBackground();
+    return bg.identityClear();
   }
 
   async identitySignIn(username: string, password: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.identitySignIn(username, password);
+    const bg = await this.getBackground();
+    return bg.identitySignIn(username, password);
   }
 
   async identityConfirmSignIn(code: string) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.identityConfirmSignIn(code);
+    const bg = await this.getBackground();
+    return bg.identityConfirmSignIn(code);
   }
 
   async identityUser(): Promise<IdentityUser> {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any
-    return (await this.background!.identityUser()) as any;
+    const bg = await this.getBackground();
+    return (await bg.identityUser()) as any;
   }
 
   async ledgerSignResponse(requestId: string, error: unknown): Promise<void>;
-  async ledgerSignResponse(
-    requestId: string,
-    error: null,
-    signature: string,
-  ): Promise<void>;
-  async ledgerSignResponse(
-    requestId: string,
-    error: unknown,
-    signature?: string,
-  ) {
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.ledgerSignResponse(
+  async ledgerSignResponse(requestId: string, error: null, signature: string): Promise<void>;
+  async ledgerSignResponse(requestId: string, error: unknown, signature?: string) {
+    const bg = await this.getBackground();
+    return bg.ledgerSignResponse(
       requestId,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       error && (error as any).message ? (error as any).message : null,
       signature,
     );
@@ -520,10 +375,8 @@ class Background {
 
     this.updatedByUser = false;
     this._lastUpdateIdle = now;
-    await this.initPromise;
-    this._connect();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.background!.updateIdle();
+    const bg = await this.getBackground();
+    return bg.updateIdle();
   }
 }
 

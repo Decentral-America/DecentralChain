@@ -32,10 +32,19 @@ function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemP
 
   const listItemEl = (
     <li
+      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: li with role="option" is a standard listbox pattern
+      role="option"
       className={className}
       onClick={() => {
         onSelect(asset.id);
       }}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(asset.id);
+        }
+      }}
+      tabIndex={0}
     >
       <div className={styles.logo}>
         {logoSrc ? (

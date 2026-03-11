@@ -158,7 +158,6 @@ export class PermissionsController {
       return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newAutoSign = { ...(autoSign as any), interval, totalAmount };
     this.updatePermission(origin, newAutoSign);
   }
@@ -307,9 +306,7 @@ export class PermissionsController {
         if (!permissions.includes(permission)) {
           permissions.push(permission);
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (!permissions.includes(type as any)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           permissions.push(type as any);
         }
         acc[origin] = permissions;
@@ -324,7 +321,6 @@ export class PermissionsController {
   _updateByConfig() {
     const { whitelist } = this.remoteConfig.store.getState();
     this.updateState({ whitelist });
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     this.remoteConfig.store.subscribe(({ whitelist }) => {
       this.updateState({ whitelist });
       this._updateBlackWhitelist();

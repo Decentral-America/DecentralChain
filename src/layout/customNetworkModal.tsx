@@ -11,19 +11,10 @@ interface Props {
   initialMatcher: string;
   initialNode: string;
   onClose: () => void;
-  onSave: (networkConfig: {
-    matcher: string;
-    networkCode: string;
-    node: string;
-  }) => void;
+  onSave: (networkConfig: { matcher: string; networkCode: string; node: string }) => void;
 }
 
-export function CustomNetworkModal({
-  initialMatcher,
-  initialNode,
-  onClose,
-  onSave,
-}: Props) {
+export function CustomNetworkModal({ initialMatcher, initialNode, onClose, onSave }: Props) {
   const { t } = useTranslation();
 
   const [matcher, setMatcher] = useState(() => initialMatcher);
@@ -46,11 +37,10 @@ export function CustomNetworkModal({
           setNodeError(false);
           setIsSubmitting(true);
 
-          const [networkCodeResult, matcherPublicKeyResult] =
-            await Promise.allSettled([
-              getNetworkCode(node),
-              matcher ? getMatcherPublicKey(matcher) : undefined,
-            ]);
+          const [networkCodeResult, matcherPublicKeyResult] = await Promise.allSettled([
+            getNetworkCode(node),
+            matcher ? getMatcherPublicKey(matcher) : undefined,
+          ]);
 
           setNodeError(networkCodeResult.status === 'rejected');
           setMatcherError(matcherPublicKeyResult.status === 'rejected');
@@ -72,8 +62,7 @@ export function CustomNetworkModal({
         }}
       >
         <h2 className="headline2 margin-main-big">
-          {t(`bottom.${NetworkName.Custom}`)}{' '}
-          {t('networkSettings.customNetwork')}
+          {t(`bottom.${NetworkName.Custom}`)} {t('networkSettings.customNetwork')}
         </h2>
 
         <div className="margin-main-big relative">
@@ -94,17 +83,12 @@ export function CustomNetworkModal({
           />
 
           <ErrorMessage show={nodeError} data-testid="nodeAddressError">
-            {node
-              ? t('networkSettings.nodeError')
-              : t('networkSettings.nodeUrlEmpty')}
+            {node ? t('networkSettings.nodeError') : t('networkSettings.nodeUrlEmpty')}
           </ErrorMessage>
         </div>
 
         <div className="margin-main-big relative">
-          <label
-            className="input-title basic500 tag1"
-            htmlFor="matcher_address"
-          >
+          <label className="input-title basic500 tag1" htmlFor="matcher_address">
             {t('networksSettings.matcher')}
           </label>
 
@@ -119,9 +103,7 @@ export function CustomNetworkModal({
             }}
           />
 
-          <ErrorMessage show={matcherError}>
-            {t('networkSettings.matcherError')}
-          </ErrorMessage>
+          <ErrorMessage show={matcherError}>{t('networkSettings.matcherError')}</ErrorMessage>
         </div>
 
         <Button

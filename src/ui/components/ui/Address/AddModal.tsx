@@ -39,7 +39,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
     setNameError('');
     setAddressValue('');
     setAddressError('');
-  }, [showModal, setShowModal]);
+  }, [showModal]);
 
   useEffect(() => {
     if (!loading) {
@@ -68,9 +68,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                 setShowModal(false);
               }}
             />
-            <p className={`headline2Bold ${styles.title}`}>
-              {t('address.add')}
-            </p>
+            <p className={`headline2Bold ${styles.title}`}>{t('address.add')}</p>
             <form
               className={styles.form}
               onSubmit={e => {
@@ -84,11 +82,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                   return;
                 }
 
-                if (
-                  /^\s/g.test(name) ||
-                  isAddressString(name) ||
-                  isAlias(name)
-                ) {
+                if (/^\s/g.test(name) || isAddressString(name) || isAlias(name)) {
                   setNameError(t('address.nameInvalidError'));
                   return;
                 }
@@ -113,9 +107,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                 setLoading(true);
               }}
             >
-              <p className={`basic500 ${styles.subtitle}`}>
-                {t('address.name')}
-              </p>
+              <p className={`basic500 ${styles.subtitle}`}>{t('address.name')}</p>
               <div className={styles.name}>
                 <Input
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,9 +123,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                   {nameError}
                 </ErrorMessage>
               </div>
-              <p className={`basic500 ${styles.subtitle}`}>
-                {t('address.subtitle')}
-              </p>
+              <p className={`basic500 ${styles.subtitle}`}>{t('address.subtitle')}</p>
               <AddressInput
                 onChange={e => {
                   setAddressValue(e.target.value);
@@ -156,10 +146,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
           </div>
         </div>
       </Modal>
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showNotification}
-      >
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showNotification}>
         <div className="modal notification">
           <div>{t('address.added')}</div>
         </div>

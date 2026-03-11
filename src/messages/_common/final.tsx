@@ -7,12 +7,7 @@ interface Props {
   messages?: { approve?: string; reject?: string; send?: string } | undefined;
 }
 
-export function MessageFinal({
-  isApprove,
-  isReject,
-  isSend,
-  messages = {},
-}: Props) {
+export function MessageFinal({ isApprove, isReject, isSend, messages = {} }: Props) {
   const { t } = useTranslation();
 
   const {

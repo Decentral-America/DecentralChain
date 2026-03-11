@@ -16,13 +16,7 @@ interface Props {
   setShowDeleteModal?: ((showModal: boolean) => void) | undefined;
 }
 
-export function EditModal({
-  name,
-  address,
-  showModal,
-  setShowModal,
-  setShowDeleteModal,
-}: Props) {
+export function EditModal({ name, address, showModal, setShowModal, setShowDeleteModal }: Props) {
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
@@ -35,20 +29,14 @@ export function EditModal({
   const [addressValue, setAddressValue] = useState(address);
 
   const nameError = useMemo(() => {
-    const isNameExists = Object.values(addresses).find(
-      addressName => addressName === nameValue,
-    );
+    const isNameExists = Object.values(addresses).find(addressName => addressName === nameValue);
     const isNameChanged = name !== nameValue;
 
     if (isNameChanged && isNameExists) {
       return t('address.nameAlreadyExist');
     }
 
-    if (
-      /^\s/g.test(nameValue) ||
-      isAddressString(nameValue) ||
-      isAlias(nameValue)
-    ) {
+    if (/^\s/g.test(nameValue) || isAddressString(nameValue) || isAlias(nameValue)) {
       return t('address.nameInvalidError');
     }
   }, [addresses, name, nameValue, t]);
@@ -71,7 +59,7 @@ export function EditModal({
     setLoading(false);
     setNameValue(name);
     setAddressValue(address);
-  }, [name, address, showModal, setShowModal]);
+  }, [name, address, showModal]);
 
   useEffect(() => {
     if (loading && (name !== nameValue || address !== addressValue)) {
@@ -79,15 +67,7 @@ export function EditModal({
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 1000);
     }
-  }, [
-    addresses,
-    name,
-    nameValue,
-    address,
-    addressValue,
-    loading,
-    setShowModal,
-  ]);
+  }, [name, nameValue, address, addressValue, loading, setShowModal]);
 
   return (
     <>
@@ -102,9 +82,7 @@ export function EditModal({
                 setShowModal(false);
               }}
             />
-            <p className={`headline2Bold ${styles.title}`}>
-              {t('address.edit')}
-            </p>
+            <p className={`headline2Bold ${styles.title}`}>{t('address.edit')}</p>
             <form
               className={styles.form}
               onSubmit={e => {
@@ -115,15 +93,11 @@ export function EditModal({
                 if (address !== addressValue) {
                   dispatch(removeAddress({ address }));
                 }
-                dispatch(
-                  setAddress({ address: addressValue, name: nameValue }),
-                );
+                dispatch(setAddress({ address: addressValue, name: nameValue }));
                 setLoading(true);
               }}
             >
-              <p className={`basic500 ${styles.subtitle}`}>
-                {t('address.name')}
-              </p>
+              <p className={`basic500 ${styles.subtitle}`}>{t('address.name')}</p>
               <div className={styles.name}>
                 <Input
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,9 +112,7 @@ export function EditModal({
                   {nameError}
                 </ErrorMessage>
               </div>
-              <p className={`basic500 ${styles.subtitle}`}>
-                {t('address.subtitle')}
-              </p>
+              <p className={`basic500 ${styles.subtitle}`}>{t('address.subtitle')}</p>
               <AddressInput
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setAddressValue(e.target.value);
@@ -154,9 +126,7 @@ export function EditModal({
                 view="submit"
                 className={styles.button}
                 disabled={
-                  !nameValue ||
-                  !addressValue ||
-                  (name === nameValue && address === addressValue)
+                  !nameValue || !addressValue || (name === nameValue && address === addressValue)
                 }
               >
                 {t('address.saveChanges')}
@@ -176,10 +146,7 @@ export function EditModal({
           </div>
         </div>
       </Modal>
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showNotification}
-      >
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showNotification}>
         <div className="modal notification">
           <div>{t('address.edited')}</div>
         </div>

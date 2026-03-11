@@ -8,14 +8,14 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { AddressRecipient } from 'ui/components/ui/Address/Recipient';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxInvokeScript } from '../types';
+import type { MessageOfType, MessageTxInvokeScript } from '../types';
 import * as styles from './invokeScript.module.css';
 
 export function InvokeScriptCard({
@@ -36,15 +36,11 @@ export function InvokeScriptCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.scriptInvocation')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.scriptInvocation')}</div>
 
           <h1 className="headline1" data-testid="invokeScriptPaymentsTitle">
             {t(
-              tx.payment.length !== 0
-                ? 'transactions.paymentsCount'
-                : 'transactions.paymentsNone',
+              tx.payment.length !== 0 ? 'transactions.paymentsCount' : 'transactions.paymentsNone',
               { count: tx.payment.length ?? 0 },
             )}
           </h1>
@@ -56,32 +52,21 @@ export function InvokeScriptCard({
           <div className="tx-title tag1 basic500">{t('transactions.dApp')}</div>
 
           <div className={transactionsStyles.txValue}>
-            <AddressRecipient
-              recipient={tx.dApp}
-              chainId={tx.chainId}
-              testid="invokeScriptDApp"
-            />
+            <AddressRecipient recipient={tx.dApp} chainId={tx.chainId} testid="invokeScriptDApp" />
           </div>
         </div>
 
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.scriptInvocationFunction')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.scriptInvocationFunction')}</div>
 
-          <div
-            className={transactionsStyles.txValue}
-            data-testid="invokeScriptFunction"
-          >
+          <div className={transactionsStyles.txValue} data-testid="invokeScriptFunction">
             {tx.call?.function ?? 'default'}
           </div>
         </div>
 
         {tx.call && tx.call.args.length !== 0 && (
           <div className={transactionsStyles.txRow}>
-            <div className="tx-title tag1 basic500">
-              {t('transactions.arguments')}
-            </div>
+            <div className="tx-title tag1 basic500">{t('transactions.arguments')}</div>
 
             <div className={transactionsStyles.txValue}>
               <Expandable
@@ -98,6 +83,7 @@ export function InvokeScriptCard({
 
                   <tbody>
                     {tx.call.args.map((arg, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: function arguments are positional, no stable ID
                       <tr key={index} data-testid="invokeArgument">
                         <td data-testid="invokeArgumentType">{arg.type}</td>
 
@@ -117,9 +103,7 @@ export function InvokeScriptCard({
 
         {tx.payment.length !== 0 && (
           <div className={transactionsStyles.txRow}>
-            <div className="tx-title tag1 basic500">
-              {t('transactions.payments')}
-            </div>
+            <div className="tx-title tag1 basic500">{t('transactions.payments')}</div>
 
             <div className={transactionsStyles.txValue}>
               <div className={clsx('plate', 'break-all')}>
@@ -128,6 +112,7 @@ export function InvokeScriptCard({
                   invariant(asset);
 
                   return (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: payment items may share assetId, no unique ID
                     <div key={index} className={styles.paymentItem}>
                       <Balance
                         balance={new Money(item.amount, new Asset(asset))}
@@ -161,16 +146,12 @@ export function InvokeScriptScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <InvokeScriptCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

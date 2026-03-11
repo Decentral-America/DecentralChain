@@ -1,4 +1,4 @@
-import { type Money } from '@decentralchain/data-entities';
+import type { Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 
 import { Loader } from '../loader';
@@ -40,9 +40,7 @@ export function Balance({
     return <div>N/A</div>;
   }
 
-  const tokens = (
-    isShortFormat ? balance.toFormat() : balance.toTokens()
-  ).split('.');
+  const tokens = (isShortFormat ? balance.toFormat() : balance.toTokens()).split('.');
 
   const assetName = showAsset ? balance.asset.displayName : null;
 

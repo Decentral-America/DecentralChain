@@ -6,20 +6,16 @@ import { MessageFooter } from 'messages/_common/footer';
 import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
-import {
-  isAlias,
-  processAliasOrAddress,
-  stringifyTransaction,
-} from 'messages/utils';
+import { isAlias, processAliasOrAddress, stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { AddressRecipient } from '../../ui/components/ui/Address/Recipient';
-import { type MessageOfType, type MessageTxMassTransfer } from '../types';
+import type { MessageOfType, MessageTxMassTransfer } from '../types';
 import { Base58 } from './common/base58';
 import * as styles from './massTransfer.module.css';
 
@@ -44,18 +40,14 @@ export function MassTransferCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.massTransfer')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.massTransfer')}</div>
 
           <h1 className="headline1">
             <Balance
               addSign="-"
               balance={
                 new Money(
-                  BigNumber.sum(
-                    ...tx.transfers.map(transfer => transfer.amount),
-                  ),
+                  BigNumber.sum(...tx.transfers.map(transfer => transfer.amount)),
                   new Asset(asset),
                 )
               }
@@ -71,9 +63,7 @@ export function MassTransferCard({
       {!collapsed && (
         <div className={transactionsStyles.cardContent}>
           <div className={transactionsStyles.txRow}>
-            <div className="tx-title tag1 basic500">
-              {t('transactions.recipients')}
-            </div>
+            <div className="tx-title tag1 basic500">{t('transactions.recipients')}</div>
 
             <details className={styles.transfersDetails} open>
               <summary
@@ -86,11 +76,7 @@ export function MassTransferCard({
               </summary>
 
               {tx.transfers.map(({ recipient, amount }) => (
-                <div
-                  key={recipient}
-                  className={styles.transfer}
-                  data-testid="massTransferItem"
-                >
+                <div key={recipient} className={styles.transfer} data-testid="massTransferItem">
                   <AddressRecipient
                     chainId={tx.chainId}
                     className={styles.recipient}
@@ -114,23 +100,14 @@ export function MassTransferCard({
 
             {tx.transfers.some(({ recipient }) =>
               isAlias(processAliasOrAddress(recipient, tx.chainId)),
-            ) && (
-              <p className={styles.aliasWarning}>{t('address.warningAlias')}</p>
-            )}
+            ) && <p className={styles.aliasWarning}>{t('address.warningAlias')}</p>}
           </div>
 
           {tx.attachment && tx.attachment.length !== 0 && (
-            <div
-              className={`${transactionsStyles.txRow} ${transactionsStyles.txRowDescription}`}
-            >
-              <div className="tx-title tag1 basic500">
-                {t('transactions.attachment')}
-              </div>
+            <div className={`${transactionsStyles.txRow} ${transactionsStyles.txRowDescription}`}>
+              <div className="tx-title tag1 basic500">{t('transactions.attachment')}</div>
 
-              <Base58
-                base58={tx.attachment}
-                data-testid="massTransferAttachment"
-              />
+              <Base58 base58={tx.attachment} data-testid="massTransferAttachment" />
             </div>
           )}
         </div>
@@ -152,16 +129,12 @@ export function MassTransferScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <MassTransferCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

@@ -1,4 +1,4 @@
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 
 export type CreateWalletInput = { name: string } & (
   | { type: 'debug'; address: string }
@@ -45,5 +45,7 @@ export type WalletPrivateData = {
   | { type: 'wx'; uuid: string; username: string }
 );
 
-export type WalletPrivateDataOfType<T extends WalletPrivateData['type']> =
-  Extract<WalletPrivateData, { type: T }>;
+export type WalletPrivateDataOfType<T extends WalletPrivateData['type']> = Extract<
+  WalletPrivateData,
+  { type: T }
+>;

@@ -1,7 +1,7 @@
 import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetsRecord } from 'assets/types';
+import type { AssetsRecord } from 'assets/types';
 import clsx from 'clsx';
 import { MessageFooter } from 'messages/_common/footer';
 import { MessageHeader } from 'messages/_common/header';
@@ -9,14 +9,14 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { TransactionCard } from 'messages/transaction/transaction';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTx } from '../types';
+import type { MessageOfType, MessageTx } from '../types';
 import * as styles from './transactionPackage.module.css';
 
 function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
@@ -51,9 +51,7 @@ function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
       return [new Money(new BigNumber(0).sub(tx.amount), new Asset(asset))];
     }
     case TRANSACTION_TYPE.LEASE:
-      return [
-        new Money(new BigNumber(0).sub(tx.amount), new Asset(assets.WAVES)),
-      ];
+      return [new Money(new BigNumber(0).sub(tx.amount), new Asset(assets.WAVES))];
     case TRANSACTION_TYPE.CANCEL_LEASE:
       return [new Money(tx.lease.amount, new Asset(assets.WAVES))];
     case TRANSACTION_TYPE.MASS_TRANSFER: {
@@ -62,9 +60,7 @@ function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
 
       return [
         new Money(
-          new BigNumber(0).sub(
-            BigNumber.sum(...tx.transfers.map(t => t.amount)),
-          ),
+          new BigNumber(0).sub(BigNumber.sum(...tx.transfers.map(t => t.amount))),
           new Asset(asset),
         ),
       ];
@@ -110,11 +106,7 @@ export function TransactionPackageCard({
 
   return (
     <div
-      className={clsx(
-        className,
-        transactionsStyles.transactionCard,
-        transactionsStyles.groupTx,
-      )}
+      className={clsx(className, transactionsStyles.transactionCard, transactionsStyles.groupTx)}
     >
       <div className={transactionsStyles.groupBottom} />
 
@@ -126,15 +118,10 @@ export function TransactionPackageCard({
 
           <div>
             <div className="basic500 body3 margin-min">
-              {message.title && collapsed
-                ? message.title
-                : t('transactions.packTransactionGroup')}
+              {message.title && collapsed ? message.title : t('transactions.packTransactionGroup')}
             </div>
 
-            <h1
-              className="headline1 margin-main"
-              data-testid="packageCountTitle"
-            >
+            <h1 className="headline1 margin-main" data-testid="packageCountTitle">
               {message.data.length} {t('transactions.packTransactions')}
             </h1>
 
@@ -146,6 +133,7 @@ export function TransactionPackageCard({
 
                   return (
                     <Balance
+                      // biome-ignore lint/suspicious/noArrayIndexKey: computed balance amounts have no stable ID
                       key={index}
                       addSign={coins.gt(0) ? '+' : undefined}
                       balance={amount}
@@ -170,13 +158,9 @@ export function TransactionPackageCard({
             <div className="margin-min">
               <div className="margin-main">
                 {fees.map((fee, index) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fee items have no stable unique ID
                   <div key={index}>
-                    <Balance
-                      data-testid="packageFeeItem"
-                      balance={fee}
-                      isShortFormat
-                      showAsset
-                    />
+                    <Balance data-testid="packageFeeItem" balance={fee} isShortFormat showAsset />
                   </div>
                 ))}
               </div>
@@ -220,17 +204,12 @@ export function TransactionPackageScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className={styles.screenCard}>
           <TransactionPackageCard message={message} />
         </div>
 
-        <div
-          ref={transactionListTitleRef}
-          className={styles.transactionListTitle}
-        >
+        <div ref={transactionListTitleRef} className={styles.transactionListTitle}>
           {t('transactions.details')}
         </div>
 
@@ -255,6 +234,7 @@ export function TransactionPackageScreen({
             };
 
             return (
+              // biome-ignore lint/suspicious/noArrayIndexKey: transaction index corresponds to input.data position
               <div key={index} data-testid="packageItem">
                 <TransactionCard message={msg} />
                 <TxInfo message={msg} />
@@ -274,38 +254,37 @@ export function TransactionPackageScreen({
             {data
               .slice()
               .reverse()
-              .map((item, index) => (
-                <MessageIcon
-                  key={index}
-                  className={styles.icon}
-                  type={
-                    {
-                      [TRANSACTION_TYPE.ISSUE]: 'issue',
-                      [TRANSACTION_TYPE.TRANSFER]: 'transfer',
-                      [TRANSACTION_TYPE.REISSUE]: 'reissue',
-                      [TRANSACTION_TYPE.BURN]: 'burn',
-                      [TRANSACTION_TYPE.LEASE]: 'lease',
-                      [TRANSACTION_TYPE.CANCEL_LEASE]: 'cancel-leasing',
-                      [TRANSACTION_TYPE.ALIAS]: 'create-alias',
-                      [TRANSACTION_TYPE.MASS_TRANSFER]: 'mass_transfer',
-                      [TRANSACTION_TYPE.DATA]: 'data',
-                      [TRANSACTION_TYPE.SET_SCRIPT]: 'set-script',
-                      [TRANSACTION_TYPE.SPONSORSHIP]: 'sponsorship',
-                      [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: 'set-asset-script',
-                      [TRANSACTION_TYPE.INVOKE_SCRIPT]: 'script_invocation',
-                      [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: 'updateAssetInfo',
-                    }[item.type]
-                  }
-                />
-              ))}
+              .map((item, index) => {
+                return (
+                  <MessageIcon
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static icon display, list never reorders
+                    key={`icon-${item.type}-${index}`}
+                    className={styles.icon}
+                    type={
+                      {
+                        [TRANSACTION_TYPE.ISSUE]: 'issue',
+                        [TRANSACTION_TYPE.TRANSFER]: 'transfer',
+                        [TRANSACTION_TYPE.REISSUE]: 'reissue',
+                        [TRANSACTION_TYPE.BURN]: 'burn',
+                        [TRANSACTION_TYPE.LEASE]: 'lease',
+                        [TRANSACTION_TYPE.CANCEL_LEASE]: 'cancel-leasing',
+                        [TRANSACTION_TYPE.ALIAS]: 'create-alias',
+                        [TRANSACTION_TYPE.MASS_TRANSFER]: 'mass_transfer',
+                        [TRANSACTION_TYPE.DATA]: 'data',
+                        [TRANSACTION_TYPE.SET_SCRIPT]: 'set-script',
+                        [TRANSACTION_TYPE.SPONSORSHIP]: 'sponsorship',
+                        [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: 'set-asset-script',
+                        [TRANSACTION_TYPE.INVOKE_SCRIPT]: 'script_invocation',
+                        [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: 'updateAssetInfo',
+                      }[item.type]
+                    }
+                  />
+                );
+              })}
           </div>
 
           <div className={styles.toggleText}>
-            {t(
-              isOpen
-                ? 'transactions.hideTransactions'
-                : 'transactions.showTransactions',
-            )}
+            {t(isOpen ? 'transactions.hideTransactions' : 'transactions.showTransactions')}
 
             <i className={isOpen ? styles.arrowUp : styles.arrowDown} />
           </div>
