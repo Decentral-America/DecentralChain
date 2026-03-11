@@ -1,5 +1,4 @@
-// NOTE: Default export from @decentralchain/ledger is named WavesLedger in source — aliased here as DccLedger
-import DccLedger from '@decentralchain/ledger';
+import { DCCLedger as DccLedger } from '@decentralchain/ledger';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { captureException } from '@sentry/browser';
 import type { PreferencesAccount } from 'preferences/types';
