@@ -95,7 +95,7 @@ export interface StorageLocalState {
 }
 
 export interface StorageSessionState {
-  memo?: Record<string, string | null>;
+  memo?: Record<string, string | null> | undefined;
   password?: string | null | undefined;
 }
 

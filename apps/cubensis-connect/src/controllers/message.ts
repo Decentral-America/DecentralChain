@@ -550,7 +550,7 @@ export class MessageController extends EventEmitter {
 
   #getFeeInAssetWithEnoughBalance(
     assets: AssetsRecord,
-    txParams: Partial<Pick<MessageTx, 'fee' | 'initialFee'>> &
+    txParams: { fee?: MessageTx['fee'] | undefined; initialFee?: MessageTx['initialFee'] | undefined } &
       (
         | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
             Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
@@ -772,7 +772,8 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            this.#getFeeInAssetWithEnoughBalance(assets, txParams, {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex intersection type conflicts with exactOptionalPropertyTypes
+            this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
               assetId: feeAssetId,
               coins: fee,
             })) || {
@@ -784,7 +785,7 @@ export class MessageController extends EventEmitter {
         };
 
         return {
-          id: base58Encode(computeTxHash(makeTxBytes(tx))),
+          id: base58Encode(computeTxHash(makeTxBytes(tx as Parameters<typeof makeTxBytes>[0]))),
           ...tx,
         };
       }
@@ -1498,7 +1499,8 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            this.#getFeeInAssetWithEnoughBalance(assets, txParams, {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex intersection type conflicts with exactOptionalPropertyTypes
+            this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
               assetId: feeAssetId,
               coins: fee,
             })) || {
@@ -1510,7 +1512,7 @@ export class MessageController extends EventEmitter {
         };
 
         return {
-          id: base58Encode(computeTxHash(makeTxBytes(tx))),
+          id: base58Encode(computeTxHash(makeTxBytes(tx as Parameters<typeof makeTxBytes>[0]))),
           ...tx,
         };
       }
@@ -1623,7 +1625,7 @@ export class MessageController extends EventEmitter {
         const data = {
           senderPublicKey: messageInput.account.publicKey,
           ...messageInput.data.data,
-        };
+        } as { senderPublicKey: string; id: string };
 
         return {
           ...messageInput,
@@ -1762,7 +1764,7 @@ export class MessageController extends EventEmitter {
           timestamp: Date.now(),
           senderPublicKey: messageInput.account.publicKey,
           ...messageInput.data.data,
-        };
+        } as { senderPublicKey: string; timestamp: number };
 
         return {
           ...messageInput,
