@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { type KeystoreAccount, type KeystoreProfiles } from 'keystore/types';
+import type { KeystoreAccount, KeystoreProfiles } from 'keystore/types';
 import { NetworkName } from 'networks/types';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/components/ui';
@@ -74,9 +74,7 @@ export function ImportKeystoreChooseAccounts({
         );
       }}
     >
-      <h2 className={clsx(styles.title, 'title1')}>
-        {t('importKeystore.chooseAccountsTitle')}
-      </h2>
+      <h2 className={clsx(styles.title, 'title1')}>{t('importKeystore.chooseAccountsTitle')}</h2>
 
       <p className={clsx(styles.description, 'body1', 'disabled500')}>
         {t('importKeystore.chooseAccountsDesc')}
@@ -87,39 +85,24 @@ export function ImportKeystoreChooseAccounts({
           .map(network => [network, profiles[network].accounts] as const)
           .filter(([, accounts]) => accounts.length !== 0)
           .map(([network, accounts]) => {
-            const newAccounts = accounts.filter(
-              acc => !existingAccounts.has(acc.address),
-            );
+            const newAccounts = accounts.filter(acc => !existingAccounts.has(acc.address));
 
             return (
-              <div
-                key={network}
-                className={styles.accountsGroup}
-                data-testid="accountsGroup"
-              >
+              <div key={network} className={styles.accountsGroup} data-testid="accountsGroup">
                 <header className={styles.accountsGroupHeader}>
-                  <i
-                    className={clsx(styles.accountsGroupIcon, 'networkIcon')}
-                  />
+                  <i className={clsx(styles.accountsGroupIcon, 'networkIcon')} />
 
-                  <h2
-                    className={styles.accountsGroupLabel}
-                    data-testid="accountsGroupLabel"
-                  >
+                  <h2 className={styles.accountsGroupLabel} data-testid="accountsGroupLabel">
                     {networkLabels[network]}
                   </h2>
 
                   {newAccounts.length !== 0 && (
                     <input
-                      checked={newAccounts.every(acc =>
-                        selected.has(acc.address),
-                      )}
+                      checked={newAccounts.every(acc => selected.has(acc.address))}
                       type="checkbox"
                       onChange={event => {
                         toggleSelected(
-                          accounts.filter(
-                            acc => !existingAccounts.has(acc.address),
-                          ),
+                          accounts.filter(acc => !existingAccounts.has(acc.address)),
                           event.currentTarget.checked,
                         );
                       }}
@@ -141,32 +124,18 @@ export function ImportKeystoreChooseAccounts({
                         title={account.address}
                       >
                         <div className={styles.accountInfo}>
-                          <Avatar
-                            size={32}
-                            address={account.address}
-                            type={account.type}
-                          />
+                          <Avatar size={32} address={account.address} type={account.type} />
 
                           <div className={styles.accountInfoText}>
-                            <div
-                              className={styles.accountName}
-                              data-testid="accountName"
-                            >
+                            <div className={styles.accountName} data-testid="accountName">
                               {account.name}
                             </div>
 
                             {existingAccount && (
-                              <div
-                                className={clsx(
-                                  styles.accountName,
-                                  'body3',
-                                  'disabled500',
-                                )}
-                              >
-                                {t(
-                                  'importKeystore.chooseAccountsExistingAccountNote',
-                                  { existingName: existingAccount.name },
-                                )}
+                              <div className={clsx(styles.accountName, 'body3', 'disabled500')}>
+                                {t('importKeystore.chooseAccountsExistingAccountNote', {
+                                  existingName: existingAccount.name,
+                                })}
                               </div>
                             )}
                           </div>
@@ -179,10 +148,7 @@ export function ImportKeystoreChooseAccounts({
                             type="checkbox"
                             value={account.address}
                             onChange={event => {
-                              toggleSelected(
-                                [account],
-                                event.currentTarget.checked,
-                              );
+                              toggleSelected([account], event.currentTarget.checked);
                             }}
                           />
                         )}

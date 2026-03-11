@@ -1,18 +1,11 @@
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 
 import { MessageFinal } from './_common/final';
 import { AuthCard, AuthFinal, AuthScreen } from './auth/auth';
-import {
-  AuthOriginCard,
-  AuthOriginFinal,
-  AuthOriginScreen,
-} from './authOrigin/authOrigin';
+import { AuthOriginCard, AuthOriginFinal, AuthOriginScreen } from './authOrigin/authOrigin';
 import { CancelOrderCard, CancelOrderScreen } from './cancelOrder/cancelOrder';
-import {
-  CustomDataCard,
-  CustomDataFinal,
-  CustomDataScreen,
-} from './customData/customData';
+import { CustomDataCard, CustomDataFinal, CustomDataScreen } from './customData/customData';
+import { DccAuthCard, DccAuthFinal, DccAuthScreen } from './dccAuth/dccAuth';
 import { OrderCard, OrderScreen } from './order/order';
 import { RequestCard, RequestFinal, RequestScreen } from './request/request';
 import { TransactionCard, TransactionScreen } from './transaction/transaction';
@@ -20,12 +13,7 @@ import {
   TransactionPackageCard,
   TransactionPackageScreen,
 } from './transactionPackage/transactionPackage';
-import { type Message, type MessageOfType } from './types';
-import {
-  DccAuthCard,
-  DccAuthFinal,
-  DccAuthScreen,
-} from './dccAuth/dccAuth';
+import type { Message, MessageOfType } from './types';
 
 interface MessageConfig<T extends Message['type']> {
   card: React.ComponentType<{
@@ -92,8 +80,6 @@ const messageConfigs = {
   },
 };
 
-export function getMessageConfig<T extends Message['type']>(
-  input: MessageOfType<T>,
-) {
+export function getMessageConfig<T extends Message['type']>(input: MessageOfType<T>) {
   return messageConfigs[input.type] as unknown as MessageConfig<T>;
 }

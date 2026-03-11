@@ -1,10 +1,7 @@
 // NOTE: This vendor integrates with wavesducks.com (third-party NFT project).
 // URLs and biographical text referencing "Waves Ducks" / "WavesDucks" are
 // content from that third-party project and not DCC branding.
-import {
-  dataEntriesToRecord,
-  fetchDataEntries,
-} from '../../nodeApi/dataEntries';
+import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
 import {
   type CreateParams,
   type FetchInfoParams,
@@ -48,11 +45,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       .then(dataEntriesToRecord)
       .then(dataEntries =>
         nftIds.map((id): DucklingsNftInfo => {
-          // eslint-disable-next-line radix
-          const level = parseInt(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (dataEntries[ducklingLevelKey(id)] as any) ?? 0,
-          );
+          const level = parseInt((dataEntries[ducklingLevelKey(id)] as any) ?? 0, 10);
 
           return {
             growthLevel: level > 0 ? level / 1e14 : 0,
@@ -216,20 +209,16 @@ const DUCKLING_ADJECTIVES = [
 const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   agnesi:
     'Maria Gaetana Agnesi - Italian mathematician, philosopher, theologian and humanitarian. She was the first woman to write a mathematics handbook and the first woman appointed as a Mathematics Professor at a University.',
-  albattani:
-    'Muhammad ibn Jābir al-Ḥarrānī al-Battānī was a founding father of astronomy.',
+  albattani: 'Muhammad ibn Jābir al-Ḥarrānī al-Battānī was a founding father of astronomy.',
   allen:
     "Frances E. Allen, became the first female IBM Fellow in 1989. In 2006, she became the first female recipient of the ACM's Turing Award.",
-  almeida:
-    'June Almeida - Scottish virologist who took the first pictures of the rubella virus.',
+  almeida: 'June Almeida - Scottish virologist who took the first pictures of the rubella virus.',
   antonelli:
     'Kathleen Antonelli, American computer programmer and one of the six original programmers of the ENIAC.',
   archimedes:
     'Archimedes was a physicist, engineer and mathematician who invented too many things to list them here.',
-  ardinghelli:
-    'Maria Ardinghelli - Italian translator, mathematician and physicist.',
-  aryabhata:
-    'Aryabhata - Ancient Indian mathematician-astronomer during 476-550 CE.',
+  ardinghelli: 'Maria Ardinghelli - Italian translator, mathematician and physicist.',
+  aryabhata: 'Aryabhata - Ancient Indian mathematician-astronomer during 476-550 CE.',
   austin:
     'Wanda Austin - Wanda Austin is the President and CEO of The Aerospace Corporation, a leading architect for the US security space programs.',
   babbage: 'Charles Babbage invented the concept of a programmable computer.',
@@ -241,8 +230,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   bartik:
     'Jean Bartik, born Betty Jean Jennings, was one of the original programmers for the ENIAC computer.',
   bassi: "Laura Bassi, the world's first female professor.",
-  beaver:
-    'Hugh Beaver, British engineer, founder of the Guinness Book of World Records.',
+  beaver: 'Hugh Beaver, British engineer, founder of the Guinness Book of World Records.',
   bell: 'Alexander Graham Bell - an eminent Scottish-born scientist, inventor, engineer and innovator who is credited with inventing the first practical telephone.',
   benz: 'Karl Friedrich Benz - a German automobile engineer. Inventor of the first practical motorcar.',
   bhabha:
@@ -256,8 +244,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   blackwell:
     'Elizabeth Blackwell - American doctor and first American woman to receive a medical degree.',
   bohr: 'Niels Bohr is the father of quantum theory.',
-  booth:
-    "Kathleen Booth, she's credited with writing the first assembly language.",
+  booth: "Kathleen Booth, she's credited with writing the first assembly language.",
   borg: 'Anita Borg - Anita Borg was the founding director of the Institute for Women and Technology (IWT).',
   bose: 'Satyendra Nath Bose - He provided the foundation for Bose–Einstein statistics and the theory of the Bose–Einstein condensate.',
   bouman:
@@ -295,8 +282,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Joan Clarke - Bletchley Park code breaker during the Second World War who pioneered techniques that remained top secret for decades. Also an accomplished numismatist.',
   cohen:
     'Bram Cohen - American computer programmer and author of the BitTorrent peer-to-peer protocol.',
-  colden:
-    'Jane Colden - American botanist widely considered the first female American botanist.',
+  colden: 'Jane Colden - American botanist widely considered the first female American botanist.',
   cori: 'Gerty Theresa Cori - American biochemist who became the third woman—and first American woman—to win a Nobel Prize in science, and the first woman to be awarded the Nobel Prize in Physiology or Medicine. Cori was born in Prague.',
   cray: 'Seymour Roger Cray was an American electrical engineer and supercomputer architect who designed a series of computers that were the fastest in the world for decades.',
   curran:
@@ -312,8 +298,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Satish Dhawan - Indian mathematician and aerospace engineer, known for leading the successful and indigenous development of the Indian space programme.',
   diffie:
     'Bailey Whitfield Diffie - American cryptographer and one of the pioneers of public-key cryptography.',
-  dijkstra:
-    'Edsger Wybe Dijkstra was a Dutch computer scientist and mathematical scientist.',
+  dijkstra: 'Edsger Wybe Dijkstra was a Dutch computer scientist and mathematical scientist.',
   dirac:
     'Paul Adrien Maurice Dirac - English theoretical physicist who made fundamental contributions to the early development of both quantum mechanics and quantum electrodynamics.',
   driscoll:
@@ -341,8 +326,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Horst Feistel - German-born American cryptographer who was one of the earliest non-government researchers to study the design and theory of block ciphers. Co-developer of DES and Lucifer. Feistel networks, a symmetric structure used in the construction of block ciphers are named after him.',
   fermat: 'Pierre de Fermat pioneered several aspects of modern mathematics.',
   fermi: 'Enrico Fermi invented the first nuclear reactor.',
-  feynman:
-    'Richard Feynman was a key contributor to quantum mechanics and particle physics.',
+  feynman: 'Richard Feynman was a key contributor to quantum mechanics and particle physics.',
   franklin:
     'Benjamin Franklin is famous for his experiments in electricity and the invention of the lightning rod.',
   gagarin:
@@ -359,8 +343,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Johann Carl Friedrich Gauss - German mathematician who made significant contributions to many fields, including number theory, algebra, statistics, analysis, differential geometry, geodesy, geophysics, mechanics, electrostatics, magnetic fields, astronomy, matrix theory, and optics.',
   germain:
     'Marie-Sophie Germain - French mathematician, physicist and philosopher. Known for her work on elasticity theory, number theory and philosophy.',
-  goldberg:
-    'Adele Goldberg, was one of the designers and developers of the Smalltalk language.',
+  goldberg: 'Adele Goldberg, was one of the designers and developers of the Smalltalk language.',
   goldstine:
     'Adele Goldstine, born Adele Katz, wrote the complete technical description for the first electronic digital computer, ENIAC.',
   goldwasser:
@@ -387,8 +370,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   heisenberg: 'Werner Heisenberg was a founding father of quantum mechanics.',
   hermann:
     'Grete Hermann was a German philosopher noted for her philosophical work on the foundations of quantum mechanics.',
-  herschel:
-    'Caroline Lucretia Herschel - German astronomer and discoverer of several comets.',
+  herschel: 'Caroline Lucretia Herschel - German astronomer and discoverer of several comets.',
   hertz:
     'Heinrich Rudolf Hertz - German physicist who first conclusively proved the existence of the electromagnetic waves.',
   heyrovsky:
@@ -430,21 +412,18 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Mstislav Keldysh - a Soviet scientist in the field of mathematics and mechanics, academician of the USSR Academy of Sciences (1946), President of the USSR Academy of Sciences (1961–1975), three times Hero of Socialist Labor (1956, 1961, 1971), fellow of the Royal Society of Edinburgh (1968).',
   keller:
     'Mary Kenneth Keller, Sister Mary Kenneth Keller became the first American woman to earn a PhD in Computer Science in 1965.',
-  kepler:
-    'Johannes Kepler, German astronomer known for his three laws of planetary motion.',
+  kepler: 'Johannes Kepler, German astronomer known for his three laws of planetary motion.',
   khayyam:
     "Omar Khayyam - Persian mathematician, astronomer and poet. Known for his work on the classification and solution of cubic equations, for his contribution to the understanding of Euclid's fifth postulate and for computing the length of a year very accurately.",
   khorana:
     'Har Gobind Khorana - Indian-American biochemist who shared the 1968 Nobel Prize for Physiology.',
-  kilby:
-    'Jack Kilby invented silicon integrated circuits and gave Silicon Valley its name.',
+  kilby: 'Jack Kilby invented silicon integrated circuits and gave Silicon Valley its name.',
   kirch: 'Maria Kirch - German astronomer and first woman to discover a comet.',
   knuth:
     'Donald Knuth - American computer scientist, author of "The Art of Computer Programming" and creator of the TeX typesetting system.',
   kowalevski:
     'Sophie Kowalevski - Russian mathematician responsible for important original contributions to analysis, differential equations and mechanics.',
-  lalande:
-    'Marie-Jeanne de Lalande - French astronomer, mathematician and cataloguer of stars.',
+  lalande: 'Marie-Jeanne de Lalande - French astronomer, mathematician and cataloguer of stars.',
   lamarr:
     'Hedy Lamarr - Actress and inventor. The principles of her work are now incorporated into modern Wi-Fi, CDMA and Bluetooth technology.',
   lamport:
@@ -455,8 +434,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Henrietta Swan Leavitt - she was an American astronomer who discovered the relation between the luminosity and the period of Cepheid variable stars.',
   lederberg:
     'Esther Miriam Zimmer Lederberg - American microbiologist and a pioneer of bacterial genetics.',
-  kaminskaia:
-    'Elena Kaminskaia – the best girlfriend who inspires creativity –.',
+  kaminskaia: 'Elena Kaminskaia – the best girlfriend who inspires creativity –.',
   lehmann:
     'Inge Lehmann - Danish seismologist and geophysicist. Known for discovering in 1936 that the Earth has a solid inner core inside a molten outer core.',
   lewin:
@@ -515,25 +493,21 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Florence Nightingale, more prominently known as a nurse, was also the first female member of the Royal Statistical Society and a pioneer in statistical graphics.',
   nobel:
     'Alfred Nobel - a Swedish chemist, engineer, innovator, and armaments manufacturer (inventor of dynamite).',
-  noether:
-    "Emmy Noether, German mathematician. Noether's Theorem is named after her.",
+  noether: "Emmy Noether, German mathematician. Noether's Theorem is named after her.",
   northcutt:
     'Poppy Northcutt. Poppy Northcutt was the first woman to work as part of NASA’s Mission Control.',
-  noyce:
-    'Robert Noyce invented silicon integrated circuits and gave Silicon Valley its name.',
+  noyce: 'Robert Noyce invented silicon integrated circuits and gave Silicon Valley its name.',
   panini:
     "Panini - Ancient Indian linguist and grammarian from 4th century CE who worked on the world's first formal system.",
   pare: 'Ambroise Pare invented modern surgery.',
   pascal: 'Blaise Pascal, French mathematician, physicist, and inventor.',
-  pasteur:
-    'Louis Pasteur discovered vaccination, fermentation and pasteurization.',
+  pasteur: 'Louis Pasteur discovered vaccination, fermentation and pasteurization.',
   payne:
     'Cecilia Payne-Gaposchkin was an astronomer and astrophysicist who, in 1925, proposed in her Ph.D. thesis an explanation for the composition of stars in terms of the relative abundances of hydrogen and helium.',
   perlman:
     'Radia Perlman is a software designer and network engineer and most famous for her invention of the spanning-tree protocol (STP).',
   pike: 'Rob Pike was a key contributor to Unix, Plan 9, the X graphic system, utf-8, and the Go programming language.',
-  poincare:
-    'Henri Poincaré made fundamental contributions in several fields of mathematics.',
+  poincare: 'Henri Poincaré made fundamental contributions in several fields of mathematics.',
   poitras:
     'Laura Poitras is a director and producer whose work, made possible by open source crypto tools, advances the causes of truth and freedom of information by reporting disclosures by whistleblowers such as Edward Snowden.',
   proskuriakova:
@@ -545,8 +519,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   ramanujan:
     'Srinivasa Ramanujan - Indian mathematician and autodidact who made extraordinary contributions to mathematical analysis, number theory, infinite series, and continued fractions.',
   ride: 'Sally Kristen Ride was an American physicist and astronaut. She was the first American woman in space, and the youngest American astronaut.',
-  ritchie:
-    'Dennis Ritchie - co-creator of UNIX and the C programming language.',
+  ritchie: 'Dennis Ritchie - co-creator of UNIX and the C programming language.',
   rhodes:
     'Ida Rhodes - American pioneer in computer programming, designed the first computer used for Social Security.',
   robinson:
@@ -555,8 +528,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Wilhelm Conrad Röntgen - German physicist who was awarded the first Nobel Prize in Physics in 1901 for the discovery of X-rays (Röntgen rays).',
   rosalind:
     'Rosalind Franklin - British biophysicist and X-ray crystallographer whose research was critical to the understanding of DNA.',
-  rubin:
-    'Vera Rubin - American astronomer who pioneered work on galaxy rotation rates.',
+  rubin: 'Vera Rubin - American astronomer who pioneered work on galaxy rotation rates.',
   saha: 'Meghnad Saha - Indian astrophysicist best known for his development of the Saha equation, used to describe chemical and physical conditions in stars.',
   sammet:
     'Jean E. Sammet developed FORMAC, the first widely used computer language for symbolic manipulation of mathematical formulas.',
@@ -641,12 +613,10 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   zhao: 'CZ – Binance Founder',
   yakovenko: 'Anatoly Yakovenko – Solana Founder',
   gun: 'Emin Gun Sirer – Avalanche Funder',
-  khomenko:
-    'Oleg Khomenko – Waves Ducks Community Member who helped with maths',
+  khomenko: 'Oleg Khomenko – Waves Ducks Community Member who helped with maths',
   pichulin:
     'Dmitry Pichulin – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
-  'van de Camp':
-    'Rob van de Camp – Duxplorer.com Creator and WavesDucks Early Adopter',
+  'van de Camp': 'Rob van de Camp – Duxplorer.com Creator and WavesDucks Early Adopter',
   badrtdinov:
     'Artem Badrtdinov – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
   kardan: 'Inal Kardan – Waves Ducks CTO',

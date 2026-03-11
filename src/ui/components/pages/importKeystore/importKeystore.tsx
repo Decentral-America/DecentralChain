@@ -56,7 +56,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
             const decrypted = await decryptSeed(base64Decode(atob(profiles)), utf8Encode(password));
 
             return JSON.parse(utf8Decode(decrypted));
-          } catch (err) {
+          } catch (_err) {
             return null;
           }
         },

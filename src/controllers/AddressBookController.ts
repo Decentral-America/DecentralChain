@@ -1,18 +1,13 @@
 import ObservableStore from 'obs-store';
-import {
-  fromEthereumToDccAddress,
-  isEthereumAddress,
-} from 'ui/utils/ethereum';
+import { fromEthereumToDccAddress, isEthereumAddress } from 'ui/utils/ethereum';
 
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 
 export class AddressBookController {
   private store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.store = new ObservableStore(
-      extensionStorage.getInitState({ addresses: {} }),
-    );
+    this.store = new ObservableStore(extensionStorage.getInitState({ addresses: {} }));
     extensionStorage.subscribe(this.store);
   }
 
@@ -36,13 +31,11 @@ export class AddressBookController {
     const { addresses } = this.store.getState();
     this.store.updateState({
       addresses: Object.entries(addresses).reduce(
-        (acc, [address, name]) => ({
-          ...acc,
-          [isEthereumAddress(address)
-            ? fromEthereumToDccAddress(address)
-            : address]: name,
-        }),
-        {},
+        (acc, [address, name]) => {
+          acc[isEthereumAddress(address) ? fromEthereumToDccAddress(address) : address] = name;
+          return acc;
+        },
+        {} as Record<string, string>,
       ),
     });
   }

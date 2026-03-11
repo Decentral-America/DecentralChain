@@ -1,19 +1,19 @@
-import { type RouteObject } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { BottomPanel } from '../layout/bottomPanel';
 import { Menu } from '../ui/components/menu/Menu';
+import { AddressBook } from '../ui/components/pages/AddressBook';
 import { AccountInfo } from '../ui/components/pages/accountInfo';
 import { ActiveMessagePage } from '../ui/components/pages/activeMessage';
 import { ActiveNotificationPage } from '../ui/components/pages/activeNotification';
-import { AddressBook } from '../ui/components/pages/AddressBook';
-import { ChangeAccountName } from '../ui/components/pages/changeAccountName';
 import { ChangePassword } from '../ui/components/pages/ChangePassword';
+import { ChangeAccountName } from '../ui/components/pages/changeAccountName';
 import { DeleteAccount } from '../ui/components/pages/deleteAccount';
 import { DeleteAllAccounts } from '../ui/components/pages/deleteAllAccounts/deleteAllAccounts';
+import { ExportAndImport } from '../ui/components/pages/ExportAndImport';
 import { ErrorPage } from '../ui/components/pages/errorPage';
 import { ExportAccounts } from '../ui/components/pages/exportAccounts/exportAccounts';
 import { ExportAddressBook } from '../ui/components/pages/exportAccounts/exportAddressBook';
-import { ExportAndImport } from '../ui/components/pages/ExportAndImport';
 import { Info } from '../ui/components/pages/Info';
 import { LangsSettings } from '../ui/components/pages/LangsSettings';
 import { MessagesAndNotificationsPage } from '../ui/components/pages/messagesAndNotifications';
@@ -24,9 +24,9 @@ import { OtherAccountsPage } from '../ui/components/pages/otherAccounts';
 import { PermissionsSettings } from '../ui/components/pages/PermissionsSettings/PermissionSettings';
 import { PopupHome } from '../ui/components/pages/popupHome';
 import { SelectedAccountQr } from '../ui/components/pages/SelectedAccountQr';
-import { Send } from '../ui/components/pages/send';
 import { Settings } from '../ui/components/pages/Settings';
 import { SettingsGeneral } from '../ui/components/pages/SettingsGeneral';
+import { Send } from '../ui/components/pages/send';
 import { Swap } from '../ui/components/pages/swap/swap';
 import { Root } from '../ui/components/Root';
 

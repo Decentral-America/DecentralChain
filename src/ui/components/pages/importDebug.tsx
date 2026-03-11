@@ -18,8 +18,7 @@ export function ImportDebug() {
   const currentNetwork = usePopupSelector(state => state.currentNetwork);
   const customCodes = usePopupSelector(state => state.customCodes);
 
-  const networkCode =
-    customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
+  const networkCode = customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
@@ -97,9 +96,7 @@ export function ImportDebug() {
             autoFocus
             error={showErrors && !!nameError}
           />
-          <ErrorMessage show={showErrors && !!nameError}>
-            {nameError}
-          </ErrorMessage>
+          <ErrorMessage show={showErrors && !!nameError}>{nameError}</ErrorMessage>
         </div>
 
         <div className="margin4">
@@ -114,18 +111,11 @@ export function ImportDebug() {
             maxLength={35}
             error={showErrors && !!addressError}
           />
-          <ErrorMessage show={showErrors && !!addressError}>
-            {addressError}
-          </ErrorMessage>
+          <ErrorMessage show={showErrors && !!addressError}>{addressError}</ErrorMessage>
         </div>
 
         <div>
-          <Button
-            data-testid="continueBtn"
-            id="continue"
-            type="submit"
-            view="submit"
-          >
+          <Button data-testid="continueBtn" id="continue" type="submit" view="submit">
             {t('importDebug.continueBtn')}
           </Button>
         </div>

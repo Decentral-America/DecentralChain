@@ -7,7 +7,7 @@ import {
   disallowOriginDone,
   pendingOrigin,
 } from '../actions/permissions';
-import { type AppAction, type AppMiddleware } from '../types';
+import type { AppAction, AppMiddleware } from '../types';
 
 let _timer: ReturnType<typeof setTimeout>;
 
@@ -24,7 +24,6 @@ const _permissionMW =
       return next(action);
     }
     store.dispatch(pendingOrigin(true));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (background[method] as any)(action.payload)
       .then(() => {
         clearTimeout(_timer);
@@ -37,11 +36,7 @@ const _permissionMW =
       .catch(() => store.dispatch(pendingOrigin(false)));
   };
 
-export const allowOrigin = _permissionMW(
-  ACTION.PERMISSIONS.ALLOW,
-  'allowOrigin',
-  allowOriginDone,
-);
+export const allowOrigin = _permissionMW(ACTION.PERMISSIONS.ALLOW, 'allowOrigin', allowOriginDone);
 
 export const setAutoOrigin = _permissionMW(
   ACTION.PERMISSIONS.SET_AUTO,

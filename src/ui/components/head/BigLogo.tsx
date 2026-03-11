@@ -16,9 +16,7 @@ export const BigLogo = ({
   return (
     <div className={className}>
       <div className={styles.bigLogoImg} />
-      {noTitle ? null : (
-        <div className={styles.bigLogoTitle}>{t('ui.logoTitle')}</div>
-      )}
+      {noTitle ? null : <div className={styles.bigLogoTitle}>{t('ui.logoTitle')}</div>}
     </div>
   );
 };

@@ -15,9 +15,9 @@ import Background from '../ui/services/Background';
 
 const USD_PRICES_UPDATE_INTERVAL = 5000;
 
-const UsdPricesContext = createContext<
-  ((assetIds: string[]) => (() => void) | undefined) | null
->(null);
+const UsdPricesContext = createContext<((assetIds: string[]) => (() => void) | undefined) | null>(
+  null,
+);
 
 export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
   const [observedAssetIds, setObservedAssetIds] = useState<string[][]>([]);
@@ -44,10 +44,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
 
     async function update({ firstRun }: { firstRun?: true } = {}) {
       try {
-        if (
-          !firstRun ||
-          assetIdsToFetch.some(assetId => usdPricesRef.current[assetId] == null)
-        ) {
+        if (!firstRun || assetIdsToFetch.some(assetId => usdPricesRef.current[assetId] == null)) {
           await Background.updateUsdPricesByAssetIds(assetIdsToFetch);
         }
       } finally {
@@ -73,17 +70,11 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return (
-    <UsdPricesContext.Provider value={observe}>
-      {children}
-    </UsdPricesContext.Provider>
-  );
+  return <UsdPricesContext.Provider value={observe}>{children}</UsdPricesContext.Provider>;
 }
 
 export function useUsdPrices(assetIds: string[]) {
-  const isMainnet = usePopupSelector(
-    state => state.currentNetwork === NetworkName.Mainnet,
-  );
+  const isMainnet = usePopupSelector(state => state.currentNetwork === NetworkName.Mainnet);
 
   const observe = useContext(UsdPricesContext);
   invariant(observe);
@@ -101,8 +92,6 @@ export function useUsdPrices(assetIds: string[]) {
   return useMemo(() => {
     const assetIdsSet = new Set(assetIds);
 
-    return Object.fromEntries(
-      Object.entries(usdPrices).filter(([id]) => assetIdsSet.has(id)),
-    );
+    return Object.fromEntries(Object.entries(usdPrices).filter(([id]) => assetIdsSet.has(id)));
   }, [assetIds, usdPrices]);
 }

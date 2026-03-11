@@ -7,14 +7,14 @@ import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { stringifyOrder } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 import { DateFormat } from 'ui/components/ui/Date/DateFormat';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 
 export function OrderCard({
   className,
@@ -59,18 +59,14 @@ export function OrderCard({
         </div>
 
         <div>
-          <div
-            className="basic500 body3 margin-min"
-            data-testid="createOrderTitle"
-          >
+          <div className="basic500 body3 margin-min" data-testid="createOrderTitle">
             {t(
               message.data.orderType === 'sell'
                 ? 'transactions.orderSell'
                 : 'transactions.orderBuy',
             )}
             <span>
-              : <span>{amountAsset.displayName}</span>/
-              <span>{priceAsset.displayName}</span>
+              : <span>{amountAsset.displayName}</span>/<span>{priceAsset.displayName}</span>
             </span>
           </div>
 
@@ -100,9 +96,7 @@ export function OrderCard({
 
       <div className={transactionsStyles.cardContent}>
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.price')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.price')}</div>
 
           <div className={transactionsStyles.txValue}>
             <Balance
@@ -116,9 +110,7 @@ export function OrderCard({
         </div>
 
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.expires')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.expires')}</div>
 
           <div className={transactionsStyles.txValue}>
             <DateFormat date={message.data.expiration} />
@@ -126,14 +118,9 @@ export function OrderCard({
         </div>
 
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.matcherPublicKey')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.matcherPublicKey')}</div>
 
-          <div
-            className={transactionsStyles.txValue}
-            data-testid="createOrderMatcherPublicKey"
-          >
+          <div className={transactionsStyles.txValue} data-testid="createOrderMatcherPublicKey">
             {message.data.matcherPublicKey}
           </div>
         </div>
@@ -160,9 +147,7 @@ export function OrderScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <OrderCard message={message} />
         </div>
@@ -170,28 +155,17 @@ export function OrderScreen({
         <TxDetailTabs json={stringifyOrder(message.data, { pretty: true })}>
           <div>
             <div className={transactionsStyles.txRow}>
-              <div className="tx-title tag1 basic500">
-                {t('transactions.txid')}
-              </div>
+              <div className="tx-title tag1 basic500">{t('transactions.txid')}</div>
 
-              <div className={transactionsStyles.txValue}>
-                {message.data.id}
-              </div>
+              <div className={transactionsStyles.txValue}>{message.data.id}</div>
             </div>
 
             <div className={transactionsStyles.txRow}>
-              <div className="tx-title tag1 basic500">
-                {t('transactions.fee')}
-              </div>
+              <div className="tx-title tag1 basic500">{t('transactions.fee')}</div>
 
               <div className={transactionsStyles.txValue}>
                 <Balance
-                  balance={
-                    new Money(
-                      message.data.matcherFee,
-                      new Asset(matcherFeeAsset),
-                    )
-                  }
+                  balance={new Money(message.data.matcherFee, new Asset(matcherFeeAsset))}
                   data-testid="createOrderFee"
                   isShortFormat
                   showAsset
@@ -200,9 +174,7 @@ export function OrderScreen({
             </div>
 
             <div className={transactionsStyles.txRow}>
-              <div className="tx-title tag1 basic500">
-                {t('transactions.txTime')}
-              </div>
+              <div className="tx-title tag1 basic500">{t('transactions.txTime')}</div>
 
               <div className={transactionsStyles.txValue}>
                 <DateFormat date={message.data.timestamp} />

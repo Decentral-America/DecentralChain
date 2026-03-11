@@ -1,10 +1,8 @@
-import { type DataTransactionEntry } from '@decentralchain/ts-types';
+import type { DataTransactionEntry } from '@decentralchain/ts-types';
 
 import { fetchInBatches } from '../_core/fetchInBatches';
 
-export function dataEntriesToRecord<T extends DataTransactionEntry>(
-  entries: T[],
-) {
+export function dataEntriesToRecord<T extends DataTransactionEntry>(entries: T[]) {
   return entries.reduce<Record<string, T['value']>>((data, item) => {
     data[item.key] = item.value;
     return data;

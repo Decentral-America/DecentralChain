@@ -1,14 +1,11 @@
-import { type AssetDetail } from 'assets/types';
+import type { AssetDetail } from 'assets/types';
 import { NftList } from 'nfts/nftList';
 import { createNft } from 'nfts/nfts';
 import { DisplayMode, type Nft } from 'nfts/types';
 import { usePopupSelector } from 'popup/store/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  sortAndFilterNfts,
-  useUiState,
-} from 'ui/components/pages/assets/tabs/helpers';
+import { sortAndFilterNfts, useUiState } from 'ui/components/pages/assets/tabs/helpers';
 import { Button, Ellipsis, SearchInput } from 'ui/components/ui';
 import { Tooltip } from 'ui/components/ui/tooltip';
 import { getAccountLink } from 'ui/urls';
@@ -27,14 +24,9 @@ export function NftCollection() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const userAddress = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.selectedAccount?.address!,
-  );
+  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
 
-  const networkCode = usePopupSelector(
-    state => state.selectedAccount?.networkCode,
-  );
+  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
 
   const myNfts = usePopupSelector(state => state.balances[userAddress]?.nfts);
   const nfts = usePopupSelector(state => state.nfts);
@@ -79,19 +71,17 @@ export function NftCollection() {
         <div>
           <Tooltip content={t('nftInfo.creatorUrlTooltip')}>
             {props => (
-              // eslint-disable-next-line react/jsx-no-target-blank
               <a
                 rel="noopener noreferrer"
                 className="link"
                 target="_blank"
                 href={
                   creatorNft?.creatorUrl ??
-                  (networkCode &&
-                    getAccountLink(networkCode, creatorNft?.creator))
+                  (networkCode && getAccountLink(networkCode, creatorNft?.creator))
                 }
                 {...props}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
                   <path
                     fillRule="evenodd"
                     clipRule="evenodd"
@@ -121,9 +111,9 @@ export function NftCollection() {
             {term ? (
               <>
                 <div className="margin-min">{t('assets.notFoundNFTs')}</div>
-                <p className="blue link" onClick={() => setTerm('')}>
+                <button type="button" className="blue link" onClick={() => setTerm('')}>
                   {t('assets.resetFilters')}
-                </p>
+                </button>
               </>
             ) : (
               t('assets.emptyNFTs')

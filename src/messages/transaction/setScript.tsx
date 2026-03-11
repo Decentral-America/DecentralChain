@@ -6,11 +6,11 @@ import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Script } from '../_common/script';
-import { type MessageOfType, type MessageTxSetScript } from '../types';
+import type { MessageOfType, MessageTxSetScript } from '../types';
 import * as styles from './setScript.module.css';
 
 export function SetScriptCard({
@@ -32,9 +32,7 @@ export function SetScriptCard({
             <MessageIcon className={styles.icon} type="set-script" />
 
             <div>
-              <div className={styles.data}>
-                {t('transactions.dataTransaction')}
-              </div>
+              <div className={styles.data}>{t('transactions.dataTransaction')}</div>
 
               <h1 className={styles.title} data-testid="setScriptTitle">
                 {t('transactions.setScriptTransaction')}
@@ -93,9 +91,7 @@ export function SetScriptScreen({
           <SetScriptCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

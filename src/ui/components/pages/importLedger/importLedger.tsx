@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ledgerService, LedgerServiceStatus } from 'ledger/service';
+import { LedgerServiceStatus, ledgerService } from 'ledger/service';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ interface ArrowProps {
 function Arrow({ direction }: ArrowProps) {
   return (
     <svg
+      aria-hidden="true"
       className={clsx(styles.avatarListArrowSvg, {
         [styles.avatarListArrowSvgLeft]: direction === 'left',
       })}
@@ -59,19 +60,13 @@ export function ImportLedger() {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
 
-  const [getUsersError, setGetUsersError] = useState<
-    string | React.ReactElement | null
-  >(null);
+  const [getUsersError, setGetUsersError] = useState<string | React.ReactElement | null>(null);
   const [page, setPage] = useState(0);
 
   const getUsersPromiseRef = useRef(Promise.resolve());
-  const [ledgerUsersPages, setLedgerUsersPages] = useState<
-    Record<number, LedgerUser[]>
-  >({});
+  const [ledgerUsersPages, setLedgerUsersPages] = useState<Record<number, LedgerUser[]>>({});
 
-  const [selectAccountError, setSelectAccountError] = useState<string | null>(
-    null,
-  );
+  const [selectAccountError, setSelectAccountError] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState(0);
 
   const selectedUser =
@@ -79,9 +74,7 @@ export function ImportLedger() {
       selectedUserId % USERS_PER_PAGE
     ];
 
-  const [userIdInputValue, setUserIdInputValue] = useState(
-    String(selectedUserId),
-  );
+  const [userIdInputValue, setUserIdInputValue] = useState(String(selectedUserId));
 
   useEffect(() => {
     setUserIdInputValue(String(selectedUserId));
@@ -97,15 +90,13 @@ export function ImportLedger() {
 
     const userIdFromInput = Number(userIdInputValue);
 
-    if (!isFinite(userIdFromInput)) {
+    if (!Number.isFinite(userIdFromInput)) {
       setUserIdInputError(t('importLedger.userIdInputNumbersError'));
       return;
     }
 
     if (userIdFromInput > MAX_USER_ID) {
-      setUserIdInputError(
-        t('importLedger.userIdInputMaxValueError', { maxUserId: MAX_USER_ID }),
-      );
+      setUserIdInputError(t('importLedger.userIdInputMaxValueError', { maxUserId: MAX_USER_ID }));
       return;
     }
 
@@ -120,8 +111,7 @@ export function ImportLedger() {
     };
   }, [userIdInputValue, t]);
 
-  const networkCode =
-    customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
+  const networkCode = customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
   const connectToLedger = useCallback(async () => {
     setConnectionError(null);
@@ -131,13 +121,9 @@ export function ImportLedger() {
 
     if (ledgerService.status === LedgerServiceStatus.Ready) {
       if (ledgerUsersPages[0] == null) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const users = await ledgerService.ledger!.getPaginationUsersData(
-          0,
-          USERS_PER_PAGE - 1,
-        );
+        const users = await ledgerService.ledger?.getPaginationUsersData(0, USERS_PER_PAGE - 1);
 
-        setLedgerUsersPages({ 0: users });
+        setLedgerUsersPages({ 0: users ?? [] });
       }
 
       setIsReady(true);
@@ -180,35 +166,29 @@ export function ImportLedger() {
     setGetUsersError(null);
 
     getUsersPromiseRef.current = getUsersPromiseRef.current.then(() =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ledgerService
-        .ledger!.getPaginationUsersData(
-          page * USERS_PER_PAGE,
-          USERS_PER_PAGE - 1,
-        )
-        .then(
-          users => {
-            setLedgerUsersPages(prevState => ({ ...prevState, [page]: users }));
-          },
-          () => {
-            setGetUsersError(
-              <Trans
-                t={t}
-                i18nKey="importLedger.couldNotGetUsersError"
-                components={{
-                  retryButton: (
-                    <button
-                      className={styles.errorRetryButton}
-                      type="button"
-                      onClick={connectToLedger}
-                    />
-                  ),
-                }}
-              />,
-            );
-            setIsReady(false);
-          },
-        ),
+      ledgerService.ledger?.getPaginationUsersData(page * USERS_PER_PAGE, USERS_PER_PAGE - 1).then(
+        users => {
+          setLedgerUsersPages(prevState => ({ ...prevState, [page]: users }));
+        },
+        () => {
+          setGetUsersError(
+            <Trans
+              t={t}
+              i18nKey="importLedger.couldNotGetUsersError"
+              components={{
+                retryButton: (
+                  <button
+                    className={styles.errorRetryButton}
+                    type="button"
+                    onClick={connectToLedger}
+                  />
+                ),
+              }}
+            />,
+          );
+          setIsReady(false);
+        },
+      ),
     );
   }, [connectToLedger, isCurPageLoaded, isReady, page, t]);
 
@@ -221,9 +201,7 @@ export function ImportLedger() {
       {ledgerUsersPages[0] != null ? (
         <>
           <div className={styles.container}>
-            <p className={styles.instructions}>
-              {t('importLedger.selectAccountInstructions')}
-            </p>
+            <p className={styles.instructions}>{t('importLedger.selectAccountInstructions')}</p>
 
             <div className={styles.avatarList}>
               <div>
@@ -248,10 +226,7 @@ export function ImportLedger() {
 
               {page > 0 && (
                 <button
-                  className={clsx(
-                    styles.avatarListArrow,
-                    styles.avatarListArrowLeft,
-                  )}
+                  className={clsx(styles.avatarListArrow, styles.avatarListArrowLeft)}
                   disabled={!isCurPageLoaded}
                   type="button"
                   onClick={() => {
@@ -264,10 +239,7 @@ export function ImportLedger() {
 
               {page < MAX_PAGE && (
                 <button
-                  className={clsx(
-                    styles.avatarListArrow,
-                    styles.avatarListArrowRight,
-                  )}
+                  className={clsx(styles.avatarListArrow, styles.avatarListArrowRight)}
                   disabled={!isCurPageLoaded}
                   type="button"
                   onClick={() => {
@@ -284,9 +256,7 @@ export function ImportLedger() {
             </ErrorMessage>
 
             <div className="margin2">
-              <div className="tag1 basic500 input-title">
-                {t('importLedger.accountIdLabel')}
-              </div>
+              <div className="tag1 basic500 input-title">{t('importLedger.accountIdLabel')}</div>
 
               <Input
                 value={userIdInputValue}
@@ -298,24 +268,18 @@ export function ImportLedger() {
                 }}
               />
 
-              <ErrorMessage show={userIdInputError != null}>
-                {userIdInputError}
-              </ErrorMessage>
+              <ErrorMessage show={userIdInputError != null}>{userIdInputError}</ErrorMessage>
             </div>
           </div>
 
-          <div className={clsx(styles.address, 'grey-line')}>
-            {selectedUser?.address}
-          </div>
+          <div className={clsx(styles.address, 'grey-line')}>{selectedUser?.address}</div>
 
           <div className={styles.container}>
             <Button
               disabled={!selectedUser}
               view="submit"
               onClick={() => {
-                if (
-                  accounts.some(acc => acc.address === selectedUser.address)
-                ) {
+                if (accounts.some(acc => acc.address === selectedUser.address)) {
                   setSelectAccountError(t('importLedger.accountExistsError'));
                   return;
                 }
@@ -340,9 +304,7 @@ export function ImportLedger() {
         </>
       ) : (
         <div className={styles.container}>
-          <p className={styles.instructions}>
-            {t('importLedger.connectInstructions')}
-          </p>
+          <p className={styles.instructions}>{t('importLedger.connectInstructions')}</p>
 
           <ErrorMessage className={styles.error} show={!!connectionError}>
             {connectionError}
@@ -351,11 +313,7 @@ export function ImportLedger() {
           {isConnecting ? (
             <div className={styles.loader} />
           ) : (
-            <Button
-              disabled={isConnecting}
-              view="submit"
-              onClick={connectToLedger}
-            >
+            <Button disabled={isConnecting} view="submit" onClick={connectToLedger}>
               {t('importLedger.tryAgainButton')}
             </Button>
           )}

@@ -6,13 +6,7 @@ import { InfoIcon } from '../icons/info';
 import * as styles from './nftCard.module.css';
 import { DisplayMode, type Nft } from './types';
 
-export function NftCover({
-  className,
-  nft,
-}: {
-  className?: string;
-  nft: Nft | undefined;
-}) {
+export function NftCover({ className, nft }: { className?: string; nft: Nft | undefined }) {
   const [isLoading, setLoading] = useState(true);
   const [errorsCount, setErrorsCount] = useState(0);
 
@@ -45,6 +39,7 @@ export function NftCover({
       />
       <img
         src={nft?.foreground}
+        alt=""
         onLoad={() => {
           setLoading(false);
         }}
@@ -72,17 +67,23 @@ export function NftCard({
   const isPlaceholder = !nft.displayCreator;
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: figure is semantically correct for clickable NFT card
     <figure
       className={clsx(styles.card, className)}
       onClick={() => !isPlaceholder && onClick(nft)}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!isPlaceholder) onClick(nft);
+        }
+      }}
+      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: figure is semantically correct for clickable NFT card
+      role="button"
+      tabIndex={0}
     >
       <NftCover nft={nft} />
-      <figcaption
-        className={clsx(styles.footer, isPlaceholder && 'skeleton-glow')}
-      >
-        {mode === DisplayMode.Name && (
-          <div className={styles.title}>{nft.displayName}</div>
-        )}
+      <figcaption className={clsx(styles.footer, isPlaceholder && 'skeleton-glow')}>
+        {mode === DisplayMode.Name && <div className={styles.title}>{nft.displayName}</div>}
         {mode === DisplayMode.Creator && (
           <>
             <div className={styles.title}>

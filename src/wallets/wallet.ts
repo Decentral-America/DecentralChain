@@ -34,7 +34,6 @@ export abstract class Wallet<TData extends WalletPrivateData> {
     return this.signBytes(bytes);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   signOrder(bytes: Uint8Array, _version: 1 | 2 | 3 | 4) {
     return this.signBytes(bytes);
   }
@@ -43,7 +42,6 @@ export abstract class Wallet<TData extends WalletPrivateData> {
     return this.signBytes(bytes);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   signTx(bytes: Uint8Array, _tx: MessageTx) {
     return this.signBytes(bytes);
   }

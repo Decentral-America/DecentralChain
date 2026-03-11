@@ -16,13 +16,9 @@ import { createUpdateState } from './accounts/updateState';
 import { AccountsRoot } from './accountsRoot';
 import type { UiApi } from './background';
 import { i18nextInit } from './i18n/init';
-import {
-  createIpcCallProxy,
-  fromWebExtensionPort,
-  handleMethodCallRequests,
-} from './ipc/ipc';
+import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from './ipc/ipc';
 import { ledgerService } from './ledger/service';
-import { type LedgerSignRequest } from './ledger/types';
+import type { LedgerSignRequest } from './ledger/types';
 import { initSentry } from './sentry/init';
 import { setLoading } from './store/actions/localState';
 import { RootWrapper } from './ui/components/RootWrapper';
@@ -68,11 +64,7 @@ Promise.all([
       return;
     }
 
-    updateState(
-      Object.fromEntries(
-        Object.entries(changes).map(([key, v]) => [key, v.newValue]),
-      ),
-    );
+    updateState(Object.fromEntries(Object.entries(changes).map(([key, v]) => [key, v.newValue])));
   });
 
   function connect() {

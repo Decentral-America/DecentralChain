@@ -1,11 +1,7 @@
 import { filter, make, map, pipe, subscribe, take } from 'wonka';
 
 import type { __BackgroundPageApiDirect, PublicState } from './background';
-import {
-  createIpcCallProxy,
-  fromMessagePort,
-  fromPostMessage,
-} from './ipc/ipc';
+import { createIpcCallProxy, fromMessagePort, fromPostMessage } from './ipc/ipc';
 
 const messagePortPromise = new Promise<MessagePort>(resolve =>
   pipe(
@@ -29,21 +25,16 @@ const messagePortPromise = new Promise<MessagePort>(resolve =>
 );
 
 declare global {
-  interface KeeperApi
-    extends Omit<__BackgroundPageApiDirect, 'subscribeToPublicState'> {
+  interface KeeperApi extends Omit<__BackgroundPageApiDirect, 'subscribeToPublicState'> {
     on(event: 'update', cb: (publicState: PublicState) => void): void;
     initialPromise: Promise<typeof CubensisConnect>;
     wavesAuth: __BackgroundPageApiDirect['dccAuth'];
   }
 
-  // eslint-disable-next-line no-var
   var CubensisConnect: KeeperApi;
 }
 
-const proxy = createIpcCallProxy<
-  keyof __BackgroundPageApiDirect,
-  __BackgroundPageApiDirect
->(
+const proxy = createIpcCallProxy<keyof __BackgroundPageApiDirect, __BackgroundPageApiDirect>(
   request => {
     messagePortPromise.then(messagePort => messagePort.postMessage(request));
   },
@@ -78,7 +69,6 @@ const publicStateUpdates = make<PublicState>(observer => {
             break;
           case 'updatePublicState':
             if ('publicState' in value) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               observer.next(value.publicState as any);
             }
             break;
@@ -113,7 +103,6 @@ globalThis.CubensisConnect = {
   // Backward-compatible alias for existing dApps still calling wavesAuth
   wavesAuth: proxy.dccAuth,
   get initialPromise() {
-    // eslint-disable-next-line no-console
     console.warn(
       "You don't need to use initialPromise anymore. If CubensisConnect variable is defined, you can call any api right away",
     );
@@ -137,7 +126,6 @@ function defineDeprecatedName(name: string) {
   Object.defineProperty(window, name, {
     configurable: true,
     get() {
-      // eslint-disable-next-line no-console
       console.warn(
         `${name} global variable is deprecated and will be removed in future releases, please update to use CubensisConnect instead`,
       );

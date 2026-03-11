@@ -7,21 +7,15 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxReissue } from '../types';
+import type { MessageOfType, MessageTxReissue } from '../types';
 
-export function ReissueCard({
-  className,
-  tx,
-}: {
-  className?: string;
-  tx: MessageTxReissue;
-}) {
+export function ReissueCard({ className, tx }: { className?: string; tx: MessageTxReissue }) {
   const { t } = useTranslation();
   const asset = usePopupSelector(state => state.assets[tx.assetId]);
   invariant(asset);
@@ -34,9 +28,7 @@ export function ReissueCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.reissue')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.reissue')}</div>
 
           <h1 className="headline1">
             <Balance
@@ -53,19 +45,10 @@ export function ReissueCard({
 
       <div className={transactionsStyles.cardContent}>
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.issueType')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.issueType')}</div>
 
-          <div
-            className={transactionsStyles.txValue}
-            data-testid="reissueReissuable"
-          >
-            {t(
-              tx.reissuable
-                ? 'transactions.reissuable'
-                : 'transactions.noReissuable',
-            )}
+          <div className={transactionsStyles.txValue} data-testid="reissueReissuable">
+            {t(tx.reissuable ? 'transactions.reissuable' : 'transactions.noReissuable')}
           </div>
         </div>
       </div>
@@ -86,16 +69,12 @@ export function ReissueScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <ReissueCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

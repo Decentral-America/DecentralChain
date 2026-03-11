@@ -1,13 +1,13 @@
 import { addBreadcrumb } from '@sentry/browser';
 import EventEmitter from 'events';
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
-import { type IdleOptions } from 'preferences/types';
+import type { IdleOptions } from 'preferences/types';
 import { compareAccountsByLastUsed } from 'preferences/utils';
-import { type WalletAccount } from 'wallets/types';
+import type { WalletAccount } from 'wallets/types';
 
-import { type ExtensionStorage } from '../storage/storage';
-import { type NetworkController } from './network';
+import type { ExtensionStorage } from '../storage/storage';
+import type { NetworkController } from './network';
 
 export class PreferencesController extends EventEmitter {
   store;
@@ -63,9 +63,7 @@ export class PreferencesController extends EventEmitter {
         { name: `Account ${i + 1}` },
         account,
         oldAccounts.find(
-          oldAcc =>
-            oldAcc.address === account.address &&
-            oldAcc.network === account.network,
+          oldAcc => oldAcc.address === account.address && oldAcc.network === account.network,
         ),
       );
     });
@@ -77,9 +75,7 @@ export class PreferencesController extends EventEmitter {
   ensureSelectedAccountInCurrentNetwork() {
     const network = this.getNetwork();
     const { accounts, selectedAccount } = this.store.getState();
-    const currentNetworkAccounts = accounts.filter(
-      account => account.network === network,
-    );
+    const currentNetworkAccounts = accounts.filter(account => account.network === network);
 
     if (
       !selectedAccount ||
@@ -92,9 +88,7 @@ export class PreferencesController extends EventEmitter {
       let addressToSelect: string | undefined;
 
       if (currentNetworkAccounts.length > 0) {
-        const sortedAccounts = currentNetworkAccounts.sort(
-          compareAccountsByLastUsed,
-        );
+        const sortedAccounts = currentNetworkAccounts.sort(compareAccountsByLastUsed);
 
         addressToSelect = sortedAccounts[0].address;
       }
@@ -111,9 +105,7 @@ export class PreferencesController extends EventEmitter {
     );
 
     if (!account) {
-      throw new Error(
-        `Account with address "${address}" in ${network} not found`,
-      );
+      throw new Error(`Account with address "${address}" in ${network} not found`);
     }
 
     account.name = label;
@@ -124,9 +116,7 @@ export class PreferencesController extends EventEmitter {
       // selectedAccount can point to a separate object, not an accounts array
       // item, so we need to update it explicitly
       selectedAccount:
-        selectedAccount && address === selectedAccount.address
-          ? account
-          : selectedAccount,
+        selectedAccount && address === selectedAccount.address ? account : selectedAccount,
     });
   }
 

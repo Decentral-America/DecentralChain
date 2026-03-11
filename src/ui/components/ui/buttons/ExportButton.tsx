@@ -23,6 +23,7 @@ export const ExportButton = ({ className }: Props) => {
   return accounts.length !== 0 || Object.keys(addresses).length !== 0 ? (
     <>
       <button
+        type="button"
         className={clsx(className, styles.root)}
         onClick={() => {
           setShowExportModal(true);
@@ -40,12 +41,7 @@ export const ExportButton = ({ className }: Props) => {
             setShowExportModal(false);
           }}
           onSubmit={async (password, encrypted) => {
-            await downloadKeystore(
-              accounts.filter(isExportable),
-              addresses,
-              password,
-              encrypted,
-            );
+            await downloadKeystore(accounts.filter(isExportable), addresses, password, encrypted);
             setShowExportModal(false);
           }}
         />

@@ -2,9 +2,7 @@ import clsx from 'clsx';
 
 import * as styles from './pills.styl';
 
-const _onClick =
-  (cb: (...args: unknown[]) => unknown) => (id: number | undefined) =>
-    cb && cb(id);
+const _onClick = (cb: (...args: unknown[]) => unknown) => (id: number | undefined) => cb?.(id);
 
 interface Props {
   className?: string | undefined;
@@ -15,14 +13,7 @@ interface Props {
   onSelect: (...args: unknown[]) => unknown;
 }
 
-export function Pill({
-  id,
-  text,
-  selected,
-  hidden,
-  className,
-  onSelect,
-}: Props) {
+export function Pill({ id, text, selected, hidden, className, onSelect }: Props) {
   const newClassName = clsx(styles.pill, className, {
     [styles.selectedPill]: selected,
     [styles.hiddenPill]: hidden,
@@ -32,9 +23,9 @@ export function Pill({
   return (
     <div className={newClassName}>
       <div>{text}</div>
-      <div className={styles.text} onClick={() => onClick(id)}>
+      <button type="button" className={styles.text} onClick={() => onClick(id)}>
         {text}
-      </div>
+      </button>
     </div>
   );
 }

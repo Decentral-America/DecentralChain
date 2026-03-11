@@ -1,9 +1,7 @@
-import { type AppActionOfType } from '../types';
+import type { AppActionOfType } from '../types';
 import { ACTION } from './constants';
 
-export const allowOrigin = (
-  origin: string,
-): AppActionOfType<typeof ACTION.PERMISSIONS.ALLOW> => ({
+export const allowOrigin = (origin: string): AppActionOfType<typeof ACTION.PERMISSIONS.ALLOW> => ({
   type: ACTION.PERMISSIONS.ALLOW,
   payload: origin,
 });
@@ -64,13 +62,6 @@ export const disallowOriginDone = (
 });
 
 export const deleteOriginDone = (
-  state: unknown,
-): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW> => ({
-  type: ACTION.PERMISSIONS.CONFIRMED_ALLOW,
-  payload: state,
-});
-
-export const setOriginAutoSignDone = (
   state: unknown,
 ): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW> => ({
   type: ACTION.PERMISSIONS.CONFIRMED_ALLOW,

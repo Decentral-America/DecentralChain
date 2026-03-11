@@ -14,9 +14,7 @@ export function ImportSuccessAddressBook() {
     <div data-testid="importSuccessForm" className={styles.content}>
       <div className={clsx(styles.successIcon, 'tx-approve-icon')} />
 
-      <p className={clsx(styles.title, 'headline2')}>
-        {t('import.readyToUseAddressBook')}
-      </p>
+      <p className={clsx(styles.title, 'headline2')}>{t('import.readyToUseAddressBook')}</p>
 
       <p className={clsx(styles.description, 'body1 basic500')}>
         {t('import.readyAddressBookText')}
@@ -37,11 +35,7 @@ export function ImportSuccessAddressBook() {
   );
 }
 
-export function ImportSuccess({
-  isKeystoreImport,
-}: {
-  isKeystoreImport?: boolean;
-}) {
+export function ImportSuccess({ isKeystoreImport }: { isKeystoreImport?: boolean }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const account = useAccountsSelector(state => state.selectedAccount);
@@ -51,15 +45,12 @@ export function ImportSuccess({
       <div className={clsx(styles.successIcon, 'tx-approve-icon')} />
 
       <p className={clsx(styles.title, 'headline2')}>
-        {t(
-          isKeystoreImport ? 'import.readyToUseKeystore' : 'import.readyToUse',
-          { name: account?.name },
-        )}
+        {t(isKeystoreImport ? 'import.readyToUseKeystore' : 'import.readyToUse', {
+          name: account?.name,
+        })}
       </p>
 
-      <p className={clsx(styles.description, 'body1 basic500')}>
-        {t('import.readyHelpText')}
-      </p>
+      <p className={clsx(styles.description, 'body1 basic500')}>{t('import.readyHelpText')}</p>
 
       {!isKeystoreImport && (
         <>

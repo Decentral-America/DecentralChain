@@ -15,8 +15,7 @@
   border-bottom: solid 1px var(--color-basic500);
   height: 32px;
   border-radius: unset;
-  background: url(../../../assets/img/search-14-basic200.svg) no-repeat scroll
-    8px;
+  background: url(../../../assets/img/search-14-basic200.svg) no-repeat scroll 8px;
 }
 
 .searchInput:hover {

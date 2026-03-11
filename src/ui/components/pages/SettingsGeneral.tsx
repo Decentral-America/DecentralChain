@@ -12,11 +12,7 @@ export function SettingsGeneral() {
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const idle = usePopupSelector<Record<string, any>>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state => (state.config as any)?.idle || {},
-  );
+  const idle = usePopupSelector<Record<string, any>>(state => (state.config as any)?.idle || {});
 
   const idleOptions = usePopupSelector(state => state.idleOptions);
 
@@ -30,9 +26,7 @@ export function SettingsGeneral() {
 
   return (
     <div className={styles.content}>
-      <div className={`${styles.title1} title1`}>
-        {t('settings.settingsGeneral')}
-      </div>
+      <div className={`${styles.title1} title1`}>{t('settings.settingsGeneral')}</div>
 
       <div className={styles.settingsMenu}>
         <div className="margin-main-big">
@@ -41,9 +35,7 @@ export function SettingsGeneral() {
             fill
             selectList={selectList}
             selected={idleOptions.type}
-            onSelectItem={(id: string | number) =>
-              dispatch(setIdle(id as string))
-            }
+            onSelectItem={(id: string | number) => dispatch(setIdle(id as string))}
           />
         </div>
 

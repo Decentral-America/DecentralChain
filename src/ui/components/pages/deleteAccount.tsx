@@ -22,8 +22,7 @@ export function DeleteAccount() {
         <Button
           id="deleteAccount"
           onClick={async () => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            await dispatch(deleteAccount(params.address!));
+            await dispatch(deleteAccount(params.address ?? ''));
             navigate('/', { replace: true });
           }}
           type="button"

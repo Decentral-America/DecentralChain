@@ -1,12 +1,7 @@
-import { type AssetDetail } from 'assets/types';
+import type { AssetDetail } from 'assets/types';
 
-import { type NftConfig } from '../constants';
-import {
-  type Nft,
-  type NftAssetDetail,
-  type NftVendor,
-  NftVendorId,
-} from './types';
+import type { NftConfig } from '../constants';
+import { type Nft, type NftAssetDetail, type NftVendor, NftVendorId } from './types';
 import { DucklingsNftVendor } from './vendors/ducklings';
 import { DucksNftVendor } from './vendors/ducks';
 import { DucksArtefactsNftVendor } from './vendors/ducksArtefacts';
@@ -21,11 +16,7 @@ const vendors = {
   [NftVendorId.Puzzle]: new PuzzleNftVendor(),
 };
 
-export type NftInfo = (typeof vendors)[keyof typeof vendors] extends NftVendor<
-  infer T
->
-  ? T
-  : never;
+export type NftInfo = (typeof vendors)[keyof typeof vendors] extends NftVendor<infer T> ? T : never;
 
 export async function fetchNftInfo(nodeUrl: string, nfts: NftAssetDetail[]) {
   const allNfts = await Promise.all(

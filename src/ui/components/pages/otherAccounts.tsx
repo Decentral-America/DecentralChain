@@ -20,9 +20,7 @@ export function OtherAccountsPage() {
   const dispatch = usePopupDispatch();
   const accounts = usePopupSelector(state => state.accounts);
   const activeAccount = usePopupSelector(state =>
-    state.accounts.find(
-      ({ address }) => address === state.selectedAccount?.address,
-    ),
+    state.accounts.find(({ address }) => address === state.selectedAccount?.address),
   );
   const assets = usePopupSelector(state => state.assets);
   const balances = usePopupSelector(state => state.balances);
@@ -47,9 +45,7 @@ export function OtherAccountsPage() {
   const balancesMoney = Object.fromEntries(
     Object.entries(balances).map(([key, balance]) => [
       key,
-      typeof balance?.regular !== 'undefined'
-        ? new Money(balance.regular, nativeAsset)
-        : undefined,
+      typeof balance?.regular !== 'undefined' ? new Money(balance.regular, nativeAsset) : undefined,
     ]),
   );
 
@@ -58,10 +54,7 @@ export function OtherAccountsPage() {
     navigate('/', { replace: true });
   };
 
-  useEffect(
-    () => startPolling(10000, () => background.updateOtherAccountsBalances()),
-    [],
-  );
+  useEffect(() => startPolling(10000, () => background.updateOtherAccountsBalances()), []);
 
   return (
     <div className={styles.root} data-testid="otherAccountsPage">
@@ -72,10 +65,7 @@ export function OtherAccountsPage() {
           {props => (
             <button
               {...props}
-              className={clsx(
-                styles.addAccountButton,
-                styles.addAccountButton_small,
-              )}
+              className={clsx(styles.addAccountButton, styles.addAccountButton_small)}
               type="button"
               onClick={addAccount}
             />
@@ -96,11 +86,7 @@ export function OtherAccountsPage() {
 
         {otherAccounts.length === 0 ? (
           <p className={styles.noAccountsNote} data-testid="accountsNote">
-            {t(
-              !term
-                ? 'otherAccounts.noAccountsNote'
-                : 'otherAccounts.noAccountsFound',
-            )}
+            {t(!term ? 'otherAccounts.noAccountsNote' : 'otherAccounts.noAccountsFound')}
           </p>
         ) : (
           otherAccounts.map(account => (
@@ -121,10 +107,7 @@ export function OtherAccountsPage() {
 
         <div className={styles.addAccount}>
           <button
-            className={clsx(
-              styles.addAccountButton,
-              styles.addAccountButton_full,
-            )}
+            className={clsx(styles.addAccountButton, styles.addAccountButton_full)}
             data-testid="addAccountButton"
             type="button"
             onClick={addAccount}

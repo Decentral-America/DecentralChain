@@ -39,7 +39,7 @@ import type {
 export function isAddressString(input: string, chainId?: number) {
   try {
     return verifyAddress(base58Decode(input), { chainId });
-  } catch (err) {
+  } catch (_err) {
     return false;
   }
 }
@@ -105,7 +105,6 @@ export function makeCustomDataBytes(data: MessageInputCustomData) {
       ...binary.serializerFromSchema(schemas.txFields.data[1])(data.data),
     );
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     throw new Error(`Invalid CustomData version: ${(data as any).version}`);
   }
 }
@@ -512,10 +511,7 @@ function prepareTransactionForJson(tx: MessageTx) {
                 : arg.type === 'list'
                   ? {
                       type: arg.type,
-                      value: arg.value.map(
-                        convertArgToBigNumber,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      ) as unknown as any,
+                      value: arg.value.map(convertArgToBigNumber) as unknown as any,
                     }
                   : arg;
             },

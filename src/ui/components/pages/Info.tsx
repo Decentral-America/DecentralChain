@@ -31,56 +31,80 @@ class InfoComponent extends Component<WithTranslation> {
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://github.com/Decentral-America"
-              ></a>
+                aria-label="GitHub"
+              >
+                <span className="sr-only">GitHub</span>
+              </a>
             </li>
             <li className={styles.telegram}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://t.me/decentralchain"
-              ></a>
+                aria-label="Telegram"
+              >
+                <span className="sr-only">Telegram</span>
+              </a>
             </li>
             <li className={styles.discord}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://discordapp.com/invite/cnFmDyA"
-              ></a>
+                aria-label="Discord"
+              >
+                <span className="sr-only">Discord</span>
+              </a>
             </li>
             <li className={styles.twitter}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://twitter.com/decaborchain"
-              ></a>
+                aria-label="Twitter"
+              >
+                <span className="sr-only">Twitter</span>
+              </a>
             </li>
             <li className={styles.reddit}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://www.reddit.com/r/DecentralChain"
-              ></a>
+                aria-label="Reddit"
+              >
+                <span className="sr-only">Reddit</span>
+              </a>
             </li>
             <li className={styles.medium}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://medium.com/decentralchain"
-              ></a>
+                aria-label="Medium"
+              >
+                <span className="sr-only">Medium</span>
+              </a>
             </li>
             <li className={styles.youtube}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://www.youtube.com/channel/UCYDQN4Fo4rGnOZ22L5plNIw/featured"
-              ></a>
+                aria-label="YouTube"
+              >
+                <span className="sr-only">YouTube</span>
+              </a>
             </li>
             <li className={styles.vk}>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://vk.com/decentralchain"
-              ></a>
+                aria-label="VK"
+              >
+                <span className="sr-only">VK</span>
+              </a>
             </li>
           </ul>
         </div>

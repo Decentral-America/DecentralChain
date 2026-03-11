@@ -4,7 +4,7 @@ import { Button } from 'ui/components/ui/buttons/Button';
 import { ErrorMessage } from 'ui/components/ui/error';
 
 import * as styles from './connectModal.module.css';
-import { ledgerService, LedgerServiceStatus } from './service';
+import { LedgerServiceStatus, ledgerService } from './service';
 
 interface Props {
   networkCode: string;
@@ -65,9 +65,7 @@ export function LedgerConnectModal({ networkCode, onClose, onReady }: Props) {
 
         <h1 className={styles.title}>{t('ledgerConnectModal.title')}</h1>
 
-        <p className={styles.instructions}>
-          {t('ledgerConnectModal.instructions')}
-        </p>
+        <p className={styles.instructions}>{t('ledgerConnectModal.instructions')}</p>
 
         <ErrorMessage className={styles.error} show>
           {error}
@@ -76,11 +74,7 @@ export function LedgerConnectModal({ networkCode, onClose, onReady }: Props) {
         {isConnecting ? (
           <div className={styles.loader} />
         ) : (
-          <Button
-            disabled={isConnecting}
-            view="submit"
-            onClick={connectToLedger}
-          >
+          <Button disabled={isConnecting} view="submit" onClick={connectToLedger}>
             {t('ledgerConnectModal.tryAgainButton')}
           </Button>
         )}

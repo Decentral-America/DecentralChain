@@ -1,5 +1,5 @@
-@import 'normalize.css';
-@import './fonts/_fonts.css';
+@import "normalize.css";
+@import "./fonts/_fonts.css";
 
 :root {
   --color-black: #000;

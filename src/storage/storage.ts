@@ -1,24 +1,24 @@
 import { captureException } from '@sentry/browser';
-import { type AssetsRecord } from 'assets/types';
-import { type TrashItem } from 'controllers/trash';
+import type { AssetsRecord } from 'assets/types';
+import type { TrashItem } from 'controllers/trash';
 import { deepEqual } from 'fast-equals';
-import { type Message } from 'messages/types';
-import { type NetworkName } from 'networks/types';
-import { type NftInfo } from 'nfts/nfts';
-import { type NotificationsStoreItem } from 'notifications/types';
+import type { Message } from 'messages/types';
+import type { NetworkName } from 'networks/types';
+import type { NftInfo } from 'nfts/nfts';
+import type { NotificationsStoreItem } from 'notifications/types';
 import type ObservableStore from 'obs-store';
-import { type PermissionValue } from 'permissions/types';
-import { type IdleOptions, type PreferencesAccount } from 'preferences/types';
-import { type UiState } from 'store/reducers/updateState';
+import type { PermissionValue } from 'permissions/types';
+import type { IdleOptions, PreferencesAccount } from 'preferences/types';
+import type { UiState } from 'store/reducers/updateState';
 import Browser from 'webextension-polyfill';
 import { make, pipe, subscribe } from 'wonka';
 
-import {
-  type AssetsConfig,
-  type DEFAULT_IDENTITY_CONFIG,
-  type DEFAULT_MAIN_CONFIG,
-  type IgnoreErrorsConfig,
-  type NftConfig,
+import type {
+  AssetsConfig,
+  DEFAULT_IDENTITY_CONFIG,
+  DEFAULT_MAIN_CONFIG,
+  IgnoreErrorsConfig,
+  NftConfig,
 } from '../constants';
 import { MIGRATIONS } from './migrations';
 
@@ -120,11 +120,13 @@ export class ExtensionStorage {
   getInitState<T extends Record<string, unknown>>(defaults: T, forced?: T): T;
   getInitState(defaults: Record<string, unknown>) {
     const defaultsInitState = Object.keys(defaults).reduce(
-      (acc, key) =>
-        Object.prototype.hasOwnProperty.call(this.#localState, key)
-          ? { ...acc, [key]: this.#localState[key as keyof StorageLocalState] }
-          : acc,
-      {},
+      (acc, key) => {
+        if (Object.hasOwn(this.#localState, key)) {
+          acc[key] = this.#localState[key as keyof StorageLocalState];
+        }
+        return acc;
+      },
+      {} as Record<string, unknown>,
     );
 
     const initState = { ...defaults, ...defaultsInitState };
@@ -137,12 +139,14 @@ export class ExtensionStorage {
   }
 
   async clear() {
-    const keysToRemove = (
-      Object.keys(this.#localState) as Array<keyof StorageLocalState>
-    ).reduce<string[]>(
-      (acc, key) => (this.#state[key] ? acc : [...acc, key]),
-      [],
-    );
+    const keysToRemove = (Object.keys(this.#localState) as Array<keyof StorageLocalState>).reduce<
+      string[]
+    >((acc, key) => {
+      if (!this.#state[key]) {
+        acc.push(key);
+      }
+      return acc;
+    }, []);
 
     this.removeState(keysToRemove);
     await Browser.storage.local.remove(keysToRemove);
@@ -158,16 +162,11 @@ export class ExtensionStorage {
         };
       }),
       subscribe(async updatedState => {
-        const currentState = await Browser.storage.local.get(
-          Object.keys(updatedState),
-        );
+        const currentState = await Browser.storage.local.get(Object.keys(updatedState));
 
         const changedState = Object.fromEntries(
           Object.entries(updatedState)
-            .map(
-              ([key, value]) =>
-                [key, value === undefined ? null : value] as const,
-            )
+            .map(([key, value]) => [key, value === undefined ? null : value] as const)
             .filter(([key, value]) => !deepEqual(currentState[key], value)),
         );
 
@@ -183,9 +182,7 @@ export class ExtensionStorage {
     );
   }
 
-  getState<K extends keyof StorageLocalState>(
-    keys?: K | K[],
-  ): Pick<StorageLocalState, K> {
+  getState<K extends keyof StorageLocalState>(keys?: K | K[]): Pick<StorageLocalState, K> {
     if (!keys) {
       return this.#state as Pick<StorageLocalState, K>;
     }
@@ -195,8 +192,12 @@ export class ExtensionStorage {
     }
 
     return keys.reduce(
-      (acc, key) =>
-        this.#state[key] ? { ...acc, [key]: this.#state[key] } : acc,
+      (acc, key) => {
+        if (this.#state[key]) {
+          acc[key] = this.#state[key];
+        }
+        return acc;
+      },
       {} as Pick<StorageLocalState, K>,
     );
   }
@@ -226,8 +227,7 @@ export class ExtensionStorage {
 
 export async function createExtensionStorage() {
   try {
-    const { migrationVersion } =
-      await Browser.storage.local.get('migrationVersion');
+    const { migrationVersion } = await Browser.storage.local.get('migrationVersion');
 
     const version = (migrationVersion as number) || 0;
 
@@ -244,7 +244,6 @@ export async function createExtensionStorage() {
     await Browser.storage.local.set({
       migrationVersion: CURRENT_MIGRATION_VERSION,
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (!err.message.includes('FILE_ERROR_NO_SPACE')) {
       captureException(err);

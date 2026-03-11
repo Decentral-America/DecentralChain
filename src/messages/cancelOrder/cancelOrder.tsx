@@ -2,12 +2,12 @@ import clsx from 'clsx';
 import { MessageFooter } from 'messages/_common/footer';
 import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { DateFormat } from '../../ui/components/ui/Date/DateFormat';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 
 export function CancelOrderCard({
   className,
@@ -27,9 +27,7 @@ export function CancelOrderCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.dex')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.dex')}</div>
 
           <h1 className="headline1">{t('transactions.orderCancel')}</h1>
         </div>
@@ -37,14 +35,9 @@ export function CancelOrderCard({
 
       <div className={transactionsStyles.cardContent}>
         <div className={transactionsStyles.txRow}>
-          <div className="tx-title tag1 basic500">
-            {t('transactions.orderId')}
-          </div>
+          <div className="tx-title tag1 basic500">{t('transactions.orderId')}</div>
 
-          <div
-            className={transactionsStyles.txValue}
-            data-testid="cancelOrderOrderId"
-          >
+          <div className={transactionsStyles.txValue} data-testid="cancelOrderOrderId">
             {data?.data?.id}
           </div>
         </div>
@@ -73,18 +66,12 @@ export function CancelOrderScreen({
 
         <div>
           <div className={transactionsStyles.txRow}>
-            <div className="tx-title tag1 basic500">
-              {t('transactions.txid')}
-            </div>
-            <div className={transactionsStyles.txValue}>
-              {message.messageHash}
-            </div>
+            <div className="tx-title tag1 basic500">{t('transactions.txid')}</div>
+            <div className={transactionsStyles.txValue}>{message.messageHash}</div>
           </div>
 
           <div className={transactionsStyles.txRow}>
-            <div className="tx-title tag1 basic500">
-              {t('transactions.txTime')}
-            </div>
+            <div className="tx-title tag1 basic500">{t('transactions.txTime')}</div>
             <div className={transactionsStyles.txValue}>
               <DateFormat date={message.data.timestamp} />
             </div>

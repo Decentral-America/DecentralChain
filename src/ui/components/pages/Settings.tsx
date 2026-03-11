@@ -13,13 +13,9 @@ export function Settings() {
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const autoClickProtection = usePopupSelector(
-    state => state.uiState.autoClickProtection,
-  );
+  const autoClickProtection = usePopupSelector(state => state.uiState.autoClickProtection);
 
-  const showSuspiciousAssets = usePopupSelector(
-    state => state.uiState.showSuspiciousAssets,
-  );
+  const showSuspiciousAssets = usePopupSelector(state => state.uiState.showSuspiciousAssets);
 
   return (
     <div className={styles.content}>
@@ -112,10 +108,7 @@ export function Settings() {
       </div>
 
       <div className={styles.quickSettingsMenu}>
-        <div
-          className={`${styles.clickProtection} tag1`}
-          data-testid="clickProtection"
-        >
+        <div className={`${styles.clickProtection} tag1`} data-testid="clickProtection">
           <PowerButton
             onClick={() => {
               dispatch(
@@ -132,13 +125,9 @@ export function Settings() {
             <div>{t('settings.autoClick')}</div>
             <div data-testid="clickProtectionStatus">
               {!autoClickProtection ? (
-                <span className="basic500">
-                  {t('settings.autoClickDisable')}
-                </span>
+                <span className="basic500">{t('settings.autoClickDisable')}</span>
               ) : (
-                <span className="submit400">
-                  {t('settings.autoClickEnable')}
-                </span>
+                <span className="submit400">{t('settings.autoClickEnable')}</span>
               )}
             </div>
           </div>
@@ -147,20 +136,11 @@ export function Settings() {
             className={styles.helpTooltip}
             data-testid="clickProtectionTooltip"
           >
-            {props => (
-              <i
-                className="helpIcon"
-                data-testid="clickProtectionIcon"
-                {...props}
-              />
-            )}
+            {props => <i className="helpIcon" data-testid="clickProtectionIcon" {...props} />}
           </Tooltip>
         </div>
 
-        <div
-          className={`${styles.showSuspiciousAssets} tag1`}
-          data-testid="showSuspiciousAssets"
-        >
+        <div className={`${styles.showSuspiciousAssets} tag1`} data-testid="showSuspiciousAssets">
           <PowerButton
             onClick={() =>
               dispatch(
@@ -177,13 +157,9 @@ export function Settings() {
             <div>{t('settings.suspiciousAssetsProtection')}</div>
             <div data-testid="showSuspiciousAssetsStatus">
               {showSuspiciousAssets ? (
-                <span className="basic500">
-                  {t('settings.autoClickDisable')}
-                </span>
+                <span className="basic500">{t('settings.autoClickDisable')}</span>
               ) : (
-                <span className="submit400">
-                  {t('settings.autoClickEnable')}
-                </span>
+                <span className="submit400">{t('settings.autoClickEnable')}</span>
               )}
             </div>
           </div>
@@ -192,13 +168,7 @@ export function Settings() {
             className={styles.helpTooltip}
             data-testid="showSuspiciousAssetsTooltip"
           >
-            {props => (
-              <i
-                className="helpIcon"
-                data-testid="showSuspiciousAssetsIcon"
-                {...props}
-              />
-            )}
+            {props => <i className="helpIcon" data-testid="showSuspiciousAssetsIcon" {...props} />}
           </Tooltip>
         </div>
       </div>
@@ -206,7 +176,8 @@ export function Settings() {
       <div className={`${styles.settingsFooter} tag1`}>
         <div className={styles.buttonsWrapper}>
           <div>
-            <div
+            <button
+              type="button"
               className={styles.deleteAccounts}
               onClick={() => {
                 navigate('/delete-all-accounts');
@@ -214,10 +185,11 @@ export function Settings() {
             >
               <i className={styles.icon}> </i>
               <span>{t('settings.deleteAccounts')}</span>
-            </div>
+            </button>
           </div>
           <div>
-            <div
+            <button
+              type="button"
               className={styles.logout}
               onClick={() => {
                 navigate('/');
@@ -226,7 +198,7 @@ export function Settings() {
             >
               <i className={styles.icon}> </i>
               <span>{t('settings.logOut')}</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>

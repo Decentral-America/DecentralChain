@@ -1,4 +1,4 @@
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 
 export const assetIds: Record<NetworkName, Record<string, string>> = {
   mainnet: {
@@ -298,8 +298,6 @@ export const assetLogosByNetwork: Partial<{
 }> = Object.fromEntries(
   Object.entries(assetIds).map(([network, nameToIdMap]) => [
     network,
-    Object.fromEntries(
-      Object.entries(nameToIdMap).map(([name, id]) => [id, logosByName[name]]),
-    ),
+    Object.fromEntries(Object.entries(nameToIdMap).map(([name, id]) => [id, logosByName[name]])),
   ]),
 );

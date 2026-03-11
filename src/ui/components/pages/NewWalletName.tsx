@@ -21,9 +21,7 @@ export function NewWalletName() {
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<string | null>('');
 
-  const existingAccount = accounts.find(
-    ({ address }) => address === account.address,
-  );
+  const existingAccount = accounts.find(({ address }) => address === account.address);
 
   useEffect(() => {
     dispatch(newAccountName(accountName));
@@ -75,9 +73,7 @@ export function NewWalletName() {
             ledger: WalletTypes.Ledger,
           };
 
-          await dispatch(
-            createAccount(account, accountTypeToWalletType[account.type]),
-          );
+          await dispatch(createAccount(account, accountTypeToWalletType[account.type]));
 
           navigate('/import-success');
         }}
@@ -100,18 +96,12 @@ export function NewWalletName() {
           </ErrorMessage>
         </div>
 
-        <div className="basic500 tag1 margin2">
-          {t('newAccountName.nameInfo')}
-        </div>
+        <div className="basic500 tag1 margin2">{t('newAccountName.nameInfo')}</div>
 
         <div className={styles.footer}>
-          <div className="tag1 basic500 input-title">
-            {t('newAccountName.accountAddress')}
-          </div>
+          <div className="tag1 basic500 input-title">{t('newAccountName.accountAddress')}</div>
 
-          <div className={`${styles.greyLine} grey-line`}>
-            {account.address}
-          </div>
+          <div className={`${styles.greyLine} grey-line`}>{account.address}</div>
 
           {existingAccount ? (
             <>

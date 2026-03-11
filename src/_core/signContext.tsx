@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { LedgerConnectModal } from 'ledger/connectModal';
-import { ledgerService, LedgerServiceStatus } from 'ledger/service';
+import { LedgerServiceStatus, ledgerService } from 'ledger/service';
 import { usePopupSelector } from 'popup/store/react';
 import {
   createContext,
@@ -20,11 +20,9 @@ import Background from 'ui/services/Background';
 import { Login } from '../ui/components/pages/importEmail/login';
 import * as styles from './signContext.module.css';
 
-type CreateSign = <P>(
-  onConfirm: (params: P) => void,
-) => (params: P) => Promise<void>;
+type CreateSign = <P>(onConfirm: (params: P) => void) => (params: P) => Promise<void>;
 
-export const SignContext = createContext<{ createSign: null | CreateSign }>({
+const SignContext = createContext<{ createSign: null | CreateSign }>({
   createSign: null,
 });
 
@@ -85,7 +83,7 @@ export function SignProvider({ children }: { children: ReactNode }) {
           try {
             await Background.identityRestore(account.uuid);
             onConfirm(params);
-          } catch (e) {
+          } catch (_e) {
             await confirmDialog.open();
             await Background.identityUpdate();
             onConfirm(params);
@@ -115,15 +113,10 @@ export function SignProvider({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <SignContext.Provider value={contextValue}>
-        {children}
-      </SignContext.Provider>
+      <SignContext.Provider value={contextValue}>{children}</SignContext.Provider>
 
       {account?.type === 'wx' && (
-        <Modal
-          showModal={confirmDialog.isOpen}
-          animation={Modal.ANIMATION.FLASH}
-        >
+        <Modal showModal={confirmDialog.isOpen} animation={Modal.ANIMATION.FLASH}>
           <div className={clsx('modal', 'cover', styles.root)}>
             <div className={styles.content}>
               <Button
@@ -133,9 +126,7 @@ export function SignProvider({ children }: { children: ReactNode }) {
                 view="transparent"
               />
 
-              <h2 className={clsx('margin4', 'title1')}>
-                {t('importEmail.loginRequired')}
-              </h2>
+              <h2 className={clsx('margin4', 'title1')}>{t('importEmail.loginRequired')}</h2>
 
               <Login
                 userData={{ username: account.username, password: '' }}
@@ -147,10 +138,7 @@ export function SignProvider({ children }: { children: ReactNode }) {
       )}
 
       {account?.type === 'ledger' && (
-        <Modal
-          animation={Modal.ANIMATION.FLASH}
-          showModal={confirmDialog.isOpen}
-        >
+        <Modal animation={Modal.ANIMATION.FLASH} showModal={confirmDialog.isOpen}>
           <LedgerConnectModal
             networkCode={account.networkCode}
             onClose={confirmDialog.onCancel}
@@ -175,9 +163,7 @@ export function useSign<OnConfirmParams>(
     (params: OnConfirmParams) => {
       setIsSignPending(true);
 
-      return createSign(onConfirm)(params).finally(() =>
-        setIsSignPending(false),
-      );
+      return createSign(onConfirm)(params).finally(() => setIsSignPending(false));
     },
     [createSign, onConfirm],
   );

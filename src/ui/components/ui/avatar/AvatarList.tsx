@@ -23,7 +23,8 @@ export function AvatarList<T extends AvatarListItem>({
   return (
     <div className={styles.avatarList}>
       {items.map(item => (
-        <div
+        <button
+          type="button"
           key={item.address}
           className={clsx(styles.avatarListItem, {
             [styles.avatarListItemSelected]: selected.address === item.address,
@@ -33,7 +34,7 @@ export function AvatarList<T extends AvatarListItem>({
           }}
         >
           <Avatar address={item.address} size={size} />
-        </div>
+        </button>
       ))}
     </div>
   );

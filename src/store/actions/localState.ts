@@ -1,12 +1,10 @@
-import { type PopupThunkAction } from '../../popup/store/types';
+import type { PopupThunkAction } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
-import { type AppAction, type AppActionPayload } from '../types';
+import type { AppAction, AppActionPayload } from '../types';
 import { ACTION } from './constants';
 import { setActiveMessage, setActiveNotification } from './notifications';
 
-function createMVAction<TActionType extends AppAction['type']>(
-  type: TActionType,
-) {
+function createMVAction<TActionType extends AppAction['type']>(type: TActionType) {
   return (payload: AppActionPayload<TActionType>) => ({
     type,
     payload,
@@ -19,9 +17,7 @@ export const selectAccount = createMVAction(ACTION.SELECT_ACCOUNT);
 
 const notificationDelete = createMVAction(ACTION.NOTIFICATION_DELETE);
 
-export function deleteAccount(
-  address: string,
-): PopupThunkAction<Promise<void>> {
+export function deleteAccount(address: string): PopupThunkAction<Promise<void>> {
   return async (dispatch, getState) => {
     const { currentNetwork } = getState();
 
@@ -36,9 +32,7 @@ export function deleteAccount(
 export const setLoading = createMVAction(ACTION.SET_LOADING);
 export const notificationSelect = createMVAction(ACTION.NOTIFICATION_SELECT);
 
-export const notificationChangeName = createMVAction(
-  ACTION.NOTIFICATION_NAME_CHANGED,
-);
+export const notificationChangeName = createMVAction(ACTION.NOTIFICATION_NAME_CHANGED);
 
 export function clearMessagesStatus(): PopupThunkAction<void> {
   return (dispatch, getState) => {
@@ -55,4 +49,3 @@ export function clearMessagesStatus(): PopupThunkAction<void> {
 }
 
 export const setIdle = createMVAction(ACTION.REMOTE_CONFIG.SET_IDLE);
-export const updateIdle = createMVAction(ACTION.REMOTE_CONFIG.UPDATE_IDLE);

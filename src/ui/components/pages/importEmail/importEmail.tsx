@@ -4,10 +4,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  usePopupDispatch,
-  usePopupSelector,
-} from '../../../../popup/store/react';
+import { usePopupDispatch, usePopupSelector } from '../../../../popup/store/react';
 import { newAccountSelect } from '../../../../store/actions/localState';
 import * as styles from './importEmail.module.css';
 import { Login, type UserData } from './login';
@@ -21,10 +18,7 @@ export function ImportEmail() {
   const handleSubmit = useCallback(
     (userData: UserData) => {
       if (
-        accounts.find(
-          account =>
-            account.type === 'wx' && account.username === userData.username,
-        )
+        accounts.find(account => account.type === 'wx' && account.username === userData.username)
       ) {
         throw new Error(t('importEmail.alreadyExists'));
       }
@@ -53,13 +47,9 @@ export function ImportEmail() {
 
   return (
     <div className={styles.root}>
-      <h2 className={clsx('margin1', 'title1')}>
-        {t('importEmail.importEmailTitle')}
-      </h2>
+      <h2 className={clsx('margin1', 'title1')}>{t('importEmail.importEmailTitle')}</h2>
 
-      <p className="margin1 tag1 disabled500">
-        {t('importEmail.importEmailDesc')}
-      </p>
+      <p className="margin1 tag1 disabled500">{t('importEmail.importEmailDesc')}</p>
 
       <Login onSubmit={handleSubmit} onConfirm={handleConfirm} />
     </div>

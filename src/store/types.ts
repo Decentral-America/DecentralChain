@@ -334,13 +334,9 @@ export type AppAction =
       meta?: never;
     };
 
-export type AppActionOfType<T extends AppAction['type']> = Extract<
-  AppAction,
-  { type: T }
->;
+export type AppActionOfType<T extends AppAction['type']> = Extract<AppAction, { type: T }>;
 
-export type AppActionPayload<T extends AppAction['type']> =
-  AppActionOfType<T>['payload'];
+export type AppActionPayload<T extends AppAction['type']> = AppActionOfType<T>['payload'];
 
 export type AppMiddleware = (
   api: MiddlewareAPI<Dispatch, PopupState>,

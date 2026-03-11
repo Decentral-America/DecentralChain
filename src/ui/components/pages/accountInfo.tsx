@@ -7,15 +7,7 @@ import { notificationChangeName } from 'store/actions/localState';
 
 import Background from '../../services/Background';
 import { getAccountLink } from '../../urls';
-import {
-  Avatar,
-  Balance,
-  Button,
-  CopyText,
-  ErrorMessage,
-  Input,
-  Modal,
-} from '../ui';
+import { Avatar, Balance, Button, CopyText, ErrorMessage, Input, Modal } from '../ui';
 import * as styles from './styles/accountInfo.styl';
 
 export function AccountInfo() {
@@ -39,16 +31,17 @@ export function AccountInfo() {
     setTimeout(() => dispatch(notificationChangeName(false)), 1000);
   }, [dispatch, showChangeNameNotification]);
 
-  const account = usePopupSelector(state =>
-    state.accounts.find(x => x.address === params.address),
-  );
+  const account = usePopupSelector(state => state.accounts.find(x => x.address === params.address));
 
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const defferRef = useRef<{
-    reject: () => void;
-    resolve: (password: string) => void;
-  } | undefined>(undefined);
+  const defferRef = useRef<
+    | {
+        reject: () => void;
+        resolve: (password: string) => void;
+      }
+    | undefined
+  >(undefined);
 
   const [password, setPassword] = useState<string | undefined>(undefined);
   const [passwordError, setPasswordError] = useState(false);
@@ -79,8 +72,7 @@ export function AccountInfo() {
   }
 
   const rejectPassword = () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    defferRef.current!.reject();
+    defferRef.current?.reject();
   };
 
   const onCopyHandler = () => {
@@ -109,7 +101,6 @@ export function AccountInfo() {
     new Promise<string>((resolve, reject) => {
       defferRef.current = { resolve, reject };
     })
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       .then(password => request(password))
       .then(data => {
         setShowPassword(false);
@@ -131,9 +122,7 @@ export function AccountInfo() {
   const getSeed = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      request: password =>
-        Background.getAccountSeed(account.address, currentNetwork, password),
+      request: password => Background.getAccountSeed(account.address, currentNetwork, password),
       retry: () => getSeed(copyCallback),
     });
   };
@@ -141,13 +130,10 @@ export function AccountInfo() {
   const getEncodedSeed = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       request: password =>
-        Background.getAccountEncodedSeed(
-          account.address,
-          currentNetwork,
-          password,
-        ).then(encodedSeed => `base58:${encodedSeed}`),
+        Background.getAccountEncodedSeed(account.address, currentNetwork, password).then(
+          encodedSeed => `base58:${encodedSeed}`,
+        ),
       retry: () => getEncodedSeed(copyCallback),
     });
   };
@@ -155,13 +141,8 @@ export function AccountInfo() {
   const getPrivateKey = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       request: password =>
-        Background.getAccountPrivateKey(
-          account.address,
-          currentNetwork,
-          password,
-        ),
+        Background.getAccountPrivateKey(account.address, currentNetwork, password),
       retry: () => getPrivateKey(copyCallback),
     });
   };
@@ -195,17 +176,12 @@ export function AccountInfo() {
             <div className={`headline1 marginTop1 ${styles.balance}`}>
               <Balance balance={balance} showAsset split showUsdAmount />
 
-              {leaseBalance &&
-                leaseBalance.gt(leaseBalance.cloneWithCoins(0)) && (
-                  <div
-                    className={`${styles.reservedBalance} margin-main-big-top`}
-                  >
-                    <span>{leaseBalance.toFormat()}</span>
-                    <span className="basic500 font300">
-                      {t('wallet.lease')}
-                    </span>
-                  </div>
-                )}
+              {leaseBalance?.gt(leaseBalance.cloneWithCoins(0)) && (
+                <div className={`${styles.reservedBalance} margin-main-big-top`}>
+                  <span>{leaseBalance.toFormat()}</span>
+                  <span className="basic500 font300">{t('wallet.lease')}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -223,63 +199,35 @@ export function AccountInfo() {
       </div>
 
       <div id="accountInfoAddress" className="margin-main-big">
-        <div className="input-title basic500 tag1">
-          {t('accountInfo.address')}
-        </div>
+        <div className="input-title basic500 tag1">{t('accountInfo.address')}</div>
         <div className="input-like tag1">
-          <CopyText
-            showCopy
-            showText
-            text={account.address}
-            onCopy={onCopyHandler}
-          />
+          <CopyText showCopy showText text={account.address} onCopy={onCopyHandler} />
         </div>
       </div>
 
       {account.type !== 'debug' && (
         <div id="accountInfoPublicKey" className="margin-main-big">
-          <div className="input-title basic500 tag1">
-            {t('accountInfo.pubKey')}
-          </div>
+          <div className="input-title basic500 tag1">{t('accountInfo.pubKey')}</div>
           <div className={`input-like tag1 ${styles.ellipsis}`}>
-            <CopyText
-              showCopy
-              showText
-              text={account.publicKey}
-              onCopy={onCopyHandler}
-            />
+            <CopyText showCopy showText text={account.publicKey} onCopy={onCopyHandler} />
           </div>
         </div>
       )}
 
       {['seed', 'encodedSeed', 'privateKey'].includes(account.type) && (
         <div id="accountInfoPrivateKey" className="margin-main-big">
-          <div className="input-title basic500 tag1">
-            {t('accountInfo.privKey')}
-          </div>
+          <div className="input-title basic500 tag1">{t('accountInfo.privKey')}</div>
           <div className="input-like password-input tag1">
-            <CopyText
-              getText={getPrivateKey}
-              showCopy
-              type="key"
-              onCopy={onCopyHandler}
-            />
+            <CopyText getText={getPrivateKey} showCopy type="key" onCopy={onCopyHandler} />
           </div>
         </div>
       )}
 
       {account.type === 'seed' ? (
         <div id="accountInfoBackupPhrase" className="margin-main-big">
-          <div className="input-title basic500 tag1">
-            {t('accountInfo.backUp')}
-          </div>
+          <div className="input-title basic500 tag1">{t('accountInfo.backUp')}</div>
           <div className="input-like password-input tag1">
-            <CopyText
-              getText={getSeed}
-              showCopy
-              type="key"
-              onCopy={onCopyHandler}
-            />
+            <CopyText getText={getSeed} showCopy type="key" onCopy={onCopyHandler} />
           </div>
         </div>
       ) : account.type === 'privateKey' ? (
@@ -290,31 +238,17 @@ export function AccountInfo() {
         </div>
       ) : account.type === 'encodedSeed' ? (
         <div id="accountInfoBackupPhrase" className="margin-main-big">
-          <div className="input-title basic500 tag1">
-            {t('accountInfo.encodedSeed')}
-          </div>
+          <div className="input-title basic500 tag1">{t('accountInfo.encodedSeed')}</div>
           <div className="input-like password-input tag1">
-            <CopyText
-              getText={getEncodedSeed}
-              showCopy
-              type="key"
-              onCopy={onCopyHandler}
-            />
+            <CopyText getText={getEncodedSeed} showCopy type="key" onCopy={onCopyHandler} />
           </div>
         </div>
       ) : account.type === 'wx' ? (
         <>
           <div className="margin-main-big">
-            <div className="input-title basic500 tag1">
-              {t('accountInfo.email')}
-            </div>
+            <div className="input-title basic500 tag1">{t('accountInfo.email')}</div>
             <div className={`input-like tag1 ${styles.ellipsis}`}>
-              <CopyText
-                showCopy
-                showText
-                text={account.username}
-                onCopy={onCopyHandler}
-              />
+              <CopyText showCopy showText text={account.username} onCopy={onCopyHandler} />
             </div>
           </div>
 
@@ -325,17 +259,16 @@ export function AccountInfo() {
           </div>
         </>
       ) : account.type === 'debug' ? (
-        <>
-          <div className="margin-main-big basic500">
-            <div className="input-title tag1">{t('accountInfo.backUp')}</div>
+        <div className="margin-main-big basic500">
+          <div className="input-title tag1">{t('accountInfo.backUp')}</div>
 
-            <div>{t('accountInfo.debugNoBackupPhrase')}</div>
-          </div>
-        </>
+          <div>{t('accountInfo.debugNoBackupPhrase')}</div>
+        </div>
       ) : null}
 
       <div className={styles.accountInfoFooter}>
-        <div
+        <button
+          type="button"
           className={styles.deleteButton}
           onClick={() => {
             navigate(`/delete-account/${params.address}`);
@@ -343,7 +276,7 @@ export function AccountInfo() {
         >
           <div className={`${styles.deleteIcon} delete-icon`} />
           <div>{t('deleteAccount.delete')}</div>
-        </div>
+        </button>
       </div>
 
       <Modal animation={Modal.ANIMATION.FLASH} showModal={showPassword}>
@@ -353,16 +286,13 @@ export function AccountInfo() {
             className="modal-form"
             onSubmit={event => {
               event.preventDefault();
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              defferRef.current!.resolve(password!);
+              defferRef.current?.resolve(password ?? '');
             }}
           >
             <i className={`lock-icon ${styles.lockIcon}`} />
 
             <div className="margin1 relative">
-              <div className="basic500 tag1 input-title">
-                {t('accountInfo.password')}
-              </div>
+              <div className="basic500 tag1 input-title">{t('accountInfo.password')}</div>
 
               <Input
                 autoComplete="current-password"
@@ -410,10 +340,7 @@ export function AccountInfo() {
         <div className="modal notification">{t('accountInfo.copied')}</div>
       </Modal>
 
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showChangeNameNotification}
-      >
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showChangeNameNotification}>
         <div className="modal notification active-asset" key="change_name">
           <div>{t('assets.changeName')}</div>
         </div>

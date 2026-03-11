@@ -54,8 +54,10 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
   };
 
   showSettingsHandler = (origin: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const [, permissions] = Object.entries(this.props.origins!).find(([name]) => name === origin)!;
+    const origins = this.props.origins ?? {};
+    const entry = Object.entries(origins).find(([name]) => name === origin);
+    if (!entry) return;
+    const [, permissions] = entry;
     const autoSign =
       (permissions || []).find(({ type }) => type === 'allowAutoSign') || Object.create(null);
     const amount = new BigNumber(autoSign.totalAmount).div(10 ** 8);
@@ -120,8 +122,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
         />
 
         <List
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          origins={this.props.origins!}
+          origins={origins ?? {}}
           showType={this.state.originsList as TTabTypes}
           showSettings={this.showSettingsHandler}
           toggleApprove={this.toggleApproveHandler}
@@ -132,21 +133,22 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
           animation={Modal.ANIMATION.FLASH}
           onExited={this.resetSettingsHandler}
         >
-          <OriginSettings
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            originName={this.state.origin!}
-            permissions={this.state.permissions}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            origins={origins!}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            autoSign={this.state.autoSign!}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            originalAutoSign={this.state.originalAutoSign!}
-            onSave={this.saveSettingsHandler}
-            onChangePerms={this.onChangeOriginSettings}
-            onClose={this.closeSettingsHandler}
-            onDelete={this.deleteHandler}
-          />
+          {this.state.showSettings &&
+            this.state.origin &&
+            this.state.autoSign &&
+            this.state.originalAutoSign && (
+              <OriginSettings
+                originName={this.state.origin}
+                permissions={this.state.permissions}
+                origins={origins ?? {}}
+                autoSign={this.state.autoSign}
+                originalAutoSign={this.state.originalAutoSign}
+                onSave={this.saveSettingsHandler}
+                onChangePerms={this.onChangeOriginSettings}
+                onClose={this.closeSettingsHandler}
+                onDelete={this.deleteHandler}
+              />
+            )}
         </Modal>
 
         <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={allowed || disallowed || deleted}>
@@ -164,7 +166,6 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
 function mapStateToProps(store: PopupState): StateProps {
   return {
     origins: store.origins,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     ...store.permissions,
   };

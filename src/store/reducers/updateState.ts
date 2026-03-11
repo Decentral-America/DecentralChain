@@ -1,9 +1,9 @@
-import { type AssetsRecord } from '../../assets/types';
-import { type Message } from '../../messages/types';
+import type { AssetsRecord } from '../../assets/types';
+import type { Message } from '../../messages/types';
 import { NetworkName } from '../../networks/types';
-import { type PreferencesAccount } from '../../preferences/types';
+import type { PreferencesAccount } from '../../preferences/types';
 import { ACTION } from '../actions/constants';
-import { type AppAction, type AppActionPayload } from '../types';
+import type { AppAction, AppActionPayload } from '../types';
 
 export * from './localState';
 export * from './nftConfig';
@@ -14,11 +14,7 @@ function createSimpleReducer<TActionType extends AppAction['type']>(
   initialState: AppActionPayload<TActionType>,
   actionType: TActionType,
 ) {
-  return (
-    state = initialState,
-    action: AppAction,
-  ): AppActionPayload<TActionType> =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (state = initialState, action: AppAction): AppActionPayload<TActionType> =>
     (actionType === action.type ? action.payload : state) as any;
 }
 
@@ -50,15 +46,9 @@ export interface UiState {
 
 export const uiState = createSimpleReducer({}, ACTION.UPDATE_UI_STATE);
 
-export const accounts = createSimpleReducer(
-  [],
-  ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS,
-);
+export const accounts = createSimpleReducer([], ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS);
 
-export const allNetworksAccounts = createSimpleReducer(
-  [],
-  ACTION.UPDATE_ALL_NETWORKS_ACCOUNTS,
-);
+export const allNetworksAccounts = createSimpleReducer([], ACTION.UPDATE_ALL_NETWORKS_ACCOUNTS);
 
 export function selectedAccount(
   state: PreferencesAccount | undefined = {} as unknown as undefined,
@@ -86,10 +76,7 @@ export const customCodes = createSimpleReducer({}, ACTION.UPDATE_CODES);
 export const customMatcher = createSimpleReducer({}, ACTION.UPDATE_MATCHER);
 export const origins = createSimpleReducer({}, ACTION.UPDATE_ORIGINS);
 
-export const idleOptions = createSimpleReducer(
-  {},
-  ACTION.REMOTE_CONFIG.UPDATE_IDLE,
-);
+export const idleOptions = createSimpleReducer({}, ACTION.REMOTE_CONFIG.UPDATE_IDLE);
 
 export const messages = (state: Message[] = [], action: AppAction) => {
   switch (action.type) {
@@ -100,14 +87,8 @@ export const messages = (state: Message[] = [], action: AppAction) => {
   }
 };
 
-export const assets = createSimpleReducer(
-  {} as AssetsRecord,
-  ACTION.SET_ASSETS,
-);
-export const swappableAssetIdsByVendor = createSimpleReducer(
-  {},
-  ACTION.UPDATE_SWAPPABLE_ASSETS,
-);
+export const assets = createSimpleReducer({} as AssetsRecord, ACTION.SET_ASSETS);
+export const swappableAssetIdsByVendor = createSimpleReducer({}, ACTION.UPDATE_SWAPPABLE_ASSETS);
 export const usdPrices = createSimpleReducer({}, ACTION.SET_USD_PRICES);
 export const assetLogos = createSimpleReducer({}, ACTION.SET_ASSET_LOGOS);
 export const assetTickers = createSimpleReducer({}, ACTION.SET_ASSET_TICKERS);

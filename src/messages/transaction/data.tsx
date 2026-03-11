@@ -7,11 +7,11 @@ import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxData } from '../types';
+import type { MessageOfType, MessageTxData } from '../types';
 import * as styles from './data.module.css';
 
 export function DataCard({
@@ -33,19 +33,14 @@ export function DataCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.dataTransaction')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.dataTransaction')}</div>
 
           <h1 className="headline1">{t('transactions.dataTransactionName')}</h1>
         </div>
       </div>
 
       <div className={styles.cardContent}>
-        <Expandable
-          allowExpanding={!collapsed}
-          textToCopy={JSON.stringify(tx.data, null, 2)}
-        >
+        <Expandable allowExpanding={!collapsed} textToCopy={JSON.stringify(tx.data, null, 2)}>
           <DataEntries entries={tx.data} />
         </Expandable>
       </div>
@@ -66,16 +61,12 @@ export function DataScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <DataCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

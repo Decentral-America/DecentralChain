@@ -45,10 +45,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
     if (!isDropdownShown || !dropdownEl) return;
 
     const handleWindowClick = (event: MouseEvent) => {
-      if (
-        !(event.target instanceof Node) ||
-        dropdownEl.contains(event.target)
-      ) {
+      if (!(event.target instanceof Node) || dropdownEl.contains(event.target)) {
         return;
       }
 
@@ -66,8 +63,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
     };
   }, [isDropdownShown]);
 
-  const [isCustomNetworkModalShown, setIsCustomNetworkModalShown] =
-    useState(false);
+  const [isCustomNetworkModalShown, setIsCustomNetworkModalShown] = useState(false);
 
   const networkHash = Object.fromEntries(
     Object.entries(NETWORK_CONFIG).map(([key, network]) => [
@@ -80,21 +76,15 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
     ]),
   );
 
-  const getNetworkTranslationKey = (network: NetworkName) =>
-    `bottom.${network}`;
+  const getNetworkTranslationKey = (network: NetworkName) => `bottom.${network}`;
 
   return (
     <div className={styles.root}>
-      <Tooltip
-        className={styles.networkTooltipContent}
-        content={t('bottom.network.disabled')}
-      >
+      <Tooltip className={styles.networkTooltipContent} content={t('bottom.network.disabled')}>
         {props => (
-          <div
-            className={styles.network}
-            {...(allowChangingNetwork ? undefined : props)}
-          >
+          <div className={styles.network} {...(allowChangingNetwork ? undefined : props)}>
             <button
+              type="button"
               className={styles.dropdownButton}
               disabled={!allowChangingNetwork}
               onClick={() => {
@@ -110,6 +100,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
 
             {currentNetwork === NetworkName.Custom && (
               <button
+                type="button"
                 className={styles.editButton}
                 disabled={!allowChangingNetwork}
                 onClick={() => {
@@ -130,6 +121,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
 
                     return (
                       <button
+                        type="button"
                         key={network}
                         className={clsx(styles.dropdownItem, {
                           [styles.dropdownItem_selected]: isSelected,
@@ -150,16 +142,9 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                               }
                         }
                       >
-                        <i
-                          className={clsx(styles.networkIcon, 'networkIcon')}
-                        />
+                        <i className={clsx(styles.networkIcon, 'networkIcon')} />
 
-                        <i
-                          className={clsx(
-                            styles.networkIconActive,
-                            'networkIconActive',
-                          )}
-                        />
+                        <i className={clsx(styles.networkIconActive, 'networkIconActive')} />
 
                         {t(getNetworkTranslationKey(network))}
                       </button>
@@ -168,18 +153,14 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
               </div>
             )}
 
-            <Modal
-              showModal={isCustomNetworkModalShown}
-              animation={Modal.ANIMATION.FLASH}
-            >
+            <Modal showModal={isCustomNetworkModalShown} animation={Modal.ANIMATION.FLASH}>
               <CustomNetworkModal
                 initialMatcher={
                   customMatcher[NetworkName.Custom] ||
                   NETWORK_CONFIG[NetworkName.Custom].matcherBaseUrl
                 }
                 initialNode={
-                  customNodes[NetworkName.Custom] ||
-                  NETWORK_CONFIG[NetworkName.Custom].nodeBaseUrl
+                  customNodes[NetworkName.Custom] || NETWORK_CONFIG[NetworkName.Custom].nodeBaseUrl
                 }
                 onClose={() => {
                   setIsCustomNetworkModalShown(false);

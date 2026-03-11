@@ -13,13 +13,7 @@ interface Props {
   className?: string | undefined;
 }
 
-export function AssetLogo({
-  className,
-  assetId,
-  name,
-  hasSponsorship,
-  hasScript,
-}: Props) {
+export function AssetLogo({ className, assetId, name, hasSponsorship, hasScript }: Props) {
   const style = {
     backgroundColor: new ColorHash().hex(assetId),
   };
@@ -30,19 +24,19 @@ export function AssetLogo({
   if (!logoSrc) {
     return (
       <div className={clsx(styles.assetLogo, className)} style={style}>
-        <div>{name && name[0].toUpperCase()}</div>
+        <div>{name?.[0].toUpperCase()}</div>
         {(hasSponsorship || hasScript) && (
           <div className={styles.assetSubIconContainer}>
             <div className={styles.assetSubIcon}>
               {hasSponsorship ? (
-                <svg viewBox="0 0 10 10" className={styles.assetSubIconSvg}>
+                <svg aria-hidden="true" viewBox="0 0 10 10" className={styles.assetSubIconSvg}>
                   <path
                     fill="currentColor"
                     d="M7.649 2.351a.714.714 0 0 1 0 1.012L3.363 7.649A.715.715 0 0 1 2.35 6.637l4.286-4.286a.714.714 0 0 1 1.012 0zm-5.22 1.506a1.429 1.429 0 1 1 0-2.857 1.429 1.429 0 0 1 0 2.857zM7.57 9a1.429 1.429 0 1 1 0-2.857 1.429 1.429 0 0 1 0 2.857z"
                   />
                 </svg>
               ) : (
-                <svg viewBox="0 0 10 10" className={styles.assetSubIconSvg}>
+                <svg aria-hidden="true" viewBox="0 0 10 10" className={styles.assetSubIconSvg}>
                   <path
                     fill="currentColor"
                     fillRule="evenodd"
@@ -57,7 +51,5 @@ export function AssetLogo({
     );
   }
 
-  return (
-    <img className={clsx(styles.assetLogo, className)} src={logoSrc} alt="" />
-  );
+  return <img className={clsx(styles.assetLogo, className)} src={logoSrc} alt="" />;
 }

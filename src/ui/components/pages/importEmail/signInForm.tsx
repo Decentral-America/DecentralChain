@@ -77,7 +77,6 @@ export function SignInForm({ className, userData, signIn }: Props) {
 
       try {
         await signIn(email, password);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         let errMessage = err?.message;
 

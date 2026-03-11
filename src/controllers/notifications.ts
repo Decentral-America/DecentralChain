@@ -1,14 +1,14 @@
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
-import { type NotificationsStoreItem } from 'notifications/types';
+import type { NotificationsStoreItem } from 'notifications/types';
 import ObservableStore from 'obs-store';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import Browser from 'webextension-polyfill';
 
 import { ERRORS } from '../lib/keeperError';
-import { type ExtensionStorage } from '../storage/storage';
-import { type PermissionsController } from './permissions';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage } from '../storage/storage';
+import type { PermissionsController } from './permissions';
+import type { RemoteConfigController } from './remoteConfig';
 
 export class NotificationsController extends EventEmitter {
   #canShowNotification;
@@ -51,17 +51,13 @@ export class NotificationsController extends EventEmitter {
   }
 
   #deleteAllByTime() {
-    const { message_expiration_ms, update_messages_ms } =
-      this.#getMessagesConfig();
+    const { message_expiration_ms, update_messages_ms } = this.#getMessagesConfig();
 
     const { notifications } = this.#store.getState();
 
     this.deleteNotifications(
       notifications
-        .filter(
-          notification =>
-            Date.now() - notification.timestamp > message_expiration_ms,
-        )
+        .filter(notification => Date.now() - notification.timestamp > message_expiration_ms)
         .map(notification => notification.id),
     );
 
@@ -83,11 +79,8 @@ export class NotificationsController extends EventEmitter {
     title: string | undefined;
     type: 'simple';
   }) {
-    const {
-      notification_title_max,
-      notification_message_max,
-      notification_interval_min,
-    } = this.#getMessagesConfig();
+    const { notification_title_max, notification_message_max, notification_interval_min } =
+      this.#getMessagesConfig();
 
     if (!data || !data.origin) {
       throw ERRORS.NOTIFICATION_DATA_ERROR();
@@ -138,16 +131,12 @@ export class NotificationsController extends EventEmitter {
   deleteNotifications(ids: string[]) {
     const { notifications } = this.#store.getState();
 
-    this.#updateNotifications(
-      notifications.filter(({ id }) => !ids.includes(id)),
-    );
+    this.#updateNotifications(notifications.filter(({ id }) => !ids.includes(id)));
   }
 
   getNotifications(account: PreferencesAccount) {
     return this.#store
       .getState()
-      .notifications.filter(
-        notification => notification.address === account.address,
-      );
+      .notifications.filter(notification => notification.address === account.address);
   }
 }

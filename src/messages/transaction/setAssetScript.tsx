@@ -7,13 +7,13 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { Script } from '../_common/script';
-import { type MessageOfType, type MessageTxSetAssetScript } from '../types';
+import type { MessageOfType, MessageTxSetAssetScript } from '../types';
 import * as setAssetScriptStyles from './setAssetScript.module.css';
 
 export function SetAssetScriptCard({
@@ -88,9 +88,7 @@ export function SetAssetScriptScreen({
           <SetAssetScriptCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

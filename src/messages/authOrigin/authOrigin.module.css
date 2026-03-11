@@ -56,21 +56,19 @@
 }
 
 .permissionsSummary:before {
-  content: '';
+  content: "";
   width: 20px;
   border-radius: 50%;
-  background: var(--color-info400) url(../../ui/assets/img/setting-14-white.svg)
-    center no-repeat;
+  background: var(--color-info400) url(../../ui/assets/img/setting-14-white.svg) center no-repeat;
 }
 
 .permissionsSummary::after {
-  content: ' ';
+  content: " ";
   margin-left: auto;
   align-self: center;
   width: 14px;
   height: 14px;
-  background: url(../../ui/assets/img/arrow-down-14-basic-200.svg) center
-    no-repeat;
+  background: url(../../ui/assets/img/arrow-down-14-basic-200.svg) center no-repeat;
 }
 
 .permissionsDetails[open] .permissionsSummary::after {

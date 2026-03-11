@@ -40,12 +40,9 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
   onFirstBlur = () => this._onBlur();
   onSecondBlur = () => this._onBlur();
   onOldBlur = () => this._onBlur();
-  onChangeFist = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this._onChangeFist(e);
-  onChangeSecond = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this._onChangeSecond(e);
-  onChangeOld = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this._onChangeOld(e);
+  onChangeFist = (e: React.ChangeEvent<HTMLInputElement>) => this._onChangeFist(e);
+  onChangeSecond = (e: React.ChangeEvent<HTMLInputElement>) => this._onChangeSecond(e);
+  onChangeOld = (e: React.ChangeEvent<HTMLInputElement>) => this._onChangeOld(e);
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => this._onSubmit(e);
 
   render() {
@@ -56,9 +53,7 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
           <h2 className="title1 margin2">{t('changePassword.changeTitle')}</h2>
           <div>
             <div className="margin-main-big relative">
-              <div className="basic500 tag1 input-title">
-                {t('changePassword.oldPassword')}
-              </div>
+              <div className="basic500 tag1 input-title">{t('changePassword.oldPassword')}</div>
               <Input
                 autoComplete="current-password"
                 autoFocus
@@ -75,16 +70,12 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
                 data-testid="oldError"
               >
                 {this.state.oldError ? t('changePassword.errorShortOld') : null}
-                {this.state.passwordError
-                  ? t('changePassword.errorWrongOld')
-                  : null}
+                {this.state.passwordError ? t('changePassword.errorWrongOld') : null}
               </ErrorMessage>
             </div>
 
             <div className="margin-main-big relative">
-              <div className="basic500 tag1 input-title">
-                {t('changePassword.newPassword')}
-              </div>
+              <div className="basic500 tag1 input-title">{t('changePassword.newPassword')}</div>
               <Input
                 autoComplete="new-password"
                 error={!!this.state.firstError || this.state.oldEqualNewError}
@@ -95,18 +86,13 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
                 onBlur={this.onFirstBlur}
                 onChange={this.onChangeFist}
               />
-              <ErrorMessage
-                show={!!this.state.firstError}
-                data-testid="firstError"
-              >
+              <ErrorMessage show={!!this.state.firstError} data-testid="firstError">
                 {t('changePassword.errorShortNew')}
               </ErrorMessage>
             </div>
 
             <div className="margin-main-big relative">
-              <div className="basic500 tag1 input-title">
-                {t('changePassword.confirmPassword')}
-              </div>
+              <div className="basic500 tag1 input-title">{t('changePassword.confirmPassword')}</div>
               <Input
                 autoComplete="new-password"
                 error={!!this.state.secondError || this.state.oldEqualNewError}
@@ -121,28 +107,16 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
                 show={!!this.state.secondError || this.state.oldEqualNewError}
                 data-testid="secondError"
               >
-                {this.state.oldEqualNewError
-                  ? t('changePassword.equalPassword')
-                  : null}
-                {this.state.secondError
-                  ? t('changePassword.errorWrongConfirm')
-                  : null}
+                {this.state.oldEqualNewError ? t('changePassword.equalPassword') : null}
+                {this.state.secondError ? t('changePassword.errorWrongConfirm') : null}
               </ErrorMessage>
             </div>
           </div>
-          <Button
-            type="submit"
-            view="submit"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            disabled={this.state.buttonDisabled as any}
-          >
+          <Button type="submit" view="submit" disabled={this.state.buttonDisabled as any}>
             {t('changePassword.create')}
           </Button>
         </form>
-        <Modal
-          animation={Modal.ANIMATION.FLASH_SCALE}
-          showModal={this.state.showChanged}
-        >
+        <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={this.state.showChanged}>
           <div className="modal notification" data-testid="modalPassword">
             {t('changePassword.done')}
           </div>
@@ -182,11 +156,7 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
   }
 
   _onChange(oldValue: string, firstValue: string, secondValue: string) {
-    const buttonDisabled = this._isDisabledButton(
-      oldValue,
-      firstValue,
-      secondValue,
-    );
+    const buttonDisabled = this._isDisabledButton(oldValue, firstValue, secondValue);
     this.setState({ oldValue, firstValue, secondValue, buttonDisabled });
   }
 
@@ -217,11 +187,7 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
       return true;
     }
 
-    return (
-      firstValue !== secondValue ||
-      secondValue.length < MIN_LENGTH ||
-      firstValue === oldValue
-    );
+    return firstValue !== secondValue || secondValue.length < MIN_LENGTH || firstValue === oldValue;
   }
 
   _checkValues() {
@@ -230,18 +196,9 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
     const firstError = this._validateFirst();
     const secondError = this._validateSecond();
     const oldEqualNewError =
-      !firstError &&
-      !secondError &&
-      !oldError &&
-      oldValue &&
-      firstValue === oldValue;
+      !firstError && !secondError && !oldError && oldValue && firstValue === oldValue;
     const buttonDisabled =
-      oldEqualNewError ||
-      oldError ||
-      firstError ||
-      secondError ||
-      !oldValue ||
-      !firstValue;
+      oldEqualNewError || oldError || firstError || secondError || !oldValue || !firstValue;
 
     if (oldError) {
       passwordError = false;

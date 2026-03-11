@@ -1,7 +1,7 @@
-import { type BalanceAssets } from 'balances/types';
+import type { BalanceAssets } from 'balances/types';
 import clsx from 'clsx';
 import ColorHash from 'color-hash';
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 import { useState } from 'react';
 import { Modal } from 'ui/components/ui/modal/Modal';
 
@@ -19,18 +19,12 @@ interface Props {
   onChange: (newValue: string) => void;
 }
 
-export function AssetSelect({
-  assetBalances,
-  network,
-  options,
-  value,
-  onChange,
-}: Props) {
+export function AssetSelect({ assetBalances, network, options, value, onChange }: Props) {
   const logoSrc = useAssetLogo(network, value);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const asset = options.find(o => o.id === value)!;
-
   const [showModal, setShowModal] = useState(false);
+  const asset = options.find(o => o.id === value);
+
+  if (!asset) return null;
 
   return (
     <>
@@ -42,11 +36,7 @@ export function AssetSelect({
         }}
       >
         {logoSrc ? (
-          <img
-            className={clsx(styles.logo, styles.logo_img)}
-            src={logoSrc}
-            alt=""
-          />
+          <img className={clsx(styles.logo, styles.logo_img)} src={logoSrc} alt="" />
         ) : (
           <div
             className={clsx(styles.logo, styles.logo_placeholder)}

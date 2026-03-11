@@ -42,10 +42,7 @@ export function createUpdateState(store: AccountsStore) {
       });
     }
 
-    if (
-      stateChanges.currentLocale &&
-      stateChanges.currentLocale !== currentState.currentLocale
-    ) {
+    if (stateChanges.currentLocale && stateChanges.currentLocale !== currentState.currentLocale) {
       actions.push({
         type: ACTION.UPDATE_FROM_LNG,
         payload: stateChanges.currentLocale,
@@ -68,14 +65,8 @@ export function createUpdateState(store: AccountsStore) {
       });
     }
 
-    const selectedAccount = getParam(
-      stateChanges.selectedAccount,
-      {} as unknown as undefined,
-    );
-    if (
-      selectedAccount &&
-      !deepEqual(selectedAccount, currentState.selectedAccount)
-    ) {
+    const selectedAccount = getParam(stateChanges.selectedAccount, {} as unknown as undefined);
+    if (selectedAccount && !deepEqual(selectedAccount, currentState.selectedAccount)) {
       actions.push({
         type: ACTION.UPDATE_SELECTED_ACCOUNT,
         payload: selectedAccount,
@@ -96,11 +87,8 @@ export function createUpdateState(store: AccountsStore) {
       (stateChanges.currentNetwork != null &&
         stateChanges.currentNetwork !== currentState.currentNetwork)
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      const accounts =
-        stateChanges.accounts || currentState.allNetworksAccounts;
-      const network =
-        stateChanges.currentNetwork || currentState.currentNetwork;
+      const accounts = stateChanges.accounts || currentState.allNetworksAccounts;
+      const network = stateChanges.currentNetwork || currentState.currentNetwork;
 
       actions.push({
         type: ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS,
@@ -112,14 +100,12 @@ export function createUpdateState(store: AccountsStore) {
       !currentState.state ||
       ('initialized' in stateChanges &&
         stateChanges.initialized !== currentState.state.initialized) ||
-      ('locked' in stateChanges &&
-        stateChanges.locked !== currentState.state.locked)
+      ('locked' in stateChanges && stateChanges.locked !== currentState.state.locked)
     ) {
       actions.push({
         type: ACTION.UPDATE_APP_STATE,
         payload: {
-          initialized:
-            stateChanges.initialized ?? currentState.state?.initialized,
+          initialized: stateChanges.initialized ?? currentState.state?.initialized,
           locked: stateChanges.locked ?? currentState.state?.locked,
         },
       });
@@ -133,6 +119,8 @@ export function createUpdateState(store: AccountsStore) {
       });
     }
 
-    actions.forEach(action => store.dispatch(action));
+    for (const action of actions) {
+      store.dispatch(action);
+    }
   };
 }

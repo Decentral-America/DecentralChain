@@ -22,7 +22,7 @@
 
 .exportBtn::after,
 .importBtn::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 15px;
   right: 0;

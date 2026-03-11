@@ -1,13 +1,13 @@
-import { JSONbn } from '_core/jsonBn';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
 import { addBreadcrumb, setTag } from '@sentry/browser';
-import { type TransactionFromNode } from '@decentralchain/ts-types';
-import { type MessageOrder, type MessageTx } from 'messages/types';
+import { JSONbn } from '_core/jsonBn';
+import type { MessageOrder, MessageTx } from 'messages/types';
 import { stringifyOrder, stringifyTransaction } from 'messages/utils';
 import { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 
 import { NETWORK_CONFIG } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 
 export class NetworkController {
   store;
@@ -84,9 +84,7 @@ export class NetworkController {
   getNetworkCode(network?: NetworkName) {
     network = network || this.getNetwork();
 
-    return (
-      this.getCustomCodes()[network] || NETWORK_CONFIG[network].networkCode
-    );
+    return this.getCustomCodes()[network] || NETWORK_CONFIG[network].networkCode;
   }
 
   getCustomNodes() {
@@ -96,9 +94,7 @@ export class NetworkController {
   getNode(network?: NetworkName) {
     network = network || this.getNetwork();
 
-    return (
-      this.getCustomNodes()[network] || NETWORK_CONFIG[network].nodeBaseUrl
-    );
+    return this.getCustomNodes()[network] || NETWORK_CONFIG[network].nodeBaseUrl;
   }
 
   getCustomMatchers() {
@@ -142,10 +138,7 @@ export class NetworkController {
     }
 
     const response = await fetch(
-      new URL(
-        `matcher/orderbook/${params.amountAsset}/${params.priceAsset}/cancel`,
-        matcherUrl,
-      ),
+      new URL(`matcher/orderbook/${params.amountAsset}/${params.priceAsset}/cancel`, matcherUrl),
       {
         method: 'POST',
         headers: {
@@ -159,7 +152,7 @@ export class NetworkController {
     if (!response.ok) {
       const text = await response.text();
 
-      let errorMessage;
+      let errorMessage: string;
       try {
         errorMessage = JSON.parse(text).message;
       } catch {
@@ -193,7 +186,7 @@ export class NetworkController {
     if (!response.ok) {
       const text = await response.text();
 
-      let errorMessage;
+      let errorMessage: string;
       try {
         errorMessage = JSON.parse(text).message;
       } catch {
@@ -209,22 +202,19 @@ export class NetworkController {
   }
 
   async broadcastTransaction(tx: MessageTx) {
-    const response = await fetch(
-      new URL('transactions/broadcast', this.getNode()),
-      {
-        method: 'POST',
-        headers: {
-          accept: 'application/json; large-significand-format=string',
-          'content-type': 'application/json; charset=utf-8',
-        },
-        body: stringifyTransaction(tx),
+    const response = await fetch(new URL('transactions/broadcast', this.getNode()), {
+      method: 'POST',
+      headers: {
+        accept: 'application/json; large-significand-format=string',
+        'content-type': 'application/json; charset=utf-8',
       },
-    );
+      body: stringifyTransaction(tx),
+    });
 
     if (!response.ok) {
       const text = await response.text();
 
-      let errorMessage;
+      let errorMessage: string;
       try {
         errorMessage = JSON.parse(text).message;
       } catch {

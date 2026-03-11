@@ -15,13 +15,9 @@ import { SignProvider } from './_core/signContext';
 import { UsdPricesProvider } from './_core/usdPrices';
 import type { UiApi } from './background';
 import { i18nextInit } from './i18n/init';
-import {
-  createIpcCallProxy,
-  fromWebExtensionPort,
-  handleMethodCallRequests,
-} from './ipc/ipc';
+import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from './ipc/ipc';
 import { ledgerService } from './ledger/service';
-import { type LedgerSignRequest } from './ledger/types';
+import type { LedgerSignRequest } from './ledger/types';
 import { createPopupStore } from './popup/store/create';
 import { createUpdateState } from './popup/updateState';
 import { PopupRoot } from './popupRoot';

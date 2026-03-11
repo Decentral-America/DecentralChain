@@ -14,9 +14,7 @@ interface DucksArtefactsNftInfo {
   vendor: NftVendorId.DucksArtefact;
 }
 
-export class DucksArtefactsNftVendor
-  implements NftVendor<DucksArtefactsNftInfo>
-{
+export class DucksArtefactsNftVendor implements NftVendor<DucksArtefactsNftInfo> {
   id = NftVendorId.DucksArtefact as const;
 
   is(nft: NftAssetDetail) {
@@ -50,18 +48,14 @@ export class DucksArtefactsNftVendor
   }
 }
 
-const DUCK_ARTEFACTS_INFO: Partial<
-  Record<string, { title: string; description: string }>
-> = {
+const DUCK_ARTEFACTS_INFO: Partial<Record<string, { title: string; description: string }>> = {
   art_lake: {
     title: 'Lake',
-    description:
-      '+2% to the productivity of all ducks on the farm. Can be toggled on or off.',
+    description: '+2% to the productivity of all ducks on the farm. Can be toggled on or off.',
   },
   art_house: {
     title: 'Duck House',
-    description:
-      'This artefact allows you to boost the productivity of 4 selected ducks by 30%',
+    description: 'This artefact allows you to boost the productivity of 4 selected ducks by 30%',
   },
   art_bighouse: {
     title: 'Mega Duck House',
@@ -95,8 +89,7 @@ const DUCK_ARTEFACTS_INFO: Partial<
   },
   art_cape: {
     title: 'Magic Cape',
-    description:
-      'Can be worn by a duck. Looks enchanted but has no magic powers.',
+    description: 'Can be worn by a duck. Looks enchanted but has no magic powers.',
   },
   art_hat: {
     title: 'Quacker Hat',
@@ -123,12 +116,10 @@ const DUCK_ARTEFACTS_INFO: Partial<
   },
   art_xsock: {
     title: 'X-mas Sock',
-    description:
-      'Earned duckling feed limit is increased by 200%. Can be toggled on or off.',
+    description: 'Earned duckling feed limit is increased by 200%. Can be toggled on or off.',
   },
   art_xtree: {
     title: 'X-mas Tree',
-    description:
-      '+3% to the productivity of all ducks on the farm. Can be toggled on or off.',
+    description: '+3% to the productivity of all ducks on the farm. Can be toggled on or off.',
   },
 };

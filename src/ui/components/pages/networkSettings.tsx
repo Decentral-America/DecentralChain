@@ -5,11 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { NETWORK_CONFIG } from '../../../constants';
 import { NetworkName } from '../../../networks/types';
 import { usePopupDispatch, usePopupSelector } from '../../../popup/store/react';
-import {
-  setCustomCode,
-  setCustomMatcher,
-  setCustomNode,
-} from '../../../store/actions/network';
+import { setCustomCode, setCustomMatcher, setCustomNode } from '../../../store/actions/network';
 import { getMatcherPublicKey, getNetworkCode } from '../../utils/network';
 import { Button, Copy, ErrorMessage, Input, Modal } from '../ui';
 import * as styles from './styles/settings.styl';
@@ -21,13 +17,9 @@ export function NetworkSettings() {
 
   const currentNetwork = usePopupSelector(state => state.currentNetwork);
 
-  const customMatcher = usePopupSelector(
-    state => state.customMatcher[state.currentNetwork],
-  );
+  const customMatcher = usePopupSelector(state => state.customMatcher[state.currentNetwork]);
 
-  const customNode = usePopupSelector(
-    state => state.customNodes[state.currentNetwork],
-  );
+  const customNode = usePopupSelector(state => state.customNodes[state.currentNetwork]);
 
   const defaultNetworkConfig = NETWORK_CONFIG[currentNetwork];
 
@@ -35,8 +27,7 @@ export function NetworkSettings() {
   const [nodeValue, setNodeValue] = useState(initialNodeValue);
   const [nodeError, setNodeError] = useState(false);
 
-  const initialMatcherValue =
-    customMatcher || defaultNetworkConfig.matcherBaseUrl;
+  const initialMatcherValue = customMatcher || defaultNetworkConfig.matcherBaseUrl;
   const [matcherValue, setMatcherValue] = useState(initialMatcherValue);
   const [matcherError, setMatcherError] = useState(false);
 
@@ -92,9 +83,7 @@ export function NetworkSettings() {
           getNetworkCode(nodeValue).then(
             networkCode => {
               if (currentNetwork === NetworkName.Custom) {
-                dispatch(
-                  setCustomCode({ code: networkCode, network: currentNetwork }),
-                );
+                dispatch(setCustomCode({ code: networkCode, network: currentNetwork }));
               } else if (networkCode !== defaultNetworkConfig.networkCode) {
                 return false;
               }
@@ -102,10 +91,7 @@ export function NetworkSettings() {
               dispatch(
                 setCustomNode({
                   network: currentNetwork,
-                  node:
-                    nodeValue === defaultNetworkConfig.nodeBaseUrl
-                      ? null
-                      : nodeValue,
+                  node: nodeValue === defaultNetworkConfig.nodeBaseUrl ? null : nodeValue,
                 }),
               );
 
@@ -119,9 +105,7 @@ export function NetworkSettings() {
               dispatch(
                 setCustomMatcher({
                   matcher:
-                    matcherValue === defaultNetworkConfig.matcherBaseUrl
-                      ? null
-                      : matcherValue,
+                    matcherValue === defaultNetworkConfig.matcherBaseUrl ? null : matcherValue,
                   network: currentNetwork,
                 }),
               );
@@ -142,9 +126,7 @@ export function NetworkSettings() {
         setIsSubmitting(false);
       }}
     >
-      <h2 className="title1 margin-main-big">
-        {t('networksSettings.network')}
-      </h2>
+      <h2 className="title1 margin-main-big">{t('networksSettings.network')}</h2>
 
       <div className="margin-main-big relative">
         <label className="input-title basic500 tag1" htmlFor="node_address">
@@ -201,17 +183,13 @@ export function NetworkSettings() {
           }}
         />
 
-        <ErrorMessage show={matcherError}>
-          {t('networkSettings.matcherError')}
-        </ErrorMessage>
+        <ErrorMessage show={matcherError}>{t('networkSettings.matcherError')}</ErrorMessage>
       </div>
 
       <Button
         className="margin-main-big"
         disabled={
-          isSubmitting ||
-          (nodeValue === initialNodeValue &&
-            matcherValue === initialMatcherValue)
+          isSubmitting || (nodeValue === initialNodeValue && matcherValue === initialMatcherValue)
         }
         loading={isSubmitting}
         type="submit"
@@ -231,9 +209,7 @@ export function NetworkSettings() {
           onClick={() => {
             dispatch(setCustomNode({ network: currentNetwork, node: null }));
 
-            dispatch(
-              setCustomMatcher({ matcher: null, network: currentNetwork }),
-            );
+            dispatch(setCustomMatcher({ matcher: null, network: currentNetwork }));
 
             setNodeValue(defaultNetworkConfig.nodeBaseUrl);
             setNodeError(false);
@@ -253,15 +229,11 @@ export function NetworkSettings() {
       </Modal>
 
       <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showSaved}>
-        <div className="modal notification">
-          {t('networksSettings.savedModal')}
-        </div>
+        <div className="modal notification">{t('networksSettings.savedModal')}</div>
       </Modal>
 
       <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showSetDefault}>
-        <div className="modal notification">
-          {t('networksSettings.setDefaultModal')}
-        </div>
+        <div className="modal notification">{t('networksSettings.setDefaultModal')}</div>
       </Modal>
     </form>
   );

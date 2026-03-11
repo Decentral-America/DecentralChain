@@ -21,9 +21,7 @@ export type InputProps = {
   className?: string | undefined;
   disabled?: boolean | undefined;
   error?: unknown | undefined;
-  forwardRef?: React.MutableRefObject<
-    HTMLInputElement | HTMLTextAreaElement | null
-  > | undefined;
+  forwardRef?: React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null> | undefined;
   id?: string | undefined;
   maxLength?: number | undefined;
   placeholder?: string | undefined;
@@ -52,7 +50,9 @@ export function Input({
   const rootRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const getRef = useCallback(
     (element: HTMLInputElement | HTMLTextAreaElement | null) => {
-      forwardRef && (forwardRef.current = element);
+      if (forwardRef) {
+        forwardRef.current = element;
+      }
       rootRef.current = element;
     },
     [forwardRef],
@@ -81,7 +81,8 @@ export function Input({
             ref={getRef}
           />
           {view === 'password' && (
-            <i
+            <button
+              type="button"
               className={styles.passwordIcon}
               onClick={() => {
                 setRootType(rootType === 'password' ? 'text' : 'password');

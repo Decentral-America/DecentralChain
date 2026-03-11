@@ -19,8 +19,7 @@ export function initSentry({
     integrations: [breadcrumbsIntegration({ dom: false })],
     beforeSend: async (event, hint) => {
       const message =
-        hint &&
-        hint.originalException &&
+        hint?.originalException &&
         typeof hint.originalException === 'object' &&
         'message' in hint.originalException &&
         typeof hint.originalException.message === 'string' &&

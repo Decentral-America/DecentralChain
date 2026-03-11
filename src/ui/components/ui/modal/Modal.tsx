@@ -7,8 +7,7 @@ import * as styles from './modal.styl';
 const ModalWrapper = (props: Props) => {
   return (
     <CSSTransition
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      in={props.showModal!}
+      in={props.showModal ?? false}
       classNames={props.animation || 'default_modal'}
       timeout={400}
       unmountOnExit

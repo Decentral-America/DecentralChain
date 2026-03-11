@@ -16,11 +16,19 @@ export class Tabs extends PureComponent<IProps> {
 
     return (
       <div className={className}>
-        {this.props.tabs.map(({ item, name }, i) => (
+        {this.props.tabs.map(({ item, name }) => (
           <div
-            key={i}
+            key={name}
             id={`${name}Tab`}
             onClick={this.selectHandler(name)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.selectHandler(name)();
+              }
+            }}
+            role="tab"
+            tabIndex={0}
             className={clsx(styles.tab, {
               [styles.selected]: selected === name,
             })}

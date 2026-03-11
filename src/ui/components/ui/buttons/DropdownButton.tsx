@@ -73,10 +73,7 @@ export class DropdownButton extends PureComponent<Props, State> {
     const [defaultItem, ...otherItems] = children as React.ReactElement[];
 
     return (
-      <div
-        className={clsx(styles.splitButton, className, 'buttons-group')}
-        ref={this.getRef}
-      >
+      <div className={clsx(styles.splitButton, className, 'buttons-group')} ref={this.getRef}>
         <div className="relative flex">
           {defaultItem}
 
@@ -91,13 +88,9 @@ export class DropdownButton extends PureComponent<Props, State> {
         </div>
 
         {this.state.showList && (
-          <div
-            className={clsx(
-              styles.list,
-              placement === 'top' && styles.listPlacementTop,
-            )}
-          >
+          <div className={clsx(styles.list, placement === 'top' && styles.listPlacementTop)}>
             {otherItems.map((item, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: React elements with no stable ID
               <div key={index} className={styles.listItem}>
                 {item}
               </div>
