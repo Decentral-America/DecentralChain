@@ -6,18 +6,18 @@
  */
 
 import './interop.js';
+import * as crypto from '@decentralchain/ts-lib-crypto';
 import * as scalaJsCompiler from '@waves/ride-lang';
 import * as replJs from '@waves/ride-repl';
-import * as crypto from '@decentralchain/ts-lib-crypto';
 
 /**
  * Compile Ride source code to binary.
  *
- * @param {string} code — Ride source code to compile.
- * @param {number} [estimatorVersion=3] — Complexity estimator version (1–3).
- * @param {boolean} [needCompaction=false] — Whether to compact the output.
- * @param {boolean} [removeUnusedCode=false] — Strip dead code from the result.
- * @param {Record<string, string>} [libraries={}] — Named library sources for imports.
+ * @param {string} code - Ride source code to compile.
+ * @param {number} [estimatorVersion=3] - Complexity estimator version (1-3).
+ * @param {boolean} [needCompaction=false] - Whether to compact the output.
+ * @param {boolean} [removeUnusedCode=false] - Strip dead code from the result.
+ * @param {Record<string, string>} [libraries={}] - Named library sources for imports.
  * @returns {{ result: { bytes: Uint8Array, base64: string, size: number, ast: object, complexity: number, verifierComplexity?: number, callableComplexities?: Record<string, number>, userFunctionComplexities?: Record<string, number>, globalVariableComplexities?: Record<string, number> } } | { error: string }} Compilation result or error.
  */
 function wrappedCompile(
@@ -78,7 +78,7 @@ function wrappedCompile(
 /**
  * Create an interactive REPL session for evaluating Ride expressions.
  *
- * @param {{ nodeUrl: string, chainId: string, address: string }} [opts] —
+ * @param {{ nodeUrl: string, chainId: string, address: string }} [opts] -
  *   Optional connection settings. When omitted a local offline REPL is created.
  * @returns {{ evaluate: (expr: string) => Promise<{ result: string } | { error: any }>, reconfigure: (opts: { nodeUrl: string, chainId: string, address: string }) => ReturnType<typeof wrappedRepl>, clear: () => void, test: (str: string) => Promise<string>, info: (s: string) => string, totalInfo: () => string }} REPL instance.
  */
@@ -120,12 +120,12 @@ function wrappedRepl(opts) {
  */
 const flattenCompilationResult = (compiled) => {
   let result = {};
-  if (compiled.error) {
-    if (compiled.result) {
-      const bytes = new Uint8Array(compiled.result);
+  if ('error' in compiled) {
+    if ('result' in compiled) {
+      const bytes = new Uint8Array(/** @type {ArrayBuffer} */ (compiled.result));
       const base64 = crypto.base64Encode(bytes);
       result = { ...compiled, base64 };
-      if (result.result) delete result.result;
+      if ('result' in result) delete result.result;
     }
   } else {
     result = compiled.result;
