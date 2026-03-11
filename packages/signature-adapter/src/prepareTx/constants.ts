@@ -12,19 +12,13 @@ const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimi
 const { binary } = libs.marshall;
 const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 
-const toNode = (
-  data: Record<string, unknown>,
-  convert?: (r: any) => any,
-) => {
+const toNode = (data: Record<string, unknown>, convert?: (r: any) => any) => {
   const r = mlToNode(data as any);
   r.timestamp = new Date(r.timestamp).getTime();
   return convert ? convert(r) : r;
 };
 
-const burnToNode = (
-  data: Record<string, unknown>,
-  convert?: (r: any) => any,
-) => {
+const burnToNode = (data: Record<string, unknown>, convert?: (r: any) => any) => {
   const r = mlToNode(data as any);
   const withAmount: Record<string, unknown> = {
     ...r,
