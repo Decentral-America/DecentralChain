@@ -102,7 +102,7 @@ export function processDescription(id?: string, required?: boolean) {
       });
 
       if (Object.keys(description).length > 0) {
-        store.description = description;
+        store['description'] = description;
       }
     } catch (e: unknown) {
       if (required ?? true) {
