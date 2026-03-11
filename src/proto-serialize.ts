@@ -257,13 +257,13 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
   if (Object.hasOwn(res, 'chainId')) {
     res.sender = address({ publicKey: t.senderPublicKey }, t.chainId);
   } else {
-    const recipient = res.recipient || res.dApp || res.transfers?.[0]?.recipient;
+    const recipient = res.recipient || res.dApp || (res.transfers as Array<{recipient?: string}> | undefined)?.[0]?.recipient;
     if (recipient) {
-      res.sender = address({ publicKey: t.senderPublicKey }, chainIdFromRecipient(recipient));
+      res.sender = address({ publicKey: t.senderPublicKey }, chainIdFromRecipient(recipient as string));
     }
   }
 
-  return res;
+  return res as TTransaction;
 }
 
 export function orderToProtoBytes(obj: ExchangeTransactionOrder): Uint8Array {
@@ -285,7 +285,7 @@ const getCommonFields = ({
   version,
   ...rest
 }: TTransaction) => {
-  const typename = nameByType[type];
+  const typename = nameByType[type as keyof typeof nameByType];
   let chainId: number | undefined = (rest as unknown as WithChainId).chainId;
   if (chainId == null) {
     const r = rest as unknown as Record<string, unknown>;
@@ -327,17 +327,17 @@ const getIssueData = (t: IssueTransaction): dccProto.waves.IIssueTransactionData
   description: t.description === '' ? null : t.description,
   amount: Long.fromValue(t.quantity),
   decimals: t.decimals === 0 ? null : t.decimals,
-  reissuable: t.reissuable ? true : undefined,
+  reissuable: t.reissuable ? true : null,
   script: t.script == null ? null : scriptToProto(t.script),
 });
 const getTransferData = (t: TransferTransaction): dccProto.waves.ITransferTransactionData => ({
   recipient: recipientToProto(t.recipient),
   amount: amountToProto(t.amount, t.assetId),
-  attachment: t.attachment == null || t.attachment === '' ? undefined : base58Decode(t.attachment),
+  attachment: t.attachment == null || t.attachment === '' ? null : base58Decode(t.attachment),
 });
 const getReissueData = (t: ReissueTransaction): dccProto.waves.IReissueTransactionData => ({
   assetAmount: amountToProto(t.quantity, t.assetId),
-  reissuable: t.reissuable ? true : undefined,
+  reissuable: t.reissuable ? true : null,
 });
 const getBurnData = (t: BurnTransaction): dccProto.waves.IBurnTransactionData => ({
   assetAmount: amountToProto(t.amount, t.assetId),
@@ -350,8 +350,8 @@ const getExchangeData = (
   buyMatcherFee: Long.fromValue(t.buyMatcherFee),
   sellMatcherFee: Long.fromValue(t.sellMatcherFee),
   orders: [
-    orderToProto({ chainId: t.chainId, ...t.order1 }),
-    orderToProto({ chainId: t.chainId, ...t.order2 }),
+    orderToProto({ chainId: t.chainId, ...t.order1 } as Record<string, unknown>),
+    orderToProto({ chainId: t.chainId, ...t.order2 } as Record<string, unknown>),
   ],
 });
 const getLeaseData = (t: LeaseTransaction): dccProto.waves.ILeaseTransactionData => ({
@@ -370,7 +370,7 @@ const getMassTransferData = (
   t: MassTransferTransaction,
 ): dccProto.waves.IMassTransferTransactionData => ({
   assetId: t.assetId == null ? null : base58Decode(t.assetId),
-  attachment: t.attachment == null || t.attachment === '' ? undefined : base58Decode(t.attachment),
+  attachment: t.attachment == null || t.attachment === '' ? null : base58Decode(t.attachment),
   transfers: t.transfers.map(massTransferItemToProto),
 });
 const getDataTxData = (t: DataTransaction): dccProto.waves.IDataTransactionData => ({
@@ -396,9 +396,7 @@ const getInvokeData = (
 ): dccProto.waves.IInvokeScriptTransactionData => ({
   dApp: recipientToProto(t.dApp),
   functionCall: binary.serializerFromSchema(
-    (schemas.invokeScriptSchemaV1 as Record<string, unknown[][]>).schema[5][1] as Parameters<
-      typeof binary.serializerFromSchema
-    >[0],
+    schemas.invokeScriptSchemaV1.schema[5]![1],
   )(t.call),
   payments:
     t.payment == null
@@ -480,7 +478,7 @@ export const txToProto = (
 
   return {
     ...common,
-    [common.data]: txData,
+    [common.data as string]: txData,
   };
 };
 
@@ -494,7 +492,7 @@ export const signedTxToProto = (t: TTx): dccProto.waves.ISignedTransaction => {
     // from the upstream protocol specification, not a branding reference.
     wavesTransaction: {
       ...common,
-      [common.data]: txData,
+      [common.data as string]: txData,
     },
     proofs: (t.proofs || []).map(proof2Uint8Array),
   };
@@ -515,7 +513,7 @@ const orderToProto = (o: Record<string, unknown>): dccProto.waves.IOrder => {
   } else priceMode = undefined;
 
   const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() === 'dcc';
-  const ap = o.assetPair as Record<string, string | null>;
+  const ap = o.assetPair as { amountAsset: string | null; priceAsset: string | null };
   return {
     chainId: o.chainId as number,
     senderPublicKey: o.senderPublicKey ? base58Decode(o.senderPublicKey as string) : null,
@@ -524,7 +522,7 @@ const orderToProto = (o: Record<string, unknown>): dccProto.waves.IOrder => {
       amountAssetId: isNullOrDcc(ap.amountAsset) ? null : base58Decode(ap.amountAsset as string),
       priceAssetId: isNullOrDcc(ap.priceAsset) ? null : base58Decode(ap.priceAsset as string),
     },
-    orderSide: o.orderType === 'buy' ? undefined : dccProto.waves.Order.Side.SELL,
+    orderSide: o.orderType === 'buy' ? null : dccProto.waves.Order.Side.SELL,
     amount: Long.fromValue(o.amount as string | number),
     price: Long.fromValue(o.price as string | number),
     timestamp: Long.fromValue(o.timestamp as string | number),
@@ -534,11 +532,11 @@ const orderToProto = (o: Record<string, unknown>): dccProto.waves.IOrder => {
       o.matcherFeeAssetId ? (o.matcherFeeAssetId as string) : null,
     ),
     version: o.version as number,
-    proofs: (o.proofs as string[] | undefined)?.map(base58Decode),
+    proofs: (o.proofs as string[] | undefined)?.map(base58Decode) ?? null,
     eip712Signature: o.eip712Signature
       ? base16Decode((o.eip712Signature as string).slice(2))
-      : undefined,
-    priceMode: priceMode,
+      : null,
+    priceMode: priceMode ?? null,
   };
 };
 
@@ -569,8 +567,8 @@ const orderFromProto = (
     orderType: po.orderSide === dccProto.waves.Order.Side.BUY ? 'buy' : 'sell',
     amount: convertNumber(po.amount as Long),
     price: convertNumber(po.price as Long),
-    timestamp: po.timestamp?.toNumber(),
-    expiration: po.expiration?.toNumber(),
+    timestamp: po.timestamp?.toNumber() ?? 0,
+    expiration: po.expiration?.toNumber() ?? 0,
     matcherFee: convertNumber(po.matcherFee?.amount as Long),
     matcherFeeAssetId:
       po.matcherFee?.assetId == null ? null : base58Encode(po.matcherFee?.assetId as Uint8Array),
@@ -583,8 +581,8 @@ const orderFromProto = (
 };
 
 const recipientToProto = (r: string): dccProto.waves.IRecipient => ({
-  alias: r.startsWith('alias') ? r.slice(8) : undefined,
-  publicKeyHash: !r.startsWith('alias') ? base58Decode(r).slice(2, -4) : undefined,
+  alias: r.startsWith('alias') ? r.slice(8) : null,
+  publicKeyHash: !r.startsWith('alias') ? base58Decode(r).slice(2, -4) : null,
 });
 const amountToProto = (a: string | number, assetId?: string | null): dccProto.waves.IAmount => ({
   amount: a === 0 ? null : Long.fromValue(a),
@@ -598,13 +596,13 @@ const massTransferItemToProto = (
 });
 export const dataEntryToProto = (de: DataTransactionEntry): dccProto.waves.IDataEntry => ({
   key: de.key,
-  intValue: de.type === 'integer' ? Long.fromValue(de.value) : undefined,
-  boolValue: de.type === 'boolean' ? de.value : undefined,
+  intValue: de.type === 'integer' ? Long.fromValue(de.value) : null,
+  boolValue: de.type === 'boolean' ? de.value : null,
   binaryValue:
     de.type === 'binary'
       ? base64Decode(de.value.startsWith('base64:') ? de.value.slice(7) : de.value)
-      : undefined,
-  stringValue: de.type === 'string' ? de.value : undefined,
+      : null,
+  stringValue: de.type === 'string' ? de.value : null,
 });
 export const scriptToProto = (s: string): Uint8Array | null => {
   return s ? base64Decode(s.toString().startsWith('base64:') ? s.slice(7) : s) : null;

@@ -311,7 +311,7 @@ export async function scriptInfo(
   nodeUrl: string,
   requestOptions?: RequestInit,
 ): Promise<Record<string, unknown>> {
-  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions) as Promise<
+  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions) as unknown as Promise<
     Record<string, unknown>
   >;
 }
@@ -325,7 +325,7 @@ export async function scriptMeta(
   address: string,
   nodeUrl: string,
 ): Promise<Record<string, unknown>> {
-  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as Promise<Record<string, unknown>>;
+  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as unknown as Promise<Record<string, unknown>>;
 }
 
 /**
@@ -344,7 +344,7 @@ export async function rewards(
   requestOptions?: RequestInit,
 ): Promise<unknown>;
 export async function rewards(
-  ...args: [number, string, RequestInit?] | [string, RequestInit?]
+  ...args: [number, string, (RequestInit | undefined)?] | [string, (RequestInit | undefined)?]
 ): Promise<unknown> {
   let nodeUrl: string;
   let _height: number | undefined;
@@ -390,5 +390,5 @@ export function broadcast<T extends SignedTransaction<Transaction<Long>>>(
     nodeUrl,
     tx as unknown as Parameters<typeof tx_route.broadcast>[1],
     requestOptions,
-  );
+  ) as unknown as Promise<T & WithApiMixin>;
 }
