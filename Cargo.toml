@@ -1,11 +1,11 @@
 [package]
-authors = ["Sergey Slipchenko <faergeek@gmail.com>"]
-description = "Cryptographic functions for Waves blockchain"
+authors = ["DecentralChain <dev@decentralchain.io>"]
+description = "Cryptographic functions for DecentralChain blockchain"
 edition = "2021"
 license = "MIT"
-name = "waves-crypto"
-repository = "https://github.com/Keeper-Wallet/waves-crypto"
-version = "0.0.0"
+name = "decentralchain-crypto"
+repository = "https://github.com/Decentral-America/crypto"
+version = "1.0.0"
 
 [lib]
 crate-type = ["cdylib"]
