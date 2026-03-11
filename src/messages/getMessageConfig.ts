@@ -29,8 +29,8 @@ import {
 
 interface MessageConfig<T extends Message['type']> {
   card: React.ComponentType<{
-    className?: string;
-    collapsed?: boolean;
+    className?: string | undefined;
+    collapsed?: boolean | undefined;
     message: MessageOfType<T>;
   }>;
   screen: React.ComponentType<{

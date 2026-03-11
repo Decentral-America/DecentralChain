@@ -21,7 +21,7 @@ export function TransactionCard({
   collapsed,
   message,
 }: {
-  collapsed?: boolean;
+  collapsed?: boolean | undefined;
   message: MessageOfType<'transaction'>;
 }) {
   switch (message.data.type) {
