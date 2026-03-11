@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Long from 'long';
 import { describe, expect, it } from 'vitest';
 import { waves as dccProto } from '../dist/index.js';
