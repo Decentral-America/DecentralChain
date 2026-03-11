@@ -9,8 +9,8 @@ import { Modal } from 'ui/components/ui/modal/Modal';
 import * as styles from './passwordModal.styl';
 
 interface Props {
-  showAttention?: boolean;
-  showEncrypted?: boolean;
+  showAttention?: boolean | undefined;
+  showEncrypted?: boolean | undefined;
   onClose: () => void;
   onSubmit: (password: string, encrypted?: boolean) => Promise<void>;
 }

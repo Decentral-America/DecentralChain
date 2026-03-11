@@ -310,7 +310,7 @@ export type TAutoAuth = {
   type: 'allowAutoSign';
   totalAmount: string | null;
   interval: number | null;
-  approved?: unknown[];
+  approved?: unknown[] | undefined;
 };
 
 type TNotification = {

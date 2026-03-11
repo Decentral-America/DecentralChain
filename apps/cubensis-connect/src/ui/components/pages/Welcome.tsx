@@ -7,7 +7,7 @@ import { Button, LangsSelect } from '../ui';
 import * as styles from './Welcome.module.css';
 
 interface Props {
-  isPopup?: boolean;
+  isPopup?: boolean | undefined;
 }
 
 export function Welcome({ isPopup }: Props) {

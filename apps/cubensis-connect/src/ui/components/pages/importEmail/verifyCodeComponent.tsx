@@ -7,7 +7,7 @@ import * as styles from './verifyCodeComponent.module.css';
 type VerifyCodeComponentProps = {
   className: string;
   isPending: boolean;
-  codeLength?: number;
+  codeLength?: number | undefined;
   onPendingChange(isPending: boolean): void;
   onApplyCode?(code: string): Promise<boolean>;
 };

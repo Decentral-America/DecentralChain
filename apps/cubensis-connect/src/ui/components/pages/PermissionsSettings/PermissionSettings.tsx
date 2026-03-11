@@ -12,11 +12,11 @@ import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './
 import * as styles from './permissionsSettings.styl';
 
 interface StateProps {
-  origins?: { [key: string]: TAutoAuth[] };
-  pending?: boolean;
-  allowed?: boolean;
-  disallowed?: boolean;
-  deleted?: boolean;
+  origins?: { [key: string]: TAutoAuth[] } | undefined;
+  pending?: boolean | undefined;
+  allowed?: boolean | undefined;
+  disallowed?: boolean | undefined;
+  deleted?: boolean | undefined;
 }
 
 interface DispatchProps {
@@ -178,9 +178,8 @@ const actions = {
   setShowNotification,
 };
 
-export const PermissionsSettings = connect(
-  mapStateToProps,
-  actions,
-)(withTranslation()(PermissionsSettingsComponent));
+const connector = connect(mapStateToProps, actions);
+// @ts-expect-error Redux connect + exactOptionalPropertyTypes conflict on action creator meta types
+export const PermissionsSettings = connector(withTranslation()(PermissionsSettingsComponent));
 
 export type TTabTypes = 'customList' | 'whiteList';
