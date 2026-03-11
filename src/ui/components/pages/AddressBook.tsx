@@ -135,7 +135,7 @@ export function AddressBook() {
     <div className={styles.content}>
       <div className={styles.head}>
         <h2 className="title1">{t('address.title')}</h2>
-        <Tooltip content={t('address.addTooltip')} placement="auto-end">
+        <Tooltip content={t('address.addTooltip')} placement="top-end">
           {props => (
             <button
               className={styles.addButtonIcon}

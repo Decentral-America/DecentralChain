@@ -100,7 +100,7 @@ export function AddressRecipient({
                 [styles.dcc]: type === 'dcc',
               })}
               content={mirrorAddress}
-              placement="auto-end"
+              placement="top-end"
             >
               {props => (
                 <div className={styles.recipientWrapper} {...props}>
@@ -116,7 +116,7 @@ export function AddressRecipient({
               )}
             </Tooltip>
           ) : (
-            <Tooltip content={address} placement="auto-end">
+            <Tooltip content={address} placement="top-end">
               {props => (
                 <div className={styles.recipientWrapper} {...props}>
                   <Ellipsis
@@ -128,7 +128,7 @@ export function AddressRecipient({
               )}
             </Tooltip>
           )}
-          <Tooltip content={t('address.addTooltip')} placement="auto-end">
+          <Tooltip content={t('address.addTooltip')} placement="top-end">
             {props => (
               <i
                 className={styles.addButtonIcon}
