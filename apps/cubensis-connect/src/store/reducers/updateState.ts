@@ -23,29 +23,29 @@ function createSimpleReducer<TActionType extends AppAction['type']>(
 }
 
 export type AssetFilters = {
-  term?: string;
-  onlyMy?: boolean;
-  onlyFavorites?: boolean;
+  term?: string | undefined;
+  onlyMy?: boolean | undefined;
+  onlyFavorites?: boolean | undefined;
 };
 export type NftFilters = {
-  term?: string;
+  term?: string | undefined;
 };
 export type TxHistoryFilters = {
-  term?: string;
-  type?: number;
-  onlyIncoming?: boolean;
-  onlyOutgoing?: boolean;
+  term?: string | undefined;
+  type?: number | undefined;
+  onlyIncoming?: boolean | undefined;
+  onlyOutgoing?: boolean | undefined;
 };
 
 export interface UiState {
-  account?: unknown;
-  assetFilters?: AssetFilters;
-  assetsTab?: number;
-  autoClickProtection?: boolean;
-  nftFilters?: NftFilters;
-  showSuspiciousAssets?: boolean;
-  slippageToleranceIndex?: number;
-  txHistoryFilters?: TxHistoryFilters;
+  account?: unknown | undefined;
+  assetFilters?: AssetFilters | undefined;
+  assetsTab?: number | undefined;
+  autoClickProtection?: boolean | undefined;
+  nftFilters?: NftFilters | undefined;
+  showSuspiciousAssets?: boolean | undefined;
+  slippageToleranceIndex?: number | undefined;
+  txHistoryFilters?: TxHistoryFilters | undefined;
 }
 
 export const uiState = createSimpleReducer({}, ACTION.UPDATE_UI_STATE);

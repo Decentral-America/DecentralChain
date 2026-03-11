@@ -16,8 +16,8 @@ export function notifications(
 }
 
 interface ActivePopupState {
-  msg?: Message;
-  notify?: NotificationsStoreItem[];
+  msg?: Message | undefined;
+  notify?: NotificationsStoreItem[] | undefined;
 }
 
 export function activePopup(
