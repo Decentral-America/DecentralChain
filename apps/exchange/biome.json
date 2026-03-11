@@ -59,10 +59,7 @@
         "noConsole": {
           "level": "warn",
           "options": {
-            "allow": [
-              "warn",
-              "error"
-            ]
+            "allow": ["warn", "error"]
           }
         },
         "noControlCharactersInRegex": "off"
@@ -79,9 +76,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "public/trading-view/**"
-      ],
+      "includes": ["public/trading-view/**"],
       "linter": {
         "enabled": false
       },
@@ -90,12 +85,7 @@
       }
     },
     {
-      "includes": [
-        "test/**",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.spec.ts"
-      ],
+      "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
