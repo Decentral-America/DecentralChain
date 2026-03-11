@@ -26,12 +26,12 @@ export const defaultValue = (value: unknown) => () => value;
 export const nope = (value: unknown) => value;
 
 export const pipe =
-  (...args: Array<(value: unknown) => unknown>) =>
+  (...args: Array<(value: any) => any>) =>
   (value: unknown) =>
     args.reduce((acc: unknown, cb) => cb(acc), value);
 
 export const validatePipe =
-  (...args: Array<(value: unknown) => unknown>) =>
+  (...args: Array<(value: any) => any>) =>
   (value: unknown) => {
     let isValid = true;
 
@@ -53,11 +53,7 @@ export const lte = (ref: unknown) => (value: unknown) => Number(ref) >= Number(v
 export const gte = (ref: unknown) => (value: unknown) => Number(ref) <= Number(value);
 
 export const ifElse =
-  (
-    condition: (value: unknown) => unknown,
-    a: (value: unknown) => unknown,
-    b: (value: unknown) => unknown,
-  ) =>
+  (condition: (value: any) => any, a: (value: any) => any, b: (value: any) => any) =>
   (value: unknown) =>
     condition(value) ? a(value) : b(value);
 
@@ -307,7 +303,7 @@ export const isRecipient = ifElse(isValidAddress, defaultValue(true), isValidAli
 
 export const validateByShema =
   (
-    shema: Record<string, (value: unknown) => unknown>,
+    shema: Record<string, (value: any) => any>,
     errorTpl: (key: string, value?: unknown) => string,
   ) =>
   (tx: Record<string, unknown>) => {

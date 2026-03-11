@@ -26,6 +26,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function transfer(
   params: ITransferParams,
   seed: TSeedTypes,
@@ -47,19 +48,19 @@ export function transfer(
     type,
     version,
     senderPublicKey,
-    assetId: normalizeAssetId(paramsOrTx.assetId),
+    assetId: normalizeAssetId(paramsOrTx.assetId ?? null),
     recipient: paramsOrTx.recipient,
     amount: paramsOrTx.amount,
     attachment: paramsOrTx.attachment || '',
     fee: fee(paramsOrTx, 100000),
-    feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
+    feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),
     timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(paramsOrTx.chainId, chainIdFromRecipient(paramsOrTx.recipient)),
     id: '',
   };
 
-  validate.transfer(tx);
+  validate.transfer(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

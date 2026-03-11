@@ -21,20 +21,22 @@ import { validate } from '../validators';
 const { BASE58_STRING, BASE64_STRING, BOOL, BYTE, BYTES, COUNT, LEN, LONG, SHORT, STRING } =
   serializePrimitives;
 
-const typeMap: Record<string, [string, number, (value: unknown) => Uint8Array]> = {
-  integer: ['integer', 0, LONG],
-  number: ['integer', 0, LONG],
-  boolean: ['boolean', 1, BOOL],
-  string: ['string', 3, LEN(SHORT)(STRING)],
-  binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s)],
-  _: ['binary', 2, LEN(SHORT)(BYTES)],
+const typeMap = {
+  integer: ['integer', 0, LONG] as const,
+  number: ['integer', 0, LONG] as const,
+  boolean: ['boolean', 1, BOOL] as const,
+  string: ['string', 3, LEN(SHORT)(STRING)] as const,
+  binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s)] as const,
+  _: ['binary', 2, LEN(SHORT)(BYTES)] as const,
 };
 
 const mapType = <T>(
   value: T,
   type: string | undefined | null,
 ): [DataFiledType, number, (value: T) => Uint8Array] => {
-  return type ? typeMap[type] : typeMap[typeof value] || typeMap._;
+  const key = type ?? typeof value;
+  const entry = (typeMap as Record<string, readonly [string, number, unknown]>)[key] ?? typeMap._;
+  return entry as [DataFiledType, number, (value: T) => Uint8Array];
 };
 
 const convertValue = (
@@ -48,6 +50,7 @@ const convertValue = (
 };
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function data(params: IDataParams, seed: TSeedTypes): DataTransaction & WithId & WithProofs;
 export function data(
   paramsOrTx: (IDataParams & WithSender) | DataTransaction,
@@ -109,13 +112,13 @@ export function data(
       BYTE(TRANSACTION_TYPE.DATA),
       BYTE(1),
       BASE58_STRING(senderPublicKey),
-      COUNT(SHORT)(schema)(dataEntriesWithTypes),
+      COUNT(SHORT)(schema)(dataEntriesWithTypes as DataTransactionEntry[]),
       LONG(_timestamp),
     );
 
     computedFee = Math.floor(1 + (bytes.length - 1) / 1024) * 100000;
   } else {
-    const protoEntries = dataEntriesWithTypes.map(dataEntryToProto);
+    const protoEntries = (dataEntriesWithTypes as DataTransactionEntry[]).map(dataEntryToProto);
     const dataBytes = dccProto.waves.DataTransactionData.encode({ data: protoEntries }).finish();
     computedFee = Math.max(100000, Math.ceil(dataBytes.length / 1024) * 100000);
   }
@@ -129,10 +132,10 @@ export function data(
     proofs: paramsOrTx.proofs || [],
     chainId: networkByte(paramsOrTx.chainId, 76),
     id: '',
-    data: dataEntriesWithTypes,
+    data: dataEntriesWithTypes as DataTransactionEntry[],
   };
 
-  validate.data(tx);
+  validate.data(tx as unknown as Record<string, unknown>);
 
   const bytes1 = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

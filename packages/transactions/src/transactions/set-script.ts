@@ -25,6 +25,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function setScript(
   params: ISetScriptParams,
   seed: TSeedTypes,
@@ -44,7 +45,7 @@ export function setScript(
   if (paramsOrTx.script === undefined)
     throw new Error('Script field cannot be undefined. Use null explicitly to remove script');
 
-  const scriptBytes = scriptToProto(paramsOrTx.script);
+  const scriptBytes = scriptToProto(paramsOrTx.script!);
   const computedFee =
     scriptBytes != null ? Math.max(100000, Math.ceil(scriptBytes.length / 1024) * 100000) : 500000;
 
@@ -60,7 +61,7 @@ export function setScript(
     script: base64Prefix(paramsOrTx.script),
   };
 
-  validate.setScript(tx);
+  validate.setScript(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

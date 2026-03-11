@@ -100,38 +100,60 @@ export function makeTx<T extends TTransactionType>(
 ): TTransaction<T> & WithId {
   switch (params.type) {
     case TRANSACTION_TYPE.ISSUE:
-      return issue(params as unknown as IIssueParams) as TTransaction<T> & WithId;
+      return issue(params as unknown as IIssueParams & WithSender) as unknown as TTransaction<T> &
+        WithId;
     case TRANSACTION_TYPE.TRANSFER:
-      return transfer(params as unknown as ITransferParams) as TTransaction<T> & WithId;
+      return transfer(
+        params as unknown as ITransferParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.REISSUE:
-      return reissue(params as unknown as IReissueParams) as TTransaction<T> & WithId;
+      return reissue(
+        params as unknown as IReissueParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.BURN:
-      return burn(params as unknown as IBurnParams) as TTransaction<T> & WithId;
+      return burn(params as unknown as IBurnParams & WithSender) as unknown as TTransaction<T> &
+        WithId;
     case TRANSACTION_TYPE.LEASE:
-      return lease(params as unknown as ILeaseParams) as TTransaction<T> & WithId;
+      return lease(params as unknown as ILeaseParams & WithSender) as unknown as TTransaction<T> &
+        WithId;
     case TRANSACTION_TYPE.CANCEL_LEASE:
-      return cancelLease(params as unknown as ICancelLeaseParams) as TTransaction<T> & WithId;
+      return cancelLease(
+        params as unknown as ICancelLeaseParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.ALIAS:
-      return alias(params as unknown as IAliasParams) as TTransaction<T> & WithId;
+      return alias(params as unknown as IAliasParams & WithSender) as unknown as TTransaction<T> &
+        WithId;
     case TRANSACTION_TYPE.MASS_TRANSFER:
-      return massTransfer(params as unknown as IMassTransferParams) as TTransaction<T> & WithId;
+      return massTransfer(
+        params as unknown as IMassTransferParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.DATA:
-      return data(params as unknown as IDataParams) as TTransaction<T> & WithId;
+      return data(params as unknown as IDataParams & WithSender) as unknown as TTransaction<T> &
+        WithId;
     case TRANSACTION_TYPE.SET_SCRIPT:
-      return setScript(params as unknown as ISetScriptParams) as TTransaction<T> & WithId;
+      return setScript(
+        params as unknown as ISetScriptParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
-      return setAssetScript(params as unknown as ISetAssetScriptParams) as TTransaction<T> & WithId;
+      return setAssetScript(
+        params as unknown as ISetAssetScriptParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.SPONSORSHIP:
-      return sponsorship(params as unknown as ISponsorshipParams) as TTransaction<T> & WithId;
+      return sponsorship(
+        params as unknown as ISponsorshipParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.EXCHANGE:
       return exchange(
         params as unknown as ExchangeTransaction & { proofs: string[] },
-      ) as TTransaction<T> & WithId;
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return invokeScript(params as unknown as IInvokeScriptParams) as TTransaction<T> & WithId;
+      return invokeScript(
+        params as unknown as IInvokeScriptParams & WithSender,
+      ) as unknown as TTransaction<T> & WithId;
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return updateAssetInfo(params as unknown as UpdateAssetInfoTransaction) as TTransaction<T> &
-        WithId;
+      return updateAssetInfo(
+        params as unknown as UpdateAssetInfoTransaction,
+      ) as unknown as TTransaction<T> & WithId;
     default:
       throw new Error(`Unknown tx type: ${params.type}`);
   }

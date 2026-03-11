@@ -39,7 +39,7 @@ export function exchange(
     id: '',
   };
 
-  validate.exchange(tx);
+  validate.exchange(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

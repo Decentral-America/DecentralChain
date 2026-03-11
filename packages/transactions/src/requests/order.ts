@@ -59,6 +59,7 @@ import { validate } from '../validators';
  * ```
  *
  */
+// @ts-expect-error TS2394: overload incompatible — IOrderParams lacks WithSender required by impl union
 export function order(
   paramsOrOrder: IOrderParams,
   seed: TSeedTypes,
@@ -87,11 +88,14 @@ export function order(
   const senderPublicKey =
     paramsOrOrder.senderPublicKey || getSenderPublicKey(seedsAndIndexes, paramsOrOrder);
 
+  // Access optional fields that exist on IOrderParams but not on ExchangeTransactionOrder
+  const orderExt = paramsOrOrder as IOrderParams & WithSender;
+
   // Use old versionless order only if it is set to null explicitly
-  const version = paramsOrOrder.version === null ? undefined : paramsOrOrder.version;
-  const ord: SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs = {
+  const version = orderExt.version === null ? undefined : orderExt.version;
+  const ord = {
     orderType,
-    version,
+    version: version as SignedIExchangeTransactionOrder<ExchangeTransactionOrder>['version'],
     assetPair: {
       amountAsset,
       priceAsset,
@@ -106,19 +110,19 @@ export function order(
     proofs,
     matcherFeeAssetId: null,
     id: '',
-    priceMode: paramsOrOrder.priceMode,
-  };
+    priceMode: orderExt.priceMode ?? 'fixedDecimals',
+  } as SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs;
 
   if (ord.version >= 3) {
-    ord.matcherFeeAssetId =
-      paramsOrOrder.matcherFeeAssetId === 'DCC' ? null : paramsOrOrder.matcherFeeAssetId;
+    (ord as unknown as Record<string, unknown>).matcherFeeAssetId =
+      orderExt.matcherFeeAssetId === 'DCC' ? null : orderExt.matcherFeeAssetId;
   }
 
   if (ord.version === 4) {
-    ord.priceMode = paramsOrOrder.priceMode || 'fixedDecimals';
-    // @ts-expect-error
-    ord.chainId = networkByte(paramsOrOrder.chainId, 76);
-    if (paramsOrOrder.eip712Signature) ord.eip712Signature = paramsOrOrder.eip712Signature;
+    ord.priceMode = orderExt.priceMode || 'fixedDecimals';
+    (ord as unknown as Record<string, unknown>).chainId = networkByte(orderExt.chainId, 76);
+    if (orderExt.eip712Signature)
+      (ord as unknown as Record<string, unknown>).eip712Signature = orderExt.eip712Signature;
   }
 
   const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord);
@@ -132,7 +136,6 @@ export function order(
   ord.id = base58Encode(blake2b(bytes));
 
   // OrderV1 uses signature instead of proofs
-  // @ts-expect-error
   if (ord.version === undefined || ord.version === 1)
     // @ts-expect-error – version narrowing causes `never` on proofs
     (ord as Record<string, unknown>).signature = ord.proofs?.[0] ?? '';
