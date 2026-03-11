@@ -21,12 +21,12 @@ import * as styles from './Recipient.module.css';
 import { AddressTooltip } from './Tooltip';
 
 export interface Props {
-  className?: string;
+  className?: string | undefined;
   recipient: string;
   chainId: number;
-  showAliasWarning?: boolean;
-  showMirrorAddress?: boolean;
-  testid?: string;
+  showAliasWarning?: boolean | undefined;
+  showMirrorAddress?: boolean | undefined;
+  testid?: string | undefined;
 }
 
 export function AddressRecipient({

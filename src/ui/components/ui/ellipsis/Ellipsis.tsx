@@ -1,7 +1,7 @@
 interface IProps {
   text: string | null | undefined;
-  className?: string;
-  size?: number;
+  className?: string | undefined;
+  size?: number | undefined;
 }
 
 export const Ellipsis = ({ text, className, size = 8 }: IProps) => {
