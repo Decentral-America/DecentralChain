@@ -26,24 +26,26 @@ export const defaultValue = (value: unknown) => () => value;
 export const nope = (value: unknown) => value;
 
 export const pipe =
-  (...args: Array<(value: any) => any>) =>
-  (value: unknown) =>
-    args.reduce((acc: unknown, cb) => cb(acc), value);
+  // biome-ignore lint/suspicious/noExplicitAny: Generic pipeline combinator — callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+    (...args: Array<(value: any) => any>) =>
+    (value: unknown) =>
+      args.reduce((acc: unknown, cb) => cb(acc), value);
 
 export const validatePipe =
-  (...args: Array<(value: any) => any>) =>
-  (value: unknown) => {
-    let isValid = true;
+  // biome-ignore lint/suspicious/noExplicitAny: Generic pipeline combinator — callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+    (...args: Array<(value: any) => any>) =>
+    (value: unknown) => {
+      let isValid = true;
 
-    for (const cb of args) {
-      isValid = !!cb(value);
-      if (!isValid) {
-        return false;
+      for (const cb of args) {
+        isValid = !!cb(value);
+        if (!isValid) {
+          return false;
+        }
       }
-    }
 
-    return isValid;
-  };
+      return isValid;
+    };
 
 export const prop = (key: string | number) => (value: unknown) =>
   value ? (value as Record<string | number, unknown>)[key] : undefined;
@@ -53,9 +55,10 @@ export const lte = (ref: unknown) => (value: unknown) => Number(ref) >= Number(v
 export const gte = (ref: unknown) => (value: unknown) => Number(ref) <= Number(value);
 
 export const ifElse =
-  (condition: (value: any) => any, a: (value: any) => any, b: (value: any) => any) =>
-  (value: unknown) =>
-    condition(value) ? a(value) : b(value);
+  // biome-ignore lint/suspicious/noExplicitAny: Generic branching combinator — condition/branch callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+    (condition: (value: any) => any, a: (value: any) => any, b: (value: any) => any) =>
+    (value: unknown) =>
+      condition(value) ? a(value) : b(value);
 
 export const isEq =
   <T>(reference: T) =>
@@ -303,6 +306,7 @@ export const isRecipient = ifElse(isValidAddress, defaultValue(true), isValidAli
 
 export const validateByShema =
   (
+    // biome-ignore lint/suspicious/noExplicitAny: Schema validators have heterogeneous signatures per field that can't be unified under unknown due to contravariance
     shema: Record<string, (value: any) => any>,
     errorTpl: (key: string, value?: unknown) => string,
   ) =>
