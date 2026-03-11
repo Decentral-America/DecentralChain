@@ -13,7 +13,7 @@
     <groupId>io.decentralchain</groupId>
     <artifactId>protobuf-schemas</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0</version>
+    <version>1.6.1-SNAPSHOT</version>
 
     <name>DecentralChain Node protobuf classes</name>
     <description>DecentralChain Node protobuf java classes</description>
