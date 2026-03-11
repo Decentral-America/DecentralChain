@@ -1,6 +1,6 @@
 import { MAINNET_DATA } from '@decentralchain/assets-pairs-order';
 import { type IAssetInfo } from '@decentralchain/data-entities';
-import DataServiceClient from '@decentralchain/data-service-client-js';
+import { DataServiceClient } from '@decentralchain/data-service-client-js';
 import { Signal } from 'ts-utils';
 import { time } from './api/node/node';
 import { type IHash } from './interface';
