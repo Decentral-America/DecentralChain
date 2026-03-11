@@ -39,8 +39,8 @@ const isFilters = (filters: unknown): filters is IExchangeTxFilters => {
     !Array.isArray(filters) &&
     !hasDangerousKeys(filters) &&
     Object.keys(filters).every((k) => possibleFilters.includes(k)) &&
-    isValidLimit((filters as Record<string, unknown>)['limit']) &&
-    isValidSort((filters as Record<string, unknown>)['sort'])
+    isValidLimit((filters as { limit?: unknown }).limit) &&
+    isValidSort((filters as { sort?: unknown }).sort)
   );
 };
 const validateFilters = (filters: unknown) =>

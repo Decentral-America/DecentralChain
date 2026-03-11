@@ -50,19 +50,19 @@ interface PaginationContext {
   method: TFunction<unknown>;
   args: unknown[];
   addPaginationToArgs?: TFunction<unknown> | undefined;
-  rawData: Record<string, unknown>;
+  rawData: { lastCursor?: unknown; [key: string]: unknown };
 }
 
 const addPagination =
   ({ method, args, addPaginationToArgs, rawData }: PaginationContext) =>
   (data: unknown) => {
-    if (!data || !addPaginationToArgs || !rawData?.['lastCursor']) {
+    if (!data || !addPaginationToArgs || !rawData?.lastCursor) {
       return { data };
     }
     return {
       data,
       fetchMore: (count: number) =>
-        method(addPaginationToArgs({ args, cursor: rawData['lastCursor'], count })),
+        method(addPaginationToArgs({ args, cursor: rawData.lastCursor, count })),
     };
   };
 
