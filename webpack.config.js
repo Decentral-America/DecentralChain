@@ -25,7 +25,7 @@ async function makeConfig({ entry, hmr, mode, name, optimization, plugins, react
   return {
     name,
     target,
-    devtool: dev ? 'cheap-module-source-map' : 'source-map',
+    devtool: dev ? 'cheap-module-source-map' : 'hidden-source-map',
     stats: 'errors-warnings',
     entry: Object.fromEntries(
       Object.entries(entry).map(([key, value]) => [
