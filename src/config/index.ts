@@ -1,6 +1,6 @@
 export type TConsoleMethods = 'log' | 'info' | 'warn' | 'error';
 
-export const LOG_LEVEL = {
+const LOG_LEVEL = {
   PRODUCTION: 0,
   ERRORS: 1,
   VERBOSE: 2,
