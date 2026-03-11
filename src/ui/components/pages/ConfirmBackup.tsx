@@ -8,8 +8,6 @@ import { type WithNavigate, withNavigate } from 'ui/router';
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
 import * as styles from './styles/confirmBackup.styl';
 
-const SHUFFLE_COUNT = 500;
-
 interface StateProps {
   account: Extract<NewAccountState, { type: 'seed' }>;
 }
@@ -48,12 +46,13 @@ class ConfirmBackupComponent extends Component<Props, State> {
     const list = seed
       .split(' ')
       .map((text, id) => ({ text, id, selected: true, hidden: false }));
-    let count = SHUFFLE_COUNT;
 
-    while (count--) {
-      const index = Math.floor(Math.random() * list.length);
-      const item = list.splice(index, 1)[0];
-      list.push(item);
+    // Fisher-Yates shuffle using CSPRNG — seed words must never use Math.random()
+    for (let i = list.length - 1; i > 0; i--) {
+      const rand = new Uint32Array(1);
+      crypto.getRandomValues(rand);
+      const j = rand[0] % (i + 1);
+      [list[i], list[j]] = [list[j], list[i]];
     }
 
     return { ...state, list, seed };
