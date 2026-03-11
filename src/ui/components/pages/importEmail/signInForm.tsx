@@ -14,7 +14,7 @@ const baseByNetwork: Partial<Record<NetworkName, string>> = {
 };
 
 interface Props {
-  className?: string;
+  className?: string | undefined;
   userData: { username: string; password: string } | undefined;
   signIn: (username: string, password: string) => void;
 }

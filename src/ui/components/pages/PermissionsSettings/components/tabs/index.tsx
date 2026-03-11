@@ -36,6 +36,6 @@ export class Tabs extends PureComponent<IProps> {
 interface IProps extends React.ComponentProps<'div'> {
   tabs: Array<{ item: React.ReactElement | string; name: string }>;
   currentTab: string;
-  className?: string;
+  className?: string | undefined;
   onSelectTab: (tab: string) => void;
 }

@@ -15,7 +15,7 @@ import * as styles from './historyItem.module.css';
 
 interface Props {
   tx: TransactionFromNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function HistoryItem({ tx, className }: Props) {

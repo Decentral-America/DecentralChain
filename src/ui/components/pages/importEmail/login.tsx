@@ -16,8 +16,8 @@ export interface UserData {
 }
 
 type LoginProps = {
-  className?: string;
-  userData?: UserData;
+  className?: string | undefined;
+  userData?: UserData | undefined;
   onConfirm(user: IdentityUser & { name: string }): void;
   onSubmit?(userData: UserData): void;
 };
