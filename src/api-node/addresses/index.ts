@@ -204,8 +204,8 @@ export interface IScriptInfo<LONG = TLong> {
 }
 
 export interface IDataQueryParams {
-  matches?: string;
-  keys?: string | string[];
+  matches?: string | undefined;
+  keys?: string | string[] | undefined;
 }
 
 export interface IBalanceDetails<LONG> {
