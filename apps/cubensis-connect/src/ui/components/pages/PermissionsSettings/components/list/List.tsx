@@ -1,9 +1,6 @@
 import { PureComponent } from 'react';
-import {
-  type TFunction,
-  type WithTranslation,
-  withTranslation,
-} from 'react-i18next';
+import { type WithTranslation, withTranslation } from 'react-i18next';
+import { type TFunction } from 'i18next';
 import { type TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
 
 import { type TAutoAuth } from '../originSettings';

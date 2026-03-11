@@ -115,9 +115,9 @@ export function Tabs({
       {Children.map(children, child => {
         switch (child.type) {
           case TabPanels:
-            return cloneElement(child, { activeIndex: activeTab });
+            return cloneElement(child as React.ReactElement<any>, { activeIndex: activeTab });
           case TabList:
-            return cloneElement(child, {
+            return cloneElement(child as React.ReactElement<any>, {
               activeIndex: activeTab,
               onActiveTab: (activeIndex: number) => {
                 if (onTabChange) {
