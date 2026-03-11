@@ -59,10 +59,7 @@
         "noConsole": {
           "level": "warn",
           "options": {
-            "allow": [
-              "warn",
-              "error"
-            ]
+            "allow": ["warn", "error"]
           }
         },
         "noControlCharactersInRegex": "off"
@@ -79,12 +76,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "test/**",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.spec.ts"
-      ],
+      "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
