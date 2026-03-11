@@ -35,7 +35,8 @@ export function dccAuth(
 
   const bytes = serializeDccAuthData(rx);
 
-  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]![0], bytes)) || '';
+  const firstSeed = seedsAndIndexes[0];
+  rx.signature = (firstSeed != null && signBytes(firstSeed[0], bytes)) || '';
   rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
   return rx;

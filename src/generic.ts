@@ -7,13 +7,10 @@ export function getSenderPublicKey(
   seedsAndIndexes: [string | TPrivateKey, number | undefined][],
   params: Partial<WithSender>,
 ) {
-  if (seedsAndIndexes.length === 0 && params.senderPublicKey == null)
-    throw new Error('Please provide either seed or senderPublicKey');
-  else {
-    return params.senderPublicKey == null
-      ? publicKey(seedsAndIndexes[0]![0])
-      : params.senderPublicKey;
-  }
+  if (params.senderPublicKey != null) return params.senderPublicKey;
+  const firstSeed = seedsAndIndexes[0];
+  if (!firstSeed) throw new Error('Please provide either seed or senderPublicKey');
+  return publicKey(firstSeed[0]);
 }
 
 export const base64Prefix = (str: string | null) =>
@@ -86,10 +83,13 @@ export function normalizeAssetId(assetId: string | null) {
 export function chainIdFromRecipient(recipient: string): number {
   const aliasMatch = /^alias:(.):.+$/.exec(recipient);
   if (aliasMatch) {
-    return aliasMatch[1]!.charCodeAt(0);
+    const chainChar = aliasMatch[1];
+    if (!chainChar) throw new Error(`Invalid alias: ${recipient}`);
+    return chainChar.charCodeAt(0);
   } else {
     try {
-      return base58Decode(recipient)[1]!;
+      const decoded = base58Decode(recipient);
+      return decoded[1] as number;
     } catch (_e) {
       throw new Error(`Invalid recipient: ${recipient}`, { cause: _e });
     }
