@@ -1,19 +1,19 @@
+import BigNumber from '@decentralchain/bignumber';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
 import { isNotNull } from '_core/isNotNull';
-import { BigNumber } from '@decentralchain/bignumber';
-import { type TransactionFromNode } from '@decentralchain/ts-types';
-import { type AssetBalance, type BalancesItem } from 'balances/types';
+import type { AssetBalance, BalancesItem } from 'balances/types';
 import { collectBalances } from 'balances/utils';
-import { type NftAssetDetail } from 'nfts/types';
+import type { NftAssetDetail } from 'nfts/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
 import { MAX_NFT_ITEMS, MAX_TX_HISTORY_ITEMS } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
-import { type AssetInfoController } from './assetInfo';
-import { type NetworkController } from './network';
-import { type NftInfoController } from './NftInfoController';
-import { type PreferencesController } from './preferences';
-import { type VaultController } from './VaultController';
+import type { ExtensionStorage } from '../storage/storage';
+import type { AssetInfoController } from './assetInfo';
+import type { NftInfoController } from './NftInfoController';
+import type { NetworkController } from './network';
+import type { PreferencesController } from './preferences';
+import type { VaultController } from './VaultController';
 
 const PERIOD_IN_SECONDS = 10;
 
@@ -137,10 +137,7 @@ export class CurrentAccountController {
   }
 
   async #fetchNfts(address: string) {
-    const url = new URL(
-      `assets/nft/${address}/limit/${MAX_NFT_ITEMS}`,
-      this.getNode(),
-    );
+    const url = new URL(`assets/nft/${address}/limit/${MAX_NFT_ITEMS}`, this.getNode());
 
     const response = await fetch(url, {
       headers: {
@@ -206,23 +203,20 @@ export class CurrentAccountController {
 
   async updateCurrentAccountBalance() {
     const currentNetwork = this.getNetwork();
-    const accounts = this.getAccounts().filter(
-      ({ network }) => network === currentNetwork,
-    );
+    const accounts = this.getAccounts().filter(({ network }) => network === currentNetwork);
     const activeAccount = this.getSelectedAccount();
 
     if (this.isLocked() || accounts.length < 1 || !activeAccount) return;
 
     const { address } = activeAccount;
 
-    const [nativeBalance, myAssets, myNfts, aliases, txHistory] =
-      await Promise.all([
-        this.#fetchNativeBalance(address),
-        this.#fetchAssetsBalance(address),
-        this.#fetchNfts(address),
-        this.#fetchAliases(address),
-        this.#fetchTxHistory(address),
-      ]);
+    const [nativeBalance, myAssets, myNfts, aliases, txHistory] = await Promise.all([
+      this.#fetchNativeBalance(address),
+      this.#fetchAssetsBalance(address),
+      this.#fetchNfts(address),
+      this.#fetchAliases(address),
+      this.#fetchTxHistory(address),
+    ]);
 
     const assets = this.assetInfoController.getAssets();
 
@@ -234,9 +228,7 @@ export class CurrentAccountController {
     const isSponsorshipUpdated = (balanceAsset: {
       assetId: string;
       minSponsoredAssetFee: string | null;
-    }) =>
-      balanceAsset.minSponsoredAssetFee !==
-      assets[balanceAsset.assetId]?.minSponsoredFee;
+    }) => balanceAsset.minSponsoredAssetFee !== assets[balanceAsset.assetId]?.minSponsoredFee;
 
     const fetchAssetIds = (
       myAssets.balances.filter(
@@ -246,31 +238,20 @@ export class CurrentAccountController {
           isMaxAgeExceeded(info.assetId),
       ) as Array<{ assetId: string }>
     )
-      .concat(
-        myNfts.filter(
-          info => !assetExists(info.assetId) || isMaxAgeExceeded(info.assetId),
-        ),
-      )
+      .concat(myNfts.filter(info => !assetExists(info.assetId) || isMaxAgeExceeded(info.assetId)))
       .map(info => info.assetId)
       .concat(
         txHistory
           .flatMap(tx => [
             ...('assetId' in tx ? [tx.assetId] : []),
             ...('order1' in tx
-              ? [
-                  tx.order1.assetPair.amountAsset,
-                  tx.order1.assetPair.priceAsset,
-                ]
+              ? [tx.order1.assetPair.amountAsset, tx.order1.assetPair.priceAsset]
               : []),
-            ...('payment' in tx ? tx.payment?.map(x => x.assetId) ?? [] : []),
-            ...('stateChanges' in tx
-              ? tx.stateChanges.transfers.map(x => x.asset)
-              : []),
+            ...('payment' in tx ? (tx.payment?.map(x => x.assetId) ?? []) : []),
+            ...('stateChanges' in tx ? tx.stateChanges.transfers.map(x => x.asset) : []),
           ])
           .filter(isNotNull)
-          .filter(
-            assetId => !assetExists(assetId) && isMaxAgeExceeded(assetId),
-          ),
+          .filter(assetId => !assetExists(assetId) && isMaxAgeExceeded(assetId)),
       );
 
     await Promise.all([
@@ -290,9 +271,7 @@ export class CurrentAccountController {
       aliases,
       available: nativeBalance.available,
       regular: nativeBalance.regular,
-      leasedOut: new BigNumber(nativeBalance.regular)
-        .sub(nativeBalance.available)
-        .toString(),
+      leasedOut: new BigNumber(nativeBalance.regular).sub(nativeBalance.available).toString(),
       network: currentNetwork,
       txHistory,
 

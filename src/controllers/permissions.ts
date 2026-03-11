@@ -1,36 +1,25 @@
-import { isNotNull } from '_core/isNotNull';
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type MessageTx } from 'messages/types';
+import { isNotNull } from '_core/isNotNull';
+import type { MessageTx } from 'messages/types';
 import ObservableStore from 'obs-store';
 import { PERMISSIONS } from 'permissions/constants';
-import {
-  type PermissionObject,
-  type PermissionType,
-  type PermissionValue,
-} from 'permissions/types';
+import type { PermissionObject, PermissionType, PermissionValue } from 'permissions/types';
 
 import { ERRORS } from '../lib/keeperError';
-import {
-  type ExtensionStorage,
-  type StorageLocalState,
-} from '../storage/storage';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
+import type { RemoteConfigController } from './remoteConfig';
 
-const findPermissionFabric =
-  (permission: PermissionType) => (item: PermissionValue) => {
-    if (typeof item === 'string') {
-      return item === permission;
-    }
+const findPermissionFabric = (permission: PermissionType) => (item: PermissionValue) => {
+  if (typeof item === 'string') {
+    return item === permission;
+  }
 
-    const { type } = item;
-    return type === permission;
-  };
+  const { type } = item;
+  return type === permission;
+};
 
-type PermissionsStoreState = Pick<
-  StorageLocalState,
-  'origins' | 'whitelist' | 'inPending'
->;
+type PermissionsStoreState = Pick<StorageLocalState, 'origins' | 'whitelist' | 'inPending'>;
 
 export class PermissionsController {
   private store;
@@ -79,8 +68,7 @@ export class PermissionsController {
 
   getPermission(origin: string, permission: PermissionValue) {
     const permissions = this.getPermissions(origin);
-    const permissionType =
-      typeof permission === 'string' ? permission : permission.type;
+    const permissionType = typeof permission === 'string' ? permission : permission.type;
     const findPermission = findPermissionFabric(permissionType);
     return permissions.find(findPermission);
   }
@@ -96,10 +84,7 @@ export class PermissionsController {
       return permission === PERMISSIONS.REJECTED;
     }
 
-    if (
-      permissions.includes(PERMISSIONS.ALL) ||
-      permissions.includes(permission)
-    ) {
+    if (permissions.includes(PERMISSIONS.ALL) || permissions.includes(permission)) {
       return true;
     }
 
@@ -114,7 +99,7 @@ export class PermissionsController {
       return null;
     }
 
-    if (Object.prototype.hasOwnProperty.call(origins, origin)) {
+    if (Object.hasOwn(origins, origin)) {
       delete origins[origin];
     }
 
@@ -137,12 +122,9 @@ export class PermissionsController {
   }
 
   deletePermission(origin: string, permission: PermissionValue) {
-    const permissionType =
-      typeof permission === 'string' ? permission : permission.type;
+    const permissionType = typeof permission === 'string' ? permission : permission.type;
     const findPermission = findPermissionFabric(permissionType);
-    const permissions = this.getPermissions(origin).filter(
-      item => !findPermission(item),
-    );
+    const permissions = this.getPermissions(origin).filter(item => !findPermission(item));
     this.setPermissions(origin, permissions);
   }
 
@@ -156,10 +138,7 @@ export class PermissionsController {
 
   setAutoApprove(
     origin: string,
-    {
-      interval,
-      totalAmount,
-    }: Pick<PermissionObject, 'interval' | 'totalAmount'>,
+    { interval, totalAmount }: Pick<PermissionObject, 'interval' | 'totalAmount'>,
   ) {
     if (!interval || !totalAmount) {
       this.deletePermission(origin, PERMISSIONS.AUTO_SIGN);
@@ -190,8 +169,7 @@ export class PermissionsController {
     const isInWhiteList = whitelist.includes(origin);
     const permission = this.getPermission(origin, PERMISSIONS.USE_NOTIFICATION);
 
-    const hasPermission =
-      !!permission && (permission as PermissionObject).canUse != null;
+    const hasPermission = !!permission && (permission as PermissionObject).canUse != null;
 
     const allowByPermission =
       (hasPermission && (permission as PermissionObject).canUse) ||
@@ -207,9 +185,7 @@ export class PermissionsController {
 
     if (waitTime > 0) {
       throw ERRORS.NOTIFICATION_ERROR(undefined, {
-        msg: `Min notification interval ${minInterval / 1000}s. Wait ${
-          waitTime / 1000
-        }s.`,
+        msg: `Min notification interval ${minInterval / 1000}s. Wait ${waitTime / 1000}s.`,
       });
     }
 
@@ -229,12 +205,12 @@ export class PermissionsController {
           ? null
           : new BigNumber(tx.amount)
         : tx.type === TRANSACTION_TYPE.MASS_TRANSFER
-        ? tx.assetId
-          ? null
-          : BigNumber.sum(...tx.transfers.map(transfer => transfer.amount))
-        : tx.type === TRANSACTION_TYPE.DATA
-        ? new BigNumber(0)
-        : null;
+          ? tx.assetId
+            ? null
+            : BigNumber.sum(...tx.transfers.map(transfer => transfer.amount))
+          : tx.type === TRANSACTION_TYPE.DATA
+            ? new BigNumber(0)
+            : null;
     }
 
     function getTxPackageAmount(txs: MessageTx[]) {
@@ -246,23 +222,17 @@ export class PermissionsController {
     }
 
     function getTxFee(tx: MessageTx) {
-      return 'feeAssetId' in tx && tx.feeAssetId != null
-        ? null
-        : new BigNumber(tx.fee);
+      return 'feeAssetId' in tx && tx.feeAssetId != null ? null : new BigNumber(tx.fee);
     }
 
     function getTxPackageFee(txs: MessageTx[]) {
       const fees = txs.map(getTxFee);
 
-      return fees.some(fee => fee == null)
-        ? null
-        : BigNumber.sum(...fees.filter(isNotNull));
+      return fees.some(fee => fee == null) ? null : BigNumber.sum(...fees.filter(isNotNull));
     }
 
     function getTotalTxAmount(tx: MessageTx | MessageTx[]) {
-      const amount = Array.isArray(tx)
-        ? getTxPackageAmount(tx)
-        : getTxAmount(tx);
+      const amount = Array.isArray(tx) ? getTxPackageAmount(tx) : getTxAmount(tx);
       const fee = Array.isArray(tx) ? getTxPackageFee(tx) : getTxFee(tx);
 
       return amount && fee ? fee.add(amount) : null;
@@ -274,20 +244,12 @@ export class PermissionsController {
       return false;
     }
 
-    let {
-      totalAmount = 0,
-      interval = 0,
-      approved = [],
-    } = permission as PermissionObject;
+    let { totalAmount = 0, interval = 0, approved = [] } = permission as PermissionObject;
 
     const currentTime = Date.now();
     approved = approved.filter(({ time }) => currentTime - time < interval);
 
-    if (
-      approved
-        .reduce((acc, item) => acc.add(item.amount), txAmount)
-        .gt(totalAmount)
-    ) {
+    if (approved.reduce((acc, item) => acc.add(item.amount), txAmount).gt(totalAmount)) {
       return false;
     }
 
@@ -314,11 +276,7 @@ export class PermissionsController {
   }
 
   updateState(state: Partial<PermissionsStoreState>) {
-    const {
-      origins: oldOrigins,
-      inPending: oldInPending,
-      ...oldState
-    } = this.store.getState();
+    const { origins: oldOrigins, inPending: oldInPending, ...oldState } = this.store.getState();
     const origins = { ...oldOrigins, ...(state.origins || {}) };
     const whitelist = state.whitelist || oldState.whitelist;
     const inPending = { ...oldInPending, ...(state.inPending || {}) };
@@ -341,11 +299,7 @@ export class PermissionsController {
     this._updatePermissionByList(whitelist, PERMISSIONS.APPROVED, 'whiteList');
   }
 
-  _updatePermissionByList(
-    list: string[],
-    permission: PermissionType,
-    type: 'whiteList',
-  ) {
+  _updatePermissionByList(list: string[], permission: PermissionType, type: 'whiteList') {
     const { origins } = this.store.getState();
     const newOrigins = list.reduce(
       (acc, origin) => {

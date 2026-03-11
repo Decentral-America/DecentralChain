@@ -1,16 +1,16 @@
-import { useDebouncedValue } from '_core/useDebouncedValue';
+import BigNumber from '@decentralchain/bignumber';
+import { Asset, Money } from '@decentralchain/data-entities';
 import {
   SwapClient,
   SwapClientErrorCode,
   type SwapClientInvokeTransaction,
-} from '@keeper-wallet/swap-client';
-import BigNumber from '@decentralchain/bignumber';
-import { Asset, Money } from '@decentralchain/data-entities';
+} from '@decentralchain/swap-client';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { useDebouncedValue } from '_core/useDebouncedValue';
 import { AssetAmountInput } from 'assets/amountInput';
 import { AssetSelect, type AssetSelectOption } from 'assets/assetSelect';
-import { type AssetDetail } from 'assets/types';
-import { type BalancesItem } from 'balances/types';
+import type { AssetDetail } from 'assets/types';
+import type { BalancesItem } from 'balances/types';
 import clsx from 'clsx';
 import { useFeeOptions } from 'fee/useFeeOptions';
 import { convertFeeToAsset } from 'fee/utils';
@@ -120,9 +120,7 @@ export function SwapForm({
   const { t } = useTranslation();
 
   const assets = usePopupSelector(state => state.assets);
-  const swappableAssetIdsByVendor = usePopupSelector(
-    state => state.swappableAssetIdsByVendor,
-  );
+  const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
   const usdPrices = usePopupSelector(state => state.usdPrices);
   const accountBalance = usePopupSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
@@ -144,8 +142,7 @@ export function SwapForm({
 
   const [feeAssetId, setFeeAssetId] = useState(() => {
     const defaultOption =
-      feeOptions.find(option => option.money.asset.id === 'WAVES') ||
-      feeOptions[0];
+      feeOptions.find(option => option.money.asset.id === 'WAVES') || feeOptions[0];
 
     return defaultOption?.money.asset.id || 'WAVES';
   });
@@ -178,10 +175,7 @@ export function SwapForm({
 
   const finalFeeOptions = feeOptions
     .filter(option => {
-      if (
-        option.money.asset.id !== fromAssetId ||
-        option.money.asset.id === feeAssetId
-      ) {
+      if (option.money.asset.id !== fromAssetId || option.money.asset.id === feeAssetId) {
         return true;
       }
 
@@ -224,9 +218,7 @@ export function SwapForm({
       })
     : null;
 
-  const accountAddress = usePopupSelector(
-    state => state.selectedAccount?.address,
-  );
+  const accountAddress = usePopupSelector(state => state.selectedAccount?.address);
 
   const isValidAssetPairSelected = useMemo(
     () =>
@@ -319,19 +311,13 @@ export function SwapForm({
         } else {
           vendorState = {
             type: 'data',
-            minimumReceivedTokens: new Money(
-              response.minimumReceivedCoins,
-              toAsset,
-            ).getTokens(),
+            minimumReceivedTokens: new Money(response.minimumReceivedCoins, toAsset).getTokens(),
             originalMinimumReceivedTokens: new Money(
               response.originalMinimumReceivedCoins,
               toAsset,
             ).getTokens(),
             priceImpact: response.priceImpact,
-            toAmountTokens: new Money(
-              response.amountCoins,
-              toAsset,
-            ).getTokens(),
+            toAmountTokens: new Money(response.amountCoins, toAsset).getTokens(),
             tx: response.tx,
           };
         }
@@ -354,14 +340,11 @@ export function SwapForm({
     fromAmountTokens.gt(fromAssetBalance.getTokens()) ||
     feeAssetBalance.getTokens().lt(sponsoredAssetFee.getTokens()) ||
     (fromAssetId === feeAssetId &&
-      fromAmountTokens
-        .add(sponsoredAssetFee.getTokens())
-        .gt(fromAssetBalance.getTokens()))
+      fromAmountTokens.add(sponsoredAssetFee.getTokens()).gt(fromAssetBalance.getTokens()))
       ? t('swap.insufficientFundsError')
       : null;
 
-  const [showSlippageToleranceModal, setShowSlippageToleranceModal] =
-    useState(false);
+  const [showSlippageToleranceModal, setShowSlippageToleranceModal] = useState(false);
 
   const swapVendorInfo = swapInfo[swapVendor];
 
@@ -380,9 +363,7 @@ export function SwapForm({
   const minReceived =
     swapVendorInfo.type === 'data'
       ? Money.fromTokens(
-          fromAmountTokens.eq(0)
-            ? new BigNumber(0)
-            : swapVendorInfo.minimumReceivedTokens,
+          fromAmountTokens.eq(0) ? new BigNumber(0) : swapVendorInfo.minimumReceivedTokens,
           toAsset,
         )
       : null;
@@ -392,27 +373,20 @@ export function SwapForm({
       ? new BigNumber(0)
       : new BigNumber(swapVendorInfo.priceImpact);
 
-  const [nonProfitVendor, profitVendor] = (
-    Object.keys(swapInfo) as SwapVendor[]
-  ).reduce<[SwapVendor | null, SwapVendor]>(
+  const [nonProfitVendor, profitVendor] = (Object.keys(swapInfo) as SwapVendor[]).reduce<
+    [SwapVendor | null, SwapVendor]
+  >(
     ([nonProfit, profit], next) => {
       const nonProfitInfo = swapInfo[nonProfit as SwapVendor];
       const minAmount =
-        nonProfitInfo?.type === 'data'
-          ? nonProfitInfo.toAmountTokens
-          : BigNumber.MAX_VALUE;
+        nonProfitInfo?.type === 'data' ? nonProfitInfo.toAmountTokens : BigNumber.MAX_VALUE;
 
       const profitInfo = swapInfo[profit];
-      const maxAmount =
-        profitInfo?.type === 'data'
-          ? profitInfo.toAmountTokens
-          : new BigNumber(0);
+      const maxAmount = profitInfo?.type === 'data' ? profitInfo.toAmountTokens : new BigNumber(0);
 
       const nextInfo = swapInfo[next];
       const nextAmount =
-        nextInfo?.type === 'data' && fromAmountTokens.gt(0)
-          ? nextInfo.toAmountTokens
-          : null;
+        nextInfo?.type === 'data' && fromAmountTokens.gt(0) ? nextInfo.toAmountTokens : null;
 
       return [
         (nextAmount || BigNumber.MAX_VALUE).lt(minAmount) ? next : nonProfit,
@@ -493,17 +467,11 @@ export function SwapForm({
             onSwap({
               feeAssetId,
               fromAssetId,
-              fromCoins: Money.fromTokens(
-                fromAmountTokens,
-                fromAsset,
-              ).getCoins(),
+              fromCoins: Money.fromTokens(fromAmountTokens, fromAsset).getCoins(),
               minReceivedCoins: minReceived.getCoins(),
               slippageTolerance,
               toAssetId,
-              toCoins: Money.fromTokens(
-                swapVendorInfo.toAmountTokens,
-                toAsset,
-              ).getCoins(),
+              toCoins: Money.fromTokens(swapVendorInfo.toAmountTokens, toAsset).getCoins(),
               tx: swapVendorInfo.tx,
               vendor: swapVendor,
             });
@@ -565,8 +533,8 @@ export function SwapForm({
                   fromAmountValue === '' || swapVendorInfo.type !== 'data'
                     ? ''
                     : fromAmountTokens.eq(0)
-                    ? '0'
-                    : swapVendorInfo.toAmountTokens.toFixed();
+                      ? '0'
+                      : swapVendorInfo.toAmountTokens.toFixed();
 
                 setFromAmountValue(newFromAmount);
                 setFromAmountValueMasked(newFromAmount);
@@ -586,12 +554,9 @@ export function SwapForm({
 
           <div className={styles.toAmount}>
             <div className={styles.toAmountHead}>
-              <div className={styles.toAmountLabel}>
-                {t('swap.toInputLabel')}
-              </div>
+              <div className={styles.toAmountLabel}>{t('swap.toInputLabel')}</div>
               <div className={styles.toAmountBalance}>
-                {t('assetAmountInput.balanceLabel')}:{' '}
-                {toAssetBalance.toTokens()}
+                {t('assetAmountInput.balanceLabel')}: {toAssetBalance.toTokens()}
               </div>
             </div>
 
@@ -612,178 +577,155 @@ export function SwapForm({
             </div>
 
             <div className={styles.toAmountCards}>
-              {(
-                Object.entries(swapInfo) as Array<
-                  [SwapVendor, SwapInfoVendorState]
-                >
-              ).map(([vendor, info]) => {
-                const amountTokens = new BigNumber(
-                  info.type !== 'data'
-                    ? '0'
-                    : (fromAmountTokens.eq(0)
-                        ? new BigNumber(0)
-                        : info.toAmountTokens
-                      ).toFixed(),
-                );
-                const minimumReceivedTokens = new BigNumber(
-                  info.type !== 'data'
-                    ? '0'
-                    : (fromAmountTokens.eq(0)
-                        ? new BigNumber(0)
-                        : info.minimumReceivedTokens
-                      ).toFixed(),
-                );
-                const originalMinimumReceviedTokens = new BigNumber(
-                  info.type !== 'data'
-                    ? '0'
-                    : (fromAmountTokens.eq(0)
-                        ? new BigNumber(0)
-                        : info.originalMinimumReceivedTokens
-                      ).toFixed(),
-                );
+              {(Object.entries(swapInfo) as Array<[SwapVendor, SwapInfoVendorState]>).map(
+                ([vendor, info]) => {
+                  const amountTokens = new BigNumber(
+                    info.type !== 'data'
+                      ? '0'
+                      : (fromAmountTokens.eq(0) ? new BigNumber(0) : info.toAmountTokens).toFixed(),
+                  );
+                  const minimumReceivedTokens = new BigNumber(
+                    info.type !== 'data'
+                      ? '0'
+                      : (fromAmountTokens.eq(0)
+                          ? new BigNumber(0)
+                          : info.minimumReceivedTokens
+                        ).toFixed(),
+                  );
+                  const originalMinimumReceviedTokens = new BigNumber(
+                    info.type !== 'data'
+                      ? '0'
+                      : (fromAmountTokens.eq(0)
+                          ? new BigNumber(0)
+                          : info.originalMinimumReceivedTokens
+                        ).toFixed(),
+                  );
 
-                const formattedValue = amountTokens.toFormat(
-                  toAssetBalance.asset.precision,
-                  BigNumber.ROUND_MODE.ROUND_FLOOR,
-                  {
-                    fractionGroupSeparator: '',
-                    fractionGroupSize: 0,
-                    decimalSeparator: '.',
-                    groupSeparator: ' ',
-                    groupSize: 3,
-                    prefix: '',
-                    secondaryGroupSize: 0,
-                    suffix: '',
-                  },
-                );
+                  const formattedValue = amountTokens.toFormat(
+                    toAssetBalance.asset.precision,
+                    BigNumber.ROUND_MODE.ROUND_FLOOR,
+                    {
+                      fractionGroupSeparator: '',
+                      fractionGroupSize: 0,
+                      decimalSeparator: '.',
+                      groupSeparator: ' ',
+                      groupSize: 3,
+                      prefix: '',
+                      secondaryGroupSize: 0,
+                      suffix: '',
+                    },
+                  );
 
-                const nextInfo = swapInfo[nonProfitVendor as SwapVendor];
+                  const nextInfo = swapInfo[nonProfitVendor as SwapVendor];
 
-                const profitTokens =
-                  info.type === 'data' &&
-                  !fromAmountTokens.eq(0) &&
-                  nextInfo != null &&
-                  nextInfo.type === 'data'
-                    ? info.toAmountTokens.sub(nextInfo.toAmountTokens)
-                    : null;
+                  const profitTokens =
+                    info.type === 'data' &&
+                    !fromAmountTokens.eq(0) &&
+                    nextInfo != null &&
+                    nextInfo.type === 'data'
+                      ? info.toAmountTokens.sub(nextInfo.toAmountTokens)
+                      : null;
 
-                const usdPrice = usdPrices[toAssetId];
+                  const usdPrice = usdPrices[toAssetId];
 
-                return (
-                  <button
-                    key={vendor}
-                    className={clsx(styles.toAmountCard, {
-                      [styles.toAmountCardSelected]: swapVendor === vendor,
-                    })}
-                    type="button"
-                    onClick={() => {
-                      setSwapVendorTouched(true);
-                      setSwapVendor(vendor);
-                    }}
-                  >
-                    <div className={styles.toAmountCardVendor}>
-                      <img
-                        src={getSwapVendorLogo(vendor)}
-                        className={styles.toAmountCardVendorLogo}
-                      />
-
-                      <div className={styles.toAmountCardVendorLabel}>
-                        {vendor}
-                      </div>
-                    </div>
-
-                    {info.type === 'loading' ? (
-                      <Loader />
-                    ) : info.type === 'data' ? (
-                      <div className={styles.toAmountCardValue}>
-                        <div className={styles.toAmountCardValueRow}>
-                          <div
-                            className={styles.toAmountCardFormattedValue}
-                            title={formattedValue}
-                          >
-                            {formattedValue}
-                          </div>
-                          {minimumReceivedTokens.lt(
-                            originalMinimumReceviedTokens,
-                          ) ? (
-                            <Tooltip
-                              className={styles.tooltipContent}
-                              content={t('swap.amountDifferenceTooltip')}
-                              placement="top"
-                            >
-                              {props => (
-                                <div
-                                  {...props}
-                                  className={styles.toAmountInfoIcon}
-                                >
-                                  <InfoIcon />
-                                </div>
-                              )}
-                            </Tooltip>
-                          ) : null}
-                        </div>
-                        <UsdAmount
-                          id={toAssetId}
-                          className={styles.toAmountCardUsdAmount}
-                          tokens={amountTokens}
+                  return (
+                    <button
+                      key={vendor}
+                      className={clsx(styles.toAmountCard, {
+                        [styles.toAmountCardSelected]: swapVendor === vendor,
+                      })}
+                      type="button"
+                      onClick={() => {
+                        setSwapVendorTouched(true);
+                        setSwapVendor(vendor);
+                      }}
+                    >
+                      <div className={styles.toAmountCardVendor}>
+                        <img
+                          src={getSwapVendorLogo(vendor)}
+                          className={styles.toAmountCardVendorLogo}
                         />
-                      </div>
-                    ) : (
-                      <div className={styles.toAmountCardError}>
-                        {info.code === SwapClientErrorCode.INVALID_ASSET_PAIR ||
-                        !isValidAssetPairSelected
-                          ? t('swap.exchangeChannelInvalidAssetPairError')
-                          : info.code === SwapClientErrorCode.UNAVAILABLE
-                          ? t('swap.exchangeChannelUnavailableError')
-                          : t('swap.exchangeChannelUnknownError')}
-                      </div>
-                    )}
 
-                    {vendor === profitVendor && (
-                      <div className={styles.toAmountCardBadge}>
-                        {profitTokens != null && !profitTokens.eq(0) ? (
-                          <>
-                            {t('swap.profitLabel')}:
-                            {usdPrice && usdPrice !== '1' && (
-                              <>
-                                {' '}
-                                $
-                                {new BigNumber(usdPrice)
-                                  .mul(profitTokens)
-                                  .toFixed(2)}
-                              </>
-                            )}{' '}
-                            <Tooltip
-                              content={`${profitTokens.toFixed(
-                                toAsset.precision,
-                                BigNumber.ROUND_MODE.ROUND_FLOOR,
-                              )} ${toAsset.displayName}`}
-                              placement="top"
-                            >
-                              {props => (
-                                <span
-                                  {...props}
-                                  className={styles.profitInfoIcon}
-                                >
-                                  <InfoIcon />
-                                </span>
-                              )}
-                            </Tooltip>
-                          </>
-                        ) : (
-                          t('swap.primaryLabel')
-                        )}
+                        <div className={styles.toAmountCardVendorLabel}>{vendor}</div>
                       </div>
-                    )}
-                  </button>
-                );
-              })}
+
+                      {info.type === 'loading' ? (
+                        <Loader />
+                      ) : info.type === 'data' ? (
+                        <div className={styles.toAmountCardValue}>
+                          <div className={styles.toAmountCardValueRow}>
+                            <div
+                              className={styles.toAmountCardFormattedValue}
+                              title={formattedValue}
+                            >
+                              {formattedValue}
+                            </div>
+                            {minimumReceivedTokens.lt(originalMinimumReceviedTokens) ? (
+                              <Tooltip
+                                className={styles.tooltipContent}
+                                content={t('swap.amountDifferenceTooltip')}
+                                placement="top"
+                              >
+                                {props => (
+                                  <div {...props} className={styles.toAmountInfoIcon}>
+                                    <InfoIcon />
+                                  </div>
+                                )}
+                              </Tooltip>
+                            ) : null}
+                          </div>
+                          <UsdAmount
+                            id={toAssetId}
+                            className={styles.toAmountCardUsdAmount}
+                            tokens={amountTokens}
+                          />
+                        </div>
+                      ) : (
+                        <div className={styles.toAmountCardError}>
+                          {info.code === SwapClientErrorCode.INVALID_ASSET_PAIR ||
+                          !isValidAssetPairSelected
+                            ? t('swap.exchangeChannelInvalidAssetPairError')
+                            : info.code === SwapClientErrorCode.UNAVAILABLE
+                              ? t('swap.exchangeChannelUnavailableError')
+                              : t('swap.exchangeChannelUnknownError')}
+                        </div>
+                      )}
+
+                      {vendor === profitVendor && (
+                        <div className={styles.toAmountCardBadge}>
+                          {profitTokens != null && !profitTokens.eq(0) ? (
+                            <>
+                              {t('swap.profitLabel')}:
+                              {usdPrice && usdPrice !== '1' && (
+                                <> ${new BigNumber(usdPrice).mul(profitTokens).toFixed(2)}</>
+                              )}{' '}
+                              <Tooltip
+                                content={`${profitTokens.toFixed(
+                                  toAsset.precision,
+                                  BigNumber.ROUND_MODE.ROUND_FLOOR,
+                                )} ${toAsset.displayName}`}
+                                placement="top"
+                              >
+                                {props => (
+                                  <span {...props} className={styles.profitInfoIcon}>
+                                    <InfoIcon />
+                                  </span>
+                                )}
+                              </Tooltip>
+                            </>
+                          ) : (
+                            t('swap.primaryLabel')
+                          )}
+                        </div>
+                      )}
+                    </button>
+                  );
+                },
+              )}
             </div>
           </div>
 
-          {swapClientError && (
-            <div className={styles.error}>{swapClientError}</div>
-          )}
+          {swapClientError && <div className={styles.error}>{swapClientError}</div>}
 
           <div className={styles.summary}>
             <div className={styles.summaryRow}>
@@ -828,10 +770,7 @@ export function SwapForm({
                     <span>
                       {minReceived
                         .getTokens()
-                        .toFormat(
-                          toAsset.precision,
-                          BigNumber.ROUND_MODE.ROUND_FLOOR,
-                        )}{' '}
+                        .toFormat(toAsset.precision, BigNumber.ROUND_MODE.ROUND_FLOOR)}{' '}
                       {toAsset.displayName}
                     </span>
                   </div>
@@ -871,14 +810,10 @@ export function SwapForm({
                         1 {toAsset.displayName} ≈{' '}
                         {(swapVendorInfo.toAmountTokens.eq(0)
                           ? new BigNumber(0)
-                          : (fromAmountTokens.eq(0)
-                              ? new BigNumber(1)
-                              : fromAmountTokens
-                            ).div(swapVendorInfo.toAmountTokens)
-                        ).toFixed(
-                          fromAsset.precision,
-                          BigNumber.ROUND_MODE.ROUND_FLOOR,
-                        )}{' '}
+                          : (fromAmountTokens.eq(0) ? new BigNumber(1) : fromAmountTokens).div(
+                              swapVendorInfo.toAmountTokens,
+                            )
+                        ).toFixed(fromAsset.precision, BigNumber.ROUND_MODE.ROUND_FLOOR)}{' '}
                         {fromAsset.displayName}
                       </span>
                     ) : (
@@ -886,10 +821,7 @@ export function SwapForm({
                         1 {fromAsset.displayName} ~{' '}
                         {swapVendorInfo.toAmountTokens
                           .div(fromAmountTokens.eq(0) ? 1 : fromAmountTokens)
-                          .toFixed(
-                            toAsset.precision,
-                            BigNumber.ROUND_MODE.ROUND_FLOOR,
-                          )}{' '}
+                          .toFixed(toAsset.precision, BigNumber.ROUND_MODE.ROUND_FLOOR)}{' '}
                         {toAsset.displayName}
                       </span>
                     )}{' '}
@@ -898,8 +830,8 @@ export function SwapForm({
                         color: priceImpact.gte(10)
                           ? 'var(--color-error400)'
                           : priceImpact.gte(5)
-                          ? 'var(--color-warning400)'
-                          : undefined,
+                            ? 'var(--color-warning400)'
+                            : undefined,
                       }}
                     >
                       (
@@ -908,10 +840,7 @@ export function SwapForm({
                         content={t('swap.priceImpactTooltip')}
                       >
                         {props => (
-                          <span
-                            className={styles.summaryTooltipTarget}
-                            {...props}
-                          >
+                          <span className={styles.summaryTooltipTarget} {...props}>
                             {priceImpact.toFixed(
                               priceImpact.eq(100) ? 0 : 3,
                               BigNumber.ROUND_MODE.ROUND_FLOOR,
@@ -968,10 +897,7 @@ export function SwapForm({
           </div>
         </form>
 
-        <Modal
-          animation={Modal.ANIMATION.FLASH}
-          showModal={showSlippageToleranceModal}
-        >
+        <Modal animation={Modal.ANIMATION.FLASH} showModal={showSlippageToleranceModal}>
           <div className="modal cover">
             <div className="modal-form">
               <Button
@@ -1010,10 +936,7 @@ export function SwapForm({
                           }}
                         />
 
-                        <label
-                          className={styles.slippageToleranceLabel}
-                          htmlFor={id}
-                        >
+                        <label className={styles.slippageToleranceLabel} htmlFor={id}>
                           {slippageTolerance.toString()}%
                         </label>
                       </Fragment>
@@ -1027,13 +950,9 @@ export function SwapForm({
       </div>
 
       <div className={styles.stickyBottomPanel}>
-        {(maxAmountExceededErrorMessage ||
-          balanceErrorMessage ||
-          swapErrorMessage) && (
+        {(maxAmountExceededErrorMessage || balanceErrorMessage || swapErrorMessage) && (
           <div className={styles.stickyBottomPanelError}>
-            {maxAmountExceededErrorMessage ||
-              balanceErrorMessage ||
-              swapErrorMessage}
+            {maxAmountExceededErrorMessage || balanceErrorMessage || swapErrorMessage}
           </div>
         )}
 
