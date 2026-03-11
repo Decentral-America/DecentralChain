@@ -1,5 +1,5 @@
 import { Asset, AssetPair } from '@decentralchain/data-entities';
-import parseJsonBignumber from '@decentralchain/parse-json-bignumber';
+import { create as parseJsonBignumber } from '@decentralchain/parse-json-bignumber';
 
 import DataServiceClient from '../index';
 
