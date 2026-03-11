@@ -14,7 +14,7 @@ interface Props {
   balance: Money | undefined;
   assetId: string;
   isSwappable: boolean;
-  className?: string;
+  className?: string | undefined;
   onInfoClick: (assetId: string) => void;
   onSendClick: (assetId: string) => void;
   onSwapClick: (assetId: string) => void;
