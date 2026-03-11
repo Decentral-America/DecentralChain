@@ -33,7 +33,7 @@ describe('Account creation', function () {
     await browser.switchToWindow(tabAccounts);
   }
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     tabKeeper = await browser.getWindowHandle();
 
@@ -44,7 +44,7 @@ describe('Account creation', function () {
     await browser.refresh();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.switchToWindow(tabAccounts);
     await browser.closeWindow();
     await browser.switchToWindow(tabKeeper);
@@ -58,7 +58,7 @@ describe('Account creation', function () {
       ANY: 'account123!@#_аккаунт',
     };
 
-    after(deleteEachAndSwitchToAccounts);
+    afterAll(deleteEachAndSwitchToAccounts);
 
     it('first account via "Create a new account"', async () => {
       await ImportFormScreen.createNewAccountButton.click();
@@ -88,7 +88,7 @@ describe('Account creation', function () {
     describe('additional account via "Add account"', () => {
       describe('When you already have 1 account', () => {
         describe('Create new account page', () => {
-          before(async () => {
+          beforeAll(async () => {
             await HomeScreen.otherAccountsButton.click();
             await OtherAccountsScreen.addAccountButton.click();
             await browser.switchToWindow(tabAccounts);
@@ -132,8 +132,8 @@ describe('Account creation', function () {
             await BackupSeedScreen.continueButton.click();
           });
 
-          it('Backup phrase cannot be selected with cursor');
-          it('Ability to copy backup phrase to clipboard');
+          it.todo('Backup phrase cannot be selected with cursor');
+          it.todo('Ability to copy backup phrase to clipboard');
         });
 
         describe('Confirm backup page', () => {
@@ -237,7 +237,7 @@ describe('Account creation', function () {
             );
           });
 
-          it('Ability to paste account name from clipboard');
+          it.todo('Ability to paste account name from clipboard');
 
           it('In the account name, you can enter numbers, special characters and symbols from any layout', async () => {
             await NewWalletNameScreen.nameInput.setValue(ACCOUNTS.ANY);
@@ -264,9 +264,9 @@ describe('Account creation', function () {
         });
       });
 
-      it('When you already have 2 accounts');
+      it.todo('When you already have 2 accounts');
 
-      it('When you already have 10 accounts');
+      it.todo('When you already have 10 accounts');
     });
   });
 
@@ -279,7 +279,7 @@ describe('Account creation', function () {
       },
     };
 
-    after(deleteEachAndSwitchToAccounts);
+    afterAll(deleteEachAndSwitchToAccounts);
 
     it('first account via "Import account"', async () => {
       await ImportFormScreen.importViaSeedButton.click();
@@ -298,7 +298,7 @@ describe('Account creation', function () {
 
     describe('additional account via the "Add account"', () => {
       describe('When you already have 1 account', () => {
-        before(async () => {
+        beforeAll(async () => {
           await PopupHome.addAccount();
           await browser.switchToWindow(tabAccounts);
           await ImportFormScreen.importViaSeedButton.click();
@@ -347,7 +347,7 @@ describe('Account creation', function () {
             );
           });
 
-          it('You can paste a seed from the clipboard');
+          it.todo('You can paste a seed from the clipboard');
 
           it('Correct seed entered', async () => {
             await ImportViaSeedScreen.seedInput.setValue(
@@ -392,14 +392,14 @@ describe('Account creation', function () {
         });
       });
 
-      it('When you already have 2 accounts');
-      it('When you already have 10 accounts');
+      it.todo('When you already have 2 accounts');
+      it.todo('When you already have 10 accounts');
     });
   });
 
   describe('Import via keystore file', () => {
     describe('validation', () => {
-      it(
+      it.todo(
         'keeps "Continue" button disabled until both keystore file is selected and password is entered',
       );
     });
@@ -483,8 +483,8 @@ describe('Account creation', function () {
         ]);
       });
 
-      it('shows an error if the file format is not recognized');
-      it('shows an error if the password is wrong');
+      it.todo('shows an error if the file format is not recognized');
+      it.todo('shows an error if the password is wrong');
     });
 
     describe('actual import', () => {
@@ -693,7 +693,7 @@ describe('Account creation', function () {
       });
 
       describe('when the user already has an account with the same name, but different address', () => {
-        before(async () => {
+        beforeAll(async () => {
           await browser.switchToWindow(tabKeeper);
         });
 

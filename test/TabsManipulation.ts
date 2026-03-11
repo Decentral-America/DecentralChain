@@ -15,13 +15,13 @@ import { DEFAULT_PASSWORD } from './utils/constants';
 describe('Tabs manipulation', function () {
   let tabKeeper: string, tabAccounts: string;
 
-  after(async () => {
+  afterAll(async () => {
     await browser.openKeeperPopup();
     await App.resetVault();
   });
 
   describe('vault is empty', function () {
-    after(async function () {
+    afterAll(async function () {
       await App.closeBgTabs(tabKeeper);
     });
 
@@ -61,7 +61,7 @@ describe('Tabs manipulation', function () {
   });
 
   describe('vault initialized', function () {
-    after(async function () {
+    afterAll(async function () {
       await App.closeBgTabs(tabKeeper);
     });
 
