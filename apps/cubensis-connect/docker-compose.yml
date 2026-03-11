@@ -1,7 +1,8 @@
 version: '3'
 services:
-  waves-private-node:
+  dcc-private-node:
     image: wavesplatform/waves-private-node
+    # TODO(DCC-59): Replace with DCC private node image when available
     platform: linux/amd64
     ports:
       - '6869:6869'

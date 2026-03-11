@@ -186,7 +186,7 @@
     "exportNotSupported": "Данный аккаунт нельзя экспортировать",
     "passwordError": "Неверный пароль",
     "passwordLabel": "Пароль",
-    "passwordVerifyDesc": "Пожалуйста, введите свой пароль от Keeper, чтобы подтвердить, что это действительно вы",
+    "passwordVerifyDesc": "Пожалуйста, введите свой пароль от Cubensis Connect, чтобы подтвердить, что это действительно вы",
     "passwordVerifyImportantNote": "<attention>Внимание:</attention> этот пароль также будет использоваться для шифрования созданного файла. Если вы забудете его, вы не сможете восстановить свои аккаунты.",
     "verifyBtn": "Подтвердить",
     "warningModalConfirmButton": "Я понимаю",
@@ -309,7 +309,7 @@
     "addressBookPasswordPlaceholder": "Пароль для создания файла",
     "browse": "Просмотреть...",
     "chooseAccountsDesc": "Выберите аккаунты, которые вы хотите импортировать",
-    "chooseAccountsExistingAccountNote": "Уже существует в Keeper как {{existingName}}.",
+    "chooseAccountsExistingAccountNote": "Уже существует в Cubensis Connect как {{existingName}}.",
     "chooseAccountsImportBtn": "Импортировать {{ count }} аккаунт",
     "chooseAccountsImportBtn_1": "Импортировать {{ count }} аккаунта",
     "chooseAccountsImportBtn_2": "Импортировать {{ count }} аккаунтов",
@@ -327,7 +327,7 @@
     "passwordPlaceholder": "Пароль, использованный для создания файла Keystore"
   },
   "importLedger": {
-    "accountExistsError": "Этот аккаунт уже существует в Keeper",
+    "accountExistsError": "Этот аккаунт уже существует в Cubensis Connect",
     "accountIdLabel": "ID аккаунта",
     "avatarListLoading": "Загружаем аккаунты",
     "connectInstructions": "Подключите устройство Ledger и откройте приложение DCC",
@@ -570,7 +570,7 @@
   },
   "swap": {
     "amountToSendError": "Не удалось выполнить обмен из-за состояния SwopFi dApp. Пожалуйста, попробуйте еще раз или немного увеличьте допуск проскальзывания, если это возможно",
-    "amountDifferenceTooltip": "Некоторые вендоры кешируют свои результаты, поэтому Keeper скорректировал их, чтобы предоставить вам самое актуальное значение",
+    "amountDifferenceTooltip": "Некоторые вендоры кешируют свои результаты, поэтому Cubensis Connect скорректировал их, чтобы предоставить вам самое актуальное значение",
     "closeBtnText": "Закрыть",
     "exchangeChannelConnectionError": "Не удалось подключиться к сервису обмена. Пожалуйста, повторите попытку позже",
     "exchangeChannelInvalidAssetPairError": "Валютная пара недоступна",

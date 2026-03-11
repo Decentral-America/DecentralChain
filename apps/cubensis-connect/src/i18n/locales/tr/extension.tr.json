@@ -185,7 +185,7 @@
     "exportNotSupported": "Bu hesap dışa aktarılamaz",
     "passwordError": "Yalnış şifre",
     "passwordLabel": "Şifre",
-    "passwordVerifyDesc": "Lütfen gerçekten siz olduğunuzu doğrulamak için Keeper şifrenizi girin",
+    "passwordVerifyDesc": "Lütfen gerçekten siz olduğunuzu doğrulamak için Cubensis Connect şifrenizi girin",
     "passwordVerifyImportantNote": "<attention>Dikkat:</attention> bu parola aynı zamanda oluşturulan dosyayı şifrelemek için de kullanılacaktır. Şifrenizi unutursanız, hesaplarınızı geri yükleyemezsiniz.",
     "verifyBtn": "Onayla",
     "warningModalConfirmButton": "Anladım",
@@ -306,7 +306,7 @@
     "addressBookPasswordPlaceholder": "Dosya oluşturmak için kullanılan şifre",
     "browse": "Gözat...",
     "chooseAccountsDesc": "Hangi hesapları içe aktarmak istediğinizi seçin",
-    "chooseAccountsExistingAccountNote": "{{existingName}} olarak Keeper'da zaten var",
+    "chooseAccountsExistingAccountNote": "{{existingName}} olarak Cubensis Connect'da zaten var",
     "chooseAccountsImportBtn": "{{count}} hesabı içe aktar",
     "chooseAccountsImportBtn_plural": "{{count}} hesabı içe aktar",
     "chooseAccountsSkipBtn": "Atla",
@@ -323,7 +323,7 @@
     "passwordPlaceholder": "Keystore dosyasını oluşturmak için kullanılan parola"
   },
   "importLedger": {
-    "accountExistsError": "Bu hesap Keeper'da zaten var",
+    "accountExistsError": "Bu hesap Cubensis Connect'da zaten var",
     "accountIdLabel": "Hesap ID",
     "avatarListLoading": "Hesaplar yükleniyor...",
     "connectInstructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",

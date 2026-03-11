@@ -313,7 +313,7 @@
     "addressBookPasswordPlaceholder": "Kata sandi yang digunakan untuk membuat file",
     "browse": "Jelajahi...",
     "chooseAccountsDesc": "Pilih akun mana yang ingin Anda impor",
-    "chooseAccountsExistingAccountNote": "Sudah ada di Keeper sebagai {{existingName}}",
+    "chooseAccountsExistingAccountNote": "Sudah ada di Cubensis Connect sebagai {{existingName}}",
     "chooseAccountsImportBtn": "Import {{count}} akun",
     "chooseAccountsImportBtn_plural": "Import {{count}} akun",
     "chooseAccountsSkipBtn": "Lewati",
@@ -330,7 +330,7 @@
     "passwordPlaceholder": "Kata sandi yang digunakan untuk membuat Keystore"
   },
   "importLedger": {
-    "accountExistsError": "Akun ini sudah ada di Keeper",
+    "accountExistsError": "Akun ini sudah ada di Cubensis Connect",
     "accountIdLabel": "ID Akun",
     "avatarListLoading": "Memuat akun...",
     "connectInstructions": "Hubungkan perangkat Ledger dan buka aplikasi DCC",

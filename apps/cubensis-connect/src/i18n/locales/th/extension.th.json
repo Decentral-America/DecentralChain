@@ -185,7 +185,7 @@
     "exportNotSupported": "บัญชีนี้ไม่สามารถส่งออกได้",
     "passwordError": "รหัสผ่านผิดพลาด",
     "passwordLabel": "รหัสผ่าน",
-    "passwordVerifyDesc": "โปรดป้อนรหัสผ่าน Keeper ของคุณเพื่อยืนยันว่าเป็นคุณจริงๆ",
+    "passwordVerifyDesc": "โปรดป้อนรหัสผ่าน Cubensis Connect ของคุณเพื่อยืนยันว่าเป็นคุณจริงๆ",
     "passwordVerifyImportantNote": "<attention>ข้อควรระวัง: </attention>รหัสผ่านนี้จะใช้ในการเข้ารหัสไฟล์ผลลัพธ์ด้วย หากคุณลืม คุณจะไม่สามารถกู้คืนบัญชีของคุณได้",
     "verifyBtn": "เข้า",
     "warningModalConfirmButton": "ฉันเข้าใจ",
@@ -306,7 +306,7 @@
     "addressBookPasswordPlaceholder": "รหัสผ่านที่ใช้สร้างไฟล์",
     "browse": "เรียกดู ...",
     "chooseAccountsDesc": "เลือกบัญชีที่คุณต้องการนำเข้า",
-    "chooseAccountsExistingAccountNote": "มีอยู่แล้วใน Keeper เป็น {{existingName}}",
+    "chooseAccountsExistingAccountNote": "มีอยู่แล้วใน Cubensis Connect เป็น {{existingName}}",
     "chooseAccountsImportBtn": "นำเข้า {{count}} บัญชี",
     "chooseAccountsImportBtn_plural": "นำเข้า {{count}} บัญชี",
     "chooseAccountsSkipBtn": "ข้าม",
@@ -323,7 +323,7 @@
     "passwordPlaceholder": "รหัสผ่านที่ใช้ในการสร้าง Keystore"
   },
   "importLedger": {
-    "accountExistsError": "บัญชีนี้มีอยู่แล้วใน Keeper",
+    "accountExistsError": "บัญชีนี้มีอยู่แล้วใน Cubensis Connect",
     "accountIdLabel": "หมายเลขบัญชี(ID)",
     "avatarListLoading": "กำลังโหลดบัญชี ...",
     "connectInstructions": "เชื่อมต่อ Ledger และ DCC app",
@@ -357,7 +357,7 @@
   },
   "info": {
     "joinUs": "เข้าร่วมชุมชน DecentralChain ",
-    "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps การใช้ Wallet Keeper คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
+    "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps การใช้ Cubensis Connect คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   },
   "langsSettings": { "confirm": "ยืนยัน", "title": "เปลี่ยนภาษา" },
   "ledgerErrors": {
