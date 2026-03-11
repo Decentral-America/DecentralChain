@@ -6,7 +6,6 @@ import { VALIDATORS } from './fieldValidator';
 export const DCC_ID = 'DCC';
 const { stringToBytes, base58Encode } = libs.crypto;
 
-//@ts-expect-error
 const normalizeAssetId = (id: string) => (id === DCC_ID ? '' : id);
 
 interface ICall {
@@ -15,7 +14,7 @@ interface ICall {
 }
 
 export interface IWrappedFunction {
-  from: string;
+  from: string | string[] | null;
   to: string;
   cb: (...args: unknown[]) => unknown;
 }
@@ -54,9 +53,11 @@ function _scriptProcessor(code: string): string | null {
 }
 
 function _assetPair(data: Record<string, unknown>) {
+  const amount = data['amount'] as { asset: { id: string } };
+  const price = data['price'] as { asset: { id: string } };
   return {
-    amountAsset: normalizeAssetId((data.amount as Record<string, Record<string, string>>).asset.id),
-    priceAsset: normalizeAssetId((data.price as Record<string, Record<string, string>>).asset.id),
+    amountAsset: normalizeAssetId(amount.asset.id),
+    priceAsset: normalizeAssetId(price.asset.id),
   };
 }
 
@@ -115,7 +116,6 @@ function _noProcess<T>(data: T): T {
   return data;
 }
 
-//@ts-expect-error
 const _recipient = (networkByte: string) => (data: string) => {
   return data.length <= 30 ? `alias:${networkByte}:${data}` : data;
 };
@@ -135,14 +135,11 @@ function _addValue(value: unknown) {
   return typeof value === 'function' ? value : () => value;
 }
 
-//@ts-expect-error
 function _expiration(date?: number) {
   return date || new Date().setDate(new Date().getDate() + 20);
 }
 
-//@ts-expect-error
-function _transfers(recipient: (r: string) => string, amount: (a: unknown) => unknown) {
-  //@ts-expect-error
+function _transfers(recipient: (r: string) => string, amount: (a: any) => any) {
   return (transfers: Array<{ recipient: string; amount: unknown }>) =>
     transfers.map((transfer: { recipient: string; amount: unknown }) => ({
       recipient: recipient(transfer.recipient),
@@ -150,20 +147,19 @@ function _transfers(recipient: (r: string) => string, amount: (a: unknown) => un
     }));
 }
 
-//@ts-expect-error
 function _quantity(data: { quantity: string | number; precision: number }): BigNumber {
   return new BigNumber(data.quantity).mul(new BigNumber(10).pow(data.precision));
 }
 
-//@ts-expect-error
 function _base64(str: string): string {
   return (str || '').replace('base64:', '');
 }
 
-//@ts-expect-error
 function _toOrderPrice(order: Record<string, unknown>) {
-  const assetPair = new AssetPair(order.amount.asset, order.price.asset);
-  const orderPrice = OrderPrice.fromTokens(order.price.toTokens(), assetPair);
+  const amount = order['amount'] as any;
+  const price = order['price'] as any;
+  const assetPair = new AssetPair(amount.asset, price.asset);
+  const orderPrice = OrderPrice.fromTokens(price.toTokens(), assetPair);
   return orderPrice.getMatcherCoins();
 }
 
@@ -192,16 +188,15 @@ const _processors = {
   toOrderPrice: _toOrderPrice,
 };
 
-function _wrap(from: string | null, to: string, cb: unknown): IWrappedFunction {
+function _wrap(from: string | string[] | null, to: string | null, cb: unknown): IWrappedFunction {
+  const resolvedTo = to ?? (typeof from === 'string' ? from : '');
   if (typeof cb !== 'function') {
-    //@ts-expect-error
-    return { from, to, cb: () => cb };
+    return { from, to: resolvedTo, cb: () => cb };
   }
-  //@ts-expect-error
-  return { from, to, cb };
+  return { from, to: resolvedTo, cb: cb as (...args: unknown[]) => unknown };
 }
 
-const _findValue = (fromKey: string | string[], data: Record<string, string>) => {
+const _findValue = (fromKey: string | string[], data: Record<string, unknown>) => {
   if (!Array.isArray(fromKey)) {
     return data[fromKey];
   }
@@ -209,7 +204,6 @@ const _findValue = (fromKey: string | string[], data: Record<string, string>) =>
 };
 
 function _schema(...args: (IWrappedFunction | string)[]) {
-  //@ts-expect-error
   return (data: Record<string, unknown>) =>
     args
       .map((item) => {
@@ -220,7 +214,7 @@ function _schema(...args: (IWrappedFunction | string)[]) {
             }
           : {
               key: item.to,
-              value: item.cb(item.from ? data[item.from] : data),
+              value: item.cb(typeof item.from === 'string' ? data[item.from] : data),
             };
       })
       .reduce((result, item) => {
@@ -229,18 +223,16 @@ function _schema(...args: (IWrappedFunction | string)[]) {
       }, Object.create(null));
 }
 
-//@ts-expect-error
 function _signSchema(
   args: {
-    name: string;
-    field: string;
+    name: string | string[] | null;
+    field: string | null;
     processor: unknown;
     optional: boolean;
     type: string;
     optionalData: unknown;
   }[],
 ) {
-  //@ts-expect-error
   return (data: Record<string, unknown>, validate = false) => {
     const errors: unknown[] = [];
     const prepareData = args
@@ -256,8 +248,7 @@ function _signSchema(
           type: item.type,
           name: item.name,
         };
-        //@ts-expect-error
-        const validator = VALIDATORS[validateOptions.type];
+        const validator = (VALIDATORS as Record<string, ((...args: unknown[]) => void) | undefined>)[validateOptions.type];
         try {
           if (validate && validator) {
             validator(validateOptions);
