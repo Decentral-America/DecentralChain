@@ -32,14 +32,14 @@ const DEFAULT_TX_VERSIONS = {
 export class CubensisConnectAdapter extends Adapter {
   public static override type = AdapterType.CubensisConnect;
   public static adapter: CubensisConnectAdapter;
-  private static _onUpdateCb: ((...args: unknown[]) => unknown)[] = [];
+  private static _onUpdateCb: ((state: ICubensisConnectState) => void)[] = [];
   private static _state: unknown;
   private _onDestroyCb: (() => void)[] = [];
   private _needDestroy = false;
   private _address: string;
   private _pKey: string;
   private static _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
-  private static _getApiCb: () => ICubensisConnect;
+  private static _getApiCb: (() => ICubensisConnect) | undefined;
 
   private static _api: ICubensisConnect;
 
@@ -63,7 +63,6 @@ export class CubensisConnectAdapter extends Adapter {
     this._address = address;
     this._pKey = publicKey;
     CubensisConnectAdapter._initExtension();
-    //@ts-expect-error
     CubensisConnectAdapter.onUpdate(this.handleUpdate);
     this._isDestroyed = false;
   }
@@ -111,7 +110,7 @@ export class CubensisConnectAdapter extends Adapter {
       CubensisConnectAdapter._updateState(data);
 
       if (data.txVersion) {
-        CubensisConnectAdapter._txVersion = data.txVersion;
+        CubensisConnectAdapter._txVersion = data.txVersion as typeof DEFAULT_TX_VERSIONS;
       }
     } catch {
       error = Object.assign(new Error('No permissions'), { code: 1 });
@@ -150,8 +149,7 @@ export class CubensisConnectAdapter extends Adapter {
     return CubensisConnectAdapter._txVersion;
   }
 
-  //@ts-expect-error
-  public onDestroy(cb: () => void) {
+  public override onDestroy(cb: () => void) {
     if (this._needDestroy) {
       return cb();
     }
@@ -183,7 +181,6 @@ export class CubensisConnectAdapter extends Adapter {
     return Promise.reject(Error('Method "getSeed" is not available!'));
   }
 
-  //@ts-expect-error
   public async signRequest(
     _bytes: Uint8Array,
     _?: unknown,
@@ -200,7 +197,6 @@ export class CubensisConnectAdapter extends Adapter {
     );
   }
 
-  //@ts-expect-error
   public async signTransaction(
     _bytes: Uint8Array,
     _precisions: Record<string, number>,
@@ -218,7 +214,6 @@ export class CubensisConnectAdapter extends Adapter {
     return result;
   }
 
-  //@ts-expect-error
   public async signOrder(
     _bytes: Uint8Array,
     _precisions: Record<string, number>,
@@ -271,8 +266,7 @@ export class CubensisConnectAdapter extends Adapter {
     });
   }
 
-  //@ts-expect-error
-  public static initOptions(options: { networkCode: number; extension?: unknown }) {
+  public static override initOptions(options: { networkCode: number; extension?: unknown }) {
     Adapter.initOptions(options);
     CubensisConnectAdapter.setApiExtension(options.extension);
     CubensisConnectAdapter._initExtension();
@@ -283,14 +277,13 @@ export class CubensisConnectAdapter extends Adapter {
     }
   }
 
-  //@ts-expect-error
   public static setApiExtension(extension: unknown) {
     let extensionCb: (() => ICubensisConnect) | undefined;
 
     if (typeof extension === 'function') {
-      extensionCb = extension;
+      extensionCb = extension as () => ICubensisConnect;
     } else if (extension) {
-      extensionCb = () => extension;
+      extensionCb = () => extension as ICubensisConnect;
     }
 
     CubensisConnectAdapter._getApiCb = extensionCb;
@@ -298,11 +291,11 @@ export class CubensisConnectAdapter extends Adapter {
     CubensisConnectAdapter._api = undefined as unknown as ICubensisConnect;
   }
 
-  public static onUpdate(cb: (...args: unknown[]) => unknown) {
+  public static onUpdate(cb: (state: ICubensisConnectState) => void) {
     CubensisConnectAdapter._onUpdateCb.push(cb);
   }
 
-  public static offUpdate(func: (...args: unknown[]) => unknown) {
+  public static offUpdate(func: (state: ICubensisConnectState) => void) {
     CubensisConnectAdapter._onUpdateCb = CubensisConnectAdapter._onUpdateCb.filter(
       (f) => f !== func,
     );
@@ -336,7 +329,7 @@ export class CubensisConnectAdapter extends Adapter {
         CubensisConnectAdapter._api.on('update', CubensisConnectAdapter._updateState);
         CubensisConnectAdapter._api.publicState().then((state) => {
           if (state.txVersion) {
-            CubensisConnectAdapter._txVersion = state.txVersion;
+            CubensisConnectAdapter._txVersion = state.txVersion as typeof DEFAULT_TX_VERSIONS;
           }
 
           CubensisConnectAdapter._updateState(state);

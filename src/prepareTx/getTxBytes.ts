@@ -12,7 +12,7 @@ export default function (forSign: TSignData, networkByte: number): Uint8Array {
       .pop();
 
   const dataForBytes = {
-    ...prepare.signSchema(prepareMap)(forSign.data),
+    ...prepare.signSchema(prepareMap)(forSign.data as unknown as Record<string, unknown>),
     ...forSign.data,
     version,
     type: forSign.type,
@@ -20,5 +20,9 @@ export default function (forSign: TSignData, networkByte: number): Uint8Array {
 
   const convert = SIGN_TYPES[forSign.type as SIGN_TYPE].toNode || null;
   const signData = convert?.(dataForBytes, networkByte) || dataForBytes;
-  return SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[Number(version)]?.(signData);
+  const getBytesFn = SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[Number(version)];
+  if (!getBytesFn) {
+    throw new Error(`No getBytes function for type ${forSign.type} version ${version}`);
+  }
+  return getBytesFn(signData as Record<string, unknown>);
 }

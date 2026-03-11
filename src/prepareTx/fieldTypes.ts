@@ -1,9 +1,13 @@
-//@ts-expect-error
 const fieldFactory =
   (type: string, optionalData?: unknown) =>
-  (fromField: string, toField = fromField, processor: unknown = null, optional = false) => ({
+  (
+    fromField: string | string[] | null,
+    toField?: string | null,
+    processor: unknown = null,
+    optional = false,
+  ) => ({
     name: fromField,
-    field: toField || fromField,
+    field: toField ?? (typeof fromField === 'string' ? fromField : null),
     optional,
     processor,
     type,

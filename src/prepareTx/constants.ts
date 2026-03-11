@@ -14,21 +14,21 @@ const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 
 const toNode = (
   data: Record<string, unknown>,
-  convert?: (r: Record<string, unknown>) => Record<string, unknown>,
+  convert?: (r: any) => any,
 ) => {
-  const r = mlToNode(data);
+  const r = mlToNode(data as any);
   r.timestamp = new Date(r.timestamp).getTime();
   return convert ? convert(r) : r;
 };
 
 const burnToNode = (
   data: Record<string, unknown>,
-  convert?: (r: Record<string, unknown>) => Record<string, unknown>,
+  convert?: (r: any) => any,
 ) => {
-  const r = mlToNode(data);
+  const r = mlToNode(data as any);
   const withAmount: Record<string, unknown> = {
     ...r,
-    amount: r.quantity,
+    amount: (r as any).quantity,
   };
   withAmount.timestamp = new Date(withAmount.timestamp as number).getTime();
   return convert ? convert(withAmount) : withAmount;
@@ -85,15 +85,15 @@ export enum SIGN_TYPE {
 }
 
 export interface ITypesMap {
-  getBytes: Record<number, (data: Record<string, unknown>) => Uint8Array>;
+  getBytes: Record<number, (data: any) => Uint8Array>;
   adapter: keyof IAdapterSignMethods;
-  toNode?: (data: Record<string, unknown>, networkByte: number) => Record<string, unknown>;
+  toNode?: (data: any, networkByte: number) => any;
 }
 
 const getCancelOrderBytes = (txData: Record<string, unknown>) => {
   const { orderId, id, senderPublicKey, sender } = txData;
-  const pBytes = BASE58_STRING(senderPublicKey || sender);
-  const orderIdBytes = BASE58_STRING(id || orderId);
+  const pBytes = BASE58_STRING((senderPublicKey || sender) as string);
+  const orderIdBytes = BASE58_STRING((id || orderId) as string);
 
   return Uint8Array.from([...Array.from(pBytes), ...Array.from(orderIdBytes)]);
 };
@@ -310,7 +310,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
           assetId: data.assetId || data.transfers[0].amount.asset.id,
           transfers: data.transfers.map((item: Record<string, unknown>) => {
             const recipient = processors.recipient(String.fromCharCode(networkByte))(
-              item.name || item.recipient,
+              (item.name || item.recipient) as string,
             );
             return { ...item, recipient };
           }),
