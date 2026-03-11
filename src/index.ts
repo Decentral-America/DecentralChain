@@ -20,7 +20,7 @@ import {
 } from './types';
 import { defaultFetch, defaultParse, isValidUrl } from './utils';
 
-export default class DataServiceClient {
+export class DataServiceClient {
   public getPairs: TGetPairs;
   public getAssets: TGetAssets;
   public getAssetsByTicker: TGetAssetsByTicker;
