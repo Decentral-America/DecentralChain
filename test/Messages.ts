@@ -6,35 +6,33 @@ import { AccountsHome } from './helpers/flows/AccountsHome';
 import { App } from './helpers/flows/App';
 import { Settings } from './helpers/flows/Settings';
 import { HomeScreen } from './helpers/HomeScreen';
+import { MessagesScreen } from './helpers/MessagesScreen';
 import { AuthMessageScreen } from './helpers/messages/AuthMessageScreen';
 import { FinalTransactionScreen } from './helpers/messages/FinalTransactionScreen';
-import { MessagesScreen } from './helpers/MessagesScreen';
 import { PermissionControlSettingsScreen } from './helpers/settings/PermissionControlSettingsScreen';
 import { SettingsMenuScreen } from './helpers/settings/SettingsMenuScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
 import { CUSTOMLIST, WHITELIST } from './utils/constants';
 
-describe('Messages', function () {
+describe('Messages', () => {
   let tabOrigin: string;
   let messageWindow: string | null = null;
 
   const sendNotification = (...args: [done: () => void]) => {
     const done = args[args.length - 1];
 
-    KeeperWallet.notification({ title: 'Hello!', message: 'World!' })
-      .then(done)
-      .catch(done);
+    CubensisConnect.notification({ title: 'Hello!', message: 'World!' }).then(done).catch(done);
   };
 
   const sendNotificationWithoutWait = (...args: [done: () => void]) => {
     const done = args[args.length - 1];
 
-    KeeperWallet.notification({ title: 'Hello!', message: 'World!' });
+    CubensisConnect.notification({ title: 'Hello!', message: 'World!' });
     done();
   };
 
-  before(async function () {
+  before(async () => {
     await App.initVault();
     const tabKeeper = await browser.getWindowHandle();
 
@@ -49,10 +47,7 @@ describe('Messages', function () {
     await browser.refresh();
 
     // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount(
-      'rich',
-      'waves private node seed with waves tokens',
-    );
+    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
 
     tabOrigin = (await browser.createWindow('tab')).handle;
 
@@ -61,7 +56,7 @@ describe('Messages', function () {
     await browser.switchToWindow(tabOrigin);
   });
 
-  after(async function () {
+  after(async () => {
     const tabKeeper = await browser.getWindowHandle();
     await browser.openKeeperPopup();
     await Settings.clearCustomList();
@@ -70,11 +65,11 @@ describe('Messages', function () {
   });
 
   for (const origin of WHITELIST) {
-    it(`Allowed messages from ${origin}`, async function () {
+    it(`Allowed messages from ${origin}`, async () => {
       await browser.navigateTo(`https://${origin}`);
 
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.executeAsync(sendNotification);
       [messageWindow] = await waitForNewWindows(1);
       await browser.switchToWindow(messageWindow);
@@ -90,11 +85,11 @@ describe('Messages', function () {
     });
   }
 
-  it('When a message is received from a new resource, permission is requested to access', async function () {
+  it('When a message is received from a new resource, permission is requested to access', async () => {
     await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
-    await ContentScript.waitForKeeperWallet();
+    await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotificationWithoutWait);
     [messageWindow] = await waitForNewWindows(1);
     await browser.switchToWindow(messageWindow);
@@ -103,7 +98,7 @@ describe('Messages', function () {
     await expect(AuthMessageScreen.root).toBeDisplayed();
   });
 
-  it('When allowing access to messages - the message is instantly displayed', async function () {
+  it('When allowing access to messages - the message is instantly displayed', async () => {
     await AuthMessageScreen.permissionDetailsButton.click();
     await AuthMessageScreen.allowMessagesCheckbox.click();
     await AuthMessageScreen.authButton.click();
@@ -117,11 +112,11 @@ describe('Messages', function () {
     await browser.switchToWindow(tabOrigin);
   });
 
-  it('When allowing access to an application, but denying messages - messages are not displayed', async function () {
+  it('When allowing access to an application, but denying messages - messages are not displayed', async () => {
     await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
-    await ContentScript.waitForKeeperWallet();
+    await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotificationWithoutWait);
     [messageWindow] = await waitForNewWindows(1);
     await browser.switchToWindow(messageWindow);
@@ -130,9 +125,7 @@ describe('Messages', function () {
     await AuthMessageScreen.permissionDetailsButton.click();
     await AuthMessageScreen.authButton.click();
 
-    await expect(FinalTransactionScreen.transactionContent).toHaveText(
-      'Request has been signed!',
-    );
+    await expect(FinalTransactionScreen.transactionContent).toHaveText('Request has been signed!');
 
     await FinalTransactionScreen.closeButton.click();
     await Windows.waitForWindowToClose(messageWindow);
@@ -140,7 +133,7 @@ describe('Messages', function () {
     await browser.switchToWindow(tabOrigin);
   });
 
-  it('When allowing access from settings - messages are displayed', async function () {
+  it('When allowing access from settings - messages are displayed', async () => {
     await browser.openKeeperPopup();
 
     await TopMenu.settingsButton.click();
@@ -155,7 +148,7 @@ describe('Messages', function () {
     await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
-    await ContentScript.waitForKeeperWallet();
+    await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotification);
     [messageWindow] = await waitForNewWindows(1);
     await browser.switchToWindow(messageWindow);
@@ -168,12 +161,12 @@ describe('Messages', function () {
     await browser.switchToWindow(tabOrigin);
   });
 
-  it('When receiving several messages from one resource - messages are displayed as a "batch"', async function () {
+  it('When receiving several messages from one resource - messages are displayed as a "batch"', async () => {
     await browser.navigateTo(`https://${WHITELIST[3]}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
     for (let success = 0; success < 2; ) {
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await browser.executeAsync<any, []>(sendNotification);
 
@@ -191,11 +184,11 @@ describe('Messages', function () {
     // do not clear messages for next test
   });
 
-  it('When receiving messages from several resources - messages are displayed in several blocks', async function () {
+  it('When receiving messages from several resources - messages are displayed in several blocks', async () => {
     await browser.switchToWindow(tabOrigin);
     await browser.navigateTo(`https://${WHITELIST[4]}`);
 
-    await ContentScript.waitForKeeperWallet();
+    await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotification);
     expect(messageWindow).not.toBeNull();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -206,7 +199,7 @@ describe('Messages', function () {
     // do not clear messages for next test
   });
 
-  it('The "Clear all" button closes all messages', async function () {
+  it('The "Clear all" button closes all messages', async () => {
     await MessagesScreen.clearAllButton.click();
     await expect(HomeScreen.root).toBeDisplayed();
 
@@ -215,9 +208,7 @@ describe('Messages', function () {
   });
 
   // TODO looks like these units need to be checked in unittests
-  it(
-    'You cannot send messages from one resource more often than once every 30 seconds',
-  );
+  it('You cannot send messages from one resource more often than once every 30 seconds');
   it('The message title cannot be longer than 20 characters');
   it('The message text cannot be longer than 250 characters');
   it('Title is a required field');
