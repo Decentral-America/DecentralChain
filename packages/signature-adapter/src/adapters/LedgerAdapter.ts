@@ -150,14 +150,12 @@ export class LedgerAdapter extends Adapter {
   }
 
   protected _isMyLedger() {
-    const promise = LedgerAdapter._ledger
-      .getUserDataById(this._currentUser.id)
-      .then((user) => {
-        if (user.address !== this._currentUser.address) {
-          this._isDestroyed = true;
-          throw new Error('Invalid ledger: address mismatch');
-        }
-      });
+    const promise = LedgerAdapter._ledger.getUserDataById(this._currentUser.id).then((user) => {
+      if (user.address !== this._currentUser.address) {
+        this._isDestroyed = true;
+        throw new Error('Invalid ledger: address mismatch');
+      }
+    });
 
     promise.catch((e: unknown) => {
       console.warn('Ledger validation failed:', e instanceof Error ? e.message : e);
