@@ -98,9 +98,13 @@ export class Signable {
       throw new SignError(message, ERRORS.VALIDATION_FAILED, e);
     }
 
-    this._bytePromise = this.getSignData().then((signData) =>
-      SIGN_TYPES[forSign.type].getBytes[version]!(signData),
-    );
+    this._bytePromise = this.getSignData().then((signData) => {
+      const getBytesForVersion = SIGN_TYPES[forSign.type].getBytes[version];
+      if (!getBytesForVersion) {
+        throw new SignError(`No getBytes for version ${version}`, ERRORS.VERSION_IS_NOT_SUPPORTED);
+      }
+      return getBytesForVersion(signData);
+    });
   }
 
   public async getOrderFee(
