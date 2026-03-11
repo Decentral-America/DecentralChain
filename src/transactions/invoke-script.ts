@@ -29,6 +29,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function invokeScript(
   params: IInvokeScriptParams,
   seed: TSeedTypes,
@@ -51,17 +52,17 @@ export function invokeScript(
     version,
     senderPublicKey,
     dApp: paramsOrTx.dApp,
-    call: callField(paramsOrTx),
+    call: callField(paramsOrTx) as InvokeScriptTransaction['call'],
     payment: mapPayment(paramsOrTx.payment),
     fee: fee(paramsOrTx, 500000),
-    feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId),
+    feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),
     timestamp: paramsOrTx.timestamp || Date.now(),
     chainId: networkByte(paramsOrTx.chainId, 76),
     proofs: paramsOrTx.proofs || [],
     id: '',
   };
 
-  validate.invokeScript(tx);
+  validate.invokeScript(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

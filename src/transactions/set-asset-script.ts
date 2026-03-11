@@ -25,6 +25,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function setAssetScript(
   params: ISetAssetScriptParams,
   seed: TSeedTypes,
@@ -56,7 +57,7 @@ export function setAssetScript(
     script: base64Prefix(paramsOrTx.script) || '',
   };
 
-  validate.setAssetScript(tx);
+  validate.setAssetScript(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

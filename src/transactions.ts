@@ -203,6 +203,9 @@ export interface IOrderParams<LONG = string | number> {
   expiration?: number;
   matcherFeeAssetId?: string | null;
   priceMode?: 'fixedDecimals' | 'assetDecimals';
+  version?: number | null;
+  chainId?: string | number;
+  eip712Signature?: string;
 }
 
 export interface ICancelOrderParams {
