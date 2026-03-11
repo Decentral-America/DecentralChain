@@ -1,8 +1,15 @@
-import { type Placement } from '@popperjs/core';
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  offset,
+  type Placement,
+  shift,
+  useFloating,
+} from '@floating-ui/react-dom';
 import clsx from 'clsx';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import * as Popper from 'react-popper';
 
 import * as modal from '../modal/modal.styl';
 import * as styles from './tooltip.module.css';
@@ -10,7 +17,6 @@ import * as styles from './tooltip.module.css';
 interface Props {
   className?: string;
   children: (renderProps: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ref: React.MutableRefObject<any>;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
@@ -28,33 +34,23 @@ export function Tooltip({
 }: Props) {
   const [el, setEl] = useState<HTMLDivElement | null>(null);
   const elRef = useRef(null);
-  const popperRef = useRef(null);
-  const [arrowRef, setArrowRef] = useState<HTMLElement | null>(null);
-  const { styles: stylesP, attributes: attributesP } = Popper.usePopper(
-    elRef.current,
-    popperRef.current,
-    {
-      placement,
-      modifiers: [
-        {
-          name: 'arrow',
-          options: {
-            element: arrowRef,
-          },
-        },
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 10],
-          },
-        },
-      ],
-    },
-  );
+  const arrowRef = useRef<HTMLDivElement | null>(null);
   const [showPopper, setShowPopper] = useState(false);
 
+  const { refs, floatingStyles, middlewareData } = useFloating({
+    placement,
+    whileElementsMounted: autoUpdate,
+    middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
+  });
+
+  const setFloatingRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      refs.setFloating(node);
+    },
+    [refs],
+  );
+
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const root = document.getElementById('app-modal')!;
 
     const child = document.createElement('div');
@@ -71,7 +67,10 @@ export function Tooltip({
     <>
       {children({
         ref: elRef,
-        onMouseEnter: () => setShowPopper(true),
+        onMouseEnter: () => {
+          refs.setReference(elRef.current);
+          setShowPopper(true);
+        },
         onMouseLeave: () => setShowPopper(false),
       })}
 
@@ -79,16 +78,18 @@ export function Tooltip({
         createPortal(
           showPopper && (
             <div
-              ref={popperRef}
+              ref={setFloatingRef}
               className={clsx(className, styles.tooltip)}
-              style={stylesP.popper}
-              {...attributesP.popper}
+              style={floatingStyles}
               {...props}
             >
               <div
-                ref={setArrowRef}
+                ref={arrowRef}
                 className={styles.arrow}
-                style={stylesP.arrow}
+                style={{
+                  left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
+                  top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
+                }}
               />
               {content}
             </div>
