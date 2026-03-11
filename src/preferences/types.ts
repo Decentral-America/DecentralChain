@@ -1,4 +1,4 @@
-import { type WalletAccount } from 'wallets/types';
+import type { WalletAccount } from 'wallets/types';
 
 export interface IdleOptions {
   type: string;
@@ -6,5 +6,5 @@ export interface IdleOptions {
 }
 
 export type PreferencesAccount = WalletAccount & {
-  lastUsed?: number;
+  lastUsed?: number | undefined;
 };
