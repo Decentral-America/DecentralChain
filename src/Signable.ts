@@ -1,6 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { convert } from '@decentralchain/money-like-to-node';
 import { libs } from '@decentralchain/transactions';
+import { type SignableTransaction } from '@decentralchain/ts-types';
 import { type Adapter } from './adapters';
 import { ERRORS } from './constants';
 import {
@@ -25,6 +26,14 @@ import {
 
 const { base58Encode, blake2b, verifySignature } = libs.crypto;
 
+/** Subset of TSignData.data properties accessed by precision helper methods. */
+interface IPrecisionData {
+  type?: number;
+  payment?: Array<{ asset?: { precision: number } }>;
+  amount?: { asset?: { precision: number } };
+  fee?: { asset?: { precision: number } };
+}
+
 export class Signable {
   public readonly type: SIGN_TYPE;
   private readonly _forSign: TSignData;
@@ -33,7 +42,7 @@ export class Signable {
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
   private _addProofPromise: Promise<string> | undefined;
-  private _preparedData: Record<string, any>;
+  private _preparedData: Record<string, unknown>;
   private _proofs: string[] = [];
 
   /** Maximum number of proofs allowed per transaction (protocol limit). */
@@ -123,13 +132,19 @@ export class Signable {
     const currentFee = currentFeeFactory(config);
     const txData = await this.getSignData();
     const bytes = await this.getBytes();
-    return currentFee(txData as any, bytes, hasScript, smartAssetIdList);
+    return currentFee(
+      txData as unknown as SignableTransaction<BigNumber>,
+      bytes,
+      hasScript,
+      smartAssetIdList,
+    );
   }
 
   public getTxData(): TSignData['data'] {
     return { ...this._forSign.data };
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic transaction record whose shape depends on type discriminant; narrowing would require 15+ casts in getAssetIds()
   public async getSignData(): Promise<Record<string, any>> {
     const senderPublicKey = await this._adapter.getPublicKey();
     const sender = await this._adapter.getAddress();
@@ -298,6 +313,7 @@ export class Signable {
     const proofs = (this._proofs || []).slice();
 
     try {
+      // biome-ignore lint/suspicious/noExplicitAny: getDataForApi() return type must remain untyped — narrowing here cascades type errors to all consumers (getOrderFee, external callers)
       return convert({ ...data, proofs } as any, (item: unknown) => new BigNumber(item as string));
     } catch {
       return { ...data, proofs, signature: proofs[0] };
@@ -329,7 +345,7 @@ export class Signable {
   }
 
   private _getAmountPrecision() {
-    const data = this._forSign.data as any;
+    const data = this._forSign.data as unknown as IPrecisionData;
     if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
       const payment = data.payment ?? [];
       return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
@@ -338,13 +354,13 @@ export class Signable {
   }
 
   private _getAmount2Precision() {
-    const data = this._forSign.data as any;
+    const data = this._forSign.data as unknown as IPrecisionData;
     const payment = data.payment ?? [];
     return payment.length === 2 && payment[1]?.asset ? payment[1].asset.precision : 0;
   }
 
   private _getFeePrecision() {
-    const data = this._forSign.data as any;
+    const data = this._forSign.data as unknown as IPrecisionData;
     return data.fee?.asset?.precision ?? 0;
   }
 }

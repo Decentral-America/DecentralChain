@@ -690,6 +690,7 @@ export const VALIDATORS = {
 
 interface IFieldOptions {
   key: string;
+  // biome-ignore lint/suspicious/noExplicitAny: Validator receives heterogeneous field values (Money, BigNumber, string, number) passed to typed APIs that don't accept unknown
   value: any;
   optional: boolean;
   type: string;

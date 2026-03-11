@@ -1,4 +1,4 @@
-import { toNode as mlToNode } from '@decentralchain/money-like-to-node';
+import { toNode as mlToNode, type TDCCGuiEntity } from '@decentralchain/money-like-to-node';
 import * as dccTransactions from '@decentralchain/transactions';
 import { libs, protoSerialize } from '@decentralchain/transactions';
 import { type IAdapterSignMethods } from './interfaces';
@@ -12,17 +12,19 @@ const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimi
 const { binary } = libs.marshall;
 const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 
+// biome-ignore lint/suspicious/noExplicitAny: Bridge callback between money-like-to-node output and @decentralchain/transactions functions with incompatible signatures
 const toNode = (data: Record<string, unknown>, convert?: (r: any) => any) => {
-  const r = mlToNode(data as any);
+  const r = mlToNode(data as unknown as TDCCGuiEntity);
   r.timestamp = new Date(r.timestamp).getTime();
   return convert ? convert(r) : r;
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: Bridge callback between money-like-to-node output and @decentralchain/transactions functions with incompatible signatures
 const burnToNode = (data: Record<string, unknown>, convert?: (r: any) => any) => {
-  const r = mlToNode(data as any);
+  const r = mlToNode(data as unknown as TDCCGuiEntity);
   const withAmount: Record<string, unknown> = {
     ...r,
-    amount: (r as any).quantity,
+    amount: (r as { quantity?: unknown }).quantity,
   };
   withAmount.timestamp = new Date(withAmount.timestamp as number).getTime();
   return convert ? convert(withAmount) : withAmount;
@@ -79,8 +81,10 @@ export enum SIGN_TYPE {
 }
 
 export interface ITypesMap {
+  // biome-ignore lint/suspicious/noExplicitAny: Version-dispatched handlers receive type-specific data shapes that can't be narrowed without cascading hundreds of casts
   getBytes: Record<number, (data: any) => Uint8Array>;
   adapter: keyof IAdapterSignMethods;
+  // biome-ignore lint/suspicious/noExplicitAny: Version-dispatched handlers receive type-specific data shapes that can't be narrowed without cascading hundreds of casts
   toNode?: (data: any, networkByte: number) => any;
 }
 
