@@ -36,7 +36,7 @@ npm install @decentralchain/data-service-client-js
 ## Quick Start
 
 ```typescript
-import DataServiceClient from '@decentralchain/data-service-client-js';
+import { DataServiceClient } from '@decentralchain/data-service-client-js';
 
 const client = new DataServiceClient({
   rootUrl: 'https://api.decentralchain.io/v0',
