@@ -10,5 +10,5 @@ export async function createSharedKey(
   const [wasm, key] = await Promise.all([initWasm(), sha256(prefix)]);
   const data = wasm.create_shared_key(privateKeyFrom, publicKeyTo);
 
-  return new Uint8Array(await hmac('SHA-256', key, data));
+  return new Uint8Array(await hmac('SHA-256', key, data as Uint8Array<ArrayBuffer>));
 }
