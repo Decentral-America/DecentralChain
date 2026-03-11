@@ -1,10 +1,10 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { MessageFinal } from 'messages/_common/final';
 import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { usePopupDispatch } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { setShowNotification } from 'store/actions/notifications';
@@ -18,7 +18,7 @@ import { Button } from '../../ui/components/ui/buttons/Button';
 import { DropdownButton } from '../../ui/components/ui/buttons/DropdownButton';
 import { Input } from '../../ui/components/ui/input/Input';
 import { Select } from '../../ui/components/ui/select/Select';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 import * as styles from './authOrigin.module.css';
 
 export function AuthOriginCard({
@@ -41,9 +41,7 @@ export function AuthOriginCard({
           <div>
             <div className={styles.origin}>{message.origin}</div>
 
-            <h1 className={styles.title}>
-              {t('transactions.allowAccessTitle')}
-            </h1>
+            <h1 className={styles.title}>{t('transactions.allowAccessTitle')}</h1>
           </div>
         </div>
       ) : (
@@ -78,8 +76,7 @@ export function AuthOriginScreen({
     totalAmount: string | null;
   } = { interval: null, showNotify: false, totalAmount: null };
 
-  const [{ interval, showNotify, totalAmount }, setState] =
-    useState(initialState);
+  const [{ interval, showNotify, totalAmount }, setState] = useState(initialState);
 
   const [selectedResolutionTime, setSelectedResolutionSelected] =
     useState<keyof typeof INTERVAL_VALUES>('0m');
@@ -98,15 +95,11 @@ export function AuthOriginScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <AuthOriginCard message={message} />
 
         <div className={styles.infoBlock}>
-          <div
-            className={clsx(styles.infoBlockIcon, 'inactive-account-icon')}
-          />
+          <div className={clsx(styles.infoBlockIcon, 'inactive-account-icon')} />
 
           <div className={styles.infoBlockText}>{t('sign.signAccessInfo')}</div>
         </div>
@@ -215,16 +208,12 @@ export function AuthOriginScreen({
               }}
             />
 
-            <label htmlFor="checkbox_noshow">
-              {t('notifications.allowSending')}
-            </label>
+            <label htmlFor="checkbox_noshow">{t('notifications.allowSending')}</label>
           </div>
         </details>
       </div>
 
-      <div
-        className={clsx(transactionsStyles.txButtonsWrapper, 'buttons-wrapper')}
-      >
+      <div className={clsx(transactionsStyles.txButtonsWrapper, 'buttons-wrapper')}>
         <DropdownButton placement="top">
           <Button
             id="reject"
@@ -268,9 +257,7 @@ export function AuthOriginScreen({
                     origin: message.origin,
                     params: {
                       interval,
-                      totalAmount: new BigNumber(totalAmount)
-                        .mul(10 ** 8)
-                        .toFixed(8),
+                      totalAmount: new BigNumber(totalAmount).mul(10 ** 8).toFixed(8),
                       type: 'allowAutoSign',
                     },
                   }),

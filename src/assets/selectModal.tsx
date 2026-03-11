@@ -1,9 +1,9 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { type BalanceAssets } from 'balances/types';
+import type { BalanceAssets } from 'balances/types';
 import clsx from 'clsx';
 import ColorHash from 'color-hash';
-import { type NetworkName } from 'networks/types';
+import type { NetworkName } from 'networks/types';
 import { cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/components/ui/buttons/Button';
@@ -11,7 +11,7 @@ import { Input } from 'ui/components/ui/input';
 import { Tooltip } from 'ui/components/ui/tooltip';
 
 import * as styles from './selectModal.module.css';
-import { type AssetDetail } from './types';
+import type { AssetDetail } from './types';
 import { useAssetLogo } from './utils';
 
 export interface AssetSelectModalOption extends AssetDetail {
@@ -27,13 +27,7 @@ interface ItemProps {
   onSelect: (assetId: string) => void;
 }
 
-function AssetSelectItem({
-  className,
-  network,
-  asset,
-  balance,
-  onSelect,
-}: ItemProps) {
+function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemProps) {
   const logoSrc = useAssetLogo(network, asset.id);
 
   const listItemEl = (
@@ -84,13 +78,7 @@ interface Props {
   onSelect: (assetId: string) => void;
 }
 
-export function AssetSelectModal({
-  assetBalances,
-  assets,
-  network,
-  onClose,
-  onSelect,
-}: Props) {
+export function AssetSelectModal({ assetBalances, assets, network, onClose, onSelect }: Props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -102,8 +90,7 @@ export function AssetSelectModal({
           asset =>
             asset.id === query ||
             asset.name.toLowerCase().includes(query.toLowerCase()) ||
-            (!!asset.ticker &&
-              asset.ticker.toLowerCase().includes(query.toLowerCase())),
+            (!!asset.ticker && asset.ticker.toLowerCase().includes(query.toLowerCase())),
         )
         .map(asset => {
           const balance = new Money(
@@ -137,9 +124,7 @@ export function AssetSelectModal({
   );
 
   useEffect(() => {
-    setSelectedIndex(
-      filteredAndSortedItems.findIndex(item => !item.asset.disabled),
-    );
+    setSelectedIndex(filteredAndSortedItems.findIndex(item => !item.asset.disabled));
   }, [filteredAndSortedItems]);
 
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -163,10 +148,7 @@ export function AssetSelectModal({
 
     const listItemBcr = listItem.getBoundingClientRect();
 
-    if (
-      listItemBcr.top < viewportBcr.top ||
-      listItemBcr.bottom > viewportBcr.bottom
-    ) {
+    if (listItemBcr.top < viewportBcr.top || listItemBcr.bottom > viewportBcr.bottom) {
       listItem.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -192,11 +174,7 @@ export function AssetSelectModal({
                 case 'ArrowDown':
                   if (filteredAndSortedItems.length !== 0) {
                     setSelectedIndex(prevState => {
-                      if (
-                        filteredAndSortedItems.every(
-                          item => item.asset.disabled,
-                        )
-                      ) {
+                      if (filteredAndSortedItems.every(item => item.asset.disabled)) {
                         return -1;
                       }
 
@@ -218,11 +196,7 @@ export function AssetSelectModal({
                 case 'ArrowUp':
                   if (filteredAndSortedItems.length !== 0) {
                     setSelectedIndex(prevState => {
-                      if (
-                        filteredAndSortedItems.every(
-                          item => item.asset.disabled,
-                        )
-                      ) {
+                      if (filteredAndSortedItems.every(item => item.asset.disabled)) {
                         return -1;
                       }
 
@@ -274,12 +248,7 @@ export function AssetSelectModal({
           </ul>
         </div>
 
-        <Button
-          className="modal-close"
-          type="button"
-          view="transparent"
-          onClick={onClose}
-        />
+        <Button className="modal-close" type="button" view="transparent" onClick={onClose} />
       </div>
     </div>
   );
