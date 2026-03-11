@@ -63,16 +63,20 @@ export function AddressRecipient({
   }, [address, chainId]);
 
   if (isAlias(address)) {
+    const aliasMatch = address.match(/^(alias:\w:)(.*)/i);
+
     return (
       <div className={className}>
-        <p
-          className={styles.name}
-          data-testid={testid}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: address.replace(/^alias:\w:/i, '<mark>$&</mark>'),
-          }}
-        />
+        <p className={styles.name} data-testid={testid}>
+          {aliasMatch ? (
+            <>
+              <mark>{aliasMatch[1]}</mark>
+              {aliasMatch[2]}
+            </>
+          ) : (
+            address
+          )}
+        </p>
         {showAliasWarning && (
           <p className={styles.warningAlias}>{t('address.warningAlias')}</p>
         )}

@@ -472,7 +472,7 @@ export function HistoryItem({ tx, className }: Props) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 getTxDetailLink(networkCode!, tx.id),
                 '_blank',
-                'noopener',
+                'noopener,noreferrer',
               );
             }}
             {...props}
