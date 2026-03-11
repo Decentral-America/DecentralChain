@@ -642,5 +642,4 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
   return { parse, stringify };
 }
 
-export default create;
 export { create };
