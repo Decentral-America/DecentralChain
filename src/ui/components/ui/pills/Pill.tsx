@@ -7,11 +7,11 @@ const _onClick =
     cb && cb(id);
 
 interface Props {
-  className?: string;
-  id?: number;
-  text?: string;
-  hidden?: boolean;
-  selected?: boolean;
+  className?: string | undefined;
+  id?: number | undefined;
+  text?: string | undefined;
+  hidden?: boolean | undefined;
+  selected?: boolean | undefined;
   onSelect: (...args: unknown[]) => unknown;
 }
 

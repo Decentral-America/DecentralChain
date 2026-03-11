@@ -6,7 +6,7 @@ import { Tooltip } from '../tooltip';
 import * as styles from './Tooltip.module.css';
 
 export interface Props {
-  className?: string;
+  className?: string | undefined;
   address: string;
 }
 

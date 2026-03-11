@@ -5,9 +5,9 @@ import { Button, Input } from 'ui/components/ui';
 import * as styles from './searchInput.module.css';
 
 interface Props extends React.HTMLProps<HTMLInputElement> {
-  className?: string;
+  className?: string | undefined;
   onInput: (e: React.FormEvent<HTMLInputElement>) => void;
-  onClear?: () => void;
+  onClear?: (() => void) | undefined;
 }
 
 export function SearchInput({

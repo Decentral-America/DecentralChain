@@ -17,7 +17,7 @@ const SAFE_FIELDS = new Set([
 ]);
 
 interface Props {
-  className?: string;
+  className?: string | undefined;
 }
 
 export const ResetButton = ({ className }: Props) => {
