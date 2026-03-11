@@ -20,6 +20,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function issue(
   params: IIssueParams,
   seed: TSeedTypes,
@@ -54,7 +55,7 @@ export function issue(
     id: '',
   };
 
-  validate.issue(tx);
+  validate.issue(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

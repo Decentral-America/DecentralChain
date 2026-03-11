@@ -14,4 +14,4 @@ export const DEFAULT_VERSIONS = {
   SET_ASSET_SCRIPT: 2,
   INVOKE_SCRIPT: 2,
   UPDATE_ASSET_INFO: 1,
-};
+} as const;
