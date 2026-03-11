@@ -1,7 +1,7 @@
 import { libs, transfer } from '@decentralchain/transactions';
 import { type SignedTransaction, type TransferTransaction } from '@decentralchain/ts-types';
 import { type WithId } from '@decentralchain/ts-types/dist/src/parts';
-import create from '../../src';
+import { create } from '../../src';
 import { fetchCalculateFee } from '../../src/api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../src/constants';
 import { type TLong } from '../../src/interface';

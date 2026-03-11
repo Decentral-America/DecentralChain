@@ -4,7 +4,7 @@ import {
   type TransferTransaction,
   type WithId,
 } from '@decentralchain/ts-types';
-import create from '../../src';
+import { create } from '../../src';
 import { TRANSACTION_STATUSES } from '../../src/constants';
 import { type TLong } from '../../src/interface';
 import { wait } from '../../src/tools/utils';
