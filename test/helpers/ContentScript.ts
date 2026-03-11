@@ -1,8 +1,8 @@
 export const ContentScript = {
-  waitForKeeperWallet() {
+  waitForCubensisConnect() {
     return browser.executeAsync((done: () => void) => {
       (function poll() {
-        if (typeof KeeperWallet !== 'undefined') done();
+        if (typeof CubensisConnect !== 'undefined') done();
         else setTimeout(() => poll(), 100);
       })();
     });
