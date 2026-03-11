@@ -6,7 +6,7 @@ import * as styles from './base58.module.css';
 
 interface Props {
   base58: string;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function Base58({ base58, className, ...otherProps }: Props) {
