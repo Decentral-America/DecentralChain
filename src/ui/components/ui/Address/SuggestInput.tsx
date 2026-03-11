@@ -1,5 +1,4 @@
 import { base58Decode } from '@decentralchain/crypto';
-import clsx from 'clsx';
 import { isAddressString } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
 import type { PreferencesAccount } from 'preferences/types';
@@ -269,13 +268,23 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
           <div
             ref={overlaidTextRef}
             className={styles.overlaidText}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: isAlias
-                ? value.replace(ALIAS_RE, `<mark class=${styles.aliasMark}>$&</mark>`)
-                : value,
-            }}
-          />
+          >
+            {isAlias ? (
+              (() => {
+                const match = value.match(ALIAS_RE);
+                return match ? (
+                  <>
+                    <mark className={styles.aliasMark}>{match[0]}</mark>
+                    {value.slice(match[0].length)}
+                  </>
+                ) : (
+                  value
+                );
+              })()
+            ) : (
+              value
+            )}
+          </div>
         </div>
 
         <button
