@@ -4,10 +4,10 @@ import { HeadLogo } from '../head';
 import * as styles from './menu.styl';
 
 interface Props {
-  hasLogo?: boolean;
-  hasSettings?: boolean;
-  hasBack?: boolean;
-  hasClose?: boolean;
+  hasLogo?: boolean | undefined;
+  hasSettings?: boolean | undefined;
+  hasBack?: boolean | undefined;
+  hasClose?: boolean | undefined;
 }
 
 export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {

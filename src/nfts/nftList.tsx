@@ -95,7 +95,7 @@ export function NftList({
                 mode,
                 len,
                 onClick,
-                renderMore,
+                ...(renderMore != null && { renderMore }),
               }}
               style={{ height, width }}
             />
