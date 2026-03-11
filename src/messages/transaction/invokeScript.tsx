@@ -22,7 +22,7 @@ export function InvokeScriptCard({
   collapsed,
   tx,
 }: {
-  collapsed?: boolean;
+  collapsed?: boolean | undefined;
   tx: MessageTxInvokeScript;
 }) {
   const { t } = useTranslation();

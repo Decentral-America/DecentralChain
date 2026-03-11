@@ -16,7 +16,7 @@ import {
 import * as styles from './detailTabs.module.css';
 
 interface Props {
-  children?: React.ReactNode;
+  children?: React.ReactNode | undefined;
   json: string;
 }
 

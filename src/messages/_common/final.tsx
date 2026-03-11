@@ -4,7 +4,7 @@ interface Props {
   isApprove: boolean;
   isReject: boolean;
   isSend: boolean | undefined;
-  messages?: { approve?: string; reject?: string; send?: string };
+  messages?: { approve?: string; reject?: string; send?: string } | undefined;
 }
 
 export function MessageFinal({

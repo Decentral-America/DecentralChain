@@ -85,8 +85,8 @@ export function TransactionPackageCard({
   collapsed,
   message,
 }: {
-  className?: string;
-  collapsed?: boolean;
+  className?: string | undefined;
+  collapsed?: boolean | undefined;
   message: MessageOfType<'transactionPackage'>;
 }) {
   const { t } = useTranslation();
