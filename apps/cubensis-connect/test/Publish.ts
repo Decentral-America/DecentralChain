@@ -26,6 +26,7 @@ import { OtherAccountsScreen } from './helpers/OtherAccountsScreen';
 import { Windows } from './helpers/Windows';
 import { ISSUER_SEED, USER_1_SEED, USER_2_SEED, WHITELIST } from './utils/constants';
 import { faucet, getNetworkByte, getTransactionStatus } from './utils/nodeInteraction';
+import { BROWSER_NODE_URL } from './utils/hooks';
 import {
   ALIAS,
   BURN,
@@ -56,7 +57,7 @@ describe('Publish', () => {
   let smartAssetId: string;
   let assetWithMaxValuesId: string;
 
-  before(async function () {
+  beforeAll(async function () {
     chainId = await getNetworkByte(nodeUrl);
 
     const issuerPrivateKeyBytes = await createPrivateKey(utf8Encode(ISSUER_SEED));
@@ -100,7 +101,7 @@ describe('Publish', () => {
 
     await Network.switchTo('Custom');
     if (await CustomNetworkModal.root.isDisplayed()) {
-      await CustomNetworkModal.addressInput.setValue(this.nodeUrl);
+      await CustomNetworkModal.addressInput.setValue(BROWSER_NODE_URL);
       await CustomNetworkModal.saveButton.click();
     }
 
@@ -118,7 +119,7 @@ describe('Publish', () => {
     await browser.switchToWindow(dAppTab);
   });
 
-  after(async () => {
+  afterAll(async () => {
     const tabKeeper = (await browser.createWindow('tab')).handle;
     await App.closeBgTabs(tabKeeper);
     await browser.openKeeperPopup();

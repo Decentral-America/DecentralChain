@@ -1,6 +1,7 @@
 import waitForExpect from 'wait-for-expect';
 
 import { AccountInfoScreen } from './helpers/AccountInfoScreen';
+import { BROWSER_NODE_URL } from './utils/hooks';
 import { CustomNetworkModal } from './helpers/CustomNetworkModal';
 import { EmptyHomeScreen } from './helpers/EmptyHomeScreen';
 import { AccountsHome } from './helpers/flows/AccountsHome';
@@ -14,11 +15,11 @@ import { Windows } from './helpers/Windows';
 describe('Network management', function () {
   let tabKeeper: string;
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
   });
 
-  after(async function () {
+  afterAll(async function () {
     await Network.switchToAndCheck('Mainnet');
     await App.closeBgTabs(tabKeeper);
     await App.resetVault();
@@ -71,14 +72,14 @@ describe('Network management', function () {
       it('Successfully switched', async function () {
         await Network.switchTo(customNetwork);
 
-        await CustomNetworkModal.addressInput.setValue(this.nodeUrl);
+        await CustomNetworkModal.addressInput.setValue(BROWSER_NODE_URL);
         await CustomNetworkModal.saveButton.click();
 
         await Network.checkNetwork(customNetwork);
       });
 
       describe('Changing network settings by "Edit" button', function () {
-        before(async function () {
+        beforeAll(async function () {
           await NetworksMenu.editButton.click();
           await expect(CustomNetworkModal.root).toBeDisplayed();
         });
@@ -107,7 +108,7 @@ describe('Network management', function () {
         });
 
         it('Matcher address is not required field', async function () {
-          await CustomNetworkModal.addressInput.setValue(this.nodeUrl);
+          await CustomNetworkModal.addressInput.setValue(BROWSER_NODE_URL);
           await CustomNetworkModal.saveButton.click();
 
           await expect(NetworksMenu.editButton).toBeDisplayed();

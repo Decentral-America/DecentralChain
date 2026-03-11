@@ -30,7 +30,7 @@ describe('Settings', () => {
     await LoginScreen.enterButton.click();
   }
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     tabKeeper = await browser.getWindowHandle();
 
@@ -57,7 +57,7 @@ describe('Settings', () => {
     await TopMenu.settingsButton.click();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await App.closeBgTabs(tabKeeper);
   });
 
@@ -78,13 +78,13 @@ describe('Settings', () => {
   describe('Network', () => {
     let nodeUrl: string, matcherUrl: string;
 
-    before(async () => {
+    beforeAll(async () => {
       await SettingsMenuScreen.networkSectionLink.click();
       nodeUrl = await NetworkSettingsScreen.nodeAddress.getValue();
       matcherUrl = await NetworkSettingsScreen.matcherAddress.getValue();
     });
 
-    after(async () => {
+    afterAll(async () => {
       await TopMenu.backButton.click();
     });
 
@@ -96,7 +96,7 @@ describe('Settings', () => {
         await NetworkSettingsScreen.nodeAddress.clearValue();
         await expect(NetworkSettingsScreen.nodeAddress).not.toHaveValue(nodeUrl);
       });
-      it('Can be copied');
+      it.todo('Can be copied');
     });
 
     describe('Matcher URL', () => {
@@ -107,7 +107,7 @@ describe('Settings', () => {
         await NetworkSettingsScreen.matcherAddress.clearValue();
         expect(NetworkSettingsScreen.matcherAddress).not.toHaveValue(matcherUrl);
       });
-      it('Can be copied');
+      it.todo('Can be copied');
     });
 
     describe('Set default', () => {
@@ -120,11 +120,11 @@ describe('Settings', () => {
   });
 
   describe('Permissions control', () => {
-    before(async () => {
+    beforeAll(async () => {
       await SettingsMenuScreen.permissionsSectionLink.click();
     });
 
-    after(async () => {
+    afterAll(async () => {
       await TopMenu.backButton.click();
     });
 
@@ -161,7 +161,7 @@ describe('Settings', () => {
     };
 
     describe('White list', () => {
-      before(async () => {
+      beforeAll(async () => {
         await PermissionControlSettingsScreen.whiteListLink.click();
       });
 
@@ -176,10 +176,10 @@ describe('Settings', () => {
       checkChangingAutoLimitsInResourceSettings();
 
       describe('Verification of transactions with auto-limits', () => {
-        it('Transfer');
-        it('MassTransfer');
-        it('Data');
-        it('InvokeScript');
+        it.todo('Transfer');
+        it.todo('MassTransfer');
+        it.todo('Data');
+        it.todo('InvokeScript');
       });
     });
 
@@ -195,7 +195,7 @@ describe('Settings', () => {
         await browser.execute(permissionRequest);
       }
 
-      after(async () => {
+      afterAll(async () => {
         await browser.openKeeperPopup();
         await Settings.clearCustomList();
       });
@@ -254,7 +254,7 @@ describe('Settings', () => {
       });
 
       describe('Blocking', () => {
-        after(async () => {
+        afterAll(async () => {
           await browser.openKeeperPopup();
 
           await TopMenu.settingsButton.click();
@@ -278,7 +278,7 @@ describe('Settings', () => {
       });
 
       describe('Removing', () => {
-        after(async () => {
+        afterAll(async () => {
           await browser.openKeeperPopup();
 
           await TopMenu.settingsButton.click();
@@ -309,20 +309,20 @@ describe('Settings', () => {
       checkChangingAutoLimitsInResourceSettings();
 
       describe('Verification of transactions with auto-limits', () => {
-        it('Transfer');
-        it('MassTransfer');
-        it('Data');
-        it('InvokeScript');
+        it.todo('Transfer');
+        it.todo('MassTransfer');
+        it.todo('Data');
+        it.todo('InvokeScript');
       });
     });
   });
 
   describe('General', () => {
-    before(async () => {
+    beforeAll(async () => {
       await SettingsMenuScreen.generalSectionLink.click();
     });
 
-    after(async () => {
+    afterAll(async () => {
       await TopMenu.backButton.click();
     });
 
@@ -344,7 +344,7 @@ describe('Settings', () => {
 
   describe('Root', () => {
     describe('Auto-click protection', () => {
-      before(async () => {
+      beforeAll(async () => {
         await expect(SettingsMenuScreen.root).toBeDisplayed();
       });
 
@@ -369,7 +369,7 @@ describe('Settings', () => {
     });
 
     describe('Suspicious assets protection', () => {
-      before(async () => {
+      beforeAll(async () => {
         await expect(SettingsMenuScreen.root).toBeDisplayed();
       });
 
@@ -400,7 +400,7 @@ describe('Settings', () => {
     });
 
     describe('Logout', () => {
-      after(async () => {
+      afterAll(async () => {
         await performLogin(DEFAULT_PASSWORD);
         await TopMenu.settingsButton.click();
       });

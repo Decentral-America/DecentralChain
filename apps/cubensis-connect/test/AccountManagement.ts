@@ -13,7 +13,7 @@ import { Windows } from './helpers/Windows';
 describe('Account management', function () {
   let tabKeeper: string, tabAccounts: string;
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     tabKeeper = await browser.getWindowHandle();
 
@@ -39,7 +39,7 @@ describe('Account management', function () {
     await browser.openKeeperPopup();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.switchToWindow(tabAccounts);
     await browser.closeWindow();
     await browser.switchToWindow(tabKeeper);
@@ -54,12 +54,11 @@ describe('Account management', function () {
       await expect(HomeScreen.activeAccountName).toHaveText('poor');
     });
 
-    it('Updating account balances on import');
-    it('The balance reflects the leased WAVES');
-    it('Copying the address of the active account on the accounts screen');
-
+    it.todo('Updating account balances on import');
+    it.todo('The balance reflects the leased WAVES');
+    it.todo('Copying the address of the active account on the accounts screen');
     describe('Show QR', () => {
-      after(async () => {
+      afterAll(async () => {
         await TopMenu.backButton.click();
       });
 
@@ -68,16 +67,16 @@ describe('Account management', function () {
         await $('[class^="content@SelectedAccountQr-module"]').waitForExist();
       });
 
-      it('Check that QR matches the displayed address');
-      it('Download QR code'); // file downloaded, filename equals "${address}.png"
+      it.todo('Check that QR matches the displayed address');
+      it.todo('Download QR code'); // file downloaded, filename equals "${address}.png"
     });
 
     describe('Search', () => {
-      before(async () => {
+      beforeAll(async () => {
         await HomeScreen.otherAccountsButton.click();
       });
 
-      after(async () => {
+      afterAll(async () => {
         await TopMenu.backButton.click();
       });
 
@@ -120,7 +119,7 @@ describe('Account management', function () {
         );
       });
 
-      it('By existing email account');
+      it.todo('By existing email account');
     });
   });
 
@@ -130,7 +129,7 @@ describe('Account management', function () {
         expect(await AccountInfoScreen.address.getText()).toMatch(/\w+/i);
       });
 
-      it('Copying by clicking the "Copy" button');
+      it.todo('Copying by clicking the "Copy" button');
     });
 
     describe('Public key', () => {
@@ -138,7 +137,7 @@ describe('Account management', function () {
         expect(await AccountInfoScreen.publicKey.getText()).toMatch(/\w+/i);
       });
 
-      it('Copying by clicking the "Copy" button');
+      it.todo('Copying by clicking the "Copy" button');
     });
 
     describe('Private key', () => {
@@ -147,7 +146,7 @@ describe('Account management', function () {
       });
 
       describe('Copying by clicking the "Copy" button', () => {
-        before(async () => {
+        beforeAll(async () => {
           await AccountInfoScreen.privateKeyCopyButton.click();
         });
 
@@ -156,8 +155,8 @@ describe('Account management', function () {
           await AccountInfoScreen.passwordModal.cancelButton.click();
         });
 
-        it('Clicking "Cancel" does not copy');
-        it('Clicking "Copy" and entering the correct password will copy it');
+        it.todo('Clicking "Cancel" does not copy');
+        it.todo('Clicking "Copy" and entering the correct password will copy it');
       });
     });
 
@@ -169,17 +168,17 @@ describe('Account management', function () {
       });
 
       describe('Copying by clicking the "Copy" button', () => {
-        before(async () => {
+        beforeAll(async () => {
           await AccountInfoScreen.backupPhraseCopyButton.click();
           await AccountInfoScreen.passwordModal.passwordInput.waitForExist();
         });
 
-        after(async () => {
+        afterAll(async () => {
           await AccountInfoScreen.passwordModal.cancelButton.click();
         });
 
-        it('Clicking "Cancel" does not copy');
-        it('Clicking "Copy" and entering the correct password will copy it');
+        it.todo('Clicking "Cancel" does not copy');
+        it.todo('Clicking "Copy" and entering the correct password will copy it');
       });
     });
 
@@ -187,7 +186,7 @@ describe('Account management', function () {
       let currentAccountName: string;
       let newAccountName: string;
 
-      before(async () => {
+      beforeAll(async () => {
         await AccountInfoScreen.name.click();
         currentAccountName =
           await ChangeAccountNameScreen.currentName.getText();
@@ -242,7 +241,7 @@ describe('Account management', function () {
   }
 
   describe('Inactive account', async () => {
-    before(async () => {
+    beforeAll(async () => {
       await HomeScreen.otherAccountsButton.click();
     });
 
@@ -263,7 +262,7 @@ describe('Account management', function () {
   });
 
   describe('Switching networks', () => {
-    before(async () => {
+    beforeAll(async () => {
       await browser.switchToWindow(tabAccounts);
 
       await AccountsHome.importAccount(
@@ -292,7 +291,7 @@ describe('Account management', function () {
       await browser.switchToWindow(tabKeeper);
     });
 
-    after(async () => {
+    afterAll(async () => {
       await Network.switchToAndCheck('Mainnet');
     });
 

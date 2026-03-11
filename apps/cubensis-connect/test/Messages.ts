@@ -32,7 +32,7 @@ describe('Messages', () => {
     done();
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     const tabKeeper = await browser.getWindowHandle();
 
@@ -56,7 +56,7 @@ describe('Messages', () => {
     await browser.switchToWindow(tabOrigin);
   });
 
-  after(async () => {
+  afterAll(async () => {
     const tabKeeper = await browser.getWindowHandle();
     await browser.openKeeperPopup();
     await Settings.clearCustomList();
