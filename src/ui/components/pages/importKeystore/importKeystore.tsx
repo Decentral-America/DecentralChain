@@ -1,10 +1,5 @@
-import {
-  base64Decode,
-  decryptSeed,
-  utf8Decode,
-  utf8Encode,
-} from '@keeper-wallet/waves-crypto';
-import { type KeystoreProfiles } from 'keystore/types';
+import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
+import type { KeystoreProfiles } from 'keystore/types';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,10 +53,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
         type: WalletTypes.Keystore,
         decrypt: async password => {
           try {
-            const decrypted = await decryptSeed(
-              base64Decode(atob(profiles)),
-              utf8Encode(password),
-            );
+            const decrypted = await decryptSeed(base64Decode(atob(profiles)), utf8Encode(password));
 
             return JSON.parse(utf8Decode(decrypted));
           } catch (err) {
@@ -94,9 +86,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
                 encryptionRounds,
               );
 
-              const accounts: ExchangeKeystoreAccount[] = JSON.parse(
-                utf8Decode(decrypted),
-              );
+              const accounts: ExchangeKeystoreAccount[] = JSON.parse(utf8Decode(decrypted));
 
               const profiles: KeystoreProfiles = {
                 custom: { accounts: [] },
@@ -107,12 +97,8 @@ function parseKeystore(json: string): EncryptedKeystore | null {
 
               accounts
                 .filter(
-                  (
-                    acc,
-                  ): acc is Extract<
-                    ExchangeKeystoreAccount,
-                    { userType: 'seed' }
-                  > => acc.userType === 'seed',
+                  (acc): acc is Extract<ExchangeKeystoreAccount, { userType: 'seed' }> =>
+                    acc.userType === 'seed',
                 )
                 .forEach(acc => {
                   const networkCode = String.fromCharCode(acc.networkByte);
@@ -147,9 +133,7 @@ const suffixRe = /\((\d+)\)$/;
 export function ImportKeystore() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
-  const allNetworksAccounts = usePopupSelector(
-    state => state.allNetworksAccounts,
-  );
+  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -197,8 +181,7 @@ export function ImportKeystore() {
                 );
 
                 let sameNameAccount = accounts.find(
-                  existingAccount =>
-                    existingAccount.name === profileAccount.name,
+                  existingAccount => existingAccount.name === profileAccount.name,
                 );
 
                 while (sameNameAccount) {
@@ -214,8 +197,7 @@ export function ImportKeystore() {
                   }
 
                   sameNameAccount = accounts.find(
-                    existingAccount =>
-                      existingAccount.name === profileAccount.name,
+                    existingAccount => existingAccount.name === profileAccount.name,
                   );
                 }
               });

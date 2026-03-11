@@ -1,16 +1,12 @@
 import {
-  isHexString,
-  isValidAddress,
-  isValidChecksumAddress,
-} from '@ethereumjs/util';
-import {
   base16Decode,
   base16Encode,
   base58Decode,
   base58Encode,
   blake2b,
   keccak,
-} from '@keeper-wallet/waves-crypto';
+} from '@decentralchain/crypto';
+import { isHexString, isValidAddress, isValidChecksumAddress } from '@ethereumjs/util';
 
 export function fromDccToEthereumAddress(address: string) {
   const bytes = base58Decode(address);
@@ -22,9 +18,7 @@ export function fromEthereumToDccAddress(address: string, chainId = 87) {
   const bytes = base16Decode(hex);
   const chainBytes = new Uint8Array([0x01, chainId]);
   const checksum = keccak(blake2b(new Uint8Array([...chainBytes, ...bytes])));
-  return base58Encode(
-    new Uint8Array([...chainBytes, ...bytes, ...checksum.slice(0, 4)]),
-  );
+  return base58Encode(new Uint8Array([...chainBytes, ...bytes, ...checksum.slice(0, 4)]));
 }
 
 export function isEthereumAddress(possibleAddress: string) {
