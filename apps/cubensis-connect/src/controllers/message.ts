@@ -1,4 +1,4 @@
-import { JSONbn } from '_core/jsonBn';
+import BigNumber from '@decentralchain/bignumber';
 import {
   base58Decode,
   base58Encode,
@@ -6,17 +6,14 @@ import {
   blake2b,
   createAddress,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
-import { captureException } from '@sentry/browser';
-import { BigNumber } from '@decentralchain/bignumber';
+} from '@decentralchain/crypto';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { binary } from '@decentralchain/marshall';
 // NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
 import { waves } from '@decentralchain/protobuf-serialization';
-import {
-  type LeaseTransactionFromNode,
-  TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+import { type LeaseTransactionFromNode, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { captureException } from '@sentry/browser';
+import { JSONbn } from '_core/jsonBn';
 import type { AssetsRecord } from 'assets/types';
 import EventEmitter from 'events';
 import Long from 'long';
@@ -26,10 +23,10 @@ import {
   makeAuthBytes,
   makeCancelOrderBytes,
   makeCustomDataBytes,
+  makeDccAuthBytes,
   makeOrderBytes,
   makeRequestBytes,
   makeTxBytes,
-  makeDccAuthBytes,
   processAliasOrAddress,
   stringifyOrder,
   stringifyTransaction,
@@ -117,9 +114,7 @@ export class MessageController extends EventEmitter {
   }) {
     super();
 
-    this.store = new ObservableStore(
-      extensionStorage.getInitState({ messages: [] }),
-    );
+    this.store = new ObservableStore(extensionStorage.getInitState({ messages: [] }));
     extensionStorage.subscribe(this.store);
 
     this.assetInfoController = assetInfoController;
@@ -141,9 +136,7 @@ export class MessageController extends EventEmitter {
     this.#updateBadge();
   }
 
-  async newMessage<T extends MessageInput['type']>(
-    messageInput: MessageInputOfType<T>,
-  ) {
+  async newMessage<T extends MessageInput['type']>(messageInput: MessageInputOfType<T>) {
     try {
       const message = await this.#generateMessage(messageInput);
       const { messages } = this.store.getState();
@@ -198,9 +191,7 @@ export class MessageController extends EventEmitter {
   }
 
   getMessageById(id: string) {
-    const result = this.store
-      .getState()
-      .messages.find(message => message.id === id);
+    const result = this.store.getState().messages.find(message => message.id === id);
 
     if (!result) throw new Error(`Failed to get message with id ${id}`);
 
@@ -228,9 +219,7 @@ export class MessageController extends EventEmitter {
         case 'auth': {
           const { data, host, name, prefix, version } = message.data.data;
 
-          const signature = await wallet.signAuth(
-            makeAuthBytes({ data, host }),
-          );
+          const signature = await wallet.signAuth(makeAuthBytes({ data, host }));
 
           message.result = {
             address,
@@ -264,9 +253,7 @@ export class MessageController extends EventEmitter {
             sender: message.data.data.senderPublicKey,
           };
 
-          const signature = await wallet.signCancelOrder(
-            makeCancelOrderBytes(cancelOrder),
-          );
+          const signature = await wallet.signCancelOrder(makeCancelOrderBytes(cancelOrder));
 
           const signedCancelOrder = {
             ...cancelOrder,
@@ -275,10 +262,7 @@ export class MessageController extends EventEmitter {
 
           if (message.broadcast) {
             message.result = JSONbn.stringify(
-              await this.networkController.broadcastCancelOrder(
-                signedCancelOrder,
-                message,
-              ),
+              await this.networkController.broadcastCancelOrder(signedCancelOrder, message),
             );
 
             message.status = MessageStatus.Published;
@@ -291,9 +275,7 @@ export class MessageController extends EventEmitter {
         case 'customData': {
           const { data } = message;
 
-          const signature = await wallet.signCustomData(
-            makeCustomDataBytes(data),
-          );
+          const signature = await wallet.signCustomData(makeCustomDataBytes(data));
 
           message.result = {
             ...data,
@@ -343,10 +325,7 @@ export class MessageController extends EventEmitter {
           break;
         }
         case 'transaction': {
-          const signature = await wallet.signTx(
-            makeTxBytes(message.data),
-            message.data,
-          );
+          const signature = await wallet.signTx(makeTxBytes(message.data), message.data);
 
           const signedTx = {
             ...message.data,
@@ -393,9 +372,7 @@ export class MessageController extends EventEmitter {
             timestamp: message.data.timestamp || Date.now(),
           };
 
-          const signature = await wallet.signDccAuth(
-            makeDccAuthBytes(data),
-          );
+          const signature = await wallet.signDccAuth(makeDccAuthBytes(data));
 
           message.result = {
             ...data,
@@ -412,10 +389,7 @@ export class MessageController extends EventEmitter {
 
       return message;
     } catch (err) {
-      if (
-        err instanceof KeeperError &&
-        err.message === 'Request is rejected on ledger'
-      ) {
+      if (err instanceof KeeperError && err.message === 'Request is rejected on ledger') {
         this.reject(id);
         return message;
       }
@@ -444,9 +418,7 @@ export class MessageController extends EventEmitter {
   reject(id: string, forever?: boolean) {
     const message = this.getMessageById(id);
 
-    message.status = forever
-      ? MessageStatus.RejectedForever
-      : MessageStatus.Rejected;
+    message.status = forever ? MessageStatus.RejectedForever : MessageStatus.Rejected;
 
     this.#updateMessage(message);
     this.emit(`${message.id}:finished`, message);
@@ -490,9 +462,7 @@ export class MessageController extends EventEmitter {
       }
     });
 
-    this.#updateStore(
-      messages.filter(message => message.connectionId !== connectionId),
-    );
+    this.#updateStore(messages.filter(message => message.connectionId !== connectionId));
   }
 
   clearMessages(ids?: string | string[]) {
@@ -512,16 +482,12 @@ export class MessageController extends EventEmitter {
   }
 
   #rejectAllByTime() {
-    const { message_expiration_ms } =
-      this.remoteConfigController.getMessagesConfig();
+    const { message_expiration_ms } = this.remoteConfigController.getMessagesConfig();
 
     const { messages } = this.store.getState();
 
     messages.forEach(({ id, timestamp, status }) => {
-      if (
-        Date.now() - timestamp > message_expiration_ms &&
-        status === MessageStatus.UnApproved
-      ) {
+      if (Date.now() - timestamp > message_expiration_ms && status === MessageStatus.UnApproved) {
         this.reject(id);
       }
     });
@@ -530,8 +496,7 @@ export class MessageController extends EventEmitter {
   }
 
   #updateMessagesByTimeout() {
-    const { update_messages_ms } =
-      this.remoteConfigController.getMessagesConfig();
+    const { update_messages_ms } = this.remoteConfigController.getMessagesConfig();
 
     Browser.alarms.create('rejectMessages', {
       delayInMinutes: update_messages_ms / 1000 / 60,
@@ -556,10 +521,7 @@ export class MessageController extends EventEmitter {
   #getMoneyLikeValue(moneyLike: MoneyLike) {
     for (const key of ['tokens', 'coins', 'amount'] as const) {
       if (key in moneyLike) {
-        return moneyLike[key] as Exclude<
-          (typeof moneyLike)[typeof key],
-          BigNumber
-        >;
+        return moneyLike[key] as Exclude<(typeof moneyLike)[typeof key], BigNumber>;
       }
     }
 
@@ -572,9 +534,7 @@ export class MessageController extends EventEmitter {
     return bn.isFinite() && bn.gt(0);
   }
 
-  #isMoneyLikeValuePositive(
-    moneyLike: MoneyLike | string | number | null | undefined,
-  ) {
+  #isMoneyLikeValuePositive(moneyLike: MoneyLike | string | number | null | undefined) {
     if (typeof moneyLike !== 'object' || moneyLike === null) {
       return false;
     }
@@ -592,15 +552,9 @@ export class MessageController extends EventEmitter {
     assets: AssetsRecord,
     txParams: Partial<Pick<MessageTx, 'fee' | 'initialFee'>> &
       (
-        | (Omit<
-            MessageTxTransfer,
-            'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'
-          > &
+        | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
             Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
-        | (Omit<
-            MessageTxInvokeScript,
-            'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'
-          > &
+        | (Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
             Partial<Pick<MessageTxInvokeScript, 'initialFeeAssetId'>>)
       ),
     feeMoneyLike: MoneyLike,
@@ -642,8 +596,7 @@ export class MessageController extends EventEmitter {
 
     const fee = feeOption.money.toCoins();
 
-    const feeAssetId =
-      feeOption.money.asset.id === 'WAVES' ? null : feeOption.money.asset.id;
+    const feeAssetId = feeOption.money.asset.id === 'WAVES' ? null : feeOption.money.asset.id;
 
     const { initialFee = fee, initialFeeAssetId = feeAssetId } = txParams;
 
@@ -659,31 +612,22 @@ export class MessageController extends EventEmitter {
     account: PreferencesAccount,
     messageInputTx: MessageInputTx,
   ): Promise<MessageTx> {
-    if (
-      'fee' in messageInputTx.data &&
-      !this.#isMoneyLikeValuePositive(messageInputTx.data.fee)
-    ) {
+    if ('fee' in messageInputTx.data && !this.#isMoneyLikeValuePositive(messageInputTx.data.fee)) {
       throw ERRORS.REQUEST_ERROR('fee is not valid', messageInputTx);
     }
 
     if (
       'chainId' in messageInputTx.data &&
-      messageInputTx.data.chainId !==
-        this.networkController.getNetworkCode().charCodeAt(0)
+      messageInputTx.data.chainId !== this.networkController.getNetworkCode().charCodeAt(0)
     ) {
-      throw ERRORS.REQUEST_ERROR(
-        'chainId does not match current network',
-        messageInputTx,
-      );
+      throw ERRORS.REQUEST_ERROR('chainId does not match current network', messageInputTx);
     }
 
-    const chainId =
-      messageInputTx.data.chainId ?? account.networkCode.charCodeAt(0);
+    const chainId = messageInputTx.data.chainId ?? account.networkCode.charCodeAt(0);
 
     const proofs = messageInputTx.data.proofs ?? [];
 
-    const senderPublicKey =
-      messageInputTx.data.senderPublicKey ?? account.publicKey;
+    const senderPublicKey = messageInputTx.data.senderPublicKey ?? account.publicKey;
 
     const getSenderExtraFee = () =>
       getExtraFee(
@@ -726,8 +670,7 @@ export class MessageController extends EventEmitter {
         ]);
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
@@ -784,10 +727,7 @@ export class MessageController extends EventEmitter {
         ]);
 
         const txParams = {
-          amount: moneyLikeToMoney(
-            messageInputTx.data.amount,
-            assets,
-          ).toCoins(),
+          amount: moneyLikeToMoney(messageInputTx.data.amount, assets).toCoins(),
           assetId:
             messageInputTx.data.amount.assetId === 'WAVES'
               ? null
@@ -795,16 +735,15 @@ export class MessageController extends EventEmitter {
           attachment: Array.isArray(messageInputTx.data.attachment)
             ? base58Encode(new Uint8Array(messageInputTx.data.attachment))
             : messageInputTx.data.attachment
-            ? base58Encode(utf8Encode(messageInputTx.data.attachment))
-            : undefined,
+              ? base58Encode(utf8Encode(messageInputTx.data.attachment))
+              : undefined,
           chainId,
           fee:
-            messageInputTx.data.fee &&
-            moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins(),
+            messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins(),
           feeAssetId:
             messageInputTx.data.fee?.assetId === 'WAVES'
               ? null
-              : messageInputTx.data.fee?.assetId ?? null,
+              : (messageInputTx.data.fee?.assetId ?? null),
           initialFee:
             messageInputTx.data.initialFee &&
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
@@ -812,12 +751,9 @@ export class MessageController extends EventEmitter {
             messageInputTx.data.initialFee &&
             (messageInputTx.data.initialFee.assetId === 'WAVES'
               ? null
-              : messageInputTx.data.initialFee.assetId ?? null),
+              : (messageInputTx.data.initialFee.assetId ?? null)),
           proofs,
-          recipient: processAliasOrAddress(
-            messageInputTx.data.recipient,
-            chainId,
-          ),
+          recipient: processAliasOrAddress(messageInputTx.data.recipient, chainId),
           senderPublicKey,
           timestamp,
           type: messageInputTx.type,
@@ -827,19 +763,11 @@ export class MessageController extends EventEmitter {
         let { fee } = txParams;
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
-            .add(
-              txParams.assetId && assets[txParams.assetId]?.hasScript
-                ? 50_0000
-                : 10_0000,
-            )
+            .add(txParams.assetId && assets[txParams.assetId]?.hasScript ? 50_0000 : 10_0000)
             .toString();
         }
 
-        const {
-          feeAssetId,
-          initialFee = fee,
-          initialFeeAssetId = feeAssetId,
-        } = txParams;
+        const { feeAssetId, initialFee = fee, initialFeeAssetId = feeAssetId } = txParams;
 
         const tx = {
           ...txParams,
@@ -874,10 +802,7 @@ export class MessageController extends EventEmitter {
             : messageInputTx.data.amount;
 
         if (!this.#isMoneyLikeValuePositive(quantityInput)) {
-          if (
-            typeof quantityInput !== 'object' &&
-            !this.#isNumberLikePositive(quantityInput)
-          ) {
+          if (typeof quantityInput !== 'object' && !this.#isNumberLikePositive(quantityInput)) {
             throw ERRORS.REQUEST_ERROR('quantity is not valid', messageInputTx);
           }
         }
@@ -918,16 +843,11 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
-            .add(
-              txParams.assetId && assets[txParams.assetId]?.hasScript
-                ? 50_0000
-                : 10_0000,
-            )
+            .add(txParams.assetId && assets[txParams.assetId]?.hasScript ? 50_0000 : 10_0000)
             .toString();
         }
 
@@ -958,10 +878,7 @@ export class MessageController extends EventEmitter {
             : messageInputTx.data.amount;
 
         if (!this.#isMoneyLikeValuePositive(amountInput)) {
-          if (
-            typeof amountInput !== 'object' &&
-            !this.#isNumberLikePositive(amountInput)
-          ) {
+          if (typeof amountInput !== 'object' && !this.#isNumberLikePositive(amountInput)) {
             throw ERRORS.REQUEST_ERROR('amount is not valid', messageInputTx);
           }
         }
@@ -973,9 +890,7 @@ export class MessageController extends EventEmitter {
         ]);
 
         const amountMaybeMoney =
-          typeof amountInput === 'object'
-            ? moneyLikeToMoney(amountInput, assets)
-            : amountInput;
+          typeof amountInput === 'object' ? moneyLikeToMoney(amountInput, assets) : amountInput;
 
         let assetId: string;
         let amount: string | number;
@@ -1002,16 +917,11 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
-            .add(
-              txParams.assetId && assets[txParams.assetId]?.hasScript
-                ? 50_0000
-                : 10_0000,
-            )
+            .add(txParams.assetId && assets[txParams.assetId]?.hasScript ? 50_0000 : 10_0000)
             .toString();
         }
 
@@ -1064,10 +974,7 @@ export class MessageController extends EventEmitter {
             messageInputTx.data.initialFee &&
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
           proofs,
-          recipient: processAliasOrAddress(
-            messageInputTx.data.recipient,
-            chainId,
-          ),
+          recipient: processAliasOrAddress(messageInputTx.data.recipient, chainId),
           senderPublicKey,
           timestamp,
           type: messageInputTx.type,
@@ -1075,13 +982,10 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(10_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(10_0000).toString();
         }
 
         const { initialFee = fee } = txParams;
@@ -1123,9 +1027,7 @@ export class MessageController extends EventEmitter {
         );
 
         if (!response.ok) {
-          throw new Error(
-            `Could not fetch lease transaction: ${await response.text()}`,
-          );
+          throw new Error(`Could not fetch lease transaction: ${await response.text()}`);
         }
 
         const lease: LeaseTransactionFromNode = await response.json();
@@ -1144,13 +1046,10 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(10_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(10_0000).toString();
         }
 
         const { initialFee = fee } = txParams;
@@ -1194,13 +1093,10 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(10_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(10_0000).toString();
         }
 
         const { initialFee = fee } = txParams;
@@ -1248,8 +1144,8 @@ export class MessageController extends EventEmitter {
           attachment: Array.isArray(messageInputTx.data.attachment)
             ? base58Encode(new Uint8Array(messageInputTx.data.attachment))
             : messageInputTx.data.attachment
-            ? base58Encode(utf8Encode(messageInputTx.data.attachment))
-            : undefined,
+              ? base58Encode(utf8Encode(messageInputTx.data.attachment))
+              : undefined,
           chainId,
           initialFee:
             messageInputTx.data.initialFee &&
@@ -1269,16 +1165,13 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
             .add(
               (((txParams.transfers.length + 1) >> 1) + 1) *
-                (txParams.assetId && assets[txParams.assetId]?.hasScript
-                  ? 50_0000
-                  : 10_0000),
+                (txParams.assetId && assets[txParams.assetId]?.hasScript ? 50_0000 : 10_0000),
             )
             .toString();
         }
@@ -1340,8 +1233,7 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           const bytes =
@@ -1350,18 +1242,13 @@ export class MessageController extends EventEmitter {
               : waves.DataTransactionData.encode({
                   data: txParams.data.map(entry => ({
                     key: entry.key,
-                    intValue:
-                      entry.type === 'integer'
-                        ? Long.fromValue(entry.value)
-                        : undefined,
-                    boolValue:
-                      entry.type === 'boolean' ? entry.value : undefined,
+                    intValue: entry.type === 'integer' ? Long.fromValue(entry.value) : undefined,
+                    boolValue: entry.type === 'boolean' ? entry.value : undefined,
                     binaryValue:
                       entry.type === 'binary'
                         ? base64Decode(entry.value.replace(/^base64:/, ''))
                         : undefined,
-                    stringValue:
-                      entry.type === 'string' ? entry.value : undefined,
+                    stringValue: entry.type === 'string' ? entry.value : undefined,
                   })),
                 }).finish();
 
@@ -1410,22 +1297,17 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           if (txParams.script == null) {
-            fee = new BigNumber(await getSenderExtraFee())
-              .add(10_0000)
-              .toString();
+            fee = new BigNumber(await getSenderExtraFee()).add(10_0000).toString();
           } else {
             const kbs = getRoundedUpKbs(
               base64Decode(txParams.script.replace(/^base64:/, '')).length,
             );
 
-            fee = new BigNumber(await getSenderExtraFee())
-              .add(kbs * 10_0000)
-              .toString();
+            fee = new BigNumber(await getSenderExtraFee()).add(kbs * 10_0000).toString();
           }
         }
 
@@ -1453,10 +1335,7 @@ export class MessageController extends EventEmitter {
         const assetId = messageInputTx.data.minSponsoredAssetFee.assetId;
 
         if (typeof assetId !== 'string') {
-          throw ERRORS.REQUEST_ERROR(
-            'assetId must be a string',
-            messageInputTx,
-          );
+          throw ERRORS.REQUEST_ERROR('assetId must be a string', messageInputTx);
         }
 
         await this.assetInfoController.updateAssets([
@@ -1476,9 +1355,7 @@ export class MessageController extends EventEmitter {
           initialFee:
             messageInputTx.data.initialFee &&
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
-          minSponsoredAssetFee: minSponsoredAssetFee.eq(0)
-            ? null
-            : minSponsoredAssetFee.toString(),
+          minSponsoredAssetFee: minSponsoredAssetFee.eq(0) ? null : minSponsoredAssetFee.toString(),
           proofs,
           senderPublicKey,
           timestamp,
@@ -1487,13 +1364,10 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(10_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(10_0000).toString();
         }
 
         const { initialFee = fee } = txParams;
@@ -1538,13 +1412,10 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(1_0000_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(1_0000_0000).toString();
         }
 
         const { initialFee = fee } = txParams;
@@ -1595,7 +1466,7 @@ export class MessageController extends EventEmitter {
           feeAssetId:
             messageInputTx.data.fee?.assetId === 'WAVES'
               ? null
-              : messageInputTx.data.fee?.assetId ?? null,
+              : (messageInputTx.data.fee?.assetId ?? null),
           initialFee:
             messageInputTx.data.initialFee &&
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
@@ -1616,20 +1487,13 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
-          fee = new BigNumber(await getSenderExtraFee())
-            .add(50_0000)
-            .toString();
+          fee = new BigNumber(await getSenderExtraFee()).add(50_0000).toString();
         }
 
-        const {
-          feeAssetId,
-          initialFee = fee,
-          initialFeeAssetId = feeAssetId,
-        } = txParams;
+        const { feeAssetId, initialFee = fee, initialFeeAssetId = feeAssetId } = txParams;
 
         const tx = {
           ...txParams,
@@ -1680,16 +1544,11 @@ export class MessageController extends EventEmitter {
         };
 
         let fee =
-          messageInputTx.data.fee &&
-          moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
+          messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins();
 
         if (!fee) {
           fee = new BigNumber(await getSenderExtraFee())
-            .add(
-              txParams.assetId && assets[txParams.assetId]?.hasScript
-                ? 50_0000
-                : 10_0000,
-            )
+            .add(txParams.assetId && assets[txParams.assetId]?.hasScript ? 50_0000 : 10_0000)
             .toString();
         }
 
@@ -1731,9 +1590,7 @@ export class MessageController extends EventEmitter {
 
         const { data, icon, name } = messageInput.data;
 
-        const host =
-          messageInput.data.host ||
-          new URL(`https://${messageInput.origin}`).host;
+        const host = messageInput.data.host || new URL(`https://${messageInput.origin}`).host;
 
         // Wire-format signing prefix — must remain 'WavesWalletAuthentication'
         // for backward-compatible auth verification. See messages/utils.ts.
@@ -1791,8 +1648,7 @@ export class MessageController extends EventEmitter {
         try {
           const data = {
             ...messageInput.data,
-            publicKey:
-              messageInput.data.publicKey || messageInput.account.publicKey,
+            publicKey: messageInput.data.publicKey || messageInput.account.publicKey,
           };
 
           return {
@@ -1820,13 +1676,8 @@ export class MessageController extends EventEmitter {
           throw ERRORS.REQUEST_ERROR('price is not valid', messageInput.data);
         }
 
-        if (
-          !this.#isMoneyLikeValuePositive(messageInput.data.data.matcherFee)
-        ) {
-          throw ERRORS.REQUEST_ERROR(
-            'matcherFee is not valid',
-            messageInput.data,
-          );
+        if (!this.#isMoneyLikeValuePositive(messageInput.data.data.matcherFee)) {
+          throw ERRORS.REQUEST_ERROR('matcherFee is not valid', messageInput.data);
         }
 
         const amountAssetId =
@@ -1861,23 +1712,15 @@ export class MessageController extends EventEmitter {
         const version = messageInput.data.data.version ?? 3;
 
         const orderParams = {
-          amount: moneyLikeToMoney(
-            messageInput.data.data.amount,
-            assets,
-          ).toCoins(),
+          amount: moneyLikeToMoney(messageInput.data.data.amount, assets).toCoins(),
           assetPair: {
             amountAsset: amountAssetId,
             priceAsset: priceAssetId,
           },
-          chainId:
-            messageInput.data.data.chainId ??
-            base58Decode(messageInput.account.address)[1],
+          chainId: messageInput.data.data.chainId ?? base58Decode(messageInput.account.address)[1],
           eip712Signature: messageInput.data.data.eip712Signature,
           expiration: messageInput.data.data.expiration,
-          matcherFee: moneyLikeToMoney(
-            messageInput.data.data.matcherFee,
-            assets,
-          ).toCoins(),
+          matcherFee: moneyLikeToMoney(messageInput.data.data.matcherFee, assets).toCoins(),
           matcherFeeAssetId,
           matcherPublicKey:
             messageInput.data.data.matcherPublicKey ??
@@ -1887,8 +1730,7 @@ export class MessageController extends EventEmitter {
             .getTokens()
             .mul(
               new BigNumber(10).pow(
-                version < 4 ||
-                  messageInput.data.data.priceMode === 'assetDecimals'
+                version < 4 || messageInput.data.data.priceMode === 'assetDecimals'
                   ? 8 + priceAsset.precision - amountAsset.precision
                   : 8,
               ),
@@ -1940,10 +1782,7 @@ export class MessageController extends EventEmitter {
         };
       }
       case 'transaction': {
-        const messageTx = await this.#generateMessageTx(
-          messageInput.account,
-          messageInput.data,
-        );
+        const messageTx = await this.#generateMessageTx(messageInput.account, messageInput.data);
 
         return {
           ...messageInput,
@@ -1962,21 +1801,13 @@ export class MessageController extends EventEmitter {
         const msgs = messageInput.data.length;
 
         if (!msgs || msgs > max) {
-          throw ERRORS.REQUEST_ERROR(
-            `max transactions in pack is ${max}`,
-            messageInput,
-          );
+          throw ERRORS.REQUEST_ERROR(`max transactions in pack is ${max}`, messageInput);
         }
 
-        const unavailableTx = messageInput.data.filter(
-          ({ type }) => !allow_tx.includes(type),
-        );
+        const unavailableTx = messageInput.data.filter(({ type }) => !allow_tx.includes(type));
 
         if (unavailableTx.length) {
-          throw ERRORS.REQUEST_ERROR(
-            `tx type can be ${allow_tx.join(', ')}`,
-            messageInput,
-          );
+          throw ERRORS.REQUEST_ERROR(`tx type can be ${allow_tx.join(', ')}`, messageInput);
         }
 
         const txs = await Promise.all(
@@ -1999,8 +1830,7 @@ export class MessageController extends EventEmitter {
         try {
           const data = {
             ...messageInput.data,
-            publicKey:
-              messageInput.data.publicKey || messageInput.account.publicKey,
+            publicKey: messageInput.data.publicKey || messageInput.account.publicKey,
           };
 
           return {

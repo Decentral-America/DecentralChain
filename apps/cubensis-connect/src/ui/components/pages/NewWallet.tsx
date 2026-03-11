@@ -5,12 +5,12 @@ import {
   createPublicKey,
   generateRandomSeed,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
-import { type PopupState } from 'popup/store/types';
+} from '@decentralchain/crypto';
+import type { PopupState } from 'popup/store/types';
 import { Component } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { type NewAccountState } from 'store/reducers/localState';
+import type { NewAccountState } from 'store/reducers/localState';
 
 import { newAccountSelect } from '../../../store/actions/localState';
 import { type WithNavigate, withNavigate } from '../../router';
@@ -28,9 +28,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  newAccountSelect: (
-    newAccount: NewWalletItem & { name: string; hasBackup: boolean },
-  ) => void;
+  newAccountSelect: (newAccount: NewWalletItem & { name: string; hasBackup: boolean }) => void;
 }
 
 type Props = WithTranslation & StateProps & DispatchProps & WithNavigate;
@@ -71,9 +69,8 @@ class NewWalletComponent extends Component<Props, State> {
     const { account } = this.props;
 
     const selected =
-      generatedWalletItems.find(
-        item => account && item.address === account.address,
-      ) || generatedWalletItems[0];
+      generatedWalletItems.find(item => account && item.address === account.address) ||
+      generatedWalletItems[0];
 
     this._onSelect(selected);
 
@@ -103,13 +100,9 @@ class NewWalletComponent extends Component<Props, State> {
           />
         </div>
 
-        <div className="tag1 basic500 input-title">
-          {t('newWallet.address')}
-        </div>
+        <div className="tag1 basic500 input-title">{t('newWallet.address')}</div>
 
-        <div className={`${styles.greyLine} grey-line`}>
-          {this.props.account.address}
-        </div>
+        <div className={`${styles.greyLine} grey-line`}>{this.props.account.address}</div>
 
         <form
           onSubmit={event => {
@@ -142,10 +135,7 @@ const actions = {
 
 function mapStateToProps(store: PopupState): StateProps {
   return {
-    account: store.localState.newAccount as Extract<
-      NewAccountState,
-      { type: 'seed' }
-    >,
+    account: store.localState.newAccount as Extract<NewAccountState, { type: 'seed' }>,
   };
 }
 

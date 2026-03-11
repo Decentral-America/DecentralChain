@@ -1,3 +1,4 @@
+import BigNumber from '@decentralchain/bignumber';
 import {
   base16Decode,
   base58Decode,
@@ -6,8 +7,7 @@ import {
   blake2b,
   createAddress,
   verifyAddress,
-} from '@keeper-wallet/waves-crypto';
-import { BigNumber } from '@decentralchain/bignumber';
+} from '@decentralchain/crypto';
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
 // NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
 import { waves } from '@decentralchain/protobuf-serialization';
@@ -16,24 +16,24 @@ import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import Long from 'long';
 
 import { JSONbn } from '../_core/jsonBn';
-import {
-  type MessageInputCustomData,
-  type MessageOrder,
-  type MessageTx,
-  type MessageTxAlias,
-  type MessageTxBurn,
-  type MessageTxCancelLease,
-  type MessageTxData,
-  type MessageTxInvokeScript,
-  type MessageTxIssue,
-  type MessageTxLease,
-  type MessageTxMassTransfer,
-  type MessageTxReissue,
-  type MessageTxSetAssetScript,
-  type MessageTxSetScript,
-  type MessageTxSponsorship,
-  type MessageTxTransfer,
-  type MessageTxUpdateAssetInfo,
+import type {
+  MessageInputCustomData,
+  MessageOrder,
+  MessageTx,
+  MessageTxAlias,
+  MessageTxBurn,
+  MessageTxCancelLease,
+  MessageTxData,
+  MessageTxInvokeScript,
+  MessageTxIssue,
+  MessageTxLease,
+  MessageTxMassTransfer,
+  MessageTxReissue,
+  MessageTxSetAssetScript,
+  MessageTxSetScript,
+  MessageTxSponsorship,
+  MessageTxTransfer,
+  MessageTxUpdateAssetInfo,
 } from './types';
 
 export function isAddressString(input: string, chainId?: number) {
@@ -47,11 +47,7 @@ export function isAddressString(input: string, chainId?: number) {
 export function isAlias(input: string) {
   const parts = input.split(':');
 
-  return (
-    parts.length === 3 &&
-    parts[0] === 'alias' &&
-    /^[-_.@0-9a-z]{4,30}$/.test(parts[2])
-  );
+  return parts.length === 3 && parts[0] === 'alias' && /^[-_.@0-9a-z]{4,30}$/.test(parts[2]);
 }
 
 export function isBase58(input: string) {
@@ -75,26 +71,20 @@ export function makeAuthBytes(data: { host: string; data: string }) {
   // TODO: Introduce a new 'DccWalletAuthentication' prefix once the network
   // defines its own authentication protocol, and keep this as a legacy fallback.
   return Uint8Array.of(
-    ...serializePrimitives.LEN(serializePrimitives.SHORT)(
-      serializePrimitives.STRING,
-    )('WavesWalletAuthentication'),
-    ...serializePrimitives.LEN(serializePrimitives.SHORT)(
-      serializePrimitives.STRING,
-    )(data.host || ''),
-    ...serializePrimitives.LEN(serializePrimitives.SHORT)(
-      serializePrimitives.STRING,
-    )(data.data || ''),
+    ...serializePrimitives.LEN(serializePrimitives.SHORT)(serializePrimitives.STRING)(
+      'WavesWalletAuthentication',
+    ),
+    ...serializePrimitives.LEN(serializePrimitives.SHORT)(serializePrimitives.STRING)(
+      data.host || '',
+    ),
+    ...serializePrimitives.LEN(serializePrimitives.SHORT)(serializePrimitives.STRING)(
+      data.data || '',
+    ),
   );
 }
 
-export function makeCancelOrderBytes(data: {
-  sender: string;
-  orderId: string;
-}) {
-  return Uint8Array.of(
-    ...base58Decode(data.sender),
-    ...base58Decode(data.orderId),
-  );
+export function makeCancelOrderBytes(data: { sender: string; orderId: string }) {
+  return Uint8Array.of(...base58Decode(data.sender), ...base58Decode(data.orderId));
 }
 
 export function makeCustomDataBytes(data: MessageInputCustomData) {
@@ -120,10 +110,7 @@ export function makeCustomDataBytes(data: MessageInputCustomData) {
   }
 }
 
-function amountToProto(
-  amount: string | number,
-  assetId?: string | null,
-): waves.IAmount {
+function amountToProto(amount: string | number, assetId?: string | null): waves.IAmount {
   return {
     amount: amount === 0 ? null : Long.fromValue(amount),
     assetId: assetId == null ? null : base58Decode(assetId),
@@ -133,15 +120,12 @@ function amountToProto(
 function recipientToProto(recipient: string): waves.IRecipient {
   return {
     alias: recipient.startsWith('alias') ? recipient.slice(8) : undefined,
-    publicKeyHash: recipient.startsWith('alias')
-      ? undefined
-      : base58Decode(recipient).slice(2, -4),
+    publicKeyHash: recipient.startsWith('alias') ? undefined : base58Decode(recipient).slice(2, -4),
   };
 }
 
 export function makeOrderBytes(
-  order: Omit<MessageOrder, 'id' | 'proofs'> &
-    Partial<Pick<MessageOrder, 'id' | 'proofs'>>,
+  order: Omit<MessageOrder, 'id' | 'proofs'> & Partial<Pick<MessageOrder, 'id' | 'proofs'>>,
 ) {
   return order.version < 4
     ? binary.serializeOrder(order)
@@ -180,20 +164,14 @@ export function makeOrderBytes(
       }).finish();
 }
 
-export function makeRequestBytes(request: {
-  senderPublicKey: string;
-  timestamp: number;
-}) {
+export function makeRequestBytes(request: { senderPublicKey: string; timestamp: number }) {
   return Uint8Array.of(
     ...serializePrimitives.BASE58_STRING(request.senderPublicKey),
     ...serializePrimitives.LONG(request.timestamp),
   );
 }
 
-export function makeDccAuthBytes(data: {
-  publicKey: string;
-  timestamp: number;
-}) {
+export function makeDccAuthBytes(data: { publicKey: string; timestamp: number }) {
   return Uint8Array.of(
     ...base58Decode(data.publicKey),
     ...serializePrimitives.LONG(data.timestamp),
@@ -203,10 +181,7 @@ export function makeDccAuthBytes(data: {
 export function makeTxBytes(
   tx:
     | Omit<MessageTxIssue, 'id' | 'initialFee' | 'proofs'>
-    | Omit<
-        MessageTxTransfer,
-        'id' | 'initialFee' | 'initialFeeAssetId' | 'proofs'
-      >
+    | Omit<MessageTxTransfer, 'id' | 'initialFee' | 'initialFeeAssetId' | 'proofs'>
     | Omit<MessageTxReissue, 'id' | 'initialFee' | 'proofs'>
     | Omit<MessageTxBurn, 'id' | 'initialFee' | 'proofs'>
     | Omit<MessageTxLease, 'id' | 'initialFee' | 'proofs'>
@@ -217,10 +192,7 @@ export function makeTxBytes(
     | Omit<MessageTxSetScript, 'id' | 'initialFee' | 'proofs'>
     | Omit<MessageTxSponsorship, 'id' | 'initialFee' | 'proofs'>
     | Omit<MessageTxSetAssetScript, 'id' | 'initialFee' | 'proofs'>
-    | Omit<
-        MessageTxInvokeScript,
-        'id' | 'initialFee' | 'initialFeeAssetId' | 'proofs'
-      >
+    | Omit<MessageTxInvokeScript, 'id' | 'initialFee' | 'initialFeeAssetId' | 'proofs'>
     | Omit<MessageTxUpdateAssetInfo, 'id' | 'initialFee' | 'proofs'>,
 ) {
   const protobufCommon = {
@@ -243,9 +215,7 @@ export function makeTxBytes(
               description: tx.description || null,
               name: tx.name,
               reissuable: tx.reissuable || undefined,
-              script: tx.script
-                ? base64Decode(tx.script.replace(/^base64:/, ''))
-                : null,
+              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
             },
           }).finish();
     case TRANSACTION_TYPE.TRANSFER:
@@ -256,9 +226,7 @@ export function makeTxBytes(
             fee: amountToProto(tx.fee, tx.feeAssetId),
             transfer: {
               amount: amountToProto(tx.amount, tx.assetId),
-              attachment: tx.attachment
-                ? base58Decode(tx.attachment)
-                : undefined,
+              attachment: tx.attachment ? base58Decode(tx.attachment) : undefined,
               recipient: recipientToProto(tx.recipient),
             },
           }).finish();
@@ -320,9 +288,7 @@ export function makeTxBytes(
             fee: amountToProto(tx.fee),
             massTransfer: {
               assetId: tx.assetId == null ? null : base58Decode(tx.assetId),
-              attachment: !tx.attachment
-                ? undefined
-                : base58Decode(tx.attachment),
+              attachment: !tx.attachment ? undefined : base58Decode(tx.attachment),
               transfers: tx.transfers.map(transfer => ({
                 recipient: recipientToProto(transfer.recipient),
                 amount: Long.fromValue(transfer.amount),
@@ -342,10 +308,7 @@ export function makeTxBytes(
                     ? base64Decode(entry.value.replace(/^base64:/, ''))
                     : undefined,
                 boolValue: entry.type === 'boolean' ? entry.value : undefined,
-                intValue:
-                  entry.type === 'integer'
-                    ? Long.fromValue(entry.value)
-                    : undefined,
+                intValue: entry.type === 'integer' ? Long.fromValue(entry.value) : undefined,
                 key: entry.key,
                 stringValue: entry.type === 'string' ? entry.value : undefined,
               })),
@@ -358,9 +321,7 @@ export function makeTxBytes(
             ...protobufCommon,
             fee: amountToProto(tx.fee),
             setScript: {
-              script: tx.script
-                ? base64Decode(tx.script.replace(/^base64:/, ''))
-                : null,
+              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
             },
           }).finish();
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
@@ -371,9 +332,7 @@ export function makeTxBytes(
             fee: amountToProto(tx.fee),
             setAssetScript: {
               assetId: base58Decode(tx.assetId),
-              script: tx.script
-                ? base64Decode(tx.script.replace(/^base64:/, ''))
-                : null,
+              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
             },
           }).finish();
     case TRANSACTION_TYPE.SPONSORSHIP:
@@ -397,12 +356,8 @@ export function makeTxBytes(
             fee: amountToProto(tx.fee, tx.feeAssetId),
             invokeScript: {
               dApp: recipientToProto(tx.dApp),
-              functionCall: binary.serializerFromSchema(
-                schemas.txFields.functionCall[1],
-              )(tx.call),
-              payments: tx.payment.map(({ amount, assetId }) =>
-                amountToProto(amount, assetId),
-              ),
+              functionCall: binary.serializerFromSchema(schemas.txFields.functionCall[1])(tx.call),
+              payments: tx.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
             },
           }).finish();
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
@@ -424,16 +379,11 @@ export function computeHash(bytes: Uint8Array) {
 
 export function computeTxHash(bytes: Uint8Array) {
   return computeHash(
-    bytes[0] === TRANSACTION_TYPE.ALIAS
-      ? Uint8Array.of(bytes[0], ...bytes.slice(36, -16))
-      : bytes,
+    bytes[0] === TRANSACTION_TYPE.ALIAS ? Uint8Array.of(bytes[0], ...bytes.slice(36, -16)) : bytes,
   );
 }
 
-export function stringifyOrder(
-  order: MessageOrder,
-  { pretty }: { pretty?: boolean } = {},
-) {
+export function stringifyOrder(order: MessageOrder, { pretty }: { pretty?: boolean } = {}) {
   const { amount, matcherFee, price, ...otherProps } = order;
 
   return JSONbn.stringify(
@@ -441,9 +391,7 @@ export function stringifyOrder(
       amount: new BigNumber(amount),
       price: new BigNumber(price),
       matcherFee: new BigNumber(matcherFee),
-      sender: base58Encode(
-        createAddress(base58Decode(order.senderPublicKey), order.chainId),
-      ),
+      sender: base58Encode(createAddress(base58Decode(order.senderPublicKey), order.chainId)),
       ...otherProps,
     },
     undefined,
@@ -452,9 +400,7 @@ export function stringifyOrder(
 }
 
 function prepareTransactionForJson(tx: MessageTx) {
-  const sender = base58Encode(
-    createAddress(base58Decode(tx.senderPublicKey), tx.chainId),
-  );
+  const sender = base58Encode(createAddress(base58Decode(tx.senderPublicKey), tx.chainId));
 
   switch (tx.type) {
     case TRANSACTION_TYPE.ISSUE: {
@@ -534,9 +480,7 @@ function prepareTransactionForJson(tx: MessageTx) {
 
       return {
         data: data.map(entry =>
-          entry.type === 'integer'
-            ? { ...entry, value: new BigNumber(entry.value) }
-            : entry,
+          entry.type === 'integer' ? { ...entry, value: new BigNumber(entry.value) } : entry,
         ),
         fee: new BigNumber(fee),
         ...otherProps,
@@ -548,9 +492,7 @@ function prepareTransactionForJson(tx: MessageTx) {
 
       return {
         minSponsoredAssetFee:
-          minSponsoredAssetFee == null
-            ? null
-            : new BigNumber(minSponsoredAssetFee),
+          minSponsoredAssetFee == null ? null : new BigNumber(minSponsoredAssetFee),
         fee: new BigNumber(fee),
         ...otherProps,
         sender,
@@ -564,20 +506,18 @@ function prepareTransactionForJson(tx: MessageTx) {
         call: call && {
           ...call,
           args: call.args.map(
-            function convertArgToBigNumber(
-              arg,
-            ): InvokeScriptCallArgument<BigNumber> {
+            function convertArgToBigNumber(arg): InvokeScriptCallArgument<BigNumber> {
               return arg.type === 'integer'
                 ? { type: arg.type, value: new BigNumber(arg.value) }
                 : arg.type === 'list'
-                ? {
-                    type: arg.type,
-                    value: arg.value.map(
-                      convertArgToBigNumber,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    ) as unknown as any,
-                  }
-                : arg;
+                  ? {
+                      type: arg.type,
+                      value: arg.value.map(
+                        convertArgToBigNumber,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      ) as unknown as any,
+                    }
+                  : arg;
             },
           ),
         },
@@ -601,13 +541,6 @@ function prepareTransactionForJson(tx: MessageTx) {
   }
 }
 
-export function stringifyTransaction(
-  tx: MessageTx,
-  { pretty }: { pretty?: boolean } = {},
-) {
-  return JSONbn.stringify(
-    prepareTransactionForJson(tx),
-    undefined,
-    pretty ? 2 : undefined,
-  );
+export function stringifyTransaction(tx: MessageTx, { pretty }: { pretty?: boolean } = {}) {
+  return JSONbn.stringify(prepareTransactionForJson(tx), undefined, pretty ? 2 : undefined);
 }

@@ -1,8 +1,8 @@
-import { base58Decode } from '@keeper-wallet/waves-crypto';
+import { base58Decode } from '@decentralchain/crypto';
 import clsx from 'clsx';
 import { isAddressString } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { icontains } from 'ui/components/pages/assets/helpers';
@@ -115,16 +115,14 @@ export function SuggestModal(props: ModalProps) {
   const accounts = useMemo(
     () =>
       props.accounts.filter(
-        account =>
-          icontains(account.address, search) || icontains(account.name, search),
+        account => icontains(account.address, search) || icontains(account.name, search),
       ),
     [props.accounts, search],
   );
   const addresses = useMemo(
     () =>
       props.addresses.filter(
-        ([address, name]) =>
-          icontains(address, search) || icontains(name, search),
+        ([address, name]) => icontains(address, search) || icontains(name, search),
       ),
     [props.addresses, search],
   );
@@ -141,9 +139,7 @@ export function SuggestModal(props: ModalProps) {
               props.setShowModal(false);
             }}
           />
-          <p className={`headline2Bold ${styles.modalTitle}`}>
-            {t('address.select')}
-          </p>
+          <p className={`headline2Bold ${styles.modalTitle}`}>{t('address.select')}</p>
           <SearchInput
             className={styles.modalSearchInput}
             value={search}
@@ -185,10 +181,9 @@ export type Props = Extract<InputProps, { multiLine?: false }> & {
 export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const { t } = useTranslation();
 
-  const chainId = usePopupSelector(
-    state =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      state.selectedAccount?.networkCode!.charCodeAt(0),
+  const chainId = usePopupSelector(state =>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    state.selectedAccount?.networkCode!.charCodeAt(0),
   );
   const accounts = usePopupSelector(state => state.accounts);
   const addresses = usePopupSelector<Record<string, string>>(state =>
@@ -197,9 +192,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
         return acc;
       }
 
-      return base58Decode(address)[1] === chainId
-        ? { ...acc, [address]: name }
-        : acc;
+      return base58Decode(address)[1] === chainId ? { ...acc, [address]: name } : acc;
     }, {}),
   );
 
@@ -210,9 +203,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
     () =>
       value
         ? accounts.filter(
-            account =>
-              icontains(account.address, value) ||
-              icontains(account.name, value),
+            account => icontains(account.address, value) || icontains(account.name, value),
           )
         : [],
     [accounts, value],
@@ -281,10 +272,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
               __html: isAlias
-                ? value.replace(
-                    ALIAS_RE,
-                    `<mark class=${styles.aliasMark}>$&</mark>`,
-                  )
+                ? value.replace(ALIAS_RE, `<mark class=${styles.aliasMark}>$&</mark>`)
                 : value,
             }}
           />
@@ -302,9 +290,8 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
           showModal={showSuggestModal}
           setShowModal={setShowSuggestModal}
           accounts={accounts}
-          addresses={Object.entries(addresses).sort(
-            ([, firstName], [, secondName]) =>
-              firstName.localeCompare(secondName),
+          addresses={Object.entries(addresses).sort(([, firstName], [, secondName]) =>
+            firstName.localeCompare(secondName),
           )}
           setValue={setValue}
           setAddress={setAddress}
@@ -312,16 +299,13 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
           onSuggest={onSuggest}
         />
 
-        {address && (
-          <AddressTooltip className={styles.tooltip} address={address} />
-        )}
+        {address && <AddressTooltip className={styles.tooltip} address={address} />}
 
         {showSuggest && (
           <Suggest
             accounts={foundAccounts}
-            addresses={Object.entries(foundAddresses).sort(
-              ([, firstName], [, secondName]) =>
-                firstName.localeCompare(secondName),
+            addresses={Object.entries(foundAddresses).sort(([, firstName], [, secondName]) =>
+              firstName.localeCompare(secondName),
             )}
             setValue={setValue}
             setAddress={setAddress}
@@ -331,9 +315,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
         )}
       </div>
 
-      {isAlias && (
-        <p className={styles.warningAlias}>{t('address.warningAlias')}</p>
-      )}
+      {isAlias && <p className={styles.warningAlias}>{t('address.warningAlias')}</p>}
     </>
   );
 }
