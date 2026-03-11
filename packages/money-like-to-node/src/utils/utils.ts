@@ -117,7 +117,7 @@ export const map: IMap = curry(
 ) as any;
 
 export const prop: IProp = curry(
-  <T, K extends keyof T>(key: K, data: T): T[K] =>
+  <T extends object, K extends keyof T>(key: K, data: T): T[K] =>
     Object.hasOwn(data, key)
       ? data[key]
       : // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
