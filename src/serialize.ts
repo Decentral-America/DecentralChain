@@ -56,7 +56,7 @@ export const serializerFromSchema =
 
       return objBytes;
     } else if (schema.type === 'anyOf') {
-      const rec = obj as Record<string, unknown>;
+      const rec = obj as { value?: unknown; [key: string]: unknown };
       const type = rec[schema.discriminatorField];
       const anyOfItem = schema.itemByKey(type as string);
 
@@ -66,7 +66,7 @@ export const serializerFromSchema =
 
       // Boolean argument type: both 'true' and 'false' share the 'boolean' string key,
       // so we disambiguate by checking the actual value
-      if (anyOfItem.strKey === 'boolean' && anyOfItem.key === 6 && rec['value'] === false)
+      if (anyOfItem.strKey === 'boolean' && anyOfItem.key === 6 && rec.value === false)
         anyOfItem.key = 7;
 
       serializer = serializerFromSchema(anyOfItem.schema, fromLongConverter);
@@ -82,16 +82,16 @@ export const serializerFromSchema =
     } else if (schema.type === 'primitive' || schema.type === undefined) {
       return schema.toBytes(obj);
     } else if (schema.type === 'dataTxField') {
-      const rec = obj as Record<string, unknown>;
-      const keyBytes = LEN(SHORT)(STRING)(rec['key'] as string);
-      const type = rec['type'] as string;
+      const rec = obj as { key: string; type: string; value: unknown };
+      const keyBytes = LEN(SHORT)(STRING)(rec.key);
+      const type = rec.type;
       const typeSchema = schema.items.get(type as DATA_FIELD_TYPE);
       if (typeSchema == null) {
         throw new Error(`Serializer Error: Unknown dataTxField type: ${type}`);
       }
       const typeCode = [...schema.items.values()].indexOf(typeSchema);
       serializer = serializerFromSchema(typeSchema, fromLongConverter);
-      itemBytes = serializer(rec['value']);
+      itemBytes = serializer(rec.value);
       return concat(keyBytes, BYTE(typeCode), itemBytes);
     } /* v8 ignore next 3 - defensive guard for future schema types */ else {
       throw new Error(`Serializer Error: Unknown schema type: ${(schema as TSchema).type}`);
@@ -137,7 +137,7 @@ export function serializeOrder<LONG = string | number>(
   ord: object,
   fromLongConverter?: TFromLongConverter<LONG>,
 ): Uint8Array {
-  const version = ((ord as Record<string, unknown>)['version'] as number) || 1;
+  const version = (ord as { version?: number }).version || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   return serializerFromSchema(schema, fromLongConverter)(ord);
