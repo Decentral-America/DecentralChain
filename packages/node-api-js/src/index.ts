@@ -17,8 +17,6 @@ export { default as waitForTx } from './tools/transactions/wait';
 
 export const create = createFn;
 
-export default createFn;
-
 export type {
   ICallableFuncArgumentType,
   TCallableFuncArguments,
