@@ -19,7 +19,7 @@ import * as styles from './bottomPanel.module.css';
 import { CustomNetworkModal } from './customNetworkModal';
 
 interface Props {
-  allowChangingNetwork?: boolean;
+  allowChangingNetwork?: boolean | undefined;
 }
 
 export function BottomPanel({ allowChangingNetwork }: Props) {
