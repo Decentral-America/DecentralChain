@@ -13,7 +13,7 @@ import { Windows } from './helpers/Windows';
 import { DEFAULT_PASSWORD } from './utils/constants';
 
 describe('Update extension', () => {
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     const tabKeeper = await browser.getWindowHandle();
 
