@@ -33,7 +33,6 @@ export enum DATA_PROVIDER_KEYS {
   LINK = 'data_provider_link',
   EMAIL = 'data_provider_email',
   LANG_LIST = 'data_provider_lang_list',
-  LOGO = 'data_provider_logo',
 }
 
 /** Pattern for provider description keys. */
