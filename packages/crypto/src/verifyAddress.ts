@@ -15,9 +15,9 @@ export function verifyAddress(
     (expectedPublicKey == null ||
       keccak(blake2b(expectedPublicKey))
         .subarray(0, 20)
-        .every((b, i) => bytes[2 + i] === b)) &&
+        .every((b: number, i: number) => bytes[2 + i] === b)) &&
     keccak(blake2b(bytes.subarray(0, 22)))
       .subarray(0, 4)
-      .every((b, i) => bytes[22 + i] === b)
+      .every((b: number, i: number) => bytes[22 + i] === b)
   );
 }

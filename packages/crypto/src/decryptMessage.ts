@@ -6,25 +6,38 @@ export async function decryptMessage(sharedKey: Uint8Array, input: Uint8Array) {
   const counter = input.subarray(113, 129);
 
   const [cekCounterHmac, message] = await Promise.all([
-    hmac('SHA-256', sharedKey, Uint8Array.of(...cek, ...counter)),
+    hmac(
+      'SHA-256',
+      sharedKey as Uint8Array<ArrayBuffer>,
+      Uint8Array.of(...cek, ...counter) as Uint8Array<ArrayBuffer>,
+    ),
     crypto.subtle
-      .importKey('raw', cek, 'AES-CTR', false, ['decrypt'])
-      .then(importedKey =>
+      .importKey('raw', cek as Uint8Array<ArrayBuffer>, 'AES-CTR', false, ['decrypt'])
+      .then((importedKey) =>
         crypto.subtle.decrypt(
-          { name: 'AES-CTR', counter, length: counter.length },
+          { name: 'AES-CTR', counter: counter as Uint8Array<ArrayBuffer>, length: counter.length },
           importedKey,
-          input.subarray(129),
+          input.subarray(129) as Uint8Array<ArrayBuffer>,
         ),
       ),
   ]);
 
-  if (new Uint8Array(cekCounterHmac).some((v, i) => v !== input[49 + i])) {
+  const expectedCekHmac = new Uint8Array(cekCounterHmac);
+  let diff = 0;
+  for (let i = 0; i < expectedCekHmac.length; i++) {
+    diff |= (expectedCekHmac[i] ?? 0) ^ (input[49 + i] ?? 0);
+  }
+  if (diff !== 0) {
     throw new Error('Invalid key');
   }
 
   const messageHmac = new Uint8Array(await hmac('SHA-256', cek, message));
 
-  if (messageHmac.some((v, i) => v !== input[81 + i])) {
+  diff = 0;
+  for (let i = 0; i < messageHmac.length; i++) {
+    diff |= (messageHmac[i] ?? 0) ^ (input[81 + i] ?? 0);
+  }
+  if (diff !== 0) {
     throw new Error('Invalid message');
   }
 

@@ -1,4 +1,4 @@
-import * as wasm from '../pkg/waves_crypto.js';
+import * as wasm from '../pkg/decentralchain_crypto.js';
 
 let isWasmInitialized = false;
 
@@ -6,11 +6,11 @@ export async function initWasm() {
   if (!isWasmInitialized) {
     await wasm.default(
       typeof self === 'undefined'
-        ? import(/* webpackIgnore: true */ 'node:fs/promises').then(fs =>
-            fs.readFile(
-              new URL('../pkg/waves_crypto_bg.wasm', import.meta.url),
+        ? {
+            module_or_path: import(/* webpackIgnore: true */ 'node:fs/promises').then((fs) =>
+              fs.readFile(new URL('../pkg/decentralchain_crypto_bg.wasm', import.meta.url)),
             ),
-          )
+          }
         : undefined,
     );
 

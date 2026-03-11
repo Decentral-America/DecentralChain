@@ -1,33 +1,31 @@
 import { encryptAesEcb } from './encryptAesEcb.js';
 import { hmac } from './hmac.js';
 
-export async function encryptMessage(
-  sharedKey: Uint8Array,
-  message: Uint8Array,
-) {
+export async function encryptMessage(sharedKey: Uint8Array, message: Uint8Array) {
   const cek = crypto.getRandomValues(new Uint8Array(32));
   const counter = crypto.getRandomValues(new Uint8Array(16));
 
-  const encryptedCek = encryptAesEcb(
-    sharedKey,
-    Uint8Array.of(...cek, ...Array(16).fill(16)),
-  );
+  const encryptedCek = encryptAesEcb(sharedKey, Uint8Array.of(...cek, ...Array(16).fill(16)));
 
   const [cekCounterHmac, messageHmac, encryptedMessage] = await Promise.all([
-    hmac('SHA-256', sharedKey, Uint8Array.of(...cek, ...counter)).then(
-      buffer => new Uint8Array(buffer),
+    hmac(
+      'SHA-256',
+      sharedKey as Uint8Array<ArrayBuffer>,
+      Uint8Array.of(...cek, ...counter) as Uint8Array<ArrayBuffer>,
+    ).then((buffer) => new Uint8Array(buffer)),
+    hmac('SHA-256', cek as Uint8Array<ArrayBuffer>, message as Uint8Array<ArrayBuffer>).then(
+      (buffer) => new Uint8Array(buffer),
     ),
-    hmac('SHA-256', cek, message).then(buffer => new Uint8Array(buffer)),
     crypto.subtle
-      .importKey('raw', cek, 'AES-CTR', false, ['encrypt'])
-      .then(importedKey =>
+      .importKey('raw', cek as Uint8Array<ArrayBuffer>, 'AES-CTR', false, ['encrypt'])
+      .then((importedKey) =>
         crypto.subtle.encrypt(
-          { name: 'AES-CTR', counter, length: counter.length },
+          { name: 'AES-CTR', counter: counter as Uint8Array<ArrayBuffer>, length: counter.length },
           importedKey,
-          message,
+          message as Uint8Array<ArrayBuffer>,
         ),
       )
-      .then(buffer => new Uint8Array(buffer)),
+      .then((buffer) => new Uint8Array(buffer)),
   ]);
 
   return Uint8Array.of(

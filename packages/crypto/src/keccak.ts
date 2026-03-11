@@ -1,1 +1,1 @@
-export { keccak_256 as keccak } from '@noble/hashes/sha3';
+export { keccak_256 as keccak } from '@noble/hashes/sha3.js';
