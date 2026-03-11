@@ -4,14 +4,15 @@ import clsx from 'clsx';
 import * as styles from './Button.module.css';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  loading?: boolean;
+  loading?: boolean | undefined;
   view?:
     | 'custom'
     | 'icon'
     | 'submit'
     | 'submitTiny'
     | 'transparent'
-    | 'warning';
+    | 'warning'
+    | undefined;
 }
 
 export function Button({

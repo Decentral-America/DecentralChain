@@ -11,7 +11,7 @@ import { AddressInput } from './Input';
 interface Props {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
-  address?: string;
+  address?: string | undefined;
 }
 
 export function AddModal({ showModal, setShowModal, address }: Props) {

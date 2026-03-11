@@ -14,15 +14,15 @@ import * as styles from './SuggestInput.module.css';
 const ALIAS_RE = /^alias:\w:/i;
 
 interface SuggestProps {
-  className?: string;
-  paddingRight?: number;
-  paddingLeft?: number;
+  className?: string | undefined;
+  paddingRight?: number | undefined;
+  paddingLeft?: number | undefined;
   accounts: PreferencesAccount[];
   addresses: Array<[string, string]>;
   setValue: (value: string) => void;
   setAddress: (value: string) => void;
   setShowSuggest: (show: boolean) => void;
-  onSuggest?: (value: string) => void;
+  onSuggest?: ((value: string) => void) | undefined;
 }
 
 function Suggest({
@@ -102,7 +102,7 @@ interface ModalProps {
   setValue: (value: string) => void;
   setAddress: (value: string) => void;
   setShowSuggest: (show: boolean) => void;
-  onSuggest?: (value: string) => void;
+  onSuggest?: ((value: string) => void) | undefined;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
 }
@@ -173,7 +173,7 @@ export function SuggestModal(props: ModalProps) {
   );
 }
 
-export type Props = Extract<InputProps, { multiLine?: false }> & {
+export type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
   onSuggest: (value: string) => void;
 };
 

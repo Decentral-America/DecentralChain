@@ -15,14 +15,14 @@ import * as modal from '../modal/modal.styl';
 import * as styles from './tooltip.module.css';
 
 interface Props {
-  className?: string;
+  className?: string | undefined;
   children: (renderProps: {
     ref: React.MutableRefObject<any>;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   }) => React.ReactNode;
   content: React.ReactNode;
-  placement?: Placement;
+  placement?: Placement | undefined;
 }
 
 export function Tooltip({

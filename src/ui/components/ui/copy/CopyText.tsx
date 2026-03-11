@@ -68,7 +68,7 @@ export class CopyText extends PureComponent<IProps> {
   }
 
   private copy(text: string) {
-    const result = copy(text, this.props.copyOptions);
+    const result = copy(text, this.props.copyOptions as Parameters<typeof copy>[1]);
     if (this.props.onCopy) {
       this.props.onCopy(text, result);
     }
@@ -76,21 +76,21 @@ export class CopyText extends PureComponent<IProps> {
 }
 
 interface IProps {
-  text?: string;
-  getText?: (cb: (text: string) => void) => void;
-  onCopy?: (...args: unknown[]) => void;
+  text?: string | undefined;
+  getText?: ((cb: (text: string) => void) => void) | undefined;
+  onCopy?: ((...args: unknown[]) => void) | undefined;
 
-  toggleText?: boolean;
+  toggleText?: boolean | undefined;
   copyOptions?: {
-    debug?: boolean;
-    message?: string;
-    format?: string; // MIME type
-    onCopy?: (clipboardData: object) => void;
-  };
-  type?: string;
-  showText?: boolean;
+    debug?: boolean | undefined;
+    message?: string | undefined;
+    format?: string | undefined;
+    onCopy?: ((clipboardData: object) => void) | undefined;
+  } | undefined;
+  type?: string | undefined;
+  showText?: boolean | undefined;
 
-  showConfirmed?: boolean;
-  showNotAccess?: boolean;
-  showCopy?: boolean;
+  showConfirmed?: boolean | undefined;
+  showNotAccess?: boolean | undefined;
+  showCopy?: boolean | undefined;
 }

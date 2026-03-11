@@ -8,7 +8,7 @@ import { Loader } from '../loader';
 interface Props {
   id: string;
   tokens: BigNumber;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function UsdAmount({ id, tokens, className }: Props) {

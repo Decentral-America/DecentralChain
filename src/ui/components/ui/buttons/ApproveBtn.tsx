@@ -3,14 +3,14 @@ import { PureComponent } from 'react';
 import { Button } from './Button';
 
 interface Props extends React.ComponentProps<'button'> {
-  autoClickProtection?: boolean;
-  loading?: boolean;
-  view?: 'submit';
+  autoClickProtection?: boolean | undefined;
+  loading?: boolean | undefined;
+  view?: 'submit' | undefined;
 }
 
 interface State {
-  pending?: boolean;
-  timerEnd?: number;
+  pending?: boolean | undefined;
+  timerEnd?: number | undefined;
 }
 
 export class ApproveBtn extends PureComponent<Props, State> {
@@ -60,7 +60,7 @@ export class ApproveBtn extends PureComponent<Props, State> {
     return (
       <Button
         {...otherProps}
-        disabled={disabled || loading || pending}
+        disabled={!!(disabled || loading || pending)}
         loading={loading}
       >
         {!loading && this.props.children}

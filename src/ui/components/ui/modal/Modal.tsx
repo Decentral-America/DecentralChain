@@ -20,10 +20,10 @@ const ModalWrapper = (props: Props) => {
 };
 
 interface Props {
-  showModal?: boolean | null;
-  children?: React.ReactNode;
-  animation?: string;
-  onExited?: () => void;
+  showModal?: boolean | null | undefined;
+  children?: React.ReactNode | undefined;
+  animation?: string | undefined;
+  onExited?: (() => void) | undefined;
 }
 
 export class Modal extends PureComponent<Props> {

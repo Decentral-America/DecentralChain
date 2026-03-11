@@ -5,10 +5,10 @@ interface Props {
   text: string | null | undefined;
   children: React.ReactNode;
   options: {
-    debug?: boolean;
-    message?: string;
-    format?: string; // MIME type
-    onCopy?: (clipboardData: object) => void;
+    debug?: boolean | undefined;
+    message?: string | undefined;
+    format?: string; // MIME type | undefined
+    onCopy?: ((clipboardData: object) => void) | undefined;
   };
   onCopy: (...args: unknown[]) => unknown;
 }
@@ -31,7 +31,7 @@ export class Copy extends PureComponent<Props> {
 
     const elem = Children.only(children);
 
-    const result = copy(text ?? '', options);
+    const result = copy(text ?? '', options as Parameters<typeof copy>[1]);
 
     if (onCopy) {
       onCopy(text, result);

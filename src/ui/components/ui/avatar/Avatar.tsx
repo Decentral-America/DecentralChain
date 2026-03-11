@@ -9,14 +9,14 @@ const SIZE = 67;
 
 interface Props {
   address: string | null;
-  className?: string;
+  className?: string | undefined;
   size: number;
-  type?: PreferencesAccount['type'];
+  type?: PreferencesAccount['type'] | undefined;
 }
 
 interface State {
-  address?: string | null;
-  src?: string;
+  address?: string | null | undefined;
+  src?: string | undefined;
 }
 
 export class Avatar extends Component<Props, State> {

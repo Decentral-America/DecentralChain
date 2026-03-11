@@ -11,10 +11,10 @@ const DEFAULT_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 interface Props {
-  className?: string;
+  className?: string | undefined;
   date: number | Date;
-  options?: Intl.DateTimeFormatOptions;
-  showRaw?: boolean;
+  options?: Intl.DateTimeFormatOptions | undefined;
+  showRaw?: boolean | undefined;
 }
 
 export const DateFormat = ({

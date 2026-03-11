@@ -8,14 +8,14 @@ import * as styles from './pills.styl';
 export interface PillsListItem {
   id: number;
   text: string;
-  selected?: boolean;
-  hidden?: boolean;
+  selected?: boolean | undefined;
+  hidden?: boolean | undefined;
 }
 
 interface Props {
-  className?: string;
-  id?: number;
-  selected?: boolean;
+  className?: string | undefined;
+  id?: number | undefined;
+  selected?: boolean | undefined;
   list: PillsListItem[];
   onSelect: (item: PillsListItem) => void;
 }

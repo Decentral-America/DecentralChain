@@ -9,7 +9,7 @@ import { ExportPasswordModal } from '../../pages/exportAccounts/passwordModal';
 import * as styles from './ExportButton.module.css';
 
 interface Props {
-  className?: string;
+  className?: string | undefined;
 }
 
 export const ExportButton = ({ className }: Props) => {

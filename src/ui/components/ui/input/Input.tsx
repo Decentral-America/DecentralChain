@@ -6,32 +6,32 @@ import * as styles from './Input.module.css';
 type View = 'default' | 'password';
 
 interface InputEvents<E extends HTMLTextAreaElement | HTMLInputElement> {
-  onBlur?: (event: React.FocusEvent<E>) => void;
-  onChange?: (event: React.ChangeEvent<E>) => void;
-  onFocus?: (event: React.FocusEvent<E>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<E>) => void;
-  onInput?: (event: React.FormEvent<E>) => void;
-  onScroll?: (event: React.UIEvent<E>) => void;
+  onBlur?: ((event: React.FocusEvent<E>) => void) | undefined;
+  onChange?: ((event: React.ChangeEvent<E>) => void) | undefined;
+  onFocus?: ((event: React.FocusEvent<E>) => void) | undefined;
+  onKeyDown?: ((event: React.KeyboardEvent<E>) => void) | undefined;
+  onInput?: ((event: React.FormEvent<E>) => void) | undefined;
+  onScroll?: ((event: React.UIEvent<E>) => void) | undefined;
 }
 
 export type InputProps = {
-  autoComplete?: string;
-  autoFocus?: boolean;
-  checked?: boolean;
-  className?: string;
-  disabled?: boolean;
-  error?: unknown;
+  autoComplete?: string | undefined;
+  autoFocus?: boolean | undefined;
+  checked?: boolean | undefined;
+  className?: string | undefined;
+  disabled?: boolean | undefined;
+  error?: unknown | undefined;
   forwardRef?: React.MutableRefObject<
     HTMLInputElement | HTMLTextAreaElement | null
-  >;
-  id?: string;
-  maxLength?: number;
-  placeholder?: string;
-  spellCheck?: boolean;
-  type?: React.HTMLInputTypeAttribute;
-  value?: string | readonly string[] | number;
-  view?: View;
-  wrapperClassName?: string;
+  > | undefined;
+  id?: string | undefined;
+  maxLength?: number | undefined;
+  placeholder?: string | undefined;
+  spellCheck?: boolean | undefined;
+  type?: React.HTMLInputTypeAttribute | undefined;
+  value?: string | readonly string[] | number | undefined;
+  view?: View | undefined;
+  wrapperClassName?: string | undefined;
 } & (
   | ({ multiLine: true; rows?: number } & InputEvents<HTMLTextAreaElement>)
   | ({ multiLine?: false | undefined } & InputEvents<HTMLInputElement>)
@@ -76,7 +76,7 @@ export function Input({
         <>
           <input
             className={clsx(styles.input, className)}
-            {...(props as Extract<InputProps, { multiLine?: false }>)}
+            {...(props as Extract<InputProps, { multiLine?: false | undefined }>)}
             type={rootType}
             ref={getRef}
           />

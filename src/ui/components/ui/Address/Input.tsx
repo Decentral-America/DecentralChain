@@ -1,10 +1,10 @@
 import { ErrorMessage, Input, type InputProps } from '..';
 import * as styles from './Input.module.css';
 
-type Props = Extract<InputProps, { multiLine?: false }> & {
+type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
   value: string;
-  showMirrorAddress?: boolean;
-  addressError?: string;
+  showMirrorAddress?: boolean | undefined;
+  addressError?: string | undefined;
 };
 
 export function AddressInput({

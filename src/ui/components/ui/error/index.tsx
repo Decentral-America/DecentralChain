@@ -28,17 +28,17 @@ const Errors = ({
 };
 
 interface Props {
-  type?: string;
-  show?: unknown;
-  children?: React.ReactNode;
-  className?: string;
-  hideByClick?: boolean;
-  onClick?: (...args: unknown[]) => void;
-  errors?: Array<{ code: number; key: string; msg: string }>;
+  type?: string | undefined;
+  show?: unknown | undefined;
+  children?: React.ReactNode | undefined;
+  className?: string | undefined;
+  hideByClick?: boolean | undefined;
+  onClick?: ((...args: unknown[]) => void) | undefined;
+  errors?: Array<{ code: number; key: string; msg: string }> | undefined;
 }
 
 interface State {
-  hidden?: boolean;
+  hidden?: boolean | undefined;
   showed: unknown;
 }
 

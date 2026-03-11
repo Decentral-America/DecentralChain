@@ -9,7 +9,7 @@ export interface SelectItem<T> {
   id: string | number;
   text: TText;
   value: T;
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | undefined;
 }
 
 type ListPlacement = 'top' | 'bottom';
@@ -22,16 +22,16 @@ const themeClassNames: Record<Theme, string> = {
 };
 
 interface Props<T> {
-  className?: string;
-  description?: TText;
-  fill?: boolean;
-  forwardRef?: React.MutableRefObject<HTMLDivElement>;
-  listPlacement?: ListPlacement;
+  className?: string | undefined;
+  description?: TText | undefined;
+  fill?: boolean | undefined;
+  forwardRef?: React.MutableRefObject<HTMLDivElement> | undefined;
+  listPlacement?: ListPlacement | undefined;
   selectList: ReadonlyArray<SelectItem<T>>;
   selected: T;
-  theme?: Theme;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  theme?: Theme | undefined;
+  onMouseEnter?: (() => void) | undefined;
+  onMouseLeave?: (() => void) | undefined;
   onSelectItem: (id: string | number, value: T) => void;
 }
 
