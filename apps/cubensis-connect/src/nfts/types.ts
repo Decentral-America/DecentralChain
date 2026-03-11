@@ -1,6 +1,6 @@
-import { type AssetDetail } from 'assets/types';
+import type { AssetDetail } from 'assets/types';
 
-import { type NftConfig } from '../constants';
+import type { NftConfig } from '../constants';
 
 export interface NftAssetDetail {
   assetId: string;
@@ -28,15 +28,15 @@ export enum NftVendorId {
 }
 
 export interface Nft {
-  background?: React.CSSProperties;
-  creator?: string;
-  creatorUrl?: string;
-  description?: string;
-  displayCreator?: string;
+  background?: React.CSSProperties | undefined;
+  creator?: string | undefined;
+  creatorUrl?: string | undefined;
+  description?: string | undefined;
+  displayCreator?: string | undefined;
   displayName: string;
-  foreground?: string;
+  foreground?: string | undefined;
   id: string;
-  marketplaceUrl?: string;
+  marketplaceUrl?: string | undefined;
   name: string;
   vendor: NftVendorId;
 }

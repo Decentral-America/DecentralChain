@@ -14,24 +14,24 @@ import type { PreferencesAccount } from 'preferences/types';
 
 interface MessageInputAuth {
   data: string;
-  host?: string;
-  icon?: string;
-  name?: string;
-  referrer?: string;
-  successPath?: string;
+  host?: string | undefined;
+  icon?: string | undefined;
+  name?: string | undefined;
+  referrer?: string | undefined;
+  successPath?: string | undefined;
 }
 
 export interface MessageInputCancelOrder {
   amountAsset: string;
   data: {
     id: string;
-    senderPublicKey?: string;
-    timestamp?: number;
+    senderPublicKey?: string | undefined;
+    timestamp?: number | undefined;
   };
   priceAsset: string;
 }
 
-export type MessageInputCustomData = { publicKey?: string } & (
+export type MessageInputCustomData = { publicKey?: string | undefined } & (
   | { version: 1; binary: string }
   | {
       version: 2;
@@ -45,37 +45,37 @@ export type MessageInputCustomData = { publicKey?: string } & (
 );
 
 export interface MoneyLike {
-  amount?: number | string;
+  amount?: number | string | undefined;
   assetId: string | null;
-  coins?: number | string;
-  tokens?: number | string;
+  coins?: number | string | undefined;
+  tokens?: number | string | undefined;
 }
 
 export interface MessageInputOrder {
   data: {
     amount: MoneyLike;
-    chainId?: number;
-    eip712Signature?: string;
+    chainId?: number | undefined;
+    eip712Signature?: string | undefined;
     expiration: number;
     matcherFee: MoneyLike;
-    matcherPublicKey?: string;
+    matcherPublicKey?: string | undefined;
     orderType: 'buy' | 'sell';
     price: MoneyLike;
-    priceMode?: 'assetDecimals' | 'fixedDecimals';
-    proofs?: string[];
-    senderPublicKey?: string;
-    timestamp?: number;
-    version?: 1 | 2 | 3 | 4;
+    priceMode?: 'assetDecimals' | 'fixedDecimals' | undefined;
+    proofs?: string[] | undefined;
+    senderPublicKey?: string | undefined;
+    timestamp?: number | undefined;
+    version?: 1 | 2 | 3 | 4 | undefined;
   };
 }
 
 interface MessageInputTxCommon {
-  chainId?: number;
-  fee?: MoneyLike;
-  initialFee?: MoneyLike;
-  proofs?: string[];
-  senderPublicKey?: string;
-  timestamp?: number;
+  chainId?: number | undefined;
+  fee?: MoneyLike | undefined;
+  initialFee?: MoneyLike | undefined;
+  proofs?: string[] | undefined;
+  senderPublicKey?: string | undefined;
+  timestamp?: number | undefined;
 }
 
 export interface MessageInputTxIssue {
@@ -86,8 +86,8 @@ export interface MessageInputTxIssue {
     precision: AssetDecimals;
     quantity: string | number;
     reissuable: boolean;
-    script?: string;
-    version?: 2 | 3;
+    script?: string | undefined;
+    version?: 2 | 3 | undefined;
   };
 }
 
@@ -95,9 +95,9 @@ export interface MessageInputTxTransfer {
   type: typeof TRANSACTION_TYPE.TRANSFER;
   data: MessageInputTxCommon & {
     amount: MoneyLike;
-    attachment?: string | number[];
+    attachment?: string | number[] | undefined;
     recipient: string;
-    version?: 2 | 3;
+    version?: 2 | 3 | undefined;
   };
 }
 
@@ -105,11 +105,11 @@ export interface MessageInputTxReissue {
   type: typeof TRANSACTION_TYPE.REISSUE;
   data: MessageInputTxCommon & {
     reissuable: boolean;
-    version?: 2 | 3;
+    version?: 2 | 3 | undefined;
   } & (
-      | { amount: MoneyLike; assetId?: string }
+      | { amount: MoneyLike; assetId?: string | undefined }
       | { amount: string | number; assetId: string }
-      | { quantity: MoneyLike; assetId?: string }
+      | { quantity: MoneyLike; assetId?: string | undefined }
       | { quantity: string | number; assetId: string }
     );
 }
@@ -118,11 +118,8 @@ export interface MessageInputTxBurn {
   type: typeof TRANSACTION_TYPE.BURN;
   data: MessageInputTxCommon & {
     assetId: string;
-    version?: 2 | 3;
-  } & (
-      | { amount: MoneyLike | string | number }
-      | { quantity: MoneyLike | string | number }
-    );
+    version?: 2 | 3 | undefined;
+  } & ({ amount: MoneyLike | string | number } | { quantity: MoneyLike | string | number });
 }
 
 export interface MessageInputTxLease {
@@ -130,7 +127,7 @@ export interface MessageInputTxLease {
   data: MessageInputTxCommon & {
     amount: MoneyLike | string | number;
     recipient: string;
-    version?: 2 | 3;
+    version?: 2 | 3 | undefined;
   };
 }
 
@@ -138,7 +135,7 @@ export interface MessageInputTxCancelLease {
   type: typeof TRANSACTION_TYPE.CANCEL_LEASE;
   data: MessageInputTxCommon & {
     leaseId: string;
-    version?: 2 | 3;
+    version?: 2 | 3 | undefined;
   };
 }
 
@@ -146,20 +143,20 @@ export interface MessageInputTxAlias {
   type: typeof TRANSACTION_TYPE.ALIAS;
   data: MessageInputTxCommon & {
     alias: string;
-    version?: 2 | 3;
+    version?: 2 | 3 | undefined;
   };
 }
 
 export interface MessageInputTxMassTransfer {
   type: typeof TRANSACTION_TYPE.MASS_TRANSFER;
   data: MessageInputTxCommon & {
-    attachment?: string | number[];
+    attachment?: string | number[] | undefined;
     totalAmount: { assetId: string | null };
     transfers: Array<{
       amount: string | number | MoneyLike;
       recipient: string;
     }>;
-    version?: 1 | 2;
+    version?: 1 | 2 | undefined;
   };
 }
 
@@ -167,15 +164,15 @@ export interface MessageInputTxData {
   type: typeof TRANSACTION_TYPE.DATA;
   data: MessageInputTxCommon & {
     data: DataTransactionEntry[];
-    version?: 1 | 2;
+    version?: 1 | 2 | undefined;
   };
 }
 
 export interface MessageInputTxSetScript {
   type: typeof TRANSACTION_TYPE.SET_SCRIPT;
   data: MessageInputTxCommon & {
-    script?: string;
-    version?: 1 | 2;
+    script?: string | undefined;
+    version?: 1 | 2 | undefined;
   };
 }
 
@@ -183,7 +180,7 @@ export interface MessageInputTxSponsorship {
   type: typeof TRANSACTION_TYPE.SPONSORSHIP;
   data: MessageInputTxCommon & {
     minSponsoredAssetFee: MoneyLike;
-    version?: 1 | 2;
+    version?: 1 | 2 | undefined;
   };
 }
 
@@ -192,20 +189,22 @@ export interface MessageInputTxSetAssetScript {
   data: MessageInputTxCommon & {
     assetId: string;
     script: string;
-    version?: 1 | 2;
+    version?: 1 | 2 | undefined;
   };
 }
 
 export interface MessageInputTxInvokeScript {
   type: typeof TRANSACTION_TYPE.INVOKE_SCRIPT;
   data: MessageInputTxCommon & {
-    call?: {
-      function: string;
-      args?: InvokeScriptCallArgument[];
-    };
+    call?:
+      | {
+          function: string;
+          args?: InvokeScriptCallArgument[] | undefined;
+        }
+      | undefined;
     dApp: string;
-    payment?: MoneyLike[];
-    version?: 1 | 2;
+    payment?: MoneyLike[] | undefined;
+    version?: 1 | 2 | undefined;
   };
 }
 
@@ -215,7 +214,7 @@ export interface MessageInputTxUpdateAssetInfo {
     assetId: string;
     description: string;
     name: string;
-    version?: 1;
+    version?: 1 | undefined;
   };
 }
 
@@ -236,15 +235,15 @@ export type MessageInputTx =
   | MessageInputTxUpdateAssetInfo;
 
 interface MessageInputDccAuth {
-  publicKey?: string;
+  publicKey?: string | undefined;
   timestamp: number;
 }
 
 export type MessageInput = {
   account: PreferencesAccount;
-  connectionId?: string;
-  options?: { uid?: unknown };
-  origin?: string;
+  connectionId?: string | undefined;
+  options?: { uid?: unknown } | undefined;
+  origin?: string | undefined;
 } & (
   | { type: 'auth'; data: MessageInputAuth }
   | {
@@ -266,18 +265,18 @@ export type MessageInput = {
   | {
       type: 'request';
       data: {
-        data?: { senderPublicKey?: string; timestamp?: number };
+        data?: { senderPublicKey?: string | undefined; timestamp?: number | undefined } | undefined;
       };
     }
   | {
       type: 'transaction';
       broadcast: boolean;
-      data: MessageInputTx & { successPath?: string };
+      data: MessageInputTx & { successPath?: string | undefined };
     }
   | {
       type: 'transactionPackage';
       data: MessageInputTx[];
-      title?: string | null;
+      title?: string | null | undefined;
     }
   | {
       type: 'dccAuth';
@@ -285,17 +284,14 @@ export type MessageInput = {
     }
 );
 
-export type MessageInputOfType<T extends MessageInput['type']> = Extract<
-  MessageInput,
-  { type: T }
->;
+export type MessageInputOfType<T extends MessageInput['type']> = Extract<MessageInput, { type: T }>;
 
 export interface MessageAuth {
-  referrer?: string;
+  referrer?: string | undefined;
   data: MessageInputAuth & {
     host: string;
     prefix: string;
-    version?: number;
+    version?: number | undefined;
   };
 }
 
@@ -306,12 +302,12 @@ type MessageAuthSigned = Omit<MessageAuth['data'], 'data'> & {
 };
 
 export interface MessageCancelOrder {
-  amountAsset?: string;
+  amountAsset?: string | undefined;
   data: {
     id: string;
     senderPublicKey: string;
   };
-  priceAsset?: string;
+  priceAsset?: string | undefined;
   timestamp: number;
 }
 
@@ -328,7 +324,7 @@ export interface MessageOrder {
   amount: number | string;
   assetPair: { amountAsset: string | null; priceAsset: string | null };
   chainId: number;
-  eip712Signature?: string;
+  eip712Signature?: string | undefined;
   expiration: number;
   id: string;
   matcherFee: string | number;
@@ -375,7 +371,7 @@ export interface MessageTxTransfer extends MessageTxCommon {
   type: typeof TRANSACTION_TYPE.TRANSFER;
   amount: number | string;
   assetId: string | null;
-  attachment?: string;
+  attachment?: string | undefined;
   feeAssetId: string | null;
   initialFeeAssetId: string | null;
   recipient: string;
@@ -420,7 +416,7 @@ export interface MessageTxAlias extends MessageTxCommon {
 export interface MessageTxMassTransfer extends MessageTxCommon {
   type: typeof TRANSACTION_TYPE.MASS_TRANSFER;
   assetId: string | null;
-  attachment?: string;
+  attachment?: string | undefined;
   transfers: Array<{ amount: string | number; recipient: string }>;
   version: 1 | 2;
 }
@@ -505,12 +501,12 @@ interface MessageDccAuthSigned extends MessageDccAuth {
 }
 
 export type Message = {
-  connectionId?: string;
+  connectionId?: string | undefined;
   account: PreferencesAccount;
   ext_uuid: unknown;
   id: string;
   timestamp: number;
-  title?: string | null;
+  title?: string | null | undefined;
 } & (
   | {
       status:
@@ -530,14 +526,14 @@ export type Message = {
         type: 'auth';
         data: MessageAuth;
         messageHash: string;
-        origin?: string;
-        result?: string | MessageAuthSigned;
-        successPath?: string | null;
+        origin?: string | undefined;
+        result?: string | MessageAuthSigned | undefined;
+        successPath?: string | null | undefined;
       }
     | {
         type: 'authOrigin';
         origin: string;
-        result?: { approved: 'OK' };
+        result?: { approved: 'OK' } | undefined;
       }
     | {
         type: 'cancelOrder';
@@ -545,55 +541,52 @@ export type Message = {
         broadcast: boolean;
         data: MessageCancelOrder;
         messageHash: string;
-        origin?: string;
+        origin?: string | undefined;
         priceAsset: string;
-        result?: string;
+        result?: string | undefined;
       }
     | {
         type: 'customData';
         data: MessageCustomData;
-        origin?: string;
-        result?: MessageCustomDataSigned;
+        origin?: string | undefined;
+        result?: MessageCustomDataSigned | undefined;
       }
     | {
         type: 'order';
         broadcast: boolean;
         data: MessageOrder;
-        origin?: string;
-        result?: string;
+        origin?: string | undefined;
+        result?: string | undefined;
       }
     | {
         type: 'request';
         data: MessageRequest;
         messageHash: string;
-        origin?: string;
-        result?: string;
+        origin?: string | undefined;
+        result?: string | undefined;
       }
     | {
         type: 'transaction';
         broadcast: boolean;
         data: MessageTx;
         input: MessageInputOfType<'transaction'>;
-        origin?: string;
-        result?: string;
-        successPath?: string | null;
+        origin?: string | undefined;
+        result?: string | undefined;
+        successPath?: string | null | undefined;
       }
     | {
         type: 'transactionPackage';
         data: MessageTx[];
         input: MessageInputOfType<'transactionPackage'>;
-        origin?: string;
-        result?: string[];
+        origin?: string | undefined;
+        result?: string[] | undefined;
       }
     | {
         type: 'dccAuth';
         data: MessageDccAuth;
-        origin?: string;
-        result?: MessageDccAuthSigned;
+        origin?: string | undefined;
+        result?: MessageDccAuthSigned | undefined;
       }
   );
 
-export type MessageOfType<T extends Message['type']> = Extract<
-  Message,
-  { type: T }
->;
+export type MessageOfType<T extends Message['type']> = Extract<Message, { type: T }>;

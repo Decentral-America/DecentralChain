@@ -3,21 +3,21 @@ import type { BigNumber } from '@decentralchain/bignumber';
 export interface AssetDetail {
   description: string;
   displayName: string;
-  hasScript?: boolean;
+  hasScript?: boolean | undefined;
   height: number;
   id: string;
-  isFavorite?: boolean;
+  isFavorite?: boolean | undefined;
   issuer: string;
-  isSuspicious?: boolean;
-  lastUpdated?: number;
-  minSponsoredFee?: string | number;
+  isSuspicious?: boolean | undefined;
+  lastUpdated?: number | undefined;
+  minSponsoredFee?: string | number | undefined;
   name: string;
-  originTransactionId?: string;
+  originTransactionId?: string | undefined;
   precision: number;
   quantity: BigNumber | string | number;
   reissuable: boolean;
   sender: string;
-  ticker?: string;
+  ticker?: string | undefined;
   timestamp: Date;
 }
 
