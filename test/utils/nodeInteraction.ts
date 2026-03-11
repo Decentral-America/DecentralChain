@@ -5,7 +5,7 @@ import {
   createPublicKey,
   signBytes,
   utf8Encode,
-} from '@keeper-wallet/waves-crypto';
+} from '@decentralchain/crypto';
 import { TRANSACTION_TYPE } from '@waves/ts-types';
 
 import { makeTxBytes, stringifyTransaction } from '../../src/messages/utils';
@@ -22,9 +22,7 @@ export async function faucet({
   nodeUrl: string;
   chainId: number;
 }) {
-  const minerPrivateKeyBytes = await createPrivateKey(
-    utf8Encode(DEFAULT_MINER_SEED),
-  );
+  const minerPrivateKeyBytes = await createPrivateKey(utf8Encode(DEFAULT_MINER_SEED));
   const minerPublicKeyBytes = await createPublicKey(minerPrivateKeyBytes);
   const minerPublicKey = base58Encode(minerPublicKeyBytes);
 
@@ -66,10 +64,7 @@ export async function getNetworkByte(nodeUrl: string) {
   return getNetworkByteByAddress(generator);
 }
 
-export async function getTransactionStatus(
-  transactionId: string,
-  nodeUrl: string,
-) {
+export async function getTransactionStatus(transactionId: string, nodeUrl: string) {
   const url = new URL('/transactions/status', nodeUrl);
   url.searchParams.set('id', transactionId);
   const response = await fetch(url);

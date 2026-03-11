@@ -1,18 +1,10 @@
-import {
-  base64Decode,
-  decryptSeed,
-  utf8Decode,
-  utf8Encode,
-} from '@keeper-wallet/waves-crypto';
+import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { setAddresses } from 'store/actions/addresses';
-import {
-  fromEthereumToDccAddress,
-  isEthereumAddress,
-} from 'ui/utils/ethereum';
+import { fromEthereumToDccAddress, isEthereumAddress } from 'ui/utils/ethereum';
 
 import { ImportKeystoreChooseFile } from './chooseFile';
 
@@ -38,10 +30,7 @@ function parseAddressBook(json: string): EncryptedAddressBook | null {
     decrypt: async password => {
       try {
         if (password) {
-          const decrypted = await decryptSeed(
-            base64Decode(atob(addresses)),
-            utf8Encode(password),
-          );
+          const decrypted = await decryptSeed(base64Decode(atob(addresses)), utf8Encode(password));
 
           return JSON.parse(utf8Decode(decrypted));
         }
@@ -62,25 +51,18 @@ function getFormattedAddresses(
 ) {
   return Object.fromEntries(
     Object.entries(keystoreAddresses).map(([keystoreAddress, keystoreName]) => {
-      let sameName = Object.values(addresses || {}).find(
-        name => keystoreName === name,
-      );
+      let sameName = Object.values(addresses || {}).find(name => keystoreName === name);
 
       while (sameName) {
         const suffixMatch = keystoreName.match(suffixRe);
 
         if (suffixMatch) {
-          keystoreName = keystoreName.replace(
-            suffixRe,
-            `(${Number(suffixMatch[1]) + 1})`,
-          );
+          keystoreName = keystoreName.replace(suffixRe, `(${Number(suffixMatch[1]) + 1})`);
         } else {
           keystoreName += ' (1)';
         }
 
-        sameName = Object.values<string>(keystoreAddresses).find(
-          name => keystoreName === name,
-        );
+        sameName = Object.values<string>(keystoreAddresses).find(name => keystoreName === name);
       }
 
       return [
@@ -130,9 +112,7 @@ export function ImportAddressBook() {
             return;
           }
 
-          dispatch(
-            setAddresses(getFormattedAddresses(addresses, keystoreAddresses)),
-          );
+          dispatch(setAddresses(getFormattedAddresses(addresses, keystoreAddresses)));
           navigate('/import-address-book/success');
         } catch (err) {
           setError(t('importKeystore.errorUnexpected'));
