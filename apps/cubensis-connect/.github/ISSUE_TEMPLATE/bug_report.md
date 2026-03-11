@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: '[BUG]'
 labels: bug
-assignees: msmolyakov
+assignees: ''
 ---
 
 **Describe the bug**
@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment**
 Please complete the following information.
 
-- Version of ProviderKeeper: [e.g. "1.0.0"]
+- Version of Cubensis Connect: [e.g. "1.0.0"]
 - OS: [e.g. "Windows 10 / macOS Big Sur / Ubuntu Bionic Beaver / iOS 15"]
 - Browser version: [e.g. "Google Chrome Version 93.0.4577.63 (Official Build) (x86_64)"]
 
