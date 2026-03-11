@@ -38,11 +38,10 @@ const isLongProp = (
 
     if (schema.type === 'dataTxField') {
       if (path[0] !== 'value') return false;
-      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as Record<
-        string,
-        unknown
-      >;
-      const dataSchema = schema.items.get(dataObj['type'] as DATA_FIELD_TYPE);
+      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as {
+        type: string;
+      };
+      const dataSchema = schema.items.get(dataObj.type as DATA_FIELD_TYPE);
       return go(path.slice(1), dataSchema);
     }
 
@@ -219,8 +218,8 @@ export function stringifyTx<LONG>(
  * @param toLongConverter
  */
 export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
-  const ord = parse(str) as Record<string, unknown>;
-  const version = (ord['version'] as number) || 1;
+  const ord = parse(str) as { version?: number; [key: string]: unknown };
+  const version = ord.version || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   return toLongConverter ? convertLongFields(ord, schema, toLongConverter) : ord;
@@ -233,10 +232,10 @@ export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLong
  * @param fromLongConverter
  */
 export function stringifyOrder<LONG>(
-  ord: Record<string, unknown>,
+  ord: { version?: number; [key: string]: unknown },
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
-  const version = (ord['version'] as number) || 1;
+  const version = ord.version || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);
   const ordWithStrings = convertLongFields(ord, schema, undefined, fromLongConverter);
