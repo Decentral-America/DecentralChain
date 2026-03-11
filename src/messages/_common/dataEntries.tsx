@@ -1,4 +1,4 @@
-import { type DataTransactionEntry } from '@decentralchain/ts-types';
+import type { DataTransactionEntry } from '@decentralchain/ts-types';
 import { useTranslation } from 'react-i18next';
 
 import * as styles from './dataEntries.module.css';
@@ -22,7 +22,8 @@ export function DataEntries({ entries }: Props) {
 
       <tbody>
         {entries.map((entry, index) => (
-          <tr key={index} data-testid="dataRow">
+          // biome-ignore lint/suspicious/noArrayIndexKey: entries may have duplicate keys, index needed for uniqueness
+          <tr key={`${entry.key}-${index}`} data-testid="dataRow">
             <td data-testid="dataRowKey" title={entry.key}>
               {entry.key}
             </td>

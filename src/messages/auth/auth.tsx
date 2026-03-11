@@ -2,12 +2,12 @@ import clsx from 'clsx';
 import { MessageFinal } from 'messages/_common/final';
 import { MessageFooter } from 'messages/_common/footer';
 import { MessageHeader } from 'messages/_common/header';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 import * as styles from './auth.module.css';
 
 export function AuthCard({
@@ -35,58 +35,40 @@ export function AuthCard({
     <div className={clsx(transactionsStyles.transactionCard, className)}>
       <div>
         {collapsed ? (
-          <>
-            <div className={styles.smallCardContent}>
-              <div
-                className={clsx(
-                  transactionsStyles.txIcon,
-                  styles.authTxIconSmall,
-                )}
-              >
-                {!icon || iconFailedToLoad ? (
-                  <div
-                    className={clsx(
-                      'signin-icon',
-                      transactionsStyles.txIcon,
-                      styles.authTxIconSmall,
-                    )}
-                  />
-                ) : (
-                  <img
-                    className={clsx(
-                      transactionsStyles.txIcon,
-                      styles.authTxIconSmall,
-                    )}
-                    src={icon}
-                    onError={() => {
-                      setIconFailedToLoad(true);
-                    }}
-                  />
-                )}
-              </div>
-
-              <div>
-                <div className="basic500 body3 margin-min origin-ellipsis">
-                  {name}
-                </div>
-
-                <h1 className="headline1">
-                  {t('transactions.allowAccessTitle')}
-                </h1>
-              </div>
+          <div className={styles.smallCardContent}>
+            <div className={clsx(transactionsStyles.txIcon, styles.authTxIconSmall)}>
+              {!icon || iconFailedToLoad ? (
+                <div
+                  className={clsx('signin-icon', transactionsStyles.txIcon, styles.authTxIconSmall)}
+                />
+              ) : (
+                <img
+                  className={clsx(transactionsStyles.txIcon, styles.authTxIconSmall)}
+                  src={icon}
+                  alt=""
+                  onError={() => {
+                    setIconFailedToLoad(true);
+                  }}
+                />
+              )}
             </div>
-          </>
+
+            <div>
+              <div className="basic500 body3 margin-min origin-ellipsis">{name}</div>
+
+              <h1 className="headline1">{t('transactions.allowAccessTitle')}</h1>
+            </div>
+          </div>
         ) : (
           <>
             <div className={transactionsStyles.txIconBig}>
               {!icon || iconFailedToLoad ? (
-                <div
-                  className={clsx('signin-icon', transactionsStyles.txIconBig)}
-                />
+                <div className={clsx('signin-icon', transactionsStyles.txIconBig)} />
               ) : (
                 <img
                   className={transactionsStyles.txIconBig}
                   src={icon}
+                  alt=""
                   onError={() => {
                     setIconFailedToLoad(true);
                   }}
@@ -115,9 +97,7 @@ export function AuthScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <AuthCard message={message} />
         </div>
@@ -129,13 +109,9 @@ export function AuthScreen({
             'margin-main-big',
           )}
         >
-          <div className="tx-title body3 basic500">
-            {t('transactions.dataHash')}
-          </div>
+          <div className="tx-title body3 basic500">{t('transactions.dataHash')}</div>
 
-          <div className={transactionsStyles.txValue}>
-            {message.messageHash}
-          </div>
+          <div className={transactionsStyles.txValue}>{message.messageHash}</div>
         </div>
 
         <div className={clsx('info-block', 'body3', 'basic500', 'left')}>

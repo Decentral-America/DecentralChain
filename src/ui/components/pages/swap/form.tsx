@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { setUiState } from 'store/actions/uiState';
 import { SwapVendor } from 'swap/constants';
 import { getSwapVendorLogo } from 'swap/utils';
+import invariant from 'tiny-invariant';
 import { Button } from 'ui/components/ui/buttons/Button';
 import { Loader } from 'ui/components/ui/loader/Loader';
 import { Modal } from 'ui/components/ui/modal/Modal';
@@ -123,8 +124,7 @@ export function SwapForm({
   const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
   const usdPrices = usePopupSelector(state => state.usdPrices);
   const accountBalance = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.balances[state.selectedAccount?.address!],
+    state => state.balances[state.selectedAccount?.address ?? ''],
   );
 
   const currentNetwork = usePopupSelector(state => state.currentNetwork);
@@ -147,27 +147,26 @@ export function SwapForm({
     return defaultOption?.money.asset.id || 'WAVES';
   });
 
-  const fromAsset = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => new Asset(assets[fromAssetId]!),
-    [assets, fromAssetId],
-  );
+  const fromAsset = useMemo(() => {
+    const data = assets[fromAssetId];
+    invariant(data, `Asset ${fromAssetId} not found`);
+    return new Asset(data);
+  }, [assets, fromAssetId]);
 
-  const toAsset = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => new Asset(assets[toAssetId]!),
-    [assets, toAssetId],
-  );
+  const toAsset = useMemo(() => {
+    const data = assets[toAssetId];
+    invariant(data, `Asset ${toAssetId} not found`);
+    return new Asset(data);
+  }, [assets, toAssetId]);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const feeAsset = new Asset(assets[feeAssetId]!);
+  const feeAssetData = assets[feeAssetId];
+  invariant(feeAssetData, `Fee asset ${feeAssetId} not found`);
+  const feeAsset = new Asset(feeAssetData);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const fromAssetBalance = getAssetBalance(fromAsset, accountBalance!);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const toAssetBalance = getAssetBalance(toAsset, accountBalance!);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const feeAssetBalance = getAssetBalance(feeAsset, accountBalance!);
+  invariant(accountBalance, 'Account balance not found');
+  const fromAssetBalance = getAssetBalance(fromAsset, accountBalance);
+  const toAssetBalance = getAssetBalance(toAsset, accountBalance);
+  const feeAssetBalance = getAssetBalance(feeAsset, accountBalance);
 
   const [fromAmountValue, setFromAmountValue] = useState('');
   const [fromAmountValueMasked, setFromAmountValueMasked] = useState('');
@@ -233,7 +232,6 @@ export function SwapForm({
       return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     let fromAmountTokens = new BigNumber(fromAmountValue || '0');
 
     if (fromAmountTokens.eq(0)) {
@@ -330,8 +328,7 @@ export function SwapForm({
     });
   }, [swapClient, swapParams, t, toAsset]);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const sponsoredAssetFee = accountBalance!.assets![feeAssetId]
+  const sponsoredAssetFee = accountBalance?.assets?.[feeAssetId]
     ? convertFeeToAsset(nativeFee, feeAsset)
     : null;
 
@@ -478,8 +475,7 @@ export function SwapForm({
           }}
         >
           <AssetAmountInput
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            assetBalances={accountBalance!.assets!}
+            assetBalances={accountBalance.assets ?? {}}
             assetOptions={fromSwappableAssets}
             balance={fromAssetBalance}
             label={t('swap.fromInputLabel')}
@@ -495,16 +491,8 @@ export function SwapForm({
             onBalanceClick={() => {
               let max = fromAssetBalance;
 
-              if (
-                feeAssetId === fromAssetId &&
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                accountBalance!.assets![feeAssetId]
-              ) {
-                const fee = convertFeeToAsset(
-                  nativeFee,
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  new Asset(assets[feeAssetId]!),
-                );
+              if (feeAssetId === fromAssetId && accountBalance.assets?.[feeAssetId]) {
+                const fee = convertFeeToAsset(nativeFee, feeAsset);
 
                 max = max.gt(fee) ? max.minus(fee) : max.cloneWithCoins(0);
               }
@@ -542,6 +530,7 @@ export function SwapForm({
               }}
             >
               <svg
+                aria-hidden="true"
                 className={styles.swapDirectionBtnIcon}
                 width="14"
                 height="14"
@@ -562,8 +551,7 @@ export function SwapForm({
 
             <div className={styles.toAmountSelect}>
               <AssetSelect
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                assetBalances={accountBalance!.assets!}
+                assetBalances={accountBalance.assets ?? {}}
                 network={currentNetwork}
                 options={toSwappableAssets}
                 value={toAssetId}
@@ -643,6 +631,7 @@ export function SwapForm({
                       <div className={styles.toAmountCardVendor}>
                         <img
                           src={getSwapVendorLogo(vendor)}
+                          alt=""
                           className={styles.toAmountCardVendorLogo}
                         />
 
@@ -757,6 +746,7 @@ export function SwapForm({
                       }}
                     >
                       <svg
+                        aria-hidden="true"
                         className={styles.slippageToleranceBtnIcon}
                         width="14"
                         height="14"
@@ -796,6 +786,7 @@ export function SwapForm({
                       }}
                     >
                       <svg
+                        aria-hidden="true"
                         className={styles.swapPriceDirectionBtnIcon}
                         width="14"
                         height="14"
@@ -917,32 +908,29 @@ export function SwapForm({
               </p>
 
               <div className={styles.slippageToleranceControl}>
-                {
-                  // eslint-disable-next-line @typescript-eslint/no-shadow
-                  SLIPPAGE_TOLERANCE_OPTIONS.map((slippageTolerance, index) => {
-                    const id = `slippageTolerance-${index}`;
+                {SLIPPAGE_TOLERANCE_OPTIONS.map((slippageTolerance, index) => {
+                  const id = `slippageTolerance-${index}`;
 
-                    return (
-                      <Fragment key={index}>
-                        <input
-                          checked={index === slippageToleranceIndex}
-                          className={styles.slippageToleranceInput}
-                          id={id}
-                          name="slippageTolerance"
-                          type="radio"
-                          value={index}
-                          onChange={() => {
-                            setSlippageToleranceIndex(index);
-                          }}
-                        />
+                  return (
+                    <Fragment key={slippageTolerance.toString()}>
+                      <input
+                        checked={index === slippageToleranceIndex}
+                        className={styles.slippageToleranceInput}
+                        id={id}
+                        name="slippageTolerance"
+                        type="radio"
+                        value={index}
+                        onChange={() => {
+                          setSlippageToleranceIndex(index);
+                        }}
+                      />
 
-                        <label className={styles.slippageToleranceLabel} htmlFor={id}>
-                          {slippageTolerance.toString()}%
-                        </label>
-                      </Fragment>
-                    );
-                  })
-                }
+                      <label className={styles.slippageToleranceLabel} htmlFor={id}>
+                        {slippageTolerance.toString()}%
+                      </label>
+                    </Fragment>
+                  );
+                })}
               </div>
             </div>
           </div>

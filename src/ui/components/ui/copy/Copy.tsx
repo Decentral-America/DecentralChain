@@ -20,10 +20,7 @@ export class Copy extends PureComponent<Props> {
     text: '',
   };
 
-  onClick = (event: {
-    stopPropagation: () => void;
-    preventDefault: () => void;
-  }) => {
+  onClick = (event: { stopPropagation: () => void; preventDefault: () => void }) => {
     const { text, onCopy, children, options } = this.props;
 
     event.stopPropagation();

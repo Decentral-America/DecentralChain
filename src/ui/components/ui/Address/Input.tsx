@@ -7,12 +7,7 @@ type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
   addressError?: string | undefined;
 };
 
-export function AddressInput({
-  value,
-  showMirrorAddress,
-  addressError,
-  ...props
-}: Props) {
+export function AddressInput({ value, showMirrorAddress, addressError, ...props }: Props) {
   return (
     <div className={styles.container}>
       <Input error={!!addressError} value={value} {...props} />

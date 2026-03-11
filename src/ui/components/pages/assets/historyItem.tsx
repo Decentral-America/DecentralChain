@@ -3,6 +3,7 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { type Long, TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { MessageIcon } from 'messages/_common/icon';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { InfoIcon } from '../../../../icons/info';
@@ -22,16 +23,22 @@ export function HistoryItem({ tx, className }: Props) {
   const { t } = useTranslation();
   const address = usePopupSelector(state => state.selectedAccount?.address);
   const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
-  const chainId = usePopupSelector(state =>
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    state.selectedAccount?.networkCode!.charCodeAt(0),
-  );
+  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
   const assets = usePopupSelector(state => state.assets);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const aliases = usePopupSelector(state => state.balances[address!]?.aliases);
+  const aliases = usePopupSelector(state =>
+    address ? state.balances[address]?.aliases : undefined,
+  );
   const addressAlias = [address, ...(aliases || [])];
 
-  let tooltip, label, info, messageType: string, addSign;
+  if (!address || !networkCode || chainId == null) {
+    return null;
+  }
+
+  let tooltip: string | undefined;
+  let label: ReactNode;
+  let info: ReactNode;
+  let messageType: string;
+  let addSign: string | undefined;
   const isTxFailed =
     'applicationStatus' in tx && tx.applicationStatus && tx.applicationStatus !== 'succeeded';
 
@@ -79,8 +86,7 @@ export function HistoryItem({ tx, className }: Props) {
         <AddressRecipient
           className={styles.recipient}
           recipient={tx.recipient}
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          chainId={chainId!}
+          chainId={chainId}
           showAliasWarning={false}
         />
       );
@@ -96,8 +102,7 @@ export function HistoryItem({ tx, className }: Props) {
           <AddressRecipient
             className={styles.recipient}
             recipient={tx.sender}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chainId={chainId!}
+            chainId={chainId}
             showAliasWarning={false}
           />
         );
@@ -114,8 +119,7 @@ export function HistoryItem({ tx, className }: Props) {
           <AddressRecipient
             className={styles.recipient}
             recipient={tx.sender}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chainId={chainId!}
+            chainId={chainId}
             showAliasWarning={false}
           />
         );
@@ -155,7 +159,6 @@ export function HistoryItem({ tx, className }: Props) {
       let totalPriceAmount: Money | undefined;
 
       if (assetAmount && priceAsset) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         priceAmount = fromTokens(
           new BigNumber(tx.price).div(
             new BigNumber(10).pow(
@@ -163,9 +166,11 @@ export function HistoryItem({ tx, className }: Props) {
             ),
           ),
           priceAssetId,
-        )!;
+        );
 
-        totalPriceAmount = assetAmount.convertTo(priceAmount.asset, priceAmount.getTokens());
+        if (priceAmount) {
+          totalPriceAmount = assetAmount.convertTo(priceAmount.asset, priceAmount.getTokens());
+        }
       }
 
       tooltip = t('historyCard.exchange');
@@ -180,8 +185,7 @@ export function HistoryItem({ tx, className }: Props) {
         <AddressRecipient
           className={styles.recipient}
           recipient={tx.recipient}
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          chainId={chainId!}
+          chainId={chainId}
           showAliasWarning={false}
         />
       );
@@ -193,8 +197,7 @@ export function HistoryItem({ tx, className }: Props) {
           <AddressRecipient
             className={styles.recipient}
             recipient={tx.sender}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chainId={chainId!}
+            chainId={chainId}
             showAliasWarning={false}
           />
         );
@@ -210,8 +213,7 @@ export function HistoryItem({ tx, className }: Props) {
         <AddressRecipient
           className={styles.recipient}
           recipient={tx.lease.recipient}
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          chainId={chainId!}
+          chainId={chainId}
           showAliasWarning={false}
         />
       );
@@ -222,8 +224,7 @@ export function HistoryItem({ tx, className }: Props) {
           <AddressRecipient
             className={styles.recipient}
             recipient={tx.lease.sender}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chainId={chainId!}
+            chainId={chainId}
             showAliasWarning={false}
           />
         );
@@ -246,8 +247,7 @@ export function HistoryItem({ tx, className }: Props) {
         <AddressRecipient
           className={styles.recipient}
           recipient={tx.sender}
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          chainId={chainId!}
+          chainId={chainId}
           showAliasWarning={false}
         />
       );
@@ -292,21 +292,14 @@ export function HistoryItem({ tx, className }: Props) {
 
       break;
     case TRANSACTION_TYPE.SPONSORSHIP:
-      tooltip = label = t('historyCard.sponsorshipEnable');
-      messageType = 'sponsor_enable';
-      info = (
-        <Balance
-          split
-          showAsset
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          balance={fromCoins(tx.minSponsoredAssetFee!, tx.assetId)}
-        />
-      );
-
       if (!tx.minSponsoredAssetFee) {
         tooltip = label = t('historyCard.sponsorshipDisable');
         info = assets[tx.assetId]?.displayName;
         messageType = 'sponsor_disable';
+      } else {
+        tooltip = label = t('historyCard.sponsorshipEnable');
+        messageType = 'sponsor_enable';
+        info = <Balance split showAsset balance={fromCoins(tx.minSponsoredAssetFee, tx.assetId)} />;
       }
       break;
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
@@ -333,14 +326,10 @@ export function HistoryItem({ tx, className }: Props) {
       ) {
         tooltip = t('historyCard.swap');
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const payment = tx.payment![0];
+        const payment = tx.payment?.[0];
         const fromBalance = payment && fromCoins(payment.amount, payment.assetId);
 
-        const incomingTransfer = tx.stateChanges?.transfers.find(
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          t => t.address === tx.sender,
-        );
+        const incomingTransfer = tx.stateChanges?.transfers.find(t => t.address === tx.sender);
 
         const toBalance =
           incomingTransfer && fromCoins(incomingTransfer.amount, incomingTransfer.asset);
@@ -354,8 +343,7 @@ export function HistoryItem({ tx, className }: Props) {
           <AddressRecipient
             className={styles.recipient}
             recipient={tx.dApp}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chainId={chainId!}
+            chainId={chainId}
             showAliasWarning={false}
           />
         );
@@ -378,8 +366,7 @@ export function HistoryItem({ tx, className }: Props) {
             <AddressRecipient
               className={styles.recipient}
               recipient={tx.sender}
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              chainId={chainId!}
+              chainId={chainId}
               showAliasWarning={false}
               showMirrorAddress
             />
@@ -401,8 +388,7 @@ export function HistoryItem({ tx, className }: Props) {
             <AddressRecipient
               className={styles.recipient}
               recipient={payload.dApp}
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              chainId={chainId!}
+              chainId={chainId}
               showAliasWarning={false}
             />
           );
@@ -410,7 +396,8 @@ export function HistoryItem({ tx, className }: Props) {
           messageType = 'script_invocation';
           break;
         default:
-          tooltip = label = null;
+          tooltip = undefined;
+          label = null;
       }
       break;
     }
@@ -439,7 +426,7 @@ export function HistoryItem({ tx, className }: Props) {
             {isTxFailed && (
               <div className={styles.txSubIconContainer}>
                 <div className={styles.txSubIcon}>
-                  <svg viewBox="0 0 10 10" className={styles.txSubIconSvg}>
+                  <svg aria-hidden="true" viewBox="0 0 10 10" className={styles.txSubIconSvg}>
                     <path
                       d="M5.64011 5.00002L8.20071 2.43942C8.37749 2.26264 8.37749 1.97604 8.20071 1.79927C8.02394 1.62249 7.73733 1.62249 7.56056 1.79927L4.99996 4.35987L2.43936 1.79927C2.26258 1.62249 1.97598 1.62249 1.79921 1.79927C1.62243 1.97604 1.62243 2.26264 1.79921 2.43942L4.35981 5.00002L1.79921 7.56062C1.62243 7.7374 1.62243 8.024 1.79921 8.20077C1.97598 8.37755 2.26258 8.37755 2.43936 8.20077L4.99996 5.64017L7.56056 8.20077C7.73733 8.37755 8.02394 8.37755 8.20071 8.20077C8.37749 8.024 8.37749 7.7374 8.20071 7.56062L5.64011 5.00002Z"
                       fill="#E5494D"
@@ -468,12 +455,7 @@ export function HistoryItem({ tx, className }: Props) {
             className={styles.infoButton}
             type="button"
             onClick={() => {
-              window.open(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                getTxDetailLink(networkCode!, tx.id),
-                '_blank',
-                'noopener,noreferrer',
-              );
+              window.open(getTxDetailLink(networkCode, tx.id), '_blank', 'noopener,noreferrer');
             }}
             {...props}
           >

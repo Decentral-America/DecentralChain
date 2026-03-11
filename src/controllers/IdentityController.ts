@@ -65,7 +65,7 @@ globalThis.fetch = (endpoint: RequestInfo | URL, options?: RequestInit) => {
   return fetch(endpoint, options);
 };
 
-export type MFAType = 'SMS_MFA' | 'SOFTWARE_TOKEN_MFA';
+type MFAType = 'SMS_MFA' | 'SOFTWARE_TOKEN_MFA';
 
 export type IdentityUser = {
   address: string;
@@ -111,19 +111,20 @@ class IdentityStorage extends ObservableStore<IdentityState> implements ICognito
   }
 
   getItem(key: string) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.memo![key];
+    return this.memo?.[key] ?? null;
   }
 
   removeItem(key: string) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    delete this.memo![key];
+    if (this.memo) {
+      delete this.memo[key];
+    }
     this._updateMemo();
   }
 
   setItem(key: string, value: string) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.memo![key] = value;
+    if (this.memo) {
+      this.memo[key] = value;
+    }
     this._updateMemo();
   }
 
@@ -185,12 +186,11 @@ class IdentityStorage extends ObservableStore<IdentityState> implements ICognito
 
       const decryptedJson = await decryptSeed(
         base64Decode(encryptedText),
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        utf8Encode(this.password!),
+        utf8Encode(this.password ?? ''),
       );
 
       return JSON.parse(utf8Decode(decryptedJson)) as CognitoSessions;
-    } catch (e) {
+    } catch (_e) {
       throw new Error('Invalid password');
     }
   }
@@ -263,8 +263,8 @@ export class IdentityController implements IdentityApi {
   }
 
   getConfig(): IdentityConfig {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.getIdentityConfig(this.network!);
+    invariant(this.network, 'Network not configured');
+    return this.getIdentityConfig(this.network);
   }
 
   configure() {
@@ -323,10 +323,8 @@ export class IdentityController implements IdentityApi {
         {
           onSuccess: async () => {
             this.identity = await this.fetchIdentityUser();
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.identity.uuid = this.user!.getUsername();
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.identity.username = this.userData!.username;
+            this.identity.uuid = this.user?.getUsername() ?? '';
+            this.identity.username = this.userData?.username ?? '';
             this.user = undefined;
             this.userData = undefined;
 
@@ -373,16 +371,13 @@ export class IdentityController implements IdentityApi {
           onSuccess: async session => {
             if (this.user) {
               delete this.user.challengeName;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               delete (this.user as any).challengeParam;
             }
 
             if (session && !this.identity) {
               this.identity = await this.fetchIdentityUser();
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              this.identity.uuid = this.user!.getUsername();
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              this.identity.username = this.userData!.username;
+              this.identity.uuid = this.user?.getUsername() ?? '';
+              this.identity.username = this.userData?.username ?? '';
               this.user = undefined;
               this.userData = undefined;
 
@@ -414,8 +409,8 @@ export class IdentityController implements IdentityApi {
   }
 
   getIdentityUser() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.identity!;
+    invariant(this.identity, 'Identity not available. Call signIn first.');
+    return this.identity;
   }
 
   async persistSession(uuid: string) {
@@ -437,14 +432,13 @@ export class IdentityController implements IdentityApi {
     this.clearSession();
     // set current user session
     await this.store.restore(this.getUserId(uuid));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.user = this.userPool!.getCurrentUser()!;
+    const currentUser = this.userPool?.getCurrentUser();
+    this.user = currentUser ?? undefined;
     // restores user session tokens from storage
     return new Promise((resolve, reject) => {
       if (!this.user) {
         return reject(new Error('Not authenticated'));
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.user.getSession((err: any) => {
         if (err) {
           return reject(err);
@@ -455,7 +449,6 @@ export class IdentityController implements IdentityApi {
             await this.persistSession(uuid);
             resolve(data);
           })
-          // eslint-disable-next-line @typescript-eslint/no-shadow
           .catch(err => reject(err));
       });
     });
@@ -512,7 +505,6 @@ export class IdentityController implements IdentityApi {
 
           this.user.refreshSession(
             refreshToken,
-            // eslint-disable-next-line @typescript-eslint/no-shadow
             (err, data) => {
               if (err) {
                 return reject(err);
@@ -594,8 +586,8 @@ export class IdentityController implements IdentityApi {
   }
 
   private getUserId(uuid: string) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const clientId = this.userPool!.getClientId();
+    invariant(this.userPool, 'UserPool not configured');
+    const clientId = this.userPool.getClientId();
     return `${clientId}.${uuid}`;
   }
 }

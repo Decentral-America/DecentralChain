@@ -7,21 +7,15 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { Balance } from '../../ui/components/ui';
-import { type MessageOfType, type MessageTxBurn } from '../types';
+import type { MessageOfType, MessageTxBurn } from '../types';
 
-export function BurnCard({
-  className,
-  tx,
-}: {
-  className?: string;
-  tx: MessageTxBurn;
-}) {
+export function BurnCard({ className, tx }: { className?: string; tx: MessageTxBurn }) {
   const { t } = useTranslation();
   const asset = usePopupSelector(state => state.assets[tx.assetId]);
   invariant(asset);
@@ -34,9 +28,7 @@ export function BurnCard({
         </div>
 
         <div>
-          <div className="basic500 body3 margin-min">
-            {t('transactions.burn')}
-          </div>
+          <div className="basic500 body3 margin-min">{t('transactions.burn')}</div>
 
           <h1 className="headline1">
             <Balance
@@ -72,9 +64,7 @@ export function BurnScreen({
           <BurnCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

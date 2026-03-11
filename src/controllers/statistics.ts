@@ -11,11 +11,7 @@ import type { SwapVendor } from '../swap/constants';
 import type { WalletTypes } from '../ui/services/Background';
 import type { NetworkController } from './network';
 
-const {
-  name: BROWSER_NAME,
-  os: PLATFORM,
-  version: BROWSER_VERSION,
-} = detect() ?? {};
+const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detect() ?? {};
 
 const BROWSER_VERSION_MAJOR = BROWSER_VERSION?.split('.')[0];
 const KEEPER_VERSION = Browser.runtime.getManifest().version;
@@ -179,9 +175,7 @@ export class StatisticsController {
       } else {
         const text = await response.text();
 
-        throw new Error(
-          `Amplitude Error (${response.status} ${response.statusText}): ${text}`,
-        );
+        throw new Error(`Amplitude Error (${response.status} ${response.statusText}): ${text}`);
       }
     }
   }
@@ -207,9 +201,7 @@ export class StatisticsController {
       } else {
         const text = await response.text();
 
-        throw new Error(
-          `MixPanel Error (${response.status} ${response.statusText}): ${text}`,
-        );
+        throw new Error(`MixPanel Error (${response.status} ${response.statusText}): ${text}`);
       }
     }
   }

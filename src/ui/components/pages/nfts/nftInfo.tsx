@@ -15,17 +15,11 @@ export function NftInfo() {
 
   const { t } = useTranslation();
 
-  const networkCode = usePopupSelector(
-    state => state.selectedAccount?.networkCode,
-  );
+  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
 
-  const userAddress = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.selectedAccount?.address!,
-  );
+  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const asset = usePopupSelector(state => state.assets[params.assetId!]);
+  const asset = usePopupSelector(state => state.assets[params.assetId ?? '']);
 
   const nftInfo = usePopupSelector(state => asset && state.nfts?.[asset.id]);
   const nftConfig = usePopupSelector(state => state.nftConfig);
@@ -41,29 +35,20 @@ export function NftInfo() {
 
   const creatorUrl =
     nft?.creatorUrl ||
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (nft?.creator && getAccountLink(networkCode!, nft.creator));
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const nftUrl = nft ? getAssetDetailLink(networkCode!, nft.id) : undefined;
+    (nft?.creator && networkCode ? getAccountLink(networkCode, nft.creator) : undefined);
+  const nftUrl = nft && networkCode ? getAssetDetailLink(networkCode, nft.id) : undefined;
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <div className={styles.title}>
-          {!nft ? <Loader /> : nft.displayName}
-        </div>
+        <div className={styles.title}>{!nft ? <Loader /> : nft.displayName}</div>
       </div>
 
       <div className={styles.content}>
         <NftCover className={styles.cover} nft={nft} />
 
         <div className={styles.links}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href={nftUrl}
-            className="link blue clean"
-          >
+          <a rel="noopener noreferrer" target="_blank" href={nftUrl} className="link blue clean">
             {t('nftInfo.viewInExplorer')}
           </a>
           {nft?.marketplaceUrl && (
@@ -92,7 +77,6 @@ export function NftInfo() {
           <div>
             <Tooltip content={t('nftInfo.creatorUrlTooltip')}>
               {props => (
-                // eslint-disable-next-line react/jsx-no-target-blank
                 <a
                   rel="noopener noreferrer"
                   className="link"
@@ -100,7 +84,7 @@ export function NftInfo() {
                   href={creatorUrl as string | undefined}
                   {...props}
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16">
+                  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"

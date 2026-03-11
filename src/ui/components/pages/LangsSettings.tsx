@@ -16,7 +16,8 @@ interface LangProps {
 }
 
 const Lang = ({ id, name, setSelected, selected }: LangProps) => {
-  const className = clsx(styles[id], styles.lang, {
+  const langStyle = (styles as Record<string, string>)[id];
+  const className = clsx(langStyle, styles.lang, {
     [styles.selected]: selected,
   });
   const iconClass = clsx(styles.flagIcon, {
@@ -25,17 +26,16 @@ const Lang = ({ id, name, setSelected, selected }: LangProps) => {
   });
 
   return (
-    <div
+    <button
+      type="button"
       className={className}
       onClick={() => {
         setSelected(id);
       }}
     >
-      <div className={`${styles.selectButton} fullwidth body1 left`}>
-        {name}
-      </div>
+      <div className={`${styles.selectButton} fullwidth body1 left`}>{name}</div>
       <div className={iconClass} />
-    </div>
+    </button>
   );
 };
 

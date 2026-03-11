@@ -71,8 +71,7 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
   const assets = usePopupSelector(state => state.assets);
   const showSuspiciousAssets = usePopupSelector(state => state.uiState?.showSuspiciousAssets);
   const address = usePopupSelector(state => state.selectedAccount?.address);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const myAssets = usePopupSelector(state => state.balances[address!]?.assets);
+  const myAssets = usePopupSelector(state => state.balances[address ?? '']?.assets);
   const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
   const swappableAssetIdsSet = useMemo(
     () => new Set(Object.values(swappableAssetIdsByVendor).flat()),
@@ -116,8 +115,14 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
         />
         <Tooltip content={t('assets.onlyFavorites')}>
           {props => (
-            <div className={styles.filterBtn} onClick={() => setOnlyFav(!onlyFav)} {...props}>
+            <button
+              type="button"
+              className={styles.filterBtn}
+              onClick={() => setOnlyFav(!onlyFav)}
+              {...props}
+            >
               <svg
+                aria-hidden="true"
                 className={styles.filterBtnIcon}
                 fill={onlyFav ? 'var(--color-submit400)' : 'none'}
                 stroke={onlyFav ? 'var(--color-submit400)' : 'var(--color-basic500)'}
@@ -127,14 +132,20 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
               >
                 <path d="M10.6472 6.66036L10.7648 6.9373L11.0645 6.96315L15.2801 7.32666L12.0848 10.0999L11.8574 10.2972L11.9254 10.5904L12.8808 14.7108L9.25837 12.5244L9 12.3685L8.74163 12.5244L5.12113 14.7096L6.08193 10.5911L6.15049 10.2972L5.92239 10.0996L2.72308 7.32803L6.93477 6.97071L7.2352 6.94522L7.35286 6.66761L9.00035 2.78048L10.6472 6.66036Z" />
               </svg>
-            </div>
+            </button>
           )}
         </Tooltip>
 
         <Tooltip content={t('assets.onlyMyAssets')}>
           {props => (
-            <div className={styles.filterBtn} onClick={() => setOnlyMy(!onlyMy)} {...props}>
+            <button
+              type="button"
+              className={styles.filterBtn}
+              onClick={() => setOnlyMy(!onlyMy)}
+              {...props}
+            >
               <svg
+                aria-hidden="true"
                 className={styles.filterBtnIcon}
                 width="14"
                 height="14"
@@ -149,7 +160,7 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
                   fill={onlyMy ? 'var(--color-submit400)' : 'var(--color-basic500)'}
                 />
               </svg>
-            </div>
+            </button>
           )}
         </Tooltip>
       </div>
@@ -159,9 +170,9 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
           {term || onlyMy || onlyFav ? (
             <>
               <div className="margin-min">{t('assets.notFoundAssets')}</div>
-              <p className="blue link" onClick={() => setFilters(null)}>
+              <button type="button" className="blue link" onClick={() => setFilters(null)}>
                 {t('assets.resetFilters')}
-              </p>
+              </button>
             </>
           ) : (
             t('assets.emptyAssets')
