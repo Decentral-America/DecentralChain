@@ -7,16 +7,15 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: styfle/cancel-workflow-action@0.11.0
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          cache: yarn
+          cache: npm
           node-version-file: .nvmrc
-      - run: yarn install --frozen-lockfile
-      - run: yarn run build
+      - run: npm ci
+      - run: npm run build
       - run: docker compose up --wait
-      - run: yarn test
+      - run: npm test
       - if: ${{ always() }}
         run: docker compose down
       - if: ${{ failure() }}
