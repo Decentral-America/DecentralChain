@@ -4,14 +4,14 @@ import { type IBasicParams, type WithProofs, type WithSender } from './transacti
 import { type TPrivateKey, type TSeedTypes } from './types';
 
 export function getSenderPublicKey(
-  seedsAndIndexes: [string | TPrivateKey, number?][],
+  seedsAndIndexes: [string | TPrivateKey, number | undefined][],
   params: Partial<WithSender>,
 ) {
   if (seedsAndIndexes.length === 0 && params.senderPublicKey == null)
     throw new Error('Please provide either seed or senderPublicKey');
   else {
     return params.senderPublicKey == null
-      ? publicKey(seedsAndIndexes[0]?.[0])
+      ? publicKey(seedsAndIndexes[0]![0])
       : params.senderPublicKey;
   }
 }
@@ -83,13 +83,13 @@ export function normalizeAssetId(assetId: string | null) {
   return assetId != null && assetId.toUpperCase() === 'DCC' ? null : assetId;
 }
 
-export function chainIdFromRecipient(recipient: string) {
+export function chainIdFromRecipient(recipient: string): number {
   const aliasMatch = /^alias:(.):.+$/.exec(recipient);
   if (aliasMatch) {
-    return aliasMatch[1]?.charCodeAt(0);
+    return aliasMatch[1]!.charCodeAt(0);
   } else {
     try {
-      return base58Decode(recipient)[1] as number;
+      return base58Decode(recipient)[1]!;
     } catch (_e) {
       throw new Error(`Invalid recipient: ${recipient}`, { cause: _e });
     }

@@ -26,9 +26,9 @@ export function auth(
 ): IAuth {
   const seedsAndIndexes = convertToPairs(seed);
   const publicKey =
-    params.publicKey || getSenderPublicKey(seedsAndIndexes, { senderPublicKey: undefined });
+    params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
 
-  validate.auth(params);
+  validate.auth(params as unknown as Record<string, unknown>);
 
   const rx = {
     hash: '',

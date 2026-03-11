@@ -22,7 +22,7 @@ export function dccAuth(
 ): IDccAuth {
   const seedsAndIndexes = convertToPairs(seed);
   const publicKey =
-    params.publicKey || getSenderPublicKey(seedsAndIndexes, { senderPublicKey: undefined });
+    params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
   const timestamp = params.timestamp || Date.now();
   validate.dccAuth({ publicKey, timestamp });
 
@@ -36,7 +36,7 @@ export function dccAuth(
 
   const bytes = serializeDccAuthData(rx);
 
-  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]?.[0], bytes)) || '';
+  rx.signature = (seedsAndIndexes.length > 0 && signBytes(seedsAndIndexes[0]![0], bytes)) || '';
   rx.hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
   return rx;
