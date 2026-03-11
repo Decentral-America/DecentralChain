@@ -248,7 +248,9 @@ function _signSchema(
           type: item.type,
           name: item.name,
         };
-        const validator = (VALIDATORS as Record<string, ((...args: unknown[]) => void) | undefined>)[validateOptions.type];
+        const validator = (
+          VALIDATORS as Record<string, ((...args: unknown[]) => void) | undefined>
+        )[validateOptions.type];
         try {
           if (validate && validator) {
             validator(validateOptions);
