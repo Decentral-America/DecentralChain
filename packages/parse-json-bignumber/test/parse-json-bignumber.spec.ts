@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import create, { type IOptions } from '../src/parse-json-bignumber.js';
+import { create, type IOptions } from '../src/parse-json-bignumber.js';
 
 const options: IOptions<BigNumber> = {
   strict: false,
