@@ -4,15 +4,11 @@ import { SIGN_TYPE } from '../prepareTx';
 import { Adapter } from './Adapter';
 
 export class LedgerAdapter extends Adapter {
-  //@ts-expect-error
   private _currentUser: { id: number; address: string; publicKey: string };
   public static override type = AdapterType.Ledger;
-  //@ts-expect-error
   private static _ledger: DCCLedger;
-  //@ts-expect-error
   private static _hasConnectionPromise: Promise<boolean> | null;
 
-  //@ts-expect-error
   constructor(user: { id: number; address: string; publicKey: string }) {
     super();
     this._currentUser = user;
@@ -37,7 +33,6 @@ export class LedgerAdapter extends Adapter {
       () => {
         LedgerAdapter._hasConnectionPromise = null;
         return true;
-        //@ts-expect-error
       },
       (_err: unknown) => {
         LedgerAdapter._hasConnectionPromise = null;
@@ -157,7 +152,6 @@ export class LedgerAdapter extends Adapter {
   protected _isMyLedger() {
     const promise = LedgerAdapter._ledger
       .getUserDataById(this._currentUser.id)
-      //@ts-expect-error
       .then((user) => {
         if (user.address !== this._currentUser.address) {
           this._isDestroyed = true;
