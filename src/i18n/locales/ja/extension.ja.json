@@ -185,7 +185,7 @@
     "exportNotSupported": "このアカウントはエクスポートできません",
     "passwordError": "パスワードが間違っています。",
     "passwordLabel": "パスワード",
-    "passwordVerifyDesc": "Keeperのパスワードを入力し、本人確認をしてください。",
+    "passwordVerifyDesc": "Cubensis Connectのパスワードを入力し、本人確認をしてください。",
     "passwordVerifyImportantNote": "<attention>注意：</attention>このパスワードはファイルを暗号化する際にも使用されます。パスワードを忘れるとアカウントを復元すできなくなります。",
     "verifyBtn": "確認",
     "warningModalConfirmButton": "理解しました",
@@ -306,7 +306,7 @@
     "addressBookPasswordPlaceholder": "ファイル作成時に使用したパスワード",
     "browse": "参照...",
     "chooseAccountsDesc": "インポートするアカウントを選択します。",
-    "chooseAccountsExistingAccountNote": "既にKeeper に {{existingName}} として存在します。",
+    "chooseAccountsExistingAccountNote": "既にCubensis Connect に {{existingName}} として存在します。",
     "chooseAccountsImportBtn": "{{count}} アカウントをインポート",
     "chooseAccountsImportBtn_plural": "{{count}} アカウントをインポート",
     "chooseAccountsSkipBtn": "スキップ",
@@ -323,7 +323,7 @@
     "passwordPlaceholder": "キーストアの作成に使用したパスワード"
   },
   "importLedger": {
-    "accountExistsError": "このアカウントはすでにKeeperに存在しています",
+    "accountExistsError": "このアカウントはすでにCubensis Connectに存在しています",
     "accountIdLabel": "アカウントID",
     "avatarListLoading": "アカウントを読み込み中",
     "connectInstructions": "Ledgerデバイスを接続し、DCCアプリを開く",
