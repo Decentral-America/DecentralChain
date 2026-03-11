@@ -19,8 +19,8 @@ export function DataCard({
   collapsed,
   tx,
 }: {
-  className?: string;
-  collapsed?: boolean;
+  className?: string | undefined;
+  collapsed?: boolean | undefined;
   tx: MessageTxData;
 }) {
   const { t } = useTranslation();

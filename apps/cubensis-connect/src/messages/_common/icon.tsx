@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 
 interface Props {
-  className?: string;
-  small?: boolean;
+  className?: string | undefined;
+  small?: boolean | undefined;
   type: string;
 }
 
