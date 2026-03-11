@@ -1,6 +1,4 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "project": ["src/**/*.ts"],
-  "ignoreDependencies": ["@arethetypeswrong/cli", "publint", "size-limit"],
-  "ignoreBinaries": ["tsup", "tsc", "publint", "attw", "size-limit"]
+  "project": ["src/**/*.ts"]
 }
