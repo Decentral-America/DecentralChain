@@ -7,14 +7,14 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v6
         with:
-          cache: yarn
+          cache: npm
           node-version-file: .nvmrc
-      - run: yarn --frozen-lockfile
+      - run: npm ci
       - name: Extract info from tag
         id: tagInfo
         run: |
@@ -24,7 +24,7 @@ jobs:
           SENTRY_RELEASE=extension@$VERSION
           VERSION=$VERSION
           EOF
-      - run: yarn run build
+      - run: npm run build
         env:
           AMPLITUDE_API_KEY: ${{ secrets.METRICS_TOKEN }}
           MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ENVIRONMENT: ${{ steps.tagInfo.outputs.SENTRY_ENVIRONMENT }}
           SENTRY_RELEASE: ${{ steps.tagInfo.outputs.SENTRY_RELEASE }}
-      - run: yarn run zip
+      - run: npm run zip
         env:
           CUBENSIS_VERSION: ${{ steps.tagInfo.outputs.VERSION }}
       - uses: getsentry/action-release@v1
