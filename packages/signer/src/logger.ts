@@ -10,9 +10,9 @@ export interface IConsole {
   error(...args: unknown[]): void;
 }
 
-export type LogLevel = 'verbose' | 'production' | 'error';
+type LogLevel = 'verbose' | 'production' | 'error';
 
-export interface LoggerOptions {
+interface LoggerOptions {
   level: LogLevel;
   prefix: string;
 }
