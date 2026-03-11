@@ -116,7 +116,7 @@ Promise.all([
   const background = connect();
 
   background.getState().then(state => {
-    setUser({ id: state.userId });
+    setUser(state.userId ? { id: state.userId } : null);
     setTag('network', state.currentNetwork);
     updateState(state);
     store.dispatch(setLoading(false));

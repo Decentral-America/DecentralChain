@@ -22,7 +22,7 @@ const UsdAmount = ({ amount }: { amount: BigNumber | null }) =>
 interface Props {
   account: PreferencesAccount;
   amountInUsd: BigNumber | null;
-  dccBalance?: Money;
+  dccBalance?: Money | undefined;
   onClick: (account: PreferencesAccount) => void;
   onCopy: () => void;
   onOtherAccountsClick: () => void;
