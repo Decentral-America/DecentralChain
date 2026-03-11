@@ -183,7 +183,7 @@
     "exportNotSupported": "无法导出该账户",
     "passwordError": "密码不正确",
     "passwordLabel": "密码",
-    "passwordVerifyDesc": "请输入Keeper密码进行本人身份认证",
+    "passwordVerifyDesc": "请输入Cubensis Connect密码进行本人身份认证",
     "passwordVerifyImportantNote": "<attention>请注意:</attention>该密码也将用于加密导出的文件。如果您忘记该密码，您将无法恢复账户。",
     "verifyBtn": "进入",
     "warningModalConfirmButton": "我已了解",
@@ -192,7 +192,7 @@
   },
   "forgotPassword": {
     "attention": "请注意！",
-    "attentionMessage": "要想重置密码，您需要删除Keeper钱包内的所有账户，然后设置新密码，并重新导入所有账户的助记词种子。",
+    "attentionMessage": "要想重置密码，您需要删除Cubensis Connect钱包内的所有账户，然后设置新密码，并重新导入所有账户的助记词种子。",
     "warningMessage": "如果您没有保存助记词种子或私钥，您将无法再次访问您的账户。",
     "continueMessage": "在以下区域中输入该内容以继续进行操作",
     "phrase": "删除所有账户",
@@ -304,7 +304,7 @@
     "addressBookPasswordPlaceholder": "创建文件需使用密码",
     "browse": "浏览...",
     "chooseAccountsDesc": "选择您想导入的账户",
-    "chooseAccountsExistingAccountNote": "Keeper中已存在名为{{existingName}}的账户",
+    "chooseAccountsExistingAccountNote": "Cubensis Connect中已存在名为{{existingName}}的账户",
     "chooseAccountsImportBtn": "导入账户{{count}}",
     "chooseAccountsImportBtn_plural": "导入多个账户{{count}}",
     "chooseAccountsSkipBtn": "跳过",
@@ -321,7 +321,7 @@
     "passwordPlaceholder": "用于创建密钥存储文件的密码"
   },
   "importLedger": {
-    "accountExistsError": "该账户在Keeper中已存在",
+    "accountExistsError": "该账户在Cubensis Connect中已存在",
     "accountIdLabel": "账户ID",
     "avatarListLoading": "账户加载中...",
     "connectInstructions": "连接Ledger设备并打开DCC应用",
@@ -355,7 +355,7 @@
   },
   "info": {
     "joinUs": "加入DecentralChain社区",
-    "keepUp": "Keeper钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。使用Keeper钱包，您可以签名交易并在危险的网站中保持安全"
+    "keepUp": "Cubensis Connect钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。使用Cubensis Connect钱包，您可以签名交易并在危险的网站中保持安全"
   },
   "langsSettings": { "confirm": "确认", "title": "变更语言" },
   "ledgerErrors": {
@@ -405,7 +405,7 @@
     "create": "继续",
     "createPassword": "创建密码",
     "notMatch": "密码不匹配",
-    "passinfo": "您输入的密码将被保存在本地。如果您更换设备或丢失密码，您必须重复添加Keeper钱包账户的流程。DecentralChain不会保存您的密码。",
+    "passinfo": "您输入的密码将被保存在本地。如果您更换设备或丢失密码，您必须重复添加Cubensis Connect钱包账户的流程。DecentralChain不会保存您的密码。",
     "privacyPolicy": "隐私政策",
     "protect": "保护您的账户",
     "smallPass": "密码太短",
@@ -677,7 +677,7 @@
   "wallet": { "lease": "已租赁" },
   "welcome": {
     "getStarted": "开始",
-    "info": "Keeper钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。",
-    "info2": "使用Keeper钱包，您可以签名交易并在危险的网站中保持安全"
+    "info": "Cubensis Connect钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。",
+    "info2": "使用Cubensis Connect钱包，您可以签名交易并在危险的网站中保持安全"
   }
 }
