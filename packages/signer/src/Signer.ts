@@ -258,8 +258,10 @@ export class Signer {
   @ensureProvider
   @checkAuth
   public getBalance(): Promise<Array<Balance>> {
+    const userData = this._userData;
+    if (!userData) throw new Error('User not authenticated');
     return Promise.all([
-      fetchBalanceDetails(this._options.NODE_URL, this._userData!.address).then((data) => ({
+      fetchBalanceDetails(this._options.NODE_URL, userData.address).then((data) => ({
         assetId: 'DCC',
         assetName: 'DCC',
         decimals: 8,
@@ -269,7 +271,7 @@ export class Signer {
         sponsorship: null,
         isSmart: false,
       })),
-      fetchAssetsBalance(this._options.NODE_URL, this._userData!.address).then((data) =>
+      fetchAssetsBalance(this._options.NODE_URL, userData.address).then((data) =>
         data.balances.map((item) => {
           const issueTx = item.issueTransaction;
           return {
@@ -308,7 +310,10 @@ export class Signer {
    */
   @ensureProvider
   public login(): Promise<UserData> {
-    return this.currentProvider!.login()
+    const provider = this.currentProvider;
+    if (!provider) throw new Error('Provider not set');
+    return provider
+      .login()
       .then((data) => {
         this._logger.info('Logged in.');
         this._userData = data;
