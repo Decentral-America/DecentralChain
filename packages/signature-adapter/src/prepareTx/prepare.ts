@@ -53,8 +53,8 @@ function _scriptProcessor(code: string): string | null {
 }
 
 function _assetPair(data: Record<string, unknown>) {
-  const amount = data['amount'] as { asset: { id: string } };
-  const price = data['price'] as { asset: { id: string } };
+  const amount = data.amount as { asset: { id: string } };
+  const price = data.price as { asset: { id: string } };
   return {
     amountAsset: normalizeAssetId(amount.asset.id),
     priceAsset: normalizeAssetId(price.asset.id),
@@ -156,8 +156,8 @@ function _base64(str: string): string {
 }
 
 function _toOrderPrice(order: Record<string, unknown>) {
-  const amount = order['amount'] as any;
-  const price = order['price'] as any;
+  const amount = order.amount as any;
+  const price = order.price as any;
   const assetPair = new AssetPair(amount.asset, price.asset);
   const orderPrice = OrderPrice.fromTokens(price.toTokens(), assetPair);
   return orderPrice.getMatcherCoins();
