@@ -45,7 +45,7 @@ const postJson = async (url, body) => {
   return res.json();
 };
 
-export const replaceTimestampWithDateTime = (obj) => {
+const replaceTimestampWithDateTime = (obj) => {
   if (obj.timestamp) {
     obj.timestamp = new DateTime(obj.timestamp);
   }
