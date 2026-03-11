@@ -5,7 +5,7 @@
  */
 
 export { DCC } from './DCC.js';
-export { DCCLedger, DCCLedger as default, Ledger } from './dcc-ledger.js';
+export { DCCLedger, Ledger } from './dcc-ledger.js';
 export type {
   DCCLedgerOptions,
   LedgerError,
