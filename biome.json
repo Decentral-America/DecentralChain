@@ -44,9 +44,6 @@
         "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error"
       },
-      "complexity": {
-        "useLiteralKeys": "off"
-      },
       "style": {
         "useConst": "error",
         "useImportType": {
