@@ -185,7 +185,7 @@
     "exportNotSupported": "Không thể xuất tài khoản này",
     "passwordError": "Sai mật khẩu",
     "passwordLabel": "Mật khẩu",
-    "passwordVerifyDesc": "Hãy nhập mật khẩu Keeper của bạn để xác nhận danh tính",
+    "passwordVerifyDesc": "Hãy nhập mật khẩu Cubensis Connect của bạn để xác nhận danh tính",
     "passwordVerifyImportantNote": "Chú ý: Mật khẩu này cũng sẽ được sử dụng để mã hóa tệp kết quả, nếu bạn quên, bạn sẽ không thể khôi phục tài khoản của mình.",
     "verifyBtn": "Đồng ý",
     "warningModalConfirmButton": "Tôi hiểu",
@@ -194,7 +194,7 @@
   },
   "forgotPassword": {
     "attention": "Chú ý!",
-    "attentionMessage": "Để tạo lại mật khẩu, bạn cần xóa tất cả tài khoản từ ví Keeper, tạo mật khẩu mới, nhập từng tài khoản của bạn lại bằng seedpharse",
+    "attentionMessage": "Để tạo lại mật khẩu, bạn cần xóa tất cả tài khoản từ ví Cubensis Connect, tạo mật khẩu mới, nhập từng tài khoản của bạn lại bằng seedpharse",
     "warningMessage": "Nếu bạn chưa lưu Seed hoặc Private key, thì bạn sẽ không thể khôi phục quyền truy cập vào tài khoản của mình.",
     "continueMessage": "Để tiếp tục, nhập từ này vào ô bên dưới ",
     "phrase": "XÓA TẤT CẢ TÀI KHOẢN",
@@ -306,7 +306,7 @@
     "addressBookPasswordPlaceholder": "Mật khẩu được dùng để tạo tệp",
     "browse": "Duyệt..",
     "chooseAccountsDesc": "Chọn tài khoản bạn muốn import",
-    "chooseAccountsExistingAccountNote": "Đã tồn tại trong Keeper với tên {{currentName}}",
+    "chooseAccountsExistingAccountNote": "Đã tồn tại trong Cubensis Connect với tên {{currentName}}",
     "chooseAccountsImportBtn": "Import tài khoản {{count}}",
     "chooseAccountsImportBtn_plural": "Import tài khoản {{count}}",
     "chooseAccountsSkipBtn": "Bỏ qua",
@@ -323,7 +323,7 @@
     "passwordPlaceholder": "Mật khẩu được sử dụng để tạo keystore file "
   },
   "importLedger": {
-    "accountExistsError": "Tài khoản này đã tồn tại trong Keeper",
+    "accountExistsError": "Tài khoản này đã tồn tại trong Cubensis Connect",
     "accountIdLabel": "ID tài khoản ",
     "avatarListLoading": "Đang tải tài khoản..",
     "connectInstructions": "Kết nối với thiết bị Ledger và mở ứng dụng DCC",
@@ -357,7 +357,7 @@
   },
   "info": {
     "joinUs": "Tham gia cộng đồng DecentralChain",
-    "keepUp": "Ví Keeper là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp DecentralChain hoặc DApps. Sử dụng ví Keeper, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
+    "keepUp": "Ví Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp DecentralChain hoặc DApps. Sử dụng ví Cubensis Connect, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
   },
   "langsSettings": { "confirm": "Xác nhận", "title": "Thay đổi ngôn ngữ" },
   "ledgerErrors": {
