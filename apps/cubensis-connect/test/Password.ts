@@ -20,12 +20,12 @@ describe('Password management', () => {
   };
   let tabKeeper: string, tabAccounts: string;
 
-  after(async function () {
+  afterAll(async function () {
     await App.closeBgTabs(tabKeeper);
   });
 
   describe('Create password', function () {
-    before(async function () {
+    beforeAll(async function () {
       tabKeeper = await browser.getWindowHandle();
 
       const { waitForNewWindows } = await Windows.captureNewWindows();
@@ -66,7 +66,7 @@ describe('Password management', () => {
       await expect(NewAccountScreen.passwordConfirmationError).toHaveText('');
     });
 
-    it('The ability to paste the password from the clipboard');
+    it.todo('The ability to paste the password from the clipboard');
 
     it('Successful password creation', async function () {
       await NewAccountScreen.passwordInput.setValue(PASSWORD.DEFAULT);
@@ -83,7 +83,7 @@ describe('Password management', () => {
 
   // this tests starts when we are at create new account page
   describe('Change password', function () {
-    before(async function () {
+    beforeAll(async function () {
       await browser.switchToWindow(tabKeeper);
       await browser.openKeeperPopup();
 
@@ -114,7 +114,7 @@ describe('Password management', () => {
       await ChangePasswordScreen.newPasswordInput.clearValue();
     });
 
-    it('The ability to paste the password from the clipboard');
+    it.todo('The ability to paste the password from the clipboard');
 
     it('Passwords in both fields must match', async function () {
       await ChangePasswordScreen.newPasswordInput.setValue(PASSWORD.DEFAULT);
@@ -176,7 +176,7 @@ describe('Password management', () => {
       await LoginScreen.enterButton.click();
     }
 
-    before(async function () {
+    beforeAll(async function () {
       await browser.switchToWindow(tabAccounts);
       // TODO: Update seed phrase when DCC test node genesis config is set up
       await AccountsHome.importAccount(
@@ -206,7 +206,7 @@ describe('Password management', () => {
     });
 
     describe('Password reset', async function () {
-      before(async function () {
+      beforeAll(async function () {
         await performLogout();
       });
 
@@ -228,7 +228,7 @@ describe('Password management', () => {
       });
 
       describe('Delete all', function () {
-        before(async function () {
+        beforeAll(async function () {
           await LoginScreen.forgotPasswordLink.click();
         });
 
