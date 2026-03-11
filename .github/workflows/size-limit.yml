@@ -6,11 +6,10 @@ jobs:
     env:
       CI_JOB_NUMBER: 1
     steps:
-      - uses: styfle/cancel-workflow-action@0.11.0
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          cache: yarn
+          cache: npm
           node-version-file: .nvmrc
       - uses: andresz1/size-limit-action@v1
         with:
