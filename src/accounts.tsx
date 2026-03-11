@@ -45,7 +45,7 @@ const store = createAccountsStore();
 Promise.all([
   Browser.storage.local
     .get('currentLocale')
-    .then(({ currentLocale }) => i18next.changeLanguage(currentLocale)),
+    .then(({ currentLocale }: { currentLocale?: string }) => i18next.changeLanguage(currentLocale)),
   i18nextInit(),
 ]).then(() => {
   const rootEl = document.getElementById('app-content');

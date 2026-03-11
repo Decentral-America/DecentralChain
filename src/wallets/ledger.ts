@@ -1,6 +1,5 @@
 import { base58Decode } from '@decentralchain/crypto';
-// NOTE: 'Waves' in path is the ledger app module name inside @decentralchain/ledger package
-import type { ISignData, ISignOrderData, ISignTxData } from '@decentralchain/ledger/lib/Waves';
+import type { SignData, SignOrderData, SignTxData } from '@decentralchain/ledger';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import type { AssetInfoController } from 'controllers/assetInfo';
 import type { MessageTx } from 'messages/types';
@@ -10,10 +9,10 @@ import type { WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';
 
 export interface LedgerApi {
-  signOrder: (data: ISignOrderData) => Promise<string>;
-  signRequest: (data: ISignData) => Promise<string>;
-  signSomeData: (data: ISignData) => Promise<string>;
-  signTransaction: (data: ISignTxData) => Promise<string>;
+  signOrder: (data: SignOrderData) => Promise<string>;
+  signRequest: (data: SignData) => Promise<string>;
+  signSomeData: (data: SignData) => Promise<string>;
+  signTransaction: (data: SignTxData) => Promise<string>;
 }
 
 export class LedgerWallet extends Wallet<WalletPrivateDataOfType<'ledger'>> {

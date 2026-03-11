@@ -21,7 +21,7 @@ export function VerifyCodeComponent({
 }: VerifyCodeComponentProps) {
   const { t } = useTranslation();
   const [isIncorrectCode, setIsIncorrectCode] = useState<boolean>(false);
-  const refs = useMemo((): Array<React.RefObject<HTMLInputElement>> => {
+  const refs = useMemo((): Array<React.RefObject<HTMLInputElement | null>> => {
     return new Array(codeLength).fill(undefined).map(() => createRef());
   }, [codeLength]);
   const [values, setValues] = useState<string[]>(refs.map(() => ''));

@@ -48,7 +48,7 @@ export function Swap() {
 
   useEffect(() => {
     let cancelled = false;
-    let timeout: number;
+    let timeout: number | undefined;
 
     background.getExtraFee(selectedAccount.address, currentNetwork).then(feeExtra => {
       if (!cancelled) {

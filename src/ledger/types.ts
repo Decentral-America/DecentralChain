@@ -1,13 +1,12 @@
-// NOTE: 'Waves' in path is the ledger app module name inside @decentralchain/ledger package
 import {
-  type ISignData,
-  type ISignOrderData,
-  type ISignTxData,
-} from '@decentralchain/ledger/lib/Waves';
+  type SignData,
+  type SignOrderData,
+  type SignTxData,
+} from '@decentralchain/ledger';
 
 export type LedgerSignRequest = { id: string } & (
-  | { type: 'order'; data: ISignOrderData }
-  | { type: 'request'; data: ISignData }
-  | { type: 'someData'; data: ISignData }
-  | { type: 'transaction'; data: ISignTxData }
+  | { type: 'order'; data: SignOrderData }
+  | { type: 'request'; data: SignData }
+  | { type: 'someData'; data: SignData }
+  | { type: 'transaction'; data: SignTxData }
 );

@@ -43,12 +43,12 @@ export function AccountInfo() {
     state.accounts.find(x => x.address === params.address),
   );
 
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const defferRef = useRef<{
     reject: () => void;
     resolve: (password: string) => void;
-  }>();
+  } | undefined>(undefined);
 
   const [password, setPassword] = useState<string | undefined>(undefined);
   const [passwordError, setPasswordError] = useState(false);

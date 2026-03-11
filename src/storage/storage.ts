@@ -25,10 +25,10 @@ import { MIGRATIONS } from './migrations';
 const CURRENT_MIGRATION_VERSION = 3;
 
 export async function backupStorage() {
-  const { backup, WalletController } = await Browser.storage.local.get([
+  const { backup, WalletController } = (await Browser.storage.local.get([
     'backup',
     'WalletController',
-  ]);
+  ])) as { backup?: Record<string, unknown>; WalletController?: { vault?: string } };
 
   if (WalletController?.vault) {
     await Browser.storage.local.set({
@@ -202,7 +202,7 @@ export class ExtensionStorage {
   }
 
   async setSession(state: StorageSessionState) {
-    return Browser.storage.session?.set(state);
+    return Browser.storage.session?.set(state as Record<string, unknown>);
   }
 
   removeState(keys: string | string[]) {

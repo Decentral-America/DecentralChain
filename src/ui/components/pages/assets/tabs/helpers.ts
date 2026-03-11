@@ -3,7 +3,7 @@ import { type AssetsRecord } from 'assets/types';
 import { deepEqual } from 'fast-equals';
 import { type Nft, NftVendorId } from 'nfts/types';
 import { useState } from 'react';
-import { type TFunction } from 'react-i18next';
+import { type TFunction } from 'i18next';
 
 import {
   usePopupDispatch,

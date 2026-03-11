@@ -16,7 +16,9 @@ interface State {
 export class DropdownButton extends PureComponent<Props, State> {
   private element: HTMLDivElement | null | undefined;
 
-  getRef = (element: HTMLDivElement | null) => (this.element = element);
+  getRef = (element: HTMLDivElement | null) => {
+    this.element = element;
+  };
 
   clickHandler = () => {
     const showList = this.state.showList;
@@ -81,7 +83,7 @@ export class DropdownButton extends PureComponent<Props, State> {
           <div className={clsx(styles.arrowButton)}>
             <Button
               type="button"
-              view={defaultItem.props.view}
+              view={(defaultItem as React.ReactElement<any>).props.view}
               onClick={this.clickHandler}
               className={clsx(styles.dropdownButton)}
             />

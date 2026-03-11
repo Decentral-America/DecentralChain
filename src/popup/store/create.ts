@@ -14,17 +14,20 @@ export function createPopupStore() {
     { dispatch: ThunkDispatch<PopupState, undefined, AppAction> },
     Record<never, unknown>
   >(
-    reducer,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reducer as any,
     applyMiddleware(
       thunk,
-      ...Object.values(middleware),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(Object.values(middleware) as any[]),
       ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
     ),
   );
 
   if (import.meta.webpackHot) {
     import.meta.webpackHot.accept('./reducer', () => {
-      store.replaceReducer(reducer);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      store.replaceReducer(reducer as any);
     });
   }
 
