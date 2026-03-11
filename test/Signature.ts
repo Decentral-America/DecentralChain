@@ -82,7 +82,7 @@ describe('Signature', () => {
   const senderPublicKey = 'AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV';
   const senderPublicKeyBytes = base58Decode(senderPublicKey);
 
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
     await Network.switchToAndCheck('Testnet');
 
@@ -105,7 +105,7 @@ describe('Signature', () => {
     await browser.navigateTo(`https://${WHITELIST[3]}`);
   });
 
-  after(async () => {
+  afterAll(async () => {
     const tabKeeper = (await browser.createWindow('tab')).handle;
     await App.closeBgTabs(tabKeeper);
     await App.resetVault();
@@ -511,8 +511,7 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      it('Copying script to the clipboard');
-
+      it.todo('Copying script to the clipboard');
       describe('without script', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -685,12 +684,11 @@ describe('Signature', () => {
       });
 
       // TODO this checks should be into unittests
-      it('Address');
-      it('Alias');
-      it('Waves / asset / smart asset');
-      it('Attachment');
-      it('Transfers to Gateways');
-
+      it.todo('Address');
+      it.todo('Alias');
+      it.todo('Waves / asset / smart asset');
+      it.todo('Attachment');
+      it.todo('Transfers to Gateways');
       describe('without attachment', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -1437,9 +1435,8 @@ describe('Signature', () => {
       });
 
       // TODO this checks should be into unittests
-      it('Minimum alias length');
-      it('Maximum alias length');
-
+      it.todo('Minimum alias length');
+      it.todo('Maximum alias length');
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -1930,10 +1927,9 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      it('Copying script to the clipboard');
-      it('Set');
-      it('Cancel');
-
+      it.todo('Copying script to the clipboard');
+      it.todo('Set');
+      it.todo('Cancel');
       describe('without script', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -2220,8 +2216,7 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      it('Copying script to the clipboard');
-
+      it.todo('Copying script to the clipboard');
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -2361,15 +2356,15 @@ describe('Signature', () => {
       });
 
       // TODO this checks should be into unittests
-      it('dApp: address / alias');
-      it('Function name at max length');
-      it('Default function call');
-      it('Maximum number of arguments');
-      it('Arguments of all types (primitives and List of unions)');
+      it.todo('dApp: address / alias');
+      it.todo('Function name at max length');
+      it.todo('Default function call');
+      it.todo('Maximum number of arguments');
+      it.todo('Arguments of all types (primitives and List of unions)');
       describe('Payment', () => {
-        it('Zero count');
-        it('Maximum count');
-        it('Waves / asset / smart asset');
+        it.todo('Zero count');
+        it.todo('Maximum count');
+        it.todo('Waves / asset / smart asset');
       });
 
       describe('without call', () => {

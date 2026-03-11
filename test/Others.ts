@@ -12,7 +12,7 @@ import { SendAssetScreen } from './helpers/SendAssetScreen';
 import { Windows } from './helpers/Windows';
 
 describe('Others', () => {
-  before(async () => {
+  beforeAll(async () => {
     await App.initVault();
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
@@ -34,23 +34,19 @@ describe('Others', () => {
     await browser.switchToWindow(newTab);
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.openKeeperPopup();
     await Network.switchToAndCheck('Mainnet');
     await App.resetVault();
   });
 
-  it('After signAndPublishTransaction() "View transaction" button leads to the correct Explorer');
-
-  it('Signature requests are automatically removed from pending requests after 30 minutes');
-
-  it('Switch account on confirmation screen');
-
-  it('Send more transactions for signature when different screens are open');
-
+  it.todo('After signAndPublishTransaction() "View transaction" button leads to the correct Explorer');
+  it.todo('Signature requests are automatically removed from pending requests after 30 minutes');
+  it.todo('Switch account on confirmation screen');
+  it.todo('Send more transactions for signature when different screens are open');
   // NOTE: 'WAVES' here refers to the native protocol asset ticker, not branding
   describe('Send WAVES', () => {
-    before(async () => {
+    beforeAll(async () => {
       await browser.openKeeperPopup();
     });
 
