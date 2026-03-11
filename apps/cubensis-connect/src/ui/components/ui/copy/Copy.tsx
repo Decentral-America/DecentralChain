@@ -39,10 +39,10 @@ export class Copy extends PureComponent<Props> {
 
     if (
       elem &&
-      (elem as React.ReactElement).props &&
-      typeof (elem as React.ReactElement).props.onClick === 'function'
+      (elem as React.ReactElement<any>).props &&
+      typeof (elem as React.ReactElement<any>).props.onClick === 'function'
     ) {
-      (elem as React.ReactElement).props.onClick(event);
+      (elem as React.ReactElement<any>).props.onClick(event);
     }
   };
 
@@ -50,7 +50,7 @@ export class Copy extends PureComponent<Props> {
     const { text, onCopy, options, children, ...props } = this.props;
     const elem = Children.only(children);
 
-    return cloneElement(elem as React.ReactElement, {
+    return cloneElement(elem as React.ReactElement<any>, {
       ...props,
       onClick: this.onClick,
     });
