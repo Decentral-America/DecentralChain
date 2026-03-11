@@ -77,7 +77,7 @@ type MethodCallResponse<T> =
   | { id: string; isError: true; error: { message: string } };
 
 interface MethodCallResponsePayload<T = unknown> {
-  keeperMethodCallResponse?: MethodCallResponse<T>;
+  keeperMethodCallResponse?: MethodCallResponse<T> | undefined;
 }
 
 export function handleMethodCallRequests<K extends string>(
