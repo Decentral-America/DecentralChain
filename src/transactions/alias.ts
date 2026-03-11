@@ -13,6 +13,7 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
+// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function alias(
   params: IAliasParams,
   seed: TSeedTypes,
@@ -42,7 +43,7 @@ export function alias(
     id: '',
   };
 
-  validate.alias(tx);
+  validate.alias(tx as unknown as Record<string, unknown>);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
   const idBytes = version > 2 ? bytes : [bytes[0], ...bytes.slice(36, -16)];
