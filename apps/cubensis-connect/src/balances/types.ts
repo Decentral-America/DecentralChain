@@ -1,6 +1,6 @@
-import { type TransactionFromNode } from '@decentralchain/ts-types';
-import { type AssetDetail } from 'assets/types';
-import { type NetworkName } from 'networks/types';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
+import type { AssetDetail } from 'assets/types';
+import type { NetworkName } from 'networks/types';
 
 export interface AssetBalance {
   balance: string;
@@ -11,12 +11,12 @@ export interface AssetBalance {
 export type BalanceAssets = Partial<Record<string, AssetBalance>>;
 
 export interface BalancesItem {
-  aliases?: string[];
-  assets?: BalanceAssets;
-  available?: string;
-  leasedOut?: string;
-  regular?: string;
-  network?: NetworkName;
-  nfts?: AssetDetail[];
-  txHistory?: TransactionFromNode[];
+  aliases?: string[] | undefined;
+  assets?: BalanceAssets | undefined;
+  available?: string | undefined;
+  leasedOut?: string | undefined;
+  regular?: string | undefined;
+  network?: NetworkName | undefined;
+  nfts?: AssetDetail[] | undefined;
+  txHistory?: TransactionFromNode[] | undefined;
 }
