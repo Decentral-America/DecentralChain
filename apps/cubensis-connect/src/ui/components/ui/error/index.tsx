@@ -49,8 +49,7 @@ export class ErrorMessage extends PureComponent<Props, State> {
     const { showed } = state;
     const { show } = props;
 
-    // eslint-disable-next-line eqeqeq
-    if (!state || showed != show) {
+    if (!state || showed !== show) {
       return { ...state, showed: show };
     }
 
@@ -62,21 +61,15 @@ export class ErrorMessage extends PureComponent<Props, State> {
   render() {
     const { showed } = this.state;
 
-    const {
-      children,
-      className = '',
-      errors,
-      type,
-      show,
-      ...otherProps
-    } = this.props;
+    const { children, className = '', errors, type, show, ...otherProps } = this.props;
 
     if (type === 'modal') {
       return null;
     }
 
     return (
-      <div
+      <button
+        type="button"
         className={clsx(styles.error, className, {
           [styles.modalError]: type && type === 'modal',
         })}
@@ -85,7 +78,7 @@ export class ErrorMessage extends PureComponent<Props, State> {
       >
         <Errors errors={errors} show={showed} />
         {showed ? children : null}
-      </div>
+      </button>
     );
   }
 

@@ -30,9 +30,7 @@ export function Login() {
           }
         }}
       >
-        <div className="left input-title basic500 tag1">
-          {t('login.password')}
-        </div>
+        <div className="left input-title basic500 tag1">{t('login.password')}</div>
 
         <div className="margin-main-big relative">
           <Input
@@ -66,14 +64,15 @@ export function Login() {
       </form>
 
       <div>
-        <div
+        <button
+          type="button"
           className={styles.forgotLnk}
           onClick={() => {
             navigate('/forgot-password');
           }}
         >
           {t('login.passwordForgot')}
-        </div>
+        </button>
       </div>
     </div>
   );

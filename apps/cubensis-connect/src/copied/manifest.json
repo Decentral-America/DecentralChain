@@ -40,12 +40,5 @@
       "all_frames": true
     }
   ],
-  "permissions": [
-    "alarms",
-    "clipboardWrite",
-    "idle",
-    "storage",
-    "unlimitedStorage",
-    "tabs"
-  ]
+  "permissions": ["alarms", "clipboardWrite", "idle", "storage", "unlimitedStorage", "tabs"]
 }

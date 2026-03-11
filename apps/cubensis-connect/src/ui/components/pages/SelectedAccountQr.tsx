@@ -18,8 +18,9 @@ export function SelectedAccountQr() {
   const qrSize = 200;
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    QrCode.toDataURL(address!, {
+    if (!address) return;
+
+    QrCode.toDataURL(address, {
       errorCorrectionLevel: 'H',
       margin: 1,
       rendererOpts: { quality: 1 },
@@ -38,6 +39,7 @@ export function SelectedAccountQr() {
         <img
           className={qrSrc ? undefined : 'skeleton-glow'}
           src={qrSrc}
+          alt="Account QR code"
           width={qrSize}
           height={qrSize}
         />

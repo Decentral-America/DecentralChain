@@ -1,4 +1,4 @@
-import { type AccountsState } from 'accounts/store/types';
+import type { AccountsState } from 'accounts/store/types';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -43,10 +43,7 @@ class NewAccountComponent extends PureComponent<Props> {
     }
 
     const isFirstError = NewAccountComponent._validateFirst(firstValue);
-    const isSecondError = NewAccountComponent._validateSecond(
-      firstValue,
-      secondValue,
-    );
+    const isSecondError = NewAccountComponent._validateSecond(firstValue, secondValue);
 
     return isFirstError || isSecondError;
   }
@@ -83,17 +80,13 @@ class NewAccountComponent extends PureComponent<Props> {
   onChangeSecond = (e: React.ChangeEvent<HTMLInputElement>) =>
     this._onChangeInputs(this.state.firstValue, e.target.value);
 
-  handleTermsAcceptedChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
+  handleTermsAcceptedChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ termsAccepted: e.currentTarget.checked }, () => {
       this._onChangeInputs(this.state.firstValue, this.state.secondValue);
     });
   };
 
-  handleonditionsAcceptedChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
+  handleonditionsAcceptedChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ conditionsAccepted: e.currentTarget.checked }, () => {
       this._onChangeInputs(this.state.firstValue, this.state.secondValue);
     });
@@ -116,20 +109,12 @@ class NewAccountComponent extends PureComponent<Props> {
 
     return (
       <div className={styles.account}>
-        <form
-          data-testid="newAccountForm"
-          className={styles.content}
-          onSubmit={this.onSubmit}
-        >
-          <h2 className={`${styles.title} title1`}>
-            {t('newAccount.protect')}
-          </h2>
+        <form data-testid="newAccountForm" className={styles.content} onSubmit={this.onSubmit}>
+          <h2 className={`${styles.title} title1`}>{t('newAccount.protect')}</h2>
 
           <div className={styles.inner}>
             <div className="margin1 relative">
-              <div className="basic500 tag1 left input-title">
-                {t('newAccount.createPassword')}
-              </div>
+              <div className="basic500 tag1 left input-title">{t('newAccount.createPassword')}</div>
               <Input
                 autoComplete="new-password"
                 autoFocus
@@ -142,10 +127,7 @@ class NewAccountComponent extends PureComponent<Props> {
                 wrapperClassName="margin1"
               />
 
-              <ErrorMessage
-                show={this.state.firstError}
-                data-testid="firstError"
-              >
+              <ErrorMessage show={this.state.firstError} data-testid="firstError">
                 {t('newAccount.smallPass')}
               </ErrorMessage>
             </div>
@@ -162,10 +144,7 @@ class NewAccountComponent extends PureComponent<Props> {
                 type="password"
                 view="password"
               />
-              <ErrorMessage
-                show={this.state.secondError}
-                data-testid="secondError"
-              >
+              <ErrorMessage show={this.state.secondError} data-testid="secondError">
                 {t('newAccount.notMatch')}
               </ErrorMessage>
             </div>
@@ -217,9 +196,7 @@ class NewAccountComponent extends PureComponent<Props> {
           >
             {t('newAccount.create')}
           </Button>
-          <div className={`${styles.text} tag1 basic500`}>
-            {t('newAccount.passinfo')}
-          </div>
+          <div className={`${styles.text} tag1 basic500`}>{t('newAccount.passinfo')}</div>
         </form>
         <div className={styles.footer}>
           <LangsSelect />
@@ -244,10 +221,7 @@ class NewAccountComponent extends PureComponent<Props> {
   _checkValues(firstValue: string, secondValue: string) {
     const { termsAccepted, conditionsAccepted } = this.state;
     const firstError = NewAccountComponent._validateFirst(firstValue);
-    const secondError = NewAccountComponent._validateSecond(
-      firstValue,
-      secondValue,
-    );
+    const secondError = NewAccountComponent._validateSecond(firstValue, secondValue);
     const passwordError = !!(firstError || secondError);
     const buttonDisabled = NewAccountComponent._isDisabledButton(
       {
@@ -262,6 +236,4 @@ class NewAccountComponent extends PureComponent<Props> {
   }
 }
 
-export const NewAccount = connect(mapStateToProps)(
-  withTranslation()(NewAccountComponent),
-);
+export const NewAccount = connect(mapStateToProps)(withTranslation()(NewAccountComponent));

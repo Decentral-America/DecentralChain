@@ -1,5 +1,5 @@
-import { captureException, withScope } from '@sentry/browser';
 import { Asset, Money } from '@decentralchain/data-entities';
+import { captureException, withScope } from '@sentry/browser';
 import clsx from 'clsx';
 import { NetworkName } from 'networks/types';
 import { usePopupSelector } from 'popup/store/react';
@@ -74,16 +74,11 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
 
       if (txStatus.status === 'confirmed') {
         if (txStatus.applicationStatus === 'succeeded') {
-          const txInfoUrl = new URL(
-            `/transactions/info/${transactionId}`,
-            nodeBaseUrl,
-          );
+          const txInfoUrl = new URL(`/transactions/info/${transactionId}`, nodeBaseUrl);
 
           try {
             const txInfo = (await fetch(txInfoUrl.toString()).then(res =>
-              res.ok
-                ? res.json()
-                : res.text().then(text => Promise.reject(new Error(text))),
+              res.ok ? res.json() : res.text().then(text => Promise.reject(new Error(text))),
             )) as {
               stateChanges: {
                 transfers: Array<{
@@ -94,19 +89,20 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
               };
             };
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const transfer = txInfo.stateChanges.transfers.find(
-              // eslint-disable-next-line @typescript-eslint/no-shadow
               t => t.address === selectedAccount?.address,
-            )!;
-
-            setReceivedMoney(
-              new Money(
-                transfer.amount,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                new Asset(assets[transfer.asset || 'WAVES']!),
-              ),
             );
+
+            if (!transfer) {
+              throw new Error('Transfer not found in state changes');
+            }
+
+            const receivedAsset = assets[transfer.asset || 'WAVES'];
+            if (!receivedAsset) {
+              throw new Error('Received asset not found');
+            }
+
+            setReceivedMoney(new Money(transfer.amount, new Asset(receivedAsset)));
             setSwapStatus(SwapStatus.Succeeded);
           } catch (err) {
             txInfoAttempts++;
@@ -155,8 +151,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
         window.clearTimeout(timeout);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAccount?.address, nodeBaseUrl, transactionId]);
+  }, [selectedAccount?.address, nodeBaseUrl, transactionId, assets]);
 
   const explorerBaseUrl = explorerBaseUrlsByNetwork[currentNetwork];
 
@@ -194,26 +189,13 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
 
           <div className={styles.main}>
             <div className={styles.card}>
-              <div
-                className={clsx(
-                  styles.cardIcon,
-                  'create-order-transaction-icon',
-                )}
-              />
+              <div className={clsx(styles.cardIcon, 'create-order-transaction-icon')} />
 
               <div className={styles.cardText}>
                 <Balance addSign="-" split showAsset balance={fromMoney} />
 
-                {[SwapStatus.Pending, SwapStatus.Succeeded].includes(
-                  swapStatus,
-                ) && (
-                  <Balance
-                    addSign="+"
-                    split
-                    showAsset
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    balance={receivedMoney!}
-                  />
+                {[SwapStatus.Pending, SwapStatus.Succeeded].includes(swapStatus) && (
+                  <Balance addSign="+" split showAsset balance={receivedMoney ?? undefined} />
                 )}
               </div>
             </div>

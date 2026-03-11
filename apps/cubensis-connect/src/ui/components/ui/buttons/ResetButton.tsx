@@ -48,12 +48,8 @@ export const ResetButton = ({ className }: Props) => {
                 setShowResetModal(false);
               }}
             />
-            <p className={styles.resetModalTitle}>
-              {t('errorPage.resetTitle')}
-            </p>
-            <p className={styles.resetModalDescription}>
-              {t('errorPage.resetDescription')}
-            </p>
+            <p className={styles.resetModalTitle}>{t('errorPage.resetTitle')}</p>
+            <p className={styles.resetModalDescription}>{t('errorPage.resetDescription')}</p>
             {loading ? (
               <div className={styles.resetModalLoader} />
             ) : (
@@ -65,11 +61,12 @@ export const ResetButton = ({ className }: Props) => {
                   const state = await Browser.storage.local.get();
 
                   await Browser.storage.local.remove(
-                    Object.keys(state).reduce<string[]>(
-                      (acc, key) =>
-                        SAFE_FIELDS.has(key) ? acc : [...acc, key],
-                      [],
-                    ),
+                    Object.keys(state).reduce<string[]>((acc, key) => {
+                      if (!SAFE_FIELDS.has(key)) {
+                        acc.push(key);
+                      }
+                      return acc;
+                    }, []),
                   );
 
                   Browser.runtime.reload();

@@ -24,19 +24,14 @@ export function ActiveMessagePage() {
   const activeMessage = usePopupSelector(state => state.activePopup?.msg);
 
   const balance = usePopupSelector(
-    state =>
-      state.selectedAccount && state.balances[state.selectedAccount.address],
+    state => state.selectedAccount && state.balances[state.selectedAccount.address],
   );
 
   const otherMessagesCount = usePopupSelector(
-    state =>
-      state.messages.filter(item => item.id !== state.activePopup?.msg?.id)
-        .length,
+    state => state.messages.filter(item => item.id !== state.activePopup?.msg?.id).length,
   );
 
-  const notificationsCount = usePopupSelector(
-    state => state.notifications.length,
-  );
+  const notificationsCount = usePopupSelector(state => state.notifications.length);
 
   const selectedAccount = usePopupSelector(state => state.selectedAccount);
 
@@ -57,16 +52,10 @@ export function ActiveMessagePage() {
 
   invariant(selectedAccount);
 
-  const {
-    card: Card,
-    final: FinalComponent,
-    screen: Message,
-  } = getMessageConfig(activeMessage);
+  const { card: Card, final: FinalComponent, screen: Message } = getMessageConfig(activeMessage);
 
   if (activeMessage.status === MessageStatus.UnApproved) {
-    return (
-      <Message message={activeMessage} selectedAccount={selectedAccount} />
-    );
+    return <Message message={activeMessage} selectedAccount={selectedAccount} />;
   }
 
   const explorerUrls = new Map([
@@ -86,14 +75,9 @@ export function ActiveMessagePage() {
 
   return (
     <div className={transactionsStyles.transaction}>
-      <MessageHeader
-        message={activeMessage}
-        selectedAccount={selectedAccount}
-      />
+      <MessageHeader message={activeMessage} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         {activeMessage.status !== MessageStatus.Failed && (
           <div
             className={clsx(transactionsStyles.txBigIcon, 'margin-main', {
@@ -116,9 +100,7 @@ export function ActiveMessagePage() {
 
           {activeMessage.status === MessageStatus.Failed && (
             <div className={clsx(styles.errorWrapper, 'plate')}>
-              <h2 className={clsx(styles.errorHeading, 'error-icon')}>
-                {t('sign.someError')}
-              </h2>
+              <h2 className={clsx(styles.errorHeading, 'error-icon')}>{t('sign.someError')}</h2>
 
               <pre className={styles.errorMessage}>{activeMessage.err}</pre>
             </div>
@@ -147,9 +129,7 @@ export function ActiveMessagePage() {
 
         {activeMessage.type === 'order' && (
           <div className={clsx(transactionsStyles.txRow, 'margin-main-top')}>
-            <div className="basic500 tx-title tag1">
-              {t('transactions.orderId')}
-            </div>
+            <div className="basic500 tx-title tag1">{t('transactions.orderId')}</div>
 
             <div className="black">{activeMessage.data.id}</div>
           </div>
@@ -161,8 +141,7 @@ export function ActiveMessagePage() {
           'buttons-wrapper': otherMessagesCount + notificationsCount > 1,
         })}
       >
-        {(otherMessagesCount + notificationsCount > 1 ||
-          notificationsCount !== 0) && (
+        {(otherMessagesCount + notificationsCount > 1 || notificationsCount !== 0) && (
           <Button
             type="button"
             onClick={() => {
@@ -199,9 +178,7 @@ export function ActiveMessagePage() {
               }
             }}
           >
-            {activeMessage.status === MessageStatus.Failed
-              ? t('sign.understand')
-              : t('sign.close')}
+            {activeMessage.status === MessageStatus.Failed ? t('sign.understand') : t('sign.close')}
           </Button>
         )}
       </div>

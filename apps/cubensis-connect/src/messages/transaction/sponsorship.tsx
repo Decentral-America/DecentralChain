@@ -7,13 +7,13 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxSponsorship } from '../types';
+import type { MessageOfType, MessageTxSponsorship } from '../types';
 
 export function SponsorshipCard({
   className,
@@ -34,19 +34,12 @@ export function SponsorshipCard({
         <div className={transactionsStyles.cardHeader}>
           <div className={transactionsStyles.txIcon}>
             <MessageIcon
-              type={
-                tx.minSponsoredAssetFee == null
-                  ? 'sponsor_disable'
-                  : 'sponsor_enable'
-              }
+              type={tx.minSponsoredAssetFee == null ? 'sponsor_disable' : 'sponsor_enable'}
             />
           </div>
 
           <div>
-            <div
-              className="basic500 body3 margin-min"
-              data-testid="sponsorshipTitle"
-            >
+            <div className="basic500 body3 margin-min" data-testid="sponsorshipTitle">
               {t(
                 tx.minSponsoredAssetFee == null
                   ? 'transactions.clearSponsored'
@@ -93,16 +86,12 @@ export function SponsorshipScreen({
     <div className={transactionsStyles.transaction}>
       <MessageHeader message={message} selectedAccount={selectedAccount} />
 
-      <div
-        className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}
-      >
+      <div className={clsx(transactionsStyles.txScrollBox, 'transactionContent')}>
         <div className="margin-main">
           <SponsorshipCard tx={tx} />
         </div>
 
-        <TxDetailTabs
-          json={stringifyTransaction(message.data, { pretty: true })}
-        >
+        <TxDetailTabs json={stringifyTransaction(message.data, { pretty: true })}>
           <TxInfo message={message} />
         </TxDetailTabs>
       </div>

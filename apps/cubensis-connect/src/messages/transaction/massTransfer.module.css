@@ -39,8 +39,7 @@
   content: attr(data-open-text);
   margin-left: auto;
   padding-right: 20px;
-  background: url(../../ui/assets/img/arrow-down-14-basic-200.svg) no-repeat
-    right center;
+  background: url(../../ui/assets/img/arrow-down-14-basic-200.svg) no-repeat right center;
   background-size: 12px;
   color: #c5d0de;
   font-size: 11px;

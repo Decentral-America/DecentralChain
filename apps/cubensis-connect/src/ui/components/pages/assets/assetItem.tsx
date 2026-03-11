@@ -1,4 +1,4 @@
-import { type Money } from '@decentralchain/data-entities';
+import type { Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import Background from 'ui/services/Background';
@@ -39,16 +39,12 @@ export function AssetItem({
   const isLoading = !asset;
 
   return (
-    <div
-      className={clsx(styles.assetCard, className, 'flex', 'relative')}
-      data-testid={assetId}
-    >
+    <div className={clsx(styles.assetCard, className, 'flex', 'relative')} data-testid={assetId}>
       <AssetLogo
         className={clsx(styles.assetIcon, isLoading && 'skeleton-glow')}
         assetId={assetId}
         name={displayName}
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        hasSponsorship={balance?.asset?.minSponsoredFee!.isPositive()}
+        hasSponsorship={balance?.asset?.minSponsoredFee?.isPositive()}
         hasScript={balance?.asset?.hasScript}
       />
 
@@ -57,11 +53,10 @@ export function AssetItem({
           <div className={styles.assetName}>{displayName || <Loader />}</div>
           {asset?.isFavorite && (
             <svg
+              aria-hidden="true"
               className={styles.assetStatusIcon}
               fill={isFavorite ? 'var(--color-submit400)' : 'none'}
-              stroke={
-                isFavorite ? 'var(--color-submit400)' : 'var(--color-submit200)'
-              }
+              stroke={isFavorite ? 'var(--color-submit400)' : 'var(--color-submit200)'}
               width="18"
               height="18"
               viewBox="0 0 18 18"
@@ -71,6 +66,7 @@ export function AssetItem({
           )}
           {asset?.isSuspicious && (
             <svg
+              aria-hidden="true"
               className={styles.assetStatusIcon}
               width="18"
               height="18"
@@ -88,12 +84,7 @@ export function AssetItem({
         </div>
 
         <div>
-          <Balance
-            balance={balance}
-            isShortFormat={false}
-            showUsdAmount
-            split
-          />
+          <Balance balance={balance} isShortFormat={false} showUsdAmount split />
         </div>
       </div>
 
@@ -108,7 +99,7 @@ export function AssetItem({
                   onClick={() => onInfoClick(assetId)}
                   {...props}
                 >
-                  <svg className={styles.infoIcon} viewBox="0 0 28 26">
+                  <svg aria-hidden="true" className={styles.infoIcon} viewBox="0 0 28 26">
                     <path d="M25 13c0 6.075-4.925 11-11 11S3 19.075 3 13 7.925 2 14 2s11 4.925 11 11ZM4 13c0 5.523 4.477 10 10 10s10-4.477 10-10S19.523 3 14 3 4 7.477 4 13Z" />
                     <path d="M14 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 1a.75.75 0 0 0-.75.75v5.5a.75.75 0 0 0 1.5 0v-5.5A.75.75 0 0 0 14 11Z" />
                   </svg>
@@ -117,11 +108,7 @@ export function AssetItem({
             </Tooltip>
           )}
           <Tooltip
-            content={t(
-              isFavorite
-                ? 'assetInfo.favRemoveTooltip'
-                : 'assetInfo.favAddTooltip',
-            )}
+            content={t(isFavorite ? 'assetInfo.favRemoveTooltip' : 'assetInfo.favAddTooltip')}
           >
             {props => (
               <button
@@ -133,13 +120,10 @@ export function AssetItem({
                 {...props}
               >
                 <svg
+                  aria-hidden="true"
                   className={styles.favIcon}
                   fill={isFavorite ? 'var(--color-submit400)' : 'none'}
-                  stroke={
-                    isFavorite
-                      ? 'var(--color-submit400)'
-                      : 'var(--color-basic200)'
-                  }
+                  stroke={isFavorite ? 'var(--color-submit400)' : 'var(--color-basic200)'}
                   width="26"
                   height="26"
                   viewBox="0 0 18 18"
@@ -160,6 +144,7 @@ export function AssetItem({
                 data-testid="sendBtn"
               >
                 <svg
+                  aria-hidden="true"
                   className={styles.sendIcon}
                   width="24"
                   height="24"
@@ -181,6 +166,7 @@ export function AssetItem({
                   {...props}
                 >
                   <svg
+                    aria-hidden="true"
                     className={styles.swapIcon}
                     width="14"
                     height="14"
