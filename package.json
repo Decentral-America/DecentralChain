@@ -1,6 +1,6 @@
 {
   "name": "@decentralchain/crypto",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Async WASM cryptographic library for DecentralChain — Ed25519/X25519 key generation, signing, AES encryption, seed management",
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -22,10 +22,10 @@
     "!src/**/*.spec.ts"
   ],
   "scripts": {
-    "build:wasm": "wasm-pack build --target web --release && rimraf pkg/package.json",
+    "build:wasm": "wasm-pack build --target web --release && rimraf pkg/package.json pkg/.gitignore",
     "build:ts": "tsc",
     "build": "npm run build:wasm && npm run build:ts",
-    "dev:wasm": "wasm-pack build --target web --dev && rimraf pkg/package.json",
+    "dev:wasm": "wasm-pack build --target web --dev && rimraf pkg/package.json pkg/.gitignore",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
