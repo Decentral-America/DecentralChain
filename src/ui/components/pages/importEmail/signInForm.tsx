@@ -34,17 +34,14 @@ export function SignInForm({ className, userData, signIn }: Props) {
   const maskedEmail = `${name[0]}******@${domain}`;
   const [password, setPassword] = useState<string>(userData?.password ?? '');
 
-  const handleEmailChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(event.target.value.trim());
-      setErrors(prev => ({
-        ...prev,
-        _form: null,
-        emailRequired: null,
-      }));
-    },
-    [],
-  );
+  const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value.trim());
+    setErrors(prev => ({
+      ...prev,
+      _form: null,
+      emailRequired: null,
+    }));
+  }, []);
 
   const handleEmailBlur = useCallback(() => {
     setErrors(prev => ({
@@ -56,23 +53,19 @@ export function SignInForm({ className, userData, signIn }: Props) {
     }));
   }, [email, t]);
 
-  const handlePasswordChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setPassword(event.target.value);
-      setErrors(prev => ({
-        ...prev,
-        _form: null,
-        passwordRequired: null,
-      }));
-    },
-    [],
-  );
+  const handlePasswordChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+    setErrors(prev => ({
+      ...prev,
+      _form: null,
+      passwordRequired: null,
+    }));
+  }, []);
 
   const handlePasswordBlur = useCallback(() => {
     setErrors(prev => ({
       ...prev,
-      passwordRequired:
-        password.length === 0 ? t('importEmail.passwordRequired') : null,
+      passwordRequired: password.length === 0 ? t('importEmail.passwordRequired') : null,
     }));
   }, [password.length, t]);
 
@@ -95,8 +88,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
           case 'Incorrect username or password.':
             errMessage = t('importEmail.incorrectUsernameOrPassword');
             break;
-          // TODO: This error string comes from the upstream exchange API — update when migrated to DCC exchange
-          case 'You have exceeded incorrect username or password limit. If you have any problems, please contact support https://support.waves.exchange/.':
+          case 'You have exceeded incorrect username or password limit. If you have any problems, please contact support https://support.decentral.exchange/.':
             errMessage = t('importEmail.incorrectUsernameOrPasswordLimit');
             break;
           default:
@@ -117,9 +109,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
   return (
     <form className={className} onSubmit={handleSubmit}>
       <div className="margin1">
-        <div className="tag1 basic500 input-title">
-          {t('importEmail.emailLabel')}
-        </div>
+        <div className="tag1 basic500 input-title">{t('importEmail.emailLabel')}</div>
 
         {userData?.username ? (
           <Input data-testid="emailInput" value={maskedEmail} disabled />
@@ -136,15 +126,11 @@ export function SignInForm({ className, userData, signIn }: Props) {
           />
         )}
 
-        <ErrorMessage show={errors.emailRequired != null}>
-          {errors.emailRequired}
-        </ErrorMessage>
+        <ErrorMessage show={errors.emailRequired != null}>{errors.emailRequired}</ErrorMessage>
       </div>
 
       <div className="margin4">
-        <div className="tag1 basic500 input-title">
-          {t('importEmail.passwordLabel')}
-        </div>
+        <div className="tag1 basic500 input-title">{t('importEmail.passwordLabel')}</div>
 
         <Input
           autoComplete="current-password"
