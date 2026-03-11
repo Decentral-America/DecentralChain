@@ -25,8 +25,7 @@ export function auth(
   chainId?: string | number,
 ): IAuth {
   const seedsAndIndexes = convertToPairs(seed);
-  const publicKey =
-    params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
+  const publicKey = params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
 
   validate.auth(params as unknown as Record<string, unknown>);
 

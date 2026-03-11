@@ -257,9 +257,15 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
   if (Object.hasOwn(res, 'chainId')) {
     res.sender = address({ publicKey: t.senderPublicKey }, t.chainId);
   } else {
-    const recipient = res.recipient || res.dApp || (res.transfers as Array<{recipient?: string}> | undefined)?.[0]?.recipient;
+    const recipient =
+      res.recipient ||
+      res.dApp ||
+      (res.transfers as Array<{ recipient?: string }> | undefined)?.[0]?.recipient;
     if (recipient) {
-      res.sender = address({ publicKey: t.senderPublicKey }, chainIdFromRecipient(recipient as string));
+      res.sender = address(
+        { publicKey: t.senderPublicKey },
+        chainIdFromRecipient(recipient as string),
+      );
     }
   }
 
@@ -395,9 +401,7 @@ const getInvokeData = (
   t: InvokeScriptTransaction,
 ): dccProto.waves.IInvokeScriptTransactionData => ({
   dApp: recipientToProto(t.dApp),
-  functionCall: binary.serializerFromSchema(
-    schemas.invokeScriptSchemaV1.schema[5]![1],
-  )(t.call),
+  functionCall: binary.serializerFromSchema(schemas.invokeScriptSchemaV1.schema[5]![1])(t.call),
   payments:
     t.payment == null
       ? null

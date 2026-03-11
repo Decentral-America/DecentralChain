@@ -325,7 +325,9 @@ export async function scriptMeta(
   address: string,
   nodeUrl: string,
 ): Promise<Record<string, unknown>> {
-  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as unknown as Promise<Record<string, unknown>>;
+  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as unknown as Promise<
+    Record<string, unknown>
+  >;
 }
 
 /**
