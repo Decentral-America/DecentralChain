@@ -1,6 +1,48 @@
 import { SIGN_TYPE } from './constants';
-import * as fieldsType from './fieldTypes';
 import { prepare } from './prepare';
+
+// ── Field Type Factories (inlined from former fieldTypes.ts) ─────
+const fieldFactory =
+  (type: string, optionalData?: unknown) =>
+  (
+    fromField: string | string[] | null,
+    toField?: string | null,
+    processor: unknown = null,
+    optional = false,
+  ) => ({
+    name: fromField,
+    field: toField ?? (typeof fromField === 'string' ? fromField : null),
+    optional,
+    processor,
+    type,
+    optionalData: optionalData,
+  });
+
+const fieldsType = {
+  string: (_data?: unknown) => fieldFactory('string'),
+  asset: (_data?: unknown) => fieldFactory('assetId'),
+  publicKey: (_data?: unknown) => fieldFactory('publicKey'),
+  assetName: (_data?: unknown) => fieldFactory('assetName'),
+  assetDescription: (_data?: unknown) => fieldFactory('assetDescription'),
+  precision: (_data?: unknown) => fieldFactory('precision'),
+  number: (_data?: unknown) => fieldFactory('number'),
+  aliasName: (data: unknown) => fieldFactory('aliasName', data),
+  aliasOrAddress: (data: unknown) => fieldFactory('aliasOrAddress', data),
+  money: (_data?: unknown) => fieldFactory('money'),
+  numberLike: (_data?: unknown) => fieldFactory('numberLike'),
+  attachment: (_data?: unknown) => fieldFactory('attachment'),
+  timestamp: (_data?: unknown) => fieldFactory('timestamp'),
+  orderType: (_data?: unknown) => fieldFactory('orderType'),
+  fromData: (_data?: unknown) => fieldFactory('fromData'),
+  boolean: (_data?: unknown) => fieldFactory('boolean'),
+  transfers: (data?: unknown) => fieldFactory('transfers', data),
+  data: (_data?: unknown) => fieldFactory('data'),
+  script: (_data?: unknown) => fieldFactory('script'),
+  asset_script: (_data?: unknown) => fieldFactory('asset_script'),
+  required: (_data?: unknown) => fieldFactory('required'),
+  call: (_data?: unknown) => fieldFactory('call'),
+  payment: (_data?: unknown) => fieldFactory('payment'),
+} as const;
 
 const { processors } = prepare;
 
