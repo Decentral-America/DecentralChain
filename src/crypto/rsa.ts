@@ -124,10 +124,7 @@ export const rsaSign = (
 
   if (digest === 'NONE') {
     return new Uint8Array(
-      privateEncrypt(
-        { key, padding: constants.RSA_PKCS1_PADDING },
-        Buffer.from(message),
-      ),
+      privateEncrypt({ key, padding: constants.RSA_PKCS1_PADDING }, Buffer.from(message)),
     );
   }
 
