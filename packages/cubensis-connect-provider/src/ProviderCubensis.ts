@@ -330,12 +330,14 @@ export class ProviderCubensis implements Provider {
 
   /** Ensures invoke-script transactions have a fee, calculating via node API if missing. */
   private async _txWithFee(tx: SignerTx): Promise<SignerTx> {
-    return tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT && !tx.fee
-      ? calculateFee(this._options.NODE_URL, {
-          ...tx,
-          payment: tx.payment ?? [],
-          senderPublicKey: await this._publicKeyPromise(),
-        })
-      : Promise.resolve(tx);
+    if (tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT && !tx.fee) {
+      const pubKey = await this._publicKeyPromise();
+      return calculateFee(this._options.NODE_URL, {
+        ...tx,
+        payment: tx.payment ?? [],
+        ...(pubKey != null && { senderPublicKey: pubKey }),
+      });
+    }
+    return Promise.resolve(tx);
   }
 }
