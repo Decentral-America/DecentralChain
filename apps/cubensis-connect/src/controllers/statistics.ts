@@ -41,14 +41,14 @@ export type AnalyticsEvent =
       eventType: 'approve';
       origin: string | undefined;
       msgType: Message['type'];
-      type?: MessageTx['type'];
-      dApp?: string;
+      type?: MessageTx['type'] | undefined;
+      dApp?: string | undefined;
     }
   | {
       eventType: 'swapAssets';
-      actualAmountCoins?: string;
-      expectedAmountCoins?: string;
-      expectedActualDelta?: string;
+      actualAmountCoins?: string | undefined;
+      expectedAmountCoins?: string | undefined;
+      expectedActualDelta?: string | undefined;
       fromAssetId: string;
       fromCoins: string;
       minReceivedCoins: string;
