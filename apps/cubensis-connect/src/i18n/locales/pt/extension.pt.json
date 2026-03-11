@@ -191,7 +191,7 @@
     "exportNotSupported": "Esta conta não pode ser exportada",
     "passwordError": "Senha incorreta",
     "passwordLabel": "Senha",
-    "passwordVerifyDesc": "Digite sua senha da Keeper para confirmar se é realmente você",
+    "passwordVerifyDesc": "Digite sua senha da Cubensis Connect para confirmar se é realmente você",
     "passwordVerifyImportantNote": "<attention>Atenção:</attention> esta senha também será usada para criptografar o arquivo resultante. Se você esquecê-la, não poderá restaurar suas contas.",
     "verifyBtn": "Entrar",
     "warningModalConfirmButton": "Eu entendo",
@@ -312,7 +312,7 @@
     "addressBookPasswordPlaceholder": "Senha usada para criar arquivo",
     "browse": "Buscar...",
     "chooseAccountsDesc": "Selecione quais contas você deseja importar",
-    "chooseAccountsExistingAccountNote": "Já existe na Keeper como {{existingName}}",
+    "chooseAccountsExistingAccountNote": "Já existe na Cubensis Connect como {{existingName}}",
     "chooseAccountsImportBtn": "Importar {{count}} conta",
     "chooseAccountsImportBtn_plural": "Importar {{count}} contas",
     "chooseAccountsSkipBtn": "Pular",
@@ -329,7 +329,7 @@
     "passwordPlaceholder": "Senha usada para criar Keystore"
   },
   "importLedger": {
-    "accountExistsError": "Esta conta já existe na Keeper",
+    "accountExistsError": "Esta conta já existe na Cubensis Connect",
     "accountIdLabel": "ID da conta",
     "avatarListLoading": "Carregando contas...",
     "connectInstructions": "Conecte o dispositivo Ledger e abra o aplicativo DCC",
