@@ -1,25 +1,14 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import clsx from 'clsx';
-import { type PopupState } from 'popup/store/types';
+import type { PopupState } from 'popup/store/types';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { setShowNotification } from 'store/actions/notifications';
-import {
-  allowOrigin,
-  deleteOrigin,
-  disableOrigin,
-  setAutoOrigin,
-} from 'store/actions/permissions';
+import { allowOrigin, deleteOrigin, disableOrigin, setAutoOrigin } from 'store/actions/permissions';
 import { Loader, Modal } from 'ui/components/ui';
 
-import {
-  List,
-  OriginSettings,
-  Tabs,
-  type TAutoAuth,
-  type TPermission,
-} from './components';
+import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './components';
 import * as styles from './permissionsSettings.styl';
 
 interface StateProps {
@@ -34,14 +23,8 @@ interface DispatchProps {
   allowOrigin: (origin: string) => void;
   deleteOrigin: (origin: string) => void;
   disableOrigin: (origin: string) => void;
-  setAutoOrigin: (permissions: {
-    origin: string;
-    params: Partial<TAutoAuth>;
-  }) => void;
-  setShowNotification: (permissions: {
-    origin: string;
-    canUse: boolean | null;
-  }) => void;
+  setAutoOrigin: (permissions: { origin: string; params: Partial<TAutoAuth> }) => void;
+  setShowNotification: (permissions: { origin: string; canUse: boolean | null }) => void;
 }
 
 type Props = WithTranslation & StateProps & DispatchProps;
@@ -72,12 +55,9 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
 
   showSettingsHandler = (origin: string) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const [, permissions] = Object.entries(this.props.origins!).find(
-      ([name]) => name === origin,
-    )!;
+    const [, permissions] = Object.entries(this.props.origins!).find(([name]) => name === origin)!;
     const autoSign =
-      (permissions || []).find(({ type }) => type === 'allowAutoSign') ||
-      Object.create(null);
+      (permissions || []).find(({ type }) => type === 'allowAutoSign') || Object.create(null);
     const amount = new BigNumber(autoSign.totalAmount).div(10 ** 8);
     autoSign.totalAmount = amount.isNaN() ? 0 : amount.toFormat();
     this.setState({
@@ -129,9 +109,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
 
     return (
       <div className={className}>
-        <h2 className="title1 center margin-main-big">
-          {t('permissionsSettings.title')}
-        </h2>
+        <h2 className="title1 center margin-main-big">{t('permissionsSettings.title')}</h2>
 
         <Loader hide={!pending} />
 
@@ -171,10 +149,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
           />
         </Modal>
 
-        <Modal
-          animation={Modal.ANIMATION.FLASH_SCALE}
-          showModal={allowed || disallowed || deleted}
-        >
+        <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={allowed || disallowed || deleted}>
           <div className="modal notification">
             {allowed ? t('permissionsSettings.notify.allowed') : null}
             {disallowed ? t('permissionsSettings.notify.disallowed') : null}
@@ -190,7 +165,7 @@ function mapStateToProps(store: PopupState): StateProps {
   return {
     origins: store.origins,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error
     ...store.permissions,
   };
 }
