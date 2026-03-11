@@ -15,12 +15,12 @@ import type { AssetDetail } from './types';
 import { useAssetLogo } from './utils';
 
 export interface AssetSelectModalOption extends AssetDetail {
-  disabled?: boolean;
-  disabledTooltip?: string;
+  disabled?: boolean | undefined;
+  disabledTooltip?: string | undefined;
 }
 
 interface ItemProps {
-  className?: string;
+  className?: string | undefined;
   asset: AssetSelectModalOption;
   network: NetworkName;
   balance: Money;

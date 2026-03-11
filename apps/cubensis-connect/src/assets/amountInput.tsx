@@ -16,9 +16,9 @@ interface Props {
   label: string;
   maskedValue: string;
   value: string;
-  showUsdAmount?: boolean;
+  showUsdAmount?: boolean | undefined;
   onAssetChange: (newAssetId: string) => void;
-  onBalanceClick?: () => void;
+  onBalanceClick?: (() => void) | undefined;
   onChange: (newValue: string, newMaskedValue: string) => void;
 }
 
