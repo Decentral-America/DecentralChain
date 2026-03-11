@@ -39,9 +39,6 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "complexity": {
-        "useLiteralKeys": "off"
-      },
       "correctness": {
         "noUnusedVariables": "error",
         "noUnusedFunctionParameters": "error",
