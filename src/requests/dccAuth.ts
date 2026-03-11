@@ -21,8 +21,7 @@ export function dccAuth(
   chainId?: string | number,
 ): IDccAuth {
   const seedsAndIndexes = convertToPairs(seed);
-  const publicKey =
-    params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
+  const publicKey = params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
   const timestamp = params.timestamp || Date.now();
   validate.dccAuth({ publicKey, timestamp });
 
