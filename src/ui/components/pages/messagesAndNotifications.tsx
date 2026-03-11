@@ -25,9 +25,7 @@ export function MessagesAndNotificationsPage() {
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <span className={styles.messageCount}>
-          {messages.length + notifications.length}
-        </span>
+        <span className={styles.messageCount}>{messages.length + notifications.length}</span>
 
         <span className="headline3">{t('messageList.notifications')}</span>
       </header>
@@ -48,11 +46,7 @@ export function MessagesAndNotificationsPage() {
                 type="button"
                 view="transparent"
                 onClick={() => {
-                  dispatch(
-                    deleteNotifications(
-                      notifications.flatMap(item => item.map(x => x.id)),
-                    ),
-                  );
+                  dispatch(deleteNotifications(notifications.flatMap(item => item.map(x => x.id))));
                 }}
               >
                 {t('messageList.clearAllMessages')}
@@ -66,18 +60,15 @@ export function MessagesAndNotificationsPage() {
                 return (
                   <div key={group[0].origin} className={styles.cardItem}>
                     <div
-                      className={clsx(
-                        styles.notificationCard,
-                        transactionsStyles.transactionCard,
-                        { [transactionsStyles.groupTx]: group.length > 1 },
-                      )}
+                      className={clsx(styles.notificationCard, transactionsStyles.transactionCard, {
+                        [transactionsStyles.groupTx]: group.length > 1,
+                      })}
                     >
-                      {group.length > 1 && (
-                        <div className={transactionsStyles.groupBottom} />
-                      )}
+                      {group.length > 1 && <div className={transactionsStyles.groupBottom} />}
 
                       <div className={transactionsStyles.groupEffect}>
-                        <div
+                        <button
+                          type="button"
                           className={transactionsStyles.cardHeader}
                           onClick={() => {
                             dispatch(setActiveNotification(group));
@@ -95,12 +86,7 @@ export function MessagesAndNotificationsPage() {
                               {group[0].origin}
                             </div>
 
-                            <h2
-                              className={clsx(
-                                styles.notificationEllipsis,
-                                'headline',
-                              )}
-                            >
+                            <h2 className={clsx(styles.notificationEllipsis, 'headline')}>
                               {group.length > 1 ? (
                                 <span>
                                   {group.length} {t('notifications.messages')}
@@ -116,12 +102,10 @@ export function MessagesAndNotificationsPage() {
                             type="button"
                             view="transparent"
                             onClick={() => {
-                              dispatch(
-                                deleteNotifications(group.map(x => x.id)),
-                              );
+                              dispatch(deleteNotifications(group.map(x => x.id)));
                             }}
                           />
-                        </div>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -140,7 +124,8 @@ export function MessagesAndNotificationsPage() {
                 const { card: Card } = getMessageConfig(message);
 
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={message.id}
                     className={styles.cardItem}
                     onClick={() => {
@@ -148,7 +133,7 @@ export function MessagesAndNotificationsPage() {
                     }}
                   >
                     <Card collapsed message={message} />
-                  </div>
+                  </button>
                 );
               })}
             </div>

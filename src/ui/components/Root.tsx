@@ -14,13 +14,9 @@ export function Root() {
   const locked = usePopupSelector(state => state.state?.locked);
   const haveAccounts = usePopupSelector(state => state.accounts.length !== 0);
 
-  const haveActiveMessage = usePopupSelector(
-    state => state.activePopup?.msg != null,
-  );
+  const haveActiveMessage = usePopupSelector(state => state.activePopup?.msg != null);
 
-  const haveActiveNotification = usePopupSelector(
-    state => state.activePopup?.notify != null,
-  );
+  const haveActiveNotification = usePopupSelector(state => state.activePopup?.notify != null);
 
   const haveMessagesOrNotifications = usePopupSelector(
     state => state.messages.length !== 0 || state.notifications.length !== 0,
@@ -70,8 +66,7 @@ export function Root() {
   if (
     (location.pathname === '/active-message' && !haveActiveMessage) ||
     (location.pathname === '/active-notification' && !haveActiveNotification) ||
-    (location.pathname === '/messages-and-notifications' &&
-      !haveMessagesOrNotifications)
+    (location.pathname === '/messages-and-notifications' && !haveMessagesOrNotifications)
   ) {
     return <Navigate replace to="/" />;
   }

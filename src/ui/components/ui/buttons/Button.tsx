@@ -5,14 +5,7 @@ import * as styles from './Button.module.css';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean | undefined;
-  view?:
-    | 'custom'
-    | 'icon'
-    | 'submit'
-    | 'submitTiny'
-    | 'transparent'
-    | 'warning'
-    | undefined;
+  view?: 'custom' | 'icon' | 'submit' | 'submitTiny' | 'transparent' | 'warning' | undefined;
 }
 
 export function Button({

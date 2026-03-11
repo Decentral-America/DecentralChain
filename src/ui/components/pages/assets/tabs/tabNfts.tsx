@@ -25,14 +25,9 @@ export function TabNfts() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const userAddress = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.selectedAccount?.address!,
-  );
+  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
 
-  const networkCode = usePopupSelector(
-    state => state.selectedAccount?.networkCode,
-  );
+  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
 
   const myNfts = usePopupSelector(state => state.balances[userAddress]?.nfts);
   const nfts = usePopupSelector(state => state.nfts);
@@ -66,18 +61,16 @@ export function TabNfts() {
   const [creatorNfts, creatorCounts] = useMemo(
     () =>
       sortedNfts.reduce<[Nft[], Record<string, number>]>(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
         ([creatorNfts, creatorCounts], current) => {
           const creator = current.creator;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          if (Object.prototype.hasOwnProperty.call(creatorCounts, creator!)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            creatorCounts[creator!] += 1;
+          if (!creator) return [creatorNfts, creatorCounts];
+
+          if (Object.hasOwn(creatorCounts, creator)) {
+            creatorCounts[creator] += 1;
             return [creatorNfts, creatorCounts];
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          creatorCounts[creator!] = 1;
+          creatorCounts[creator] = 1;
           creatorNfts.push(current);
 
           return [creatorNfts, creatorCounts];
@@ -101,21 +94,15 @@ export function TabNfts() {
           {term ? (
             <>
               <div className="margin-min">
-                {
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-                  myNfts?.length! > MAX_NFT_ITEMS - 1 ? (
-                    <Trans
-                      i18nKey="assets.notFoundMaxNFTs"
-                      values={{ count: MAX_NFT_ITEMS }}
-                    />
-                  ) : (
-                    t('assets.notFoundNFTs')
-                  )
-                }
+                {(myNfts?.length ?? 0) > MAX_NFT_ITEMS - 1 ? (
+                  <Trans i18nKey="assets.notFoundMaxNFTs" values={{ count: MAX_NFT_ITEMS }} />
+                ) : (
+                  t('assets.notFoundNFTs')
+                )}
               </div>
-              <p className="blue link" onClick={() => setFilters(null)}>
+              <button type="button" className="blue link" onClick={() => setFilters(null)}>
                 {t('assets.resetFilters')}
-              </p>
+              </button>
             </>
           ) : (
             t('assets.emptyNFTs')
@@ -130,8 +117,7 @@ export function TabNfts() {
             navigate(`/nft-collection/${asset.creator}`);
           }}
           renderMore={() =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-            myNfts?.length! > MAX_NFT_ITEMS - 1 && (
+            (myNfts?.length ?? 0) > MAX_NFT_ITEMS - 1 && (
               <div className={clsx(styles.nftListMore, 'basic500')}>
                 <div className="margin-min">
                   {term ? (
@@ -148,8 +134,7 @@ export function TabNfts() {
                 </div>
                 <a
                   className="blue link"
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  href={getNftsLink(networkCode!, userAddress)}
+                  href={networkCode ? getNftsLink(networkCode, userAddress) : '#'}
                   rel="noopener noreferrer"
                   target="_blank"
                 >

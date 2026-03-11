@@ -1,16 +1,13 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetsRecord } from 'assets/types';
+import type { AssetsRecord } from 'assets/types';
 import { deepEqual } from 'fast-equals';
+import type { TFunction } from 'i18next';
 import { type Nft, NftVendorId } from 'nfts/types';
 import { useState } from 'react';
-import { type TFunction } from 'i18next';
 
-import {
-  usePopupDispatch,
-  usePopupSelector,
-} from '../../../../../popup/store/react';
+import { usePopupDispatch, usePopupSelector } from '../../../../../popup/store/react';
 import { setUiState } from '../../../../../store/actions/uiState';
-import { type UiState } from '../../../../../store/reducers/updateState';
+import type { UiState } from '../../../../../store/reducers/updateState';
 
 export function useUiState<T extends keyof UiState>(
   key: T,
@@ -36,9 +33,7 @@ export function sortAssetEntries<T>(
   showSuspiciousAssets: boolean | undefined,
 ): Array<[string, T]> {
   return assetEntries
-    .filter(
-      ([assetId]) => showSuspiciousAssets || !assets[assetId]?.isSuspicious,
-    )
+    .filter(([assetId]) => showSuspiciousAssets || !assets[assetId]?.isSuspicious)
     .sort(([aAssetId], [bAssetId]) => {
       const a = assets[aAssetId];
       const b = assets[bAssetId];
@@ -72,10 +67,8 @@ export function sortAndFilterNfts<T extends Nft>(
     nfts = nfts.filter(
       nft =>
         nft.id.toLowerCase() === term.toLowerCase() ||
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        nft.creator!.toLowerCase() === term.toLowerCase() ||
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        nft.displayCreator!.toLowerCase().indexOf(term.toLowerCase()) !== -1 ||
+        nft.creator?.toLowerCase() === term.toLowerCase() ||
+        nft.displayCreator?.toLowerCase().indexOf(term.toLowerCase()) !== -1 ||
         nft.displayName.toLowerCase().indexOf(term.toLowerCase()) !== -1,
     );
   }
@@ -86,21 +79,6 @@ export function sortAndFilterNfts<T extends Nft>(
     return NftVendorKeys.indexOf(a.vendor) - NftVendorKeys.indexOf(b.vendor);
   });
 }
-
-export const MONTH = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
 
 export const buildTxTypeOptions = (t: TFunction<'translation', undefined>) => [
   {

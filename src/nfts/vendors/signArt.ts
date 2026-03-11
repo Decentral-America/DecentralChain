@@ -1,10 +1,7 @@
-import { type DataTransactionEntryString } from '@decentralchain/ts-types';
+import type { DataTransactionEntryString } from '@decentralchain/ts-types';
 import invariant from 'tiny-invariant';
 
-import {
-  dataEntriesToRecord,
-  fetchDataEntries,
-} from '../../nodeApi/dataEntries';
+import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
 import {
   type CreateParams,
   type FetchInfoParams,
@@ -67,7 +64,7 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
           fetchDataEntries<DataTransactionEntryString>({
             nodeUrl,
             address: SIGN_ART_DAPP,
-            keys: nftIds.flatMap((id, index) => {
+            keys: nftIds.flatMap((_id, index) => {
               const info = artworks[index];
               return [
                 `art_name_${info.artworkId}_${info.creator}`,
@@ -81,7 +78,7 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
           fetchDataEntries<DataTransactionEntryString>({
             nodeUrl,
             address: SIGN_ART_USER_DAPP,
-            keys: nftIds.map((id, index) => {
+            keys: nftIds.map((_id, index) => {
               const info = artworks[index];
               return `user_name_${info.creator}`;
             }),
@@ -114,13 +111,9 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
   }
 
   create({ asset, config, info }: CreateParams<SignArtNftInfo>) {
-    const creator = info
-      ? info.creator
-      : asset.description.match(/creator: (\w+)/i)?.[1];
+    const creator = info ? info.creator : asset.description.match(/creator: (\w+)/i)?.[1];
 
-    const artworkId = info
-      ? info.artworkId
-      : asset.description?.match(/artid: (\w+)/i)?.[1];
+    const artworkId = info ? info.artworkId : asset.description?.match(/artid: (\w+)/i)?.[1];
 
     let foreground: string | undefined;
 
@@ -142,9 +135,7 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
       id: asset.id,
 
       marketplaceUrl:
-        creator &&
-        artworkId &&
-        `https://mainnet.sign-art.app/user/${creator}/artwork/${artworkId}`,
+        creator && artworkId && `https://mainnet.sign-art.app/user/${creator}/artwork/${artworkId}`,
 
       name: asset.name,
       vendor: NftVendorId.SignArt,

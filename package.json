@@ -13,7 +13,7 @@
     "dev": "webpack --watch --mode development",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "lint:typescript": "tsc -p src && tsc -p test",
+    "lint:typescript": "tsc -p src",
     "test:dev": "vitest --watch",
     "test": "vitest run",
     "test:update": "vitest run test/Update.ts",

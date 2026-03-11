@@ -1,8 +1,8 @@
-import { type AccountsState } from 'accounts/store/types';
+import type { AccountsState } from 'accounts/store/types';
 import { Component } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { type NewAccountState } from 'store/reducers/localState';
+import type { NewAccountState } from 'store/reducers/localState';
 import { type WithNavigate, withNavigate } from 'ui/router';
 
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
@@ -33,19 +33,14 @@ class ConfirmBackupComponent extends Component<Props, State> {
     disabled: false,
   };
 
-  static getDerivedStateFromProps(
-    props: Readonly<Props>,
-    state: State,
-  ): Partial<State> | null {
+  static getDerivedStateFromProps(props: Readonly<Props>, state: State): Partial<State> | null {
     const { seed } = props.account;
 
     if (seed === state.seed) {
       return null;
     }
 
-    const list = seed
-      .split(' ')
-      .map((text, id) => ({ text, id, selected: true, hidden: false }));
+    const list = seed.split(' ').map((text, id) => ({ text, id, selected: true, hidden: false }));
 
     // Fisher-Yates shuffle using CSPRNG — seed words must never use Math.random()
     for (let i = list.length - 1; i > 0; i--) {
@@ -92,12 +87,7 @@ class ConfirmBackupComponent extends Component<Props, State> {
           ) : null}
         </div>
 
-        <Pills
-          className={styles.writeSeed}
-          list={list}
-          selected
-          onSelect={this.onSelect}
-        />
+        <Pills className={styles.writeSeed} list={list} selected onSelect={this.onSelect} />
         {showButton ? (
           <Button
             id="confirmBackup"
@@ -163,10 +153,7 @@ class ConfirmBackupComponent extends Component<Props, State> {
 
 const mapStateToProps = (state: AccountsState): StateProps => {
   return {
-    account: state.localState.newAccount as Extract<
-      NewAccountState,
-      { type: 'seed' }
-    >,
+    account: state.localState.newAccount as Extract<NewAccountState, { type: 'seed' }>,
   };
 };
 

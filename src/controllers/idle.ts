@@ -1,10 +1,10 @@
 import ObservableStore from 'obs-store';
-import { type IdleOptions } from 'preferences/types';
+import type { IdleOptions } from 'preferences/types';
 import Browser from 'webextension-polyfill';
 
-import { type ExtensionStorage } from '../storage/storage';
-import { type PreferencesController } from './preferences';
-import { type VaultController } from './VaultController';
+import type { ExtensionStorage } from '../storage/storage';
+import type { PreferencesController } from './preferences';
+import type { VaultController } from './VaultController';
 
 const IDLE_INTERVAL = 60;
 
@@ -26,19 +26,15 @@ export class IdleController {
   }) {
     Browser.idle.setDetectionInterval(IDLE_INTERVAL);
     this.options = {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error
       type: 'idle',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error
       interval: 15 * 60 * 1000,
       ...preferencesController.store.getState().idleOptions,
     };
     this.preferencesController = preferencesController;
     this.vaultController = vaultController;
-    this.store = new ObservableStore(
-      extensionStorage.getInitState({ lastUpdateIdle: Date.now() }),
-    );
+    this.store = new ObservableStore(extensionStorage.getInitState({ lastUpdateIdle: Date.now() }));
     this.lastUpdateIdle = this.store.getState().lastUpdateIdle;
     extensionStorage.subscribe(this.store);
     this.start();

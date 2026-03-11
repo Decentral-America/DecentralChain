@@ -14,9 +14,9 @@
 }
 
 .root_base58::before {
-  content: 'base58: ';
+  content: "base58: ";
 }
 
 .root_plain::before {
-  content: 'text: ';
+  content: "text: ";
 }

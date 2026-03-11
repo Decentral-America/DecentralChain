@@ -26,8 +26,7 @@ function assetIdAsFloat(assetId: string): number {
   let i = 0;
   let hash = 0;
   if (!assetId) return 0;
-  while (i < assetId.length)
-    hash = (hash << 5) + hash + assetId.charCodeAt(i++);
+  while (i < assetId.length) hash = (hash << 5) + hash + assetId.charCodeAt(i++);
 
   return Math.abs(((hash * 10) % 0x7fffffff) / 0x7fffffff);
 }
@@ -86,11 +85,7 @@ export class DucksNftVendor implements NftVendor<DucksNftInfo> {
         `https://wavesducks.com/api/v1/ducks/${genoType}.svg` +
         `?color=${generation[1]}` +
         `&druck=${
-          genoType.indexOf('I') !== -1
-            ? assetIdAsFloat(asset.id) > 0.5
-              ? '1'
-              : '2'
-            : null
+          genoType.indexOf('I') !== -1 ? (assetIdAsFloat(asset.id) > 0.5 ? '1' : '2') : null
         }`,
 
       id: asset.id,
@@ -121,9 +116,7 @@ const DUCK_GENERATION_NAMES: Partial<Record<string, string>> = {
   G: 'Genesis',
 };
 
-const DUCK_NAMES: Partial<
-  Record<string, { name: string; unique?: boolean } | string[]>
-> = {
+const DUCK_NAMES: Partial<Record<string, { name: string; unique?: boolean } | string[]>> = {
   AAAAAAAA: { name: 'Elon' },
   BBBBBBBB: { name: 'Satoshi' },
   CCCCCCCC: { name: 'Doge' },

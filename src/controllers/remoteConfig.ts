@@ -11,10 +11,9 @@ import {
   type MainConfig,
   STATUS,
 } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
-import { type IdentityConfig } from './IdentityController';
+import type { ExtensionStorage } from '../storage/storage';
+import type { IdentityConfig } from './IdentityController';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extendValues = (defaultValues: any, newValues: any) => {
   return Object.entries(defaultValues).reduce(
     (acc, [key, value]) => {
@@ -32,7 +31,7 @@ const extendValues = (defaultValues: any, newValues: any) => {
               : { ...value, ...acc[key] };
             break;
         }
-      } catch (e) {
+      } catch (_e) {
         acc[key] = value;
       }
       return acc;
@@ -84,7 +83,7 @@ export class RemoteConfigController extends EventEmitter {
     try {
       const { pack_config } = this.store.getState().config;
       return extendValues(DEFAULT_MAIN_CONFIG.pack_config, pack_config);
-    } catch (e) {
+    } catch (_e) {
       return DEFAULT_MAIN_CONFIG.pack_config;
     }
   }
@@ -93,7 +92,7 @@ export class RemoteConfigController extends EventEmitter {
     try {
       const { idle } = this.store.getState().config;
       return extendValues(DEFAULT_MAIN_CONFIG.idle, idle);
-    } catch (e) {
+    } catch (_e) {
       return DEFAULT_MAIN_CONFIG.idle;
     }
   }
@@ -102,7 +101,7 @@ export class RemoteConfigController extends EventEmitter {
     try {
       const { messages_config } = this.store.getState().config;
       return extendValues(DEFAULT_MAIN_CONFIG.messages_config, messages_config);
-    } catch (e) {
+    } catch (_e) {
       return DEFAULT_MAIN_CONFIG.messages_config;
     }
   }
@@ -116,7 +115,7 @@ export class RemoteConfigController extends EventEmitter {
       }
 
       return [];
-    } catch (e) {
+    } catch (_e) {
       return [];
     }
   }
@@ -138,9 +137,7 @@ export class RemoteConfigController extends EventEmitter {
     const { identityConfig } = this.store.getState();
 
     return identityConfig[
-      network === NetworkName.Testnet
-        ? NetworkName.Testnet
-        : NetworkName.Mainnet
+      network === NetworkName.Testnet ? NetworkName.Testnet : NetworkName.Mainnet
     ];
   }
 
@@ -178,9 +175,7 @@ export class RemoteConfigController extends EventEmitter {
 
     fetch('https://configs.decentralchain.io/web/networks.json')
       .then(resp =>
-        resp.ok
-          ? resp.json()
-          : resp.text().then(text => Promise.reject(new Error(text))),
+        resp.ok ? resp.json() : resp.text().then(text => Promise.reject(new Error(text))),
       )
       .then(
         (
@@ -191,13 +186,9 @@ export class RemoteConfigController extends EventEmitter {
         ) =>
           Promise.all(
             networks.map(async network => {
-              const envNetworkConfig = networkConfigs.find(
-                c => c.name === network,
-              );
+              const envNetworkConfig = networkConfigs.find(c => c.name === network);
               if (!envNetworkConfig) {
-                throw new Error(
-                  `No network configuration found for ${network}`,
-                );
+                throw new Error(`No network configuration found for ${network}`);
               }
 
               return fetch(
@@ -206,9 +197,7 @@ export class RemoteConfigController extends EventEmitter {
               ).then(response =>
                 response.ok
                   ? response.json()
-                  : response
-                      .text()
-                      .then(text => Promise.reject(new Error(text))),
+                  : response.text().then(text => Promise.reject(new Error(text))),
               );
             }),
           ),
@@ -226,8 +215,6 @@ export class RemoteConfigController extends EventEmitter {
         }
       })
       .catch(() => undefined) // ignore
-      .then(() =>
-        Browser.alarms.create('updateIdentityConfig', { delayInMinutes: 1 }),
-      );
+      .then(() => Browser.alarms.create('updateIdentityConfig', { delayInMinutes: 1 }));
   }
 }

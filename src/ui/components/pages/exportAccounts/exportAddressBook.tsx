@@ -11,18 +11,13 @@ export function ExportAddressBook() {
   const navigate = useNavigate();
   const addresses = usePopupSelector(state => state.addresses);
 
-  const [addressesToExport, setAddressesToExport] = useState<Record<
-    string,
-    string
-  > | null>(null);
+  const [addressesToExport, setAddressesToExport] = useState<Record<string, string> | null>(null);
 
   return (
     <>
       <ExportKeystoreChooseItems
         items={Object.entries(addresses)
-          .sort(([, firstName], [, secondName]) =>
-            firstName.localeCompare(secondName),
-          )
+          .sort(([, firstName], [, secondName]) => firstName.localeCompare(secondName))
           .map(([address, name]) => ({
             name,
             address,
@@ -30,10 +25,10 @@ export function ExportAddressBook() {
           }))}
         type="contacts"
         onSubmit={async contacts => {
-          const addressesSelected = contacts.reduce<Record<string, string>>(
-            (acc, contact) => ({ ...acc, [contact.address]: contact.name }),
-            {},
-          );
+          const addressesSelected = contacts.reduce<Record<string, string>>((acc, contact) => {
+            acc[contact.address] = contact.name;
+            return acc;
+          }, {});
           setAddressesToExport(addressesSelected);
         }}
       />
@@ -45,12 +40,7 @@ export function ExportAddressBook() {
             setAddressesToExport(null);
           }}
           onSubmit={async (password, encrypted) => {
-            await downloadKeystore(
-              undefined,
-              addressesToExport,
-              password,
-              encrypted,
-            );
+            await downloadKeystore(undefined, addressesToExport, password, encrypted);
             navigate(-2);
           }}
         />

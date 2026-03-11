@@ -51,7 +51,8 @@ export function Tooltip({
   );
 
   useEffect(() => {
-    const root = document.getElementById('app-modal')!;
+    const root = document.getElementById('app-modal');
+    if (!root) return;
 
     const child = document.createElement('div');
     child.classList.add(modal.modalWrapper);

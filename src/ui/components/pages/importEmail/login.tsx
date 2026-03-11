@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type {
-  CodeDelivery,
-  IdentityUser,
-} from '../../../../controllers/IdentityController';
+import type { CodeDelivery, IdentityUser } from '../../../../controllers/IdentityController';
 import background from '../../../services/Background';
 import { CodeConfirmation } from './codeConfirmation';
 import { SignInForm } from './signInForm';
@@ -22,12 +19,7 @@ type LoginProps = {
   onSubmit?(userData: UserData): void;
 };
 
-export function Login({
-  className,
-  userData,
-  onConfirm,
-  onSubmit,
-}: LoginProps) {
+export function Login({ className, userData, onConfirm, onSubmit }: LoginProps) {
   const [loginState, setLoginState] = useState<LoginStateType>('sign-in');
   const [codeDelivery, setCodeDelivery] = useState<CodeDelivery>();
   const userRef = useRef<UserData | undefined>(userData);
@@ -38,8 +30,7 @@ export function Login({
 
   const handleSuccess = useCallback(() => {
     background.identityUser().then(identityUser => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const [name, domain] = userRef.current!.username.split('@');
+      const [name, domain] = userRef.current?.username.split('@') ?? [];
       onConfirm({
         name: `${name[0]}*******@${domain}`,
         ...identityUser,
@@ -55,10 +46,7 @@ export function Login({
         onSubmit(userRef.current);
       }
 
-      const { challengeName } = await background.identitySignIn(
-        username,
-        password,
-      );
+      const { challengeName } = await background.identitySignIn(username, password);
 
       switch (challengeName) {
         case 'SOFTWARE_TOKEN_MFA':
@@ -80,7 +68,6 @@ export function Login({
       try {
         await background.identityConfirmSignIn(code);
         handleSuccess();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         if (e && e.code === 'NotAuthorizedException' && userRef.current) {
           await signIn(userRef.current.username, userRef.current.password);

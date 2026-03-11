@@ -16,10 +16,7 @@ interface State {
 export class ApproveBtn extends PureComponent<Props, State> {
   readonly state: State = {};
 
-  static getDerivedStateFromProps(
-    { autoClickProtection }: Props,
-    { timerEnd }: State,
-  ): State {
+  static getDerivedStateFromProps({ autoClickProtection }: Props, { timerEnd }: State): State {
     return {
       pending: autoClickProtection && (!timerEnd || timerEnd > Date.now()),
     };
@@ -52,17 +49,12 @@ export class ApproveBtn extends PureComponent<Props, State> {
   _timeout: ReturnType<typeof setTimeout> | undefined;
 
   render() {
-    const { autoClickProtection, disabled, loading, ...otherProps } =
-      this.props;
+    const { autoClickProtection, disabled, loading, ...otherProps } = this.props;
 
     const { pending } = this.state;
 
     return (
-      <Button
-        {...otherProps}
-        disabled={!!(disabled || loading || pending)}
-        loading={loading}
-      >
+      <Button {...otherProps} disabled={!!(disabled || loading || pending)} loading={loading}>
         {!loading && this.props.children}
       </Button>
     );

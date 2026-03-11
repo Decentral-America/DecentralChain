@@ -14,12 +14,17 @@ interface TabProps {
 export function Tab({ className, children, isActive, onActivate }: TabProps) {
   return (
     <li
-      className={clsx(
-        styles.tabListItem,
-        { [styles.tabListActive]: isActive },
-        className,
-      )}
+      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: li with role="tab" is a standard tabs pattern
+      role="tab"
+      className={clsx(styles.tabListItem, { [styles.tabListActive]: isActive }, className)}
       onClick={onActivate}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onActivate?.();
+        }
+      }}
+      tabIndex={0}
     >
       {children}
     </li>
@@ -47,12 +52,7 @@ interface TabListProps {
   onActiveTab?: ((index: number) => void) | undefined;
 }
 
-export function TabList({
-  activeIndex,
-  children,
-  className,
-  onActiveTab,
-}: TabListProps) {
+export function TabList({ activeIndex, children, className, onActiveTab }: TabListProps) {
   return (
     <ol className={clsx(styles.tabList, className)}>
       {Children.map(
@@ -74,16 +74,10 @@ interface TabPanelsProps {
   className?: string | undefined;
 }
 
-export function TabPanels({
-  activeIndex,
-  children,
-  className,
-}: TabPanelsProps) {
+export function TabPanels({ activeIndex, children, className }: TabPanelsProps) {
   invariant(typeof activeIndex === 'number');
 
-  return (
-    <div className={className}>{Children.toArray(children)[activeIndex]}</div>
-  );
+  return <div className={className}>{Children.toArray(children)[activeIndex]}</div>;
 }
 
 interface TabPanelProps {
@@ -101,11 +95,7 @@ interface TabsProps {
   onTabChange?: ((activeIndex: number) => void) | undefined;
 }
 
-export function Tabs({
-  children,
-  activeTab: activeTabProp,
-  onTabChange,
-}: TabsProps) {
+export function Tabs({ children, activeTab: activeTabProp, onTabChange }: TabsProps) {
   const [activeTabState, setActiveTabState] = useState(activeTabProp ?? 0);
 
   const activeTab = activeTabProp ?? activeTabState;

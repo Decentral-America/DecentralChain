@@ -23,9 +23,7 @@ import type {
 import invariant from 'tiny-invariant';
 
 export async function getExtraFee(address: string, node: string) {
-  const response = await fetch(
-    new URL(`/addresses/scriptInfo/${address}`, node),
-  );
+  const response = await fetch(new URL(`/addresses/scriptInfo/${address}`, node));
 
   if (!response.ok) {
     throw response;
@@ -37,18 +35,18 @@ export async function getExtraFee(address: string, node: string) {
 }
 
 export function convertFeeToAsset(fee: Money, asset: Asset) {
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   const minSponsoredFee = (asset: Asset) =>
     asset.id === 'WAVES' ? 10_0000 : asset.minSponsoredFee;
 
+  const assetFee = minSponsoredFee(asset);
+  const baseFee = minSponsoredFee(fee.asset);
+
+  if (assetFee == null || baseFee == null) {
+    throw new Error('Missing sponsored fee for asset');
+  }
+
   return new Money(
-    fee
-      .getCoins()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .mul(minSponsoredFee(asset)!)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .div(minSponsoredFee(fee.asset)!)
-      .roundTo(0, BigNumber.ROUND_MODE.ROUND_UP),
+    fee.getCoins().mul(assetFee).div(baseFee).roundTo(0, BigNumber.ROUND_MODE.ROUND_UP),
     asset,
   );
 }
@@ -73,10 +71,7 @@ export function getFeeOptions({
 }) {
   const feeInNative = convertFeeToAsset(initialFee, new Asset(assets.WAVES));
 
-  if (
-    txType !== TRANSACTION_TYPE.TRANSFER &&
-    txType !== TRANSACTION_TYPE.INVOKE_SCRIPT
-  ) {
+  if (txType !== TRANSACTION_TYPE.TRANSFER && txType !== TRANSACTION_TYPE.INVOKE_SCRIPT) {
     return [];
   }
 
@@ -86,8 +81,7 @@ export function getFeeOptions({
       assetBalance,
     }))
     .filter(
-      (item): item is { asset: AssetDetail; assetBalance: AssetBalance } =>
-        item.asset != null,
+      (item): item is { asset: AssetDetail; assetBalance: AssetBalance } => item.asset != null,
     )
     .map(
       ({ asset, assetBalance }): FeeOption => ({
@@ -102,13 +96,9 @@ export function getFeeOptions({
         new BigNumber(assetBalance.balance).gte(money.getCoins()),
     )
     .sort((a, b) => {
-      const aUsdSum = a.money
-        .getTokens()
-        .mul(usdPrices[a.money.asset.id] || '0');
+      const aUsdSum = a.money.getTokens().mul(usdPrices[a.money.asset.id] || '0');
 
-      const bUsdSum = b.money
-        .getTokens()
-        .mul(usdPrices[b.money.asset.id] || '0');
+      const bUsdSum = b.money.getTokens().mul(usdPrices[b.money.asset.id] || '0');
 
       if (aUsdSum.gt(bUsdSum)) {
         return 1;
@@ -151,10 +141,7 @@ export function getSpendingAmountsForSponsorableTx({
     | Omit<MessageTxSetScript, 'fee' | 'id' | 'initialFee'>
     | Omit<MessageTxSponsorship, 'fee' | 'id' | 'initialFee'>
     | Omit<MessageTxSetAssetScript, 'fee' | 'id' | 'initialFee'>
-    | Omit<
-        MessageTxInvokeScript,
-        'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'
-      >
+    | Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'>
     | Omit<MessageTxUpdateAssetInfo, 'fee' | 'id' | 'initialFee'>;
 }) {
   switch (messageTx.type) {

@@ -5,7 +5,7 @@ import { Copy, Ellipsis, Modal } from '..';
 import { Tooltip } from '../tooltip';
 import * as styles from './Tooltip.module.css';
 
-export interface Props {
+interface Props {
   className?: string | undefined;
   address: string;
 }
@@ -39,10 +39,7 @@ export function AddressTooltip({ className, address }: Props) {
           </Copy>
         )}
       </Tooltip>
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showCopyNotification}
-      >
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showCopyNotification}>
         <div className="modal notification">
           <div>{t('address.copied')}</div>
         </div>

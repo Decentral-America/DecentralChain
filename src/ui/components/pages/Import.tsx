@@ -18,13 +18,7 @@ export function ImportPopup() {
 
   return (
     <div data-testid="importForm" className={styles.root}>
-      <img
-        className={styles.importIcon}
-        src={keeperWalletLock}
-        alt=""
-        width={216}
-        height={137}
-      />
+      <img className={styles.importIcon} src={keeperWalletLock} alt="" width={216} height={137} />
 
       <p className="body1 disabled500 font300 center margin-main-big-top margin-main-large">
         <Trans
@@ -36,12 +30,7 @@ export function ImportPopup() {
       <Button
         data-testid="addAccountBtn"
         view="submit"
-        onClick={() =>
-          background.showTab(
-            `${window.location.origin}/accounts.html`,
-            'accounts',
-          )
-        }
+        onClick={() => background.showTab(`${window.location.origin}/accounts.html`, 'accounts')}
       >
         {t('import.addAccount')}
       </Button>
@@ -69,21 +58,14 @@ export function AccountsHome() {
 
   return (
     <div data-testid="importForm" className={styles.root}>
-      <img
-        className={styles.importIcon}
-        src={keeperWalletLock}
-        alt=""
-        width={216}
-        height={137}
-      />
+      <img className={styles.importIcon} src={keeperWalletLock} alt="" width={216} height={137} />
 
       <Button
         data-testid="createNewAccountBtn"
         view="submit"
         onClick={async () => {
           const networkCode =
-            customCodes[currentNetwork] ||
-            NETWORK_CONFIG[currentNetwork].networkCode;
+            customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
           await generateNewWalletItems(networkCode);
           navigate('/create-account');
@@ -92,9 +74,7 @@ export function AccountsHome() {
         {t('import.createNew')}
       </Button>
 
-      <div
-        className={clsx('body1', 'disabled500', 'font300', styles.separator)}
-      >
+      <div className={clsx('body1', 'disabled500', 'font300', styles.separator)}>
         {t('import.importVia')}
       </div>
 
@@ -110,6 +90,7 @@ export function AccountsHome() {
               }}
             >
               <svg
+                aria-hidden="true"
                 className={styles.importButtonIcon}
                 width="25"
                 height="25"
@@ -133,6 +114,7 @@ export function AccountsHome() {
             }}
           >
             <svg
+              aria-hidden="true"
               className={styles.importButtonIcon}
               width="25"
               height="25"
@@ -161,6 +143,7 @@ export function AccountsHome() {
             }}
           >
             <svg
+              aria-hidden="true"
               className={styles.importButtonIcon}
               width="20"
               height="21"
@@ -173,9 +156,7 @@ export function AccountsHome() {
             <div>
               <div>{t('import.viaLedger')}</div>
               {!isLedgerSupported && (
-                <div className={styles.importButtonNote}>
-                  {t('import.notSupportedByBrowser')}
-                </div>
+                <div className={styles.importButtonNote}>{t('import.notSupportedByBrowser')}</div>
               )}
             </div>
           </Button>
@@ -191,6 +172,7 @@ export function AccountsHome() {
             }}
           >
             <svg
+              aria-hidden="true"
               className={styles.importButtonIcon}
               fill="none"
               width="19"
@@ -245,6 +227,7 @@ export function AccountsHome() {
               }}
             >
               <svg
+                aria-hidden="true"
                 className={styles.importButtonIcon}
                 width="24"
                 height="24"

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["test/**"],
+  "ignoreDependencies": [
+    "buffer",
+    "events",
+    "stream-browserify",
+    "util",
+    "@types/w3c-web-usb",
+    "esbuild",
+    "lightningcss",
+    "del"
+  ]
+}

@@ -28,12 +28,8 @@ export function DeleteModal({ address, showModal, setShowModal }: Props) {
               setShowModal(false);
             }}
           />
-          <p className={`headline2Bold ${styles.title}`}>
-            {t('address.delete')}
-          </p>
-          <p className={`basic500 ${styles.description}`}>
-            {t('address.deleteDescription')}
-          </p>
+          <p className={`headline2Bold ${styles.title}`}>{t('address.delete')}</p>
+          <p className={`basic500 ${styles.description}`}>{t('address.deleteDescription')}</p>
           <Button
             view="submit"
             className={styles.cancelButton}

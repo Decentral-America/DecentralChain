@@ -72,20 +72,13 @@ export function Expandable({
               setIsExpanded(prevState => !prevState);
             }}
           >
-            {!isExpanded
-              ? t('showScriptComponent.showAll')
-              : t('showScriptComponent.hide')}
+            {!isExpanded ? t('showScriptComponent.showAll') : t('showScriptComponent.hide')}
           </button>
         )}
       </div>
 
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showCopiedNotification}
-      >
-        <div className="modal notification">
-          {t('showScriptComponent.copied')}
-        </div>
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showCopiedNotification}>
+        <div className="modal notification">{t('showScriptComponent.copied')}</div>
       </Modal>
     </div>
   );

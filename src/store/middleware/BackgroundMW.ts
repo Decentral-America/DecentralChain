@@ -1,15 +1,12 @@
 import i18next from 'i18next';
 
-import { type AppMiddleware } from '../../store/types';
+import type { AppMiddleware } from '../../store/types';
 import Background from '../../ui/services/Background';
 import { ACTION } from '../actions/constants';
 import { notificationSelect } from '../actions/localState';
 
 export const changeLang: AppMiddleware = store => next => action => {
-  if (
-    action.type === ACTION.CHANGE_LNG &&
-    action.payload !== store.getState().currentLocale
-  ) {
+  if (action.type === ACTION.CHANGE_LNG && action.payload !== store.getState().currentLocale) {
     Background.setCurrentLocale(action.payload);
   }
   return next(action);
@@ -32,23 +29,19 @@ export const setIdle: AppMiddleware = () => next => action => {
 };
 
 export const updateLang: AppMiddleware = store => next => action => {
-  if (
-    action.type === ACTION.UPDATE_FROM_LNG &&
-    action.payload !== store.getState().currentLocale
-  ) {
+  if (action.type === ACTION.UPDATE_FROM_LNG && action.payload !== store.getState().currentLocale) {
     i18next.changeLanguage(action.payload);
   }
   return next(action);
 };
 
-export const updateCurrentAccountBalance: AppMiddleware =
-  () => next => action => {
-    if (action.type === ACTION.GET_BALANCES) {
-      Background.updateCurrentAccountBalance();
-    }
+export const updateCurrentAccountBalance: AppMiddleware = () => next => action => {
+  if (action.type === ACTION.GET_BALANCES) {
+    Background.updateCurrentAccountBalance();
+  }
 
-    return next(action);
-  };
+  return next(action);
+};
 
 export const selectAccount: AppMiddleware = store => next => action => {
   if (
@@ -56,12 +49,10 @@ export const selectAccount: AppMiddleware = store => next => action => {
     store.getState().selectedAccount?.address !== action.payload.address
   ) {
     const { currentNetwork } = store.getState();
-    Background.selectAccount(action.payload.address, currentNetwork).then(
-      () => {
-        store.dispatch(notificationSelect(true));
-        setTimeout(() => store.dispatch(notificationSelect(false)), 1000);
-      },
-    );
+    Background.selectAccount(action.payload.address, currentNetwork).then(() => {
+      store.dispatch(notificationSelect(true));
+      setTimeout(() => store.dispatch(notificationSelect(false)), 1000);
+    });
   }
 
   return next(action);

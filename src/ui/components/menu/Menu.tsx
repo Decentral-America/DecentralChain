@@ -20,14 +20,16 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
 
       {hasSettings && (
         <>
-          <div
+          <button
+            type="button"
             className={styles.settingsIcon}
             onClick={() => {
               navigate('/settings');
             }}
           />
 
-          <div
+          <button
+            type="button"
             className={styles.navigationIcon}
             onClick={() => {
               navigate('/about');
@@ -37,7 +39,8 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
       )}
 
       {hasBack && location.pathname !== window.location.hash.split('#')[1] && (
-        <div
+        <button
+          type="button"
           className={`${styles.arrowBackIcon} arrow-back-icon`}
           onClick={() => {
             navigate(-1);
@@ -46,7 +49,8 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
       )}
 
       {hasClose && (
-        <div
+        <button
+          type="button"
           className={`${styles.closeIcon} close-icon`}
           onClick={() => {
             navigate(-1);

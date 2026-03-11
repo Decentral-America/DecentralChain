@@ -1,16 +1,13 @@
 import { isNotNull } from '_core/isNotNull';
-import { type AssetDetail } from 'assets/types';
+import type { AssetDetail } from 'assets/types';
 import { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
 import { defaultAssetTickers } from '../assets/constants';
-import {
-  type ExtensionStorage,
-  type StorageLocalState,
-} from '../storage/storage';
-import { type NetworkController } from './network';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
+import type { NetworkController } from './network';
+import type { RemoteConfigController } from './remoteConfig';
 
 // 'WAVES' is the protocol-level native asset ID — do not rename.
 const NATIVE_ASSET: AssetDetail = {
@@ -22,7 +19,6 @@ const NATIVE_ASSET: AssetDetail = {
   description: '',
   height: 0,
   issuer: '',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   timestamp: '2016-04-11T21:00:00.000Z' as any,
   sender: '',
   reissuable: false,
@@ -166,8 +162,8 @@ export class AssetInfoController {
 
     if (assetIdsToUpdate.length !== 0) {
       assetIdsToUpdate.forEach(assetId => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const asset = assets.mainnet[assetId]!;
+        const asset = assets.mainnet[assetId];
+        if (!asset) return;
         const ticker = assetTickers[assetId];
 
         asset.displayName = asset.ticker = ticker;
@@ -190,9 +186,7 @@ export class AssetInfoController {
   }
 
   isMaxAgeExceeded(lastUpdated: number | undefined) {
-    return (
-      new Date().getTime() - new Date(lastUpdated || 0).getTime() > MAX_AGE
-    );
+    return Date.now() - new Date(lastUpdated || 0).getTime() > MAX_AGE;
   }
 
   isSuspiciousAsset(assetId: string) {
@@ -208,18 +202,14 @@ export class AssetInfoController {
     const { assets } = this.store.getState();
     const network = this.getNetwork();
 
-    if (
-      assetId === '' ||
-      assetId == null ||
-      assetId.toUpperCase() === 'WAVES'
-    ) {
+    if (assetId === '' || assetId == null || assetId.toUpperCase() === 'WAVES') {
       return assets[network].WAVES;
     }
 
     const API_BASE = this.getNode();
     const url = new URL(`assets/details/${assetId}`, API_BASE).toString();
 
-    const asset = assets[network] && assets[network][assetId];
+    const asset = assets[network]?.[assetId];
     if (!asset || this.isMaxAgeExceeded(asset.lastUpdated)) {
       const resp = await fetch(url);
       switch (resp.status) {
@@ -227,33 +217,31 @@ export class AssetInfoController {
           const assetInfo = (await resp
             .text()
             .then(text =>
-              JSON.parse(
-                text.replace(/(".+?"[ \t\n]*:[ \t\n]*)(\d{15,})/gm, '$1"$2"'),
-              ),
+              JSON.parse(text.replace(/(".+?"[ \t\n]*:[ \t\n]*)(\d{15,})/gm, '$1"$2"')),
             )) as AssetInfoResponseItem;
 
           assets[network] = assets[network] || {};
           assets[network][assetId] = {
             ...assets[network][assetId],
             ...this.toAssetDetails(assetInfo),
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any;
           this.store.updateState({ assets });
           break;
         }
         case 400: {
           const error = await resp.json();
-          throw new Error(
-            `Could not find info for asset with id: ${assetId}. ${error.message}`,
-          );
+          throw new Error(`Could not find info for asset with id: ${assetId}. ${error.message}`);
         }
         default:
           throw new Error(await resp.text());
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return assets[network][assetId]!;
+    const result = assets[network][assetId];
+    if (!result) {
+      throw new Error(`Asset ${assetId} not found after fetch`);
+    }
+    return result;
   }
 
   toAssetDetails(info: AssetInfoResponseItem) {
@@ -276,7 +264,7 @@ export class AssetInfoController {
       originTransactionId: info.originTransactionId,
       issuer: info.issuer,
       isSuspicious: this.isSuspiciousAsset(info.assetId),
-      lastUpdated: new Date().getTime(),
+      lastUpdated: Date.now(),
     };
   }
 
@@ -327,9 +315,7 @@ export class AssetInfoController {
           .filter(assetId => {
             const asset = assets[network][assetId];
 
-            return (
-              ignoreCache || !asset || this.isMaxAgeExceeded(asset.lastUpdated)
-            );
+            return ignoreCache || !asset || this.isMaxAgeExceeded(asset.lastUpdated);
           }),
       ),
     );
@@ -350,7 +336,6 @@ export class AssetInfoController {
         assets[network][assetInfo.assetId] = {
           ...assets[network][assetInfo.assetId],
           ...this.toAssetDetails(assetInfo),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any;
       });
 
@@ -366,16 +351,15 @@ export class AssetInfoController {
       const resp = await fetch(new URL(SUSPICIOUS_LIST_URL));
 
       if (resp.ok) {
-        // eslint-disable-next-line @typescript-eslint/no-shadow
         const suspiciousAssets = (await resp.text()).split('\n').sort();
 
         if (suspiciousAssets) {
-          Object.keys(assets[NetworkName.Mainnet]).forEach(
-            assetId =>
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              (assets[NetworkName.Mainnet][assetId]!.isSuspicious =
-                binarySearch(suspiciousAssets, assetId) > -1),
-          );
+          for (const assetId of Object.keys(assets[NetworkName.Mainnet])) {
+            const asset = assets[NetworkName.Mainnet][assetId];
+            if (asset) {
+              asset.isSuspicious = binarySearch(suspiciousAssets, assetId) > -1;
+            }
+          }
         }
 
         this.store.updateState({ assets, suspiciousAssets });
@@ -449,10 +433,7 @@ export class AssetInfoController {
   async updateSwappableAssetIdsByVendor() {
     const resp = await fetch(new URL('/assets', SWAP_SERVICE_URL));
     if (resp.ok) {
-      const swappableAssetIdsByVendor = (await resp.json()) as Record<
-        string,
-        string[]
-      >;
+      const swappableAssetIdsByVendor = (await resp.json()) as Record<string, string[]>;
       this.store.updateState({ swappableAssetIdsByVendor });
     }
   }

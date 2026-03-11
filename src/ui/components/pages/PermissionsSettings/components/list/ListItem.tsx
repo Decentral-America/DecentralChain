@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Button } from 'ui/components/ui/buttons';
 
-import { type TAutoAuth } from '../originSettings/OriginSettings';
+import type { TAutoAuth } from '../originSettings/OriginSettings';
 import * as styles from './list.styl';
 
 export const ListItem: React.FunctionComponent<IParams> = ({
@@ -20,10 +20,7 @@ export const ListItem: React.FunctionComponent<IParams> = ({
     <div>{originName}</div>
     <div className={styles.statusColor}>{permissionsText}</div>
     <div>
-      <ItemButton
-        permissions={permissions}
-        onClick={enable => toggleApprove(originName, enable)}
-      />
+      <ItemButton permissions={permissions} onClick={enable => toggleApprove(originName, enable)} />
       <SettingsButton onClick={() => showSettings(originName)} />
     </div>
   </div>
@@ -38,7 +35,8 @@ const ItemButton: React.FunctionComponent<{
   }
   const isApproved = permissions.includes('approved');
   const status = isApproved ? 'enable' : 'disable';
-  const className = clsx(styles.button, styles[status]);
+  const statusStyle = status === 'enable' ? styles.enable : styles.disable;
+  const className = clsx(styles.button, statusStyle);
   return (
     <Button
       type="button"

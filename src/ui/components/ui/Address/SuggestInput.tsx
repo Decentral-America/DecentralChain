@@ -50,6 +50,8 @@ function Suggest({
               className={styles.item}
               style={{ paddingRight, paddingLeft }}
               key={account.address}
+              role="option"
+              tabIndex={0}
               onMouseDown={() => {
                 setValue(account.name);
                 setAddress(account.address);
@@ -76,6 +78,8 @@ function Suggest({
               className={styles.item}
               style={{ paddingRight, paddingLeft }}
               key={address}
+              role="option"
+              tabIndex={0}
               onMouseDown={() => {
                 setValue(name);
                 setAddress(address);
@@ -107,7 +111,7 @@ interface ModalProps {
   setShowModal: (showModal: boolean) => void;
 }
 
-export function SuggestModal(props: ModalProps) {
+function SuggestModal(props: ModalProps) {
   const { t } = useTranslation();
 
   const [search, setSearch] = useState('');
@@ -173,26 +177,25 @@ export function SuggestModal(props: ModalProps) {
   );
 }
 
-export type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
+type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
   onSuggest: (value: string) => void;
 };
 
 export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const { t } = useTranslation();
 
-  const chainId = usePopupSelector(state =>
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    state.selectedAccount?.networkCode!.charCodeAt(0),
-  );
+  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
   const accounts = usePopupSelector(state => state.accounts);
   const addresses = usePopupSelector<Record<string, string>>(state =>
-    Object.entries(state.addresses).reduce((acc, [address, name]) => {
-      if (!isAddressString(address, chainId)) {
+    Object.entries(state.addresses).reduce(
+      (acc, [address, name]) => {
+        if (isAddressString(address, chainId) && base58Decode(address)[1] === chainId) {
+          acc[address] = name;
+        }
         return acc;
-      }
-
-      return base58Decode(address)[1] === chainId ? { ...acc, [address]: name } : acc;
-    }, {}),
+      },
+      {} as Record<string, string>,
+    ),
   );
 
   const [value, setValue] = useState('');
@@ -210,14 +213,12 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const foundAddresses = useMemo<Record<string, string>>(
     () =>
       value
-        ? Object.entries(addresses).reduce(
-            // eslint-disable-next-line @typescript-eslint/no-shadow
-            (acc, [address, name]) =>
-              icontains(address, value) || icontains(name, value)
-                ? { ...acc, [address]: name }
-                : acc,
-            {},
-          )
+        ? Object.entries(addresses).reduce<Record<string, string>>((acc, [address, name]) => {
+            if (icontains(address, value) || icontains(name, value)) {
+              acc[address] = name;
+            }
+            return acc;
+          }, {})
         : {},
     [addresses, value],
   );
@@ -265,25 +266,20 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
             }}
           />
 
-          <div
-            ref={overlaidTextRef}
-            className={styles.overlaidText}
-          >
-            {isAlias ? (
-              (() => {
-                const match = value.match(ALIAS_RE);
-                return match ? (
-                  <>
-                    <mark className={styles.aliasMark}>{match[0]}</mark>
-                    {value.slice(match[0].length)}
-                  </>
-                ) : (
-                  value
-                );
-              })()
-            ) : (
-              value
-            )}
+          <div ref={overlaidTextRef} className={styles.overlaidText}>
+            {isAlias
+              ? (() => {
+                  const match = value.match(ALIAS_RE);
+                  return match ? (
+                    <>
+                      <mark className={styles.aliasMark}>{match[0]}</mark>
+                      {value.slice(match[0].length)}
+                    </>
+                  ) : (
+                    value
+                  );
+                })()
+              : value}
           </div>
         </div>
 

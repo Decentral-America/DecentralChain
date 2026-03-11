@@ -46,8 +46,7 @@ export function VerifyCodeComponent({
           setIsIncorrectCode(true);
         })
         .then(() => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          refs[0].current!.focus();
+          refs[0].current?.focus();
           setValues(refs.map(() => ''));
         });
     } else {
@@ -58,9 +57,7 @@ export function VerifyCodeComponent({
   const changeHandler = useCallback(
     (value: string, index: number): void => {
       if (!value) {
-        setValues(
-          values.map((v, currentIndex) => (currentIndex === index ? '' : v)),
-        );
+        setValues(values.map((v, currentIndex) => (currentIndex === index ? '' : v)));
 
         return;
       }
@@ -75,10 +72,8 @@ export function VerifyCodeComponent({
       });
 
       const nextIndex = Math.min(index + filledValues.length, codeLength - 1);
-      const el =
-        (refs[nextIndex] && refs[nextIndex].current) || refs[index].current;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      el!.focus();
+      const el = refs[nextIndex]?.current || refs[index].current;
+      el?.focus();
 
       setValues(newValues);
     },
@@ -105,7 +100,7 @@ export function VerifyCodeComponent({
       const i = Number(e.currentTarget.dataset.index);
       const prevIndex = i - 1;
       const nextIndex = i + 1;
-      const currentInput = refs[i] && refs[i].current;
+      const currentInput = refs[i]?.current;
       const prevInput = refs[prevIndex] ? refs[prevIndex].current : null;
       const nextInput = refs[nextIndex] ? refs[nextIndex].current : null;
 
@@ -155,31 +150,29 @@ export function VerifyCodeComponent({
   return (
     <div className={className}>
       <div className={styles.codeWrapper}>
-        {refs.map((ref, i) => (
-          <Input
-            key={i}
-            forwardRef={ref}
-            className={styles.codeInput}
-            value={values[i]}
-            autoFocus={i === 0}
-            onInput={onChange}
-            onKeyDown={onKeyDown}
-            onFocus={onFocus}
-            data-index={i}
-          />
-        ))}
+        {refs.map((ref, i) => {
+          return (
+            <Input
+              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length code input fields, index is the stable identifier
+              key={i}
+              forwardRef={ref}
+              className={styles.codeInput}
+              value={values[i]}
+              autoFocus={i === 0}
+              onInput={onChange}
+              onKeyDown={onKeyDown}
+              onFocus={onFocus}
+              data-index={i}
+            />
+          );
+        })}
       </div>
       <div className={styles.codeErrorWrapper}>
         <ErrorMessage show={!isPending && isIncorrectCode}>
           {t('importEmail.incorrectCode')}
         </ErrorMessage>
         {isPending && (
-          <Button
-            className="center fullwidth"
-            type="button"
-            view="transparent"
-            loading
-          />
+          <Button className="center fullwidth" type="button" view="transparent" loading />
         )}
       </div>
     </div>

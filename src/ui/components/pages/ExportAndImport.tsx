@@ -15,17 +15,13 @@ export function ExportAndImport() {
   const { t } = useTranslation();
 
   const addresses = usePopupSelector(state => state.addresses);
-  const allNetworksAccounts = usePopupSelector(
-    state => state.allNetworksAccounts,
-  );
+  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
 
   const [showExportModal, setShowExportModal] = useState(false);
 
   return (
     <div className={styles.content}>
-      <h2 className={`${styles.title} title1`}>
-        {t('settings.exportAndImport')}
-      </h2>
+      <h2 className={`${styles.title} title1`}>{t('settings.exportAndImport')}</h2>
 
       <Button
         className={styles.exportBtn}
@@ -79,7 +75,8 @@ export function ExportAndImport() {
       </Button>
 
       <div className={styles.footer}>
-        <div
+        <button
+          type="button"
           className={styles.exportAll}
           onClick={() => {
             setShowExportModal(true);
@@ -87,7 +84,7 @@ export function ExportAndImport() {
         >
           <i className={styles.exportAllIcon} />
           <span>{t('exportAndImport.exportAll')}</span>
-        </div>
+        </button>
 
         {showExportModal && (
           <ExportPasswordModal

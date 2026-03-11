@@ -1,8 +1,8 @@
 import ObservableStore from 'obs-store';
 
-import { type ExtensionStorage } from '../storage/storage';
-import { type IdentityController } from './IdentityController';
-import { type WalletController } from './wallet';
+import type { ExtensionStorage } from '../storage/storage';
+import type { IdentityController } from './IdentityController';
+import type { WalletController } from './wallet';
 
 export class VaultController {
   #identity;
@@ -72,18 +72,13 @@ export class VaultController {
   migrate() {
     const state = this.#wallet.store.getState().WalletController;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((state as any).initialized != null) {
       this.store.updateState({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         initialized: (state as any).initialized,
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (state as any).locked;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (state as any).initialized;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.#wallet.store.putState(state as any);
     }
   }

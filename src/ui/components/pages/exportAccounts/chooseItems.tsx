@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { NetworkName } from 'networks/types';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from 'ui/components/ui/avatar/Avatar';
@@ -34,26 +34,21 @@ interface Props<T> {
 }
 
 export function isExportable(item: PreferencesAccount | Contact) {
-  return (
-    !('type' in item) ||
-    ['seed', 'encodedSeed', 'privateKey', 'debug'].includes(item.type)
-  );
+  return !('type' in item) || ['seed', 'encodedSeed', 'privateKey', 'debug'].includes(item.type);
 }
 
-export function ExportKeystoreChooseItems<
-  T extends PreferencesAccount | Contact,
->({ items, type, onSubmit }: Props<T>) {
+export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact>({
+  items,
+  type,
+  onSubmit,
+}: Props<T>) {
   const { t } = useTranslation();
 
   const [selected, setSelected] = useState(
     () => new Set(items.filter(isExportable).map(({ address }) => address)),
   );
 
-  function toggleSelected(
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    items: Array<PreferencesAccount | Contact>,
-    isSelected: boolean,
-  ) {
+  function toggleSelected(items: Array<PreferencesAccount | Contact>, isSelected: boolean) {
     setSelected(prevSelected => {
       const newSelected = new Set(prevSelected);
 
@@ -69,9 +64,7 @@ export function ExportKeystoreChooseItems<
     });
   }
 
-  const [showWarningModal, setShowWarningModal] = useState(
-    !items.every(isExportable),
-  );
+  const [showWarningModal, setShowWarningModal] = useState(!items.every(isExportable));
 
   return (
     <form
@@ -103,23 +96,17 @@ export function ExportKeystoreChooseItems<
             network,
             items.filter(acc => acc.network === network),
           ])
-          // eslint-disable-next-line @typescript-eslint/no-shadow
           .filter(([, items]) => items.length !== 0)
-          // eslint-disable-next-line @typescript-eslint/no-shadow
           .map(([network, items]) => (
             <div key={network} className={styles.accountsGroup}>
               <header className={styles.accountsGroupHeader}>
                 <i className={clsx(styles.accountsGroupIcon, 'networkIcon')} />
 
-                <h2 className={styles.accountsGroupLabel}>
-                  {networkLabels[network]}
-                </h2>
+                <h2 className={styles.accountsGroupLabel}>{networkLabels[network]}</h2>
 
                 {items.some(isExportable) && (
                   <input
-                    checked={items
-                      .filter(isExportable)
-                      .every(acc => selected.has(acc.address))}
+                    checked={items.filter(isExportable).every(acc => selected.has(acc.address))}
                     className={styles.checkbox}
                     type="checkbox"
                     onChange={event => {
@@ -134,11 +121,7 @@ export function ExportKeystoreChooseItems<
                   const showExportable = isExportable(item);
 
                   return (
-                    <li
-                      key={item.address}
-                      className={styles.accountListItem}
-                      title={item.address}
-                    >
+                    <li key={item.address} className={styles.accountListItem} title={item.address}>
                       <div className={styles.accountInfo}>
                         <Avatar
                           size={32}
@@ -149,9 +132,7 @@ export function ExportKeystoreChooseItems<
                         <div className={styles.accountInfoText}>
                           <div className={styles.accountName}>{item.name}</div>
 
-                          {type === 'contacts' && (
-                            <Ellipsis text={item.address} size={8} />
-                          )}
+                          {type === 'contacts' && <Ellipsis text={item.address} size={8} />}
 
                           {!showExportable && (
                             <div className={styles.accountInfoNote}>
@@ -199,9 +180,7 @@ export function ExportKeystoreChooseItems<
       <Modal animation={Modal.ANIMATION.FLASH} showModal={showWarningModal}>
         <div className="modal cover">
           <div className="modal-form">
-            <h2 className={clsx('margin1', 'title1')}>
-              {t('exportKeystore.warningModalTitle')}
-            </h2>
+            <h2 className={clsx('margin1', 'title1')}>{t('exportKeystore.warningModalTitle')}</h2>
 
             <p className={clsx('margin1', 'body1', 'disabled500')}>
               {t('exportKeystore.warningModalDesc')}

@@ -11,8 +11,7 @@ import invariant from 'tiny-invariant';
 import Background from 'ui/services/Background';
 
 import * as styles from '../../../ui/components/pages/styles/transactions.module.css';
-import { DateFormat } from '../../../ui/components/ui';
-import { Balance, Select, type SelectItem } from '../../../ui/components/ui';
+import { Balance, DateFormat, Select, type SelectItem } from '../../../ui/components/ui';
 import type { MessageOfType } from '../../types';
 
 interface Props {
@@ -25,8 +24,7 @@ export function TxInfo({ message }: Props) {
   const assets = usePopupSelector(state => state.assets);
 
   const balance = usePopupSelector(
-    state =>
-      state.selectedAccount && state.balances[state.selectedAccount.address],
+    state => state.selectedAccount && state.balances[state.selectedAccount.address],
   );
 
   const selectedAccount = usePopupSelector(state => state.selectedAccount);
@@ -35,10 +33,7 @@ export function TxInfo({ message }: Props) {
   const usdPrices = usePopupSelector(state => state.usdPrices);
 
   const initailFeeAsset =
-    assets[
-      ('initialFeeAssetId' in message.data && message.data.initialFeeAssetId) ||
-        'WAVES'
-    ];
+    assets[('initialFeeAssetId' in message.data && message.data.initialFeeAssetId) || 'WAVES'];
   invariant(initailFeeAsset);
 
   let feeOptions: FeeOption[] = [];
@@ -48,10 +43,7 @@ export function TxInfo({ message }: Props) {
       ? getFeeOptions({
           assets,
           balance,
-          initialFee: new Money(
-            message.data.initialFee,
-            new Asset(initailFeeAsset),
-          ),
+          initialFee: new Money(message.data.initialFee, new Asset(initailFeeAsset)),
           txType: message.data.type,
           usdPrices,
         }).filter(option =>
@@ -66,19 +58,13 @@ export function TxInfo({ message }: Props) {
         )
       : [];
 
-  const feeAsset =
-    assets[
-      ('feeAssetId' in message.data && message.data.feeAssetId) || 'WAVES'
-    ];
+  const feeAsset = assets[('feeAssetId' in message.data && message.data.feeAssetId) || 'WAVES'];
   invariant(feeAsset);
 
   const fee = new Money(message.data.fee, new Asset(feeAsset));
   const assetBalance = balance?.assets?.[feeAsset.id];
 
-  if (
-    feeOptions.findIndex(opt => opt.money.asset.id === feeAsset.id) === -1 &&
-    assetBalance
-  ) {
+  if (feeOptions.findIndex(opt => opt.money.asset.id === feeAsset.id) === -1 && assetBalance) {
     feeOptions = feeOptions.concat({
       assetBalance,
       money: fee,
@@ -101,9 +87,7 @@ export function TxInfo({ message }: Props) {
                   (option): SelectItem<string> => ({
                     id: option.money.asset.id,
                     value: option.money.getTokens().toFixed(),
-                    text: `${option.money.toFormat()} ${
-                      option.money.asset.displayName
-                    }`,
+                    text: `${option.money.toFormat()} ${option.money.asset.displayName}`,
                   }),
                 )}
                 selected={feeAsset.id}

@@ -260,12 +260,9 @@ export class WalletController extends EventEmitter {
     await Promise.all(
       this.#wallets.map(async (wallet, index) => {
         if (wallet.data.network === network && wallet.data.networkCode !== code) {
-          this.#wallets[index] = await this.#createWallet(
-            wallet.data,
-            wallet.data.network,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            code!,
-          );
+          if (!code) return;
+
+          this.#wallets[index] = await this.#createWallet(wallet.data, wallet.data.network, code);
 
           changed = true;
         }

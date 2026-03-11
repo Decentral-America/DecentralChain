@@ -1,7 +1,7 @@
 interface Props
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLSpanElement>,
-    HTMLSpanElement
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
   > {
   onClick: () => void;
 }
@@ -13,17 +13,11 @@ interface Props
  */
 export function InlineButton({ onClick, ...otherProps }: Props) {
   return (
-    <span
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       {...otherProps}
       onClick={() => {
         onClick();
-      }}
-      onKeyUp={event => {
-        if (['Enter', ' '].includes(event.key)) {
-          onClick();
-        }
       }}
     />
   );

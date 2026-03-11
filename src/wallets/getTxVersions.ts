@@ -1,11 +1,9 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type MessageTx } from 'messages/types';
-import { type PreferencesAccount } from 'preferences/types';
+import type { MessageTx } from 'messages/types';
+import type { PreferencesAccount } from 'preferences/types';
 
 type TxVersions = {
-  [T in MessageTx['type']]: Array<
-    NonNullable<Extract<MessageTx, { type: T }>['version']>
-  >;
+  [T in MessageTx['type']]: Array<NonNullable<Extract<MessageTx, { type: T }>['version']>>;
 } & Record<'1000' | '1001' | '1002' | '1003', number[]>;
 
 const DEFAULT_TX_VERSIONS: TxVersions = {

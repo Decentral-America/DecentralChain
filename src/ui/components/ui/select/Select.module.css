@@ -15,7 +15,7 @@
 }
 
 .trigger:after {
-  content: '';
+  content: "";
   margin-left: auto;
   width: 14px;
   height: 14px;

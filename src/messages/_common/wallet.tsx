@@ -1,4 +1,4 @@
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -31,12 +31,7 @@ export function MessageWallet({ account }: Props) {
 
   return (
     <div className={styles.root}>
-      <Avatar
-        address={account.address}
-        className={styles.avatar}
-        size={28}
-        type={account.type}
-      />
+      <Avatar address={account.address} className={styles.avatar} size={28} type={account.type} />
 
       <Tooltip
         content={
@@ -61,10 +56,7 @@ export function MessageWallet({ account }: Props) {
         )}
       </Tooltip>
 
-      <Modal
-        animation={Modal.ANIMATION.FLASH_SCALE}
-        showModal={showCopiedNotification}
-      >
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={showCopiedNotification}>
         <div className="modal notification">{t('accountInfo.copied')}</div>
       </Modal>
     </div>

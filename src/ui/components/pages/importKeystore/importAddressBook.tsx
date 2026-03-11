@@ -36,7 +36,7 @@ function parseAddressBook(json: string): EncryptedAddressBook | null {
         }
 
         return JSON.parse(decodeURIComponent(atob(addresses)));
-      } catch (err) {
+      } catch (_err) {
         return null;
       }
     },
@@ -114,7 +114,7 @@ export function ImportAddressBook() {
 
           dispatch(setAddresses(getFormattedAddresses(addresses, keystoreAddresses)));
           navigate('/import-address-book/success');
-        } catch (err) {
+        } catch (_err) {
           setError(t('importKeystore.errorUnexpected'));
         }
 

@@ -11,11 +11,9 @@ if (document.documentElement.tagName === 'HTML') {
         const messageChannel = new MessageChannel();
         const inpagePort = messageChannel.port1;
 
-        postMessage(
-          { keeperMessagePort: messageChannel.port2 },
-          location.origin,
-          [messageChannel.port2],
-        );
+        postMessage({ keeperMessagePort: messageChannel.port2 }, location.origin, [
+          messageChannel.port2,
+        ]);
 
         const getWebExtensionPort = (() => {
           let webExtensionPort: Browser.Runtime.Port | undefined;

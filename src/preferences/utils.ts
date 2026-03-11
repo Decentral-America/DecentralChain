@@ -1,9 +1,6 @@
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 
-export function compareAccountsByLastUsed(
-  accA: PreferencesAccount,
-  accB: PreferencesAccount,
-) {
+export function compareAccountsByLastUsed(accA: PreferencesAccount, accB: PreferencesAccount) {
   const a = accA.lastUsed;
   const b = accB.lastUsed;
 

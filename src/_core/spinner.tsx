@@ -13,6 +13,7 @@ const PATH_LENGTH = 2 * Math.PI * RADIUS;
 export function Spinner({ size }: Props) {
   return (
     <svg
+      aria-hidden="true"
       className={styles.root}
       width={size}
       height={size}
@@ -25,7 +26,6 @@ export function Spinner({ size }: Props) {
         r={RADIUS}
         strokeWidth={STROKE_WIDTH}
         style={{
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ['--path-length' as any]: `${PATH_LENGTH}px`,
         }}
       />

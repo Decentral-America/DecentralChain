@@ -1,17 +1,7 @@
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';
 import type Browser from 'webextension-polyfill';
-import {
-  filter,
-  make,
-  map,
-  pipe,
-  type Source,
-  subscribe,
-  take,
-  takeUntil,
-  tap,
-} from 'wonka';
+import { filter, make, map, pipe, type Source, subscribe, take, takeUntil, tap } from 'wonka';
 
 import { fromWebExtensionEvent } from '../_core/wonka';
 
@@ -66,11 +56,7 @@ interface MethodCallRequestPayload<K> {
   keeperMethodCallRequest: MethodCallRequest<K>;
 }
 
-type ApiObject<K extends string> = Record<
-  K,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (...args: any[]) => Promise<unknown>
->;
+type ApiObject<K extends string> = Record<K, (...args: any[]) => Promise<unknown>>;
 
 type MethodCallResponse<T> =
   | { id: string; isError?: never; data: T }
@@ -82,9 +68,7 @@ interface MethodCallResponsePayload<T = unknown> {
 
 export function handleMethodCallRequests<K extends string>(
   api: ApiObject<K>,
-  sendResponse: (
-    result: 'KEEPER_PONG' | MethodCallResponsePayload<unknown>,
-  ) => void,
+  sendResponse: (result: 'KEEPER_PONG' | MethodCallResponsePayload<unknown>) => void,
 ) {
   return tap(async data => {
     if (data === 'KEEPER_PING') {
@@ -125,11 +109,11 @@ export function handleMethodCallRequests<K extends string>(
             err instanceof Response
               ? { message: await err.text() }
               : err && typeof err === 'object'
-              ? {
-                  ...err,
-                  message: String('message' in err ? err.message : err),
-                }
-              : { message: String(err) },
+                ? {
+                    ...err,
+                    message: String('message' in err ? err.message : err),
+                  }
+                : { message: String(err) },
         },
       });
     }
@@ -137,9 +121,7 @@ export function handleMethodCallRequests<K extends string>(
 }
 
 export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
-  sendRequest: (
-    payload: 'KEEPER_PING' | MethodCallRequestPayload<string>,
-  ) => void,
+  sendRequest: (payload: 'KEEPER_PING' | MethodCallRequestPayload<string>) => void,
   responseSource: Source<unknown>,
 ) {
   function ensureConnection() {
@@ -176,9 +158,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
         pipe(
           responseSource,
           map(data =>
-            typeof data === 'object' &&
-            data != null &&
-            'keeperMethodCallResponse' in data
+            typeof data === 'object' && data != null && 'keeperMethodCallResponse' in data
               ? data.keeperMethodCallResponse
               : undefined,
           ),
@@ -205,9 +185,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
                     }
                 : undefined,
           ),
-          filter(
-            response => response?.id === request.keeperMethodCallRequest.id,
-          ),
+          filter(response => response?.id === request.keeperMethodCallRequest.id),
           take(1),
           subscribe(response => {
             invariant(response);
@@ -215,7 +193,6 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
             if (response.isError) {
               reject(response.error);
             } else {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               resolve(response.data as any);
             }
           }),

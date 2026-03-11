@@ -22,27 +22,19 @@ export function Send() {
 
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const chainId = usePopupSelector(state =>
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    state.selectedAccount?.networkCode!.charCodeAt(0),
-  );
+  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
   const accountBalance = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.balances[state.selectedAccount?.address!],
+    state => state.balances[state.selectedAccount?.address ?? ''],
   );
   const assetBalances = accountBalance?.assets;
   const assets = usePopupSelector(state => state.assets);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const asset = usePopupSelector(state => state.assets[params.assetId!]);
+  const asset = usePopupSelector(state => state.assets[params.assetId ?? '']);
 
   const isNft =
     asset && asset.precision === 0 && new BigNumber(asset.quantity).eq(1) && !asset.reissuable;
 
-  const userAddress = usePopupSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-    state => state.selectedAccount?.address!,
-  );
+  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
 
   const nftInfo = usePopupSelector(state => asset && state.nfts?.[asset.id]);
   const nftConfig = usePopupSelector(state => state.nftConfig);
@@ -72,11 +64,7 @@ export function Send() {
   }, [assetBalances, dispatch]);
 
   const currentBalance = asset
-    ? Money.fromCoins(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        !isNft ? (assetBalances![asset.id]?.balance ?? 0) : 1,
-        new Asset(asset),
-      )
+    ? Money.fromCoins(!isNft ? (assetBalances?.[asset.id]?.balance ?? 0) : 1, new Asset(asset))
     : null;
 
   const [isTriedToSubmit, setIsTriedToSubmit] = useState(false);
@@ -124,8 +112,7 @@ export function Send() {
           type: 4,
           data: {
             amount: {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              assetId: asset!.id,
+              assetId: asset?.id ?? null,
               tokens: amountValue,
             },
             recipient: recipientValue,
@@ -167,32 +154,22 @@ export function Send() {
 
           {!isNft && (
             <div className="margin-main-big">
-              {!asset ||
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              !assetBalances![asset.id] ? (
+              {!asset || !assetBalances?.[asset.id] ? (
                 <Loader />
               ) : (
                 (() => {
                   const balance = new Money(
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    new BigNumber(assetBalances![asset.id]?.balance ?? 0),
+                    new BigNumber(assetBalances?.[asset.id]?.balance ?? 0),
                     new Asset(asset),
                   );
 
                   return (
                     <>
                       <AssetAmountInput
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        assetBalances={assetBalances!}
+                        assetBalances={assetBalances ?? {}}
                         assetOptions={Object.values(assets)
-                          .filter(
-                            // eslint-disable-next-line @typescript-eslint/no-shadow
-                            (asset): asset is NonNullable<typeof asset> => asset != null,
-                          )
-                          .filter(
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-shadow
-                            asset => assetBalances![asset.id] != null,
-                          )}
+                          .filter((asset): asset is NonNullable<typeof asset> => asset != null)
+                          .filter(asset => assetBalances?.[asset.id] != null)}
                         balance={balance}
                         label={t('send.amountInputLabel')}
                         maskedValue={amountValueMasked}

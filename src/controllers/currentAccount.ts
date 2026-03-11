@@ -248,7 +248,7 @@ export class CurrentAccountController {
               ? [tx.order1.assetPair.amountAsset, tx.order1.assetPair.priceAsset]
               : []),
             ...('payment' in tx ? (tx.payment?.map(x => x.assetId) ?? []) : []),
-            ...('stateChanges' in tx ? tx.stateChanges?.transfers.map(x => x.asset) ?? [] : []),
+            ...('stateChanges' in tx ? (tx.stateChanges?.transfers.map(x => x.asset) ?? []) : []),
           ])
           .filter(isNotNull)
           .filter(assetId => !assetExists(assetId) && isMaxAgeExceeded(assetId)),

@@ -151,7 +151,6 @@ export class MessageController extends EventEmitter {
         throw new Error(await err.text());
       }
 
-      // eslint-disable-next-line no-console
       console.error(err);
       captureException(err);
       throw ERRORS.UNKNOWN(String(err));
@@ -469,7 +468,9 @@ export class MessageController extends EventEmitter {
     if (typeof ids === 'string') {
       this.deleteMessage(ids);
     } else if (ids && ids.length > 0) {
-      ids.forEach(id => this.deleteMessage(id));
+      for (const id of ids) {
+        this.deleteMessage(id);
+      }
     } else {
       this.#updateStore([]);
     }
@@ -550,13 +551,15 @@ export class MessageController extends EventEmitter {
 
   #getFeeInAssetWithEnoughBalance(
     assets: AssetsRecord,
-    txParams: { fee?: MessageTx['fee'] | undefined; initialFee?: MessageTx['initialFee'] | undefined } &
-      (
-        | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
-            Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
-        | (Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
-            Partial<Pick<MessageTxInvokeScript, 'initialFeeAssetId'>>)
-      ),
+    txParams: {
+      fee?: MessageTx['fee'] | undefined;
+      initialFee?: MessageTx['initialFee'] | undefined;
+    } & (
+      | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
+          Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
+      | (Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
+          Partial<Pick<MessageTxInvokeScript, 'initialFeeAssetId'>>)
+    ),
     feeMoneyLike: MoneyLike,
   ) {
     const balance = this.getAccountBalance();
@@ -772,7 +775,6 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex intersection type conflicts with exactOptionalPropertyTypes
             this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
               assetId: feeAssetId,
               coins: fee,
@@ -1499,7 +1501,6 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex intersection type conflicts with exactOptionalPropertyTypes
             this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
               assetId: feeAssetId,
               coins: fee,
@@ -1605,7 +1606,7 @@ export class MessageController extends EventEmitter {
             referrer: messageInput.data.referrer,
             data: { data, host, icon, name, prefix },
           },
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           id: nanoid(),
           messageHash: base58Encode(computeHash(makeAuthBytes({ data, host }))),
           status: MessageStatus.UnApproved,
@@ -1617,7 +1618,7 @@ export class MessageController extends EventEmitter {
         return {
           ...messageInput,
           id: nanoid(),
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           status: MessageStatus.UnApproved,
           timestamp: Date.now(),
         };
@@ -1631,7 +1632,7 @@ export class MessageController extends EventEmitter {
           ...messageInput,
           amountAsset: messageInput.data.amountAsset,
           data: { ...messageInput.data, data, timestamp: Date.now() },
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           id: nanoid(),
           messageHash: base58Encode(
             computeHash(
@@ -1659,13 +1660,12 @@ export class MessageController extends EventEmitter {
               ...data,
               hash: base58Encode(computeHash(makeCustomDataBytes(data))),
             },
-            ext_uuid: messageInput.options && messageInput.options.uid,
+            ext_uuid: messageInput.options?.uid,
             id: nanoid(),
             status: MessageStatus.UnApproved,
             timestamp: Date.now(),
           };
         } catch (err) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           throw ERRORS.REQUEST_ERROR((err as any).message, messageInput);
         }
       }
@@ -1753,7 +1753,7 @@ export class MessageController extends EventEmitter {
         return {
           ...messageInput,
           data: order,
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           id: nanoid(),
           status: MessageStatus.UnApproved,
           timestamp: Date.now(),
@@ -1769,7 +1769,7 @@ export class MessageController extends EventEmitter {
         return {
           ...messageInput,
           data: { ...messageInput.data, data },
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           id: nanoid(),
           messageHash: base58Encode(
             computeHash(
@@ -1821,7 +1821,7 @@ export class MessageController extends EventEmitter {
         return {
           ...messageInput,
           data: txs,
-          ext_uuid: messageInput.options && messageInput.options.uid,
+          ext_uuid: messageInput.options?.uid,
           id: nanoid(),
           input: messageInput,
           status: MessageStatus.UnApproved,
@@ -1842,13 +1842,12 @@ export class MessageController extends EventEmitter {
               address: messageInput.account.address,
               hash: base58Encode(blake2b(makeDccAuthBytes(data))),
             },
-            ext_uuid: messageInput.options && messageInput.options.uid,
+            ext_uuid: messageInput.options?.uid,
             id: nanoid(),
             status: MessageStatus.UnApproved,
             timestamp: Date.now(),
           };
         } catch (err) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           throw ERRORS.REQUEST_ERROR((err as any).message, messageInput);
         }
       }

@@ -4,8 +4,7 @@ import { PureComponent } from 'react';
 
 import * as styles from './copy.styl';
 
-const DEFAULT_HIDDEN_CONTENT =
-  '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••';
+const DEFAULT_HIDDEN_CONTENT = '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••';
 
 export class CopyText extends PureComponent<IProps> {
   readonly state = { showText: false };
@@ -16,8 +15,7 @@ export class CopyText extends PureComponent<IProps> {
     });
   };
 
-  onCopyHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    this._copyText(event);
+  onCopyHandler = (event: React.MouseEvent<HTMLElement>) => this._copyText(event);
 
   render() {
     const iconClass = clsx(styles.firstIcon, {
@@ -26,32 +24,28 @@ export class CopyText extends PureComponent<IProps> {
 
     const copyIcon = clsx(styles.lastIcon, 'copy-icon');
 
-    const toggleHandler = this.props.toggleText
-      ? this.showTextHandler
-      : undefined;
+    const toggleHandler = this.props.toggleText ? this.showTextHandler : undefined;
 
-    const showText = this.props.toggleText
-      ? this.state.showText
-      : this.props.showText;
+    const showText = this.props.toggleText ? this.state.showText : this.props.showText;
 
     return (
-      <div onClick={toggleHandler}>
+      <button type="button" onClick={toggleHandler}>
         <div>
           {this.props.type ? <i className={iconClass}> </i> : null}
           <div className={styles.copyTextOverflow}>
             {showText ? this.props.text : DEFAULT_HIDDEN_CONTENT}
           </div>
           {this.props.showCopy ? (
-            <div className={copyIcon} onClick={this.onCopyHandler} />
+            <button type="button" className={copyIcon} onClick={this.onCopyHandler} />
           ) : null}
           {this.props.showConfirmed ? <div>Confirm</div> : null}
           {this.props.showNotAccess ? <div>N/A</div> : null}
         </div>
-      </div>
+      </button>
     );
   }
 
-  private _copyText(event: React.MouseEvent<HTMLDivElement>) {
+  private _copyText(event: React.MouseEvent<HTMLElement>) {
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -63,8 +57,7 @@ export class CopyText extends PureComponent<IProps> {
     }
 
     const text = this.props.text;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.copy(text!);
+    this.copy(text ?? '');
   }
 
   private copy(text: string) {
@@ -81,12 +74,14 @@ interface IProps {
   onCopy?: ((...args: unknown[]) => void) | undefined;
 
   toggleText?: boolean | undefined;
-  copyOptions?: {
-    debug?: boolean | undefined;
-    message?: string | undefined;
-    format?: string | undefined;
-    onCopy?: ((clipboardData: object) => void) | undefined;
-  } | undefined;
+  copyOptions?:
+    | {
+        debug?: boolean | undefined;
+        message?: string | undefined;
+        format?: string | undefined;
+        onCopy?: ((clipboardData: object) => void) | undefined;
+      }
+    | undefined;
   type?: string | undefined;
   showText?: boolean | undefined;
 

@@ -15,12 +15,7 @@ interface Props {
   onSubmit: (password: string, encrypted?: boolean) => Promise<void>;
 }
 
-export function ExportPasswordModal({
-  showAttention,
-  showEncrypted,
-  onClose,
-  onSubmit,
-}: Props) {
+export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onSubmit }: Props) {
   const { t } = useTranslation();
 
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
@@ -66,9 +61,7 @@ export function ExportPasswordModal({
           </p>
 
           <div className="margin2 relative">
-            <div className="basic500 tag1 input-title">
-              {t('exportKeystore.passwordLabel')}
-            </div>
+            <div className="basic500 tag1 input-title">{t('exportKeystore.passwordLabel')}</div>
 
             <Input
               autoComplete="current-password"
@@ -101,9 +94,7 @@ export function ExportPasswordModal({
 
           {showEncrypted && (
             <div className={styles.encrypt}>
-              <p className={styles.encryptTitle}>
-                {t('exportKeystore.encryptAddressBook')}
-              </p>
+              <p className={styles.encryptTitle}>{t('exportKeystore.encryptAddressBook')}</p>
               <input
                 type="checkbox"
                 checked={encrypted}
@@ -129,12 +120,7 @@ export function ExportPasswordModal({
             {t('exportKeystore.cancelBtn')}
           </Button>
 
-          <Button
-            className="modal-close"
-            onClick={onClose}
-            type="button"
-            view="transparent"
-          />
+          <Button className="modal-close" onClick={onClose} type="button" view="transparent" />
         </form>
       </div>
     </Modal>

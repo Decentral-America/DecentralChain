@@ -1,8 +1,8 @@
 import type BigNumber from '@decentralchain/bignumber';
-import { type Money } from '@decentralchain/data-entities';
+import type { Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import type { PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '../ui/avatar/Avatar';
@@ -13,11 +13,7 @@ import { Tooltip } from '../ui/tooltip';
 import * as styles from './activeAccountCard.module.css';
 
 const UsdAmount = ({ amount }: { amount: BigNumber | null }) =>
-  amount !== null ? (
-    <p className={styles.accountAmount}>{`$${amount.toFixed(2)}`}</p>
-  ) : (
-    <Loader />
-  );
+  amount !== null ? <p className={styles.accountAmount}>{`$${amount.toFixed(2)}`}</p> : <Loader />;
 
 interface Props {
   account: PreferencesAccount;
@@ -57,12 +53,7 @@ export function ActiveAccountCard({
           {isMainnet ? (
             <UsdAmount amount={amountInUsd} />
           ) : (
-            <Balance
-              balance={dccBalance}
-              isShortFormat={false}
-              showAsset
-              split
-            />
+            <Balance balance={dccBalance} isShortFormat={false} showAsset split />
           )}
         </div>
 
@@ -79,7 +70,8 @@ export function ActiveAccountCard({
         </Tooltip>
       </div>
 
-      <div
+      <button
+        type="button"
         className={styles.selectableOverlay}
         onClick={() => {
           onClick(account);
@@ -88,8 +80,8 @@ export function ActiveAccountCard({
 
       <div className={styles.controls}>
         {isMainnet && (
-          <button className={styles.button} onClick={onSwapClick}>
-            <svg width="14" height="14" fill="currentColor">
+          <button type="button" className={styles.button} onClick={onSwapClick}>
+            <svg aria-hidden="true" width="14" height="14" fill="currentColor">
               <path d="m11.56 4.01-1.266-1.268a.6.6 0 0 1 .848-.848l2.291 2.29a.6.6 0 0 1 0 .85l-2.29 2.29a.6.6 0 1 1-.85-.848l1.268-1.267H4.99a.6.6 0 0 1 0-1.2h6.57ZM2.44 9.99l1.266 1.268a.6.6 0 1 1-.848.848L.567 9.816a.6.6 0 0 1 0-.85l2.29-2.29a.6.6 0 1 1 .849.848L2.439 8.791h6.57a.6.6 0 0 1 0 1.2h-6.57Z" />
             </svg>
 
@@ -102,10 +94,7 @@ export function ActiveAccountCard({
         <Tooltip content={t('copyAddress')}>
           {props => (
             <Copy text={account.address} onCopy={onCopy}>
-              <button
-                className={clsx(styles.iconButton, 'copyIconBlack')}
-                {...props}
-              />
+              <button className={clsx(styles.iconButton, 'copyIconBlack')} {...props} />
             </Copy>
           )}
         </Tooltip>

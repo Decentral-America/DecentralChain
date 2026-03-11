@@ -1,15 +1,13 @@
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 
 export class TabsManager {
   #store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.#store = new ObservableStore(
-      extensionStorage.getInitState({ tabs: {} }),
-    );
+    this.#store = new ObservableStore(extensionStorage.getInitState({ tabs: {} }));
 
     extensionStorage.subscribe(this.#store);
   }
@@ -21,8 +19,7 @@ export class TabsManager {
     let existingTab: Browser.Tabs.Tab | null;
 
     try {
-      existingTab =
-        currentTab?.id == null ? null : await Browser.tabs.get(currentTab.id);
+      existingTab = currentTab?.id == null ? null : await Browser.tabs.get(currentTab.id);
     } catch {
       existingTab = null;
     }

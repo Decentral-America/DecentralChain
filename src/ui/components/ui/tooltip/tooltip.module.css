@@ -7,8 +7,8 @@
   font-size: 14px;
 }
 
-.tooltip[data-popper-reference-hidden='true'],
-.tooltip[data-popper-reference-escaped='true'] {
+.tooltip[data-popper-reference-hidden="true"],
+.tooltip[data-popper-reference-escaped="true"] {
   visibility: hidden;
   pointer-events: none;
 }
@@ -19,7 +19,7 @@
   height: 10px;
 }
 .arrow:after {
-  content: ' ';
+  content: " ";
   position: absolute;
   width: 10px;
   height: 10px;
@@ -27,18 +27,18 @@
   transform: rotate(45deg);
 }
 
-.tooltip[data-popper-placement^='top'] > .arrow {
+.tooltip[data-popper-placement^="top"] > .arrow {
   top: calc(100% - 7px);
 }
 
-.tooltip[data-popper-placement^='bottom'] > .arrow {
+.tooltip[data-popper-placement^="bottom"] > .arrow {
   bottom: calc(100% - 7px);
 }
 
-.tooltip[data-popper-placement^='right'] > .arrow {
+.tooltip[data-popper-placement^="right"] > .arrow {
   right: calc(100% - 7px);
 }
 
-.tooltip[data-popper-placement^='left'] > .arrow {
+.tooltip[data-popper-placement^="left"] > .arrow {
   left: calc(100% - 7px);
 }

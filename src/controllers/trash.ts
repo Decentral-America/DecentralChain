@@ -1,6 +1,6 @@
 import ObservableStore from 'obs-store';
 
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 
 const MAX_ITEMS = 200;
 
@@ -13,9 +13,7 @@ export class TrashController {
   #store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.#store = new ObservableStore(
-      extensionStorage.getInitState({ data: [] }),
-    );
+    this.#store = new ObservableStore(extensionStorage.getInitState({ data: [] }));
 
     extensionStorage.subscribe(this.#store);
   }

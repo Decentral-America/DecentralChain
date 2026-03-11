@@ -11,11 +11,7 @@ type CodeConfirmationProps = {
   confirmCode(code: string): Promise<void>;
 };
 
-export function CodeConfirmation({
-  className,
-  codeDelivery,
-  confirmCode,
-}: CodeConfirmationProps) {
+export function CodeConfirmation({ className, codeDelivery, confirmCode }: CodeConfirmationProps) {
   const { t } = useTranslation();
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -25,7 +21,7 @@ export function CodeConfirmation({
         await confirmCode(code);
 
         return true;
-      } catch (e) {
+      } catch (_e) {
         return false;
       }
     },

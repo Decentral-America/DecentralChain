@@ -5,13 +5,7 @@ import { CopyIcon } from 'icons/copy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Highlight } from 'ui/components/ui/highlight/highlight';
-import {
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from 'ui/components/ui/Tabs/Tabs';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'ui/components/ui/Tabs/Tabs';
 
 import * as styles from './detailTabs.module.css';
 
@@ -38,6 +32,7 @@ export function TxDetailTabs({ children, json }: Props) {
           <div className={styles.root}>
             <div className={styles.copyBtnWrapper}>
               <button
+                type="button"
                 className={clsx(styles.copyBtn, {
                   [styles.copyBtn_feedback]: copyFeedback,
                 })}
