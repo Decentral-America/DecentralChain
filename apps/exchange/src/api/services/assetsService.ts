@@ -127,7 +127,7 @@ export const useAssetBalance = (
       return data;
     },
     enabled: !!address && !!assetId && options?.enabled !== false,
-    refetchInterval: options?.refetchInterval,
+    ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 30000, // 30 seconds - balances change frequently
   });
 };

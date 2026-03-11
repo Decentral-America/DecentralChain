@@ -194,16 +194,16 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
         case 'relative':
           return formatDistance(dateObj, new Date(), {
             addSuffix: true,
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
 
         case 'calendar':
           return formatRelative(dateObj, new Date(), {
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
         default:
           return format(dateObj, formatStr, {
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
       }
     } catch (error) {
@@ -218,7 +218,7 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
 
     try {
       return format(dateObj, tooltipFormat, {
-        locale: dateLocale,
+        ...(dateLocale && { locale: dateLocale }),
       });
     } catch {
       return dateObj.toLocaleString();

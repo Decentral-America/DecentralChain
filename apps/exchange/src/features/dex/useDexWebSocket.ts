@@ -233,8 +233,8 @@ export const calculateSpread = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0]?.price;
-  const bestAsk = orderBook.asks[0]?.price;
+  const bestBid = orderBook.bids[0]?.price ?? 0;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   return bestAsk - bestBid;
 };
@@ -249,7 +249,7 @@ export const calculateSpreadPercentage = (orderBook: OrderBook | null): number =
   }
 
   const spread = calculateSpread(orderBook);
-  const bestAsk = orderBook.asks[0]?.price;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   if (bestAsk === 0) return 0;
 
@@ -265,8 +265,8 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0]?.price;
-  const bestAsk = orderBook.asks[0]?.price;
+  const bestBid = orderBook.bids[0]?.price ?? 0;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   return (bestBid + bestAsk) / 2;
 };

@@ -33,7 +33,7 @@ interface QueueItem<T> {
   /**
    * Priority level (higher = earlier execution)
    */
-  priority?: number;
+  priority?: number | undefined;
 
   /**
    * Timestamp when item was added
@@ -118,7 +118,7 @@ export interface UseQueueReturn<T> {
   /**
    * Get all queued items (for debugging)
    */
-  getQueue: () => ReadonlyArray<{ id: string; timestamp: number; priority?: number }>;
+  getQueue: () => ReadonlyArray<{ id: string; timestamp: number; priority?: number | undefined }>;
 }
 
 /**

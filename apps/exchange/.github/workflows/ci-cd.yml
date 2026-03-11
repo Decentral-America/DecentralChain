@@ -136,6 +136,8 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: production
+    env:
+      HAS_CLOUDFRONT: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
     
     steps:
       - name: Download build artifacts
@@ -167,7 +169,7 @@ jobs:
             --include "service-worker.js"
 
       - name: Invalidate CloudFront cache
-        if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+        if: env.HAS_CLOUDFRONT == 'true'
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
@@ -217,7 +219,7 @@ jobs:
           path: dist/
 
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2
+        uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: './dist'
           production-deploy: true
@@ -233,10 +235,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-aws, deploy-vercel, deploy-netlify]
     if: always() && github.ref == 'refs/heads/main'
+    env:
+      HAS_SLACK: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
     
     steps:
       - name: Send Slack notification
-        if: secrets.SLACK_WEBHOOK_URL != ''
+        if: env.HAS_SLACK == 'true'
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
@@ -245,6 +249,5 @@ jobs:
             Branch: ${{ github.ref }}
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

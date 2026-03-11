@@ -23,11 +23,11 @@ export interface DepositDetails {
   minimumAmount: BigNumber;
   maximumAmount: BigNumber;
   gatewayFee: BigNumber;
-  disclaimerLink?: string;
-  minRecoveryAmount?: BigNumber;
-  recoveryFee?: BigNumber;
-  supportEmail?: string;
-  operator?: string;
+  disclaimerLink?: string | undefined;
+  minRecoveryAmount?: BigNumber | undefined;
+  recoveryFee?: BigNumber | undefined;
+  supportEmail?: string | undefined;
+  operator?: string | undefined;
   walletAddress: string; // User's DecentralChain address
   gatewayType: 'deposit' | 'round-robin';
   gatewayUrl: string;

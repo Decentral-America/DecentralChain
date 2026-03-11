@@ -18,6 +18,19 @@ interface AssetInfoModalProps {
   assetId: string;
 }
 
+interface AssetInfoData {
+  name?: string;
+  description?: string;
+  quantity?: number | string;
+  precision?: number;
+  reissuable?: boolean;
+  sender?: string;
+  height?: number;
+  timestamp?: number;
+  hasScript?: boolean;
+  minSponsoredFee?: number | string;
+}
+
 export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps) {
   const { copyToClipboard } = useClipboard();
 
@@ -25,7 +38,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
   const { data: assetInfo, isLoading } = useQuery({
     queryKey: ['asset-info', assetId],
     queryFn: async () => {
-      return await ds.api.assets.get(assetId);
+      return (await ds.api.assets.get(assetId)) as AssetInfoData;
     },
     enabled: isOpen && !!assetId,
     staleTime: 60000, // Cache for 1 minute
@@ -65,9 +78,9 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Total Supply:</Label>
             <Value>
-              {(Number(assetInfo.quantity) / 10 ** assetInfo.precision).toLocaleString(undefined, {
+              {(Number(assetInfo.quantity) / 10 ** (assetInfo.precision ?? 0)).toLocaleString(undefined, {
                 minimumFractionDigits: 0,
-                maximumFractionDigits: assetInfo.precision,
+                maximumFractionDigits: assetInfo.precision ?? 0,
               })}
             </Value>
           </InfoRow>
@@ -85,7 +98,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Issuer:</Label>
             <CopyableValue
-              onClick={() => handleCopy(assetInfo.sender, 'Issuer')}
+              onClick={() => handleCopy(assetInfo.sender ?? '', 'Issuer')}
               title="Click to copy"
             >
               {assetInfo.sender}
@@ -115,8 +128,8 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
             <InfoRow>
               <Label>Min Sponsored Fee:</Label>
               <Value>
-                {(Number(assetInfo.minSponsoredFee) / 10 ** assetInfo.precision).toFixed(
-                  assetInfo.precision,
+                {(Number(assetInfo.minSponsoredFee) / 10 ** (assetInfo.precision ?? 0)).toFixed(
+                  assetInfo.precision ?? 0,
                 )}{' '}
                 {assetInfo.name}
               </Value>

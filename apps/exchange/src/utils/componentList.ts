@@ -160,7 +160,7 @@ class ComponentListManager {
     };
 
     // Update component registry
-    this.components.set(metadata.id, entry);
+    this.components.set(metadata.id, entry as ComponentEntry);
 
     // Update category index
     if (!this.categories.has(metadata.category)) {
@@ -179,7 +179,7 @@ class ComponentListManager {
     }
 
     // Emit event
-    this.emit('add', entry);
+    this.emit('add', entry as ComponentEntry);
 
     logger.debug(`Component registered: ${metadata.id} (${metadata.name})`);
   }
@@ -246,7 +246,9 @@ class ComponentListManager {
     id: string,
   ): ComponentType<P> | LazyExoticComponent<ComponentType<P>> | null {
     const entry = this.components.get(id);
-    return entry ? entry.component : null;
+    return entry
+      ? (entry.component as ComponentType<P> | LazyExoticComponent<ComponentType<P>>)
+      : null;
   }
 
   /**
@@ -468,7 +470,7 @@ export const renderWithSuspense = <P = unknown>(
   return createElement(
     Suspense,
     { fallback: fallback || createElement('div', null, 'Loading...') },
-    createElement(Component as ComponentType<P>, props),
+    createElement(Component as ComponentType<Record<string, unknown>>, props as Record<string, unknown>),
   );
 };
 

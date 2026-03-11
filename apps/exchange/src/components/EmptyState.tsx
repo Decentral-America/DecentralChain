@@ -136,12 +136,12 @@ export interface EmptyStateProps {
   /**
    * Primary action button
    */
-  action?: EmptyStateAction;
+  action?: EmptyStateAction | undefined;
 
   /**
    * Secondary action button
    */
-  secondaryAction?: EmptyStateAction;
+  secondaryAction?: EmptyStateAction | undefined;
 
   /**
    * Additional help text below actions

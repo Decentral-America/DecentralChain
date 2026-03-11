@@ -248,8 +248,8 @@ export const trackEvent = (
     ReactGA.event({
       category,
       action,
-      label,
-      value,
+      ...(label != null && { label }),
+      ...(value != null && { value }),
       ...params,
     });
 

@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
 
 // React 19 type compatibility cast
-const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<Record<string, unknown>>;
+const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 interface DepositAddressProps {
   /** External blockchain address (e.g., BTC address) */

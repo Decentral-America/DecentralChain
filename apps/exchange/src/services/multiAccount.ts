@@ -32,13 +32,31 @@ interface UserData {
 interface EncryptedUser {
   userType: string;
   networkByte: number;
-  seed?: string;
-  id?: string;
-  privateKey?: string;
+  seed?: string | undefined;
+  id?: string | undefined;
+  privateKey?: string | undefined;
   publicKey: string;
   // Ledger-specific fields
-  ledgerPath?: string;
-  ledgerId?: string;
+  ledgerPath?: string | undefined;
+  ledgerId?: string | undefined;
+}
+
+/**
+ * User object returned by toList() - merges encrypted user data with metadata
+ */
+export interface MultiAccountUser {
+  userType: string;
+  networkByte: number;
+  id: string | undefined;
+  seed: string | undefined;
+  privateKey: string | undefined;
+  publicKey: string;
+  address: string;
+  hash: string;
+  ledgerPath: string | undefined;
+  ledgerId: string | undefined;
+  /** Spread from metadata - allows additional fields like name, settings, matcherSign */
+  [key: string]: unknown;
 }
 
 interface AddUserResult {
@@ -224,7 +242,7 @@ class MultiAccountService {
    * @param multiAccountUsers - User metadata from localStorage
    * @returns Array of complete user objects with decrypted data
    */
-  toList(multiAccountUsers: Record<string, Record<string, unknown>>): Record<string, unknown>[] {
+  toList(multiAccountUsers: Record<string, Record<string, unknown>>): MultiAccountUser[] {
     if (!this.isSignedIn) {
       return [];
     }
@@ -252,10 +270,10 @@ class MultiAccountService {
           // Ledger-specific fields
           ledgerPath: _user.ledgerPath,
           ledgerId: _user.ledgerId,
-        };
+        } satisfies MultiAccountUser;
       })
-      .filter(Boolean)
-      .sort((a, b) => (b.lastLogin || 0) - (a.lastLogin || 0));
+      .filter((u): u is MultiAccountUser => u != null)
+      .sort((a, b) => (Number(b.lastLogin) || 0) - (Number(a.lastLogin) || 0));
   }
 
   /**

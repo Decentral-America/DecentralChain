@@ -12,8 +12,8 @@ import React from 'react';
 
 export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'error'> {
   label?: string;
-  error?: string;
-  helperText?: string;
+  error?: string | undefined;
+  helperText?: string | undefined;
   step?: string;
   min?: string | number;
   max?: string | number;

@@ -301,7 +301,7 @@ export const RestoreFromBackupPage: React.FC = () => {
       // If encrypted, decrypt first
       if (backupData.encrypted) {
         const decryptedData = await decryptBackup(JSON.stringify(backupData.data), password);
-        accountsData = decryptedData.accounts;
+        accountsData = (decryptedData as { accounts: typeof accountsData }).accounts;
       }
 
       // Verify checksum

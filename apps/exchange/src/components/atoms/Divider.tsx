@@ -16,7 +16,7 @@ export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
 
 const DividerLine = styled.hr<{
   orientation: 'horizontal' | 'vertical';
-  spacing?: string;
+  spacing?: string | undefined;
   thickness: string;
   variant: string;
   hasLabel: boolean;

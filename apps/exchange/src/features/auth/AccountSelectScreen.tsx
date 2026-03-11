@@ -14,11 +14,11 @@ import { logger } from '@/lib/logger';
 // Account type - matches User from AuthContext
 interface Account {
   hash: string;
-  name?: string;
+  name?: string | undefined;
   address: string;
-  lastLogin?: number;
-  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper'; // Account type
-  settings?: Record<string, unknown>;
+  lastLogin?: number | undefined;
+  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper' | undefined; // Account type
+  settings?: Record<string, unknown> | undefined;
 }
 
 interface AccountSelectScreenProps {

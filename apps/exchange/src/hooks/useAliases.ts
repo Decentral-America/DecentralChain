@@ -63,7 +63,7 @@ export const useAliases = () => {
 
   // Validate and check if alias is available
   const checkAvailability = useCallback(
-    async (alias: string): Promise<{ available: boolean; error?: string }> => {
+    async (alias: string): Promise<{ available: boolean; error?: string | undefined }> => {
       // First validate format
       const validation = validateAliasFormat(alias);
       if (!validation.valid) {

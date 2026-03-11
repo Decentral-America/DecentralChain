@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 // React 19 type compatibility casts
-const QRCodeSVG = QRCodeSVGBase as React.ComponentType<Record<string, unknown>>;
-const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<Record<string, unknown>>;
+const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
+const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 /**
  * QRCode Component

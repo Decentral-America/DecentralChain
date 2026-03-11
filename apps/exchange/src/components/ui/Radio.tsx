@@ -120,17 +120,17 @@ export interface RadioProps {
   /**
    * Description text displayed below the label
    */
-  description?: string;
+  description?: string | undefined;
 
   /**
    * Whether the radio is disabled
    */
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 
   /**
    * Error message (displays below radio if provided)
    */
-  error?: string;
+  error?: string | undefined;
 
   /**
    * Custom className for styling

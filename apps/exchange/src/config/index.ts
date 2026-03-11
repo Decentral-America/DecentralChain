@@ -19,7 +19,7 @@ export interface Config {
   network: string;
   networkByte: number;
   apiUrl: string;
-  wsUrl?: string;
+  wsUrl?: string | undefined;
   nodeUrl: string;
   matcherUrl: string;
   explorerUrl: string;
@@ -33,7 +33,7 @@ export interface Config {
 
   // Feature flags
   sentryEnabled: boolean;
-  sentryDsn?: string;
+  sentryDsn?: string | undefined;
 }
 
 /**

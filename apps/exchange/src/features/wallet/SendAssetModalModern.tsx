@@ -56,8 +56,8 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   const [amount, setAmount] = useState('');
   const [attachment, setAttachment] = useState('');
   const [validationErrors, setValidationErrors] = useState<{
-    recipient?: string;
-    amount?: string;
+    recipient?: string | undefined;
+    amount?: string | undefined;
   }>({});
 
   // Alias resolution state

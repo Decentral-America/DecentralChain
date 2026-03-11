@@ -39,7 +39,7 @@ interface SelectedAsset {
   name: string;
   ticker: string;
   decimals: number;
-  icon?: string;
+  icon?: string | undefined;
   balance: BigNumber;
 }
 

@@ -14,8 +14,8 @@ export interface SelectOption {
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  error?: string;
-  helperText?: string;
+  error?: string | undefined;
+  helperText?: string | undefined;
   fullWidth?: boolean;
   selectSize?: 'small' | 'medium' | 'large';
   options: SelectOption[];

@@ -95,7 +95,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
     if (depositDetails?.gatewayType === 'round-robin' && depositDetails.expiry) {
       // Initial calculation
       const calculateRemaining = () => {
-        const remaining = depositDetails.expiry?.getTime() - Date.now();
+        const remaining = depositDetails.expiry!.getTime() - Date.now();
         return Math.max(0, remaining);
       };
 

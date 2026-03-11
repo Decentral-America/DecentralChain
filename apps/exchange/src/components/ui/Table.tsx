@@ -19,7 +19,7 @@ import type React from 'react';
 // Styled Components
 const StyledTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => !['sortable'].includes(prop as string),
-})<{ sortable?: boolean }>(({ theme, sortable }) => ({
+})<{ sortable?: boolean | undefined }>(({ theme, sortable }) => ({
   fontWeight: 600,
   cursor: sortable ? 'pointer' : 'default',
   userSelect: 'none',
@@ -41,7 +41,7 @@ const StyledTableRow = styled(TableRow, {
   },
 }));
 
-const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' }>(
+const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' | undefined }>(
   ({ theme, direction: _direction }) => ({
     marginLeft: theme.spacing(1),
     fontSize: '0.75rem',
@@ -63,9 +63,9 @@ export interface TableProps<T = unknown> {
   data: T[];
   onSort?: (key: string) => void;
   sortKey?: string;
-  sortDirection?: 'asc' | 'desc';
-  onRowClick?: (row: T) => void;
-  keyExtractor?: (row: T, index: number) => string | number;
+  sortDirection?: 'asc' | 'desc' | undefined;
+  onRowClick?: ((row: T) => void) | undefined;
+  keyExtractor?: ((row: T, index: number) => string | number) | undefined;
   emptyMessage?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -123,7 +123,7 @@ export const Table = <T extends Record<string, unknown>>({
                 >
                   {columns.map((col) => (
                     <TableCell key={col.key}>
-                      {col.render ? col.render(row[col.key], row) : row[col.key]}
+                      {col.render ? col.render(row[col.key], row) : (row[col.key] as React.ReactNode)}
                     </TableCell>
                   ))}
                 </StyledTableRow>

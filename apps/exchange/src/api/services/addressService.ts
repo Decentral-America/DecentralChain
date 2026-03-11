@@ -141,7 +141,7 @@ export const useAddressBalance = (
       };
     },
     enabled: !!address && options?.enabled !== false,
-    refetchInterval: options?.refetchInterval,
+    ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 30000, // Consider data fresh for 30 seconds
   });
 };
@@ -171,7 +171,7 @@ export const useAddressTransactions = (
       return data;
     },
     enabled: !!address && options?.enabled !== false,
-    refetchInterval: options?.refetchInterval,
+    ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 10000, // Consider data fresh for 10 seconds
   });
 };
@@ -197,7 +197,7 @@ export const useAddressData = (
       return data;
     },
     enabled: !!address && options?.enabled !== false,
-    refetchInterval: options?.refetchInterval,
+    ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 60000, // Consider data fresh for 1 minute
   });
 };

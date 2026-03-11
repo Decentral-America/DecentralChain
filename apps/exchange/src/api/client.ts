@@ -39,7 +39,7 @@ export class HttpError extends Error {
 export interface RequestConfig {
   method?: string;
   url?: string;
-  params?: Record<string, unknown>;
+  params?: Record<string, unknown> | undefined;
   data?: unknown;
   headers?: Record<string, string>;
   timeout?: number;
@@ -256,7 +256,7 @@ export async function apiPut<T = unknown>(
 /**
  * DELETE request helper
  */
-export async function apiDelete<T = unknown>(client: AxiosInstance, endpoint: string): Promise<T> {
+export async function apiDelete<T = unknown>(client: FetchClient, endpoint: string): Promise<T> {
   return apiRequest<T>(client, endpoint, { method: 'DELETE' });
 }
 

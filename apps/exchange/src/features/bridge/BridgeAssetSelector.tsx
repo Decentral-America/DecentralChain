@@ -14,7 +14,7 @@ interface GatewayAsset {
   name: string;
   ticker: string;
   decimals: number;
-  icon?: string;
+  icon?: string | undefined;
   balance: BigNumber;
   hasDeposit: boolean;
   hasWithdraw: boolean;
@@ -43,15 +43,15 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   // Build list of gateway assets with their details
   const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
     const assetInfo: Record<string, unknown> =
-      (assets as Record<string, Record<string, unknown>>)[assetId] || {};
+      (assets as unknown as Record<string, Record<string, unknown>>)[assetId] || {};
     const balance = balances[assetId] || new BigNumber(0);
 
     return {
       assetId,
-      name: assetInfo.displayName || assetInfo.name || 'Unknown Asset',
-      ticker: assetInfo.ticker || assetId.substring(0, 8),
-      decimals: assetInfo.precision || 8,
-      icon: assetInfo.icon,
+      name: String(assetInfo.displayName || assetInfo.name || 'Unknown Asset'),
+      ticker: String(assetInfo.ticker || assetId.substring(0, 8)),
+      decimals: Number(assetInfo.precision || 8),
+      icon: assetInfo.icon as string | undefined,
       balance,
       hasDeposit: true, // All gateway assets support deposit
       hasWithdraw: true, // All gateway assets support withdraw

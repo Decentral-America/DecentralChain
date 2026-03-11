@@ -237,11 +237,11 @@ export const Carousel: React.FC<CarouselProps> = ({
 
   // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0]?.clientX);
+    handleDragStart(e.touches[0]?.clientX ?? 0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    handleDragMove(e.touches[0]?.clientX);
+    handleDragMove(e.touches[0]?.clientX ?? 0);
   };
 
   const handleTouchEnd = () => {

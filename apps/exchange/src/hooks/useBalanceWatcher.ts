@@ -155,7 +155,7 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
     refetch,
   } = useAddressBalance(address || '', {
     enabled: !!address && isPollingEnabled,
-    refetchInterval: isPollingEnabled ? interval : undefined,
+    ...(isPollingEnabled && { refetchInterval: interval }),
   }) as UseQueryResult<AddressBalance, Error>;
 
   /**

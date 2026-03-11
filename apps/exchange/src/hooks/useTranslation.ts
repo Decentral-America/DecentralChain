@@ -28,7 +28,7 @@ export const useTranslation = () => {
    * @returns Translated string
    */
   const translate = (key: string, params?: TranslationParams): string => {
-    return t(key, params);
+    return params ? t(key, params) : t(key);
   };
 
   /**

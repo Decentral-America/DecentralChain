@@ -43,7 +43,7 @@ export const ImportLedger = () => {
         const users = await getUserList(0, USERS_PER_PAGE);
         setVisibleUsers(users);
         if (users.length > 0) {
-          setSelectedUserId(users[0]?.id);
+          setSelectedUserId(users[0]?.id ?? '');
         }
         setShowConnectModal(false);
       } catch {
@@ -67,7 +67,7 @@ export const ImportLedger = () => {
         setVisibleUsers(userList);
 
         if (useDefaultAddress && userList.length > 0) {
-          setSelectedUserId(userList[0]?.id);
+          setSelectedUserId(userList[0]?.id ?? '');
         }
       } catch {
         setShowErrorModal(true);

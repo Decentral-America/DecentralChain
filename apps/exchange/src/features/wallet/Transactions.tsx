@@ -349,14 +349,14 @@ export const Transactions = () => {
             fee: txData.fee.getTokens().toNumber(),
             timestamp: txData.timestamp,
             sender: txData.sender,
-            recipient: txData.recipient,
+            ...(txData.recipient != null && { recipient: txData.recipient }),
           };
         });
 
         allTransactions.push(...mapped);
 
         if (txList.length < MAX_LIMIT) break;
-        after = txList[txList.length - 1].id;
+        after = (txList[txList.length - 1] as { id: string }).id;
       }
 
       if (allTransactions.length === 0) {

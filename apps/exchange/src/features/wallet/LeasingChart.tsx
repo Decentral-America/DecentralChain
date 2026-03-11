@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { VictoryContainer, VictoryPie as VictoryPieBase } from 'victory';
 
 // React 19 type compatibility cast
-const VictoryPie = VictoryPieBase as React.ComponentType<Record<string, unknown>>;
+const VictoryPie = VictoryPieBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 

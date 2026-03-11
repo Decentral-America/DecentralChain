@@ -93,7 +93,7 @@ const parseNumber = (value: string | number | BigNumber): BigNumber => {
 
 const formatWithSeparator = (value: string, separator: string = ','): string => {
   const parts = value.split('.');
-  const integerPart = parts[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+  const integerPart = parts[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, separator) ?? '';
   return parts[1] ? `${integerPart}.${parts[1]}` : integerPart;
 };
 

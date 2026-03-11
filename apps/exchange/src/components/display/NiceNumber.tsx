@@ -18,7 +18,7 @@ import { logger } from '@/lib/logger';
  */
 
 // Styled Components
-const NumberWrapper = styled.span<{ color?: string; size?: 'small' | 'medium' | 'large' }>`
+const NumberWrapper = styled.span<{ color?: string | undefined; size?: 'small' | 'medium' | 'large' }>`
   font-family: 'Roboto Mono', monospace;
   font-size: ${({ size }) => {
     switch (size) {

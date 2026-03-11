@@ -32,7 +32,7 @@ export interface UseDraggableOptions {
     top?: number;
     right?: number;
     bottom?: number;
-  };
+  } | undefined;
 
   /**
    * Snap to grid

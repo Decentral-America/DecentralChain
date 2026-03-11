@@ -63,7 +63,7 @@ export interface ModalProps {
    * Z-index for the modal
    * @default 1000
    */
-  zIndex?: number;
+  zIndex?: number | undefined;
 
   /**
    * Animation duration in ms

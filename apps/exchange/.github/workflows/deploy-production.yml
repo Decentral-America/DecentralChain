@@ -17,6 +17,10 @@ jobs:
     environment:
       name: production
       url: https://wallet.decentralchain.io
+    env:
+      HAS_AWS: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
+      HAS_CLOUDFRONT: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+      HAS_VERCEL: ${{ secrets.VERCEL_TOKEN != '' }}
     
     steps:
       - name: Checkout code
@@ -53,7 +57,7 @@ jobs:
           retention-days: 30  # Keep production builds longer
 
       - name: Deploy to AWS S3 (Production)
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: env.HAS_AWS == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -61,7 +65,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Sync to S3 production bucket
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: env.HAS_AWS == 'true'
         run: |
           # Upload static assets with long-term caching
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_PRODUCTION }} \
@@ -80,7 +84,7 @@ jobs:
             --include "manifest.json"
 
       - name: Invalidate CloudFront cache
-        if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+        if: env.HAS_CLOUDFRONT == 'true'
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
@@ -88,7 +92,7 @@ jobs:
             --no-cli-pager
 
       - name: Deploy to Vercel (Production)
-        if: secrets.VERCEL_TOKEN != ''
+        if: env.HAS_VERCEL == 'true'
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -130,7 +134,7 @@ jobs:
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: false
           prerelease: false
@@ -150,7 +154,8 @@ jobs:
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
             URL: https://wallet.decentralchain.io
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify deployment failure
         if: failure()
@@ -163,10 +168,11 @@ jobs:
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
             Requires immediate attention!
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Rollback on failure
-        if: failure() && secrets.AWS_ACCESS_KEY_ID != ''
+        if: failure() && env.HAS_AWS == 'true'
         run: |
           echo "❌ Deployment failed. Consider rolling back to previous version."
           echo "To rollback: Promote previous Docker image or restore S3 from backup"
