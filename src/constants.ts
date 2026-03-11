@@ -46,12 +46,7 @@ export const NETWORK_CONFIG: Record<
 };
 
 export const DEFAULT_MAIN_CONFIG = {
-  whitelist: [
-    'decentralchain.io',
-    'explorer.decentralchain.io',
-    'web.keeper-wallet.app',
-    'swap.keeper-wallet.app',
-  ],
+  whitelist: ['decentralchain.io', 'explorer.decentralchain.io'],
   networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
   messages_config: {
     message_expiration_ms: 30 * 60 * 1000,
@@ -101,9 +96,7 @@ export type IgnoreErrorsConfig = MainConfig['ignoreErrors'];
 export type NftConfig = MainConfig['nfts'];
 
 export type IgnoreErrorsContext = {
-  [K in keyof IgnoreErrorsConfig]: IgnoreErrorsConfig[K] extends string[]
-    ? K
-    : never;
+  [K in keyof IgnoreErrorsConfig]: IgnoreErrorsConfig[K] extends string[] ? K : never;
 }[keyof IgnoreErrorsConfig];
 
 // TODO: Replace with DecentralChain identity service endpoints once available
