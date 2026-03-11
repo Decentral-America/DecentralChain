@@ -1,5 +1,5 @@
 import { parserFromSchema, type TToLongConverter } from './parse';
-import { getTransactionSchema } from './schemas';
+import { getTransactionSchema, type TRANSACTION_TYPE } from './schemas';
 import { type TSchema } from './schemaTypes';
 import { serializerFromSchema, type TFromLongConverter } from './serialize';
 
@@ -20,7 +20,7 @@ export function convertLongFields<T = string, R = string>(
   const ser = serializerFromSchema(schema, fromConverter);
   const par = parserFromSchema(schema, toConverter);
   const converted = par(ser(obj)).value;
-  return { ...obj, ...converted };
+  return { ...obj, ...(converted as Record<string, unknown>) };
 }
 
 /**
@@ -38,6 +38,6 @@ export function convertTxLongFields<T = string, R = string>(
   fromConverter?: TFromLongConverter<R>,
 ) {
   const { type, version } = tx;
-  const schema = getTransactionSchema(type, version);
+  const schema = getTransactionSchema(type as TRANSACTION_TYPE, version as number);
   return convertLongFields(tx, schema, toConverter, fromConverter);
 }
