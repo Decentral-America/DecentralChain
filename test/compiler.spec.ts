@@ -218,11 +218,13 @@ func bar() = WriteSet([])`;
 
   test('testHttp', async () => {
     expect(
+      // TODO: Replace with DCC node URL once available
       await https.get('https://nodes.wavesplatform.com/transactions/info/asd').getHeader('body'),
     ).toBeUndefined();
   });
 
   test('connect blockchain - transactionHeightById', async () => {
+    // TODO: Replace with DCC testnet node URL once available
     const nodeUrl = 'https://nodes-testnet.wavesnodes.com/',
       chainId = 'T',
       address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
@@ -236,6 +238,7 @@ func bar() = WriteSet([])`;
   });
 
   test('reconfigure', async () => {
+    // TODO: Replace with DCC testnet node URL once available
     const nodeUrl = 'https://nodes-testnet.wavesnodes.com/',
       chainId = 'T';
     let address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';

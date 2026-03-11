@@ -6,6 +6,7 @@ export default defineConfig({
     alias: {
       // The @waves/ts-lib-crypto ESM bundle is broken (Buffer.from undefined
       // at module init). Force the CJS build which works fine in Node.
+      // NOTE: This is an npm package path resolution, not branding.
       '@waves/ts-lib-crypto': path.resolve('node_modules/@waves/ts-lib-crypto/cjs/index.cjs'),
     },
   },

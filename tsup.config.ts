@@ -10,6 +10,8 @@ export default defineConfig({
   target: 'es2024',
   shims: true,
   platform: 'node',
+  // NOTE: These are npm package names resolved by Node — not branding.
+  // TODO: Replace with @decentralchain/ride-lang and @decentralchain/ride-repl once forked
   external: ['@waves/ride-lang', '@waves/ride-repl', '@waves/ts-lib-crypto'],
   clean: true,
   outDir: 'dist',
