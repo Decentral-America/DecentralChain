@@ -148,6 +148,7 @@ export function postPeerToTheBanList(base: string, peer: string): Promise<unknow
 /**
  * GET /debug/stateHash/{height}
  * State hash at a given height.
+ * NOTE: `waves.db.store-state-hashes` is an actual node configuration key name.
  * Requires `waves.db.store-state-hashes = true` in node configuration.
  */
 export function debugStateHash(
@@ -260,6 +261,7 @@ export function debugPrint(base: string, message: string, apiKey: string): Promi
 /**
  * POST /debug/rollback
  * Remove all blocks after a given height.
+ * NOTE: `waves.db.max-rollback-depth` is an actual node configuration key name.
  * Max rollback depth is set by `waves.db.max-rollback-depth` (default 2000).
  * Requires node API key.
  */
