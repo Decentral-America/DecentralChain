@@ -53,10 +53,7 @@
         "noConsole": {
           "level": "warn",
           "options": {
-            "allow": [
-              "warn",
-              "error"
-            ]
+            "allow": ["warn", "error"]
           }
         },
         "noDoubleEquals": "error"
@@ -76,9 +73,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "src/**/*.js"
-      ],
+      "includes": ["src/**/*.js"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -93,9 +88,7 @@
       }
     },
     {
-      "includes": [
-        "src/**/*.d.ts"
-      ],
+      "includes": ["src/**/*.d.ts"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -105,11 +98,7 @@
       }
     },
     {
-      "includes": [
-        "test/**",
-        "**/*.spec.ts",
-        "**/*.spec.tsx"
-      ],
+      "includes": ["test/**", "**/*.spec.ts", "**/*.spec.tsx"],
       "linter": {
         "rules": {
           "suspicious": {

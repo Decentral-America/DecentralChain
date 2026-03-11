@@ -6,6 +6,7 @@ globalThis.base58Decode = (data) => crypto.base58Decode(data).buffer;
 globalThis.base64Encode = (bytes) => crypto.base64Encode(new Uint8Array(bytes));
 globalThis.base64Decode = (data) => crypto.base64Decode(data);
 globalThis.keccak256 = (bytes) => Uint8Array.from(crypto.keccak(new Uint8Array(bytes))).buffer;
+// @ts-expect-error — Buffer.from handles TBytes (Uint8Array) at runtime; overload mismatch is harmless
 globalThis.sha256 = (bytes) => Buffer.from(crypto.sha256(new Uint8Array(bytes)), 'hex');
 globalThis.blake2b256 = (bytes) => crypto.blake2b(new Uint8Array(bytes)).buffer;
 globalThis.curve25519verify = (msg, sig, key) =>
