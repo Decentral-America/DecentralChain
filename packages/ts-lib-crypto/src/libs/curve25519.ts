@@ -85,7 +85,7 @@ function modPow(base: bigint, exp: bigint, mod: bigint): bigint {
 
 // ─── public API ────────────────────────────────────────────────────
 
-export interface KeyPair {
+interface KeyPair {
   public: Uint8Array;
   private: Uint8Array;
 }
@@ -96,7 +96,7 @@ export interface KeyPair {
  * Public key is a Montgomery u-coordinate (sign bit cleared).
  * Private key is the clamped seed.
  */
-export function generateKeyPair(seed: Uint8Array): KeyPair {
+function generateKeyPair(seed: Uint8Array): KeyPair {
   if (seed.length !== 32) throw new Error('wrong seed length');
 
   const sk = clamp(new Uint8Array(seed));
@@ -111,7 +111,7 @@ export function generateKeyPair(seed: Uint8Array): KeyPair {
 /**
  * Compute an X25519 shared secret.
  */
-export function sharedKey(secretKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
+function sharedKey(secretKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
   if (secretKey.length !== 32) throw new Error('wrong secret key length');
   if (publicKey.length !== 32) throw new Error('wrong public key length');
   return x25519.scalarMult(secretKey, publicKey);
@@ -126,7 +126,7 @@ export function sharedKey(secretKey: Uint8Array, publicKey: Uint8Array): Uint8Ar
  * The Ed25519 sign bit of the internal Edwards public key is stored in
  * `signature[63]` so that verification can reconstruct the full key.
  */
-export function sign(secretKey: Uint8Array, msg: Uint8Array, optRandom?: Uint8Array): Uint8Array {
+function sign(secretKey: Uint8Array, msg: Uint8Array, optRandom?: Uint8Array): Uint8Array {
   if (secretKey.length !== 32) throw new Error('wrong secret key length');
   if (optRandom !== undefined && optRandom.length !== 64) {
     throw new Error('wrong random data length');
@@ -189,7 +189,7 @@ export function sign(secretKey: Uint8Array, msg: Uint8Array, optRandom?: Uint8Ar
  * Reconstructs the Edwards public key from the Montgomery public key and
  * the sign bit embedded in the signature, then delegates to noble Ed25519.
  */
-export function verify(publicKey: Uint8Array, msg: Uint8Array, signature: Uint8Array): boolean {
+function verify(publicKey: Uint8Array, msg: Uint8Array, signature: Uint8Array): boolean {
   if (signature.length !== 64) throw new Error('wrong signature length');
   if (publicKey.length !== 32) throw new Error('wrong public key length');
 
