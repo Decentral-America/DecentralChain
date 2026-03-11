@@ -45,7 +45,7 @@ export function setScript(
   if (paramsOrTx.script === undefined)
     throw new Error('Script field cannot be undefined. Use null explicitly to remove script');
 
-  const scriptBytes = scriptToProto(paramsOrTx.script!);
+  const scriptBytes = paramsOrTx.script != null ? scriptToProto(paramsOrTx.script) : null;
   const computedFee =
     scriptBytes != null ? Math.max(100000, Math.ceil(scriptBytes.length / 1024) * 100000) : 500000;
 
