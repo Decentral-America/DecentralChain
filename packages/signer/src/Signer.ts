@@ -173,7 +173,7 @@ export class Signer {
     toBroadcast: SignedTx<T> | Array<SignedTx<T>>,
     options?: BroadcastOptions,
   ): Promise<BroadcastedTx<SignedTx<T>> | BroadcastedTx<Array<SignedTx<T>>>> {
-    return broadcastTx(this._options.NODE_URL, toBroadcast as unknown, options) as unknown;
+    return broadcastTx(this._options.NODE_URL, toBroadcast as never, options) as never;
   }
 
   /** Retrieve the network byte for the configured node. */
@@ -259,7 +259,7 @@ export class Signer {
   @checkAuth
   public getBalance(): Promise<Array<Balance>> {
     return Promise.all([
-      fetchBalanceDetails(this._options.NODE_URL, this._userData?.address).then((data) => ({
+      fetchBalanceDetails(this._options.NODE_URL, this._userData!.address).then((data) => ({
         assetId: 'DCC',
         assetName: 'DCC',
         decimals: 8,
@@ -269,7 +269,7 @@ export class Signer {
         sponsorship: null,
         isSmart: false,
       })),
-      fetchAssetsBalance(this._options.NODE_URL, this._userData?.address).then((data) =>
+      fetchAssetsBalance(this._options.NODE_URL, this._userData!.address).then((data) =>
         data.balances.map((item) => {
           const issueTx = item.issueTransaction;
           return {
@@ -308,8 +308,8 @@ export class Signer {
    */
   @ensureProvider
   public login(): Promise<UserData> {
-    return this.currentProvider
-      ?.login()
+    return this.currentProvider!
+      .login()
       .then((data) => {
         this._logger.info('Logged in.');
         this._userData = data;
@@ -458,7 +458,7 @@ export class Signer {
     tx: T | T[],
     confirmations: number,
   ): Promise<T | T[]> {
-    return waitForTx(this._options.NODE_URL, tx as unknown, { confirmations });
+    return waitForTx(this._options.NODE_URL, tx as never, { confirmations }) as never;
   }
 
   // ---------------------------------------------------------------------------
@@ -590,33 +590,31 @@ export class Signer {
     const chainArgs = Array.isArray(txs) ? txs : [txs];
 
     return {
-      ...({
-        issue: this._issue(chainArgs),
-        transfer: this._transfer(chainArgs),
-        reissue: this._reissue(chainArgs),
-        burn: this._burn(chainArgs),
-        lease: this._lease(chainArgs),
-        exchange: this._exchange(chainArgs),
-        cancelLease: this._cancelLease(chainArgs),
-        alias: this._alias(chainArgs),
-        massTransfer: this._massTransfer(chainArgs),
-        data: this._data(chainArgs),
-        sponsorship: this._sponsorship(chainArgs),
-        setScript: this._setScript(chainArgs),
-        setAssetScript: this._setAssetScript(chainArgs),
-        invoke: this._invoke(chainArgs),
-      } as unknown),
-      sign: () => this._sign<T>(txs as unknown as T[]),
+      issue: this._issue(chainArgs),
+      transfer: this._transfer(chainArgs),
+      reissue: this._reissue(chainArgs),
+      burn: this._burn(chainArgs),
+      lease: this._lease(chainArgs),
+      exchange: this._exchange(chainArgs),
+      cancelLease: this._cancelLease(chainArgs),
+      alias: this._alias(chainArgs),
+      massTransfer: this._massTransfer(chainArgs),
+      data: this._data(chainArgs),
+      sponsorship: this._sponsorship(chainArgs),
+      setScript: this._setScript(chainArgs),
+      setAssetScript: this._setAssetScript(chainArgs),
+      invoke: this._invoke(chainArgs),
+      sign: () => _this._sign<T>(txs as unknown as T[]) as never,
       broadcast(options?: BroadcastOptions) {
         if (_this.currentProvider?.isSignAndBroadcastByProvider === true) {
-          return _this.currentProvider.sign(txs);
+          return _this.currentProvider.sign(txs) as never;
         }
 
-        return this.sign().then((signed: SignedTx<T>) =>
-          _this.broadcast(signed, options),
-        ) as unknown;
+        return (_this._sign<T>(txs as unknown as T[]) as unknown as Promise<SignedTx<T>>).then(
+          (signed) => _this.broadcast(signed, options),
+        ) as never;
       },
-    };
+    } as unknown as ChainApi1stCall<T>;
   }
 
   // ---------------------------------------------------------------------------
@@ -681,7 +679,7 @@ export class Signer {
 
     if (validation.isValid) {
       return this._connectPromise.then(
-        (provider) => provider.sign(toSign as unknown as SignerTx[]) as unknown,
+        (provider) => provider.sign(toSign as unknown as SignerTx[]) as never,
       );
     }
 
