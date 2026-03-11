@@ -1,4 +1,4 @@
-import { Breadcrumbs, init } from '@sentry/browser';
+import { breadcrumbsIntegration, init } from '@sentry/browser';
 
 export function initSentry({
   shouldIgnoreError,
@@ -16,7 +16,7 @@ export function initSentry({
         source,
       },
     },
-    integrations: [new Breadcrumbs({ dom: false })],
+    integrations: [breadcrumbsIntegration({ dom: false })],
     beforeSend: async (event, hint) => {
       const message =
         hint &&

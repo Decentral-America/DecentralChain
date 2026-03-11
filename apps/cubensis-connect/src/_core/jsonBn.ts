@@ -1,5 +1,5 @@
 import BigNumber from '@decentralchain/bignumber';
-import create from '@decentralchain/parse-json-bignumber/dist/parse-json-bignumber';
+import { create } from '@decentralchain/parse-json-bignumber';
 
 export const JSONbn = create({
   isInstance: BigNumber.isBigNumber,
