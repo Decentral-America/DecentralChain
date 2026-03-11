@@ -1,6 +1,6 @@
 import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
-import thunk, { type ThunkDispatch } from 'redux-thunk';
+import { type ThunkDispatch, thunk } from 'redux-thunk';
 
 import * as middleware from '../../store/middleware';
 import type { AppAction } from '../../store/types';
@@ -18,9 +18,7 @@ export function createAccountsStore() {
     applyMiddleware(
       thunk,
       ...Object.values(middleware),
-      ...(process.env.NODE_ENV === 'development'
-        ? [createLogger({ collapsed: true })]
-        : []),
+      ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
     ),
   );
 
