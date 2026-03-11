@@ -1,28 +1,309 @@
+import { base58Decode, verifyAddress } from '@decentralchain/ts-lib-crypto';
 import { TRANSACTION_TYPE, type TransactionType } from '@decentralchain/ts-types';
 import { type SignerOptions } from './types/index.js';
-import {
-  isArray,
-  isAssetId,
-  isAttachment,
-  isBase64,
-  isBoolean,
-  isNonNegativeAmount,
-  isNumber,
-  isPositiveAmount,
-  isPublicKey,
-  isRecipient,
-  isRequired,
-  isString,
-  isValidAliasName,
-  isValidAssetDescription,
-  isValidAssetName,
-  isValidData,
-  noop,
-  orderValidator,
-  orEq,
-  validateBySchema,
-  validatePipe,
-} from './validators.js';
+
+// ── Protocol Constants ───────────────────────────────────────────
+
+/**
+ * Maximum safe integer for blockchain Long values (signed 64-bit).
+ * JavaScript's Number.MAX_SAFE_INTEGER (2^53-1) is the practical ceiling
+ * for numeric values; string amounts can represent up to Long.MAX_VALUE.
+ */
+const MAX_SAFE_LONG = '9223372036854775807'; // 2^63 - 1
+
+const TX_DEFAULTS = {
+  MAX_ATTACHMENT: 140,
+  ALIAS: {
+    AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz',
+    MAX_ALIAS_LENGTH: 30,
+    MIN_ALIAS_LENGTH: 4,
+  },
+} as const;
+
+const ASSETS = {
+  NAME_MIN_BYTES: 4,
+  NAME_MAX_BYTES: 16,
+  DESCRIPTION_MAX_BYTES: 1000,
+} as const;
+
+// ── Primitive Validators ─────────────────────────────────────────
+
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
+const validatePipe =
+  (...args: Array<(value: unknown) => boolean>) =>
+  (value: unknown): boolean => {
+    for (const cb of args) {
+      if (!cb(value)) return false;
+    }
+    return true;
+  };
+
+const isRequired = (required: boolean) => (value: unknown) => !required || value != null;
+
+const isString = (value: unknown): value is string =>
+  typeof value === 'string' || value instanceof String;
+
+const isNumber = (value: unknown): value is number =>
+  (typeof value === 'number' || value instanceof Number) && !Number.isNaN(Number(value));
+
+/**
+ * Validates that a value is number-like (can be coerced to a finite number).
+ * Accepts 0 as valid. Rejects NaN, Infinity, -Infinity, null, undefined.
+ */
+const isNumberLike = (value: unknown): boolean => {
+  if (value == null) return false;
+  const num = Number(value);
+  return !Number.isNaN(num) && Number.isFinite(num) && (!!value || value === 0 || value === '0');
+};
+
+const isBoolean = (value: unknown): value is boolean =>
+  value != null && (typeof value === 'boolean' || value instanceof Boolean);
+
+/**
+ * Validates that a value is a positive number-like amount suitable for blockchain transactions.
+ * Rejects: negative, zero, NaN, Infinity, values exceeding Long.MAX_VALUE (2^63-1).
+ * Accepts string representations for BigInt-scale amounts (e.g. "9007199254740993").
+ */
+const isPositiveAmount = (value: unknown): boolean => {
+  if (!isNumberLike(value)) return false;
+  const str = String(value).trim();
+  if (str.startsWith('-') || Number(str) === 0) return false;
+  if (typeof value === 'string' && /^\d+$/.test(str)) {
+    if (str.length > MAX_SAFE_LONG.length) return false;
+    if (str.length === MAX_SAFE_LONG.length && str > MAX_SAFE_LONG) return false;
+  }
+  if (typeof value === 'number' && value > Number.MAX_SAFE_INTEGER) return false;
+  return true;
+};
+
+/**
+ * Validates that a value is a non-negative number-like amount (amount >= 0).
+ * Used for fees that can legally be zero (e.g. sponsorship removal).
+ */
+const isNonNegativeAmount = (value: unknown): boolean => {
+  if (!isNumberLike(value)) return false;
+  const num = Number(value);
+  if (num < 0) return false;
+  const str = String(value).trim();
+  if (typeof value === 'string' && /^\d+$/.test(str)) {
+    if (str.length > MAX_SAFE_LONG.length) return false;
+    if (str.length === MAX_SAFE_LONG.length && str > MAX_SAFE_LONG) return false;
+  }
+  if (typeof value === 'number' && value > Number.MAX_SAFE_INTEGER) return false;
+  return true;
+};
+
+const orEq =
+  <T>(list: T[]) =>
+  (item: unknown): boolean =>
+    list.includes(item as T);
+
+const exception = (msg: string): never => {
+  throw new Error(msg);
+};
+
+const validateBySchema =
+  (schema: Record<string, (value: unknown) => boolean>, _errorTpl: unknown) =>
+  (tx: Record<string, unknown>): boolean => {
+    for (const [key, cb] of Object.entries(schema)) {
+      const value = tx?.[key];
+      if (!cb(value)) {
+        exception(`Validation failed for field: ${key}`);
+      }
+    }
+    return true;
+  };
+
+/**
+ * Validates an attachment field. Must be null/undefined or a string within the
+ * protocol maximum of 140 bytes.
+ */
+const isAttachment = (value: unknown): boolean => {
+  if (value === null || value === undefined) return true;
+  if (!isString(value)) return false;
+  const str = value as string;
+  if (str.length > TX_DEFAULTS.MAX_ATTACHMENT) {
+    const byteLength = new TextEncoder().encode(str).length;
+    return byteLength <= TX_DEFAULTS.MAX_ATTACHMENT;
+  }
+  return true;
+};
+
+const validateChars = (chars: string) => (value: string) =>
+  value.split('').every((char: string) => chars.includes(char));
+
+const isValidAliasName = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  if (!validateChars(TX_DEFAULTS.ALIAS.AVAILABLE_CHARS)(value as string)) return false;
+  const len = (value as string).length;
+  return len >= TX_DEFAULTS.ALIAS.MIN_ALIAS_LENGTH && len <= TX_DEFAULTS.ALIAS.MAX_ALIAS_LENGTH;
+};
+
+/**
+ * Validates a base64-encoded script field.
+ * Must be null/undefined or a string matching `base64:<valid-base64-content>`.
+ */
+const isBase64 = (value: unknown): boolean => {
+  if (value === null || value === undefined) return true;
+  if (!isString(value)) return false;
+  const str = value as string;
+  if (!str.startsWith('base64:')) return false;
+  const content = str.slice(7);
+  if (content.length === 0) return true;
+  return /^[A-Za-z0-9+/]+=*$/.test(content);
+};
+
+const validateType: Record<string, (value: unknown) => boolean> = {
+  integer: isNumberLike,
+  boolean: isBoolean,
+  string: isString,
+  binary: isBase64,
+};
+
+const isValidDataPair = (data: { type: string; value: unknown }): boolean =>
+  !!(validateType[data.type] && validateType[data.type]?.(data.value));
+
+const isValidData = (item: unknown): boolean => {
+  if (item == null) return false;
+  const record = item as Record<string, unknown>;
+  if (!isString(record.key) || !(record.key as string)) return false;
+  return isValidDataPair(record as { type: string; value: unknown });
+};
+
+const isPublicKey = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  try {
+    return base58Decode(value as string).length === 32;
+  } catch {
+    return false;
+  }
+};
+
+const isValidAssetName = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  const len = (value as string).length;
+  return len >= ASSETS.NAME_MIN_BYTES && len <= ASSETS.NAME_MAX_BYTES;
+};
+
+const isValidAssetDescription = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  return (value as string).length <= ASSETS.DESCRIPTION_MAX_BYTES;
+};
+
+/**
+ * Validates an asset ID. Valid values:
+ * - null / undefined / '' / 'DCC' → native token
+ * - Base58-encoded 32-byte string → token asset ID
+ */
+const isAssetId = (value: unknown): boolean => {
+  if (value === '' || value === null || value === undefined || value === 'DCC') return true;
+  if (!isString(value)) return false;
+  const str = (value as string).trim();
+  if (str.length === 0) return true;
+  try {
+    const decoded = base58Decode(str);
+    return decoded.length === 32;
+  } catch {
+    return false;
+  }
+};
+
+const isAlias = (value: string): boolean => value.startsWith('alias:');
+
+/**
+ * Validates a DecentralChain address using full Base58+checksum verification
+ * via `@decentralchain/ts-lib-crypto`. Rejects malformed, wrong-length,
+ * or invalid-checksum addresses.
+ */
+const isValidAddress = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  const str = (value as string).trim();
+  if (str.length === 0) return false;
+  try {
+    return verifyAddress(str);
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Validates an alias recipient string. Format: `alias:<chainByte>:<name>`.
+ * Chain byte must be a single printable ASCII character (network ID).
+ */
+const isValidAlias = (value: string): boolean => {
+  const parts = value.split(':');
+  if (parts.length !== 3) return false;
+  const chainByte = parts[1];
+  const name = parts[2];
+  if (
+    !chainByte ||
+    chainByte.length !== 1 ||
+    chainByte.charCodeAt(0) < 33 ||
+    chainByte.charCodeAt(0) > 126
+  ) {
+    return false;
+  }
+  return name != null ? isValidAliasName(name) : false;
+};
+
+const isRecipient = (value: unknown): boolean => {
+  if (!isString(value)) return false;
+  if (isAlias(value as string)) return isValidAlias(value as string);
+  return isValidAddress(value);
+};
+
+const noop = (): void => {};
+
+// ── Order Validation ─────────────────────────────────────────────
+
+const orderScheme: Record<string, (value: unknown) => boolean> = {
+  orderType: orEq(['sell', 'buy']),
+  senderPublicKey: isPublicKey,
+  matcherPublicKey: isPublicKey,
+  version: orEq([undefined, 1, 2, 3]),
+  assetPair: validatePipe(
+    isRequired(true),
+    (v) => isAssetId((v as Record<string, unknown>)?.amountAsset),
+    (v) => isAssetId((v as Record<string, unknown>)?.priceAsset),
+  ),
+  price: isNumberLike,
+  amount: isNumberLike,
+  matcherFee: isNumberLike,
+  expiration: isNumberLike,
+  timestamp: isNumber,
+  proofs: (value) => (isArray(value) ? true : value === undefined),
+};
+
+const v12OrderScheme = {
+  matcherFeeAssetId: (item: unknown): boolean =>
+    item === undefined || item === null || item === 'DCC',
+};
+
+const v3OrderScheme = {
+  matcherFeeAssetId: isAssetId,
+};
+
+const validateOrder = validateBySchema(orderScheme, noop);
+const validateOrderV2 = validateBySchema(v12OrderScheme, noop);
+const validateOrderV3 = validateBySchema(v3OrderScheme, noop);
+
+const orderValidator = (value: unknown): boolean => {
+  try {
+    const record = value as Record<string, unknown>;
+    validateOrder(record);
+    if (record.version === 3) {
+      validateOrderV3(record);
+    } else {
+      validateOrderV2(record);
+    }
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// ── Transaction Validation ───────────────────────────────────────
 
 const shouldValidate = (value: unknown): boolean => value !== undefined;
 
@@ -39,10 +320,7 @@ type ValidatorFn = (
   invalidFields?: string[];
 };
 
-/**
- * Validates a transaction against a schema and collects individual field errors.
- */
-export const validator: ValidatorFn = (scheme, method) => (transaction) => {
+const validator: ValidatorFn = (scheme, method) => (transaction) => {
   const invalidFields: string[] = [];
 
   for (const [fieldName, validationScheme] of Object.entries(scheme)) {
@@ -69,7 +347,7 @@ const getCommonValidators = (transactionType: TransactionType) => ({
   proofs: validateOptional(isArray),
 });
 
-export const issueArgsScheme = {
+const issueArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.ISSUE),
   name: isValidAssetName,
   description: validateOptional(isValidAssetDescription),
@@ -79,9 +357,9 @@ export const issueArgsScheme = {
   script: validateOptional(isBase64),
   chainId: validateOptional(isNumber),
 };
-export const issueArgsValidator = validator(issueArgsScheme, 'issue');
+const issueArgsValidator = validator(issueArgsScheme, 'issue');
 
-export const transferArgsScheme = {
+const transferArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.TRANSFER),
   amount: isPositiveAmount,
   recipient: isRecipient,
@@ -89,46 +367,46 @@ export const transferArgsScheme = {
   feeAssetId: validateOptional(isAssetId),
   attachment: validateOptional(isAttachment),
 };
-export const transferArgsValidator = validator(transferArgsScheme, 'transfer');
+const transferArgsValidator = validator(transferArgsScheme, 'transfer');
 
-export const reissueArgsScheme = {
+const reissueArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.REISSUE),
   assetId: isAssetId,
   quantity: isPositiveAmount,
   reissuable: isBoolean,
   chainId: validateOptional(isNumber),
 };
-export const reissueArgsValidator = validator(reissueArgsScheme, 'reissue');
+const reissueArgsValidator = validator(reissueArgsScheme, 'reissue');
 
-export const burnArgsScheme = {
+const burnArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.BURN),
   assetId: isString,
   amount: isPositiveAmount,
   chainId: validateOptional(isNumber),
 };
-export const burnArgsValidator = validator(burnArgsScheme, 'burn');
+const burnArgsValidator = validator(burnArgsScheme, 'burn');
 
-export const leaseArgsScheme = {
+const leaseArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.LEASE),
   amount: isPositiveAmount,
   recipient: isRecipient,
 };
-export const leaseArgsValidator = validator(leaseArgsScheme, 'lease');
+const leaseArgsValidator = validator(leaseArgsScheme, 'lease');
 
-export const cancelLeaseArgsScheme = {
+const cancelLeaseArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.CANCEL_LEASE),
   leaseId: isString,
   chainId: validateOptional(isNumber),
 };
-export const cancelLeaseArgsValidator = validator(cancelLeaseArgsScheme, 'cancel lease');
+const cancelLeaseArgsValidator = validator(cancelLeaseArgsScheme, 'cancel lease');
 
-export const aliasArgsScheme = {
+const aliasArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.ALIAS),
   alias: (value: unknown) => (typeof value === 'string' ? isValidAliasName(value) : false),
 };
-export const aliasArgsValidator = validator(aliasArgsScheme, 'alias');
+const aliasArgsValidator = validator(aliasArgsScheme, 'alias');
 
-export const massTransferArgsScheme = {
+const massTransferArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.MASS_TRANSFER),
   transfers: validatePipe(
     isArray,
@@ -144,29 +422,29 @@ export const massTransferArgsScheme = {
   assetId: validateOptional(isAssetId),
   attachment: validateOptional(isAttachment),
 };
-export const massTransferArgsValidator = validator(massTransferArgsScheme, 'mass transfer');
+const massTransferArgsValidator = validator(massTransferArgsScheme, 'mass transfer');
 
-export const dataArgsScheme = {
+const dataArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.DATA),
   data: (data: unknown) => isArray(data) && (data as unknown[]).every((item) => isValidData(item)),
 };
-export const dataArgsValidator = validator(dataArgsScheme, 'data');
+const dataArgsValidator = validator(dataArgsScheme, 'data');
 
-export const setScriptArgsScheme = {
+const setScriptArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.SET_SCRIPT),
   script: isBase64,
   chainId: validateOptional(isNumber),
 };
-export const setScriptArgsValidator = validator(setScriptArgsScheme, 'set script');
+const setScriptArgsValidator = validator(setScriptArgsScheme, 'set script');
 
-export const sponsorshipArgsScheme = {
+const sponsorshipArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.SPONSORSHIP),
   assetId: isString,
   minSponsoredAssetFee: (value: unknown) => value === null || isNonNegativeAmount(value),
 };
-export const sponsorshipArgsValidator = validator(sponsorshipArgsScheme, 'sponsorship');
+const sponsorshipArgsValidator = validator(sponsorshipArgsScheme, 'sponsorship');
 
-export const exchangeArgsScheme = {
+const exchangeArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.EXCHANGE),
   order1: validatePipe(isRequired(true), orderValidator),
   order2: validatePipe(isRequired(true), orderValidator),
@@ -175,17 +453,17 @@ export const exchangeArgsScheme = {
   buyMatcherFee: isNonNegativeAmount,
   sellMatcherFee: isNonNegativeAmount,
 };
-export const exchangeArgsValidator = validator(exchangeArgsScheme, 'exchange');
+const exchangeArgsValidator = validator(exchangeArgsScheme, 'exchange');
 
-export const setAssetScriptArgsScheme = {
+const setAssetScriptArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.SET_ASSET_SCRIPT),
   script: isBase64,
   assetId: isAssetId,
   chainId: validateOptional(isNumber),
 };
-export const setAssetScriptArgsValidator = validator(setAssetScriptArgsScheme, 'set asset script');
+const setAssetScriptArgsValidator = validator(setAssetScriptArgsScheme, 'set asset script');
 
-export const invokeArgsScheme = {
+const invokeArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.INVOKE_SCRIPT),
   dApp: isRecipient,
   call: validateOptional(
@@ -205,7 +483,9 @@ export const invokeArgsScheme = {
   feeAssetId: validateOptional(isAssetId),
   chainId: validateOptional(isNumber),
 };
-export const invokeArgsValidator = validator(invokeArgsScheme, 'invoke');
+const invokeArgsValidator = validator(invokeArgsScheme, 'invoke');
+
+// ── Public API (3 exports consumed by Signer.ts) ────────────────
 
 export const argsValidators: Record<number, ReturnType<typeof validator>> = {
   [TRANSACTION_TYPE.ISSUE]: issueArgsValidator,
@@ -239,7 +519,6 @@ export const validateSignerOptions = (options: Partial<SignerOptions>): SignerOp
     res.isValid = false;
     res.invalidOptions.push('NODE_URL');
   } else {
-    // Validate URL format and enforce HTTPS in production contexts
     try {
       const url = new URL(options.NODE_URL);
       if (!['http:', 'https:'].includes(url.protocol)) {
