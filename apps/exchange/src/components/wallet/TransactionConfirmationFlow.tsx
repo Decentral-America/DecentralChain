@@ -229,22 +229,22 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Recipient</Label>
-                  <Value>{params.recipient}</Value>
+                  <Value>{String(params.recipient ?? '')}</Value>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Amount</Label>
                   <Value>{(Number(params.amount) || 0) / 100000000} DCC</Value>
                 </ReviewRow>
-                {params.fee && (
+                {!!params.fee && (
                   <ReviewRow>
                     <Label>Fee</Label>
                     <Value>{(Number(params.fee) || 0) / 100000000} DCC</Value>
                   </ReviewRow>
                 )}
-                {params.attachment && (
+                {!!params.attachment && (
                   <ReviewRow>
                     <Label>Attachment</Label>
-                    <Value>{params.attachment}</Value>
+                    <Value>{String(params.attachment ?? '')}</Value>
                   </ReviewRow>
                 )}
               </ReviewSection>

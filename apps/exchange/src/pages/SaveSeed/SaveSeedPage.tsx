@@ -187,7 +187,7 @@ export const SaveSeedPage: React.FC = () => {
         const users: User[] = JSON.parse(usersData);
         setUserList(users);
         if (users.length > 0) {
-          setSelectedAddress(users[0]?.address);
+          setSelectedAddress(users[0]?.address ?? '');
         }
       }
     } catch (error) {
@@ -227,6 +227,7 @@ export const SaveSeedPage: React.FC = () => {
         settings: userSettings,
         networkByte: NetworkConfig.networkByte, // Computed from mainnet.json code
         userType: selectedUser.userType || 'seed', // Default to seed
+        publicKey: selectedUser.publicKey || '',
       };
 
       // Get signature API (same as Angular)

@@ -41,7 +41,7 @@ export interface AlertModalProps {
    * Button text
    * @default 'OK'
    */
-  buttonText?: string;
+  buttonText?: string | undefined;
 
   /**
    * Additional content to display

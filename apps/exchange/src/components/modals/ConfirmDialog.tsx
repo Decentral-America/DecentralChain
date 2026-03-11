@@ -39,19 +39,19 @@ export interface ConfirmDialogProps {
    * Confirmation button text
    * @default 'Confirm'
    */
-  confirmText?: string;
+  confirmText?: string | undefined;
 
   /**
    * Cancel button text
    * @default 'Cancel'
    */
-  cancelText?: string;
+  cancelText?: string | undefined;
 
   /**
    * Whether the action is destructive (shows red confirm button)
    * @default false
    */
-  destructive?: boolean;
+  destructive?: boolean | undefined;
 
   /**
    * Whether to show a loading state during confirmation

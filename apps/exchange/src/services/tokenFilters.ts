@@ -14,8 +14,8 @@ import { logger } from '@/lib/logger';
 export interface TokenInfo {
   assetId: string;
   name: string;
-  ticker?: string;
-  verified?: boolean;
+  ticker?: string | undefined;
+  verified?: boolean | undefined;
 }
 
 class TokenFilterService {

@@ -24,7 +24,7 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const IconWrapper = styled('span', {
   shouldForwardProp: (prop) => !['size', 'color'].includes(prop as string),
-})<{ size: string; color?: string }>(({ size, color }) => ({
+})<{ size: string; color?: string | undefined }>(({ size, color }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',

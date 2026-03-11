@@ -38,7 +38,7 @@ export interface ValidationErrorProps {
   /**
    * Custom className for styling
    */
-  className?: string;
+  className?: string | undefined;
 
   /**
    * Custom test ID for testing

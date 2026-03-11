@@ -76,7 +76,7 @@ export interface ExportAccountModalProps {
 export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [selectedAddresses, setSelectedAddresses] = useState<Set<string>>(new Set());
-  const [userList, setUserList] = useState<Record<string, unknown>[]>([]);
+  const [userList, setUserList] = useState<{ address: string; [key: string]: unknown }[]>([]);
 
   useEffect(() => {
     if (isOpen && user) {

@@ -25,7 +25,7 @@ import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
 import type React from 'react';
 
 // React 19 type compatibility cast
-const QRCodeSVG = QRCodeSVGBase as React.ComponentType<Record<string, unknown>>;
+const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';

@@ -443,9 +443,9 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
       {showTooltip && hoveredPoint !== null && (
         <Tooltip $x={tooltipPos.x} $y={tooltipPos.y} $visible={hoveredPoint !== null}>
           <div>
-            <strong>{formatDate(data[hoveredPoint]?.timestamp)}</strong>
+            <strong>{formatDate(data[hoveredPoint]?.timestamp ?? 0)}</strong>
           </div>
-          <div>Rate: {formatRate(data[hoveredPoint]?.rate)}</div>
+          <div>Rate: {formatRate(data[hoveredPoint]?.rate ?? 0)}</div>
           {data[hoveredPoint]?.label && <div>{data[hoveredPoint]?.label}</div>}
         </Tooltip>
       )}

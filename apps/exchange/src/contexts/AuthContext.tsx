@@ -46,6 +46,14 @@ interface SessionData {
 }
 
 /**
+ * Convert MultiAccountUser to User via type assertion.
+ * Safe because multiAccount.toList() merges metadata (name, settings, matcherSign)
+ * with encrypted data (publicKey, address, seed) into objects matching the User shape.
+ */
+const toUser = (mau: import('@/services/multiAccount').MultiAccountUser): User => mau as unknown as User;
+const toUsers = (maus: import('@/services/multiAccount').MultiAccountUser[]): User[] => maus.map(toUser);
+
+/**
  * AuthProvider component
  * Provides authentication state with Angular-compatible encryption
  */
@@ -186,14 +194,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}',
         );
 
-        let allUsers: Array<{
-          hash: string;
-          name?: string;
-          address: string;
-          [key: string]: unknown;
-        }>;
+        let allUsers: User[];
         try {
-          allUsers = multiAccount.toList(multiAccountUsers);
+          allUsers = toUsers(multiAccount.toList(multiAccountUsers));
           if (!allUsers || allUsers.length === 0) {
             logger.debug('[Auth] Cannot decrypt user data - password required');
             clearSession();
@@ -437,7 +440,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
 
         // 5. Get full user object with decrypted data
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         const createdUser = allUsers.find((u) => u.hash === userHash);
 
         if (!createdUser) {
@@ -468,13 +471,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser({
           ...createdUser,
           matcherSign,
-        });
+        } as User);
 
         // 10. Update accounts list
         setAccounts(allUsers);
 
         // 11. Dispatch login event
-        dispatchLoginEvent({ ...createdUser, matcherSign });
+        dispatchLoginEvent({ ...createdUser, matcherSign } as User);
 
         // 12. Save session for auto-restore
         saveSession(userHash);
@@ -519,7 +522,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}');
 
         // 4. Get full user list with decrypted data
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         const targetUser = allUsers.find((u) => u.hash === userHash);
 
         if (!targetUser) {
@@ -562,7 +565,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser({
           ...targetUser,
           matcherSign,
-        });
+        } as User);
         setAccounts(allUsers);
 
         logger.debug('[Auth] User logged in:', {
@@ -573,7 +576,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         // 9. Dispatch login event
-        dispatchLoginEvent({ ...targetUser, matcherSign });
+        dispatchLoginEvent({ ...targetUser, matcherSign } as User);
 
         // 10. Save session for auto-restore
         saveSession(userHash);
@@ -680,7 +683,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         // Get user from multiAccount
         const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}');
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         const targetUser = allUsers.find((u) => u.hash === userHash);
 
         if (!targetUser) {
@@ -723,7 +726,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser({
           ...targetUser,
           matcherSign,
-        });
+        } as User);
 
         // Track analytics event
         trackEvent('User', 'Switch Account Success');
@@ -778,7 +781,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
 
         // Update accounts list
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         setAccounts(allUsers);
 
         // Track analytics event
@@ -816,7 +819,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
 
         // Update accounts list
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         setAccounts(allUsers);
 
         // If removing current user, logout
@@ -864,7 +867,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         // Check for duplicate address
         const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}');
-        const allUsers = multiAccount.toList(users);
+        const allUsers = toUsers(multiAccount.toList(users));
         const existingUser = allUsers.find((u) => u.address === ledgerData.address);
 
         if (existingUser) {
@@ -896,7 +899,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
 
         // Update accounts list
-        const updatedUsers = multiAccount.toList(users);
+        const updatedUsers = toUsers(multiAccount.toList(users));
         setAccounts(updatedUsers);
 
         // Track analytics
@@ -984,7 +987,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!user) return '';
 
       const settingKey = `${section}.activeState`;
-      return user.settings?.[settingKey] || '';
+      return (user.settings?.[settingKey] as string) || '';
     },
     [user],
   );

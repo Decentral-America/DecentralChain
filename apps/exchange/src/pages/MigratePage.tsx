@@ -23,7 +23,7 @@ interface LegacyUser {
 
 interface MigratedUser {
   address: string;
-  name?: string;
+  name?: string | undefined;
   userType: string;
 }
 

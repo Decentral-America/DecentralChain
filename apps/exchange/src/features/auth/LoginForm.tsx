@@ -97,7 +97,7 @@ export const LoginForm = () => {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
   const [accounts, setAccounts] = useState<
-    Array<{ hash: string; name?: string; address: string; lastLogin?: number }>
+    Array<{ hash: string; name?: string | undefined; address: string; lastLogin?: number | undefined }>
   >([]);
   const [showAccountSelect, setShowAccountSelect] = useState(false);
   const [showNoAccountModal, setShowNoAccountModal] = useState(false);
@@ -165,7 +165,7 @@ export const LoginForm = () => {
 
       if (accountList.length === 1) {
         // Auto-login with single account
-        await login(accountList[0].hash, password);
+        await login(accountList[0]!.hash, password);
 
         // Navigate via effect once user state propagates
         navigationTarget.current = getActiveState('wallet');

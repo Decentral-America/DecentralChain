@@ -85,13 +85,13 @@ function getDefaultLanguage(): string {
     navigator.language || (navigator as Navigator & { userLanguage?: string }).userLanguage;
 
   // Check for exact match
-  if (resources[browserLang as keyof typeof resources]) {
+  if (browserLang && resources[browserLang as keyof typeof resources]) {
     return browserLang;
   }
 
   // Check for language code only (e.g., 'en' from 'en-US')
-  const langCode = browserLang.split('-')[0];
-  if (resources[langCode as keyof typeof resources]) {
+  const langCode = browserLang?.split('-')[0];
+  if (langCode && resources[langCode as keyof typeof resources]) {
     return langCode;
   }
 

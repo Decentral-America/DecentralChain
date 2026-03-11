@@ -28,8 +28,8 @@ const shimmer = keyframes`
 `;
 
 const ImageContainer = styled.div<{
-  $width?: number | string;
-  $height?: number | string;
+  $width?: number | string | undefined;
+  $height?: number | string | undefined;
 }>`
   position: relative;
   width: ${({ $width }) => (typeof $width === 'number' ? `${$width}px` : $width || '100%')};

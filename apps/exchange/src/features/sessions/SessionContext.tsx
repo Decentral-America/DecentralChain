@@ -88,11 +88,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     switch (event.type) {
       case 'session-created':
         if (event.session) {
+          const newSession = event.session;
           setSessions((prev) => {
-            if (prev.find((s) => s.id === event.session?.id)) {
+            if (prev.find((s) => s.id === newSession.id)) {
               return prev;
             }
-            return [...prev, event.session];
+            return [...prev, newSession];
           });
         }
         break;
@@ -102,7 +103,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: true } : s)),
         );
         setActiveSession((prev) =>
-          prev?.id === event.sessionId ? { ...prev, isLocked: true } : prev,
+          prev != null && prev.id === event.sessionId ? { ...prev, isLocked: true } : prev,
         );
         break;
 
@@ -111,7 +112,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           prev.map((s) => (s.id === event.sessionId ? { ...s, isLocked: false } : s)),
         );
         setActiveSession((prev) =>
-          prev?.id === event.sessionId ? { ...prev, isLocked: false } : prev,
+          prev != null && prev.id === event.sessionId ? { ...prev, isLocked: false } : prev,
         );
         break;
 
@@ -128,7 +129,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       case 'activity-refresh':
         setActiveSession((prev) =>
-          prev?.id === event.sessionId ? { ...prev, lastActivity: event.timestamp } : prev,
+          prev != null && prev.id === event.sessionId
+            ? { ...prev, lastActivity: event.timestamp }
+            : prev,
         );
         break;
     }

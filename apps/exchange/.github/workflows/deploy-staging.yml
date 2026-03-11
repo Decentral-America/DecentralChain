@@ -15,6 +15,10 @@ jobs:
     environment:
       name: staging
       url: https://staging.dcc-wallet.example.com
+    env:
+      HAS_AWS: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
+      HAS_VERCEL: ${{ secrets.VERCEL_TOKEN != '' }}
+      HAS_SLACK: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
     
     steps:
       - name: Checkout code
@@ -49,7 +53,7 @@ jobs:
           retention-days: 14
 
       - name: Deploy to AWS S3 (Staging)
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: env.HAS_AWS == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -57,14 +61,14 @@ jobs:
           aws-region: us-east-1
 
       - name: Sync to S3 staging bucket
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: env.HAS_AWS == 'true'
         run: |
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_STAGING }} \
             --delete \
             --cache-control "public, max-age=3600"
 
       - name: Deploy to Vercel (Staging)
-        if: secrets.VERCEL_TOKEN != ''
+        if: env.HAS_VERCEL == 'true'
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -92,7 +96,7 @@ jobs:
             ghcr.io/${{ github.repository }}/dcc-wallet:staging-${{ github.sha }}
 
       - name: Notify deployment success
-        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        if: success() && env.HAS_SLACK == 'true'
         uses: 8398a7/action-slack@v3
         with:
           status: success
@@ -102,10 +106,11 @@ jobs:
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
             URL: https://staging.dcc-wallet.example.com
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify deployment failure
-        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        if: failure() && env.HAS_SLACK == 'true'
         uses: 8398a7/action-slack@v3
         with:
           status: failure
@@ -114,4 +119,5 @@ jobs:
             Branch: ${{ github.ref }}
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

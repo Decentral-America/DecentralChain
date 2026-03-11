@@ -19,7 +19,7 @@ import { logger } from '@/lib/logger';
 /**
  * Styled Components
  */
-const FormCard = styled(Card as React.ComponentType)`
+const FormCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -142,7 +142,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const RemoveScriptButton = styled(Button as React.ComponentType)`
+const RemoveScriptButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   flex: 1;
 `;
 

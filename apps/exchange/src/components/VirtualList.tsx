@@ -237,7 +237,7 @@ export function VariableVirtualList<T extends VirtualListItem>({
   const getItemOffset = (index: number): number => {
     let offset = 0;
     for (let i = 0; i < index; i++) {
-      offset += itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      offset += itemHeights.get(i) || getItemHeight?.(items[i]!, i) || estimatedItemHeight;
     }
     return offset;
   };
@@ -258,7 +258,7 @@ export function VariableVirtualList<T extends VirtualListItem>({
     // Find start index
     let currentOffset = 0;
     for (let i = 0; i < items.length; i++) {
-      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i]!, i) || estimatedItemHeight;
       if (currentOffset + itemHeight > scrollTop) {
         start = Math.max(0, i - overscan);
         break;
@@ -269,7 +269,7 @@ export function VariableVirtualList<T extends VirtualListItem>({
     // Find end index
     currentOffset = getItemOffset(start);
     for (let i = start; i < items.length; i++) {
-      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i]!, i) || estimatedItemHeight;
       if (currentOffset > scrollTop + containerHeight) {
         end = Math.min(items.length, i + overscan);
         break;

@@ -150,7 +150,8 @@ export const useOrderBook = (
     queryKey: ['orderbook', amountAsset, priceAsset, depth],
     queryFn: async () => {
       // Use data-service which properly converts Money objects
-      const orderBookData = await ds.api.matcher.getOrderBook(amountAsset, priceAsset);
+      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped data-service API
+      const orderBookData: any = await ds.api.matcher.getOrderBook(amountAsset, priceAsset);
 
       // Convert Money objects to numbers (in token units, not smallest units)
       // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
@@ -360,9 +361,13 @@ export const useCancelOrder = (): UseMutationResult<
   Error,
   { orderId: string; sender: string; signature: string }
 > => {
-  return useMutation({
+  return useMutation<
+    { status: string; message: string },
+    Error,
+    { orderId: string; sender: string; signature: string }
+  >({
     mutationFn: async ({ orderId, sender, signature }) => {
-      const { data } = await matcherClient.post(`/orderbook/${orderId}/cancel`, {
+      const { data } = await matcherClient.post<{ status: string; message: string }>(`/orderbook/${orderId}/cancel`, {
         sender,
         signature,
       });
@@ -380,9 +385,13 @@ export const useCancelAllOrders = (): UseMutationResult<
   Error,
   { sender: string; timestamp: number; signature: string }
 > => {
-  return useMutation({
+  return useMutation<
+    { status: string; message: string },
+    Error,
+    { sender: string; timestamp: number; signature: string }
+  >({
     mutationFn: async ({ sender, timestamp, signature }) => {
-      const { data } = await matcherClient.post('/orderbook/cancel', {
+      const { data } = await matcherClient.post<{ status: string; message: string }>('/orderbook/cancel', {
         sender,
         timestamp,
         signature,

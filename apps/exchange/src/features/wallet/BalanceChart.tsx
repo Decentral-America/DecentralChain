@@ -15,9 +15,9 @@ import {
 } from 'victory';
 
 // React 19 type compatibility casts
-const VictoryChart = VictoryChartBase as React.ComponentType<Record<string, unknown>>;
-const VictoryLine = VictoryLineBase as React.ComponentType<Record<string, unknown>>;
-const VictoryAxis = VictoryAxisBase as React.ComponentType<Record<string, unknown>>;
+const VictoryChart = VictoryChartBase as unknown as React.ComponentType<Record<string, unknown>>;
+const VictoryLine = VictoryLineBase as unknown as React.ComponentType<Record<string, unknown>>;
+const VictoryAxis = VictoryAxisBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 import { Spinner } from '@/components/atoms/Spinner';
 

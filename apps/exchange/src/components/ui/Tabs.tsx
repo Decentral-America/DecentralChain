@@ -34,7 +34,7 @@ const TabList = styled.div<{ variant?: 'line' | 'enclosed' | 'pills' }>`
 const Tab = styled.button<{
   $active: boolean;
   $variant?: 'line' | 'enclosed' | 'pills';
-  $disabled?: boolean;
+  $disabled?: boolean | undefined;
 }>`
   position: relative;
   padding: 12px 24px;

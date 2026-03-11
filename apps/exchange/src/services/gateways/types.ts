@@ -26,7 +26,7 @@ export interface IGatewayDetails {
   address: string;
 
   /** Optional attachment/memo for the transaction */
-  attachment?: string;
+  attachment?: string | undefined;
 
   /** Minimum amount allowed for this operation */
   minimumAmount: BigNumber;
@@ -38,7 +38,7 @@ export interface IGatewayDetails {
   gatewayFee: BigNumber;
 
   /** Exchange rate (if applicable, e.g., for wrapped tokens) */
-  exchangeRate?: BigNumber;
+  exchangeRate?: BigNumber | undefined;
 
   /** Additional provider-specific data */
   [key: string]: unknown;

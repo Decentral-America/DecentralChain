@@ -213,19 +213,21 @@ export const createAliasTransaction = async (
     feeValue = parseInt(preparedTx.fee, 10);
   } else if (preparedTx.fee && typeof preparedTx.fee === 'object') {
     // Fee is a Money/BigNumber object - try to extract numeric value
-    if (preparedTx.fee.bn && typeof preparedTx.fee.bn.toNumber === 'function') {
+    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped fee object from signable API
+    const feeObj = preparedTx.fee as any;
+    if (feeObj.bn && typeof feeObj.bn.toNumber === 'function') {
       // Fee has bn.toNumber() method (most common case)
-      feeValue = preparedTx.fee.bn.toNumber();
-    } else if (preparedTx.fee.bn && typeof preparedTx.fee.bn.toString === 'function') {
+      feeValue = feeObj.bn.toNumber();
+    } else if (feeObj.bn && typeof feeObj.bn.toString === 'function') {
       // Fee has bn.toString() method
-      feeValue = parseInt(preparedTx.fee.bn.toString(), 10);
-    } else if (typeof preparedTx.fee.getCoins === 'function') {
+      feeValue = parseInt(feeObj.bn.toString(), 10);
+    } else if (typeof feeObj.getCoins === 'function') {
       // Fee is a Money object with getCoins() method
-      feeValue = preparedTx.fee.getCoins();
-    } else if (typeof preparedTx.fee.toCoins === 'function') {
+      feeValue = feeObj.getCoins();
+    } else if (typeof feeObj.toCoins === 'function') {
       // Fee has toCoins() method
-      feeValue = preparedTx.fee.toCoins();
-    } else if (typeof preparedTx.fee.toString === 'function') {
+      feeValue = feeObj.toCoins();
+    } else if (typeof feeObj.toString === 'function') {
       // Fee has toString() method
       feeValue = parseInt(preparedTx.fee.toString(), 10);
     } else {

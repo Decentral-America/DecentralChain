@@ -21,7 +21,7 @@ import { logger } from '@/lib/logger';
 /**
  * Styled Components
  */
-const FormCard = styled(Card as React.ComponentType)`
+const FormCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -48,7 +48,7 @@ const EntriesContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
-const EntryCard = styled(Card as React.ComponentType)`
+const EntryCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.md};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -67,7 +67,7 @@ const EntryTitle = styled.div`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const RemoveButton = styled(Button as React.ComponentType)`
+const RemoveButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   font-size: 12px;
 `;
@@ -93,7 +93,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const AddButton = styled(Button as React.ComponentType)`
+const AddButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   width: 100%;
   max-width: 200px;
 `;

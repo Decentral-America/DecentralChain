@@ -283,7 +283,7 @@ export class DefaultSettings {
    */
   private _isCommon(path: string): boolean {
     const [start] = path.split('.');
-    return Object.hasOwn(this.commonDefaults, start ?? '');
+    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start ?? '');
   }
 
   /**

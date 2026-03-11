@@ -333,7 +333,7 @@ class CandlesService {
 
       // Wait for all batches and flatten results
       const responses = await Promise.all(promises);
-      const rawCandles = responses.flatMap((response) => response?.data || []);
+      const rawCandles = responses.flatMap((response) => (response as { data?: unknown[] })?.data || []);
 
       logger.debug('[Candles] Raw candles count:', rawCandles.length);
 
@@ -556,7 +556,7 @@ class CandlesService {
 
   private _updateLastTime(candles: Candle[]) {
     const lastTime = candles[candles.length - 1]?.time;
-    if (this._lastTime && this._lastTime >= lastTime) {
+    if (lastTime === undefined || (this._lastTime && this._lastTime >= lastTime)) {
       return false;
     }
     this._lastTime = lastTime;

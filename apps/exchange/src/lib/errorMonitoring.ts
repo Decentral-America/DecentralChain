@@ -42,17 +42,17 @@ import { logger } from '@/lib/logger';
  */
 export interface ErrorMonitoringConfig {
   /** Sentry DSN (Data Source Name) */
-  dsn?: string;
+  dsn?: string | undefined;
   /** Environment name (production, staging, development) */
-  environment?: string;
+  environment?: string | undefined;
   /** Application release version */
-  release?: string;
+  release?: string | undefined;
   /** Sample rate for performance monitoring (0.0 to 1.0) */
-  tracesSampleRate?: number;
+  tracesSampleRate?: number | undefined;
   /** Enable in development */
-  enableInDev?: boolean;
+  enableInDev?: boolean | undefined;
   /** Enable debug mode */
-  debug?: boolean;
+  debug?: boolean | undefined;
 }
 
 /**
@@ -126,14 +126,14 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
   try {
     Sentry.init({
       dsn: config.dsn,
-      environment: config.environment,
-      release: config.release,
+      ...(config.environment != null && { environment: config.environment }),
+      ...(config.release != null && { release: config.release }),
 
       // Performance trace sample rate
-      tracesSampleRate: config.tracesSampleRate,
+      ...(config.tracesSampleRate != null && { tracesSampleRate: config.tracesSampleRate }),
 
       // Debug mode
-      debug: config.debug,
+      ...(config.debug != null && { debug: config.debug }),
 
       // Before send hook for filtering/modifying events
       beforeSend(event, _hint) {
@@ -217,7 +217,7 @@ export const captureError = (
   try {
     Sentry.captureException(error, {
       level: severity,
-      extra: context,
+      ...(context != null && { extra: context }),
     });
 
     if (config.debug) {
@@ -258,7 +258,7 @@ export const captureMessage = (
   try {
     Sentry.captureMessage(message, {
       level: severity,
-      extra: context,
+      ...(context != null && { extra: context }),
     });
 
     if (config.debug) {
@@ -397,7 +397,7 @@ export const addBreadcrumb = (
   try {
     Sentry.addBreadcrumb({
       message,
-      category,
+      ...(category != null && { category }),
       level,
       data: data as Record<string, unknown>,
     });

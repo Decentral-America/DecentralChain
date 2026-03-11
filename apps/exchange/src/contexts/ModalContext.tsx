@@ -12,8 +12,8 @@ import { logger } from '@/lib/logger';
 export interface ModalState {
   open: boolean;
   props?: Record<string, unknown>;
-  onClose?: () => void;
-  priority?: number; // Higher priority modals appear above others
+  onClose?: (() => void) | undefined;
+  priority?: number | undefined; // Higher priority modals appear above others
 }
 
 /**

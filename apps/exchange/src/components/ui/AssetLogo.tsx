@@ -20,7 +20,7 @@ const LogoImg = styled.img<{ $size: number }>`
   object-fit: cover;
 `;
 
-const Fallback = styled.div<{ $size: number; $color?: string }>`
+const Fallback = styled.div<{ $size: number; $color?: string | undefined }>`
   width: 100%;
   height: 100%;
   display: flex;
