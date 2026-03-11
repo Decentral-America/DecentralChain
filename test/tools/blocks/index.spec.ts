@@ -1,4 +1,4 @@
-import create from '../../../src';
+import { create } from '../../../src';
 import getNetworkByte from '../../../src/tools/blocks/getNetworkByte';
 import getNetworkCode from '../../../src/tools/blocks/getNetworkCode';
 import { CHAIN_ID, NETWORK_BYTE, NODE_URL } from '../../_state';
