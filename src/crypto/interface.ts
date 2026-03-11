@@ -15,7 +15,7 @@ export const TEST_NET_CHAIN_ID = 84 as const;
 /** A seed combined with a nonce for deterministic key derivation. */
 export interface INonceSeed {
   seed: TBytes;
-  nonce?: number;
+  nonce?: number | undefined;
 }
 
 /** AES cipher mode of operation. */
