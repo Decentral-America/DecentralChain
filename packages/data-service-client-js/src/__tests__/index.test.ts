@@ -1,7 +1,7 @@
 import { Asset, AssetPair } from '@decentralchain/data-entities';
 import { create as parseJsonBignumber } from '@decentralchain/parse-json-bignumber';
 
-import DataServiceClient from '../index';
+import { DataServiceClient } from '../index';
 
 const parser = (parseJsonBignumber as any)().parse;
 const fetch = vi.fn(() => Promise.resolve('{"data":[{ "data": 1 }]}'));
