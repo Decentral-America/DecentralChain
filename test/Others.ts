@@ -11,8 +11,8 @@ import { TransferTransactionScreen } from './helpers/messages/TransferTransactio
 import { SendAssetScreen } from './helpers/SendAssetScreen';
 import { Windows } from './helpers/Windows';
 
-describe('Others', function () {
-  before(async function () {
+describe('Others', () => {
+  before(async () => {
     await App.initVault();
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
@@ -26,10 +26,7 @@ describe('Others', function () {
     await Network.switchToAndCheck('Testnet');
 
     // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount(
-      'rich',
-      'waves private node seed with waves tokens',
-    );
+    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
 
     const newTab = (await browser.createWindow('tab')).handle;
     await browser.switchToWindow(tabAccounts);
@@ -37,50 +34,42 @@ describe('Others', function () {
     await browser.switchToWindow(newTab);
   });
 
-  after(async function () {
+  after(async () => {
     await browser.openKeeperPopup();
     await Network.switchToAndCheck('Mainnet');
     await App.resetVault();
   });
 
-  it(
-    'After signAndPublishTransaction() "View transaction" button leads to the correct Explorer',
-  );
+  it('After signAndPublishTransaction() "View transaction" button leads to the correct Explorer');
 
-  it(
-    'Signature requests are automatically removed from pending requests after 30 minutes',
-  );
+  it('Signature requests are automatically removed from pending requests after 30 minutes');
 
   it('Switch account on confirmation screen');
 
   it('Send more transactions for signature when different screens are open');
 
   // NOTE: 'WAVES' here refers to the native protocol asset ticker, not branding
-  describe('Send WAVES', function () {
+  describe('Send WAVES', () => {
     before(async () => {
       await browser.openKeeperPopup();
     });
 
-    beforeEach(async function () {
+    beforeEach(async () => {
       const assetCard = await HomeScreen.getAssetByName('WAVES');
       await assetCard.moreButton.moveTo();
       await assetCard.sendButton.click();
     });
 
-    afterEach(async function () {
+    afterEach(async () => {
       await TransferTransactionScreen.rejectButton.click();
       await FinalTransactionScreen.closeButton.click();
     });
 
-    it('Send WAVES to an address', async function () {
-      await SendAssetScreen.recipientInput.setValue(
-        '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
-      );
+    it('Send WAVES to an address', async () => {
+      await SendAssetScreen.recipientInput.setValue('3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW');
       await SendAssetScreen.amountInput.setValue('123123123.123');
 
-      expect(await SendAssetScreen.amountInput.getValue()).toBe(
-        '123 123 123.123',
-      );
+      expect(await SendAssetScreen.amountInput.getValue()).toBe('123 123 123.123');
 
       await SendAssetScreen.amountInput.clearValue();
       await SendAssetScreen.amountInput.setValue('0.123');
@@ -89,32 +78,20 @@ describe('Others', function () {
 
       await SendAssetScreen.submitButton.click();
 
-      await expect(TransferTransactionScreen.transferAmount).toHaveText(
-        '-0.12300000 WAVES',
-      );
-      await expect(TransferTransactionScreen.recipient).toHaveText(
-        'rich\n3MsX9C2M...yxZMg4cW',
-      );
-      await expect(TransferTransactionScreen.attachmentContent).toHaveText(
-        'This is an attachment',
-      );
+      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.12300000 WAVES');
+      await expect(TransferTransactionScreen.recipient).toHaveText('rich\n3MsX9C2M...yxZMg4cW');
+      await expect(TransferTransactionScreen.attachmentContent).toHaveText('This is an attachment');
     });
 
-    it('Send assets to an alias', async function () {
+    it('Send assets to an alias', async () => {
       await SendAssetScreen.recipientInput.setValue('alias:T:an_alias');
       await SendAssetScreen.amountInput.setValue('0.87654321');
       await SendAssetScreen.attachmentInput.setValue('This is an attachment');
       await SendAssetScreen.submitButton.click();
 
-      await expect(TransferTransactionScreen.transferAmount).toHaveText(
-        '-0.87654321 WAVES',
-      );
-      await expect(TransferTransactionScreen.recipient).toHaveText(
-        'alias:T:an_alias',
-      );
-      await expect(TransferTransactionScreen.attachmentContent).toHaveText(
-        'This is an attachment',
-      );
+      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.87654321 WAVES');
+      await expect(TransferTransactionScreen.recipient).toHaveText('alias:T:an_alias');
+      await expect(TransferTransactionScreen.attachmentContent).toHaveText('This is an attachment');
     });
   });
 
@@ -125,7 +102,7 @@ describe('Others', function () {
       await $('.content .stop').waitForDisplayed({ reverse: true });
     }
 
-    it('ui waits until connection with background is established before trying to call methods', async function () {
+    it('ui waits until connection with background is established before trying to call methods', async () => {
       await stopServiceWorker();
       await browser.openKeeperPopup();
 
@@ -147,7 +124,7 @@ describe('Others', function () {
       await browser.switchToWindow(newTab);
     });
 
-    it('contentscript waits until connection is established before trying to call methods', async function () {
+    it('contentscript waits until connection is established before trying to call methods', async () => {
       await browser.navigateTo('https://example.com');
 
       const prevHandle = await browser.getWindowHandle();
@@ -157,9 +134,9 @@ describe('Others', function () {
       await browser.switchToWindow(prevHandle);
 
       const { waitForNewWindows } = await Windows.captureNewWindows();
-      await ContentScript.waitForKeeperWallet();
+      await ContentScript.waitForCubensisConnect();
       await browser.execute(() => {
-        KeeperWallet.auth({ data: 'hello' });
+        CubensisConnect.auth({ data: 'hello' });
       });
       const [messageWindow] = await waitForNewWindows(1);
       await browser.switchToWindow(messageWindow);
