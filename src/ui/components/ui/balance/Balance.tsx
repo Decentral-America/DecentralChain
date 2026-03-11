@@ -6,14 +6,14 @@ import { UsdAmount } from '../UsdAmount';
 import * as styles from './Balance.module.css';
 
 interface Props {
-  addSign?: string;
+  addSign?: string | undefined;
   balance: Money | undefined;
-  children?: React.ReactNode;
-  className?: string;
-  isShortFormat?: boolean;
-  showAsset?: boolean;
-  showUsdAmount?: boolean;
-  split?: boolean;
+  children?: React.ReactNode | undefined;
+  className?: string | undefined;
+  isShortFormat?: boolean | undefined;
+  showAsset?: boolean | undefined;
+  showUsdAmount?: boolean | undefined;
+  split?: boolean | undefined;
 }
 
 export function Balance({
