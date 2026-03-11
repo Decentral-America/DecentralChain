@@ -5,7 +5,7 @@ import { type AppAction } from '../types';
 
 export type NewAccountState = {
   address: string;
-  hasBackup?: boolean;
+  hasBackup?: boolean | undefined;
   name: string;
 } & (
   | { type: 'encodedSeed'; encodedSeed: string }
@@ -41,11 +41,11 @@ function loading(state = true, { type, payload }: AppAction) {
 }
 
 interface NotificationsState {
-  accountCreationSuccess?: boolean;
-  accountImportSuccess?: boolean;
-  changeName?: boolean;
-  deleted?: boolean;
-  selected?: boolean;
+  accountCreationSuccess?: boolean | undefined;
+  accountImportSuccess?: boolean | undefined;
+  changeName?: boolean | undefined;
+  deleted?: boolean | undefined;
+  selected?: boolean | undefined;
 }
 
 function notifications(
