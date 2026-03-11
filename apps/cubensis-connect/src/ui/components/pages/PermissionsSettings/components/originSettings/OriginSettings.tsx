@@ -1,4 +1,4 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
@@ -54,21 +54,15 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     return autoSign;
   }
 
-  static getDerivedStateFromProps(
-    props: Readonly<IProps>,
-    state: IState,
-  ): Partial<IState> {
-    const { interval = null, totalAmount } =
-      OriginSettingsComponent._getAutoSign(props.autoSign);
+  static getDerivedStateFromProps(props: Readonly<IProps>, state: IState): Partial<IState> {
+    const { interval = null, totalAmount } = OriginSettingsComponent._getAutoSign(props.autoSign);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const selected = CONFIG.list.find(({ value }) => value === interval)!.id;
     const notifications = props.permissions.find(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       item => item && (item as any).type === 'useNotifications',
     ) as TNotification;
-    const inWhiteList = (props.origins[props.originName] || []).includes(
-      'whiteList',
-    );
+    const inWhiteList = (props.origins[props.originName] || []).includes('whiteList');
     let canShowNotifications = state.canShowNotifications;
     const canUse = notifications && notifications.canUse;
     const canUseNotify = canUse || (canUse == null && inWhiteList);
@@ -107,22 +101,14 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
 
   canUseNotificationsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ canShowNotifications: e.target.checked });
-    this.calculateCanSave(
-      this.state.interval,
-      this.state.totalAmount,
-      e.target.checked,
-    );
+    this.calculateCanSave(this.state.interval, this.state.totalAmount, e.target.checked);
   };
 
   selectTimeHandler = (time: number | string) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { value } = CONFIG.list.find(({ id }) => id === time)!;
     this.setState({ interval: value, edited: true, selected: time });
-    this.calculateCanSave(
-      value,
-      this.state.totalAmount,
-      this.state.canShowNotifications,
-    );
+    this.calculateCanSave(value, this.state.totalAmount, this.state.canShowNotifications);
   };
 
   calculateCanSave(
@@ -130,9 +116,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     newTotalAmount: string | null,
     newCanShowNotifications: boolean | null,
   ) {
-    const sign = OriginSettingsComponent._getAutoSign(
-      this.props.originalAutoSign,
-    );
+    const sign = OriginSettingsComponent._getAutoSign(this.props.originalAutoSign);
     let canSave = false;
 
     newTotalAmount = newInterval ? newTotalAmount : '';
@@ -190,11 +174,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     const newValue = parsedValue.join('.');
 
     this.setState({ totalAmount: parsedValue.join('.'), edited: true });
-    this.calculateCanSave(
-      this.state.interval,
-      newValue,
-      this.state.canShowNotifications,
-    );
+    this.calculateCanSave(this.state.interval, newValue, this.state.canShowNotifications);
   };
 
   render(): React.ReactNode {
@@ -215,9 +195,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     return (
       <div className="modal cover">
         <div id="originSettings" className="modal-form">
-          <h2 className={clsx(styles.title)}>
-            {t('permissionSettings.modal.title')}
-          </h2>
+          <h2 className={clsx(styles.title)}>{t('permissionSettings.modal.title')}</h2>
 
           <div className={styles.description}>
             {t('permissionSettings.modal.description', { originName })}
@@ -255,19 +233,12 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
               checked={this.state.canShowNotifications!}
               onChange={this.canUseNotificationsHandler}
             />
-            <label htmlFor="checkbox_noshow">
-              {t('notifications.allowSending')}
-            </label>
+            <label htmlFor="checkbox_noshow">{t('notifications.allowSending')}</label>
           </div>
 
           {!inWhiteList ? (
             <div className="buttons-wrapper">
-              <Button
-                id="delete"
-                type="button"
-                onClick={this.deleteHandler}
-                view="warning"
-              >
+              <Button id="delete" type="button" onClick={this.deleteHandler} view="warning">
                 {t('permissionSettings.modal.delete')}
               </Button>
 

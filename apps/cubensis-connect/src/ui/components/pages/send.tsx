@@ -1,4 +1,4 @@
-import { BigNumber } from '@decentralchain/bignumber';
+import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { isAddressString, isAlias } from 'messages/utils';
 import { createNft } from 'nfts/nfts';
@@ -22,10 +22,9 @@ export function Send() {
 
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const chainId = usePopupSelector(
-    state =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      state.selectedAccount?.networkCode!.charCodeAt(0),
+  const chainId = usePopupSelector(state =>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    state.selectedAccount?.networkCode!.charCodeAt(0),
   );
   const accountBalance = usePopupSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
@@ -38,10 +37,7 @@ export function Send() {
   const asset = usePopupSelector(state => state.assets[params.assetId!]);
 
   const isNft =
-    asset &&
-    asset.precision === 0 &&
-    new BigNumber(asset.quantity).eq(1) &&
-    !asset.reissuable;
+    asset && asset.precision === 0 && new BigNumber(asset.quantity).eq(1) && !asset.reissuable;
 
   const userAddress = usePopupSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
@@ -78,7 +74,7 @@ export function Send() {
   const currentBalance = asset
     ? Money.fromCoins(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        !isNft ? assetBalances![asset.id]?.balance ?? 0 : 1,
+        !isNft ? (assetBalances![asset.id]?.balance ?? 0) : 1,
         new Asset(asset),
       )
     : null;
@@ -89,8 +85,8 @@ export function Send() {
   const recipientError = !recipientValue
     ? t('send.recipientRequiredError')
     : !(isAddressString(recipientValue, chainId) || isAlias(recipientValue))
-    ? t('send.recipientInvalidError')
-    : null;
+      ? t('send.recipientInvalidError')
+      : null;
   const showRecipientError = isTriedToSubmit && recipientError != null;
 
   const [amountValue, setAmountValue] = useState(isNft ? '1' : '');
@@ -99,14 +95,13 @@ export function Send() {
     !currentBalance || !amountValue || Number(amountValue) === 0
       ? t('send.amountRequiredError')
       : !currentBalance.getTokens().gte(amountValue)
-      ? t('send.insufficientFundsError')
-      : null;
+        ? t('send.insufficientFundsError')
+        : null;
   const showAmountError = isTriedToSubmit && amountError != null;
 
   const [attachmentValue, setAttachmentValue] = useState('');
   const attachmentByteCount = new TextEncoder().encode(attachmentValue).length;
-  const attachmentError =
-    attachmentByteCount > 140 ? t('send.attachmentMaxLengthError') : null;
+  const attachmentError = attachmentByteCount > 140 ? t('send.attachmentMaxLengthError') : null;
   const showAttachmentError = isTriedToSubmit && attachmentError != null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -153,9 +148,7 @@ export function Send() {
         </header>
 
         <div className={styles.fields}>
-          <div className="input-title basic500 tag1">
-            {t('send.recipientInputLabel')}
-          </div>
+          <div className="input-title basic500 tag1">{t('send.recipientInputLabel')}</div>
 
           <div className="margin-main-big">
             <AddressSuggestInput
@@ -169,9 +162,7 @@ export function Send() {
               }}
             />
 
-            <ErrorMessage show={showRecipientError}>
-              {recipientError}
-            </ErrorMessage>
+            <ErrorMessage show={showRecipientError}>{recipientError}</ErrorMessage>
           </div>
 
           {!isNft && (
@@ -196,8 +187,7 @@ export function Send() {
                         assetOptions={Object.values(assets)
                           .filter(
                             // eslint-disable-next-line @typescript-eslint/no-shadow
-                            (asset): asset is NonNullable<typeof asset> =>
-                              asset != null,
+                            (asset): asset is NonNullable<typeof asset> => asset != null,
                           )
                           .filter(
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-shadow
@@ -220,9 +210,7 @@ export function Send() {
                           setAmountValueMasked(newMaskedValue);
                         }}
                       />
-                      <ErrorMessage show={showAmountError}>
-                        {amountError}
-                      </ErrorMessage>
+                      <ErrorMessage show={showAmountError}>{amountError}</ErrorMessage>
                     </>
                   );
                 })()
@@ -250,9 +238,7 @@ export function Send() {
               }}
             />
 
-            <ErrorMessage show={showAttachmentError}>
-              {attachmentError}
-            </ErrorMessage>
+            <ErrorMessage show={showAttachmentError}>{attachmentError}</ErrorMessage>
           </div>
         </div>
 
