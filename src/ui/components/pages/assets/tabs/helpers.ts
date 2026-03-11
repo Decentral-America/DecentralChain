@@ -58,8 +58,8 @@ export function sortAssetEntries<T>(
 export function sortAndFilterNfts<T extends Nft>(
   nfts: T[],
   filters: {
-    term?: string;
-    creator?: string | null;
+    term?: string | undefined;
+    creator?: string | null | undefined;
   },
 ) {
   const { creator, term } = filters;

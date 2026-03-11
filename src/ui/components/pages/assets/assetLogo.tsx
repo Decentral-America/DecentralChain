@@ -8,9 +8,9 @@ import * as styles from './assetLogo.module.css';
 interface Props {
   assetId: string;
   name: string | undefined;
-  hasScript?: boolean;
-  hasSponsorship?: boolean;
-  className?: string;
+  hasScript?: boolean | undefined;
+  hasSponsorship?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export function AssetLogo({

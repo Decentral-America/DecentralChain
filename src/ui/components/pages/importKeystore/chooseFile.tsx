@@ -9,7 +9,7 @@ interface Props {
   title: string;
   label: string;
   placeholder: string;
-  loading?: boolean;
+  loading?: boolean | undefined;
   error: string | null;
   setError: (error: string | null) => void;
   onSubmit: (result: string, password: string) => void;

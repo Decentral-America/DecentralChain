@@ -6,7 +6,7 @@ import type { CodeDelivery } from '../../../../controllers/IdentityController';
 import { VerifyCodeComponent } from './verifyCodeComponent';
 
 type CodeConfirmationProps = {
-  className?: string;
+  className?: string | undefined;
   codeDelivery: CodeDelivery | undefined;
   confirmCode(code: string): Promise<void>;
 };
