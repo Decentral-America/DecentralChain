@@ -339,7 +339,7 @@ export class Bus<
       typeof some === 'object' &&
       some !== null &&
       'then' in some &&
-      typeof (some as Record<string, unknown>)['then'] === 'function'
+      typeof (some as { then: unknown }).then === 'function'
     );
   }
 
