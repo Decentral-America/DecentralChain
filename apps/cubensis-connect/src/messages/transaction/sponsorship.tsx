@@ -20,8 +20,8 @@ export function SponsorshipCard({
   collapsed,
   tx,
 }: {
-  className?: string;
-  collapsed?: boolean;
+  className?: string | undefined;
+  collapsed?: boolean | undefined;
   tx: MessageTxSponsorship;
 }) {
   const { t } = useTranslation();

@@ -21,8 +21,8 @@ export function IssueCard({
   collapsed,
   tx,
 }: {
-  className?: string;
-  collapsed?: boolean;
+  className?: string | undefined;
+  collapsed?: boolean | undefined;
   tx: MessageTxIssue;
 }) {
   const { t } = useTranslation();

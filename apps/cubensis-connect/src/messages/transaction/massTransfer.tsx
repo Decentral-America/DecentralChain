@@ -28,8 +28,8 @@ export function MassTransferCard({
   collapsed,
   tx,
 }: {
-  className?: string;
-  collapsed?: boolean;
+  className?: string | undefined;
+  collapsed?: boolean | undefined;
   tx: MessageTxMassTransfer;
 }) {
   const { t } = useTranslation();
