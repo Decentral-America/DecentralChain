@@ -1,35 +1,33 @@
 import clsx from 'clsx';
-import { type CSSProperties } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeList } from 'react-window';
+import { AutoSizer } from 'react-virtualized-auto-sizer';
+import { List, type RowComponentProps } from 'react-window';
 import invariant from 'tiny-invariant';
 
 import { NftCard } from './nftCard';
 import * as styles from './nftList.module.css';
-import { type DisplayMode, type Nft } from './types';
+import type { DisplayMode, Nft } from './types';
 
 const NFT_ROW_HEIGHT = 162;
 const NFT_ROW_MARGIN_BOTTOM = 8;
 const NFT_ROW_FULL_HEIGHT = NFT_ROW_HEIGHT + NFT_ROW_MARGIN_BOTTOM;
 
 const Row = ({
-  data,
   index,
   style,
-}: {
-  data: {
-    rows: Nft[];
-    counts: Record<string, number>;
-    mode: DisplayMode;
-    len: number;
-    onClick: (nft: Nft) => void;
-    renderMore?: () => React.ReactNode;
-  };
-  index: number;
-  style: CSSProperties;
-}) => {
-  const { rows, counts = {}, mode, len, onClick, renderMore } = data;
-
+  rows,
+  counts = {},
+  mode,
+  len,
+  onClick,
+  renderMore,
+}: RowComponentProps<{
+  rows: Nft[];
+  counts: Record<string, number>;
+  mode: DisplayMode;
+  len: number;
+  onClick: (nft: Nft) => void;
+  renderMore?: () => React.ReactNode;
+}>) => {
   const leftIndex = 2 * index;
   const leftNft = rows[leftIndex];
   const leftCount = (leftNft?.creator && counts[leftNft.creator]) || 0;
@@ -80,19 +78,18 @@ export function NftList({
 }) {
   return (
     <div className={styles.nftList}>
-      <AutoSizer>
-        {({ height, width }) => {
+      <AutoSizer
+        renderProp={({ height, width }) => {
           invariant(width != null);
           invariant(height != null);
 
           const len = Math.round(nfts.length / 2);
           return (
-            <VariableSizeList
-              height={height}
-              width={width}
-              itemCount={len}
-              itemSize={() => NFT_ROW_FULL_HEIGHT}
-              itemData={{
+            <List
+              rowComponent={Row}
+              rowCount={len}
+              rowHeight={NFT_ROW_FULL_HEIGHT}
+              rowProps={{
                 rows: nfts,
                 counts: counters,
                 mode,
@@ -100,13 +97,11 @@ export function NftList({
                 onClick,
                 renderMore,
               }}
-              itemKey={(index, { rows }) => rows[index].id}
-            >
-              {Row}
-            </VariableSizeList>
+              style={{ height, width }}
+            />
           );
         }}
-      </AutoSizer>
+      />
     </div>
   );
 }
