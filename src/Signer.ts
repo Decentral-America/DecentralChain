@@ -308,8 +308,7 @@ export class Signer {
    */
   @ensureProvider
   public login(): Promise<UserData> {
-    return this.currentProvider!
-      .login()
+    return this.currentProvider!.login()
       .then((data) => {
         this._logger.info('Logged in.');
         this._userData = data;
