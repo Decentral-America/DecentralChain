@@ -33,6 +33,7 @@ declare global {
     extends Omit<__BackgroundPageApiDirect, 'subscribeToPublicState'> {
     on(event: 'update', cb: (publicState: PublicState) => void): void;
     initialPromise: Promise<typeof CubensisConnect>;
+    wavesAuth: __BackgroundPageApiDirect['dccAuth'];
   }
 
   // eslint-disable-next-line no-var

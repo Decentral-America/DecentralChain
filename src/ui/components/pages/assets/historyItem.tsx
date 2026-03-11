@@ -337,7 +337,7 @@ export function HistoryItem({ tx, className }: Props) {
         const payment = tx.payment![0];
         const fromBalance = payment && fromCoins(payment.amount, payment.assetId);
 
-        const incomingTransfer = tx.stateChanges.transfers.find(
+        const incomingTransfer = tx.stateChanges?.transfers.find(
           // eslint-disable-next-line @typescript-eslint/no-shadow
           t => t.address === tx.sender,
         );
