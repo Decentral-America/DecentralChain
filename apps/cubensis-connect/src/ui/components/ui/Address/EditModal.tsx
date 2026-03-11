@@ -13,7 +13,7 @@ interface Props {
   address: string;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
-  setShowDeleteModal?: (showModal: boolean) => void;
+  setShowDeleteModal?: ((showModal: boolean) => void) | undefined;
 }
 
 export function EditModal({

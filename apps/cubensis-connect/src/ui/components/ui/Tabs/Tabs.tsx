@@ -5,10 +5,10 @@ import invariant from 'tiny-invariant';
 import * as styles from './tabs.styl';
 
 interface TabProps {
-  className?: string;
+  className?: string | undefined;
   children: React.ReactNode;
-  isActive?: boolean;
-  onActivate?: () => void;
+  isActive?: boolean | undefined;
+  onActivate?: (() => void) | undefined;
 }
 
 export function Tab({ className, children, isActive, onActivate }: TabProps) {
@@ -27,7 +27,7 @@ export function Tab({ className, children, isActive, onActivate }: TabProps) {
 }
 
 interface TabListProps {
-  activeIndex?: number;
+  activeIndex?: number | undefined;
   children:
     | Array<
         | React.ReactElement<React.ComponentProps<typeof Tab>, typeof Tab>
@@ -43,8 +43,8 @@ interface TabListProps {
     | string
     | null
     | undefined;
-  className?: string;
-  onActiveTab?: (index: number) => void;
+  className?: string | undefined;
+  onActiveTab?: ((index: number) => void) | undefined;
 }
 
 export function TabList({
@@ -69,9 +69,9 @@ export function TabList({
 }
 
 interface TabPanelsProps {
-  activeIndex?: number;
+  activeIndex?: number | undefined;
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function TabPanels({
@@ -88,7 +88,7 @@ export function TabPanels({
 
 interface TabPanelProps {
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function TabPanel({ children, className }: TabPanelProps) {
@@ -96,9 +96,9 @@ export function TabPanel({ children, className }: TabPanelProps) {
 }
 
 interface TabsProps {
-  activeTab?: number | null;
+  activeTab?: number | null | undefined;
   children: [React.ReactElement, React.ReactElement];
-  onTabChange?: (activeIndex: number) => void;
+  onTabChange?: ((activeIndex: number) => void) | undefined;
 }
 
 export function Tabs({
