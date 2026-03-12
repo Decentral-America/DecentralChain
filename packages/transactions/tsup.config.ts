@@ -15,5 +15,8 @@ export default defineConfig([
     splitting: false,
     treeshake: true,
     target: 'es2024',
+    outExtension() {
+      return { js: '.mjs' };
+    },
   },
 ]);
