@@ -3,13 +3,13 @@
   "version": "5.0.1",
   "description": "Deterministic asset-pair ordering for the DecentralChain decentralized exchange (DEX). Resolves canonical amount/price asset direction using network priority lists.",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.mjs"
     }
   },
   "files": [
