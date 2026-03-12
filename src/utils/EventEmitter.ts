@@ -4,14 +4,12 @@
  */
 
 interface HandlerEntry {
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  handler: (...args: any[]) => any;
+  handler: (...args: unknown[]) => void;
   context: unknown;
   once: boolean;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-export class EventEmitter<T extends Record<string, any>> {
+export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string, unknown>> {
   private readonly _events: Record<string, HandlerEntry[]> = Object.create(null) as Record<
     string,
     HandlerEntry[]
@@ -98,12 +96,10 @@ export class EventEmitter<T extends Record<string, any>> {
     once: boolean,
   ): void {
     const key = eventName as string;
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-    const entry: HandlerEntry = { handler: handler as any, context, once };
+    const entry: HandlerEntry = { handler: handler as (...args: unknown[]) => void, context, once };
     this._events[key] ??= [];
     this._events[key].push(entry);
   }
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-export type IHandler<T> = (data: Readonly<T>) => any;
+export type IHandler<T> = (data: Readonly<T>) => void;

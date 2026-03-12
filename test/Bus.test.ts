@@ -287,9 +287,9 @@ describe('Bus', () => {
         const requestData = {
           count: 0,
           name: 'getRequestCount',
-          handler: (c: number) => {
+          handler: (c: unknown) => {
             requestData.count++;
-            return requestData.count + c;
+            return requestData.count + (c as number);
           },
         };
 
@@ -314,9 +314,9 @@ describe('Bus', () => {
         const requestData = {
           count: 0,
           name: 'getRequestCount',
-          handler: (c: number) => {
+          handler: (c: unknown) => {
             requestData.count++;
-            return Promise.resolve(requestData.count + c);
+            return Promise.resolve(requestData.count + (c as number));
           },
         };
 
