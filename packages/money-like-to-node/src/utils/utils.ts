@@ -76,11 +76,9 @@ export const ifElse =
   (data: T): Y | N =>
     expression(data) ? resolve(data) : reject(data);
 
-export const has: IHas = curry(
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  (prop: string | number | symbol, data: any): boolean => Object.hasOwn(data, prop),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-) as any;
+export const has: IHas = curry((prop: string | number | symbol, data: object): boolean =>
+  Object.hasOwn(data, prop),
+) as IHas;
 
 export const emptyError =
   <T>(message: string) =>
@@ -117,12 +115,8 @@ export const map: IMap = curry(
 ) as any;
 
 export const prop: IProp = curry(
-  <T extends object, K extends keyof T>(key: K, data: T): T[K] =>
-    Object.hasOwn(data, key)
-      ? data[key]
-      : // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-        (undefined as any),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+  <T extends object, K extends keyof T>(key: K, data: T): T[K] => data[key],
+  // biome-ignore lint/suspicious/noExplicitAny: curry return → IProp bridge
 ) as any;
 
 export const pipe: IPipe = (...processors: ((...args: unknown[]) => unknown)[]) =>
@@ -136,10 +130,8 @@ interface IComparator {
 }
 
 interface IHas {
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  (prop: string | number | symbol, data: any): boolean;
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  (prop: string | number | symbol): (data: any) => boolean;
+  (prop: string | number | symbol, data: object): boolean;
+  (prop: string | number | symbol): (data: object) => boolean;
 }
 
 interface IMap {
