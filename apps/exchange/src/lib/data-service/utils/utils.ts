@@ -74,8 +74,12 @@ export function addParam<T, K, R>(cb: (data: T, param: K) => R, param: K): (data
 
 export function isPromise(some: unknown): some is Promise<unknown> {
   if (some == null || typeof some !== 'object') return false;
-  const obj = some as Record<string, unknown>;
-  return typeof obj.then === 'function' && typeof obj.catch === 'function';
+  return (
+    'then' in some &&
+    typeof some.then === 'function' &&
+    'catch' in some &&
+    typeof some.catch === 'function'
+  );
 }
 
 export function toArray<T>(some: T | Array<T>): Array<T> {
