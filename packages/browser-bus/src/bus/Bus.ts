@@ -20,10 +20,8 @@ export enum ResponseStatus {
  * across browser window boundaries via an {@link Adapter} transport.
  */
 export class Bus<
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  T extends Record<string, any> = any,
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  H extends Record<string, (data: any) => any> = any,
+  T extends { [K in keyof T]: unknown } = Record<string, unknown>,
+  H extends Record<string, (data: unknown) => unknown> = Record<string, (data: unknown) => unknown>,
 > {
   public id: string = uniqueId('bus');
   private _adapter: Adapter;
@@ -57,9 +55,8 @@ export class Bus<
     name: E,
     data?: Parameters<H[E]>[0],
     timeout?: number,
-  ): Promise<ReturnType<H[E]> extends Promise<infer P> ? P : ReturnType<H[E]>> {
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-    return new Promise<any>((resolve, reject) => {
+  ): Promise<Awaited<ReturnType<H[E]>>> {
+    return new Promise((resolve, reject) => {
       const id = uniqueId(`${this.id}-action`);
       const wait = timeout ?? this._timeout;
 
@@ -91,7 +88,8 @@ export class Bus<
         resolve: (data: unknown) => {
           cancelTimeout();
           console.info(`Request with name "${String(name)}" success resolved!`, data);
-          resolve(data);
+          // Data arrives from postMessage deserialization — cast at the trust boundary
+          resolve(data as Awaited<ReturnType<H[E]>>);
         },
       };
 
@@ -101,8 +99,11 @@ export class Bus<
   }
 
   /** Subscribe to an event by name. */
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  public on<K extends keyof T>(name: K, handler: IOneArgFunction<T[K], void>, context?: any): this {
+  public on<K extends keyof T>(
+    name: K,
+    handler: IOneArgFunction<T[K], void>,
+    context?: unknown,
+  ): this {
     return this._addEventHandler(name as string, handler, context, false);
   }
 
@@ -110,8 +111,7 @@ export class Bus<
   public once<K extends keyof T>(
     name: K,
     handler: IOneArgFunction<T[K], void>,
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-    context?: any,
+    context?: unknown,
   ): this {
     return this._addEventHandler(name as string, handler, context, true);
   }
@@ -211,15 +211,18 @@ export class Bus<
     this._adapter.destroy();
   }
 
-  private _addEventHandler(
+  private _addEventHandler<K extends keyof T>(
     name: string,
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-    handler: IOneArgFunction<any, void>,
+    handler: IOneArgFunction<T[K], void>,
     context: unknown,
     once: boolean,
   ): this {
     this._eventHandlers[name] ??= [];
-    this._eventHandlers[name].push({ handler, once, context });
+    this._eventHandlers[name].push({
+      handler: handler as IOneArgFunction<unknown, void>,
+      context,
+      once,
+    });
 
     return this;
   }
@@ -334,7 +337,7 @@ export class Bus<
     };
   }
 
-  private static _isPromise(some: unknown): some is Promise<unknown> {
+  private static _isPromise(some: unknown): some is PromiseLike<unknown> {
     return (
       typeof some === 'object' &&
       some !== null &&
@@ -396,8 +399,7 @@ export interface IEventData {
   type: EventType.Event;
   channelId?: TChannelId | undefined;
   name: string | number | symbol;
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  data?: any;
+  data?: unknown;
 }
 
 /** Request (action) message shape. */
@@ -406,8 +408,7 @@ export interface IRequestData {
   channelId?: TChannelId | undefined;
   type: EventType.Action;
   name: string | number | symbol;
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  data?: any;
+  data?: unknown;
 }
 
 /** Response message shape. */
@@ -416,8 +417,7 @@ export interface IResponseData {
   channelId?: TChannelId | undefined;
   type: EventType.Response;
   status: ResponseStatus;
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  content: any;
+  content: unknown;
 }
 
 interface ISentActionData {
@@ -428,8 +428,7 @@ interface ISentActionData {
 interface IEventHandlerData {
   context: unknown;
   once: boolean;
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  handler: IOneArgFunction<any, void>;
+  handler: IOneArgFunction<unknown, void>;
 }
 
 interface IInternalMessage {
