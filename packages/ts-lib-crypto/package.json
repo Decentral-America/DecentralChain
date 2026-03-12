@@ -7,15 +7,15 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+      "default": "./dist/index.mjs"
     },
     "./bytes": {
       "types": "./dist/bytes.d.ts",
-      "import": "./dist/bytes.mjs"
+      "default": "./dist/bytes.mjs"
     },
     "./rsa": {
       "types": "./dist/rsa.d.ts",
-      "import": "./dist/rsa.mjs"
+      "default": "./dist/rsa.mjs"
     }
   },
   "module": "./dist/index.mjs",
