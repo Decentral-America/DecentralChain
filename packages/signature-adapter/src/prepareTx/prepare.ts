@@ -139,10 +139,9 @@ function _expiration(date?: number) {
   return date || new Date().setDate(new Date().getDate() + 20);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Callback receives Money/BigNumber/string values from processors with incompatible signatures (strictFunctionTypes contravariance)
-function _transfers(recipient: (r: string) => string, amount: (a: any) => any) {
-  return (transfers: Array<{ recipient: string; amount: unknown }>) =>
-    transfers.map((transfer: { recipient: string; amount: unknown }) => ({
+function _transfers<A, R>(recipient: (r: string) => string, amount: (a: A) => R) {
+  return (transfers: Array<{ recipient: string; amount: A }>) =>
+    transfers.map((transfer) => ({
       recipient: recipient(transfer.recipient),
       amount: amount(transfer.amount),
     }));
