@@ -6,12 +6,10 @@ import { toArray } from './utils';
  * All keys and values are percent-encoded via `encodeURIComponent` to prevent
  * query-string injection (e.g. values containing `&`, `=`, or `#`).
  */
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-type Params = Record<string, any>;
-
-export default function <T extends Params>(params: T, evolver: TEvolver<T> = {}): string {
+export default function <T extends object>(params: T, evolver: TEvolver<T> = {}): string {
+  const record = params as Record<string, unknown>;
   const query = Object.keys(params)
-    .map<[keyof T, T[keyof T]]>((key) => [key as keyof T, params[key] as T[keyof T]])
+    .map<[keyof T, T[keyof T]]>((key) => [key as keyof T, record[key] as T[keyof T]])
     .map(([key, value]) => [
       key,
       Object.hasOwn(evolver, key)
@@ -28,6 +26,6 @@ export default function <T extends Params>(params: T, evolver: TEvolver<T> = {})
   return query.length ? `?${query}` : '';
 }
 
-type TEvolver<T extends Params> = {
+type TEvolver<T extends object> = {
   [Key in keyof T]?: (value: T[Key]) => string | undefined;
 };
