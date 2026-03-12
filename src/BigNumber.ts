@@ -358,8 +358,7 @@ export class BigNumber {
   }
 
   /** Type guard: returns `true` if `some` is a BigNumber instance (or duck-types as one). */
-  // biome-ignore lint/suspicious/noExplicitAny: duck-type guard must accept any value
-  public static isBigNumber(some: any): some is BigNumber {
+  public static isBigNumber(some: unknown): some is BigNumber {
     if (!some || typeof some !== 'object') {
       return false;
     }
