@@ -1,7 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { convert } from '@decentralchain/money-like-to-node';
 import { libs } from '@decentralchain/transactions';
-import { type SignableTransaction } from '@decentralchain/ts-types';
+import { type ExchangeTransactionOrder, type SignableTransaction } from '@decentralchain/ts-types';
 import { type Adapter } from './adapters';
 import { ERRORS } from './constants';
 import {
@@ -34,9 +34,24 @@ interface IPrecisionData {
   fee?: { asset?: { precision: number } };
 }
 
-export class Signable {
+/** Structural contract for extracting asset IDs from node-format transaction records. */
+interface IAssetIdTransaction {
+  type: number;
+  feeAssetId?: string;
+  assetId?: string;
+  matcherFeeAssetId?: string;
+  assetPair?: { amountAsset?: string; priceAsset?: string };
+  order1?: {
+    assetPair: { amountAsset?: string; priceAsset?: string };
+    matcherFeeAssetId?: string;
+  };
+  order2?: { matcherFeeAssetId?: string };
+  payment?: Array<{ assetId: string }>;
+}
+
+export class Signable<T extends TSignData = TSignData> {
   public readonly type: SIGN_TYPE;
-  private readonly _forSign: TSignData;
+  private readonly _forSign: T;
   private readonly _adapter: Adapter;
   private readonly _bytePromise: Promise<Uint8Array>;
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
@@ -48,7 +63,7 @@ export class Signable {
   /** Maximum number of proofs allowed per transaction (protocol limit). */
   private static readonly MAX_PROOFS = 8;
 
-  constructor(forSign: TSignData, adapter: Adapter) {
+  constructor(forSign: T, adapter: Adapter) {
     const networkCode = adapter.getNetworkByte();
     this._forSign = { ...forSign };
     this.type = forSign.type;
@@ -124,7 +139,11 @@ export class Signable {
   ) {
     if (this._forSign.type === SIGN_TYPE.CREATE_ORDER) {
       const currentFee = currentCreateOrderFactory(config, minOrderFee);
-      return currentFee(await this.getDataForApi(), hasMatcherScript, smartAssetIdList);
+      return currentFee(
+        (await this.getDataForApi()) as unknown as ExchangeTransactionOrder<BigNumber>,
+        hasMatcherScript,
+        smartAssetIdList,
+      );
     }
   }
 
@@ -140,12 +159,11 @@ export class Signable {
     );
   }
 
-  public getTxData(): TSignData['data'] {
+  public getTxData(): T['data'] {
     return { ...this._forSign.data };
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic transaction record whose shape depends on type discriminant; narrowing would require 15+ casts in getAssetIds()
-  public async getSignData(): Promise<Record<string, any>> {
+  public async getSignData(): Promise<Record<string, unknown>> {
     const senderPublicKey = await this._adapter.getPublicKey();
     const sender = await this._adapter.getAddress();
     const dataForBytes = {
@@ -162,16 +180,16 @@ export class Signable {
   }
 
   public async getAssetIds(): Promise<string[]> {
-    const transaction = await this.getSignData();
-    const hash = Object.create(null);
+    const transaction = (await this.getSignData()) as unknown as IAssetIdTransaction;
+    const hash = Object.create(null) as Record<string, boolean>;
     hash[DCC_ID] = true;
     hash[normalizeAssetId(transaction.feeAssetId)] = true;
 
     switch (transaction.type) {
       case SIGN_TYPE.CREATE_ORDER:
         hash[normalizeAssetId(transaction.matcherFeeAssetId)] = true;
-        hash[normalizeAssetId(transaction.assetPair.amountAsset)] = true;
-        hash[normalizeAssetId(transaction.assetPair.priceAsset)] = true;
+        hash[normalizeAssetId(transaction.assetPair?.amountAsset)] = true;
+        hash[normalizeAssetId(transaction.assetPair?.priceAsset)] = true;
         break;
       case TRANSACTION_TYPE_NUMBER.REISSUE:
       case TRANSACTION_TYPE_NUMBER.BURN:
@@ -181,13 +199,13 @@ export class Signable {
         hash[normalizeAssetId(transaction.assetId)] = true;
         break;
       case TRANSACTION_TYPE_NUMBER.EXCHANGE:
-        hash[normalizeAssetId(transaction.order1.assetPair.amountAsset)] = true;
-        hash[normalizeAssetId(transaction.order1.assetPair.priceAsset)] = true;
-        hash[normalizeAssetId(transaction.order1.matcherFeeAssetId)] = true;
-        hash[normalizeAssetId(transaction.order2.matcherFeeAssetId)] = true;
+        hash[normalizeAssetId(transaction.order1?.assetPair.amountAsset)] = true;
+        hash[normalizeAssetId(transaction.order1?.assetPair.priceAsset)] = true;
+        hash[normalizeAssetId(transaction.order1?.matcherFeeAssetId)] = true;
+        hash[normalizeAssetId(transaction.order2?.matcherFeeAssetId)] = true;
         break;
       case TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION:
-        transaction.payment.forEach((payment: { assetId: string }) => {
+        transaction.payment?.forEach((payment) => {
           hash[normalizeAssetId(payment.assetId)] = true;
         });
         break;
@@ -195,7 +213,7 @@ export class Signable {
     return Object.keys(hash);
   }
 
-  public sign2fa(options: ISign2faOptions): Promise<Signable> {
+  public sign2fa(options: ISign2faOptions): Promise<Signable<T>> {
     const code = options.code;
 
     return this._adapter
@@ -250,9 +268,9 @@ export class Signable {
     });
   }
 
-  public sign(): Promise<Signable> {
+  public sign(): Promise<Signable<T>> {
     this._makeSignPromise();
-    return this._signPromise?.then(() => this) as Promise<Signable>;
+    return this._signPromise?.then(() => this) as Promise<Signable<T>>;
   }
 
   public getSignature(): Promise<string> {
@@ -313,8 +331,10 @@ export class Signable {
     const proofs = (this._proofs || []).slice();
 
     try {
-      // biome-ignore lint/suspicious/noExplicitAny: getDataForApi() return type must remain untyped — narrowing here cascades type errors to all consumers (getOrderFee, external callers)
-      return convert({ ...data, proofs } as any, (item: unknown) => new BigNumber(item as string));
+      return convert(
+        { ...data, proofs } as unknown as SignableTransaction<string>,
+        (item: unknown) => new BigNumber(item as string),
+      );
     } catch {
       return { ...data, proofs, signature: proofs[0] };
     }
