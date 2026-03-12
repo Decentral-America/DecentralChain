@@ -37,7 +37,7 @@ export interface IAnyOf {
 
 export type TPrimitive = {
   type?: 'primitive';
-  // biome-ignore lint/suspicious/noExplicitAny: serializer accepts various primitive types
+  // biome-ignore lint/suspicious/noExplicitAny: serializers have specific param types (string, number, etc.) that must be contravariant-compatible
   toBytes: (value: any) => Uint8Array;
   fromBytes: (bytes: Uint8Array, start?: number) => { value: unknown; shift: number };
 };
