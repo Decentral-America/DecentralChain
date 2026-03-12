@@ -10,10 +10,11 @@ export const reissue = factory<TDCCGuiReissue, TWithPartialFee<ReissueTransactio
   assetId: pipe<TDCCGuiReissue, string, string>(
     ifElse<TDCCGuiReissue, string, string>(
       has('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+      // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-      ((data: any) => getAssetId(data.quantity)) as any,
+      ((data: IDCCGuiReissueMoney) => getAssetId(data.quantity)) as (
+        data: TDCCGuiReissue,
+      ) => string,
     ),
     emptyError('Has no assetId!'),
   ),
