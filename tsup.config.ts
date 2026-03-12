@@ -11,4 +11,7 @@ export default defineConfig({
   treeshake: true,
   minify: false,
   outDir: 'dist',
+  outExtension() {
+    return { js: '.mjs' };
+  },
 });
