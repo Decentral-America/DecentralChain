@@ -47,13 +47,12 @@ export function processField<T>(
     return (store, hash) => {
       try {
         const value = getFieldValue(hash, from, type);
-        // biome-ignore lint/suspicious/noExplicitAny: runtime-validated field assignment
-        (store as any)[to] = value;
+        (store as Record<string, unknown>)[String(to)] = value;
         return store;
       } catch (e: unknown) {
         if (required ?? true) {
           errors.push({
-            path: to as string,
+            path: String(to),
             /* v8 ignore next */
             error: e instanceof Error ? e : new Error(String(e)),
           });
