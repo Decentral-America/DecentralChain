@@ -5,22 +5,19 @@ import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js
 import { emptyError, getAssetId, getCoins, has, ifElse, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-const burnTransform: any = {
+const burnTransform = {
   ...getDefaultTransform(),
   assetId: pipe<TDCCGuiBurn, string, string>(
     ifElse<TDCCGuiBurn, string, string>(
       has('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+      // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-      ((data: any) => getAssetId(data.quantity)) as any,
+      ((data: IDCCGuiBurnMoney) => getAssetId(data.quantity)) as (data: TDCCGuiBurn) => string,
     ),
     emptyError('Has no assetId!'),
   ),
   quantity: pipe<TDCCGuiBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  chainId: (prop as any)('chainId'),
+  chainId: prop<TDCCGuiBurn, 'chainId'>('chainId'),
 };
 
 export const burn = factory<TDCCGuiBurn, TWithPartialFee<BurnTransaction<string>>>(burnTransform);

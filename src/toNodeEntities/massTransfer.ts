@@ -35,9 +35,9 @@ export const massTransfer = factory<
   assetId: pipe<TDCCGuiMassTransfer, string, string>(
     ifElse<TDCCGuiMassTransfer, string, string>(
       has('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+      // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+      // biome-ignore lint/suspicious/noExplicitAny: pipe() first type param can't be inferred from ifElse fallback branch
       pipe<any, IDCCGuiMassTransferItem<TMoney>[], IDCCGuiMassTransferItem<TMoney>, TMoney, string>(
         prop<IDCCGuiMassTransferMoney, 'transfers'>('transfers'),
         getFirstMassTransferItem,
