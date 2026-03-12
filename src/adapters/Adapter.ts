@@ -23,7 +23,7 @@ export abstract class Adapter {
     this._code = resolvedCode;
   }
 
-  public makeSignable(forSign: TSignData): Signable {
+  public makeSignable<T extends TSignData>(forSign: T): Signable<T> {
     return new Signable(forSign, this);
   }
 
