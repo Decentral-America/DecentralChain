@@ -11,7 +11,11 @@ export class StorageService {
 
     if (!objectAsString) return null;
 
-    return JSON.parse(objectAsString);
+    try {
+      return JSON.parse(objectAsString);
+    } catch {
+      return null;
+    }
   };
 
   saveObject = (key, object) => {
