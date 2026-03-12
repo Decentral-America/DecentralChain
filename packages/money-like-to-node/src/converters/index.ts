@@ -98,17 +98,14 @@ const reissue = <FROM, TO, TX extends ReissueTransaction<FROM>>(
 const burn = <
   FROM,
   TO,
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  TX extends BurnTransaction<FROM> & { amount?: any },
+  TX extends BurnTransaction<FROM> & { amount?: FROM | undefined; quantity?: FROM | undefined },
 >(
   tx: TX,
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy field fallback
-  amount: tx.amount != null ? factory(tx.amount) : factory((tx as any).quantity as FROM),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-  quantity: tx.amount != null ? factory(tx.amount) : factory((tx as any).quantity as FROM),
+  amount: tx.amount != null ? factory(tx.amount) : factory(tx.quantity as FROM),
+  quantity: tx.amount != null ? factory(tx.amount) : factory(tx.quantity as FROM),
 });
 
 const order = <FROM, TO, O extends SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>>(
