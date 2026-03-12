@@ -54,8 +54,10 @@ export function makeConsole(options: LoggerOptions): IConsole {
 
   // verbose — log everything
   return {
-    log: (..._args: unknown[]) => {}, // biome-ignore lint/suspicious/noConsole: suppressed
-    info: (...args: unknown[]) => console.log(tag, ...args),
+    // biome-ignore lint/suspicious/noConsole: verbose mode requires console.log
+    log: (...args: unknown[]) => console.log(tag, ...args),
+    // biome-ignore lint/suspicious/noConsole: verbose mode requires console.info
+    info: (...args: unknown[]) => console.info(tag, ...args),
     warn: (...args: unknown[]) => console.warn(tag, ...args),
     error: (...args: unknown[]) => console.error(tag, ...args),
   };
