@@ -16,6 +16,7 @@
     "forceConsistentCasingInFileNames": true,
 
     "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
