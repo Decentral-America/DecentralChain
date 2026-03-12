@@ -81,7 +81,7 @@ const getBytesFromString = (value: string) => {
 
 const numberToString = (num: unknown) => (num && typeof num === 'number' ? num.toString() : num);
 
-const error = ({ value, ...options }: IFieldOptions, message: string) => {
+const error = ({ value, ...options }: IFieldOptions, message: unknown): never => {
   const { name: field, type } = options;
   throw { value, field, type, message };
 };
@@ -114,26 +114,24 @@ const attachment = (options: IFieldOptions) => {
   if (typeof value === 'string' || typeof value === 'number') {
     string(options);
 
-    switch (true) {
-      case typeof value !== 'string':
-        error(options, ERROR_MSG.WRONG_TYPE);
-        break;
-      case getBytesFromString(value as string).length > TRANSFERS.ATTACHMENT:
-        error(options, ERROR_MSG.LARGE_FIELD);
-        break;
+    if (typeof value !== 'string') {
+      return error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    if (getBytesFromString(value).length > TRANSFERS.ATTACHMENT) {
+      return error(options, ERROR_MSG.LARGE_FIELD);
     }
 
     return;
   }
 
-  if (typeof value === 'object') {
-    switch (true) {
-      case typeof value.length !== 'number' || value.length < 0:
-        error(options, ERROR_MSG.WRONG_TYPE);
-        break;
-      case value.length > TRANSFERS.ATTACHMENT:
-        error(options, ERROR_MSG.LARGE_FIELD);
-        break;
+  if (typeof value === 'object' && value !== null) {
+    const sized = value as { length: number };
+
+    if (typeof sized.length !== 'number' || sized.length < 0) {
+      return error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    if (sized.length > TRANSFERS.ATTACHMENT) {
+      return error(options, ERROR_MSG.LARGE_FIELD);
     }
 
     return;
@@ -146,7 +144,7 @@ const number = (options: IFieldOptions) => {
   required(options);
   const { value } = options;
 
-  if (value != null && new BigNumber(value).isNaN()) {
+  if (value != null && new BigNumber(value as string | number).isNaN()) {
     return error(options, ERROR_MSG.WRONG_NUMBER);
   }
 };
@@ -217,10 +215,10 @@ const numberLike = (options: IFieldOptions, min?: string | number, max?: string 
     case typeof value === 'string' && !value:
       error(options, ERROR_MSG.WRONG_NUMBER);
       break;
-    case new BigNumber(value).isNaN():
+    case new BigNumber(value as string | number).isNaN():
       return error(options, ERROR_MSG.WRONG_NUMBER);
     default:
-      checkInterval(new BigNumber(value));
+      checkInterval(new BigNumber(value as string | number));
   }
 };
 
@@ -239,15 +237,18 @@ const aliasName = (options: IFieldOptions) => {
     return null;
   }
 
-  switch (true) {
-    case typeof value !== 'string':
-      return error(options, ERROR_MSG.WRONG_TYPE);
-    case value.length < ALIAS.MIN_ALIAS_LENGTH:
-      return error(options, ERROR_MSG.SMALL_FIELD);
-    case value.length > ALIAS.MAX_ALIAS_LENGTH:
-      return error(options, ERROR_MSG.LARGE_FIELD);
-    case !value.split('').every((char: string) => ALIAS.AVAILABLE_CHARS.includes(char)):
-      return error(options, ERROR_MSG.WRONG_SYMBOLS);
+  if (typeof value !== 'string') {
+    return error(options, ERROR_MSG.WRONG_TYPE);
+  }
+
+  if (value.length < ALIAS.MIN_ALIAS_LENGTH) {
+    return error(options, ERROR_MSG.SMALL_FIELD);
+  }
+  if (value.length > ALIAS.MAX_ALIAS_LENGTH) {
+    return error(options, ERROR_MSG.LARGE_FIELD);
+  }
+  if (!value.split('').every((char: string) => ALIAS.AVAILABLE_CHARS.includes(char))) {
+    return error(options, ERROR_MSG.WRONG_SYMBOLS);
   }
 };
 
@@ -266,15 +267,18 @@ const address = (options: IFieldOptions) => {
   if (value == null) {
     return null;
   }
-  switch (true) {
-    case typeof value !== 'string':
-      return error(options, ERROR_MSG.WRONG_TYPE);
-    case value.length <= ALIAS.MAX_ALIAS_LENGTH:
-      return error(options, ERROR_MSG.SMALL_FIELD);
-    case value.length > ADDRESS.MAX_ADDRESS_LENGTH:
-      return error(options, ERROR_MSG.LARGE_FIELD);
-    case !validateAddress(value):
-      return error(options, ERROR_MSG.WRONG_ADDRESS);
+  if (typeof value !== 'string') {
+    return error(options, ERROR_MSG.WRONG_TYPE);
+  }
+
+  if (value.length <= ALIAS.MAX_ALIAS_LENGTH) {
+    return error(options, ERROR_MSG.SMALL_FIELD);
+  }
+  if (value.length > ADDRESS.MAX_ADDRESS_LENGTH) {
+    return error(options, ERROR_MSG.LARGE_FIELD);
+  }
+  if (!validateAddress(value)) {
+    return error(options, ERROR_MSG.WRONG_ADDRESS);
   }
 };
 
@@ -317,8 +321,8 @@ const timestamp = (options: IFieldOptions) => {
   const { value } = options;
 
   if (
-    Number.isNaN(value) ||
-    (value && !(value instanceof Date || typeof value === 'number' || +value))
+    Number.isNaN(value as number) ||
+    (value && !(value instanceof Date || typeof value === 'number' || +(value as string | number)))
   ) {
     if (typeof value !== 'string' || Number.isNaN(Date.parse(value))) {
       return error(options, ERROR_MSG.WRONG_TIMESTAMP);
@@ -350,7 +354,7 @@ const assetName = (options: IFieldOptions) => {
 
   if (value != null) {
     if (typeof value !== 'string') {
-      error(options, ERROR_MSG.WRONG_TYPE);
+      return error(options, ERROR_MSG.WRONG_TYPE);
     }
 
     const bytesLength = getBytesFromString(value).length;
@@ -372,7 +376,7 @@ const assetDescription = (options: IFieldOptions) => {
 
   if (value != null) {
     if (typeof value !== 'string') {
-      error(options, ERROR_MSG.WRONG_TYPE);
+      return error(options, ERROR_MSG.WRONG_TYPE);
     }
 
     const bytesLength = getBytesFromString(value).length;
@@ -404,16 +408,14 @@ const httpsUrl = (options: IFieldOptions) => {
     return null;
   }
 
-  switch (true) {
-    case typeof value !== 'string':
-      error(options, ERROR_MSG.WRONG_TYPE);
-      break;
-    case value.indexOf('https://') === -1:
-      error(options, ERROR_MSG.NOT_HTTPS_URL);
-      break;
-    case isNotUrl(value):
-      error(options, ERROR_MSG.NOT_HTTPS_URL);
-      break;
+  if (typeof value !== 'string') {
+    return error(options, ERROR_MSG.WRONG_TYPE);
+  }
+  if (value.indexOf('https://') === -1) {
+    return error(options, ERROR_MSG.NOT_HTTPS_URL);
+  }
+  if (isNotUrl(value)) {
+    return error(options, ERROR_MSG.NOT_HTTPS_URL);
   }
 };
 
@@ -422,46 +424,42 @@ const transfers = (options: IFieldOptions) => {
   const { value } = options;
 
   if (!Array.isArray(value)) {
-    error(options, ERROR_MSG.WRONG_TYPE);
+    return error(options, ERROR_MSG.WRONG_TYPE);
   }
 
   if (!options.optional && value.length === 0) {
     error(options, ERROR_MSG.REQUIRED);
   }
 
-  const errors = (value || [])
-    .map(
-      (
-        { recipient, amount, name }: { recipient?: string; amount?: unknown; name?: string },
-        index: number,
-      ) => {
-        const dataErrors: unknown[] = [];
+  const items = value as Array<{ recipient?: string; amount?: unknown; name?: string }>;
+  const errors = items
+    .map(({ recipient, amount, name }, index) => {
+      const dataErrors: unknown[] = [];
 
-        try {
-          numberLike({
-            ...options,
-            value: amount,
-            name: `${options.name}:${index}:amount`,
-            optional: false,
-          });
-        } catch (e) {
-          dataErrors.push(e);
-        }
+      try {
+        numberLike({
+          ...options,
+          value: amount,
+          name: `${options.name}:${index}:amount`,
+          optional: false,
+        });
+      } catch (e) {
+        dataErrors.push(e);
+      }
 
-        try {
-          aliasOrAddress({
-            ...options,
-            value: recipient || name,
-            name: `${options.name}:${index}:recipient`,
-            optional: false,
-          });
-        } catch (e) {
-          dataErrors.push(e);
-        }
+      try {
+        aliasOrAddress({
+          ...options,
+          value: recipient || name,
+          name: `${options.name}:${index}:recipient`,
+          optional: false,
+        });
+      } catch (e) {
+        dataErrors.push(e);
+      }
 
-        return dataErrors;
-      },
-    )
+      return dataErrors;
+    })
     .filter((item: unknown[]) => item.length);
 
   if (errors.length) {
@@ -473,73 +471,72 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
   required(options);
   const { value } = options;
   if (!Array.isArray(value)) {
-    error(options, ERROR_MSG.WRONG_TYPE);
+    return error(options, ERROR_MSG.WRONG_TYPE);
   }
-  const errors = value
-    .map(
-      ({ key, type, value }: { key?: string; type?: string; value?: unknown }, index: number) => {
-        if (!noKey) {
-          try {
-            string({
-              ...options,
-              value: key,
-              name: `${options.name}:${index}:key`,
-              optional: false,
-            });
-          } catch (e) {
-            return e;
-          }
-        }
-        const itemOptions = {
-          ...options,
-          name: `${options.name}:${index}:value`,
-          optional: false,
-          value,
-        };
-
+  const entries = value as Array<{ key?: string; type?: string; value?: unknown }>;
+  const errors = entries
+    .map(({ key, type, value }, index) => {
+      if (!noKey) {
         try {
-          switch (type) {
-            case 'integer':
-              numberLike(itemOptions);
-              break;
-            case 'boolean':
-              boolean(itemOptions);
-              break;
-            case 'binary':
-              binary(itemOptions);
-              break;
-            case 'string':
-              string(itemOptions);
-              break;
-            case undefined:
-              isNull(itemOptions);
-              break;
-            case 'list':
-              if (isArgs) {
-                const listValues = {
-                  ...itemOptions,
-                  name: `${itemOptions.name}:list`,
-                  value: itemOptions.value,
-                };
-
-                if (listValues.value) {
-                  data(listValues, true);
-                  break;
-                }
-              }
-              break;
-            default:
-              error(
-                { ...options, value: key, name: `${options.name}:${index}:type` },
-                ERROR_MSG.WRONG_TYPE,
-              );
-          }
+          string({
+            ...options,
+            value: key,
+            name: `${options.name}:${index}:key`,
+            optional: false,
+          });
         } catch (e) {
           return e;
         }
-        return undefined;
-      },
-    )
+      }
+      const itemOptions = {
+        ...options,
+        name: `${options.name}:${index}:value`,
+        optional: false,
+        value,
+      };
+
+      try {
+        switch (type) {
+          case 'integer':
+            numberLike(itemOptions);
+            break;
+          case 'boolean':
+            boolean(itemOptions);
+            break;
+          case 'binary':
+            binary(itemOptions);
+            break;
+          case 'string':
+            string(itemOptions);
+            break;
+          case undefined:
+            isNull(itemOptions);
+            break;
+          case 'list':
+            if (isArgs) {
+              const listValues = {
+                ...itemOptions,
+                name: `${itemOptions.name}:list`,
+                value: itemOptions.value,
+              };
+
+              if (listValues.value) {
+                data(listValues, true);
+                break;
+              }
+            }
+            break;
+          default:
+            error(
+              { ...options, value: key, name: `${options.name}:${index}:type` },
+              ERROR_MSG.WRONG_TYPE,
+            );
+        }
+      } catch (e) {
+        return e;
+      }
+      return undefined;
+    })
     .filter((item: unknown) => item);
 
   if (errors.length) {
@@ -548,7 +545,7 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
 };
 
 const binary = (options: IFieldOptions) => {
-  const { value = '' } = options;
+  const value = (options.value ?? '') as string;
 
   if (value && !value.includes('base64:')) {
     error(options, ERROR_MSG.BASE64);
@@ -565,7 +562,7 @@ const publicKey = (options: IFieldOptions) => {
   const { value = '' } = options;
 
   if (!value || typeof value !== 'string') {
-    error(options, ERROR_MSG.PUB_KEY);
+    return error(options, ERROR_MSG.PUB_KEY);
   }
   let pk: Uint8Array | undefined;
   try {
@@ -588,7 +585,7 @@ const script = (options: IFieldOptions) => {
 const asset_script = (options: IFieldOptions) => {
   const { value } = options;
 
-  if (!value?.replace('base64:', '')) {
+  if (typeof value !== 'string' || !value.replace('base64:', '')) {
     error(options, ERROR_MSG.EMPTY_BASE64);
   }
 
@@ -606,9 +603,11 @@ const call = (options: IFieldOptions) => {
     error(options, ERROR_MSG.WRONG_TYPE);
   }
 
+  const callData = value as { function?: string; args?: unknown[] };
+
   const functionValue = {
     key: 'call.function',
-    value: value.function,
+    value: callData.function,
     optional: false,
     type: 'string',
     name: 'function',
@@ -616,13 +615,13 @@ const call = (options: IFieldOptions) => {
 
   string(functionValue);
 
-  if (value.function === '') {
+  if (callData.function === '') {
     error(functionValue, ERROR_MSG.REQUIRED);
   }
 
   const argsValue = {
     key: 'call.args',
-    value: value.args,
+    value: callData.args,
     optional: true,
     type: 'args',
     name: 'args',
@@ -637,11 +636,11 @@ const payment = (options: IFieldOptions) => {
   required(options);
   const { value } = options;
 
-  if (typeof value !== 'object' || typeof value.length !== 'number' || !value.forEach) {
-    error(options, ERROR_MSG.WRONG_TYPE);
+  if (!Array.isArray(value)) {
+    return error(options, ERROR_MSG.WRONG_TYPE);
   }
 
-  const errors = (value || [])
+  const errors = value
     .map((amount: unknown, index: number) => {
       const dataErrors: unknown[] = [];
 
@@ -690,8 +689,7 @@ export const VALIDATORS = {
 
 interface IFieldOptions {
   key: string;
-  // biome-ignore lint/suspicious/noExplicitAny: Validator receives heterogeneous field values (Money, BigNumber, string, number) passed to typed APIs that don't accept unknown
-  value: any;
+  value: unknown;
   optional: boolean;
   type: string;
   name: string;
