@@ -5,9 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    // verbatimModuleSyntax disabled: codebase mixes value and type imports
-    // from @decentralchain/data-entities (Asset, AssetPair used as both)
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "declaration": true,
     "declarationMap": true,
