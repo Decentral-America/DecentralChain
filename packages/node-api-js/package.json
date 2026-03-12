@@ -6,76 +6,52 @@
   "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
     },
     "./api-node/transactions": {
-      "import": {
-        "types": "./dist/api-node/transactions/index.d.ts",
-        "default": "./dist/api-node/transactions/index.mjs"
-      }
+      "types": "./dist/api-node/transactions/index.d.ts",
+      "default": "./dist/api-node/transactions/index.mjs"
     },
     "./api-node/blocks": {
-      "import": {
-        "types": "./dist/api-node/blocks/index.d.ts",
-        "default": "./dist/api-node/blocks/index.mjs"
-      }
+      "types": "./dist/api-node/blocks/index.d.ts",
+      "default": "./dist/api-node/blocks/index.mjs"
     },
     "./api-node/addresses": {
-      "import": {
-        "types": "./dist/api-node/addresses/index.d.ts",
-        "default": "./dist/api-node/addresses/index.mjs"
-      }
+      "types": "./dist/api-node/addresses/index.d.ts",
+      "default": "./dist/api-node/addresses/index.mjs"
     },
     "./api-node/assets": {
-      "import": {
-        "types": "./dist/api-node/assets/index.d.ts",
-        "default": "./dist/api-node/assets/index.mjs"
-      }
+      "types": "./dist/api-node/assets/index.d.ts",
+      "default": "./dist/api-node/assets/index.mjs"
     },
     "./api-node/rewards": {
-      "import": {
-        "types": "./dist/api-node/rewards/index.d.ts",
-        "default": "./dist/api-node/rewards/index.mjs"
-      }
+      "types": "./dist/api-node/rewards/index.d.ts",
+      "default": "./dist/api-node/rewards/index.mjs"
     },
     "./api-node/debug": {
-      "import": {
-        "types": "./dist/api-node/debug/index.d.ts",
-        "default": "./dist/api-node/debug/index.mjs"
-      }
+      "types": "./dist/api-node/debug/index.d.ts",
+      "default": "./dist/api-node/debug/index.mjs"
     },
     "./api-node/alias": {
-      "import": {
-        "types": "./dist/api-node/alias/index.d.ts",
-        "default": "./dist/api-node/alias/index.mjs"
-      }
+      "types": "./dist/api-node/alias/index.d.ts",
+      "default": "./dist/api-node/alias/index.mjs"
     },
     "./api-node/node": {
-      "import": {
-        "types": "./dist/api-node/node/index.d.ts",
-        "default": "./dist/api-node/node/index.mjs"
-      }
+      "types": "./dist/api-node/node/index.d.ts",
+      "default": "./dist/api-node/node/index.mjs"
     },
     "./api-node/peers": {
-      "import": {
-        "types": "./dist/api-node/peers/index.d.ts",
-        "default": "./dist/api-node/peers/index.mjs"
-      }
+      "types": "./dist/api-node/peers/index.d.ts",
+      "default": "./dist/api-node/peers/index.mjs"
     },
     "./api-node/leasing": {
-      "import": {
-        "types": "./dist/api-node/leasing/index.d.ts",
-        "default": "./dist/api-node/leasing/index.mjs"
-      }
+      "types": "./dist/api-node/leasing/index.d.ts",
+      "default": "./dist/api-node/leasing/index.mjs"
     },
     "./api-node/eth": {
-      "import": {
-        "types": "./dist/api-node/eth/index.d.ts",
-        "default": "./dist/api-node/eth/index.mjs"
-      }
+      "types": "./dist/api-node/eth/index.d.ts",
+      "default": "./dist/api-node/eth/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
