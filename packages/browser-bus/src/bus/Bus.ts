@@ -21,7 +21,8 @@ export enum ResponseStatus {
  */
 export class Bus<
   T extends { [K in keyof T]: unknown } = Record<string, unknown>,
-  H extends Record<string, (data: unknown) => unknown> = Record<string, (data: unknown) => unknown>,
+  // biome-ignore lint/suspicious/noExplicitAny: constraint position — any enables contravariant handler param acceptance; never leaks into value types
+  H extends Record<string, (...args: any[]) => any> = Record<string, (data: unknown) => unknown>,
 > {
   public id: string = uniqueId('bus');
   private _adapter: Adapter;
@@ -150,7 +151,7 @@ export class Bus<
   }
 
   /** Register a handler for incoming requests. */
-  public registerRequestHandler(name: keyof H, handler: H[keyof H]): this {
+  public registerRequestHandler<E extends keyof H>(name: E, handler: H[E]): this {
     if (this._requestHandlers[name]) {
       throw new Error('Duplicate request handler!');
     }
