@@ -286,15 +286,18 @@ describe('Bus', () => {
       new Promise<void>((done) => {
         const requestData = {
           count: 0,
-          name: 'getRequestCount',
-          handler: (c: unknown) => {
+          name: 'getRequestCount' as const,
+          handler: (c: number) => {
             requestData.count++;
-            return requestData.count + (c as number);
+            return requestData.count + c;
           },
         };
 
         const secondAdapter = new MockAdapter();
-        const secondBus = new Bus(secondAdapter);
+        const secondBus = new Bus<
+          Record<string, unknown>,
+          { getRequestCount: (data: number) => number }
+        >(secondAdapter);
 
         secondBus.registerRequestHandler(requestData.name, requestData.handler);
 
@@ -313,15 +316,18 @@ describe('Bus', () => {
       new Promise<void>((done) => {
         const requestData = {
           count: 0,
-          name: 'getRequestCount',
-          handler: (c: unknown) => {
+          name: 'getRequestCount' as const,
+          handler: (c: number) => {
             requestData.count++;
-            return Promise.resolve(requestData.count + (c as number));
+            return Promise.resolve(requestData.count + c);
           },
         };
 
         const secondAdapter = new MockAdapter();
-        const secondBus = new Bus(secondAdapter);
+        const secondBus = new Bus<
+          Record<string, unknown>,
+          { getRequestCount: (data: number) => Promise<number> }
+        >(secondAdapter);
 
         secondBus.registerRequestHandler(requestData.name, requestData.handler);
 

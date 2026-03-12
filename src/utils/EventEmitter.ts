@@ -3,17 +3,19 @@
  * @internal
  */
 
-interface HandlerEntry {
-  handler: (...args: unknown[]) => void;
+interface HandlerEntry<D = unknown> {
+  handler: (data: Readonly<D>) => void;
   context: unknown;
   once: boolean;
 }
 
+/** Per-event typed handler storage — preserves T[K] through the handler lifecycle. */
+type EventStore<T> = {
+  [K in keyof T]?: HandlerEntry<T[K]>[];
+};
+
 export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string, unknown>> {
-  private readonly _events: Record<string, HandlerEntry[]> = Object.create(null) as Record<
-    string,
-    HandlerEntry[]
-  >;
+  private readonly _events = Object.create(null) as EventStore<T>;
 
   /**
    * Optional error handler invoked when a listener throws.
@@ -22,17 +24,18 @@ export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string,
   public onError?: (error: unknown, eventName: string) => void;
 
   public hasListeners(eventName: keyof T): boolean {
-    const handlers = this._events[eventName as string];
+    const handlers = this._events[eventName];
     return !!(handlers && handlers.length > 0);
   }
 
   public getActiveEvents(): (keyof T)[] {
-    return (Object.keys(this._events) as (keyof T)[]).filter((name) => this.hasListeners(name));
+    return (Object.keys(this._events as Record<string, unknown>) as (keyof T)[]).filter((name) =>
+      this.hasListeners(name),
+    );
   }
 
   public trigger<K extends keyof T>(eventName: K, params: Readonly<T[K]>): void {
-    const key = eventName as string;
-    const handlers = this._events[key];
+    const handlers = this._events[eventName];
     if (!handlers) return;
 
     const remaining = handlers.filter((entry) => {
@@ -40,16 +43,16 @@ export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string,
         entry.handler.call(entry.context, params);
       } catch (error: unknown) {
         if (this.onError) {
-          this.onError(error, key);
+          this.onError(error, eventName as string);
         }
       }
       return !entry.once;
     });
 
     if (remaining.length === 0) {
-      delete this._events[key];
+      delete this._events[eventName];
     } else {
-      this._events[key] = remaining;
+      this._events[eventName] = remaining;
     }
   }
 
@@ -65,26 +68,24 @@ export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string,
   public off<K extends keyof T>(eventName: K, handler?: IHandler<T[K]>): void;
   public off<K extends keyof T>(eventName?: K, handler?: IHandler<T[K]>): void {
     if (eventName === undefined) {
-      for (const key of Object.keys(this._events)) {
-        delete this._events[key];
+      for (const key of Object.keys(this._events as Record<string, unknown>)) {
+        delete (this._events as Record<string, unknown>)[key];
       }
       return;
     }
 
-    const key = eventName as string;
-
     if (!handler) {
-      delete this._events[key];
+      delete this._events[eventName];
       return;
     }
 
-    const entries = this._events[key];
+    const entries = this._events[eventName];
     if (entries) {
       const remaining = entries.filter((item) => item.handler !== handler);
       if (remaining.length === 0) {
-        delete this._events[key];
+        delete this._events[eventName];
       } else {
-        this._events[key] = remaining;
+        this._events[eventName] = remaining;
       }
     }
   }
@@ -95,10 +96,8 @@ export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string,
     context: unknown,
     once: boolean,
   ): void {
-    const key = eventName as string;
-    const entry: HandlerEntry = { handler: handler as (...args: unknown[]) => void, context, once };
-    this._events[key] ??= [];
-    this._events[key].push(entry);
+    this._events[eventName] ??= [];
+    this._events[eventName]?.push({ handler, context, once });
   }
 }
 
