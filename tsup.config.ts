@@ -15,4 +15,7 @@ export default defineConfig({
   external: ['@waves/ride-lang', '@waves/ride-repl', '@waves/ts-lib-crypto'],
   clean: true,
   outDir: 'dist',
+  outExtension() {
+    return { js: '.mjs' };
+  },
 });
