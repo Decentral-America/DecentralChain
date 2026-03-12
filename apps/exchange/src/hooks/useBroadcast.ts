@@ -6,10 +6,9 @@ import { logger } from '@/lib/logger';
 import { transactionService } from '@/services/transactionService';
 
 /**
- * Transaction type (any - matches dcc-transactions)
+ * Transaction type — opaque signed transaction payload
  */
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-export type Transaction = any;
+export type Transaction = unknown;
 
 /**
  * Transaction broadcast status
