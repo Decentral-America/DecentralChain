@@ -56,10 +56,7 @@ export class GatewayService {
     }
 
     // Look up provider by gateway_id or gateway_type
-    const gatewayId =
-      gatewayConfig.gateway_id ||
-      gatewayConfig.gateway_type ||
-      'dccgateway';
+    const gatewayId = gatewayConfig.gateway_id || gatewayConfig.gateway_type || 'dccgateway';
 
     const provider = this.providers.get(gatewayId.toLowerCase());
     if (!provider) {

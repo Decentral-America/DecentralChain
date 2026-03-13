@@ -173,7 +173,9 @@ export const usePollCache = <T>(
     staleTime,
     enabled,
     refetchOnWindowFocus,
-    ...(keepPreviousData && { placeholderData: ((previousData: T | undefined) => previousData) as never }),
+    ...(keepPreviousData && {
+      placeholderData: ((previousData: T | undefined) => previousData) as never,
+    }),
     retry,
     retryDelay,
   }) as UseQueryResult<T, Error>;

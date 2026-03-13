@@ -333,7 +333,9 @@ class CandlesService {
 
       // Wait for all batches and flatten results
       const responses = await Promise.all(promises);
-      const rawCandles = responses.flatMap((response) => (response as { data?: unknown[] })?.data || []);
+      const rawCandles = responses.flatMap(
+        (response) => (response as { data?: unknown[] })?.data || [],
+      );
 
       logger.debug('[Candles] Raw candles count:', rawCandles.length);
 
