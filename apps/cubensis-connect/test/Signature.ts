@@ -1,7 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { base58Decode, base58Encode, blake2b, verifySignature } from '@decentralchain/crypto';
 import { binary } from '@decentralchain/marshall';
-import Long from 'long';
 
 import { JSONbn } from '../src/_core/jsonBn';
 import {
@@ -422,7 +421,11 @@ describe('Signature', () => {
       expect(status).toBe('RESOLVED');
       const bytes = Uint8Array.of(
         ...senderPublicKeyBytes,
-        ...new Uint8Array(Long.fromNumber(timestamp).toBytesBE()),
+        ...(() => {
+          const buf = new ArrayBuffer(8);
+          new DataView(buf).setBigInt64(0, BigInt(timestamp));
+          return new Uint8Array(buf);
+        })(),
       );
       expect(await verifySignature(senderPublicKeyBytes, bytes, base58Decode(result))).toBe(true);
     });
