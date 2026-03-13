@@ -1,71 +1,9 @@
 {
-  "name": "@decentralchain/ts-types",
-  "version": "2.0.0",
-  "description": "Shared TypeScript type definitions for the DecentralChain SDK",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
-  },
-  "types": "./dist/index.d.mts",
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "keywords": [
-    "decentralchain",
-    "dcc",
-    "blockchain",
-    "typescript",
-    "types",
-    "transactions",
-    "sdk"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/ts-types.git"
-  },
-  "homepage": "https://github.com/Decentral-America/ts-types",
+  "author": "DecentralChain",
   "bugs": {
     "url": "https://github.com/Decentral-America/ts-types/issues"
   },
-  "author": "DecentralChain",
-  "license": "MIT",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
-  },
-  "engines": {
-    "node": ">=24"
-  },
-  "packageManager": "npm@11.9.0",
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "scripts": {
-    "build": "tsdown",
-    "clean": "rm -rf dist coverage",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "lint": "biome check --write .",
-    "lint:check": "biome check .",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
-    "test:coverage": "vitest run --coverage",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
-    "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && publint && attw --pack --ignore-rules cjs-resolves-to-esm && size-limit",
-    "prepublishOnly": "npm run validate",
-    "prepare": "lefthook install",
-    "lint:fix": "biome check --write .",
-    "check:exports": "attw --pack . --profile esm-only"
-  },
+  "description": "Shared TypeScript type definitions for the DecentralChain SDK",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@biomejs/biome": "2.4.6",
@@ -78,10 +16,72 @@
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/ts-types",
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "blockchain",
+    "typescript",
+    "types",
+    "transactions",
+    "sdk"
+  ],
+  "license": "MIT",
+  "name": "@decentralchain/ts-types",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/ts-types.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "clean": "rm -rf dist coverage",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepare": "lefthook install",
+    "prepublishOnly": "npm run validate",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && publint && attw --pack --ignore-rules cjs-resolves-to-esm && size-limit"
+  },
+  "sideEffects": false,
   "size-limit": [
     {
-      "path": "./dist/index.mjs",
-      "limit": "10 kB"
+      "limit": "10 kB",
+      "path": "./dist/index.mjs"
     }
-  ]
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "2.0.0"
 }
