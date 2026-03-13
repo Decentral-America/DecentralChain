@@ -183,7 +183,7 @@ npm install
 
 | Command                 | Description                          |
 | ----------------------- | ------------------------------------ |
-| `npm run build`         | Build distribution files (tsup)      |
+| `npm run build`         | Build distribution files (tsdown)      |
 | `npm test`              | Run tests with Vitest                |
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |
@@ -204,7 +204,7 @@ The validate pipeline checks:
 - Linting (Biome with strict rules)
 - Type checking (TypeScript strict mode)
 - Tests with coverage thresholds (90%+)
-- Build (tsup ESM output)
+- Build (tsdown ESM output)
 - Package validation (publint + attw)
 - Bundle size limits (size-limit)
 
