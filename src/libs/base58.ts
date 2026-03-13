@@ -1,3 +1,4 @@
+// biome-ignore lint/security/noSecrets: Base58 encoding alphabet, not a secret
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP: Record<string, number> = ALPHABET.split('').reduce<Record<string, number>>(
   (map, c, i) => {
@@ -8,41 +9,6 @@ const ALPHABET_MAP: Record<string, number> = ALPHABET.split('').reduce<Record<st
 );
 
 export default {
-  encode(buffer: Uint8Array): string {
-    if (!buffer.length) return '';
-
-    const digits = [0];
-
-    for (let i = 0; i < buffer.length; i++) {
-      for (let j = 0; j < digits.length; j++) {
-        digits[j] = (digits[j] as number) << 8;
-      }
-
-      digits[0] = (digits[0] as number) + (buffer[i] as number);
-      let carry = 0;
-
-      for (let k = 0; k < digits.length; k++) {
-        digits[k] = (digits[k] as number) + carry;
-        carry = ((digits[k] as number) / 58) | 0;
-        digits[k] = (digits[k] as number) % 58;
-      }
-
-      while (carry) {
-        digits.push(carry % 58);
-        carry = (carry / 58) | 0;
-      }
-    }
-
-    for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++) {
-      digits.push(0);
-    }
-
-    return digits
-      .reverse()
-      .map((digit) => ALPHABET[digit])
-      .join('');
-  },
-
   decode(string: string): Uint8Array {
     if (!string.length) return new Uint8Array(0);
 
@@ -78,5 +44,39 @@ export default {
     }
 
     return new Uint8Array(bytes.reverse());
+  },
+  encode(buffer: Uint8Array): string {
+    if (!buffer.length) return '';
+
+    const digits = [0];
+
+    for (let i = 0; i < buffer.length; i++) {
+      for (let j = 0; j < digits.length; j++) {
+        digits[j] = (digits[j] as number) << 8;
+      }
+
+      digits[0] = (digits[0] as number) + (buffer[i] as number);
+      let carry = 0;
+
+      for (let k = 0; k < digits.length; k++) {
+        digits[k] = (digits[k] as number) + carry;
+        carry = ((digits[k] as number) / 58) | 0;
+        digits[k] = (digits[k] as number) % 58;
+      }
+
+      while (carry) {
+        digits.push(carry % 58);
+        carry = (carry / 58) | 0;
+      }
+    }
+
+    for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++) {
+      digits.push(0);
+    }
+
+    return digits
+      .reverse()
+      .map((digit) => ALPHABET[digit])
+      .join('');
   },
 };

@@ -18,8 +18,8 @@ import { isPrivateKey, isPublicKey } from './util';
 
 /** Create a seed-with-nonce pair for deterministic key derivation. */
 export const seedWithNonce = (seed: TSeed, nonce: number): INonceSeed => ({
-  seed: Seed.toBinary(seed).seed,
   nonce,
+  seed: Seed.toBinary(seed).seed,
 });
 
 /** Build a DecentralChain address from raw public key bytes and chain ID. */

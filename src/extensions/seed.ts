@@ -7,6 +7,6 @@ export const Seed = {
     typeof val === 'object' && 'seed' in val && 'nonce' in val && typeof val.nonce === 'number',
   toBinary: (seed: TSeed): INonceSeed =>
     Seed.isSeedWithNonce(seed)
-      ? { seed: Seed.toBinary(seed.seed).seed, nonce: seed.nonce }
-      : { seed: _fromRawIn(seed), nonce: undefined },
+      ? { nonce: seed.nonce, seed: Seed.toBinary(seed.seed).seed }
+      : { nonce: undefined, seed: _fromRawIn(seed) },
 };

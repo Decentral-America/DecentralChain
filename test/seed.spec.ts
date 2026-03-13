@@ -14,8 +14,8 @@ describe('Seed', () => {
     });
 
     test('returns true for a seed-with-nonce object', () => {
-      expect(Seed.isSeedWithNonce({ seed: SEED_PHRASE, nonce: 0 })).toBe(true);
-      expect(Seed.isSeedWithNonce({ seed: SEED_PHRASE, nonce: 42 })).toBe(true);
+      expect(Seed.isSeedWithNonce({ nonce: 0, seed: SEED_PHRASE })).toBe(true);
+      expect(Seed.isSeedWithNonce({ nonce: 42, seed: SEED_PHRASE })).toBe(true);
     });
   });
 
@@ -36,7 +36,7 @@ describe('Seed', () => {
     });
 
     test('converts nonce seed to binary preserving nonce', () => {
-      const result = Seed.toBinary({ seed: SEED_PHRASE, nonce: 5 });
+      const result = Seed.toBinary({ nonce: 5, seed: SEED_PHRASE });
       expect(result.seed).toBeInstanceOf(Uint8Array);
       expect(result.nonce).toBe(5);
     });

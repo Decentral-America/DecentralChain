@@ -31,7 +31,7 @@ describe('verifyAddress edge cases', () => {
   it('returns true when publicKey matches address', () => {
     const a = address(SEED, 'L');
     const pk = publicKey(SEED);
-    expect(verifyAddress(a, { publicKey: pk, chainId: 'L' })).toBe(true);
+    expect(verifyAddress(a, { chainId: 'L', publicKey: pk })).toBe(true);
   });
 
   it('returns false for garbage input', () => {

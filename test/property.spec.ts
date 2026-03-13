@@ -41,10 +41,10 @@ import { messageDecrypt, messageEncrypt } from '../src/crypto/encryption';
 // ── Arbitraries ─────────────────────────────────────────────────────
 
 /** Arbitrary seed — any printable ASCII string of length 15–50. */
-const arbSeed = fc.string({ minLength: 15, maxLength: 50 });
+const arbSeed = fc.string({ maxLength: 50, minLength: 15 });
 
 /** Arbitrary Uint8Array of a given length. */
-const arbBytes = (min = 0, max = 256) => fc.uint8Array({ minLength: min, maxLength: max });
+const arbBytes = (min = 0, max = 256) => fc.uint8Array({ maxLength: max, minLength: min });
 
 /** Arbitrary non-empty Uint8Array. */
 const arbNonEmptyBytes = arbBytes(1, 256);
@@ -322,8 +322,8 @@ describe('Sign/Verify properties', () => {
 // ── AES encrypt/decrypt properties ──────────────────────────────────
 
 describe('AES encrypt/decrypt properties', () => {
-  const arbKey16 = fc.uint8Array({ minLength: 16, maxLength: 16 });
-  const arbIv16 = fc.uint8Array({ minLength: 16, maxLength: 16 });
+  const arbKey16 = fc.uint8Array({ maxLength: 16, minLength: 16 });
+  const arbIv16 = fc.uint8Array({ maxLength: 16, minLength: 16 });
 
   test('CBC: encrypt then decrypt is identity', () => {
     fc.assert(
@@ -397,7 +397,7 @@ describe('Message encrypt/decrypt properties', () => {
       fc.property(
         arbSeed,
         arbSeed,
-        fc.string({ minLength: 1, maxLength: 128 }),
+        fc.string({ maxLength: 128, minLength: 1 }),
         (seedA, seedB, msg) => {
           fc.pre(seedA !== seedB);
           const kpA = keyPair(seedA);
@@ -449,7 +449,7 @@ describe('Concat/Split properties', () => {
 describe('Random properties', () => {
   test('randomBytes produces requested length', () => {
     fc.assert(
-      fc.property(fc.integer({ min: 1, max: 256 }), (len) => {
+      fc.property(fc.integer({ max: 256, min: 1 }), (len) => {
         const bytes = randomBytes(len);
         expect(bytes).toHaveLength(len);
       }),
