@@ -23,20 +23,20 @@ export function exchange(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: ExchangeTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
+    amount: paramsOrTx.amount,
+    buyMatcherFee: paramsOrTx.buyMatcherFee,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 100000),
+    id: '',
     order1: paramsOrTx.order1,
     order2: paramsOrTx.order2,
     price: paramsOrTx.price,
-    amount: paramsOrTx.amount,
-    buyMatcherFee: paramsOrTx.buyMatcherFee,
-    sellMatcherFee: paramsOrTx.sellMatcherFee,
-    fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
     proofs: paramsOrTx.proofs || [],
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    id: '',
+    sellMatcherFee: paramsOrTx.sellMatcherFee,
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.exchange(tx as unknown as Record<string, unknown>);

@@ -65,7 +65,7 @@ describe('setScript', () => {
 
   it('Should handle incorrect keys in seedObject', () => {
     const txParams = { script: compiledContract };
-    const signedTx = setScript(txParams, { asd1: seed, '2': seed2 } as any);
+    const signedTx = setScript(txParams, { '2': seed2, asd1: seed } as any);
 
     expect(signedTx.proofs[0]).toEqual('');
     expect(signedTx.proofs[1]).toEqual('');
@@ -81,13 +81,13 @@ describe('setScript', () => {
   });
 
   it('Should not create setScript transaction with zero fee', () => {
-    expect(() => setScript({ script: compiledContract, fee: 0 }, seed)).toThrowError(
+    expect(() => setScript({ fee: 0, script: compiledContract }, seed)).toThrowError(
       errorMessageByTemplate('fee', 0),
     );
   });
 
   it('Should not create correct signed setScript transaction with negative fee', () => {
-    expect(() => setScript({ script: compiledContract, fee: -1 }, seed)).toThrowError(
+    expect(() => setScript({ fee: -1, script: compiledContract }, seed)).toThrowError(
       errorMessageByTemplate('fee', -1),
     );
   });
@@ -96,7 +96,7 @@ describe('setScript', () => {
 describe('serialize/deserialize set script tx', () => {
   Object.entries(setScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -104,7 +104,7 @@ describe('serialize/deserialize set script tx', () => {
 describe('serialize/deserialize set script binary tx', () => {
   Object.entries(setScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

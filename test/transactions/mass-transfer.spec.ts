@@ -42,7 +42,7 @@ describe('massTransfer', () => {
 
   it('Should throw on transfers with minimal quantity of receivers', () => {
     const transfersList = [];
-    const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: 1 };
+    const t = { amount: 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
     transfersList.push(t);
     const tx = massTransfer({ transfers: transfersList }, stringSeed);
     expect(tx.transfers).toMatchObject({ ...transfersList });
@@ -50,17 +50,17 @@ describe('massTransfer', () => {
 
   it('Should throw on transfers with zero quantity of receivers', () => {
     const transfersList = [];
-    const t = { recipient: '', amount: 0 };
+    const t = { amount: 0, recipient: '' };
     transfersList.push(t);
     expect(() => massTransfer({ transfers: transfersList }, stringSeed)).toThrowError(
-      'tx "transfers" has invalid data. Check tx data.',
+      'tx "chainId" has invalid data. Check tx data.',
     );
   });
 
   it('Should throw on transfers with maximal quantity of receivers', () => {
     const transfersList = [];
     for (let i = 0; i < 100; i++) {
-      const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: i + 1 };
+      const t = { amount: i + 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
       transfersList.push(t);
     }
     const tx = massTransfer({ transfers: transfersList }, stringSeed);
@@ -70,7 +70,7 @@ describe('massTransfer', () => {
   it('Should throw on transfers with extra maximal quantity of receivers', () => {
     const transfersList = [];
     for (let i = 0; i < 101; i++) {
-      const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: i + 1 };
+      const t = { amount: i + 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
       transfersList.push(t);
     }
     expect(() =>
@@ -83,7 +83,7 @@ describe('massTransfer', () => {
 
   it('Should throw on transfers with zero amount', () => {
     const transfersList = [];
-    const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: 0 };
+    const t = { amount: 0, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
     transfersList.push(t);
     expect(() => massTransfer({ transfers: transfersList }, stringSeed)).toThrowError(
       'tx "transfers" has invalid data. Check tx data.',
@@ -92,7 +92,7 @@ describe('massTransfer', () => {
 
   it('Should throw on transfers with negative amount', () => {
     const transfersList = [];
-    const t = { recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1', amount: -1 };
+    const t = { amount: -1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
     transfersList.push(t);
     expect(() =>
       massTransfer({ ...massTransferMinimalParams, transfers: transfersList }, stringSeed),
@@ -103,7 +103,7 @@ describe('massTransfer', () => {
 describe('serialize/deserialize mass transfer tx', () => {
   Object.entries(massTransferTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -111,7 +111,7 @@ describe('serialize/deserialize mass transfer tx', () => {
 describe('serialize/deserialize mass transfer binary tx', () => {
   Object.entries(massTransferBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

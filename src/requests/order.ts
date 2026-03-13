@@ -94,23 +94,23 @@ export function order(
   // Use old versionless order only if it is set to null explicitly
   const version = orderExt.version === null ? undefined : orderExt.version;
   const ord = {
-    orderType,
-    version: version as SignedIExchangeTransactionOrder<ExchangeTransactionOrder>['version'],
+    amount,
     assetPair: {
       amountAsset,
       priceAsset,
     },
-    price,
-    amount,
-    timestamp: t,
     expiration: expiration || t + 29 * 24 * 60 * 60 * 1000,
-    matcherFee: matcherFee ?? 300000,
-    matcherPublicKey,
-    senderPublicKey,
-    proofs,
-    matcherFeeAssetId: null,
     id: '',
+    matcherFee: matcherFee ?? 300000,
+    matcherFeeAssetId: null,
+    matcherPublicKey,
+    orderType,
+    price,
     priceMode: orderExt.priceMode ?? 'fixedDecimals',
+    proofs,
+    senderPublicKey,
+    timestamp: t,
+    version: version as SignedIExchangeTransactionOrder<ExchangeTransactionOrder>['version'],
   } as SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs;
 
   if (ord.version >= 3) {

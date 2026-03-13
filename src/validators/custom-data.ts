@@ -13,15 +13,15 @@ import {
 } from './validators';
 
 const customDataV1Scheme = {
-  version: isEq(1),
   binary: isBase64,
+  version: isEq(1),
 };
 
 const customDataV2Scheme = {
-  version: isEq(2),
   data: validatePipe(isArray, (data: Array<unknown>) =>
     data.every(validatePipe(isRequired(true), isValidDataPair)),
   ),
+  version: isEq(2),
 };
 
 const v1Validator = validateByShema(customDataV1Scheme, getError);

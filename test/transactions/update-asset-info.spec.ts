@@ -8,7 +8,7 @@ describe('updateAssetInfo', () => {
 
   it('Should create update asset info transaction with minimal params', () => {
     const tx = updateAssetInfo({ ...updateAssetInfoMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...updateAssetInfoMinimalParams, fee: 100000, chainId: 76 });
+    expect(tx).toMatchObject({ ...updateAssetInfoMinimalParams, chainId: 76, fee: 100000 });
   });
 
   it('Should not create update asset info transaction with name <3', () => {
@@ -67,7 +67,7 @@ describe('updateAssetInfo', () => {
 describe('serialize/deserialize update asset info tx', () => {
   Object.entries(updateAssetInfoTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

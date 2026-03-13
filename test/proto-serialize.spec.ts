@@ -66,7 +66,7 @@ describe('transactions v3', () => {
     SEED = `account1${nonce}`;
     const mtt = massTransfer(
       {
-        transfers: [{ recipient: address(SEED, CHAIN_ID), amount: 0.1 * wvs }],
+        transfers: [{ amount: 0.1 * wvs, recipient: address(SEED, CHAIN_ID) }],
       },
       masterSeed,
     );
@@ -74,10 +74,10 @@ describe('transactions v3', () => {
     const assetIssue = issue(
       {
         ...issueMinimalParams,
-        quantity: 1000000000000,
-        decimals: 8,
-        reissuable: true,
         chainId: CHAIN_ID,
+        decimals: 8,
+        quantity: 1000000000000,
+        reissuable: true,
       },
       masterSeed,
     );
@@ -94,10 +94,10 @@ describe('transactions v3', () => {
     async () => {
       const _itx = issue(
         {
-          quantity: 100000,
+          chainId: CHAIN_ID,
           description: 'my token',
           name: 'my token',
-          chainId: CHAIN_ID,
+          quantity: 100000,
           reissuable: true,
         },
         SEED,
@@ -109,41 +109,41 @@ describe('transactions v3', () => {
       const _reitx = reissue(
         {
           assetId: assetId,
-          quantity: 100,
           chainId: CHAIN_ID,
+          quantity: 100,
           reissuable: true,
         },
         SEED,
       );
-      const _btx = burn({ assetId: assetId, amount: 2, chainId: CHAIN_ID }, SEED);
+      const _btx = burn({ amount: 2, assetId: assetId, chainId: CHAIN_ID }, SEED);
       const dtx = data(
-        { data: [{ type: 'string', key: 'foo', value: 'bar' }], chainId: CHAIN_ID },
+        { chainId: CHAIN_ID, data: [{ key: 'foo', type: 'string', value: 'bar' }] },
         SEED,
       );
-      const _dtx2delete = data({ data: [{ key: 'foo' }], chainId: CHAIN_ID }, SEED);
+      const _dtx2delete = data({ chainId: CHAIN_ID, data: [{ key: 'foo' }] }, SEED);
       const _ltx = lease(
         { amount: 1000, recipient: libs.crypto.address(`${SEED}foo`, CHAIN_ID) },
         SEED,
       );
       const _canltx = cancelLease(
-        { leaseId: '6pDDM84arAdJ4Ts7cY7JaDbhjBHMbPdYsr3WyiDSDzbt', chainId: CHAIN_ID },
+        { chainId: CHAIN_ID, leaseId: '6pDDM84arAdJ4Ts7cY7JaDbhjBHMbPdYsr3WyiDSDzbt' },
         SEED,
       );
       const _mttx = massTransfer(
         {
           attachment: '123',
           chainId: CHAIN_ID,
-          transfers: [{ recipient: libs.crypto.address(SEED, CHAIN_ID), amount: 1000 }],
+          transfers: [{ amount: 1000, recipient: libs.crypto.address(SEED, CHAIN_ID) }],
         },
         SEED,
       );
       const _atx = alias({ alias: 'super-alias2', chainId: CHAIN_ID }, SEED);
       const _ssTx = setScript(
         {
+          additionalFee: 400000,
+          chainId: CHAIN_ID,
           //script: 'AwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAIBQAAAAJ0eAAAAA9zZW5kZXJQdWJsaWNLZXmIg5mo',
           script: null,
-          chainId: CHAIN_ID,
-          additionalFee: 400000,
         },
         SEED,
       );
@@ -157,26 +157,26 @@ describe('transactions v3', () => {
       );
       const _spontx = sponsorship(
         {
-          chainId: CHAIN_ID,
           assetId: assetId,
+          chainId: CHAIN_ID,
           minSponsoredAssetFee: 1000,
         },
         SEED,
       );
       const _istx = invokeScript(
         {
-          dApp: libs.crypto.address(SEED, CHAIN_ID),
-          chainId: CHAIN_ID,
           call: { function: 'foo' },
+          chainId: CHAIN_ID,
+          dApp: libs.crypto.address(SEED, CHAIN_ID),
         },
         SEED,
       );
       const _uaitx = updateAssetInfo(
         {
           assetId: assetId,
-          name: 'new NAme',
-          description: 'new description',
           chainId: CHAIN_ID,
+          description: 'new description',
+          name: 'new NAme',
         },
         SEED,
       );
@@ -219,19 +219,19 @@ describe('transactions v3', () => {
 });
 
 const _a = {
-  type: 4,
-  version: 3,
-  senderPublicKey: '8rbsYsY3pnPveg13yDcoQ8WrS2tciNQS55rAKcC6gJut',
-  assetId: '9NNLqSE68fimL5GpKFacu67auqtq5aYPVnvWJZJPigNA',
-  recipient: '3FVUWaBpL7DmMWwH3e8S7E8JYVvpihviTDK',
   amount: 500,
+  assetId: '9NNLqSE68fimL5GpKFacu67auqtq5aYPVnvWJZJPigNA',
   attachment: '3MyAGEBuZGDKZDzYn6sbh2noqk9uYHy4kjw',
+  chainId: 68,
   fee: 100000,
   feeAssetId: null,
-  timestamp: 1576572672305,
+  id: '4cYF5ryXtyoXKyTWAjxFm2fnMRuASgfMb1H8SgtaMLrH',
   proofs: [
     '4TjSReiWQRsfqJahn8jLAsw6yhTCqR4fWyE4vFpxKF6WeZoFRehbxE1FocyE8QDtezE6a5Fv1RpK7HJ2rf4WZLfM',
   ],
-  chainId: 68,
-  id: '4cYF5ryXtyoXKyTWAjxFm2fnMRuASgfMb1H8SgtaMLrH',
+  recipient: '3FVUWaBpL7DmMWwH3e8S7E8JYVvpihviTDK',
+  senderPublicKey: '8rbsYsY3pnPveg13yDcoQ8WrS2tciNQS55rAKcC6gJut',
+  timestamp: 1576572672305,
+  type: 4,
+  version: 3,
 };

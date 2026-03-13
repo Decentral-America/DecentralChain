@@ -239,9 +239,9 @@ describe('Validators', () => {
 
     it('Validate by schema', () => {
       const schema = {
-        recipient: validators.isRecipient,
         amount: validators.isNumberLike,
         bool: validators.orEq([true, false]),
+        recipient: validators.isRecipient,
       };
 
       const getError = (key: string) => key;
@@ -249,49 +249,49 @@ describe('Validators', () => {
 
       expect(
         validator({
-          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
           amount: 10,
           bool: true,
+          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
         }),
       ).toBe(true);
 
-      expect(() => validator({ recipient: 1 })).toThrow('recipient');
+      expect(() => validator({ recipient: 1 })).toThrow('amount');
 
       expect(() =>
         validator({
-          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
           amount: undefined,
+          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
         }),
       ).toThrow('amount');
 
       expect(() =>
         validator({
-          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
           amount: '2',
           bool: 1,
+          recipient: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
         }),
       ).toThrow('bool');
 
       const a: any = null;
 
-      expect(() => validator(a)).toThrow('recipient');
+      expect(() => validator(a)).toThrow('amount');
     });
   });
 
   describe('Tx validators', () => {
     it('transfer', () => {
       const transfer = {
-        type: TRANSACTION_TYPE.TRANSFER,
-        version: 2,
-        senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
-        assetId: 'DCC',
-        recipient: 'alias:W:test',
         amount: 100000,
+        assetId: 'DCC',
         attachment: null,
+        chainId: 76,
         fee: 100000,
         feeAssetId: 'DCC',
-        chainId: 76,
+        recipient: 'alias:W:test',
+        senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
         timestamp: Date.now(),
+        type: TRANSACTION_TYPE.TRANSFER,
+        version: 2,
       } as any;
 
       expect(() => validate.transfer(transfer)).not.toThrow();

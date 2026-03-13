@@ -15,7 +15,7 @@ describe('reissue', () => {
 
   it('should build from minimal set of params', () => {
     const tx = reissue({ ...reissueMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...reissueMinimalParams, fee: 100000, chainId: 76 });
+    expect(tx).toMatchObject({ ...reissueMinimalParams, chainId: 76, fee: 100000 });
   });
 
   it('Should get correct signature', () => {
@@ -69,7 +69,7 @@ describe('reissue', () => {
 describe('serialize/deserialize reissue proto tx', () => {
   Object.entries(reissueTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -77,7 +77,7 @@ describe('serialize/deserialize reissue proto tx', () => {
 describe('serialize/deserialize reissue binary proto tx', () => {
   Object.entries(reissueBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

@@ -216,12 +216,12 @@ export function submitOrder(
   }
   return request({
     base: matcherUrl,
-    url: endpoint,
     options: {
-      method: 'POST',
       body: stringify(ord),
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     },
+    url: endpoint,
   });
 }
 
@@ -242,11 +242,11 @@ export function cancelSubmittedOrder(
   const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`;
   return request({
     base: matcherUrl,
-    url: endpoint,
     options: {
-      method: 'POST',
       body: stringify(co),
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     },
+    url: endpoint,
   });
 }

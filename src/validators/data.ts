@@ -15,15 +15,15 @@ import {
 } from './validators';
 
 const dataScheme = {
-  type: isEq(TRANSACTION_TYPE.DATA),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
+  chainId: isNaturalNumberLike,
   data: (data: Array<unknown>) =>
     isArray(data) && data.every((item) => isValidData(item) || isValidDeleteRequest(item)),
   fee: isNaturalNumberLike,
-  chainId: isNaturalNumberLike,
-  timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.DATA),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const dataFieldValidator = (item: unknown) =>

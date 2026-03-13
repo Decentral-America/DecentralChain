@@ -30,12 +30,12 @@ export function auth(
   validate.auth(params as unknown as Record<string, unknown>);
 
   const rx = {
-    hash: '',
-    signature: '',
-    host: params.host,
-    data: params.data,
-    publicKey,
     address: address({ publicKey }, chainId ?? 'L'),
+    data: params.data,
+    hash: '',
+    host: params.host,
+    publicKey,
+    signature: '',
   };
 
   const bytes = serializeAuthData(rx);

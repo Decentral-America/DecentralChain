@@ -45,16 +45,16 @@ export function setAssetScript(
   if (paramsOrTx.script == null) throw new Error('Asset script cannot be empty');
 
   const tx: SetAssetScriptTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
     assetId: paramsOrTx.assetId,
     chainId: networkByte(paramsOrTx.chainId, 76),
     fee: fee(paramsOrTx, 100000000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
     id: '',
+    proofs: paramsOrTx.proofs || [],
     script: base64Prefix(paramsOrTx.script) || '',
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.setAssetScript(tx as unknown as Record<string, unknown>);

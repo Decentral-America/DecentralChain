@@ -15,7 +15,7 @@ describe('cancel-lease', () => {
 
   it('should build from minimal set of params', () => {
     const tx = cancelLease({ ...cancelLeaseMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...cancelLeaseMinimalParams, version: 3, fee: 100000, chainId: 76 });
+    expect(tx).toMatchObject({ ...cancelLeaseMinimalParams, chainId: 76, fee: 100000, version: 3 });
   });
 
   it('Should get correct signature', () => {
@@ -64,7 +64,7 @@ describe('cancel-lease', () => {
 describe('serialize/deserialize cancel lease tx', () => {
   Object.entries(cancelLeaseTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -72,7 +72,7 @@ describe('serialize/deserialize cancel lease tx', () => {
 describe('serialize/deserialize binary cancel lease tx', () => {
   Object.entries(cancelLeaseBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

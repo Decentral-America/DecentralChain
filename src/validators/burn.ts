@@ -14,15 +14,15 @@ import {
 } from './validators';
 
 const burnScheme = {
-  type: isEq(TRANSACTION_TYPE.BURN),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 2, 3]),
-  assetId: isAssetId,
   amount: isNaturalNumberLike,
+  assetId: isAssetId,
   chainId: isNaturalNumberLike,
   fee: isNaturalNumberLike,
-  timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.BURN),
+  version: orEq([undefined, 2, 3]),
 };
 
 export const burnValidator = validateByShema(burnScheme, getError);

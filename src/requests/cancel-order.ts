@@ -23,10 +23,10 @@ export function cancelOrder(params: ICancelOrderParams, seed?: string | TPrivate
   const hash = base58Encode(blake2b(Uint8Array.from(bytes)));
 
   const cancelOrderBody: ICancelOrder = {
-    sender: senderPublicKey,
-    orderId: params.orderId,
-    signature,
     hash,
+    orderId: params.orderId,
+    sender: senderPublicKey,
+    signature,
   };
 
   validate.cancelOrder(cancelOrderBody as unknown as Record<string, unknown>);

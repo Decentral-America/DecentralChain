@@ -102,11 +102,11 @@ describe('data', () => {
   ])('check serialization for %o, tx version: %i', (dataEntries, version, expectedBytes) => {
     const tx = data(
       {
-        data: dataEntries,
         chainId: testChainId,
+        data: dataEntries,
+        fee: fee,
         timestamp: timestamp,
         version: version,
-        fee: fee,
       } as any,
       senderPk,
     );
@@ -130,8 +130,8 @@ describe('data', () => {
   ])('check fee calculation', (dataEntries, version, expectedFee) => {
     const tx = data(
       {
-        data: dataEntries,
         chainId: testChainId,
+        data: dataEntries,
         timestamp: timestamp,
         version: version,
       } as any,
@@ -170,8 +170,8 @@ describe('data', () => {
       [
         {
           key: 'bin',
-          value: 'false',
           type: 'boolean',
+          value: 'false',
         },
       ],
       1,
@@ -181,8 +181,8 @@ describe('data', () => {
     const tx = () =>
       data(
         {
-          data: dataEntries,
           chainId: testChainId,
+          data: dataEntries,
           timestamp: timestamp,
           version: version,
         } as any,
@@ -287,7 +287,7 @@ describe('data', () => {
 
   it('Should create data with max key', () => {
     const tx = data(
-      { data: testMaxKeyParams, chainId: 83, fee: 1000000, version: 2 } as any,
+      { chainId: 83, data: testMaxKeyParams, fee: 1000000, version: 2 } as any,
       senderPk,
     );
     //expect(tx).toMatchObject({...testMaxKeyParams})
@@ -298,7 +298,7 @@ describe('data', () => {
 
   it('Should not create data with key > 400', () => {
     const tx = data(
-      { data: testExtraMaxKeyParams, chainId: 83, fee: 1000000, version: 2 } as any,
+      { chainId: 83, data: testExtraMaxKeyParams, fee: 1000000, version: 2 } as any,
       senderPk,
     );
     expect(tx.data[1].value).toEqual(false);
@@ -334,7 +334,7 @@ describe('data', () => {
 
   it('Should get data with max value', () => {
     const tx = data(
-      { data: testMaxValueParams, chainId: 83, fee: 1000000, version: 2 } as any,
+      { chainId: 83, data: testMaxValueParams, fee: 1000000, version: 2 } as any,
       senderPk,
     );
     expect(tx.data[0].value).toEqual(sMax);
@@ -344,7 +344,7 @@ describe('data', () => {
 describe('serialize/deserialize data tx', () => {
   Object.entries(dataTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -352,7 +352,7 @@ describe('serialize/deserialize data tx', () => {
 describe('serialize/deserialize data binary tx', () => {
   Object.entries(dataBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

@@ -15,15 +15,15 @@ import {
 } from './validators';
 
 const sponsorshipScheme = {
-  type: isEq(TRANSACTION_TYPE.SPONSORSHIP),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
   assetId: isAssetId,
-  minSponsoredAssetFee: isNaturalNumberOrNullLike,
-  fee: isNaturalNumberLike,
   chainId: isNaturalNumberLike,
-  timestamp: isNumber,
+  fee: isNaturalNumberLike,
+  minSponsoredAssetFee: isNaturalNumberOrNullLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.SPONSORSHIP),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const sponsorshipValidator = validateByShema(sponsorshipScheme, getError);

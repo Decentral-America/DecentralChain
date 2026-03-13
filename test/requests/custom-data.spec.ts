@@ -7,7 +7,7 @@ describe('custom-data', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
 
   it('sign v1', () => {
-    const p = { version: 1 as const, binary: '0J/RgNC40LLQtdGCINC80LjRgAo=' };
+    const p = { binary: '0J/RgNC40LLQtdGCINC80LjRgAo=', version: 1 as const };
     const d = customData(p, stringSeed);
     expect(d).toMatchObject(p);
     expect(d.hash).toEqual(base58Encode(blake2b(serializeCustomData(d))));
@@ -15,7 +15,7 @@ describe('custom-data', () => {
   });
 
   it('get v1 data', () => {
-    const p = { version: 1 as const, binary: '0J/RgNC40LLQtdGCINC80LjRgAo=' };
+    const p = { binary: '0J/RgNC40LLQtdGCINC80LjRgAo=', version: 1 as const };
     const d = customData(p);
     expect(d).toMatchObject(p);
     expect(d.hash).toEqual(base58Encode(blake2b(serializeCustomData(d))));
@@ -24,14 +24,14 @@ describe('custom-data', () => {
   it('sign v2', () => {
     const d = customData(
       {
-        version: 2,
         data: [
           {
+            key: 'foo',
             type: DATA_FIELD_TYPE.INTEGER,
             value: 1,
-            key: 'foo',
           },
         ],
+        version: 2,
       },
       stringSeed,
     );

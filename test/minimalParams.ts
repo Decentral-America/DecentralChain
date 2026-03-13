@@ -23,13 +23,13 @@ export const aliasMinimalParams: IAliasParams = {
 };
 
 export const burnMinimalParams: IBurnParams = {
-  assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
   amount: 10000,
+  assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
 };
 
 export const leaseMinimalParams: ILeaseParams = {
-  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
   amount: 1,
+  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
 };
 
 export const cancelLeaseMinimalParams: ICancelLeaseParams = {
@@ -37,9 +37,7 @@ export const cancelLeaseMinimalParams: ICancelLeaseParams = {
 };
 
 export const invokeScriptMinimalParams: IInvokeScriptParams = {
-  dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
   call: {
-    function: 'foo',
     args: [
       {
         type: 'binary',
@@ -59,25 +57,27 @@ export const invokeScriptMinimalParams: IInvokeScriptParams = {
         ],
       },
     ],
+    function: 'foo',
   },
+  dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
 };
 
 export const massTransferMinimalParams: IMassTransferParams = {
   transfers: [
     {
-      recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
       amount: 1,
+      recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
     },
   ],
 };
 
 export const orderMinimalParams: IOrderParams = {
-  matcherPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
-  amountAsset: null,
-  priceAsset: '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu',
-  price: 10000,
   amount: 1233,
+  amountAsset: null,
+  matcherPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
   orderType: 'buy',
+  price: 10000,
+  priceAsset: '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu',
 };
 
 export const cancelOrderMinimalParams: ICancelOrderParams = {
@@ -109,14 +109,14 @@ export const reissueMinimalParams: IReissueParams = {
 };
 
 export const issueMinimalParams: IIssueParams = {
-  quantity: 1,
-  name: 'test',
   description: '',
+  name: 'test',
+  quantity: 1,
 };
 
 export const transferMinimalParams: ITransferParams = {
-  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
   amount: 1,
+  recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
 };
 
 const setScriptMinimalParams: ISetScriptParams = {
@@ -124,8 +124,8 @@ const setScriptMinimalParams: ISetScriptParams = {
 };
 
 export const setAssetScriptMinimalParams: ISetAssetScriptParams = {
-  script: 'base64:AQa3b8tH',
   assetId: 'syXBywr2HVY7wxqkaci1jKY73KMpoLh46cp1peJAZNJ',
+  script: 'base64:AQa3b8tH',
 };
 
 export const sponsorshipMinimalParams: ISponsorshipParams = {
@@ -134,9 +134,9 @@ export const sponsorshipMinimalParams: ISponsorshipParams = {
 };
 
 export const updateAssetInfoMinimalParams: IUpdateAssetInfoParams = {
-  name: 'xxxx',
-  description: '',
   assetId: 'syXBywr2HVY7wxqkaci1jKY73KMpoLh46cp1peJAZNJ',
+  description: '',
+  name: 'xxxx',
 };
 
 const _minimalParams = {
