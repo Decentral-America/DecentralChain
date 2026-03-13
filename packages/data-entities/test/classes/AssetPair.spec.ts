@@ -18,11 +18,11 @@ describe('AssetPair', () => {
 
     asset2 = new Asset(
       getAssetData({
-        ticker: 'TN2',
         id: 'test2',
         name: 'Test No. 2',
         precision: 4,
         reissuable: true,
+        ticker: 'TN2',
       }),
     );
   });

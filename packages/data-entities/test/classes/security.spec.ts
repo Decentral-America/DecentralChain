@@ -301,16 +301,16 @@ describe('Security: Candle field validation', () => {
     expect(
       () =>
         new Candle({
-          time: new Date(),
-          open: '1',
           close: '1',
           high: '1',
           low: '1',
-          volume: '1',
-          quoteVolume: '1',
-          weightedAveragePrice: '1',
           maxHeight: -1,
+          open: '1',
+          quoteVolume: '1',
+          time: new Date(),
           txsCount: 0,
+          volume: '1',
+          weightedAveragePrice: '1',
         }),
     ).toThrow('Invalid maxHeight');
   });
@@ -319,16 +319,16 @@ describe('Security: Candle field validation', () => {
     expect(
       () =>
         new Candle({
-          time: new Date(),
-          open: '1',
           close: '1',
           high: '1',
           low: '1',
-          volume: '1',
-          quoteVolume: '1',
-          weightedAveragePrice: '1',
           maxHeight: 0,
+          open: '1',
+          quoteVolume: '1',
+          time: new Date(),
           txsCount: 1.5,
+          volume: '1',
+          weightedAveragePrice: '1',
         }),
     ).toThrow('Invalid txsCount');
   });
@@ -337,16 +337,16 @@ describe('Security: Candle field validation', () => {
     expect(
       () =>
         new Candle({
-          time: new Date(),
-          open: '1',
           close: '1',
           high: '1',
           low: '1',
-          volume: '1',
-          quoteVolume: '1',
-          weightedAveragePrice: '1',
           maxHeight: NaN,
+          open: '1',
+          quoteVolume: '1',
+          time: new Date(),
           txsCount: 0,
+          volume: '1',
+          weightedAveragePrice: '1',
         }),
     ).toThrow('Invalid maxHeight');
   });
