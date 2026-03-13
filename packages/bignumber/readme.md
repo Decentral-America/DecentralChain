@@ -358,7 +358,7 @@ This project enforces strict quality standards to ensure reliability for product
 | Language | TypeScript 5.9 (strict mode) |
 | Runtime | Node.js >= 24 |
 | Module Format | Pure ESM |
-| Build Tool | [tsup](https://tsup.egoist.dev/) |
+| Build Tool | [tsdown](https://tsdown.dev/) |
 | Test Framework | [Vitest](https://vitest.dev/) |
 | Linter | [ESLint](https://eslint.org/) (flat config) |
 | Formatter | [Prettier](https://prettier.io/) |
