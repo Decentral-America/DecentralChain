@@ -1,4 +1,4 @@
-import type { AppAction, AppActionPayload } from '..//types';
+import { type AppAction, type AppActionPayload } from '..//types';
 
 export const ACTION = {
   CHANGE_LNG: 'CHANGE_LNG',

@@ -1,8 +1,8 @@
 import type BigNumber from '@decentralchain/bignumber';
-import type { Money } from '@decentralchain/data-entities';
+import { type Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '../ui/avatar/Avatar';
@@ -37,7 +37,7 @@ export function ActiveAccountCard({
   onSwapClick,
 }: Props) {
   const { t } = useTranslation();
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const isMainnet = currentNetwork === 'mainnet';
 
   return (
@@ -58,7 +58,7 @@ export function ActiveAccountCard({
         </div>
 
         <Tooltip content={t('assets.inStorage')}>
-          {props => (
+          {(props) => (
             <button
               className={clsx(styles.iconButton, styles.otherAccountsButton)}
               data-testid="otherAccountsButton"
@@ -92,7 +92,7 @@ export function ActiveAccountCard({
         <span className={styles.controlsExpand} />
 
         <Tooltip content={t('copyAddress')}>
-          {props => (
+          {(props) => (
             <Copy text={account.address} onCopy={onCopy}>
               <button className={clsx(styles.iconButton, 'copyIconBlack')} {...props} />
             </Copy>
@@ -100,7 +100,7 @@ export function ActiveAccountCard({
         </Tooltip>
 
         <Tooltip content={t('showQR')} placement="bottom-end">
-          {props => (
+          {(props) => (
             <button
               className={clsx(styles.iconButton, 'showQrIcon')}
               onClick={onShowQr}

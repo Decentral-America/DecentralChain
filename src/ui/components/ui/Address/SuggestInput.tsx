@@ -1,7 +1,7 @@
 import { base58Decode } from '@decentralchain/crypto';
 import { isAddressString } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { icontains } from 'ui/components/pages/assets/helpers';
@@ -45,7 +45,7 @@ function Suggest({
           <p className={styles.title} style={{ paddingRight, paddingLeft }}>
             {t('address.wallets')}
           </p>
-          {accounts.map(account => (
+          {accounts.map((account) => (
             <div
               className={styles.item}
               style={{ paddingRight, paddingLeft }}
@@ -118,7 +118,7 @@ function SuggestModal(props: ModalProps) {
   const accounts = useMemo(
     () =>
       props.accounts.filter(
-        account => icontains(account.address, search) || icontains(account.name, search),
+        (account) => icontains(account.address, search) || icontains(account.name, search),
       ),
     [props.accounts, search],
   );
@@ -147,7 +147,7 @@ function SuggestModal(props: ModalProps) {
             className={styles.modalSearchInput}
             value={search}
             autoFocus
-            onInput={e => setSearch(e.currentTarget.value)}
+            onInput={(e) => setSearch(e.currentTarget.value)}
             onClear={() => setSearch('')}
           />
           {accounts.length > 0 ? (
@@ -160,7 +160,7 @@ function SuggestModal(props: ModalProps) {
               setValue={props.setValue}
               setAddress={props.setAddress}
               setShowSuggest={props.setShowSuggest}
-              onSuggest={value => {
+              onSuggest={(value) => {
                 props.setShowModal(false);
 
                 if (props.onSuggest) {
@@ -184,9 +184,9 @@ type Props = Extract<InputProps, { multiLine?: false | undefined }> & {
 export function AddressSuggestInput({ onSuggest, ...props }: Props) {
   const { t } = useTranslation();
 
-  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
-  const accounts = usePopupSelector(state => state.accounts);
-  const addresses = usePopupSelector<Record<string, string>>(state =>
+  const chainId = usePopupSelector((state) => state.selectedAccount?.networkCode?.charCodeAt(0));
+  const accounts = usePopupSelector((state) => state.accounts);
+  const addresses = usePopupSelector<Record<string, string>>((state) =>
     Object.entries(state.addresses).reduce(
       (acc, [address, name]) => {
         if (isAddressString(address, chainId) && base58Decode(address)[1] === chainId) {
@@ -205,7 +205,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
     () =>
       value
         ? accounts.filter(
-            account => icontains(account.address, value) || icontains(account.name, value),
+            (account) => icontains(account.address, value) || icontains(account.name, value),
           )
         : [],
     [accounts, value],
@@ -244,7 +244,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
             onBlur={() => {
               setShowSuggest(false);
             }}
-            onChange={event => {
+            onChange={(event) => {
               setValue(event.currentTarget.value);
               setAddress('');
 
@@ -255,7 +255,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
             onFocus={() => {
               setShowSuggest(true);
             }}
-            onScroll={event => {
+            onScroll={(event) => {
               const overlaidText = overlaidTextRef.current;
 
               if (!overlaidText) {

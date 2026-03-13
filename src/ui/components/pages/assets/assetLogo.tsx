@@ -18,7 +18,7 @@ export function AssetLogo({ className, assetId, name, hasSponsorship, hasScript 
     backgroundColor: new ColorHash().hex(assetId),
   };
 
-  const network = usePopupSelector(state => state.currentNetwork);
+  const network = usePopupSelector((state) => state.currentNetwork);
   const logoSrc = useAssetLogo(network, assetId);
 
   if (!logoSrc) {

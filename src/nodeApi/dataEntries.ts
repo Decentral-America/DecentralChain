@@ -1,4 +1,4 @@
-import type { DataTransactionEntry } from '@decentralchain/ts-types';
+import { type DataTransactionEntry } from '@decentralchain/ts-types';
 
 import { fetchInBatches } from '../_core/fetchInBatches';
 
@@ -24,7 +24,7 @@ export function fetchDataEntries<T extends DataTransactionEntry>({
   address: string;
   keys: string[];
 }) {
-  return fetchInBatches(allKeys, NODE_DATA_KEYS_REQUEST_LIMIT, keys =>
+  return fetchInBatches(allKeys, NODE_DATA_KEYS_REQUEST_LIMIT, (keys) =>
     fetch(createDataUrl(nodeUrl, address), {
       method: 'POST',
       headers: {
@@ -36,7 +36,7 @@ export function fetchDataEntries<T extends DataTransactionEntry>({
       (response): Promise<T[]> =>
         response.ok
           ? response.json()
-          : response.text().then(text => Promise.reject(new Error(text))),
+          : response.text().then((text) => Promise.reject(new Error(text))),
     ),
   );
 }

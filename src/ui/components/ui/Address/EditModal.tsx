@@ -20,7 +20,7 @@ export function EditModal({ name, address, showModal, setShowModal, setShowDelet
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
-  const addresses = usePopupSelector(state => state.addresses);
+  const addresses = usePopupSelector((state) => state.addresses);
 
   const [loading, setLoading] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -29,7 +29,7 @@ export function EditModal({ name, address, showModal, setShowModal, setShowDelet
   const [addressValue, setAddressValue] = useState(address);
 
   const nameError = useMemo(() => {
-    const isNameExists = Object.values(addresses).find(addressName => addressName === nameValue);
+    const isNameExists = Object.values(addresses).find((addressName) => addressName === nameValue);
     const isNameChanged = name !== nameValue;
 
     if (isNameChanged && isNameExists) {
@@ -85,7 +85,7 @@ export function EditModal({ name, address, showModal, setShowModal, setShowDelet
             <p className={`headline2Bold ${styles.title}`}>{t('address.edit')}</p>
             <form
               className={styles.form}
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
 
                 if (nameError || addressError) return;

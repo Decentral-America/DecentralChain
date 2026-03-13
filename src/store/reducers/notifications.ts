@@ -1,6 +1,6 @@
-import type { Message } from '../../messages/types';
-import type { NotificationsStoreItem } from '../../notifications/types';
-import type { AppAction } from '../../store/types';
+import { type Message } from '../../messages/types';
+import { type NotificationsStoreItem } from '../../notifications/types';
+import { type AppAction } from '../../store/types';
 import { ACTION } from '../actions/constants';
 
 export function notifications(state: NotificationsStoreItem[][] = [], action: AppAction) {
@@ -29,7 +29,7 @@ export function activePopup(
         if (msg) {
           return {
             msg:
-              action.payload.allMessages?.find(item => item.id === msg.id) ??
+              action.payload.allMessages?.find((item) => item.id === msg.id) ??
               action.payload.allMessages?.[0],
           };
         }

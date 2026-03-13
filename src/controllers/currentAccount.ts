@@ -1,19 +1,19 @@
 import BigNumber from '@decentralchain/bignumber';
-import type { TransactionFromNode } from '@decentralchain/ts-types';
+import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { isNotNull } from '_core/isNotNull';
-import type { AssetBalance, BalancesItem } from 'balances/types';
+import { type AssetBalance, type BalancesItem } from 'balances/types';
 import { collectBalances } from 'balances/utils';
-import type { NftAssetDetail } from 'nfts/types';
+import { type NftAssetDetail } from 'nfts/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
 import { MAX_NFT_ITEMS, MAX_TX_HISTORY_ITEMS } from '../constants';
-import type { ExtensionStorage } from '../storage/storage';
-import type { AssetInfoController } from './assetInfo';
-import type { NftInfoController } from './NftInfoController';
-import type { NetworkController } from './network';
-import type { PreferencesController } from './preferences';
-import type { VaultController } from './VaultController';
+import { type ExtensionStorage } from '../storage/storage';
+import { type AssetInfoController } from './assetInfo';
+import { type NftInfoController } from './NftInfoController';
+import { type NetworkController } from './network';
+import { type PreferencesController } from './preferences';
+import { type VaultController } from './VaultController';
 
 const PERIOD_IN_SECONDS = 10;
 
@@ -47,7 +47,7 @@ export class CurrentAccountController {
     isLocked: VaultController['isLocked'];
   }) {
     const defaults: Partial<Record<string, BalancesItem>> = Object.fromEntries(
-      getAccounts().map(acc => [`balance_${acc.address}`, undefined]),
+      getAccounts().map((acc) => [`balance_${acc.address}`, undefined]),
     );
 
     const initState = extensionStorage.getInitState(defaults);
@@ -58,7 +58,7 @@ export class CurrentAccountController {
 
     extensionStorage.removeState(emptyKeys);
 
-    emptyKeys.forEach(key => {
+    emptyKeys.forEach((key) => {
       delete initState[key];
     });
 
@@ -232,26 +232,26 @@ export class CurrentAccountController {
 
     const fetchAssetIds = (
       myAssets.balances.filter(
-        info =>
+        (info) =>
           !assetExists(info.assetId) ||
           isSponsorshipUpdated(info) ||
           isMaxAgeExceeded(info.assetId),
       ) as Array<{ assetId: string }>
     )
-      .concat(myNfts.filter(info => !assetExists(info.assetId) || isMaxAgeExceeded(info.assetId)))
-      .map(info => info.assetId)
+      .concat(myNfts.filter((info) => !assetExists(info.assetId) || isMaxAgeExceeded(info.assetId)))
+      .map((info) => info.assetId)
       .concat(
         txHistory
-          .flatMap(tx => [
+          .flatMap((tx) => [
             ...('assetId' in tx ? [tx.assetId] : []),
             ...('order1' in tx
               ? [tx.order1.assetPair.amountAsset, tx.order1.assetPair.priceAsset]
               : []),
-            ...('payment' in tx ? (tx.payment?.map(x => x.assetId) ?? []) : []),
-            ...('stateChanges' in tx ? (tx.stateChanges?.transfers.map(x => x.asset) ?? []) : []),
+            ...('payment' in tx ? (tx.payment?.map((x) => x.assetId) ?? []) : []),
+            ...('stateChanges' in tx ? (tx.stateChanges?.transfers.map((x) => x.asset) ?? []) : []),
           ])
           .filter(isNotNull)
-          .filter(assetId => !assetExists(assetId) && isMaxAgeExceeded(assetId)),
+          .filter((assetId) => !assetExists(assetId) && isMaxAgeExceeded(assetId)),
       );
 
     await Promise.all([
@@ -277,7 +277,7 @@ export class CurrentAccountController {
 
       assets: Object.fromEntries([
         ['WAVES', nativeAssetBalance],
-        ...myAssets.balances.map(info => {
+        ...myAssets.balances.map((info) => {
           const assetBalance: AssetBalance = {
             minSponsoredAssetFee: info.minSponsoredAssetFee,
             sponsorBalance: info.sponsorBalance,
@@ -287,7 +287,7 @@ export class CurrentAccountController {
           return [info.assetId, assetBalance];
         }),
       ]),
-      nfts: myNfts.map(nft => ({
+      nfts: myNfts.map((nft) => ({
         id: nft.assetId,
         name: nft.name,
         precision: nft.decimals,
@@ -312,7 +312,7 @@ export class CurrentAccountController {
 
   async updateOtherAccountsBalances() {
     const url = new URL('addresses/balance', this.getNode());
-    const addresses = this.getAccounts().map(account => account.address);
+    const addresses = this.getAccounts().map((account) => account.address);
 
     while (addresses.length > 0) {
       const splicedAddresses = addresses.splice(0, 1000);
@@ -335,7 +335,7 @@ export class CurrentAccountController {
       const storeState = this.store.getState();
 
       const balances = Object.fromEntries(
-        regularBalances.map(regularBalance => {
+        regularBalances.map((regularBalance) => {
           const balanceKey = `balance_${regularBalance.id}`;
           const existingBalance = storeState[balanceKey];
 

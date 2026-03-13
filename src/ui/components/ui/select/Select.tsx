@@ -99,7 +99,7 @@ export function Select<T>({
         type="button"
         className={styles.trigger}
         onClick={() => {
-          setIsOpen(prevState => !prevState);
+          setIsOpen((prevState) => !prevState);
         }}
         {...otherProps}
       >
@@ -118,8 +118,8 @@ export function Select<T>({
           )}
         >
           {selectList
-            .filter(item => item.id !== selected)
-            .map(item => (
+            .filter((item) => item.id !== selected)
+            .map((item) => (
               <div
                 key={item.id}
                 className={styles.item}
@@ -127,7 +127,7 @@ export function Select<T>({
                   setIsOpen(false);
                   onSelectItem(item.id, item.value);
                 }}
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     setIsOpen(false);

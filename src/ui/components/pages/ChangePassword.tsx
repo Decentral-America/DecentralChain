@@ -4,7 +4,7 @@ import { type WithTranslation, withTranslation } from 'react-i18next';
 import { CONFIG } from '../../appConfig';
 import background from '../../services/Background';
 import { Button, ErrorMessage, Input, Modal } from '../ui';
-import * as styles from './styles/changePassword.styl';
+import * as styles from './styles/changePassword.module.styl';
 
 const MIN_LENGTH = CONFIG.PASSWORD_MIN_LENGTH;
 

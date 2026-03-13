@@ -15,14 +15,14 @@ export function NftInfo() {
 
   const { t } = useTranslation();
 
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
 
-  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
+  const userAddress = usePopupSelector((state) => state.selectedAccount?.address ?? '');
 
-  const asset = usePopupSelector(state => state.assets[params.assetId ?? '']);
+  const asset = usePopupSelector((state) => state.assets[params.assetId ?? '']);
 
-  const nftInfo = usePopupSelector(state => asset && state.nfts?.[asset.id]);
-  const nftConfig = usePopupSelector(state => state.nftConfig);
+  const nftInfo = usePopupSelector((state) => asset && state.nfts?.[asset.id]);
+  const nftConfig = usePopupSelector((state) => state.nftConfig);
 
   const nft =
     asset &&
@@ -76,7 +76,7 @@ export function NftInfo() {
           </div>
           <div>
             <Tooltip content={t('nftInfo.creatorUrlTooltip')}>
-              {props => (
+              {(props) => (
                 <a
                   rel="noopener noreferrer"
                   className="link"

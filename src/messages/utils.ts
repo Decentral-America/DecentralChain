@@ -11,29 +11,28 @@ import {
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
 // NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
 import { waves } from '@decentralchain/protobuf-serialization';
-import type { InvokeScriptCallArgument } from '@decentralchain/ts-types';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { type InvokeScriptCallArgument, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import Long from 'long';
 
 import { JSONbn } from '../_core/jsonBn';
-import type {
-  MessageInputCustomData,
-  MessageOrder,
-  MessageTx,
-  MessageTxAlias,
-  MessageTxBurn,
-  MessageTxCancelLease,
-  MessageTxData,
-  MessageTxInvokeScript,
-  MessageTxIssue,
-  MessageTxLease,
-  MessageTxMassTransfer,
-  MessageTxReissue,
-  MessageTxSetAssetScript,
-  MessageTxSetScript,
-  MessageTxSponsorship,
-  MessageTxTransfer,
-  MessageTxUpdateAssetInfo,
+import {
+  type MessageInputCustomData,
+  type MessageOrder,
+  type MessageTx,
+  type MessageTxAlias,
+  type MessageTxBurn,
+  type MessageTxCancelLease,
+  type MessageTxData,
+  type MessageTxInvokeScript,
+  type MessageTxIssue,
+  type MessageTxLease,
+  type MessageTxMassTransfer,
+  type MessageTxReissue,
+  type MessageTxSetAssetScript,
+  type MessageTxSetScript,
+  type MessageTxSponsorship,
+  type MessageTxTransfer,
+  type MessageTxUpdateAssetInfo,
 } from './types';
 
 export function isAddressString(input: string, chainId?: number) {
@@ -288,7 +287,7 @@ export function makeTxBytes(
             massTransfer: {
               assetId: tx.assetId == null ? null : base58Decode(tx.assetId),
               attachment: !tx.attachment ? undefined : base58Decode(tx.attachment),
-              transfers: tx.transfers.map(transfer => ({
+              transfers: tx.transfers.map((transfer) => ({
                 recipient: recipientToProto(transfer.recipient),
                 amount: Long.fromValue(transfer.amount),
               })),
@@ -301,7 +300,7 @@ export function makeTxBytes(
             ...protobufCommon,
             fee: amountToProto(tx.fee),
             dataTransaction: {
-              data: tx.data.map(entry => ({
+              data: tx.data.map((entry) => ({
                 binaryValue:
                   entry.type === 'binary'
                     ? base64Decode(entry.value.replace(/^base64:/, ''))
@@ -478,7 +477,7 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { data, fee, initialFee, ...otherProps } = tx;
 
       return {
-        data: data.map(entry =>
+        data: data.map((entry) =>
           entry.type === 'integer' ? { ...entry, value: new BigNumber(entry.value) } : entry,
         ),
         fee: new BigNumber(fee),
@@ -501,7 +500,7 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { call, fee, initialFee, payment, ...otherProps } = tx;
 
       return {
-        payment: payment.map(p => ({ ...p, amount: new BigNumber(p.amount) })),
+        payment: payment.map((p) => ({ ...p, amount: new BigNumber(p.amount) })),
         call: call && {
           ...call,
           args: call.args.map(
