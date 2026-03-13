@@ -29,32 +29,32 @@ import { getAssetIdFromKey, getFieldValue } from '../src/response/index.js';
 import { getFieldsDiff, isProvider, toField, toFields, toHash } from '../src/utils/index.js';
 
 const PROVIDER_DATA = {
-  version: DATA_PROVIDER_VERSIONS.BETA,
-  name: 'Provider name',
-  link: 'https://some.provider.com',
-  email: 'provider@mail.ru',
   description: {
     en: 'Some en description!',
   },
+  email: 'provider@mail.ru',
+  link: 'https://some.provider.com',
+  name: 'Provider name',
+  version: DATA_PROVIDER_VERSIONS.BETA,
 };
 
 const VERIFIED_ASSET = {
-  id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-  version: DATA_PROVIDER_VERSIONS.BETA,
-  status: STATUS_LIST.VERIFIED,
-  ticker: 'BTC',
-  link: 'https://btc.com',
-  email: 'support@btc.com',
-  logo: 'some-logo',
   description: {
     en: 'Some BTC en description',
   },
+  email: 'support@btc.com',
+  id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+  link: 'https://btc.com',
+  logo: 'some-logo',
+  status: STATUS_LIST.VERIFIED,
+  ticker: 'BTC',
+  version: DATA_PROVIDER_VERSIONS.BETA,
 };
 
 const SCAM_ASSET: TScamAsset = {
   id: '9M1wcQwS2XvpbeWALsE5n3j4s97nuipZJzVZ1wXJAqdJ',
-  version: DATA_PROVIDER_VERSIONS.BETA,
   status: STATUS_LIST.SCAM,
+  version: DATA_PROVIDER_VERSIONS.BETA,
 };
 
 const SCAM_ASSET_FIELDS: Array<TDataTxField> = [
@@ -206,8 +206,8 @@ describe('Data provider tests', () => {
       it('Get suspicious asset data', () => {
         const suspiciousAsset: TScamAsset = {
           id: 'SUSPICIOUS123456789012345678901234567890123',
-          version: DATA_PROVIDER_VERSIONS.BETA,
           status: STATUS_LIST.SUSPICIOUS,
+          version: DATA_PROVIDER_VERSIONS.BETA,
         };
         const fields: TDataTxField[] = [
           {
@@ -230,8 +230,8 @@ describe('Data provider tests', () => {
       it('Get not_verify asset data', () => {
         const notVerifyAsset: TScamAsset = {
           id: 'NOTVERIFY12345678901234567890123456789012345',
-          version: DATA_PROVIDER_VERSIONS.BETA,
           status: STATUS_LIST.NOT_VERIFY,
+          version: DATA_PROVIDER_VERSIONS.BETA,
         };
         const fields: TDataTxField[] = [
           {
@@ -253,14 +253,14 @@ describe('Data provider tests', () => {
 
       it('Get detailed asset data', () => {
         const detailedAsset = {
+          description: { en: 'Detailed description' },
+          email: 'test@detailed.com',
           id: 'DETAILED123456789012345678901234567890123456',
-          version: DATA_PROVIDER_VERSIONS.BETA,
+          link: 'https://detailed.com',
+          logo: 'detailed-logo',
           status: STATUS_LIST.DETAILED,
           ticker: 'DTL',
-          link: 'https://detailed.com',
-          email: 'test@detailed.com',
-          logo: 'detailed-logo',
-          description: { en: 'Detailed description' },
+          version: DATA_PROVIDER_VERSIONS.BETA,
         };
         const fields: TDataTxField[] = [
           ...PROVIDER_FIELDS,
@@ -628,11 +628,11 @@ describe('Data provider tests', () => {
   describe('Boundary Value Tests', () => {
     it('Handles empty string fields correctly', () => {
       const emptyProvider: IProviderData = {
-        version: DATA_PROVIDER_VERSIONS.BETA,
-        name: '',
-        link: '',
-        email: '',
         description: { en: '' },
+        email: '',
+        link: '',
+        name: '',
+        version: DATA_PROVIDER_VERSIONS.BETA,
       };
       const fields = getFields(emptyProvider);
       const decoded = getProviderData(fields);
@@ -645,8 +645,8 @@ describe('Data provider tests', () => {
       const longId = 'A'.repeat(44); // Base58 asset IDs are typically 43-44 chars
       const asset: TScamAsset = {
         id: longId,
-        version: DATA_PROVIDER_VERSIONS.BETA,
         status: STATUS_LIST.SCAM,
+        version: DATA_PROVIDER_VERSIONS.BETA,
       };
       const fields = [...PROVIDER_FIELDS, ...getFields(asset)];
       const decoded = getProviderAssets(fields);
@@ -673,8 +673,8 @@ describe('Data provider tests', () => {
     it('Handles unicode/emoji in text fields', () => {
       const unicodeProvider: IProviderData = {
         ...PROVIDER_DATA,
-        name: '🚀 DCC Provider 日本語',
         description: { en: 'Supports émojis 🎉 and ñ special chars' },
+        name: '🚀 DCC Provider 日本語',
       };
       const fields = getFields(unicodeProvider);
       const decoded = getProviderData(fields);
@@ -734,8 +734,8 @@ describe('Data provider tests', () => {
     it('getProviderAssets handles mixed valid and invalid assets', () => {
       const validAsset: TScamAsset = {
         id: 'VALIDASSET123456789012345678901234567890123',
-        version: DATA_PROVIDER_VERSIONS.BETA,
         status: STATUS_LIST.SCAM,
+        version: DATA_PROVIDER_VERSIONS.BETA,
       };
       const validFields = getFields(validAsset);
 
@@ -770,11 +770,11 @@ describe('Data provider tests', () => {
 
     it('getDifferenceByData detects all changed fields', () => {
       const modified: IProviderData = {
-        version: DATA_PROVIDER_VERSIONS.BETA,
-        name: 'New Name',
-        link: 'https://new.link.com',
-        email: 'new@email.com',
         description: { en: 'New description' },
+        email: 'new@email.com',
+        link: 'https://new.link.com',
+        name: 'New Name',
+        version: DATA_PROVIDER_VERSIONS.BETA,
       };
       const diff = getDifferenceByData(PROVIDER_DATA, modified);
 
@@ -1008,25 +1008,25 @@ describe('Data provider tests', () => {
     const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
     const arbBase58 = fc.string({
-      unit: fc.constantFrom(...BASE58_CHARS.split('')),
-      minLength: 1,
       maxLength: 44,
+      minLength: 1,
+      unit: fc.constantFrom(...BASE58_CHARS.split('')),
     });
 
     const arbProviderData = fc.record({
-      version: fc.constant(DATA_PROVIDER_VERSIONS.BETA),
-      name: fc.string({ minLength: 0, maxLength: 100 }),
-      link: fc.string({ minLength: 0, maxLength: 200 }),
-      email: fc.string({ minLength: 0, maxLength: 100 }),
       description: fc.dictionary(
         fc.string({
-          unit: fc.constantFrom(...'abcdefghijklmnopqrstuvwxyz'.split('')),
-          minLength: 2,
           maxLength: 2,
+          minLength: 2,
+          unit: fc.constantFrom(...'abcdefghijklmnopqrstuvwxyz'.split('')),
         }),
-        fc.string({ minLength: 0, maxLength: 200 }),
-        { minKeys: 1, maxKeys: 5 },
+        fc.string({ maxLength: 200, minLength: 0 }),
+        { maxKeys: 5, minKeys: 1 },
       ),
+      email: fc.string({ maxLength: 100, minLength: 0 }),
+      link: fc.string({ maxLength: 200, minLength: 0 }),
+      name: fc.string({ maxLength: 100, minLength: 0 }),
+      version: fc.constant(DATA_PROVIDER_VERSIONS.BETA),
     });
 
     it('Provider data always survives encode → decode roundtrip', () => {
@@ -1053,7 +1053,7 @@ describe('Data provider tests', () => {
     it('getProviderData never throws (always returns TResponse)', () => {
       const arbRawFields = fc.array(
         fc.record({
-          key: fc.string({ minLength: 1, maxLength: 50 }),
+          key: fc.string({ maxLength: 50, minLength: 1 }),
           type: fc.constantFrom(
             DATA_ENTRY_TYPES.STRING,
             DATA_ENTRY_TYPES.INTEGER,
@@ -1062,7 +1062,7 @@ describe('Data provider tests', () => {
           ),
           value: fc.oneof(fc.string(), fc.integer(), fc.boolean()),
         }),
-        { minLength: 0, maxLength: 20 },
+        { maxLength: 20, minLength: 0 },
       );
 
       fc.assert(
@@ -1079,7 +1079,7 @@ describe('Data provider tests', () => {
     it('getProviderAssets never throws (always returns TResponse[])', () => {
       const arbRawFields = fc.array(
         fc.record({
-          key: fc.string({ minLength: 1, maxLength: 50 }),
+          key: fc.string({ maxLength: 50, minLength: 1 }),
           type: fc.constantFrom(
             DATA_ENTRY_TYPES.STRING,
             DATA_ENTRY_TYPES.INTEGER,
@@ -1088,7 +1088,7 @@ describe('Data provider tests', () => {
           ),
           value: fc.oneof(fc.string(), fc.integer(), fc.boolean()),
         }),
-        { minLength: 0, maxLength: 20 },
+        { maxLength: 20, minLength: 0 },
       );
 
       fc.assert(
@@ -1146,9 +1146,9 @@ describe('Data provider tests', () => {
 
     it('isValidAssetId rejects strings with non-base58 characters', () => {
       const nonBase58 = fc.string({
-        unit: fc.constantFrom('0', 'O', 'I', 'l'),
-        minLength: 1,
         maxLength: 10,
+        minLength: 1,
+        unit: fc.constantFrom('0', 'O', 'I', 'l'),
       });
       fc.assert(
         fc.property(nonBase58, (bad) => {
@@ -1160,7 +1160,7 @@ describe('Data provider tests', () => {
 
     it('isValidStatus accepts only known enum values', () => {
       fc.assert(
-        fc.property(fc.integer({ min: -1000, max: 1000 }), (n) => {
+        fc.property(fc.integer({ max: 1000, min: -1000 }), (n) => {
           const valid = [-2, -1, 0, 1, 2].includes(n);
           expect(isValidStatus(n)).toBe(valid);
         }),

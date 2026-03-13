@@ -52,9 +52,9 @@ export function processField<T>(
       } catch (e: unknown) {
         if (required ?? true) {
           errors.push({
-            path: String(to),
             /* v8 ignore next */
             error: e instanceof Error ? e : new Error(String(e)),
+            path: String(to),
           });
         }
       }
@@ -93,9 +93,9 @@ export function processDescription(id?: string, required?: boolean) {
           } catch (e: unknown) {
             if (required ?? true) {
               errors.push({
-                path: `description.${lang}`,
                 /* v8 ignore next */
                 error: e instanceof Error ? e : new Error(String(e)),
+                path: `description.${lang}`,
               });
             }
           }
@@ -107,9 +107,9 @@ export function processDescription(id?: string, required?: boolean) {
       } catch (e: unknown) {
         if (required ?? true) {
           errors.push({
-            path: 'description',
             /* v8 ignore next */
             error: e instanceof Error ? e : new Error(String(e)),
+            path: 'description',
           });
         }
       }

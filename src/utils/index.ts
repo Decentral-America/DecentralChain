@@ -79,9 +79,9 @@ export function toField(
     checkType(value as string | number | boolean, type);
 
     return {
-      value,
-      type,
       key,
+      type,
+      value,
     } as TDataTxField;
   };
 }
