@@ -16,15 +16,18 @@ export class BigNumber {
   public readonly bn: BigNum;
 
   /** Minimum signed 64-bit integer (`-9223372036854775808`). */
+  // biome-ignore lint/security/noSecrets: int64 boundary constant, not a secret
   public static readonly MIN_VALUE = new BigNumber('-9223372036854775808');
 
   /** Maximum signed 64-bit integer (`9223372036854775807`). */
+  // biome-ignore lint/security/noSecrets: int64 boundary constant, not a secret
   public static readonly MAX_VALUE = new BigNumber('9223372036854775807');
 
   /** Minimum unsigned 64-bit integer (`0`). */
   public static readonly MIN_UNSIGNED_VALUE = new BigNumber('0');
 
   /** Maximum unsigned 64-bit integer (`18446744073709551615`). */
+  // biome-ignore lint/security/noSecrets: uint64 boundary constant, not a secret
   public static readonly MAX_UNSIGNED_VALUE = new BigNumber('18446744073709551615');
 
   /** Global configuration for formatting and rounding. */

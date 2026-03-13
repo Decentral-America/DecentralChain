@@ -9,13 +9,13 @@ import { type BigNumber } from './BigNumber.js';
  */
 export class Config {
   private static readonly DEFAULT_FORMAT: IFormat = {
-    prefix: '',
     decimalSeparator: '.',
-    groupSeparator: ',',
-    groupSize: 3,
-    secondaryGroupSize: 0,
     fractionGroupSeparator: ' ',
     fractionGroupSize: 0,
+    groupSeparator: ',',
+    groupSize: 3,
+    prefix: '',
+    secondaryGroupSize: 0,
     suffix: '',
   };
 
