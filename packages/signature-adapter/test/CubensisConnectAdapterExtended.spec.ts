@@ -5,24 +5,24 @@ import { SIGN_TYPE } from '../src/prepareTx';
 // Mock API for CubensisConnect
 function createMockApi(overrides: any = {}) {
   const defaultState = {
-    locked: false,
     account: {
       address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
     },
+    locked: false,
     txVersion: null,
   };
 
   return {
-    publicState: vi.fn().mockResolvedValue({ ...defaultState, ...overrides }),
-    signTransaction: vi.fn().mockResolvedValue(JSON.stringify({ proofs: ['sig1'] })),
-    signOrder: vi.fn().mockResolvedValue(JSON.stringify({ signature: 'orderSig' })),
-    signCancelOrder: vi.fn().mockResolvedValue(JSON.stringify({ signature: 'cancelSig' })),
-    signRequest: vi.fn().mockResolvedValue('requestSig'),
-    signCustomData: vi.fn().mockResolvedValue({ signature: 'customSig' }),
     auth: vi.fn().mockResolvedValue({ signature: 'authSig' }),
-    on: vi.fn(),
     initialPromise: Promise.resolve(null as any), // filled below
+    on: vi.fn(),
+    publicState: vi.fn().mockResolvedValue({ ...defaultState, ...overrides }),
+    signCancelOrder: vi.fn().mockResolvedValue(JSON.stringify({ signature: 'cancelSig' })),
+    signCustomData: vi.fn().mockResolvedValue({ signature: 'customSig' }),
+    signOrder: vi.fn().mockResolvedValue(JSON.stringify({ signature: 'orderSig' })),
+    signRequest: vi.fn().mockResolvedValue('requestSig'),
+    signTransaction: vi.fn().mockResolvedValue(JSON.stringify({ proofs: ['sig1'] })),
   };
 }
 
@@ -146,7 +146,7 @@ describe('CubensisConnectAdapter - extended coverage', () => {
       const extension = { initialPromise: Promise.resolve(mockApi) };
       // Set api so publicState doesn't throw
       (CubensisConnectAdapter as any)._api = mockApi;
-      CubensisConnectAdapter.initOptions({ networkCode: 87, extension });
+      CubensisConnectAdapter.initOptions({ extension, networkCode: 87 });
     });
   });
 
@@ -231,7 +231,7 @@ describe('CubensisConnectAdapter - extended coverage', () => {
 
     it('signTransaction uses signature field over proofs', async () => {
       mockApi.signTransaction.mockResolvedValue(
-        JSON.stringify({ signature: 'directSig', proofs: ['otherSig'] }),
+        JSON.stringify({ proofs: ['otherSig'], signature: 'directSig' }),
       );
       const sig = await adapter.signTransaction(new Uint8Array([1, 2, 3]), {}, { type: 4 } as any);
       expect(sig).toBe('directSig');
@@ -353,7 +353,7 @@ describe('CubensisConnectAdapter - extended coverage', () => {
         callCount++;
         // Return valid state for constructor but throw on isAvailable check
         if (callCount <= 1) {
-          return { locked: false, account: { address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM' } };
+          return { account: { address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM' }, locked: false };
         }
         throw Object.assign(new Error('Selected network incorrect'), { code: 3 });
       });
@@ -401,8 +401,8 @@ describe('CubensisConnectAdapter - extended coverage', () => {
     it('does not call callbacks when state is unchanged', () => {
       const cb = vi.fn();
       CubensisConnectAdapter.onUpdate(cb);
-      const state1 = { locked: false, account: { address: 'test' } };
-      const state2 = { locked: false, account: { address: 'test' } };
+      const state1 = { account: { address: 'test' }, locked: false };
+      const state2 = { account: { address: 'test' }, locked: false };
       // Call with equal but different objects; after first call, _state is set
       (CubensisConnectAdapter as any)._updateState(state1);
       // Second call with deep-equal state should be filtered by ramda equals
@@ -445,8 +445,8 @@ describe('CubensisConnectAdapter - extended coverage', () => {
 
       // Simulate update with different account
       (adapter as any).handleUpdate({
-        locked: false,
         account: { address: 'differentAddress' },
+        locked: false,
       });
 
       expect(adapter.isDestroyed()).toBe(true);

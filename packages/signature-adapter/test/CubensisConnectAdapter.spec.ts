@@ -4,30 +4,46 @@ import { CubensisConnectAdapter } from '../src/adapters/CubensisConnectAdapter';
 import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
 
 const testAsset = new Asset({
-  precision: 5,
-  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
-  quantity: new BigNumber(10000),
   description: 'Some text',
   height: 100,
+  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
   name: 'Test',
+  precision: 5,
+  quantity: new BigNumber(10000),
   reissuable: false,
   sender: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-  timestamp: new Date(),
   ticker: undefined,
+  timestamp: new Date(),
 });
 
 const keeperMock = {
   // @ts-expect-error - mock impl
   auth: async (_data) => ({
+    address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
     data: 'test',
-    prefix: 'DCCWalletAuthentication',
     host: 'www.yandex.ru',
     name: 'test',
-    address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+    prefix: 'DCCWalletAuthentication',
     publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
     signature:
       '3xvbSznhRTgDP5vMSoPpqwVf29hSdDQLFpdbtVaMHCyzuFFEgSodB7MXZTescxcYiVtR9wCgTGmZPWTApMVMg6qP',
   }),
+  initialPromise: Promise.resolve() as any,
+  // @ts-expect-error - mock impl
+  on: (_key: string, _cb) => {},
+  publicState: async () => ({
+    account: {
+      address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+      publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+    },
+    locked: false,
+  }),
+  // @ts-expect-error - mock impl
+  signCancelOrder: async (_data) => {},
+  // @ts-expect-error - mock impl
+  signOrder: async (_data) => {},
+  // @ts-expect-error - mock impl
+  signRequest: async (_data) => {},
   // @ts-expect-error - mock impl
   signTransaction: async (data) => {
     switch (data.type) {
@@ -49,27 +65,11 @@ const keeperMock = {
     }
     return JSON.stringify({ proofs: ['test', 'realProof'] });
   },
-  // @ts-expect-error - mock impl
-  signOrder: async (_data) => {},
-  // @ts-expect-error - mock impl
-  signCancelOrder: async (_data) => {},
-  // @ts-expect-error - mock impl
-  signRequest: async (_data) => {},
-  publicState: async () => ({
-    locked: false,
-    account: {
-      address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-      publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
-    },
-  }),
-  // @ts-expect-error - mock impl
-  on: (_key: string, _cb) => {},
-  initialPromise: Promise.resolve() as any,
 };
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
-CubensisConnectAdapter.initOptions({ networkCode: 'W'.charCodeAt(0), extension: keeperMock });
+CubensisConnectAdapter.initOptions({ extension: keeperMock, networkCode: 'W'.charCodeAt(0) });
 
 describe('CubensisConnect adapter test', () => {
   it('Test connect to extension', async () => {
@@ -98,13 +98,13 @@ describe('CubensisConnect adapter test', () => {
 
   it('Test sign transfer', async () => {
     const data = {
-      type: 4,
       data: {
-        fee: Money.fromTokens('0.1', testAsset),
         amount: new Money(1, testAsset),
-        recipient: 'test',
         attachment: '',
+        fee: Money.fromTokens('0.1', testAsset),
+        recipient: 'test',
       },
+      type: 4,
     };
 
     CubensisConnectAdapter.setApiExtension(keeperMock);
@@ -117,13 +117,13 @@ describe('CubensisConnect adapter test', () => {
 
   it('Test convert UInt8Array transfer', async () => {
     const data = {
-      type: 4,
       data: {
-        fee: Money.fromTokens('0.1', testAsset),
         amount: new Money(1, testAsset),
-        recipient: 'test',
         attachment: new Uint8Array([1, 2, 3, 4]),
+        fee: Money.fromTokens('0.1', testAsset),
+        recipient: 'test',
       },
+      type: 4,
     };
 
     CubensisConnectAdapter.setApiExtension(keeperMock);

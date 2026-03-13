@@ -36,8 +36,8 @@ describe('WSeed adapter test', () => {
   it('Create adapter from user seed', async () => {
     const user = {
       encryptedSeed: 'U2FsdGVkX19iOsZUUXdokaat9g3MVg9B4FCW199Zoap7S04dO6XtP5w5fzFHOGvo',
-      password: '123123',
       encryptionRounds: 5000,
+      password: '123123',
     };
     const adapter = new SeedAdapter(user, 'T');
     const address = await adapter.getAddress();
@@ -57,8 +57,8 @@ describe('WSeed adapter test', () => {
     const user = {
       encryptedSeed:
         'U2FsdGVkX18qITSaCcqnwW3+CW081VQeOFq4abcshIdyR/6e1BJatQclPAoo0IuOsnfE462VYLcnVEBbV18Vdw==',
-      password: '12345678',
       encryptionRounds: 5000,
+      password: '12345678',
     };
     const adapter = new SeedAdapter(user, 'T');
     const address = await adapter.getAddress();
@@ -113,8 +113,8 @@ describe('WSeed adapter test', () => {
     const data = await adapter.signCustomData('test');
     const pk = await adapter.getPublicKey();
     const binary = serializeCustomData({
-      version: 1,
       binary: libs.crypto.base64Encode(libs.crypto.stringToBytes('test')),
+      version: 1,
     });
     expect(libs.crypto.verifySignature(pk, binary, data)).toBe(true);
   });
