@@ -71,44 +71,44 @@ export function create(base: string) {
   const eth: TWrapRecord<typeof ethModule> = wrapRecord(base, ethModule);
 
   const tools = {
-    transactions: {
-      broadcast: wrapRequest(base, broadcast) as BroadcastWrapped,
-      wait: wrapRequest(base, wait),
+    addresses: {
+      availableSponsoredBalances: wrapRequest(base, availableSponsoredBalances),
+      createWatch: wrapRequest(base, createWatch),
+      getAssetIdListByTx,
+      getAssetsByTransaction: wrapRequest(base, getAssetsByTransaction),
+      getTransactionsWithAssets: wrapRequest(base, getTransactionsWithAssets),
     },
     blocks: {
       getNetworkByte: wrapRequest(base, getNetworkByte),
       getNetworkCode: wrapRequest(base, getNetworkCode),
     },
-    addresses: {
-      createWatch: wrapRequest(base, createWatch),
-      getAssetsByTransaction: wrapRequest(base, getAssetsByTransaction),
-      getAssetIdListByTx,
-      getTransactionsWithAssets: wrapRequest(base, getTransactionsWithAssets),
-      availableSponsoredBalances: wrapRequest(base, availableSponsoredBalances),
+    parse,
+    query,
+    request,
+    resolve,
+    transactions: {
+      broadcast: wrapRequest(base, broadcast) as BroadcastWrapped,
+      wait: wrapRequest(base, wait),
     },
     utils: toolsUtilsModule,
-    query,
-    resolve,
-    request,
-    parse,
   };
 
   return {
+    activation,
     addresses,
+    alias,
+    assets,
     blocks,
-    transactions,
+    consensus,
+    debug,
+    eth,
     leasing,
-    tools,
+    node,
     peers,
     rewards,
+    tools,
+    transactions,
     utils,
-    debug,
-    alias,
-    consensus,
-    activation,
-    node,
-    assets,
-    eth,
   };
 }
 

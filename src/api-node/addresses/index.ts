@@ -12,8 +12,8 @@ export function fetchDataKey(
 ): Promise<DataTransactionEntry<TLong>> {
   return request({
     base,
-    url: `/addresses/data/${pathSegment(address)}/${encodeURIComponent(key)}`,
     options,
+    url: `/addresses/data/${pathSegment(address)}/${encodeURIComponent(key)}`,
   });
 }
 
@@ -34,8 +34,8 @@ export function fetchBalanceDetails(
 ): Promise<IBalanceDetails<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/details/${pathSegment(address)}`,
     options,
+    url: `/addresses/balance/details/${pathSegment(address)}`,
   });
 }
 
@@ -47,8 +47,8 @@ export function fetchBalanceConfirmations(
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/${pathSegment(address)}/${pathSegment(confirmations)}`,
     options,
+    url: `/addresses/balance/${pathSegment(address)}/${pathSegment(confirmations)}`,
   });
 }
 
@@ -59,8 +59,8 @@ export function fetchScriptInfo(
 ): Promise<IScriptInfo> {
   return request({
     base,
-    url: `/addresses/scriptInfo/${pathSegment(address)}`,
     options,
+    url: `/addresses/scriptInfo/${pathSegment(address)}`,
   });
 }
 
@@ -72,8 +72,8 @@ export function data(
 ): Promise<DataTransactionEntry<TLong>[]> {
   return request({
     base,
-    url: `/addresses/data/${pathSegment(address)}${query(params)}`,
     options,
+    url: `/addresses/data/${pathSegment(address)}${query(params)}`,
   });
 }
 
@@ -91,8 +91,8 @@ export function fetchBalance(
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/balance/${pathSegment(address)}`,
     options,
+    url: `/addresses/balance/${pathSegment(address)}`,
   });
 }
 
@@ -107,17 +107,17 @@ export function fetchMultipleBalance(
 ): Promise<IBalanceConfirmations<TLong>[]> {
   return request({
     base,
-    url: '/addresses/balance',
     options: deepAssign(
       { ...options },
       {
-        method: 'POST',
         body: JSON.stringify({ addresses }),
         headers: {
           'Content-Type': 'application/json',
         },
+        method: 'POST',
       },
     ),
+    url: '/addresses/balance',
   });
 }
 
@@ -129,8 +129,8 @@ export function fetchEffectiveBalanceConfirmations(
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/effectiveBalance/${pathSegment(address)}/${pathSegment(confirmations)}`,
     options,
+    url: `/addresses/effectiveBalance/${pathSegment(address)}/${pathSegment(confirmations)}`,
   });
 }
 
@@ -141,8 +141,8 @@ export function fetchEffectiveBalance(
 ): Promise<IBalanceConfirmations<TLong>> {
   return request({
     base,
-    url: `/addresses/effectiveBalance/${pathSegment(address)}`,
     options,
+    url: `/addresses/effectiveBalance/${pathSegment(address)}`,
   });
 }
 

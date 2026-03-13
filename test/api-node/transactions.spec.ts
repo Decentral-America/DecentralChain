@@ -13,8 +13,8 @@ it('Broadcast and unconfirmed', async () => {
   const tx = await API.transactions.broadcast(
     transfer(
       {
-        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
         amount: 1,
+        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
       },
       MASTER_ACCOUNT.SEED,
     ) as SignedTransaction<TransferTransaction<TLong>>,
@@ -31,8 +31,8 @@ it('Unconfirmed transaction', async () => {
     const tx = await API.transactions.broadcast(
       transfer(
         {
-          recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
           amount: 1,
+          recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
         },
         MASTER_ACCOUNT.SEED,
       ) as SignedTransaction<TransferTransaction<TLong>>,
@@ -56,8 +56,8 @@ it('Unconfirmed size', async () => {
       tx[i] = await API.transactions.broadcast(
         transfer(
           {
-            recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
             amount: 1,
+            recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
           },
           MASTER_ACCOUNT.SEED,
         ) as SignedTransaction<TransferTransaction<TLong>>,
@@ -72,8 +72,8 @@ test('Broadcast, wait and info', async () => {
   const tx = await API.transactions.broadcast(
     transfer(
       {
-        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
         amount: 1,
+        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
       },
       MASTER_ACCOUNT.SEED,
     ) as SignedTransaction<TransferTransaction<TLong>>,
@@ -91,8 +91,8 @@ describe('Status', () => {
     const tx = await API.transactions.broadcast(
       transfer(
         {
-          recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
           amount: 1,
+          recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
         },
         MASTER_ACCOUNT.SEED,
       ) as SignedTransaction<TransferTransaction<TLong>>,
@@ -107,8 +107,8 @@ describe('Status', () => {
   it('Not found', async () => {
     const tx = transfer(
       {
-        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
         amount: 1,
+        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
       },
       MASTER_ACCOUNT.SEED,
     ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
@@ -128,8 +128,8 @@ describe('Calculate fee', () => {
         NODE_URL,
         transfer(
           {
-            recipient: MASTER_ACCOUNT.ADDRESS,
             amount: '1',
+            recipient: MASTER_ACCOUNT.ADDRESS,
           },
           STATE.ACCOUNTS.SIMPLE.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
@@ -143,8 +143,8 @@ describe('Calculate fee', () => {
         NODE_URL,
         transfer(
           {
-            recipient: MASTER_ACCOUNT.ADDRESS,
             amount: 1,
+            recipient: MASTER_ACCOUNT.ADDRESS,
           },
           STATE.ACCOUNTS.SMART.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
@@ -158,9 +158,9 @@ describe('Calculate fee', () => {
         NODE_URL,
         transfer(
           {
-            recipient: MASTER_ACCOUNT.ADDRESS,
             amount: 1,
             assetId: STATE.ASSETS.SMART.id,
+            recipient: MASTER_ACCOUNT.ADDRESS,
           },
           STATE.ACCOUNTS.SIMPLE.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,
@@ -174,9 +174,9 @@ describe('Calculate fee', () => {
         NODE_URL,
         transfer(
           {
-            recipient: MASTER_ACCOUNT.ADDRESS,
             amount: '1',
             assetId: STATE.ASSETS.SMART.id,
+            recipient: MASTER_ACCOUNT.ADDRESS,
           },
           STATE.ACCOUNTS.SMART.seed,
         ) as SignedTransaction<TransferTransaction<TLong>> & WithId,

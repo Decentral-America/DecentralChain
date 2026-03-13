@@ -4,11 +4,11 @@ import request from '../../tools/request';
 // POST /node/stop
 
 export function fetchNodeStatus(base: string, options: RequestInit = {}): Promise<INodeStatus> {
-  return request({ base, url: '/node/status', options });
+  return request({ base, options, url: '/node/status' });
 }
 
 export function fetchNodeVersion(base: string, options: RequestInit = {}): Promise<INodeVersion> {
-  return request({ base, url: '/node/version', options });
+  return request({ base, options, url: '/node/version' });
 }
 
 export interface INodeStatus {

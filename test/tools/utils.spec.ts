@@ -138,7 +138,7 @@ describe('wait – async delay', () => {
 describe('prop – property accessor factory', () => {
   it('returns a function that extracts the named property', () => {
     const getName = prop<{ name: string; age: number }, 'name'>('name');
-    expect(getName({ name: 'Alice', age: 30 })).toBe('Alice');
+    expect(getName({ age: 30, name: 'Alice' })).toBe('Alice');
   });
 });
 
@@ -216,7 +216,7 @@ describe('switchTransactionByType – dispatch by tx type', () => {
       4: (tx) => `transfer:${String(tx.amount)}`,
     });
 
-    const issueTx = { type: 3 as const, name: 'MyToken' } as never;
+    const issueTx = { name: 'MyToken', type: 3 as const } as never;
     expect(sw(issueTx)).toBe('issue:MyToken');
   });
 

@@ -11,6 +11,7 @@ export default function (base: string): Promise<number> {
   });
 }
 
+// biome-ignore lint/security/noSecrets: Base58 encoding alphabet, not a secret
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP: Record<string, number> = {};
 

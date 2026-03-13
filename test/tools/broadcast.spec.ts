@@ -15,16 +15,16 @@ const api = create(NODE_URL);
 it('Broadcast 2 transactions', async () => {
   const tx1 = transfer(
     {
-      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
       amount: 1,
+      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
     },
     MASTER_ACCOUNT.SEED,
   ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
 
   const tx2 = transfer(
     {
-      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
       amount: 2,
+      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
     },
     MASTER_ACCOUNT.SEED,
   ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
@@ -42,16 +42,16 @@ it('Broadcast 2 transactions', async () => {
 test('Chain broadcast 2 transactions', async () => {
   const tx1 = transfer(
     {
-      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
       amount: 1,
+      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
     },
     MASTER_ACCOUNT.SEED,
   ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
 
   const tx2 = transfer(
     {
-      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
       amount: 2,
+      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
     },
     MASTER_ACCOUNT.SEED,
   ) as SignedTransaction<TransferTransaction<TLong>> & WithId;

@@ -21,8 +21,8 @@ export function fetchBalanceHistory(
 ): Promise<IBalanceHistory[]> {
   return request({
     base,
-    url: `/debug/balances/history/${pathSegment(address)}`,
     options,
+    url: `/debug/balances/history/${pathSegment(address)}`,
   });
 }
 
@@ -107,8 +107,8 @@ export function fetchStateChangesByAddress(
 ): Promise<(Transaction<TLong> & WithId & IWithStateChanges)[]> {
   return request({
     base,
-    url: `/debug/stateChanges/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
     options,
+    url: `/debug/stateChanges/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
   });
 }
 
@@ -124,8 +124,8 @@ export function fetchStateChangesByTxId(
 ): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
   return request({
     base,
-    url: `/debug/stateChanges/info/${pathSegment(txId)}`,
     options,
+    url: `/debug/stateChanges/info/${pathSegment(txId)}`,
   });
 }
 
@@ -136,12 +136,12 @@ export function fetchStateChangesByTxId(
 export function postPeerToTheBanList(base: string, peer: string): Promise<unknown> {
   return request({
     base,
-    url: '/debug/blacklist',
     options: {
-      method: 'POST',
       body: peer,
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     },
+    url: '/debug/blacklist',
   });
 }
 
@@ -158,8 +158,8 @@ export function debugStateHash(
 ): Promise<IStateHash> {
   return request({
     base,
-    url: `/debug/stateHash/${pathSegment(height)}`,
     options,
+    url: `/debug/stateHash/${pathSegment(height)}`,
   });
 }
 
@@ -171,12 +171,12 @@ export function debugStateHash(
 export function debugValidate(base: string, transaction: string): Promise<IValidateResponse> {
   return request({
     base,
-    url: '/debug/validate',
     options: {
-      method: 'POST',
       body: transaction,
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     },
+    url: '/debug/validate',
   });
 }
 
@@ -189,10 +189,10 @@ export function debugValidate(base: string, transaction: string): Promise<IValid
 export function fetchConfigInfo(base: string, apiKey: string): Promise<string> {
   return request({
     base,
-    url: '/debug/configInfo',
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: '/debug/configInfo',
   });
 }
 
@@ -203,10 +203,10 @@ export function fetchConfigInfo(base: string, apiKey: string): Promise<string> {
 export function fetchDebugInfo(base: string, apiKey: string): Promise<IDebugInfo> {
   return request({
     base,
-    url: '/debug/info',
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: '/debug/info',
   });
 }
 
@@ -217,10 +217,10 @@ export function fetchDebugInfo(base: string, apiKey: string): Promise<IDebugInfo
 export function fetchMinerInfo(base: string, apiKey: string): Promise<IMinerInfo<TLong>> {
   return request({
     base,
-    url: '/debug/minerInfo',
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: '/debug/minerInfo',
   });
 }
 
@@ -235,10 +235,10 @@ export function fetchPortfolios(
 ): Promise<IPortfolio<TLong>> {
   return request({
     base,
-    url: `/debug/portfolios/${pathSegment(address)}`,
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: `/debug/portfolios/${pathSegment(address)}`,
   });
 }
 
@@ -249,12 +249,12 @@ export function fetchPortfolios(
 export function debugPrint(base: string, message: string, apiKey: string): Promise<unknown> {
   return request({
     base,
-    url: '/debug/print',
     options: {
-      method: 'POST',
       body: JSON.stringify({ message }),
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+      method: 'POST',
     },
+    url: '/debug/print',
   });
 }
 
@@ -273,12 +273,12 @@ export function debugRollback(
 ): Promise<unknown> {
   return request({
     base,
-    url: '/debug/rollback',
     options: {
+      body: JSON.stringify({ returnTransactionsToUtx, rollbackTo: height }),
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
       method: 'POST',
-      body: JSON.stringify({ rollbackTo: height, returnTransactionsToUtx }),
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
     },
+    url: '/debug/rollback',
   });
 }
 
@@ -289,11 +289,11 @@ export function debugRollback(
 export function debugRollbackTo(base: string, id: string, apiKey: string): Promise<unknown> {
   return request({
     base,
-    url: `/debug/rollback-to/${pathSegment(id)}`,
     options: {
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
       method: 'DELETE',
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
     },
+    url: `/debug/rollback-to/${pathSegment(id)}`,
   });
 }
 
@@ -304,10 +304,10 @@ export function debugRollbackTo(base: string, id: string, apiKey: string): Promi
 export function debugState(base: string, apiKey: string): Promise<Record<string, number | string>> {
   return request({
     base,
-    url: '/debug/state',
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: '/debug/state',
   });
 }
 
@@ -322,10 +322,10 @@ export function debugStateDcc(
 ): Promise<Record<string, number | string>> {
   return request({
     base,
-    url: `/debug/stateDcc/${pathSegment(height)}`,
     options: {
-      headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
     },
+    url: `/debug/stateDcc/${pathSegment(height)}`,
   });
 }
 

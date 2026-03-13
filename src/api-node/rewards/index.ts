@@ -13,8 +13,8 @@ export function fetchRewards(
 ): Promise<TRewards<TLong>> {
   return request({
     base,
-    url: height ? `/blockchain/rewards/${pathSegment(height)}` : '/blockchain/rewards',
     options,
+    url: height ? `/blockchain/rewards/${pathSegment(height)}` : '/blockchain/rewards',
   });
 }
 

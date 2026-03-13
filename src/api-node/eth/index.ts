@@ -22,8 +22,8 @@ export function fetchEthAssetDetails(
 
   return request<TAssetDetails[]>({
     base,
-    url: `/eth/assets${query({ id })}`,
     options,
+    url: `/eth/assets${query({ id })}`,
   }).then((list) => {
     if (Array.isArray(ethAssetId)) return list;
     const first = list[0];

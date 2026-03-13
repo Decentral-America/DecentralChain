@@ -11,7 +11,7 @@ export function fetchActive(
   address: string,
   options: RequestInit = {},
 ): Promise<ILeaseInfo[]> {
-  return request({ base, url: `/leasing/active/${pathSegment(address)}`, options });
+  return request({ base, options, url: `/leasing/active/${pathSegment(address)}` });
 }
 
 /**
@@ -28,15 +28,15 @@ export function fetchLeasingInfo(
 
   return request({
     base,
-    url: `/leasing/info/`,
     options: {
       ...options,
       body,
-      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: `/leasing/info/`,
   });
 }
 

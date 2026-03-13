@@ -32,8 +32,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"height":12345}', { status: 200 }));
 
     const result = await requestFn<{ height: number }>({
-      url: '/blocks/height',
       base: 'https://nodes.example.com',
+      url: '/blocks/height',
     });
 
     expect(result).toEqual({ height: 12345 });
@@ -48,8 +48,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"balance":99999999999999999}', { status: 200 }));
 
     const result = await requestFn<{ balance: string }>({
-      url: '/addresses/balance/3L',
       base: 'https://nodes.example.com',
+      url: '/addresses/balance/3L',
     });
 
     // parse.ts should have converted the 17-digit number to a string
@@ -63,7 +63,7 @@ describe('request – HTTP client', () => {
     );
 
     await expect(
-      requestFn({ url: '/addresses/balance/invalid', base: 'https://nodes.example.com' }),
+      requestFn({ base: 'https://nodes.example.com', url: '/addresses/balance/invalid' }),
     ).rejects.toThrow('Address not found');
   });
 
@@ -71,7 +71,7 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('Internal Server Error', { status: 500 }));
 
     await expect(
-      requestFn({ url: '/blocks/height', base: 'https://nodes.example.com' }),
+      requestFn({ base: 'https://nodes.example.com', url: '/blocks/height' }),
     ).rejects.toThrow('HTTP 500: Internal Server Error');
   });
 
@@ -79,8 +79,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"ok":true}', { status: 200 }));
 
     await requestFn({
-      url: '/blocks/height',
       base: 'https://nodes.example.com',
+      url: '/blocks/height',
     });
 
     const calledOptions = mockFetch.mock.calls[0]?.[1] as RequestInit;
@@ -92,8 +92,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"ok":true}', { status: 200 }));
 
     await requestFn({
-      url: 'https://evil.com/steal',
       base: 'https://nodes.example.com',
+      url: 'https://evil.com/steal',
     });
 
     // The URL passed to fetch should be on nodes.example.com, NOT evil.com
@@ -106,7 +106,7 @@ describe('request – HTTP client', () => {
     // resolve() throws synchronously for insecure URLs
     // The non-async request function will throw, and await converts to rejection
     try {
-      await requestFn({ url: '/blocks/height', base: 'http://remote-node.com' });
+      await requestFn({ base: 'http://remote-node.com', url: '/blocks/height' });
       // Should never reach here
       expect.unreachable('Expected request to throw');
     } catch (err: unknown) {
@@ -121,8 +121,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"height":1}', { status: 200 }));
 
     const result = await requestFn<{ height: number }>({
-      url: '/blocks/height',
       base: 'http://localhost:6869',
+      url: '/blocks/height',
     });
 
     expect(result).toEqual({ height: 1 });
@@ -131,7 +131,7 @@ describe('request – HTTP client', () => {
   it('handles empty JSON object response', async () => {
     mockFetch.mockResolvedValueOnce(new Response('{}', { status: 200 }));
 
-    const result = await requestFn({ url: '/blocks/height', base: 'https://nodes.example.com' });
+    const result = await requestFn({ base: 'https://nodes.example.com', url: '/blocks/height' });
     expect(result).toEqual({});
   });
 
@@ -139,8 +139,8 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('[{"id":"abc"},{"id":"def"}]', { status: 200 }));
 
     const result = await requestFn<{ id: string }[]>({
-      url: '/transactions/unconfirmed',
       base: 'https://nodes.example.com',
+      url: '/transactions/unconfirmed',
     });
     expect(result).toHaveLength(2);
     expect(result[0]).toEqual({ id: 'abc' });
@@ -152,7 +152,7 @@ describe('request – HTTP client', () => {
     );
 
     try {
-      await requestFn({ url: '/transactions/info/bad', base: 'https://nodes.example.com' });
+      await requestFn({ base: 'https://nodes.example.com', url: '/transactions/info/bad' });
       expect.unreachable('Expected error');
     } catch (err: unknown) {
       const error = err as Error & { data: unknown; status: number };
@@ -166,7 +166,7 @@ describe('request – HTTP client', () => {
     mockFetch.mockResolvedValueOnce(new Response('{"code":"NOT_FOUND"}', { status: 404 }));
 
     await expect(
-      requestFn({ url: '/blocks/height', base: 'https://nodes.example.com' }),
+      requestFn({ base: 'https://nodes.example.com', url: '/blocks/height' }),
     ).rejects.toThrow(/HTTP 404/);
   });
 });

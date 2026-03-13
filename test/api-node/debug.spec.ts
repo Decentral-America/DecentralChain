@@ -11,11 +11,11 @@ describe('State changes by transaction Id', () => {
   it('gets state changes', async () => {
     const itx = invokeScript(
       {
-        dApp: STATE.ACCOUNTS.FOR_SCRIPT.address,
         call: {
           function: 'call',
         },
         chainId: CHAIN_ID,
+        dApp: STATE.ACCOUNTS.FOR_SCRIPT.address,
       },
       STATE.ACCOUNTS.SIMPLE.seed,
     );

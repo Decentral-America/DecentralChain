@@ -112,8 +112,8 @@ export function addStateUpdateField(
 
   const payments =
     payload.payment?.map((p: TPayment) => ({
-      assetId: p.assetId,
       amount: p.amount,
+      assetId: p.assetId,
     })) ?? [];
   const dApp = payload.dApp;
   // Capture after null guard so TypeScript narrows the type
@@ -130,7 +130,7 @@ function makeStateUpdate(
   sender: string,
 ): TStateUpdate {
   const dApp = dAppParam ?? '';
-  const payments = payment.map((p) => ({ payment: p, dApp, sender }));
+  const payments = payment.map((p) => ({ dApp, payment: p, sender }));
   const addField = <T extends object, K extends string>(array: T[], fieldName: K) =>
     array.map((item) => ({ ...item, [fieldName]: dApp }) as T & Record<K, string>);
   const transfers = addField(stateChanges.transfers, 'sender');
@@ -143,15 +143,15 @@ function makeStateUpdate(
   const leaseCancels = addField(stateChanges.leaseCancels, 'address');
 
   const stateUpdate = {
-    payments,
-    data,
-    transfers,
-    reissues,
-    issues,
     burns,
-    sponsorFees,
-    leases,
+    data,
+    issues,
     leaseCancels,
+    leases,
+    payments,
+    reissues,
+    sponsorFees,
+    transfers,
   };
 
   const recursiveFunction = (sc: TStateChanges, senderAddr: string) => {
@@ -166,9 +166,9 @@ function makeStateUpdate(
           existing.payment.amount = new BigNumber(existing.payment.amount).add(y.amount).toFixed();
         } else {
           payments.push({
+            dApp: x.dApp,
             payment: y,
             sender: senderAddr,
-            dApp: x.dApp,
           });
         }
       });

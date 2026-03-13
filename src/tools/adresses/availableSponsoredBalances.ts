@@ -26,12 +26,12 @@ function canBeSponsor(dccFee: TLong): (balance: TAssetBalance) => boolean {
 
 function currentFee(dccFee: TLong): (balance: TAssetBalance) => TAssetFeeInfo {
   return (balance) => ({
-    assetId: balance.assetId,
-    dccFee,
     assetFee: BigNumber.toBigNumber(balance.minSponsoredAssetFee ?? 0)
       .mul(dccFee)
       .div(MIN_FEE_UNITS)
       .toFixed(),
+    assetId: balance.assetId,
+    dccFee,
   });
 }
 

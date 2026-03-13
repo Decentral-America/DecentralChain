@@ -8,8 +8,8 @@ import request from '../../tools/request';
 export function fetchAll(base: string, options: RequestInit = {}): Promise<IAllResponse> {
   return request({
     base,
-    url: '/peers/all',
     options,
+    url: '/peers/all',
   });
 }
 
@@ -23,8 +23,8 @@ export function fetchConnected(
 ): Promise<IAllConnectedResponse> {
   return request({
     base,
-    url: '/peers/connected',
     options,
+    url: '/peers/connected',
   });
 }
 
@@ -35,8 +35,8 @@ export function fetchConnected(
 export function fetchBlackListed(base: string, options: RequestInit = {}): Promise<IBlackPeer[]> {
   return request({
     base,
-    url: '/peers/blacklisted',
     options,
+    url: '/peers/blacklisted',
   });
 }
 
@@ -47,8 +47,8 @@ export function fetchBlackListed(base: string, options: RequestInit = {}): Promi
 export function fetchSuspended(base: string, options: RequestInit = {}): Promise<ISuspendedPeer[]> {
   return request({
     base,
-    url: '/peers/suspended',
     options,
+    url: '/peers/suspended',
   });
 }
 
