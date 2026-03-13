@@ -22,12 +22,12 @@ export const getDefaultTransform = <
 >(): {
   [Key in keyof TTx<string, TYPE>]: (data: T) => TTx<string, TYPE>[Key];
 } => ({
-  type: pipe(prop('type'), validate(requiredValidator('type'))),
-  version: pipe(prop('version'), validate(requiredValidator('version'))),
+  chainId: prop('chainId'),
+  fee: pipe(prop('fee'), getCoins, validate(requiredValidator('fee'))),
   senderPublicKey: pipe(prop('senderPublicKey'), validate(requiredValidator('senderPublicKey'))),
   timestamp: pipe(prop('timestamp'), processTimestamp),
-  fee: pipe(prop('fee'), getCoins, validate(requiredValidator('fee'))),
-  chainId: prop('chainId'),
+  type: pipe(prop('type'), validate(requiredValidator('type'))),
+  version: pipe(prop('version'), validate(requiredValidator('version'))),
 });
 
 export interface IDefaultGuiTx<TYPE> {
