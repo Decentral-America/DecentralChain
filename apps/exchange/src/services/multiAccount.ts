@@ -55,6 +55,7 @@ export interface MultiAccountUser {
   hash: string;
   ledgerPath: string | undefined;
   ledgerId: string | undefined;
+  lastLogin?: number;
   /** Spread from metadata - allows additional fields like name, settings, matcherSign */
   [key: string]: unknown;
 }

@@ -78,7 +78,7 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
           colorScale={displayData.map((segment) => segment.color)}
           innerRadius={hasBalance ? 80 : 90}
           labelRadius={120}
-          labels={({ datum }: { datum: Record<string, unknown> }) =>
+          labels={({ datum }: { datum: { value?: number; [key: string]: unknown } }) =>
             hasBalance && (datum.value as number) > 0
               ? `${Math.round(((datum.value as number) / totalDcc) * 100)}%`
               : ''
