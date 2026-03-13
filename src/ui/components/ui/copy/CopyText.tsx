@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import copy from 'copy-to-clipboard';
 import { PureComponent } from 'react';
 
-import * as styles from './copy.styl';
+import * as styles from './copy.module.styl';
 
 const DEFAULT_HIDDEN_CONTENT = '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••';
 
@@ -52,7 +52,7 @@ export class CopyText extends PureComponent<IProps> {
     }
 
     if (this.props.getText) {
-      this.props.getText(text => this.copy(text));
+      this.props.getText((text) => this.copy(text));
       return null;
     }
 

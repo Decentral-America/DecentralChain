@@ -14,7 +14,7 @@ import { waves } from '@decentralchain/protobuf-serialization';
 import { type LeaseTransactionFromNode, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
 import { JSONbn } from '_core/jsonBn';
-import type { AssetsRecord } from 'assets/types';
+import { type AssetsRecord } from 'assets/types';
 import EventEmitter from 'events';
 import Long from 'long';
 import {
@@ -56,15 +56,15 @@ import {
   type MoneyLike,
 } from '../messages/types';
 import { PERMISSIONS } from '../permissions/constants';
-import type { PreferencesAccount } from '../preferences/types';
-import type { ExtensionStorage } from '../storage/storage';
+import { type PreferencesAccount } from '../preferences/types';
+import { type ExtensionStorage } from '../storage/storage';
 import { getTxVersions } from '../wallets/getTxVersions';
-import type { AssetInfoController } from './assetInfo';
-import type { CurrentAccountController } from './currentAccount';
-import type { NetworkController } from './network';
-import type { PermissionsController } from './permissions';
-import type { RemoteConfigController } from './remoteConfig';
-import type { WalletController } from './wallet';
+import { type AssetInfoController } from './assetInfo';
+import { type CurrentAccountController } from './currentAccount';
+import { type NetworkController } from './network';
+import { type PermissionsController } from './permissions';
+import { type RemoteConfigController } from './remoteConfig';
+import { type WalletController } from './wallet';
 
 function moneyLikeToMoney(amount: MoneyLike, assets: AssetsRecord) {
   const asset = new Asset(assets[amount.assetId ?? 'WAVES'] ?? assets.WAVES);
@@ -171,7 +171,7 @@ export class MessageController extends EventEmitter {
         throw ERRORS.FAILED_MSG(undefined, message.err);
     }
 
-    const finishedMessage = await new Promise<Message>(resolve => {
+    const finishedMessage = await new Promise<Message>((resolve) => {
       this.once(`${id}:finished`, resolve);
     });
 
@@ -190,7 +190,7 @@ export class MessageController extends EventEmitter {
   }
 
   getMessageById(id: string) {
-    const result = this.store.getState().messages.find(message => message.id === id);
+    const result = this.store.getState().messages.find((message) => message.id === id);
 
     if (!result) throw new Error(`Failed to get message with id ${id}`);
 
@@ -199,7 +199,7 @@ export class MessageController extends EventEmitter {
 
   deleteMessage(id: string) {
     const { messages } = this.store.getState();
-    const index = messages.findIndex(message => message.id === id);
+    const index = messages.findIndex((message) => message.id === id);
 
     if (index > -1) {
       messages.splice(index, 1);
@@ -351,7 +351,7 @@ export class MessageController extends EventEmitter {
         }
         case 'transactionPackage': {
           message.result = await Promise.all(
-            message.data.map(async data => {
+            message.data.map(async (data) => {
               const signature = await wallet.signTx(makeTxBytes(data), data);
 
               return stringifyTransaction({
@@ -455,13 +455,13 @@ export class MessageController extends EventEmitter {
   removeMessagesFromConnection(connectionId: string) {
     const { messages } = this.store.getState();
 
-    messages.forEach(message => {
+    messages.forEach((message) => {
       if (message.connectionId === connectionId) {
         this.reject(message.id);
       }
     });
 
-    this.#updateStore(messages.filter(message => message.connectionId !== connectionId));
+    this.#updateStore(messages.filter((message) => message.connectionId !== connectionId));
   }
 
   clearMessages(ids?: string | string[]) {
@@ -506,7 +506,7 @@ export class MessageController extends EventEmitter {
 
   #updateMessage(message: Message) {
     const messages = this.store.getState().messages;
-    messages[messages.findIndex(m => m.id === message.id)] = message;
+    messages[messages.findIndex((m) => m.id === message.id)] = message;
     this.#updateStore(messages);
   }
 
@@ -587,7 +587,7 @@ export class MessageController extends EventEmitter {
       initialFee: feeMoney,
       txType: txParams.type,
       usdPrices: this.assetInfoController.getUsdPrices(),
-    }).find(option =>
+    }).find((option) =>
       isEnoughBalanceForFeeAndSpendingAmounts({
         balance: option.assetBalance.balance,
         fee: option.money,
@@ -1156,7 +1156,7 @@ export class MessageController extends EventEmitter {
           proofs,
           senderPublicKey,
           timestamp,
-          transfers: messageInputTx.data.transfers.map(transfer => ({
+          transfers: messageInputTx.data.transfers.map((transfer) => ({
             amount:
               typeof transfer.amount === 'object'
                 ? moneyLikeToMoney(transfer.amount, assets).toCoins()
@@ -1200,7 +1200,7 @@ export class MessageController extends EventEmitter {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
         }
 
-        messageInputTx.data.data.forEach(item => {
+        messageInputTx.data.data.forEach((item) => {
           if (item.type === 'integer') {
             const { value } = item;
 
@@ -1243,7 +1243,7 @@ export class MessageController extends EventEmitter {
             txParams.version === 1
               ? binary.serializeTx({ ...txParams, fee: 0 })
               : waves.DataTransactionData.encode({
-                  data: txParams.data.map(entry => ({
+                  data: txParams.data.map((entry) => ({
                     key: entry.key,
                     intValue: entry.type === 'integer' ? Long.fromValue(entry.value) : undefined,
                     boolValue: entry.type === 'boolean' ? entry.value : undefined,
@@ -1444,7 +1444,7 @@ export class MessageController extends EventEmitter {
 
         const payment = messageInputTx.data.payment ?? [];
 
-        payment.forEach(p => {
+        payment.forEach((p) => {
           if (!this.#isMoneyLikeValuePositive(p)) {
             throw ERRORS.REQUEST_ERROR('payment is not valid', messageInputTx);
           }
@@ -1453,7 +1453,7 @@ export class MessageController extends EventEmitter {
         await this.assetInfoController.updateAssets([
           messageInputTx.data.fee?.assetId,
           messageInputTx.data.initialFee?.assetId,
-          ...payment.map(p => p.assetId),
+          ...payment.map((p) => p.assetId),
         ]);
 
         const txParams = {
@@ -1478,7 +1478,7 @@ export class MessageController extends EventEmitter {
             (messageInputTx.data.initialFee.assetId === 'WAVES'
               ? null
               : messageInputTx.data.initialFee.assetId),
-          payment: payment.map(p => ({
+          payment: payment.map((p) => ({
             amount: moneyLikeToMoney(p, assets).toCoins(),
             assetId: p.assetId === 'WAVES' ? null : p.assetId,
           })),
@@ -1813,7 +1813,7 @@ export class MessageController extends EventEmitter {
         }
 
         const txs = await Promise.all(
-          messageInput.data.map(txParams =>
+          messageInput.data.map((txParams) =>
             this.#generateMessageTx(messageInput.account, txParams),
           ),
         );

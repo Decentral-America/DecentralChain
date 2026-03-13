@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import * as avatar from 'identity-img';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { Component } from 'react';
 
-import * as styles from './avatar.styl';
+import * as styles from './avatar.module.styl';
 
 const SIZE = 67;
 

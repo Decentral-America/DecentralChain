@@ -32,7 +32,7 @@ function AddressCard({ address, name }: AddressCardProps) {
       </div>
       <MoreActions>
         <Tooltip content={t('copyAddress')}>
-          {props => (
+          {(props) => (
             <Copy
               text={address}
               onCopy={() => {
@@ -49,7 +49,7 @@ function AddressCard({ address, name }: AddressCardProps) {
           )}
         </Tooltip>
         <Tooltip content={t('address.edit')}>
-          {props => (
+          {(props) => (
             <button
               className={styles.editButton}
               onClick={() => {
@@ -64,7 +64,7 @@ function AddressCard({ address, name }: AddressCardProps) {
           )}
         </Tooltip>
         <Tooltip content={t('address.delete')}>
-          {props => (
+          {(props) => (
             <button
               className={styles.deleteButton}
               onClick={() => {
@@ -106,7 +106,7 @@ function AddressCard({ address, name }: AddressCardProps) {
 export function AddressBook() {
   const { t } = useTranslation();
 
-  const addresses = usePopupSelector(state => state.addresses);
+  const addresses = usePopupSelector((state) => state.addresses);
 
   const [search, setSearch] = useState('');
   const addressList = useMemo(
@@ -128,7 +128,7 @@ export function AddressBook() {
       <div className={styles.head}>
         <h2 className="title1">{t('address.title')}</h2>
         <Tooltip content={t('address.addTooltip')} placement="top-end">
-          {props => (
+          {(props) => (
             <button
               className={styles.addButtonIcon}
               onClick={addHandler}
@@ -151,7 +151,7 @@ export function AddressBook() {
           <SearchInput
             className={styles.searchInput}
             value={search}
-            onInput={e => setSearch(e.currentTarget.value)}
+            onInput={(e) => setSearch(e.currentTarget.value)}
             onClear={() => setSearch('')}
           />
           <div className={styles.cardList}>

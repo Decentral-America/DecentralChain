@@ -27,7 +27,7 @@ export function VerifyCodeComponent({
   const [values, setValues] = useState<string[]>(refs.map(() => ''));
 
   useEffect(() => {
-    if (values.length < codeLength || values.some(v => !v)) {
+    if (values.length < codeLength || values.some((v) => !v)) {
       return;
     }
 
@@ -37,7 +37,7 @@ export function VerifyCodeComponent({
       const code = values.join('');
 
       onApplyCode(code)
-        .then(result => {
+        .then((result) => {
           onPending(false);
           setIsIncorrectCode(!result);
         })

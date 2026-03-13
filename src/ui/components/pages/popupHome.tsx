@@ -1,6 +1,6 @@
 import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,21 +15,21 @@ import { TabAssets } from './assets/tabs/tabAssets';
 import { TabNfts } from './assets/tabs/tabNfts';
 import { TabTxHistory } from './assets/tabs/tabTxHistory';
 import { ImportPopup } from './Import';
-import * as styles from './styles/assets.styl';
+import * as styles from './styles/assets.module.styl';
 
 export function PopupHome() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
 
-  const activeAccount = usePopupSelector(state =>
+  const activeAccount = usePopupSelector((state) =>
     state.accounts.find(({ address }) => address === state.selectedAccount?.address),
   );
-  const assets = usePopupSelector(state => state.assets);
-  const usdPrices = usePopupSelector(state => state.usdPrices);
-  const balances = usePopupSelector(state => state.balances);
+  const assets = usePopupSelector((state) => state.assets);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
+  const balances = usePopupSelector((state) => state.balances);
 
-  const notifications = usePopupSelector(state => state.localState.notifications);
+  const notifications = usePopupSelector((state) => state.localState.notifications);
 
   const [activeTab, setActiveTab] = useUiState('assetsTab');
 
@@ -86,7 +86,7 @@ export function PopupHome() {
           onOtherAccountsClick={() => {
             navigate('/other-accounts');
           }}
-          onClick={account => {
+          onClick={(account) => {
             navigate(`/account-info/${account.address}`);
           }}
           onShowQr={() => {
@@ -103,17 +103,17 @@ export function PopupHome() {
         </TabList>
         <TabPanels className={styles.tabPanels}>
           <TabAssets
-            onInfoClick={assetId => {
+            onInfoClick={(assetId) => {
               const assetData = assets[assetId];
               if (assetData) {
                 setAsset(assetData);
                 setShowAsset(true);
               }
             }}
-            onSendClick={assetId => {
+            onSendClick={(assetId) => {
               navigate(`/send/${assetId}`);
             }}
-            onSwapClick={assetId => {
+            onSwapClick={(assetId) => {
               navigate(`/swap?${new URLSearchParams({ fromAssetId: assetId })}`);
             }}
           />

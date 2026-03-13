@@ -1,11 +1,11 @@
-import type { TFunction } from 'i18next';
+import { type TFunction } from 'i18next';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
-import type { TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
+import { type TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
 
-import type { TAutoAuth } from '../originSettings';
+import { type TAutoAuth } from '../originSettings';
 import { ListItem } from './ListItem';
-import * as styles from './list.styl';
+import * as styles from './list.module.styl';
 
 class ListComponent extends PureComponent<IProps> {
   render(): React.ReactNode {
@@ -25,7 +25,7 @@ class ListComponent extends PureComponent<IProps> {
 
     return (
       <div className={styles.permissionList}>
-        {originsNames.sort().map(name => (
+        {originsNames.sort().map((name) => (
           <ListItem
             key={name}
             originName={name}
@@ -47,7 +47,7 @@ class ListComponent extends PureComponent<IProps> {
       hasApproved = perms.includes('approved');
       hasAuto =
         hasApproved &&
-        perms.find(item => (typeof item !== 'object' ? false : item.type === 'allowAutoSign'));
+        perms.find((item) => (typeof item !== 'object' ? false : item.type === 'allowAutoSign'));
     }
 
     return (
@@ -66,7 +66,7 @@ const getFilteredOrigins = (
   attr: TTabTypes,
 ) => {
   return Object.keys(origins)
-    .filter(name => {
+    .filter((name) => {
       const permissions = origins[name] || [];
 
       if (attr !== 'customList') {

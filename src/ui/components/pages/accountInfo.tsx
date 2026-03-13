@@ -8,7 +8,7 @@ import { notificationChangeName } from 'store/actions/localState';
 import Background from '../../services/Background';
 import { getAccountLink } from '../../urls';
 import { Avatar, Balance, Button, CopyText, ErrorMessage, Input, Modal } from '../ui';
-import * as styles from './styles/accountInfo.styl';
+import * as styles from './styles/accountInfo.module.styl';
 
 export function AccountInfo() {
   const { t } = useTranslation();
@@ -17,12 +17,12 @@ export function AccountInfo() {
   const params = useParams<{ address: string }>();
 
   const dispatch = usePopupDispatch();
-  const assets = usePopupSelector(state => state.assets);
-  const balances = usePopupSelector(state => state.balances);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const assets = usePopupSelector((state) => state.assets);
+  const balances = usePopupSelector((state) => state.balances);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
   const showChangeNameNotification = usePopupSelector(
-    state => state.localState.notifications.changeName,
+    (state) => state.localState.notifications.changeName,
   );
 
   useEffect(() => {
@@ -31,7 +31,9 @@ export function AccountInfo() {
     setTimeout(() => dispatch(notificationChangeName(false)), 1000);
   }, [dispatch, showChangeNameNotification]);
 
-  const account = usePopupSelector(state => state.accounts.find(x => x.address === params.address));
+  const account = usePopupSelector((state) =>
+    state.accounts.find((x) => x.address === params.address),
+  );
 
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -101,13 +103,13 @@ export function AccountInfo() {
     new Promise<string>((resolve, reject) => {
       defferRef.current = { resolve, reject };
     })
-      .then(password => request(password))
-      .then(data => {
+      .then((password) => request(password))
+      .then((data) => {
         setShowPassword(false);
         setPasswordError(false);
         copyCallback(data);
       })
-      .catch(err => {
+      .catch((err) => {
         if (err) {
           setPasswordError(true);
           retry();
@@ -122,7 +124,7 @@ export function AccountInfo() {
   const getSeed = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      request: password => Background.getAccountSeed(account.address, currentNetwork, password),
+      request: (password) => Background.getAccountSeed(account.address, currentNetwork, password),
       retry: () => getSeed(copyCallback),
     });
   };
@@ -130,9 +132,9 @@ export function AccountInfo() {
   const getEncodedSeed = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      request: password =>
+      request: (password) =>
         Background.getAccountEncodedSeed(account.address, currentNetwork, password).then(
-          encodedSeed => `base58:${encodedSeed}`,
+          (encodedSeed) => `base58:${encodedSeed}`,
         ),
       retry: () => getEncodedSeed(copyCallback),
     });
@@ -141,7 +143,7 @@ export function AccountInfo() {
   const getPrivateKey = (copyCallback: (text: string) => void) => {
     requestPrivateData({
       copyCallback,
-      request: password =>
+      request: (password) =>
         Background.getAccountPrivateKey(account.address, currentNetwork, password),
       retry: () => getPrivateKey(copyCallback),
     });
@@ -284,7 +286,7 @@ export function AccountInfo() {
           <form
             id="enterPassword"
             className="modal-form"
-            onSubmit={event => {
+            onSubmit={(event) => {
               event.preventDefault();
               defferRef.current?.resolve(password ?? '');
             }}
@@ -301,7 +303,7 @@ export function AccountInfo() {
                 view="password"
                 error={passwordError}
                 wrapperClassName="margin1"
-                onChange={event => {
+                onChange={(event) => {
                   setPassword(event.currentTarget.value);
                   setPasswordError(false);
                 }}

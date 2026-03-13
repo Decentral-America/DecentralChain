@@ -6,7 +6,7 @@ import { filter, make, map, pipe, type Source, subscribe, take, takeUntil, tap }
 import { fromWebExtensionEvent } from '../_core/wonka';
 
 export function fromPostMessage(origin: string, source: MessageEventSource) {
-  return make(observer => {
+  return make((observer) => {
     function handleMessage(event: MessageEvent<unknown>) {
       if (event.origin !== origin || event.source !== source) {
         return;
@@ -24,7 +24,7 @@ export function fromPostMessage(origin: string, source: MessageEventSource) {
 }
 
 export function fromMessagePort(port: MessagePort) {
-  return make(observer => {
+  return make((observer) => {
     function handleMessage(event: MessageEvent<unknown>) {
       observer.next(event.data);
     }
@@ -70,7 +70,7 @@ export function handleMethodCallRequests<K extends string>(
   api: ApiObject<K>,
   sendResponse: (result: 'KEEPER_PONG' | MethodCallResponsePayload<unknown>) => void,
 ) {
-  return tap(async data => {
+  return tap(async (data) => {
     if (data === 'KEEPER_PING') {
       sendResponse('KEEPER_PONG');
       return;
@@ -125,7 +125,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
   responseSource: Source<unknown>,
 ) {
   function ensureConnection() {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       let retryTimeout: ReturnType<typeof setTimeout>;
 
       (function sendPing() {
@@ -135,7 +135,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
 
       pipe(
         responseSource,
-        filter(response => response === 'KEEPER_PONG'),
+        filter((response) => response === 'KEEPER_PONG'),
         take(1),
         subscribe(() => {
           clearTimeout(retryTimeout);
@@ -157,7 +157,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
       return new Promise<Awaited<ReturnType<T[Method]>>>((resolve, reject) => {
         pipe(
           responseSource,
-          map(data =>
+          map((data) =>
             typeof data === 'object' && data != null && 'keeperMethodCallResponse' in data
               ? data.keeperMethodCallResponse
               : undefined,
@@ -185,9 +185,9 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
                     }
                 : undefined,
           ),
-          filter(response => response?.id === request.keeperMethodCallRequest.id),
+          filter((response) => response?.id === request.keeperMethodCallRequest.id),
           take(1),
-          subscribe(response => {
+          subscribe((response) => {
             invariant(response);
 
             if (response.isError) {

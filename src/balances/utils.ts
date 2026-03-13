@@ -1,4 +1,4 @@
-import type { BalancesItem } from './types';
+import { type BalancesItem } from './types';
 
 export function collectBalances(
   obj: Record<string, unknown>,

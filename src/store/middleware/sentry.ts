@@ -1,9 +1,9 @@
 import { addBreadcrumb, setTag } from '@sentry/browser';
 
 import { ACTION } from '../actions/constants';
-import type { AppMiddleware } from '../types';
+import { type AppMiddleware } from '../types';
 
-export const sentryBreadcrumbs: AppMiddleware = () => next => action => {
+export const sentryBreadcrumbs: AppMiddleware = () => (next) => (action) => {
   addBreadcrumb({
     type: 'info',
     category: 'redux.action',

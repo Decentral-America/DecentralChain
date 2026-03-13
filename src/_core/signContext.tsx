@@ -72,12 +72,12 @@ function usePromiseDialogController(initiallyOpen = false) {
 export function SignProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
 
-  const account = usePopupSelector(state => state.selectedAccount);
+  const account = usePopupSelector((state) => state.selectedAccount);
 
   const confirmDialog = usePromiseDialogController();
 
   const createSign: CreateSign = useCallback(
-    onConfirm => async params => {
+    (onConfirm) => async (params) => {
       switch (account?.type) {
         case 'wx':
           try {

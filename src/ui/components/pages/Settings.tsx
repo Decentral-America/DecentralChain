@@ -6,16 +6,16 @@ import Background from 'ui/services/Background';
 import { setUiState } from '../../../store/actions/uiState';
 import { Button, PowerButton } from '../ui';
 import { Tooltip } from '../ui/tooltip';
-import * as styles from './styles/settings.styl';
+import * as styles from './styles/settings.module.styl';
 
 export function Settings() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const autoClickProtection = usePopupSelector(state => state.uiState.autoClickProtection);
+  const autoClickProtection = usePopupSelector((state) => state.uiState.autoClickProtection);
 
-  const showSuspiciousAssets = usePopupSelector(state => state.uiState.showSuspiciousAssets);
+  const showSuspiciousAssets = usePopupSelector((state) => state.uiState.showSuspiciousAssets);
 
   return (
     <div className={styles.content}>
@@ -136,7 +136,7 @@ export function Settings() {
             className={styles.helpTooltip}
             data-testid="clickProtectionTooltip"
           >
-            {props => <i className="helpIcon" data-testid="clickProtectionIcon" {...props} />}
+            {(props) => <i className="helpIcon" data-testid="clickProtectionIcon" {...props} />}
           </Tooltip>
         </div>
 
@@ -168,7 +168,9 @@ export function Settings() {
             className={styles.helpTooltip}
             data-testid="showSuspiciousAssetsTooltip"
           >
-            {props => <i className="helpIcon" data-testid="showSuspiciousAssetsIcon" {...props} />}
+            {(props) => (
+              <i className="helpIcon" data-testid="showSuspiciousAssetsIcon" {...props} />
+            )}
           </Tooltip>
         </div>
       </div>

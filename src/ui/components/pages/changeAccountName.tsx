@@ -1,5 +1,5 @@
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,7 +8,7 @@ import Background from 'ui/services/Background';
 
 import { CONFIG } from '../../appConfig';
 import { Button, ErrorMessage, Input } from '../ui';
-import * as styles from './styles/changeName.styl';
+import * as styles from './styles/changeName.module.styl';
 
 function validateName(name: string, accounts: PreferencesAccount[]) {
   const errors: Array<{ code: number; key: string; msg: string }> = [];
@@ -40,10 +40,12 @@ export function ChangeAccountName() {
   const params = useParams<{ address: string }>();
 
   const dispatch = usePopupDispatch();
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const accounts = usePopupSelector(state => state.accounts);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const accounts = usePopupSelector((state) => state.accounts);
 
-  const account = usePopupSelector(state => state.accounts.find(x => x.address === params.address));
+  const account = usePopupSelector((state) =>
+    state.accounts.find((x) => x.address === params.address),
+  );
 
   const [error, setError] = useState(false);
 
@@ -64,7 +66,7 @@ export function ChangeAccountName() {
       <div className="separator margin-main-big" />
 
       <form
-        onSubmit={async event => {
+        onSubmit={async (event) => {
           event.preventDefault();
 
           await Background.editWalletName(account?.address ?? '', newName, currentNetwork);
@@ -89,7 +91,7 @@ export function ChangeAccountName() {
               setErrors(errors);
               setError(errors.length !== 0);
             }}
-            onChange={event => {
+            onChange={(event) => {
               const newName = event.currentTarget.value;
 
               setNewName(newName);

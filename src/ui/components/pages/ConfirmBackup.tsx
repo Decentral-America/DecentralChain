@@ -1,12 +1,12 @@
-import type { AccountsState } from 'accounts/store/types';
+import { type AccountsState } from 'accounts/store/types';
 import { Component } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import type { NewAccountState } from 'store/reducers/localState';
+import { type NewAccountState } from 'store/reducers/localState';
 import { type WithNavigate, withNavigate } from 'ui/router';
 
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
-import * as styles from './styles/confirmBackup.styl';
+import * as styles from './styles/confirmBackup.module.styl';
 
 interface StateProps {
   account: Extract<NewAccountState, { type: 'seed' }>;
@@ -124,20 +124,20 @@ class ConfirmBackupComponent extends Component<Props, State> {
   }
 
   private _onUnSelect({ id }: PillsListItem) {
-    const selected = this.state.selectedList.filter(item => item.id !== id);
+    const selected = this.state.selectedList.filter((item) => item.id !== id);
     this._setSelected(selected);
   }
 
   private _setSelected(selected: PillsListItem[]) {
     const list = this.state.list;
-    const selectedTextsList = selected.map(item => item.text);
-    const selectedIdsList = selected.map(item => item.id);
+    const selectedTextsList = selected.map((item) => item.text);
+    const selectedIdsList = selected.map((item) => item.id);
 
     const state = {
       selectedList: selected,
       wrongSeed: this.state.seed !== selectedTextsList.join(' '),
       complete: selected.length === list.length,
-      list: this.state.list.map(item => {
+      list: this.state.list.map((item) => {
         item.hidden = selectedIdsList.includes(item.id);
         return item;
       }),
