@@ -137,13 +137,11 @@ export function verify(
   if (!publicKey) throw new Error('No public key provided and transaction has no senderPublicKey');
   const bytes = serialize(obj);
   if (obj.version == null) {
-    const signature = (obj as Record<string, unknown>).signature;
+    const signature = (obj as { signature?: string }).signature;
     if (!signature) throw new Error('Transaction has no signature to verify');
-    return verifySignature(publicKey, bytes, signature as string);
+    return verifySignature(publicKey, bytes, signature);
   }
-  const proofs: string[] | undefined = (obj as Record<string, unknown>).proofs as
-    | string[]
-    | undefined;
+  const proofs: string[] | undefined = (obj as { proofs?: string[] }).proofs;
   if (!Array.isArray(proofs) || proofs.length === 0) {
     throw new Error('Transaction has no proofs to verify');
   }

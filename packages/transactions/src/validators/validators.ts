@@ -50,9 +50,45 @@ export const validatePipe =
 export const prop = (key: string | number) => (value: unknown) =>
   value ? (value as Record<string | number, unknown>)[key] : undefined;
 
-export const lte = (ref: unknown) => (value: unknown) => Number(ref) >= Number(value);
+/** Unbox Number/String wrapper objects to their primitive values. */
+const unbox = (value: unknown): unknown =>
+  value instanceof Number || value instanceof String ? value.valueOf() : value;
 
-export const gte = (ref: unknown) => (value: unknown) => Number(ref) <= Number(value);
+/**
+ * Safely convert a value to BigInt for precision-safe integer validation.
+ * Returns null if the value cannot be represented as a BigInt.
+ */
+const toBigInt = (value: unknown): bigint | null => {
+  try {
+    const v = unbox(value);
+    if (typeof v === 'bigint') return v;
+    if (typeof v === 'number') {
+      if (!Number.isFinite(v) || !Number.isInteger(v)) return null;
+      return BigInt(v);
+    }
+    if (typeof v === 'string') {
+      const trimmed = v.trim();
+      if (/^-?\d+$/.test(trimmed)) return BigInt(trimmed);
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+export const lte = (ref: unknown) => (value: unknown) => {
+  const bigRef = toBigInt(ref);
+  const bigVal = toBigInt(value);
+  if (bigRef !== null && bigVal !== null) return bigRef >= bigVal;
+  return Number(ref) >= Number(value);
+};
+
+export const gte = (ref: unknown) => (value: unknown) => {
+  const bigRef = toBigInt(ref);
+  const bigVal = toBigInt(value);
+  if (bigRef !== null && bigVal !== null) return bigRef <= bigVal;
+  return Number(ref) <= Number(value);
+};
 
 export const ifElse =
   // biome-ignore lint/suspicious/noExplicitAny: Generic branching combinator — condition/branch callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
@@ -64,8 +100,12 @@ export const isEq =
   <T>(reference: T) =>
   (value: unknown) => {
     switch (true) {
-      case isNumber(value) && isNumber(reference):
+      case isNumber(value) && isNumber(reference): {
+        const bigVal = toBigInt(value);
+        const bigRef = toBigInt(reference);
+        if (bigVal !== null && bigRef !== null) return bigVal === bigRef;
         return Number(value) === Number(reference);
+      }
       case isString(value) && isString(reference):
         return String(reference) === String(value);
       case isBoolean(value) && isBoolean(reference):
@@ -83,29 +123,71 @@ export const isRequired = (required: boolean) => (value: unknown) => !required |
 export const isString = (value: unknown) => typeof value === 'string' || value instanceof String;
 
 export const isNumber = (value: unknown) =>
-  (typeof value === 'number' || value instanceof Number) && !Number.isNaN(Number(value));
+  (typeof value === 'number' || value instanceof Number) &&
+  !Number.isNaN(value instanceof Number ? value.valueOf() : value);
+
+/**
+ * Check if a value represents a valid, finite number.
+ * Uses string analysis for large integer strings to avoid Number() precision loss.
+ */
+const isFiniteNumeric = (value: unknown): boolean => {
+  const v = unbox(value);
+  if (typeof v === 'number') return !Number.isNaN(v) && Number.isFinite(v);
+  if (typeof v === 'bigint') return true;
+  if (typeof v === 'string') {
+    const trimmed = v.trim();
+    if (trimmed === '') return false;
+    if (/^-?\d+$/.test(trimmed)) return true;
+    const num = Number(trimmed);
+    return !Number.isNaN(num) && Number.isFinite(num);
+  }
+  return false;
+};
+
+/**
+ * Safely check if a numeric value is strictly positive (> 0)
+ * without Number() precision loss for large integer strings.
+ */
+const isPositiveNumeric = (value: unknown): boolean => {
+  const v = unbox(value);
+  if (typeof v === 'number') return Number.isFinite(v) && v > 0;
+  if (typeof v === 'bigint') return v > 0n;
+  const big = toBigInt(v);
+  if (big !== null) return big > 0n;
+  if (typeof v === 'string') {
+    const num = Number(v);
+    return Number.isFinite(num) && num > 0;
+  }
+  return false;
+};
+
+/**
+ * Safely check if a numeric value is non-negative (>= 0)
+ * without Number() precision loss for large integer strings.
+ */
+const isNonNegativeNumeric = (value: unknown): boolean => {
+  const v = unbox(value);
+  if (typeof v === 'number') return Number.isFinite(v) && v >= 0;
+  if (typeof v === 'bigint') return v >= 0n;
+  const big = toBigInt(v);
+  if (big !== null) return big >= 0n;
+  if (typeof v === 'string') {
+    const num = Number(v);
+    return Number.isFinite(num) && num >= 0;
+  }
+  return false;
+};
 
 export const isNumberLike = (value: unknown) =>
-  value != null &&
-  !Number.isNaN(Number(value)) &&
-  Number.isFinite(Number(value)) &&
-  !!(value || value === 0);
+  value != null && isFiniteNumeric(value) && !!(value || value === 0);
 
-export const isNaturalNumberLike = (value: unknown) =>
-  value != null &&
-  !Number.isNaN(Number(value)) &&
-  Number.isFinite(Number(value)) &&
-  Number(value) > 0;
+export const isNaturalNumberLike = (value: unknown) => value != null && isPositiveNumeric(value);
 
 export const isNaturalNumberOrZeroLike = (value: unknown) =>
-  value != null &&
-  !Number.isNaN(Number(value)) &&
-  Number.isFinite(Number(value)) &&
-  Number(value) >= 0;
+  value != null && isNonNegativeNumeric(value);
 
 export const isNaturalNumberOrNullLike = (value: unknown) =>
-  (!Number.isNaN(Number(value)) && Number.isFinite(Number(value)) && Number(value) > 0) ||
-  value === null;
+  isPositiveNumeric(value) || value === null;
 
 export const isBoolean = (value: unknown) =>
   value != null && (typeof value === 'boolean' || value instanceof Boolean);
