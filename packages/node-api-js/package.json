@@ -6,56 +6,56 @@
   "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     },
     "./api-node/transactions": {
-      "types": "./dist/api-node/transactions/index.d.ts",
+      "types": "./dist/api-node/transactions/index.d.mts",
       "default": "./dist/api-node/transactions/index.mjs"
     },
     "./api-node/blocks": {
-      "types": "./dist/api-node/blocks/index.d.ts",
+      "types": "./dist/api-node/blocks/index.d.mts",
       "default": "./dist/api-node/blocks/index.mjs"
     },
     "./api-node/addresses": {
-      "types": "./dist/api-node/addresses/index.d.ts",
+      "types": "./dist/api-node/addresses/index.d.mts",
       "default": "./dist/api-node/addresses/index.mjs"
     },
     "./api-node/assets": {
-      "types": "./dist/api-node/assets/index.d.ts",
+      "types": "./dist/api-node/assets/index.d.mts",
       "default": "./dist/api-node/assets/index.mjs"
     },
     "./api-node/rewards": {
-      "types": "./dist/api-node/rewards/index.d.ts",
+      "types": "./dist/api-node/rewards/index.d.mts",
       "default": "./dist/api-node/rewards/index.mjs"
     },
     "./api-node/debug": {
-      "types": "./dist/api-node/debug/index.d.ts",
+      "types": "./dist/api-node/debug/index.d.mts",
       "default": "./dist/api-node/debug/index.mjs"
     },
     "./api-node/alias": {
-      "types": "./dist/api-node/alias/index.d.ts",
+      "types": "./dist/api-node/alias/index.d.mts",
       "default": "./dist/api-node/alias/index.mjs"
     },
     "./api-node/node": {
-      "types": "./dist/api-node/node/index.d.ts",
+      "types": "./dist/api-node/node/index.d.mts",
       "default": "./dist/api-node/node/index.mjs"
     },
     "./api-node/peers": {
-      "types": "./dist/api-node/peers/index.d.ts",
+      "types": "./dist/api-node/peers/index.d.mts",
       "default": "./dist/api-node/peers/index.mjs"
     },
     "./api-node/leasing": {
-      "types": "./dist/api-node/leasing/index.d.ts",
+      "types": "./dist/api-node/leasing/index.d.mts",
       "default": "./dist/api-node/leasing/index.mjs"
     },
     "./api-node/eth": {
-      "types": "./dist/api-node/eth/index.d.ts",
+      "types": "./dist/api-node/eth/index.d.mts",
       "default": "./dist/api-node/eth/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -82,7 +82,7 @@
     "url": "https://github.com/Decentral-America/node-api-js/issues"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:watch": "vitest",
@@ -137,7 +137,7 @@
     "@vitest/coverage-v8": "4.0.18",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
-    "tsup": "8.5.1",
+    "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "undici-types": "7.22.0",
     "vitest": "4.0.18"

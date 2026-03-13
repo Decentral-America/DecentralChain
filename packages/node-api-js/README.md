@@ -127,7 +127,7 @@ npm install
 
 | Command                    | Description                           |
 | -------------------------- | ------------------------------------- |
-| `npm run build`            | Build distribution files (tsup)       |
+| `npm run build`            | Build distribution files (tsdown)       |
 | `npm test`                 | Run unit tests (Vitest)               |
 | `npm run test:integration` | Run integration tests (requires node) |
 | `npm run test:watch`       | Tests in watch mode                   |
