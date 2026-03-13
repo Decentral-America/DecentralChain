@@ -106,7 +106,7 @@ describe('Messages', () => {
     expect(await MessagesScreen.messages).not.toHaveLength(0);
 
     await MessagesScreen.closeButton.click();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: messageWindow is guaranteed non-null here
     await Windows.waitForWindowToClose(messageWindow!);
     messageWindow = null;
     await browser.switchToWindow(tabOrigin);
@@ -167,7 +167,6 @@ describe('Messages', () => {
     const { waitForNewWindows } = await Windows.captureNewWindows();
     for (let success = 0; success < 2; ) {
       await ContentScript.waitForCubensisConnect();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await browser.executeAsync<any, []>(sendNotification);
 
       if (result?.code === '18') {
@@ -191,7 +190,7 @@ describe('Messages', () => {
     await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotification);
     expect(messageWindow).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: asserted non-null on previous line
     await browser.switchToWindow(messageWindow!);
     await browser.refresh();
 

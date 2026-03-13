@@ -1,7 +1,6 @@
 import waitForExpect from 'wait-for-expect';
 
 import { AccountInfoScreen } from './helpers/AccountInfoScreen';
-import { BROWSER_NODE_URL } from './utils/hooks';
 import { CustomNetworkModal } from './helpers/CustomNetworkModal';
 import { EmptyHomeScreen } from './helpers/EmptyHomeScreen';
 import { AccountsHome } from './helpers/flows/AccountsHome';
@@ -11,21 +10,22 @@ import { HomeScreen } from './helpers/HomeScreen';
 import { NetworksMenu } from './helpers/NetworksMenu';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
+import { BROWSER_NODE_URL } from './utils/hooks';
 
-describe('Network management', function () {
+describe('Network management', () => {
   let tabKeeper: string;
 
   beforeAll(async () => {
     await App.initVault();
   });
 
-  afterAll(async function () {
+  afterAll(async () => {
     await Network.switchToAndCheck('Mainnet');
     await App.closeBgTabs(tabKeeper);
     await App.resetVault();
   });
 
-  describe('Switching networks', function () {
+  describe('Switching networks', () => {
     it('Stagenet', async () => {
       await Network.switchToAndCheck('Stagenet');
     });
@@ -34,12 +34,12 @@ describe('Network management', function () {
       await Network.switchToAndCheck('Mainnet');
     });
 
-    describe('Testnet', function () {
+    describe('Testnet', () => {
       it('Successfully switched', async () => {
         await Network.switchToAndCheck('Testnet');
       });
 
-      it('Imported testnet account starts with 3N or 3M', async function () {
+      it('Imported testnet account starts with 3N or 3M', async () => {
         tabKeeper = await browser.getWindowHandle();
 
         const { waitForNewWindows } = await Windows.captureNewWindows();
@@ -50,10 +50,7 @@ describe('Network management', function () {
         await browser.refresh();
 
         // TODO: Update seed phrase when DCC test node genesis config is set up
-        await AccountsHome.importAccount(
-          'rich',
-          'waves private node seed with waves tokens',
-        );
+        await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
         await browser.switchToWindow(tabKeeper);
 
         await HomeScreen.activeAccountCard.click();
@@ -65,11 +62,11 @@ describe('Network management', function () {
       });
     });
 
-    describe('Custom', function () {
+    describe('Custom', () => {
       const invalidNodeUrl = 'https://nodes.invalid.com';
       const customNetwork = 'Custom';
 
-      it('Successfully switched', async function () {
+      it('Successfully switched', async () => {
         await Network.switchTo(customNetwork);
 
         await CustomNetworkModal.addressInput.setValue(BROWSER_NODE_URL);
@@ -78,36 +75,32 @@ describe('Network management', function () {
         await Network.checkNetwork(customNetwork);
       });
 
-      describe('Changing network settings by "Edit" button', function () {
-        beforeAll(async function () {
+      describe('Changing network settings by "Edit" button', () => {
+        beforeAll(async () => {
           await NetworksMenu.editButton.click();
           await expect(CustomNetworkModal.root).toBeDisplayed();
         });
 
-        beforeEach(async function () {
+        beforeEach(async () => {
           await CustomNetworkModal.addressInput.clearValue();
           await CustomNetworkModal.matcherAddressInput.clearValue();
         });
 
-        it('Node address is required field', async function () {
+        it('Node address is required field', async () => {
           await CustomNetworkModal.saveButton.click();
-          await expect(CustomNetworkModal.addressError).toHaveText(
-            'URL is required',
-          );
+          await expect(CustomNetworkModal.addressError).toHaveText('URL is required');
         });
 
-        it('The address of non-existed node was entered', async function () {
+        it('The address of non-existed node was entered', async () => {
           await CustomNetworkModal.addressInput.setValue(invalidNodeUrl);
           await CustomNetworkModal.saveButton.click();
 
           await waitForExpect(async () => {
-            await expect(CustomNetworkModal.addressError).toHaveText(
-              'Incorrect node address',
-            );
+            await expect(CustomNetworkModal.addressError).toHaveText('Incorrect node address');
           });
         });
 
-        it('Matcher address is not required field', async function () {
+        it('Matcher address is not required field', async () => {
           await CustomNetworkModal.addressInput.setValue(BROWSER_NODE_URL);
           await CustomNetworkModal.saveButton.click();
 

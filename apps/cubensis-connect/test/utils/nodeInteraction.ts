@@ -6,7 +6,7 @@ import {
   signBytes,
   utf8Encode,
 } from '@decentralchain/crypto';
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 import { makeTxBytes, stringifyTransaction } from '../../src/messages/utils';
 import { DEFAULT_MINER_SEED } from './constants';
