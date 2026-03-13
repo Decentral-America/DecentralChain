@@ -80,8 +80,8 @@ class AnyOfClass implements IAnyOf {
     );
     return (
       row && {
-        schema: row[1],
         key: row[0],
+        schema: row[1],
         strKey: row[2],
       }
     );
@@ -91,8 +91,8 @@ class AnyOfClass implements IAnyOf {
     const row = this._items.find(([key]) => key === k);
     return (
       row && {
-        schema: row[1],
         key: row[0],
+        schema: row[1],
         strKey: row[2] || row[0].toString(10),
       }
     );
