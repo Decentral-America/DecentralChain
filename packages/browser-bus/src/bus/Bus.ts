@@ -94,7 +94,7 @@ export class Bus<
         },
       };
 
-      this._adapter.send({ id, type: EventType.Action, name, data });
+      this._adapter.send({ data, id, name, type: EventType.Action });
       console.info(`Request with name "${String(name)}"`, data);
     });
   }
@@ -220,8 +220,8 @@ export class Bus<
   ): this {
     this._eventHandlers[name] ??= [];
     this._eventHandlers[name].push({
-      handler: handler as IOneArgFunction<unknown, void>,
       context,
+      handler: handler as IOneArgFunction<unknown, void>,
       once,
     });
 
@@ -255,10 +255,10 @@ export class Bus<
     const sendError = (error: Error) => {
       console.error(error);
       this._adapter.send({
-        id: message.id,
-        type: EventType.Response,
-        status: ResponseStatus.Error,
         content: Bus._dataToMessage(error),
+        id: message.id,
+        status: ResponseStatus.Error,
+        type: EventType.Response,
       });
     };
 
@@ -276,18 +276,18 @@ export class Bus<
       if (Bus._isPromise(result)) {
         result.then((data: unknown) => {
           this._adapter.send({
-            id: message.id,
-            type: EventType.Response,
-            status: ResponseStatus.Success,
             content: Bus._dataToMessage(data),
+            id: message.id,
+            status: ResponseStatus.Success,
+            type: EventType.Response,
           });
         }, sendError);
       } else {
         this._adapter.send({
-          id: message.id,
-          type: EventType.Response,
-          status: ResponseStatus.Success,
           content: Bus._dataToMessage(result),
+          id: message.id,
+          status: ResponseStatus.Success,
+          type: EventType.Response,
         });
       }
     } catch (e) {
@@ -332,9 +332,9 @@ export class Bus<
 
   private static _createEvent(eventName: string, data: unknown): IEventData {
     return {
-      type: EventType.Event,
-      name: eventName,
       data,
+      name: eventName,
+      type: EventType.Event,
     };
   }
 
@@ -350,14 +350,14 @@ export class Bus<
   private static _dataToMessage(data: unknown): IInternalMessage {
     if (data instanceof Error) {
       return {
-        type: 'error',
         content: data.message,
         name: data.name,
+        type: 'error',
         // Stack traces intentionally omitted — sending them over postMessage
         // would leak internal code paths to potentially untrusted windows.
       };
     }
-    return { type: 'data', content: data };
+    return { content: data, type: 'data' };
   }
 
   private static _messageToData(message: unknown): unknown {
