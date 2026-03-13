@@ -2,18 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
-    include: ['test/**/*.spec.ts'],
-    exclude: [
-      'test/integration/**',
-      'test/test.spec.ts',
-      'test/nodeInteraction.spec.ts',
-      'test/proto-serialize.spec.ts',
-    ],
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
       exclude: ['src/index.ts'],
+      include: ['src/**/*.ts'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 70,
@@ -22,6 +15,14 @@ export default defineConfig({
         statements: 70,
       },
     },
+    exclude: [
+      'test/integration/**',
+      'test/test.spec.ts',
+      'test/nodeInteraction.spec.ts',
+      'test/proto-serialize.spec.ts',
+    ],
+    globals: true,
+    include: ['test/**/*.spec.ts'],
     reporters: ['default'],
     testTimeout: 30000,
   },
