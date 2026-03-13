@@ -86,8 +86,8 @@ export abstract class Adapter {
   public signCustomData(data: string | number[] | Uint8Array) {
     const bytes = typeof data === 'string' ? stringToBytes(data) : Uint8Array.from(data);
     const serializeData = {
-      version: 1,
       binary: libs.crypto.base64Encode(bytes),
+      version: 1,
     } as unknown as Parameters<typeof serializeCustomData>[0];
     const binary = serializeCustomData(serializeData);
     return this.signRequest(binary, { type: 'customData', ...serializeData });
@@ -115,11 +115,11 @@ export abstract class Adapter {
       const data = `${netByte}:${clientId}:${String(seconds)}`;
       return this.signCustomData(data).then((signature) => {
         return {
-          signature,
-          publicKey,
-          seconds,
           clientId,
           networkByte: this._code,
+          publicKey,
+          seconds,
+          signature,
         };
       });
     });
