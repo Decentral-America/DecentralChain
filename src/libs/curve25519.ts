@@ -105,7 +105,7 @@ function generateKeyPair(seed: Uint8Array): KeyPair {
   // Clear sign bit from public key (Montgomery u-coordinate)
   pk[31] = (pk[31] as number) & 127;
 
-  return { public: pk, private: sk };
+  return { private: sk, public: pk };
 }
 
 /**

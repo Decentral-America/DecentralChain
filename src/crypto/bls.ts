@@ -8,6 +8,7 @@ import { type TBinaryIn, type TBLSKeyPair, type TBytes } from './interface';
 
 const DST = new TextEncoder().encode('BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_');
 const BLS_KEYGEN_SALT_BASE = new TextEncoder().encode('BLS-SIG-KEYGEN-SALT-');
+// biome-ignore lint/security/noSecrets: BLS12-381 curve order, not a secret
 const CURVE_ORDER = BigInt('0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001');
 const bls = bls12_381.longSignatures;
 
@@ -43,7 +44,7 @@ export const blsPublicKey = (secretKey: TBinaryIn): TBytes => {
 export const blsKeyPair = (seed: TBinaryIn): TBLSKeyPair => {
   const secretKey = mkBlsSecretKey(_fromIn(seed));
   const publicKey = blsPublicKey(secretKey);
-  return { blsSecret: secretKey, blsPublic: publicKey };
+  return { blsPublic: publicKey, blsSecret: secretKey };
 };
 
 /** Sign a message using BLS12-381 (hash-to-curve with long signatures). */
