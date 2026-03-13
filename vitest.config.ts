@@ -2,10 +2,10 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ['test/**/*.test.ts'],
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
       include: ['src/**/*.ts'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 15,
@@ -14,5 +14,6 @@ export default defineConfig({
         statements: 15,
       },
     },
+    include: ['test/**/*.test.ts'],
   },
 });
