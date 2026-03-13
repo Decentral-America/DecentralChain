@@ -3,19 +3,19 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { create, type IOptions } from '../src/parse-json-bignumber.js';
 
 const options: IOptions<BigNumber> = {
-  strict: false,
-  parse: (long: string): BigNumber => new BigNumber(long),
-  stringify: (long: BigNumber): string => long.toFixed(),
   isInstance: (some: unknown): some is BigNumber =>
     some != null && (some instanceof BigNumber || BigNumber.isBigNumber(some)),
+  parse: (long: string): BigNumber => new BigNumber(long),
+  strict: false,
+  stringify: (long: BigNumber): string => long.toFixed(),
 };
 
 const strictOptions: IOptions<BigNumber> = {
-  strict: true,
-  parse: (long: string): BigNumber => new BigNumber(long),
-  stringify: (long: BigNumber): string => long.toFixed(),
   isInstance: (some: unknown): some is BigNumber =>
     some != null && (some instanceof BigNumber || BigNumber.isBigNumber(some)),
+  parse: (long: string): BigNumber => new BigNumber(long),
+  strict: true,
+  stringify: (long: BigNumber): string => long.toFixed(),
 };
 
 describe('lib', () => {
