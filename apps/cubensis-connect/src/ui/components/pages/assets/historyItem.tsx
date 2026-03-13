@@ -3,7 +3,7 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { type Long, TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { MessageIcon } from 'messages/_common/icon';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { InfoIcon } from '../../../../icons/info';
@@ -21,11 +21,11 @@ interface Props {
 
 export function HistoryItem({ tx, className }: Props) {
   const { t } = useTranslation();
-  const address = usePopupSelector(state => state.selectedAccount?.address);
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
-  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
-  const assets = usePopupSelector(state => state.assets);
-  const aliases = usePopupSelector(state =>
+  const address = usePopupSelector((state) => state.selectedAccount?.address);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
+  const chainId = usePopupSelector((state) => state.selectedAccount?.networkCode?.charCodeAt(0));
+  const assets = usePopupSelector((state) => state.assets);
+  const aliases = usePopupSelector((state) =>
     address ? state.balances[address]?.aliases : undefined,
   );
   const addressAlias = [address, ...(aliases || [])];
@@ -329,7 +329,7 @@ export function HistoryItem({ tx, className }: Props) {
         const payment = tx.payment?.[0];
         const fromBalance = payment && fromCoins(payment.amount, payment.assetId);
 
-        const incomingTransfer = tx.stateChanges?.transfers.find(t => t.address === tx.sender);
+        const incomingTransfer = tx.stateChanges?.transfers.find((t) => t.address === tx.sender);
 
         const toBalance =
           incomingTransfer && fromCoins(incomingTransfer.amount, incomingTransfer.asset);
@@ -414,7 +414,7 @@ export function HistoryItem({ tx, className }: Props) {
         content={`${(isTxFailed && t('historyCard.failed')) || ''} ${tooltip}`}
         placement="right"
       >
-        {props => (
+        {(props) => (
           <div
             className={clsx(
               styles.historyIconWrapper,
@@ -450,7 +450,7 @@ export function HistoryItem({ tx, className }: Props) {
       </div>
 
       <Tooltip content={t('historyCard.infoTooltip')}>
-        {props => (
+        {(props) => (
           <button
             className={styles.infoButton}
             type="button"

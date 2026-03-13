@@ -1,6 +1,6 @@
-import type { TransactionFromNode } from '@decentralchain/ts-types';
-import type { AssetDetail } from 'assets/types';
-import type { NetworkName } from 'networks/types';
+import { type TransactionFromNode } from '@decentralchain/ts-types';
+import { type AssetDetail } from 'assets/types';
+import { type NetworkName } from 'networks/types';
 
 export interface AssetBalance {
   balance: string;

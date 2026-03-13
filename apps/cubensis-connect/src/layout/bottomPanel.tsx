@@ -26,9 +26,9 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const customMatcher = usePopupSelector(state => state.customMatcher);
-  const customNodes = usePopupSelector(state => state.customNodes);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const customMatcher = usePopupSelector((state) => state.customMatcher);
+  const customNodes = usePopupSelector((state) => state.customNodes);
 
   const setNewNetwork = async (network: NetworkName) => {
     dispatch(setLoading(true));
@@ -81,7 +81,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
   return (
     <div className={styles.root}>
       <Tooltip className={styles.networkTooltipContent} content={t('bottom.network.disabled')}>
-        {props => (
+        {(props) => (
           <div className={styles.network} {...(allowChangingNetwork ? undefined : props)}>
             <button
               type="button"
@@ -114,9 +114,9 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
             {isDropdownShown && (
               <div ref={dropdownRef} className={styles.dropdown}>
                 {(Object.keys(NETWORK_CONFIG) as NetworkName[])
-                  .filter(network => network !== currentNetwork)
+                  .filter((network) => network !== currentNetwork)
                   .concat(currentNetwork)
-                  .map(network => {
+                  .map((network) => {
                     const isSelected = currentNetwork === network;
 
                     return (

@@ -1,5 +1,5 @@
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import { ExportPasswordModal } from './passwordModal';
 export function ExportAccounts() {
   const navigate = useNavigate();
 
-  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
+  const allNetworksAccounts = usePopupSelector((state) => state.allNetworksAccounts);
 
   const [accountsToExport, setAccountsToExport] = useState<PreferencesAccount[] | null>(null);
 
@@ -19,7 +19,7 @@ export function ExportAccounts() {
       <ExportKeystoreChooseItems
         items={allNetworksAccounts}
         type="accounts"
-        onSubmit={accounts => {
+        onSubmit={(accounts) => {
           setAccountsToExport(accounts);
         }}
       />
@@ -30,7 +30,7 @@ export function ExportAccounts() {
           onClose={() => {
             setAccountsToExport(null);
           }}
-          onSubmit={async password => {
+          onSubmit={async (password) => {
             await downloadKeystore(accountsToExport, undefined, password);
             navigate(-2);
           }}

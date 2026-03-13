@@ -8,7 +8,7 @@ import {
   utf8Encode,
 } from '@decentralchain/crypto';
 import { EventEmitter } from 'events';
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 import { DebugWallet } from 'wallets/debug';
@@ -16,15 +16,15 @@ import { EncodedSeedWallet } from 'wallets/encodedSeed';
 import { type LedgerApi, LedgerWallet } from 'wallets/ledger';
 import { PrivateKeyWallet } from 'wallets/privateKey';
 import { SeedWallet } from 'wallets/seed';
-import type { CreateWalletInput, WalletPrivateData } from 'wallets/types';
-import type { Wallet } from 'wallets/wallet';
+import { type CreateWalletInput, type WalletPrivateData } from 'wallets/types';
+import { type Wallet } from 'wallets/wallet';
 import { WxWallet } from 'wallets/wx';
 
 import { NETWORK_CONFIG } from '../constants';
-import type { ExtensionStorage } from '../storage/storage';
-import type { AssetInfoController } from './assetInfo';
-import type { IdentityApi } from './IdentityController';
-import type { TrashController } from './trash';
+import { type ExtensionStorage } from '../storage/storage';
+import { type AssetInfoController } from './assetInfo';
+import { type IdentityApi } from './IdentityController';
+import { type TrashController } from './trash';
 
 async function encryptVault(input: WalletPrivateData[], password: string) {
   const json = JSON.stringify(input);
@@ -153,7 +153,7 @@ export class WalletController extends EventEmitter {
     invariant(this.#password);
 
     const vault = await encryptVault(
-      this.#wallets.map(wallet => wallet.data),
+      this.#wallets.map((wallet) => wallet.data),
       this.#password,
     );
 
@@ -171,14 +171,14 @@ export class WalletController extends EventEmitter {
     const decryptedVault = await decryptVault(vault, password);
 
     this.#wallets = await Promise.all(
-      decryptedVault.map(user => this.#createWallet(user, user.network, user.networkCode)),
+      decryptedVault.map((user) => this.#createWallet(user, user.network, user.networkCode)),
     );
 
     this.emit('updateWallets');
   }
 
   #getWalletsByNetwork(network: NetworkName) {
-    return this.#wallets.filter(wallet => wallet.data.network === network);
+    return this.#wallets.filter((wallet) => wallet.data.network === network);
   }
 
   #setPassword(password: string | null) {
@@ -208,7 +208,7 @@ export class WalletController extends EventEmitter {
     const wallet = await this.#createWallet(input, network, networkCode);
 
     const foundWallet = this.#getWalletsByNetwork(network).find(
-      w => w.data.address === wallet.data.address,
+      (w) => w.data.address === wallet.data.address,
     );
 
     if (foundWallet) {
@@ -228,14 +228,14 @@ export class WalletController extends EventEmitter {
     inputs: Array<CreateWalletInput & { network: NetworkName; networkCode: string }>,
   ) {
     const newWallets = await Promise.all(
-      inputs.map(input => this.#createWallet(input, input.network, input.networkCode)),
+      inputs.map((input) => this.#createWallet(input, input.network, input.networkCode)),
     );
 
     this.#wallets.push(...newWallets);
 
     await this.#saveWallets();
 
-    newWallets.forEach(wallet => {
+    newWallets.forEach((wallet) => {
       this.emit('addWallet', wallet);
     });
 
@@ -243,12 +243,12 @@ export class WalletController extends EventEmitter {
   }
 
   async removeWallet(address: string, network: NetworkName) {
-    const wallet = this.#getWalletsByNetwork(network).find(w => w.data.address === address);
+    const wallet = this.#getWalletsByNetwork(network).find((w) => w.data.address === address);
 
     if (!wallet) return;
 
     await this.#putWalletIntoTrash(wallet);
-    this.#wallets = this.#wallets.filter(w => w !== wallet);
+    this.#wallets = this.#wallets.filter((w) => w !== wallet);
     await this.#saveWallets();
     this.emit('removeWallet', wallet);
     this.emit('updateWallets');
@@ -277,7 +277,7 @@ export class WalletController extends EventEmitter {
   }
 
   getAccounts() {
-    return this.#wallets.map(wallet => wallet.getAccount());
+    return this.#wallets.map((wallet) => wallet.getAccount());
   }
 
   async initVault(password: string) {
@@ -286,9 +286,9 @@ export class WalletController extends EventEmitter {
   }
 
   async deleteVault() {
-    await Promise.all(this.#wallets.map(wallet => this.#putWalletIntoTrash(wallet)));
+    await Promise.all(this.#wallets.map((wallet) => this.#putWalletIntoTrash(wallet)));
 
-    this.#wallets.forEach(wallet => {
+    this.#wallets.forEach((wallet) => {
       this.emit('removeWallet', wallet);
     });
 
@@ -317,13 +317,13 @@ export class WalletController extends EventEmitter {
     await this.#restoreWallets(password);
     this.#setPassword(password);
 
-    if (this.#wallets.some(wallet => !wallet.data.network)) {
+    if (this.#wallets.some((wallet) => !wallet.data.network)) {
       const networks = Object.fromEntries(
-        Object.values(NETWORK_CONFIG).map(net => [net.networkCode, net.name]),
+        Object.values(NETWORK_CONFIG).map((net) => [net.networkCode, net.name]),
       );
 
       this.#wallets = await Promise.all(
-        this.#wallets.map(wallet =>
+        this.#wallets.map((wallet) =>
           this.#createWallet(
             wallet.data,
             networks[wallet.data.networkCode],
@@ -339,7 +339,7 @@ export class WalletController extends EventEmitter {
   }
 
   getWallet(address: string, network: NetworkName) {
-    const wallet = this.#getWalletsByNetwork(network).find(w => w.data.address === address);
+    const wallet = this.#getWalletsByNetwork(network).find((w) => w.data.address === address);
 
     if (!wallet) throw new Error(`Wallet not found for address ${address}`);
 

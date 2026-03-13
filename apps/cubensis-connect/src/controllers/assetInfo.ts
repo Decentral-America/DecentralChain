@@ -1,13 +1,13 @@
 import { isNotNull } from '_core/isNotNull';
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 import { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
 import { defaultAssetTickers } from '../assets/constants';
-import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
-import type { NetworkController } from './network';
-import type { RemoteConfigController } from './remoteConfig';
+import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';
+import { type NetworkController } from './network';
+import { type RemoteConfigController } from './remoteConfig';
 
 // 'WAVES' is the protocol-level native asset ID — do not rename.
 const NATIVE_ASSET: AssetDetail = {
@@ -153,7 +153,7 @@ export class AssetInfoController {
   addTickersForExistingAssets() {
     const { assets, assetTickers } = this.store.getState();
 
-    const assetIdsToUpdate = Object.keys(assetTickers).filter(assetId => {
+    const assetIdsToUpdate = Object.keys(assetTickers).filter((assetId) => {
       const asset = assets.mainnet[assetId];
       const ticker = assetTickers[assetId];
 
@@ -161,7 +161,7 @@ export class AssetInfoController {
     });
 
     if (assetIdsToUpdate.length !== 0) {
-      assetIdsToUpdate.forEach(assetId => {
+      assetIdsToUpdate.forEach((assetId) => {
         const asset = assets.mainnet[assetId];
         if (!asset) return;
         const ticker = assetTickers[assetId];
@@ -216,7 +216,7 @@ export class AssetInfoController {
         case 200: {
           const assetInfo = (await resp
             .text()
-            .then(text =>
+            .then((text) =>
               JSON.parse(text.replace(/(".+?"[ \t\n]*:[ \t\n]*)(\d{15,})/gm, '$1"$2"')),
             )) as AssetInfoResponseItem;
 
@@ -311,8 +311,8 @@ export class AssetInfoController {
       new Set(
         assetIds
           .filter(isNotNull)
-          .filter(id => id !== 'WAVES')
-          .filter(assetId => {
+          .filter((id) => id !== 'WAVES')
+          .filter((assetId) => {
             const asset = assets[network][assetId];
 
             return ignoreCache || !asset || this.isMaxAgeExceeded(asset.lastUpdated);
@@ -332,7 +332,7 @@ export class AssetInfoController {
         assetIdsToFetch.slice(i, i + maxAssetsPerRequest),
       );
 
-      assetInfos.forEach(assetInfo => {
+      assetInfos.forEach((assetInfo) => {
         assets[network][assetInfo.assetId] = {
           ...assets[network][assetInfo.assetId],
           ...this.toAssetDetails(assetInfo),

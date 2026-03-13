@@ -1,9 +1,9 @@
 import { deepEqual } from 'fast-equals';
-import type { StorageLocalState } from 'storage/storage';
+import { type StorageLocalState } from 'storage/storage';
 import { ACTION } from 'store/actions/constants';
-import type { AppAction } from 'store/types';
+import { type AppAction } from 'store/types';
 
-import type { AccountsStore } from './store/types';
+import { type AccountsStore } from './store/types';
 
 function getParam<S, D>(param: S, defaultParam: D) {
   if (param) {
@@ -92,7 +92,7 @@ export function createUpdateState(store: AccountsStore) {
 
       actions.push({
         type: ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS,
-        payload: accounts.filter(account => account.network === network),
+        payload: accounts.filter((account) => account.network === network),
       });
     }
 

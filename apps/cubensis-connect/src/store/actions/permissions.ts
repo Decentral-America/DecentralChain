@@ -1,4 +1,4 @@
-import type { AppActionOfType } from '../types';
+import { type AppActionOfType } from '../types';
 import { ACTION } from './constants';
 
 export const allowOrigin = (origin: string): AppActionOfType<typeof ACTION.PERMISSIONS.ALLOW> => ({

@@ -27,7 +27,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
     [observedAssetIds],
   );
 
-  const usdPrices = usePopupSelector(state => state.usdPrices);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
   const usdPricesRef = useRef(usdPrices);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
 
     async function update({ firstRun }: { firstRun?: true } = {}) {
       try {
-        if (!firstRun || assetIdsToFetch.some(assetId => usdPricesRef.current[assetId] == null)) {
+        if (!firstRun || assetIdsToFetch.some((assetId) => usdPricesRef.current[assetId] == null)) {
           await Background.updateUsdPricesByAssetIds(assetIdsToFetch);
         }
       } finally {
@@ -63,10 +63,10 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
   }, [assetIdsToFetch]);
 
   const observe = useCallback((assetIds: string[]) => {
-    setObservedAssetIds(ids => [...ids, assetIds]);
+    setObservedAssetIds((ids) => [...ids, assetIds]);
 
     return () => {
-      setObservedAssetIds(prev => prev.filter(ids => ids !== assetIds));
+      setObservedAssetIds((prev) => prev.filter((ids) => ids !== assetIds));
     };
   }, []);
 
@@ -74,7 +74,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useUsdPrices(assetIds: string[]) {
-  const isMainnet = usePopupSelector(state => state.currentNetwork === NetworkName.Mainnet);
+  const isMainnet = usePopupSelector((state) => state.currentNetwork === NetworkName.Mainnet);
 
   const observe = useContext(UsdPricesContext);
   invariant(observe);
@@ -87,7 +87,7 @@ export function useUsdPrices(assetIds: string[]) {
     return observe(assetIds);
   }, [observe, assetIds, isMainnet]);
 
-  const usdPrices = usePopupSelector(state => state.usdPrices);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
 
   return useMemo(() => {
     const assetIdsSet = new Set(assetIds);

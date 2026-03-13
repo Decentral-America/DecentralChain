@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 
 import { BigLogo } from '../head';
-import * as styles from './styles/info.styl';
+import * as styles from './styles/info.module.styl';
 
 class InfoComponent extends Component<WithTranslation> {
   render() {

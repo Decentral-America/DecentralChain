@@ -3,7 +3,7 @@ import { PureComponent } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { Pill } from './Pill';
-import * as styles from './pills.styl';
+import * as styles from './pills.module.styl';
 
 export interface PillsListItem {
   id: number;
@@ -28,7 +28,7 @@ export class Pills extends PureComponent<Props> {
     const myClassName = clsx(styles.pills, className);
     return (
       <TransitionGroup className={myClassName}>
-        {list.map(item => (
+        {list.map((item) => (
           <CSSTransition key={item.id} classNames="animated" timeout={200}>
             <Pill
               onSelect={this.onSelect.bind(null, item)}
