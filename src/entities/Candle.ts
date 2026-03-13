@@ -84,16 +84,16 @@ export class Candle {
   /** Serialize this Candle to a plain JSON-friendly object. */
   public toJSON(): ICandleJSON {
     return {
-      time: this.time,
-      open: this.open,
       close: this.close,
       high: this.high,
       low: this.low,
-      volume: this.volume,
-      quoteVolume: this.quoteVolume,
-      weightedAveragePrice: this.weightedAveragePrice,
       maxHeight: this.maxHeight,
+      open: this.open,
+      quoteVolume: this.quoteVolume,
+      time: this.time,
       txsCount: this.txsCount,
+      volume: this.volume,
+      weightedAveragePrice: this.weightedAveragePrice,
     };
   }
 
