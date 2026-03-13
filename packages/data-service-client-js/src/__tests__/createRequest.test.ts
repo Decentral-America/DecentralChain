@@ -5,8 +5,8 @@ describe('createRequest', () => {
   it('returns a GET request when no params are provided', () => {
     const result = createRequest('http://example.com/assets');
     expect(result).toEqual({
-      url: 'http://example.com/assets',
       method: HttpMethods.Get,
+      url: 'http://example.com/assets',
     });
   });
 
@@ -15,8 +15,8 @@ describe('createRequest', () => {
       ids: ['a', 'b'],
     });
     expect(result).toEqual({
-      url: 'http://example.com/assets?ids=a&ids=b',
       method: HttpMethods.Get,
+      url: 'http://example.com/assets?ids=a&ids=b',
     });
   });
 
@@ -29,8 +29,8 @@ describe('createRequest', () => {
     expect(result.url).toBe('http://example.com/assets');
     expect(result.body).toBeDefined();
     expect(result.headers).toEqual({
-      'Content-Type': 'application/json',
       Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
     });
 
     const parsedBody = JSON.parse(result.body as string);
@@ -46,8 +46,8 @@ describe('createRequest', () => {
 
   it('filters undefined values from query string via createQS', () => {
     const result = createRequest('http://example.com/assets', {
-      ids: ['a'],
       filter: undefined,
+      ids: ['a'],
     });
     expect(result.url).toBe('http://example.com/assets?ids=a');
     expect(result.method).toBe(HttpMethods.Get);

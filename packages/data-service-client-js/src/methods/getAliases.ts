@@ -57,22 +57,22 @@ const createRequestForAddress =
   };
 
 const createGetAliases: TCreateGetFn<TAliases> = (libOptions: ILibOptions) => ({
-  getById: createMethod<TAlias[]>({
-    validate: validateId,
-    generateRequest: createRequestForId,
-    libOptions,
-  }),
-  getByIdList: createMethod<TAlias[]>({
-    validate: validateIdList,
-    generateRequest: createRequestForIdList,
-    libOptions,
-  }),
   getByAddress: (address, options?) =>
     createMethod<TAlias[]>({
-      validate: validateByAddressParams,
       generateRequest: createRequestForAddress,
       libOptions,
+      validate: validateByAddressParams,
     })(address, options ?? {}),
+  getById: createMethod<TAlias[]>({
+    generateRequest: createRequestForId,
+    libOptions,
+    validate: validateId,
+  }),
+  getByIdList: createMethod<TAlias[]>({
+    generateRequest: createRequestForIdList,
+    libOptions,
+    validate: validateIdList,
+  }),
 });
 
 export default createGetAliases;
