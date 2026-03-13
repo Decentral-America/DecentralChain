@@ -95,8 +95,8 @@ function validSwapParams(overrides?: Partial<SwapParams>): SwapParams {
   return {
     amountCoins: '100000000',
     fromAssetId: 'WAVES',
-    toAssetId: 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p',
     slippageTolerance: 1,
+    toAssetId: 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p',
     ...overrides,
   };
 }
@@ -262,7 +262,7 @@ describe('setSwapParams validation', () => {
 describe('subscribe', () => {
   it('returns an unsubscribe function', () => {
     const client = new SwapClient();
-    const subscriber: Subscriber = { onError: vi.fn(), onData: vi.fn() };
+    const subscriber: Subscriber = { onData: vi.fn(), onError: vi.fn() };
     const unsub = client.subscribe(subscriber);
     expect(typeof unsub).toBe('function');
     client.destroy();
@@ -270,7 +270,7 @@ describe('subscribe', () => {
 
   it('connects WebSocket on first subscribe', () => {
     const client = new SwapClient();
-    const subscriber: Subscriber = { onError: vi.fn(), onData: vi.fn() };
+    const subscriber: Subscriber = { onData: vi.fn(), onError: vi.fn() };
     client.subscribe(subscriber);
     expect(MockWebSocket.instances).toHaveLength(1);
     expect(getLastMockWs().url).toBe('wss://swap.decentralchain.io/v2');
@@ -279,7 +279,7 @@ describe('subscribe', () => {
 
   it('does not duplicate subscriber', () => {
     const client = new SwapClient();
-    const subscriber: Subscriber = { onError: vi.fn(), onData: vi.fn() };
+    const subscriber: Subscriber = { onData: vi.fn(), onError: vi.fn() };
     client.subscribe(subscriber);
     client.subscribe(subscriber);
     // Only 1 WebSocket should be created
@@ -290,14 +290,14 @@ describe('subscribe', () => {
   it('throws if client is destroyed', () => {
     const client = new SwapClient();
     client.destroy();
-    expect(() => client.subscribe({ onError: vi.fn(), onData: vi.fn() })).toThrow(
+    expect(() => client.subscribe({ onData: vi.fn(), onError: vi.fn() })).toThrow(
       'SwapClient has been destroyed',
     );
   });
 
   it('disconnects after last unsubscribe with delay', () => {
     const client = new SwapClient();
-    const subscriber: Subscriber = { onError: vi.fn(), onData: vi.fn() };
+    const subscriber: Subscriber = { onData: vi.fn(), onError: vi.fn() };
     const unsub = client.subscribe(subscriber);
     const ws = getLastMockWs();
     ws.simulateOpen();
@@ -318,7 +318,7 @@ describe('subscribe', () => {
 describe('connection lifecycle', () => {
   it('sends request after WebSocket opens', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     client.setSwapParams(validSwapParams());
 
     const ws = getLastMockWs();
@@ -330,14 +330,14 @@ describe('connection lifecycle', () => {
 
   it('does not send duplicate request for same params', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     client.setSwapParams(validSwapParams());
 
     const ws = getLastMockWs();
     ws.simulateOpen();
 
     // Try subscribing again — same request should not be re-sent
-    const sub2: Subscriber = { onError: vi.fn(), onData: vi.fn() };
+    const sub2: Subscriber = { onData: vi.fn(), onError: vi.fn() };
     client.subscribe(sub2);
 
     expect(ws.sentMessages).toHaveLength(1);
@@ -346,7 +346,7 @@ describe('connection lifecycle', () => {
 
   it('sends new request when params change', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     client.setSwapParams(validSwapParams());
 
     const ws = getLastMockWs();
@@ -359,7 +359,7 @@ describe('connection lifecycle', () => {
 
   it('times out connection after connectTimeoutMs', () => {
     const client = new SwapClient({ connectTimeoutMs: 5_000 });
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
 
     const ws = getLastMockWs();
     // WebSocket stays in CONNECTING — never opens
@@ -379,7 +379,7 @@ describe('reconnection', () => {
   it('reconnects with exponential backoff on close', () => {
     const client = new SwapClient({ maxReconnectAttempts: 3 });
     const onError = vi.fn();
-    client.subscribe({ onError, onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError });
     client.setSwapParams(validSwapParams());
 
     const ws1 = getLastMockWs();
@@ -417,7 +417,7 @@ describe('reconnection', () => {
 
   it('resets reconnect counter on successful connection', () => {
     const client = new SwapClient({ maxReconnectAttempts: 5 });
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     client.setSwapParams(validSwapParams());
 
     const ws1 = getLastMockWs();
@@ -438,7 +438,7 @@ describe('reconnection', () => {
 
   it('does not reconnect when destroyed', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
 
     const ws = getLastMockWs();
     ws.simulateOpen();
@@ -452,7 +452,7 @@ describe('reconnection', () => {
 
   it('does not reconnect when no subscribers', () => {
     const client = new SwapClient();
-    const unsub = client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    const unsub = client.subscribe({ onData: vi.fn(), onError: vi.fn() });
 
     const ws = getLastMockWs();
     ws.simulateOpen();
@@ -476,7 +476,7 @@ describe('message handling', () => {
     const client = new SwapClient();
     const params = validSwapParams();
 
-    client.subscribe({ onError, onData });
+    client.subscribe({ onData, onError });
     client.setSwapParams(params);
 
     const ws = getLastMockWs();
@@ -488,24 +488,24 @@ describe('message handling', () => {
     const decoded = fromBinary(RequestSchema, sentBytes);
     const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
-    return { client, ws, onData, onError, requestId, params };
+    return { client, onData, onError, params, requestId, ws };
   }
 
   it('delivers data response to subscribers', () => {
     const { client, ws, onData, requestId } = setupConnectedClient();
 
     const buf = encodeResponse({
-      id: requestId,
-      vendor: 'puzzle-swap',
       data: {
         amount: 100000000,
+        dApp: '3P8d1E1BLKoD52y3bQJ1bDTd2TD1gpaLn9t',
+        fn: 'swap',
         minReceived: 99000000,
         originalAmount: 100000000,
         originalMinReceived: 99000000,
         priceImpact: 0.005,
-        dApp: '3P8d1E1BLKoD52y3bQJ1bDTd2TD1gpaLn9t',
-        fn: 'swap',
       },
+      id: requestId,
+      vendor: 'puzzle-swap',
     });
 
     ws.simulateMessage(buf);
@@ -532,8 +532,8 @@ describe('message handling', () => {
     const { client, ws, onData, requestId } = setupConnectedClient();
 
     const buf = encodeResponse({
-      id: requestId,
       error: { code: Response_Error_CODES.INVALID_ASSET_PAIR },
+      id: requestId,
     });
 
     ws.simulateMessage(buf);
@@ -553,15 +553,15 @@ describe('message handling', () => {
     const { client, ws, onData } = setupConnectedClient();
 
     const buf = encodeResponse({
-      id: 'wrong-id',
       data: {
         amount: 1,
+        dApp: 'x',
+        fn: 'y',
         minReceived: 1,
         originalAmount: 1,
         originalMinReceived: 1,
-        dApp: 'x',
-        fn: 'y',
       },
+      id: 'wrong-id',
     });
 
     ws.simulateMessage(buf);
@@ -595,8 +595,8 @@ describe('message handling', () => {
     const onData2 = vi.fn();
     const client = new SwapClient();
 
-    client.subscribe({ onError: vi.fn(), onData: onData1 });
-    client.subscribe({ onError: vi.fn(), onData: onData2 });
+    client.subscribe({ onData: onData1, onError: vi.fn() });
+    client.subscribe({ onData: onData2, onError: vi.fn() });
     client.setSwapParams(validSwapParams());
 
     const ws = getLastMockWs();
@@ -608,15 +608,15 @@ describe('message handling', () => {
     const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
     const buf = encodeResponse({
-      id: requestId,
       data: {
         amount: 100,
+        dApp: 'test',
+        fn: 'swap',
         minReceived: 99,
         originalAmount: 100,
         originalMinReceived: 99,
-        dApp: 'test',
-        fn: 'swap',
       },
+      id: requestId,
     });
 
     ws.simulateMessage(buf);
@@ -631,7 +631,7 @@ describe('message handling', () => {
     const client = new SwapClient();
     const customAssetId = 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p';
 
-    client.subscribe({ onError: vi.fn(), onData });
+    client.subscribe({ onData, onError: vi.fn() });
     client.setSwapParams(
       validSwapParams({
         fromAssetId: customAssetId,
@@ -648,15 +648,15 @@ describe('message handling', () => {
     const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
     const buf = encodeResponse({
-      id: requestId,
       data: {
         amount: 100,
+        dApp: 'test',
+        fn: 'swap',
         minReceived: 99,
         originalAmount: 100,
         originalMinReceived: 99,
-        dApp: 'test',
-        fn: 'swap',
       },
+      id: requestId,
     });
 
     ws.simulateMessage(buf);
@@ -760,7 +760,7 @@ describe('destroy', () => {
 
   it('closes active WebSocket', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     const ws = getLastMockWs();
     ws.simulateOpen();
 
@@ -770,7 +770,7 @@ describe('destroy', () => {
 
   it('clears all timers', () => {
     const client = new SwapClient();
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
 
     client.destroy();
 
@@ -798,7 +798,7 @@ describe('protocol encoding', () => {
       referrer: '3PLrCnhKyX5iFbGDxbqqMvea5fBQXHEhLiN',
     });
 
-    client.subscribe({ onError: vi.fn(), onData: vi.fn() });
+    client.subscribe({ onData: vi.fn(), onError: vi.fn() });
     client.setSwapParams(params);
 
     const ws = getLastMockWs();
@@ -827,15 +827,14 @@ describe('protocol encoding', () => {
 describe('type shapes', () => {
   it('error response shape', () => {
     const response: SwapClientResponse = {
-      type: 'error',
       code: SwapClientErrorCode.UNAVAILABLE,
+      type: 'error',
     };
     expect(response.type).toBe('error');
   });
 
   it('data response shape', () => {
     const response: SwapClientResponse = {
-      type: 'data',
       amountCoins: '1000000',
       minimumReceivedCoins: '990000',
       originalAmountCoins: '1000000',
@@ -843,22 +842,23 @@ describe('type shapes', () => {
       priceImpact: 0.01,
       swapParams: validSwapParams(),
       tx: {
-        dApp: '3P8d1E1BLKoD52y3bQJ1bDTd2TD1gpaLn9t',
         call: {
-          function: 'swap',
           args: [
             { type: 'string', value: 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p' },
             { type: 'integer', value: '990000' },
           ],
+          function: 'swap',
         },
-        payment: [{ assetId: null, amount: '1000000' }],
+        dApp: '3P8d1E1BLKoD52y3bQJ1bDTd2TD1gpaLn9t',
+        payment: [{ amount: '1000000', assetId: null }],
       },
+      type: 'data',
     };
     expect(response.type).toBe('data');
   });
 
   it('SwapClientOptions type', () => {
-    const opts: SwapClientOptions = { wsUrl: 'wss://example.com', connectTimeoutMs: 5000 };
+    const opts: SwapClientOptions = { connectTimeoutMs: 5000, wsUrl: 'wss://example.com' };
     expect(opts.wsUrl).toBe('wss://example.com');
   });
 });
