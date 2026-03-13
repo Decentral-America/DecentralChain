@@ -14,7 +14,7 @@ pre-commit:
       stage_fixed: true
     typecheck:
       glob: "*.{ts,tsx}"
-      run: npm run lint:typescript
+      run: npm run typecheck
       skip:
         - merge
         - rebase

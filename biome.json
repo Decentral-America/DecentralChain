@@ -5,11 +5,11 @@
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true,
-    "defaultBranch": "master"
+    "defaultBranch": "main"
   },
   "files": {
-    "ignoreUnknown": true,
-    "includes": ["**", "!dist", "!coverage", "!*.d.ts", "!node_modules"]
+    "ignoreUnknown": false,
+    "includes": ["**", "!dist", "!coverage", "!*.d.ts"]
   },
   "formatter": {
     "enabled": true,
@@ -23,7 +23,7 @@
       "quoteStyle": "single",
       "semicolons": "always",
       "trailingCommas": "all",
-      "arrowParentheses": "asNeeded",
+      "arrowParentheses": "always",
       "bracketSpacing": true,
       "bracketSameLine": false,
       "quoteProperties": "asNeeded"
@@ -50,22 +50,29 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noUnusedVariables": "warn",
-        "noUnusedFunctionParameters": "warn",
-        "noUnusedImports": "warn"
+        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error",
+        "noUnusedImports": "error"
       },
       "style": {
         "useConst": "error",
-        "noNamespace": "error"
+        "useImportType": {
+          "level": "error",
+          "options": {
+            "style": "inlineType"
+          }
+        },
+        "noNamespace": "error",
+        "noCommonJs": "error"
       },
       "suspicious": {
         "noConsole": {
           "level": "warn",
           "options": {
-            "allow": ["warn", "error", "info"]
+            "allow": ["warn", "error"]
           }
         },
-        "noExplicitAny": "off"
+        "noExplicitAny": "warn"
       }
     }
   },
@@ -79,7 +86,7 @@
   },
   "overrides": [
     {
-      "includes": ["test/**", "**/*.test.ts", "**/*.spec.ts"],
+      "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -89,11 +96,14 @@
       }
     },
     {
-      "includes": ["scripts/**", "webpack.config.js", "postcss.config.cjs"],
+      "includes": ["scripts/**", "postcss.config.cjs"],
       "linter": {
         "rules": {
           "style": {
             "noCommonJs": "off"
+          },
+          "suspicious": {
+            "noConsole": "off"
           }
         }
       }

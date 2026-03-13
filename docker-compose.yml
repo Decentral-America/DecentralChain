@@ -1,4 +1,3 @@
-version: '3'
 services:
   dcc-private-node:
     image: wavesplatform/waves-private-node
