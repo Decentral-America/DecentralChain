@@ -7,8 +7,8 @@ import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const setScript = factory<IDCCGuiSetScript, TWithPartialFee<SetScriptTransaction<string>>>({
   ...getDefaultTransform(),
-  script: prop('script'),
   chainId: prop('chainId'),
+  script: prop('script'),
 });
 
 export interface IDCCGuiSetScript extends IDefaultGuiTx<typeof TYPES.SET_SCRIPT> {
