@@ -10,11 +10,11 @@ export const MOCK_URL = 'https://mock.com';
 export const MASTER_ACCOUNT_SEED = 'some master account seed for testing purposes';
 
 export const ACCOUNTS = {
-  SIMPLE: {
-    seed: 'some simple account seed',
-  },
   NODE: {
     seed: 'some node mainer seed',
+  },
+  SIMPLE: {
+    seed: 'some simple account seed',
   },
   SMART: {
     seed: 'some smart contract seed',
@@ -24,9 +24,9 @@ export const ACCOUNTS = {
 export const SMART_ASSET_SCRIPT = `base64:BAbMtW/U`;
 
 const makeResponse = (ok: boolean, data: unknown) => ({
+  json: () => Promise.resolve(data),
   ok,
   text: () => Promise.resolve(JSON.stringify(data)),
-  json: () => Promise.resolve(data),
 });
 
 // Capture the original fetch before overwriting so non-mock requests
@@ -49,28 +49,28 @@ const f: Fetch = ((url: string | URL | Request, options?: RequestInit) => {
 
     if (path === '/blocks/headers/last') {
       return makeResponse(true, {
-        version: 5,
-        timestamp: 1607356839244,
-        reference: 'FJTPjM4xdnA9UHzzAvJiQrukQXhLdUqcuGCAHyAG9byv',
+        blocksize: 12134,
+        desiredReward: -1,
+        features: [],
+        generator: '3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N',
+        generatorPublicKey: 'BDjPpGYcC8ANJSPX7xgprPpp9nioWK6Qpw9PjbekXxav',
+        height: 2362163,
+        id: 'HUgEdXjzh9eRmmCMbDCUArybD9xTujLu5pHsBiWgMvLS',
         'nxt-consensus': {
           'base-target': 65,
           'generation-signature':
             '3ePCDAcp4gwu4Ean62Gadq1b8cfiyPS4HcjkNCcbqtnstkgmMxcACy5xKXtvmE8cvuxYCP5up5ySTwBxLEYpdDGxRyS2G39uAKRPk9L7UkhT2NrxgBAp4sFUdKSJCnDVdGN',
         },
-        transactionsRoot: 'F29m1msUptvkURdGMfKh5vn4mWcXZ26AjT7rQvEs9G93',
-        id: 'HUgEdXjzh9eRmmCMbDCUArybD9xTujLu5pHsBiWgMvLS',
-        features: [],
-        desiredReward: -1,
-        generator: '3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N',
-        generatorPublicKey: 'BDjPpGYcC8ANJSPX7xgprPpp9nioWK6Qpw9PjbekXxav',
+        reference: 'FJTPjM4xdnA9UHzzAvJiQrukQXhLdUqcuGCAHyAG9byv',
+        reward: 600000000,
         signature:
           '5voKYmNf446S1vjxNi755kpz96dL4JW5csmpKaLrNGg1uKcvFVVDMoFF4cQL3ko71MRHnW5YUTwcZmLb8XFqfjqL',
-        blocksize: 12134,
-        transactionCount: 19,
-        height: 2362163,
+        timestamp: 1607356839244,
         totalFee: 6700000,
-        reward: 600000000,
+        transactionCount: 19,
+        transactionsRoot: 'F29m1msUptvkURdGMfKh5vn4mWcXZ26AjT7rQvEs9G93',
         VRF: 'FW4nZFpq4odLoiuN6ndGNk3w1mEvvJ2zHhv9p3tgyGgZ',
+        version: 5,
       });
     }
 
@@ -83,10 +83,10 @@ const f: Fetch = ((url: string | URL | Request, options?: RequestInit) => {
       const addr = path.replace('/addresses/balance/details/', '');
       return makeResponse(true, {
         address: addr,
-        regular: 0,
-        generating: 0,
         available: 0,
         effective: 0,
+        generating: 0,
+        regular: 0,
       });
     }
 

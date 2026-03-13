@@ -36,29 +36,29 @@ export function makeConsole(options: LoggerOptions): IConsole {
 
   if (level === 'error') {
     return {
-      log: noop,
-      info: noop,
-      warn: noop,
       error: (...args: unknown[]) => console.error(tag, ...args),
+      info: noop,
+      log: noop,
+      warn: noop,
     };
   }
 
   if (level === 'production') {
     return {
-      log: noop,
-      info: noop,
-      warn: (...args: unknown[]) => console.warn(tag, ...args),
       error: (...args: unknown[]) => console.error(tag, ...args),
+      info: noop,
+      log: noop,
+      warn: (...args: unknown[]) => console.warn(tag, ...args),
     };
   }
 
   // verbose — log everything
   return {
-    // biome-ignore lint/suspicious/noConsole: verbose mode requires console.log
-    log: (...args: unknown[]) => console.log(tag, ...args),
+    error: (...args: unknown[]) => console.error(tag, ...args),
     // biome-ignore lint/suspicious/noConsole: verbose mode requires console.info
     info: (...args: unknown[]) => console.info(tag, ...args),
+    // biome-ignore lint/suspicious/noConsole: verbose mode requires console.log
+    log: (...args: unknown[]) => console.log(tag, ...args),
     warn: (...args: unknown[]) => console.warn(tag, ...args),
-    error: (...args: unknown[]) => console.error(tag, ...args),
   };
 }

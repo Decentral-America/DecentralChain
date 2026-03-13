@@ -8,10 +8,10 @@ signer.setProvider(provider as any);
 
 const issue = signer
   .issue({
-    name: 'Test',
-    description: 'Test description',
-    quantity: 100,
     decimals: 0,
+    description: 'Test description',
+    name: 'Test',
+    quantity: 100,
     reissuable: false,
   })
   .broadcast();

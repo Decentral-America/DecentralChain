@@ -10,13 +10,13 @@ signer.setProvider(provider as any);
 
 const issue = signer
   .issue({
-    name: 'Test',
-    description: 'Test description',
-    quantity: 100,
     decimals: 0,
+    description: 'Test description',
+    fee: 1.004 * 10 ** 8,
+    name: 'Test',
+    quantity: 100,
     reissuable: false,
     script: SMART_ASSET_SCRIPT,
-    fee: 1.004 * 10 ** 8,
   })
   .broadcast()
   .then(([tx]: any[]) => tx);
@@ -24,8 +24,8 @@ const issue = signer
 it('Remove Account Script', async () => {
   await signer
     .setScript({
-      script: null,
       fee: 1400000,
+      script: null,
     })
     .broadcast();
 });
@@ -33,8 +33,8 @@ it('Remove Account Script', async () => {
 it('Set Account Script', async () => {
   await signer
     .setScript({
-      script: SMART_ASSET_SCRIPT,
       fee: 1400000,
+      script: SMART_ASSET_SCRIPT,
     })
     .broadcast();
 });
@@ -45,8 +45,8 @@ it('Set Asset Script', async () => {
   await signer
     .setAssetScript({
       assetId: asset.id,
-      script: SMART_ASSET_SCRIPT,
       fee: 100400000,
+      script: SMART_ASSET_SCRIPT,
     })
     .broadcast()
     .catch((e: unknown) => {
@@ -58,11 +58,11 @@ it('Set Asset Script', async () => {
 it('Invoke', async () => {
   await signer
     .invoke({
-      dApp: libs.crypto.address(ACCOUNTS.SMART.seed, NETWORK_BYTE),
       call: {
-        function: 'foo',
         args: [],
+        function: 'foo',
       },
+      dApp: libs.crypto.address(ACCOUNTS.SMART.seed, NETWORK_BYTE),
       fee: Math.ceil(0.009 * 10 ** 8),
     })
     .broadcast();

@@ -16,8 +16,8 @@ beforeEach(() => {
 it('Lease', async () => {
   const [tx] = await signer
     .lease({
-      recipient: MASTER_ADDRESS,
       amount: 100,
+      recipient: MASTER_ADDRESS,
     })
     .broadcast();
 
@@ -27,8 +27,8 @@ it('Lease', async () => {
 it('Cancel lease', async () => {
   const [tx] = await signer
     .lease({
-      recipient: MASTER_ADDRESS,
       amount: 100,
+      recipient: MASTER_ADDRESS,
     })
     .broadcast();
 

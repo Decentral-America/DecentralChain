@@ -9,21 +9,23 @@ import { type SignerOptions } from './types/index.js';
  * JavaScript's Number.MAX_SAFE_INTEGER (2^53-1) is the practical ceiling
  * for numeric values; string amounts can represent up to Long.MAX_VALUE.
  */
+// biome-ignore lint/security/noSecrets: int64 boundary constant, not a secret
 const MAX_SAFE_LONG = '9223372036854775807'; // 2^63 - 1
 
 const TX_DEFAULTS = {
-  MAX_ATTACHMENT: 140,
   ALIAS: {
+    // biome-ignore lint/security/noSecrets: valid alias character set, not a secret
     AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz',
     MAX_ALIAS_LENGTH: 30,
     MIN_ALIAS_LENGTH: 4,
   },
+  MAX_ATTACHMENT: 140,
 } as const;
 
 const ASSETS = {
-  NAME_MIN_BYTES: 4,
-  NAME_MAX_BYTES: 16,
   DESCRIPTION_MAX_BYTES: 1000,
+  NAME_MAX_BYTES: 16,
+  NAME_MIN_BYTES: 4,
 } as const;
 
 // ── Primitive Validators ─────────────────────────────────────────
@@ -155,10 +157,10 @@ const isBase64 = (value: unknown): boolean => {
 };
 
 const validateType: Record<string, (value: unknown) => boolean> = {
-  integer: isNumberLike,
-  boolean: isBoolean,
-  string: isString,
   binary: isBase64,
+  boolean: isBoolean,
+  integer: isNumberLike,
+  string: isString,
 };
 
 const isValidDataPair = (data: { type: string; value: unknown }): boolean =>
@@ -258,21 +260,21 @@ const noop = (): void => {};
 // ── Order Validation ─────────────────────────────────────────────
 
 const orderScheme: Record<string, (value: unknown) => boolean> = {
-  orderType: orEq(['sell', 'buy']),
-  senderPublicKey: isPublicKey,
-  matcherPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2, 3]),
+  amount: isNumberLike,
   assetPair: validatePipe(
     isRequired(true),
     (v) => isAssetId((v as { amountAsset?: unknown }).amountAsset),
     (v) => isAssetId((v as { priceAsset?: unknown }).priceAsset),
   ),
-  price: isNumberLike,
-  amount: isNumberLike,
-  matcherFee: isNumberLike,
   expiration: isNumberLike,
-  timestamp: isNumber,
+  matcherFee: isNumberLike,
+  matcherPublicKey: isPublicKey,
+  orderType: orEq(['sell', 'buy']),
+  price: isNumberLike,
   proofs: (value) => (isArray(value) ? true : value === undefined),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  version: orEq([undefined, 1, 2, 3]),
 };
 
 const v12OrderScheme = {
@@ -332,56 +334,56 @@ const validator: ValidatorFn = (scheme, method) => (transaction) => {
   }
 
   return {
-    isValid: invalidFields.length === 0,
-    transaction,
-    method,
     invalidFields,
+    isValid: invalidFields.length === 0,
+    method,
+    transaction,
   };
 };
 
 const getCommonValidators = (transactionType: TransactionType) => ({
-  type: (value: unknown) => value === transactionType,
-  version: validateOptional(orEq([undefined, 1, 2, 3])),
-  senderPublicKey: validateOptional(isPublicKey),
   fee: validateOptional(isNonNegativeAmount),
   proofs: validateOptional(isArray),
+  senderPublicKey: validateOptional(isPublicKey),
+  type: (value: unknown) => value === transactionType,
+  version: validateOptional(orEq([undefined, 1, 2, 3])),
 });
 
 const issueArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.ISSUE),
-  name: isValidAssetName,
-  description: validateOptional(isValidAssetDescription),
-  quantity: isPositiveAmount,
+  chainId: validateOptional(isNumber),
   decimals: isNumber,
+  description: validateOptional(isValidAssetDescription),
+  name: isValidAssetName,
+  quantity: isPositiveAmount,
   reissuable: validateOptional(isBoolean),
   script: validateOptional(isBase64),
-  chainId: validateOptional(isNumber),
 };
 const issueArgsValidator = validator(issueArgsScheme, 'issue');
 
 const transferArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.TRANSFER),
   amount: isPositiveAmount,
-  recipient: isRecipient,
   assetId: validateOptional(isAssetId),
-  feeAssetId: validateOptional(isAssetId),
   attachment: validateOptional(isAttachment),
+  feeAssetId: validateOptional(isAssetId),
+  recipient: isRecipient,
 };
 const transferArgsValidator = validator(transferArgsScheme, 'transfer');
 
 const reissueArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.REISSUE),
   assetId: isAssetId,
+  chainId: validateOptional(isNumber),
   quantity: isPositiveAmount,
   reissuable: isBoolean,
-  chainId: validateOptional(isNumber),
 };
 const reissueArgsValidator = validator(reissueArgsScheme, 'reissue');
 
 const burnArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.BURN),
-  assetId: isString,
   amount: isPositiveAmount,
+  assetId: isString,
   chainId: validateOptional(isNumber),
 };
 const burnArgsValidator = validator(burnArgsScheme, 'burn');
@@ -395,8 +397,8 @@ const leaseArgsValidator = validator(leaseArgsScheme, 'lease');
 
 const cancelLeaseArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.CANCEL_LEASE),
-  leaseId: isString,
   chainId: validateOptional(isNumber),
+  leaseId: isString,
 };
 const cancelLeaseArgsValidator = validator(cancelLeaseArgsScheme, 'cancel lease');
 
@@ -408,6 +410,8 @@ const aliasArgsValidator = validator(aliasArgsScheme, 'alias');
 
 const massTransferArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.MASS_TRANSFER),
+  assetId: validateOptional(isAssetId),
+  attachment: validateOptional(isAttachment),
   transfers: validatePipe(
     isArray,
     (data) => {
@@ -419,8 +423,6 @@ const massTransferArgsScheme = {
         (item) => item != null && isRecipient(item.recipient) && isPositiveAmount(item.amount),
       ),
   ),
-  assetId: validateOptional(isAssetId),
-  attachment: validateOptional(isAttachment),
 };
 const massTransferArgsValidator = validator(massTransferArgsScheme, 'mass transfer');
 
@@ -432,8 +434,8 @@ const dataArgsValidator = validator(dataArgsScheme, 'data');
 
 const setScriptArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.SET_SCRIPT),
-  script: isBase64,
   chainId: validateOptional(isNumber),
+  script: isBase64,
 };
 const setScriptArgsValidator = validator(setScriptArgsScheme, 'set script');
 
@@ -446,26 +448,25 @@ const sponsorshipArgsValidator = validator(sponsorshipArgsScheme, 'sponsorship')
 
 const exchangeArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.EXCHANGE),
+  amount: isPositiveAmount,
+  buyMatcherFee: isNonNegativeAmount,
   order1: validatePipe(isRequired(true), orderValidator),
   order2: validatePipe(isRequired(true), orderValidator),
-  amount: isPositiveAmount,
   price: isPositiveAmount,
-  buyMatcherFee: isNonNegativeAmount,
   sellMatcherFee: isNonNegativeAmount,
 };
 const exchangeArgsValidator = validator(exchangeArgsScheme, 'exchange');
 
 const setAssetScriptArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.SET_ASSET_SCRIPT),
-  script: isBase64,
   assetId: isAssetId,
   chainId: validateOptional(isNumber),
+  script: isBase64,
 };
 const setAssetScriptArgsValidator = validator(setAssetScriptArgsScheme, 'set asset script');
 
 const invokeArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.INVOKE_SCRIPT),
-  dApp: isRecipient,
   call: validateOptional(
     validatePipe(
       (v) => isString((v as { function?: unknown }).function),
@@ -473,6 +474,9 @@ const invokeArgsScheme = {
       (v) => isArray((v as { args?: unknown }).args),
     ),
   ),
+  chainId: validateOptional(isNumber),
+  dApp: isRecipient,
+  feeAssetId: validateOptional(isAssetId),
   payment: validateOptional(
     validatePipe(isArray, (data) =>
       (data as Array<{ amount?: unknown; assetId?: unknown }>).every(
@@ -480,8 +484,6 @@ const invokeArgsScheme = {
       ),
     ),
   ),
-  feeAssetId: validateOptional(isAssetId),
-  chainId: validateOptional(isNumber),
 };
 const invokeArgsValidator = validator(invokeArgsScheme, 'invoke');
 
@@ -508,8 +510,8 @@ type SignerOptionsValidation = { isValid: boolean; invalidOptions: string[] };
 
 export const validateSignerOptions = (options: Partial<SignerOptions>): SignerOptionsValidation => {
   const res: SignerOptionsValidation = {
-    isValid: true,
     invalidOptions: [],
+    isValid: true,
   };
 
   const isValidLogLevel = (level: unknown) =>
@@ -548,9 +550,9 @@ export const validateProviderInterface = (
     connect: isFunction,
     login: isFunction,
     logout: isFunction,
+    sign: isFunction,
     signMessage: isFunction,
     signTypedData: isFunction,
-    sign: isFunction,
   };
 
   const invalidProperties: string[] = [];
@@ -562,7 +564,7 @@ export const validateProviderInterface = (
   }
 
   return {
-    isValid: invalidProperties.length === 0,
     invalidProperties,
+    isValid: invalidProperties.length === 0,
   };
 };

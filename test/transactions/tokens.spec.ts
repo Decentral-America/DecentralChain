@@ -14,10 +14,10 @@ beforeEach(() => {
 it('Issue', async () => {
   const [tx] = await signer
     .issue({
-      name: 'Test',
-      description: 'Test description',
-      quantity: 100,
       decimals: 0,
+      description: 'Test description',
+      name: 'Test',
+      quantity: 100,
       reissuable: false,
     })
     .broadcast();
@@ -28,10 +28,10 @@ it('Issue', async () => {
 it('Reissue', async () => {
   const [{ id }] = await signer
     .issue({
-      name: 'Test',
-      description: 'Test description',
-      quantity: 100,
       decimals: 0,
+      description: 'Test description',
+      name: 'Test',
+      quantity: 100,
       reissuable: true,
     })
     .broadcast();
@@ -50,18 +50,18 @@ it('Reissue', async () => {
 it('Burn', async () => {
   const [{ id }] = await signer
     .issue({
-      name: 'Test',
-      description: 'Test description',
-      quantity: 100,
       decimals: 0,
+      description: 'Test description',
+      name: 'Test',
+      quantity: 100,
       reissuable: false,
     })
     .broadcast();
 
   const [tx] = await signer
     .burn({
-      assetId: id,
       amount: 10,
+      assetId: id,
     })
     .broadcast();
 

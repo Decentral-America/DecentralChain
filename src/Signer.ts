@@ -262,25 +262,24 @@ export class Signer {
     if (!userData) throw new Error('User not authenticated');
     return Promise.all([
       fetchBalanceDetails(this._options.NODE_URL, userData.address).then((data) => ({
+        amount: String(data.available),
         assetId: 'DCC',
         assetName: 'DCC',
         decimals: 8,
-        amount: String(data.available),
         isMyAsset: false,
-        tokens: safeTokens(String(data.available), 8),
-        sponsorship: null,
         isSmart: false,
+        sponsorship: null,
+        tokens: safeTokens(String(data.available), 8),
       })),
       fetchAssetsBalance(this._options.NODE_URL, userData.address).then((data) =>
         data.balances.map((item) => {
           const issueTx = item.issueTransaction;
           return {
+            amount: String(item.balance),
             assetId: item.assetId,
             assetName: issueTx?.name ?? '',
             decimals: issueTx?.decimals ?? 0,
-            amount: String(item.balance),
             isMyAsset: issueTx?.sender === this._userData?.address,
-            tokens: safeTokens(String(item.balance), issueTx?.decimals ?? 0),
             isSmart: !!issueTx?.script,
             sponsorship:
               item.sponsorBalance != null &&
@@ -288,6 +287,7 @@ export class Signer {
               Number(item.minSponsoredAssetFee ?? 0) < Number(item.balance)
                 ? item.minSponsoredAssetFee
                 : null,
+            tokens: safeTokens(String(item.balance), issueTx?.decimals ?? 0),
           };
         }),
       ),
@@ -384,9 +384,9 @@ export class Signer {
     const sign = (): Promise<SignedTx<SignerTx>[]> => this._sign(tsx).then((result) => result);
 
     return {
-      sign,
       broadcast: (opt?: BroadcastOptions): Promise<BroadcastedTx<SignedTx<SignerTx>>[]> =>
         sign().then((transactions) => this.broadcast(transactions, opt)),
+      sign,
     };
   }
 
@@ -594,21 +594,7 @@ export class Signer {
     const chainArgs = Array.isArray(txs) ? txs : [txs];
 
     return {
-      issue: this._issue(chainArgs),
-      transfer: this._transfer(chainArgs),
-      reissue: this._reissue(chainArgs),
-      burn: this._burn(chainArgs),
-      lease: this._lease(chainArgs),
-      exchange: this._exchange(chainArgs),
-      cancelLease: this._cancelLease(chainArgs),
       alias: this._alias(chainArgs),
-      massTransfer: this._massTransfer(chainArgs),
-      data: this._data(chainArgs),
-      sponsorship: this._sponsorship(chainArgs),
-      setScript: this._setScript(chainArgs),
-      setAssetScript: this._setAssetScript(chainArgs),
-      invoke: this._invoke(chainArgs),
-      sign: () => _this._sign<T>(txs as unknown as T[]) as never,
       broadcast(options?: BroadcastOptions) {
         if (_this.currentProvider?.isSignAndBroadcastByProvider === true) {
           return _this.currentProvider.sign(txs) as never;
@@ -618,6 +604,20 @@ export class Signer {
           (signed) => _this.broadcast(signed, options),
         ) as never;
       },
+      burn: this._burn(chainArgs),
+      cancelLease: this._cancelLease(chainArgs),
+      data: this._data(chainArgs),
+      exchange: this._exchange(chainArgs),
+      invoke: this._invoke(chainArgs),
+      issue: this._issue(chainArgs),
+      lease: this._lease(chainArgs),
+      massTransfer: this._massTransfer(chainArgs),
+      reissue: this._reissue(chainArgs),
+      setAssetScript: this._setAssetScript(chainArgs),
+      setScript: this._setScript(chainArgs),
+      sign: () => _this._sign<T>(txs as unknown as T[]) as never,
+      sponsorship: this._sponsorship(chainArgs),
+      transfer: this._transfer(chainArgs),
     } as unknown as ChainApi1stCall<T>;
   }
 
@@ -632,10 +632,10 @@ export class Signer {
       const validatorFn = argsValidators[tx.type];
       if (!validatorFn) {
         return {
-          isValid: false,
-          transaction: tx,
-          method: 'unknown',
           invalidFields: [] as string[],
+          isValid: false,
+          method: 'unknown',
+          transaction: tx,
         };
       }
       return validatorFn(tx);
@@ -649,11 +649,10 @@ export class Signer {
     const invalidTxs = knownTxs.map(validateTx).filter(({ isValid }) => !isValid);
 
     if (invalidTxs.length === 0 && unknownTxs.length === 0) {
-      return { isValid: true, errors: [] };
+      return { errors: [], isValid: true };
     }
 
     return {
-      isValid: false,
       errors: [
         ...invalidTxs.map(
           ({ method: scope, invalidFields }) =>
@@ -661,6 +660,7 @@ export class Signer {
         ),
         ...unknownTxs.map((tx) => `Validation error: unknown transaction type ${String(tx.type)}`),
       ],
+      isValid: false,
     };
   }
 
