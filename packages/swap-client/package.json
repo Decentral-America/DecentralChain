@@ -1,87 +1,8 @@
 {
-  "name": "@decentralchain/swap-client",
-  "version": "2.0.0",
-  "description": "WebSocket client for DecentralChain token swap aggregation — get the best swap prices across multiple DEX vendors",
-  "type": "module",
-  "packageManager": "npm@11.9.0",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
-  },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "LICENSE",
-    "README.md"
-  ],
-  "engines": {
-    "node": ">=24"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/swap-client.git"
-  },
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
-  },
-  "homepage": "https://github.com/Decentral-America/swap-client#readme",
+  "author": "DecentralChain",
   "bugs": {
     "url": "https://github.com/Decentral-America/swap-client/issues"
   },
-  "scripts": {
-    "generate": "buf generate",
-    "build": "tsdown",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit",
-    "lint": "biome check --write .",
-    "lint:check": "biome check .",
-    "lint:fix": "biome check --write .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "check:publint": "publint",
-    "check:exports": "attw --pack . --profile esm-only",
-    "check:size": "size-limit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
-    "prepare": "lefthook install",
-    "prepack": "npm run build",
-    "postversion": "npm publish",
-    "postpublish": "git push"
-  },
-  "size-limit": [
-    {
-      "path": "./dist/index.mjs",
-      "limit": "50 kB"
-    }
-  ],
-  "keywords": [
-    "decentralchain",
-    "dcc",
-    "swap",
-    "dex",
-    "aggregator",
-    "websocket",
-    "protobuf",
-    "token-swap",
-    "defi",
-    "blockchain",
-    "web3"
-  ],
-  "author": "DecentralChain",
-  "license": "MIT",
   "dependencies": {
     "@bufbuild/protobuf": "2.11.0",
     "@decentralchain/bignumber": "1.1.1",
@@ -89,6 +10,7 @@
     "nanoid": "^5.1.5",
     "protobufjs": "^7.4.0"
   },
+  "description": "WebSocket client for DecentralChain token swap aggregation — get the best swap prices across multiple DEX vendors",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@biomejs/biome": "2.4.6",
@@ -103,5 +25,83 @@
     "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
-  }
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/swap-client#readme",
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "swap",
+    "dex",
+    "aggregator",
+    "websocket",
+    "protobuf",
+    "token-swap",
+    "defi",
+    "blockchain",
+    "web3"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.mjs",
+  "name": "@decentralchain/swap-client",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/swap-client.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "generate": "buf generate",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "postpublish": "git push",
+    "postversion": "npm publish",
+    "prepack": "npm run build",
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
+  },
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "limit": "50 kB",
+      "path": "./dist/index.mjs"
+    }
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "2.0.0"
 }
