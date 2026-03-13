@@ -16,8 +16,8 @@ const burnTransform = {
     ),
     emptyError('Has no assetId!'),
   ),
-  quantity: pipe<TDCCGuiBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
   chainId: prop<TDCCGuiBurn, 'chainId'>('chainId'),
+  quantity: pipe<TDCCGuiBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
 };
 
 export const burn = factory<TDCCGuiBurn, TWithPartialFee<BurnTransaction<string>>>(burnTransform);

@@ -21,8 +21,8 @@ export const factory =
         return Object.assign(acc, { [name]: value }) as R;
       } catch (e: unknown) {
         errors.push({
-          path: name,
           message: e instanceof Error ? e.message : String(e),
+          path: name,
         });
         return acc;
       }

@@ -10,8 +10,8 @@ export const cancelLease = factory<
   TWithPartialFee<CancelLeaseTransaction<string>>
 >({
   ...getDefaultTransform(),
-  leaseId: prop('leaseId'),
   chainId: prop('chainId'),
+  leaseId: prop('leaseId'),
 });
 
 export interface IDCCGuiCancelLease extends IDefaultGuiTx<typeof TYPES.CANCEL_LEASE> {
