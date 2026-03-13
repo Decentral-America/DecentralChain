@@ -56,7 +56,7 @@ export function isAddressString(input: string, chainId?: number) {
 export function isAlias(input: string) {
   const parts = input.split(':');
 
-  return parts.length === 3 && parts[0] === 'alias' && /^[-_.@0-9a-z]{4,30}$/.test(parts[2]);
+  return parts.length === 3 && parts[0] === 'alias' && /^[-_.@0-9a-z]{4,30}$/.test(parts[2]!);
 }
 
 export function isBase58(input: string) {
