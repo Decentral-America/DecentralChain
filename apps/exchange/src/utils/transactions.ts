@@ -102,7 +102,8 @@ export const createTransferTransaction = async (
   await signable.getId();
 
   // Get the data formatted for API broadcast
-  const preparedTx = await signable.getDataForApi();
+  const rawTx = await signable.getDataForApi();
+  const preparedTx: typeof rawTx & { amount?: unknown; fee?: unknown } = rawTx;
 
   // CRITICAL FIX: The node expects amount and fee as numbers, not strings
   // getDataForApi() returns them as strings, so we need to convert them
@@ -199,7 +200,8 @@ export const createAliasTransaction = async (
   });
 
   await signable.getId();
-  const preparedTx = await signable.getDataForApi();
+  const rawAliasTx = await signable.getDataForApi();
+  const preparedTx: typeof rawAliasTx & { fee?: unknown } = rawAliasTx;
 
   // CRITICAL FIX: The node expects fee as a number, not a Money object
   // The fee object from getDataForApi() has structure: {bn: BigNumber}

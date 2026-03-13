@@ -466,7 +466,7 @@ export const validateExportData = (
     return { valid: false, errors };
   }
 
-  const record = data as Record<string, unknown>;
+  const record = data as { version?: unknown; timestamp?: unknown; encrypted?: unknown; [key: string]: unknown };
 
   // Check required fields
   if (!record.version) {

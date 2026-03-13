@@ -169,7 +169,7 @@ const Warning = styled.div`
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid ${(p) => (p.theme.colors as Record<string, string>).warningBorder || '#ffc107'};
+  border: 1px solid ${(p) => (p.theme.colors as { warningBorder?: string; [key: string]: string | undefined }).warningBorder || '#ffc107'};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 

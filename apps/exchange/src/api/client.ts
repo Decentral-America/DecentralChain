@@ -140,7 +140,7 @@ class FetchClient {
       }
 
       const apiError: ApiError = {
-        message: (errorData as Record<string, string>)?.message || res.statusText,
+        message: (errorData as { message?: string })?.message || res.statusText,
         status: res.status,
         details: errorData,
       };

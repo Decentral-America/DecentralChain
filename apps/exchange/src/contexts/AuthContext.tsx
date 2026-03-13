@@ -353,7 +353,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Matches Angular: User._addUserData() lines 858-864
    * Allows users to configure custom node URLs, matcher URLs, etc.
    */
-  const syncNetworkConfig = useCallback(async (userSettings: Record<string, unknown>) => {
+  const syncNetworkConfig = useCallback(async (userSettings: { oracleDCC?: unknown; [key: string]: unknown }) => {
     try {
       const ds = await import('data-service');
 

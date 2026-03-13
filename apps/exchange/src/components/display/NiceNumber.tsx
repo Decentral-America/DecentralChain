@@ -180,7 +180,7 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
 
       // Handle rounding mode (only supported in newer browsers)
       if (roundingMode) {
-        (options as Record<string, unknown>).roundingMode = roundingMode;
+        (options as Intl.NumberFormatOptions & { roundingMode?: string }).roundingMode = roundingMode;
       }
 
       // Create formatter and format number

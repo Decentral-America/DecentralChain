@@ -31,6 +31,10 @@ export interface GatewayAssetConfig {
   isThirdParty: boolean;
   /** Regex pattern for validating deposit addresses for this asset */
   regex: string;
+  /** Gateway type identifier for provider lookup */
+  gateway_type?: string;
+  /** Gateway ID for provider lookup */
+  gateway_id?: string;
 }
 
 /**

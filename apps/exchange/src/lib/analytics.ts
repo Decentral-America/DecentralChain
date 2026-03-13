@@ -103,8 +103,8 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
   }
 
   config = {
-    gaId: import.meta.env.VITE_GA_MEASUREMENT_ID,
-    amplitudeKey: import.meta.env.VITE_AMPLITUDE_KEY,
+    ...(import.meta.env.VITE_GA_MEASUREMENT_ID && { gaId: import.meta.env.VITE_GA_MEASUREMENT_ID }),
+    ...(import.meta.env.VITE_AMPLITUDE_KEY && { amplitudeKey: import.meta.env.VITE_AMPLITUDE_KEY }),
     debug: import.meta.env.DEV === true,
     enableInDev: false,
     ...options,

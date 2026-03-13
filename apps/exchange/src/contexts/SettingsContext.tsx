@@ -137,7 +137,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
  */
 const getDefaultCommonSettings = (): CommonSettings => {
   // Get assets configuration
-  const assets = (NetworkConfig.get('assets') as Record<string, string>) || {};
+  const assets = (NetworkConfig.get('assets') as { DCC?: string; CRC?: string; [key: string]: string | undefined }) || {};
   const dccAssetId = assets.DCC || 'DCC';
 
   return {
@@ -179,7 +179,7 @@ const getDefaultCommonSettings = (): CommonSettings => {
  * Matches Angular defaults
  */
 const getDefaultUserSettings = (): UserSettings => {
-  const assets = (NetworkConfig.get('assets') as Record<string, string>) || {};
+  const assets = (NetworkConfig.get('assets') as { DCC?: string; CRC?: string; [key: string]: string | undefined }) || {};
   const dccAssetId = assets.DCC || 'DCC';
   const crcAssetId = assets.CRC || 'CRC';
 
@@ -257,18 +257,19 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         case 'tokensNameListUrl': {
           // Update data-service config
           const ds = await import('data-service');
-          if (ds.config.setConfig) {
-            const updates: Record<string, unknown> = {};
+          const setConfig = ds.config.setConfig as ((config: Record<string, unknown>) => void) | undefined;
+          if (setConfig) {
             if (key === 'network' && value) {
               const network = value as { server: string; matcher: string };
-              updates.servers = {
-                nodeAddress: network.server,
-                matcherAddress: network.matcher,
-              };
+              setConfig({
+                servers: {
+                  nodeAddress: network.server,
+                  matcherAddress: network.matcher,
+                },
+              });
             } else {
-              updates[key] = value;
+              setConfig({ [key]: value });
             }
-            ds.config.setConfig(updates);
           }
           break;
         }

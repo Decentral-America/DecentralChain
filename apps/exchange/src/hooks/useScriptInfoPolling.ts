@@ -45,10 +45,10 @@ export const useScriptInfoPolling = (
       try {
         const ds = await import('data-service');
         const nodeUrl = ds.config.get('node');
-        const response = (await ds.fetch(`${nodeUrl}/addresses/scriptInfo/${address}`)) as Record<
-          string,
-          unknown
-        >;
+        const response = (await ds.fetch(`${nodeUrl}/addresses/scriptInfo/${address}`)) as {
+          extraFee?: unknown;
+          [key: string]: unknown;
+        };
 
         if (response && response.extraFee !== undefined) {
           // Account has a script
