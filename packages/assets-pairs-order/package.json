@@ -5,10 +5,10 @@
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     }
   },
@@ -58,8 +58,8 @@
     "deterministic"
   ],
   "scripts": {
-    "build": "tsup",
-    "build:browser": "tsup",
+    "build": "tsdown",
+    "build:browser": "tsdown",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -67,7 +67,7 @@
     "format:check": "biome format .",
     "lint": "biome check --write .",
     "check:publint": "publint",
-    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "check:exports": "attw --pack . --profile esm-only",
     "check:size": "size-limit",
     "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "biome check --write . && npm run typecheck && npm run test",
@@ -92,7 +92,7 @@
     "@vitest/coverage-v8": "4.0.18",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
-    "tsup": "8.5.1",
+    "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   },

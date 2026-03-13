@@ -277,7 +277,7 @@ assets-pairs-order/
 │   ├── arbitrary.json    # Supplementary asset data
 │   └── __tests__/        # Vitest test suite
 ├── dist/                 # Built output (ESM + IIFE)
-├── tsup.config.ts        # Build configuration
+├── tsdown.config.ts        # Build configuration
 ├── vitest.config.ts      # Test configuration
 ├── biome.json            # Linting & formatting rules
 └── package.json
