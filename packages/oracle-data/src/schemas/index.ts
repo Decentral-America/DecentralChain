@@ -111,13 +111,6 @@ export const ASSETS_VERSION_MAP = {
 } as const;
 
 export const DATA_TO_FIELDS = {
-  PROVIDER: toFields(
-    addVersion(DATA_PROVIDER_VERSIONS.BETA),
-    toField('name', DATA_PROVIDER_KEYS.NAME, DATA_ENTRY_TYPES.STRING),
-    toField('link', DATA_PROVIDER_KEYS.LINK, DATA_ENTRY_TYPES.STRING),
-    toField('email', DATA_PROVIDER_KEYS.EMAIL, DATA_ENTRY_TYPES.STRING),
-    descriptionToField(),
-  ),
   ASSET: toFields(
     addAssetVersion(DATA_PROVIDER_VERSIONS.BETA),
     toAssetField('status', ORACLE_ASSET_FIELD_PATTERN.STATUS, DATA_ENTRY_TYPES.INTEGER),
@@ -126,5 +119,12 @@ export const DATA_TO_FIELDS = {
     toAssetField('ticker', ORACLE_ASSET_FIELD_PATTERN.TICKER, DATA_ENTRY_TYPES.STRING),
     toAssetField('email', ORACLE_ASSET_FIELD_PATTERN.EMAIL, DATA_ENTRY_TYPES.STRING),
     toAssetDescription(),
+  ),
+  PROVIDER: toFields(
+    addVersion(DATA_PROVIDER_VERSIONS.BETA),
+    toField('name', DATA_PROVIDER_KEYS.NAME, DATA_ENTRY_TYPES.STRING),
+    toField('link', DATA_PROVIDER_KEYS.LINK, DATA_ENTRY_TYPES.STRING),
+    toField('email', DATA_PROVIDER_KEYS.EMAIL, DATA_ENTRY_TYPES.STRING),
+    descriptionToField(),
   ),
 };

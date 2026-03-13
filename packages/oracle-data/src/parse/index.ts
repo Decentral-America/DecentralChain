@@ -33,15 +33,15 @@ export function parseOracleData(hash: Record<string, TDataTxField>): TResponse<I
     return parser(hash);
   } catch (e: unknown) {
     return {
-      status: RESPONSE_STATUSES.ERROR,
       content: {},
       errors: [
         {
-          path: 'version',
           /* v8 ignore next */
           error: e instanceof Error ? e : new Error(String(e)),
+          path: 'version',
         },
       ],
+      status: RESPONSE_STATUSES.ERROR,
     };
   }
 }
@@ -73,15 +73,15 @@ export function parseAssetData(hash: Record<string, TDataTxField>): TResponse<TP
         return parser(id, status)(hash);
       } catch (e: unknown) {
         return {
-          status: RESPONSE_STATUSES.ERROR,
           content: { id },
           errors: [
             {
-              path: 'version',
               /* v8 ignore next */
               error: e instanceof Error ? e : new Error(String(e)),
+              path: 'version',
             },
           ],
+          status: RESPONSE_STATUSES.ERROR,
         } as IErrorResponse<TProviderAsset>;
       }
     });
