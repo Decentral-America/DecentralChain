@@ -39,9 +39,9 @@ globalThis.rsaVerify = (digest, msg, sig, key) => {
   return _rsaVerify(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig), alg);
 };
 globalThis.httpGet = async (data) => {
-  if (!data.url) return { ...data, status: 404, body: 'url is undefined' };
+  if (!data.url) return { ...data, body: 'url is undefined', status: 404 };
   const resp = await fetch(data.url, { signal: AbortSignal.timeout(30_000) });
   const status = resp.status;
   const body = await resp.text();
-  return { ...data, status, body };
+  return { ...data, body, status };
 };
