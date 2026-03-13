@@ -1,78 +1,9 @@
 {
-  "name": "@decentralchain/cubensis-connect-types",
-  "version": "1.0.0",
-  "description": "TypeScript type definitions for the CubensisConnect browser-extension API",
-  "type": "module",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
-  },
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "packageManager": "npm@11.9.0",
-  "engines": {
-    "node": ">=24"
-  },
-  "engineStrict": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/cubensis-connect-types.git"
-  },
-  "keywords": [
-    "types",
-    "typescript",
-    "cubensisconnect",
-    "decentralchain",
-    "blockchain",
-    "browser-extension"
-  ],
   "author": "DecentralChain",
-  "license": "MIT",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
-  },
   "bugs": {
     "url": "https://github.com/Decentral-America/cubensis-connect-types/issues"
   },
-  "homepage": "https://github.com/Decentral-America/cubensis-connect-types#readme",
-  "scripts": {
-    "build": "tsdown",
-    "typecheck": "tsc --noEmit",
-    "lint": "biome check --write .",
-    "lint:check": "biome check .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "check:publint": "publint",
-    "check:exports": "attw --pack . --profile esm-only",
-    "check:size": "size-limit",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
-    "validate": "npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
-    "prepare": "lefthook install",
-    "lint:fix": "biome check --write ."
-  },
-  "size-limit": [
-    {
-      "path": "dist/index.mjs",
-      "limit": "1 kB"
-    }
-  ],
+  "description": "TypeScript type definitions for the CubensisConnect browser-extension API",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@biomejs/biome": "2.4.6",
@@ -84,5 +15,74 @@
     "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
-  }
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/cubensis-connect-types#readme",
+  "keywords": [
+    "types",
+    "typescript",
+    "cubensisconnect",
+    "decentralchain",
+    "blockchain",
+    "browser-extension"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.mjs",
+  "name": "@decentralchain/cubensis-connect-types",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/cubensis-connect-types.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run bulletproof:check && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
+  },
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "limit": "1 kB",
+      "path": "dist/index.mjs"
+    }
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "1.0.0"
 }
