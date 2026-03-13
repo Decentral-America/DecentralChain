@@ -138,7 +138,7 @@ const state = await api.publicState();
 
 | Script                      | Purpose                                                |
 | --------------------------- | ------------------------------------------------------ |
-| `npm run build`             | Compile with tsup (ESM + .d.ts)                        |
+| `npm run build`             | Compile with tsdown (ESM + .d.ts)                        |
 | `npm run typecheck`         | `tsc --noEmit` strict type check                       |
 | `npm run lint`              | Biome lint check (no auto-fix)                             |
 | `npm run lint:fix`          | Biome lint with auto-fix                                   |
