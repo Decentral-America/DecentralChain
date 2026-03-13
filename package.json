@@ -97,5 +97,5 @@
   ],
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "5.0.0"
+  "version": "5.0.1"
 }
