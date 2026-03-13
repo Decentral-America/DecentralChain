@@ -13,7 +13,7 @@ export function fetchGeneratingBalance(
   address: string,
   options: RequestInit = {},
 ): Promise<IGeneratingBalance<TLong>> {
-  return request({ base, url: `/consensus/generatingbalance/${pathSegment(address)}`, options });
+  return request({ base, options, url: `/consensus/generatingbalance/${pathSegment(address)}` });
 }
 
 /**

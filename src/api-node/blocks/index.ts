@@ -18,8 +18,8 @@ export function fetchHeadersSeq(
 ): Promise<IBlockHeader[]> {
   return request({
     base,
-    url: `/blocks/headers/seq/${pathSegment(from)}/${pathSegment(to)}`,
     options,
+    url: `/blocks/headers/seq/${pathSegment(from)}/${pathSegment(to)}`,
   });
 }
 
@@ -31,8 +31,8 @@ export function fetchHeadersSeq(
 export function fetchHeadersLast(base: string, options: RequestInit = {}): Promise<IBlockHeader> {
   return request({
     base,
-    url: `/blocks/headers/last`,
     options,
+    url: `/blocks/headers/last`,
   });
 }
 
@@ -62,8 +62,8 @@ export function fetchHeadersAt(
 ): Promise<IBlockHeader> {
   return request({
     base,
-    url: `/blocks/headers/at/${pathSegment(height)}`,
     options,
+    url: `/blocks/headers/at/${pathSegment(height)}`,
   });
 }
 
@@ -80,8 +80,8 @@ export function fetchHeadersById(
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/headers/${pathSegment(id)}`,
     options,
+    url: `/blocks/headers/${pathSegment(id)}`,
   });
 }
 
@@ -98,8 +98,8 @@ export function fetchBlockAt(
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/at/${pathSegment(height)}`,
     options,
+    url: `/blocks/at/${pathSegment(height)}`,
   });
 }
 
@@ -118,8 +118,8 @@ export function fetchSeq(
 ): Promise<IBlock[]> {
   return request({
     base,
-    url: `/blocks/seq/${pathSegment(from)}/${pathSegment(to)}`,
     options,
+    url: `/blocks/seq/${pathSegment(from)}/${pathSegment(to)}`,
   });
 }
 
@@ -136,8 +136,8 @@ export function fetchBlockById(
 ): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/${pathSegment(id)}`,
     options,
+    url: `/blocks/${pathSegment(id)}`,
   });
 }
 
@@ -149,8 +149,8 @@ export function fetchBlockById(
 export function fetchFirst(base: string, options: RequestInit = {}): Promise<IBlock> {
   return request({
     base,
-    url: `/blocks/first`,
     options,
+    url: `/blocks/first`,
   });
 }
 
@@ -171,8 +171,8 @@ export function fetchBlocksByAddress(
 ): Promise<IBlock[]> {
   return request({
     base,
-    url: `/blocks/address/${pathSegment(address)}/${pathSegment(from)}/${pathSegment(to)}`,
     options,
+    url: `/blocks/address/${pathSegment(address)}/${pathSegment(from)}/${pathSegment(to)}`,
   });
 }
 
@@ -184,8 +184,8 @@ export function fetchBlocksByAddress(
 export function fetchLast(base: string, options: RequestInit = {}): Promise<IBlock> {
   return request({
     base,
-    url: '/blocks/last',
     options,
+    url: '/blocks/last',
   });
 }
 
@@ -225,8 +225,8 @@ export function fetchHeightByTimestamp(
 ): Promise<{ height: number }> {
   return request({
     base,
-    url: `/blocks/heightByTimestamp/${pathSegment(timestamp)}`,
     options,
+    url: `/blocks/heightByTimestamp/${pathSegment(timestamp)}`,
   });
 }
 

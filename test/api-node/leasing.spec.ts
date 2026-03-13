@@ -11,14 +11,14 @@ const largeNumbeConvertHeader = {
 const checkLeasing = (object: ILeaseInfo) => {
   expect(object).toMatchObject({
     amount: expect.isStringOrNumber(),
-    sender: expect.any(String),
-    recipient: expect.any(String),
-    id: expect.any(String),
-    originTransactionId: expect.any(String),
-    height: expect.any(Number),
-    status: expect.any(String),
     cancelHeight: expect.isNullableNumber(),
     cancelTransactionId: expect.isNullableString(),
+    height: expect.any(Number),
+    id: expect.any(String),
+    originTransactionId: expect.any(String),
+    recipient: expect.any(String),
+    sender: expect.any(String),
+    status: expect.any(String),
   });
 };
 

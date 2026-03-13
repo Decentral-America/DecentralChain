@@ -34,8 +34,8 @@ export function fetchDetails<T extends string | string[]>(
     toArray(assetId).map((id) =>
       request<TAssetDetails>({
         base,
-        url: `/assets/details/${pathSegment(id)}`,
         options,
+        url: `/assets/details/${pathSegment(id)}`,
       }),
     ),
   ).then((list) => {
@@ -61,8 +61,8 @@ export function fetchAssetsDetails(
 
   return request<(TAssetDetails | TErrorResponse)[]>({
     base,
-    url: `/assets/details${queryStr}`,
     options,
+    url: `/assets/details${queryStr}`,
   });
 }
 
@@ -75,8 +75,8 @@ export function fetchAssetDistribution(
 ): Promise<IAssetDistribution> {
   return request({
     base,
-    url: `/assets/${pathSegment(assetId)}/distribution/${pathSegment(height)}/limit/${pathSegment(limit)}`,
     options,
+    url: `/assets/${pathSegment(assetId)}/distribution/${pathSegment(height)}/limit/${pathSegment(limit)}`,
   });
 }
 
@@ -93,8 +93,8 @@ export function fetchAssetsAddressLimit(
 ): Promise<TAssetDetails[]> {
   return request({
     base,
-    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}`,
     options,
+    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}`,
   });
 }
 
@@ -117,8 +117,8 @@ export function fetchAssetsNft(
 
   return request({
     base,
-    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}${afterQuery}`,
     options,
+    url: `/assets/nft/${pathSegment(address)}/limit/${pathSegment(limit)}${afterQuery}`,
   });
 }
 
@@ -129,8 +129,8 @@ export async function fetchAssetsBalance(
 ): Promise<TAssetsBalance> {
   const balancesResponse = await request<TAssetsBalance>({
     base,
-    url: `/assets/balance/${pathSegment(address)}`,
     options,
+    url: `/assets/balance/${pathSegment(address)}`,
   });
 
   const assetsWithoutIssueTransaction = balancesResponse.balances.reduce<Record<string, number>>(
@@ -164,23 +164,23 @@ export async function fetchAssetsBalance(
     }
 
     assetBalance.issueTransaction = {
-      id: assetDetails.originTransactionId,
-      name: assetDetails.name,
+      chainId: 0,
       decimals: assetDetails.decimals,
       description: assetDetails.description,
+      fee: 10 ** 8,
+      feeAssetId: null,
+      height: assetDetails.issueHeight,
+      id: assetDetails.originTransactionId,
+      name: assetDetails.name,
+      proofs: [],
       quantity: assetDetails.quantity,
       reissuable: assetDetails.reissuable,
+      script: assetDetails.scripted ? '-' : null,
       sender: assetDetails.issuer,
       senderPublicKey: assetDetails.issuerPublicKey,
       timestamp: assetDetails.issueTimestamp,
-      height: assetDetails.issueHeight,
-      script: assetDetails.scripted ? '-' : null,
-      proofs: [],
-      fee: 10 ** 8,
-      feeAssetId: null,
-      version: 3,
       type: TRANSACTION_TYPE.ISSUE,
-      chainId: 0,
+      version: 3,
     } as unknown as NonNullable<TAssetBalance['issueTransaction']>;
   });
 
@@ -195,8 +195,8 @@ export function fetchBalanceAddressAssetId(
 ): Promise<IBalanceAddressAssetId> {
   return request({
     base,
-    url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`,
     options,
+    url: `/assets/balance/${pathSegment(address)}/${pathSegment(assetId)}`,
   });
 }
 
