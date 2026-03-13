@@ -1,12 +1,12 @@
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { BigNumber } from '@decentralchain/bignumber';
-import Long from 'long';
 import { nanoid } from 'nanoid';
-import * as protobuf from 'protobufjs/minimal';
-
-import { proto } from './messages.proto.compiled';
-
-protobuf.util.Long = Long;
-protobuf.configure();
+import {
+  RequestSchema,
+  Response_Error_CODES,
+  type Response_Exchange_Transaction_Argument,
+  ResponseSchema,
+} from './gen/messages_pb.js';
 
 const DEFAULT_WS_URL = 'wss://swap.decentralchain.io/v2';
 const DEFAULT_CONNECT_TIMEOUT_MS = 15_000;
@@ -36,8 +36,8 @@ export interface SwapClientInvokeTransaction {
   payment: Array<{ assetId: string | null; amount: string }>;
 }
 
-export type SwapClientErrorCode = proto.Response.Error.CODES;
-export const SwapClientErrorCode = proto.Response.Error.CODES;
+export type SwapClientErrorCode = Response_Error_CODES;
+export const SwapClientErrorCode = Response_Error_CODES;
 
 export interface SwapParams {
   address?: string;
@@ -92,48 +92,33 @@ function uint8ToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-export function convertArg(arg: proto.Response.Exchange.Transaction.Argument): InvokeArg {
-  switch (arg.value) {
+export function convertArg(arg: Response_Exchange_Transaction_Argument): InvokeArg {
+  switch (arg.value.case) {
     case 'integerValue':
-      if (arg.integerValue == null) {
-        throw new Error('Protobuf decode error: integerValue is null');
-      }
-      return { type: 'integer', value: String(arg.integerValue) };
+      return { type: 'integer', value: String(arg.value.value) };
 
     case 'binaryValue':
-      if (arg.binaryValue == null) {
-        throw new Error('Protobuf decode error: binaryValue is null');
-      }
       return {
         type: 'binary',
-        value: `base64:${uint8ToBase64(arg.binaryValue instanceof Uint8Array ? arg.binaryValue : new Uint8Array(arg.binaryValue))}`,
+        value: `base64:${uint8ToBase64(arg.value.value instanceof Uint8Array ? arg.value.value : new Uint8Array(arg.value.value))}`,
       };
 
     case 'stringValue':
-      if (arg.stringValue == null) {
-        throw new Error('Protobuf decode error: stringValue is null');
-      }
-      return { type: 'string', value: arg.stringValue };
+      return { type: 'string', value: arg.value.value };
 
     case 'booleanValue':
-      if (arg.booleanValue == null) {
-        throw new Error('Protobuf decode error: booleanValue is null');
-      }
-      return { type: 'boolean', value: arg.booleanValue };
+      return { type: 'boolean', value: arg.value.value };
 
     case 'list':
-      if (arg.list == null) {
-        throw new Error('Protobuf decode error: list is null');
-      }
       return {
         type: 'list',
-        value: (arg.list.items ?? []).map((item) =>
-          convertArg(item as proto.Response.Exchange.Transaction.Argument),
+        value: (arg.value.value.items ?? []).map((item) =>
+          convertArg(item),
         ) as InvokeArgPrimitive[],
       };
 
     default:
-      throw new Error(`Protobuf decode error: unexpected arg.value "${String(arg.value)}"`);
+      throw new Error(`Protobuf decode error: unexpected arg.value "${String(arg.value.case)}"`);
   }
 }
 
@@ -216,22 +201,18 @@ export class SwapClient {
       return;
     }
 
-    const decoded = proto.Response.decode(new Uint8Array(event.data as ArrayBuffer));
+    const decoded = fromBinary(ResponseSchema, new Uint8Array(event.data as ArrayBuffer));
 
-    if (decoded.id !== this.activeRequest.id || decoded.payload !== 'exchange') {
+    if (decoded.id !== this.activeRequest.id || decoded.payload.case !== 'exchange') {
       return;
     }
 
-    const exchange = decoded.exchange;
-    if (exchange == null) {
-      console.error('[SwapClient] Malformed response: exchange is null');
-      return;
-    }
+    const exchange = decoded.payload.value;
 
     let response: SwapClientResponse;
 
-    if (exchange.data != null) {
-      const data = exchange.data;
+    if (exchange.result.case === 'data') {
+      const data = exchange.result.value;
       if (data.transaction == null || data.transaction.call == null) {
         console.error('[SwapClient] Malformed exchange data: missing required fields');
         return;
@@ -251,9 +232,7 @@ export class SwapClient {
           dApp: data.transaction.dApp ?? '',
           call: {
             function: data.transaction.call.function ?? '',
-            args: (data.transaction.call.arguments ?? []).map((a) =>
-              convertArg(a as proto.Response.Exchange.Transaction.Argument),
-            ),
+            args: (data.transaction.call.arguments ?? []).map((a) => convertArg(a)),
           },
           payment: [
             {
@@ -263,8 +242,8 @@ export class SwapClient {
           ],
         },
       };
-    } else if (exchange.error != null) {
-      const error = exchange.error;
+    } else if (exchange.result.case === 'error') {
+      const error = exchange.result.value;
       response = {
         type: 'error',
         code: error.code ?? SwapClientErrorCode.UNEXPECTED,
@@ -333,19 +312,23 @@ export class SwapClient {
       return;
     }
 
-    const encoded = proto.Request.encode(
-      proto.Request.create({
-        exchange: proto.Request.Exchange.create({
-          amount: Long.fromString(swapParams.amountCoins),
-          id,
-          recipient: swapParams.address ?? null,
-          referrer: swapParams.referrer ?? null,
-          slippageTolerance: Math.round(swapParams.slippageTolerance * 10),
-          source: swapParams.fromAssetId,
-          target: swapParams.toAssetId,
-        }),
+    const encoded = toBinary(
+      RequestSchema,
+      create(RequestSchema, {
+        payload: {
+          case: 'exchange',
+          value: {
+            amount: BigInt(swapParams.amountCoins),
+            id,
+            recipient: swapParams.address ?? '',
+            referrer: swapParams.referrer ?? '',
+            slippageTolerance: Math.round(swapParams.slippageTolerance * 10),
+            source: swapParams.fromAssetId,
+            target: swapParams.toAssetId,
+          },
+        },
       }),
-    ).finish();
+    );
 
     this.ws.send(encoded);
     this.lastSentRequestId = id;
