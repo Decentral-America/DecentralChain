@@ -4,11 +4,11 @@
     "url": "https://github.com/Decentral-America/transactions/issues"
   },
   "dependencies": {
-    "@decentralchain/marshall": "1.0.0",
-    "@decentralchain/node-api-js": "2.0.0",
+    "@decentralchain/marshall": "^1.0.1",
+    "@decentralchain/node-api-js": "^2.0.1",
     "@decentralchain/protobuf-serialization": "^3.0.0",
-    "@decentralchain/ts-lib-crypto": "2.0.0",
-    "@decentralchain/ts-types": "2.0.0"
+    "@decentralchain/ts-lib-crypto": "^2.0.1",
+    "@decentralchain/ts-types": "^2.0.1"
   },
   "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
   "devDependencies": {
