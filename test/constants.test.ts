@@ -231,7 +231,7 @@ describe('Type-level correctness', () => {
   });
 
   it('WithApiMixin should combine WithId + sender + height', () => {
-    const mixin: WithApiMixin = { id: 'tx1', sender: '3N...', height: 100 };
+    const mixin: WithApiMixin = { height: 100, id: 'tx1', sender: '3N...' };
     expect(mixin.id).toBe('tx1');
     expect(mixin.sender).toBe('3N...');
     expect(mixin.height).toBe(100);
@@ -303,13 +303,13 @@ describe('DataTransactionEntry', () => {
 
 describe('MassTransferItem', () => {
   it('should require recipient and amount', () => {
-    const item: MassTransferItem = { recipient: '3N...', amount: 100_000_000 };
+    const item: MassTransferItem = { amount: 100_000_000, recipient: '3N...' };
     expect(item.recipient).toBe('3N...');
     expect(item.amount).toBe(100_000_000);
   });
 
   it('should accept string amounts for Long', () => {
-    const item: MassTransferItem<string> = { recipient: '3N...', amount: '100000000' };
+    const item: MassTransferItem<string> = { amount: '100000000', recipient: '3N...' };
     expect(typeof item.amount).toBe('string');
   });
 });
@@ -317,13 +317,13 @@ describe('MassTransferItem', () => {
 describe('InvokeScriptCall', () => {
   it('should accept a function name and args', () => {
     const call: InvokeScriptCall = {
-      function: 'transfer',
       args: [
         { type: 'string', value: '3N...' },
         { type: 'integer', value: 1000 },
         { type: 'boolean', value: true },
         { type: 'binary', value: 'base64:AA==' },
       ],
+      function: 'transfer',
     };
     expect(call.function).toBe('transfer');
     expect(call.args).toHaveLength(4);
@@ -332,7 +332,7 @@ describe('InvokeScriptCall', () => {
 
 describe('InvokeScriptPayment', () => {
   it('should require assetId and amount', () => {
-    const payment: InvokeScriptPayment = { assetId: null, amount: 500 };
+    const payment: InvokeScriptPayment = { amount: 500, assetId: null };
     expect(payment.assetId).toBeNull();
     expect(payment.amount).toBe(500);
   });
@@ -345,16 +345,16 @@ describe('InvokeScriptPayment', () => {
 describe('ExchangeTransactionOrder', () => {
   it('should accept a V1 order', () => {
     const order: ExchangeTransactionOrder = {
-      version: 1,
-      orderType: 'buy',
-      assetPair: { amountAsset: null, priceAsset: null },
-      price: 100,
       amount: 1000,
-      timestamp: Date.now(),
+      assetPair: { amountAsset: null, priceAsset: null },
       expiration: Date.now() + 86400000,
       matcherFee: 300000,
       matcherPublicKey: 'matcher_pub_key',
+      orderType: 'buy',
+      price: 100,
       senderPublicKey: 'sender_pub_key',
+      timestamp: Date.now(),
+      version: 1,
     };
     expect(order.version).toBe(1);
     expect(order.orderType).toBe('buy');
@@ -362,17 +362,17 @@ describe('ExchangeTransactionOrder', () => {
 
   it('should accept a V3 order with matcherFeeAssetId', () => {
     const order: ExchangeTransactionOrder = {
-      version: 3,
-      orderType: 'sell',
-      assetPair: { amountAsset: 'asset1', priceAsset: 'asset2' },
-      price: 200,
       amount: 500,
-      timestamp: Date.now(),
+      assetPair: { amountAsset: 'asset1', priceAsset: 'asset2' },
       expiration: Date.now() + 86400000,
       matcherFee: 300000,
-      matcherPublicKey: 'matcher_pub_key',
-      senderPublicKey: 'sender_pub_key',
       matcherFeeAssetId: 'fee_asset',
+      matcherPublicKey: 'matcher_pub_key',
+      orderType: 'sell',
+      price: 200,
+      senderPublicKey: 'sender_pub_key',
+      timestamp: Date.now(),
+      version: 3,
     };
     expect(order.version).toBe(3);
     expect(order.matcherFeeAssetId).toBe('fee_asset');
@@ -386,17 +386,17 @@ describe('ExchangeTransactionOrder', () => {
 describe('Transaction type shapes', () => {
   it('TransferTransaction should have required fields', () => {
     const tx: TransferTransaction = {
-      version: 2,
-      type: 4,
-      chainId: 76,
-      senderPublicKey: 'pub_key',
-      timestamp: Date.now(),
-      fee: 100000,
-      recipient: '3N...',
       amount: 1_000_000,
-      feeAssetId: null,
       assetId: null,
       attachment: null,
+      chainId: 76,
+      fee: 100000,
+      feeAssetId: null,
+      recipient: '3N...',
+      senderPublicKey: 'pub_key',
+      timestamp: Date.now(),
+      type: 4,
+      version: 2,
     };
     expect(tx.type).toBe(TRANSACTION_TYPE.TRANSFER);
     expect(tx.version).toBe(2);
@@ -404,16 +404,16 @@ describe('Transaction type shapes', () => {
 
   it('DataTransaction should contain data entries', () => {
     const tx: DataTransaction = {
-      version: 1,
-      type: 12,
       chainId: 76,
-      senderPublicKey: 'pub_key',
-      timestamp: Date.now(),
-      fee: 100000,
       data: [
         { key: 'price', type: 'integer', value: 42 },
         { key: 'name', type: 'string', value: 'test' },
       ],
+      fee: 100000,
+      senderPublicKey: 'pub_key',
+      timestamp: Date.now(),
+      type: 12,
+      version: 1,
     };
     expect(tx.type).toBe(TRANSACTION_TYPE.DATA);
     expect(tx.data).toHaveLength(2);
@@ -421,13 +421,13 @@ describe('Transaction type shapes', () => {
 
   it('GenesisTransaction should omit senderPublicKey', () => {
     const tx: GenesisTransaction = {
-      version: 1,
-      type: 1,
+      amount: 10_000_000_000,
       chainId: 76,
-      timestamp: 0,
       fee: 0,
       recipient: '3N...',
-      amount: 10_000_000_000,
+      timestamp: 0,
+      type: 1,
+      version: 1,
     };
     expect(tx.type).toBe(TRANSACTION_TYPE.GENESIS);
     // GenesisTransaction omits senderPublicKey
@@ -475,26 +475,26 @@ describe('TransactionMap completeness', () => {
 describe('TStateChanges', () => {
   it('should accept a complete state changes object', () => {
     const stateChanges: TStateChanges = {
+      burns: [{ assetId: 'asset1', quantity: 100 }],
       data: [{ key: 'k', type: 'integer', value: 1 }],
-      transfers: [{ address: '3N...', amount: 100, asset: null }],
+      invokes: [],
       issues: [
         {
           assetId: 'asset1',
-          name: 'Token',
-          description: 'A token',
-          quantity: 1000,
-          decimals: 8,
-          isReissuable: true,
           compiledScript: null,
+          decimals: 8,
+          description: 'A token',
+          isReissuable: true,
+          name: 'Token',
           nonce: 0,
+          quantity: 1000,
         },
       ],
-      reissues: [{ assetId: 'asset1', isReissuable: false, quantity: 500 }],
-      burns: [{ assetId: 'asset1', quantity: 100 }],
-      sponsorFees: [{ assetId: 'asset1', minSponsoredAssetFee: 1000 }],
-      leases: [{ leaseId: 'lease1', recipient: '3N...', amount: 100 }],
       leaseCancels: [{ leaseId: 'lease1' }],
-      invokes: [],
+      leases: [{ amount: 100, leaseId: 'lease1', recipient: '3N...' }],
+      reissues: [{ assetId: 'asset1', isReissuable: false, quantity: 500 }],
+      sponsorFees: [{ assetId: 'asset1', minSponsoredAssetFee: 1000 }],
+      transfers: [{ address: '3N...', amount: 100, asset: null }],
     };
     expect(stateChanges.data).toHaveLength(1);
     expect(stateChanges.transfers).toHaveLength(1);
@@ -503,16 +503,16 @@ describe('TStateChanges', () => {
 
   it('should accept optional error field', () => {
     const stateChanges: TStateChanges = {
-      data: [],
-      transfers: [],
-      issues: [],
-      reissues: [],
       burns: [],
-      sponsorFees: [],
-      leases: [],
-      leaseCancels: [],
-      invokes: [],
+      data: [],
       error: { code: 1, text: 'Script execution failed' },
+      invokes: [],
+      issues: [],
+      leaseCancels: [],
+      leases: [],
+      reissues: [],
+      sponsorFees: [],
+      transfers: [],
     };
     expect(stateChanges.error?.code).toBe(1);
   });
@@ -574,14 +574,14 @@ describe('SignedTransaction', () => {
   it('should produce a type that compiles correctly for v1 genesis', () => {
     // V1 genesis transactions use `signature` (not `proofs`)
     const signed: SignedTransaction<GenesisTransaction> = {
-      version: 1,
-      type: 1,
+      amount: 10_000_000_000,
       chainId: 76,
-      timestamp: 0,
       fee: 0,
       recipient: '3N...',
-      amount: 10_000_000_000,
       signature: 'sig_here',
+      timestamp: 0,
+      type: 1,
+      version: 1,
     };
     expect(signed.signature).toBe('sig_here');
   });
