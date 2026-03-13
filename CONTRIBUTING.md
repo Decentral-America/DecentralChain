@@ -23,7 +23,7 @@ npm install
 
 | Command                     | Description                              |
 | --------------------------- | ---------------------------------------- |
-| `npm run build`             | Build distribution files with tsup       |
+| `npm run build`             | Build distribution files with tsdown     |
 | `npm test`                  | Run tests with Vitest                    |
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
@@ -59,7 +59,7 @@ refactor: simplify implementation
 - **Strict mode** — TypeScript strict flags enabled
 - **Biome** — auto-formatting on commit
 - **Coverage** — thresholds enforced
-- **ESM-first** — pure ESM with CJS compatibility via tsup
+- **ESM-first** — pure ESM via tsdown (Rolldown-powered)
 
 ## PR Checklist
 
