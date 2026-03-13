@@ -15,8 +15,7 @@ const action = {
   },
 };
 
-const contentSecurityPolicy =
-  "object-src 'self'; script-src 'self' 'wasm-unsafe-eval'";
+const contentSecurityPolicy = "object-src 'self'; script-src 'self' 'wasm-unsafe-eval'";
 
 const manifestV2 = {
   manifest_version: 2,
@@ -37,9 +36,7 @@ const manifestV3 = {
   content_security_policy: {
     extension_pages: contentSecurityPolicy,
   },
-  web_accessible_resources: [
-    { resources: ['inpage.js'], matches: ['<all_urls>'] },
-  ],
+  web_accessible_resources: [{ resources: ['inpage.js'], matches: ['<all_urls>'] }],
 };
 
 const platformValues = {
