@@ -11,8 +11,8 @@ const DIST_FOLDER = path.resolve(__dirname, '..', 'dist');
 
 readFile(path.resolve(__dirname, './platforms.json'), 'utf8')
   .then(JSON.parse)
-  .then(platforms => {
-    platforms.forEach(async platformName => {
+  .then((platforms) => {
+    platforms.forEach(async (platformName) => {
       await zip(
         path.resolve(DIST_FOLDER, platformName),
         path.resolve(
