@@ -9,14 +9,17 @@ import {
 } from '@decentralchain/crypto';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { binary } from '@decentralchain/marshall';
-// NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
-import { waves } from '@decentralchain/protobuf-serialization';
+import {
+  create,
+  DataEntrySchema,
+  DataTransactionDataSchema,
+  toBinary,
+} from '@decentralchain/protobuf-serialization';
 import { type LeaseTransactionFromNode, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
 import { JSONbn } from '_core/jsonBn';
 import { type AssetsRecord } from 'assets/types';
 import EventEmitter from 'events';
-import Long from 'long';
 import {
   computeHash,
   computeTxHash,
@@ -1242,18 +1245,29 @@ export class MessageController extends EventEmitter {
           const bytes =
             txParams.version === 1
               ? binary.serializeTx({ ...txParams, fee: 0 })
-              : waves.DataTransactionData.encode({
-                  data: txParams.data.map((entry) => ({
-                    key: entry.key,
-                    intValue: entry.type === 'integer' ? Long.fromValue(entry.value) : undefined,
-                    boolValue: entry.type === 'boolean' ? entry.value : undefined,
-                    binaryValue:
-                      entry.type === 'binary'
-                        ? base64Decode(entry.value.replace(/^base64:/, ''))
-                        : undefined,
-                    stringValue: entry.type === 'string' ? entry.value : undefined,
-                  })),
-                }).finish();
+              : toBinary(
+                  DataTransactionDataSchema,
+                  create(DataTransactionDataSchema, {
+                    data: txParams.data.map((entry) =>
+                      create(DataEntrySchema, {
+                        key: entry.key,
+                        value:
+                          entry.type === 'integer'
+                            ? { case: 'intValue' as const, value: BigInt(entry.value) }
+                            : entry.type === 'boolean'
+                              ? { case: 'boolValue' as const, value: entry.value }
+                              : entry.type === 'binary'
+                                ? {
+                                    case: 'binaryValue' as const,
+                                    value: base64Decode(entry.value.replace(/^base64:/, '')),
+                                  }
+                                : entry.type === 'string'
+                                  ? { case: 'stringValue' as const, value: entry.value }
+                                  : { case: undefined },
+                      }),
+                    ),
+                  }),
+                );
 
           fee = new BigNumber(await getSenderExtraFee())
             .add(getRoundedUpKbs(bytes.length) * 10_0000)
