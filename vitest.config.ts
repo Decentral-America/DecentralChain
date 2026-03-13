@@ -2,12 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
-    include: ['test/**/*.test.ts'],
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
       exclude: ['src/index.ts'],
+      include: ['src/**/*.ts'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 95,
@@ -16,6 +15,8 @@ export default defineConfig({
         statements: 95,
       },
     },
+    globals: true,
+    include: ['test/**/*.test.ts'],
     reporters: ['default'],
     typecheck: { enabled: true },
   },
