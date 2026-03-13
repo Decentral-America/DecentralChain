@@ -215,7 +215,7 @@ function waitForTx(txId: string, options: { apiBase: string; timeout?: number })
 
 | Command                | Purpose                              |
 | ---------------------- | ------------------------------------ |
-| `npm run build`        | Build ESM bundle via tsup            |
+| `npm run build`        | Build ESM bundle via tsdown            |
 | `npm test`             | Run tests via Vitest                 |
 | `npm run test:watch`   | Run tests in watch mode              |
 | `npm run typecheck`    | Type-check with `tsc --noEmit`       |
