@@ -43,8 +43,8 @@
     "validate": "npm audit --audit-level=high && npm run lint:check && npm run test && npm run build"
   },
   "dependencies": {
-    "@decentralchain/node-api-js": "2.0.0",
-    "@decentralchain/ride-js": "2.3.0",
+    "@decentralchain/node-api-js": "^2.0.1",
+    "@decentralchain/ride-js": "^2.3.0",
     "@sentry/browser": "^10.5.0",
     "amplitude-js": "^8.21.9",
     "bignumber.js": "^9.1.2",
@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
-    "@decentralchain/ts-lib-crypto": "2.0.0",
+    "@decentralchain/ts-lib-crypto": "^2.0.1",
     "@evilmartians/lefthook": "2.1.3",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
