@@ -16,16 +16,16 @@ import {
 } from './validators';
 
 const updateAssetInfoScheme = {
-  type: isEq(TRANSACTION_TYPE.UPDATE_ASSET_INFO),
-  senderPublicKey: isPublicKey,
-  name: isValidAssetName,
-  description: isValidAssetDescription,
-  version: orEq([1]),
   assetId: isAssetId,
-  fee: isNaturalNumberLike,
   chainId: isNaturalNumberLike,
-  timestamp: isNumber,
+  description: isValidAssetDescription,
+  fee: isNaturalNumberLike,
+  name: isValidAssetName,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.UPDATE_ASSET_INFO),
+  version: orEq([1]),
 };
 
 export const updateAssetInfoValidator = validateByShema(updateAssetInfoScheme, getError);

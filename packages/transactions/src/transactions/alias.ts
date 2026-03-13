@@ -32,15 +32,15 @@ export function alias(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: AliasTransaction & WithId & WithProofs = {
+    alias: paramsOrTx.alias,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 100000),
+    id: '',
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    alias: paramsOrTx.alias,
-    fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    proofs: paramsOrTx.proofs || [],
-    id: '',
   };
 
   validate.alias(tx as unknown as Record<string, unknown>);

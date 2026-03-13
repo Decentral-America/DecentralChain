@@ -16,7 +16,7 @@ describe('alias', () => {
 
   it('should build from minimal set of params', () => {
     const tx = alias({ ...aliasMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...aliasMinimalParams, fee: 100000, chainId: 76 });
+    expect(tx).toMatchObject({ ...aliasMinimalParams, chainId: 76, fee: 100000 });
   });
 
   it('Should get correct signature', () => {
@@ -88,7 +88,7 @@ describe('alias', () => {
 describe('serialize/deserialize alias proto tx', () => {
   Object.entries(aliasTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -96,7 +96,7 @@ describe('serialize/deserialize alias proto tx', () => {
 describe('serialize/deserialize alias binary tx', () => {
   Object.entries(aliasBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

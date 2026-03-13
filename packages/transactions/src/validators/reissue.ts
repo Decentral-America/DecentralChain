@@ -15,16 +15,16 @@ import {
 } from './validators';
 
 const reissueScheme = {
-  type: isEq(TRANSACTION_TYPE.REISSUE),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 2, 3]),
   assetId: isAssetId,
-  quantity: isNaturalNumberLike,
-  reissuable: isBoolean,
   chainId: isNaturalNumberLike,
   fee: isNaturalNumberLike,
-  timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  quantity: isNaturalNumberLike,
+  reissuable: isBoolean,
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.REISSUE),
+  version: orEq([undefined, 2, 3]),
 };
 
 export const reissueValidator = validateByShema(reissueScheme, getError);
