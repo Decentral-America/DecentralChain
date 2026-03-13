@@ -1,6 +1,6 @@
 import BigNumber from '@decentralchain/bignumber';
-import type { Money } from '@decentralchain/data-entities';
-import type { BalanceAssets } from 'balances/types';
+import { type Money } from '@decentralchain/data-entities';
+import { type BalanceAssets } from 'balances/types';
 import { usePopupSelector } from 'popup/store/react';
 import { useTranslation } from 'react-i18next';
 import { IMaskInput } from 'react-imask';
@@ -35,7 +35,7 @@ export function AssetAmountInput({
   onChange,
 }: Props) {
   const { t } = useTranslation();
-  const network = usePopupSelector(state => state.currentNetwork);
+  const network = usePopupSelector((state) => state.currentNetwork);
 
   return (
     <div className={styles.root}>

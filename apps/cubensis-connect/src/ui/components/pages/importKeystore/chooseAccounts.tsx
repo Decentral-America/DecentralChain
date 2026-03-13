@@ -1,13 +1,13 @@
 import clsx from 'clsx';
-import type { KeystoreAccount, KeystoreProfiles } from 'keystore/types';
+import { type KeystoreAccount, type KeystoreProfiles } from 'keystore/types';
 import { NetworkName } from 'networks/types';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/components/ui';
 import { Avatar } from 'ui/components/ui/avatar/Avatar';
 
-import * as styles from './chooseAccounts.styl';
+import * as styles from './chooseAccounts.module.styl';
 
 const allNetworks: NetworkName[] = Object.values(NetworkName);
 
@@ -32,23 +32,23 @@ export function ImportKeystoreChooseAccounts({
   onSubmit,
 }: Props) {
   const { t } = useTranslation();
-  const existingAccounts = new Set(allNetworksAccounts.map(acc => acc.address));
+  const existingAccounts = new Set(allNetworksAccounts.map((acc) => acc.address));
 
   const [selected, setSelected] = useState(
     () =>
       new Set(
         Object.values(profiles)
-          .flatMap(profile => profile.accounts)
+          .flatMap((profile) => profile.accounts)
           .filter(({ address }) => !existingAccounts.has(address))
           .map(({ address }) => address),
       ),
   );
 
   function toggleSelected(accounts: KeystoreAccount[], isSelected: boolean) {
-    setSelected(prevSelected => {
+    setSelected((prevSelected) => {
       const newSelected = new Set(prevSelected);
 
-      accounts.forEach(acc => {
+      accounts.forEach((acc) => {
         if (isSelected) {
           newSelected.add(acc.address);
         } else {
@@ -64,12 +64,12 @@ export function ImportKeystoreChooseAccounts({
     <form
       data-testid="chooseAccountsForm"
       className={styles.root}
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault();
 
         onSubmit(
           Object.values(profiles)
-            .flatMap(profile => profile.accounts)
+            .flatMap((profile) => profile.accounts)
             .filter(({ address }) => selected.has(address)),
         );
       }}
@@ -82,10 +82,10 @@ export function ImportKeystoreChooseAccounts({
 
       <div className={styles.accounts}>
         {allNetworks
-          .map(network => [network, profiles[network].accounts] as const)
+          .map((network) => [network, profiles[network].accounts] as const)
           .filter(([, accounts]) => accounts.length !== 0)
           .map(([network, accounts]) => {
-            const newAccounts = accounts.filter(acc => !existingAccounts.has(acc.address));
+            const newAccounts = accounts.filter((acc) => !existingAccounts.has(acc.address));
 
             return (
               <div key={network} className={styles.accountsGroup} data-testid="accountsGroup">
@@ -98,11 +98,11 @@ export function ImportKeystoreChooseAccounts({
 
                   {newAccounts.length !== 0 && (
                     <input
-                      checked={newAccounts.every(acc => selected.has(acc.address))}
+                      checked={newAccounts.every((acc) => selected.has(acc.address))}
                       type="checkbox"
-                      onChange={event => {
+                      onChange={(event) => {
                         toggleSelected(
-                          accounts.filter(acc => !existingAccounts.has(acc.address)),
+                          accounts.filter((acc) => !existingAccounts.has(acc.address)),
                           event.currentTarget.checked,
                         );
                       }}
@@ -111,9 +111,9 @@ export function ImportKeystoreChooseAccounts({
                 </header>
 
                 <ul className={styles.accountList}>
-                  {accounts.map(account => {
+                  {accounts.map((account) => {
                     const existingAccount = allNetworksAccounts.find(
-                      acc => acc.address === account.address,
+                      (acc) => acc.address === account.address,
                     );
 
                     return (
@@ -147,7 +147,7 @@ export function ImportKeystoreChooseAccounts({
                             name="selected"
                             type="checkbox"
                             value={account.address}
-                            onChange={event => {
+                            onChange={(event) => {
                               toggleSelected([account], event.currentTarget.checked);
                             }}
                           />

@@ -5,7 +5,7 @@ import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
 import { isNotNull } from '_core/isNotNull';
 import { useSign } from '_core/signContext';
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 import { useAssetIdByTicker } from 'assets/utils';
 import { convertFeeToAsset } from 'fee/utils';
 import { computeTxHash, makeTxBytes } from 'messages/utils';
@@ -27,10 +27,10 @@ export function Swap() {
 
   const { t } = useTranslation();
 
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   invariant(selectedAccount);
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
   const usdnAssetId = useAssetIdByTicker(currentNetwork, 'USDN');
 
@@ -49,7 +49,7 @@ export function Swap() {
     let cancelled = false;
     let timeout: number | undefined;
 
-    background.getExtraFee(selectedAccount.address, currentNetwork).then(feeExtra => {
+    background.getExtraFee(selectedAccount.address, currentNetwork).then((feeExtra) => {
       if (!cancelled) {
         setNativeFeeCoins(minimumFee + feeExtra);
       }
@@ -64,8 +64,8 @@ export function Swap() {
     };
   }, [currentNetwork, selectedAccount?.address]);
 
-  const assets = usePopupSelector(state => state.assets);
-  const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
+  const assets = usePopupSelector((state) => state.assets);
+  const swappableAssetIdsByVendor = usePopupSelector((state) => state.swappableAssetIdsByVendor);
 
   const swappableAssetEntries = useMemo(
     () =>
@@ -79,7 +79,7 @@ export function Swap() {
     Background.updateAssets(swappableAssetEntries.map(([assetId]) => assetId));
   }, [swappableAssetEntries]);
 
-  const accountBalance = usePopupSelector(state => state.balances[selectedAccount.address]);
+  const accountBalance = usePopupSelector((state) => state.balances[selectedAccount.address]);
 
   const [performedSwapData, setPerformedSwapData] = useState<{
     fromMoney: Money;
@@ -265,7 +265,7 @@ export function Swap() {
 
   const { sign, isSignPending } = useSign(onConfirm);
 
-  if (!accountBalance?.assets || swappableAssets.some(asset => asset == null)) {
+  if (!accountBalance?.assets || swappableAssets.some((asset) => asset == null)) {
     return <div className={styles.loader} />;
   }
 

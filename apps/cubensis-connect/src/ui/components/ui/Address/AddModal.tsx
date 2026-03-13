@@ -18,7 +18,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
-  const addresses = usePopupSelector(state => state.addresses);
+  const addresses = usePopupSelector((state) => state.addresses);
 
   const [loading, setLoading] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -71,11 +71,11 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
             <p className={`headline2Bold ${styles.title}`}>{t('address.add')}</p>
             <form
               className={styles.form}
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
 
                 const foundName = Object.values(addresses).find(
-                  addressName => addressName === name,
+                  (addressName) => addressName === name,
                 );
                 if (foundName) {
                   setNameError(t('address.nameAlreadyExist'));
@@ -125,7 +125,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
               </div>
               <p className={`basic500 ${styles.subtitle}`}>{t('address.subtitle')}</p>
               <AddressInput
-                onChange={e => {
+                onChange={(e) => {
                   setAddressValue(e.target.value);
                   setAddressError('');
                 }}

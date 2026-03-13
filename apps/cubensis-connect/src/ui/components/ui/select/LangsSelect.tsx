@@ -8,7 +8,7 @@ import * as styles from './LangsSelect.module.css';
 
 export function LangsSelect() {
   const dispatch = usePopupDispatch();
-  const currentLocale = usePopupSelector(state => state.currentLocale);
+  const currentLocale = usePopupSelector((state) => state.currentLocale);
 
   return (
     <Select
@@ -27,7 +27,7 @@ export function LangsSelect() {
         ),
       }))}
       selected={currentLocale}
-      onSelectItem={locale => {
+      onSelectItem={(locale) => {
         if (currentLocale === locale) {
           return;
         }

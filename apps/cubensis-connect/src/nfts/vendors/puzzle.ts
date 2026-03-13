@@ -1,4 +1,4 @@
-import type { DataTransactionEntryString } from '@decentralchain/ts-types';
+import { type DataTransactionEntryString } from '@decentralchain/ts-types';
 
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
 import {
@@ -35,15 +35,15 @@ export class PuzzleNftVendor implements NftVendor<PuzzleNftInfo> {
       return [];
     }
 
-    const nftIds = nfts.map(nft => nft.assetId);
+    const nftIds = nfts.map((nft) => nft.assetId);
 
     return fetchDataEntries<DataTransactionEntryString>({
       nodeUrl,
       address: PUZZLE_MARKET_DAPP,
-      keys: nftIds.flatMap(id => [nftPropertyKey(id, 'image'), nftPropertyKey(id, 'issuer')]),
+      keys: nftIds.flatMap((id) => [nftPropertyKey(id, 'image'), nftPropertyKey(id, 'issuer')]),
     })
       .then(dataEntriesToRecord)
-      .then(artworksEntries => {
+      .then((artworksEntries) => {
         return nftIds.map((id): PuzzleNftInfo => {
           const creator = artworksEntries[nftPropertyKey(id, 'issuer')];
           const image = artworksEntries[nftPropertyKey(id, 'image')];

@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function UsdAmount({ id, tokens, className }: Props) {
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const isMainnet = currentNetwork === 'mainnet';
 
   const usdPrices = useUsdPrices(useMemo(() => [id], [id]));

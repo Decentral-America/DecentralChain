@@ -9,8 +9,8 @@ import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { useDebouncedValue } from '_core/useDebouncedValue';
 import { AssetAmountInput } from 'assets/amountInput';
 import { AssetSelect, type AssetSelectOption } from 'assets/assetSelect';
-import type { AssetDetail } from 'assets/types';
-import type { BalancesItem } from 'balances/types';
+import { type AssetDetail } from 'assets/types';
+import { type BalancesItem } from 'balances/types';
 import clsx from 'clsx';
 import { useFeeOptions } from 'fee/useFeeOptions';
 import { convertFeeToAsset } from 'fee/utils';
@@ -120,14 +120,14 @@ export function SwapForm({
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const assets = usePopupSelector(state => state.assets);
-  const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
-  const usdPrices = usePopupSelector(state => state.usdPrices);
+  const assets = usePopupSelector((state) => state.assets);
+  const swappableAssetIdsByVendor = usePopupSelector((state) => state.swappableAssetIdsByVendor);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
   const accountBalance = usePopupSelector(
-    state => state.balances[state.selectedAccount?.address ?? ''],
+    (state) => state.balances[state.selectedAccount?.address ?? ''],
   );
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const nativeFee = new Money(nativeFeeCoins, new Asset(assets.WAVES));
 
   const feeOptions = useFeeOptions({
@@ -142,7 +142,7 @@ export function SwapForm({
 
   const [feeAssetId, setFeeAssetId] = useState(() => {
     const defaultOption =
-      feeOptions.find(option => option.money.asset.id === 'WAVES') || feeOptions[0];
+      feeOptions.find((option) => option.money.asset.id === 'WAVES') || feeOptions[0];
 
     return defaultOption?.money.asset.id || 'WAVES';
   });
@@ -173,7 +173,7 @@ export function SwapForm({
   const fromAmountTokens = new BigNumber(fromAmountValue || '0');
 
   const finalFeeOptions = feeOptions
-    .filter(option => {
+    .filter((option) => {
       if (option.money.asset.id !== fromAssetId || option.money.asset.id === feeAssetId) {
         return true;
       }
@@ -194,7 +194,7 @@ export function SwapForm({
   const [swapVendorTouched, setSwapVendorTouched] = useState(false);
 
   const slippageToleranceIndex = usePopupSelector(
-    state => state.uiState.slippageToleranceIndex ?? 2,
+    (state) => state.uiState.slippageToleranceIndex ?? 2,
   );
 
   function setSlippageToleranceIndex(index: number) {
@@ -217,12 +217,12 @@ export function SwapForm({
       })
     : null;
 
-  const accountAddress = usePopupSelector(state => state.selectedAccount?.address);
+  const accountAddress = usePopupSelector((state) => state.selectedAccount?.address);
 
   const isValidAssetPairSelected = useMemo(
     () =>
       Object.values(swappableAssetIdsByVendor).some(
-        ids => ids.includes(fromAsset.id) && ids.includes(toAsset.id),
+        (ids) => ids.includes(fromAsset.id) && ids.includes(toAsset.id),
       ),
     [swappableAssetIdsByVendor, fromAsset.id, toAsset.id],
   );
@@ -320,7 +320,7 @@ export function SwapForm({
           };
         }
 
-        setSwapInfo(prevState => ({
+        setSwapInfo((prevState) => ({
           ...prevState,
           [typedVendor]: vendorState,
         }));
@@ -402,12 +402,12 @@ export function SwapForm({
   const fromSwappableAssets = useMemo(() => {
     const availableIds = new Set(
       Object.values(swappableAssetIdsByVendor)
-        .filter(ids => ids.includes(toAsset.id))
+        .filter((ids) => ids.includes(toAsset.id))
         .flat(),
     );
 
     return swappableAssets
-      .filter(asset => asset.id !== toAsset.id)
+      .filter((asset) => asset.id !== toAsset.id)
       .map((asset): AssetSelectOption => {
         const isAvailable = availableIds.has(asset.id);
 
@@ -427,12 +427,12 @@ export function SwapForm({
   const toSwappableAssets = useMemo(() => {
     const availableIds = new Set(
       Object.values(swappableAssetIdsByVendor)
-        .filter(ids => ids.includes(fromAsset.id))
+        .filter((ids) => ids.includes(fromAsset.id))
         .flat(),
     );
 
     return swappableAssets
-      .filter(asset => asset.id !== fromAsset.id)
+      .filter((asset) => asset.id !== fromAsset.id)
       .map((asset): AssetSelectOption => {
         const isAvailable = availableIds.has(asset.id);
 
@@ -454,7 +454,7 @@ export function SwapForm({
       <div className={styles.root}>
         <form
           id="swapForm"
-          onSubmit={event => {
+          onSubmit={(event) => {
             event.preventDefault();
 
             if (swapVendorInfo.type !== 'data' || !minReceived) {
@@ -482,8 +482,8 @@ export function SwapForm({
             maskedValue={fromAmountValueMasked}
             value={fromAmountValue}
             showUsdAmount
-            onAssetChange={newAssetId => {
-              setAssetIds(prevState => ({
+            onAssetChange={(newAssetId) => {
+              setAssetIds((prevState) => ({
                 ...prevState,
                 fromAssetId: newAssetId,
               }));
@@ -512,7 +512,7 @@ export function SwapForm({
               className={styles.swapDirectionBtn}
               type="button"
               onClick={() => {
-                setAssetIds(prevState => ({
+                setAssetIds((prevState) => ({
                   fromAssetId: prevState.toAssetId,
                   toAssetId: prevState.fromAssetId,
                 }));
@@ -526,7 +526,7 @@ export function SwapForm({
 
                 setFromAmountValue(newFromAmount);
                 setFromAmountValueMasked(newFromAmount);
-                setIsPriceDirectionSwapped(prevState => !prevState);
+                setIsPriceDirectionSwapped((prevState) => !prevState);
               }}
             >
               <svg
@@ -555,8 +555,8 @@ export function SwapForm({
                 network={currentNetwork}
                 options={toSwappableAssets}
                 value={toAssetId}
-                onChange={newAssetId => {
-                  setAssetIds(prevState => ({
+                onChange={(newAssetId) => {
+                  setAssetIds((prevState) => ({
                     ...prevState,
                     toAssetId: newAssetId,
                   }));
@@ -655,7 +655,7 @@ export function SwapForm({
                                 content={t('swap.amountDifferenceTooltip')}
                                 placement="top"
                               >
-                                {props => (
+                                {(props) => (
                                   <div {...props} className={styles.toAmountInfoIcon}>
                                     <InfoIcon />
                                   </div>
@@ -695,7 +695,7 @@ export function SwapForm({
                                 )} ${toAsset.displayName}`}
                                 placement="top"
                               >
-                                {props => (
+                                {(props) => (
                                   <span {...props} className={styles.profitInfoIcon}>
                                     <InfoIcon />
                                   </span>
@@ -723,7 +723,7 @@ export function SwapForm({
                   className={styles.tooltipContent}
                   content={t('swap.minimumReceivedTooltip')}
                 >
-                  {props => (
+                  {(props) => (
                     <span className={styles.summaryTooltipTarget} {...props}>
                       {t('swap.minimumReceived')}
                     </span>
@@ -782,7 +782,7 @@ export function SwapForm({
                       className={styles.swapPriceDirectionBtn}
                       type="button"
                       onClick={() => {
-                        setIsPriceDirectionSwapped(prevState => !prevState);
+                        setIsPriceDirectionSwapped((prevState) => !prevState);
                       }}
                     >
                       <svg
@@ -830,7 +830,7 @@ export function SwapForm({
                         className={styles.tooltipContent}
                         content={t('swap.priceImpactTooltip')}
                       >
-                        {props => (
+                        {(props) => (
                           <span className={styles.summaryTooltipTarget} {...props}>
                             {priceImpact.toFixed(
                               priceImpact.eq(100) ? 0 : 3,
@@ -855,7 +855,7 @@ export function SwapForm({
                   className={styles.tooltipContent}
                   content={t('swap.transactionFeeTooltip')}
                 >
-                  {props => (
+                  {(props) => (
                     <span className={styles.summaryTooltipTarget} {...props}>
                       {t('swap.transactionFee')}
                     </span>
@@ -868,7 +868,7 @@ export function SwapForm({
                   <Select
                     listPlacement="top"
                     selected={feeAssetId}
-                    selectList={finalFeeOptions.map(money => ({
+                    selectList={finalFeeOptions.map((money) => ({
                       id: money.asset.id,
                       text: formatFeeOption(money),
                       value: money.asset.id,

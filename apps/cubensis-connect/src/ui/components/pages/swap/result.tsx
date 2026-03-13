@@ -45,9 +45,9 @@ const explorerBaseUrlsByNetwork = {
 
 export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
   const { t } = useTranslation();
-  const assets = usePopupSelector(state => state.assets);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const assets = usePopupSelector((state) => state.assets);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
 
   const { nodeBaseUrl } = NETWORK_CONFIG[currentNetwork];
 
@@ -64,7 +64,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
     let txInfoAttempts = 0;
 
     async function updateStatus(prevTxStatus: TxStatus | null) {
-      const [txStatus] = (await fetch(txStatusUrl.toString()).then(res =>
+      const [txStatus] = (await fetch(txStatusUrl.toString()).then((res) =>
         res.json(),
       )) as TxStatus[];
 
@@ -77,8 +77,8 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
           const txInfoUrl = new URL(`/transactions/info/${transactionId}`, nodeBaseUrl);
 
           try {
-            const txInfo = (await fetch(txInfoUrl.toString()).then(res =>
-              res.ok ? res.json() : res.text().then(text => Promise.reject(new Error(text))),
+            const txInfo = (await fetch(txInfoUrl.toString()).then((res) =>
+              res.ok ? res.json() : res.text().then((text) => Promise.reject(new Error(text))),
             )) as {
               stateChanges: {
                 transfers: Array<{
@@ -90,7 +90,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
             };
 
             const transfer = txInfo.stateChanges.transfers.find(
-              t => t.address === selectedAccount?.address,
+              (t) => t.address === selectedAccount?.address,
             );
 
             if (!transfer) {
@@ -112,7 +112,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
             } else {
               setSwapStatus(SwapStatus.Failed);
 
-              withScope(scope => {
+              withScope((scope) => {
                 scope.setExtra('transactionId', transactionId);
                 captureException(err);
               });
@@ -121,7 +121,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
         } else {
           setSwapStatus(SwapStatus.Failed);
 
-          withScope(scope => {
+          withScope((scope) => {
             scope.setExtra('transactionId', transactionId);
             captureException(new Error('Swap transaction failed'));
           });
@@ -133,7 +133,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
       ) {
         setSwapStatus(SwapStatus.Failed);
 
-        withScope(scope => {
+        withScope((scope) => {
           scope.setExtra('transactionId', transactionId);
           captureException(new Error('Swap transaction failed'));
         });

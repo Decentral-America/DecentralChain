@@ -69,7 +69,7 @@ export function Expandable({
             className={styles.button}
             type="button"
             onClick={() => {
-              setIsExpanded(prevState => !prevState);
+              setIsExpanded((prevState) => !prevState);
             }}
           >
             {!isExpanded ? t('showScriptComponent.showAll') : t('showScriptComponent.hide')}

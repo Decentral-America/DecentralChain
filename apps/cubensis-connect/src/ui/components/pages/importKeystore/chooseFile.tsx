@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, ErrorMessage, Input } from '../../ui';
-import * as styles from './chooseFile.styl';
+import * as styles from './chooseFile.module.styl';
 
 interface Props {
   title: string;
@@ -53,7 +53,7 @@ export function ImportKeystoreChooseFile({
         try {
           setShowPassword(
             !Object.values(JSON.parse(reader.result)).every(
-              text => !!JSON.parse(decodeURIComponent(atob(text as string))),
+              (text) => !!JSON.parse(decodeURIComponent(atob(text as string))),
             ),
           );
         } catch {
@@ -72,7 +72,7 @@ export function ImportKeystoreChooseFile({
   return (
     <form
       className={styles.root}
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault();
         onSubmit(result, showPassword ? password : '');
       }}
@@ -88,7 +88,7 @@ export function ImportKeystoreChooseFile({
             data-testid="fileInput"
             type="file"
             value=""
-            onChange={event => {
+            onChange={(event) => {
               setKeystoreFile(event.currentTarget.files?.[0] || null);
             }}
           />
@@ -114,7 +114,7 @@ export function ImportKeystoreChooseFile({
             value={password}
             view="password"
             wrapperClassName="margin1"
-            onChange={event => {
+            onChange={(event) => {
               setPassword(event.currentTarget.value);
             }}
           />

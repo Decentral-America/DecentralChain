@@ -1,10 +1,10 @@
 import ObservableStore from 'obs-store';
-import type { IdleOptions } from 'preferences/types';
+import { type IdleOptions } from 'preferences/types';
 import Browser from 'webextension-polyfill';
 
-import type { ExtensionStorage } from '../storage/storage';
-import type { PreferencesController } from './preferences';
-import type { VaultController } from './VaultController';
+import { type ExtensionStorage } from '../storage/storage';
+import { type PreferencesController } from './preferences';
+import { type VaultController } from './VaultController';
 
 const IDLE_INTERVAL = 60;
 

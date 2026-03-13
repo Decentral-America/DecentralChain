@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
-import * as styles from './head.styl';
+import * as styles from './head.module.styl';
 
 export const BigLogo = ({
   className = '',

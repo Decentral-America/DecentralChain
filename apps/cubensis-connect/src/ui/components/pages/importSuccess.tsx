@@ -38,7 +38,7 @@ export function ImportSuccessAddressBook() {
 export function ImportSuccess({ isKeystoreImport }: { isKeystoreImport?: boolean }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const account = useAccountsSelector(state => state.selectedAccount);
+  const account = useAccountsSelector((state) => state.selectedAccount);
 
   return (
     <div data-testid="importSuccessForm" className={styles.content}>

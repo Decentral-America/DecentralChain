@@ -1,12 +1,12 @@
 import { filter, make, map, pipe, subscribe, take } from 'wonka';
 
-import type { __BackgroundPageApiDirect, PublicState } from './background';
+import { type __BackgroundPageApiDirect, type PublicState } from './background';
 import { createIpcCallProxy, fromMessagePort, fromPostMessage } from './ipc/ipc';
 
-const messagePortPromise = new Promise<MessagePort>(resolve =>
+const messagePortPromise = new Promise<MessagePort>((resolve) =>
   pipe(
     fromPostMessage(location.origin, window),
-    map(value =>
+    map((value) =>
       typeof value === 'object' &&
       value != null &&
       'keeperMessagePort' in value &&
@@ -14,9 +14,9 @@ const messagePortPromise = new Promise<MessagePort>(resolve =>
         ? value.keeperMessagePort
         : undefined,
     ),
-    filter(messagePort => messagePort != null),
+    filter((messagePort) => messagePort != null),
     take(1),
-    subscribe(messagePort => {
+    subscribe((messagePort) => {
       if (messagePort) {
         resolve(messagePort);
       }
@@ -35,14 +35,14 @@ declare global {
 }
 
 const proxy = createIpcCallProxy<keyof __BackgroundPageApiDirect, __BackgroundPageApiDirect>(
-  request => {
-    messagePortPromise.then(messagePort => messagePort.postMessage(request));
+  (request) => {
+    messagePortPromise.then((messagePort) => messagePort.postMessage(request));
   },
-  make(observer => {
-    messagePortPromise.then(messagePort => {
+  make((observer) => {
+    messagePortPromise.then((messagePort) => {
       pipe(
         fromMessagePort(messagePort),
-        subscribe(value => {
+        subscribe((value) => {
           observer.next(value);
         }),
       );
@@ -52,13 +52,13 @@ const proxy = createIpcCallProxy<keyof __BackgroundPageApiDirect, __BackgroundPa
   }),
 );
 
-const publicStateUpdates = make<PublicState>(observer => {
+const publicStateUpdates = make<PublicState>((observer) => {
   proxy.subscribeToPublicState();
 
-  messagePortPromise.then(messagePort => {
+  messagePortPromise.then((messagePort) => {
     pipe(
       fromMessagePort(messagePort),
-      subscribe(value => {
+      subscribe((value) => {
         if (typeof value !== 'object' || value == null || !('event' in value)) {
           return;
         }
@@ -115,7 +115,7 @@ globalThis.CubensisConnect = {
 
     pipe(
       publicStateUpdates,
-      subscribe(value => {
+      subscribe((value) => {
         cb(value);
       }),
     );
