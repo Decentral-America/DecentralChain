@@ -63,16 +63,16 @@ describe('Adapter', () => {
         tx.fee = amount; // now tx with fee in DCC
 
         expect(keeperTxFactory(tx).data.fee).toEqual({
-          coins: tx.fee,
           assetId: 'DCC',
+          coins: tx.fee,
         });
 
         if (tx.type === TRANSACTION_TYPE.TRANSFER || tx.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
           tx.feeAssetId = assetId; // tx with fee in asset
 
           expect(keeperTxFactory(tx).data.fee).toEqual({
-            coins: tx.fee,
             assetId: tx.feeAssetId,
+            coins: tx.fee,
           });
         }
       });
@@ -83,15 +83,15 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txIssue)).toEqual({
-          type: txIssue.type,
           data: {
+            description: txIssue.description,
             name: txIssue.name,
             precision: txIssue.decimals,
             quantity: txIssue.quantity,
             reissuable: txIssue.reissuable,
-            description: txIssue.description,
             script: txIssue.script,
           },
+          type: txIssue.type,
         });
       });
 
@@ -115,12 +115,12 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txTransfer)).toEqual({
-          type: txTransfer.type,
           data: {
-            recipient: txTransfer.recipient,
-            amount: { coins: txTransfer.amount, assetId: txTransfer.assetId },
+            amount: { assetId: txTransfer.assetId, coins: txTransfer.amount },
             attachment: txTransfer.attachment,
+            recipient: txTransfer.recipient,
           },
+          type: txTransfer.type,
         });
       });
 
@@ -139,12 +139,12 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txReissue)).toEqual({
-          type: txReissue.type,
           data: {
             assetId: txReissue.assetId,
             quantity: txReissue.quantity,
             reissuable: txReissue.reissuable,
           },
+          type: txReissue.type,
         });
       });
 
@@ -156,11 +156,11 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txBurn)).toEqual({
-          type: txBurn.type,
           data: {
-            assetId: txBurn.assetId,
             amount: txBurn.amount,
+            assetId: txBurn.assetId,
           },
+          type: txBurn.type,
         });
       });
 
@@ -172,11 +172,11 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txLease)).toEqual({
-          type: txLease.type,
           data: {
-            recipient: txLease.recipient,
             amount: txLease.amount,
+            recipient: txLease.recipient,
           },
+          type: txLease.type,
         });
       });
 
@@ -188,10 +188,10 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txLeaseCancel)).toEqual({
-          type: txLeaseCancel.type,
           data: {
             leaseId: txLeaseCancel.leaseId,
           },
+          type: txLeaseCancel.type,
         });
       });
 
@@ -203,10 +203,10 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txAlias)).toEqual({
-          type: txAlias.type,
           data: {
             alias: txAlias.alias,
           },
+          type: txAlias.type,
         });
       });
 
@@ -218,12 +218,12 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txMassTransfer)).toEqual({
-          type: txMassTransfer.type,
           data: {
-            totalAmount: { coins: 0, assetId: txMassTransfer.assetId },
-            transfers: txMassTransfer.transfers,
             attachment: txMassTransfer.attachment,
+            totalAmount: { assetId: txMassTransfer.assetId, coins: 0 },
+            transfers: txMassTransfer.transfers,
           },
+          type: txMassTransfer.type,
         });
       });
 
@@ -242,10 +242,10 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txData)).toEqual({
-          type: txData.type,
           data: {
             data: txData.data,
           },
+          type: txData.type,
         });
       });
 
@@ -257,10 +257,10 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txSetScript)).toEqual({
-          type: txSetScript.type,
           data: {
             script: txSetScript.script,
           },
+          type: txSetScript.type,
         });
       });
 
@@ -272,13 +272,13 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txSponsorship)).toEqual({
-          type: txSponsorship.type,
           data: {
             minSponsoredAssetFee: {
-              coins: txSponsorship.minSponsoredAssetFee,
               assetId: txSponsorship.assetId,
+              coins: txSponsorship.minSponsoredAssetFee,
             },
           },
+          type: txSponsorship.type,
         });
       });
 
@@ -290,11 +290,11 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txSetAssetScript)).toEqual({
-          type: txSetAssetScript.type,
           data: {
             assetId: txSetAssetScript.assetId,
             script: txSetAssetScript.script,
           },
+          type: txSetAssetScript.type,
         });
       });
 
@@ -306,25 +306,25 @@ describe('Adapter', () => {
 
       it('is valid', () => {
         expect(keeperTxFactory(txInvokeScript)).toEqual({
-          type: txInvokeScript.type,
           data: {
-            dApp: txInvokeScript.dApp,
             call: {
-              function: txInvokeScript.call?.function,
               args: txInvokeScript.call?.args,
+              function: txInvokeScript.call?.function,
             },
+            dApp: txInvokeScript.dApp,
             payment: txInvokeScript.payment,
           },
+          type: txInvokeScript.type,
         });
       });
 
       it('omits call when absent and includes fee when provided', () => {
         const txNoCall: SignerInvokeTx = {
-          type: TRANSACTION_TYPE.INVOKE_SCRIPT,
           dApp: '3My2kBJaGfeM2koiZroaYdd3y8rAgfV2EAx',
           fee: 500000,
           feeAssetId: null,
           payment: [],
+          type: TRANSACTION_TYPE.INVOKE_SCRIPT,
         };
         const result = keeperTxFactory(txNoCall);
         expect(result.data).not.toHaveProperty('call');
@@ -337,25 +337,25 @@ describe('Adapter', () => {
     describe('edge cases', () => {
       it('moneyFactory defaults assetId to DCC when null', () => {
         const txTransfer: SignerTransferTx = {
-          type: TRANSACTION_TYPE.TRANSFER,
-          recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD',
-          assetId: null,
           amount: 100,
+          assetId: null,
           attachment: '',
+          recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD',
+          type: TRANSACTION_TYPE.TRANSFER,
         };
         const result = keeperTxFactory(txTransfer);
-        expect(result.data.amount).toEqual({ coins: 100, assetId: 'DCC' });
+        expect(result.data.amount).toEqual({ assetId: 'DCC', coins: 100 });
       });
 
       it('sponsorshipAdapter defaults minSponsoredAssetFee to 0 when undefined', () => {
         const txSp: SignerSponsorshipTx = {
-          type: TRANSACTION_TYPE.SPONSORSHIP,
           assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+          type: TRANSACTION_TYPE.SPONSORSHIP,
         } as SignerSponsorshipTx;
         const result = keeperTxFactory(txSp);
         expect(result.data.minSponsoredAssetFee).toEqual({
-          coins: 0,
           assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+          coins: 0,
         });
       });
     });
@@ -407,8 +407,8 @@ describe('Adapter', () => {
         };
         const result = keeperTxFactory(tx);
         expect(result.data.fee).toEqual({
-          coins: 100000,
           assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+          coins: 100000,
         });
       });
 
@@ -420,8 +420,8 @@ describe('Adapter', () => {
         };
         const result = keeperTxFactory(tx);
         expect(result.data.fee).toEqual({
-          coins: 500000,
           assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
+          coins: 500000,
         });
       });
     });

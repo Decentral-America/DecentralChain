@@ -9,30 +9,30 @@ describe('calculateFee', () => {
 
   it('returns tx with fee from node API response', async () => {
     const mockResponse = {
+      json: () => Promise.resolve({ feeAmount: 500000, feeAssetId: null }),
       ok: true,
-      json: () => Promise.resolve({ feeAssetId: null, feeAmount: 500000 }),
     };
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result.fee).toBe(500000);
     expect(fetch).toHaveBeenCalledWith(
       'https://node.example.com/transactions/calculateFee',
       expect.objectContaining({
-        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
         signal: expect.any(AbortSignal) as AbortSignal,
       }),
     );
   });
 
   it('returns original tx when response is not ok', async () => {
-    const mockResponse = { ok: false, json: vi.fn() };
+    const mockResponse = { json: vi.fn(), ok: false };
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -42,7 +42,7 @@ describe('calculateFee', () => {
   it('returns original tx when fetch throws', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
-    const tx = { type: TRANSACTION_TYPE.TRANSFER, amount: 100 } as any;
+    const tx = { amount: 100, type: TRANSACTION_TYPE.TRANSFER } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -53,12 +53,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: 100000, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 100000 }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     await calculateFee('http://insecure-node.example.com', tx);
 
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('not HTTPS'));
@@ -69,12 +69,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: 100000, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 100000 }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     await calculateFee('https://secure-node.example.com', tx);
 
     expect(warnSpy).not.toHaveBeenCalled();
@@ -87,13 +87,13 @@ describe('calculateFee', () => {
       vi.fn().mockImplementation((_url: string, init: RequestInit) => {
         receivedSignal = init.signal ?? undefined;
         return Promise.resolve({
+          json: () => Promise.resolve({ feeAmount: 500000, feeAssetId: null }),
           ok: true,
-          json: () => Promise.resolve({ feeAssetId: null, feeAmount: 500000 }),
         });
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     await calculateFee('https://node.example.com', tx);
 
     expect(receivedSignal).toBeInstanceOf(AbortSignal);
@@ -105,12 +105,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: -100, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: -100 }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -122,12 +122,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: 0, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 0 }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -139,12 +139,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: NaN, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: NaN }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -156,12 +156,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: 'not-a-number', feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 'not-a-number' }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -173,12 +173,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
-        ok: true,
         json: () => Promise.resolve('invalid'),
+        ok: true,
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -190,12 +190,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: Infinity, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: Infinity }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);
@@ -207,12 +207,12 @@ describe('calculateFee', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ feeAmount: 500000.5, feeAssetId: null }),
         ok: true,
-        json: () => Promise.resolve({ feeAssetId: null, feeAmount: 500000.5 }),
       }),
     );
 
-    const tx = { type: TRANSACTION_TYPE.INVOKE_SCRIPT, dApp: '3N...' } as any;
+    const tx = { dApp: '3N...', type: TRANSACTION_TYPE.INVOKE_SCRIPT } as any;
     const result = await calculateFee('https://node.example.com', tx);
 
     expect(result).toEqual(tx);

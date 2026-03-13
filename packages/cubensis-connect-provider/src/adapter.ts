@@ -40,8 +40,8 @@ function moneyFactory(
   assetId: string | null = 'DCC',
 ): CubensisConnect.IMoneyCoins {
   return {
-    coins: amount,
     assetId: assetId ?? 'DCC',
+    coins: amount,
   };
 }
 
@@ -65,14 +65,14 @@ function issueAdapter(tx: SignerIssueTx): CubensisConnect.TIssueTxData {
   const { name, description, quantity, decimals, reissuable, script } = tx;
   const data: CubensisConnect.IIssueTx = {
     ...defaultsFactory(tx),
-    name,
     description: description ?? '',
-    quantity,
+    name,
     precision: decimals,
+    quantity,
     reissuable: reissuable ?? false,
     ...(script ? { script } : {}),
   };
-  return { type: TRANSACTION_TYPE.ISSUE, data };
+  return { data, type: TRANSACTION_TYPE.ISSUE };
 }
 
 function transferAdapter(tx: SignerTransferTx): CubensisConnect.TTransferTxData {
@@ -83,7 +83,7 @@ function transferAdapter(tx: SignerTransferTx): CubensisConnect.TTransferTxData 
     recipient: addressFactory(recipient),
     ...(attachment ? { attachment } : {}),
   };
-  return { type: TRANSACTION_TYPE.TRANSFER, data };
+  return { data, type: TRANSACTION_TYPE.TRANSFER };
 }
 
 function reissueAdapter(tx: SignerReissueTx): CubensisConnect.TReissueTxData {
@@ -94,27 +94,27 @@ function reissueAdapter(tx: SignerReissueTx): CubensisConnect.TReissueTxData {
     quantity,
     reissuable,
   };
-  return { type: TRANSACTION_TYPE.REISSUE, data };
+  return { data, type: TRANSACTION_TYPE.REISSUE };
 }
 
 function burnAdapter(tx: SignerBurnTx): CubensisConnect.TBurnTxData {
   const { assetId, amount } = tx;
   const data: CubensisConnect.IBurnTx = {
     ...defaultsFactory(tx),
-    assetId,
     amount,
+    assetId,
   };
-  return { type: TRANSACTION_TYPE.BURN, data };
+  return { data, type: TRANSACTION_TYPE.BURN };
 }
 
 function leaseAdapter(tx: SignerLeaseTx): CubensisConnect.TLeaseTxData {
   const { recipient, amount } = tx;
   const data: CubensisConnect.ILeaseTx = {
     ...defaultsFactory(tx),
-    recipient: addressFactory(recipient),
     amount,
+    recipient: addressFactory(recipient),
   };
-  return { type: TRANSACTION_TYPE.LEASE, data };
+  return { data, type: TRANSACTION_TYPE.LEASE };
 }
 
 function leaseCancelAdapter(tx: SignerCancelLeaseTx): CubensisConnect.TLeaseCancelTxData {
@@ -123,7 +123,7 @@ function leaseCancelAdapter(tx: SignerCancelLeaseTx): CubensisConnect.TLeaseCanc
     ...defaultsFactory(tx),
     leaseId,
   };
-  return { type: TRANSACTION_TYPE.CANCEL_LEASE, data };
+  return { data, type: TRANSACTION_TYPE.CANCEL_LEASE };
 }
 
 function aliasAdapter(tx: SignerAliasTx): CubensisConnect.TCreateAliasTxData {
@@ -132,7 +132,7 @@ function aliasAdapter(tx: SignerAliasTx): CubensisConnect.TCreateAliasTxData {
     ...defaultsFactory(tx),
     alias,
   };
-  return { type: TRANSACTION_TYPE.ALIAS, data };
+  return { data, type: TRANSACTION_TYPE.ALIAS };
 }
 
 function massTransferAdapter(tx: SignerMassTransferTx): CubensisConnect.TMassTransferTxData {
@@ -141,12 +141,12 @@ function massTransferAdapter(tx: SignerMassTransferTx): CubensisConnect.TMassTra
     ...defaultsFactory(tx),
     totalAmount: moneyFactory(0, assetId),
     transfers: transfers.map((transfer) => ({
-      recipient: addressFactory(transfer.recipient),
       amount: transfer.amount,
+      recipient: addressFactory(transfer.recipient),
     })),
     ...(attachment ? { attachment } : {}),
   };
-  return { type: TRANSACTION_TYPE.MASS_TRANSFER, data };
+  return { data, type: TRANSACTION_TYPE.MASS_TRANSFER };
 }
 
 function dataAdapter(tx: SignerDataTx): CubensisConnect.TDataTxData {
@@ -155,7 +155,7 @@ function dataAdapter(tx: SignerDataTx): CubensisConnect.TDataTxData {
     ...defaultsFactory(tx),
     data: data as CubensisConnect.TData[],
   };
-  return { type: TRANSACTION_TYPE.DATA, data: dataTx };
+  return { data: dataTx, type: TRANSACTION_TYPE.DATA };
 }
 
 function setScriptAdapter(tx: SignerSetScriptTx): CubensisConnect.TSetScriptTxData {
@@ -164,7 +164,7 @@ function setScriptAdapter(tx: SignerSetScriptTx): CubensisConnect.TSetScriptTxDa
     ...defaultsFactory(tx),
     script,
   };
-  return { type: TRANSACTION_TYPE.SET_SCRIPT, data };
+  return { data, type: TRANSACTION_TYPE.SET_SCRIPT };
 }
 
 function sponsorshipAdapter(tx: SignerSponsorshipTx): CubensisConnect.TSponsoredFeeTxData {
@@ -173,7 +173,7 @@ function sponsorshipAdapter(tx: SignerSponsorshipTx): CubensisConnect.TSponsored
     ...defaultsFactory(tx),
     minSponsoredAssetFee: moneyFactory(minSponsoredAssetFee ?? 0, assetId),
   };
-  return { type: TRANSACTION_TYPE.SPONSORSHIP, data };
+  return { data, type: TRANSACTION_TYPE.SPONSORSHIP };
 }
 
 function setAssetScriptAdapter(tx: SignerSetAssetScriptTx): CubensisConnect.TSetAssetScriptTxData {
@@ -183,7 +183,7 @@ function setAssetScriptAdapter(tx: SignerSetAssetScriptTx): CubensisConnect.TSet
     assetId,
     script,
   };
-  return { type: TRANSACTION_TYPE.SET_ASSET_SCRIPT, data };
+  return { data, type: TRANSACTION_TYPE.SET_ASSET_SCRIPT };
 }
 
 function invokeScriptAdapter(tx: SignerInvokeTx): CubensisConnect.TScriptInvocationTxData {
@@ -194,7 +194,7 @@ function invokeScriptAdapter(tx: SignerInvokeTx): CubensisConnect.TScriptInvocat
     payment: (payment ?? []) as CubensisConnect.TMoney[],
     ...(call ? { call: call as CubensisConnect.ICall } : {}),
   };
-  return { type: TRANSACTION_TYPE.INVOKE_SCRIPT, data };
+  return { data, type: TRANSACTION_TYPE.INVOKE_SCRIPT };
 }
 
 export function keeperTxFactory(tx: SignerIssueTx): CubensisConnect.TIssueTxData;

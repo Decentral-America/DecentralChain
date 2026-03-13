@@ -62,9 +62,9 @@ export async function calculateFee(baseUrl: string, tx: SignerTx): Promise<Signe
 
     try {
       const response = await fetch(`${baseUrl}/transactions/calculateFee`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tx),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
         signal: controller.signal,
       });
 
