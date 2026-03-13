@@ -17,9 +17,9 @@ export default defineConfig({
       'test/tools/addresses/index.spec.ts',
       'test/tools/blocks/index.spec.ts',
     ],
-    testTimeout: 30_000,
     reporters: ['default'],
-    typecheck: { enabled: false },
     setupFiles: ['test/extendedMatcher.ts'],
+    testTimeout: 30_000,
+    typecheck: { enabled: false },
   },
 });
