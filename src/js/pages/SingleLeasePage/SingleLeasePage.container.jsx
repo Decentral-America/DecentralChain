@@ -97,7 +97,7 @@ export class SingleLeasePage extends React.Component {
       ...items.default,
       { label: 'Sender', value: <EndpointRef endpoint={lease.sender} /> },
       { label: 'Recipient', value: <EndpointRef endpoint={lease.recipient} /> },
-      { label: 'Amount', value: <MoneyInfo value={lease.amount} /> }, // todo
+      { label: 'Amount', value: <MoneyInfo value={lease.amount} /> },
     ];
 
     return items;
