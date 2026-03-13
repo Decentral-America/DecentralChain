@@ -2,12 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ['src/**/*.spec.ts'],
-    globals: true,
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
       exclude: ['src/**/*.spec.ts', 'src/seedWords.ts'],
+      include: ['src/**/*.ts'],
+      provider: 'v8',
       thresholds: {
         branches: 80,
         functions: 80,
@@ -15,5 +14,7 @@ export default defineConfig({
         statements: 80,
       },
     },
+    globals: true,
+    include: ['src/**/*.spec.ts'],
   },
 });
