@@ -221,7 +221,6 @@ export class SwapClient {
       const { swapParams } = this.activeRequest;
 
       response = {
-        type: 'data',
         amountCoins: new BigNumber(String(data.amount)).toString(),
         minimumReceivedCoins: new BigNumber(String(data.minReceived)).toString(),
         originalAmountCoins: new BigNumber(String(data.originalAmount)).toString(),
@@ -229,11 +228,11 @@ export class SwapClient {
         priceImpact: data.priceImpact ?? 0,
         swapParams,
         tx: {
-          dApp: data.transaction.dApp ?? '',
           call: {
-            function: data.transaction.call.function ?? '',
             args: (data.transaction.call.arguments ?? []).map((a) => convertArg(a)),
+            function: data.transaction.call.function ?? '',
           },
+          dApp: data.transaction.dApp ?? '',
           payment: [
             {
               amount: swapParams.amountCoins.toString(),
@@ -241,12 +240,13 @@ export class SwapClient {
             },
           ],
         },
+        type: 'data',
       };
     } else if (exchange.result.case === 'error') {
       const error = exchange.result.value;
       response = {
-        type: 'error',
         code: error.code ?? SwapClientErrorCode.UNEXPECTED,
+        type: 'error',
       };
     } else {
       return;
