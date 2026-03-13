@@ -5,11 +5,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     }
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -48,7 +48,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "clean": "rm -rf dist coverage",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -63,7 +63,8 @@
     "validate": "npm audit --audit-level=high && npm run bulletproof:check && npm run build && publint && attw --pack --ignore-rules cjs-resolves-to-esm && size-limit",
     "prepublishOnly": "npm run validate",
     "prepare": "lefthook install",
-    "lint:fix": "biome check --write ."
+    "lint:fix": "biome check --write .",
+    "check:exports": "attw --pack . --profile esm-only"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
@@ -73,7 +74,7 @@
     "@vitest/coverage-v8": "4.0.18",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
-    "tsup": "8.5.1",
+    "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
