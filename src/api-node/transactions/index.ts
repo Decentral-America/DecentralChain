@@ -45,17 +45,17 @@ export function fetchCalculateFee<T extends keyof TransactionMap<TLong>>(
 ): Promise<TFeeInfo> {
   return request({
     base,
-    url: '/transactions/calculateFee',
     options: deepAssign(
       { ...options },
       {
-        method: 'POST',
         body: stringify(tx),
         headers: {
           'Content-Type': 'application/json',
         },
+        method: 'POST',
       },
     ),
+    url: '/transactions/calculateFee',
   });
 }
 
@@ -74,8 +74,8 @@ export function fetchUnconfirmed(
 ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
   return request({
     base,
-    url: '/transactions/unconfirmed',
     options,
+    url: '/transactions/unconfirmed',
   });
 }
 
@@ -96,8 +96,8 @@ export function fetchTransactions(
 ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
   return request<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[][]>({
     base,
-    url: `/transactions/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
     options,
+    url: `/transactions/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
   }).then(([list]) => {
     if (!list) return [];
     list.forEach((transaction) => {
@@ -120,8 +120,8 @@ export function fetchUnconfirmedInfo(
 ): Promise<Transaction<TLong> & WithApiMixin> {
   return request({
     base,
-    url: `/transactions/unconfirmed/info/${pathSegment(id)}`,
     options,
+    url: `/transactions/unconfirmed/info/${pathSegment(id)}`,
   });
 }
 
@@ -143,8 +143,8 @@ export function fetchInfo(
 ): Promise<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus> {
   return request<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>({
     base,
-    url: `/transactions/info/${pathSegment(id)}`,
     options,
+    url: `/transactions/info/${pathSegment(id)}`,
   }).then((transaction) => addStateUpdateField(transaction));
 }
 
@@ -159,8 +159,8 @@ export function fetchMultipleInfo(
 ): Promise<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[]> {
   return request<(TTransaction<TLong> & WithApiMixin & IWithApplicationStatus)[]>({
     base,
-    url: `/transactions/info${query({ id: ids })}`,
     options,
+    url: `/transactions/info${query({ id: ids })}`,
   });
 }
 
@@ -174,25 +174,25 @@ export function fetchStatus(base: string, list: string[]): Promise<ITransactions
     fetchHeight(base),
     request<IBatchStatusResponse[]>({
       base,
-      url: '/transactions/status',
       options: {
-        method: 'POST',
         body: JSON.stringify({ ids: list }),
         headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
       },
+      url: '/transactions/status',
     }),
   ]).then(([{ height }, batchStatuses]) => ({
     height,
     statuses: batchStatuses.map((item) => ({
-      id: item.id,
-      status: item.status,
-      inUTX: item.status === TRANSACTION_STATUSES.UNCONFIRMED,
-      height: item.height ?? -1,
+      applicationStatus: item.applicationStatus,
       confirmations:
         item.status === TRANSACTION_STATUSES.IN_BLOCKCHAIN && item.height != null
           ? height - item.height
           : -1,
-      applicationStatus: item.applicationStatus,
+      height: item.height ?? -1,
+      id: item.id,
+      inUTX: item.status === TRANSACTION_STATUSES.UNCONFIRMED,
+      status: item.status,
     })),
   }));
 }
@@ -227,16 +227,16 @@ export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(
 ): Promise<T & WithApiMixin> {
   return request<T & WithApiMixin>({
     base,
-    url: '/transactions/broadcast',
     options: deepAssign(
       { ...options },
       {
-        method: 'POST',
         body: stringify(tx),
         headers: {
           'Content-Type': 'application/json',
         },
+        method: 'POST',
       },
     ),
+    url: '/transactions/broadcast',
   });
 }

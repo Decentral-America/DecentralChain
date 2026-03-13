@@ -96,11 +96,11 @@ it('tx serialize', async () => {
   const tx = issue(
     {
       chainId: CHAIN_ID,
-      name: 'some name',
-      description: 'some description',
-      reissuable: false,
-      quantity: 10000000,
       decimals: 5,
+      description: 'some description',
+      name: 'some name',
+      quantity: 10000000,
+      reissuable: false,
     },
     MASTER_ACCOUNT.SEED,
   );

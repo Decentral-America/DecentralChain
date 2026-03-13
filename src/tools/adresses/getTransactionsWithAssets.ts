@@ -14,6 +14,6 @@ export default function (
   assets: Record<string, TAssetDetails>;
 }> {
   return fetchTransactions(base, address, limit, after).then((transactions) =>
-    getAssetsByTransaction(base, transactions).then((assets) => ({ transactions, assets })),
+    getAssetsByTransaction(base, transactions).then((assets) => ({ assets, transactions })),
   );
 }
