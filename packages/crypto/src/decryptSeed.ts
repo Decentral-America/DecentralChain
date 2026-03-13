@@ -13,7 +13,7 @@ export async function decryptSeed(input: Uint8Array, password: Uint8Array, hashR
 
   return new Uint8Array(
     await crypto.subtle.decrypt(
-      { name: 'AES-CBC', iv: iv as Uint8Array<ArrayBuffer>, length: iv.length },
+      { iv: iv as Uint8Array<ArrayBuffer>, length: iv.length, name: 'AES-CBC' },
       importedKey,
       input.subarray(16) as Uint8Array<ArrayBuffer>,
     ),

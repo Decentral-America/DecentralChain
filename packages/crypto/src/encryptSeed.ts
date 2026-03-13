@@ -15,7 +15,7 @@ export async function encryptSeed(input: Uint8Array, password: Uint8Array, hashR
 
   const encrypted = new Uint8Array(
     await crypto.subtle.encrypt(
-      { name: 'AES-CBC', iv: iv as Uint8Array<ArrayBuffer>, length: iv.length },
+      { iv: iv as Uint8Array<ArrayBuffer>, length: iv.length, name: 'AES-CBC' },
       importedKey,
       input as Uint8Array<ArrayBuffer>,
     ),
