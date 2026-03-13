@@ -9,7 +9,7 @@ import * as styles from './SelectedAccountQr.module.css';
 
 export function SelectedAccountQr() {
   const { t } = useTranslation();
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
 
   const address = selectedAccount?.address;
   const name = selectedAccount?.name;

@@ -21,7 +21,7 @@ interface Props {
 
 export function SignInForm({ className, userData, signIn }: Props) {
   const { t } = useTranslation();
-  const networkId = usePopupSelector(state => state.currentNetwork);
+  const networkId = usePopupSelector((state) => state.currentNetwork);
 
   const [pending, setPending] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string | null>>({
@@ -36,7 +36,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
 
   const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value.trim());
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       _form: null,
       emailRequired: null,
@@ -44,7 +44,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
   }, []);
 
   const handleEmailBlur = useCallback(() => {
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       emailRequired:
         email.length === 0 || /.+@.+\..+/.test(email) === false
@@ -55,7 +55,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
 
   const handlePasswordChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       _form: null,
       passwordRequired: null,
@@ -63,7 +63,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
   }, []);
 
   const handlePasswordBlur = useCallback(() => {
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       passwordRequired: password.length === 0 ? t('importEmail.passwordRequired') : null,
     }));
@@ -94,7 +94,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
             break;
         }
 
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
           _form: errMessage,
         }));

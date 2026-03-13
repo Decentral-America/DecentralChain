@@ -11,8 +11,8 @@ import {
   type MainConfig,
   STATUS,
 } from '../constants';
-import type { ExtensionStorage } from '../storage/storage';
-import type { IdentityConfig } from './IdentityController';
+import { type ExtensionStorage } from '../storage/storage';
+import { type IdentityConfig } from './IdentityController';
 
 const extendValues = (defaultValues: any, newValues: any) => {
   return Object.entries(defaultValues).reduce(
@@ -111,7 +111,7 @@ export class RemoteConfigController extends EventEmitter {
       const { whitelist } = this.store.getState();
 
       if (Array.isArray(whitelist)) {
-        return whitelist.filter(item => typeof item === 'string');
+        return whitelist.filter((item) => typeof item === 'string');
       }
 
       return [];
@@ -125,7 +125,7 @@ export class RemoteConfigController extends EventEmitter {
 
     return (
       ignoreErrorsConfig.ignoreAll ||
-      ignoreErrorsConfig[context].some(str => {
+      ignoreErrorsConfig[context].some((str) => {
         const re = new RegExp(str);
 
         return re.test(message);
@@ -174,8 +174,8 @@ export class RemoteConfigController extends EventEmitter {
     const networks = [NetworkName.Mainnet, NetworkName.Testnet];
 
     fetch('https://configs.decentralchain.io/web/networks.json')
-      .then(resp =>
-        resp.ok ? resp.json() : resp.text().then(text => Promise.reject(new Error(text))),
+      .then((resp) =>
+        resp.ok ? resp.json() : resp.text().then((text) => Promise.reject(new Error(text))),
       )
       .then(
         (
@@ -185,8 +185,8 @@ export class RemoteConfigController extends EventEmitter {
           }>,
         ) =>
           Promise.all(
-            networks.map(async network => {
-              const envNetworkConfig = networkConfigs.find(c => c.name === network);
+            networks.map(async (network) => {
+              const envNetworkConfig = networkConfigs.find((c) => c.name === network);
               if (!envNetworkConfig) {
                 throw new Error(`No network configuration found for ${network}`);
               }
@@ -194,15 +194,15 @@ export class RemoteConfigController extends EventEmitter {
               return fetch(
                 `${envNetworkConfig.configService.url}/` +
                   `${envNetworkConfig.configService.featuresConfigUrl}`,
-              ).then(response =>
+              ).then((response) =>
                 response.ok
                   ? response.json()
-                  : response.text().then(text => Promise.reject(new Error(text))),
+                  : response.text().then((text) => Promise.reject(new Error(text))),
               );
             }),
           ),
       )
-      .then(networkConfigs => {
+      .then((networkConfigs) => {
         const fetchedConfig = Object.fromEntries(
           networks.map((network, i) => [network, networkConfigs[i].identity]),
         );

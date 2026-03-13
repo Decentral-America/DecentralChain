@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function RootWrapper({ children }: Props) {
-  const isLoading = usePopupSelector(state => state.localState.loading);
+  const isLoading = usePopupSelector((state) => state.localState.loading);
 
   return isLoading ? <LoadingScreen /> : children;
 }

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { PureComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import * as styles from './error.styl';
+import * as styles from './error.module.styl';
 
 const Errors = ({
   errors,

@@ -35,9 +35,9 @@ export function ImportSeed() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
-  const accounts = usePopupSelector(state => state.accounts);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const customCodes = usePopupSelector(state => state.customCodes);
+  const accounts = usePopupSelector((state) => state.accounts);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const customCodes = usePopupSelector((state) => state.customCodes);
 
   const [activeTab, setActiveTab] = useState(SEED_TAB_INDEX);
 
@@ -54,7 +54,7 @@ export function ImportSeed() {
   const [validationError, setValidationError] = useState<React.ReactElement | string>();
 
   const findExistingAccount = useCallback(
-    (addr: string | undefined) => addr && accounts.find(acc => acc.address === addr),
+    (addr: string | undefined) => addr && accounts.find((acc) => acc.address === addr),
     [accounts],
   );
 
@@ -144,7 +144,7 @@ export function ImportSeed() {
 
         createPrivateKey(utf8Encode(trimmedSeedValue))
           .then(createPublicKey)
-          .then(publicKey => {
+          .then((publicKey) => {
             const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
             validateAddress(newAddress);
@@ -173,7 +173,7 @@ export function ImportSeed() {
 
           createPrivateKey(base58Decode(unprefixed))
             .then(createPublicKey)
-            .then(publicKey => {
+            .then((publicKey) => {
               const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
               validateAddress(newAddress);
@@ -209,7 +209,7 @@ export function ImportSeed() {
           setIsAddressInProgress(true);
 
           createPublicKey(privateKey)
-            .then(publicKey => {
+            .then((publicKey) => {
               const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
               validateAddress(newAddress);
@@ -240,7 +240,7 @@ export function ImportSeed() {
       </div>
 
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
 
           if (isAddressInProgress) {
@@ -298,7 +298,7 @@ export function ImportSeed() {
       >
         <Tabs
           activeTab={activeTab}
-          onTabChange={newActiveTab => {
+          onTabChange={(newActiveTab) => {
             setShowValidationError(false);
             setActiveTab(newActiveTab);
           }}
@@ -321,7 +321,7 @@ export function ImportSeed() {
                 rows={3}
                 spellCheck={false}
                 value={seedValue}
-                onChange={event => {
+                onChange={(event) => {
                   setSeedValue(event.target.value);
                 }}
               />
@@ -336,7 +336,7 @@ export function ImportSeed() {
                 rows={3}
                 spellCheck={false}
                 value={encodedSeedValue}
-                onChange={event => {
+                onChange={(event) => {
                   setEncodedSeedValue(event.target.value);
                 }}
               />
@@ -351,7 +351,7 @@ export function ImportSeed() {
                 rows={3}
                 spellCheck={false}
                 value={privateKeyValue}
-                onChange={event => {
+                onChange={(event) => {
                   setPrivateKeyValue(event.target.value);
                 }}
               />

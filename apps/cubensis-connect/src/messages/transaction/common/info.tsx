@@ -12,7 +12,7 @@ import Background from 'ui/services/Background';
 
 import * as styles from '../../../ui/components/pages/styles/transactions.module.css';
 import { Balance, DateFormat, Select, type SelectItem } from '../../../ui/components/ui';
-import type { MessageOfType } from '../../types';
+import { type MessageOfType } from '../../types';
 
 interface Props {
   message: MessageOfType<'transaction'>;
@@ -21,16 +21,16 @@ interface Props {
 export function TxInfo({ message }: Props) {
   const { t } = useTranslation();
 
-  const assets = usePopupSelector(state => state.assets);
+  const assets = usePopupSelector((state) => state.assets);
 
   const balance = usePopupSelector(
-    state => state.selectedAccount && state.balances[state.selectedAccount.address],
+    (state) => state.selectedAccount && state.balances[state.selectedAccount.address],
   );
 
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   invariant(selectedAccount);
 
-  const usdPrices = usePopupSelector(state => state.usdPrices);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
 
   const initailFeeAsset =
     assets[('initialFeeAssetId' in message.data && message.data.initialFeeAssetId) || 'WAVES'];
@@ -46,7 +46,7 @@ export function TxInfo({ message }: Props) {
           initialFee: new Money(message.data.initialFee, new Asset(initailFeeAsset)),
           txType: message.data.type,
           usdPrices,
-        }).filter(option =>
+        }).filter((option) =>
           isEnoughBalanceForFeeAndSpendingAmounts({
             balance: option.assetBalance.balance,
             fee: option.money,
@@ -64,7 +64,7 @@ export function TxInfo({ message }: Props) {
   const fee = new Money(message.data.fee, new Asset(feeAsset));
   const assetBalance = balance?.assets?.[feeAsset.id];
 
-  if (feeOptions.findIndex(opt => opt.money.asset.id === feeAsset.id) === -1 && assetBalance) {
+  if (feeOptions.findIndex((opt) => opt.money.asset.id === feeAsset.id) === -1 && assetBalance) {
     feeOptions = feeOptions.concat({
       assetBalance,
       money: fee,

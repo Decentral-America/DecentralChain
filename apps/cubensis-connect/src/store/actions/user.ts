@@ -1,15 +1,15 @@
-import type { CreateWalletInput } from 'wallets/types';
+import { type CreateWalletInput } from 'wallets/types';
 
-import type { AccountsThunkAction } from '../../accounts/store/types';
+import { type AccountsThunkAction } from '../../accounts/store/types';
 import { NETWORK_CONFIG } from '../../constants';
-import type { NetworkName } from '../../networks/types';
+import { type NetworkName } from '../../networks/types';
 import Background, { WalletTypes } from '../../ui/services/Background';
 import { ACTION } from './constants';
 import { selectAccount } from './localState';
 import { updateActiveState } from './notifications';
 
 export function deleteAllAccounts(): AccountsThunkAction<Promise<void>> {
-  return async dispatch => {
+  return async (dispatch) => {
     await Background.deleteVault();
 
     dispatch(updateActiveState());

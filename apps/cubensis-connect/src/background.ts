@@ -6,7 +6,7 @@ import { deepEqual } from 'fast-equals';
 import { getExtraFee } from 'fee/utils';
 import { SUPPORTED_LANGUAGES } from 'i18n/constants';
 import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from 'ipc/ipc';
-import type { LedgerSignRequest } from 'ledger/types';
+import { type LedgerSignRequest } from 'ledger/types';
 import { ERRORS, KeeperError } from 'lib/keeperError';
 import { TabsManager } from 'lib/tabsManager';
 import {
@@ -19,12 +19,12 @@ import {
 } from 'messages/types';
 import { makeCustomDataBytes, makeTxBytes } from 'messages/utils';
 import { nanoid } from 'nanoid';
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 import { PERMISSIONS } from 'permissions/constants';
-import type { PermissionObject } from 'permissions/types';
-import type { IdleOptions, PreferencesAccount } from 'preferences/types';
+import { type PermissionObject } from 'permissions/types';
+import { type IdleOptions, type PreferencesAccount } from 'preferences/types';
 import { initSentry } from 'sentry/init';
-import type { UiState } from 'store/reducers/updateState';
+import { type UiState } from 'store/reducers/updateState';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import {
@@ -43,7 +43,7 @@ import {
 } from 'wonka';
 
 import { fromWebExtensionEvent } from './_core/wonka';
-import type { IgnoreErrorsContext } from './constants';
+import { type IgnoreErrorsContext } from './constants';
 import { AddressBookController } from './controllers/AddressBookController';
 import { AssetInfoController } from './controllers/assetInfo';
 import { CurrentAccountController } from './controllers/currentAccount';
@@ -74,7 +74,7 @@ const bgPromise = setupBackgroundService();
 
 initSentry({
   source: 'background',
-  shouldIgnoreError: async message => {
+  shouldIgnoreError: async (message) => {
     const bg = await bgPromise;
 
     return (
@@ -86,7 +86,7 @@ initSentry({
 
 const storageChangesSource = pipe(fromWebExtensionEvent(Browser.storage.onChanged), share);
 
-Browser.runtime.onConnect.addListener(async remotePort => {
+Browser.runtime.onConnect.addListener(async (remotePort) => {
   const bgService = await bgPromise;
 
   if (remotePort.name === 'contentscript') {
@@ -101,7 +101,7 @@ Browser.runtime.onUpdateAvailable.addListener(async () => {
   Browser.runtime.reload();
 });
 
-Browser.runtime.onInstalled.addListener(async details => {
+Browser.runtime.onInstalled.addListener(async (details) => {
   const bgService = await bgPromise;
 
   switch (details.reason) {
@@ -123,8 +123,8 @@ async function setupBackgroundService() {
     createExtensionStorage(),
   ]);
 
-  const initLangCode = acceptLanguages.find(code =>
-    SUPPORTED_LANGUAGES.find(lang => lang.id === code.toLowerCase()),
+  const initLangCode = acceptLanguages.find((code) =>
+    SUPPORTED_LANGUAGES.find((lang) => lang.id === code.toLowerCase()),
   );
 
   const backgroundService = new BackgroundService({
@@ -153,7 +153,7 @@ async function setupBackgroundService() {
   backgroundService.notificationsController.on('Update badge', updateBadge);
   updateBadge();
   // open new tab
-  backgroundService.messageController.on('Open new tab', url => {
+  backgroundService.messageController.on('Open new tab', (url) => {
     Browser.tabs.create({ url });
   });
 
@@ -273,22 +273,22 @@ class BackgroundService extends EventEmitter {
       extensionStorage: this.extensionStorage,
       assetInfo: (...args) => this.assetInfoController.assetInfo(...args),
       ledger: {
-        signOrder: data =>
+        signOrder: (data) =>
           this.ledgerSign('order', {
             ...data,
             dataBuffer: Array.from(data.dataBuffer),
           }),
-        signRequest: data =>
+        signRequest: (data) =>
           this.ledgerSign('request', {
             ...data,
             dataBuffer: Array.from(data.dataBuffer),
           }),
-        signSomeData: data =>
+        signSomeData: (data) =>
           this.ledgerSign('someData', {
             ...data,
             dataBuffer: Array.from(data.dataBuffer),
           }),
-        signTransaction: data =>
+        signTransaction: (data) =>
           this.ledgerSign('transaction', {
             ...data,
             dataBuffer: Array.from(data.dataBuffer),
@@ -306,7 +306,7 @@ class BackgroundService extends EventEmitter {
       identity: this.identityController,
     });
 
-    this.vaultController.store.subscribe(state => {
+    this.vaultController.store.subscribe((state) => {
       if (!state.locked || !state.initialized) {
         const accounts = this.walletController.getAccounts();
         this.preferencesController.syncAccounts(accounts);
@@ -320,13 +320,13 @@ class BackgroundService extends EventEmitter {
     });
 
     this.walletController
-      .on('addWallet', wallet => {
+      .on('addWallet', (wallet) => {
         if (wallet.getAccount().type === 'wx') {
           // persist current session to storage
           this.identityController.persistSession(wallet.getAccount().uuid);
         }
       })
-      .on('removeWallet', wallet => {
+      .on('removeWallet', (wallet) => {
         if (wallet.getAccount().type === 'wx') {
           this.identityController.removeSession(wallet.getAccount().uuid);
         }
@@ -752,8 +752,8 @@ class BackgroundService extends EventEmitter {
             lastPublicState = await this.getPublicState(origin, connectionId);
           }
         }),
-        filter(publicState => !deepEqual(publicState, lastPublicState)),
-        tap(publicState => {
+        filter((publicState) => !deepEqual(publicState, lastPublicState)),
+        tap((publicState) => {
           lastPublicState = publicState;
         }),
         share,
@@ -1073,7 +1073,7 @@ class BackgroundService extends EventEmitter {
       subscribeToPublicState: async () => {
         pipe(
           publicStateUpdates,
-          subscribe(publicState => {
+          subscribe((publicState) => {
             port.postMessage({ event: 'updatePublicState', publicState });
           }),
         );
@@ -1087,7 +1087,7 @@ class BackgroundService extends EventEmitter {
 
     pipe(
       fromWebExtensionPort(port),
-      handleMethodCallRequests(api, result => port?.postMessage(result)),
+      handleMethodCallRequests(api, (result) => port?.postMessage(result)),
       onEnd(() => {
         port = null;
         this.off('ledger:signRequest', ui.ledgerSignRequest);
@@ -1097,7 +1097,7 @@ class BackgroundService extends EventEmitter {
     );
 
     const ui = createIpcCallProxy<keyof UiApi, UiApi>(
-      request => port?.postMessage(request),
+      (request) => port?.postMessage(request),
       fromWebExtensionPort(port),
     );
 
@@ -1121,10 +1121,10 @@ class BackgroundService extends EventEmitter {
       locked: state.locked,
       messages: state.messages
         .filter(
-          message =>
+          (message) =>
             message.account.address === selectedAccount.address && message.origin === origin,
         )
-        .map(message => ({
+        .map((message) => ({
           id: message.id,
           status: message.status,
           uid: message.ext_uuid,
@@ -1153,7 +1153,7 @@ class BackgroundService extends EventEmitter {
 
     pipe(
       fromWebExtensionPort(port),
-      handleMethodCallRequests(inpageApi, result => port?.postMessage(result)),
+      handleMethodCallRequests(inpageApi, (result) => port?.postMessage(result)),
       onEnd(() => {
         port = null;
         this.messageController.removeMessagesFromConnection(connectionId);

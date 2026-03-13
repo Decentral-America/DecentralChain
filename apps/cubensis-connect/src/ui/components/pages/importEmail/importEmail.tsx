@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { IdentityUser } from 'controllers/IdentityController';
+import { type IdentityUser } from 'controllers/IdentityController';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -13,12 +13,12 @@ export function ImportEmail() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const accounts = usePopupSelector(state => state.accounts);
+  const accounts = usePopupSelector((state) => state.accounts);
 
   const handleSubmit = useCallback(
     (userData: UserData) => {
       if (
-        accounts.find(account => account.type === 'wx' && account.username === userData.username)
+        accounts.find((account) => account.type === 'wx' && account.username === userData.username)
       ) {
         throw new Error(t('importEmail.alreadyExists'));
       }

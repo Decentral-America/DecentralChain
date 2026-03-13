@@ -1,4 +1,4 @@
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +42,7 @@ export function MessageWallet({ account }: Props) {
         }
         placement="top-start"
       >
-        {props => (
+        {(props) => (
           <Copy
             text={account.address}
             onCopy={() => {

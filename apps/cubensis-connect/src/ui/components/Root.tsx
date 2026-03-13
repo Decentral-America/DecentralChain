@@ -10,19 +10,19 @@ export function Root() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const initialized = usePopupSelector(state => state.state?.initialized);
-  const locked = usePopupSelector(state => state.state?.locked);
-  const haveAccounts = usePopupSelector(state => state.accounts.length !== 0);
+  const initialized = usePopupSelector((state) => state.state?.initialized);
+  const locked = usePopupSelector((state) => state.state?.locked);
+  const haveAccounts = usePopupSelector((state) => state.accounts.length !== 0);
 
-  const haveActiveMessage = usePopupSelector(state => state.activePopup?.msg != null);
+  const haveActiveMessage = usePopupSelector((state) => state.activePopup?.msg != null);
 
-  const haveActiveNotification = usePopupSelector(state => state.activePopup?.notify != null);
+  const haveActiveNotification = usePopupSelector((state) => state.activePopup?.notify != null);
 
   const haveMessagesOrNotifications = usePopupSelector(
-    state => state.messages.length !== 0 || state.notifications.length !== 0,
+    (state) => state.messages.length !== 0 || state.notifications.length !== 0,
   );
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const prevNetworkRef = useRef(currentNetwork);
   useEffect(() => {
     if (currentNetwork === prevNetworkRef.current) {

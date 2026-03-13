@@ -1,15 +1,15 @@
-import type { PopupThunkAction } from 'popup/store/types';
+import { type PopupThunkAction } from 'popup/store/types';
 import Background from 'ui/services/Background';
 
-import type { Message } from '../../messages/types';
-import type { NotificationsStoreItem } from '../../notifications/types';
+import { type Message } from '../../messages/types';
+import { type NotificationsStoreItem } from '../../notifications/types';
 import { ACTION } from './constants';
 
 export function deleteNotifications(
   ids: string[],
   next?: NotificationsStoreItem[],
 ): PopupThunkAction<Promise<void>> {
-  return async dispatch => {
+  return async (dispatch) => {
     await Background.deleteNotifications(ids);
     dispatch(setActiveNotification(next));
   };

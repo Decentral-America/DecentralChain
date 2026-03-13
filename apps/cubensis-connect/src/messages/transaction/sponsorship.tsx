@@ -7,13 +7,13 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { stringifyTransaction } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import type { MessageOfType, MessageTxSponsorship } from '../types';
+import { type MessageOfType, type MessageTxSponsorship } from '../types';
 
 export function SponsorshipCard({
   className,
@@ -25,7 +25,7 @@ export function SponsorshipCard({
   tx: MessageTxSponsorship;
 }) {
   const { t } = useTranslation();
-  const asset = usePopupSelector(state => state.assets[tx.assetId]);
+  const asset = usePopupSelector((state) => state.assets[tx.assetId]);
   invariant(asset);
 
   return (

@@ -8,7 +8,7 @@ import { ApproveBtn } from 'ui/components/ui/buttons/ApproveBtn';
 import { Button } from 'ui/components/ui/buttons/Button';
 import Background from 'ui/services/Background';
 
-import type { Message } from '../types';
+import { type Message } from '../types';
 
 interface Props {
   message: Message;
@@ -17,7 +17,7 @@ interface Props {
 export function MessageFooter({ message }: Props) {
   const { t } = useTranslation();
 
-  const autoClickProtection = usePopupSelector(state => state.uiState.autoClickProtection);
+  const autoClickProtection = usePopupSelector((state) => state.uiState.autoClickProtection);
 
   const [isApprovePending, setIsApprovePending] = useState(false);
   const [isRejectPending, setIsRejectPending] = useState(false);

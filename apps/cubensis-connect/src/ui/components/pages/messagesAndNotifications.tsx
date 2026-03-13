@@ -17,9 +17,9 @@ import * as transactionsStyles from './styles/transactions.module.css';
 export function MessagesAndNotificationsPage() {
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const messages = usePopupSelector(state => state.messages);
-  const notifications = usePopupSelector(state => state.notifications);
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const messages = usePopupSelector((state) => state.messages);
+  const notifications = usePopupSelector((state) => state.notifications);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   invariant(selectedAccount);
 
   return (
@@ -46,7 +46,9 @@ export function MessagesAndNotificationsPage() {
                 type="button"
                 view="transparent"
                 onClick={() => {
-                  dispatch(deleteNotifications(notifications.flatMap(item => item.map(x => x.id))));
+                  dispatch(
+                    deleteNotifications(notifications.flatMap((item) => item.map((x) => x.id))),
+                  );
                 }}
               >
                 {t('messageList.clearAllMessages')}
@@ -54,7 +56,7 @@ export function MessagesAndNotificationsPage() {
             </div>
 
             <div className="margin-main-big">
-              {notifications.map(items => {
+              {notifications.map((items) => {
                 const group = items.slice().reverse();
 
                 return (
@@ -102,7 +104,7 @@ export function MessagesAndNotificationsPage() {
                             type="button"
                             view="transparent"
                             onClick={() => {
-                              dispatch(deleteNotifications(group.map(x => x.id)));
+                              dispatch(deleteNotifications(group.map((x) => x.id)));
                             }}
                           />
                         </button>
@@ -120,7 +122,7 @@ export function MessagesAndNotificationsPage() {
             <div className="basic500">{t('messageList.pendingConfirm')}</div>
 
             <div>
-              {messages.map(message => {
+              {messages.map((message) => {
                 const { card: Card } = getMessageConfig(message);
 
                 return (

@@ -4,7 +4,7 @@ import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { Button, Input, Select } from 'ui/components/ui';
 
-import * as styles from './settings.styl';
+import * as styles from './settings.module.styl';
 
 const CONFIG = {
   list: [
@@ -58,7 +58,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     const { interval = null, totalAmount } = OriginSettingsComponent._getAutoSign(props.autoSign);
     const selected = CONFIG.list.find(({ value }) => value === interval)?.id;
     const notifications = props.permissions.find(
-      item => item && (item as any).type === 'useNotifications',
+      (item) => item && (item as any).type === 'useNotifications',
     ) as TNotification;
     const inWhiteList = (props.origins[props.originName] || []).includes('whiteList');
     let canShowNotifications = state.canShowNotifications;
@@ -178,7 +178,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     const inWhiteList = this.props.permissions.includes('whiteList');
     const { t, originName } = this.props;
 
-    const timeList = CONFIG.list.map(item => {
+    const timeList = CONFIG.list.map((item) => {
       return {
         id: item.id,
         value: item.value,

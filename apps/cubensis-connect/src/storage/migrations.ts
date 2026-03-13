@@ -29,7 +29,7 @@ const flatState: Migration = {
       'VaultController',
     ];
 
-    const migrateFields = CONTROLLERS.filter(controller => state[controller]);
+    const migrateFields = CONTROLLERS.filter((controller) => state[controller]);
 
     if (migrateFields.length === 0) {
       return;
@@ -147,7 +147,7 @@ const flattenBalances: Migration = {
     );
 
     await Browser.storage.local.remove(
-      Object.keys(state).filter(key => key.startsWith('balance_')),
+      Object.keys(state).filter((key) => key.startsWith('balance_')),
     );
 
     await Browser.storage.local.set({ balances });

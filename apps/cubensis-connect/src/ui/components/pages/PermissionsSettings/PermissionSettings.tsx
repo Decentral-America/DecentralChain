@@ -1,6 +1,6 @@
 import BigNumber from '@decentralchain/bignumber';
 import clsx from 'clsx';
-import type { PopupState } from 'popup/store/types';
+import { type PopupState } from 'popup/store/types';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { allowOrigin, deleteOrigin, disableOrigin, setAutoOrigin } from 'store/a
 import { Loader, Modal } from 'ui/components/ui';
 
 import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './components';
-import * as styles from './permissionsSettings.styl';
+import * as styles from './permissionsSettings.module.styl';
 
 interface StateProps {
   origins?: { [key: string]: TAutoAuth[] } | undefined;
@@ -103,7 +103,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
 
   render() {
     const { t, origins, pending, allowed, disallowed, deleted } = this.props;
-    const tabs = ['customList', 'whiteList'].map(name => ({
+    const tabs = ['customList', 'whiteList'].map((name) => ({
       item: t(`permission.${name}`),
       name,
     }));
@@ -118,7 +118,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
         <Tabs
           tabs={tabs}
           currentTab={this.state.originsList}
-          onSelectTab={originsList => this.setState({ originsList })}
+          onSelectTab={(originsList) => this.setState({ originsList })}
         />
 
         <List

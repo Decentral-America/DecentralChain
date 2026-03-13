@@ -1,10 +1,10 @@
 import { NetworkName } from 'networks/types';
 import { fetchNftInfo } from 'nfts/nfts';
-import type { NftAssetDetail } from 'nfts/types';
+import { type NftAssetDetail } from 'nfts/types';
 import ObservableStore from 'obs-store';
 
-import type { ExtensionStorage } from '../storage/storage';
-import type { NetworkController } from './network';
+import { type ExtensionStorage } from '../storage/storage';
+import { type NetworkController } from './network';
 
 export class NftInfoController {
   private store;
@@ -34,10 +34,10 @@ export class NftInfoController {
     }
 
     const { nfts } = this.store.getState();
-    const nftsToFetch = nftsAssetDetails.filter(nft => !nfts[nft.assetId]);
+    const nftsToFetch = nftsAssetDetails.filter((nft) => !nfts[nft.assetId]);
     const nftInfos = await fetchNftInfo(this.getNode(), nftsToFetch);
 
-    nftInfos.forEach(info => {
+    nftInfos.forEach((info) => {
       nfts[info.id] = info;
     });
 

@@ -21,19 +21,19 @@ export function ActiveMessagePage() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
 
-  const activeMessage = usePopupSelector(state => state.activePopup?.msg);
+  const activeMessage = usePopupSelector((state) => state.activePopup?.msg);
 
   const balance = usePopupSelector(
-    state => state.selectedAccount && state.balances[state.selectedAccount.address],
+    (state) => state.selectedAccount && state.balances[state.selectedAccount.address],
   );
 
   const otherMessagesCount = usePopupSelector(
-    state => state.messages.filter(item => item.id !== state.activePopup?.msg?.id).length,
+    (state) => state.messages.filter((item) => item.id !== state.activePopup?.msg?.id).length,
   );
 
-  const notificationsCount = usePopupSelector(state => state.notifications.length);
+  const notificationsCount = usePopupSelector((state) => state.notifications.length);
 
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
 
   useEffect(() => {
     if (

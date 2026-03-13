@@ -38,10 +38,10 @@ export function AddressRecipient({
     ? recipient
     : processAliasOrAddress(recipient, chainId);
 
-  const accounts = usePopupSelector(state => state.accounts);
-  const addresses = usePopupSelector(state => state.addresses);
+  const accounts = usePopupSelector((state) => state.accounts);
+  const addresses = usePopupSelector((state) => state.addresses);
 
-  const name = accounts.find(account => account.address === address)?.name || addresses[address];
+  const name = accounts.find((account) => account.address === address)?.name || addresses[address];
 
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -94,7 +94,7 @@ export function AddressRecipient({
               content={mirrorAddress}
               placement="top-end"
             >
-              {props => (
+              {(props) => (
                 <div className={styles.recipientWrapper} {...props}>
                   <Ellipsis
                     text={address}
@@ -109,7 +109,7 @@ export function AddressRecipient({
             </Tooltip>
           ) : (
             <Tooltip content={address} placement="top-end">
-              {props => (
+              {(props) => (
                 <div className={styles.recipientWrapper} {...props}>
                   <Ellipsis text={address} size={12} className={styles.recipient} />
                 </div>
@@ -117,7 +117,7 @@ export function AddressRecipient({
             </Tooltip>
           )}
           <Tooltip content={t('address.addTooltip')} placement="top-end">
-            {props => (
+            {(props) => (
               <button
                 type="button"
                 className={styles.addButtonIcon}

@@ -19,7 +19,7 @@ interface Props {
 export function LedgerAvatarList({ selectedId, size, users, onSelect }: Props) {
   return (
     <div className={styles.root}>
-      {users.map(item => (
+      {users.map((item) => (
         <button
           type="button"
           key={item.address}
@@ -33,7 +33,7 @@ export function LedgerAvatarList({ selectedId, size, users, onSelect }: Props) {
           <Avatar address={item.address} size={size} />
 
           <Tooltip content={<span>{item.id}</span>}>
-            {props => (
+            {(props) => (
               <div className={styles.itemLabel} {...props}>
                 {item.id}
               </div>

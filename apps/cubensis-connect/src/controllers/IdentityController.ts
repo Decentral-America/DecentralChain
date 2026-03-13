@@ -20,16 +20,20 @@ import {
   CognitoUserPool,
   type ICognitoStorage,
 } from 'amazon-cognito-identity-js';
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 
 import { handleResponse } from '../_core/handleResponse';
 import { DEFAULT_IDENTITY_CONFIG } from '../constants';
-import type { ExtensionStorage, StorageLocalState, StorageSessionState } from '../storage/storage';
-import type { NetworkController } from './network';
-import type { PreferencesController } from './preferences';
-import type { RemoteConfigController } from './remoteConfig';
+import {
+  type ExtensionStorage,
+  type StorageLocalState,
+  type StorageSessionState,
+} from '../storage/storage';
+import { type NetworkController } from './network';
+import { type PreferencesController } from './preferences';
+import { type RemoteConfigController } from './remoteConfig';
 
 export type CodeDelivery = {
   type: 'SMS' | 'EMAIL' | string;
@@ -50,7 +54,7 @@ globalThis.fetch = (endpoint: RequestInfo | URL, options?: RequestInit) => {
     return fetch(endpoint, {
       ...options,
       headers: { ...options?.headers, 'X-Application': 'cubensisconnect' },
-    }).then(async response => {
+    }).then(async (response) => {
       if (response.status === 403) {
         const err = await response.json();
         if ('type' in err && 'message' in err) {
@@ -331,7 +335,7 @@ export class IdentityController implements IdentityApi {
             resolve({});
           },
 
-          onFailure: err => {
+          onFailure: (err) => {
             reject(err);
           },
           customChallenge() {
@@ -368,7 +372,7 @@ export class IdentityController implements IdentityApi {
       this.user.sendMFACode(
         code,
         {
-          onSuccess: async session => {
+          onSuccess: async (session) => {
             if (this.user) {
               delete this.user.challengeName;
               delete (this.user as any).challengeParam;
@@ -384,7 +388,7 @@ export class IdentityController implements IdentityApi {
               resolve();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             reject(err);
           },
         },
@@ -405,7 +409,7 @@ export class IdentityController implements IdentityApi {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }).then(response => response.json());
+    }).then((response) => response.json());
   }
 
   getIdentityUser() {
@@ -445,11 +449,11 @@ export class IdentityController implements IdentityApi {
         }
 
         this.refreshSessionIsNeeded()
-          .then(async data => {
+          .then(async (data) => {
             await this.persistSession(uuid);
             resolve(data);
           })
-          .catch(err => reject(err));
+          .catch((err) => reject(err));
       });
     });
   }
@@ -486,7 +490,7 @@ export class IdentityController implements IdentityApi {
             Value: publicKeyBase58,
           }),
         ],
-        err => {
+        (err) => {
           if (err) {
             return reject(err);
           }

@@ -1,4 +1,4 @@
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 
 export type CreateWalletInput = { name: string } & (
   | { type: 'debug'; address: string }

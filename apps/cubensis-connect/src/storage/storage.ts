@@ -1,24 +1,24 @@
 import { captureException } from '@sentry/browser';
-import type { AssetsRecord } from 'assets/types';
-import type { TrashItem } from 'controllers/trash';
+import { type AssetsRecord } from 'assets/types';
+import { type TrashItem } from 'controllers/trash';
 import { deepEqual } from 'fast-equals';
-import type { Message } from 'messages/types';
-import type { NetworkName } from 'networks/types';
-import type { NftInfo } from 'nfts/nfts';
-import type { NotificationsStoreItem } from 'notifications/types';
+import { type Message } from 'messages/types';
+import { type NetworkName } from 'networks/types';
+import { type NftInfo } from 'nfts/nfts';
+import { type NotificationsStoreItem } from 'notifications/types';
 import type ObservableStore from 'obs-store';
-import type { PermissionValue } from 'permissions/types';
-import type { IdleOptions, PreferencesAccount } from 'preferences/types';
-import type { UiState } from 'store/reducers/updateState';
+import { type PermissionValue } from 'permissions/types';
+import { type IdleOptions, type PreferencesAccount } from 'preferences/types';
+import { type UiState } from 'store/reducers/updateState';
 import Browser from 'webextension-polyfill';
 import { make, pipe, subscribe } from 'wonka';
 
-import type {
-  AssetsConfig,
-  DEFAULT_IDENTITY_CONFIG,
-  DEFAULT_MAIN_CONFIG,
-  IgnoreErrorsConfig,
-  NftConfig,
+import {
+  type AssetsConfig,
+  type DEFAULT_IDENTITY_CONFIG,
+  type DEFAULT_MAIN_CONFIG,
+  type IgnoreErrorsConfig,
+  type NftConfig,
 } from '../constants';
 import { MIGRATIONS } from './migrations';
 
@@ -154,14 +154,14 @@ export class ExtensionStorage {
 
   subscribe<T extends Record<string, unknown>>(store: ObservableStore<T>) {
     pipe(
-      make<T>(observer => {
+      make<T>((observer) => {
         store.subscribe(observer.next);
 
         return () => {
           store.unsubscribe(observer.next);
         };
       }),
-      subscribe(async updatedState => {
+      subscribe(async (updatedState) => {
         const currentState = await Browser.storage.local.get(Object.keys(updatedState));
 
         const changedState = Object.fromEntries(
@@ -215,7 +215,7 @@ export class ExtensionStorage {
           delete state[keys as keyof typeof state];
         }
       } else {
-        keys.forEach(key => {
+        keys.forEach((key) => {
           if (key in state) {
             delete state[key as keyof typeof state];
           }

@@ -1,5 +1,5 @@
 import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
-import type { KeystoreProfiles } from 'keystore/types';
+import { type KeystoreProfiles } from 'keystore/types';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +51,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
 
       return {
         type: WalletTypes.Keystore,
-        decrypt: async password => {
+        decrypt: async (password) => {
           try {
             const decrypted = await decryptSeed(base64Decode(atob(profiles)), utf8Encode(password));
 
@@ -78,7 +78,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
 
         return {
           type: WalletTypes.KeystoreWx,
-          decrypt: async password => {
+          decrypt: async (password) => {
             try {
               const decrypted = await decryptSeed(
                 base64Decode(saveUsers),
@@ -100,7 +100,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
                   (acc): acc is Extract<ExchangeKeystoreAccount, { userType: 'seed' }> =>
                     acc.userType === 'seed',
                 )
-                .forEach(acc => {
+                .forEach((acc) => {
                   const networkCode = String.fromCharCode(acc.networkByte);
                   const network = getNetworkByNetworkCode(networkCode);
 
@@ -133,7 +133,7 @@ const suffixRe = /\((\d+)\)$/;
 export function ImportKeystore() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
-  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
+  const allNetworksAccounts = usePopupSelector((state) => state.allNetworksAccounts);
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -172,16 +172,16 @@ export function ImportKeystore() {
 
             Object.entries(newProfiles).forEach(([network, profile]) => {
               const currentNetworkAccounts = allNetworksAccounts.filter(
-                acc => acc.network === network,
+                (acc) => acc.network === network,
               );
 
-              profile.accounts.forEach(profileAccount => {
+              profile.accounts.forEach((profileAccount) => {
                 const accounts = currentNetworkAccounts.filter(
-                  acc => acc.address !== profileAccount.address,
+                  (acc) => acc.address !== profileAccount.address,
                 );
 
                 let sameNameAccount = accounts.find(
-                  existingAccount => existingAccount.name === profileAccount.name,
+                  (existingAccount) => existingAccount.name === profileAccount.name,
                 );
 
                 while (sameNameAccount) {
@@ -197,7 +197,7 @@ export function ImportKeystore() {
                   }
 
                   sameNameAccount = accounts.find(
-                    existingAccount => existingAccount.name === profileAccount.name,
+                    (existingAccount) => existingAccount.name === profileAccount.name,
                   );
                 }
               });
@@ -221,12 +221,12 @@ export function ImportKeystore() {
       onSkip={() => {
         navigate('/');
       }}
-      onSubmit={async selectedAccounts => {
+      onSubmit={async (selectedAccounts) => {
         invariant(walletType);
 
         await dispatch(
           batchAddAccounts(
-            selectedAccounts.map(acc => ({
+            selectedAccounts.map((acc) => ({
               type: 'seed',
               ...acc,
               network: getNetworkByNetworkCode(acc.networkCode),

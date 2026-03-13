@@ -1,7 +1,7 @@
 import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import type { AssetsRecord } from 'assets/types';
-import type { BalanceAssets } from 'balances/types';
+import { type AssetsRecord } from 'assets/types';
+import { type BalanceAssets } from 'balances/types';
 import clsx from 'clsx';
 import { usePopupSelector } from 'popup/store/react';
 import { useMemo } from 'react';
@@ -11,7 +11,7 @@ import { List, type RowComponentProps } from 'react-window';
 import invariant from 'tiny-invariant';
 import { AssetItem } from 'ui/components/pages/assets//assetItem';
 import { icontains } from 'ui/components/pages/assets/helpers';
-import * as styles from 'ui/components/pages/styles/assets.styl';
+import * as styles from 'ui/components/pages/styles/assets.module.styl';
 import { SearchInput, TabPanel } from 'ui/components/ui';
 import { Tooltip } from 'ui/components/ui/tooltip';
 
@@ -51,7 +51,7 @@ const Row = ({
   );
 };
 
-const PLACEHOLDERS = [...Array(4).keys()].map<[string, BalanceAssets[string]]>(key => [
+const PLACEHOLDERS = [...Array(4).keys()].map<[string, BalanceAssets[string]]>((key) => [
   String(key),
   {
     balance: '0',
@@ -68,11 +68,11 @@ interface Props {
 
 export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
   const { t } = useTranslation();
-  const assets = usePopupSelector(state => state.assets);
-  const showSuspiciousAssets = usePopupSelector(state => state.uiState?.showSuspiciousAssets);
-  const address = usePopupSelector(state => state.selectedAccount?.address);
-  const myAssets = usePopupSelector(state => state.balances[address ?? '']?.assets);
-  const swappableAssetIdsByVendor = usePopupSelector(state => state.swappableAssetIdsByVendor);
+  const assets = usePopupSelector((state) => state.assets);
+  const showSuspiciousAssets = usePopupSelector((state) => state.uiState?.showSuspiciousAssets);
+  const address = usePopupSelector((state) => state.selectedAccount?.address);
+  const myAssets = usePopupSelector((state) => state.balances[address ?? '']?.assets);
+  const swappableAssetIdsByVendor = usePopupSelector((state) => state.swappableAssetIdsByVendor);
   const swappableAssetIdsSet = useMemo(
     () => new Set(Object.values(swappableAssetIdsByVendor).flat()),
     [swappableAssetIdsByVendor],
@@ -110,11 +110,11 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
       <div className={styles.filterContainer}>
         <SearchInput
           value={term ?? ''}
-          onInput={e => setTerm(e.currentTarget.value)}
+          onInput={(e) => setTerm(e.currentTarget.value)}
           onClear={() => setTerm('')}
         />
         <Tooltip content={t('assets.onlyFavorites')}>
-          {props => (
+          {(props) => (
             <button
               type="button"
               className={styles.filterBtn}
@@ -137,7 +137,7 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
         </Tooltip>
 
         <Tooltip content={t('assets.onlyMyAssets')}>
-          {props => (
+          {(props) => (
             <button
               type="button"
               className={styles.filterBtn}

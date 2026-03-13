@@ -15,8 +15,8 @@ export function NewWalletName() {
   const { t } = useTranslation();
   const dispatch = useAccountsDispatch();
 
-  const account = useAccountsSelector(state => state.localState.newAccount);
-  const accounts = useAccountsSelector(state => state.accounts);
+  const account = useAccountsSelector((state) => state.localState.newAccount);
+  const accounts = useAccountsSelector((state) => state.accounts);
   const [accountName, setAccountName] = useState('');
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<string | null>('');
@@ -50,7 +50,7 @@ export function NewWalletName() {
       <h2 className="title1 margin1">{t('newAccountName.accountName')}</h2>
 
       <form
-        onSubmit={async e => {
+        onSubmit={async (e) => {
           e.preventDefault();
 
           setPending(true);
@@ -82,7 +82,7 @@ export function NewWalletName() {
           <Input
             data-testid="newAccountNameInput"
             className="margin1"
-            onChange={event => {
+            onChange={(event) => {
               setAccountName(event.target.value);
             }}
             value={accountName}

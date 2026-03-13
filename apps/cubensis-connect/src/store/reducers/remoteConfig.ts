@@ -1,4 +1,4 @@
-import type { StorageLocalState } from 'storage/storage';
+import { type StorageLocalState } from 'storage/storage';
 
 import { ACTION } from '../actions/constants';
 import { simpleFabric } from './utils';

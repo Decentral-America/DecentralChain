@@ -1,4 +1,4 @@
-import type { AccountsState } from 'accounts/store/types';
+import { type AccountsState } from 'accounts/store/types';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';

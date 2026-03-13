@@ -3,9 +3,9 @@ import { createLogger } from 'redux-logger';
 import { type ThunkDispatch, thunk } from 'redux-thunk';
 
 import * as middleware from '../../store/middleware';
-import type { AppAction } from '../../store/types';
+import { type AppAction } from '../../store/types';
 import { reducer } from './reducer';
-import type { AccountsState } from './types';
+import { type AccountsState } from './types';
 
 export function createAccountsStore() {
   const store = createStore<
@@ -22,8 +22,8 @@ export function createAccountsStore() {
     ),
   );
 
-  if (import.meta.webpackHot) {
-    import.meta.webpackHot.accept('./reducer', () => {
+  if (import.meta.hot) {
+    import.meta.hot.accept('./reducer', () => {
       store.replaceReducer(reducer as any);
     });
   }

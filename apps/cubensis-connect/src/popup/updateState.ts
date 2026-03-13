@@ -1,13 +1,13 @@
 import { deepEqual } from 'fast-equals';
-import type { NotificationsStoreItem } from 'notifications/types';
-import type { StorageLocalState } from 'storage/storage';
+import { type NotificationsStoreItem } from 'notifications/types';
+import { type StorageLocalState } from 'storage/storage';
 
-import type { AssetsRecord } from '../assets/types';
+import { type AssetsRecord } from '../assets/types';
 import { collectBalances } from '../balances/utils';
 import { type Message, MessageStatus } from '../messages/types';
-import type { NetworkName } from '../networks/types';
+import { type NetworkName } from '../networks/types';
 import { ACTION } from '../store/actions/constants';
-import type { PopupStore } from './store/types';
+import { type PopupStore } from './store/types';
 
 function getParam<S, D>(param: S, defaultParam: D) {
   if (param) {
@@ -136,7 +136,7 @@ export function createUpdateState(store: PopupStore) {
       currentOrNewSelectedAccount &&
       stateChanges.notifications &&
       stateChanges.notifications
-        .filter(notification => notification.address === currentOrNewSelectedAccount.address)
+        .filter((notification) => notification.address === currentOrNewSelectedAccount.address)
         .reverse()
         .reduce<{
           items: NotificationsStoreItem[][];
@@ -202,7 +202,7 @@ export function createUpdateState(store: PopupStore) {
 
       store.dispatch({
         type: ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS,
-        payload: accounts.filter(account => account.network === network),
+        payload: accounts.filter((account) => account.network === network),
       });
     }
 

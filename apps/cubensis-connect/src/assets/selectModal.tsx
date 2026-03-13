@@ -1,9 +1,9 @@
 import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import type { BalanceAssets } from 'balances/types';
+import { type BalanceAssets } from 'balances/types';
 import clsx from 'clsx';
 import ColorHash from 'color-hash';
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 import { cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/components/ui/buttons/Button';
@@ -11,7 +11,7 @@ import { Input } from 'ui/components/ui/input';
 import { Tooltip } from 'ui/components/ui/tooltip';
 
 import * as styles from './selectModal.module.css';
-import type { AssetDetail } from './types';
+import { type AssetDetail } from './types';
 import { useAssetLogo } from './utils';
 
 export interface AssetSelectModalOption extends AssetDetail {
@@ -38,7 +38,7 @@ function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemP
       onClick={() => {
         onSelect(asset.id);
       }}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           onSelect(asset.id);
@@ -72,7 +72,7 @@ function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemP
       className={styles.listItemTooltipContent}
       content={asset.disabledTooltip}
     >
-      {props => cloneElement(listItemEl, props)}
+      {(props) => cloneElement(listItemEl, props)}
     </Tooltip>
   ) : (
     cloneElement(listItemEl, { key: asset.id })
@@ -96,12 +96,12 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
     () =>
       assets
         .filter(
-          asset =>
+          (asset) =>
             asset.id === query ||
             asset.name.toLowerCase().includes(query.toLowerCase()) ||
             (!!asset.ticker && asset.ticker.toLowerCase().includes(query.toLowerCase())),
         )
-        .map(asset => {
+        .map((asset) => {
           const balance = new Money(
             new BigNumber(assetBalances[asset.id]?.balance ?? 0),
             new Asset(asset),
@@ -133,7 +133,7 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
   );
 
   useEffect(() => {
-    setSelectedIndex(filteredAndSortedItems.findIndex(item => !item.asset.disabled));
+    setSelectedIndex(filteredAndSortedItems.findIndex((item) => !item.asset.disabled));
   }, [filteredAndSortedItems]);
 
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -175,15 +175,15 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
             autoFocus
             placeholder={t('assetSelectModal.searchPlaceholder')}
             value={query}
-            onChange={event => {
+            onChange={(event) => {
               setQuery(event.currentTarget.value);
             }}
-            onKeyDown={event => {
+            onKeyDown={(event) => {
               switch (event.key) {
                 case 'ArrowDown':
                   if (filteredAndSortedItems.length !== 0) {
-                    setSelectedIndex(prevState => {
-                      if (filteredAndSortedItems.every(item => item.asset.disabled)) {
+                    setSelectedIndex((prevState) => {
+                      if (filteredAndSortedItems.every((item) => item.asset.disabled)) {
                         return -1;
                       }
 
@@ -204,8 +204,8 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
                   break;
                 case 'ArrowUp':
                   if (filteredAndSortedItems.length !== 0) {
-                    setSelectedIndex(prevState => {
-                      if (filteredAndSortedItems.every(item => item.asset.disabled)) {
+                    setSelectedIndex((prevState) => {
+                      if (filteredAndSortedItems.every((item) => item.asset.disabled)) {
                         return -1;
                       }
 

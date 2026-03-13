@@ -5,16 +5,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { setIdle } from '../../../store/actions/localState';
 import { Button, Select } from '../ui';
-import * as styles from './styles/settings.styl';
+import * as styles from './styles/settings.module.styl';
 
 export function SettingsGeneral() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const idle = usePopupSelector<Record<string, any>>(state => (state.config as any)?.idle || {});
+  const idle = usePopupSelector<Record<string, any>>((state) => (state.config as any)?.idle || {});
 
-  const idleOptions = usePopupSelector(state => state.idleOptions);
+  const idleOptions = usePopupSelector((state) => state.idleOptions);
 
   const selectList = Object.entries(idle)
     .sort(([, a], [, b]) => a - b)

@@ -6,7 +6,7 @@ import { usePopupSelector } from 'popup/store/react';
 import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import * as styles from 'ui/components/pages/styles/assets.styl';
+import * as styles from 'ui/components/pages/styles/assets.module.styl';
 import { SearchInput, TabPanel } from 'ui/components/ui';
 import { getNftsLink } from 'ui/urls';
 
@@ -14,7 +14,7 @@ import { MAX_NFT_ITEMS } from '../../../../../constants';
 import { sortAndFilterNfts, useUiState } from './helpers';
 
 const PLACEHOLDERS = [...Array(4).keys()].map<Nft>(
-  key =>
+  (key) =>
     ({
       id: `${key}`,
       creator: `${key}`,
@@ -25,12 +25,12 @@ export function TabNfts() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
+  const userAddress = usePopupSelector((state) => state.selectedAccount?.address ?? '');
 
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
 
-  const myNfts = usePopupSelector(state => state.balances[userAddress]?.nfts);
-  const nfts = usePopupSelector(state => state.nfts);
+  const myNfts = usePopupSelector((state) => state.balances[userAddress]?.nfts);
+  const nfts = usePopupSelector((state) => state.nfts);
 
   const [filters, setFilters] = useUiState('nftFilters');
   const [term, setTerm] = [
@@ -38,13 +38,13 @@ export function TabNfts() {
     (value: string) => setFilters({ ...filters, term: value }),
   ];
 
-  const nftConfig = usePopupSelector(state => state.nftConfig);
+  const nftConfig = usePopupSelector((state) => state.nftConfig);
 
   const sortedNfts = useMemo(
     () =>
       myNfts && nfts
         ? sortAndFilterNfts(
-            myNfts.map(nft =>
+            myNfts.map((nft) =>
               createNft({
                 asset: nft,
                 config: nftConfig,
@@ -85,7 +85,7 @@ export function TabNfts() {
       <div className={styles.filterContainer}>
         <SearchInput
           value={term ?? ''}
-          onInput={e => setTerm(e.currentTarget.value)}
+          onInput={(e) => setTerm(e.currentTarget.value)}
           onClear={() => setTerm('')}
         />
       </div>
@@ -113,7 +113,7 @@ export function TabNfts() {
           mode={DisplayMode.Creator}
           nfts={creatorNfts}
           counters={creatorCounts}
-          onClick={asset => {
+          onClick={(asset) => {
             navigate(`/nft-collection/${asset.creator}`);
           }}
           renderMore={() =>

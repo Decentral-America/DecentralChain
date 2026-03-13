@@ -34,7 +34,7 @@ export function NftCover({ className, nft }: { className?: string; nft: Nft | un
       <source
         src={nft?.foreground}
         onError={() => {
-          setErrorsCount(count => count + 1);
+          setErrorsCount((count) => count + 1);
         }}
       />
       <img
@@ -44,7 +44,7 @@ export function NftCover({ className, nft }: { className?: string; nft: Nft | un
           setLoading(false);
         }}
         onError={() => {
-          setErrorsCount(count => count + 1);
+          setErrorsCount((count) => count + 1);
         }}
       />
     </video>
@@ -71,7 +71,7 @@ export function NftCard({
     <figure
       className={clsx(styles.card, className)}
       onClick={() => !isPlaceholder && onClick(nft)}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           if (!isPlaceholder) onClick(nft);

@@ -1,5 +1,5 @@
-import type { Money } from '@decentralchain/data-entities';
-import type { PreferencesAccount } from 'preferences/types';
+import { type Money } from '@decentralchain/data-entities';
+import { type PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '../ui/avatar/Avatar';
@@ -39,7 +39,7 @@ export function AccountCard({ account, balance, onClick, onInfoClick }: Props) {
       />
 
       <Tooltip content={t('accountCard.infoTooltip')}>
-        {props => (
+        {(props) => (
           <button
             className={styles.infoButton}
             data-testid="accountInfoButton"

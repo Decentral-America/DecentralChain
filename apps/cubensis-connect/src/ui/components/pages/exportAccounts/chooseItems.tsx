@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { NetworkName } from 'networks/types';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from 'ui/components/ui/avatar/Avatar';
@@ -8,7 +8,7 @@ import { Button } from 'ui/components/ui/buttons/Button';
 import { Ellipsis } from 'ui/components/ui/ellipsis/Ellipsis';
 import { Modal } from 'ui/components/ui/modal/Modal';
 
-import * as styles from './chooseItems.styl';
+import * as styles from './chooseItems.module.styl';
 
 const allNetworks: NetworkName[] = Object.values(NetworkName);
 
@@ -49,10 +49,10 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
   );
 
   function toggleSelected(items: Array<PreferencesAccount | Contact>, isSelected: boolean) {
-    setSelected(prevSelected => {
+    setSelected((prevSelected) => {
       const newSelected = new Set(prevSelected);
 
-      items.forEach(acc => {
+      items.forEach((acc) => {
         if (isSelected) {
           newSelected.add(acc.address);
         } else {
@@ -69,7 +69,7 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
   return (
     <form
       className={styles.root}
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault();
         onSubmit(items.filter(({ address }) => selected.has(address)));
       }}
@@ -92,9 +92,9 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
 
       <div className={styles.accounts}>
         {allNetworks
-          .map<[NetworkName, Array<PreferencesAccount | Contact>]>(network => [
+          .map<[NetworkName, Array<PreferencesAccount | Contact>]>((network) => [
             network,
-            items.filter(acc => acc.network === network),
+            items.filter((acc) => acc.network === network),
           ])
           .filter(([, items]) => items.length !== 0)
           .map(([network, items]) => (
@@ -106,10 +106,10 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
 
                 {items.some(isExportable) && (
                   <input
-                    checked={items.filter(isExportable).every(acc => selected.has(acc.address))}
+                    checked={items.filter(isExportable).every((acc) => selected.has(acc.address))}
                     className={styles.checkbox}
                     type="checkbox"
-                    onChange={event => {
+                    onChange={(event) => {
                       toggleSelected(items, event.currentTarget.checked);
                     }}
                   />
@@ -117,7 +117,7 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
               </header>
 
               <ul className={styles.accountList}>
-                {items.map(item => {
+                {items.map((item) => {
                   const showExportable = isExportable(item);
 
                   return (
@@ -149,7 +149,7 @@ export function ExportKeystoreChooseItems<T extends PreferencesAccount | Contact
                           name="selected"
                           type="checkbox"
                           value={item.address}
-                          onChange={event => {
+                          onChange={(event) => {
                             toggleSelected([item], event.currentTarget.checked);
                           }}
                         />
