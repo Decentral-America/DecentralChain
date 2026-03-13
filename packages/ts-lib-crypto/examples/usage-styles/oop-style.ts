@@ -2,7 +2,7 @@ import { crypto, randomSeed } from '@decentralchain/ts-lib-crypto';
 
 const seed = randomSeed();
 
-const c = crypto({ seed, output: 'Bytes' });
+const c = crypto({ output: 'Bytes', seed });
 
 c.address(); // => UInt8Array
 

@@ -24,14 +24,14 @@ const DEFAULT_RSA_E = 0x10001; // 65537
  * MD5 and SHA1 are intentionally excluded — they are cryptographically broken.
  */
 const DIGEST_MAP: Record<Exclude<RSADigestAlgorithm, 'NONE'>, string> = {
-  SHA224: 'sha224',
-  SHA256: 'sha256',
-  SHA384: 'sha384',
-  SHA512: 'sha512',
   'SHA3-224': 'sha3-224',
   'SHA3-256': 'sha3-256',
   'SHA3-384': 'sha3-384',
   'SHA3-512': 'sha3-512',
+  SHA224: 'sha224',
+  SHA256: 'sha256',
+  SHA384: 'sha384',
+  SHA512: 'sha512',
 };
 
 /* ── Key helpers ─────────────────────────────────────────────────── */
@@ -54,9 +54,9 @@ export const pemToBytes = (pem: string) =>
  */
 function importPublicKey(der: Uint8Array): KeyObject {
   try {
-    return createPublicKey({ key: Buffer.from(der), format: 'der', type: 'spki' });
+    return createPublicKey({ format: 'der', key: Buffer.from(der), type: 'spki' });
   } catch {
-    return createPublicKey({ key: Buffer.from(der), format: 'der', type: 'pkcs1' });
+    return createPublicKey({ format: 'der', key: Buffer.from(der), type: 'pkcs1' });
   }
 }
 
@@ -65,9 +65,9 @@ function importPublicKey(der: Uint8Array): KeyObject {
  */
 function importPrivateKey(der: Uint8Array): KeyObject {
   try {
-    return createPrivateKey({ key: Buffer.from(der), format: 'der', type: 'pkcs1' });
+    return createPrivateKey({ format: 'der', key: Buffer.from(der), type: 'pkcs1' });
   } catch {
-    return createPrivateKey({ key: Buffer.from(der), format: 'der', type: 'pkcs8' });
+    return createPrivateKey({ format: 'der', key: Buffer.from(der), type: 'pkcs8' });
   }
 }
 
@@ -84,14 +84,14 @@ export const rsaKeyPairSync = (
 
   const kp = generateKeyPairSync('rsa', {
     modulusLength: bits,
+    privateKeyEncoding: { format: 'der', type: 'pkcs1' },
     publicExponent: e,
-    publicKeyEncoding: { type: 'spki', format: 'der' },
-    privateKeyEncoding: { type: 'pkcs1', format: 'der' },
+    publicKeyEncoding: { format: 'der', type: 'spki' },
   });
 
   return {
-    rsaPublic: new Uint8Array(kp.publicKey),
     rsaPrivate: new Uint8Array(kp.privateKey),
+    rsaPublic: new Uint8Array(kp.publicKey),
   };
 };
 

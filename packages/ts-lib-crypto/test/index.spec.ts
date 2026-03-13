@@ -50,8 +50,8 @@ test('verify address', () => {
 
 test('keyPair', () =>
   expect(keyPair(s)).toEqual({
-    publicKey: '12wYe4Y5Z5uJXRQw44huYYszidfMfFbwhjyVTparH1wT',
     privateKey: 'AAJPFvUtBgSMWbDQgCJUxzXmYeggKgn8a4LEMGaoWEMj',
+    publicKey: '12wYe4Y5Z5uJXRQw44huYYszidfMfFbwhjyVTparH1wT',
   }));
 
 test('publicKey', () => expect(publicKey(s)).toBe('12wYe4Y5Z5uJXRQw44huYYszidfMfFbwhjyVTparH1wT'));

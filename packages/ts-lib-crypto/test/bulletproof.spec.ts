@@ -135,11 +135,11 @@ describe('Address Generation', () => {
   });
 
   const CHAIN_IDS = [
-    { id: 'L', code: 76 },
-    { id: 'W', code: 87 },
-    { id: 'T', code: 84 },
-    { id: 'S', code: 83 }, // custom staging
-    { id: 'D', code: 68 }, // custom dev
+    { code: 76, id: 'L' },
+    { code: 87, id: 'W' },
+    { code: 84, id: 'T' },
+    { code: 83, id: 'S' }, // custom staging
+    { code: 68, id: 'D' }, // custom dev
   ];
 
   CHAIN_IDS.forEach(({ id, code }) => {
