@@ -38,8 +38,8 @@ describe('protobuf roundtrip encoding', () => {
   describe('Amount', () => {
     it('should encode and decode with asset_id and amount', () => {
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
         amount: 1_000_000n,
+        assetId: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
       });
 
       const buffer = toBinary(AmountSchema, original);
@@ -53,8 +53,8 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode with zero amount (native token)', () => {
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([]),
         amount: 0n,
+        assetId: new Uint8Array([]),
       });
 
       const buffer = toBinary(AmountSchema, original);
@@ -65,8 +65,8 @@ describe('protobuf roundtrip encoding', () => {
     it('should handle large int64 values beyond Number.MAX_SAFE_INTEGER', () => {
       const largeValue = 9007199254740993n; // > Number.MAX_SAFE_INTEGER
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([10, 20]),
         amount: largeValue,
+        assetId: new Uint8Array([10, 20]),
       });
 
       const buffer = toBinary(AmountSchema, original);
@@ -76,8 +76,8 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should handle negative int64 values', () => {
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([]),
         amount: -1n,
+        assetId: new Uint8Array([]),
       });
 
       const buffer = toBinary(AmountSchema, original);
@@ -88,8 +88,8 @@ describe('protobuf roundtrip encoding', () => {
     it('should handle max int64 value', () => {
       const maxBigint = 9223372036854775807n; // Long.MAX_VALUE equivalent
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([0xff]),
         amount: maxBigint,
+        assetId: new Uint8Array([0xff]),
       });
 
       const buffer = toBinary(AmountSchema, original);
@@ -99,8 +99,8 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should produce deterministic encoding (same input → same bytes)', () => {
       const original = create(AmountSchema, {
-        assetId: new Uint8Array([1, 2, 3]),
         amount: 42n,
+        assetId: new Uint8Array([1, 2, 3]),
       });
 
       const buffer1 = toBinary(AmountSchema, original);
@@ -165,13 +165,13 @@ describe('protobuf roundtrip encoding', () => {
   describe('Block.Header', () => {
     it('should encode and decode a basic block header', () => {
       const original = create(Block_HeaderSchema, {
-        chainId: 84, // T for testnet
-        version: 5,
-        timestamp: BigInt(Date.now()),
         baseTarget: 100n,
+        chainId: 84, // T for testnet
         generationSignature: new Uint8Array(32).fill(0xcc),
         generator: new Uint8Array(32).fill(0xdd),
         rewardVote: -1n,
+        timestamp: BigInt(Date.now()),
+        version: 5,
       });
 
       const buffer = toBinary(Block_HeaderSchema, original);
@@ -185,14 +185,14 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should preserve feature_votes array', () => {
       const original = create(Block_HeaderSchema, {
-        chainId: 84,
-        version: 5,
-        timestamp: 1000000n,
         baseTarget: 50n,
+        chainId: 84,
+        featureVotes: [1, 2, 14, 15],
         generationSignature: new Uint8Array(32),
         generator: new Uint8Array(32),
         rewardVote: 0n,
-        featureVotes: [1, 2, 14, 15],
+        timestamp: 1000000n,
+        version: 5,
       });
 
       const buffer = toBinary(Block_HeaderSchema, original);
@@ -202,13 +202,13 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a full Block with transactions', () => {
       const header = create(Block_HeaderSchema, {
-        chainId: 84,
-        version: 5,
-        timestamp: 1000000n,
         baseTarget: 100n,
+        chainId: 84,
         generationSignature: new Uint8Array(32).fill(0xaa),
         generator: new Uint8Array(32).fill(0xbb),
         rewardVote: 600000000n,
+        timestamp: 1000000n,
+        version: 5,
       });
 
       const block = create(BlockSchema, {
@@ -255,23 +255,23 @@ describe('protobuf roundtrip encoding', () => {
   describe('Order', () => {
     it('should encode and decode a BUY order', () => {
       const original = create(OrderSchema, {
-        chainId: 84,
-        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        amount: 100_000_000n,
         assetPair: {
           amountAssetId: new Uint8Array([1, 2, 3, 4]),
           priceAssetId: new Uint8Array([5, 6, 7, 8]),
         },
-        orderSide: Order_Side.BUY,
-        amount: 100_000_000n,
-        price: 50_000n,
-        timestamp: BigInt(Date.now()),
+        chainId: 84,
         expiration: BigInt(Date.now() + 86400000),
         matcherFee: {
-          assetId: new Uint8Array([]),
           amount: 300_000n,
+          assetId: new Uint8Array([]),
         },
-        version: 4,
+        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        orderSide: Order_Side.BUY,
+        price: 50_000n,
         senderPublicKey: new Uint8Array(32).fill(0x22),
+        timestamp: BigInt(Date.now()),
+        version: 4,
       });
 
       const buffer = toBinary(OrderSchema, original);
@@ -287,23 +287,23 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a SELL order', () => {
       const original = create(OrderSchema, {
-        chainId: 84,
-        orderSide: Order_Side.SELL,
         amount: 500_000_000n,
-        price: 200_000n,
-        matcherPublicKey: new Uint8Array(32).fill(0x33),
         assetPair: {
           amountAssetId: new Uint8Array(32).fill(0x44),
           priceAssetId: new Uint8Array([]),
         },
-        timestamp: 1000000000n,
+        chainId: 84,
         expiration: 2000000000n,
         matcherFee: {
-          assetId: new Uint8Array([]),
           amount: 300_000n,
+          assetId: new Uint8Array([]),
         },
-        version: 3,
+        matcherPublicKey: new Uint8Array(32).fill(0x33),
+        orderSide: Order_Side.SELL,
+        price: 200_000n,
         senderPublicKey: new Uint8Array(32).fill(0x55),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(OrderSchema, original);
@@ -317,14 +317,14 @@ describe('protobuf roundtrip encoding', () => {
       const priceAsset = new Uint8Array(32).fill(0xbb);
 
       const original = create(OrderSchema, {
+        amount: 1n,
         assetPair: {
           amountAssetId: amountAsset,
           priceAssetId: priceAsset,
         },
-        amount: 1n,
+        expiration: 1n,
         price: 1n,
         timestamp: 1n,
-        expiration: 1n,
       });
 
       const buffer = toBinary(OrderSchema, original);
@@ -339,18 +339,18 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a TransferTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x01),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: BigInt(Date.now()),
-        version: 3,
         data: {
           case: 'transfer',
           value: {
-            recipient: { recipient: { case: 'alias', value: 'bob' } },
-            amount: { assetId: new Uint8Array([]), amount: 10_000_000n },
+            amount: { amount: 10_000_000n, assetId: new Uint8Array([]) },
             attachment: new Uint8Array([0xde, 0xad]),
+            recipient: { recipient: { case: 'alias', value: 'bob' } },
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x01),
+        timestamp: BigInt(Date.now()),
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -375,14 +375,14 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a CreateAliasTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x02),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'createAlias',
           value: { alias: 'my-alias' },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x02),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -396,10 +396,6 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a DataTransactionData with all entry types', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x03),
-        fee: { assetId: new Uint8Array([]), amount: 500_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'dataTransaction',
           value: {
@@ -420,6 +416,10 @@ describe('protobuf roundtrip encoding', () => {
             ],
           },
         },
+        fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x03),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -445,21 +445,21 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode IssueTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x04),
-        fee: { assetId: new Uint8Array([]), amount: 100_000_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'issue',
           value: {
-            name: 'TestToken',
-            description: 'A test token for DecentralChain',
             amount: 1_000_000_000_000n,
             decimals: 8,
+            description: 'A test token for DecentralChain',
+            name: 'TestToken',
             reissuable: true,
             script: new Uint8Array([]),
           },
         },
+        fee: { amount: 100_000_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x04),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -477,31 +477,31 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode MassTransferTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x05),
-        fee: { assetId: new Uint8Array([]), amount: 200_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'massTransfer',
           value: {
             assetId: new Uint8Array(32).fill(0xaa),
+            attachment: new Uint8Array([0x01, 0x02]),
             transfers: [
               {
-                recipient: { recipient: { case: 'alias' as const, value: 'alice' } },
                 amount: 1_000_000n,
+                recipient: { recipient: { case: 'alias' as const, value: 'alice' } },
               },
               {
-                recipient: { recipient: { case: 'alias' as const, value: 'bob' } },
                 amount: 2_000_000n,
+                recipient: { recipient: { case: 'alias' as const, value: 'bob' } },
               },
               {
-                recipient: { recipient: { case: 'alias' as const, value: 'carol' } },
                 amount: 3_000_000n,
+                recipient: { recipient: { case: 'alias' as const, value: 'carol' } },
               },
             ],
-            attachment: new Uint8Array([0x01, 0x02]),
           },
         },
+        fee: { amount: 200_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x05),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -524,17 +524,17 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode GenesisTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x00),
-        fee: { assetId: new Uint8Array([]), amount: 0n },
-        timestamp: 1460678400000n,
-        version: 1,
         data: {
           case: 'genesis',
           value: {
-            recipientAddress: new Uint8Array(26).fill(0x01),
             amount: 10_000_000_000_000_000n,
+            recipientAddress: new Uint8Array(26).fill(0x01),
           },
         },
+        fee: { amount: 0n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x00),
+        timestamp: 1460678400000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -551,17 +551,17 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode PaymentTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0a),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'payment',
           value: {
-            recipientAddress: new Uint8Array(26).fill(0x02),
             amount: 50_000_000n,
+            recipientAddress: new Uint8Array(26).fill(0x02),
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0a),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -577,57 +577,57 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode ExchangeTransactionData', () => {
       const buyOrder = create(OrderSchema, {
-        chainId: 84,
-        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        amount: 100_000_000n,
         assetPair: {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        orderSide: Order_Side.BUY,
-        amount: 100_000_000n,
-        price: 5_000_000n,
-        timestamp: 1000000000n,
+        chainId: 84,
         expiration: 1000086400n,
-        matcherFee: { assetId: new Uint8Array([]), amount: 300_000n },
-        version: 4,
-        senderPublicKey: new Uint8Array(32).fill(0x22),
+        matcherFee: { amount: 300_000n, assetId: new Uint8Array([]) },
+        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        orderSide: Order_Side.BUY,
+        price: 5_000_000n,
         proofs: [new Uint8Array(64).fill(0xee)],
+        senderPublicKey: new Uint8Array(32).fill(0x22),
+        timestamp: 1000000000n,
+        version: 4,
       });
 
       const sellOrder = create(OrderSchema, {
-        chainId: 84,
-        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        amount: 100_000_000n,
         assetPair: {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        orderSide: Order_Side.SELL,
-        amount: 100_000_000n,
-        price: 5_000_000n,
-        timestamp: 1000000001n,
+        chainId: 84,
         expiration: 1000086401n,
-        matcherFee: { assetId: new Uint8Array([]), amount: 300_000n },
-        version: 4,
-        senderPublicKey: new Uint8Array(32).fill(0x33),
+        matcherFee: { amount: 300_000n, assetId: new Uint8Array([]) },
+        matcherPublicKey: new Uint8Array(32).fill(0x11),
+        orderSide: Order_Side.SELL,
+        price: 5_000_000n,
         proofs: [new Uint8Array(64).fill(0xff)],
+        senderPublicKey: new Uint8Array(32).fill(0x33),
+        timestamp: 1000000001n,
+        version: 4,
       });
 
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x11),
-        fee: { assetId: new Uint8Array([]), amount: 300_000n },
-        timestamp: 1000000002n,
-        version: 3,
         data: {
           case: 'exchange',
           value: {
             amount: 50_000_000n,
-            price: 5_000_000n,
             buyMatcherFee: 150_000n,
-            sellMatcherFee: 150_000n,
             orders: [buyOrder, sellOrder],
+            price: 5_000_000n,
+            sellMatcherFee: 150_000n,
           },
         },
+        fee: { amount: 300_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x11),
+        timestamp: 1000000002n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -650,19 +650,19 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode LeaseTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0b),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'lease',
           value: {
+            amount: 100_000_000n,
             recipient: {
               recipient: { case: 'publicKeyHash', value: new Uint8Array(20).fill(0xcc) },
             },
-            amount: 100_000_000n,
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0b),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -682,14 +682,14 @@ describe('protobuf roundtrip encoding', () => {
       const leaseId = new Uint8Array(32).fill(0xdd);
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0c),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'leaseCancel',
           value: { leaseId },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0c),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -703,16 +703,16 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode BurnTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0d),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'burn',
           value: {
-            assetAmount: { assetId: new Uint8Array(32).fill(0xee), amount: 500_000_000n },
+            assetAmount: { amount: 500_000_000n, assetId: new Uint8Array(32).fill(0xee) },
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0d),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -728,17 +728,17 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode ReissueTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0e),
-        fee: { assetId: new Uint8Array([]), amount: 100_000_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'reissue',
           value: {
-            assetAmount: { assetId: new Uint8Array(32).fill(0xff), amount: 1_000_000_000n },
+            assetAmount: { amount: 1_000_000_000n, assetId: new Uint8Array(32).fill(0xff) },
             reissuable: false,
           },
         },
+        fee: { amount: 100_000_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0e),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -755,14 +755,14 @@ describe('protobuf roundtrip encoding', () => {
       const scriptBytes = new Uint8Array(128).fill(0xab);
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x0f),
-        fee: { assetId: new Uint8Array([]), amount: 1_000_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'setScript',
           value: { script: scriptBytes },
         },
+        fee: { amount: 1_000_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x0f),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -778,14 +778,14 @@ describe('protobuf roundtrip encoding', () => {
       const scriptBytes = new Uint8Array(64).fill(0xcd);
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x10),
-        fee: { assetId: new Uint8Array([]), amount: 100_000_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'setAssetScript',
           value: { assetId, script: scriptBytes },
         },
+        fee: { amount: 100_000_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x10),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -800,16 +800,16 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode SponsorFeeTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x11),
-        fee: { assetId: new Uint8Array([]), amount: 100_000_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'sponsorFee',
           value: {
-            minFee: { assetId: new Uint8Array(32).fill(0xaa), amount: 100_000n },
+            minFee: { amount: 100_000n, assetId: new Uint8Array(32).fill(0xaa) },
           },
         },
+        fee: { amount: 100_000_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x11),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -825,21 +825,21 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode InvokeScriptTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x12),
-        fee: { assetId: new Uint8Array([]), amount: 500_000n },
-        timestamp: 1000000000n,
-        version: 2,
         data: {
           case: 'invokeScript',
           value: {
             dApp: { recipient: { case: 'alias', value: 'my-dapp' } },
             functionCall: new Uint8Array([0x01, 0x09, 0x01, 0x00]),
             payments: [
-              { assetId: new Uint8Array([]), amount: 1_000_000n },
-              { assetId: new Uint8Array(32).fill(0xbb), amount: 2_000_000n },
+              { amount: 1_000_000n, assetId: new Uint8Array([]) },
+              { amount: 2_000_000n, assetId: new Uint8Array(32).fill(0xbb) },
             ],
           },
         },
+        fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x12),
+        timestamp: 1000000000n,
+        version: 2,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -863,18 +863,18 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode UpdateAssetInfoTransactionData', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x13),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'updateAssetInfo',
           value: {
             assetId: new Uint8Array(32).fill(0xcc),
-            name: 'UpdatedToken',
             description: 'Updated description for the token',
+            name: 'UpdatedToken',
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x13),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -892,23 +892,23 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a signed transaction with proofs', () => {
       const tx = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x01),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 3,
         data: {
           case: 'transfer',
           value: {
-            recipient: { recipient: { case: 'alias', value: 'test' } },
-            amount: { assetId: new Uint8Array([]), amount: 5_000_000n },
+            amount: { amount: 5_000_000n, assetId: new Uint8Array([]) },
             attachment: new Uint8Array([]),
+            recipient: { recipient: { case: 'alias', value: 'test' } },
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x01),
+        timestamp: 1000000000n,
+        version: 3,
       });
 
       const signedTx = create(SignedTransactionSchema, {
-        transaction: { case: 'wavesTransaction', value: tx },
         proofs: [new Uint8Array(64).fill(0xff)],
+        transaction: { case: 'wavesTransaction', value: tx },
       });
 
       const buffer = toBinary(SignedTransactionSchema, signedTx);
@@ -925,20 +925,20 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode with multiple proofs (multisig)', () => {
       const tx = create(TransactionSchema, {
         chainId: 84,
+        data: { case: 'createAlias', value: { alias: 'multisig-test' } },
+        fee: { amount: 500_000n, assetId: new Uint8Array([]) },
         senderPublicKey: new Uint8Array(32).fill(0x10),
-        fee: { assetId: new Uint8Array([]), amount: 500_000n },
         timestamp: 1000000000n,
         version: 2,
-        data: { case: 'createAlias', value: { alias: 'multisig-test' } },
       });
 
       const signedTx = create(SignedTransactionSchema, {
-        transaction: { case: 'wavesTransaction', value: tx },
         proofs: [
           new Uint8Array(64).fill(0xaa),
           new Uint8Array(64).fill(0xbb),
           new Uint8Array(64).fill(0xcc),
         ],
+        transaction: { case: 'wavesTransaction', value: tx },
       });
 
       const buffer = toBinary(SignedTransactionSchema, signedTx);
@@ -952,14 +952,14 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode an invoke expression transaction', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x06),
-        fee: { assetId: new Uint8Array([]), amount: 500_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'invokeExpression',
           value: { expression: new Uint8Array([0x01, 0x02, 0x03, 0x04]) },
         },
+        fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x06),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -975,14 +975,14 @@ describe('protobuf roundtrip encoding', () => {
     it('should handle empty expression bytes', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x07),
-        fee: { assetId: new Uint8Array([]), amount: 500_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'invokeExpression',
           value: { expression: new Uint8Array([]) },
         },
+        fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x07),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -998,18 +998,18 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a commit to generation transaction', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x08),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'commitToGeneration',
           value: {
-            generationPeriodStart: 42,
-            endorserPublicKey: new Uint8Array(48).fill(0xaa),
             commitmentSignature: new Uint8Array(96).fill(0xbb),
+            endorserPublicKey: new Uint8Array(48).fill(0xaa),
+            generationPeriodStart: 42,
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x08),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -1029,18 +1029,18 @@ describe('protobuf roundtrip encoding', () => {
     it('should handle zero generation_period_start', () => {
       const original = create(TransactionSchema, {
         chainId: 84,
-        senderPublicKey: new Uint8Array(32).fill(0x09),
-        fee: { assetId: new Uint8Array([]), amount: 100_000n },
-        timestamp: 1000000000n,
-        version: 1,
         data: {
           case: 'commitToGeneration',
           value: {
-            generationPeriodStart: 0,
-            endorserPublicKey: new Uint8Array(48).fill(0xcc),
             commitmentSignature: new Uint8Array(96).fill(0xdd),
+            endorserPublicKey: new Uint8Array(48).fill(0xcc),
+            generationPeriodStart: 0,
           },
         },
+        fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+        senderPublicKey: new Uint8Array(32).fill(0x09),
+        timestamp: 1000000000n,
+        version: 1,
       });
 
       const buffer = toBinary(TransactionSchema, original);
@@ -1066,7 +1066,7 @@ describe('protobuf roundtrip encoding', () => {
         transfers: [
           {
             address: new Uint8Array(26).fill(0x01),
-            amount: { assetId: new Uint8Array([]), amount: 5_000_000n },
+            amount: { amount: 5_000_000n, assetId: new Uint8Array([]) },
           },
         ],
       });
@@ -1103,7 +1103,7 @@ describe('protobuf roundtrip encoding', () => {
         balances: [
           {
             address: new Uint8Array(26).fill(0x01),
-            amount: { assetId: new Uint8Array([]), amount: 10_000_000n },
+            amount: { amount: 10_000_000n, assetId: new Uint8Array([]) },
           },
         ],
       });
@@ -1119,8 +1119,8 @@ describe('protobuf roundtrip encoding', () => {
   describe('events (BlockchainUpdated)', () => {
     it('should encode and decode a BlockchainUpdated message', () => {
       const original = create(BlockchainUpdatedSchema, {
-        id: new Uint8Array(32).fill(0x01),
         height: 1000,
+        id: new Uint8Array(32).fill(0x01),
       });
 
       const buffer = toBinary(BlockchainUpdatedSchema, original);
@@ -1131,21 +1131,21 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a BlockchainUpdated with Append containing state updates', () => {
       const original = create(BlockchainUpdatedSchema, {
-        id: new Uint8Array(32).fill(0x02),
         height: 2000,
+        id: new Uint8Array(32).fill(0x02),
         update: {
           case: 'append',
           value: {
-            transactionIds: [new Uint8Array(32).fill(0xaa), new Uint8Array(32).fill(0xbb)],
             stateUpdate: {
               balances: [
                 {
                   address: new Uint8Array(26).fill(0x01),
-                  amountAfter: { assetId: new Uint8Array([]), amount: 99_000_000n },
+                  amountAfter: { amount: 99_000_000n, assetId: new Uint8Array([]) },
                   amountBefore: 100_000_000n,
                 },
               ],
             },
+            transactionIds: [new Uint8Array(32).fill(0xaa), new Uint8Array(32).fill(0xbb)],
           },
         },
       });
@@ -1167,13 +1167,13 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a Rollback update', () => {
       const original = create(BlockchainUpdatedSchema, {
-        id: new Uint8Array(32).fill(0x03),
         height: 1500,
+        id: new Uint8Array(32).fill(0x03),
         update: {
           case: 'rollback',
           value: {
-            type: BlockchainUpdated_Rollback_RollbackType.BLOCK,
             removedTransactionIds: [new Uint8Array(32).fill(0xcc)],
+            type: BlockchainUpdated_Rollback_RollbackType.BLOCK,
           },
         },
       });
@@ -1191,11 +1191,11 @@ describe('protobuf roundtrip encoding', () => {
   describe('MicroBlock', () => {
     it('should encode and decode a MicroBlock', () => {
       const original = create(MicroBlockSchema, {
-        version: 5,
         reference: new Uint8Array(64).fill(0x01),
-        updatedBlockSignature: new Uint8Array(64).fill(0x02),
         senderPublicKey: new Uint8Array(32).fill(0x03),
         transactions: [],
+        updatedBlockSignature: new Uint8Array(64).fill(0x02),
+        version: 5,
       });
 
       const buffer = toBinary(MicroBlockSchema, original);
@@ -1207,11 +1207,11 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a SignedMicroBlock', () => {
       const microBlock = create(MicroBlockSchema, {
-        version: 5,
         reference: new Uint8Array(64).fill(0x01),
-        updatedBlockSignature: new Uint8Array(64).fill(0x02),
         senderPublicKey: new Uint8Array(32).fill(0x03),
         transactions: [],
+        updatedBlockSignature: new Uint8Array(64).fill(0x02),
+        version: 5,
       });
 
       const original = create(SignedMicroBlockSchema, {
@@ -1238,7 +1238,7 @@ describe('protobuf roundtrip encoding', () => {
             balances: [
               {
                 address: new Uint8Array(26).fill(0x02),
-                amount: { assetId: new Uint8Array([]), amount: 50_000_000n },
+                amount: { amount: 50_000_000n, assetId: new Uint8Array([]) },
               },
             ],
             transactionStatus: TransactionStatus.SUCCEEDED,
@@ -1277,10 +1277,10 @@ describe('protobuf roundtrip encoding', () => {
       const original = create(TransactionStateSnapshotSchema, {
         newLeases: [
           {
-            leaseId: new Uint8Array(32).fill(0x11),
-            senderPublicKey: new Uint8Array(32).fill(0x22),
-            recipientAddress: new Uint8Array(26).fill(0x33),
             amount: 100_000_000n,
+            leaseId: new Uint8Array(32).fill(0x11),
+            recipientAddress: new Uint8Array(26).fill(0x33),
+            senderPublicKey: new Uint8Array(32).fill(0x22),
           },
         ],
       });
@@ -1309,8 +1309,8 @@ describe('protobuf roundtrip encoding', () => {
         assetStatics: [
           {
             assetId: new Uint8Array(32).fill(0x55),
-            issuerPublicKey: new Uint8Array(32).fill(0x66),
             decimals: 8,
+            issuerPublicKey: new Uint8Array(32).fill(0x66),
             nft: false,
           },
         ],
@@ -1327,9 +1327,9 @@ describe('protobuf roundtrip encoding', () => {
       const original = create(TransactionStateSnapshotSchema, {
         orderFills: [
           {
+            fee: 300_000n,
             orderId: new Uint8Array(32).fill(0x77),
             volume: 50_000_000n,
-            fee: 300_000n,
           },
         ],
       });
@@ -1405,29 +1405,29 @@ describe('protobuf roundtrip encoding', () => {
   describe('InvokeScriptResult (detailed)', () => {
     it('should encode and decode issues, reissues, and burns', () => {
       const original = create(InvokeScriptResultSchema, {
+        burns: [
+          {
+            amount: 100_000_000n,
+            assetId: new Uint8Array(32).fill(0x03),
+          },
+        ],
         issues: [
           {
-            assetId: new Uint8Array(32).fill(0x01),
-            name: 'InvokeToken',
-            description: 'Token issued by invoke',
             amount: 1_000_000_000n,
+            assetId: new Uint8Array(32).fill(0x01),
             decimals: 6,
+            description: 'Token issued by invoke',
+            name: 'InvokeToken',
+            nonce: 1n,
             reissuable: true,
             script: new Uint8Array([]),
-            nonce: 1n,
           },
         ],
         reissues: [
           {
-            assetId: new Uint8Array(32).fill(0x02),
             amount: 500_000_000n,
+            assetId: new Uint8Array(32).fill(0x02),
             isReissuable: true,
-          },
-        ],
-        burns: [
-          {
-            assetId: new Uint8Array(32).fill(0x03),
-            amount: 100_000_000n,
           },
         ],
       });
@@ -1445,15 +1445,15 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode leases and lease cancels', () => {
       const original = create(InvokeScriptResultSchema, {
+        leaseCancels: [{ leaseId: new Uint8Array(32).fill(0x05) }],
         leases: [
           {
-            recipient: { recipient: { case: 'alias', value: 'lease-target' } },
             amount: 10_000_000n,
-            nonce: 42n,
             leaseId: new Uint8Array(32).fill(0x04),
+            nonce: 42n,
+            recipient: { recipient: { case: 'alias', value: 'lease-target' } },
           },
         ],
-        leaseCancels: [{ leaseId: new Uint8Array(32).fill(0x05) }],
       });
 
       const buffer = toBinary(InvokeScriptResultSchema, original);
@@ -1473,7 +1473,7 @@ describe('protobuf roundtrip encoding', () => {
       const original = create(InvokeScriptResultSchema, {
         sponsorFees: [
           {
-            minFee: { assetId: new Uint8Array(32).fill(0x06), amount: 50_000n },
+            minFee: { amount: 50_000n, assetId: new Uint8Array(32).fill(0x06) },
           },
         ],
       });
@@ -1489,17 +1489,17 @@ describe('protobuf roundtrip encoding', () => {
       const original = create(InvokeScriptResultSchema, {
         invokes: [
           {
-            dApp: new Uint8Array(26).fill(0x07),
             call: {
-              function: 'deposit',
               args: [
                 { value: { case: 'integerValue', value: 100n } },
                 { value: { case: 'stringValue', value: 'hello' } },
                 { value: { case: 'booleanValue', value: true } },
                 { value: { case: 'binaryValue', value: new Uint8Array([0xca, 0xfe]) } },
               ],
+              function: 'deposit',
             },
-            payments: [{ assetId: new Uint8Array([]), amount: 1_000_000n }],
+            dApp: new Uint8Array(26).fill(0x07),
+            payments: [{ amount: 1_000_000n, assetId: new Uint8Array([]) }],
             stateChanges: {
               data: [
                 create(DataEntrySchema, {
@@ -1532,16 +1532,16 @@ describe('protobuf roundtrip encoding', () => {
   describe('DAppMeta', () => {
     it('should encode and decode DAppMeta with callable signatures', () => {
       const original = create(DAppMetaSchema, {
-        version: 2,
-        funcs: [
-          { types: new Uint8Array([0x01, 0x02, 0x03]) },
-          { types: new Uint8Array([0x04, 0x05]) },
-        ],
         compactNameAndOriginalNamePairList: [
           { compactName: 'a', originalName: 'deposit' },
           { compactName: 'b', originalName: 'withdraw' },
         ],
+        funcs: [
+          { types: new Uint8Array([0x01, 0x02, 0x03]) },
+          { types: new Uint8Array([0x04, 0x05]) },
+        ],
         originalNames: ['deposit', 'withdraw'],
+        version: 2,
       });
 
       const buffer = toBinary(DAppMetaSchema, original);
@@ -1558,9 +1558,9 @@ describe('protobuf roundtrip encoding', () => {
   describe('FinalizationVoting and EndorseBlock', () => {
     it('should encode and decode FinalizationVoting', () => {
       const original = create(FinalizationVotingSchema, {
+        aggregatedEndorsementSignature: new Uint8Array(96).fill(0xaa),
         endorserIndexes: [0, 1, 2, 5],
         finalizedBlockHeight: 1000,
-        aggregatedEndorsementSignature: new Uint8Array(96).fill(0xaa),
       });
 
       const buffer = toBinary(FinalizationVotingSchema, original);
@@ -1574,10 +1574,10 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode EndorseBlock', () => {
       const original = create(EndorseBlockSchema, {
-        endorserIndex: 3,
-        finalizedBlockId: new Uint8Array(32).fill(0x01),
-        finalizedBlockHeight: 999,
         endorsedBlockId: new Uint8Array(32).fill(0x02),
+        endorserIndex: 3,
+        finalizedBlockHeight: 999,
+        finalizedBlockId: new Uint8Array(32).fill(0x01),
         signature: new Uint8Array(96).fill(0xbb),
       });
 
@@ -1685,8 +1685,8 @@ describe('protobuf error handling', () => {
 
   it('should throw when buffer is truncated mid-field', () => {
     const original = create(AmountSchema, {
-      assetId: new Uint8Array(32).fill(0xaa),
       amount: 1_000_000n,
+      assetId: new Uint8Array(32).fill(0xaa),
     });
     const fullBuffer = toBinary(AmountSchema, original);
     // Truncate to half the buffer
@@ -1709,8 +1709,8 @@ describe('financial safety edge cases', () => {
   it('should preserve min int64 (negative overflow boundary)', () => {
     const minBigint = -9223372036854775808n; // Long.MIN_VALUE equivalent
     const original = create(AmountSchema, {
-      assetId: new Uint8Array([]),
       amount: minBigint,
+      assetId: new Uint8Array([]),
     });
 
     const buffer = toBinary(AmountSchema, original);
@@ -1721,8 +1721,8 @@ describe('financial safety edge cases', () => {
   it('should handle SignedTransaction with ethereum_transaction bytes', () => {
     const ethTxBytes = new Uint8Array(256).fill(0xab);
     const original = create(SignedTransactionSchema, {
-      transaction: { case: 'ethereumTransaction', value: ethTxBytes },
       proofs: [],
+      transaction: { case: 'ethereumTransaction', value: ethTxBytes },
     });
 
     const buffer = toBinary(SignedTransactionSchema, original);
@@ -1741,23 +1741,23 @@ describe('financial safety edge cases', () => {
 
     const tx = create(TransactionSchema, {
       chainId: 87, // W for mainnet
-      senderPublicKey: senderPk,
-      fee: { assetId: new Uint8Array([]), amount: 100_000n },
-      timestamp: 1000000000n,
-      version: 3,
       data: {
         case: 'transfer',
         value: {
-          recipient: { recipient: { case: 'alias', value: 'test' } },
-          amount: { assetId: new Uint8Array([]), amount: 1n },
+          amount: { amount: 1n, assetId: new Uint8Array([]) },
           attachment: new Uint8Array([]),
+          recipient: { recipient: { case: 'alias', value: 'test' } },
         },
       },
+      fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: senderPk,
+      timestamp: 1000000000n,
+      version: 3,
     });
 
     const signedTx = create(SignedTransactionSchema, {
-      transaction: { case: 'wavesTransaction', value: tx },
       proofs: [proof],
+      transaction: { case: 'wavesTransaction', value: tx },
     });
 
     const buffer = toBinary(SignedTransactionSchema, signedTx);
@@ -1773,20 +1773,20 @@ describe('financial safety edge cases', () => {
   it('should handle ExchangeTransactionData with extreme price values', () => {
     const original = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 300_000n },
-      timestamp: 1000000000n,
-      version: 3,
       data: {
         case: 'exchange',
         value: {
           amount: 9007199254740993n, // > MAX_SAFE_INTEGER
-          price: 999999999999999999n,
           buyMatcherFee: 9223372036854775807n, // max int64
-          sellMatcherFee: 0n,
           orders: [],
+          price: 999999999999999999n,
+          sellMatcherFee: 0n,
         },
       },
+      fee: { amount: 300_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 3,
     });
 
     const buffer = toBinary(TransactionSchema, original);
@@ -1803,10 +1803,6 @@ describe('financial safety edge cases', () => {
   it('should produce deterministic encoding for complex transactions', () => {
     const tx = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 500_000n },
-      timestamp: 1000000000n,
-      version: 2,
       data: {
         case: 'dataTransaction',
         value: {
@@ -1821,6 +1817,10 @@ describe('financial safety edge cases', () => {
           ],
         },
       },
+      fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 2,
     });
 
     const buf1 = toBinary(TransactionSchema, tx);
@@ -1832,26 +1832,26 @@ describe('financial safety edge cases', () => {
 
   it('should handle MassTransfer with max recipients count', () => {
     const transfers = Array.from({ length: 100 }, (_, i) => ({
+      amount: BigInt((i + 1) * 1_000_000),
       recipient: create(RecipientSchema, {
         recipient: { case: 'alias' as const, value: `r${i}` },
       }),
-      amount: BigInt((i + 1) * 1_000_000),
     }));
 
     const original = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 5_100_000n },
-      timestamp: 1000000000n,
-      version: 2,
       data: {
         case: 'massTransfer',
         value: {
           assetId: new Uint8Array([]),
-          transfers,
           attachment: new Uint8Array([]),
+          transfers,
         },
       },
+      fee: { amount: 5_100_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 2,
     });
 
     const buffer = toBinary(TransactionSchema, original);
@@ -1871,16 +1871,16 @@ describe('financial safety edge cases', () => {
   it('should handle DataEntry with empty key (proto3 allows it)', () => {
     const original = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 500_000n },
-      timestamp: 1000000000n,
-      version: 2,
       data: {
         case: 'dataTransaction',
         value: {
           data: [create(DataEntrySchema, { key: '', value: { case: 'intValue', value: 0n } })],
         },
       },
+      fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 2,
     });
 
     const buffer = toBinary(TransactionSchema, original);
@@ -1894,16 +1894,16 @@ describe('financial safety edge cases', () => {
   it('should handle DataEntry with delete semantics (no value set)', () => {
     const original = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 500_000n },
-      timestamp: 1000000000n,
-      version: 2,
       data: {
         case: 'dataTransaction',
         value: {
           data: [create(DataEntrySchema, { key: 'to-delete' })], // No value = delete
         },
       },
+      fee: { amount: 500_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 2,
     });
 
     const buffer = toBinary(TransactionSchema, original);
@@ -1921,18 +1921,18 @@ describe('financial safety edge cases', () => {
   it('should not silently swallow unknown oneOf fields in Transaction.data', () => {
     const original = create(TransactionSchema, {
       chainId: 84,
-      senderPublicKey: new Uint8Array(32).fill(0x01),
-      fee: { assetId: new Uint8Array([]), amount: 100_000n },
-      timestamp: 1000000000n,
-      version: 3,
       data: {
         case: 'transfer',
         value: {
-          recipient: { recipient: { case: 'alias', value: 'x' } },
-          amount: { assetId: new Uint8Array([]), amount: 1n },
+          amount: { amount: 1n, assetId: new Uint8Array([]) },
           attachment: new Uint8Array([]),
+          recipient: { recipient: { case: 'alias', value: 'x' } },
         },
       },
+      fee: { amount: 100_000n, assetId: new Uint8Array([]) },
+      senderPublicKey: new Uint8Array(32).fill(0x01),
+      timestamp: 1000000000n,
+      version: 3,
     });
 
     const buffer = toBinary(TransactionSchema, original);

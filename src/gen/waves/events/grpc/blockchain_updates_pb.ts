@@ -2,31 +2,22 @@
 // @generated from file waves/events/grpc/blockchain_updates.proto (package waves.events.grpc, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  fileDesc,
-  type GenFile,
-  type GenMessage,
-  type GenService,
-  messageDesc,
-  serviceDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import { type BlockchainUpdated, file_waves_events_events } from '../events_pb.js';
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { BlockchainUpdated } from "../events_pb.js";
+import { file_waves_events_events } from "../events_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/events/grpc/blockchain_updates.proto.
  */
-export const file_waves_events_grpc_blockchain_updates: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'Cip3YXZlcy9ldmVudHMvZ3JwYy9ibG9ja2NoYWluX3VwZGF0ZXMucHJvdG8SEXdhdmVzLmV2ZW50cy5ncnBjIicKFUdldEJsb2NrVXBkYXRlUmVxdWVzdBIOCgZoZWlnaHQYASABKAUiSQoWR2V0QmxvY2tVcGRhdGVSZXNwb25zZRIvCgZ1cGRhdGUYASABKAsyHy53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQiRQobR2V0QmxvY2tVcGRhdGVzUmFuZ2VSZXF1ZXN0EhMKC2Zyb21faGVpZ2h0GAEgASgFEhEKCXRvX2hlaWdodBgCIAEoBSJQChxHZXRCbG9ja1VwZGF0ZXNSYW5nZVJlc3BvbnNlEjAKB3VwZGF0ZXMYASADKAsyHy53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQiOgoQU3Vic2NyaWJlUmVxdWVzdBITCgtmcm9tX2hlaWdodBgBIAEoBRIRCgl0b19oZWlnaHQYAiABKAUiQQoOU3Vic2NyaWJlRXZlbnQSLwoGdXBkYXRlGAEgASgLMh8ud2F2ZXMuZXZlbnRzLkJsb2NrY2hhaW5VcGRhdGVkMs0CChRCbG9ja2NoYWluVXBkYXRlc0FwaRJlCg5HZXRCbG9ja1VwZGF0ZRIoLndhdmVzLmV2ZW50cy5ncnBjLkdldEJsb2NrVXBkYXRlUmVxdWVzdBopLndhdmVzLmV2ZW50cy5ncnBjLkdldEJsb2NrVXBkYXRlUmVzcG9uc2USdwoUR2V0QmxvY2tVcGRhdGVzUmFuZ2USLi53YXZlcy5ldmVudHMuZ3JwYy5HZXRCbG9ja1VwZGF0ZXNSYW5nZVJlcXVlc3QaLy53YXZlcy5ldmVudHMuZ3JwYy5HZXRCbG9ja1VwZGF0ZXNSYW5nZVJlc3BvbnNlElUKCVN1YnNjcmliZRIjLndhdmVzLmV2ZW50cy5ncnBjLlN1YnNjcmliZVJlcXVlc3QaIS53YXZlcy5ldmVudHMuZ3JwYy5TdWJzY3JpYmVFdmVudDABQqMBCippby5kZWNlbnRyYWxjaGFpbi5ldmVudHMuYXBpLmdycGMucHJvdG9idWZaWGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvZXZlbnRzL2dycGOqAhpEZWNlbnRyYWxDaGFpbi5FdmVudHMuR3JwY2IGcHJvdG8z',
-    [file_waves_events_events],
-  );
+export const file_waves_events_grpc_blockchain_updates: GenFile = /*@__PURE__*/
+  fileDesc("Cip3YXZlcy9ldmVudHMvZ3JwYy9ibG9ja2NoYWluX3VwZGF0ZXMucHJvdG8SEXdhdmVzLmV2ZW50cy5ncnBjIicKFUdldEJsb2NrVXBkYXRlUmVxdWVzdBIOCgZoZWlnaHQYASABKAUiSQoWR2V0QmxvY2tVcGRhdGVSZXNwb25zZRIvCgZ1cGRhdGUYASABKAsyHy53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQiRQobR2V0QmxvY2tVcGRhdGVzUmFuZ2VSZXF1ZXN0EhMKC2Zyb21faGVpZ2h0GAEgASgFEhEKCXRvX2hlaWdodBgCIAEoBSJQChxHZXRCbG9ja1VwZGF0ZXNSYW5nZVJlc3BvbnNlEjAKB3VwZGF0ZXMYASADKAsyHy53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQiOgoQU3Vic2NyaWJlUmVxdWVzdBITCgtmcm9tX2hlaWdodBgBIAEoBRIRCgl0b19oZWlnaHQYAiABKAUiQQoOU3Vic2NyaWJlRXZlbnQSLwoGdXBkYXRlGAEgASgLMh8ud2F2ZXMuZXZlbnRzLkJsb2NrY2hhaW5VcGRhdGVkMs0CChRCbG9ja2NoYWluVXBkYXRlc0FwaRJlCg5HZXRCbG9ja1VwZGF0ZRIoLndhdmVzLmV2ZW50cy5ncnBjLkdldEJsb2NrVXBkYXRlUmVxdWVzdBopLndhdmVzLmV2ZW50cy5ncnBjLkdldEJsb2NrVXBkYXRlUmVzcG9uc2USdwoUR2V0QmxvY2tVcGRhdGVzUmFuZ2USLi53YXZlcy5ldmVudHMuZ3JwYy5HZXRCbG9ja1VwZGF0ZXNSYW5nZVJlcXVlc3QaLy53YXZlcy5ldmVudHMuZ3JwYy5HZXRCbG9ja1VwZGF0ZXNSYW5nZVJlc3BvbnNlElUKCVN1YnNjcmliZRIjLndhdmVzLmV2ZW50cy5ncnBjLlN1YnNjcmliZVJlcXVlc3QaIS53YXZlcy5ldmVudHMuZ3JwYy5TdWJzY3JpYmVFdmVudDABQqMBCippby5kZWNlbnRyYWxjaGFpbi5ldmVudHMuYXBpLmdycGMucHJvdG9idWZaWGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvZXZlbnRzL2dycGOqAhpEZWNlbnRyYWxDaGFpbi5FdmVudHMuR3JwY2IGcHJvdG8z", [file_waves_events_events]);
 
 /**
  * @generated from message waves.events.grpc.GetBlockUpdateRequest
  */
-export type GetBlockUpdateRequest = Message<'waves.events.grpc.GetBlockUpdateRequest'> & {
+export type GetBlockUpdateRequest = Message<"waves.events.grpc.GetBlockUpdateRequest"> & {
   /**
    * @generated from field: int32 height = 1;
    */
@@ -37,14 +28,13 @@ export type GetBlockUpdateRequest = Message<'waves.events.grpc.GetBlockUpdateReq
  * Describes the message waves.events.grpc.GetBlockUpdateRequest.
  * Use `create(GetBlockUpdateRequestSchema)` to create a new message.
  */
-export const GetBlockUpdateRequestSchema: GenMessage<GetBlockUpdateRequest> =
-  /*@__PURE__*/
+export const GetBlockUpdateRequestSchema: GenMessage<GetBlockUpdateRequest> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 0);
 
 /**
  * @generated from message waves.events.grpc.GetBlockUpdateResponse
  */
-export type GetBlockUpdateResponse = Message<'waves.events.grpc.GetBlockUpdateResponse'> & {
+export type GetBlockUpdateResponse = Message<"waves.events.grpc.GetBlockUpdateResponse"> & {
   /**
    * @generated from field: waves.events.BlockchainUpdated update = 1;
    */
@@ -55,59 +45,54 @@ export type GetBlockUpdateResponse = Message<'waves.events.grpc.GetBlockUpdateRe
  * Describes the message waves.events.grpc.GetBlockUpdateResponse.
  * Use `create(GetBlockUpdateResponseSchema)` to create a new message.
  */
-export const GetBlockUpdateResponseSchema: GenMessage<GetBlockUpdateResponse> =
-  /*@__PURE__*/
+export const GetBlockUpdateResponseSchema: GenMessage<GetBlockUpdateResponse> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 1);
 
 /**
  * @generated from message waves.events.grpc.GetBlockUpdatesRangeRequest
  */
-export type GetBlockUpdatesRangeRequest =
-  Message<'waves.events.grpc.GetBlockUpdatesRangeRequest'> & {
-    /**
-     * both required, inclusive
-     *
-     * @generated from field: int32 from_height = 1;
-     */
-    fromHeight: number;
+export type GetBlockUpdatesRangeRequest = Message<"waves.events.grpc.GetBlockUpdatesRangeRequest"> & {
+  /**
+   * both required, inclusive
+   *
+   * @generated from field: int32 from_height = 1;
+   */
+  fromHeight: number;
 
-    /**
-     * @generated from field: int32 to_height = 2;
-     */
-    toHeight: number;
-  };
+  /**
+   * @generated from field: int32 to_height = 2;
+   */
+  toHeight: number;
+};
 
 /**
  * Describes the message waves.events.grpc.GetBlockUpdatesRangeRequest.
  * Use `create(GetBlockUpdatesRangeRequestSchema)` to create a new message.
  */
-export const GetBlockUpdatesRangeRequestSchema: GenMessage<GetBlockUpdatesRangeRequest> =
-  /*@__PURE__*/
+export const GetBlockUpdatesRangeRequestSchema: GenMessage<GetBlockUpdatesRangeRequest> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 2);
 
 /**
  * @generated from message waves.events.grpc.GetBlockUpdatesRangeResponse
  */
-export type GetBlockUpdatesRangeResponse =
-  Message<'waves.events.grpc.GetBlockUpdatesRangeResponse'> & {
-    /**
-     * @generated from field: repeated waves.events.BlockchainUpdated updates = 1;
-     */
-    updates: BlockchainUpdated[];
-  };
+export type GetBlockUpdatesRangeResponse = Message<"waves.events.grpc.GetBlockUpdatesRangeResponse"> & {
+  /**
+   * @generated from field: repeated waves.events.BlockchainUpdated updates = 1;
+   */
+  updates: BlockchainUpdated[];
+};
 
 /**
  * Describes the message waves.events.grpc.GetBlockUpdatesRangeResponse.
  * Use `create(GetBlockUpdatesRangeResponseSchema)` to create a new message.
  */
-export const GetBlockUpdatesRangeResponseSchema: GenMessage<GetBlockUpdatesRangeResponse> =
-  /*@__PURE__*/
+export const GetBlockUpdatesRangeResponseSchema: GenMessage<GetBlockUpdatesRangeResponse> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 3);
 
 /**
  * @generated from message waves.events.grpc.SubscribeRequest
  */
-export type SubscribeRequest = Message<'waves.events.grpc.SubscribeRequest'> & {
+export type SubscribeRequest = Message<"waves.events.grpc.SubscribeRequest"> & {
   /**
    * Optional. Default: start at the genesis, height 1.
    *
@@ -127,14 +112,13 @@ export type SubscribeRequest = Message<'waves.events.grpc.SubscribeRequest'> & {
  * Describes the message waves.events.grpc.SubscribeRequest.
  * Use `create(SubscribeRequestSchema)` to create a new message.
  */
-export const SubscribeRequestSchema: GenMessage<SubscribeRequest> =
-  /*@__PURE__*/
+export const SubscribeRequestSchema: GenMessage<SubscribeRequest> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 4);
 
 /**
  * @generated from message waves.events.grpc.SubscribeEvent
  */
-export type SubscribeEvent = Message<'waves.events.grpc.SubscribeEvent'> & {
+export type SubscribeEvent = Message<"waves.events.grpc.SubscribeEvent"> & {
   /**
    * @generated from field: waves.events.BlockchainUpdated update = 1;
    */
@@ -145,8 +129,7 @@ export type SubscribeEvent = Message<'waves.events.grpc.SubscribeEvent'> & {
  * Describes the message waves.events.grpc.SubscribeEvent.
  * Use `create(SubscribeEventSchema)` to create a new message.
  */
-export const SubscribeEventSchema: GenMessage<SubscribeEvent> =
-  /*@__PURE__*/
+export const SubscribeEventSchema: GenMessage<SubscribeEvent> = /*@__PURE__*/
   messageDesc(file_waves_events_grpc_blockchain_updates, 5);
 
 /**
@@ -157,24 +140,26 @@ export const BlockchainUpdatesApi: GenService<{
    * @generated from rpc waves.events.grpc.BlockchainUpdatesApi.GetBlockUpdate
    */
   getBlockUpdate: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof GetBlockUpdateRequestSchema;
     output: typeof GetBlockUpdateResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.events.grpc.BlockchainUpdatesApi.GetBlockUpdatesRange
    */
   getBlockUpdatesRange: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof GetBlockUpdatesRangeRequestSchema;
     output: typeof GetBlockUpdatesRangeResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.events.grpc.BlockchainUpdatesApi.Subscribe
    */
   subscribe: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof SubscribeRequestSchema;
     output: typeof SubscribeEventSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_waves_events_grpc_blockchain_updates, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_waves_events_grpc_blockchain_updates, 0);
+

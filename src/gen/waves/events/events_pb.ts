@@ -2,45 +2,30 @@
 // @generated from file waves/events/events.proto (package waves.events, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  enumDesc,
-  fileDesc,
-  type GenEnum,
-  type GenFile,
-  type GenMessage,
-  messageDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import { type Amount, file_waves_amount } from '../amount_pb.js';
-import { type Block, file_waves_block, type SignedMicroBlock } from '../block_pb.js';
-import {
-  file_waves_invoke_script_result,
-  type InvokeScriptResult,
-  type InvokeScriptResult_Call_Argument,
-} from '../invoke_script_result_pb.js';
-import { file_waves_reward_share, type RewardShare } from '../reward_share_pb.js';
-import { type DataEntry, file_waves_transaction } from '../transaction_pb.js';
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Block, SignedMicroBlock } from "../block_pb.js";
+import { file_waves_block } from "../block_pb.js";
+import type { Amount } from "../amount_pb.js";
+import { file_waves_amount } from "../amount_pb.js";
+import type { DataEntry } from "../transaction_pb.js";
+import { file_waves_transaction } from "../transaction_pb.js";
+import type { InvokeScriptResult, InvokeScriptResult_Call_Argument } from "../invoke_script_result_pb.js";
+import { file_waves_invoke_script_result } from "../invoke_script_result_pb.js";
+import type { RewardShare } from "../reward_share_pb.js";
+import { file_waves_reward_share } from "../reward_share_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/events/events.proto.
  */
-export const file_waves_events_events: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'Chl3YXZlcy9ldmVudHMvZXZlbnRzLnByb3RvEgx3YXZlcy5ldmVudHMigwkKEUJsb2NrY2hhaW5VcGRhdGVkEgoKAmlkGAEgASgMEg4KBmhlaWdodBgCIAEoBRI4CgZhcHBlbmQYCyABKAsyJi53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuQXBwZW5kSAASPAoIcm9sbGJhY2sYDCABKAsyKC53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuUm9sbGJhY2tIABI+ChFyZWZlcmVuY2VkX2Fzc2V0cxgVIAMoCzIjLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5Bc3NldEluZm8a8wQKBkFwcGVuZBJDCgVibG9jaxgBIAEoCzIyLndhdmVzLmV2ZW50cy5CbG9ja2NoYWluVXBkYXRlZC5BcHBlbmQuQmxvY2tBcHBlbmRIABJOCgttaWNyb19ibG9jaxgCIAEoCzI3LndhdmVzLmV2ZW50cy5CbG9ja2NoYWluVXBkYXRlZC5BcHBlbmQuTWljcm9CbG9ja0FwcGVuZEgAEhcKD3RyYW5zYWN0aW9uX2lkcxgDIAMoDBJAChV0cmFuc2FjdGlvbnNfbWV0YWRhdGEYBCADKAsyIS53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YRIvCgxzdGF0ZV91cGRhdGUYCyABKAsyGS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUSPAoZdHJhbnNhY3Rpb25fc3RhdGVfdXBkYXRlcxgMIAMoCzIZLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZRqcAQoLQmxvY2tBcHBlbmQSGwoFYmxvY2sYASABKAsyDC53YXZlcy5CbG9jaxIcChR1cGRhdGVkX3dhdmVzX2Ftb3VudBgCIAEoAxIaChJhY3RpdmF0ZWRfZmVhdHVyZXMYAyADKAUSCwoDdnJmGAQgASgMEikKDXJld2FyZF9zaGFyZXMYBSADKAsyEi53YXZlcy5SZXdhcmRTaGFyZRpjChBNaWNyb0Jsb2NrQXBwZW5kEiwKC21pY3JvX2Jsb2NrGAEgASgLMhcud2F2ZXMuU2lnbmVkTWljcm9CbG9jaxIhChl1cGRhdGVkX3RyYW5zYWN0aW9uc19yb290GAIgASgMQgYKBGJvZHkamQIKCFJvbGxiYWNrEkMKBHR5cGUYASABKA4yNS53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuUm9sbGJhY2suUm9sbGJhY2tUeXBlEh8KF3JlbW92ZWRfdHJhbnNhY3Rpb25faWRzGAIgAygMEiQKDnJlbW92ZWRfYmxvY2tzGAMgAygLMgwud2F2ZXMuQmxvY2sSOAoVcm9sbGJhY2tfc3RhdGVfdXBkYXRlGAQgASgLMhkud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlEhwKFGRlYWN0aXZhdGVkX2ZlYXR1cmVzGAUgAygFIikKDFJvbGxiYWNrVHlwZRIJCgVCTE9DSxAAEg4KCk1JQ1JPQkxPQ0sQAUIICgZ1cGRhdGUi0wwKC1N0YXRlVXBkYXRlEjkKCGJhbGFuY2VzGAEgAygLMicud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkJhbGFuY2VVcGRhdGUSRAoTbGVhc2luZ19mb3JfYWRkcmVzcxgCIAMoCzInLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5MZWFzaW5nVXBkYXRlEj8KDGRhdGFfZW50cmllcxgDIAMoCzIpLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5EYXRhRW50cnlVcGRhdGUSOgoGYXNzZXRzGAQgAygLMioud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0U3RhdGVVcGRhdGUSQAoRaW5kaXZpZHVhbF9sZWFzZXMYBSADKAsyJS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuTGVhc2VVcGRhdGUSNwoHc2NyaXB0cxgGIAMoCzImLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5TY3JpcHRVcGRhdGUSFwoPZGVsZXRlZF9hbGlhc2VzGAcgAygJGlwKDUJhbGFuY2VVcGRhdGUSDwoHYWRkcmVzcxgBIAEoDBIjCgxhbW91bnRfYWZ0ZXIYAiABKAsyDS53YXZlcy5BbW91bnQSFQoNYW1vdW50X2JlZm9yZRgDIAEoAxpsCg1MZWFzaW5nVXBkYXRlEg8KB2FkZHJlc3MYASABKAwSEAoIaW5fYWZ0ZXIYAiABKAMSEQoJb3V0X2FmdGVyGAMgASgDEhEKCWluX2JlZm9yZRgEIAEoAxISCgpvdXRfYmVmb3JlGAUgASgDGuMBCgtMZWFzZVVwZGF0ZRIQCghsZWFzZV9pZBgBIAEoDBJHCgxzdGF0dXNfYWZ0ZXIYAiABKA4yMS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuTGVhc2VVcGRhdGUuTGVhc2VTdGF0dXMSDgoGYW1vdW50GAogASgDEg4KBnNlbmRlchgLIAEoDBIRCglyZWNpcGllbnQYDCABKAwSHQoVb3JpZ2luX3RyYW5zYWN0aW9uX2lkGA0gASgMIicKC0xlYXNlU3RhdHVzEgwKCElOQUNUSVZFEAASCgoGQUNUSVZFEAEadQoPRGF0YUVudHJ5VXBkYXRlEg8KB2FkZHJlc3MYASABKAwSJAoKZGF0YV9lbnRyeRgCIAEoCzIQLndhdmVzLkRhdGFFbnRyeRIrChFkYXRhX2VudHJ5X2JlZm9yZRgKIAEoCzIQLndhdmVzLkRhdGFFbnRyeRqBAQoQQXNzZXRTdGF0ZVVwZGF0ZRI2CgZiZWZvcmUYASABKAsyJi53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuQXNzZXREZXRhaWxzEjUKBWFmdGVyGAIgASgLMiYud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0RGV0YWlscxqLAwoMQXNzZXREZXRhaWxzEhAKCGFzc2V0X2lkGAEgASgMEg4KBmlzc3VlchgCIAEoDBIQCghkZWNpbWFscxgDIAEoBRIMCgRuYW1lGAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJEhIKCnJlaXNzdWFibGUYBiABKAgSDgoGdm9sdW1lGAcgASgDEksKC3NjcmlwdF9pbmZvGAggASgLMjYud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0RGV0YWlscy5Bc3NldFNjcmlwdEluZm8SEwoLc3BvbnNvcnNoaXAYCSABKAMSCwoDbmZ0GAogASgIEhQKDGxhc3RfdXBkYXRlZBgLIAEoBRIZChFzZXF1ZW5jZV9pbl9ibG9jaxgMIAEoBRIUCgxpc3N1ZV9oZWlnaHQYDSABKAUSEwoLc2FmZV92b2x1bWUYFCABKAwaNQoPQXNzZXRTY3JpcHRJbmZvEg4KBnNjcmlwdBgBIAEoDBISCgpjb21wbGV4aXR5GAIgASgDGjcKCUFzc2V0SW5mbxIKCgJpZBgBIAEoDBIQCghkZWNpbWFscxgCIAEoBRIMCgRuYW1lGAMgASgJGj4KDFNjcmlwdFVwZGF0ZRIPCgdhZGRyZXNzGAEgASgMEg4KBmJlZm9yZRgCIAEoDBINCgVhZnRlchgDIAEoDCK7DAoTVHJhbnNhY3Rpb25NZXRhZGF0YRIWCg5zZW5kZXJfYWRkcmVzcxgBIAEoDBJGCgh0cmFuc2ZlchhoIAEoCzIyLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLlRyYW5zZmVyTWV0YWRhdGFIABJGCghleGNoYW5nZRhrIAEoCzIyLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkV4Y2hhbmdlTWV0YWRhdGFIABJPCg1tYXNzX3RyYW5zZmVyGG8gASgLMjYud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuTWFzc1RyYW5zZmVyTWV0YWRhdGFIABJPCg1pbnZva2Vfc2NyaXB0GHQgASgLMjYud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuSW52b2tlU2NyaXB0TWV0YWRhdGFIABJACgVsZWFzZRh1IAEoCzIvLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkxlYXNlTWV0YWRhdGFIABJHCghldGhlcmV1bRitAiABKAsyMi53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YS5FdGhlcmV1bU1ldGFkYXRhSAAaLQoQVHJhbnNmZXJNZXRhZGF0YRIZChFyZWNpcGllbnRfYWRkcmVzcxgBIAEoDBo0ChRNYXNzVHJhbnNmZXJNZXRhZGF0YRIcChRyZWNpcGllbnRzX2FkZHJlc3NlcxgBIAMoDBpnChBFeGNoYW5nZU1ldGFkYXRhEhEKCW9yZGVyX2lkcxgBIAMoDBIeChZvcmRlcl9zZW5kZXJfYWRkcmVzc2VzGAIgAygMEiAKGG9yZGVyX3NlbmRlcl9wdWJsaWNfa2V5cxgDIAMoDBr4AwoUSW52b2tlU2NyaXB0TWV0YWRhdGESFQoNZF9hcHBfYWRkcmVzcxgBIAEoDBIVCg1mdW5jdGlvbl9uYW1lGAIgASgJEjoKCWFyZ3VtZW50cxgDIAMoCzInLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5DYWxsLkFyZ3VtZW50Eh8KCHBheW1lbnRzGAQgAygLMg0ud2F2ZXMuQW1vdW50EikKBnJlc3VsdBgFIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdBqjAgoIQXJndW1lbnQSFwoNaW50ZWdlcl92YWx1ZRgBIAEoA0gAEhYKDGJpbmFyeV92YWx1ZRgCIAEoDEgAEhYKDHN0cmluZ192YWx1ZRgDIAEoCUgAEhcKDWJvb2xlYW5fdmFsdWUYBCABKAhIABJUCgRsaXN0GAogASgLMkQud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuSW52b2tlU2NyaXB0TWV0YWRhdGEuQXJndW1lbnQuTGlzdEgAGlYKBExpc3QSTgoFaXRlbXMYASADKAsyPy53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YS5JbnZva2VTY3JpcHRNZXRhZGF0YS5Bcmd1bWVudEIHCgV2YWx1ZUoECAYQBxoqCg1MZWFzZU1ldGFkYXRhEhkKEXJlY2lwaWVudF9hZGRyZXNzGAEgASgMGlQKGEV0aGVyZXVtVHJhbnNmZXJNZXRhZGF0YRIZChFyZWNpcGllbnRfYWRkcmVzcxgBIAEoDBIdCgZhbW91bnQYAiABKAsyDS53YXZlcy5BbW91bnQa9wEKEEV0aGVyZXVtTWV0YWRhdGESEQoJdGltZXN0YW1wGAIgASgDEgsKA2ZlZRgDIAEoAxIZChFzZW5kZXJfcHVibGljX2tleRgEIAEoDBJOCgh0cmFuc2ZlchgKIAEoCzI6LndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkV0aGVyZXVtVHJhbnNmZXJNZXRhZGF0YUgAEkgKBmludm9rZRgLIAEoCzI2LndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkludm9rZVNjcmlwdE1ldGFkYXRhSABCCAoGQWN0aW9uSgQIARACQgoKCG1ldGFkYXRhQpABCiFpby5kZWNlbnRyYWxjaGFpbi5ldmVudHMucHJvdG9idWZaU2dpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvZXZlbnRzqgIVRGVjZW50cmFsQ2hhaW4uRXZlbnRzYgZwcm90bzM',
-    [
-      file_waves_block,
-      file_waves_amount,
-      file_waves_transaction,
-      file_waves_invoke_script_result,
-      file_waves_reward_share,
-    ],
-  );
+export const file_waves_events_events: GenFile = /*@__PURE__*/
+  fileDesc("Chl3YXZlcy9ldmVudHMvZXZlbnRzLnByb3RvEgx3YXZlcy5ldmVudHMigwkKEUJsb2NrY2hhaW5VcGRhdGVkEgoKAmlkGAEgASgMEg4KBmhlaWdodBgCIAEoBRI4CgZhcHBlbmQYCyABKAsyJi53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuQXBwZW5kSAASPAoIcm9sbGJhY2sYDCABKAsyKC53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuUm9sbGJhY2tIABI+ChFyZWZlcmVuY2VkX2Fzc2V0cxgVIAMoCzIjLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5Bc3NldEluZm8a8wQKBkFwcGVuZBJDCgVibG9jaxgBIAEoCzIyLndhdmVzLmV2ZW50cy5CbG9ja2NoYWluVXBkYXRlZC5BcHBlbmQuQmxvY2tBcHBlbmRIABJOCgttaWNyb19ibG9jaxgCIAEoCzI3LndhdmVzLmV2ZW50cy5CbG9ja2NoYWluVXBkYXRlZC5BcHBlbmQuTWljcm9CbG9ja0FwcGVuZEgAEhcKD3RyYW5zYWN0aW9uX2lkcxgDIAMoDBJAChV0cmFuc2FjdGlvbnNfbWV0YWRhdGEYBCADKAsyIS53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YRIvCgxzdGF0ZV91cGRhdGUYCyABKAsyGS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUSPAoZdHJhbnNhY3Rpb25fc3RhdGVfdXBkYXRlcxgMIAMoCzIZLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZRqcAQoLQmxvY2tBcHBlbmQSGwoFYmxvY2sYASABKAsyDC53YXZlcy5CbG9jaxIcChR1cGRhdGVkX3dhdmVzX2Ftb3VudBgCIAEoAxIaChJhY3RpdmF0ZWRfZmVhdHVyZXMYAyADKAUSCwoDdnJmGAQgASgMEikKDXJld2FyZF9zaGFyZXMYBSADKAsyEi53YXZlcy5SZXdhcmRTaGFyZRpjChBNaWNyb0Jsb2NrQXBwZW5kEiwKC21pY3JvX2Jsb2NrGAEgASgLMhcud2F2ZXMuU2lnbmVkTWljcm9CbG9jaxIhChl1cGRhdGVkX3RyYW5zYWN0aW9uc19yb290GAIgASgMQgYKBGJvZHkamQIKCFJvbGxiYWNrEkMKBHR5cGUYASABKA4yNS53YXZlcy5ldmVudHMuQmxvY2tjaGFpblVwZGF0ZWQuUm9sbGJhY2suUm9sbGJhY2tUeXBlEh8KF3JlbW92ZWRfdHJhbnNhY3Rpb25faWRzGAIgAygMEiQKDnJlbW92ZWRfYmxvY2tzGAMgAygLMgwud2F2ZXMuQmxvY2sSOAoVcm9sbGJhY2tfc3RhdGVfdXBkYXRlGAQgASgLMhkud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlEhwKFGRlYWN0aXZhdGVkX2ZlYXR1cmVzGAUgAygFIikKDFJvbGxiYWNrVHlwZRIJCgVCTE9DSxAAEg4KCk1JQ1JPQkxPQ0sQAUIICgZ1cGRhdGUi0wwKC1N0YXRlVXBkYXRlEjkKCGJhbGFuY2VzGAEgAygLMicud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkJhbGFuY2VVcGRhdGUSRAoTbGVhc2luZ19mb3JfYWRkcmVzcxgCIAMoCzInLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5MZWFzaW5nVXBkYXRlEj8KDGRhdGFfZW50cmllcxgDIAMoCzIpLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5EYXRhRW50cnlVcGRhdGUSOgoGYXNzZXRzGAQgAygLMioud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0U3RhdGVVcGRhdGUSQAoRaW5kaXZpZHVhbF9sZWFzZXMYBSADKAsyJS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuTGVhc2VVcGRhdGUSNwoHc2NyaXB0cxgGIAMoCzImLndhdmVzLmV2ZW50cy5TdGF0ZVVwZGF0ZS5TY3JpcHRVcGRhdGUSFwoPZGVsZXRlZF9hbGlhc2VzGAcgAygJGlwKDUJhbGFuY2VVcGRhdGUSDwoHYWRkcmVzcxgBIAEoDBIjCgxhbW91bnRfYWZ0ZXIYAiABKAsyDS53YXZlcy5BbW91bnQSFQoNYW1vdW50X2JlZm9yZRgDIAEoAxpsCg1MZWFzaW5nVXBkYXRlEg8KB2FkZHJlc3MYASABKAwSEAoIaW5fYWZ0ZXIYAiABKAMSEQoJb3V0X2FmdGVyGAMgASgDEhEKCWluX2JlZm9yZRgEIAEoAxISCgpvdXRfYmVmb3JlGAUgASgDGuMBCgtMZWFzZVVwZGF0ZRIQCghsZWFzZV9pZBgBIAEoDBJHCgxzdGF0dXNfYWZ0ZXIYAiABKA4yMS53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuTGVhc2VVcGRhdGUuTGVhc2VTdGF0dXMSDgoGYW1vdW50GAogASgDEg4KBnNlbmRlchgLIAEoDBIRCglyZWNpcGllbnQYDCABKAwSHQoVb3JpZ2luX3RyYW5zYWN0aW9uX2lkGA0gASgMIicKC0xlYXNlU3RhdHVzEgwKCElOQUNUSVZFEAASCgoGQUNUSVZFEAEadQoPRGF0YUVudHJ5VXBkYXRlEg8KB2FkZHJlc3MYASABKAwSJAoKZGF0YV9lbnRyeRgCIAEoCzIQLndhdmVzLkRhdGFFbnRyeRIrChFkYXRhX2VudHJ5X2JlZm9yZRgKIAEoCzIQLndhdmVzLkRhdGFFbnRyeRqBAQoQQXNzZXRTdGF0ZVVwZGF0ZRI2CgZiZWZvcmUYASABKAsyJi53YXZlcy5ldmVudHMuU3RhdGVVcGRhdGUuQXNzZXREZXRhaWxzEjUKBWFmdGVyGAIgASgLMiYud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0RGV0YWlscxqLAwoMQXNzZXREZXRhaWxzEhAKCGFzc2V0X2lkGAEgASgMEg4KBmlzc3VlchgCIAEoDBIQCghkZWNpbWFscxgDIAEoBRIMCgRuYW1lGAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJEhIKCnJlaXNzdWFibGUYBiABKAgSDgoGdm9sdW1lGAcgASgDEksKC3NjcmlwdF9pbmZvGAggASgLMjYud2F2ZXMuZXZlbnRzLlN0YXRlVXBkYXRlLkFzc2V0RGV0YWlscy5Bc3NldFNjcmlwdEluZm8SEwoLc3BvbnNvcnNoaXAYCSABKAMSCwoDbmZ0GAogASgIEhQKDGxhc3RfdXBkYXRlZBgLIAEoBRIZChFzZXF1ZW5jZV9pbl9ibG9jaxgMIAEoBRIUCgxpc3N1ZV9oZWlnaHQYDSABKAUSEwoLc2FmZV92b2x1bWUYFCABKAwaNQoPQXNzZXRTY3JpcHRJbmZvEg4KBnNjcmlwdBgBIAEoDBISCgpjb21wbGV4aXR5GAIgASgDGjcKCUFzc2V0SW5mbxIKCgJpZBgBIAEoDBIQCghkZWNpbWFscxgCIAEoBRIMCgRuYW1lGAMgASgJGj4KDFNjcmlwdFVwZGF0ZRIPCgdhZGRyZXNzGAEgASgMEg4KBmJlZm9yZRgCIAEoDBINCgVhZnRlchgDIAEoDCK7DAoTVHJhbnNhY3Rpb25NZXRhZGF0YRIWCg5zZW5kZXJfYWRkcmVzcxgBIAEoDBJGCgh0cmFuc2ZlchhoIAEoCzIyLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLlRyYW5zZmVyTWV0YWRhdGFIABJGCghleGNoYW5nZRhrIAEoCzIyLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkV4Y2hhbmdlTWV0YWRhdGFIABJPCg1tYXNzX3RyYW5zZmVyGG8gASgLMjYud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuTWFzc1RyYW5zZmVyTWV0YWRhdGFIABJPCg1pbnZva2Vfc2NyaXB0GHQgASgLMjYud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuSW52b2tlU2NyaXB0TWV0YWRhdGFIABJACgVsZWFzZRh1IAEoCzIvLndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkxlYXNlTWV0YWRhdGFIABJHCghldGhlcmV1bRitAiABKAsyMi53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YS5FdGhlcmV1bU1ldGFkYXRhSAAaLQoQVHJhbnNmZXJNZXRhZGF0YRIZChFyZWNpcGllbnRfYWRkcmVzcxgBIAEoDBo0ChRNYXNzVHJhbnNmZXJNZXRhZGF0YRIcChRyZWNpcGllbnRzX2FkZHJlc3NlcxgBIAMoDBpnChBFeGNoYW5nZU1ldGFkYXRhEhEKCW9yZGVyX2lkcxgBIAMoDBIeChZvcmRlcl9zZW5kZXJfYWRkcmVzc2VzGAIgAygMEiAKGG9yZGVyX3NlbmRlcl9wdWJsaWNfa2V5cxgDIAMoDBr4AwoUSW52b2tlU2NyaXB0TWV0YWRhdGESFQoNZF9hcHBfYWRkcmVzcxgBIAEoDBIVCg1mdW5jdGlvbl9uYW1lGAIgASgJEjoKCWFyZ3VtZW50cxgDIAMoCzInLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5DYWxsLkFyZ3VtZW50Eh8KCHBheW1lbnRzGAQgAygLMg0ud2F2ZXMuQW1vdW50EikKBnJlc3VsdBgFIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdBqjAgoIQXJndW1lbnQSFwoNaW50ZWdlcl92YWx1ZRgBIAEoA0gAEhYKDGJpbmFyeV92YWx1ZRgCIAEoDEgAEhYKDHN0cmluZ192YWx1ZRgDIAEoCUgAEhcKDWJvb2xlYW5fdmFsdWUYBCABKAhIABJUCgRsaXN0GAogASgLMkQud2F2ZXMuZXZlbnRzLlRyYW5zYWN0aW9uTWV0YWRhdGEuSW52b2tlU2NyaXB0TWV0YWRhdGEuQXJndW1lbnQuTGlzdEgAGlYKBExpc3QSTgoFaXRlbXMYASADKAsyPy53YXZlcy5ldmVudHMuVHJhbnNhY3Rpb25NZXRhZGF0YS5JbnZva2VTY3JpcHRNZXRhZGF0YS5Bcmd1bWVudEIHCgV2YWx1ZUoECAYQBxoqCg1MZWFzZU1ldGFkYXRhEhkKEXJlY2lwaWVudF9hZGRyZXNzGAEgASgMGlQKGEV0aGVyZXVtVHJhbnNmZXJNZXRhZGF0YRIZChFyZWNpcGllbnRfYWRkcmVzcxgBIAEoDBIdCgZhbW91bnQYAiABKAsyDS53YXZlcy5BbW91bnQa9wEKEEV0aGVyZXVtTWV0YWRhdGESEQoJdGltZXN0YW1wGAIgASgDEgsKA2ZlZRgDIAEoAxIZChFzZW5kZXJfcHVibGljX2tleRgEIAEoDBJOCgh0cmFuc2ZlchgKIAEoCzI6LndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkV0aGVyZXVtVHJhbnNmZXJNZXRhZGF0YUgAEkgKBmludm9rZRgLIAEoCzI2LndhdmVzLmV2ZW50cy5UcmFuc2FjdGlvbk1ldGFkYXRhLkludm9rZVNjcmlwdE1ldGFkYXRhSABCCAoGQWN0aW9uSgQIARACQgoKCG1ldGFkYXRhQpABCiFpby5kZWNlbnRyYWxjaGFpbi5ldmVudHMucHJvdG9idWZaU2dpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvZXZlbnRzqgIVRGVjZW50cmFsQ2hhaW4uRXZlbnRzYgZwcm90bzM", [file_waves_block, file_waves_amount, file_waves_transaction, file_waves_invoke_script_result, file_waves_reward_share]);
 
 /**
  * @generated from message waves.events.BlockchainUpdated
  */
-export type BlockchainUpdated = Message<'waves.events.BlockchainUpdated'> & {
+export type BlockchainUpdated = Message<"waves.events.BlockchainUpdated"> & {
   /**
    * @generated from field: bytes id = 1;
    */
@@ -54,22 +39,19 @@ export type BlockchainUpdated = Message<'waves.events.BlockchainUpdated'> & {
   /**
    * @generated from oneof waves.events.BlockchainUpdated.update
    */
-  update:
-    | {
-        /**
-         * @generated from field: waves.events.BlockchainUpdated.Append append = 11;
-         */
-        value: BlockchainUpdated_Append;
-        case: 'append';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.BlockchainUpdated.Rollback rollback = 12;
-         */
-        value: BlockchainUpdated_Rollback;
-        case: 'rollback';
-      }
-    | { case: undefined; value?: undefined };
+  update: {
+    /**
+     * @generated from field: waves.events.BlockchainUpdated.Append append = 11;
+     */
+    value: BlockchainUpdated_Append;
+    case: "append";
+  } | {
+    /**
+     * @generated from field: waves.events.BlockchainUpdated.Rollback rollback = 12;
+     */
+    value: BlockchainUpdated_Rollback;
+    case: "rollback";
+  } | { case: undefined; value?: undefined };
 
   /**
    * @generated from field: repeated waves.events.StateUpdate.AssetInfo referenced_assets = 21;
@@ -81,33 +63,29 @@ export type BlockchainUpdated = Message<'waves.events.BlockchainUpdated'> & {
  * Describes the message waves.events.BlockchainUpdated.
  * Use `create(BlockchainUpdatedSchema)` to create a new message.
  */
-export const BlockchainUpdatedSchema: GenMessage<BlockchainUpdated> =
-  /*@__PURE__*/
+export const BlockchainUpdatedSchema: GenMessage<BlockchainUpdated> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 0);
 
 /**
  * @generated from message waves.events.BlockchainUpdated.Append
  */
-export type BlockchainUpdated_Append = Message<'waves.events.BlockchainUpdated.Append'> & {
+export type BlockchainUpdated_Append = Message<"waves.events.BlockchainUpdated.Append"> & {
   /**
    * @generated from oneof waves.events.BlockchainUpdated.Append.body
    */
-  body:
-    | {
-        /**
-         * @generated from field: waves.events.BlockchainUpdated.Append.BlockAppend block = 1;
-         */
-        value: BlockchainUpdated_Append_BlockAppend;
-        case: 'block';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.BlockchainUpdated.Append.MicroBlockAppend micro_block = 2;
-         */
-        value: BlockchainUpdated_Append_MicroBlockAppend;
-        case: 'microBlock';
-      }
-    | { case: undefined; value?: undefined };
+  body: {
+    /**
+     * @generated from field: waves.events.BlockchainUpdated.Append.BlockAppend block = 1;
+     */
+    value: BlockchainUpdated_Append_BlockAppend;
+    case: "block";
+  } | {
+    /**
+     * @generated from field: waves.events.BlockchainUpdated.Append.MicroBlockAppend micro_block = 2;
+     */
+    value: BlockchainUpdated_Append_MicroBlockAppend;
+    case: "microBlock";
+  } | { case: undefined; value?: undefined };
 
   /**
    * @generated from field: repeated bytes transaction_ids = 3;
@@ -134,77 +112,72 @@ export type BlockchainUpdated_Append = Message<'waves.events.BlockchainUpdated.A
  * Describes the message waves.events.BlockchainUpdated.Append.
  * Use `create(BlockchainUpdated_AppendSchema)` to create a new message.
  */
-export const BlockchainUpdated_AppendSchema: GenMessage<BlockchainUpdated_Append> =
-  /*@__PURE__*/
+export const BlockchainUpdated_AppendSchema: GenMessage<BlockchainUpdated_Append> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 0, 0);
 
 /**
  * @generated from message waves.events.BlockchainUpdated.Append.BlockAppend
  */
-export type BlockchainUpdated_Append_BlockAppend =
-  Message<'waves.events.BlockchainUpdated.Append.BlockAppend'> & {
-    /**
-     * @generated from field: waves.Block block = 1;
-     */
-    block?: Block;
+export type BlockchainUpdated_Append_BlockAppend = Message<"waves.events.BlockchainUpdated.Append.BlockAppend"> & {
+  /**
+   * @generated from field: waves.Block block = 1;
+   */
+  block?: Block;
 
-    /**
-     * @generated from field: int64 updated_waves_amount = 2;
-     */
-    updatedWavesAmount: bigint;
+  /**
+   * @generated from field: int64 updated_waves_amount = 2;
+   */
+  updatedWavesAmount: bigint;
 
-    /**
-     * @generated from field: repeated int32 activated_features = 3;
-     */
-    activatedFeatures: number[];
+  /**
+   * @generated from field: repeated int32 activated_features = 3;
+   */
+  activatedFeatures: number[];
 
-    /**
-     * @generated from field: bytes vrf = 4;
-     */
-    vrf: Uint8Array;
+  /**
+   * @generated from field: bytes vrf = 4;
+   */
+  vrf: Uint8Array;
 
-    /**
-     * @generated from field: repeated waves.RewardShare reward_shares = 5;
-     */
-    rewardShares: RewardShare[];
-  };
+  /**
+   * @generated from field: repeated waves.RewardShare reward_shares = 5;
+   */
+  rewardShares: RewardShare[];
+};
 
 /**
  * Describes the message waves.events.BlockchainUpdated.Append.BlockAppend.
  * Use `create(BlockchainUpdated_Append_BlockAppendSchema)` to create a new message.
  */
-export const BlockchainUpdated_Append_BlockAppendSchema: GenMessage<BlockchainUpdated_Append_BlockAppend> =
-  /*@__PURE__*/
+export const BlockchainUpdated_Append_BlockAppendSchema: GenMessage<BlockchainUpdated_Append_BlockAppend> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 0, 0, 0);
 
 /**
  * @generated from message waves.events.BlockchainUpdated.Append.MicroBlockAppend
  */
-export type BlockchainUpdated_Append_MicroBlockAppend =
-  Message<'waves.events.BlockchainUpdated.Append.MicroBlockAppend'> & {
-    /**
-     * @generated from field: waves.SignedMicroBlock micro_block = 1;
-     */
-    microBlock?: SignedMicroBlock;
+export type BlockchainUpdated_Append_MicroBlockAppend = Message<"waves.events.BlockchainUpdated.Append.MicroBlockAppend"> & {
+  /**
+   * @generated from field: waves.SignedMicroBlock micro_block = 1;
+   */
+  microBlock?: SignedMicroBlock;
 
-    /**
-     * @generated from field: bytes updated_transactions_root = 2;
-     */
-    updatedTransactionsRoot: Uint8Array;
-  };
+  /**
+   * @generated from field: bytes updated_transactions_root = 2;
+   */
+  updatedTransactionsRoot: Uint8Array;
+};
 
 /**
  * Describes the message waves.events.BlockchainUpdated.Append.MicroBlockAppend.
  * Use `create(BlockchainUpdated_Append_MicroBlockAppendSchema)` to create a new message.
  */
-export const BlockchainUpdated_Append_MicroBlockAppendSchema: GenMessage<BlockchainUpdated_Append_MicroBlockAppend> =
-  /*@__PURE__*/
+export const BlockchainUpdated_Append_MicroBlockAppendSchema: GenMessage<BlockchainUpdated_Append_MicroBlockAppend> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 0, 0, 1);
 
 /**
  * @generated from message waves.events.BlockchainUpdated.Rollback
  */
-export type BlockchainUpdated_Rollback = Message<'waves.events.BlockchainUpdated.Rollback'> & {
+export type BlockchainUpdated_Rollback = Message<"waves.events.BlockchainUpdated.Rollback"> & {
   /**
    * @generated from field: waves.events.BlockchainUpdated.Rollback.RollbackType type = 1;
    */
@@ -235,8 +208,7 @@ export type BlockchainUpdated_Rollback = Message<'waves.events.BlockchainUpdated
  * Describes the message waves.events.BlockchainUpdated.Rollback.
  * Use `create(BlockchainUpdated_RollbackSchema)` to create a new message.
  */
-export const BlockchainUpdated_RollbackSchema: GenMessage<BlockchainUpdated_Rollback> =
-  /*@__PURE__*/
+export const BlockchainUpdated_RollbackSchema: GenMessage<BlockchainUpdated_Rollback> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 0, 1);
 
 /**
@@ -257,14 +229,13 @@ export enum BlockchainUpdated_Rollback_RollbackType {
 /**
  * Describes the enum waves.events.BlockchainUpdated.Rollback.RollbackType.
  */
-export const BlockchainUpdated_Rollback_RollbackTypeSchema: GenEnum<BlockchainUpdated_Rollback_RollbackType> =
-  /*@__PURE__*/
+export const BlockchainUpdated_Rollback_RollbackTypeSchema: GenEnum<BlockchainUpdated_Rollback_RollbackType> = /*@__PURE__*/
   enumDesc(file_waves_events_events, 0, 1, 0);
 
 /**
  * @generated from message waves.events.StateUpdate
  */
-export type StateUpdate = Message<'waves.events.StateUpdate'> & {
+export type StateUpdate = Message<"waves.events.StateUpdate"> & {
   /**
    * @generated from field: repeated waves.events.StateUpdate.BalanceUpdate balances = 1;
    */
@@ -305,14 +276,13 @@ export type StateUpdate = Message<'waves.events.StateUpdate'> & {
  * Describes the message waves.events.StateUpdate.
  * Use `create(StateUpdateSchema)` to create a new message.
  */
-export const StateUpdateSchema: GenMessage<StateUpdate> =
-  /*@__PURE__*/
+export const StateUpdateSchema: GenMessage<StateUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1);
 
 /**
  * @generated from message waves.events.StateUpdate.BalanceUpdate
  */
-export type StateUpdate_BalanceUpdate = Message<'waves.events.StateUpdate.BalanceUpdate'> & {
+export type StateUpdate_BalanceUpdate = Message<"waves.events.StateUpdate.BalanceUpdate"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -333,14 +303,13 @@ export type StateUpdate_BalanceUpdate = Message<'waves.events.StateUpdate.Balanc
  * Describes the message waves.events.StateUpdate.BalanceUpdate.
  * Use `create(StateUpdate_BalanceUpdateSchema)` to create a new message.
  */
-export const StateUpdate_BalanceUpdateSchema: GenMessage<StateUpdate_BalanceUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_BalanceUpdateSchema: GenMessage<StateUpdate_BalanceUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 0);
 
 /**
  * @generated from message waves.events.StateUpdate.LeasingUpdate
  */
-export type StateUpdate_LeasingUpdate = Message<'waves.events.StateUpdate.LeasingUpdate'> & {
+export type StateUpdate_LeasingUpdate = Message<"waves.events.StateUpdate.LeasingUpdate"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -371,14 +340,13 @@ export type StateUpdate_LeasingUpdate = Message<'waves.events.StateUpdate.Leasin
  * Describes the message waves.events.StateUpdate.LeasingUpdate.
  * Use `create(StateUpdate_LeasingUpdateSchema)` to create a new message.
  */
-export const StateUpdate_LeasingUpdateSchema: GenMessage<StateUpdate_LeasingUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_LeasingUpdateSchema: GenMessage<StateUpdate_LeasingUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 1);
 
 /**
  * @generated from message waves.events.StateUpdate.LeaseUpdate
  */
-export type StateUpdate_LeaseUpdate = Message<'waves.events.StateUpdate.LeaseUpdate'> & {
+export type StateUpdate_LeaseUpdate = Message<"waves.events.StateUpdate.LeaseUpdate"> & {
   /**
    * @generated from field: bytes lease_id = 1;
    */
@@ -414,8 +382,7 @@ export type StateUpdate_LeaseUpdate = Message<'waves.events.StateUpdate.LeaseUpd
  * Describes the message waves.events.StateUpdate.LeaseUpdate.
  * Use `create(StateUpdate_LeaseUpdateSchema)` to create a new message.
  */
-export const StateUpdate_LeaseUpdateSchema: GenMessage<StateUpdate_LeaseUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_LeaseUpdateSchema: GenMessage<StateUpdate_LeaseUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 2);
 
 /**
@@ -436,14 +403,13 @@ export enum StateUpdate_LeaseUpdate_LeaseStatus {
 /**
  * Describes the enum waves.events.StateUpdate.LeaseUpdate.LeaseStatus.
  */
-export const StateUpdate_LeaseUpdate_LeaseStatusSchema: GenEnum<StateUpdate_LeaseUpdate_LeaseStatus> =
-  /*@__PURE__*/
+export const StateUpdate_LeaseUpdate_LeaseStatusSchema: GenEnum<StateUpdate_LeaseUpdate_LeaseStatus> = /*@__PURE__*/
   enumDesc(file_waves_events_events, 1, 2, 0);
 
 /**
  * @generated from message waves.events.StateUpdate.DataEntryUpdate
  */
-export type StateUpdate_DataEntryUpdate = Message<'waves.events.StateUpdate.DataEntryUpdate'> & {
+export type StateUpdate_DataEntryUpdate = Message<"waves.events.StateUpdate.DataEntryUpdate"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -464,14 +430,13 @@ export type StateUpdate_DataEntryUpdate = Message<'waves.events.StateUpdate.Data
  * Describes the message waves.events.StateUpdate.DataEntryUpdate.
  * Use `create(StateUpdate_DataEntryUpdateSchema)` to create a new message.
  */
-export const StateUpdate_DataEntryUpdateSchema: GenMessage<StateUpdate_DataEntryUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_DataEntryUpdateSchema: GenMessage<StateUpdate_DataEntryUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 3);
 
 /**
  * @generated from message waves.events.StateUpdate.AssetStateUpdate
  */
-export type StateUpdate_AssetStateUpdate = Message<'waves.events.StateUpdate.AssetStateUpdate'> & {
+export type StateUpdate_AssetStateUpdate = Message<"waves.events.StateUpdate.AssetStateUpdate"> & {
   /**
    * @generated from field: waves.events.StateUpdate.AssetDetails before = 1;
    */
@@ -487,14 +452,13 @@ export type StateUpdate_AssetStateUpdate = Message<'waves.events.StateUpdate.Ass
  * Describes the message waves.events.StateUpdate.AssetStateUpdate.
  * Use `create(StateUpdate_AssetStateUpdateSchema)` to create a new message.
  */
-export const StateUpdate_AssetStateUpdateSchema: GenMessage<StateUpdate_AssetStateUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_AssetStateUpdateSchema: GenMessage<StateUpdate_AssetStateUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 4);
 
 /**
  * @generated from message waves.events.StateUpdate.AssetDetails
  */
-export type StateUpdate_AssetDetails = Message<'waves.events.StateUpdate.AssetDetails'> & {
+export type StateUpdate_AssetDetails = Message<"waves.events.StateUpdate.AssetDetails"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -577,38 +541,35 @@ export type StateUpdate_AssetDetails = Message<'waves.events.StateUpdate.AssetDe
  * Describes the message waves.events.StateUpdate.AssetDetails.
  * Use `create(StateUpdate_AssetDetailsSchema)` to create a new message.
  */
-export const StateUpdate_AssetDetailsSchema: GenMessage<StateUpdate_AssetDetails> =
-  /*@__PURE__*/
+export const StateUpdate_AssetDetailsSchema: GenMessage<StateUpdate_AssetDetails> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 5);
 
 /**
  * @generated from message waves.events.StateUpdate.AssetDetails.AssetScriptInfo
  */
-export type StateUpdate_AssetDetails_AssetScriptInfo =
-  Message<'waves.events.StateUpdate.AssetDetails.AssetScriptInfo'> & {
-    /**
-     * @generated from field: bytes script = 1;
-     */
-    script: Uint8Array;
+export type StateUpdate_AssetDetails_AssetScriptInfo = Message<"waves.events.StateUpdate.AssetDetails.AssetScriptInfo"> & {
+  /**
+   * @generated from field: bytes script = 1;
+   */
+  script: Uint8Array;
 
-    /**
-     * @generated from field: int64 complexity = 2;
-     */
-    complexity: bigint;
-  };
+  /**
+   * @generated from field: int64 complexity = 2;
+   */
+  complexity: bigint;
+};
 
 /**
  * Describes the message waves.events.StateUpdate.AssetDetails.AssetScriptInfo.
  * Use `create(StateUpdate_AssetDetails_AssetScriptInfoSchema)` to create a new message.
  */
-export const StateUpdate_AssetDetails_AssetScriptInfoSchema: GenMessage<StateUpdate_AssetDetails_AssetScriptInfo> =
-  /*@__PURE__*/
+export const StateUpdate_AssetDetails_AssetScriptInfoSchema: GenMessage<StateUpdate_AssetDetails_AssetScriptInfo> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 5, 0);
 
 /**
  * @generated from message waves.events.StateUpdate.AssetInfo
  */
-export type StateUpdate_AssetInfo = Message<'waves.events.StateUpdate.AssetInfo'> & {
+export type StateUpdate_AssetInfo = Message<"waves.events.StateUpdate.AssetInfo"> & {
   /**
    * @generated from field: bytes id = 1;
    */
@@ -629,14 +590,13 @@ export type StateUpdate_AssetInfo = Message<'waves.events.StateUpdate.AssetInfo'
  * Describes the message waves.events.StateUpdate.AssetInfo.
  * Use `create(StateUpdate_AssetInfoSchema)` to create a new message.
  */
-export const StateUpdate_AssetInfoSchema: GenMessage<StateUpdate_AssetInfo> =
-  /*@__PURE__*/
+export const StateUpdate_AssetInfoSchema: GenMessage<StateUpdate_AssetInfo> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 6);
 
 /**
  * @generated from message waves.events.StateUpdate.ScriptUpdate
  */
-export type StateUpdate_ScriptUpdate = Message<'waves.events.StateUpdate.ScriptUpdate'> & {
+export type StateUpdate_ScriptUpdate = Message<"waves.events.StateUpdate.ScriptUpdate"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -657,14 +617,13 @@ export type StateUpdate_ScriptUpdate = Message<'waves.events.StateUpdate.ScriptU
  * Describes the message waves.events.StateUpdate.ScriptUpdate.
  * Use `create(StateUpdate_ScriptUpdateSchema)` to create a new message.
  */
-export const StateUpdate_ScriptUpdateSchema: GenMessage<StateUpdate_ScriptUpdate> =
-  /*@__PURE__*/
+export const StateUpdate_ScriptUpdateSchema: GenMessage<StateUpdate_ScriptUpdate> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 1, 7);
 
 /**
  * @generated from message waves.events.TransactionMetadata
  */
-export type TransactionMetadata = Message<'waves.events.TransactionMetadata'> & {
+export type TransactionMetadata = Message<"waves.events.TransactionMetadata"> & {
   /**
    * @generated from field: bytes sender_address = 1;
    */
@@ -673,333 +632,299 @@ export type TransactionMetadata = Message<'waves.events.TransactionMetadata'> & 
   /**
    * @generated from oneof waves.events.TransactionMetadata.metadata
    */
-  metadata:
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.TransferMetadata transfer = 104;
-         */
-        value: TransactionMetadata_TransferMetadata;
-        case: 'transfer';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.ExchangeMetadata exchange = 107;
-         */
-        value: TransactionMetadata_ExchangeMetadata;
-        case: 'exchange';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.MassTransferMetadata mass_transfer = 111;
-         */
-        value: TransactionMetadata_MassTransferMetadata;
-        case: 'massTransfer';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata invoke_script = 116;
-         */
-        value: TransactionMetadata_InvokeScriptMetadata;
-        case: 'invokeScript';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.LeaseMetadata lease = 117;
-         */
-        value: TransactionMetadata_LeaseMetadata;
-        case: 'lease';
-      }
-    | {
-        /**
-         * @generated from field: waves.events.TransactionMetadata.EthereumMetadata ethereum = 301;
-         */
-        value: TransactionMetadata_EthereumMetadata;
-        case: 'ethereum';
-      }
-    | { case: undefined; value?: undefined };
+  metadata: {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.TransferMetadata transfer = 104;
+     */
+    value: TransactionMetadata_TransferMetadata;
+    case: "transfer";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.ExchangeMetadata exchange = 107;
+     */
+    value: TransactionMetadata_ExchangeMetadata;
+    case: "exchange";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.MassTransferMetadata mass_transfer = 111;
+     */
+    value: TransactionMetadata_MassTransferMetadata;
+    case: "massTransfer";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata invoke_script = 116;
+     */
+    value: TransactionMetadata_InvokeScriptMetadata;
+    case: "invokeScript";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.LeaseMetadata lease = 117;
+     */
+    value: TransactionMetadata_LeaseMetadata;
+    case: "lease";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.EthereumMetadata ethereum = 301;
+     */
+    value: TransactionMetadata_EthereumMetadata;
+    case: "ethereum";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message waves.events.TransactionMetadata.
  * Use `create(TransactionMetadataSchema)` to create a new message.
  */
-export const TransactionMetadataSchema: GenMessage<TransactionMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadataSchema: GenMessage<TransactionMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2);
 
 /**
  * @generated from message waves.events.TransactionMetadata.TransferMetadata
  */
-export type TransactionMetadata_TransferMetadata =
-  Message<'waves.events.TransactionMetadata.TransferMetadata'> & {
-    /**
-     * @generated from field: bytes recipient_address = 1;
-     */
-    recipientAddress: Uint8Array;
-  };
+export type TransactionMetadata_TransferMetadata = Message<"waves.events.TransactionMetadata.TransferMetadata"> & {
+  /**
+   * @generated from field: bytes recipient_address = 1;
+   */
+  recipientAddress: Uint8Array;
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.TransferMetadata.
  * Use `create(TransactionMetadata_TransferMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_TransferMetadataSchema: GenMessage<TransactionMetadata_TransferMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_TransferMetadataSchema: GenMessage<TransactionMetadata_TransferMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 0);
 
 /**
  * @generated from message waves.events.TransactionMetadata.MassTransferMetadata
  */
-export type TransactionMetadata_MassTransferMetadata =
-  Message<'waves.events.TransactionMetadata.MassTransferMetadata'> & {
-    /**
-     * @generated from field: repeated bytes recipients_addresses = 1;
-     */
-    recipientsAddresses: Uint8Array[];
-  };
+export type TransactionMetadata_MassTransferMetadata = Message<"waves.events.TransactionMetadata.MassTransferMetadata"> & {
+  /**
+   * @generated from field: repeated bytes recipients_addresses = 1;
+   */
+  recipientsAddresses: Uint8Array[];
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.MassTransferMetadata.
  * Use `create(TransactionMetadata_MassTransferMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_MassTransferMetadataSchema: GenMessage<TransactionMetadata_MassTransferMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_MassTransferMetadataSchema: GenMessage<TransactionMetadata_MassTransferMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 1);
 
 /**
  * @generated from message waves.events.TransactionMetadata.ExchangeMetadata
  */
-export type TransactionMetadata_ExchangeMetadata =
-  Message<'waves.events.TransactionMetadata.ExchangeMetadata'> & {
-    /**
-     *
-     * Fields starting with `order_*` represent order metadata.
-     * Each of them is a collection of exactly 2 elements.
-     * Element indexes correspond to their parent order indexes in the exchange transaction.
-     *
-     * @generated from field: repeated bytes order_ids = 1;
-     */
-    orderIds: Uint8Array[];
+export type TransactionMetadata_ExchangeMetadata = Message<"waves.events.TransactionMetadata.ExchangeMetadata"> & {
+  /**
+   *
+   * Fields starting with `order_*` represent order metadata.
+   * Each of them is a collection of exactly 2 elements.
+   * Element indexes correspond to their parent order indexes in the exchange transaction.
+   *
+   * @generated from field: repeated bytes order_ids = 1;
+   */
+  orderIds: Uint8Array[];
 
-    /**
-     * @generated from field: repeated bytes order_sender_addresses = 2;
-     */
-    orderSenderAddresses: Uint8Array[];
+  /**
+   * @generated from field: repeated bytes order_sender_addresses = 2;
+   */
+  orderSenderAddresses: Uint8Array[];
 
-    /**
-     * @generated from field: repeated bytes order_sender_public_keys = 3;
-     */
-    orderSenderPublicKeys: Uint8Array[];
-  };
+  /**
+   * @generated from field: repeated bytes order_sender_public_keys = 3;
+   */
+  orderSenderPublicKeys: Uint8Array[];
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.ExchangeMetadata.
  * Use `create(TransactionMetadata_ExchangeMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_ExchangeMetadataSchema: GenMessage<TransactionMetadata_ExchangeMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_ExchangeMetadataSchema: GenMessage<TransactionMetadata_ExchangeMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 2);
 
 /**
  * @generated from message waves.events.TransactionMetadata.InvokeScriptMetadata
  */
-export type TransactionMetadata_InvokeScriptMetadata =
-  Message<'waves.events.TransactionMetadata.InvokeScriptMetadata'> & {
-    /**
-     * @generated from field: bytes d_app_address = 1;
-     */
-    dAppAddress: Uint8Array;
+export type TransactionMetadata_InvokeScriptMetadata = Message<"waves.events.TransactionMetadata.InvokeScriptMetadata"> & {
+  /**
+   * @generated from field: bytes d_app_address = 1;
+   */
+  dAppAddress: Uint8Array;
 
-    /**
-     * @generated from field: string function_name = 2;
-     */
-    functionName: string;
+  /**
+   * @generated from field: string function_name = 2;
+   */
+  functionName: string;
 
-    /**
-     * @generated from field: repeated waves.InvokeScriptResult.Call.Argument arguments = 3;
-     */
-    arguments: InvokeScriptResult_Call_Argument[];
+  /**
+   * @generated from field: repeated waves.InvokeScriptResult.Call.Argument arguments = 3;
+   */
+  arguments: InvokeScriptResult_Call_Argument[];
 
-    /**
-     * @generated from field: repeated waves.Amount payments = 4;
-     */
-    payments: Amount[];
+  /**
+   * @generated from field: repeated waves.Amount payments = 4;
+   */
+  payments: Amount[];
 
-    /**
-     * @generated from field: waves.InvokeScriptResult result = 5;
-     */
-    result?: InvokeScriptResult;
-  };
+  /**
+   * @generated from field: waves.InvokeScriptResult result = 5;
+   */
+  result?: InvokeScriptResult;
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.InvokeScriptMetadata.
  * Use `create(TransactionMetadata_InvokeScriptMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_InvokeScriptMetadataSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_InvokeScriptMetadataSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 3);
 
 /**
  * @generated from message waves.events.TransactionMetadata.InvokeScriptMetadata.Argument
  */
-export type TransactionMetadata_InvokeScriptMetadata_Argument =
-  Message<'waves.events.TransactionMetadata.InvokeScriptMetadata.Argument'> & {
+export type TransactionMetadata_InvokeScriptMetadata_Argument = Message<"waves.events.TransactionMetadata.InvokeScriptMetadata.Argument"> & {
+  /**
+   * @generated from oneof waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.value
+   */
+  value: {
     /**
-     * @generated from oneof waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.value
+     * @generated from field: int64 integer_value = 1;
      */
-    value:
-      | {
-          /**
-           * @generated from field: int64 integer_value = 1;
-           */
-          value: bigint;
-          case: 'integerValue';
-        }
-      | {
-          /**
-           * @generated from field: bytes binary_value = 2;
-           */
-          value: Uint8Array;
-          case: 'binaryValue';
-        }
-      | {
-          /**
-           * @generated from field: string string_value = 3;
-           */
-          value: string;
-          case: 'stringValue';
-        }
-      | {
-          /**
-           * @generated from field: bool boolean_value = 4;
-           */
-          value: boolean;
-          case: 'booleanValue';
-        }
-      | {
-          /**
-           * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List list = 10;
-           */
-          value: TransactionMetadata_InvokeScriptMetadata_Argument_List;
-          case: 'list';
-        }
-      | { case: undefined; value?: undefined };
-  };
+    value: bigint;
+    case: "integerValue";
+  } | {
+    /**
+     * @generated from field: bytes binary_value = 2;
+     */
+    value: Uint8Array;
+    case: "binaryValue";
+  } | {
+    /**
+     * @generated from field: string string_value = 3;
+     */
+    value: string;
+    case: "stringValue";
+  } | {
+    /**
+     * @generated from field: bool boolean_value = 4;
+     */
+    value: boolean;
+    case: "booleanValue";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List list = 10;
+     */
+    value: TransactionMetadata_InvokeScriptMetadata_Argument_List;
+    case: "list";
+  } | { case: undefined; value?: undefined };
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.
  * Use `create(TransactionMetadata_InvokeScriptMetadata_ArgumentSchema)` to create a new message.
  */
-export const TransactionMetadata_InvokeScriptMetadata_ArgumentSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata_Argument> =
-  /*@__PURE__*/
+export const TransactionMetadata_InvokeScriptMetadata_ArgumentSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata_Argument> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 3, 0);
 
 /**
  * @generated from message waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List
  */
-export type TransactionMetadata_InvokeScriptMetadata_Argument_List =
-  Message<'waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List'> & {
-    /**
-     * @generated from field: repeated waves.events.TransactionMetadata.InvokeScriptMetadata.Argument items = 1;
-     */
-    items: TransactionMetadata_InvokeScriptMetadata_Argument[];
-  };
+export type TransactionMetadata_InvokeScriptMetadata_Argument_List = Message<"waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List"> & {
+  /**
+   * @generated from field: repeated waves.events.TransactionMetadata.InvokeScriptMetadata.Argument items = 1;
+   */
+  items: TransactionMetadata_InvokeScriptMetadata_Argument[];
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.InvokeScriptMetadata.Argument.List.
  * Use `create(TransactionMetadata_InvokeScriptMetadata_Argument_ListSchema)` to create a new message.
  */
-export const TransactionMetadata_InvokeScriptMetadata_Argument_ListSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata_Argument_List> =
-  /*@__PURE__*/
+export const TransactionMetadata_InvokeScriptMetadata_Argument_ListSchema: GenMessage<TransactionMetadata_InvokeScriptMetadata_Argument_List> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 3, 0, 0);
 
 /**
  * @generated from message waves.events.TransactionMetadata.LeaseMetadata
  */
-export type TransactionMetadata_LeaseMetadata =
-  Message<'waves.events.TransactionMetadata.LeaseMetadata'> & {
-    /**
-     * @generated from field: bytes recipient_address = 1;
-     */
-    recipientAddress: Uint8Array;
-  };
+export type TransactionMetadata_LeaseMetadata = Message<"waves.events.TransactionMetadata.LeaseMetadata"> & {
+  /**
+   * @generated from field: bytes recipient_address = 1;
+   */
+  recipientAddress: Uint8Array;
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.LeaseMetadata.
  * Use `create(TransactionMetadata_LeaseMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_LeaseMetadataSchema: GenMessage<TransactionMetadata_LeaseMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_LeaseMetadataSchema: GenMessage<TransactionMetadata_LeaseMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 4);
 
 /**
  * @generated from message waves.events.TransactionMetadata.EthereumTransferMetadata
  */
-export type TransactionMetadata_EthereumTransferMetadata =
-  Message<'waves.events.TransactionMetadata.EthereumTransferMetadata'> & {
-    /**
-     * @generated from field: bytes recipient_address = 1;
-     */
-    recipientAddress: Uint8Array;
+export type TransactionMetadata_EthereumTransferMetadata = Message<"waves.events.TransactionMetadata.EthereumTransferMetadata"> & {
+  /**
+   * @generated from field: bytes recipient_address = 1;
+   */
+  recipientAddress: Uint8Array;
 
-    /**
-     * @generated from field: waves.Amount amount = 2;
-     */
-    amount?: Amount;
-  };
+  /**
+   * @generated from field: waves.Amount amount = 2;
+   */
+  amount?: Amount;
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.EthereumTransferMetadata.
  * Use `create(TransactionMetadata_EthereumTransferMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_EthereumTransferMetadataSchema: GenMessage<TransactionMetadata_EthereumTransferMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_EthereumTransferMetadataSchema: GenMessage<TransactionMetadata_EthereumTransferMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 5);
 
 /**
  * @generated from message waves.events.TransactionMetadata.EthereumMetadata
  */
-export type TransactionMetadata_EthereumMetadata =
-  Message<'waves.events.TransactionMetadata.EthereumMetadata'> & {
-    /**
-     * @generated from field: int64 timestamp = 2;
-     */
-    timestamp: bigint;
+export type TransactionMetadata_EthereumMetadata = Message<"waves.events.TransactionMetadata.EthereumMetadata"> & {
+  /**
+   * @generated from field: int64 timestamp = 2;
+   */
+  timestamp: bigint;
 
-    /**
-     * @generated from field: int64 fee = 3;
-     */
-    fee: bigint;
+  /**
+   * @generated from field: int64 fee = 3;
+   */
+  fee: bigint;
 
-    /**
-     * @generated from field: bytes sender_public_key = 4;
-     */
-    senderPublicKey: Uint8Array;
+  /**
+   * @generated from field: bytes sender_public_key = 4;
+   */
+  senderPublicKey: Uint8Array;
 
+  /**
+   * @generated from oneof waves.events.TransactionMetadata.EthereumMetadata.Action
+   */
+  Action: {
     /**
-     * @generated from oneof waves.events.TransactionMetadata.EthereumMetadata.Action
+     * @generated from field: waves.events.TransactionMetadata.EthereumTransferMetadata transfer = 10;
      */
-    Action:
-      | {
-          /**
-           * @generated from field: waves.events.TransactionMetadata.EthereumTransferMetadata transfer = 10;
-           */
-          value: TransactionMetadata_EthereumTransferMetadata;
-          case: 'transfer';
-        }
-      | {
-          /**
-           * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata invoke = 11;
-           */
-          value: TransactionMetadata_InvokeScriptMetadata;
-          case: 'invoke';
-        }
-      | { case: undefined; value?: undefined };
-  };
+    value: TransactionMetadata_EthereumTransferMetadata;
+    case: "transfer";
+  } | {
+    /**
+     * @generated from field: waves.events.TransactionMetadata.InvokeScriptMetadata invoke = 11;
+     */
+    value: TransactionMetadata_InvokeScriptMetadata;
+    case: "invoke";
+  } | { case: undefined; value?: undefined };
+};
 
 /**
  * Describes the message waves.events.TransactionMetadata.EthereumMetadata.
  * Use `create(TransactionMetadata_EthereumMetadataSchema)` to create a new message.
  */
-export const TransactionMetadata_EthereumMetadataSchema: GenMessage<TransactionMetadata_EthereumMetadata> =
-  /*@__PURE__*/
+export const TransactionMetadata_EthereumMetadataSchema: GenMessage<TransactionMetadata_EthereumMetadata> = /*@__PURE__*/
   messageDesc(file_waves_events_events, 2, 6);
+
