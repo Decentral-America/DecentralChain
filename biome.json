@@ -1,11 +1,13 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
-  "root": true,
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true,
-    "defaultBranch": "main"
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "useSortedKeys": "on"
+      }
+    },
+    "enabled": true
   },
   "files": {
     "ignoreUnknown": false,
@@ -15,18 +17,18 @@
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100,
-    "lineEnding": "lf"
+    "lineEnding": "lf",
+    "lineWidth": 100
   },
   "javascript": {
     "formatter": {
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "bracketSpacing": true,
+      "quoteProperties": "asNeeded",
       "quoteStyle": "single",
       "semicolons": "always",
-      "trailingCommas": "all",
-      "arrowParentheses": "always",
-      "bracketSpacing": true,
-      "bracketSameLine": false,
-      "quoteProperties": "asNeeded"
+      "trailingCommas": "all"
     }
   },
   "json": {
@@ -38,22 +40,33 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": {
+            "maxAllowedComplexity": 25
+          }
+        }
+      },
       "correctness": {
-        "noUnusedVariables": "error",
         "noUnusedFunctionParameters": "error",
-        "noUnusedImports": "error"
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
+      },
+      "recommended": true,
+      "security": {
+        "noSecrets": "warn"
       },
       "style": {
+        "noCommonJs": "error",
+        "noNamespace": "error",
         "useConst": "error",
         "useImportType": {
           "level": "error",
           "options": {
             "style": "inlineType"
           }
-        },
-        "noNamespace": "error",
-        "noCommonJs": "error"
+        }
       },
       "suspicious": {
         "noConsole": {
@@ -65,14 +78,6 @@
       }
     }
   },
-  "assist": {
-    "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
-  },
   "overrides": [
     {
       "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
@@ -80,9 +85,19 @@
         "rules": {
           "suspicious": {
             "noExplicitAny": "off"
+          },
+          "security": {
+            "noSecrets": "off"
           }
         }
       }
     }
-  ]
+  ],
+  "root": true,
+  "vcs": {
+    "clientKind": "git",
+    "defaultBranch": "main",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
 }
