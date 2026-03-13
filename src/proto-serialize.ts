@@ -91,6 +91,62 @@ export function protoBytesToTx(bytes: Uint8Array): TTransaction {
   return res;
 }
 
+/** Mutable record for building a TTransaction from protobuf fields. */
+interface ProtoTxFields {
+  version: unknown;
+  type: unknown;
+  senderPublicKey: unknown;
+  timestamp: unknown;
+  fee: unknown;
+  feeAssetId?: unknown;
+  chainId?: unknown;
+  sender?: unknown;
+  name?: unknown;
+  description?: unknown;
+  quantity?: unknown;
+  decimals?: unknown;
+  reissuable?: unknown;
+  script?: unknown;
+  amount?: unknown;
+  recipient?: unknown;
+  attachment?: unknown;
+  assetId?: unknown;
+  price?: unknown;
+  buyMatcherFee?: unknown;
+  sellMatcherFee?: unknown;
+  order1?: unknown;
+  order2?: unknown;
+  leaseId?: unknown;
+  alias?: unknown;
+  transfers?: unknown;
+  data?: unknown;
+  minSponsoredAssetFee?: unknown;
+  dApp?: unknown;
+  call?: unknown;
+  payment?: unknown;
+  [key: string]: unknown;
+}
+
+/** Typed input for orderToProto — all order fields accessed by the serializer. */
+interface OrderProtoInput {
+  version?: unknown;
+  priceMode?: unknown;
+  assetPair?: { amountAsset: string | null; priceAsset: string | null };
+  chainId?: unknown;
+  senderPublicKey?: unknown;
+  matcherPublicKey?: unknown;
+  orderType?: unknown;
+  amount?: unknown;
+  price?: unknown;
+  timestamp?: unknown;
+  expiration?: unknown;
+  matcherFee?: unknown;
+  matcherFeeAssetId?: unknown;
+  proofs?: string[];
+  eip712Signature?: unknown;
+  [key: string]: unknown;
+}
+
 export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
   type transactionTypes =
     | 'genesis'
@@ -111,7 +167,7 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
     | 'invokeScript'
     | 'updateAssetInfo';
 
-  const res: Record<string, unknown> = {
+  const res: ProtoTxFields = {
     version: t.version,
     type: typeByName[t.data as transactionTypes] as TransactionType,
     senderPublicKey: base58Encode(t.senderPublicKey),
@@ -273,9 +329,7 @@ export function protoTxDataToTx(t: dccProto.waves.Transaction): TTransaction {
 }
 
 export function orderToProtoBytes(obj: ExchangeTransactionOrder): Uint8Array {
-  return dccProto.waves.Order.encode(
-    orderToProto(obj as unknown as Record<string, unknown>),
-  ).finish();
+  return dccProto.waves.Order.encode(orderToProto(obj as unknown as OrderProtoInput)).finish();
 }
 
 export function protoBytesToOrder(bytes: Uint8Array) {
@@ -294,7 +348,12 @@ const getCommonFields = ({
   const typename = nameByType[type as keyof typeof nameByType];
   let chainId: number | undefined = (rest as unknown as WithChainId).chainId;
   if (chainId == null) {
-    const r = rest as unknown as Record<string, unknown>;
+    const r = rest as unknown as {
+      recipient?: unknown;
+      dApp?: unknown;
+      transfers?: Array<{ recipient?: string }>;
+      [key: string]: unknown;
+    };
     const recipient = (r.recipient ||
       r.dApp ||
       (r.transfers as Array<{ recipient?: string }> | undefined)?.[0]?.recipient) as
@@ -310,16 +369,13 @@ const getCommonFields = ({
     chainId,
     senderPublicKey: base58Decode(senderPublicKey),
     timestamp: Long.fromValue(timestamp),
-    fee: amountToProto(
-      fee,
-      (rest as unknown as Record<string, unknown>).feeAssetId as string | null | undefined,
-    ),
+    fee: amountToProto(fee, (rest as unknown as { feeAssetId?: string | null }).feeAssetId),
     data: typename,
   };
 };
 
 const getCommonSignedFields = (tx: TTx) => {
-  const fields = getCommonFields(tx) as Record<string, unknown>;
+  const fields: ReturnType<typeof getCommonFields> & { proofs?: string[] } = getCommonFields(tx);
 
   if (Object.hasOwn(tx, 'proofs')) {
     fields.proofs = tx.proofs;
@@ -356,8 +412,8 @@ const getExchangeData = (
   buyMatcherFee: Long.fromValue(t.buyMatcherFee),
   sellMatcherFee: Long.fromValue(t.sellMatcherFee),
   orders: [
-    orderToProto({ chainId: t.chainId, ...t.order1 } as Record<string, unknown>),
-    orderToProto({ chainId: t.chainId, ...t.order2 } as Record<string, unknown>),
+    orderToProto({ chainId: t.chainId, ...t.order1 } as OrderProtoInput),
+    orderToProto({ chainId: t.chainId, ...t.order2 } as OrderProtoInput),
   ],
 });
 const getLeaseData = (t: LeaseTransaction): dccProto.waves.ILeaseTransactionData => ({
@@ -504,7 +560,7 @@ export const signedTxToProto = (t: TTx): dccProto.waves.ISignedTransaction => {
   };
 };
 
-const orderToProto = (o: Record<string, unknown>): dccProto.waves.IOrder => {
+const orderToProto = (o: OrderProtoInput): dccProto.waves.IOrder => {
   let priceMode: number | undefined;
   if (o.version === 4 && 'priceMode' in o) {
     if (o.priceMode === 0 || o.priceMode === 'default') {
