@@ -13,7 +13,13 @@ import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { type Transaction, transactionService } from '@/services/transactionService';
 
 // Temporary type definition until @decentralchain/transactions is fixed
-type ITransferParams = Record<string, unknown>;
+type ITransferParams = {
+  recipient?: string;
+  amount?: number;
+  fee?: number;
+  attachment?: string;
+  [key: string]: unknown;
+};
 
 /**
  * Transaction Flow Steps
@@ -27,7 +33,7 @@ export interface TransactionConfirmationProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (transaction: Transaction) => void;
-  params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>;
+  params: ITransferParams;
   transactionType?: string;
 }
 

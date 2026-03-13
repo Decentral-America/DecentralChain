@@ -182,7 +182,7 @@ export const Dashboard = () => {
     // Flatten the nested array structure
     const flatTransactions = transactionsData.flat();
 
-    return flatTransactions.slice(0, 3).map((tx: Record<string, unknown>) => {
+    return flatTransactions.slice(0, 3).map((tx: { type?: number; recipient?: string; amount?: number; assetId?: string | null; timestamp?: number; id?: string; [key: string]: unknown }) => {
       const isReceived = tx.recipient === user.address;
 
       let type = 'Transaction';
@@ -194,8 +194,8 @@ export const Dashboard = () => {
       if (tx.type === 4) {
         // Transfer
         type = isReceived ? 'Received' : 'Sent';
-        const txAmount = tx.amount ? (tx.amount as number) / 10 ** 8 : 0;
-        assetId = (tx.assetId as string) || null;
+        const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
+        assetId = tx.assetId || null;
         amount = `${isReceived ? '+' : '-'}${formatAmount(txAmount)}`;
       } else if (tx.type === 7) {
         // Exchange (Swap)
@@ -204,7 +204,7 @@ export const Dashboard = () => {
       } else if (tx.type === 8) {
         // Lease
         type = 'Leased';
-        const txAmount = tx.amount ? (tx.amount as number) / 10 ** 8 : 0;
+        const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
         amount = `${formatAmount(txAmount)} DCC`;
       } else if (tx.type === 9) {
         // Lease Cancel
@@ -214,7 +214,7 @@ export const Dashboard = () => {
 
       // Calculate time ago
       const time = tx.timestamp
-        ? formatDistanceToNow(new Date(tx.timestamp as number), { addSuffix: true })
+        ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
         : 'Unknown time';
 
       return {

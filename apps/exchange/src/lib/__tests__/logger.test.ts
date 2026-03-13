@@ -54,7 +54,7 @@ describe('logger', () => {
       // biome-ignore lint/suspicious/noConsole: test verifying console.log redaction behavior
       const callArgs = (console.log as ReturnType<typeof vi.fn>).mock.calls[0];
       if (callArgs) {
-        const logged = callArgs[0] as Record<string, unknown>;
+        const logged = callArgs[0] as { seed?: unknown; privateKey?: unknown; password?: unknown; mnemonic?: unknown; address?: unknown; amount?: unknown };
         expect(logged.seed).toBe('[REDACTED]');
         expect(logged.privateKey).toBe('[REDACTED]');
         expect(logged.password).toBe('[REDACTED]');

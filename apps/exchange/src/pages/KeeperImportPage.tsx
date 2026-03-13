@@ -196,7 +196,7 @@ export const KeeperImportPage: React.FC = () => {
   });
   const [isVisible, setIsVisible] = useState(false);
 
-  const adapter = (signatureAdapter as Record<string, unknown>).CubensisConnectAdapter as {
+  const adapter = signatureAdapter.CubensisConnectAdapter as unknown as {
     isAvailable: () => Promise<boolean>;
     getUserList: () => Promise<KeeperUser[]>;
     type: string;

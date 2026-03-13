@@ -57,8 +57,8 @@ export class GatewayService {
 
     // Look up provider by gateway_id or gateway_type
     const gatewayId =
-      (gatewayConfig as unknown as Record<string, string>).gateway_id ||
-      (gatewayConfig as unknown as Record<string, string>).gateway_type ||
+      gatewayConfig.gateway_id ||
+      gatewayConfig.gateway_type ||
       'dccgateway';
 
     const provider = this.providers.get(gatewayId.toLowerCase());
@@ -88,7 +88,7 @@ export class GatewayService {
     // Filter gateways that support card purchases
     Object.entries(allGateways).forEach(([assetId, config]) => {
       // Check if gateway supports card purchases (simplex, moonpay, etc.)
-      const gatewayId = (config as unknown as Record<string, string>).gateway_id?.toLowerCase();
+      const gatewayId = config.gateway_id?.toLowerCase();
       if (gatewayId && ['simplex', 'moonpay', 'mercuryo'].includes(gatewayId)) {
         purchasableWithCards[assetId] = config;
       }
