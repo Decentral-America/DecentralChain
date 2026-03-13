@@ -23,7 +23,7 @@ describe('Create querystring util', () => {
     expect(qs).toBe(`?a=true&b=1&c=string&d=${encodeURIComponent(now.toISOString())}&e=9&e=8&e=7`);
   });
   it('ignores undefined fields', () => {
-    const obj = { a: true, b: 1, c: 'string', e: [9, 8, 7], d: undefined };
+    const obj = { a: true, b: 1, c: 'string', d: undefined, e: [9, 8, 7] };
     const qs = createQS(obj);
     expect(qs).toBe('?a=true&b=1&c=string&e=9&e=8&e=7');
   });
@@ -129,7 +129,7 @@ describe('hasDangerousKeys', () => {
     expect(hasDangerousKeys({ prototype: {} })).toBe(true);
   });
   it('passes safe objects', () => {
-    expect(hasDangerousKeys({ sender: 'addr', limit: 5 })).toBe(false);
+    expect(hasDangerousKeys({ limit: 5, sender: 'addr' })).toBe(false);
   });
 });
 
@@ -202,10 +202,10 @@ describe('defaultFetch', () => {
       ok: true,
       text: () => Promise.resolve('ok'),
     });
-    await defaultFetch('http://example.com', { method: 'POST', body: '{}' });
+    await defaultFetch('http://example.com', { body: '{}', method: 'POST' });
     expect(globalThis.fetch).toHaveBeenCalledWith(
       'http://example.com',
-      expect.objectContaining({ method: 'POST', body: '{}' }),
+      expect.objectContaining({ body: '{}', method: 'POST' }),
     );
   });
 

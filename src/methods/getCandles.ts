@@ -58,9 +58,9 @@ const createRequestForCandles =
 
 const createGetCandles: TCreateGetFn<TGetCandles> = (libOptions: ILibOptions) =>
   createMethod<Candle[]>({
-    validate: validateFilters,
     generateRequest: createRequestForCandles,
     libOptions,
+    validate: validateFilters,
   });
 
 export default createGetCandles;

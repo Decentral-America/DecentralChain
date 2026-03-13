@@ -38,7 +38,7 @@ const createMethod = <T>({
         }
         return pipeP(
           libOptions.transform,
-          addPagination({ method, args, addPaginationToArgs, rawData }),
+          addPagination({ addPaginationToArgs, args, method, rawData }),
         )(rawData);
       },
     )(...args);
@@ -62,7 +62,7 @@ const addPagination =
     return {
       data,
       fetchMore: (count: number) =>
-        method(addPaginationToArgs({ args, cursor: rawData.lastCursor, count })),
+        method(addPaginationToArgs({ args, count, cursor: rawData.lastCursor })),
     };
   };
 

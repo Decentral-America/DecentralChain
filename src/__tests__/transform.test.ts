@@ -15,9 +15,9 @@ describe('Default transformer', () => {
   });
 
   it('returns data as-is for transaction type', () => {
-    const input = { __type: ApiTypes.Transaction, data: { id: 'tx1', amount: 100 } };
+    const input = { __type: ApiTypes.Transaction, data: { amount: 100, id: 'tx1' } };
     const result = transformer(input);
-    expect(result).toEqual({ id: 'tx1', amount: 100 });
+    expect(result).toEqual({ amount: 100, id: 'tx1' });
   });
 
   it('returns data as-is for alias type', () => {
@@ -35,17 +35,17 @@ describe('Default transformer', () => {
 
   it('transforms asset type using Asset constructor when data is not null', () => {
     const assetData = {
+      description: '',
+      hasScript: false,
+      height: 1,
       id: 'test-asset',
+      minSponsoredFee: '0',
       name: 'Test',
       precision: 8,
-      description: '',
-      height: 1,
-      timestamp: new Date().toISOString(),
-      sender: 'sender',
       quantity: '1000000',
       reissuable: false,
-      hasScript: false,
-      minSponsoredFee: '0',
+      sender: 'sender',
+      timestamp: new Date().toISOString(),
     };
     const input = { __type: ApiTypes.Asset, data: assetData };
     const result = transformer(input);

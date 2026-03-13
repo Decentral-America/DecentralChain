@@ -27,9 +27,9 @@ const createRequestForMany =
 
 const createGetAssetsByTicker: TCreateGetFn<TGetAssetsByTicker> = (libOptions: ILibOptions) =>
   createMethod<Asset[]>({
-    validate: validateTicker,
     generateRequest: createRequestForMany,
     libOptions,
+    validate: validateTicker,
   });
 
 export default createGetAssetsByTicker;

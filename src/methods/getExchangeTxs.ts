@@ -55,19 +55,19 @@ const generateRequestMany =
 
 const createGetExchangeTxs: TCreateGetFn<IGetExchangeTxs> = (libOptions) => {
   const getExchangeTxsOne = createMethod<ITransaction[]>({
-    validate: validateId,
     generateRequest: generateRequestOne,
     libOptions,
+    validate: validateId,
   });
   const getExchangeTxsMany = createMethod<ITransaction[]>({
-    validate: validateFilters,
-    generateRequest: generateRequestMany,
-    libOptions,
     addPaginationToArgs: ({ args: [filters], cursor, count }) => ({
       ...filters,
       after: cursor,
       ...(count ? { limit: count } : {}),
     }),
+    generateRequest: generateRequestMany,
+    libOptions,
+    validate: validateFilters,
   });
 
   const getExchangeTxs: IGetExchangeTxs = (idOrFilters?: string | IExchangeTxFilters) =>
