@@ -80,14 +80,22 @@ export const lte = (ref: unknown) => (value: unknown) => {
   const bigRef = toBigInt(ref);
   const bigVal = toBigInt(value);
   if (bigRef !== null && bigVal !== null) return bigRef >= bigVal;
-  return Number(ref) >= Number(value);
+  // Fallback: only reached for non-integer JS numbers (floats) — safe by definition
+  const nRef = unbox(ref);
+  const nVal = unbox(value);
+  if (typeof nRef === 'number' && typeof nVal === 'number') return nRef >= nVal;
+  return false;
 };
 
 export const gte = (ref: unknown) => (value: unknown) => {
   const bigRef = toBigInt(ref);
   const bigVal = toBigInt(value);
   if (bigRef !== null && bigVal !== null) return bigRef <= bigVal;
-  return Number(ref) <= Number(value);
+  // Fallback: only reached for non-integer JS numbers (floats) — safe by definition
+  const nRef = unbox(ref);
+  const nVal = unbox(value);
+  if (typeof nRef === 'number' && typeof nVal === 'number') return nRef <= nVal;
+  return false;
 };
 
 export const ifElse =
@@ -104,7 +112,11 @@ export const isEq =
         const bigVal = toBigInt(value);
         const bigRef = toBigInt(reference);
         if (bigVal !== null && bigRef !== null) return bigVal === bigRef;
-        return Number(value) === Number(reference);
+        // Fallback: only reached for non-integer JS numbers (floats) — safe by definition
+        const nVal = unbox(value);
+        const nRef = unbox(reference);
+        if (typeof nVal === 'number' && typeof nRef === 'number') return nVal === nRef;
+        return false;
       }
       case isString(value) && isString(reference):
         return String(reference) === String(value);
@@ -138,7 +150,9 @@ const isFiniteNumeric = (value: unknown): boolean => {
     const trimmed = v.trim();
     if (trimmed === '') return false;
     if (/^-?\d+$/.test(trimmed)) return true;
-    const num = Number(trimmed);
+    // For non-integer strings (floats like "3.14"), validate the full string is numeric.
+    // Using unary + instead of parseFloat because parseFloat('3abc') returns 3.
+    const num = +trimmed;
     return !Number.isNaN(num) && Number.isFinite(num);
   }
   return false;
@@ -155,7 +169,7 @@ const isPositiveNumeric = (value: unknown): boolean => {
   const big = toBigInt(v);
   if (big !== null) return big > 0n;
   if (typeof v === 'string') {
-    const num = Number(v);
+    const num = +v;
     return Number.isFinite(num) && num > 0;
   }
   return false;
@@ -172,7 +186,7 @@ const isNonNegativeNumeric = (value: unknown): boolean => {
   const big = toBigInt(v);
   if (big !== null) return big >= 0n;
   if (typeof v === 'string') {
-    const num = Number(v);
+    const num = +v;
     return Number.isFinite(num) && num >= 0;
   }
   return false;
