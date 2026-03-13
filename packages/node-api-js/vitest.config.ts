@@ -2,19 +2,8 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
-    include: ['test/**/*.spec.ts'],
-    // Integration tests require a running DecentralChain node.
-    // Run with: npm run test:integration
-    exclude: [
-      'test/api-node/**',
-      'test/tools/broadcast.spec.ts',
-      'test/tools/addresses/index.spec.ts',
-      'test/tools/blocks/index.spec.ts',
-    ],
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
       exclude: [
         'src/index.ts',
         // Pure type declarations — no runtime code to cover
@@ -33,6 +22,8 @@ export default defineConfig({
         'src/tools/transactions/wait.ts',
         'src/tools/transactions/transactions.ts',
       ],
+      include: ['src/**/*.ts'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 80,
@@ -41,8 +32,18 @@ export default defineConfig({
         statements: 80,
       },
     },
+    // Integration tests require a running DecentralChain node.
+    // Run with: npm run test:integration
+    exclude: [
+      'test/api-node/**',
+      'test/tools/broadcast.spec.ts',
+      'test/tools/addresses/index.spec.ts',
+      'test/tools/blocks/index.spec.ts',
+    ],
+    globals: true,
+    include: ['test/**/*.spec.ts'],
     reporters: ['default'],
-    typecheck: { enabled: false },
     setupFiles: ['test/extendedMatcher.ts'],
+    typecheck: { enabled: false },
   },
 });
