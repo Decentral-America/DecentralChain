@@ -2,33 +2,22 @@
 // @generated from file waves/node/grpc/blockchain_api.proto (package waves.node.grpc, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  enumDesc,
-  fileDesc,
-  type GenEnum,
-  type GenFile,
-  type GenMessage,
-  type GenService,
-  messageDesc,
-  serviceDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import { type EmptySchema, file_google_protobuf_empty } from '@bufbuild/protobuf/wkt';
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { EmptySchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/node/grpc/blockchain_api.proto.
  */
-export const file_waves_node_grpc_blockchain_api: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiR3YXZlcy9ub2RlL2dycGMvYmxvY2tjaGFpbl9hcGkucHJvdG8SD3dhdmVzLm5vZGUuZ3JwYyIpChdBY3RpdmF0aW9uU3RhdHVzUmVxdWVzdBIOCgZoZWlnaHQYASABKAUirQEKGEFjdGl2YXRpb25TdGF0dXNSZXNwb25zZRIOCgZoZWlnaHQYASABKAUSFwoPdm90aW5nX2ludGVydmFsGAIgASgFEhgKEHZvdGluZ190aHJlc2hvbGQYAyABKAUSEgoKbmV4dF9jaGVjaxgEIAEoBRI6CghmZWF0dXJlcxgFIAMoCzIoLndhdmVzLm5vZGUuZ3JwYy5GZWF0dXJlQWN0aXZhdGlvblN0YXR1cyKrAwoXRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMSCgoCaWQYASABKAUSEwoLZGVzY3JpcHRpb24YAiABKAkSWwoRYmxvY2tjaGFpbl9zdGF0dXMYAyABKA4yQC53YXZlcy5ub2RlLmdycGMuRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMuQmxvY2tjaGFpbkZlYXR1cmVTdGF0dXMSTwoLbm9kZV9zdGF0dXMYBCABKA4yOi53YXZlcy5ub2RlLmdycGMuRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMuTm9kZUZlYXR1cmVTdGF0dXMSGQoRYWN0aXZhdGlvbl9oZWlnaHQYBSABKAUSGQoRc3VwcG9ydGluZ19ibG9ja3MYBiABKAUiRQoXQmxvY2tjaGFpbkZlYXR1cmVTdGF0dXMSDQoJVU5ERUZJTkVEEAASDAoIQVBQUk9WRUQQARINCglBQ1RJVkFURUQQAiJEChFOb2RlRmVhdHVyZVN0YXR1cxITCg9OT1RfSU1QTEVNRU5URUQQABIPCgtJTVBMRU1FTlRFRBABEgkKBVZPVEVEEAIiKQoSQmFzZVRhcmdldFJlc3BvbnNlEhMKC2Jhc2VfdGFyZ2V0GAEgASgDIh4KDVNjb3JlUmVzcG9uc2USDQoFc2NvcmUYASABKAwylwIKDUJsb2NrY2hhaW5BcGkSagoTR2V0QWN0aXZhdGlvblN0YXR1cxIoLndhdmVzLm5vZGUuZ3JwYy5BY3RpdmF0aW9uU3RhdHVzUmVxdWVzdBopLndhdmVzLm5vZGUuZ3JwYy5BY3RpdmF0aW9uU3RhdHVzUmVzcG9uc2USTAoNR2V0QmFzZVRhcmdldBIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRojLndhdmVzLm5vZGUuZ3JwYy5CYXNlVGFyZ2V0UmVzcG9uc2USTAoSR2V0Q3VtdWxhdGl2ZVNjb3JlEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gh4ud2F2ZXMubm9kZS5ncnBjLlNjb3JlUmVzcG9uc2VCjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z',
-    [file_google_protobuf_empty],
-  );
+export const file_waves_node_grpc_blockchain_api: GenFile = /*@__PURE__*/
+  fileDesc("CiR3YXZlcy9ub2RlL2dycGMvYmxvY2tjaGFpbl9hcGkucHJvdG8SD3dhdmVzLm5vZGUuZ3JwYyIpChdBY3RpdmF0aW9uU3RhdHVzUmVxdWVzdBIOCgZoZWlnaHQYASABKAUirQEKGEFjdGl2YXRpb25TdGF0dXNSZXNwb25zZRIOCgZoZWlnaHQYASABKAUSFwoPdm90aW5nX2ludGVydmFsGAIgASgFEhgKEHZvdGluZ190aHJlc2hvbGQYAyABKAUSEgoKbmV4dF9jaGVjaxgEIAEoBRI6CghmZWF0dXJlcxgFIAMoCzIoLndhdmVzLm5vZGUuZ3JwYy5GZWF0dXJlQWN0aXZhdGlvblN0YXR1cyKrAwoXRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMSCgoCaWQYASABKAUSEwoLZGVzY3JpcHRpb24YAiABKAkSWwoRYmxvY2tjaGFpbl9zdGF0dXMYAyABKA4yQC53YXZlcy5ub2RlLmdycGMuRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMuQmxvY2tjaGFpbkZlYXR1cmVTdGF0dXMSTwoLbm9kZV9zdGF0dXMYBCABKA4yOi53YXZlcy5ub2RlLmdycGMuRmVhdHVyZUFjdGl2YXRpb25TdGF0dXMuTm9kZUZlYXR1cmVTdGF0dXMSGQoRYWN0aXZhdGlvbl9oZWlnaHQYBSABKAUSGQoRc3VwcG9ydGluZ19ibG9ja3MYBiABKAUiRQoXQmxvY2tjaGFpbkZlYXR1cmVTdGF0dXMSDQoJVU5ERUZJTkVEEAASDAoIQVBQUk9WRUQQARINCglBQ1RJVkFURUQQAiJEChFOb2RlRmVhdHVyZVN0YXR1cxITCg9OT1RfSU1QTEVNRU5URUQQABIPCgtJTVBMRU1FTlRFRBABEgkKBVZPVEVEEAIiKQoSQmFzZVRhcmdldFJlc3BvbnNlEhMKC2Jhc2VfdGFyZ2V0GAEgASgDIh4KDVNjb3JlUmVzcG9uc2USDQoFc2NvcmUYASABKAwylwIKDUJsb2NrY2hhaW5BcGkSagoTR2V0QWN0aXZhdGlvblN0YXR1cxIoLndhdmVzLm5vZGUuZ3JwYy5BY3RpdmF0aW9uU3RhdHVzUmVxdWVzdBopLndhdmVzLm5vZGUuZ3JwYy5BY3RpdmF0aW9uU3RhdHVzUmVzcG9uc2USTAoNR2V0QmFzZVRhcmdldBIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRojLndhdmVzLm5vZGUuZ3JwYy5CYXNlVGFyZ2V0UmVzcG9uc2USTAoSR2V0Q3VtdWxhdGl2ZVNjb3JlEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gh4ud2F2ZXMubm9kZS5ncnBjLlNjb3JlUmVzcG9uc2VCjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z", [file_google_protobuf_empty]);
 
 /**
  * @generated from message waves.node.grpc.ActivationStatusRequest
  */
-export type ActivationStatusRequest = Message<'waves.node.grpc.ActivationStatusRequest'> & {
+export type ActivationStatusRequest = Message<"waves.node.grpc.ActivationStatusRequest"> & {
   /**
    * @generated from field: int32 height = 1;
    */
@@ -39,14 +28,13 @@ export type ActivationStatusRequest = Message<'waves.node.grpc.ActivationStatusR
  * Describes the message waves.node.grpc.ActivationStatusRequest.
  * Use `create(ActivationStatusRequestSchema)` to create a new message.
  */
-export const ActivationStatusRequestSchema: GenMessage<ActivationStatusRequest> =
-  /*@__PURE__*/
+export const ActivationStatusRequestSchema: GenMessage<ActivationStatusRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_blockchain_api, 0);
 
 /**
  * @generated from message waves.node.grpc.ActivationStatusResponse
  */
-export type ActivationStatusResponse = Message<'waves.node.grpc.ActivationStatusResponse'> & {
+export type ActivationStatusResponse = Message<"waves.node.grpc.ActivationStatusResponse"> & {
   /**
    * @generated from field: int32 height = 1;
    */
@@ -77,14 +65,13 @@ export type ActivationStatusResponse = Message<'waves.node.grpc.ActivationStatus
  * Describes the message waves.node.grpc.ActivationStatusResponse.
  * Use `create(ActivationStatusResponseSchema)` to create a new message.
  */
-export const ActivationStatusResponseSchema: GenMessage<ActivationStatusResponse> =
-  /*@__PURE__*/
+export const ActivationStatusResponseSchema: GenMessage<ActivationStatusResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_blockchain_api, 1);
 
 /**
  * @generated from message waves.node.grpc.FeatureActivationStatus
  */
-export type FeatureActivationStatus = Message<'waves.node.grpc.FeatureActivationStatus'> & {
+export type FeatureActivationStatus = Message<"waves.node.grpc.FeatureActivationStatus"> & {
   /**
    * @generated from field: int32 id = 1;
    */
@@ -120,8 +107,7 @@ export type FeatureActivationStatus = Message<'waves.node.grpc.FeatureActivation
  * Describes the message waves.node.grpc.FeatureActivationStatus.
  * Use `create(FeatureActivationStatusSchema)` to create a new message.
  */
-export const FeatureActivationStatusSchema: GenMessage<FeatureActivationStatus> =
-  /*@__PURE__*/
+export const FeatureActivationStatusSchema: GenMessage<FeatureActivationStatus> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_blockchain_api, 2);
 
 /**
@@ -147,8 +133,7 @@ export enum FeatureActivationStatus_BlockchainFeatureStatus {
 /**
  * Describes the enum waves.node.grpc.FeatureActivationStatus.BlockchainFeatureStatus.
  */
-export const FeatureActivationStatus_BlockchainFeatureStatusSchema: GenEnum<FeatureActivationStatus_BlockchainFeatureStatus> =
-  /*@__PURE__*/
+export const FeatureActivationStatus_BlockchainFeatureStatusSchema: GenEnum<FeatureActivationStatus_BlockchainFeatureStatus> = /*@__PURE__*/
   enumDesc(file_waves_node_grpc_blockchain_api, 2, 0);
 
 /**
@@ -174,14 +159,13 @@ export enum FeatureActivationStatus_NodeFeatureStatus {
 /**
  * Describes the enum waves.node.grpc.FeatureActivationStatus.NodeFeatureStatus.
  */
-export const FeatureActivationStatus_NodeFeatureStatusSchema: GenEnum<FeatureActivationStatus_NodeFeatureStatus> =
-  /*@__PURE__*/
+export const FeatureActivationStatus_NodeFeatureStatusSchema: GenEnum<FeatureActivationStatus_NodeFeatureStatus> = /*@__PURE__*/
   enumDesc(file_waves_node_grpc_blockchain_api, 2, 1);
 
 /**
  * @generated from message waves.node.grpc.BaseTargetResponse
  */
-export type BaseTargetResponse = Message<'waves.node.grpc.BaseTargetResponse'> & {
+export type BaseTargetResponse = Message<"waves.node.grpc.BaseTargetResponse"> & {
   /**
    * @generated from field: int64 base_target = 1;
    */
@@ -192,14 +176,13 @@ export type BaseTargetResponse = Message<'waves.node.grpc.BaseTargetResponse'> &
  * Describes the message waves.node.grpc.BaseTargetResponse.
  * Use `create(BaseTargetResponseSchema)` to create a new message.
  */
-export const BaseTargetResponseSchema: GenMessage<BaseTargetResponse> =
-  /*@__PURE__*/
+export const BaseTargetResponseSchema: GenMessage<BaseTargetResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_blockchain_api, 3);
 
 /**
  * @generated from message waves.node.grpc.ScoreResponse
  */
-export type ScoreResponse = Message<'waves.node.grpc.ScoreResponse'> & {
+export type ScoreResponse = Message<"waves.node.grpc.ScoreResponse"> & {
   /**
    * BigInt
    *
@@ -212,8 +195,7 @@ export type ScoreResponse = Message<'waves.node.grpc.ScoreResponse'> & {
  * Describes the message waves.node.grpc.ScoreResponse.
  * Use `create(ScoreResponseSchema)` to create a new message.
  */
-export const ScoreResponseSchema: GenMessage<ScoreResponse> =
-  /*@__PURE__*/
+export const ScoreResponseSchema: GenMessage<ScoreResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_blockchain_api, 4);
 
 /**
@@ -224,24 +206,26 @@ export const BlockchainApi: GenService<{
    * @generated from rpc waves.node.grpc.BlockchainApi.GetActivationStatus
    */
   getActivationStatus: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof ActivationStatusRequestSchema;
     output: typeof ActivationStatusResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.BlockchainApi.GetBaseTarget
    */
   getBaseTarget: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof EmptySchema;
     output: typeof BaseTargetResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.BlockchainApi.GetCumulativeScore
    */
   getCumulativeScore: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof EmptySchema;
     output: typeof ScoreResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_waves_node_grpc_blockchain_api, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_waves_node_grpc_blockchain_api, 0);
+

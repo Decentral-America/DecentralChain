@@ -2,22 +2,20 @@
 // @generated from file waves/lang/dapp_meta.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/lang/dapp_meta.proto.
  */
-export const file_waves_lang_dapp_meta: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'Chp3YXZlcy9sYW5nL2RhcHBfbWV0YS5wcm90bxIFd2F2ZXMiuQIKCERBcHBNZXRhEg8KB3ZlcnNpb24YASABKAUSNAoFZnVuY3MYAiADKAsyJS53YXZlcy5EQXBwTWV0YS5DYWxsYWJsZUZ1bmNTaWduYXR1cmUSWgoiY29tcGFjdE5hbWVBbmRPcmlnaW5hbE5hbWVQYWlyTGlzdBgDIAMoCzIuLndhdmVzLkRBcHBNZXRhLkNvbXBhY3ROYW1lQW5kT3JpZ2luYWxOYW1lUGFpchIVCg1vcmlnaW5hbE5hbWVzGAQgAygJGiYKFUNhbGxhYmxlRnVuY1NpZ25hdHVyZRINCgV0eXBlcxgBIAEoDBpLCh5Db21wYWN0TmFtZUFuZE9yaWdpbmFsTmFtZVBhaXISEwoLY29tcGFjdE5hbWUYASABKAkSFAoMb3JpZ2luYWxOYW1lGAIgASgJQn8KH2lvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLmRhcHBaS2dpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvcmlkZS9tZXRhL2dlbmVyYXRlZKoCDkRlY2VudHJhbENoYWluYgZwcm90bzM',
-  );
+export const file_waves_lang_dapp_meta: GenFile = /*@__PURE__*/
+  fileDesc("Chp3YXZlcy9sYW5nL2RhcHBfbWV0YS5wcm90bxIFd2F2ZXMiuQIKCERBcHBNZXRhEg8KB3ZlcnNpb24YASABKAUSNAoFZnVuY3MYAiADKAsyJS53YXZlcy5EQXBwTWV0YS5DYWxsYWJsZUZ1bmNTaWduYXR1cmUSWgoiY29tcGFjdE5hbWVBbmRPcmlnaW5hbE5hbWVQYWlyTGlzdBgDIAMoCzIuLndhdmVzLkRBcHBNZXRhLkNvbXBhY3ROYW1lQW5kT3JpZ2luYWxOYW1lUGFpchIVCg1vcmlnaW5hbE5hbWVzGAQgAygJGiYKFUNhbGxhYmxlRnVuY1NpZ25hdHVyZRINCgV0eXBlcxgBIAEoDBpLCh5Db21wYWN0TmFtZUFuZE9yaWdpbmFsTmFtZVBhaXISEwoLY29tcGFjdE5hbWUYASABKAkSFAoMb3JpZ2luYWxOYW1lGAIgASgJQn8KH2lvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLmRhcHBaS2dpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvcmlkZS9tZXRhL2dlbmVyYXRlZKoCDkRlY2VudHJhbENoYWluYgZwcm90bzM");
 
 /**
  * @generated from message waves.DAppMeta
  */
-export type DAppMeta = Message<'waves.DAppMeta'> & {
+export type DAppMeta = Message<"waves.DAppMeta"> & {
   /**
    * @generated from field: int32 version = 1;
    */
@@ -43,14 +41,13 @@ export type DAppMeta = Message<'waves.DAppMeta'> & {
  * Describes the message waves.DAppMeta.
  * Use `create(DAppMetaSchema)` to create a new message.
  */
-export const DAppMetaSchema: GenMessage<DAppMeta> =
-  /*@__PURE__*/
+export const DAppMetaSchema: GenMessage<DAppMeta> = /*@__PURE__*/
   messageDesc(file_waves_lang_dapp_meta, 0);
 
 /**
  * @generated from message waves.DAppMeta.CallableFuncSignature
  */
-export type DAppMeta_CallableFuncSignature = Message<'waves.DAppMeta.CallableFuncSignature'> & {
+export type DAppMeta_CallableFuncSignature = Message<"waves.DAppMeta.CallableFuncSignature"> & {
   /**
    * @generated from field: bytes types = 1;
    */
@@ -61,30 +58,28 @@ export type DAppMeta_CallableFuncSignature = Message<'waves.DAppMeta.CallableFun
  * Describes the message waves.DAppMeta.CallableFuncSignature.
  * Use `create(DAppMeta_CallableFuncSignatureSchema)` to create a new message.
  */
-export const DAppMeta_CallableFuncSignatureSchema: GenMessage<DAppMeta_CallableFuncSignature> =
-  /*@__PURE__*/
+export const DAppMeta_CallableFuncSignatureSchema: GenMessage<DAppMeta_CallableFuncSignature> = /*@__PURE__*/
   messageDesc(file_waves_lang_dapp_meta, 0, 0);
 
 /**
  * @generated from message waves.DAppMeta.CompactNameAndOriginalNamePair
  */
-export type DAppMeta_CompactNameAndOriginalNamePair =
-  Message<'waves.DAppMeta.CompactNameAndOriginalNamePair'> & {
-    /**
-     * @generated from field: string compactName = 1;
-     */
-    compactName: string;
+export type DAppMeta_CompactNameAndOriginalNamePair = Message<"waves.DAppMeta.CompactNameAndOriginalNamePair"> & {
+  /**
+   * @generated from field: string compactName = 1;
+   */
+  compactName: string;
 
-    /**
-     * @generated from field: string originalName = 2;
-     */
-    originalName: string;
-  };
+  /**
+   * @generated from field: string originalName = 2;
+   */
+  originalName: string;
+};
 
 /**
  * Describes the message waves.DAppMeta.CompactNameAndOriginalNamePair.
  * Use `create(DAppMeta_CompactNameAndOriginalNamePairSchema)` to create a new message.
  */
-export const DAppMeta_CompactNameAndOriginalNamePairSchema: GenMessage<DAppMeta_CompactNameAndOriginalNamePair> =
-  /*@__PURE__*/
+export const DAppMeta_CompactNameAndOriginalNamePairSchema: GenMessage<DAppMeta_CompactNameAndOriginalNamePair> = /*@__PURE__*/
   messageDesc(file_waves_lang_dapp_meta, 0, 1);
+
