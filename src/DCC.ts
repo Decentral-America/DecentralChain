@@ -26,13 +26,6 @@ import { base58Encode, bytesToAscii, bytesToHex, concatBytes, uint32ToBytesBE } 
  * meaningful diagnostics instead of raw hex.
  */
 const STATUS_MESSAGES: Readonly<Record<number, string>> = {
-  36864: 'OK',
-  37120: 'User cancelled',
-  37122: 'Deprecated sign protocol',
-  37123: 'Incorrect precision value',
-  37124: 'Incorrect transaction type/version',
-  37125: 'Protobuf decoding failed',
-  37126: 'Byte decoding failed',
   27010: 'Security status not satisfied',
   27013: 'Conditions not satisfied',
   27014: 'Device is locked',
@@ -40,11 +33,23 @@ const STATUS_MESSAGES: Readonly<Record<number, string>> = {
   27270: 'Incorrect P1/P2',
   27904: 'Instruction not supported',
   28160: 'CLA not supported',
+  36864: 'OK',
+  37120: 'User cancelled',
+  37122: 'Deprecated sign protocol',
+  37123: 'Incorrect precision value',
+  37124: 'Incorrect transaction type/version',
+  37125: 'Protobuf decoding failed',
+  37126: 'Byte decoding failed',
 };
 
 const DCC_CONFIG = {
-  /** Status word indicating success. */
-  SW_OK: 0x9000,
+  ADDRESS_LENGTH: 35,
+  /** Default decimal precision for DCC token amounts. */
+  DCC_PRECISION: 8,
+  /** Mainnet chain code (`'L'` = 76). */
+  MAIN_NET_CODE: 76,
+  MAX_SIZE: 128,
+  PUBLIC_KEY_LENGTH: 32,
   /**
    * Ledger app identifier.
    *
@@ -54,20 +59,15 @@ const DCC_CONFIG = {
    * ships its own custom Ledger app.
    */
   SECRET: 'WAVES',
-  PUBLIC_KEY_LENGTH: 32,
-  ADDRESS_LENGTH: 35,
-  STATUS_LENGTH: 2,
   SIGNED_CODES: {
-    ORDER: 0xfc,
-    SOME_DATA: 0xfd,
-    REQUEST: 0xfe,
     MESSAGE: 0xff,
+    ORDER: 0xfc,
+    REQUEST: 0xfe,
+    SOME_DATA: 0xfd,
   },
-  MAX_SIZE: 128,
-  /** Default decimal precision for DCC token amounts. */
-  DCC_PRECISION: 8,
-  /** Mainnet chain code (`'L'` = 76). */
-  MAIN_NET_CODE: 76,
+  STATUS_LENGTH: 2,
+  /** Status word indicating success. */
+  SW_OK: 0x9000,
 } as const;
 
 // Runtime immutability — prevent malicious or accidental mutation of protocol constants.
@@ -147,7 +147,7 @@ export class DCC {
     );
     const statusCode = bytesToHex(response.slice(-DCC_CONFIG.STATUS_LENGTH));
 
-    return { publicKey, address, statusCode };
+    return { address, publicKey, statusCode };
   }
 
   /**
@@ -193,9 +193,9 @@ export class DCC {
   async signSomeData(path: string, sOData: SignData): Promise<string> {
     const sData: SignTxData = {
       ...sOData,
+      amountPrecision: 0,
       dataType: DCC_CONFIG.SIGNED_CODES.SOME_DATA,
       dataVersion: 0,
-      amountPrecision: 0,
       feePrecision: 0,
     };
     const dataForDevice = await this._fillDataForSign(path, sData);
@@ -212,9 +212,9 @@ export class DCC {
   async signRequest(path: string, sOData: SignData): Promise<string> {
     const sData: SignTxData = {
       ...sOData,
+      amountPrecision: 0,
       dataType: DCC_CONFIG.SIGNED_CODES.REQUEST,
       dataVersion: 0,
-      amountPrecision: 0,
       feePrecision: 0,
     };
     const dataForDevice = await this._fillDataForSign(path, sData);
@@ -231,9 +231,9 @@ export class DCC {
   async signMessage(path: string, sOData: SignData): Promise<string> {
     const sData: SignTxData = {
       ...sOData,
+      amountPrecision: 0,
       dataType: DCC_CONFIG.SIGNED_CODES.MESSAGE,
       dataVersion: 0,
-      amountPrecision: 0,
       feePrecision: 0,
     };
     const dataForDevice = await this._fillDataForSign(path, sData);

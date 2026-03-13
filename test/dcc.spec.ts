@@ -12,10 +12,10 @@ function ledgerResponse(payload: number[], status = [0x90, 0x00]): Uint8Array {
 
 function createMockTransport(overrides: Partial<LedgerTransport> = {}): LedgerTransport {
   return {
-    send: vi.fn().mockResolvedValue(ledgerResponse([])),
     close: vi.fn().mockResolvedValue(undefined),
-    setExchangeTimeout: vi.fn(),
     decorateAppAPIMethods: vi.fn(),
+    send: vi.fn().mockResolvedValue(ledgerResponse([])),
+    setExchangeTimeout: vi.fn(),
     ...overrides,
   };
 }
@@ -203,8 +203,8 @@ describe('DCC', () => {
         .mockResolvedValue(new Uint8Array([...pubKeyBytes, ...addressBytes, 0x69, 0x85]));
 
       await expect(dcc.getWalletPublicKey("44'/5741564'/0'/0'/0'")).rejects.toMatchObject({
-        message: 'Conditions not satisfied',
         cause: { error: 'Conditions not satisfied', status: 0x6985 },
+        message: 'Conditions not satisfied',
       });
     });
 
@@ -255,8 +255,8 @@ describe('DCC', () => {
           return dcc.getVersion();
         })(),
       ).rejects.toMatchObject({
-        message: 'Conditions not satisfied',
         cause: { error: 'Conditions not satisfied', status: 0x6985 },
+        message: 'Conditions not satisfied',
       });
     });
   });
@@ -286,10 +286,10 @@ describe('DCC', () => {
 
       await expect(
         dcc.signTransaction("44'/5741564'/0'/0'/0'", {
+          amountPrecision: 256,
           dataBuffer: new Uint8Array([1]),
           dataType: 4,
           dataVersion: 1,
-          amountPrecision: 256,
         }),
       ).rejects.toThrow('amountPrecision must be an integer in [0, 255]');
     });
@@ -381,11 +381,11 @@ describe('DCC', () => {
         .mockResolvedValue(new Uint8Array(new Array(64).fill(0).concat([0x90, 0x00])));
 
       await dcc.signTransaction("44'/5741564'/0'/0'/0'", {
+        amount2Precision: 2,
+        amountPrecision: 6,
         dataBuffer: new Uint8Array([1, 2, 3]),
         dataType: 4,
         dataVersion: 2,
-        amountPrecision: 6,
-        amount2Precision: 2,
         feePrecision: 8,
       });
 
@@ -400,11 +400,11 @@ describe('DCC', () => {
         .mockResolvedValue(new Uint8Array(new Array(64).fill(0).concat([0x90, 0x00])));
 
       await dcc.signTransaction("44'/5741564'/0'/0'/0'", {
+        amount2Precision: 3,
+        amountPrecision: 6,
         dataBuffer: new Uint8Array([1, 2, 3]),
         dataType: 4,
         dataVersion: 2,
-        amountPrecision: 6,
-        amount2Precision: 3,
         feePrecision: 8,
       });
 
@@ -476,8 +476,8 @@ describe('DCC', () => {
           dataVersion: 1,
         }),
       ).rejects.toMatchObject({
-        message: 'Conditions not satisfied',
         cause: { error: 'Conditions not satisfied', status: 0x6985 },
+        message: 'Conditions not satisfied',
       });
     });
   });
