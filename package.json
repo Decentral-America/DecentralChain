@@ -6,12 +6,12 @@
   "packageManager": "npm@11.9.0",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -40,10 +40,10 @@
   },
   "scripts": {
     "generate": "pbjs -t static-module -w es6 --es6 --force-long --keep-case --no-convert --no-delimited --no-verify -o src/messages.proto.compiled.js src/messages.proto",
-    "generate:types": "pbts -o src/messages.proto.compiled.d.ts src/messages.proto.compiled.js",
+    "generate:types": "pbts -o src/messages.proto.compiled.d.mts src/messages.proto.compiled.js",
     "generate:all": "npm run generate && npm run generate:types && npm run fix:imports",
     "fix:imports": "node -e \"import{readFileSync as r,writeFileSync as w}from'fs';let js=r('src/messages.proto.compiled.js','utf8');js=js.replace('import * as \\$protobuf from \\\"protobufjs/minimal\\\"','import \\$protobuf from \\\"protobufjs/minimal.js\\\"');w('src/messages.proto.compiled.js',js);\"",
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -54,7 +54,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "check:publint": "publint",
-    "check:exports": "attw --pack . --ignore-rules no-resolution",
+    "check:exports": "attw --pack . --profile esm-only",
     "check:size": "size-limit",
     "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size",
     "bulletproof": "biome check --write . && npm run typecheck && npm run test",
@@ -101,7 +101,7 @@
     "protobufjs-cli": "2.0.0",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
-    "tsup": "8.5.1",
+    "tsdown": "0.21.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   }
