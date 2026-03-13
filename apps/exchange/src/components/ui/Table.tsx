@@ -123,7 +123,9 @@ export const Table = <T extends Record<string, unknown>>({
                 >
                   {columns.map((col) => (
                     <TableCell key={col.key}>
-                      {col.render ? col.render(row[col.key], row) : (row[col.key] as React.ReactNode)}
+                      {col.render
+                        ? col.render(row[col.key], row)
+                        : (row[col.key] as React.ReactNode)}
                     </TableCell>
                   ))}
                 </StyledTableRow>

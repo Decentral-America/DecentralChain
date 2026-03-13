@@ -470,7 +470,10 @@ export const renderWithSuspense = <P = unknown>(
   return createElement(
     Suspense,
     { fallback: fallback || createElement('div', null, 'Loading...') },
-    createElement(Component as ComponentType<Record<string, unknown>>, props as Record<string, unknown>),
+    createElement(
+      Component as ComponentType<Record<string, unknown>>,
+      props as Record<string, unknown>,
+    ),
   );
 };
 

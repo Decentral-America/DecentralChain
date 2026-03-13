@@ -18,7 +18,10 @@ import { logger } from '@/lib/logger';
  */
 
 // Styled Components
-const NumberWrapper = styled.span<{ color?: string | undefined; size?: 'small' | 'medium' | 'large' }>`
+const NumberWrapper = styled.span<{
+  color?: string | undefined;
+  size?: 'small' | 'medium' | 'large';
+}>`
   font-family: 'Roboto Mono', monospace;
   font-size: ${({ size }) => {
     switch (size) {
@@ -180,7 +183,8 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
 
       // Handle rounding mode (only supported in newer browsers)
       if (roundingMode) {
-        (options as Intl.NumberFormatOptions & { roundingMode?: string }).roundingMode = roundingMode;
+        (options as Intl.NumberFormatOptions & { roundingMode?: string }).roundingMode =
+          roundingMode;
       }
 
       // Create formatter and format number
