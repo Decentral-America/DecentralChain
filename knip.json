@@ -1,5 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "project": ["src/**/*.{js,ts}"],
-  "ignoreDependencies": ["@decentralchain/ts-lib-crypto"]
+  "ignoreDependencies": ["@decentralchain/ts-lib-crypto"],
+  "project": ["src/**/*.{js,ts}"]
 }
