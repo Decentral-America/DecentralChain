@@ -57,15 +57,15 @@ function wrappedCompile(
       } = result;
       return {
         result: {
-          bytes,
-          base64: crypto.base64Encode(bytes),
-          size: bytes.byteLength,
           ast,
-          complexity,
-          verifierComplexity,
+          base64: crypto.base64Encode(bytes),
+          bytes,
           callableComplexities,
-          userFunctionComplexities,
+          complexity,
           globalVariableComplexities,
+          size: bytes.byteLength,
+          userFunctionComplexities,
+          verifierComplexity,
         },
       };
     }
@@ -171,21 +171,21 @@ export const parseAndCompile = scalaJsCompiler.parseAndCompile;
 // Legacy default export for CJS compat
 const api = {
   compile: wrappedCompile,
-  repl: wrappedRepl,
   get contractLimits() {
     return scalaJsCompiler.contractLimits();
   },
+  decompile: scalaJsCompiler.decompile,
+  flattenCompilationResult,
+  getFunctionsDoc: scalaJsCompiler.getFunctionsDoc,
+  getTypes: scalaJsCompiler.getTypes,
+  getVarsDoc: scalaJsCompiler.getVarsDoc,
+  parseAndCompile: scalaJsCompiler.parseAndCompile,
+  repl: wrappedRepl,
+  scriptInfo: scalaJsCompiler.scriptInfo,
   get version() {
     const v = scalaJsCompiler.nodeVersion();
     return v?.version;
   },
-  scriptInfo: scalaJsCompiler.scriptInfo,
-  getTypes: scalaJsCompiler.getTypes,
-  getVarsDoc: scalaJsCompiler.getVarsDoc,
-  getFunctionsDoc: scalaJsCompiler.getFunctionsDoc,
-  decompile: scalaJsCompiler.decompile,
-  flattenCompilationResult,
-  parseAndCompile: scalaJsCompiler.parseAndCompile,
 };
 
 globalThis.RideJS = api;

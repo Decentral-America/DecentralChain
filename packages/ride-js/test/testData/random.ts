@@ -73,11 +73,11 @@ export const getRandomDigestAlgorithmTypeArray = () =>
  * */
 export const entryListWithRandomData = (key: string, dataForEntry: any): string => {
   const entryArray = {
-    DataEntry: `[DataEntry("key", ${dataForEntry})]`,
     BinaryEntry: `[BinaryEntry("key", ${dataForEntry})]`,
+    BooleanEntry: `[BooleanEntry("key", ${dataForEntry})]`,
+    DataEntry: `[DataEntry("key", ${dataForEntry})]`,
     IntegerEntry: `[IntegerEntry("key", ${dataForEntry})]`,
     StringEntry: `[StringEntry("key", ${dataForEntry})]`,
-    BooleanEntry: `[BooleanEntry("key", ${dataForEntry})]`,
   };
 
   return entryArray[key];

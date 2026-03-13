@@ -235,7 +235,7 @@ func bar() = WriteSet([])`;
       chainId = 'T',
       address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
 
-    const { evaluate } = compiler.repl({ nodeUrl, chainId, address });
+    const { evaluate } = compiler.repl({ address, chainId, nodeUrl });
     const res = await evaluate(
       "transactionHeightById(base58'GgjvCxoDP2FtNrKMqsWrUqJZfMGTiWB1tF2RyYHk6u9w')",
     );
@@ -249,22 +249,22 @@ func bar() = WriteSet([])`;
       chainId = 'T';
     let address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
 
-    let repl = compiler.repl({ nodeUrl, chainId, address });
+    let repl = compiler.repl({ address, chainId, nodeUrl });
     let res = await repl.evaluate('this');
     expect('result' in res && res.result.includes(address)).toEqual(true);
 
     address = '3N5hQm6twVhFgf8mKBkJpNhxwcBnpZsPyni';
-    repl = repl.reconfigure({ nodeUrl, chainId, address });
+    repl = repl.reconfigure({ address, chainId, nodeUrl });
     res = await repl.evaluate('this');
     expect('result' in res && res.result.includes(address)).toEqual(true);
 
     address = '3N77yhDrPTdLFjzNPZcBQPZLDg11EHAB7xF';
-    repl = repl.reconfigure({ nodeUrl, chainId, address });
+    repl = repl.reconfigure({ address, chainId, nodeUrl });
     res = await repl.evaluate('this');
     expect('result' in res && res.result.includes(address)).toEqual(true);
 
     address = '3Mzrrp6SCrDz7bUQThWoYvbwkFSjTDcRtCv';
-    repl = repl.reconfigure({ nodeUrl, chainId, address });
+    repl = repl.reconfigure({ address, chainId, nodeUrl });
     res = await repl.evaluate('this');
     expect('result' in res && res.result.includes(address)).toEqual(true);
   });
@@ -402,9 +402,9 @@ let a = 5
 multiply(inc(a), dec(a)) == (5 + 1) * (5 - 1)
 `;
     const libMap = {
-      'lib1.ride': lib1,
       'lib-2.ride': lib2,
       'lib.3.ride': lib3,
+      'lib1.ride': lib1,
     };
     const compiled = compiler.compile(code, 3, false, false, libMap);
     expect(compiled.error).toBeUndefined();
