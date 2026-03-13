@@ -11,13 +11,10 @@ export default defineConfig({
     },
   },
   test: {
-    globals: true,
-    environment: 'node',
-    include: ['test/**/*.spec.{ts,js}'],
-    testTimeout: 60_000,
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
       include: ['src/**/*.js'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 65,
@@ -26,6 +23,10 @@ export default defineConfig({
         statements: 84,
       },
     },
+    environment: 'node',
+    globals: true,
+    include: ['test/**/*.spec.{ts,js}'],
     reporters: ['default'],
+    testTimeout: 60_000,
   },
 });
