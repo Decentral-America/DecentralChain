@@ -14,9 +14,9 @@ export function ImportDebug() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const accounts = usePopupSelector(state => state.accounts);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const customCodes = usePopupSelector(state => state.customCodes);
+  const accounts = usePopupSelector((state) => state.accounts);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const customCodes = usePopupSelector((state) => state.customCodes);
 
   const networkCode = customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
@@ -28,7 +28,7 @@ export function ImportDebug() {
       return t('importDebug.requiredError');
     }
 
-    if (accounts.some(account => account.name === name)) {
+    if (accounts.some((account) => account.name === name)) {
       return t('importDebug.alreadyExists');
     }
 
@@ -46,7 +46,7 @@ export function ImportDebug() {
       });
     }
 
-    if (accounts.some(account => account.address === address)) {
+    if (accounts.some((account) => account.address === address)) {
       return t('importDebug.alreadyExists');
     }
 
@@ -60,7 +60,7 @@ export function ImportDebug() {
       <h2 className="margin1 title1">{t('importDebug.title')}</h2>
 
       <form
-        onSubmit={async e => {
+        onSubmit={async (e) => {
           e.preventDefault();
 
           setShowErrors(true);
@@ -90,7 +90,7 @@ export function ImportDebug() {
           <Input
             id="accountName"
             className="margin1"
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             value={name}
             maxLength={32}
             autoFocus
@@ -106,7 +106,7 @@ export function ImportDebug() {
           <Input
             id="accountAddress"
             className="margin1"
-            onChange={e => setAddress(e.target.value)}
+            onChange={(e) => setAddress(e.target.value)}
             value={address}
             maxLength={35}
             error={showErrors && !!addressError}

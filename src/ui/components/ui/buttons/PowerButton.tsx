@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import * as styles from './powerBtn.styl';
+import * as styles from './powerBtn.module.styl';
 
 export function PowerButton({ className, onClick, enabled, children, ...props }: IProps) {
   const btnClassName = clsx(className, styles.powerBtn, {

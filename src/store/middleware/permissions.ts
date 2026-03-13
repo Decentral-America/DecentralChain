@@ -7,7 +7,7 @@ import {
   disallowOriginDone,
   pendingOrigin,
 } from '../actions/permissions';
-import type { AppAction, AppMiddleware } from '../types';
+import { type AppAction, type AppMiddleware } from '../types';
 
 let _timer: ReturnType<typeof setTimeout>;
 
@@ -17,9 +17,9 @@ const _permissionMW =
     method: keyof typeof background,
     actionCb: (payload: unknown) => AppAction,
   ): AppMiddleware =>
-  store =>
-  next =>
-  action => {
+  (store) =>
+  (next) =>
+  (action) => {
     if (action.type !== type) {
       return next(action);
     }

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { PureComponent } from 'react';
 
 import { Button } from './Button';
-import * as styles from './dropdownButton.styl';
+import * as styles from './dropdownButton.module.styl';
 
 interface Props extends React.ComponentProps<'div'> {
   children?: React.ReactElement[] | undefined;

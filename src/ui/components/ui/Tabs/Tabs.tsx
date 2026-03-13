@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { Children, cloneElement, isValidElement, useState } from 'react';
 import invariant from 'tiny-invariant';
 
-import * as styles from './tabs.styl';
+import * as styles from './tabs.module.styl';
 
 interface TabProps {
   className?: string | undefined;
@@ -18,7 +18,7 @@ export function Tab({ className, children, isActive, onActivate }: TabProps) {
       role="tab"
       className={clsx(styles.tabListItem, { [styles.tabListActive]: isActive }, className)}
       onClick={onActivate}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           onActivate?.();
@@ -102,7 +102,7 @@ export function Tabs({ children, activeTab: activeTabProp, onTabChange }: TabsPr
 
   return (
     <>
-      {Children.map(children, child => {
+      {Children.map(children, (child) => {
         switch (child.type) {
           case TabPanels:
             return cloneElement(child as React.ReactElement<any>, { activeIndex: activeTab });

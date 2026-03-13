@@ -6,7 +6,7 @@ import { ErrorMessage } from 'ui/components/ui/error';
 import { Input } from 'ui/components/ui/input';
 import { Modal } from 'ui/components/ui/modal/Modal';
 
-import * as styles from './passwordModal.styl';
+import * as styles from './passwordModal.module.styl';
 
 interface Props {
   showAttention?: boolean | undefined;
@@ -40,7 +40,7 @@ export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onS
       <div className="modal cover">
         <form
           className="modal-form"
-          onSubmit={async event => {
+          onSubmit={async (event) => {
             event.preventDefault();
             setPasswordError(false);
             setLoading(true);
@@ -72,7 +72,7 @@ export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onS
               value={password}
               view="password"
               wrapperClassName="margin1"
-              onChange={event => {
+              onChange={(event) => {
                 setPassword(event.currentTarget.value);
               }}
             />
@@ -98,7 +98,7 @@ export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onS
               <input
                 type="checkbox"
                 checked={encrypted}
-                onChange={event => {
+                onChange={(event) => {
                   setEncrypted(event.currentTarget.checked);
                 }}
               />

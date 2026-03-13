@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 
-import * as styles from './modal.styl';
+import * as styles from './modal.module.styl';
 
 const ModalWrapper = (props: Props) => {
   return (

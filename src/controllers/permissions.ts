@@ -1,14 +1,18 @@
 import BigNumber from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { isNotNull } from '_core/isNotNull';
-import type { MessageTx } from 'messages/types';
+import { type MessageTx } from 'messages/types';
 import ObservableStore from 'obs-store';
 import { PERMISSIONS } from 'permissions/constants';
-import type { PermissionObject, PermissionType, PermissionValue } from 'permissions/types';
+import {
+  type PermissionObject,
+  type PermissionType,
+  type PermissionValue,
+} from 'permissions/types';
 
 import { ERRORS } from '../lib/keeperError';
-import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
-import type { RemoteConfigController } from './remoteConfig';
+import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';
+import { type RemoteConfigController } from './remoteConfig';
 
 const findPermissionFabric = (permission: PermissionType) => (item: PermissionValue) => {
   if (typeof item === 'string') {
@@ -124,7 +128,7 @@ export class PermissionsController {
   deletePermission(origin: string, permission: PermissionValue) {
     const permissionType = typeof permission === 'string' ? permission : permission.type;
     const findPermission = findPermissionFabric(permissionType);
-    const permissions = this.getPermissions(origin).filter(item => !findPermission(item));
+    const permissions = this.getPermissions(origin).filter((item) => !findPermission(item));
     this.setPermissions(origin, permissions);
   }
 
@@ -206,7 +210,7 @@ export class PermissionsController {
         : tx.type === TRANSACTION_TYPE.MASS_TRANSFER
           ? tx.assetId
             ? null
-            : BigNumber.sum(...tx.transfers.map(transfer => transfer.amount))
+            : BigNumber.sum(...tx.transfers.map((transfer) => transfer.amount))
           : tx.type === TRANSACTION_TYPE.DATA
             ? new BigNumber(0)
             : null;
@@ -215,7 +219,7 @@ export class PermissionsController {
     function getTxPackageAmount(txs: MessageTx[]) {
       const amounts = txs.map(getTxAmount);
 
-      return amounts.some(amount => amount == null)
+      return amounts.some((amount) => amount == null)
         ? null
         : BigNumber.sum(...amounts.filter(isNotNull));
     }
@@ -227,7 +231,7 @@ export class PermissionsController {
     function getTxPackageFee(txs: MessageTx[]) {
       const fees = txs.map(getTxFee);
 
-      return fees.some(fee => fee == null) ? null : BigNumber.sum(...fees.filter(isNotNull));
+      return fees.some((fee) => fee == null) ? null : BigNumber.sum(...fees.filter(isNotNull));
     }
 
     function getTotalTxAmount(tx: MessageTx | MessageTx[]) {
@@ -268,7 +272,7 @@ export class PermissionsController {
       (permission as PermissionObject).type || permission,
     );
     const permissions = [
-      ...this.getPermissions(origin).filter(item => !findPermission(item)),
+      ...this.getPermissions(origin).filter((item) => !findPermission(item)),
       permission,
     ];
     this.setPermissions(origin, permissions);
@@ -279,7 +283,7 @@ export class PermissionsController {
     const origins = { ...oldOrigins, ...(state.origins || {}) };
     const whitelist = state.whitelist || oldState.whitelist;
     const inPending = { ...oldInPending, ...(state.inPending || {}) };
-    Object.keys(origins).forEach(key => {
+    Object.keys(origins).forEach((key) => {
       origins[key] = Array.from(new Set(origins[key] || []));
     });
     const newState = {

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { PureComponent } from 'react';
 
-import * as styles from './index.styl';
+import * as styles from './index.module.styl';
 
 export class Tabs extends PureComponent<IProps> {
   selectHandler = (name: string) => () => {
@@ -21,7 +21,7 @@ export class Tabs extends PureComponent<IProps> {
             key={name}
             id={`${name}Tab`}
             onClick={this.selectHandler(name)}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 this.selectHandler(name)();

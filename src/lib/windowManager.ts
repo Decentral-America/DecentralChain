@@ -12,8 +12,8 @@ export class WindowManager {
       windowTypes: ['popup'],
     });
 
-    const win = windows.find(w =>
-      w.tabs?.some(tab => tab.url?.startsWith(NOTIFICATION_WINDOW_URL)),
+    const win = windows.find((w) =>
+      w.tabs?.some((tab) => tab.url?.startsWith(NOTIFICATION_WINDOW_URL)),
     );
 
     return win?.id;
@@ -22,7 +22,7 @@ export class WindowManager {
   showWindow() {
     this.#lastWindowPromise = this.#lastWindowPromise
       .catch(() => undefined)
-      .then(async win => {
+      .then(async (win) => {
         const notificationWindowId = win?.id ?? (await this.#getNotificationWindowId());
 
         try {

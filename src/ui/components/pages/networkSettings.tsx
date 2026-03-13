@@ -8,18 +8,18 @@ import { usePopupDispatch, usePopupSelector } from '../../../popup/store/react';
 import { setCustomCode, setCustomMatcher, setCustomNode } from '../../../store/actions/network';
 import { getMatcherPublicKey, getNetworkCode } from '../../utils/network';
 import { Button, Copy, ErrorMessage, Input, Modal } from '../ui';
-import * as styles from './styles/settings.styl';
+import * as styles from './styles/settings.module.styl';
 
 export function NetworkSettings() {
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
 
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
-  const customMatcher = usePopupSelector(state => state.customMatcher[state.currentNetwork]);
+  const customMatcher = usePopupSelector((state) => state.customMatcher[state.currentNetwork]);
 
-  const customNode = usePopupSelector(state => state.customNodes[state.currentNetwork]);
+  const customNode = usePopupSelector((state) => state.customNodes[state.currentNetwork]);
 
   const defaultNetworkConfig = NETWORK_CONFIG[currentNetwork];
 
@@ -75,13 +75,13 @@ export function NetworkSettings() {
   return (
     <form
       className={styles.networkTab}
-      onSubmit={async event => {
+      onSubmit={async (event) => {
         event.preventDefault();
         setIsSubmitting(true);
 
         const [nodeIsValid, matcherIsValid] = await Promise.all([
           getNetworkCode(nodeValue).then(
-            networkCode => {
+            (networkCode) => {
               if (currentNetwork === NetworkName.Custom) {
                 dispatch(setCustomCode({ code: networkCode, network: currentNetwork }));
               } else if (networkCode !== defaultNetworkConfig.networkCode) {
@@ -147,7 +147,7 @@ export function NetworkSettings() {
           id="node_address"
           type="url"
           value={nodeValue}
-          onChange={event => {
+          onChange={(event) => {
             setNodeValue(event.currentTarget.value);
             setNodeError(false);
           }}
@@ -177,7 +177,7 @@ export function NetworkSettings() {
           id="matcher_address"
           type="url"
           value={matcherValue}
-          onChange={event => {
+          onChange={(event) => {
             setMatcherValue(event.currentTarget.value);
             setMatcherError(false);
           }}

@@ -1,4 +1,4 @@
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 import { NftList } from 'nfts/nftList';
 import { createNft } from 'nfts/nfts';
 import { DisplayMode, type Nft } from 'nfts/types';
@@ -13,7 +13,7 @@ import { getAccountLink } from 'ui/urls';
 import * as styles from './nftCollection.module.css';
 
 const PLACEHOLDERS = [...Array(4).keys()].map<Nft>(
-  key =>
+  (key) =>
     ({
       id: `${key}`,
       creator: `${key}`,
@@ -24,12 +24,12 @@ export function NftCollection() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
+  const userAddress = usePopupSelector((state) => state.selectedAccount?.address ?? '');
 
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
 
-  const myNfts = usePopupSelector(state => state.balances[userAddress]?.nfts);
-  const nfts = usePopupSelector(state => state.nfts);
+  const myNfts = usePopupSelector((state) => state.balances[userAddress]?.nfts);
+  const nfts = usePopupSelector((state) => state.nfts);
 
   const [filters, setFilters] = useUiState('nftFilters');
   const [term, setTerm] = [
@@ -39,7 +39,7 @@ export function NftCollection() {
 
   const params = useParams<{ creator: string }>();
 
-  const nftConfig = usePopupSelector(state => state.nftConfig);
+  const nftConfig = usePopupSelector((state) => state.nftConfig);
 
   const getNftDetails = (asset: AssetDetail) =>
     createNft({
@@ -70,7 +70,7 @@ export function NftCollection() {
         </div>
         <div>
           <Tooltip content={t('nftInfo.creatorUrlTooltip')}>
-            {props => (
+            {(props) => (
               <a
                 rel="noopener noreferrer"
                 className="link"
@@ -101,7 +101,7 @@ export function NftCollection() {
             autoFocus
             className={styles.searchInput}
             value={term ?? ''}
-            onInput={e => setTerm(e.currentTarget.value)}
+            onInput={(e) => setTerm(e.currentTarget.value)}
             onClear={() => setTerm('')}
           />
         </div>
@@ -123,7 +123,7 @@ export function NftCollection() {
           <NftList
             mode={DisplayMode.Name}
             nfts={creatorNfts}
-            onClick={nft => {
+            onClick={(nft) => {
               navigate(`/nft/${nft.id}`);
             }}
           />

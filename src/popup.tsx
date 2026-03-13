@@ -1,6 +1,6 @@
 import './global.css';
-import './ui/styles/app.styl';
-import './ui/styles/icons.styl';
+import './ui/styles/app.module.styl';
+import './ui/styles/icons.module.styl';
 
 import { setTag, setUser } from '@sentry/browser';
 import i18next from 'i18next';
@@ -13,11 +13,11 @@ import { onEnd, pipe, publish } from 'wonka';
 
 import { SignProvider } from './_core/signContext';
 import { UsdPricesProvider } from './_core/usdPrices';
-import type { UiApi } from './background';
+import { type UiApi } from './background';
 import { i18nextInit } from './i18n/init';
 import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from './ipc/ipc';
 import { ledgerService } from './ledger/service';
-import type { LedgerSignRequest } from './ledger/types';
+import { type LedgerSignRequest } from './ledger/types';
 import { createPopupStore } from './popup/store/create';
 import { createUpdateState } from './popup/updateState';
 import { PopupRoot } from './popupRoot';
@@ -28,7 +28,7 @@ import Background, { type BackgroundUiApi } from './ui/services/Background';
 
 initSentry({
   source: 'popup',
-  shouldIgnoreError: async message => {
+  shouldIgnoreError: async (message) => {
     const [shouldIgnoreGlobal, shouldIgnoreContext] = await Promise.all([
       Background.shouldIgnoreError('beforeSend', message),
       Background.shouldIgnoreError('beforeSendPopup', message),
@@ -88,7 +88,7 @@ Promise.all([
       closePopupWindow: async () => {
         const popup = Browser.extension
           .getViews({ type: 'popup' })
-          .find(w => w.location.pathname === '/popup.html');
+          .find((w) => w.location.pathname === '/popup.html');
 
         if (popup) {
           popup.close();
@@ -105,7 +105,7 @@ Promise.all([
 
     pipe(
       fromWebExtensionPort(port),
-      handleMethodCallRequests(uiApi, result => port?.postMessage(result)),
+      handleMethodCallRequests(uiApi, (result) => port?.postMessage(result)),
       onEnd(() => {
         Background.setConnect(() => {
           port = null;
@@ -116,7 +116,7 @@ Promise.all([
     );
 
     return createIpcCallProxy<keyof BackgroundUiApi, BackgroundUiApi>(
-      request => port?.postMessage(request),
+      (request) => port?.postMessage(request),
       fromWebExtensionPort(port),
     );
   }
@@ -133,7 +133,7 @@ Promise.all([
     );
   }
 
-  background.getState().then(state => {
+  background.getState().then((state) => {
     setUser(state.userId ? { id: state.userId } : null);
     setTag('network', state.currentNetwork);
     updateState(state);

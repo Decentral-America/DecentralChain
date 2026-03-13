@@ -1,5 +1,5 @@
 import { Asset, Money } from '@decentralchain/data-entities';
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 import { useTranslation } from 'react-i18next';
 
 import { usePopupSelector } from '../../../../popup/store/react';
@@ -14,7 +14,7 @@ interface Props {
 
 export function AssetInfo({ asset, onCopy, onClose }: Props) {
   const { t } = useTranslation();
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
 
   return (
     <div className="modal cover">

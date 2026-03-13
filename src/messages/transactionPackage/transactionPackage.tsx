@@ -1,7 +1,7 @@
 import BigNumber from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import type { AssetsRecord } from 'assets/types';
+import { type AssetsRecord } from 'assets/types';
 import clsx from 'clsx';
 import { MessageFooter } from 'messages/_common/footer';
 import { MessageHeader } from 'messages/_common/header';
@@ -9,14 +9,14 @@ import { MessageIcon } from 'messages/_common/icon';
 import { TxInfo } from 'messages/transaction/common/info';
 import { TransactionCard } from 'messages/transaction/transaction';
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import type { MessageOfType, MessageTx } from '../types';
+import { type MessageOfType, type MessageTx } from '../types';
 import * as styles from './transactionPackage.module.css';
 
 function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
@@ -60,13 +60,13 @@ function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
 
       return [
         new Money(
-          new BigNumber(0).sub(BigNumber.sum(...tx.transfers.map(t => t.amount))),
+          new BigNumber(0).sub(BigNumber.sum(...tx.transfers.map((t) => t.amount))),
           new Asset(asset),
         ),
       ];
     }
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return tx.payment.map(p => {
+      return tx.payment.map((p) => {
         const asset = assets[p.assetId ?? 'WAVES'];
         invariant(asset);
         return new Money(new BigNumber(0).sub(p.amount), new Asset(asset));
@@ -86,7 +86,7 @@ export function TransactionPackageCard({
   message: MessageOfType<'transactionPackage'>;
 }) {
   const { t } = useTranslation();
-  const assets = usePopupSelector(state => state.assets);
+  const assets = usePopupSelector((state) => state.assets);
 
   const fees = Object.values(
     message.data.reduce<Record<string, Money>>((acc, tx) => {
@@ -125,9 +125,9 @@ export function TransactionPackageCard({
               {message.data.length} {t('transactions.packTransactions')}
             </h1>
 
-            {message.data.flatMap(tx =>
+            {message.data.flatMap((tx) =>
               getBalanceChanges(tx, assets)
-                .filter(amount => !amount.getTokens().eq(0))
+                .filter((amount) => !amount.getTokens().eq(0))
                 .map((amount, index) => {
                   const coins = amount.getCoins();
 
@@ -247,7 +247,7 @@ export function TransactionPackageScreen({
           data-testid="packageDetailsToggle"
           type="button"
           onClick={() => {
-            setIsOpen(prevState => !prevState);
+            setIsOpen((prevState) => !prevState);
           }}
         >
           <div className={styles.icons}>

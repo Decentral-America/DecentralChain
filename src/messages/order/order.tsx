@@ -7,14 +7,14 @@ import { MessageHeader } from 'messages/_common/header';
 import { MessageIcon } from 'messages/_common/icon';
 import { stringifyOrder } from 'messages/utils';
 import { usePopupSelector } from 'popup/store/react';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { Balance } from 'ui/components/ui/balance/Balance';
 import { DateFormat } from 'ui/components/ui/Date/DateFormat';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import type { MessageOfType } from '../types';
+import { type MessageOfType } from '../types';
 
 export function OrderCard({
   className,
@@ -26,13 +26,13 @@ export function OrderCard({
   const { t } = useTranslation();
 
   const amountAsset = usePopupSelector(
-    state => state.assets[message.data.assetPair.amountAsset ?? 'WAVES'],
+    (state) => state.assets[message.data.assetPair.amountAsset ?? 'WAVES'],
   );
   invariant(amountAsset);
   const amount = new Money(message.data.amount, new Asset(amountAsset));
 
   const priceAsset = usePopupSelector(
-    state => state.assets[message.data.assetPair.priceAsset ?? 'WAVES'],
+    (state) => state.assets[message.data.assetPair.priceAsset ?? 'WAVES'],
   );
   invariant(priceAsset);
 
@@ -139,7 +139,7 @@ export function OrderScreen({
   const { t } = useTranslation();
 
   const matcherFeeAsset = usePopupSelector(
-    state => state.assets[message.data.matcherFeeAssetId ?? 'WAVES'],
+    (state) => state.assets[message.data.matcherFeeAssetId ?? 'WAVES'],
   );
   invariant(matcherFeeAsset);
 

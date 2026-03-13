@@ -52,9 +52,9 @@ export function ImportLedger() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const accounts = usePopupSelector(state => state.accounts);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
-  const customCodes = usePopupSelector(state => state.customCodes);
+  const accounts = usePopupSelector((state) => state.accounts);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
+  const customCodes = usePopupSelector((state) => state.customCodes);
 
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -167,8 +167,8 @@ export function ImportLedger() {
 
     getUsersPromiseRef.current = getUsersPromiseRef.current.then(() =>
       ledgerService.ledger?.getPaginationUsersData(page * USERS_PER_PAGE, USERS_PER_PAGE - 1).then(
-        users => {
-          setLedgerUsersPages(prevState => ({ ...prevState, [page]: users }));
+        (users) => {
+          setLedgerUsersPages((prevState) => ({ ...prevState, [page]: users }));
         },
         () => {
           setGetUsersError(
@@ -210,7 +210,7 @@ export function ImportLedger() {
                     selectedId={selectedUserId}
                     size={38}
                     users={ledgerUsersPages[page]}
-                    onSelect={id => {
+                    onSelect={(id) => {
                       setSelectAccountError(null);
                       setSelectedUserId(id);
                     }}
@@ -230,7 +230,7 @@ export function ImportLedger() {
                   disabled={!isCurPageLoaded}
                   type="button"
                   onClick={() => {
-                    setPage(prevState => prevState - 1);
+                    setPage((prevState) => prevState - 1);
                   }}
                 >
                   <Arrow direction="left" />
@@ -243,7 +243,7 @@ export function ImportLedger() {
                   disabled={!isCurPageLoaded}
                   type="button"
                   onClick={() => {
-                    setPage(prevState => prevState + 1);
+                    setPage((prevState) => prevState + 1);
                   }}
                 >
                   <Arrow direction="right" />
@@ -263,7 +263,7 @@ export function ImportLedger() {
                 onBlur={() => {
                   setUserIdInputValue(String(selectedUserId));
                 }}
-                onChange={event => {
+                onChange={(event) => {
                   setUserIdInputValue(event.currentTarget.value);
                 }}
               />
@@ -279,7 +279,7 @@ export function ImportLedger() {
               disabled={!selectedUser}
               view="submit"
               onClick={() => {
-                if (accounts.some(acc => acc.address === selectedUser.address)) {
+                if (accounts.some((acc) => acc.address === selectedUser.address)) {
                   setSelectAccountError(t('importLedger.accountExistsError'));
                   return;
                 }

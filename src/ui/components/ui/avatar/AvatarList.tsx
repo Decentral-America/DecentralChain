@@ -22,7 +22,7 @@ export function AvatarList<T extends AvatarListItem>({
 }: Props<T>) {
   return (
     <div className={styles.avatarList}>
-      {items.map(item => (
+      {items.map((item) => (
         <button
           type="button"
           key={item.address}

@@ -35,7 +35,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       return [];
     }
 
-    const nftIds = nfts.map(nft => nft.assetId);
+    const nftIds = nfts.map((nft) => nft.assetId);
 
     return fetchDataEntries({
       nodeUrl,
@@ -43,7 +43,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       keys: nftIds.map(ducklingLevelKey),
     })
       .then(dataEntriesToRecord)
-      .then(dataEntries =>
+      .then((dataEntries) =>
         nftIds.map((id): DucklingsNftInfo => {
           const level = parseInt((dataEntries[ducklingLevelKey(id)] as any) ?? 0, 10);
 

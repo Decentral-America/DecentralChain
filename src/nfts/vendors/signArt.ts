@@ -1,4 +1,4 @@
-import type { DataTransactionEntryString } from '@decentralchain/ts-types';
+import { type DataTransactionEntryString } from '@decentralchain/ts-types';
 import invariant from 'tiny-invariant';
 
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
@@ -40,16 +40,16 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
       return [];
     }
 
-    const nftIds = nfts.map(nft => nft.assetId);
+    const nftIds = nfts.map((nft) => nft.assetId);
 
     return fetchDataEntries<DataTransactionEntryString>({
       nodeUrl,
       address: SIGN_ART_DAPP,
-      keys: nftIds.map(id => nftIdKey(id)),
+      keys: nftIds.map((id) => nftIdKey(id)),
     })
       .then(dataEntriesToRecord)
-      .then(dataEntries =>
-        nftIds.map(id => {
+      .then((dataEntries) =>
+        nftIds.map((id) => {
           const value = dataEntries[nftIdKey(id)];
 
           const match = value.match(/art_sold_\d+_of_\d+_(\w+)_(\w+)/i);
@@ -59,7 +59,7 @@ export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
           return { artworkId, creator };
         }),
       )
-      .then(artworks =>
+      .then((artworks) =>
         Promise.all([
           fetchDataEntries<DataTransactionEntryString>({
             nodeUrl,

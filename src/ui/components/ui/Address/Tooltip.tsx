@@ -25,7 +25,7 @@ export function AddressTooltip({ className, address }: Props) {
           </>
         }
       >
-        {props => (
+        {(props) => (
           <Copy
             text={address}
             onCopy={() => {

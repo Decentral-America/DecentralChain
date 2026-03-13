@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function SwapLayout({ children }: Props) {
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   const { t } = useTranslation();
 
   return (

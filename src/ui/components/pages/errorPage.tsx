@@ -17,7 +17,7 @@ export function ErrorPage() {
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
-  const activePopup = usePopupSelector(state => state.activePopup);
+  const activePopup = usePopupSelector((state) => state.activePopup);
 
   useEffect(() => {
     if (isRouteErrorResponse(error)) {
@@ -34,7 +34,7 @@ export function ErrorPage() {
       }
 
       if (activePopup.notify) {
-        dispatch(deleteNotifications(activePopup.notify.map(x => x.id))).then(() => {
+        dispatch(deleteNotifications(activePopup.notify.map((x) => x.id))).then(() => {
           navigate('/messages-and-notifications');
         });
       }

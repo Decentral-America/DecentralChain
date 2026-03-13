@@ -9,8 +9,8 @@ export function i18nextInit() {
     .use(
       resourcesToBackend((lng, ns, clb) => {
         import(`./locales/${lng}/${ns}.${lng}.json`)
-          .then(resources => clb(null, resources))
-          .catch(err => clb(err, null));
+          .then((resources) => clb(null, resources))
+          .catch((err) => clb(err, null));
       }),
     )
     .use(initReactI18next)

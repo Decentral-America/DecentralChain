@@ -1,6 +1,6 @@
-import type { PopupThunkAction } from '../../popup/store/types';
+import { type PopupThunkAction } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
-import type { AppAction, AppActionPayload } from '../types';
+import { type AppAction, type AppActionPayload } from '../types';
 import { ACTION } from './constants';
 import { setActiveMessage, setActiveNotification } from './notifications';
 
@@ -24,7 +24,7 @@ export function deleteAccount(address: string): PopupThunkAction<Promise<void>> 
     await Background.removeWallet(address, currentNetwork);
 
     dispatch(notificationDelete(true));
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     dispatch(notificationDelete(false));
   };
 }
@@ -38,7 +38,7 @@ export function clearMessagesStatus(): PopupThunkAction<void> {
   return (dispatch, getState) => {
     const { activePopup, messages, notifications } = getState();
 
-    const message = messages.find(x => x.id !== activePopup?.msg?.id);
+    const message = messages.find((x) => x.id !== activePopup?.msg?.id);
 
     if (message) {
       dispatch(setActiveMessage(message));

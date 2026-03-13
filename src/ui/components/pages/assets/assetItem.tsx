@@ -1,4 +1,4 @@
-import type { Money } from '@decentralchain/data-entities';
+import { type Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import Background from 'ui/services/Background';
@@ -30,8 +30,8 @@ export function AssetItem({
   onSwapClick,
 }: Props) {
   const { t } = useTranslation();
-  const assets = usePopupSelector(state => state.assets);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const assets = usePopupSelector((state) => state.assets);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const asset = assets[assetId];
 
   const displayName = asset?.displayName;
@@ -92,7 +92,7 @@ export function AssetItem({
         <MoreActions>
           {assetId !== 'WAVES' && (
             <Tooltip content={t('assetInfo.infoTooltip')}>
-              {props => (
+              {(props) => (
                 <button
                   className={styles.infoBtn}
                   type="button"
@@ -110,7 +110,7 @@ export function AssetItem({
           <Tooltip
             content={t(isFavorite ? 'assetInfo.favRemoveTooltip' : 'assetInfo.favAddTooltip')}
           >
-            {props => (
+            {(props) => (
               <button
                 className={styles.favBtn}
                 type="button"
@@ -135,7 +135,7 @@ export function AssetItem({
           </Tooltip>
 
           <Tooltip content={t('assetInfo.sendAssetTooltip')}>
-            {props => (
+            {(props) => (
               <button
                 className={styles.sendBtn}
                 type="button"
@@ -158,7 +158,7 @@ export function AssetItem({
 
           {currentNetwork === 'mainnet' && isSwappable && (
             <Tooltip content={t('assetInfo.swapAssetTooltip')}>
-              {props => (
+              {(props) => (
                 <button
                   className={styles.swapBtn}
                   type="button"

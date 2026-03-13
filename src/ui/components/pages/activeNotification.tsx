@@ -15,19 +15,19 @@ export function ActiveNotificationPage() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
 
-  const activeNotification = usePopupSelector(state => state.activePopup?.notify);
+  const activeNotification = usePopupSelector((state) => state.activePopup?.notify);
   invariant(activeNotification);
 
-  const messageCount = usePopupSelector(state => state.messages.length);
-  const notifications = usePopupSelector(state => state.notifications);
+  const messageCount = usePopupSelector((state) => state.messages.length);
+  const notifications = usePopupSelector((state) => state.notifications);
 
   const otherOriginNotifications = notifications.filter(
     ([item]) => item.origin !== activeNotification[0].origin,
   );
 
-  const permissions = usePopupSelector(state => state.origins[activeNotification[0].origin]);
+  const permissions = usePopupSelector((state) => state.origins[activeNotification[0].origin]);
 
-  const selectedAccount = usePopupSelector(state => state.selectedAccount);
+  const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   invariant(selectedAccount);
 
   return (
@@ -37,7 +37,7 @@ export function ActiveNotificationPage() {
       </div>
 
       <div className={clsx(styles.messageListScrollBox)}>
-        {activeNotification.map(notification => (
+        {activeNotification.map((notification) => (
           <div key={notification.id} className="margin-main-big">
             <div className={clsx(styles.messageItemInner, 'margin-2')}>
               <div className="flex">
@@ -64,10 +64,10 @@ export function ActiveNotificationPage() {
           <Input
             id="allow-notifications"
             checked={permissions?.some(
-              item => typeof item === 'object' && item.type === 'useNotifications' && item.canUse,
+              (item) => typeof item === 'object' && item.type === 'useNotifications' && item.canUse,
             )}
             type="checkbox"
-            onChange={event => {
+            onChange={(event) => {
               dispatch(
                 setShowNotification({
                   origin: activeNotification[0].origin,
@@ -87,7 +87,7 @@ export function ActiveNotificationPage() {
           <Button
             type="button"
             onClick={() => {
-              dispatch(deleteNotifications(activeNotification.map(x => x.id))).then(() =>
+              dispatch(deleteNotifications(activeNotification.map((x) => x.id))).then(() =>
                 navigate('/messages-and-notifications'),
               );
             }}

@@ -1,4 +1,4 @@
-import './head.styl';
+import './head.module.styl';
 
 import clsx from 'clsx';
 

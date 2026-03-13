@@ -7,7 +7,7 @@ import { List, type RowComponentProps } from 'react-window';
 import invariant from 'tiny-invariant';
 import { icontains } from 'ui/components/pages/assets/helpers';
 import { HistoryItem } from 'ui/components/pages/assets/historyItem';
-import * as styles from 'ui/components/pages/styles/assets.styl';
+import * as styles from 'ui/components/pages/styles/assets.module.styl';
 import { SearchInput, Select, TabPanel } from 'ui/components/ui';
 import { Tooltip } from 'ui/components/ui/tooltip';
 import { getTxHistoryLink } from 'ui/urls';
@@ -60,7 +60,7 @@ const Row = ({
 };
 
 const PLACEHOLDERS = [...Array(4).keys()].map<TransactionFromNode>(
-  key =>
+  (key) =>
     ({
       id: `${key}`,
     }) as TransactionFromNode,
@@ -68,13 +68,13 @@ const PLACEHOLDERS = [...Array(4).keys()].map<TransactionFromNode>(
 
 export function TabTxHistory() {
   const { t, i18n } = useTranslation();
-  const networkCode = usePopupSelector(state => state.selectedAccount?.networkCode);
-  const assets = usePopupSelector(state => state.assets);
-  const showSuspiciousAssets = usePopupSelector(state => !!state.uiState?.showSuspiciousAssets);
-  const address = usePopupSelector(state => state.selectedAccount?.address);
-  const aliases = usePopupSelector(state => state.balances[address ?? '']?.aliases || []);
+  const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
+  const assets = usePopupSelector((state) => state.assets);
+  const showSuspiciousAssets = usePopupSelector((state) => !!state.uiState?.showSuspiciousAssets);
+  const address = usePopupSelector((state) => state.selectedAccount?.address);
+  const aliases = usePopupSelector((state) => state.balances[address ?? '']?.aliases || []);
   const addressOrAlias = [address, ...aliases];
-  const txHistory = usePopupSelector(state => state.balances[address ?? '']?.txHistory);
+  const txHistory = usePopupSelector((state) => state.balances[address ?? '']?.txHistory);
 
   const thisYear = new Date().getFullYear();
   const thisMonth = new Date().getMonth();
@@ -214,7 +214,7 @@ export function TabTxHistory() {
       <div className={styles.filterContainer}>
         <SearchInput
           value={term ?? ''}
-          onInput={e => {
+          onInput={(e) => {
             setTerm(e.currentTarget.value);
           }}
           onClear={() => {
@@ -239,7 +239,7 @@ export function TabTxHistory() {
         </Tooltip>
 
         <Tooltip content={t('historyFilters.incoming')}>
-          {props => (
+          {(props) => (
             <button
               type="button"
               className={styles.filterBtn}
@@ -265,7 +265,7 @@ export function TabTxHistory() {
         </Tooltip>
 
         <Tooltip content={t('historyFilters.outgoing')}>
-          {props => (
+          {(props) => (
             <button
               type="button"
               className={styles.filterBtn}
@@ -322,7 +322,7 @@ export function TabTxHistory() {
                 <List
                   rowComponent={Row}
                   rowCount={historyWithGroups.length}
-                  rowHeight={index =>
+                  rowHeight={(index) =>
                     'groupName' in historyWithGroups[index]
                       ? FULL_GROUP_HEIGHT
                       : CARD_FULL_HEIGHT *

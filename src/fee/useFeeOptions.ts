@@ -1,5 +1,5 @@
-import type { Money } from '@decentralchain/data-entities';
-import type { MessageTx } from 'messages/types';
+import { type Money } from '@decentralchain/data-entities';
+import { type MessageTx } from 'messages/types';
 import { usePopupSelector } from 'popup/store/react';
 
 import { getFeeOptions } from './utils';
@@ -11,13 +11,13 @@ export function useFeeOptions({
   initialFee: Money;
   txType: MessageTx['type'];
 }) {
-  const assets = usePopupSelector(state => state.assets);
+  const assets = usePopupSelector((state) => state.assets);
 
   const balance = usePopupSelector(
-    state => state.selectedAccount && state.balances[state.selectedAccount.address],
+    (state) => state.selectedAccount && state.balances[state.selectedAccount.address],
   );
 
-  const usdPrices = usePopupSelector(state => state.usdPrices);
+  const usdPrices = usePopupSelector((state) => state.usdPrices);
 
   return getFeeOptions({
     assets,

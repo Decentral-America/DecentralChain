@@ -5,7 +5,7 @@ import Background from 'ui/services/Background';
 
 import { BigLogo } from '../head';
 import { Button, ErrorMessage, Input } from '../ui';
-import * as styles from './styles/login.styl';
+import * as styles from './styles/login.module.styl';
 
 export function Login() {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export function Login() {
       </div>
 
       <form
-        onSubmit={async event => {
+        onSubmit={async (event) => {
           event.preventDefault();
 
           try {
@@ -41,7 +41,7 @@ export function Login() {
             type="password"
             value={password}
             view="password"
-            onChange={event => {
+            onChange={(event) => {
               setPassword(event.target.value);
               setError(false);
             }}

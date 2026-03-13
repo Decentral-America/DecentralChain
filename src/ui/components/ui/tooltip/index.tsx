@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import * as modal from '../modal/modal.styl';
+import * as modal from '../modal/modal.module.styl';
 import * as styles from './tooltip.module.css';
 
 interface Props {

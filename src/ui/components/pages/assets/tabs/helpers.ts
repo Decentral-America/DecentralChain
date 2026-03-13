@@ -1,23 +1,23 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import type { AssetsRecord } from 'assets/types';
+import { type AssetsRecord } from 'assets/types';
 import { deepEqual } from 'fast-equals';
-import type { TFunction } from 'i18next';
+import { type TFunction } from 'i18next';
 import { type Nft, NftVendorId } from 'nfts/types';
 import { useState } from 'react';
 
 import { usePopupDispatch, usePopupSelector } from '../../../../../popup/store/react';
 import { setUiState } from '../../../../../store/actions/uiState';
-import type { UiState } from '../../../../../store/reducers/updateState';
+import { type UiState } from '../../../../../store/reducers/updateState';
 
 export function useUiState<T extends keyof UiState>(
   key: T,
 ): [UiState[T] | null, (newState: UiState[T] | null) => void] {
   const dispatch = usePopupDispatch();
-  const initialValue = usePopupSelector(state => state.uiState[key]);
+  const initialValue = usePopupSelector((state) => state.uiState[key]);
   const [state, setState] = useState<UiState[T] | null>(initialValue);
   return [
     state,
-    newState => {
+    (newState) => {
       setState(newState);
 
       if (!deepEqual(newState, state)) {
@@ -60,12 +60,12 @@ export function sortAndFilterNfts<T extends Nft>(
   const { creator, term } = filters;
 
   if (creator) {
-    nfts = nfts.filter(nft => nft.creator === creator);
+    nfts = nfts.filter((nft) => nft.creator === creator);
   }
 
   if (term) {
     nfts = nfts.filter(
-      nft =>
+      (nft) =>
         nft.id.toLowerCase() === term.toLowerCase() ||
         nft.creator?.toLowerCase() === term.toLowerCase() ||
         nft.displayCreator?.toLowerCase().indexOf(term.toLowerCase()) !== -1 ||

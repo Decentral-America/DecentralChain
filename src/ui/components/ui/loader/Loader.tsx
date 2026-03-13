@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import * as styles from './loader.styl';
+import * as styles from './loader.module.styl';
 
 export function Loader({ hide, className }: { hide?: boolean; className?: string }) {
   if (hide) {

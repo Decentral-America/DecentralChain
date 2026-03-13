@@ -10,10 +10,10 @@ export function RootAccounts() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const initialized = useAccountsSelector(state => state.state?.initialized);
-  const locked = useAccountsSelector(state => state.state?.locked);
+  const initialized = useAccountsSelector((state) => state.state?.initialized);
+  const locked = useAccountsSelector((state) => state.state?.locked);
 
-  const currentNetwork = useAccountsSelector(state => state.currentNetwork);
+  const currentNetwork = useAccountsSelector((state) => state.currentNetwork);
   const prevNetworkRef = useRef(currentNetwork);
   useEffect(() => {
     if (currentNetwork === prevNetworkRef.current) {

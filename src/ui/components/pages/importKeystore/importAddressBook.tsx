@@ -27,7 +27,7 @@ function parseAddressBook(json: string): EncryptedAddressBook | null {
   const { addresses } = parsedJson;
 
   return {
-    decrypt: async password => {
+    decrypt: async (password) => {
       try {
         if (password) {
           const decrypted = await decryptSeed(base64Decode(atob(addresses)), utf8Encode(password));
@@ -51,7 +51,7 @@ function getFormattedAddresses(
 ) {
   return Object.fromEntries(
     Object.entries(keystoreAddresses).map(([keystoreAddress, keystoreName]) => {
-      let sameName = Object.values(addresses || {}).find(name => keystoreName === name);
+      let sameName = Object.values(addresses || {}).find((name) => keystoreName === name);
 
       while (sameName) {
         const suffixMatch = keystoreName.match(suffixRe);
@@ -62,7 +62,7 @@ function getFormattedAddresses(
           keystoreName += ' (1)';
         }
 
-        sameName = Object.values<string>(keystoreAddresses).find(name => keystoreName === name);
+        sameName = Object.values<string>(keystoreAddresses).find((name) => keystoreName === name);
       }
 
       return [
@@ -78,7 +78,7 @@ function getFormattedAddresses(
 export function ImportAddressBook() {
   const navigate = useNavigate();
   const dispatch = usePopupDispatch();
-  const addresses = usePopupSelector(state => state.addresses);
+  const addresses = usePopupSelector((state) => state.addresses);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

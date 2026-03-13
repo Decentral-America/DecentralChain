@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { CodeDelivery, IdentityUser } from '../../../../controllers/IdentityController';
+import { type CodeDelivery, type IdentityUser } from '../../../../controllers/IdentityController';
 import background from '../../../services/Background';
 import { CodeConfirmation } from './codeConfirmation';
 import { SignInForm } from './signInForm';
@@ -29,7 +29,7 @@ export function Login({ className, userData, onConfirm, onSubmit }: LoginProps) 
   }, []);
 
   const handleSuccess = useCallback(() => {
-    background.identityUser().then(identityUser => {
+    background.identityUser().then((identityUser) => {
       const [name, domain] = userRef.current?.username.split('@') ?? [];
       onConfirm({
         name: `${name[0]}*******@${domain}`,

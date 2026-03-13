@@ -14,8 +14,8 @@ export function ExportAndImport() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const addresses = usePopupSelector(state => state.addresses);
-  const allNetworksAccounts = usePopupSelector(state => state.allNetworksAccounts);
+  const addresses = usePopupSelector((state) => state.addresses);
+  const allNetworksAccounts = usePopupSelector((state) => state.allNetworksAccounts);
 
   const [showExportModal, setShowExportModal] = useState(false);
 

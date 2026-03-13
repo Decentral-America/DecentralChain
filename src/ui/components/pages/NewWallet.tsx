@@ -6,16 +6,16 @@ import {
   generateRandomSeed,
   utf8Encode,
 } from '@decentralchain/crypto';
-import type { PopupState } from 'popup/store/types';
+import { type PopupState } from 'popup/store/types';
 import { Component } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import type { NewAccountState } from 'store/reducers/localState';
+import { type NewAccountState } from 'store/reducers/localState';
 
 import { newAccountSelect } from '../../../store/actions/localState';
 import { type WithNavigate, withNavigate } from '../../router';
 import { AvatarList, Button } from '../ui';
-import * as styles from './styles/newwallet.styl';
+import * as styles from './styles/newwallet.module.styl';
 
 interface NewWalletItem {
   address: string;
@@ -69,7 +69,7 @@ class NewWalletComponent extends Component<Props, State> {
     const { account } = this.props;
 
     const selected =
-      generatedWalletItems.find(item => account && item.address === account.address) ||
+      generatedWalletItems.find((item) => account && item.address === account.address) ||
       generatedWalletItems[0];
 
     this._onSelect(selected);
@@ -96,7 +96,7 @@ class NewWalletComponent extends Component<Props, State> {
             items={this.state.list}
             selected={this.props.account}
             size={38}
-            onSelect={account => this._onSelect(account)}
+            onSelect={(account) => this._onSelect(account)}
           />
         </div>
 
@@ -105,7 +105,7 @@ class NewWalletComponent extends Component<Props, State> {
         <div className={`${styles.greyLine} grey-line`}>{this.props.account.address}</div>
 
         <form
-          onSubmit={event => {
+          onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();
             this.props.navigate('/create-account/save-backup');

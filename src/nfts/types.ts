@@ -1,6 +1,6 @@
-import type { AssetDetail } from 'assets/types';
+import { type AssetDetail } from 'assets/types';
 
-import type { NftConfig } from '../constants';
+import { type NftConfig } from '../constants';
 
 export interface NftAssetDetail {
   assetId: string;

@@ -15,8 +15,8 @@ interface Props {
 export const ExportButton = ({ className }: Props) => {
   const { t } = useTranslation();
 
-  const addresses = usePopupSelector(state => state.addresses);
-  const accounts = usePopupSelector(state => state.allNetworksAccounts);
+  const addresses = usePopupSelector((state) => state.addresses);
+  const accounts = usePopupSelector((state) => state.allNetworksAccounts);
 
   const [showExportModal, setShowExportModal] = useState(false);
 

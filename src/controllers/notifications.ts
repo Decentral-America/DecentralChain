@@ -1,14 +1,14 @@
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
-import type { NotificationsStoreItem } from 'notifications/types';
+import { type NotificationsStoreItem } from 'notifications/types';
 import ObservableStore from 'obs-store';
-import type { PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from 'preferences/types';
 import Browser from 'webextension-polyfill';
 
 import { ERRORS } from '../lib/keeperError';
-import type { ExtensionStorage } from '../storage/storage';
-import type { PermissionsController } from './permissions';
-import type { RemoteConfigController } from './remoteConfig';
+import { type ExtensionStorage } from '../storage/storage';
+import { type PermissionsController } from './permissions';
+import { type RemoteConfigController } from './remoteConfig';
 
 export class NotificationsController extends EventEmitter {
   #canShowNotification;
@@ -57,8 +57,8 @@ export class NotificationsController extends EventEmitter {
 
     this.deleteNotifications(
       notifications
-        .filter(notification => Date.now() - notification.timestamp > message_expiration_ms)
-        .map(notification => notification.id),
+        .filter((notification) => Date.now() - notification.timestamp > message_expiration_ms)
+        .map((notification) => notification.id),
     );
 
     Browser.alarms.create('deleteMessages', {
@@ -137,6 +137,6 @@ export class NotificationsController extends EventEmitter {
   getNotifications(account: PreferencesAccount) {
     return this.#store
       .getState()
-      .notifications.filter(notification => notification.address === account.address);
+      .notifications.filter((notification) => notification.address === account.address);
   }
 }

@@ -1,13 +1,13 @@
 import { addBreadcrumb } from '@sentry/browser';
 import EventEmitter from 'events';
-import type { NetworkName } from 'networks/types';
+import { type NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
-import type { IdleOptions } from 'preferences/types';
+import { type IdleOptions } from 'preferences/types';
 import { compareAccountsByLastUsed } from 'preferences/utils';
-import type { WalletAccount } from 'wallets/types';
+import { type WalletAccount } from 'wallets/types';
 
-import type { ExtensionStorage } from '../storage/storage';
-import type { NetworkController } from './network';
+import { type ExtensionStorage } from '../storage/storage';
+import { type NetworkController } from './network';
 
 export class PreferencesController extends EventEmitter {
   store;
@@ -63,7 +63,7 @@ export class PreferencesController extends EventEmitter {
         { name: `Account ${i + 1}` },
         account,
         oldAccounts.find(
-          oldAcc => oldAcc.address === account.address && oldAcc.network === account.network,
+          (oldAcc) => oldAcc.address === account.address && oldAcc.network === account.network,
         ),
       );
     });
@@ -75,12 +75,12 @@ export class PreferencesController extends EventEmitter {
   ensureSelectedAccountInCurrentNetwork() {
     const network = this.getNetwork();
     const { accounts, selectedAccount } = this.store.getState();
-    const currentNetworkAccounts = accounts.filter(account => account.network === network);
+    const currentNetworkAccounts = accounts.filter((account) => account.network === network);
 
     if (
       !selectedAccount ||
       !currentNetworkAccounts.some(
-        account =>
+        (account) =>
           account.address === selectedAccount.address &&
           account.network === selectedAccount.network,
       )
@@ -101,7 +101,7 @@ export class PreferencesController extends EventEmitter {
     const { accounts, selectedAccount } = this.store.getState();
 
     const account = accounts.find(
-      current => current.address === address && current.network === network,
+      (current) => current.address === address && current.network === network,
     );
 
     if (!account) {
@@ -136,7 +136,7 @@ export class PreferencesController extends EventEmitter {
       });
 
       if (selectedAccount) {
-        accounts.forEach(acc => {
+        accounts.forEach((acc) => {
           if (acc.address === selectedAccount.address) {
             acc.lastUsed = Date.now();
           }
@@ -146,7 +146,7 @@ export class PreferencesController extends EventEmitter {
       this.store.updateState({
         accounts,
         selectedAccount: accounts.find(
-          account => account.address === address && account.network === network,
+          (account) => account.address === address && account.network === network,
         ),
       });
 

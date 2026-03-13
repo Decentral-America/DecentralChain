@@ -22,22 +22,22 @@ export function Send() {
 
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const chainId = usePopupSelector(state => state.selectedAccount?.networkCode?.charCodeAt(0));
+  const chainId = usePopupSelector((state) => state.selectedAccount?.networkCode?.charCodeAt(0));
   const accountBalance = usePopupSelector(
-    state => state.balances[state.selectedAccount?.address ?? ''],
+    (state) => state.balances[state.selectedAccount?.address ?? ''],
   );
   const assetBalances = accountBalance?.assets;
-  const assets = usePopupSelector(state => state.assets);
+  const assets = usePopupSelector((state) => state.assets);
 
-  const asset = usePopupSelector(state => state.assets[params.assetId ?? '']);
+  const asset = usePopupSelector((state) => state.assets[params.assetId ?? '']);
 
   const isNft =
     asset && asset.precision === 0 && new BigNumber(asset.quantity).eq(1) && !asset.reissuable;
 
-  const userAddress = usePopupSelector(state => state.selectedAccount?.address ?? '');
+  const userAddress = usePopupSelector((state) => state.selectedAccount?.address ?? '');
 
-  const nftInfo = usePopupSelector(state => asset && state.nfts?.[asset.id]);
-  const nftConfig = usePopupSelector(state => state.nftConfig);
+  const nftInfo = usePopupSelector((state) => asset && state.nfts?.[asset.id]);
+  const nftConfig = usePopupSelector((state) => state.nftConfig);
 
   const displayName = useMemo(() => {
     if (!asset) {
@@ -97,7 +97,7 @@ export function Send() {
   return (
     <form
       className={styles.root}
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault();
 
         setIsTriedToSubmit(true);
@@ -118,7 +118,7 @@ export function Send() {
             recipient: recipientValue,
             attachment: attachmentValue,
           },
-        }).catch(err => {
+        }).catch((err) => {
           if (err instanceof Error && /user denied/i.test(err.message)) {
             return;
           }
@@ -141,10 +141,10 @@ export function Send() {
             <AddressSuggestInput
               data-testid="recipientInput"
               error={showRecipientError}
-              onChange={event => {
+              onChange={(event) => {
                 setRecipientValue(event.currentTarget.value);
               }}
-              onSuggest={value => {
+              onSuggest={(value) => {
                 setRecipientValue(value);
               }}
             />
@@ -169,13 +169,13 @@ export function Send() {
                         assetBalances={assetBalances ?? {}}
                         assetOptions={Object.values(assets)
                           .filter((asset): asset is NonNullable<typeof asset> => asset != null)
-                          .filter(asset => assetBalances?.[asset.id] != null)}
+                          .filter((asset) => assetBalances?.[asset.id] != null)}
                         balance={balance}
                         label={t('send.amountInputLabel')}
                         maskedValue={amountValueMasked}
                         value={amountValue}
                         showUsdAmount
-                        onAssetChange={assetId => {
+                        onAssetChange={(assetId) => {
                           navigate(`/send/${assetId}`, { replace: true });
                         }}
                         onBalanceClick={() => {
@@ -210,7 +210,7 @@ export function Send() {
               multiLine
               rows={4}
               value={attachmentValue}
-              onChange={event => {
+              onChange={(event) => {
                 setAttachmentValue(event.currentTarget.value);
               }}
             />

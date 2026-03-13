@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import * as styles from './pills.styl';
+import * as styles from './pills.module.styl';
 
 const _onClick = (cb: (...args: unknown[]) => unknown) => (id: number | undefined) => cb?.(id);
 

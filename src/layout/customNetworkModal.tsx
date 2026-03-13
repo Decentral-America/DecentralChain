@@ -30,7 +30,7 @@ export function CustomNetworkModal({ initialMatcher, initialNode, onClose, onSav
       <form
         className="modal-form"
         id="customNetwork"
-        onSubmit={async event => {
+        onSubmit={async (event) => {
           event.preventDefault();
 
           setMatcherError(false);
@@ -76,7 +76,7 @@ export function CustomNetworkModal({ initialMatcher, initialNode, onClose, onSav
             id="node_address"
             type="url"
             value={node ?? ''}
-            onChange={event => {
+            onChange={(event) => {
               setNode(event.currentTarget.value);
               setNodeError(false);
             }}
@@ -97,7 +97,7 @@ export function CustomNetworkModal({ initialMatcher, initialNode, onClose, onSav
             id="matcher_address"
             type="url"
             value={matcher ?? ''}
-            onChange={event => {
+            onChange={(event) => {
               setMatcher(event.currentTarget.value);
               setMatcherError(false);
             }}

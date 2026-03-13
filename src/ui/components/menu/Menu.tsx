@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { HeadLogo } from '../head';
-import * as styles from './menu.styl';
+import * as styles from './menu.module.styl';
 
 interface Props {
   hasLogo?: boolean | undefined;

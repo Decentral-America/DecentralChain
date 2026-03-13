@@ -4,12 +4,12 @@ import { nanoid } from 'nanoid';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
-import type { Message, MessageTx } from '../messages/types';
-import type { NetworkName } from '../networks/types';
-import type { ExtensionStorage } from '../storage/storage';
-import type { SwapVendor } from '../swap/constants';
-import type { WalletTypes } from '../ui/services/Background';
-import type { NetworkController } from './network';
+import { type Message, type MessageTx } from '../messages/types';
+import { type NetworkName } from '../networks/types';
+import { type ExtensionStorage } from '../storage/storage';
+import { type SwapVendor } from '../swap/constants';
+import { type WalletTypes } from '../ui/services/Background';
+import { type NetworkController } from './network';
 
 const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detect() ?? {};
 

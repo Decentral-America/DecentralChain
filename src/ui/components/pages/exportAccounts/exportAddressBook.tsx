@@ -9,7 +9,7 @@ import { ExportPasswordModal } from './passwordModal';
 
 export function ExportAddressBook() {
   const navigate = useNavigate();
-  const addresses = usePopupSelector(state => state.addresses);
+  const addresses = usePopupSelector((state) => state.addresses);
 
   const [addressesToExport, setAddressesToExport] = useState<Record<string, string> | null>(null);
 
@@ -24,7 +24,7 @@ export function ExportAddressBook() {
             network: getNetworkByAddress(address),
           }))}
         type="contacts"
-        onSubmit={async contacts => {
+        onSubmit={async (contacts) => {
           const addressesSelected = contacts.reduce<Record<string, string>>((acc, contact) => {
             acc[contact.address] = contact.name;
             return acc;

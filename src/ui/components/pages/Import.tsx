@@ -10,11 +10,11 @@ import { usePopupSelector } from '../../../popup/store/react';
 import keeperWalletLock from '../../assets/img/cubensis-connect-lock.svg';
 import { Button } from '../ui';
 import { generateNewWalletItems } from './NewWallet';
-import * as styles from './styles/import.styl';
+import * as styles from './styles/import.module.styl';
 
 export function ImportPopup() {
   const { t } = useTranslation();
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
   return (
     <div data-testid="importForm" className={styles.root}>
@@ -41,8 +41,8 @@ export function ImportPopup() {
 export function AccountsHome() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const customCodes = usePopupSelector(state => state.customCodes);
-  const currentNetwork = usePopupSelector(state => state.currentNetwork);
+  const customCodes = usePopupSelector((state) => state.customCodes);
+  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
   const [isLedgerSupported, setIsLedgerSupported] = useState(false);
   const [isDebug, setDebug] = useState(false);

@@ -18,18 +18,18 @@ export function OtherAccountsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
-  const accounts = usePopupSelector(state => state.accounts);
-  const activeAccount = usePopupSelector(state =>
+  const accounts = usePopupSelector((state) => state.accounts);
+  const activeAccount = usePopupSelector((state) =>
     state.accounts.find(({ address }) => address === state.selectedAccount?.address),
   );
-  const assets = usePopupSelector(state => state.assets);
-  const balances = usePopupSelector(state => state.balances);
+  const assets = usePopupSelector((state) => state.assets);
+  const balances = usePopupSelector((state) => state.balances);
 
   const [term, setTerm] = useState<string>('');
 
   const otherAccounts = accounts
     .filter(
-      account =>
+      (account) =>
         account.address !== activeAccount?.address &&
         (!term ||
           account.name.toLowerCase().indexOf(term.toLowerCase()) !== -1 ||
@@ -62,7 +62,7 @@ export function OtherAccountsPage() {
         <h2 className={styles.title}>{t('otherAccounts.title')}</h2>
 
         <Tooltip content={t('otherAccounts.addAccount')}>
-          {props => (
+          {(props) => (
             <button
               {...props}
               className={clsx(styles.addAccountButton, styles.addAccountButton_small)}
@@ -78,7 +78,7 @@ export function OtherAccountsPage() {
           <SearchInput
             autoFocus
             value={term ?? ''}
-            onInput={e => setTerm(e.currentTarget.value)}
+            onInput={(e) => setTerm(e.currentTarget.value)}
             onClear={() => setTerm('')}
             data-testid="accountsSearchInput"
           />
@@ -89,16 +89,16 @@ export function OtherAccountsPage() {
             {t(!term ? 'otherAccounts.noAccountsNote' : 'otherAccounts.noAccountsFound')}
           </p>
         ) : (
-          otherAccounts.map(account => (
+          otherAccounts.map((account) => (
             <AccountCard
               key={account.address}
               account={account}
               balance={balancesMoney[account.address]}
-              onClick={clickedAccount => {
+              onClick={(clickedAccount) => {
                 dispatch(selectAccount(clickedAccount));
                 navigate('/', { replace: true });
               }}
-              onInfoClick={clickedAccount => {
+              onInfoClick={(clickedAccount) => {
                 navigate(`/account-info/${clickedAccount.address}`);
               }}
             />

@@ -1,4 +1,4 @@
-import type { PERMISSIONS } from './constants';
+import { type PERMISSIONS } from './constants';
 
 export type PermissionType = (typeof PERMISSIONS)[keyof typeof PERMISSIONS] | 'whiteList';
 

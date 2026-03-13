@@ -43,7 +43,7 @@ export const LangsSettings = () => {
   const { t } = useTranslation();
 
   const dispatch = usePopupDispatch();
-  const currentLocale = usePopupSelector(state => state.currentLocale);
+  const currentLocale = usePopupSelector((state) => state.currentLocale);
 
   const [selected, setSelected] = useState(currentLocale);
 

@@ -30,7 +30,7 @@ if (document.documentElement.tagName === 'HTML') {
                   webExtensionPort = undefined;
                   inpagePort.postMessage({ event: 'disconnected' });
                 }),
-                subscribe(message => {
+                subscribe((message) => {
                   inpagePort.postMessage(message);
                 }),
               );
@@ -42,7 +42,7 @@ if (document.documentElement.tagName === 'HTML') {
 
         pipe(
           fromMessagePort(inpagePort),
-          subscribe(data => {
+          subscribe((data) => {
             getWebExtensionPort().postMessage(data);
           }),
         );
