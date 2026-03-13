@@ -1,6 +1,5 @@
 module.exports = {
-  plugins: [
-    ['postcss-preset-env', { enableClientSidePolyfills: false }],
-    'postcss-normalize',
-  ],
+  plugins: {
+    'postcss-preset-env': { enableClientSidePolyfills: false },
+  },
 };
