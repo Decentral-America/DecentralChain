@@ -652,7 +652,7 @@ export class MessageController extends EventEmitter {
     switch (messageInputTx.type) {
       case TRANSACTION_TYPE.ISSUE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -716,7 +716,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.TRANSFER: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -796,7 +796,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.REISSUE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -872,7 +872,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.BURN: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -946,7 +946,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.LEASE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1009,7 +1009,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.CANCEL_LEASE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1074,7 +1074,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.ALIAS: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1120,7 +1120,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.MASS_TRANSFER: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1197,7 +1197,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.DATA: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1289,7 +1289,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SET_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1343,7 +1343,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SPONSORSHIP: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1402,7 +1402,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SET_ASSET_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1450,7 +1450,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.INVOKE_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1533,7 +1533,7 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.UPDATE_ASSET_INFO: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0];
+        const version = messageInputTx.data.version ?? versions[0]!;
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1733,7 +1733,7 @@ export class MessageController extends EventEmitter {
             amountAsset: amountAssetId,
             priceAsset: priceAssetId,
           },
-          chainId: messageInput.data.data.chainId ?? base58Decode(messageInput.account.address)[1],
+          chainId: messageInput.data.data.chainId ?? base58Decode(messageInput.account.address)[1]!,
           eip712Signature: messageInput.data.data.eip712Signature,
           expiration: messageInput.data.data.expiration,
           matcherFee: moneyLikeToMoney(messageInput.data.data.matcherFee, assets).toCoins(),
