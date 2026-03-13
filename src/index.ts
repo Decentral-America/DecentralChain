@@ -18,13 +18,13 @@ import * as serializePrimitives from './serializePrimitives';
  * ```
  */
 const binary = {
-  serializerFromSchema,
-  serializeTx,
-  serializeOrder,
+  parseHeader,
+  parseOrder,
   parserFromSchema,
   parseTx,
-  parseOrder,
-  parseHeader,
+  serializeOrder,
+  serializerFromSchema,
+  serializeTx,
 };
 
 export type { TToLongConverter } from './parse';
