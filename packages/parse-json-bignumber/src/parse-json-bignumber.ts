@@ -89,8 +89,8 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
   const MAX_DEPTH = 512;
   const escapee: Readonly<Record<string, string>> = {
     '"': '"',
-    '\\': '\\',
     '/': '/',
+    '\\': '\\',
     b: '\b',
     f: '\f',
     n: '\n',
@@ -126,6 +126,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     return ch;
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON number parser — inherent complexity
   const number = (): number | string | T => {
     let numStr = '';
 
@@ -199,6 +200,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     return num;
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON string parser with escape handling
   const string = (): string => {
     let hex: number;
     let i: number;
@@ -371,13 +373,13 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
   let indent: string;
 
   const meta: Readonly<Record<string, string>> = {
-    '\b': '\\b',
-    '\t': '\\t',
-    '\n': '\\n',
-    '\f': '\\f',
-    '\r': '\\r',
     '"': '\\"',
     '\\': '\\\\',
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
   };
 
   let rep:
@@ -402,6 +404,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
       : `"${s}"`;
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: JSON stringifier with recursive structure handling
   function str(key: string, holder: Record<string, unknown>): string | undefined {
     let i: number;
     let k: string;
