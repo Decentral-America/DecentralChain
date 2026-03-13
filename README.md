@@ -119,7 +119,7 @@ npm install
 
 | Command                     | Description                                  |
 | --------------------------- | -------------------------------------------- |
-| `npm run build`             | Build distribution files (ESM-only via tsup) |
+| `npm run build`             | Build distribution files (ESM-only via tsdown) |
 | `npm test`                  | Run tests with Vitest                        |
 | `npm run test:watch`        | Tests in watch mode                          |
 | `npm run test:coverage`     | Tests with V8 coverage                       |
