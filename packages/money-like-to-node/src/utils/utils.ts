@@ -1,5 +1,3 @@
-import { type IDCCGuiExchangeOrder } from '../toNodeEntities/exchange.js';
-import { type TDCCGuiEntity } from '../toNodeEntities/index.js';
 import { type TLong, type TMoney } from '../types/index.js';
 
 export function getAssetId(money: TMoney): string;
@@ -88,10 +86,6 @@ export const emptyError =
     }
     return value as T;
   };
-
-export function isOrder(data: TDCCGuiEntity | IDCCGuiExchangeOrder): data is IDCCGuiExchangeOrder {
-  return 'orderType' in data;
-}
 
 export const length = (some: string | unknown[]): number => some.length;
 

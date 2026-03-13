@@ -7,7 +7,6 @@ import {
 } from '@decentralchain/ts-types';
 import { TYPES } from '../constants/index.js';
 import { type TWithPartialFee } from '../types/index.js';
-import { isOrder } from '../utils/index.js';
 import { alias } from './alias.js';
 import { burn } from './burn.js';
 import { cancelLease } from './cancelLease.js';
@@ -74,6 +73,10 @@ export const node = {
   invokeScript,
   updateAssetInfo,
 };
+
+function isOrder(data: TDCCGuiEntity | IDCCGuiExchangeOrder): data is IDCCGuiExchangeOrder {
+  return 'orderType' in data;
+}
 
 export function toNode(
   item: IDCCGuiExchangeOrder,
