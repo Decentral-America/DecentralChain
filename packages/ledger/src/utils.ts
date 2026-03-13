@@ -6,6 +6,7 @@
  * @module utils
  */
 
+// biome-ignore lint/security/noSecrets: Base58 encoding alphabet, not a secret
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 /**

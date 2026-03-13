@@ -11,10 +11,10 @@ function ledgerResponse(payload: number[], status = [0x90, 0x00]): Uint8Array {
 
 function createMockTransport(): LedgerTransport {
   return {
-    send: vi.fn().mockResolvedValue(ledgerResponse([])),
     close: vi.fn().mockResolvedValue(undefined),
-    setExchangeTimeout: vi.fn(),
     decorateAppAPIMethods: vi.fn(),
+    send: vi.fn().mockResolvedValue(ledgerResponse([])),
+    setExchangeTimeout: vi.fn(),
   };
 }
 
@@ -52,27 +52,27 @@ describe('DCCLedger', () => {
     it('accepts optional configuration', () => {
       const factory = createMockFactory();
       const ledger = new DCCLedger({
-        transport: factory,
         debug: true,
-        openTimeout: 1000,
-        listenTimeout: 5000,
         exchangeTimeout: 10000,
+        listenTimeout: 5000,
         networkCode: 84,
+        openTimeout: 1000,
+        transport: factory,
       });
       expect(ledger).toBeDefined();
     });
 
     it('throws RangeError when networkCode exceeds uint8', () => {
       const factory = createMockFactory();
-      expect(() => new DCCLedger({ transport: factory, networkCode: 256 })).toThrow(RangeError);
-      expect(() => new DCCLedger({ transport: factory, networkCode: 256 })).toThrow(
+      expect(() => new DCCLedger({ networkCode: 256, transport: factory })).toThrow(RangeError);
+      expect(() => new DCCLedger({ networkCode: 256, transport: factory })).toThrow(
         'networkCode must be an integer in [0, 255]',
       );
     });
 
     it('throws RangeError when networkCode is negative', () => {
       const factory = createMockFactory();
-      expect(() => new DCCLedger({ transport: factory, networkCode: -1 })).toThrow(RangeError);
+      expect(() => new DCCLedger({ networkCode: -1, transport: factory })).toThrow(RangeError);
     });
   });
 
@@ -438,7 +438,7 @@ describe('DCCLedger', () => {
     it('enables listen logging when debug is true', async () => {
       const transport = createMockTransport();
       const factory = createMockFactory(transport);
-      const ledger = new DCCLedger({ transport: factory, debug: true });
+      const ledger = new DCCLedger({ debug: true, transport: factory });
       await ledger.tryConnect();
       // No assertion on listen() internals, just ensure no crash
       expect(ledger.ready).toBe(true);
@@ -449,7 +449,7 @@ describe('DCCLedger', () => {
     it('sets exchange timeout on transport', async () => {
       const transport = createMockTransport();
       const factory = createMockFactory(transport);
-      const ledger = new DCCLedger({ transport: factory, exchangeTimeout: 5000 });
+      const ledger = new DCCLedger({ exchangeTimeout: 5000, transport: factory });
       await ledger.tryConnect();
       expect(transport.setExchangeTimeout).toHaveBeenCalledWith(5000);
     });
@@ -588,7 +588,7 @@ describe('DCCLedger', () => {
     it('cleans up log subscription on disconnect and resubscribes on reconnect', async () => {
       const transport = createMockTransport();
       const factory = createMockFactory(transport);
-      const ledger = new DCCLedger({ transport: factory, debug: true });
+      const ledger = new DCCLedger({ debug: true, transport: factory });
       await ledger.tryConnect();
       expect(ledger.ready).toBe(true);
 
