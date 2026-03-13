@@ -16,6 +16,8 @@
     "strict": false,
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
