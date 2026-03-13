@@ -104,18 +104,18 @@ export class Asset {
   /** Serialize this Asset to a plain JSON-friendly object. */
   public toJSON(): IAssetJSON {
     return {
-      ticker: this.ticker,
+      description: this.description,
+      hasScript: this.hasScript,
+      height: this.height,
       id: this.id,
+      minSponsoredFee: this.minSponsoredFee,
       name: this.name,
       precision: this.precision,
-      description: this.description,
-      height: this.height,
-      timestamp: this.timestamp,
-      sender: this.sender,
       quantity: this.quantity,
       reissuable: this.reissuable,
-      hasScript: this.hasScript,
-      minSponsoredFee: this.minSponsoredFee,
+      sender: this.sender,
+      ticker: this.ticker,
+      timestamp: this.timestamp,
     };
   }
 

@@ -188,7 +188,7 @@ describe('Money', () => {
   describe('type guard', () => {
     it('should reject non-Money objects', () => {
       expect(Money.isMoney({})).toBe(false);
-      expect(Money.isMoney({ asset: fakeZERO, _coins: 10 })).toBe(false);
+      expect(Money.isMoney({ _coins: 10, asset: fakeZERO })).toBe(false);
     });
   });
 

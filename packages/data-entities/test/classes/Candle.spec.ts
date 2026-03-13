@@ -5,16 +5,16 @@ import { Candle, config } from '../../src/index';
 
 function getCandleData(overrides: Partial<ICandleInfo> = {}): ICandleInfo {
   return {
-    time: new Date('2024-01-15T12:00:00Z'),
-    open: '100.5',
     close: '105.2',
     high: '110.0',
     low: '95.3',
-    volume: '50000',
-    quoteVolume: '5250000',
-    weightedAveragePrice: '102.8',
     maxHeight: 1000,
+    open: '100.5',
+    quoteVolume: '5250000',
+    time: new Date('2024-01-15T12:00:00Z'),
     txsCount: 42,
+    volume: '50000',
+    weightedAveragePrice: '102.8',
     ...overrides,
   };
 }
@@ -29,12 +29,12 @@ describe('Candle', () => {
     it('should create a Candle from numeric values', () => {
       const candle = new Candle(
         getCandleData({
-          open: 100.5,
           close: 105.2,
           high: 110.0,
           low: 95.3,
-          volume: 50000,
+          open: 100.5,
           quoteVolume: 5250000,
+          volume: 50000,
           weightedAveragePrice: 102.8,
         }),
       );
@@ -45,12 +45,12 @@ describe('Candle', () => {
     it('should create a Candle from BigNumber values', () => {
       const candle = new Candle(
         getCandleData({
-          open: new BigNumber('100.5'),
           close: new BigNumber('105.2'),
           high: new BigNumber('110.0'),
           low: new BigNumber('95.3'),
-          volume: new BigNumber('50000'),
+          open: new BigNumber('100.5'),
           quoteVolume: new BigNumber('5250000'),
+          volume: new BigNumber('50000'),
           weightedAveragePrice: new BigNumber('102.8'),
         }),
       );

@@ -10,22 +10,22 @@ let defaultAssetInfo2: IAssetInfo;
 describe('Asset', () => {
   beforeEach(() => {
     defaultAssetInfo1 = getAssetData({
+      hasScript: true,
       id: 'test1',
+      minSponsoredFee: 100000,
       name: 'Test No. 1',
       precision: 0,
       reissuable: false,
-      hasScript: true,
-      minSponsoredFee: 100000,
     });
 
     defaultAssetInfo2 = getAssetData({
-      ticker: 'TN2',
+      hasScript: false,
       id: 'test2',
+      minSponsoredFee: 1,
       name: 'Test No. 2',
       precision: 8,
       reissuable: true,
-      hasScript: false,
-      minSponsoredFee: 1,
+      ticker: 'TN2',
     });
   });
 
