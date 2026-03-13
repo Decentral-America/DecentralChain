@@ -14,14 +14,14 @@ import {
 } from './validators';
 
 const setScriptScheme = {
-  type: isEq(TRANSACTION_TYPE.SET_SCRIPT),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
   chainId: isNaturalNumberLike,
   fee: isNaturalNumberLike,
-  timestamp: isNumber,
-  script: ifElse(isEq(null), defaultValue(true), isBase64),
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  script: ifElse(isEq(null), defaultValue(true), isBase64),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.SET_SCRIPT),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const setScriptValidator = validateByShema(setScriptScheme, getError);

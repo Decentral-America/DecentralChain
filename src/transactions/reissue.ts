@@ -37,17 +37,17 @@ export function reissue(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: ReissueTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
     assetId: paramsOrTx.assetId,
-    quantity: paramsOrTx.quantity,
-    reissuable: paramsOrTx.reissuable,
     chainId: networkByte(paramsOrTx.chainId, 76),
     fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
     id: '',
+    proofs: paramsOrTx.proofs || [],
+    quantity: paramsOrTx.quantity,
+    reissuable: paramsOrTx.reissuable,
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.reissue(tx as unknown as Record<string, unknown>);
