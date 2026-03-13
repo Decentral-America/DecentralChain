@@ -132,16 +132,16 @@ describe('Script handling - null script support', () => {
   it('should handle SetScript transaction with null script (script removal)', () => {
     // Type 13 SetScript with null script clears dApp script
     const clearScriptTx = {
-      type: 13,
-      version: 1,
-      fee: 1000000,
-      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
-      timestamp: 1542539421635,
       chainId: 76,
+      fee: 1000000,
       proofs: [
         '35x1Rphm1mr24ELJgpLP6dK3wMW7cG6nWsFUcMF3RvxKr3UjEuo4NfYnQf6MEanD7bxBdKDuYxbBJZYQQ495ax3w',
       ],
       script: null, // Null script clears the account script
+      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
+      timestamp: 1542539421635,
+      type: 13,
+      version: 1,
     };
 
     const bytes = binary.serializeTx(clearScriptTx);
@@ -157,17 +157,17 @@ describe('InvokeScript optional call handling', () => {
   it('should handle InvokeScript with no function call (default call)', () => {
     // When call is null/undefined, it invokes default()
     const invokeWithoutCall = {
-      type: 16,
-      version: 1,
-      chainId: 76,
-      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
-      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
       call: null, // No function call - invokes default
-      payment: [],
+      chainId: 76,
+      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
       fee: 500000,
       feeAssetId: null,
-      timestamp: 1542539421700,
+      payment: [],
       proofs: [],
+      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
+      timestamp: 1542539421700,
+      type: 16,
+      version: 1,
     };
 
     const bytes = binary.serializeTx(invokeWithoutCall);

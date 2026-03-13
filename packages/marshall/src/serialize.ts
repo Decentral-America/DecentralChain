@@ -15,6 +15,7 @@ export const serializerFromSchema =
     schema: TSchema,
     fromLongConverter?: TFromLongConverter<LONG>,
   ): TSerializer<unknown> =>
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: binary protocol serializer with type discriminators
   (obj: unknown) => {
     let serializer: TSerializer<unknown>;
     let itemBytes: Uint8Array;

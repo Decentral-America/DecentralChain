@@ -12,6 +12,7 @@ export type TToLongConverter<LONG> = (val: string) => LONG;
  */
 export const parserFromSchema =
   <LONG = string>(schema: TSchema, toLongConverter?: TToLongConverter<LONG>): TParser<unknown> =>
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: binary protocol parser with type discriminators
   (bytes: Uint8Array, start = 0) => {
     let cursor: number = start;
 
@@ -27,12 +28,12 @@ export const parserFromSchema =
         cursor += shift;
       });
 
-      return { value: result, shift: cursor - start };
+      return { shift: cursor - start, value: result };
     } else if (schema.type === 'object') {
       if (schema.optional) {
         const exists = bytes[cursor] === 1;
         cursor += 1;
-        if (!exists) return { value: undefined, shift: 1 };
+        if (!exists) return { shift: 1, value: undefined };
       }
 
       // skip object length, since we have schema of all its fields
@@ -57,7 +58,7 @@ export const parserFromSchema =
         }
       });
 
-      return { value: result, shift: cursor - start };
+      return { shift: cursor - start, value: result };
     } else if (schema.type === 'anyOf') {
       const typeInfo = (schema.fromBytes || P_BYTE)(bytes, cursor + schema.discriminatorBytePos);
 
@@ -75,11 +76,11 @@ export const parserFromSchema =
       cursor += shift;
 
       return {
+        shift: cursor - start,
         // Checks if value should be written inside object. Eg. { type: 'int', value: 20}. Otherwise writes object directly. Eg. {type: 4, recipient: 'foo', timestamp:10000}
         value: schema.valueField
           ? { [schema.discriminatorField]: item.strKey, [schema.valueField]: value }
           : value,
-        shift: cursor - start,
       };
     } else if (schema.type === 'dataTxField') {
       const key = byteToStringWithLength(bytes, cursor);
@@ -93,12 +94,12 @@ export const parserFromSchema =
       const parser = parserFromSchema(itemRecord[1], toLongConverter);
       const result = parser(bytes, cursor);
       return {
+        shift: result.shift + key.shift + dataType.shift,
         value: {
-          value: result.value,
           key: key.value,
           type: itemRecord[0],
+          value: result.value,
         },
-        shift: result.shift + key.shift + dataType.shift,
       };
     } else if (schema.type === 'primitive' || schema.type === undefined) {
       const parser = schema.fromBytes;
@@ -109,7 +110,7 @@ export const parserFromSchema =
       if (parser === P_LONG && toLongConverter) {
         value = toLongConverter(value as string);
       }
-      return { value, shift: shift };
+      return { shift: shift, value };
     } /* v8 ignore next 3 - defensive guard for future schema types */ else {
       throw new Error(`Parser Error: Unknown schema type: ${(schema as TSchema).type}`);
     }

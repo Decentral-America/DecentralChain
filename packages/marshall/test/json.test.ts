@@ -34,7 +34,7 @@ describe('Orders json to and from', () => {
   });
 
   it('should reject unknown order version in stringifyOrder', () => {
-    const invalidOrder = { version: 99, orderType: 'buy', price: 10 };
+    const invalidOrder = { orderType: 'buy', price: 10, version: 99 };
     expect(() => json.stringifyOrder(invalidOrder)).toThrow('Unknown order version: 99');
   });
 
@@ -60,16 +60,16 @@ describe('JSON edge case handling', () => {
     // Invalid data entries are caught during serialization, not during JSON stringify
     // This tests the defensive error path in serialize.ts
     const txWithInvalidData = {
+      data: [
+        { key: 'a', type: 'integer', value: 100 },
+        { key: 'b', type: 'invalid_type', value: 'test' }, // Invalid type
+      ],
+      fee: 100000,
+      proofs: ['test'],
+      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
+      timestamp: 1542539421605,
       type: 12,
       version: 1,
-      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
-      fee: 100000,
-      timestamp: 1542539421605,
-      proofs: ['test'],
-      data: [
-        { type: 'integer', key: 'a', value: 100 },
-        { type: 'invalid_type', key: 'b', value: 'test' }, // Invalid type
-      ],
     };
 
     // The serializer should reject unknown data field types
@@ -79,13 +79,13 @@ describe('JSON edge case handling', () => {
   it('should handle proofs array with empty strings', () => {
     // Empty proof strings are valid in some contexts
     const txWithEmptyProof = {
+      data: [{ key: 'a', type: 'integer', value: 100 }],
+      fee: 100000,
+      proofs: [''],
+      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
+      timestamp: 1542539421605,
       type: 12,
       version: 1,
-      senderPublicKey: '7GGPvAPV3Gmxo4eswmBRLb6bXXEhAovPinfcwVkA2LJh',
-      fee: 100000,
-      timestamp: 1542539421605,
-      proofs: [''],
-      data: [{ type: 'integer', key: 'a', value: 100 }],
     };
 
     const str = json.stringifyTx(txWithEmptyProof);
