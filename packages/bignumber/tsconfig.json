@@ -1,36 +1,35 @@
 {
   "compilerOptions": {
-    /* Language & Environment */
-    "target": "ES2024",
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "lib": ["ES2024"],
 
     /* Modules */
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-
-    /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "outDir": "./dist",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
 
     /* Type Checking — maximum strictness */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "forceConsistentCasingInFileNames": true,
-
-    /* Interop */
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    /* Language & Environment */
+    "target": "ES2024",
+    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src/**/*.ts"]
