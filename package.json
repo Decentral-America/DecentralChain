@@ -40,7 +40,7 @@
     "@decentralchain/data-entities": "^3.0.0",
     "@decentralchain/marshall": "^0.14.0",
     "@decentralchain/parse-json-bignumber": "^2.0.0",
-    "@decentralchain/protobuf-serialization": "file:../protobuf-serialization",
+    "@decentralchain/protobuf-serialization": "^3.0.0",
     "@decentralchain/ts-types": "^2.0.0",
     "@ethereumjs/util": "^10.1.1",
     "@floating-ui/react-dom": "^2.1.8",
