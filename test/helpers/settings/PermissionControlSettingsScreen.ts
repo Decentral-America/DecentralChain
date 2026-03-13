@@ -22,9 +22,7 @@ const Permission = (wrapped: WebdriverIO.Element) => ({
   },
 });
 
-const PermissionDetailsModal = (
-  wrapped: ChainablePromiseElement<WebdriverIO.Element>,
-) => ({
+const PermissionDetailsModal = (wrapped: ChainablePromiseElement<WebdriverIO.Element>) => ({
   get root() {
     return wrapped;
   },
@@ -39,9 +37,7 @@ const PermissionDetailsModal = (
 
   async setResolutionTime(time: string) {
     await wrapped.$("[class*='trigger@Select']").click();
-    await browser
-      .findByText$(time, { selector: "[class*='item@Select']" })
-      .click();
+    await browser.findByText$(time, { selector: "[class*='item@Select']" }).click();
   },
 
   get spendingLimitInput() {
@@ -49,9 +45,7 @@ const PermissionDetailsModal = (
   },
 
   get allowMessagesCheckbox() {
-    return browser
-      .$("[class*='modalWrapper@modal']")
-      .findByText$('Allow sending messages');
+    return browser.$("[class*='modalWrapper@modal']").findByText$('Allow sending messages');
   },
 });
 
@@ -65,9 +59,7 @@ export const PermissionControlSettingsScreen = {
   },
 
   get permissionItems() {
-    return this.root
-      .$$("[class*='permissionItem@list']")
-      .map(it => Permission(it));
+    return this.root.$$("[class*='permissionItem@list']").map((it) => Permission(it));
   },
 
   get whiteListLink() {
