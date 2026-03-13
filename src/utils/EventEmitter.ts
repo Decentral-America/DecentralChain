@@ -97,7 +97,7 @@ export class EventEmitter<T extends { [K in keyof T]: unknown } = Record<string,
     once: boolean,
   ): void {
     this._events[eventName] ??= [];
-    this._events[eventName]?.push({ handler, context, once });
+    this._events[eventName]?.push({ context, handler, once });
   }
 }
 

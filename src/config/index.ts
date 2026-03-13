@@ -1,8 +1,8 @@
 export type TConsoleMethods = 'log' | 'info' | 'warn' | 'error';
 
 const LOG_LEVEL = {
-  PRODUCTION: 0,
   ERRORS: 1,
+  PRODUCTION: 0,
   VERBOSE: 2,
 } as const;
 
@@ -10,10 +10,10 @@ export const consoleConfig = {
   LOG_LEVEL,
   logLevel: LOG_LEVEL.PRODUCTION as number,
   methodsData: {
-    log: { save: false, logLevel: LOG_LEVEL.VERBOSE },
-    info: { save: false, logLevel: LOG_LEVEL.VERBOSE },
-    warn: { save: true, logLevel: LOG_LEVEL.VERBOSE },
-    error: { save: true, logLevel: LOG_LEVEL.ERRORS },
+    error: { logLevel: LOG_LEVEL.ERRORS, save: true },
+    info: { logLevel: LOG_LEVEL.VERBOSE, save: false },
+    log: { logLevel: LOG_LEVEL.VERBOSE, save: false },
+    warn: { logLevel: LOG_LEVEL.VERBOSE, save: true },
   } as Record<TConsoleMethods, { save: boolean; logLevel: number }>,
 };
 
