@@ -165,13 +165,14 @@ interface OrderProtoInput {
   [key: string]: unknown;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: switch over 14 transaction types — inherent complexity
 export function protoTxDataToTx(t: Transaction): TTransaction {
   const res: ProtoTxFields = {
-    version: t.version,
-    type: typeByName[t.data.case as keyof typeof typeByName] as TransactionType,
+    fee: convertNumber(t.fee?.amount ?? 0n),
     senderPublicKey: base58Encode(t.senderPublicKey),
     timestamp: Number(t.timestamp),
-    fee: convertNumber(t.fee?.amount ?? 0n),
+    type: typeByName[t.data.case as keyof typeof typeByName] as TransactionType,
+    version: t.version,
   };
 
   if (t.fee && t.fee.assetId.length > 0) {
@@ -376,13 +377,13 @@ const getCommonFields = ({
     }
   }
   return {
-    version,
-    type,
     chainId,
+    data: typename,
+    fee: amountToProto(fee, (rest as unknown as { feeAssetId?: string | null }).feeAssetId),
     senderPublicKey: base58Decode(senderPublicKey),
     timestamp: BigInt(timestamp),
-    fee: amountToProto(fee, (rest as unknown as { feeAssetId?: string | null }).feeAssetId),
-    data: typename,
+    type,
+    version,
   };
 };
 
@@ -397,18 +398,18 @@ const getCommonSignedFields = (tx: TTx) => {
 };
 
 const getIssueData = (t: IssueTransaction) => ({
-  name: t.name,
-  description: t.description === '' ? undefined : t.description,
   amount: BigInt(t.quantity),
   decimals: t.decimals === 0 ? undefined : t.decimals,
+  description: t.description === '' ? undefined : t.description,
+  name: t.name,
   reissuable: t.reissuable ? true : undefined,
   script: t.script == null ? new Uint8Array() : (scriptToProto(t.script) ?? new Uint8Array()),
 });
 const getTransferData = (t: TransferTransaction) => ({
-  recipient: recipientToProto(t.recipient),
   amount: amountToProto(t.amount, t.assetId),
   attachment:
     t.attachment == null || t.attachment === '' ? new Uint8Array() : base58Decode(t.attachment),
+  recipient: recipientToProto(t.recipient),
 });
 const getReissueData = (t: ReissueTransaction) => ({
   assetAmount: amountToProto(t.quantity, t.assetId),
@@ -419,17 +420,17 @@ const getBurnData = (t: BurnTransaction) => ({
 });
 const getExchangeData = (t: ExchangeTransaction & WithChainId) => ({
   amount: BigInt(t.amount),
-  price: BigInt(t.price),
   buyMatcherFee: BigInt(t.buyMatcherFee),
-  sellMatcherFee: BigInt(t.sellMatcherFee),
   orders: [
     orderToProto({ chainId: t.chainId, ...t.order1 } as OrderProtoInput),
     orderToProto({ chainId: t.chainId, ...t.order2 } as OrderProtoInput),
   ],
+  price: BigInt(t.price),
+  sellMatcherFee: BigInt(t.sellMatcherFee),
 });
 const getLeaseData = (t: LeaseTransaction) => ({
-  recipient: recipientToProto(t.recipient),
   amount: BigInt(t.amount),
+  recipient: recipientToProto(t.recipient),
 });
 const getCancelLeaseData = (t: CancelLeaseTransaction) => ({
   leaseId: base58Decode(t.leaseId),
@@ -460,7 +461,11 @@ const getSetAssetScriptData = (t: SetAssetScriptTransaction) => ({
   script: t.script == null ? new Uint8Array() : (scriptToProto(t.script) ?? new Uint8Array()),
 });
 const getInvokeData = (t: InvokeScriptTransaction) => {
-  const callSchemaEntry = schemas.invokeScriptSchemaV1.schema[5];
+  const callSchemaEntry = (
+    schemas.invokeScriptSchemaV1 as unknown as {
+      schema: [string | string[], Parameters<typeof binary.serializerFromSchema>[0]][];
+    }
+  ).schema[5];
   if (!callSchemaEntry) throw new Error('Missing invoke script call schema entry');
   return {
     dApp: recipientToProto(t.dApp),
@@ -475,8 +480,8 @@ const getInvokeData = (t: InvokeScriptTransaction) => {
 const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction) => {
   return {
     assetId: base58Decode(t.assetId),
-    name: t.name,
     description: t.description === '' ? undefined : t.description,
+    name: t.name,
   };
 };
 
@@ -543,11 +548,11 @@ export const txToProto = (t: Exclude<TTransaction, GenesisTransaction>): Transac
 
   return create(TransactionSchema, {
     chainId: common.chainId,
-    senderPublicKey: common.senderPublicKey as Uint8Array,
+    data: { case: dataCase, value: txData } as Transaction['data'],
     fee: common.fee as Amount,
+    senderPublicKey: common.senderPublicKey as Uint8Array,
     timestamp: common.timestamp as bigint,
     version: common.version as number,
-    data: { case: dataCase, value: txData } as Transaction['data'],
   });
 };
 
@@ -558,19 +563,19 @@ export const signedTxToProto = (t: TTx): SignedTransaction => {
 
   const wavesTransaction = create(TransactionSchema, {
     chainId: common.chainId,
-    senderPublicKey: common.senderPublicKey as Uint8Array,
+    data: { case: dataCase, value: txData } as Transaction['data'],
     fee: common.fee as Amount,
+    senderPublicKey: common.senderPublicKey as Uint8Array,
     timestamp: common.timestamp as bigint,
     version: common.version as number,
-    data: { case: dataCase, value: txData } as Transaction['data'],
   });
 
   return create(SignedTransactionSchema, {
+    proofs: (t.proofs || []).map(proof2Uint8Array),
     transaction: {
       case: 'wavesTransaction',
       value: wavesTransaction,
     },
-    proofs: (t.proofs || []).map(proof2Uint8Array),
   });
 };
 
@@ -591,13 +596,7 @@ const orderToProto = (o: OrderProtoInput): Order => {
   const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() === 'dcc';
   const ap = o.assetPair as { amountAsset: string | null; priceAsset: string | null };
   return create(OrderSchema, {
-    chainId: o.chainId as number,
-    sender: o.senderPublicKey
-      ? { case: 'senderPublicKey', value: base58Decode(o.senderPublicKey as string) }
-      : o.eip712Signature
-        ? { case: 'eip712Signature', value: base16Decode((o.eip712Signature as string).slice(2)) }
-        : { case: undefined },
-    matcherPublicKey: base58Decode(o.matcherPublicKey as string),
+    amount: BigInt(o.amount as string | number),
     assetPair: {
       amountAssetId: isNullOrDcc(ap.amountAsset)
         ? new Uint8Array()
@@ -606,18 +605,24 @@ const orderToProto = (o: OrderProtoInput): Order => {
         ? new Uint8Array()
         : base58Decode(ap.priceAsset as string),
     } as AssetPair,
-    orderSide: o.orderType === 'buy' ? Order_Side.BUY : Order_Side.SELL,
-    amount: BigInt(o.amount as string | number),
-    price: BigInt(o.price as string | number),
-    timestamp: BigInt(o.timestamp as string | number),
+    chainId: o.chainId as number,
     expiration: BigInt(o.expiration as string | number),
     matcherFee: amountToProto(
       o.matcherFee as string | number,
       o.matcherFeeAssetId ? (o.matcherFeeAssetId as string) : null,
     ),
-    version: o.version as number,
-    proofs: (o.proofs as string[] | undefined)?.map(base58Decode) ?? [],
+    matcherPublicKey: base58Decode(o.matcherPublicKey as string),
+    orderSide: o.orderType === 'buy' ? Order_Side.BUY : Order_Side.SELL,
+    price: BigInt(o.price as string | number),
     priceMode: priceMode ?? Order_PriceMode.DEFAULT,
+    proofs: (o.proofs as string[] | undefined)?.map(base58Decode) ?? [],
+    sender: o.senderPublicKey
+      ? { case: 'senderPublicKey', value: base58Decode(o.senderPublicKey as string) }
+      : o.eip712Signature
+        ? { case: 'eip712Signature', value: base16Decode((o.eip712Signature as string).slice(2)) }
+        : { case: undefined },
+    timestamp: BigInt(o.timestamp as string | number),
+    version: o.version as number,
   });
 };
 
@@ -634,12 +639,7 @@ const orderFromProto = (
   }
 
   return {
-    version: po.version as 1 | 2 | 3 | 4,
-    senderPublicKey:
-      po.sender.case === 'senderPublicKey'
-        ? base58Encode(po.sender.value)
-        : base58Encode(new Uint8Array()),
-    matcherPublicKey: base58Encode(po.matcherPublicKey),
+    amount: convertNumber(po.amount),
     assetPair: {
       amountAsset:
         po.assetPair?.amountAssetId == null || po.assetPair.amountAssetId.length === 0
@@ -651,22 +651,27 @@ const orderFromProto = (
           : base58Encode(po.assetPair.priceAssetId),
     },
     chainId: po.chainId,
-    orderType: po.orderSide === Order_Side.BUY ? 'buy' : 'sell',
-    amount: convertNumber(po.amount),
-    price: convertNumber(po.price),
-    timestamp: Number(po.timestamp),
+    eip712Signature:
+      po.sender.case === 'eip712Signature' && po.sender.value.length
+        ? `0x${base16Encode(po.sender.value)}`
+        : undefined,
     expiration: Number(po.expiration),
     matcherFee: convertNumber(po.matcherFee?.amount ?? 0n),
     matcherFeeAssetId:
       po.matcherFee?.assetId == null || po.matcherFee.assetId.length === 0
         ? null
         : base58Encode(po.matcherFee.assetId),
+    matcherPublicKey: base58Encode(po.matcherPublicKey),
+    orderType: po.orderSide === Order_Side.BUY ? 'buy' : 'sell',
+    price: convertNumber(po.price),
     // @ts-expect-error
     priceMode: priceMode,
-    eip712Signature:
-      po.sender.case === 'eip712Signature' && po.sender.value.length
-        ? `0x${base16Encode(po.sender.value)}`
-        : undefined,
+    senderPublicKey:
+      po.sender.case === 'senderPublicKey'
+        ? base58Encode(po.sender.value)
+        : base58Encode(new Uint8Array()),
+    timestamp: Number(po.timestamp),
+    version: po.version as 1 | 2 | 3 | 4,
   };
 };
 
@@ -682,8 +687,8 @@ const amountToProto = (a: string | number, assetId?: string | null): Amount =>
     assetId: assetId == null ? new Uint8Array() : base58Decode(assetId),
   });
 const massTransferItemToProto = (mti: MassTransferItem) => ({
-  recipient: recipientToProto(mti.recipient),
   amount: mti.amount === 0 ? 0n : BigInt(mti.amount),
+  recipient: recipientToProto(mti.recipient),
 });
 export const dataEntryToProto = (de: DataTransactionEntry): DataEntry =>
   create(DataEntrySchema, {
@@ -726,22 +731,22 @@ const nameByType = {
   17: 'updateAssetInfo' as const,
 };
 const typeByName = {
-  genesis: 1 as const,
-  payment: 2 as const,
-  issue: 3 as const,
-  transfer: 4 as const,
-  reissue: 5 as const,
   burn: 6 as const,
+  createAlias: 10 as const,
+  dataTransaction: 12 as const,
   exchange: 7 as const,
+  genesis: 1 as const,
+  invokeScript: 16 as const,
+  issue: 3 as const,
   lease: 8 as const,
   leaseCancel: 9 as const,
-  createAlias: 10 as const,
   massTransfer: 11 as const,
-  dataTransaction: 12 as const,
+  payment: 2 as const,
+  reissue: 5 as const,
+  setAssetScript: 15 as const,
   setScript: 13 as const,
   sponsorFee: 14 as const,
-  setAssetScript: 15 as const,
-  invokeScript: 16 as const,
+  transfer: 4 as const,
   updateAssetInfo: 17 as const,
 };
 

@@ -17,8 +17,8 @@ describe('invokeScript', () => {
     const tx = invokeScript({ ...invokeScriptMinimalParams }, stringSeed);
     expect(tx).toMatchObject({
       ...invokeScriptMinimalParams,
-      fee: 500000,
       chainId: 76,
+      fee: 500000,
       version: 2,
     });
   });
@@ -53,18 +53,18 @@ describe('invokeScript', () => {
 
   it('should build without args', () => {
     const params: IInvokeScriptParams = {
-      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
       call: {
         function: 'foo',
       },
+      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
     };
     const tx = invokeScript(params, stringSeed);
     expect(tx).toMatchObject({
-      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
       call: {
-        function: 'foo',
         args: [],
+        function: 'foo',
       },
+      dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
     });
   });
 
@@ -111,9 +111,7 @@ describe('invokeScript', () => {
   });
 
   const testInvokeScriptParams: IInvokeScriptParams = {
-    dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
     call: {
-      function: 'foo',
       args: [
         {
           type: 'binary',
@@ -153,7 +151,9 @@ describe('invokeScript', () => {
           ],
         },
       ],
+      function: 'foo',
     },
+    dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1',
   };
 
   it('Should build with test set params', () => {
@@ -167,7 +167,7 @@ describe('invokeScript', () => {
 describe('serialize/deserialize invoke tx', () => {
   Object.entries(invokeScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -175,7 +175,7 @@ describe('serialize/deserialize invoke tx', () => {
 describe('serialize/deserialize invoke binary tx', () => {
   Object.entries(invokeScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

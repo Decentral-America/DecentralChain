@@ -22,11 +22,6 @@ import {
 } from './validators';
 
 const invokeScheme = {
-  type: isEq(TRANSACTION_TYPE.INVOKE_SCRIPT),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
-  dApp: isRecipient,
-
   call: ifElse(
     orEq([null, undefined]),
     defaultValue(true),
@@ -39,6 +34,10 @@ const invokeScheme = {
       ),
     ),
   ),
+  chainId: isNaturalNumberLike,
+  dApp: isRecipient,
+  fee: isNaturalNumberLike,
+  feeAssetId: isDccOrAssetId,
   payment: validatePipe(isArray, (data: Array<unknown>) =>
     data.every(
       validatePipe(
@@ -47,11 +46,11 @@ const invokeScheme = {
       ),
     ),
   ),
-  fee: isNaturalNumberLike,
-  feeAssetId: isDccOrAssetId,
-  chainId: isNaturalNumberLike,
-  timestamp: isNaturalNumberLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNaturalNumberLike,
+  type: isEq(TRANSACTION_TYPE.INVOKE_SCRIPT),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const invokeValidator = validateByShema(invokeScheme, getError);

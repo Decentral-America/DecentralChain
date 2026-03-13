@@ -37,15 +37,15 @@ export function cancelLease(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: CancelLeaseTransaction & WithId & WithProofs = {
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 100000),
+    id: '',
+    leaseId: paramsOrTx.leaseId,
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    leaseId: paramsOrTx.leaseId,
-    fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    proofs: paramsOrTx.proofs || [],
-    id: '',
   };
 
   validate.cancelLease(tx as unknown as Record<string, unknown>);

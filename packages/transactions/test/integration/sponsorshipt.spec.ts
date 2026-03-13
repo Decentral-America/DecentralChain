@@ -10,12 +10,12 @@ describe('Sponsorship', () => {
     async () => {
       const issueTx = issue(
         {
+          chainId: CHAIN_ID,
           decimals: 8,
-          name: 'testAsset',
           description: '',
+          name: 'testAsset',
           quantity: '9000000000000',
           reissuable: true,
-          chainId: CHAIN_ID,
         },
         MASTER_SEED,
       );
@@ -31,19 +31,19 @@ describe('Sponsorship', () => {
     'Should set sponsorship',
     async () => {
       const sponTx = sponsorship(
-        { assetId, minSponsoredAssetFee: '100000', chainId: CHAIN_ID },
+        { assetId, chainId: CHAIN_ID, minSponsoredAssetFee: '100000' },
         MASTER_SEED,
       );
       await broadcast(sponTx, API_BASE);
-      await waitForTx(sponTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+      await waitForTx(sponTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
 
       const ttx = transfer(
         {
-          recipient: address(MASTER_SEED, CHAIN_ID),
           amount: '100',
-          feeAssetId: assetId,
-          fee: '100000',
           chainId: CHAIN_ID,
+          fee: '100000',
+          feeAssetId: assetId,
+          recipient: address(MASTER_SEED, CHAIN_ID),
         },
         MASTER_SEED,
       );
@@ -56,16 +56,16 @@ describe('Sponsorship', () => {
     'Should remove sponsorship',
     async () => {
       const sponTx = sponsorship(
-        { assetId, minSponsoredAssetFee: null, chainId: CHAIN_ID },
+        { assetId, chainId: CHAIN_ID, minSponsoredAssetFee: null },
         MASTER_SEED,
       );
       await broadcast(sponTx, API_BASE);
-      await waitForTx(sponTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+      await waitForTx(sponTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
       const ttx = transfer(
         {
-          recipient: address(MASTER_SEED, CHAIN_ID),
           amount: 1000,
           feeAssetId: assetId,
+          recipient: address(MASTER_SEED, CHAIN_ID),
         },
         MASTER_SEED,
       );
