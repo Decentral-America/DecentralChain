@@ -2,13 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
-    globals: true,
-    include: ['test/**/*.test.ts'],
+    clearMocks: true,
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
       exclude: ['src/messages.proto.compiled.js', 'src/messages.proto.compiled.d.ts'],
+      include: ['src/**/*.ts'],
+      provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 80,
@@ -17,6 +15,9 @@ export default defineConfig({
         statements: 80,
       },
     },
+    environment: 'jsdom',
+    globals: true,
+    include: ['test/**/*.test.ts'],
     reporters: ['default'],
     typecheck: { enabled: true },
   },
