@@ -31,8 +31,8 @@ const create = (options?: Options) => {
 
   const escapee: Record<string, string> = {
     '"': '"',
-    '\\': '\\',
     '/': '/',
+    '\\': '\\',
     b: '\b',
     f: '\f',
     n: '\n',
@@ -44,9 +44,9 @@ const create = (options?: Options) => {
 
   const error = (m: string): never => {
     throw {
-      name: 'SyntaxError',
-      message: m,
       at: at,
+      message: m,
+      name: 'SyntaxError',
       text: text,
     };
   };
@@ -60,6 +60,7 @@ const create = (options?: Options) => {
     return ch;
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON number parser — inherent complexity
   const number = (): string | number => {
     let string = '';
 
@@ -107,6 +108,7 @@ const create = (options?: Options) => {
     }
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON string parser with escape handling
   const string = (): string => {
     let hex: number;
     let i: number;
@@ -258,13 +260,13 @@ const create = (options?: Options) => {
   let indent: string;
 
   const meta: Record<string, string> = {
-    '\b': '\\b',
-    '\t': '\\t',
-    '\n': '\\n',
-    '\f': '\\f',
-    '\r': '\\r',
     '"': '\\"',
     '\\': '\\\\',
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
   };
 
   let rep: unknown;
@@ -283,6 +285,7 @@ const create = (options?: Options) => {
       : `"${s}"`;
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: JSON stringifier with recursive structure handling
   function str(key: string | number, holder: Record<string | number, unknown>): string | undefined {
     let i: number;
     let k: string;
