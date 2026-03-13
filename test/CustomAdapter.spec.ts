@@ -4,14 +4,14 @@ import { SIGN_TYPE } from '../src/prepareTx';
 
 describe('CustomAdapter', () => {
   const mockUserApi: IUserApi = {
-    type: 'customTest',
-    isAvailable: () => true,
     getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
     getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+    isAvailable: () => true,
+    signData: async (_bytes) => 'mockDataSignature',
+    signOrder: async (_bytes) => 'mockOrderSignature',
     signRequest: async (_bytes) => 'mockSignature',
     signTransaction: async (_bytes) => 'mockTxSignature',
-    signOrder: async (_bytes) => 'mockOrderSignature',
-    signData: async (_bytes) => 'mockDataSignature',
+    type: 'customTest',
   };
 
   beforeAll(() => {

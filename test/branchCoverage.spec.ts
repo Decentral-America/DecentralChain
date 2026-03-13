@@ -18,37 +18,37 @@ import { VALIDATORS } from '../src/prepareTx/fieldValidator';
 const testSeed = 'some test seed words without money on mainnet';
 
 const dccAsset = new Asset({
-  precision: 8,
-  id: 'DCC',
-  quantity: new BigNumber(10000000000000000),
   description: '',
   height: 0,
+  id: 'DCC',
   name: 'DCC',
+  precision: 8,
+  quantity: new BigNumber(10000000000000000),
   reissuable: false,
   sender: '',
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
   ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 const testAsset = new Asset({
-  precision: 5,
-  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
-  quantity: new BigNumber(10000),
   description: 'Some text',
   height: 100,
+  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
   name: 'Test',
+  precision: 5,
+  quantity: new BigNumber(10000),
   reissuable: false,
   sender: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-  timestamp: new Date(),
   ticker: undefined,
+  timestamp: new Date(),
 });
 
 const opts = (value: any, overrides: any = {}) => ({
   key: 'test',
-  value,
+  name: 'testField',
   optional: false,
   type: 'string',
-  name: 'testField',
+  value,
   ...overrides,
 });
 
@@ -62,7 +62,6 @@ describe('Branch coverage - Signable', () => {
   describe('_makeSignPromise non-signRequest branch', () => {
     it('uses signTransaction for transfer type', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.TRANSFER,
         data: {
           amount: Money.fromCoins(100000, dccAsset),
           fee: Money.fromCoins(100000, dccAsset),
@@ -70,6 +69,7 @@ describe('Branch coverage - Signable', () => {
           timestamp: Date.now(),
           version: 2,
         },
+        type: SIGN_TYPE.TRANSFER,
       } as any);
 
       const sig = await signable.getSignature();
@@ -79,17 +79,17 @@ describe('Branch coverage - Signable', () => {
 
     it('uses signOrder for create order type', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.CREATE_ORDER,
         data: {
+          amount: Money.fromCoins(100000000, dccAsset),
+          expiration: Date.now() + 86400000,
+          matcherFee: Money.fromCoins(300000, dccAsset),
           matcherPublicKey: 'E3ao18QtWEzm7hAbKQaoZNBRw6coj2NAy7opqbrqURFr',
           orderType: 'buy',
-          amount: Money.fromCoins(100000000, dccAsset),
           price: Money.fromCoins(50000, testAsset),
-          matcherFee: Money.fromCoins(300000, dccAsset),
-          expiration: Date.now() + 86400000,
           timestamp: Date.now(),
           version: 3,
         },
+        type: SIGN_TYPE.CREATE_ORDER,
       } as any);
 
       const sig = await signable.getSignature();
@@ -100,15 +100,15 @@ describe('Branch coverage - Signable', () => {
   describe('_getAmountPrecision SCRIPT_INVOCATION branch', () => {
     it('returns payment precision for script invocation', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.SCRIPT_INVOCATION,
         data: {
+          call: { args: [], function: 'test' },
           dApp: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-          call: { function: 'test', args: [] },
           fee: Money.fromCoins(500000, dccAsset),
           payment: [Money.fromCoins(1000000, testAsset)],
           timestamp: Date.now(),
           version: 1,
         },
+        type: SIGN_TYPE.SCRIPT_INVOCATION,
       } as any);
 
       // This exercises the SCRIPT_INVOCATION branch in _getAmountPrecision
@@ -118,15 +118,15 @@ describe('Branch coverage - Signable', () => {
 
     it('returns 0 when script invocation has no payment', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.SCRIPT_INVOCATION,
         data: {
+          call: { args: [], function: 'test' },
           dApp: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-          call: { function: 'test', args: [] },
           fee: Money.fromCoins(500000, dccAsset),
           payment: [],
           timestamp: Date.now(),
           version: 1,
         },
+        type: SIGN_TYPE.SCRIPT_INVOCATION,
       } as any);
 
       const sig = await signable.getSignature();
@@ -137,15 +137,15 @@ describe('Branch coverage - Signable', () => {
   describe('_getAmount2Precision branch', () => {
     it('returns second payment precision when 2 payments', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.SCRIPT_INVOCATION,
         data: {
+          call: { args: [], function: 'test' },
           dApp: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-          call: { function: 'test', args: [] },
           fee: Money.fromCoins(500000, dccAsset),
           payment: [Money.fromCoins(1000000, dccAsset), Money.fromCoins(500, testAsset)],
           timestamp: Date.now(),
           version: 1,
         },
+        type: SIGN_TYPE.SCRIPT_INVOCATION,
       } as any);
 
       const sig = await signable.getSignature();
@@ -156,14 +156,14 @@ describe('Branch coverage - Signable', () => {
   describe('_getFeePrecision branch', () => {
     it('returns fee asset precision when fee has asset', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.SPONSORSHIP,
         data: {
           assetId: testAsset.id,
-          minSponsoredAssetFee: Money.fromCoins(100, testAsset),
           fee: Money.fromCoins(100000000, dccAsset),
+          minSponsoredAssetFee: Money.fromCoins(100, testAsset),
           timestamp: Date.now(),
           version: 1,
         },
+        type: SIGN_TYPE.SPONSORSHIP,
       } as any);
 
       const sig = await signable.getSignature();
@@ -174,8 +174,8 @@ describe('Branch coverage - Signable', () => {
   describe('addProof edge cases', () => {
     it('throws for empty string', () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       expect(() => signable.addProof('')).toThrow('Invalid signature');
@@ -183,8 +183,8 @@ describe('Branch coverage - Signable', () => {
 
     it('throws for whitespace-only string', () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       expect(() => signable.addProof('   ')).toThrow('Invalid signature');
@@ -192,8 +192,8 @@ describe('Branch coverage - Signable', () => {
 
     it('throws when max proofs exceeded', () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       for (let i = 0; i < 8; i++) {
@@ -204,8 +204,8 @@ describe('Branch coverage - Signable', () => {
 
     it('deduplicates proofs', () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       signable.addProof('sameProof');
@@ -218,8 +218,8 @@ describe('Branch coverage - Signable', () => {
     it('falls back when convert throws', async () => {
       // The convert function might throw for non-standard data
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       const result = await signable.getDataForApi();
@@ -231,8 +231,8 @@ describe('Branch coverage - Signable', () => {
   describe('getOrderFee only works for CREATE_ORDER', () => {
     it('returns undefined for non-order type', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       const result = await signable.getOrderFee({} as any, new BigNumber(0), false);
@@ -243,7 +243,6 @@ describe('Branch coverage - Signable', () => {
   describe('getFee', () => {
     it('computes fee for transfer', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.TRANSFER,
         data: {
           amount: Money.fromCoins(100000, dccAsset),
           fee: Money.fromCoins(100000, dccAsset),
@@ -251,20 +250,21 @@ describe('Branch coverage - Signable', () => {
           timestamp: Date.now(),
           version: 2,
         },
+        type: SIGN_TYPE.TRANSFER,
       } as any);
 
       const config = {
-        smart_asset_extra_fee: 400000,
-        smart_account_extra_fee: 400000,
         calculate_fee_rules: {
           default: {
             add_smart_account_fee: true,
             add_smart_asset_fee: true,
-            min_price_step: 0,
             fee: 100000,
+            min_price_step: 0,
             price_per_kb: 0,
           },
         },
+        smart_account_extra_fee: 400000,
+        smart_asset_extra_fee: 400000,
       };
 
       const fee = await signable.getFee(config as any, false);
@@ -275,8 +275,8 @@ describe('Branch coverage - Signable', () => {
   describe('getHash', () => {
     it('returns base58 hash', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       const hash = await signable.getHash();
@@ -290,28 +290,28 @@ describe('Branch coverage - Signable', () => {
       Adapter.initOptions({ networkCode: 'W'.charCodeAt(0) });
       // Create adapter that rejects signing
       const failApi = {
-        type: 'custom',
-        isAvailable: () => true,
         getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+        isAvailable: () => true,
+        signData: async () => {
+          throw new Error('sign failed');
+        },
+        signOrder: async () => {
+          throw new Error('sign failed');
+        },
         signRequest: async () => {
           throw new Error('sign failed');
         },
         signTransaction: async () => {
           throw new Error('sign failed');
         },
-        signOrder: async () => {
-          throw new Error('sign failed');
-        },
-        signData: async () => {
-          throw new Error('sign failed');
-        },
+        type: 'custom',
       };
       const failAdapter = new CustomAdapter(failApi);
 
       const signable = failAdapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       await expect(signable.getSignature()).rejects.toThrow('sign failed');
@@ -455,8 +455,8 @@ describe('Branch coverage - fieldValidator', () => {
       expect(() =>
         VALIDATORS.call(
           opts({
-            function: 'test',
             args: [{ type: 'list', value: [{ type: 'integer', value: 42 }] }],
+            function: 'test',
           }),
         ),
       ).not.toThrow();
@@ -466,8 +466,8 @@ describe('Branch coverage - fieldValidator', () => {
       expect(() =>
         VALIDATORS.call(
           opts({
-            function: 'test',
             args: [{ type: 'list', value: null }],
+            function: 'test',
           }),
         ),
       ).not.toThrow();
@@ -542,21 +542,20 @@ describe('Branch coverage - Signable getAssetIds', () => {
   it('handles EXCHANGE type in getAssetIds', async () => {
     // Create any signable, then mock getSignData to return EXCHANGE-shaped data
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Mock getSignData to return EXCHANGE data
     vi.spyOn(signable, 'getSignData').mockResolvedValue({
-      type: TRANSACTION_TYPE_NUMBER.EXCHANGE,
       feeAssetId: null,
       order1: {
         assetPair: { amountAsset: 'asset1', priceAsset: 'asset2' },
@@ -565,6 +564,7 @@ describe('Branch coverage - Signable getAssetIds', () => {
       order2: {
         matcherFeeAssetId: 'asset4',
       },
+      type: TRANSACTION_TYPE_NUMBER.EXCHANGE,
     } as any);
 
     const ids = await signable.getAssetIds();
@@ -577,23 +577,23 @@ describe('Branch coverage - Signable getAssetIds', () => {
 
   it('handles SCRIPT_INVOCATION type in getAssetIds', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Mock getSignData to return SCRIPT_INVOCATION data
     vi.spyOn(signable, 'getSignData').mockResolvedValue({
-      type: TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION,
       feeAssetId: null,
       payment: [{ assetId: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU' }, { assetId: null }],
+      type: TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION,
     } as any);
 
     const ids = await signable.getAssetIds();
@@ -603,16 +603,16 @@ describe('Branch coverage - Signable getAssetIds', () => {
 
   it('handles getId with protobuf-style bytes (first byte === 10)', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Mock _bytePromise to return bytes starting with 10 (protobuf marker)
@@ -677,10 +677,10 @@ describe('Branch coverage - CustomAdapter sign methods missing', () => {
 
   it('throws when signRequest is missing', () => {
     const userApi = {
-      type: 'custom',
-      isAvailable: () => true,
       getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+      isAvailable: () => true,
+      type: 'custom',
       // No sign methods
     };
     const adapter = new CustomAdapter(userApi);
@@ -691,10 +691,10 @@ describe('Branch coverage - CustomAdapter sign methods missing', () => {
 
   it('throws when signTransaction is missing', () => {
     const userApi = {
-      type: 'custom',
-      isAvailable: () => true,
       getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+      isAvailable: () => true,
+      type: 'custom',
     };
     const adapter = new CustomAdapter(userApi);
     expect(() => adapter.signTransaction(new Uint8Array([1, 2, 3]), {}, null)).toThrow(
@@ -704,10 +704,10 @@ describe('Branch coverage - CustomAdapter sign methods missing', () => {
 
   it('throws when signOrder is missing', () => {
     const userApi = {
-      type: 'custom',
-      isAvailable: () => true,
       getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+      isAvailable: () => true,
+      type: 'custom',
     };
     const adapter = new CustomAdapter(userApi);
     expect(() => adapter.signOrder(new Uint8Array([1, 2, 3]), {}, null)).toThrow(
@@ -717,10 +717,10 @@ describe('Branch coverage - CustomAdapter sign methods missing', () => {
 
   it('throws when signData is missing', () => {
     const userApi = {
-      type: 'custom',
-      isAvailable: () => true,
       getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+      isAvailable: () => true,
+      type: 'custom',
     };
     const adapter = new CustomAdapter(userApi);
     expect(() => adapter.signData(new Uint8Array([1, 2, 3]))).toThrow(
@@ -730,10 +730,10 @@ describe('Branch coverage - CustomAdapter sign methods missing', () => {
 
   it('isAvailable rejects when currentUser is not available', async () => {
     const userApi = {
-      type: 'custom',
-      isAvailable: () => false,
       getAddress: () => '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
       getPublicKey: () => 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
+      isAvailable: () => false,
+      type: 'custom',
     };
     const adapter = new CustomAdapter(userApi);
     await expect(adapter.isAvailable()).rejects.toThrow('Custom adapter is not available');
