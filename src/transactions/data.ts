@@ -3,7 +3,11 @@
  */
 
 import { binary, serializePrimitives } from '@decentralchain/marshall';
-import * as dccProto from '@decentralchain/protobuf-serialization';
+import {
+  create,
+  DataTransactionDataSchema,
+  toBinary,
+} from '@decentralchain/protobuf-serialization';
 import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
   type DataFiledType,
@@ -119,7 +123,10 @@ export function data(
     computedFee = Math.floor(1 + (bytes.length - 1) / 1024) * 100000;
   } else {
     const protoEntries = (dataEntriesWithTypes as DataTransactionEntry[]).map(dataEntryToProto);
-    const dataBytes = dccProto.waves.DataTransactionData.encode({ data: protoEntries }).finish();
+    const dataBytes = toBinary(
+      DataTransactionDataSchema,
+      create(DataTransactionDataSchema, { data: protoEntries }),
+    );
     computedFee = Math.max(100000, Math.ceil(dataBytes.length / 1024) * 100000);
   }
 
