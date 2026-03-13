@@ -166,7 +166,7 @@ const isValidDataPair = (data: { type: string; value: unknown }): boolean =>
 
 const isValidData = (item: unknown): boolean => {
   if (item == null) return false;
-  const record = item as Record<string, unknown>;
+  const record = item as { key?: unknown; type: string; value: unknown };
   if (!isString(record.key) || !(record.key as string)) return false;
   return isValidDataPair(record as { type: string; value: unknown });
 };
@@ -264,8 +264,8 @@ const orderScheme: Record<string, (value: unknown) => boolean> = {
   version: orEq([undefined, 1, 2, 3]),
   assetPair: validatePipe(
     isRequired(true),
-    (v) => isAssetId((v as Record<string, unknown>)?.amountAsset),
-    (v) => isAssetId((v as Record<string, unknown>)?.priceAsset),
+    (v) => isAssetId((v as { amountAsset?: unknown }).amountAsset),
+    (v) => isAssetId((v as { priceAsset?: unknown }).priceAsset),
   ),
   price: isNumberLike,
   amount: isNumberLike,
@@ -290,7 +290,7 @@ const validateOrderV3 = validateBySchema(v3OrderScheme, noop);
 
 const orderValidator = (value: unknown): boolean => {
   try {
-    const record = value as Record<string, unknown>;
+    const record = value as { version?: unknown; [key: string]: unknown };
     validateOrder(record);
     if (record.version === 3) {
       validateOrderV3(record);
@@ -415,7 +415,7 @@ const massTransferArgsScheme = {
       return arr.length > 0 && arr.length <= 100;
     },
     (data) =>
-      (data as Array<Record<string, unknown>>).every(
+      (data as Array<{ recipient?: unknown; amount?: unknown }>).every(
         (item) => item != null && isRecipient(item.recipient) && isPositiveAmount(item.amount),
       ),
   ),
@@ -468,14 +468,14 @@ const invokeArgsScheme = {
   dApp: isRecipient,
   call: validateOptional(
     validatePipe(
-      (v) => isString((v as Record<string, unknown>)?.function),
-      (v) => ((v as Record<string, unknown>)?.function as string)?.length >= 0,
-      (v) => isArray((v as Record<string, unknown>)?.args),
+      (v) => isString((v as { function?: unknown }).function),
+      (v) => ((v as { function?: unknown }).function as string)?.length >= 0,
+      (v) => isArray((v as { args?: unknown }).args),
     ),
   ),
   payment: validateOptional(
     validatePipe(isArray, (data) =>
-      (data as Array<Record<string, unknown>>).every(
+      (data as Array<{ amount?: unknown; assetId?: unknown }>).every(
         (item) => isPositiveAmount(item.amount) && isAssetId(item.assetId),
       ),
     ),
