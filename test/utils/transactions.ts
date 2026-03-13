@@ -32,55 +32,55 @@ const scriptTest =
   'base64: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';
 
 export const ISSUE: SignerIssueTx = {
-  type: TRANSACTION_TYPE.ISSUE,
-  name: 'ShortToken',
   decimals: 8,
+  description: 'Full description of ShortToken',
+  name: 'ShortToken',
   quantity: longMax,
   reissuable: true,
-  description: 'Full description of ShortToken',
   script: script,
+  type: TRANSACTION_TYPE.ISSUE,
 };
 
 export const TRANSFER: SignerTransferTx = {
-  type: TRANSACTION_TYPE.TRANSFER,
-  recipient,
-  assetId: assetId,
   amount: amount,
+  assetId: assetId,
   attachment: attachment,
+  recipient,
+  type: TRANSACTION_TYPE.TRANSFER,
 };
 
 export const REISSUE: SignerReissueTx = {
-  type: TRANSACTION_TYPE.REISSUE,
   assetId: assetId,
   quantity: amount,
   reissuable: true,
+  type: TRANSACTION_TYPE.REISSUE,
 };
 
 export const BURN: SignerBurnTx = {
-  type: TRANSACTION_TYPE.BURN,
-  assetId: assetId,
   amount: amount,
+  assetId: assetId,
+  type: TRANSACTION_TYPE.BURN,
 };
 
 export const LEASE: SignerLeaseTx = {
-  type: TRANSACTION_TYPE.LEASE,
-  recipient: recipient,
   amount: amount,
+  recipient: recipient,
+  type: TRANSACTION_TYPE.LEASE,
 };
 
 export const CANCEL_LEASE: SignerCancelLeaseTx = {
-  type: TRANSACTION_TYPE.CANCEL_LEASE,
   leaseId: leaseId,
+  type: TRANSACTION_TYPE.CANCEL_LEASE,
 };
 
 export const ALIAS: SignerAliasTx = {
-  type: TRANSACTION_TYPE.ALIAS,
   alias: aliasStr,
+  type: TRANSACTION_TYPE.ALIAS,
 };
 
 export const MASS_TRANSFER: SignerMassTransferTx = {
-  type: TRANSACTION_TYPE.MASS_TRANSFER,
   assetId: assetId,
+  attachment: attachment,
   transfers: [
     {
       amount: 1,
@@ -91,161 +91,157 @@ export const MASS_TRANSFER: SignerMassTransferTx = {
       recipient: 'merry',
     },
   ],
-  attachment: attachment,
+  type: TRANSACTION_TYPE.MASS_TRANSFER,
 };
 
 export const DATA: SignerDataTx = {
-  type: TRANSACTION_TYPE.DATA,
   data: [
     { key: 'stringValue', type: 'string', value: 'Lorem ipsum dolor sit amet' },
     { key: 'longMaxValue', type: 'integer', value: longMax },
     { key: 'flagValue', type: 'boolean', value: true },
     { key: 'base64', type: 'binary', value: script },
   ],
+  type: TRANSACTION_TYPE.DATA,
 };
 
 export const SET_SCRIPT: SignerSetScriptTx = {
-  type: TRANSACTION_TYPE.SET_SCRIPT,
   script: script,
+  type: TRANSACTION_TYPE.SET_SCRIPT,
 };
 
 export const SPONSORSHIP: SignerSponsorshipTx = {
-  type: TRANSACTION_TYPE.SPONSORSHIP,
   assetId: assetId,
   minSponsoredAssetFee: amount,
+  type: TRANSACTION_TYPE.SPONSORSHIP,
 };
 
 export const SET_ASSET_SCRIPT: SignerSetAssetScriptTx = {
-  type: TRANSACTION_TYPE.SET_ASSET_SCRIPT,
   assetId: assetId,
   script: script,
+  type: TRANSACTION_TYPE.SET_ASSET_SCRIPT,
 };
 
 export const INVOKE: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
-  dApp: dApp,
   call: {
-    function: 'someFunctionToCall',
     args: [
       { type: 'binary', value: 'base64:BQbtKNoM' },
       { type: 'boolean', value: true },
       { type: 'integer', value: longMax },
       { type: 'string', value: 'Lorem ipsum dolor sit amet' },
     ],
+    function: 'someFunctionToCall',
   },
+  dApp: dApp,
   payment: [
     {
-      assetId: null,
       amount: 1,
+      assetId: null,
     },
     {
-      assetId: assetId,
       amount: 1,
+      assetId: assetId,
     },
   ],
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };
 
 export const INVOKE_DEFAULT_CALL: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
+  call: {
+    args: [],
+    function: 'default',
+  },
   dApp: dApp,
   fee: dAppMinFee,
-  call: {
-    function: 'default',
-    args: [],
-  },
   payment: [],
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };
 
 export const INVOKE_NO_ARGS_SINGLE_PAYMENTS: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
+  call: {
+    args: [],
+    function: 'callWithPaymentsButNoArgs',
+  },
   dApp: dApp,
   fee: dAppMinFee,
   payment: [
     {
-      assetId: 'DCC',
       amount: longMax,
+      assetId: 'DCC',
     },
   ],
-  call: {
-    function: 'callWithPaymentsButNoArgs',
-    args: [],
-  },
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };
 
 export const INVOKE_NO_ARGS_MANY_PAYMENTS: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
+  call: {
+    args: [],
+    function: 'callWithPaymentsButNoArgs',
+  },
   dApp: dApp,
   fee: dAppMinFee,
   payment: [
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
     {
-      assetId: 'DCC',
       amount: 1,
+      assetId: 'DCC',
     },
   ],
-  call: {
-    function: 'callWithPaymentsButNoArgs',
-    args: [],
-  },
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };
 
 export const INVOKE_NATIVE_ARGS_NO_PAYMENTS: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
-  dApp: dApp,
-  fee: dAppMinFee,
   call: {
-    function: 'callWithNativeArgsAndNoPayments',
     args: [
       { type: 'binary', value: 'base64:BQbtKNoM' },
       { type: 'boolean', value: true },
       { type: 'integer', value: longMax },
       { type: 'string', value: 'Lorem ipsum dolor sit amet' },
     ],
+    function: 'callWithNativeArgsAndNoPayments',
   },
+  dApp: dApp,
+  fee: dAppMinFee,
   payment: [],
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };
 
 export const INVOKE_LIST_ARGS_NO_PAYMENTS: SignerInvokeTx = {
-  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
-  dApp: dApp,
-  fee: dAppMinFee,
   call: {
-    function: 'callWithListArgsAndNoPayments',
     args: [
       {
         type: 'list',
@@ -276,6 +272,10 @@ export const INVOKE_LIST_ARGS_NO_PAYMENTS: SignerInvokeTx = {
         ],
       },
     ],
+    function: 'callWithListArgsAndNoPayments',
   },
+  dApp: dApp,
+  fee: dAppMinFee,
   payment: [],
+  type: TRANSACTION_TYPE.INVOKE_SCRIPT,
 };

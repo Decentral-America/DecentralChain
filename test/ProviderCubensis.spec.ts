@@ -13,26 +13,26 @@ const TEST_OPTIONS = { NETWORK_BYTE: TEST_NETWORK_BYTE, NODE_URL: TEST_NODE_URL 
 function createMockApi(): CubensisConnect.TCubensisConnectApi {
   return {
     auth: vi.fn(),
-    signTransaction: vi.fn(),
-    signTransactionPackage: vi.fn(),
-    signCustomData: vi.fn(),
+    decryptMessage: vi.fn(),
+    encryptMessage: vi.fn(),
+    notification: vi.fn(),
+    on: vi.fn(),
     publicState: vi.fn().mockResolvedValue({
       account: { publicKey: 'mockPublicKey' },
       network: {
-        server: TEST_NODE_URL,
         code: String.fromCharCode(TEST_NETWORK_BYTE),
+        server: TEST_NODE_URL,
       },
     }),
-    signOrder: vi.fn(),
-    signAndPublishOrder: vi.fn(),
-    signAndPublishTransaction: vi.fn(),
-    signRequest: vi.fn(),
     resourceIsApproved: vi.fn(),
     resourceIsBlocked: vi.fn(),
-    on: vi.fn(),
-    notification: vi.fn(),
-    encryptMessage: vi.fn(),
-    decryptMessage: vi.fn(),
+    signAndPublishOrder: vi.fn(),
+    signAndPublishTransaction: vi.fn(),
+    signCustomData: vi.fn(),
+    signOrder: vi.fn(),
+    signRequest: vi.fn(),
+    signTransaction: vi.fn(),
+    signTransactionPackage: vi.fn(),
   } as unknown as CubensisConnect.TCubensisConnectApi;
 }
 
@@ -118,9 +118,9 @@ describe('ProviderCubensis', () => {
     it('authenticates and returns user data', async () => {
       const authResult = {
         address: '3N1234567890abcdef',
-        publicKey: 'abc123publickey',
         host: 'example.com',
         prefix: 'CubensisConnect',
+        publicKey: 'abc123publickey',
         signature: 'sig123',
       };
       (mockApi.auth as ReturnType<typeof vi.fn>).mockResolvedValue(authResult);
@@ -138,9 +138,9 @@ describe('ProviderCubensis', () => {
     it('calls auth with auth data containing hex-encoded random bytes', async () => {
       (mockApi.auth as ReturnType<typeof vi.fn>).mockResolvedValue({
         address: 'addr',
-        publicKey: 'pk',
         host: '',
         prefix: '',
+        publicKey: 'pk',
         signature: '',
       });
 
@@ -177,8 +177,8 @@ describe('ProviderCubensis', () => {
       expect(sig).toBe('sig_abc123');
       expect(mockApi.signCustomData).toHaveBeenCalledWith(
         expect.objectContaining({
-          version: 1,
           binary: expect.stringMatching(/^base64:/) as string,
+          version: 1,
         }),
       );
     });
@@ -203,14 +203,14 @@ describe('ProviderCubensis', () => {
 
       await provider.connect(TEST_OPTIONS);
 
-      const typedData = [{ type: 'string' as const, key: 'name', value: 'Alice' }];
+      const typedData = [{ key: 'name', type: 'string' as const, value: 'Alice' }];
       const sig = await provider.signTypedData(typedData);
 
       expect(sig).toBe('typed_sig');
       expect(mockApi.signCustomData).toHaveBeenCalledWith(
         expect.objectContaining({
-          version: 2,
           data: typedData,
+          version: 2,
         }),
       );
     });
@@ -219,18 +219,18 @@ describe('ProviderCubensis', () => {
   describe('sign()', () => {
     it('signs a single transfer transaction', async () => {
       const signedJson = JSON.stringify({
-        type: 4,
-        version: 2,
         amount: 1000,
-        recipient: '3Naddr',
         id: 'txid123',
         proofs: ['proof1'],
+        recipient: '3Naddr',
+        type: 4,
+        version: 2,
       });
       (mockApi.signTransaction as ReturnType<typeof vi.fn>).mockResolvedValue(signedJson);
 
       await provider.connect(TEST_OPTIONS);
 
-      const result = await provider.sign([{ type: 4, amount: 1000, recipient: '3Naddr' }]);
+      const result = await provider.sign([{ amount: 1000, recipient: '3Naddr', type: 4 }]);
 
       expect(result).toHaveLength(1);
       expect(mockApi.signTransaction).toHaveBeenCalled();
@@ -238,20 +238,20 @@ describe('ProviderCubensis', () => {
 
     it('signs multiple transactions as a package', async () => {
       const signed1 = JSON.stringify({
-        type: 4,
-        version: 2,
         amount: 100,
-        recipient: '3Na',
         id: 'id1',
         proofs: ['p1'],
-      });
-      const signed2 = JSON.stringify({
+        recipient: '3Na',
         type: 4,
         version: 2,
+      });
+      const signed2 = JSON.stringify({
         amount: 200,
-        recipient: '3Nb',
         id: 'id2',
         proofs: ['p2'],
+        recipient: '3Nb',
+        type: 4,
+        version: 2,
       });
       (mockApi.signTransactionPackage as ReturnType<typeof vi.fn>).mockResolvedValue([
         signed1,
@@ -261,8 +261,8 @@ describe('ProviderCubensis', () => {
       await provider.connect(TEST_OPTIONS);
 
       const result = await provider.sign([
-        { type: 4, amount: 100, recipient: '3Na' },
-        { type: 4, amount: 200, recipient: '3Nb' },
+        { amount: 100, recipient: '3Na', type: 4 },
+        { amount: 200, recipient: '3Nb', type: 4 },
       ]);
 
       expect(result).toHaveLength(2);
@@ -273,25 +273,25 @@ describe('ProviderCubensis', () => {
       // Mock fetch for calculateFee
       const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
         new Response(JSON.stringify({ feeAmount: 500000 }), {
-          status: 200,
           headers: { 'Content-Type': 'application/json' },
+          status: 200,
         }),
       );
 
       const signedJson = JSON.stringify({
+        call: { args: [], function: 'transfer' },
+        dApp: '3Napp',
+        id: 'txid',
+        payment: [],
+        proofs: ['p'],
         type: 16,
         version: 2,
-        dApp: '3Napp',
-        call: { function: 'transfer', args: [] },
-        payment: [],
-        id: 'txid',
-        proofs: ['p'],
       });
       (mockApi.signTransaction as ReturnType<typeof vi.fn>).mockResolvedValue(signedJson);
 
       await provider.connect(TEST_OPTIONS);
 
-      await provider.sign([{ type: 16, dApp: '3Napp', call: { function: 'transfer', args: [] } }]);
+      await provider.sign([{ call: { args: [], function: 'transfer' }, dApp: '3Napp', type: 16 }]);
 
       expect(fetchSpy).toHaveBeenCalledWith(
         expect.stringContaining('/transactions/calculateFee'),
@@ -308,8 +308,8 @@ describe('ProviderCubensis', () => {
       (mockApi.publicState as ReturnType<typeof vi.fn>).mockResolvedValue({
         account: { publicKey: 'pk' },
         network: {
-          server: 'https://other-node.example.com',
           code: 'X',
+          server: 'https://other-node.example.com',
         },
       });
 
@@ -322,13 +322,13 @@ describe('ProviderCubensis', () => {
   describe('_txWithFee (via sign)', () => {
     it('passes through transactions with existing fee', async () => {
       const signedJson = JSON.stringify({
-        type: 16,
+        call: { args: [], function: 'f' },
         dApp: '3Napp',
-        call: { function: 'f', args: [] },
-        payment: [],
         fee: 500000,
         id: 'txid',
+        payment: [],
         proofs: ['p'],
+        type: 16,
       });
       (mockApi.signTransaction as ReturnType<typeof vi.fn>).mockResolvedValue(signedJson);
 
@@ -337,7 +337,7 @@ describe('ProviderCubensis', () => {
       // Invoke script WITH fee should NOT call calculateFee/fetch
       const fetchSpy = vi.spyOn(globalThis, 'fetch');
       await provider.sign([
-        { type: 16, dApp: '3Napp', call: { function: 'f', args: [] }, fee: 500000 },
+        { call: { args: [], function: 'f' }, dApp: '3Napp', fee: 500000, type: 16 },
       ]);
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -349,23 +349,23 @@ describe('ProviderCubensis', () => {
 
       const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
         new Response(JSON.stringify({ feeAmount: 500000 }), {
-          status: 200,
           headers: { 'Content-Type': 'application/json' },
+          status: 200,
         }),
       );
 
       const signedJson = JSON.stringify({
-        type: 16,
+        call: { args: [], function: 'f' },
         dApp: '3Napp',
-        call: { function: 'f', args: [] },
-        payment: [],
         id: 'txid',
+        payment: [],
         proofs: ['p'],
+        type: 16,
       });
       (mockApi.signTransaction as ReturnType<typeof vi.fn>).mockResolvedValue(signedJson);
 
       await provider.connect(TEST_OPTIONS);
-      await provider.sign([{ type: 16, dApp: '3Napp', call: { function: 'f', args: [] } }]);
+      await provider.sign([{ call: { args: [], function: 'f' }, dApp: '3Napp', type: 16 }]);
 
       // Should have used user's publicKey in the fetch body
       const fetchBody = JSON.parse(
