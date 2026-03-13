@@ -4,12 +4,12 @@
     "url": "https://github.com/Decentral-America/decentralchain-signature-adapter/issues"
   },
   "dependencies": {
-    "@decentralchain/bignumber": "1.1.1",
-    "@decentralchain/data-entities": "3.0.0",
-    "@decentralchain/ledger": "5.0.0",
-    "@decentralchain/money-like-to-node": "1.0.0",
-    "@decentralchain/transactions": "5.0.0",
-    "@decentralchain/ts-types": "2.0.0",
+    "@decentralchain/bignumber": "^1.2.1",
+    "@decentralchain/data-entities": "^3.0.1",
+    "@decentralchain/ledger": "^5.1.1",
+    "@decentralchain/money-like-to-node": "^1.0.1",
+    "@decentralchain/transactions": "^5.0.1",
+    "@decentralchain/ts-types": "^2.0.1",
     "ramda": "^0.32.0"
   },
   "description": "Multi-provider transaction signing adapter for DecentralChain blockchain",
