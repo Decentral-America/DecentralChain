@@ -1,10 +1,29 @@
 {
-  "name": "@decentralchain/protobuf-serialization",
-  "version": "3.0.0",
+  "author": "DecentralChain",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.11.0"
+  },
   "description": "Official Protocol Buffers schema definitions and multi-language bindings for the DecentralChain blockchain protocol — encoding/decoding transactions, blocks, events, and gRPC APIs.",
-  "type": "module",
-  "main": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
+    "@bufbuild/buf": "1.66.1",
+    "@bufbuild/protoc-gen-es": "2.11.0",
+    "@evilmartians/lefthook": "2.1.3",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsdown": "0.21.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  },
+  "engines": {
+    "node": ">=24"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -18,55 +37,11 @@
     "LICENSE",
     "README.md"
   ],
-  "sideEffects": false,
-  "engines": {
-    "node": ">=24"
-  },
-  "packageManager": "npm@11.9.0",
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/protobuf-serialization.git"
-  },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
   "homepage": "https://github.com/Decentral-America/protobuf-serialization#readme",
-  "bugs": {
-    "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
-  },
-  "scripts": {
-    "generate": "buf generate",
-    "build": "rm -rf dist && buf generate && tsdown",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "lint": "biome check --write .",
-    "check:publint": "publint",
-    "check:exports": "attw --pack . --profile esm-only",
-    "check:size": "size-limit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
-    "prepublishOnly": "npm run validate",
-    "prepack": "npm run build",
-    "prepare": "lefthook install",
-    "lint:check": "biome check .",
-    "lint:fix": "biome check --write ."
-  },
-  "size-limit": [
-    {
-      "path": "./dist/index.js",
-      "limit": "500 kB"
-    }
-  ],
   "keywords": [
     "decentralchain",
     "dcc",
@@ -84,23 +59,48 @@
     "decentralized",
     "binary-encoding"
   ],
-  "author": "DecentralChain",
   "license": "MIT",
-  "dependencies": {
-    "@bufbuild/protobuf": "^2.11.0"
+  "main": "./dist/index.mjs",
+  "name": "@decentralchain/protobuf-serialization",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
-  "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.6",
-    "@bufbuild/buf": "1.66.1",
-    "@bufbuild/protoc-gen-es": "2.11.0",
-    "@evilmartians/lefthook": "2.1.3",
-    "@size-limit/preset-small-lib": "12.0.0",
-    "@vitest/coverage-v8": "4.0.18",
-    "publint": "0.3.18",
-    "tsdown": "0.21.2",
-    "size-limit": "12.0.0",
-    "typescript": "5.9.3",
-    "vitest": "4.0.18"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/protobuf-serialization.git"
+  },
+  "scripts": {
+    "build": "rm -rf dist && buf generate && tsdown",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "generate": "buf generate",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepack": "npm run build",
+    "prepare": "lefthook install",
+    "prepublishOnly": "npm run validate",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
+  },
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "limit": "500 kB",
+      "path": "./dist/index.mjs"
+    }
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "3.0.0"
 }
