@@ -1,5 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "project": ["src/**/*.ts"],
-  "ignoreDependencies": ["undici-types"]
+  "ignoreDependencies": ["undici-types"],
+  "project": ["src/**/*.ts"]
 }
