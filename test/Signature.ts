@@ -1,14 +1,14 @@
+import { BigNumber } from '@decentralchain/bignumber';
 import { base58Decode, base58Encode, blake2b, verifySignature } from '@decentralchain/crypto';
-import { BigNumber } from '@waves/bignumber';
-import { binary } from '@waves/marshall';
+import { binary } from '@decentralchain/marshall';
 import Long from 'long';
 
 import { JSONbn } from '../src/_core/jsonBn';
-import type {
-  MessageInputCancelOrder,
-  MessageInputCustomData,
-  MessageInputOrder,
-  MessageInputTx,
+import {
+  type MessageInputCancelOrder,
+  type MessageInputCustomData,
+  type MessageInputOrder,
+  type MessageInputTx,
 } from '../src/messages/types';
 import {
   makeAuthBytes,
@@ -236,10 +236,10 @@ describe('Signature', () => {
       await ContentScript.waitForCubensisConnect();
       await browser.execute(() => {
         CubensisConnect.publicState().then(
-          result => {
+          (result) => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
-          err => {
+          (err) => {
             window.result = JSON.stringify(['REJECTED', err]);
           },
         );
@@ -320,10 +320,10 @@ describe('Signature', () => {
       await ContentScript.waitForCubensisConnect();
       await browser.execute(() => {
         CubensisConnect.auth({ data: 'generated auth data' }).then(
-          result => {
+          (result) => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
-          err => {
+          (err) => {
             window.result = JSON.stringify(['REJECTED', err]);
           },
         );
@@ -380,7 +380,6 @@ describe('Signature', () => {
       await ContentScript.waitForCubensisConnect();
 
       await browser.execute(
-        // eslint-disable-next-line @typescript-eslint/no-shadow
         (senderPublicKey: string, timestamp: number) => {
           CubensisConnect.signRequest({
             data: {
@@ -388,10 +387,10 @@ describe('Signature', () => {
               timestamp,
             },
           }).then(
-            result => {
+            (result) => {
               window.result = JSON.stringify(['RESOLVED', result]);
             },
-            err => {
+            (err) => {
               window.result = JSON.stringify(['REJECTED', err]);
             },
           );
@@ -435,10 +434,10 @@ describe('Signature', () => {
       await ContentScript.waitForCubensisConnect();
       await browser.execute((tx: MessageInputTx) => {
         CubensisConnect.signTransaction(tx).then(
-          result => {
+          (result) => {
             window.result = JSON.stringify(['RESOLVED', result]);
           },
-          err => {
+          (err) => {
             window.result = JSON.stringify(['REJECTED', err]);
           },
         );
@@ -1490,7 +1489,7 @@ describe('Signature', () => {
       async function checkMassTransferItems(items: Array<{ recipient: string; amount: string }>) {
         const transferItems = await MassTransferTransactionScreen.getTransferItems();
         const actualItems = await Promise.all(
-          transferItems.map(async transferItem => {
+          transferItems.map(async (transferItem) => {
             const [recipient, amount] = await Promise.all([
               transferItem.recipient.getText(),
               transferItem.amount.getText(),
@@ -1700,7 +1699,7 @@ describe('Signature', () => {
       ) {
         const dataRows = await DataTransactionScreen.getDataRows();
         const actualItems = await Promise.all(
-          dataRows.map(async it => {
+          dataRows.map(async (it) => {
             const [key, type, value] = await Promise.all([
               it.key.getText(),
               it.type.getText(),
@@ -2270,7 +2269,7 @@ describe('Signature', () => {
       async function checkArgs(args: Array<{ type: string; value: string }>) {
         const invokeArguments = await InvokeScriptTransactionScreen.getArguments();
         const actualArgs = await Promise.all(
-          invokeArguments.map(async it => {
+          invokeArguments.map(async (it) => {
             const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
             return {
               type,
@@ -2284,7 +2283,7 @@ describe('Signature', () => {
       async function checkPayments(payments: string[]) {
         const invokePayments = await InvokeScriptTransactionScreen.getPayments();
 
-        const actualPayments = await Promise.all(invokePayments.map(it => it.getText()));
+        const actualPayments = await Promise.all(invokePayments.map((it) => it.getText()));
 
         expect(actualPayments).toStrictEqual(payments);
       }
@@ -2553,7 +2552,7 @@ describe('Signature', () => {
   describe('Order', () => {
     function createOrder(tx: MessageInputOrder) {
       CubensisConnect.signOrder(tx).then(
-        result => {
+        (result) => {
           window.result = result;
         },
         () => {
@@ -2564,7 +2563,7 @@ describe('Signature', () => {
 
     function cancelOrder(tx: MessageInputCancelOrder) {
       CubensisConnect.signCancelOrder(tx).then(
-        result => {
+        (result) => {
           window.result = result;
         },
         () => {
@@ -3123,14 +3122,9 @@ describe('Signature', () => {
       const { waitForNewWindows } = await Windows.captureNewWindows();
       await ContentScript.waitForCubensisConnect();
       await browser.execute(
-        (
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          tx: MessageInputTx[],
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          name: string,
-        ) => {
+        (tx: MessageInputTx[], name: string) => {
           CubensisConnect.signTransactionPackage(tx, name).then(
-            result => {
+            (result) => {
               window.result = result;
             },
             () => {
@@ -3148,14 +3142,14 @@ describe('Signature', () => {
 
     async function checkPackageAmounts(amounts: string[]) {
       const actualAmounts = await Promise.all(
-        await PackageTransactionScreen.packageAmounts.map(async it => await it.getText()),
+        await PackageTransactionScreen.packageAmounts.map(async (it) => await it.getText()),
       );
       expect(actualAmounts).toStrictEqual(amounts);
     }
 
     async function checkPackageFees(fees: string[]) {
       const actualFees = await Promise.all(
-        await PackageTransactionScreen.packageFees.map(async it => await it.getText()),
+        await PackageTransactionScreen.packageFees.map(async (it) => await it.getText()),
       );
       expect(actualFees).toStrictEqual(fees);
     }
@@ -3217,7 +3211,7 @@ describe('Signature', () => {
 
       const invokeArguments = await invokeScript.getInvokeArguments();
       const actualArgs = await Promise.all(
-        invokeArguments.map(async it => {
+        invokeArguments.map(async (it) => {
           const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
           return { type, value };
         }),
@@ -3238,7 +3232,7 @@ describe('Signature', () => {
       ]);
 
       const actualPayments = await Promise.all(
-        await invokeScript.invokeScriptPaymentItems.map(async it => it.getText()),
+        await invokeScript.invokeScriptPaymentItems.map(async (it) => it.getText()),
       );
       expect(actualPayments).toStrictEqual(['0.00000001 WAVES', '1 NonScriptToken']);
 
@@ -3261,7 +3255,7 @@ describe('Signature', () => {
         id: string;
         proofs: string[];
         timestamp: number;
-      }>(result => JSONbn.parse(result));
+      }>((result) => JSONbn.parse(result));
       const expectedApproveResult0 = {
         type: ISSUE.type,
         version: 3 as const,
@@ -3439,10 +3433,9 @@ describe('Signature', () => {
     async function performSignCustomData(data: MessageInputCustomData) {
       const { waitForNewWindows } = await Windows.captureNewWindows();
       await ContentScript.waitForCubensisConnect();
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       await browser.execute((data: MessageInputCustomData) => {
         CubensisConnect.signCustomData(data).then(
-          result => {
+          (result) => {
             window.result = JSON.stringify(result);
           },
           () => {
@@ -3496,7 +3489,7 @@ describe('Signature', () => {
         entries: Array<{ key: string; type: string; value: string }>,
       ) {
         const actualItems = await Promise.all(
-          (await DataTransactionScreen.getDataRows()).map(async it => {
+          (await DataTransactionScreen.getDataRows()).map(async (it) => {
             const [key, type, value] = await Promise.all([
               it.key.getText(),
               it.type.getText(),

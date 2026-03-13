@@ -86,9 +86,7 @@ const PackageItem = (wrapped: WebdriverIO.Element) => ({
   },
 
   async getInvokeArguments() {
-    return await wrapped
-      .findAllByTestId$('invokeArgument')
-      .map(it => InvokeArgument(it));
+    return await wrapped.findAllByTestId$('invokeArgument').map((it) => InvokeArgument(it));
   },
 
   get invokeScriptPaymentItems() {
@@ -118,8 +116,6 @@ export const PackageTransactionScreen = {
   },
 
   async getPackageItems() {
-    return await this.root
-      .findAllByTestId$('packageItem')
-      .map(it => PackageItem(it));
+    return await this.root.findAllByTestId$('packageItem').map((it) => PackageItem(it));
   },
 };

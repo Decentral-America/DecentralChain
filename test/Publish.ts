@@ -11,7 +11,7 @@ import {
 import waitForExpect from 'wait-for-expect';
 
 import { JSONbn } from '../src/_core/jsonBn';
-import type { MessageInputTx } from '../src/messages/types';
+import { type MessageInputTx } from '../src/messages/types';
 import { makeTxBytes } from '../src/messages/utils';
 import { ContentScript } from './helpers/ContentScript';
 import { CustomNetworkModal } from './helpers/CustomNetworkModal';
@@ -25,8 +25,8 @@ import { FinalTransactionScreen } from './helpers/messages/FinalTransactionScree
 import { OtherAccountsScreen } from './helpers/OtherAccountsScreen';
 import { Windows } from './helpers/Windows';
 import { ISSUER_SEED, USER_1_SEED, USER_2_SEED, WHITELIST } from './utils/constants';
-import { faucet, getNetworkByte, getTransactionStatus } from './utils/nodeInteraction';
 import { BROWSER_NODE_URL } from './utils/hooks';
+import { faucet, getNetworkByte, getTransactionStatus } from './utils/nodeInteraction';
 import {
   ALIAS,
   BURN,
@@ -57,7 +57,7 @@ describe('Publish', () => {
   let smartAssetId: string;
   let assetWithMaxValuesId: string;
 
-  beforeAll(async function () {
+  beforeAll(async () => {
     chainId = await getNetworkByte(nodeUrl);
 
     const issuerPrivateKeyBytes = await createPrivateKey(utf8Encode(ISSUER_SEED));
@@ -132,10 +132,10 @@ describe('Publish', () => {
     await ContentScript.waitForCubensisConnect();
     await browser.execute((tx: MessageInputTx) => {
       CubensisConnect.signAndPublishTransaction(tx).then(
-        result => {
+        (result) => {
           window.result = JSON.stringify(['RESOLVED', result]);
         },
-        err => {
+        (err) => {
           window.result = JSON.stringify(['REJECTED', err]);
         },
       );

@@ -24,7 +24,7 @@ const AccountsGroup = (wrapped: WebdriverIO.Element) => ({
   },
 
   get accounts() {
-    return wrapped.findAllByTestId$('accountCard').map(it => Account(it));
+    return wrapped.findAllByTestId$('accountCard').map((it) => Account(it));
   },
 });
 
@@ -42,13 +42,11 @@ export const ChooseAccountsForm = {
   },
 
   get accountsGroups() {
-    return this.root
-      .findAllByTestId$('accountsGroup')
-      .map(it => AccountsGroup(it));
+    return this.root.findAllByTestId$('accountsGroup').map((it) => AccountsGroup(it));
   },
 
   get accounts() {
-    return this.root.findAllByTestId$('accountCard').map(it => Account(it));
+    return this.root.findAllByTestId$('accountCard').map((it) => Account(it));
   },
 
   get skipButton() {

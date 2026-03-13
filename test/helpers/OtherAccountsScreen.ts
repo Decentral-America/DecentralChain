@@ -22,14 +22,12 @@ export const OtherAccountsScreen = {
   },
 
   get accounts() {
-    return this.root.queryAllByTestId$('accountCard').map(it => Account(it));
+    return this.root.queryAllByTestId$('accountCard').map((it) => Account(it));
   },
 
   async getAccountByName(accountName: string) {
     return Account(
-      await this.root.$(
-        `.//*[@data-testid='accountCard' and contains(., '${accountName}')]`,
-      ),
+      await this.root.$(`.//*[@data-testid='accountCard' and contains(., '${accountName}')]`),
     );
   },
 

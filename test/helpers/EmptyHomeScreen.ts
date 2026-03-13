@@ -1,10 +1,8 @@
 export const EmptyHomeScreen = {
   isDisplayed: async () => {
     try {
-      return await browser
-        .findByTestId$('importForm', {}, { timeout: 5000 })
-        .isDisplayed();
-    } catch (e) {
+      return await browser.findByTestId$('importForm', {}, { timeout: 5000 }).isDisplayed();
+    } catch {
       return false;
     }
   },

@@ -10,7 +10,7 @@ import { OtherAccountsScreen } from './helpers/OtherAccountsScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
 
-describe('Account management', function () {
+describe('Account management', () => {
   let tabKeeper: string, tabAccounts: string;
 
   beforeAll(async () => {
@@ -24,16 +24,10 @@ describe('Account management', function () {
     await browser.refresh();
 
     // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
-    await AccountsHome.importAccount(
-      'poor',
-      'waves private node seed without waves tokens',
-    );
+    await AccountsHome.importAccount('poor', 'waves private node seed without waves tokens');
 
     // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
-    await AccountsHome.importAccount(
-      'rich',
-      'waves private node seed with waves tokens',
-    );
+    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
 
     await browser.switchToWindow(tabKeeper);
     await browser.openKeeperPopup();
@@ -96,27 +90,19 @@ describe('Account management', function () {
 
       it('By existing account name', async () => {
         await OtherAccountsScreen.searchInput.setValue('ic');
-        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText(
-          'rich',
-        );
+        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText('rich');
       });
 
       it('By existing account address', async () => {
-        await OtherAccountsScreen.searchInput.setValue(
-          '3P5Xx9MFs8VchRjfLeocGFxXkZGknm38oq1',
-        );
-        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText(
-          'rich',
-        );
+        await OtherAccountsScreen.searchInput.setValue('3P5Xx9MFs8VchRjfLeocGFxXkZGknm38oq1');
+        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText('rich');
       });
 
       it('By existing account public key', async () => {
         await OtherAccountsScreen.searchInput.setValue(
           'AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV',
         );
-        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText(
-          'rich',
-        );
+        await expect((await OtherAccountsScreen.accounts)[0].name).toHaveText('rich');
       });
 
       it.todo('By existing email account');
@@ -162,9 +148,7 @@ describe('Account management', function () {
 
     describe('Backup phrase', () => {
       it('Is hidden', async () => {
-        expect(await AccountInfoScreen.backupPhrase.getText()).not.toMatch(
-          /\w+/i,
-        );
+        expect(await AccountInfoScreen.backupPhrase.getText()).not.toMatch(/\w+/i);
       });
 
       describe('Copying by clicking the "Copy" button', () => {
@@ -188,16 +172,13 @@ describe('Account management', function () {
 
       beforeAll(async () => {
         await AccountInfoScreen.name.click();
-        currentAccountName =
-          await ChangeAccountNameScreen.currentName.getText();
+        currentAccountName = await ChangeAccountNameScreen.currentName.getText();
       });
 
       it('A name that is already in use cannot be specified', async () => {
         await ChangeAccountNameScreen.newNameInput.setValue(currentAccountName);
         await browser.keys('Tab');
-        await expect(ChangeAccountNameScreen.error).toHaveText(
-          'Name already exist',
-        );
+        await expect(ChangeAccountNameScreen.error).toHaveText('Name already exist');
         await expect(ChangeAccountNameScreen.saveButton).toBeDisabled();
         await ChangeAccountNameScreen.newNameInput.clearValue();
       });
@@ -213,9 +194,7 @@ describe('Account management', function () {
       it('Successfully changed account name', async () => {
         await ChangeAccountNameScreen.saveButton.click();
 
-        await expect(AccountInfoScreen.notification).toHaveText(
-          'Account name changed',
-        );
+        await expect(AccountInfoScreen.notification).toHaveText('Account name changed');
         await expect(AccountInfoScreen.name).toHaveText(newAccountName);
       });
     });
@@ -232,10 +211,9 @@ describe('Account management', function () {
 
       it('Click "Delete account" deletes the account', async () => {
         await DeleteAccountScreen.deleteAccountButton.click();
-        expect(
-          (await HomeScreen.isDisplayed()) ||
-            (await EmptyHomeScreen.isDisplayed()),
-        ).toBe(true);
+        expect((await HomeScreen.isDisplayed()) || (await EmptyHomeScreen.isDisplayed())).toBe(
+          true,
+        );
       });
     });
   }

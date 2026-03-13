@@ -16,7 +16,7 @@ export const DataTransactionScreen = {
   },
 
   async getDataRows() {
-    return this.root.findAllByTestId$('dataRow').map(it => DataRow(it));
+    return this.root.findAllByTestId$('dataRow').map((it) => DataRow(it));
   },
 
   get contentScript() {

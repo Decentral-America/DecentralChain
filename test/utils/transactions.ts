@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@waves/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 export const ISSUE = {
   type: TRANSACTION_TYPE.ISSUE,
@@ -288,12 +288,4 @@ export const SET_SCRIPT_COMPILED = {
   },
 };
 
-export const PACKAGE = [
-  ISSUE,
-  TRANSFER,
-  REISSUE,
-  BURN,
-  LEASE,
-  CANCEL_LEASE,
-  INVOKE_SCRIPT,
-];
+export const PACKAGE = [ISSUE, TRANSFER, REISSUE, BURN, LEASE, CANCEL_LEASE, INVOKE_SCRIPT];

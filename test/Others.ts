@@ -40,7 +40,9 @@ describe('Others', () => {
     await App.resetVault();
   });
 
-  it.todo('After signAndPublishTransaction() "View transaction" button leads to the correct Explorer');
+  it.todo(
+    'After signAndPublishTransaction() "View transaction" button leads to the correct Explorer',
+  );
   it.todo('Signature requests are automatically removed from pending requests after 30 minutes');
   it.todo('Switch account on confirmation screen');
   it.todo('Send more transactions for signature when different screens are open');

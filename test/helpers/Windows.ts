@@ -10,7 +10,7 @@ export const Windows = {
           async () => {
             const handles = await browser.getWindowHandles();
 
-            newHandles = handles.filter(handle => !prevHandlesSet.has(handle));
+            newHandles = handles.filter((handle) => !prevHandlesSet.has(handle));
 
             return newHandles.length >= count;
           },

@@ -12,15 +12,11 @@ export const NewAccountScreen = {
   },
 
   get termsAndConditionsCheckbox() {
-    return this.root.findByLabelText$(
-      'I have read and agree with the Terms and Conditions',
-    );
+    return this.root.findByLabelText$('I have read and agree with the Terms and Conditions');
   },
 
   get privacyPolicyCheckbox() {
-    return this.root.findByLabelText$(
-      'I have read and agree with the Privacy Policy',
-    );
+    return this.root.findByLabelText$('I have read and agree with the Privacy Policy');
   },
 
   get continueButton() {

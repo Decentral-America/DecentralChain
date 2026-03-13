@@ -13,22 +13,17 @@ export const BROWSER_NODE_URL = 'http://waves-private-node:6869';
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result: any;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // biome-ignore lint/style/noNamespace: required for WebdriverIO declaration merging
   namespace WebdriverIO {
-    interface Browser
-      extends WebdriverIOQueries,
-        WebdriverIOQueriesChainable<Browser> {
+    interface Browser extends WebdriverIOQueries, WebdriverIOQueriesChainable<Browser> {
       openKeeperPopup: () => Promise<void>;
       openKeeperExtensionPage: () => Promise<void>;
     }
 
-    interface Element
-      extends WebdriverIOQueries,
-        WebdriverIOQueriesChainable<Element> {}
+    interface Element extends WebdriverIOQueries, WebdriverIOQueriesChainable<Element> {}
   }
 }
 
@@ -49,10 +44,7 @@ beforeAll(async () => {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: [
-            '--load-extension=/app/dist/chrome',
-            '--disable-web-security',
-          ],
+          args: ['--load-extension=/app/dist/chrome', '--disable-web-security'],
         },
         pageLoadStrategy: 'eager',
       },
@@ -100,21 +92,13 @@ beforeAll(async () => {
     true,
   );
 
-  browser.addCommand(
-    'openKeeperPopup',
-    async function (this: WebdriverIO.Browser) {
-      await this.navigateTo(
-        `chrome-extension://${keeperExtensionId}/popup.html`,
-      );
-    },
-  );
+  browser.addCommand('openKeeperPopup', async function (this: WebdriverIO.Browser) {
+    await this.navigateTo(`chrome-extension://${keeperExtensionId}/popup.html`);
+  });
 
-  browser.addCommand(
-    'openKeeperExtensionPage',
-    async function (this: WebdriverIO.Browser) {
-      await this.navigateTo(`chrome://extensions/?id=${keeperExtensionId}`);
-    },
-  );
+  browser.addCommand('openKeeperExtensionPage', async function (this: WebdriverIO.Browser) {
+    await this.navigateTo(`chrome://extensions/?id=${keeperExtensionId}`);
+  });
 });
 
 afterAll(async () => {
