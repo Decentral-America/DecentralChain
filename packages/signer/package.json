@@ -4,10 +4,10 @@
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "type": "module",
   "main": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     }
   },
@@ -56,7 +56,7 @@
     "sdk"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome check --write .",
@@ -98,7 +98,7 @@
     "@vitest/coverage-v8": "4.0.18",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
-    "tsup": "8.5.1",
+    "tsdown": "0.21.2",
     "typed-ts-events": "^3.0.1",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
