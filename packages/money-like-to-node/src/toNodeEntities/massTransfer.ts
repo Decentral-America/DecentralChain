@@ -9,11 +9,11 @@ const remapTransferItem = factory<
   IDCCGuiMassTransferItem<TMoney | TLong>,
   MassTransferItem<string>
 >({
-  recipient: prop('recipient'),
   amount: pipe<IDCCGuiMassTransferItem<TMoney | TLong>, TMoney | TLong, string>(
     prop('amount'),
     getCoins,
   ),
+  recipient: prop('recipient'),
 });
 
 const getFirstMassTransferItem = (
@@ -31,7 +31,6 @@ export const massTransfer = factory<
   TWithPartialFee<MassTransferTransaction<string>>
 >({
   ...getDefaultTransform(),
-  transfers: pipe(prop('transfers'), map(remapTransferItem)),
   assetId: pipe<TDCCGuiMassTransfer, string, string>(
     ifElse<TDCCGuiMassTransfer, string, string>(
       has('assetId'),
@@ -48,6 +47,7 @@ export const massTransfer = factory<
     emptyError('Has no assetId!'),
   ),
   attachment: prop('attachment'),
+  transfers: pipe(prop('transfers'), map(remapTransferItem)),
 });
 
 export interface IDCCGuiMassTransferMoney extends IDefaultGuiTx<typeof TYPES.MASS_TRANSFER> {

@@ -11,8 +11,8 @@ export const updateAssetInfo = factory<
 >({
   ...getDefaultTransform(),
   assetId: prop('assetId'),
-  name: prop('name'),
   description: prop('description'),
+  name: prop('name'),
 });
 
 export interface IDCCGuiUpdateAssetInfo extends IDefaultGuiTx<typeof TYPES.UPDATE_ASSET_INFO> {

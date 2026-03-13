@@ -11,8 +11,8 @@ export const setAssetScript = factory<
 >({
   ...getDefaultTransform(),
   assetId: prop('assetId'),
-  script: prop('script'),
   chainId: prop('chainId'),
+  script: prop('script'),
 });
 
 export interface IDCCGuiSetAssetScript extends IDefaultGuiTx<typeof TYPES.SET_ASSET_SCRIPT> {

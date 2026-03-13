@@ -7,12 +7,12 @@ import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const issue = factory<IDCCGuiIssue, TWithPartialFee<IssueTransaction<string>>>({
   ...getDefaultTransform(),
-  name: prop('name'),
-  description: prop('description'),
+  chainId: prop('chainId'),
   decimals: (data) => prop('decimals', data) ?? prop('precision', data) ?? 0,
+  description: prop('description'),
+  name: prop('name'),
   quantity: pipe<IDCCGuiIssue, TLong, string>(prop('quantity'), getCoins),
   reissuable: prop('reissuable'),
-  chainId: prop('chainId'),
   script: prop('script'),
 });
 

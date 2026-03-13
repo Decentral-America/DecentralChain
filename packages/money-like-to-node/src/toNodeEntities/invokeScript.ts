@@ -25,12 +25,12 @@ const processArgument = (
 };
 
 const processCall = factory<InvokeScriptCall<TLong>, InvokeScriptCall<string>>({
-  function: prop('function'),
   args: pipe<
     InvokeScriptCall<TLong>,
     InvokeScriptCallArgument<TLong>[],
     InvokeScriptCallArgument<string>[]
   >(prop('args'), map(processArgument)),
+  function: prop('function'),
 });
 
 const processPayment = factory<TMoney, InvokeScriptPayment<string>>({
@@ -43,13 +43,6 @@ export const invokeScript = factory<
   TWithPartialFee<InvokeScriptTransaction<string>>
 >({
   ...getDefaultTransform(),
-  chainId: prop('chainId'),
-  dApp: prop('dApp'),
-  feeAssetId: pipe<IDCCGuiInvokeScript, TMoney | TLong | undefined | null, string | null, string>(
-    prop('fee'),
-    getAssetId,
-    defaultTo('DCC'),
-  ),
   call: pipe<
     IDCCGuiInvokeScript,
     InvokeScriptCall<TLong> | null | undefined,
@@ -62,6 +55,13 @@ export const invokeScript = factory<
       // biome-ignore lint/style/noNonNullAssertion: asserted safe
       (call: InvokeScriptCall<TLong> | null | undefined) => processCall(call!),
     ),
+  ),
+  chainId: prop('chainId'),
+  dApp: prop('dApp'),
+  feeAssetId: pipe<IDCCGuiInvokeScript, TMoney | TLong | undefined | null, string | null, string>(
+    prop('fee'),
+    getAssetId,
+    defaultTo('DCC'),
   ),
   payment: pipe<
     IDCCGuiInvokeScript,

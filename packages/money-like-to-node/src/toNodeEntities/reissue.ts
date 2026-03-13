@@ -18,9 +18,9 @@ export const reissue = factory<TDCCGuiReissue, TWithPartialFee<ReissueTransactio
     ),
     emptyError('Has no assetId!'),
   ),
+  chainId: prop('chainId'),
   quantity: pipe<TDCCGuiReissue, TMoney | TLong, string>(prop('quantity'), getCoins),
   reissuable: prop('reissuable'),
-  chainId: prop('chainId'),
 });
 
 export interface IDCCGuiReissueMoney extends IDefaultGuiTx<typeof TYPES.REISSUE> {

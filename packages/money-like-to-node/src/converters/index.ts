@@ -114,9 +114,9 @@ const order = <FROM, TO, O extends SignedIExchangeTransactionOrder<ExchangeTrans
 ): TReplaceParam<O, 'price' | 'amount' | 'matcherFee', TO> =>
   ({
     ...data,
-    price: factory(data.price),
     amount: factory(data.amount),
     matcherFee: factory(data.matcherFee),
+    price: factory(data.price),
   }) as TReplaceParam<O, 'price' | 'amount' | 'matcherFee', TO>;
 
 const exchange = <FROM, TO, TX extends ExchangeTransaction<FROM>>(
@@ -124,12 +124,12 @@ const exchange = <FROM, TO, TX extends ExchangeTransaction<FROM>>(
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
+  amount: factory(tx.amount),
+  buyMatcherFee: factory(tx.buyMatcherFee),
   order1: order(tx.order1, factory),
   order2: order(tx.order2, factory),
-  amount: factory(tx.amount),
   price: factory(tx.price),
   sellMatcherFee: factory(tx.sellMatcherFee),
-  buyMatcherFee: factory(tx.buyMatcherFee),
 });
 
 const lease = <FROM, TO, TX extends LeaseTransaction<FROM>>(
@@ -186,9 +186,6 @@ const invokeScript = <FROM, TO, TX extends InvokeScriptTransaction<FROM>>(
   factory: IFactory<FROM, TO>,
 ) => ({
   ...defaultConvert(tx, factory),
-  payment: tx.payment
-    ? tx.payment.map((item) => ({ ...item, amount: factory(item.amount) }))
-    : tx.payment,
   call: tx.call
     ? {
         ...tx.call,
@@ -201,6 +198,9 @@ const invokeScript = <FROM, TO, TX extends InvokeScriptTransaction<FROM>>(
         ),
       }
     : tx.call,
+  payment: tx.payment
+    ? tx.payment.map((item) => ({ ...item, amount: factory(item.amount) }))
+    : tx.payment,
 });
 
 const updateAssetInfo = <FROM, TO, TX extends UpdateAssetInfoTransaction<FROM>>(

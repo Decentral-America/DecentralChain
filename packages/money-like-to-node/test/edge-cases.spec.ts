@@ -22,15 +22,15 @@ import { DCC_ASSET } from './transactionData.js';
 // Test Assets
 // ---------------------------------------------------------------------------
 const BTC_ASSET = new Asset({
-  id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-  sender: '3PC4roN512iugc6xGVTTM2XkoWKEdSiiscd',
-  timestamp: new Date(1480690876160),
-  name: 'WBTC',
-  quantity: 2100000000000000,
-  reissuable: false,
-  precision: 8,
   description: 'Bitcoin Token',
   height: 257457,
+  id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+  name: 'WBTC',
+  precision: 8,
+  quantity: 2100000000000000,
+  reissuable: false,
+  sender: '3PC4roN512iugc6xGVTTM2XkoWKEdSiiscd',
+  timestamp: new Date(1480690876160),
 });
 
 // ---------------------------------------------------------------------------
@@ -39,11 +39,11 @@ const BTC_ASSET = new Asset({
 describe('Error handling', () => {
   it('toNode throws on unknown transaction type', () => {
     const unknownTx = {
-      type: 999,
-      version: 1,
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: Date.now(),
-      fee: '100',
+      type: 999,
+      version: 1,
     };
 
     expect(() => toNode(unknownTx as any)).toThrow('Unknown transaction type!');
@@ -51,12 +51,12 @@ describe('Error handling', () => {
 
   it('node.alias throws when required fields are missing', () => {
     const badAlias = {
-      type: TYPES.ALIAS,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: Date.now(),
       // fee missing!
       alias: 'testname',
+      senderPublicKey: 'abc',
+      timestamp: Date.now(),
+      type: TYPES.ALIAS,
+      version: 1,
     };
 
     expect(() => node.alias(badAlias as any)).toThrow(/fee/);
@@ -64,12 +64,12 @@ describe('Error handling', () => {
 
   it('node.alias throws on invalid alias characters', () => {
     const badAlias = {
-      type: TYPES.ALIAS,
-      version: 1,
+      alias: 'INVALID!!!',
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: Date.now(),
-      fee: '100',
-      alias: 'INVALID!!!',
+      type: TYPES.ALIAS,
+      version: 1,
     };
 
     expect(() => node.alias(badAlias as any)).toThrow();
@@ -77,12 +77,12 @@ describe('Error handling', () => {
 
   it('node.alias throws on alias that is too short', () => {
     const badAlias = {
-      type: TYPES.ALIAS,
-      version: 1,
+      alias: 'ab',
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: Date.now(),
-      fee: '100',
-      alias: 'ab',
+      type: TYPES.ALIAS,
+      version: 1,
     };
 
     expect(() => node.alias(badAlias as any)).toThrow();
@@ -90,12 +90,12 @@ describe('Error handling', () => {
 
   it('node.alias throws on alias that is too long', () => {
     const badAlias = {
-      type: TYPES.ALIAS,
-      version: 1,
+      alias: 'a'.repeat(31),
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: Date.now(),
-      fee: '100',
-      alias: 'a'.repeat(31),
+      type: TYPES.ALIAS,
+      version: 1,
     };
 
     expect(() => node.alias(badAlias as any)).toThrow();
@@ -108,18 +108,18 @@ describe('Error handling', () => {
 describe('Boundary values — large number precision', () => {
   it('preserves very large integer values without loss (21 digits)', () => {
     const largeIssue = {
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
-      timestamp: 1555398380418,
+      chainId: 87,
+      description: 'large number test',
       fee: new Money(100000000, DCC_ASSET),
       name: 'large',
-      description: 'large number test',
       precision: 8,
       quantity: new BigNumber('999999999999999999999'),
       reissuable: false,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
+      timestamp: 1555398380418,
+      type: TYPES.ISSUE,
+      version: 1,
     };
 
     const result = toNode(largeIssue);
@@ -129,18 +129,18 @@ describe('Boundary values — large number precision', () => {
   it('preserves 30+ digit quantity values exactly', () => {
     const hugeQuantity = '560164651464654056161651560132';
     const issueTx = {
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
-      timestamp: 1555398380418,
+      chainId: 87,
+      description: 'huge quantity test',
       fee: new Money(100000000, DCC_ASSET),
       name: 'huge',
-      description: 'huge quantity test',
       precision: 8,
       quantity: new BigNumber(hugeQuantity),
       reissuable: true,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
+      timestamp: 1555398380418,
+      type: TYPES.ISSUE,
+      version: 1,
     };
 
     const result = toNode(issueTx);
@@ -149,13 +149,13 @@ describe('Boundary values — large number precision', () => {
 
   it('handles zero money amount correctly', () => {
     const transfer = {
-      type: TYPES.TRANSFER,
-      version: 1,
+      amount: new Money(0, DCC_ASSET),
+      fee: new Money(100000, DCC_ASSET),
+      recipient: 'recipient',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
       timestamp: 1555398380418,
-      fee: new Money(100000, DCC_ASSET),
-      amount: new Money(0, DCC_ASSET),
-      recipient: 'recipient',
+      type: TYPES.TRANSFER,
+      version: 1,
     };
 
     const result = toNode(transfer);
@@ -164,13 +164,13 @@ describe('Boundary values — large number precision', () => {
 
   it('handles fee as string (raw coins)', () => {
     const leaseTx = {
-      type: TYPES.LEASE,
-      version: 1,
+      amount: { assetId: 'DCC', coins: '100000000' },
+      fee: '10000',
+      recipient: 'merry',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
       timestamp: 1555398380418,
-      amount: { coins: '100000000', assetId: 'DCC' },
-      recipient: 'merry',
-      fee: '10000',
+      type: TYPES.LEASE,
+      version: 1,
     };
 
     const result = toNode(leaseTx);
@@ -192,11 +192,11 @@ describe('getCoins — all input forms', () => {
   });
 
   it('extracts coins from money-like { coins, assetId }', () => {
-    expect(getCoins({ coins: '42', assetId: 'DCC' })).toBe('42');
+    expect(getCoins({ assetId: 'DCC', coins: '42' })).toBe('42');
   });
 
   it('coerces numeric coins from money-like', () => {
-    expect(getCoins({ coins: 42, assetId: 'DCC' })).toBe('42');
+    expect(getCoins({ assetId: 'DCC', coins: 42 })).toBe('42');
   });
 
   it('coerces string TLong', () => {
@@ -226,7 +226,7 @@ describe('getAssetId — all input forms', () => {
   });
 
   it('returns assetId from money-like object', () => {
-    expect(getAssetId({ coins: '100', assetId: 'MYTOKEN' })).toBe('MYTOKEN');
+    expect(getAssetId({ assetId: 'MYTOKEN', coins: '100' })).toBe('MYTOKEN');
   });
 
   it('returns null for BigNumber (no asset info)', () => {
@@ -386,18 +386,18 @@ describe('Utility functions', () => {
 describe('node.* named converters', () => {
   it('node.issue converts Money to node format', () => {
     const result = node.issue({
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
+      description: 'desc',
       fee: new Money(100, DCC_ASSET),
       name: 'token',
-      description: 'desc',
       precision: 2,
       quantity: new BigNumber('5000'),
       reissuable: true,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.ISSUE,
+      version: 1,
     });
 
     expect(result.fee).toBe('100');
@@ -408,13 +408,13 @@ describe('node.* named converters', () => {
 
   it('node.transfer converts amounts and extracts assetId', () => {
     const result = node.transfer({
-      type: TYPES.TRANSFER,
-      version: 1,
+      amount: new Money(500, BTC_ASSET),
+      fee: new Money(100, DCC_ASSET),
+      recipient: 'dest',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: new Money(100, DCC_ASSET),
-      amount: new Money(500, BTC_ASSET),
-      recipient: 'dest',
+      type: TYPES.TRANSFER,
+      version: 1,
     });
 
     expect(result.fee).toBe('100');
@@ -426,13 +426,13 @@ describe('node.* named converters', () => {
 
   it('node.burn extracts assetId from quantity money-like', () => {
     const result = node.burn({
-      type: TYPES.BURN,
-      version: 1,
+      chainId: 87,
+      fee: '1000',
+      quantity: { assetId: BTC_ASSET.id, coins: '500' },
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: '1000',
-      quantity: { coins: '500', assetId: BTC_ASSET.id },
-      chainId: 87,
+      type: TYPES.BURN,
+      version: 1,
     });
 
     expect(result.quantity).toBe('500');
@@ -441,16 +441,16 @@ describe('node.* named converters', () => {
 
   it('node.data converts integer values to strings', () => {
     const result = node.data({
-      type: TYPES.DATA,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: '500',
       data: [
         { key: 'num', type: 'integer', value: 42 },
         { key: 'str', type: 'string', value: 'hello' },
         { key: 'bool', type: 'boolean', value: true },
       ],
+      fee: '500',
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.DATA,
+      version: 1,
     });
 
     expect(result.data[0]?.value).toBe('42');
@@ -460,12 +460,12 @@ describe('node.* named converters', () => {
 
   it('node.sponsorship returns null minSponsoredAssetFee when stopping', () => {
     const result = node.sponsorship({
-      type: TYPES.SPONSORSHIP,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
       fee: '1000',
       minSponsoredAssetFee: new Money(0, BTC_ASSET),
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.SPONSORSHIP,
+      version: 1,
     });
 
     expect(result.assetId).toBe(BTC_ASSET.id);
@@ -474,13 +474,13 @@ describe('node.* named converters', () => {
 
   it('node.invokeScript handles null call and payment', () => {
     const result = node.invokeScript({
-      type: TYPES.INVOKE_SCRIPT,
-      version: 1,
+      chainId: 87,
+      dApp: 'dapp-address',
+      fee: new Money(100, DCC_ASSET),
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: new Money(100, DCC_ASSET),
-      dApp: 'dapp-address',
-      chainId: 87,
+      type: TYPES.INVOKE_SCRIPT,
+      version: 1,
     });
 
     expect(result.call).toBeNull();
@@ -490,21 +490,21 @@ describe('node.* named converters', () => {
 
   it('node.invokeScript converts call args and payment', () => {
     const result = node.invokeScript({
-      type: TYPES.INVOKE_SCRIPT,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: new Money(100, DCC_ASSET),
-      dApp: 'dapp-address',
       call: {
-        function: 'stake',
         args: [
           { type: 'integer', value: 42 },
           { type: 'string', value: 'hello' },
         ],
+        function: 'stake',
       },
-      payment: [new Money(200, BTC_ASSET)],
       chainId: 87,
+      dApp: 'dapp-address',
+      fee: new Money(100, DCC_ASSET),
+      payment: [new Money(200, BTC_ASSET)],
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.INVOKE_SCRIPT,
+      version: 1,
     });
 
     expect(result.call?.function).toBe('stake');
@@ -515,16 +515,16 @@ describe('node.* named converters', () => {
 
   it('node.order converts exchange order', () => {
     const result = node.order({
-      version: 1,
+      amount: { assetId: BTC_ASSET.id, coins: '200' },
+      expiration: 2000,
+      matcherFee: { assetId: 'DCC', coins: '300' },
       matcherPublicKey: 'matcher',
       orderType: 'buy' as const,
-      price: { coins: '100', assetId: 'DCC' },
-      amount: { coins: '200', assetId: BTC_ASSET.id },
-      matcherFee: { coins: '300', assetId: 'DCC' },
-      timestamp: 1000,
-      expiration: 2000,
-      senderPublicKey: 'sender',
+      price: { assetId: 'DCC', coins: '100' },
       proofs: ['proof1'],
+      senderPublicKey: 'sender',
+      timestamp: 1000,
+      version: 1,
     });
 
     expect(result.price).toBe('100');
@@ -543,12 +543,12 @@ describe('node.* named converters', () => {
 describe('convert() function', () => {
   it('converts a simple transaction (alias)', () => {
     const aliasTx = {
-      type: TYPES.ALIAS as 10,
-      version: 1 as const,
+      alias: 'myname',
+      fee: 500,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 500,
-      alias: 'myname',
+      type: TYPES.ALIAS as 10,
+      version: 1 as const,
     };
 
     const result = convert(aliasTx, (val: number) => String(val));
@@ -558,16 +558,16 @@ describe('convert() function', () => {
 
   it('converts an exchange order', () => {
     const orderData = {
-      version: 1 as const,
+      amount: 200,
+      expiration: 2000,
+      matcherFee: 300,
       matcherPublicKey: 'matcher',
       orderType: 'buy' as const,
       price: 100,
-      amount: 200,
-      matcherFee: 300,
-      timestamp: 1000,
-      expiration: 2000,
-      senderPublicKey: 'sender',
       proofs: ['proof1'],
+      senderPublicKey: 'sender',
+      timestamp: 1000,
+      version: 1 as const,
     };
 
     const result = convert(orderData, (val: number) => String(val));
@@ -578,11 +578,11 @@ describe('convert() function', () => {
 
   it('throws on unknown type in convert()', () => {
     const bad = {
-      type: 999,
-      version: 1,
+      fee: 0,
       senderPublicKey: 'x',
       timestamp: 0,
-      fee: 0,
+      type: 999,
+      version: 1,
     };
 
     expect(() => convert(bad as any, String)).toThrow('Unknown transaction type!');
@@ -596,11 +596,11 @@ describe('Timestamp auto-generation', () => {
   it('generates timestamp close to now when omitted', () => {
     const before = Date.now();
     const result = toNode({
+      alias: 'testname',
+      fee: '100',
+      senderPublicKey: 'abc',
       type: TYPES.ALIAS,
       version: 1,
-      senderPublicKey: 'abc',
-      fee: '100',
-      alias: 'testname',
     });
     const after = Date.now();
 
@@ -610,12 +610,12 @@ describe('Timestamp auto-generation', () => {
 
   it('preserves explicit timestamp', () => {
     const result = toNode({
-      type: TYPES.ALIAS,
-      version: 1,
+      alias: 'testname',
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: 1234567890,
-      fee: '100',
-      alias: 'testname',
+      type: TYPES.ALIAS,
+      version: 1,
     });
 
     expect(result.timestamp).toBe(1234567890);
@@ -628,16 +628,16 @@ describe('Timestamp auto-generation', () => {
 describe('CRITICAL: convert() data integer value 0', () => {
   it('converts integer value 0 through factory (not skipped)', () => {
     const dataTx = {
-      type: TYPES.DATA as 12,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
       data: [
         { key: 'zero', type: 'integer' as const, value: 0 },
         { key: 'positive', type: 'integer' as const, value: 42 },
         { key: 'str', type: 'string' as const, value: 'hello' },
       ],
+      fee: 100,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.DATA as 12,
+      version: 1 as const,
     };
 
     const result = convert(dataTx, (val: number) => String(val));
@@ -648,12 +648,12 @@ describe('CRITICAL: convert() data integer value 0', () => {
 
   it('preserves null integer values without calling factory', () => {
     const dataTx = {
-      type: TYPES.DATA as 12,
-      version: 1 as const,
+      data: [{ key: 'nullval', type: 'integer' as const, value: null }],
+      fee: 100,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      data: [{ key: 'nullval', type: 'integer' as const, value: null }],
+      type: TYPES.DATA as 12,
+      version: 1 as const,
     };
 
     const result = convert(dataTx as any, (val: number) => String(val));
@@ -664,13 +664,13 @@ describe('CRITICAL: convert() data integer value 0', () => {
 describe('CRITICAL: convert() burn with amount=0', () => {
   it('uses amount field even when amount is 0', () => {
     const burnTx = {
-      type: TYPES.BURN as 6,
-      version: 1 as const,
+      amount: 0,
+      fee: 100,
+      quantity: 999,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      amount: 0,
-      quantity: 999,
+      type: TYPES.BURN as 6,
+      version: 1 as const,
     };
 
     const result = convert(burnTx as any, (val: number) => String(val));
@@ -681,12 +681,12 @@ describe('CRITICAL: convert() burn with amount=0', () => {
 
   it('falls through to quantity when amount is undefined', () => {
     const burnTx = {
-      type: TYPES.BURN as 6,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
       fee: 100,
       quantity: 500,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.BURN as 6,
+      version: 1 as const,
     };
 
     const result = convert(burnTx as any, (val: number) => String(val));
@@ -698,16 +698,16 @@ describe('CRITICAL: convert() burn with amount=0', () => {
 describe('CRITICAL: convert() invokeScript null call/payment', () => {
   it('returns null call when tx.call is null (not { args: undefined })', () => {
     const invokeTx = {
-      type: TYPES.INVOKE_SCRIPT as 16,
-      version: 1 as const,
+      call: null,
+      chainId: 87,
+      dApp: 'dapp',
+      fee: 100,
+      feeAssetId: 'DCC',
+      payment: null,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      dApp: 'dapp',
-      call: null,
-      payment: null,
-      chainId: 87,
-      feeAssetId: 'DCC',
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
     };
 
     const result = convert(invokeTx as any, (val: number) => String(val));
@@ -717,31 +717,31 @@ describe('CRITICAL: convert() invokeScript null call/payment', () => {
 
   it('converts call args when call is present', () => {
     const invokeTx = {
-      type: TYPES.INVOKE_SCRIPT as 16,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
-      dApp: 'dapp',
       call: {
-        function: 'stake',
         args: [
           { type: 'integer' as const, value: 0 },
           { type: 'string' as const, value: 'hello' },
         ],
+        function: 'stake',
       },
-      payment: [{ amount: 200, assetId: 'DCC' }],
       chainId: 87,
+      dApp: 'dapp',
+      fee: 100,
       feeAssetId: 'DCC',
+      payment: [{ amount: 200, assetId: 'DCC' }],
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
     };
 
     const result = convert(invokeTx as any, (val: number) => String(val));
     expect(result.call).toEqual({
-      function: 'stake',
       args: [
         { type: 'integer', value: '0' },
         { type: 'string', value: 'hello' },
       ],
+      function: 'stake',
     });
     expect(result.payment).toEqual([{ amount: '200', assetId: 'DCC' }]);
   });
@@ -750,18 +750,18 @@ describe('CRITICAL: convert() invokeScript null call/payment', () => {
 describe('MEDIUM: issue decimals=0 preserved correctly', () => {
   it('preserves decimals=0 (does not fall through to precision)', () => {
     const result = node.issue({
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
+      decimals: 0,
+      description: 'no decimals',
       fee: '100',
       name: 'indivisible',
-      description: 'no decimals',
-      decimals: 0,
       quantity: '1000000',
       reissuable: false,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.ISSUE,
+      version: 1,
     });
 
     expect(result.decimals).toBe(0);
@@ -769,18 +769,18 @@ describe('MEDIUM: issue decimals=0 preserved correctly', () => {
 
   it('falls through to precision when decimals is undefined', () => {
     const result = node.issue({
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
+      description: 'uses precision',
       fee: '100',
       name: 'precise',
-      description: 'uses precision',
       precision: 8,
       quantity: '1000000',
       reissuable: false,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.ISSUE,
+      version: 1,
     });
 
     expect(result.decimals).toBe(8);
@@ -788,17 +788,17 @@ describe('MEDIUM: issue decimals=0 preserved correctly', () => {
 
   it('defaults to 0 when neither decimals nor precision provided', () => {
     const result = node.issue({
-      type: TYPES.ISSUE,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
+      description: 'no decimals field',
       fee: '100',
       name: 'default',
-      description: 'no decimals field',
       quantity: '1000000',
       reissuable: false,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.ISSUE,
+      version: 1,
     } as any);
 
     expect(result.decimals).toBe(0);
@@ -808,15 +808,15 @@ describe('MEDIUM: issue decimals=0 preserved correctly', () => {
 describe('CRITICAL: toNode data with integer value 0', () => {
   it('converts integer value 0 to string "0" (toNodeEntities path)', () => {
     const result = node.data({
-      type: TYPES.DATA,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: '500',
       data: [
         { key: 'zero', type: 'integer', value: 0 },
         { key: 'negative', type: 'integer', value: -1 },
       ],
+      fee: '500',
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.DATA,
+      version: 1,
     });
 
     expect(result.data[0]?.value).toBe('0');
@@ -833,7 +833,7 @@ describe('CRITICAL: getCoins rejects unsafe integers', () => {
   });
 
   it('throws when IMoneyLike coins exceeds MAX_SAFE_INTEGER as number', () => {
-    expect(() => getCoins({ coins: Number.MAX_SAFE_INTEGER + 2, assetId: 'DCC' })).toThrow(
+    expect(() => getCoins({ assetId: 'DCC', coins: Number.MAX_SAFE_INTEGER + 2 })).toThrow(
       'Unsafe integer detected',
     );
   });
@@ -847,7 +847,7 @@ describe('CRITICAL: getCoins rejects unsafe integers', () => {
   });
 
   it('accepts IMoneyLike with string coins (safe path)', () => {
-    expect(getCoins({ coins: '99999999999999999999999', assetId: 'DCC' })).toBe(
+    expect(getCoins({ assetId: 'DCC', coins: '99999999999999999999999' })).toBe(
       '99999999999999999999999',
     );
   });
@@ -876,12 +876,12 @@ describe('CRITICAL: data.ts rejects unknown data entry types', () => {
   it('throws on unknown data type instead of silently returning null', () => {
     expect(() =>
       node.data({
-        type: TYPES.DATA,
-        version: 1,
+        data: [{ key: 'bad', type: 'unknown_type' as any, value: 'x' }],
+        fee: '500',
         senderPublicKey: 'abc',
         timestamp: 1000,
-        fee: '500',
-        data: [{ key: 'bad', type: 'unknown_type' as any, value: 'x' }],
+        type: TYPES.DATA,
+        version: 1,
       }),
     ).toThrow('Unknown data entry type');
   });
@@ -904,18 +904,18 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts issue transaction', () => {
     const tx = {
-      type: TYPES.ISSUE as 3,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
+      decimals: 2,
+      description: 'desc',
       fee: 100,
       name: 'token',
-      description: 'desc',
-      decimals: 2,
       quantity: 5000,
       reissuable: true,
-      chainId: 87,
       script: null,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.ISSUE as 3,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -924,16 +924,16 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts transfer transaction', () => {
     const tx = {
-      type: TYPES.TRANSFER as 4,
-      version: 1 as const,
+      amount: 500,
+      assetId: 'DCC',
+      attachment: '',
+      fee: 100,
+      feeAssetId: 'DCC',
+      recipient: 'dest',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      amount: 500,
-      recipient: 'dest',
-      assetId: 'DCC',
-      feeAssetId: 'DCC',
-      attachment: '',
+      type: TYPES.TRANSFER as 4,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -942,15 +942,15 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts reissue transaction', () => {
     const tx = {
-      type: TYPES.REISSUE as 5,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
       assetId: 'BTC',
+      chainId: 87,
+      fee: 100,
       quantity: 2000,
       reissuable: false,
-      chainId: 87,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.REISSUE as 5,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -959,13 +959,13 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts lease transaction', () => {
     const tx = {
-      type: TYPES.LEASE as 8,
-      version: 1 as const,
+      amount: 9999,
+      fee: 100,
+      recipient: 'node',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      amount: 9999,
-      recipient: 'node',
+      type: TYPES.LEASE as 8,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -974,13 +974,13 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts cancel lease transaction', () => {
     const tx = {
-      type: TYPES.CANCEL_LEASE as 9,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
       fee: 100,
       leaseId: 'lease123',
-      chainId: 87,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.CANCEL_LEASE as 9,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -988,35 +988,35 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts mass transfer transaction', () => {
     const tx = {
-      type: TYPES.MASS_TRANSFER as 11,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
       assetId: 'DCC',
       attachment: 'memo',
+      fee: 100,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
       transfers: [
-        { recipient: 'a', amount: 10 },
-        { recipient: 'b', amount: 20 },
+        { amount: 10, recipient: 'a' },
+        { amount: 20, recipient: 'b' },
       ],
+      type: TYPES.MASS_TRANSFER as 11,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
     expect(result.transfers).toEqual([
-      { recipient: 'a', amount: '10' },
-      { recipient: 'b', amount: '20' },
+      { amount: '10', recipient: 'a' },
+      { amount: '20', recipient: 'b' },
     ]);
   });
 
   it('converts set script transaction', () => {
     const tx = {
-      type: TYPES.SET_SCRIPT as 13,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
+      chainId: 87,
       fee: 100,
       script: 'base64:script',
-      chainId: 87,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.SET_SCRIPT as 13,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -1024,13 +1024,13 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts sponsorship transaction', () => {
     const tx = {
-      type: TYPES.SPONSORSHIP as 14,
-      version: 1 as const,
+      assetId: 'TOKEN',
+      fee: 100,
+      minSponsoredAssetFee: 50,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      assetId: 'TOKEN',
-      minSponsoredAssetFee: 50,
+      type: TYPES.SPONSORSHIP as 14,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -1039,13 +1039,13 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts sponsorship with null minSponsoredAssetFee', () => {
     const tx = {
-      type: TYPES.SPONSORSHIP as 14,
-      version: 1 as const,
+      assetId: 'TOKEN',
+      fee: 100,
+      minSponsoredAssetFee: null,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      assetId: 'TOKEN',
-      minSponsoredAssetFee: null,
+      type: TYPES.SPONSORSHIP as 14,
+      version: 1 as const,
     };
     const result = convert(tx as any, toStr);
     expect(result.minSponsoredAssetFee).toBeNull();
@@ -1053,14 +1053,14 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts set asset script transaction', () => {
     const tx = {
-      type: TYPES.SET_ASSET_SCRIPT as 15,
-      version: 1 as const,
+      assetId: 'TOKEN',
+      chainId: 87,
+      fee: 100,
+      script: 'base64:script',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      assetId: 'TOKEN',
-      script: 'base64:script',
-      chainId: 87,
+      type: TYPES.SET_ASSET_SCRIPT as 15,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -1068,22 +1068,22 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts invoke script transaction with call and payment', () => {
     const tx = {
-      type: TYPES.INVOKE_SCRIPT as 16,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
-      dApp: 'dapp',
       call: {
-        function: 'stake',
         args: [
           { type: 'integer' as const, value: 42 },
           { type: 'string' as const, value: 'hi' },
         ],
+        function: 'stake',
       },
-      payment: [{ amount: 200, assetId: 'DCC' }],
       chainId: 87,
+      dApp: 'dapp',
+      fee: 100,
       feeAssetId: 'DCC',
+      payment: [{ amount: 200, assetId: 'DCC' }],
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
     };
     const result = convert(tx as any, toStr);
     expect(result.fee).toBe('100');
@@ -1093,16 +1093,16 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts invoke script with undefined payment (falsy but not null)', () => {
     const tx = {
-      type: TYPES.INVOKE_SCRIPT as 16,
-      version: 1 as const,
+      call: null,
+      chainId: 87,
+      dApp: 'dapp',
+      fee: 100,
+      feeAssetId: 'DCC',
+      payment: undefined,
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      dApp: 'dapp',
-      call: null,
-      payment: undefined,
-      chainId: 87,
-      feeAssetId: 'DCC',
+      type: TYPES.INVOKE_SCRIPT as 16,
+      version: 1 as const,
     };
     const result = convert(tx as any, toStr);
     expect(result.payment).toBeUndefined();
@@ -1110,14 +1110,14 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts update asset info transaction', () => {
     const tx = {
-      type: TYPES.UPDATE_ASSET_INFO as 17,
-      version: 1 as const,
+      assetId: 'TOKEN',
+      description: 'New Desc',
+      fee: 100,
+      name: 'New Name',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: 100,
-      assetId: 'TOKEN',
-      name: 'New Name',
-      description: 'New Desc',
+      type: TYPES.UPDATE_ASSET_INFO as 17,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -1125,17 +1125,17 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts data transaction with all entry types', () => {
     const tx = {
-      type: TYPES.DATA as 12,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
       data: [
         { key: 'int', type: 'integer' as const, value: 99 },
         { key: 'str', type: 'string' as const, value: 'hello' },
         { key: 'bool', type: 'boolean' as const, value: true },
         { key: 'bin', type: 'binary' as const, value: 'base64' },
       ],
+      fee: 100,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.DATA as 12,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.data[0]?.value).toBe('99');
@@ -1146,31 +1146,31 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts exchange transaction fully', () => {
     const orderBase = {
-      version: 1 as const,
-      matcherPublicKey: 'matcher',
-      timestamp: 1000,
       expiration: 2000,
-      senderPublicKey: 'sender',
+      matcherPublicKey: 'matcher',
       proofs: ['p'],
+      senderPublicKey: 'sender',
+      timestamp: 1000,
+      version: 1 as const,
     };
     const tx = {
-      type: TYPES.EXCHANGE as 7,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: 100,
-      order1: { ...orderBase, orderType: 'buy' as const, price: 50, amount: 200, matcherFee: 10 },
-      order2: {
-        ...orderBase,
-        orderType: 'sell' as const,
-        price: 50,
-        amount: 200,
-        matcherFee: 10,
-      },
-      price: 50,
       amount: 200,
       buyMatcherFee: 10,
+      fee: 100,
+      order1: { ...orderBase, amount: 200, matcherFee: 10, orderType: 'buy' as const, price: 50 },
+      order2: {
+        ...orderBase,
+        amount: 200,
+        matcherFee: 10,
+        orderType: 'sell' as const,
+        price: 50,
+      },
+      price: 50,
       sellMatcherFee: 10,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.EXCHANGE as 7,
+      version: 1 as const,
     };
     const result = convert(tx, toStr);
     expect(result.fee).toBe('100');
@@ -1184,12 +1184,12 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts burn with quantity fallback', () => {
     const tx = {
-      type: TYPES.BURN as 6,
-      version: 1 as const,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
       fee: 100,
       quantity: 777,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.BURN as 6,
+      version: 1 as const,
     };
     const result = convert(tx as any, toStr);
     expect(result.amount).toBe('777');
@@ -1203,15 +1203,15 @@ describe('convert() — full transaction type coverage', () => {
 describe('toNode() — additional entity types', () => {
   it('converts reissue via toNode', () => {
     const result = toNode({
-      type: TYPES.REISSUE,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: '100',
       assetId: 'TOKEN',
+      chainId: 87,
+      fee: '100',
       quantity: '5000',
       reissuable: true,
-      chainId: 87,
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      type: TYPES.REISSUE,
+      version: 1,
     });
     expect(result.quantity).toBe('5000');
     expect(result.assetId).toBe('TOKEN');
@@ -1219,42 +1219,42 @@ describe('toNode() — additional entity types', () => {
 
   it('converts updateAssetInfo via toNode', () => {
     const result = toNode({
-      type: TYPES.UPDATE_ASSET_INFO,
-      version: 1,
+      assetId: 'TOKEN',
+      description: 'Desc',
+      fee: '100',
+      name: 'New',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: '100',
-      assetId: 'TOKEN',
-      name: 'New',
-      description: 'Desc',
+      type: TYPES.UPDATE_ASSET_INFO,
+      version: 1,
     });
     expect(result.name).toBe('New');
   });
 
   it('converts setAssetScript via toNode', () => {
     const result = toNode({
-      type: TYPES.SET_ASSET_SCRIPT,
-      version: 1,
+      assetId: 'TOKEN',
+      chainId: 87,
+      fee: '100',
+      script: 'base64:abc',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: '100',
-      assetId: 'TOKEN',
-      script: 'base64:abc',
-      chainId: 87,
+      type: TYPES.SET_ASSET_SCRIPT,
+      version: 1,
     });
     expect(result.script).toBe('base64:abc');
   });
 
   it('converts massTransfer with assetId via toNode', () => {
     const result = toNode({
-      type: TYPES.MASS_TRANSFER,
-      version: 1,
-      senderPublicKey: 'abc',
-      timestamp: 1000,
-      fee: '100',
       assetId: 'TOKEN',
       attachment: 'memo',
-      transfers: [{ recipient: 'a', amount: '10' }],
+      fee: '100',
+      senderPublicKey: 'abc',
+      timestamp: 1000,
+      transfers: [{ amount: '10', recipient: 'a' }],
+      type: TYPES.MASS_TRANSFER,
+      version: 1,
     });
     expect(result.assetId).toBe('TOKEN');
     expect(result.transfers[0]?.amount).toBe('10');
@@ -1263,26 +1263,26 @@ describe('toNode() — additional entity types', () => {
   it('massTransfer throws on empty transfers array (money variant)', () => {
     expect(() =>
       toNode({
-        type: TYPES.MASS_TRANSFER,
-        version: 1,
+        attachment: '',
+        fee: '100',
         senderPublicKey: 'abc',
         timestamp: 1000,
-        fee: '100',
-        attachment: '',
         transfers: [],
+        type: TYPES.MASS_TRANSFER,
+        version: 1,
       } as any),
     ).toThrow('MassTransfer transaction must have one transfer!');
   });
 
   it('massTransfer extracts assetId from first transfer money item', () => {
     const result = toNode({
-      type: TYPES.MASS_TRANSFER,
-      version: 1,
+      attachment: 'memo',
+      fee: '100',
       senderPublicKey: 'abc',
       timestamp: 1000,
-      fee: '100',
-      attachment: 'memo',
-      transfers: [{ recipient: 'a', amount: new Money(10, DCC_ASSET) }],
+      transfers: [{ amount: new Money(10, DCC_ASSET), recipient: 'a' }],
+      type: TYPES.MASS_TRANSFER,
+      version: 1,
     } as any);
     expect(result.assetId).toBe('DCC');
   });
