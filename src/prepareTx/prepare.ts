@@ -52,7 +52,7 @@ function _scriptProcessor(code: string): string | null {
   return (code || '').replace('base64:', '') ? code : null;
 }
 
-function _assetPair(data: Record<string, unknown>) {
+function _assetPair(data: { amount?: unknown; price?: unknown; [key: string]: unknown }) {
   const amount = data.amount as { asset: { id: string } };
   const price = data.price as { asset: { id: string } };
   return {
@@ -155,7 +155,7 @@ function _base64(str: string): string {
   return (str || '').replace('base64:', '');
 }
 
-function _toOrderPrice(order: Record<string, unknown>) {
+function _toOrderPrice(order: { amount?: unknown; price?: unknown; [key: string]: unknown }) {
   const amount = order.amount as Money;
   const price = order.price as Money;
   const assetPair = new AssetPair(amount.asset, price.asset);

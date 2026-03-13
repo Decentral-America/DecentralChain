@@ -18,16 +18,44 @@ const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 // in @decentralchain/transactions and @decentralchain/marshall.
 // Each `as unknown as` cast is a single, auditable bridge point — zero `any`.
 
-/** Byte serializer compatible with the Record<string, unknown> handler pipeline. */
-type TByteSerializer = (data: Record<string, unknown>) => Uint8Array;
+/** Byte serializer compatible with the TxRecord handler pipeline. */
+type TByteSerializer = (data: TxRecord) => Uint8Array;
 
 /** Transaction factory bridge — heterogeneous tx records in and out. */
-type TTxBridgeFn = (r: Record<string, unknown>) => Record<string, unknown>;
+type TTxBridgeFn = (r: TxRecord) => TxRecord;
 
 /** Proof fields present on exchange order data at runtime. */
 interface IExchangeOrderData {
   signature?: string;
   proofs?: string[];
+  [key: string]: unknown;
+}
+
+/**
+ * Transaction/order record with known field names flowing through the signing pipeline.
+ * Explicit properties enable dot-notation access, satisfying both
+ * `noPropertyAccessFromIndexSignature` (TS) and `useLiteralKeys` (Biome).
+ */
+interface TxRecord {
+  timestamp?: unknown;
+  price?: unknown;
+  orderId?: unknown;
+  senderPublicKey?: unknown;
+  proofs?: unknown;
+  recipient?: unknown;
+  attachment?: unknown;
+  amount?: unknown;
+  quantity?: unknown;
+  script?: unknown;
+  version?: unknown;
+  buyOrder?: unknown;
+  sellOrder?: unknown;
+  order1?: unknown;
+  order2?: unknown;
+  chainId?: unknown;
+  transfers?: unknown;
+  assetId?: unknown;
+  dApp?: unknown;
   [key: string]: unknown;
 }
 
@@ -53,18 +81,15 @@ const txSetAssetScript = dccTransactions.setAssetScript as unknown as TTxBridgeF
 const txInvokeScript = dccTransactions.invokeScript as unknown as TTxBridgeFn;
 const txUpdateAssetInfo = dccTransactions.updateAssetInfo as unknown as TTxBridgeFn;
 
-const toNode = (data: Record<string, unknown>, convert?: TTxBridgeFn): Record<string, unknown> => {
+const toNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
   const r = mlToNode(data as unknown as TDCCGuiEntity);
-  const result: Record<string, unknown> = { ...r, timestamp: new Date(r.timestamp).getTime() };
+  const result: TxRecord = { ...r, timestamp: new Date(r.timestamp).getTime() };
   return convert ? convert(result) : result;
 };
 
-const burnToNode = (
-  data: Record<string, unknown>,
-  convert?: TTxBridgeFn,
-): Record<string, unknown> => {
+const burnToNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
   const r = mlToNode(data as unknown as TDCCGuiEntity);
-  const withAmount: Record<string, unknown> = {
+  const withAmount: TxRecord = {
     ...r,
     amount: (r as { quantity?: unknown }).quantity,
   };
@@ -125,10 +150,10 @@ export enum SIGN_TYPE {
 export interface ITypesMap {
   getBytes: Record<number, TByteSerializer>;
   adapter: keyof IAdapterSignMethods;
-  toNode?: (data: Record<string, unknown>, networkByte: number) => Record<string, unknown>;
+  toNode?: (data: TxRecord, networkByte: number) => TxRecord;
 }
 
-const getCancelOrderBytes = (txData: Record<string, unknown>) => {
+const getCancelOrderBytes = (txData: TxRecord) => {
   const { orderId, id, senderPublicKey, sender } = txData;
   const pBytes = BASE58_STRING((senderPublicKey || sender) as string);
   const orderIdBytes = BASE58_STRING((id || orderId) as string);
@@ -300,12 +325,12 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const buyOrder = data.buyOrder as IExchangeOrderData;
       const sellOrder = data.sellOrder as IExchangeOrderData;
       const order1 = {
-        ...(tx.order1 as Record<string, unknown>),
+        ...(tx.order1 as TxRecord),
         signature: buyOrder.signature || buyOrder.proofs?.[0],
         proofs: buyOrder.proofs ?? buyOrder.signature,
       };
       const order2 = {
-        ...(tx.order2 as Record<string, unknown>),
+        ...(tx.order2 as TxRecord),
         signature: sellOrder.signature || sellOrder.proofs?.[0],
         proofs: sellOrder.proofs ?? sellOrder.signature,
       };
