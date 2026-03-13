@@ -5,29 +5,29 @@ import { prepare } from '../src/prepareTx/prepare';
 const { processors } = prepare;
 
 const dccAsset = new Asset({
-  precision: 8,
-  id: 'DCC',
-  quantity: new BigNumber(10000000000000000),
   description: '',
   height: 0,
+  id: 'DCC',
   name: 'DCC',
+  precision: 8,
+  quantity: new BigNumber(10000000000000000),
   reissuable: false,
   sender: '',
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
   ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 const testAsset = new Asset({
-  precision: 5,
-  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
-  quantity: new BigNumber(10000),
   description: 'Some text',
   height: 100,
+  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
   name: 'Test',
+  precision: 5,
+  quantity: new BigNumber(10000),
   reissuable: false,
   sender: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-  timestamp: new Date(),
   ticker: undefined,
+  timestamp: new Date(),
 });
 
 describe('prepare.processors', () => {
@@ -39,15 +39,15 @@ describe('prepare.processors', () => {
 
     it('returns function and args from call data', () => {
       const result = processors.callFunc({
-        function: 'deposit',
         args: [{ type: 'integer', value: 100 }],
+        function: 'deposit',
       });
-      expect(result).toEqual({ function: 'deposit', args: [{ type: 'integer', value: 100 }] });
+      expect(result).toEqual({ args: [{ type: 'integer', value: 100 }], function: 'deposit' });
     });
 
     it('defaults to empty function name and args', () => {
       const result = processors.callFunc({} as any);
-      expect(result).toEqual({ function: '', args: [] });
+      expect(result).toEqual({ args: [], function: '' });
     });
   });
 
@@ -257,14 +257,14 @@ describe('prepare.processors', () => {
       const recipientFn = (r: string) => r;
       const amountFn = (a: string) => a;
       const fn = processors.transfers(recipientFn, amountFn);
-      const result = fn([{ recipient: 'addr1', amount: '100' }]);
-      expect(result).toEqual([{ recipient: 'addr1', amount: '100' }]);
+      const result = fn([{ amount: '100', recipient: 'addr1' }]);
+      expect(result).toEqual([{ amount: '100', recipient: 'addr1' }]);
     });
   });
 
   describe('quantity', () => {
     it('calculates quantity with precision', () => {
-      const result = processors.quantity({ quantity: 100, precision: 2 });
+      const result = processors.quantity({ precision: 2, quantity: 100 });
       expect(result.toString()).toBe('10000');
     });
   });
@@ -315,8 +315,8 @@ describe('prepare.wrap', () => {
 describe('prepare.schema', () => {
   it('constructs object from schema with string fields', () => {
     const schemaFn = prepare.schema('name', 'age');
-    const result = schemaFn({ name: 'Alice', age: 30 });
-    expect(result).toEqual({ name: 'Alice', age: 30 });
+    const result = schemaFn({ age: 30, name: 'Alice' });
+    expect(result).toEqual({ age: 30, name: 'Alice' });
   });
 
   it('constructs object from schema with wrapped fields', () => {
@@ -332,12 +332,12 @@ describe('prepare.signSchema', () => {
   it('processes args with processors', () => {
     const schemaFn = prepare.signSchema([
       {
-        name: 'amount',
         field: 'amount',
-        processor: processors.toNumberString,
+        name: 'amount',
         optional: false,
-        type: 'number',
         optionalData: null,
+        processor: processors.toNumberString,
+        type: 'number',
       },
     ]);
     const result = schemaFn({ amount: 12345 });
@@ -347,12 +347,12 @@ describe('prepare.signSchema', () => {
   it('validates when validate=true and throws on error', () => {
     const schemaFn = prepare.signSchema([
       {
-        name: 'amount',
         field: 'amount',
-        processor: processors.noProcess,
+        name: 'amount',
         optional: false,
-        type: 'number',
         optionalData: null,
+        processor: processors.noProcess,
+        type: 'number',
       },
     ]);
     expect(() => schemaFn({ amount: 'not-a-number' }, true)).toThrow();
@@ -361,12 +361,12 @@ describe('prepare.signSchema', () => {
   it('passes validation for valid data', () => {
     const schemaFn = prepare.signSchema([
       {
-        name: 'amount',
         field: 'amount',
-        processor: processors.toNumberString,
+        name: 'amount',
         optional: false,
-        type: 'number',
         optionalData: null,
+        processor: processors.toNumberString,
+        type: 'number',
       },
     ]);
     const result = schemaFn({ amount: 100 }, true);

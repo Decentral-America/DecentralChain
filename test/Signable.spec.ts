@@ -17,13 +17,13 @@ describe('Signable', () => {
   it('throws SignError for unknown sign type', () => {
     expect(
       () =>
-        new Signable({ type: 99999 as any, data: { timestamp: Date.now(), version: 1 } }, adapter),
+        new Signable({ data: { timestamp: Date.now(), version: 1 }, type: 99999 as any }, adapter),
     ).toThrow(SignError);
   });
 
   it('SignError has correct code for unknown type', () => {
     try {
-      new Signable({ type: 99999 as any, data: { timestamp: Date.now(), version: 1 } }, adapter);
+      new Signable({ data: { timestamp: Date.now(), version: 1 }, type: 99999 as any }, adapter);
     } catch (e) {
       expect(e).toBeInstanceOf(SignError);
       expect((e as SignError).code).toBe(ERRORS.UNKNOWN_SIGN_TYPE);
@@ -32,8 +32,8 @@ describe('Signable', () => {
 
   it('addProof rejects empty string', () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     expect(() => signable.addProof('')).toThrow('Invalid signature');
@@ -41,8 +41,8 @@ describe('Signable', () => {
 
   it('addProof rejects non-string', () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     expect(() => signable.addProof(null as any)).toThrow('Invalid signature');
@@ -50,8 +50,8 @@ describe('Signable', () => {
 
   it('addProof enforces max proof count', () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     for (let i = 0; i < 8; i++) {
@@ -62,8 +62,8 @@ describe('Signable', () => {
 
   it('addProof deduplicates identical signatures', () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     signable.addProof('uniqueProof');
@@ -75,8 +75,8 @@ describe('Signable', () => {
 
   it('getBytes returns Uint8Array', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const bytes = await signable.getBytes();
@@ -86,8 +86,8 @@ describe('Signable', () => {
 
   it('getHash returns base58 string', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const hash = await signable.getHash();
@@ -97,8 +97,8 @@ describe('Signable', () => {
 
   it('getId returns base58 string', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const id = await signable.getId();
@@ -108,8 +108,8 @@ describe('Signable', () => {
 
   it('sign returns Signable instance', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const result = await signable.sign();
@@ -118,8 +118,8 @@ describe('Signable', () => {
 
   it('getSignature returns string', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const signature = await signable.getSignature();
@@ -130,8 +130,8 @@ describe('Signable', () => {
   it('deterministic: same data produces same bytes for same input', async () => {
     const timestamp = 1234567890;
     const data = {
+      data: { data: 'test', host: 'localhost', prefix: 'test', timestamp },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test', timestamp },
     } as any;
 
     const signable1 = adapter.makeSignable(data);
@@ -144,8 +144,8 @@ describe('Signable', () => {
 
   it('hasMySignature returns false before signing', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const has = await signable.hasMySignature();
@@ -154,8 +154,8 @@ describe('Signable', () => {
 
   it('hasMySignature returns true after signing', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     await signable.addMyProof();
@@ -165,8 +165,8 @@ describe('Signable', () => {
 
   it('addMyProof returns same signature on second call', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const sig1 = await signable.addMyProof();
@@ -175,10 +175,10 @@ describe('Signable', () => {
   });
 
   it('getTxData returns copy of data', () => {
-    const originalData = { prefix: 'test', host: 'localhost', data: 'test' };
+    const originalData = { data: 'test', host: 'localhost', prefix: 'test' };
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.AUTH,
       data: originalData,
+      type: SIGN_TYPE.AUTH,
     } as any);
 
     const txData = signable.getTxData();
@@ -189,8 +189,8 @@ describe('Signable', () => {
 
   it('type property reflects the sign type', () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     expect(signable.type).toBe(SIGN_TYPE.AUTH);
@@ -198,8 +198,8 @@ describe('Signable', () => {
 
   it('getSignData includes senderPublicKey', async () => {
     const signable = adapter.makeSignable({
+      data: { data: 'test', host: 'localhost', prefix: 'test' },
       type: SIGN_TYPE.AUTH,
-      data: { prefix: 'test', host: 'localhost', data: 'test' },
     } as any);
 
     const signData = await signable.getSignData();

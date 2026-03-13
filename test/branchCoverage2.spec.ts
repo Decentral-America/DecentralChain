@@ -13,8 +13,8 @@ const { MockLedger } = vi.hoisted(() => {
   class MockLedger {
     private users: Record<number, any> = {
       1: {
-        id: 1,
         address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+        id: 1,
         publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
         statusCode: 'U2F_V2',
       },
@@ -77,16 +77,16 @@ import { currentFeeFactory } from '../src/utils';
 const testSeed = 'some test seed words without money on mainnet';
 
 const dccAsset = new Asset({
-  precision: 8,
-  id: 'DCC',
-  quantity: new BigNumber(10000000000000000),
   description: '',
   height: 0,
+  id: 'DCC',
   name: 'DCC',
+  precision: 8,
+  quantity: new BigNumber(10000000000000000),
   reissuable: false,
   sender: '',
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
   ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 describe('Branch coverage - LedgerAdapter defaults & caching', () => {
@@ -118,38 +118,38 @@ describe('Branch coverage - LedgerAdapter defaults & caching', () => {
 
 describe('Branch coverage - utils isNFT and fee branches', () => {
   const feeConfig = {
-    smart_asset_extra_fee: new BigNumber(400000),
-    smart_account_extra_fee: new BigNumber(400000),
     calculate_fee_rules: {
-      default: {
-        add_smart_account_fee: true,
-        add_smart_asset_fee: true,
-        min_price_step: new BigNumber(0),
-        fee: new BigNumber(100000),
-        nftFee: new BigNumber(100000),
-      },
       3: {
         fee: new BigNumber(100000000),
       },
       12: {
         price_per_kb: new BigNumber(100000),
       },
+      default: {
+        add_smart_account_fee: true,
+        add_smart_asset_fee: true,
+        fee: new BigNumber(100000),
+        min_price_step: new BigNumber(0),
+        nftFee: new BigNumber(100000),
+      },
     },
+    smart_account_extra_fee: new BigNumber(400000),
+    smart_asset_extra_fee: new BigNumber(400000),
   };
 
   it('calculates NFT issue fee (isNFT = true branch)', () => {
     const calculateFee = currentFeeFactory(feeConfig as any);
     const fee = calculateFee(
       {
-        type: 3, // ISSUE
-        timestamp: Date.now(),
+        decimals: 0,
+        description: 'An NFT',
         fee: new Money(100000, dccAsset),
         name: 'NFT Token',
-        description: 'An NFT',
-        quantity: new BigNumber(1),
         precision: 0,
-        decimals: 0,
+        quantity: new BigNumber(1),
         reissuable: false,
+        timestamp: Date.now(),
+        type: 3, // ISSUE
         version: 2,
       } as any,
       new Uint8Array(0),
@@ -164,15 +164,15 @@ describe('Branch coverage - utils isNFT and fee branches', () => {
     const calculateFee = currentFeeFactory(feeConfig as any);
     const fee = calculateFee(
       {
-        type: 3, // ISSUE
-        timestamp: Date.now(),
+        decimals: 8,
+        description: 'A regular token',
         fee: new Money(100000000, dccAsset),
         name: 'Regular Token',
-        description: 'A regular token',
-        quantity: new BigNumber(1000000),
         precision: 8,
-        decimals: 8,
+        quantity: new BigNumber(1000000),
         reissuable: true,
+        timestamp: Date.now(),
+        type: 3, // ISSUE
         version: 2,
       } as any,
       new Uint8Array(0),
@@ -187,10 +187,10 @@ describe('Branch coverage - utils isNFT and fee branches', () => {
     const calculateFee = currentFeeFactory(feeConfig as any);
     const fee = calculateFee(
       {
-        type: 12, // DATA
-        timestamp: Date.now(),
-        fee: new Money(100000, dccAsset),
         data: [],
+        fee: new Money(100000, dccAsset),
+        timestamp: Date.now(),
+        type: 12, // DATA
         version: 1,
       } as any,
       new Uint8Array(0),
@@ -211,16 +211,16 @@ describe('Branch coverage - Signable getMyProofs catch & addMyProof cache', () =
 
   it('getMyProofs returns false for invalid signature (catch branch)', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Add an invalid signature that will cause verifySignature to throw
@@ -233,16 +233,16 @@ describe('Branch coverage - Signable getMyProofs catch & addMyProof cache', () =
 
   it('addMyProof returns cached promise on second call', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Call addMyProof twice — second should return cached promise
@@ -257,16 +257,16 @@ describe('Branch coverage - Signable getMyProofs catch & addMyProof cache', () =
 
   it('addMyProof returns existing signature when already signed', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // First call signs
@@ -278,27 +278,27 @@ describe('Branch coverage - Signable getMyProofs catch & addMyProof cache', () =
 
   it('getAssetIds for CREATE_ORDER includes matcher fee and pair', async () => {
     const signable = adapter.makeSignable({
-      type: SIGN_TYPE.TRANSFER,
       data: {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
-        version: 2,
         amount: new Money(100, dccAsset),
+        attachment: '',
         fee: new Money(100000, dccAsset),
         recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
         timestamp: Date.now(),
-        attachment: '',
+        type: TRANSACTION_TYPE_NUMBER.TRANSFER,
+        version: 2,
       },
+      type: SIGN_TYPE.TRANSFER,
     } as any);
 
     // Mock getSignData to return CREATE_ORDER data
     vi.spyOn(signable, 'getSignData').mockResolvedValue({
-      type: SIGN_TYPE.CREATE_ORDER,
-      feeAssetId: null,
-      matcherFeeAssetId: 'matcherFee123',
       assetPair: {
         amountAsset: 'amountAsset456',
         priceAsset: 'priceAsset789',
       },
+      feeAssetId: null,
+      matcherFeeAssetId: 'matcherFee123',
+      type: SIGN_TYPE.CREATE_ORDER,
     } as any);
 
     const ids = await signable.getAssetIds();

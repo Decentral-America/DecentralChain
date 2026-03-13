@@ -6,29 +6,29 @@ import { SIGN_TYPE } from '../src/prepareTx';
 const testSeed = 'some test seed words without money on mainnet';
 
 const dccAsset = new Asset({
-  precision: 8,
-  id: 'DCC',
-  quantity: new BigNumber(10000000000000000),
   description: '',
   height: 0,
+  id: 'DCC',
   name: 'DCC',
+  precision: 8,
+  quantity: new BigNumber(10000000000000000),
   reissuable: false,
   sender: '',
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
   ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 const testAsset = new Asset({
-  precision: 5,
-  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
-  quantity: new BigNumber(10000),
   description: 'Some text',
   height: 100,
+  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
   name: 'Test',
+  precision: 5,
+  quantity: new BigNumber(10000),
   reissuable: false,
   sender: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-  timestamp: new Date(),
   ticker: undefined,
+  timestamp: new Date(),
 });
 
 describe('Signable - extended coverage', () => {
@@ -41,8 +41,8 @@ describe('Signable - extended coverage', () => {
   describe('getAssetIds', () => {
     it('returns DCC_ID for auth', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       const ids = await signable.getAssetIds();
       expect(ids).toContain('DCC');
@@ -50,7 +50,6 @@ describe('Signable - extended coverage', () => {
 
     it('returns asset IDs for transfer', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.TRANSFER,
         data: {
           amount: Money.fromCoins(100000, testAsset),
           fee: Money.fromCoins(100000, dccAsset),
@@ -58,6 +57,7 @@ describe('Signable - extended coverage', () => {
           timestamp: Date.now(),
           version: 2,
         },
+        type: SIGN_TYPE.TRANSFER,
       } as any);
       const ids = await signable.getAssetIds();
       expect(ids).toContain('DCC');
@@ -66,15 +66,15 @@ describe('Signable - extended coverage', () => {
 
     it('returns asset IDs for burn', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.BURN,
         data: {
-          assetId: testAsset.id,
           amount: new BigNumber(1000),
+          assetId: testAsset.id,
           fee: Money.fromCoins(100000, dccAsset),
+          senderPublicKey: 'E3ao18QtWEzm7hAbKQaoZNBRw6coj2NAy7opqbrqURFr',
           timestamp: Date.now(),
           version: 2,
-          senderPublicKey: 'E3ao18QtWEzm7hAbKQaoZNBRw6coj2NAy7opqbrqURFr',
         },
+        type: SIGN_TYPE.BURN,
       } as any);
       const ids = await signable.getAssetIds();
       expect(ids).toContain(testAsset.id);
@@ -84,8 +84,8 @@ describe('Signable - extended coverage', () => {
   describe('getDataForApi', () => {
     it('returns data with proofs when needSign is true', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       const result = (await signable.getDataForApi(true)) as any;
       expect(result.proofs).toBeDefined();
@@ -94,8 +94,8 @@ describe('Signable - extended coverage', () => {
 
     it('returns data without signing when needSign is false', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       const result = (await signable.getDataForApi(false)) as any;
       expect(result).toBeDefined();
@@ -105,8 +105,8 @@ describe('Signable - extended coverage', () => {
   describe('sign2fa', () => {
     it('calls request with address, code and signData', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
 
       const mockSignature = 'mock2faSignature';
@@ -129,7 +129,6 @@ describe('Signable - extended coverage', () => {
     it('throws when version is not supported', () => {
       expect(() =>
         adapter.makeSignable({
-          type: SIGN_TYPE.TRANSFER,
           data: {
             amount: Money.fromCoins(100000, dccAsset),
             fee: Money.fromCoins(100000, dccAsset),
@@ -137,14 +136,15 @@ describe('Signable - extended coverage', () => {
             timestamp: Date.now(),
             version: 99,
           },
+          type: SIGN_TYPE.TRANSFER,
         } as any),
       ).toThrow();
     });
 
     it('auto-selects latest version when not specified', () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       expect(signable.type).toBe(SIGN_TYPE.AUTH);
     });
@@ -153,13 +153,13 @@ describe('Signable - extended coverage', () => {
   describe('existing proofs', () => {
     it('preserves existing proofs from input data', () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.AUTH,
         data: {
-          prefix: 'test',
-          host: 'localhost',
           data: 'test',
+          host: 'localhost',
+          prefix: 'test',
           proofs: ['existingProof1'],
         },
+        type: SIGN_TYPE.AUTH,
       } as any);
 
       // Should be able to add more proofs without error
@@ -171,7 +171,6 @@ describe('Signable - extended coverage', () => {
   describe('getId for protobuf transactions', () => {
     it('handles protobuf byte prefix (10)', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.TRANSFER,
         data: {
           amount: Money.fromCoins(100000, dccAsset),
           fee: Money.fromCoins(100000, dccAsset),
@@ -179,6 +178,7 @@ describe('Signable - extended coverage', () => {
           timestamp: 1558497371511,
           version: 3,
         },
+        type: SIGN_TYPE.TRANSFER,
       } as any);
 
       const id = await signable.getId();
@@ -190,8 +190,8 @@ describe('Signable - extended coverage', () => {
   describe('getMyProofs', () => {
     it('returns empty array when no matching proofs', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       signable.addProof('invalidSignatureNotBase58!!');
       const myProofs = await signable.getMyProofs();
@@ -200,8 +200,8 @@ describe('Signable - extended coverage', () => {
 
     it('returns matching proofs after signing', async () => {
       const signable = adapter.makeSignable({
+        data: { data: 'test', host: 'localhost', prefix: 'test' },
         type: SIGN_TYPE.AUTH,
-        data: { prefix: 'test', host: 'localhost', data: 'test' },
       } as any);
       await signable.addMyProof();
       const myProofs = await signable.getMyProofs();
@@ -212,15 +212,15 @@ describe('Signable - extended coverage', () => {
   describe('precision methods', () => {
     it('handles script invocation payment precision', async () => {
       const signable = adapter.makeSignable({
-        type: SIGN_TYPE.SCRIPT_INVOCATION,
         data: {
+          call: { args: [], function: 'test' },
           dApp: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
-          call: { function: 'test', args: [] },
           fee: Money.fromCoins(500000, dccAsset),
           payment: [Money.fromCoins(1000000, testAsset)],
           timestamp: Date.now(),
           version: 1,
         },
+        type: SIGN_TYPE.SCRIPT_INVOCATION,
       } as any);
 
       const bytes = await signable.getBytes();

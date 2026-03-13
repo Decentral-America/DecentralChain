@@ -163,6 +163,7 @@ const getCancelOrderBytes = (txData: TxRecord) => {
 
 export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
   [SIGN_TYPE.AUTH]: {
+    adapter: 'signRequest',
     getBytes: {
       1: (txData) => {
         const { host, data } = txData as { host: string; data: string };
@@ -177,9 +178,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         ]);
       },
     },
-    adapter: 'signRequest',
   },
   [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
+    adapter: 'signRequest',
     getBytes: {
       1: (txData) => {
         const { timestamp, prefix } = txData as { timestamp: number; prefix: string };
@@ -189,9 +190,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         return Uint8Array.from([...Array.from(pBytes), ...Array.from(timestampBytes)]);
       },
     },
-    adapter: 'signRequest',
   },
   [SIGN_TYPE.DCC_CONFIRMATION]: {
+    adapter: 'signRequest',
     getBytes: {
       1: (txData) => {
         const { timestamp, publicKey } = txData as { timestamp: number; publicKey: string };
@@ -201,9 +202,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         return Uint8Array.from([...Array.from(pBytes), ...Array.from(timestampBytes)]);
       },
     },
-    adapter: 'signRequest',
   },
   [SIGN_TYPE.MATCHER_ORDERS]: {
+    adapter: 'signRequest',
     getBytes: {
       1: (txData) => {
         const { timestamp, senderPublicKey } = txData as {
@@ -216,9 +217,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         return Uint8Array.from([...Array.from(pBytes), ...Array.from(timestampBytes)]);
       },
     },
-    adapter: 'signRequest',
   },
   [SIGN_TYPE.CREATE_ORDER]: {
+    adapter: 'signOrder',
     getBytes: {
       0: binary.serializeOrder,
       1: binary.serializeOrder,
@@ -231,14 +232,13 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const priceObj = data.price as Money;
       return toNode({ ...data, price: Money.fromCoins(price, priceObj.asset) }, txOrder);
     },
-    adapter: 'signOrder',
   },
   [SIGN_TYPE.CANCEL_ORDER]: {
+    adapter: 'signRequest',
     getBytes: {
       0: getCancelOrderBytes,
       1: getCancelOrderBytes,
     },
-    adapter: 'signRequest',
     toNode: (data) => ({
       orderId: data.orderId,
       sender: data.senderPublicKey,
@@ -247,6 +247,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     }),
   },
   [SIGN_TYPE.TRANSFER]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
@@ -255,16 +256,16 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       toNode(
         {
           ...data,
+          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
           recipient: processors.recipient(String.fromCharCode(networkByte))(
             data.recipient as string,
           ),
-          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
         },
         txTransfer,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.ISSUE]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
@@ -278,9 +279,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         txIssue,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.REISSUE]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
@@ -289,9 +290,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const quantity = data.amount || data.quantity;
       return toNode({ ...data, quantity }, txReissue);
     },
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.BURN]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
@@ -300,16 +301,16 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const quantity = data.amount || data.quantity;
       return burnToNode({ ...data, quantity }, txBurn);
     },
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.UPDATE_ASSET_INFO]: {
+    adapter: 'signTransaction',
     getBytes: {
       1: protoTxBytes,
     },
     toNode: (data) => toNode(data, txUpdateAssetInfo),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.EXCHANGE]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: (data) => binary.serializeTx({ ...data, version: 1 }),
       1: binary.serializeTx,
@@ -326,19 +327,19 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const sellOrder = data.sellOrder as IExchangeOrderData;
       const order1 = {
         ...(tx.order1 as TxRecord),
-        signature: buyOrder.signature || buyOrder.proofs?.[0],
         proofs: buyOrder.proofs ?? buyOrder.signature,
+        signature: buyOrder.signature || buyOrder.proofs?.[0],
       };
       const order2 = {
         ...(tx.order2 as TxRecord),
-        signature: sellOrder.signature || sellOrder.proofs?.[0],
         proofs: sellOrder.proofs ?? sellOrder.signature,
+        signature: sellOrder.signature || sellOrder.proofs?.[0],
       };
       return txExchange({ ...tx, order1, order2 });
     },
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.LEASE]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
@@ -353,25 +354,25 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         txLease,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.CANCEL_LEASING]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
     toNode: (data) => toNode(data, txCancelLease),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.CREATE_ALIAS]: {
+    adapter: 'signTransaction',
     getBytes: {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
     toNode: (data) => ({ ...toNode(data, txAlias), chainId: data.chainId }),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.MASS_TRANSFER]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
@@ -388,29 +389,29 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         {
           ...data,
           assetId: data.assetId || transfers[0]?.amount.asset.id,
+          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
           transfers: transfers.map((item) => {
             const recipient = processors.recipient(String.fromCharCode(networkByte))(
               (item.name || item.recipient) as string,
             );
             return { ...item, recipient };
           }),
-          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
         },
         txMassTransfer,
       );
     },
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.DATA]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
       2: protoTxBytes,
     },
     toNode: (data) => toNode(data, txData),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.SET_SCRIPT]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
@@ -424,18 +425,18 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         txSetScript,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.SPONSORSHIP]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
       2: protoTxBytes,
     },
     toNode: (data) => toNode(data, txSponsorship),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.SET_ASSET_SCRIPT]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
@@ -449,9 +450,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         txSetAssetScript,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.SCRIPT_INVOCATION]: {
+    adapter: 'signTransaction',
     getBytes: {
       0: binary.serializeTx,
       1: binary.serializeTx,
@@ -465,10 +466,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         txInvokeScript,
       ),
-    adapter: 'signTransaction',
   },
   [SIGN_TYPE.ETHEREUM_TX]: {
-    getBytes: {},
     adapter: 'signTransaction',
+    getBytes: {},
   },
 };

@@ -97,10 +97,10 @@ export class LedgerAdapter extends Adapter {
       LedgerAdapter._ledger.signTransaction(this._currentUser.id, {
         amount2Precision: precision.amount2Precision,
         amountPrecision: precision.amountPrecision,
-        feePrecision: precision.feePrecision,
+        dataBuffer: bytes,
         dataType: sd.type,
         dataVersion: sd.data.version,
-        dataBuffer: bytes,
+        feePrecision: precision.feePrecision,
       }),
     );
   }
@@ -109,10 +109,10 @@ export class LedgerAdapter extends Adapter {
     const sd = data as LedgerSignData;
     return this._isMyLedger().then(() =>
       LedgerAdapter._ledger.signOrder(this._currentUser.id, {
-        dataBuffer: bytes,
         amountPrecision: precision.amountPrecision,
-        feePrecision: precision.feePrecision,
+        dataBuffer: bytes,
         dataVersion: sd.data.version,
+        feePrecision: precision.feePrecision,
       }),
     );
   }

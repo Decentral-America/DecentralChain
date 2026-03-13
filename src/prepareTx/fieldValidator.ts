@@ -9,6 +9,7 @@ const TRANSFERS = {
 };
 
 const ALIAS = {
+  // biome-ignore lint/security/noSecrets: valid alias character set, not a secret
   AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz',
   MAX_ALIAS_LENGTH: 30,
   MIN_ALIAS_LENGTH: 4,
@@ -19,29 +20,29 @@ const ADDRESS = {
 };
 
 const ASSETS = {
-  NAME_MIN_BYTES: 4,
-  NAME_MAX_BYTES: 16,
   DESCRIPTION_MAX_BYTES: 1000,
+  NAME_MAX_BYTES: 16,
+  NAME_MIN_BYTES: 4,
 };
 
 export const ERROR_MSG = {
-  REQUIRED: 'field is required',
-  WRONG_TYPE: 'field is wrong type',
-  WRONG_NUMBER: 'field is not number',
-  WRONG_TIMESTAMP: 'field is not timestamp',
-  SMALL_FIELD: 'field is small',
-  LARGE_FIELD: 'field is large',
-  WRONG_SYMBOLS: 'field has wrong symbols',
-  WRONG_ADDRESS: 'field is wrong address',
-  WRONG_BOOLEAN: 'field is wrong boolean',
-  WRONG_ASSET_ID: 'field is wrong assetId',
-  WRONG_ORDER_TYPE: 'field is wrong order type. Field can be "buy" or "sell"',
-  NOT_HTTPS_URL: 'field can be url with https protocol',
+  BASE58: 'field can be base58 string',
   BASE64: 'field can be base64 string with prefix "base64:"',
   EMPTY_BASE64: 'field can be not empty base64"',
-  BASE58: 'field can be base58 string',
-  PUB_KEY: 'field can be base58 publicKey',
+  LARGE_FIELD: 'field is large',
+  NOT_HTTPS_URL: 'field can be url with https protocol',
   NULL_VALUE: 'field is not null',
+  PUB_KEY: 'field can be base58 publicKey',
+  REQUIRED: 'field is required',
+  SMALL_FIELD: 'field is small',
+  WRONG_ADDRESS: 'field is wrong address',
+  WRONG_ASSET_ID: 'field is wrong assetId',
+  WRONG_BOOLEAN: 'field is wrong boolean',
+  WRONG_NUMBER: 'field is not number',
+  WRONG_ORDER_TYPE: 'field is wrong order type. Field can be "buy" or "sell"',
+  WRONG_SYMBOLS: 'field has wrong symbols',
+  WRONG_TIMESTAMP: 'field is not timestamp',
+  WRONG_TYPE: 'field is wrong type',
 };
 
 export const isValidAddress = (address: string, networkByte: number) => {
@@ -83,7 +84,7 @@ const numberToString = (num: unknown) => (num && typeof num === 'number' ? num.t
 
 const error = ({ value, ...options }: IFieldOptions, message: unknown): never => {
   const { name: field, type } = options;
-  throw { value, field, type, message };
+  throw { field, message, type, value };
 };
 
 const required = (options: IFieldOptions) => {
@@ -439,9 +440,9 @@ const transfers = (options: IFieldOptions) => {
       try {
         numberLike({
           ...options,
-          value: amount,
           name: `${options.name}:${index}:amount`,
           optional: false,
+          value: amount,
         });
       } catch (e) {
         dataErrors.push(e);
@@ -450,9 +451,9 @@ const transfers = (options: IFieldOptions) => {
       try {
         aliasOrAddress({
           ...options,
-          value: recipient || name,
           name: `${options.name}:${index}:recipient`,
           optional: false,
+          value: recipient || name,
         });
       } catch (e) {
         dataErrors.push(e);
@@ -480,9 +481,9 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
         try {
           string({
             ...options,
-            value: key,
             name: `${options.name}:${index}:key`,
             optional: false,
+            value: key,
           });
         } catch (e) {
           return e;
@@ -528,7 +529,7 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
             break;
           default:
             error(
-              { ...options, value: key, name: `${options.name}:${index}:type` },
+              { ...options, name: `${options.name}:${index}:type`, value: key },
               ERROR_MSG.WRONG_TYPE,
             );
         }
@@ -607,10 +608,10 @@ const call = (options: IFieldOptions) => {
 
   const functionValue = {
     key: 'call.function',
-    value: callData.function,
+    name: 'function',
     optional: false,
     type: 'string',
-    name: 'function',
+    value: callData.function,
   };
 
   string(functionValue);
@@ -621,10 +622,10 @@ const call = (options: IFieldOptions) => {
 
   const argsValue = {
     key: 'call.args',
-    value: callData.args,
+    name: 'args',
     optional: true,
     type: 'args',
-    name: 'args',
+    value: callData.args,
   };
 
   if (argsValue.value) {
@@ -645,7 +646,7 @@ const payment = (options: IFieldOptions) => {
       const dataErrors: unknown[] = [];
 
       try {
-        money({ ...options, value: amount, name: `${options.name}:${index}`, optional: false });
+        money({ ...options, name: `${options.name}:${index}`, optional: false, value: amount });
       } catch (e) {
         dataErrors.push(e);
       }
@@ -660,31 +661,31 @@ const payment = (options: IFieldOptions) => {
 };
 
 export const VALIDATORS = {
-  string,
-  number,
-  required,
-  numberLike,
-  money,
-  aliasName,
   address,
-  boolean,
-  assetId,
-  timestamp,
-  orderType,
-  assetName,
-  assetDescription,
-  httpsUrl,
-  attachment,
-  transfers,
+  aliasName,
   aliasOrAddress,
-  data,
-  script,
   asset_script,
+  assetDescription,
+  assetId,
+  assetName,
+  attachment,
   binary,
-  precision,
+  boolean,
   call,
+  data,
+  httpsUrl,
+  money,
+  number,
+  numberLike,
+  orderType,
   payment,
+  precision,
   publicKey,
+  required,
+  script,
+  string,
+  timestamp,
+  transfers,
 };
 
 interface IFieldOptions {

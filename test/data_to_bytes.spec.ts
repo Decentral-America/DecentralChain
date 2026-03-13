@@ -10,12 +10,11 @@ const checkTx = (type: keyof typeof txs, version: number) => {
   const txData = (txs[type] as any)[version];
   const data = txData.data;
   return {
-    name: `Test ${txData.name} v.${version} transaction.`,
     check: () => {
       const adapter = new SeedAdapter(TEST_SEED, txData.network ?? 'W');
       const signable = adapter.makeSignable({
-        type,
         data: { ...data, version } as any,
+        type,
       } as any);
       return Promise.all([
         adapter.getPublicKey(),
@@ -29,6 +28,7 @@ const checkTx = (type: keyof typeof txs, version: number) => {
         expect(id).toEqual(txData.id);
       });
     },
+    name: `Test ${txData.name} v.${version} transaction.`,
   };
 };
 

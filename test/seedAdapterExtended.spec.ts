@@ -10,8 +10,8 @@ describe('SeedAdapter - extended coverage', () => {
     const adapter = new SeedAdapter(
       {
         encryptedSeed,
-        password,
         encryptionRounds: 5000,
+        password,
       } as any,
       'W',
     );

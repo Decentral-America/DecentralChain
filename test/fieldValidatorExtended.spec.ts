@@ -3,24 +3,24 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { isValidAddress, VALIDATORS } from '../src/prepareTx/fieldValidator';
 
 const dccAsset = new Asset({
-  precision: 8,
-  id: 'DCC',
-  quantity: new BigNumber(10000000000000000),
   description: '',
   height: 0,
+  id: 'DCC',
   name: 'DCC',
+  precision: 8,
+  quantity: new BigNumber(10000000000000000),
   reissuable: false,
   sender: '',
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
   ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 const opts = (value: any, overrides: any = {}) => ({
   key: 'test',
-  value,
+  name: 'testField',
   optional: false,
   type: 'string',
-  name: 'testField',
+  value,
   ...overrides,
 });
 
@@ -107,11 +107,11 @@ describe('fieldValidator - extended coverage', () => {
 
   describe('call', () => {
     it('passes with valid call data', () => {
-      expect(() => VALIDATORS.call(opts({ function: 'deposit', args: [] }))).not.toThrow();
+      expect(() => VALIDATORS.call(opts({ args: [], function: 'deposit' }))).not.toThrow();
     });
 
     it('throws for empty function name', () => {
-      expect(() => VALIDATORS.call(opts({ function: '', args: [] }))).toThrow();
+      expect(() => VALIDATORS.call(opts({ args: [], function: '' }))).toThrow();
     });
 
     it('throws for non-object value', () => {
@@ -126,8 +126,8 @@ describe('fieldValidator - extended coverage', () => {
       expect(() =>
         VALIDATORS.call(
           opts({
-            function: 'test',
             args: [{ type: 'integer', value: 42 }],
+            function: 'test',
           }),
         ),
       ).not.toThrow();
@@ -293,8 +293,8 @@ describe('fieldValidator - extended coverage', () => {
           opts(
             [
               {
-                recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
                 amount: 100,
+                recipient: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
               },
             ],
             { optionalData: 87 },

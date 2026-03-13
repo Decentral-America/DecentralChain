@@ -37,23 +37,23 @@ export function last<T>(list: T[]): T {
 }
 
 export const TRANSACTION_TYPE = {
+  ALIAS: 10 as const,
+  BURN: 6 as const,
+  CANCEL_LEASE: 9 as const,
+  DATA: 12 as const,
+  EXCHANGE: 7 as const,
   // TODO Remove after refactor ts-types lib
   GENESIS: 1 as const,
-  PAYMENT: 2 as const,
   ISSUE: 3 as const,
-  TRANSFER: 4 as const,
-  REISSUE: 5 as const,
-  BURN: 6 as const,
-  EXCHANGE: 7 as const,
   LEASE: 8 as const,
-  CANCEL_LEASE: 9 as const,
-  ALIAS: 10 as const,
   MASS_TRANSFER: 11 as const,
-  DATA: 12 as const,
+  PAYMENT: 2 as const,
+  REISSUE: 5 as const,
+  SCRIPT_INVOCATION: 16 as const,
+  SET_ASSET_SCRIPT: 15 as const,
   SET_SCRIPT: 13 as const,
   SPONSORSHIP: 14 as const,
-  SET_ASSET_SCRIPT: 15 as const,
-  SCRIPT_INVOCATION: 16 as const,
+  TRANSFER: 4 as const,
   UPDATE_ASSET_INFO: 17 as const,
 };
 

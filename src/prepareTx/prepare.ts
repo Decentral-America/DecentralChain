@@ -25,8 +25,8 @@ function _callFunc(callData?: ICall | null): ICall | null {
   }
 
   return {
-    function: callData?.function || '',
     args: callData?.args || [],
+    function: callData?.function || '',
   };
 }
 
@@ -142,8 +142,8 @@ function _expiration(date?: number) {
 function _transfers<A, R>(recipient: (r: string) => string, amount: (a: A) => R) {
   return (transfers: Array<{ recipient: string; amount: A }>) =>
     transfers.map((transfer) => ({
-      recipient: recipient(transfer.recipient),
       amount: amount(transfer.amount),
+      recipient: recipient(transfer.recipient),
     }));
 }
 
@@ -164,36 +164,36 @@ function _toOrderPrice(order: { amount?: unknown; price?: unknown; [key: string]
 }
 
 const _processors = {
-  callFunc: _callFunc,
-  payments: _payments,
-  paymentsToNode: _paymentsToNode,
-  scriptProcessor: _scriptProcessor,
+  addValue: _addValue,
   assetPair: _assetPair,
-  signatureFromProof: _signatureFromProof,
-  toBigNumber: _toBigNumber,
-  toNumberString: _toNumberString,
-  toSponsorshipFee: _toSponsorshipFee,
+  attachment: _attachment,
+  base64: _base64,
+  callFunc: _callFunc,
+  expiration: _expiration,
   moneyToAssetId: _moneyToAssetId,
   moneyToNodeAssetId: _moneyToNodeAssetId,
-  timestamp: _timestamp,
-  orString: _orString,
   noProcess: _noProcess,
-  recipient: _recipient,
-  attachment: _attachment,
-  addValue: _addValue,
-  expiration: _expiration,
-  transfers: _transfers,
+  orString: _orString,
+  payments: _payments,
+  paymentsToNode: _paymentsToNode,
   quantity: _quantity,
-  base64: _base64,
+  recipient: _recipient,
+  scriptProcessor: _scriptProcessor,
+  signatureFromProof: _signatureFromProof,
+  timestamp: _timestamp,
+  toBigNumber: _toBigNumber,
+  toNumberString: _toNumberString,
   toOrderPrice: _toOrderPrice,
+  toSponsorshipFee: _toSponsorshipFee,
+  transfers: _transfers,
 };
 
 function _wrap(from: string | string[] | null, to: string | null, cb: unknown): IWrappedFunction {
   const resolvedTo = to ?? (typeof from === 'string' ? from : '');
   if (typeof cb !== 'function') {
-    return { from, to: resolvedTo, cb: () => cb };
+    return { cb: () => cb, from, to: resolvedTo };
   }
-  return { from, to: resolvedTo, cb: cb as (...args: unknown[]) => unknown };
+  return { cb: cb as (...args: unknown[]) => unknown, from, to: resolvedTo };
 }
 
 const _findValue = (fromKey: string | string[], data: Record<string, unknown>) => {
@@ -242,11 +242,11 @@ function _signSchema(
 
         const validateOptions = {
           key: wrapped.to,
-          value: value,
+          name: item.name,
           optional: item.optional,
           optionalData: item.optionalData,
           type: item.type,
-          name: item.name,
+          value: value,
         };
         const validator = (
           VALIDATORS as Record<string, ((...args: unknown[]) => void) | undefined>
@@ -286,9 +286,9 @@ function _idToNode(id: string): string {
 }
 
 export const prepare = {
+  idToNode: _idToNode,
   processors: _processors,
-  wrap: _wrap,
   schema: _schema,
   signSchema: _signSchema,
-  idToNode: _idToNode,
+  wrap: _wrap,
 };

@@ -12,16 +12,16 @@ const getError = (e: Error) => JSON.parse(e.message);
 const testSeed = 'some test seed words without money on mainnet';
 const seed = new Seed(testSeed);
 const testAsset = new Asset({
-  precision: 5,
-  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
-  quantity: new BigNumber(10000),
   description: 'Some text',
   height: 100,
+  id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
   name: 'Test',
+  precision: 5,
+  quantity: new BigNumber(10000),
   reissuable: false,
   sender: seed.address,
-  timestamp: new Date(),
   ticker: undefined,
+  timestamp: new Date(),
 });
 
 describe('Check validators', () => {
@@ -33,18 +33,18 @@ describe('Check validators', () => {
 
   describe('check order validations', () => {
     const data = {
+      amount: new Money('12.5', testAsset),
+      expiration: Date.now(),
+      matcherFee: Money.fromTokens('0.003', testAsset),
       matcherPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh',
       orderType: 'sell',
       price: Money.fromTokens('12.22', testAsset),
-      amount: new Money('12.5', testAsset),
-      matcherFee: Money.fromTokens('0.003', testAsset),
-      expiration: Date.now(),
     };
 
     it('valid order', () => {
       const signData = {
-        type: SIGN_TYPE.CREATE_ORDER,
         data: { ...data },
+        type: SIGN_TYPE.CREATE_ORDER,
       } as any;
 
       expect(
@@ -58,8 +58,8 @@ describe('Check validators', () => {
 
     it('invalid order type', () => {
       const signData = {
-        type: SIGN_TYPE.CREATE_ORDER,
         data: { ...data, orderType: 'none' },
+        type: SIGN_TYPE.CREATE_ORDER,
       } as any;
 
       try {
@@ -75,8 +75,8 @@ describe('Check validators', () => {
 
     it('invalid order amount', () => {
       const signData = {
-        type: SIGN_TYPE.CREATE_ORDER,
         data: { ...data, amount: '10' },
+        type: SIGN_TYPE.CREATE_ORDER,
       } as any;
 
       try {
@@ -101,8 +101,8 @@ describe('Check validators', () => {
 
     it('valid transfer', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -110,8 +110,8 @@ describe('Check validators', () => {
 
     it('valid transfer bytes', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, transfers: [2, 15, 40, 20] },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -119,8 +119,8 @@ describe('Check validators', () => {
 
     it('valid transfer UInt8 bytes', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, transfers: new Uint8Array([2, 15, 40, 20]) },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -128,8 +128,8 @@ describe('Check validators', () => {
 
     it('invalid transfer amount', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, amount: '' },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       try {
@@ -145,8 +145,8 @@ describe('Check validators', () => {
 
     it('invalid transfer fee', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, fee: '' },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       try {
@@ -162,8 +162,8 @@ describe('Check validators', () => {
 
     it('invalid transfer attachment', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, attachment: {} },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       try {
@@ -179,8 +179,8 @@ describe('Check validators', () => {
 
     it('invalid transfer recipient', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, recipient: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       try {
@@ -196,8 +196,8 @@ describe('Check validators', () => {
 
     it('invalid transfer timestamp', () => {
       const signData = {
-        type: SIGN_TYPE.TRANSFER,
         data: { ...data, timestamp: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' },
+        type: SIGN_TYPE.TRANSFER,
       } as any;
 
       try {
@@ -216,15 +216,15 @@ describe('Check validators', () => {
     const data = {
       amount: Money.fromTokens(1, testAsset),
       fee: Money.fromTokens(0.0001, testAsset),
-      transfers: [{ amount: '1', recipient: 'test1' }],
-      totalAmount: new Money(1, testAsset),
       timestamp: Date.now(),
+      totalAmount: new Money(1, testAsset),
+      transfers: [{ amount: '1', recipient: 'test1' }],
     };
 
     it('valid mass transfer', () => {
       const signData = {
-        type: SIGN_TYPE.MASS_TRANSFER,
         data: { ...data },
+        type: SIGN_TYPE.MASS_TRANSFER,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -232,8 +232,8 @@ describe('Check validators', () => {
 
     it('mass transfer invalid transfers required', () => {
       const signData = {
-        type: SIGN_TYPE.MASS_TRANSFER,
         data: { ...data, transfers: null },
+        type: SIGN_TYPE.MASS_TRANSFER,
       } as any;
 
       try {
@@ -249,8 +249,8 @@ describe('Check validators', () => {
 
     it('mass transfer invalid transfers type', () => {
       const signData = {
-        type: SIGN_TYPE.MASS_TRANSFER,
         data: { ...data, transfers: {} },
+        type: SIGN_TYPE.MASS_TRANSFER,
       } as any;
 
       try {
@@ -266,7 +266,6 @@ describe('Check validators', () => {
 
     it('mass transfer invalid transfers address and amount', () => {
       const signData = {
-        type: SIGN_TYPE.MASS_TRANSFER,
         data: {
           ...data,
           transfers: [
@@ -274,6 +273,7 @@ describe('Check validators', () => {
             { amount: '1', recipient: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' },
           ],
         },
+        type: SIGN_TYPE.MASS_TRANSFER,
       } as any;
 
       try {
@@ -300,18 +300,18 @@ describe('Check validators', () => {
 
   describe('check issue validations', () => {
     const data = {
-      name: 'test',
-      fee: Money.fromTokens(1, testAsset),
       description: '',
-      quantity: 100000,
+      fee: Money.fromTokens(1, testAsset),
+      name: 'test',
       precision: 7,
+      quantity: 100000,
       reissuable: true,
     };
 
     it('issue no script valid', () => {
       const signData = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -319,9 +319,9 @@ describe('Check validators', () => {
 
     it('issue has script valid', () => {
       const signData = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data },
         script: 'base64:AbCd',
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -329,8 +329,8 @@ describe('Check validators', () => {
 
     it('issue invalid name', () => {
       const signData = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, name: 'P' },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -344,8 +344,8 @@ describe('Check validators', () => {
       }
 
       const signData2 = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, name: 'японамама' },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -360,8 +360,8 @@ describe('Check validators', () => {
 
     it('issue invalid description', () => {
       const signData = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, description: {} },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -377,8 +377,8 @@ describe('Check validators', () => {
       const desc = new Array(1002).join('T');
 
       const signData2 = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, description: desc },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -394,8 +394,8 @@ describe('Check validators', () => {
 
     it('issue invalid precision', () => {
       const signData = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, precision: -1 },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -409,8 +409,8 @@ describe('Check validators', () => {
       }
 
       const signData2 = {
-        type: SIGN_TYPE.ISSUE,
         data: { ...data, precision: '10' },
+        type: SIGN_TYPE.ISSUE,
       } as any;
 
       try {
@@ -427,19 +427,19 @@ describe('Check validators', () => {
 
   describe('check data validations', () => {
     const data = {
-      fee: Money.fromTokens(0.003, testAsset),
       data: [
-        { key: 'string', value: 'testVal', type: 'string' },
-        { key: 'binary', value: 'base64:AbCd', type: 'binary' },
-        { key: 'integer', value: '20', type: 'integer' },
-        { key: 'boolean', value: false, type: 'boolean' },
+        { key: 'string', type: 'string', value: 'testVal' },
+        { key: 'binary', type: 'binary', value: 'base64:AbCd' },
+        { key: 'integer', type: 'integer', value: '20' },
+        { key: 'boolean', type: 'boolean', value: false },
       ],
+      fee: Money.fromTokens(0.003, testAsset),
     };
 
     it('valid data', () => {
       const signData = {
-        type: SIGN_TYPE.DATA,
         data: { ...data },
+        type: SIGN_TYPE.DATA,
       } as any;
 
       expect((() => !!adapter.makeSignable(signData))()).toBe(true);
@@ -447,8 +447,8 @@ describe('Check validators', () => {
 
     it('invalid data', () => {
       const signData = {
-        type: SIGN_TYPE.DATA,
         data: { ...data, data: {} },
+        type: SIGN_TYPE.DATA,
       } as any;
 
       try {
@@ -464,11 +464,11 @@ describe('Check validators', () => {
 
     it('invalid data binary', () => {
       const signData = {
-        type: SIGN_TYPE.DATA,
         data: {
           ...data,
-          data: [{ key: 'binary', value: 'AbCd', type: 'binary' }],
+          data: [{ key: 'binary', type: 'binary', value: 'AbCd' }],
         },
+        type: SIGN_TYPE.DATA,
       } as any;
 
       try {
@@ -484,11 +484,11 @@ describe('Check validators', () => {
 
     it('invalid data binary no base64', () => {
       const signData = {
-        type: SIGN_TYPE.DATA,
         data: {
           ...data,
-          data: [{ key: 'binary', value: 'base64:AbC', type: 'binary' }],
+          data: [{ key: 'binary', type: 'binary', value: 'base64:AbC' }],
         },
+        type: SIGN_TYPE.DATA,
       } as any;
 
       try {
@@ -504,11 +504,11 @@ describe('Check validators', () => {
 
     it('invalid data type', () => {
       const signData = {
-        type: SIGN_TYPE.DATA,
         data: {
           ...data,
-          data: [{ key: 'custom', value: 'base64:AbCd', type: 'custom' }],
+          data: [{ key: 'custom', type: 'custom', value: 'base64:AbCd' }],
         },
+        type: SIGN_TYPE.DATA,
       } as any;
 
       try {

@@ -14,8 +14,8 @@ export default function (forSign: TSignData, networkByte: number): Uint8Array {
   const dataForBytes = {
     ...prepare.signSchema(prepareMap)(forSign.data as unknown as Record<string, unknown>),
     ...forSign.data,
-    version,
     type: forSign.type,
+    version,
   };
 
   const convert = SIGN_TYPES[forSign.type as SIGN_TYPE].toNode || null;

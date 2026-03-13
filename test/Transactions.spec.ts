@@ -6,12 +6,8 @@ const testSeed = 'some test seed words without money on mainnet';
 
 describe('Test invoke', () => {
   const tx = {
-    network: 'W',
-    name: 'script invocation',
     data: {
-      senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
       call: {
-        function: 'bet',
         args: [
           { type: 'list', value: [{ type: 'string', value: 'data' }] },
           {
@@ -23,21 +19,25 @@ describe('Test invoke', () => {
             value: '36',
           },
         ],
+        function: 'bet',
       },
       dApp: '3PNHLhiVUeZts17hzNfoM7MPJ8mcFGiBEMs',
-      feeAssetId: null,
       fee: Money.fromCoins(500000, DCCAsset),
+      feeAssetId: null,
       payment: [Money.fromCoins('1400500000', DCCAsset)],
+      senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+      timestamp: 1559291920421,
       type: 16,
       version: 1,
-      timestamp: 1559291920421,
     },
+    name: 'script invocation',
+    network: 'W',
   };
   it('Args List', () => {
     const adapter = new SeedAdapter(testSeed, tx.network);
     const signable = adapter.makeSignable({
-      type: tx.data.type,
       data: { ...tx.data } as any,
+      type: tx.data.type,
     } as any);
 
     return signable.getSignature().then((signature) => {

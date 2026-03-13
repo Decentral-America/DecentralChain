@@ -22,8 +22,8 @@ describe('PrivateKeyAdapter - extended tests', () => {
     const encrypted = seedUtils.Seed.encryptSeedPhrase(testPrivateKey, password, 5000);
     const user = {
       encryptedPrivateKey: encrypted,
-      password,
       encryptionRounds: 5000,
+      password,
     };
     const adapter = new PrivateKeyAdapter(user, 'W');
     expect(adapter.isDestroyed()).toBe(false);
@@ -33,7 +33,7 @@ describe('PrivateKeyAdapter - extended tests', () => {
     // When encryptedPrivateKey is empty, decryptSeedPhrase gets ''
     // This will likely produce an invalid key, but should not crash constructing
     try {
-      const user = { encryptedPrivateKey: '', password: 'test', encryptionRounds: 5000 };
+      const user = { encryptedPrivateKey: '', encryptionRounds: 5000, password: 'test' };
       new PrivateKeyAdapter(user, 'W');
     } catch {
       // Expected - empty key can't generate valid key pair
