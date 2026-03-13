@@ -10,7 +10,7 @@ describe('Node interaction utility functions', () => {
   vi.setConfig({ testTimeout: 60000 });
   it('should send tx to node', async () => {
     const dataParams = {
-      version: 1,
+      chainId: chainId,
       data: [
         {
           key: 'oneTwo',
@@ -26,7 +26,7 @@ describe('Node interaction utility functions', () => {
         },
       ],
       timestamp: 100000,
-      chainId: chainId,
+      version: 1,
     };
     const result = data(dataParams, 'seed seed');
 

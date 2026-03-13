@@ -17,18 +17,18 @@ import {
 } from './validators';
 
 const exchangeScheme = {
-  type: isEq(TRANSACTION_TYPE.EXCHANGE),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2, 3]),
+  amount: isNaturalNumberLike,
+  buyMatcherFee: isNaturalNumberOrZeroLike,
+  fee: isNaturalNumberLike,
   order1: validatePipe(isRequired(true), orderValidator),
   order2: validatePipe(isRequired(true), orderValidator),
-  amount: isNaturalNumberLike,
   price: isNaturalNumberLike,
-  buyMatcherFee: isNaturalNumberOrZeroLike,
-  sellMatcherFee: isNaturalNumberOrZeroLike,
-  fee: isNaturalNumberLike,
-  timestamp: isNumber,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  sellMatcherFee: isNaturalNumberOrZeroLike,
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.EXCHANGE),
+  version: orEq([undefined, 1, 2, 3]),
 };
 
 export const exchangeValidator = validateByShema(exchangeScheme, getError);

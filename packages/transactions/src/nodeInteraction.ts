@@ -41,8 +41,8 @@ export interface INodeRequestOptions {
 }
 
 const DEFAULT_NODE_REQUEST_OPTIONS = {
-  timeout: 120000,
   apiBase: 'https://mainnet-node.decentralchain.io/',
+  timeout: 120000,
 };
 
 export const currentHeight = async (apiBase: string): Promise<number> => {
@@ -279,7 +279,12 @@ export async function accountData(
     }
   }
 
-  const data = await addresses_route.data(nodeUrl, address, { matches: match }, requestOptions);
+  const data = await addresses_route.data(
+    nodeUrl,
+    address,
+    match !== undefined ? { matches: match } : {},
+    requestOptions,
+  );
 
   const result: Record<string, DataTransactionEntry> = {};
   for (const item of data) {

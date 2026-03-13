@@ -162,6 +162,7 @@ export function makeTx<T extends TTransactionType>(
 /**
  * Makes transaction bytes from validated transaction
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: switch over 14 transaction types — inherent complexity
 export function makeTxBytes<T extends TTransactionType>(
   tx: TTxParamsWithType<T> & WithSender & { version: number },
 ): Uint8Array {

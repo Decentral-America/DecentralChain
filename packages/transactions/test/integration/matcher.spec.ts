@@ -13,13 +13,13 @@ describe('Matcher requests', () => {
     'should submit and cancel order',
     async () => {
       const oParams = {
-        orderType: 'buy' as const,
-        matcherPublicKey: MATCHER_PUBLIC_KEY,
-        price: 1000000000,
         amount: 10,
-        matcherFee: 1000000,
-        priceAsset: null,
         amountAsset: assetId,
+        matcherFee: 1000000,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        orderType: 'buy' as const,
+        price: 1000000000,
+        priceAsset: null,
       };
 
       const ord = order(oParams, MASTER_SEED);
@@ -42,13 +42,13 @@ describe('Matcher requests', () => {
     'should submit and cancel order',
     async () => {
       const oParams = {
-        orderType: 'buy' as const,
-        matcherPublicKey: MATCHER_PUBLIC_KEY,
-        price: 1000000000,
         amount: 10,
-        matcherFee: 1000000,
-        priceAsset: null,
         amountAsset: assetId,
+        matcherFee: 1000000,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        orderType: 'buy' as const,
+        price: 1000000000,
+        priceAsset: null,
         version: 4,
       };
 
@@ -67,13 +67,13 @@ describe('Matcher requests', () => {
     'should submit and cancel market order',
     async () => {
       const oParams = {
-        orderType: 'buy' as const,
-        matcherPublicKey: MATCHER_PUBLIC_KEY,
-        price: 100000000,
         amount: 10,
-        matcherFee: 1000000,
-        priceAsset: null,
         amountAsset: assetId,
+        matcherFee: 1000000,
+        matcherPublicKey: MATCHER_PUBLIC_KEY,
+        orderType: 'buy' as const,
+        price: 100000000,
+        priceAsset: null,
       };
 
       const ord = order(oParams, MASTER_SEED);
@@ -97,28 +97,28 @@ describe('Matcher requests', () => {
     async () => {
       const order1 = order(
         {
+          amount: 1,
+          amountAsset: assetId,
+          matcherFee: 1000000,
           matcherPublicKey: MATCHER_PUBLIC_KEY,
           //matcherPublicKey: publicKey(seed),
           orderType: 'buy',
-          matcherFee: 1000000,
-          amountAsset: assetId,
-          priceAsset: null,
-          amount: 1,
           price: 100000000,
+          priceAsset: null,
         },
         MASTER_SEED,
       );
 
       const order2 = order(
         {
+          amount: 1,
+          amountAsset: assetId,
+          matcherFee: 1000000,
           matcherPublicKey: MATCHER_PUBLIC_KEY,
           //matcherPublicKey: publicKey(seed),
           orderType: 'sell',
-          matcherFee: 1000000,
-          amountAsset: assetId,
-          priceAsset: null,
-          amount: 1,
           price: 100000000,
+          priceAsset: null,
         },
         MASTER_SEED,
       );

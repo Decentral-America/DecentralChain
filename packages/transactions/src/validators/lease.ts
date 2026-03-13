@@ -14,15 +14,15 @@ import {
 } from './validators';
 
 const leaseScheme = {
+  amount: isNaturalNumberLike,
+  chainId: isNaturalNumberLike,
+  fee: isNaturalNumberLike,
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  recipient: isRecipient,
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
   type: isEq(TRANSACTION_TYPE.LEASE),
   version: orEq([undefined, 2, 3]),
-  senderPublicKey: isPublicKey,
-  recipient: isRecipient,
-  amount: isNaturalNumberLike,
-  fee: isNaturalNumberLike,
-  chainId: isNaturalNumberLike,
-  timestamp: isNumber,
-  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
 
 export const leaseValidator = validateByShema(leaseScheme, getError);

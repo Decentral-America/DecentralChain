@@ -39,20 +39,20 @@ export function issue(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: IssueTransaction & WithId & WithProofs = {
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    decimals: paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals,
+    description: paramsOrTx.description,
+    fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
+    id: '',
+    name: paramsOrTx.name,
+    proofs: paramsOrTx.proofs || [],
+    quantity: paramsOrTx.quantity,
+    reissuable: paramsOrTx.reissuable || false,
+    script: paramsOrTx.script == null ? null : (base64Prefix(paramsOrTx.script) as string),
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    name: paramsOrTx.name,
-    description: paramsOrTx.description,
-    quantity: paramsOrTx.quantity,
-    script: paramsOrTx.script == null ? null : (base64Prefix(paramsOrTx.script) as string),
-    decimals: paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals,
-    reissuable: paramsOrTx.reissuable || false,
-    fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    proofs: paramsOrTx.proofs || [],
-    id: '',
   };
 
   validate.issue(tx as unknown as Record<string, unknown>);

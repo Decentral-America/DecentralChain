@@ -13,39 +13,39 @@ const seed2 =
 describe('exchange', () => {
   it('Should build exchange tx', () => {
     const order1 = {
-      version: 4,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 4,
     };
 
     const order2 = {
-      version: 4,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 4,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 'T',
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
-      sellMatcherFee: 100,
-      chainId: 'T',
-      fee: 700000,
-      version: 3,
       proofs: [],
+      sellMatcherFee: 100,
+      version: 3,
     };
 
     // @ts-expect-error
@@ -54,37 +54,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver1-1-1', () => {
     const order1 = {
-      version: 1,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const order2 = {
-      version: 1,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 'T',
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 'T',
-      fee: 700000,
       version: 1,
     };
 
@@ -94,37 +94,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver2-1-1', () => {
     const order1 = {
-      version: 1,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const order2 = {
-      version: 1,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 2,
     };
 
@@ -134,37 +134,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver2-1-2', () => {
     const order1 = {
-      version: 1,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const order2 = {
-      version: 2,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 2,
     };
 
@@ -174,37 +174,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver2-2-2', () => {
     const order1 = {
-      version: 2,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const order2 = {
-      version: 2,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 2,
     };
 
@@ -218,37 +218,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-4-4', () => {
     const order1 = {
-      version: 4,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 4,
     };
 
     const order2 = {
-      version: 4,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 4,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -258,37 +258,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-1-1', () => {
     const order1 = {
-      version: 1,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const order2 = {
-      version: 1,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -298,37 +298,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-1-2', () => {
     const order1 = {
-      version: 1,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
     };
 
     const order2 = {
-      version: 2,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -338,37 +338,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-2-2', () => {
     const order1 = {
-      version: 2,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const order2 = {
-      version: 2,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -378,37 +378,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-2-3', () => {
     const order1 = {
-      version: 2,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
     };
 
     const order2 = {
-      version: 3,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -418,37 +418,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-3-3', () => {
     const order1 = {
-      version: 3,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
     };
 
     const order2 = {
-      version: 3,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 
@@ -458,37 +458,37 @@ describe('exchange', () => {
 
   it('Should build exchange tx ver3-3-4', async () => {
     const order1 = {
-      version: 3,
       amount: 100,
-      price: 500000000,
-      matcherFee: 100,
       amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
+      matcherFee: 100,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
     };
 
     const order2 = {
-      version: 4,
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
       matcherFee: 100,
       matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
-      amount: 100,
-      price: 500000000,
-      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
-      priceAsset: null,
       matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
       orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 4,
     };
 
     const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
       price: 500000000,
-      amount: 100,
-      buyMatcherFee: 100,
       sellMatcherFee: 100,
-      chainId: 84,
-      fee: 700000,
       version: 3,
     };
 

@@ -61,10 +61,10 @@ describe('setAssetScript', () => {
 
   it('Should handle incorrect keys in seedObject', () => {
     const txParams = {
-      script: compiledContract,
       assetId: 'syXBywr2HVY7wxqkaci1jKY73KMpoLh46cp1peJAZNJ',
+      script: compiledContract,
     };
-    const signedTx = setAssetScript(txParams, { asd1: seed, '2': seed2 } as any);
+    const signedTx = setAssetScript(txParams, { '2': seed2, asd1: seed } as any);
 
     expect(signedTx.proofs[0]).toEqual('');
     expect(signedTx.proofs[1]).toEqual('');
@@ -87,7 +87,7 @@ describe('setAssetScript', () => {
     const txParams = { ...setAssetScriptMinimalParams };
     const signedTx = setAssetScript(txParams, seed);
 
-    expect(signedTx).toMatchObject({ ...setAssetScriptMinimalParams, fee: 100000000, chainId: 76 });
+    expect(signedTx).toMatchObject({ ...setAssetScriptMinimalParams, chainId: 76, fee: 100000000 });
   });
 
   it('Should add base64 prefix for script when create setAssetScript tz', () => {
@@ -101,7 +101,7 @@ describe('setAssetScript', () => {
 describe('serialize/deserialize SetAssetScript proto tx', () => {
   Object.entries(setAssetScriptTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -109,7 +109,7 @@ describe('serialize/deserialize SetAssetScript proto tx', () => {
 describe('serialize/deserialize SetAssetScript binary tx', () => {
   Object.entries(setAssetScriptBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

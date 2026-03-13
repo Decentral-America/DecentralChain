@@ -38,8 +38,8 @@ describe('Assets', () => {
     const mtt = massTransfer(
       {
         transfers: [
-          { recipient: address(account1, CHAIN_ID), amount: 5.016 * wvs },
-          { recipient: address(account2, CHAIN_ID), amount: 0.1 * wvs },
+          { amount: 5.016 * wvs, recipient: address(account1, CHAIN_ID) },
+          { amount: 0.1 * wvs, recipient: address(account2, CHAIN_ID) },
         ],
       },
       MASTER_SEED,
@@ -55,12 +55,12 @@ describe('Assets', () => {
       'Should ISSUE new token',
       async () => {
         const txParams: IIssueParams = {
-          name: 'Test token',
-          description: 'no description',
-          decimals: 3,
           additionalFee: 400000,
-          quantity: 1000,
           chainId: CHAIN_ID,
+          decimals: 3,
+          description: 'no description',
+          name: 'Test token',
+          quantity: 1000,
           reissuable: true,
         };
 
@@ -75,10 +75,10 @@ describe('Assets', () => {
 
     it('Should ReIssue token', async () => {
       const txParams: IReissueParams = {
-        reissuable: true,
         assetId,
-        quantity: 1000,
         chainId: CHAIN_ID,
+        quantity: 1000,
+        reissuable: true,
       };
       const tx = reissue(txParams, account1);
       const resp = await broadcast(tx, API_BASE);
@@ -87,8 +87,8 @@ describe('Assets', () => {
 
     it('Should BURN token', async () => {
       const burnParams: IBurnParams = {
-        assetId,
         amount: 500,
+        assetId,
         chainId: CHAIN_ID,
       };
       const burnTx = burn(burnParams, account1);
@@ -100,8 +100,8 @@ describe('Assets', () => {
       const transferParams: ITransferParams = {
         amount: '500',
         assetId,
-        recipient: address2,
         attachment: '3MyAGEBuZGDKZDzYn6sbh2noqk9uYHy4kjw',
+        recipient: address2,
       };
 
       const tx = transfer(transferParams, account1);
@@ -115,12 +115,12 @@ describe('Assets', () => {
         assetId,
         transfers: [
           {
-            recipient: address1,
             amount: '100',
+            recipient: address1,
           },
           {
-            recipient: address2,
             amount: '100',
+            recipient: address2,
           },
         ],
       };
@@ -142,23 +142,23 @@ describe('Assets', () => {
         const script =
           'AQQAAAAHJG1hdGNoMAUAAAACdHgDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAAD0J1cm5UcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAcGPmRSDA==';
         const txParams: IIssueParams = {
-          name: 'scriptedToken',
-          description: 'no description',
+          chainId: CHAIN_ID,
           decimals: 3,
+          description: 'no description',
+          name: 'scriptedToken',
           quantity: 10000,
           reissuable: true,
-          chainId: CHAIN_ID,
           script,
         };
         const tx = issue(txParams, account1);
         const resp = await broadcast(tx, API_BASE);
         expect(resp.type).toEqual(3);
         assetId = tx.id;
-        await waitForTx(assetId, { timeout: TIMEOUT, apiBase: API_BASE });
+        await waitForTx(assetId, { apiBase: API_BASE, timeout: TIMEOUT });
 
         const burnParams: IBurnParams = {
-          assetId,
           amount: 1000,
+          assetId,
           chainId: CHAIN_ID,
         };
         const burnTx = burn(burnParams, account1);
@@ -181,13 +181,13 @@ describe('Assets', () => {
         const tx = setAssetScript(txParams, account1);
         const resp = await broadcast(tx, API_BASE);
         expect(resp.type).toEqual(15);
-        await waitForTx(tx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+        await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
 
         const burnParams: IBurnParams = {
-          assetId,
-          amount: '1000',
-          chainId: CHAIN_ID,
           additionalFee: 400000,
+          amount: '1000',
+          assetId,
+          chainId: CHAIN_ID,
         };
         const burnTx = burn(burnParams, account1);
         const burnResp = await broadcast(burnTx, API_BASE);
@@ -204,9 +204,9 @@ describe('Assets', () => {
         const tx = issue(
           {
             ...issueMinimalParams,
-            quantity: 1,
-            decimals: 0,
             chainId: CHAIN_ID,
+            decimals: 0,
+            quantity: 1,
           },
           account1,
         );
@@ -228,9 +228,9 @@ describe('Assets', () => {
         const aliasTx = alias({ alias: aliasStr, chainId: CHAIN_ID }, account1);
         const resp = await broadcast(aliasTx, API_BASE);
         expect(resp.type).toEqual(10);
-        await waitForTx(aliasTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+        await waitForTx(aliasTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
         const ttx = transfer(
-          { recipient: `alias:${CHAIN_ID}:${aliasStr}`, amount: 1000 },
+          { amount: 1000, recipient: `alias:${CHAIN_ID}:${aliasStr}` },
           account1,
         );
         const ttxResp = await broadcast(ttx, API_BASE);
@@ -246,11 +246,11 @@ describe('Assets', () => {
           // ISSUE ASSET
           const account2 = 'exchange test';
           const txParams: IIssueParams = {
-            name: 'Test token',
+            chainId: CHAIN_ID,
             description: 'no description',
+            name: 'Test token',
             //decimals: 3,
             quantity: 100000000000,
-            chainId: CHAIN_ID,
             reissuable: true,
           };
 
@@ -262,7 +262,7 @@ describe('Assets', () => {
           // await broadcast(transferTx, API_BASE)
 
           //WAIT BOTH TX TO COMPLETE
-          await waitForTx(issueTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+          await waitForTx(issueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
           // await waitForTx(transferTx.id, { timeout: TIMEOUT, apiBase: API_BASE })
           /////////////////////////
 
@@ -270,28 +270,28 @@ describe('Assets', () => {
 
           const order1 = order(
             {
+              amount: 1,
+              amountAsset: assetId,
+              matcherFee: 300000,
               //matcherPublicKey,
               matcherPublicKey: publicKey(account1),
               orderType: 'buy',
-              matcherFee: 300000,
-              amountAsset: assetId,
-              priceAsset: null,
-              amount: 1,
               price: 10000,
+              priceAsset: null,
             },
             account2,
           );
 
           const order2 = order(
             {
+              amount: 1,
+              amountAsset: assetId,
+              matcherFee: 300000,
               //matcherPublicKey,
               matcherPublicKey: publicKey(account1),
               orderType: 'sell',
-              matcherFee: 300000,
-              amountAsset: assetId,
-              priceAsset: null,
-              amount: 1,
               price: 10000,
+              priceAsset: null,
             },
             account1,
           );
@@ -301,19 +301,19 @@ describe('Assets', () => {
 
           const exchangeTx = exchange(
             {
-              type: 7,
+              amount: 1,
+              buyMatcherFee: order1.matcherFee,
               chainId: CHAIN_ID.charCodeAt(0),
-              version: 2,
+              fee: 300000,
               order1,
               order2,
               price: 10000,
-              amount: 1,
-              buyMatcherFee: order1.matcherFee,
-              sellMatcherFee: order2.matcherFee,
-              timestamp: Date.now(),
               proofs: [],
-              fee: 300000,
+              sellMatcherFee: order2.matcherFee,
               senderPublicKey: publicKey(account1),
+              timestamp: Date.now(),
+              type: 7,
+              version: 2,
             },
             account1,
           );

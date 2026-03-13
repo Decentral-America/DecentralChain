@@ -37,16 +37,16 @@ export function sponsorship(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: SponsorshipTransaction & WithId & WithProofs = {
+    assetId: paramsOrTx.assetId,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 1e5),
+    id: '',
+    minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,
-    assetId: paramsOrTx.assetId,
-    fee: fee(paramsOrTx, 1e5),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    proofs: paramsOrTx.proofs || [],
-    id: '',
   };
 
   validate.sponsorship(tx as unknown as Record<string, unknown>);

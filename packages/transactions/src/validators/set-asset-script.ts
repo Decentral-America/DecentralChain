@@ -15,15 +15,15 @@ import {
 } from './validators';
 
 const setAssetScriptScheme = {
-  type: isEq(TRANSACTION_TYPE.SET_ASSET_SCRIPT),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
   assetId: isAssetId,
   chainId: isNaturalNumberLike,
   fee: isNaturalNumberLike,
-  timestamp: isNumber,
-  script: isBase64,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  script: isBase64,
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.SET_ASSET_SCRIPT),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const setAssetScriptValidator = validateByShema(setAssetScriptScheme, getError);

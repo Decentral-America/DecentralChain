@@ -36,17 +36,17 @@ export function updateAssetInfo(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: UpdateAssetInfoTransaction & WithId & WithProofs = {
+    assetId: paramsOrTx.assetId,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    description: paramsOrTx.description,
+    fee: fee(paramsOrTx, 100000),
+    id: '',
+    name: paramsOrTx.name,
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    name: paramsOrTx.name,
-    description: paramsOrTx.description,
-    assetId: paramsOrTx.assetId,
-    fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    id: '',
   };
 
   validate.updateAssetInfo(tx as unknown as Record<string, unknown>);

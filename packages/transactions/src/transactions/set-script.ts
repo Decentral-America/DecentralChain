@@ -50,15 +50,15 @@ export function setScript(
     scriptBytes != null ? Math.max(100000, Math.ceil(scriptBytes.length / 1024) * 100000) : 500000;
 
   const tx: SetScriptTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
     chainId: networkByte(paramsOrTx.chainId, 76),
     fee: fee(paramsOrTx, computedFee),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
     id: '',
+    proofs: paramsOrTx.proofs || [],
     script: base64Prefix(paramsOrTx.script),
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.setScript(tx as unknown as Record<string, unknown>);

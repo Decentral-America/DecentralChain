@@ -45,19 +45,19 @@ export function transfer(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: TransferTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
-    assetId: normalizeAssetId(paramsOrTx.assetId ?? null),
-    recipient: paramsOrTx.recipient,
     amount: paramsOrTx.amount,
+    assetId: normalizeAssetId(paramsOrTx.assetId ?? null),
     attachment: paramsOrTx.attachment || '',
+    chainId: networkByte(paramsOrTx.chainId, chainIdFromRecipient(paramsOrTx.recipient)),
     fee: fee(paramsOrTx, 100000),
     feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
-    chainId: networkByte(paramsOrTx.chainId, chainIdFromRecipient(paramsOrTx.recipient)),
     id: '',
+    proofs: paramsOrTx.proofs || [],
+    recipient: paramsOrTx.recipient,
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.transfer(tx as unknown as Record<string, unknown>);

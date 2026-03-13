@@ -14,14 +14,14 @@ import {
 } from './validators';
 
 const cancelLeaseScheme = {
-  type: isEq(TRANSACTION_TYPE.CANCEL_LEASE),
-  senderPublicKey: isPublicKey,
-  version: orEq([undefined, 2, 3]),
-  leaseId: isAssetId,
   chainId: isNaturalNumberLike,
   fee: isNaturalNumberLike,
-  timestamp: isNumber,
+  leaseId: isAssetId,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
+  type: isEq(TRANSACTION_TYPE.CANCEL_LEASE),
+  version: orEq([undefined, 2, 3]),
 };
 
 export const cancelLeaseValidator = validateByShema(cancelLeaseScheme, getError);

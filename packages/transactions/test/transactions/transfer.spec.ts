@@ -39,8 +39,8 @@ describe('transfer', () => {
   });
 
   it('Should build with custom fee and amount', () => {
-    const tx = transfer({ ...transferMinimalParams, fee: 12345, amount: 666 }, stringSeed);
-    expect(tx).toMatchObject({ ...transferMinimalParams, fee: 12345, amount: 666 });
+    const tx = transfer({ ...transferMinimalParams, amount: 666, fee: 12345 }, stringSeed);
+    expect(tx).toMatchObject({ ...transferMinimalParams, amount: 666, fee: 12345 });
   });
 
   it('Should build with correct feeAssetId', () => {
@@ -83,7 +83,7 @@ describe('transfer', () => {
 describe('serialize/deserialize transfer tx', () => {
   Object.entries(transferTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -91,7 +91,7 @@ describe('serialize/deserialize transfer tx', () => {
 describe('serialize/deserialize transfer binary tx', () => {
   Object.entries(transferBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

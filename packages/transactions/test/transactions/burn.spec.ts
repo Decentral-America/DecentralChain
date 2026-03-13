@@ -15,7 +15,7 @@ describe('burn', () => {
 
   it('should build from minimal set of params', () => {
     const tx = burn({ ...burnMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...burnMinimalParams, fee: 100000, chainId: 76, version: 3 });
+    expect(tx).toMatchObject({ ...burnMinimalParams, chainId: 76, fee: 100000, version: 3 });
   });
 
   it('Should get correct signature', () => {
@@ -86,7 +86,7 @@ describe('burn', () => {
 describe('serialize/deserialize burn tx', () => {
   Object.entries(burnTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -94,7 +94,7 @@ describe('serialize/deserialize burn tx', () => {
 describe('serialize/deserialize binary burn tx', () => {
   Object.entries(burnBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });

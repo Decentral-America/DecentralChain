@@ -24,8 +24,8 @@ describe('Smart features', () => {
     const mtt = massTransfer(
       {
         transfers: [
-          { recipient: address(account1, CHAIN_ID), amount: 0.1 * wvs },
-          { recipient: address(account2, CHAIN_ID), amount: 1100000 },
+          { amount: 0.1 * wvs, recipient: address(account1, CHAIN_ID) },
+          { amount: 1100000, recipient: address(account2, CHAIN_ID) },
         ],
       },
       MASTER_SEED,
@@ -116,18 +116,18 @@ describe('Smart features', () => {
         const resp = await broadcast(tx, API_BASE);
         expect(resp.type).toEqual(13);
 
-        await waitForTx(tx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+        await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
 
         const removeTxParams: ISetScriptParams = {
-          senderPublicKey: publicKey(account1),
+          additionalFee: 400000,
           chainId: CHAIN_ID,
           script: null,
-          additionalFee: 400000,
+          senderPublicKey: publicKey(account1),
         };
 
         const removeTx = setScript(removeTxParams, [null, 'bob', 'cooper']);
         const resp2 = await broadcast(removeTx, API_BASE);
-        await waitForTx(removeTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+        await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
         expect(resp2.type).toEqual(13);
       },
       TIMEOUT,
@@ -159,7 +159,7 @@ describe('Smart features', () => {
           };
           const tx = setScript(txParams, account2);
           await broadcast(tx, API_BASE);
-          await waitForTx(tx.id, { timeout: TIMEOUT, apiBase: API_BASE });
+          await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
         } catch (e) {
           console.error(e);
           throw e;
@@ -175,12 +175,12 @@ describe('Smart features', () => {
 
         const invokeTx = invokeScript(
           {
+            call: {
+              args: [{ type: 'integer', value: 10000 }],
+              function: 'foo',
+            },
             chainId: CHAIN_ID,
             dApp: dappAddress,
-            call: {
-              function: 'foo',
-              args: [{ type: 'integer', value: 10000 }],
-            },
             fee: 900000,
           },
           account1,

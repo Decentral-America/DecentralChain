@@ -26,12 +26,12 @@ const { BASE58_STRING, BASE64_STRING, BOOL, BYTE, BYTES, COUNT, LEN, LONG, SHORT
   serializePrimitives;
 
 const typeMap = {
+  _: ['binary', 2, LEN(SHORT)(BYTES)] as const,
+  binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s)] as const,
+  boolean: ['boolean', 1, BOOL] as const,
   integer: ['integer', 0, LONG] as const,
   number: ['integer', 0, LONG] as const,
-  boolean: ['boolean', 1, BOOL] as const,
   string: ['string', 3, LEN(SHORT)(STRING)] as const,
-  binary: ['binary', 2, (s: string) => LEN(SHORT)(BASE64_STRING)(s)] as const,
-  _: ['binary', 2, LEN(SHORT)(BYTES)] as const,
 };
 
 const mapType = <T>(
@@ -94,8 +94,8 @@ export function data(
         const type = mapType(x.value, x.type)[0];
 
         return {
-          type,
           key: x.key,
+          type,
           value: convertValue(type, x.value, 'not defined'),
         };
       }
@@ -131,15 +131,15 @@ export function data(
   }
 
   const tx: DataTransaction & WithId & WithProofs = {
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    data: dataEntriesWithTypes as DataTransactionEntry[],
+    fee: fee(paramsOrTx, computedFee),
+    id: '',
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: _timestamp,
     type,
     version,
-    senderPublicKey,
-    fee: fee(paramsOrTx, computedFee),
-    timestamp: _timestamp,
-    proofs: paramsOrTx.proofs || [],
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    id: '',
-    data: dataEntriesWithTypes as DataTransactionEntry[],
   };
 
   validate.data(tx as unknown as Record<string, unknown>);

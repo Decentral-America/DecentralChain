@@ -22,9 +22,13 @@ import {
 } from './validators';
 
 const massTransferScheme = {
-  type: isEq(TRANSACTION_TYPE.MASS_TRANSFER),
+  assetId: isDccOrAssetId,
+  attachment: isAttachment,
+  chainId: isNaturalNumberLike,
+  fee: isNaturalNumberLike,
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
   senderPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2]),
+  timestamp: isNumber,
   transfers: validatePipe(
     isArray,
     pipe(prop('length'), gte(1)),
@@ -38,12 +42,8 @@ const massTransferScheme = {
         ),
       ),
   ),
-  assetId: isDccOrAssetId,
-  attachment: isAttachment,
-  fee: isNaturalNumberLike,
-  chainId: isNaturalNumberLike,
-  timestamp: isNumber,
-  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  type: isEq(TRANSACTION_TYPE.MASS_TRANSFER),
+  version: orEq([undefined, 1, 2]),
 };
 
 export const massTransferValidator = validateByShema(massTransferScheme, getError);

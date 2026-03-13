@@ -14,14 +14,14 @@ import {
 } from './validators';
 
 const aliasScheme = {
+  alias: isValidAliasName,
+  chainId: isNaturalNumberLike,
+  fee: isNaturalNumberLike,
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  senderPublicKey: isPublicKey,
+  timestamp: isNumber,
   type: isEq(TRANSACTION_TYPE.ALIAS),
   version: orEq([undefined, 2, 3]),
-  senderPublicKey: isPublicKey,
-  alias: isValidAliasName,
-  fee: isNaturalNumberLike,
-  chainId: isNaturalNumberLike,
-  timestamp: isNumber,
-  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
 };
 
 export const aliasValidator = validateByShema(aliasScheme, getError);

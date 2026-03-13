@@ -26,11 +26,11 @@ export function dccAuth(
   validate.dccAuth({ publicKey, timestamp });
 
   const rx = {
+    address: address({ publicKey }, chainId ?? 'L'),
     hash: '',
+    publicKey,
     signature: '',
     timestamp,
-    publicKey,
-    address: address({ publicKey }, chainId ?? 'L'),
   };
 
   const bytes = serializeDccAuthData(rx);

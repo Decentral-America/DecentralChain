@@ -48,20 +48,20 @@ export function massTransfer(
     throw new Error('Should contain at least one transfer');
 
   const tx: MassTransferTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
     assetId: normalizeAssetId(paramsOrTx.assetId ?? null),
-    transfers: paramsOrTx.transfers,
-    fee: fee(paramsOrTx, 100000 + Math.ceil(0.5 * paramsOrTx.transfers.length) * 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
     attachment: paramsOrTx.attachment || '',
-    proofs: paramsOrTx.proofs || [],
     chainId: networkByte(
       paramsOrTx.chainId,
       chainIdFromRecipient(paramsOrTx.transfers[0]?.recipient ?? ''),
     ),
+    fee: fee(paramsOrTx, 100000 + Math.ceil(0.5 * paramsOrTx.transfers.length) * 100000),
     id: '',
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    transfers: paramsOrTx.transfers,
+    type,
+    version,
   };
   validate.massTransfer(tx as unknown as Record<string, unknown>);
 

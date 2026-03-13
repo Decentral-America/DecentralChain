@@ -32,16 +32,16 @@ export function lease(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: LeaseTransaction & WithId & WithProofs = {
+    amount: paramsOrTx.amount,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 100000),
+    id: '',
+    proofs: paramsOrTx.proofs || [],
+    recipient: paramsOrTx.recipient,
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
-    senderPublicKey,
-    amount: paramsOrTx.amount,
-    recipient: paramsOrTx.recipient,
-    fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    id: '',
   };
 
   validate.lease(tx as unknown as Record<string, unknown>);

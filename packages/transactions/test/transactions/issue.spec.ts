@@ -20,9 +20,9 @@ describe('issue', () => {
     const tx = issue({ ...issueMinimalParams }, stringSeed);
     expect(tx).toMatchObject({
       ...issueMinimalParams,
+      chainId: 76,
       decimals: 8,
       fee: 100000000,
-      chainId: 76,
       reissuable: false,
     });
   });
@@ -30,7 +30,7 @@ describe('issue', () => {
   it('should create issue tx with max name length = 16 and max description length = 1000', () => {
     const descr = rndString(1000);
     const tx = issue(
-      { ...issueMinimalParams, name: 'this_is_16_bytes', description: descr },
+      { ...issueMinimalParams, description: descr, name: 'this_is_16_bytes' },
       stringSeed,
     );
     expect(tx.name).toEqual('this_is_16_bytes');
@@ -89,23 +89,23 @@ describe('issue', () => {
 
   it('should correctly set reissuable and decimals', () => {
     const tx = issue({ ...issueMinimalParams, decimals: 0, reissuable: true }, stringSeed);
-    expect(tx).toMatchObject({ decimals: 0, reissuable: true, fee: 100000000 });
+    expect(tx).toMatchObject({ decimals: 0, fee: 100000000, reissuable: true });
   });
 
   it('should set correct minimal fee for NFT token', () => {
     const tx = issue(
-      { ...issueMinimalParams, quantity: 1, decimals: 0, reissuable: false },
+      { ...issueMinimalParams, decimals: 0, quantity: 1, reissuable: false },
       stringSeed,
     );
-    expect(tx).toMatchObject({ quantity: 1, decimals: 0, reissuable: false, fee: 100000 });
+    expect(tx).toMatchObject({ decimals: 0, fee: 100000, quantity: 1, reissuable: false });
   });
 
   it('Should get correct signature of NFT token', () => {
     const tx = issue(
       {
         ...issueMinimalParams,
-        quantity: 1,
         decimals: 0,
+        quantity: 1,
       },
       stringSeed,
     );
@@ -147,7 +147,7 @@ describe('issue', () => {
 describe('serialize/deserialize issue tx', () => {
   Object.entries(issueTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -155,7 +155,7 @@ describe('serialize/deserialize issue tx', () => {
 describe('serialize/deserialize binary issue tx', () => {
   Object.entries(issueBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
