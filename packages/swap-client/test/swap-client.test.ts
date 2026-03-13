@@ -1,6 +1,18 @@
-import Long from 'long';
-import * as protobuf from 'protobufjs/minimal';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  RequestSchema,
+  Response_Error_CODES,
+  Response_ErrorSchema,
+  Response_Exchange_DataSchema,
+  type Response_Exchange_Transaction_Argument,
+  Response_Exchange_Transaction_Argument_ListSchema,
+  Response_Exchange_Transaction_ArgumentSchema,
+  Response_Exchange_Transaction_CallSchema,
+  Response_Exchange_TransactionSchema,
+  Response_ExchangeSchema,
+  ResponseSchema,
+} from '../src/gen/messages_pb.js';
 import {
   convertArg,
   type Subscriber,
@@ -10,10 +22,6 @@ import {
   type SwapClientResponse,
   type SwapParams,
 } from '../src/index';
-import { proto } from '../src/messages.proto.compiled';
-
-protobuf.util.Long = Long;
-protobuf.configure();
 
 // ---------------------------------------------------------------------------
 // WebSocket mock
@@ -93,7 +101,7 @@ function validSwapParams(overrides?: Partial<SwapParams>): SwapParams {
   };
 }
 
-/** Encode a proto.Response into an ArrayBuffer for simulation. */
+/** Encode a Response into an ArrayBuffer for simulation. */
 function encodeResponse(fields: {
   id: string;
   vendor?: string;
@@ -105,39 +113,44 @@ function encodeResponse(fields: {
     priceImpact?: number;
     dApp: string;
     fn: string;
-    args?: proto.Response.Exchange.Transaction.IArgument[];
+    args?: Response_Exchange_Transaction_Argument[];
   };
-  error?: { code: proto.Response.Error.CODES; message?: string };
+  error?: { code: Response_Error_CODES; message?: string };
 }): ArrayBuffer {
-  const exchange: proto.Response.IExchange = { vendor: fields.vendor ?? 'test-vendor' };
+  const exchange = create(Response_ExchangeSchema);
+  exchange.vendor = fields.vendor ?? 'test-vendor';
 
   if (fields.data) {
-    exchange.data = proto.Response.Exchange.Data.create({
-      amount: Long.fromNumber(fields.data.amount),
-      minReceived: Long.fromNumber(fields.data.minReceived),
-      originalAmount: Long.fromNumber(fields.data.originalAmount),
-      originalMinReceived: Long.fromNumber(fields.data.originalMinReceived),
-      priceImpact: fields.data.priceImpact ?? 0.01,
-      transaction: proto.Response.Exchange.Transaction.create({
-        dApp: fields.data.dApp,
-        call: proto.Response.Exchange.Transaction.Call.create({
-          function: fields.data.fn,
-          arguments: fields.data.args ?? [],
-        }),
-      }),
-    });
+    const tx = create(Response_Exchange_TransactionSchema);
+    tx.dApp = fields.data.dApp;
+    tx.call = create(Response_Exchange_Transaction_CallSchema);
+    tx.call.function = fields.data.fn;
+    tx.call.arguments = fields.data.args ?? [];
+
+    const data = create(Response_Exchange_DataSchema);
+    data.amount = BigInt(fields.data.amount);
+    data.minReceived = BigInt(fields.data.minReceived);
+    data.originalAmount = BigInt(fields.data.originalAmount);
+    data.originalMinReceived = BigInt(fields.data.originalMinReceived);
+    data.priceImpact = fields.data.priceImpact ?? 0.01;
+    data.transaction = tx;
+
+    exchange.result = { case: 'data', value: data };
   }
 
   if (fields.error) {
-    exchange.error = proto.Response.Error.create({
-      code: fields.error.code,
-      message: fields.error.message ?? '',
-    });
+    const error = create(Response_ErrorSchema);
+    error.code = fields.error.code;
+    error.message = fields.error.message ?? '';
+    exchange.result = { case: 'error', value: error };
   }
 
-  const msg = proto.Response.create({ id: fields.id, exchange });
-  const encoded = proto.Response.encode(msg).finish();
-  return new Uint8Array(encoded).buffer as ArrayBuffer;
+  const msg = create(ResponseSchema);
+  msg.id = fields.id;
+  msg.payload = { case: 'exchange', value: exchange };
+
+  const bytes = toBinary(ResponseSchema, msg);
+  return bytes.buffer as ArrayBuffer;
 }
 
 // ---------------------------------------------------------------------------
@@ -472,8 +485,8 @@ describe('message handling', () => {
     // Decode the sent message to get the request ID
     const sentBytes = ws.sentMessages[0];
     if (!sentBytes) throw new Error('No message sent');
-    const decoded = proto.Request.decode(sentBytes);
-    const requestId = decoded.exchange?.id ?? '';
+    const decoded = fromBinary(RequestSchema, sentBytes);
+    const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
     return { client, ws, onData, onError, requestId, params };
   }
@@ -520,7 +533,7 @@ describe('message handling', () => {
 
     const buf = encodeResponse({
       id: requestId,
-      error: { code: proto.Response.Error.CODES.INVALID_ASSET_PAIR },
+      error: { code: Response_Error_CODES.INVALID_ASSET_PAIR },
     });
 
     ws.simulateMessage(buf);
@@ -560,12 +573,14 @@ describe('message handling', () => {
     const { client, ws, onData, requestId } = setupConnectedClient();
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    // Encode a response with exchange but null data (malformed)
-    const exchange: proto.Response.IExchange = { vendor: 'test' };
-    // We need to trick the discriminator — create a response with data: null
-    const msg = proto.Response.create({ id: requestId, exchange });
-    const encoded = proto.Response.encode(msg).finish();
-    const buf = new Uint8Array(encoded).buffer as ArrayBuffer;
+    // Encode a response with exchange but no data/error result (malformed)
+    const exchange = create(Response_ExchangeSchema);
+    exchange.vendor = 'test';
+    const msg = create(ResponseSchema);
+    msg.id = requestId;
+    msg.payload = { case: 'exchange', value: exchange };
+    const encoded = toBinary(ResponseSchema, msg);
+    const buf = encoded.buffer as ArrayBuffer;
 
     ws.simulateMessage(buf);
 
@@ -589,8 +604,8 @@ describe('message handling', () => {
 
     const sentMsg = ws.sentMessages[0];
     if (!sentMsg) throw new Error('No message sent');
-    const decoded = proto.Request.decode(sentMsg);
-    const requestId = decoded.exchange?.id ?? '';
+    const decoded = fromBinary(RequestSchema, sentMsg);
+    const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
     const buf = encodeResponse({
       id: requestId,
@@ -629,8 +644,8 @@ describe('message handling', () => {
 
     const firstMsg = ws.sentMessages[0];
     if (!firstMsg) throw new Error('No message sent');
-    const decoded = proto.Request.decode(firstMsg);
-    const requestId = decoded.exchange?.id ?? '';
+    const decoded = fromBinary(RequestSchema, firstMsg);
+    const requestId = decoded.payload.case === 'exchange' ? decoded.payload.value.id : '';
 
     const buf = encodeResponse({
       id: requestId,
@@ -659,24 +674,24 @@ describe('message handling', () => {
 
 describe('convertArg', () => {
   it('converts integer value', () => {
-    const arg = proto.Response.Exchange.Transaction.Argument.create({
-      integerValue: Long.fromNumber(42),
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema, {
+      value: { case: 'integerValue', value: 42n },
     });
     const result = convertArg(arg);
     expect(result).toEqual({ type: 'integer', value: '42' });
   });
 
   it('converts string value', () => {
-    const arg = proto.Response.Exchange.Transaction.Argument.create({
-      stringValue: 'hello',
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema, {
+      value: { case: 'stringValue', value: 'hello' },
     });
     const result = convertArg(arg);
     expect(result).toEqual({ type: 'string', value: 'hello' });
   });
 
   it('converts boolean value', () => {
-    const arg = proto.Response.Exchange.Transaction.Argument.create({
-      booleanValue: true,
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema, {
+      value: { case: 'booleanValue', value: true },
     });
     const result = convertArg(arg);
     expect(result).toEqual({ type: 'boolean', value: true });
@@ -684,8 +699,8 @@ describe('convertArg', () => {
 
   it('converts binary value with base64 prefix', () => {
     const bytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]); // "Hello"
-    const arg = proto.Response.Exchange.Transaction.Argument.create({
-      binaryValue: bytes,
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema, {
+      value: { case: 'binaryValue', value: bytes },
     });
     const result = convertArg(arg);
     expect(result.type).toBe('binary');
@@ -698,15 +713,20 @@ describe('convertArg', () => {
   });
 
   it('converts list value', () => {
-    const arg = proto.Response.Exchange.Transaction.Argument.create({
-      list: proto.Response.Exchange.Transaction.Argument.List.create({
-        items: [
-          proto.Response.Exchange.Transaction.Argument.create({ stringValue: 'a' }),
-          proto.Response.Exchange.Transaction.Argument.create({
-            integerValue: Long.fromNumber(1),
-          }),
-        ],
-      }),
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema, {
+      value: {
+        case: 'list',
+        value: create(Response_Exchange_Transaction_Argument_ListSchema, {
+          items: [
+            create(Response_Exchange_Transaction_ArgumentSchema, {
+              value: { case: 'stringValue', value: 'a' },
+            }),
+            create(Response_Exchange_Transaction_ArgumentSchema, {
+              value: { case: 'integerValue', value: 1n },
+            }),
+          ],
+        }),
+      },
     });
     const result = convertArg(arg);
     expect(result.type).toBe('list');
@@ -717,48 +737,13 @@ describe('convertArg', () => {
     }
   });
 
-  it('throws on null integerValue', () => {
-    const arg = {
-      value: 'integerValue',
-      integerValue: null,
-    } as unknown as proto.Response.Exchange.Transaction.Argument;
-    expect(() => convertArg(arg)).toThrow('integerValue is null');
-  });
-
-  it('throws on null binaryValue', () => {
-    const arg = {
-      value: 'binaryValue',
-      binaryValue: null,
-    } as unknown as proto.Response.Exchange.Transaction.Argument;
-    expect(() => convertArg(arg)).toThrow('binaryValue is null');
-  });
-
-  it('throws on null stringValue', () => {
-    const arg = {
-      value: 'stringValue',
-      stringValue: null,
-    } as unknown as proto.Response.Exchange.Transaction.Argument;
-    expect(() => convertArg(arg)).toThrow('stringValue is null');
-  });
-
-  it('throws on null booleanValue', () => {
-    const arg = {
-      value: 'booleanValue',
-      booleanValue: null,
-    } as unknown as proto.Response.Exchange.Transaction.Argument;
-    expect(() => convertArg(arg)).toThrow('booleanValue is null');
-  });
-
-  it('throws on null list', () => {
-    const arg = {
-      value: 'list',
-      list: null,
-    } as unknown as proto.Response.Exchange.Transaction.Argument;
-    expect(() => convertArg(arg)).toThrow('list is null');
+  it('throws on unset arg value', () => {
+    const arg = create(Response_Exchange_Transaction_ArgumentSchema);
+    expect(() => convertArg(arg)).toThrow('unexpected arg.value');
   });
 
   it('throws on unexpected arg type', () => {
-    const arg = { value: 'unknown' } as unknown as proto.Response.Exchange.Transaction.Argument;
+    const arg = { value: { case: 'unknown' } } as unknown as Response_Exchange_Transaction_Argument;
     expect(() => convertArg(arg)).toThrow('unexpected arg.value');
   });
 });
@@ -823,14 +808,15 @@ describe('protocol encoding', () => {
 
     const firstMsg = ws.sentMessages[0];
     if (!firstMsg) throw new Error('No message sent');
-    const decoded = proto.Request.decode(firstMsg);
-    expect(decoded.exchange).toBeDefined();
-    expect(decoded.exchange?.source).toBe(params.fromAssetId);
-    expect(decoded.exchange?.target).toBe(params.toAssetId);
-    expect(decoded.exchange?.amount?.toString()).toBe(params.amountCoins);
-    expect(decoded.exchange?.recipient).toBe(params.address);
-    expect(decoded.exchange?.referrer).toBe(params.referrer);
-    expect(decoded.exchange?.slippageTolerance).toBe(Math.round(params.slippageTolerance * 10));
+    const decoded = fromBinary(RequestSchema, firstMsg);
+    expect(decoded.payload.case).toBe('exchange');
+    if (decoded.payload.case !== 'exchange') throw new Error('Expected exchange payload');
+    expect(decoded.payload.value.source).toBe(params.fromAssetId);
+    expect(decoded.payload.value.target).toBe(params.toAssetId);
+    expect(decoded.payload.value.amount.toString()).toBe(params.amountCoins);
+    expect(decoded.payload.value.recipient).toBe(params.address);
+    expect(decoded.payload.value.referrer).toBe(params.referrer);
+    expect(decoded.payload.value.slippageTolerance).toBe(Math.round(params.slippageTolerance * 10));
 
     client.destroy();
   });
