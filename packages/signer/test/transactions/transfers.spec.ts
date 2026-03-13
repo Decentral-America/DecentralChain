@@ -25,19 +25,19 @@ it('Transfer Signer', async () => {
 it('Transfer custom asset', async () => {
   const [{ id }] = await signer
     .issue({
-      name: 'Bitcoin',
       decimals: 8,
+      description: 'Digital gold',
+      name: 'Bitcoin',
       quantity: 10000,
       reissuable: false,
-      description: 'Digital gold',
     })
     .broadcast();
 
   await signer
     .transfer({
       amount: 1,
-      recipient: MASTER_ADDRESS,
       assetId: id,
+      recipient: MASTER_ADDRESS,
     })
     .broadcast();
 });
@@ -46,8 +46,8 @@ it('Mass Transfer', async () => {
   await signer
     .massTransfer({
       transfers: [
-        { recipient: MASTER_ADDRESS, amount: 1 },
-        { recipient: MASTER_ADDRESS, amount: 1 },
+        { amount: 1, recipient: MASTER_ADDRESS },
+        { amount: 1, recipient: MASTER_ADDRESS },
       ],
     })
     .broadcast();
