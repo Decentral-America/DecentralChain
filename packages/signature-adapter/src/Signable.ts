@@ -168,8 +168,8 @@ export class Signable<T extends TSignData = TSignData> {
     const sender = await this._adapter.getAddress();
     const dataForBytes = {
       ...this._preparedData,
-      senderPublicKey,
       sender,
+      senderPublicKey,
       ...this._forSign.data,
       type: this._forSign.type,
     };
@@ -323,7 +323,7 @@ export class Signable<T extends TSignData = TSignData> {
     return this._addProofPromise;
   }
 
-  public async getDataForApi(needSign = true) {
+  public async getDataForApi(needSign = true): Promise<unknown> {
     const data = await this.getSignData();
     if (needSign) {
       await this.addMyProof();
@@ -349,8 +349,8 @@ export class Signable<T extends TSignData = TSignData> {
           return this._adapter[this._signMethod](
             bytes,
             {
-              amountPrecision: this._getAmountPrecision(),
               amount2Precision: this._getAmount2Precision(),
+              amountPrecision: this._getAmountPrecision(),
               feePrecision: this._getFeePrecision(),
             },
             this._forSign,

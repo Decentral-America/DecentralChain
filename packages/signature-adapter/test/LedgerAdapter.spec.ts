@@ -8,14 +8,14 @@ const { MockLedger } = vi.hoisted(() => {
       { id: number; address: string; publicKey: string; statusCode: string }
     > = {
       1: {
-        id: 1,
         address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+        id: 1,
         publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
         statusCode: 'U2F_V2',
       },
       2: {
-        id: 2,
         address: '3P5GB69tyeW1BEEwdw8w74fusTZdrTXZPQL',
+        id: 2,
         publicKey: 'B2Rd3SSLydLDaRjQngaZ8sMH9VAKbLrdyVysG7PDeKRs',
         statusCode: 'U2F_V2',
       },
@@ -90,15 +90,15 @@ import { SIGN_TYPE } from '../src/prepareTx';
 
 describe('LedgerAdapter', () => {
   const mockUser = {
-    id: 1,
     address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
+    id: 1,
     publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
   };
 
   beforeAll(() => {
     LedgerAdapter.initOptions({
-      networkCode: 'W'.charCodeAt(0),
       debug: false,
+      networkCode: 'W'.charCodeAt(0),
     } as any);
     // Override the ledger instance with mock
     (LedgerAdapter as any)._ledger = new MockLedger();
@@ -162,8 +162,8 @@ describe('LedgerAdapter', () => {
     const adapter = new LedgerAdapter(mockUser);
     const sig = await adapter.signTransaction(
       new Uint8Array([4, 5, 6]),
-      { amountPrecision: 8, feePrecision: 8, amount2Precision: 0 },
-      { type: 4, data: { version: 2 } },
+      { amount2Precision: 0, amountPrecision: 8, feePrecision: 8 },
+      { data: { version: 2 }, type: 4 },
     );
     expect(sig).toBe('mockTxSignature');
   });
