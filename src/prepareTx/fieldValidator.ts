@@ -166,11 +166,11 @@ const money = (options: IFieldOptions) => {
     return;
   }
 
-  switch (true) {
-    case !(value instanceof Money):
-      return error(options, ERROR_MSG.WRONG_TYPE);
-    case value instanceof Money && value.getCoins().isNaN():
-      return error(options, ERROR_MSG.WRONG_NUMBER);
+  if (!(value instanceof Money)) {
+    return error(options, ERROR_MSG.WRONG_TYPE);
+  }
+  if (value.getCoins().isNaN()) {
+    return error(options, ERROR_MSG.WRONG_NUMBER);
   }
 };
 

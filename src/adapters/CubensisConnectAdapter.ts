@@ -4,6 +4,12 @@ import { SIGN_TYPE, type TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
 import { Adapter } from './Adapter';
 
+/** Shape of sign data passed through the signing bridge. */
+interface SignableData {
+  type?: string | number;
+  [key: string]: unknown;
+}
+
 const DEFAULT_TX_VERSIONS = {
   [SIGN_TYPE.AUTH]: [1],
   [SIGN_TYPE.MATCHER_ORDERS]: [1],
@@ -184,10 +190,10 @@ export class CubensisConnectAdapter extends Adapter {
   public async signRequest(
     _bytes: Uint8Array,
     _?: unknown,
-    signData?: Record<string, unknown>,
+    signData?: SignableData,
   ): Promise<string> {
     await this.isAvailable(true);
-    signData = (signData || _ || {}) as Record<string, unknown>;
+    signData = (signData || _ || {}) as SignableData;
     if (signData?.type === 'customData') {
       return (await CubensisConnectAdapter._api.signCustomData(signData)).signature;
     }
@@ -217,7 +223,7 @@ export class CubensisConnectAdapter extends Adapter {
   public async signOrder(
     _bytes: Uint8Array,
     _precisions: Record<string, number>,
-    signData: Record<string, unknown>,
+    signData: SignableData,
   ): Promise<string> {
     await this.isAvailable(true);
     let promise: Promise<string> | undefined;

@@ -16,6 +16,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
