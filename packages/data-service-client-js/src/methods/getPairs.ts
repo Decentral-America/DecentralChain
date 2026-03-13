@@ -50,15 +50,15 @@ const createRequestForMany =
   (nodeUrl: string) =>
   ([matcher, pairs]: TPairsRequest): ILibRequest =>
     createRequest(`${nodeUrl}/pairs`, {
-      pairs: pairs.map((p) => p.toString()),
       matcher,
+      pairs: pairs.map((p) => p.toString()),
     });
 
 const getPairs: TCreateGetFn<TGetPairs> = (libOptions: ILibOptions) => (matcher: string) =>
   createMethod<TPairJSON[]>({
-    validate: validateRequest(matcher),
     generateRequest: createRequestForMany,
     libOptions,
+    validate: validateRequest(matcher),
   });
 
 export default getPairs;
