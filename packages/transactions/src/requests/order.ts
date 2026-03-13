@@ -114,15 +114,15 @@ export function order(
   } as SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs;
 
   if (ord.version >= 3) {
-    (ord as unknown as Record<string, unknown>).matcherFeeAssetId =
+    (ord as unknown as { matcherFeeAssetId: string | null | undefined }).matcherFeeAssetId =
       orderExt.matcherFeeAssetId === 'DCC' ? null : orderExt.matcherFeeAssetId;
   }
 
   if (ord.version === 4) {
     ord.priceMode = orderExt.priceMode || 'fixedDecimals';
-    (ord as unknown as Record<string, unknown>).chainId = networkByte(orderExt.chainId, 76);
+    (ord as unknown as { chainId: number }).chainId = networkByte(orderExt.chainId, 76);
     if (orderExt.eip712Signature)
-      (ord as unknown as Record<string, unknown>).eip712Signature = orderExt.eip712Signature;
+      (ord as unknown as { eip712Signature: string }).eip712Signature = orderExt.eip712Signature;
   }
 
   const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord);

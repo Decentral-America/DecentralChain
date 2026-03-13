@@ -101,31 +101,36 @@ export async function waitForTx(
         to.cancel();
         return x;
       })
-      .catch((e: Record<string, unknown>) => {
-        // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
-        const status = (e as Record<string, unknown>)?.response
-          ? (e as Record<string, { status?: number }>).response?.status
-          : ((e as Record<string, unknown>)?.status ?? (e as Record<string, unknown>)?.code);
-        if (
-          status === 400 ||
-          status === 401 ||
-          status === 403 ||
-          status === 405 ||
-          status === 422
-        ) {
-          to.cancel();
-          return Promise.reject(
-            new Error(
-              `waitForTx failed with non-retriable error (HTTP ${status}): ${e?.message ?? e}`,
-            ),
+      .catch(
+        (e: {
+          response?: { status?: number };
+          status?: number;
+          code?: number;
+          message?: string;
+        }) => {
+          // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
+          const status = e.response ? e.response.status : (e.status ?? e.code);
+          if (
+            status === 400 ||
+            status === 401 ||
+            status === 403 ||
+            status === 405 ||
+            status === 422
+          ) {
+            to.cancel();
+            return Promise.reject(
+              new Error(
+                `waitForTx failed with non-retriable error (HTTP ${status}): ${e.message ?? e}`,
+              ),
+            );
+          }
+          // 404 means tx not yet in a block — keep polling
+          // 500/502/503 could be transient — keep polling
+          return delay(1000).then((_) =>
+            expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : promise(),
           );
-        }
-        // 404 means tx not yet in a block — keep polling
-        // 500/502/503 could be transient — keep polling
-        return delay(1000).then((_) =>
-          expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : promise(),
-        );
-      });
+        },
+      );
 
   return promise();
 }
