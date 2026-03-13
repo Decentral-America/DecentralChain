@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/ride-js/issues"
   },
   "dependencies": {
-    "@decentralchain/ts-lib-crypto": "2.0.0",
+    "@decentralchain/ts-lib-crypto": "^2.0.1",
     "@waves/ride-lang": "1.6.1",
     "@waves/ride-repl": "1.6.1"
   },
@@ -101,5 +101,5 @@
   ],
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "2.3.0"
+  "version": "2.3.1"
 }
