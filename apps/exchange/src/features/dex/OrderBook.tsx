@@ -352,7 +352,8 @@ export const OrderBook: React.FC = () => {
   // Calculate spread (difference between lowest ask and highest bid)
   const spread =
     hasAsks && hasBids
-      ? ((parseFloat(orderBook.asks[0]?.price ?? '0') - parseFloat(orderBook.bids[0]?.price ?? '0')) /
+      ? ((parseFloat(orderBook.asks[0]?.price ?? '0') -
+          parseFloat(orderBook.bids[0]?.price ?? '0')) /
           parseFloat(orderBook.bids[0]?.price ?? '1')) *
         100
       : 0;

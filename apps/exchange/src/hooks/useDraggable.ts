@@ -27,12 +27,14 @@ export interface UseDraggableOptions {
   /**
    * Constrain dragging within bounds
    */
-  bounds?: {
-    left?: number;
-    top?: number;
-    right?: number;
-    bottom?: number;
-  } | undefined;
+  bounds?:
+    | {
+        left?: number;
+        top?: number;
+        right?: number;
+        bottom?: number;
+      }
+    | undefined;
 
   /**
    * Snap to grid

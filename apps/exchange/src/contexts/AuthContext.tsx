@@ -50,8 +50,10 @@ interface SessionData {
  * Safe because multiAccount.toList() merges metadata (name, settings, matcherSign)
  * with encrypted data (publicKey, address, seed) into objects matching the User shape.
  */
-const toUser = (mau: import('@/services/multiAccount').MultiAccountUser): User => mau as unknown as User;
-const toUsers = (maus: import('@/services/multiAccount').MultiAccountUser[]): User[] => maus.map(toUser);
+const toUser = (mau: import('@/services/multiAccount').MultiAccountUser): User =>
+  mau as unknown as User;
+const toUsers = (maus: import('@/services/multiAccount').MultiAccountUser[]): User[] =>
+  maus.map(toUser);
 
 /**
  * AuthProvider component
@@ -353,34 +355,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Matches Angular: User._addUserData() lines 858-864
    * Allows users to configure custom node URLs, matcher URLs, etc.
    */
-  const syncNetworkConfig = useCallback(async (userSettings: { oracleDCC?: unknown; [key: string]: unknown }) => {
-    try {
-      const ds = await import('data-service');
+  const syncNetworkConfig = useCallback(
+    async (userSettings: { oracleDCC?: unknown; [key: string]: unknown }) => {
+      try {
+        const ds = await import('data-service');
 
-      // Network keys that can be customized
-      const networkKeys = ['node', 'matcher', 'api', 'explorer'];
+        // Network keys that can be customized
+        const networkKeys = ['node', 'matcher', 'api', 'explorer'];
 
-      // Sync each network setting if user has customized it
-      networkKeys.forEach((key) => {
-        const settingPath = `network.${key}`;
-        const customValue = userSettings?.[settingPath];
-        if (customValue && ds.config.set) {
-          ds.config.set(key, customValue);
-          logger.debug(`[Auth] Synced network.${key} =`, customValue);
+        // Sync each network setting if user has customized it
+        networkKeys.forEach((key) => {
+          const settingPath = `network.${key}`;
+          const customValue = userSettings?.[settingPath];
+          if (customValue && ds.config.set) {
+            ds.config.set(key, customValue);
+            logger.debug(`[Auth] Synced network.${key} =`, customValue);
+          }
+        });
+
+        // Sync oracle settings
+        const oracleDCC = userSettings?.oracleDCC;
+        if (oracleDCC && ds.config.set) {
+          ds.config.set('oracleDCC', oracleDCC);
+          logger.debug('[Auth] Synced oracleDCC =', oracleDCC);
         }
-      });
-
-      // Sync oracle settings
-      const oracleDCC = userSettings?.oracleDCC;
-      if (oracleDCC && ds.config.set) {
-        ds.config.set('oracleDCC', oracleDCC);
-        logger.debug('[Auth] Synced oracleDCC =', oracleDCC);
+      } catch (error) {
+        logger.error('[Auth] Failed to sync network config:', error);
+        // Don't throw - use default network config
       }
-    } catch (error) {
-      logger.error('[Auth] Failed to sync network config:', error);
-      // Don't throw - use default network config
-    }
-  }, []);
+    },
+    [],
+  );
 
   /**
    * Create new account

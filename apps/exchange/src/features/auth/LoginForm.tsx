@@ -97,7 +97,12 @@ export const LoginForm = () => {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
   const [accounts, setAccounts] = useState<
-    Array<{ hash: string; name?: string | undefined; address: string; lastLogin?: number | undefined }>
+    Array<{
+      hash: string;
+      name?: string | undefined;
+      address: string;
+      lastLogin?: number | undefined;
+    }>
   >([]);
   const [showAccountSelect, setShowAccountSelect] = useState(false);
   const [showNoAccountModal, setShowNoAccountModal] = useState(false);

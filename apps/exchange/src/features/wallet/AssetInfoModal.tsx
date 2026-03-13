@@ -78,10 +78,13 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Total Supply:</Label>
             <Value>
-              {(Number(assetInfo.quantity) / 10 ** (assetInfo.precision ?? 0)).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: assetInfo.precision ?? 0,
-              })}
+              {(Number(assetInfo.quantity) / 10 ** (assetInfo.precision ?? 0)).toLocaleString(
+                undefined,
+                {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: assetInfo.precision ?? 0,
+                },
+              )}
             </Value>
           </InfoRow>
 

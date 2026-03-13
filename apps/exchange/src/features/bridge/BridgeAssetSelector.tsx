@@ -42,8 +42,27 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
 
   // Build list of gateway assets with their details
   const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
-    const assetInfo: { displayName?: string; name?: string; ticker?: string; precision?: number; icon?: string; [key: string]: unknown } =
-      (assets as unknown as Record<string, { displayName?: string; name?: string; ticker?: string; precision?: number; icon?: string; [key: string]: unknown }>)[assetId] || {};
+    const assetInfo: {
+      displayName?: string;
+      name?: string;
+      ticker?: string;
+      precision?: number;
+      icon?: string;
+      [key: string]: unknown;
+    } =
+      (
+        assets as unknown as Record<
+          string,
+          {
+            displayName?: string;
+            name?: string;
+            ticker?: string;
+            precision?: number;
+            icon?: string;
+            [key: string]: unknown;
+          }
+        >
+      )[assetId] || {};
     const balance = balances[assetId] || new BigNumber(0);
 
     return {

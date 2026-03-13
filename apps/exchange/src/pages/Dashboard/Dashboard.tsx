@@ -182,51 +182,63 @@ export const Dashboard = () => {
     // Flatten the nested array structure
     const flatTransactions = transactionsData.flat();
 
-    return flatTransactions.slice(0, 3).map((tx: { type?: number; recipient?: string; amount?: number; assetId?: string | null; timestamp?: number; id?: string; [key: string]: unknown }) => {
-      const isReceived = tx.recipient === user.address;
+    return flatTransactions
+      .slice(0, 3)
+      .map(
+        (tx: {
+          type?: number;
+          recipient?: string;
+          amount?: number;
+          assetId?: string | null;
+          timestamp?: number;
+          id?: string;
+          [key: string]: unknown;
+        }) => {
+          const isReceived = tx.recipient === user.address;
 
-      let type = 'Transaction';
-      let amount = '';
-      let assetId: string | null = null;
-      const status = 'completed';
+          let type = 'Transaction';
+          let amount = '';
+          let assetId: string | null = null;
+          const status = 'completed';
 
-      // Determine transaction type and amount
-      if (tx.type === 4) {
-        // Transfer
-        type = isReceived ? 'Received' : 'Sent';
-        const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
-        assetId = tx.assetId || null;
-        amount = `${isReceived ? '+' : '-'}${formatAmount(txAmount)}`;
-      } else if (tx.type === 7) {
-        // Exchange (Swap)
-        type = 'Swap';
-        amount = 'Token Exchange';
-      } else if (tx.type === 8) {
-        // Lease
-        type = 'Leased';
-        const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
-        amount = `${formatAmount(txAmount)} DCC`;
-      } else if (tx.type === 9) {
-        // Lease Cancel
-        type = 'Lease Cancelled';
-        amount = 'Lease Return';
-      }
+          // Determine transaction type and amount
+          if (tx.type === 4) {
+            // Transfer
+            type = isReceived ? 'Received' : 'Sent';
+            const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
+            assetId = tx.assetId || null;
+            amount = `${isReceived ? '+' : '-'}${formatAmount(txAmount)}`;
+          } else if (tx.type === 7) {
+            // Exchange (Swap)
+            type = 'Swap';
+            amount = 'Token Exchange';
+          } else if (tx.type === 8) {
+            // Lease
+            type = 'Leased';
+            const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
+            amount = `${formatAmount(txAmount)} DCC`;
+          } else if (tx.type === 9) {
+            // Lease Cancel
+            type = 'Lease Cancelled';
+            amount = 'Lease Return';
+          }
 
-      // Calculate time ago
-      const time = tx.timestamp
-        ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
-        : 'Unknown time';
+          // Calculate time ago
+          const time = tx.timestamp
+            ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
+            : 'Unknown time';
 
-      return {
-        type,
-        amount,
-        assetId,
-        time,
-        status,
-        isReceived,
-        txId: tx.id as string,
-      };
-    });
+          return {
+            type,
+            amount,
+            assetId,
+            time,
+            status,
+            isReceived,
+            txId: tx.id as string,
+          };
+        },
+      );
   }, [transactionsData, user?.address]);
 
   // Quick action cards

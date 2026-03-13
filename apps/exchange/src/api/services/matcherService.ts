@@ -367,10 +367,13 @@ export const useCancelOrder = (): UseMutationResult<
     { orderId: string; sender: string; signature: string }
   >({
     mutationFn: async ({ orderId, sender, signature }) => {
-      const { data } = await matcherClient.post<{ status: string; message: string }>(`/orderbook/${orderId}/cancel`, {
-        sender,
-        signature,
-      });
+      const { data } = await matcherClient.post<{ status: string; message: string }>(
+        `/orderbook/${orderId}/cancel`,
+        {
+          sender,
+          signature,
+        },
+      );
       return data;
     },
   });
@@ -391,11 +394,14 @@ export const useCancelAllOrders = (): UseMutationResult<
     { sender: string; timestamp: number; signature: string }
   >({
     mutationFn: async ({ sender, timestamp, signature }) => {
-      const { data } = await matcherClient.post<{ status: string; message: string }>('/orderbook/cancel', {
-        sender,
-        timestamp,
-        signature,
-      });
+      const { data } = await matcherClient.post<{ status: string; message: string }>(
+        '/orderbook/cancel',
+        {
+          sender,
+          timestamp,
+          signature,
+        },
+      );
       return data;
     },
   });
