@@ -54,19 +54,19 @@ const generateRequestMany =
 
 const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = (libOptions) => {
   const getTransferTxsOne = createMethod<ITransaction[]>({
-    validate: validateId,
     generateRequest: generateRequestOne,
     libOptions,
+    validate: validateId,
   });
   const getTransferTxsMany = createMethod<ITransaction[]>({
-    validate: validateFilters,
-    generateRequest: generateRequestMany,
-    libOptions,
     addPaginationToArgs: ({ args: [filters], cursor, count }) => ({
       ...filters,
       after: cursor,
       ...(count ? { limit: count } : {}),
     }),
+    generateRequest: generateRequestMany,
+    libOptions,
+    validate: validateFilters,
   });
 
   const getTransferTxs: IGetTransferTxs = (idOrFilters?: string | ITransferTxFilters) =>
