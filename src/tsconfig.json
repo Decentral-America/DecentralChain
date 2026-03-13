@@ -2,7 +2,7 @@
   "extends": "../tsconfig.base",
   "include": [".", "../types"],
   "compilerOptions": {
-    "types": ["long", "vite/client"],
+    "types": ["vite/client"],
     "lib": ["esnext", "dom"],
     "skipLibCheck": true
   }
