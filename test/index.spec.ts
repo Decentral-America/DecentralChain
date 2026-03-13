@@ -570,14 +570,14 @@ describe('BigNumber', () => {
     describe('toFormat with custom format', () => {
       it('applies custom format parameters', () => {
         const customFormat = {
-          prefix: '$',
-          suffix: ' USD',
-          groupSeparator: ',',
           decimalSeparator: '.',
-          groupSize: 3,
-          secondaryGroupSize: 0,
           fractionGroupSeparator: ' ',
           fractionGroupSize: 0,
+          groupSeparator: ',',
+          groupSize: 3,
+          prefix: '$',
+          secondaryGroupSize: 0,
+          suffix: ' USD',
         };
         expect(
           new BigNumber('1234567.89').toFormat(2, BigNumber.ROUND_MODE.ROUND_HALF_UP, customFormat),
@@ -586,14 +586,14 @@ describe('BigNumber', () => {
 
       it('uses custom decimal separator', () => {
         const format = {
-          prefix: '',
-          suffix: '',
           decimalSeparator: ',',
-          groupSeparator: '.',
-          groupSize: 3,
-          secondaryGroupSize: 0,
           fractionGroupSeparator: ' ',
           fractionGroupSize: 0,
+          groupSeparator: '.',
+          groupSize: 3,
+          prefix: '',
+          secondaryGroupSize: 0,
+          suffix: '',
         };
         expect(
           new BigNumber('1000.50').toFormat(2, BigNumber.ROUND_MODE.ROUND_HALF_UP, format),
@@ -621,9 +621,9 @@ describe('BigNumber', () => {
 
       it('handles duck-typed objects', () => {
         const fakeBN = {
+          add: () => {},
           bn: {},
           clone: () => {},
-          add: () => {},
           sub: () => {},
         };
         const result = BigNumber.isBigNumber(fakeBN);
