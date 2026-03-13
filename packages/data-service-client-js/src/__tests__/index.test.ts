@@ -7,9 +7,9 @@ const parser = (parseJsonBignumber as any)().parse;
 const fetch = vi.fn(() => Promise.resolve('{"data":[{ "data": 1 }]}'));
 const NODE_URL = 'http://localhost:3000';
 const client = new DataServiceClient({
-  rootUrl: NODE_URL,
-  parse: parser,
   fetch,
+  parse: parser,
+  rootUrl: NODE_URL,
 });
 
 describe('Assets endpoint: ', () => {
@@ -126,18 +126,18 @@ describe('Aliases endpoint: ', () => {
 describe('Candles endpoint: ', () => {
   it('fetch is called with correct params#1', async () => {
     await client.getCandles('AMOUNTASSETID', 'PRICEASSETID', {
-      timeStart: '2018-12-01',
-      timeEnd: '2018-12-31',
       interval: '1h',
       matcher: '123',
+      timeEnd: '2018-12-31',
+      timeStart: '2018-12-01',
     });
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
   it('fetch is called with correct params#2', async () => {
     await client.getCandles('AMOUNTASSETID', 'PRICEASSETID', {
-      timeStart: '2018-12-01',
       interval: '1h',
       matcher: '123',
+      timeStart: '2018-12-01',
     });
     expect(fetch.mock.calls.slice().pop()).toMatchSnapshot();
   });
@@ -158,35 +158,35 @@ describe('ExchangeTxs endpoint: ', () => {
   type Case = { label: string; params: any[]; expectedUrl?: string };
   const goodCases: Case[] = [
     {
+      expectedUrl: `${NODE_URL}/transactions/exchange/8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS`,
       label: 'single string',
       params: ['8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS'],
-      expectedUrl: `${NODE_URL}/transactions/exchange/8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS`,
     },
     {
+      expectedUrl: `${NODE_URL}/transactions/exchange`,
       label: 'empty call',
       params: [],
-      expectedUrl: `${NODE_URL}/transactions/exchange`,
     },
     {
+      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-01-01`,
       label: 'with one filter',
       params: [{ timeStart: '2016-01-01' }],
-      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-01-01`,
     },
     {
+      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-02-01&timeEnd=2016-03-01&matcher=matcher&sender=sender&amountAsset=asset1&priceAsset=priceAsset&limit=5&sort=desc`,
       label: 'with all filters',
       params: [
         {
-          timeStart: '2016-02-01',
-          timeEnd: '2016-03-01',
-          matcher: 'matcher',
-          sender: 'sender',
           amountAsset: 'asset1',
-          priceAsset: 'priceAsset',
           limit: 5,
+          matcher: 'matcher',
+          priceAsset: 'priceAsset',
+          sender: 'sender',
           sort: 'desc',
+          timeEnd: '2016-03-01',
+          timeStart: '2016-02-01',
         },
       ],
-      expectedUrl: `${NODE_URL}/transactions/exchange?timeStart=2016-02-01&timeEnd=2016-03-01&matcher=matcher&sender=sender&amountAsset=asset1&priceAsset=priceAsset&limit=5&sort=desc`,
     },
   ];
   const badCases: Case[] = [
@@ -237,12 +237,12 @@ describe('TransferTxs endpoint: ', () => {
       params: [
         {
           assetId: 'assetId',
-          sender: 'sender',
-          recipient: 'recipient',
-          timeStart: '2016-02-01',
-          timeEnd: '2016-03-01',
           limit: 5,
+          recipient: 'recipient',
+          sender: 'sender',
           sort: 'desc',
+          timeEnd: '2016-03-01',
+          timeStart: '2016-02-01',
         },
       ],
     },
@@ -294,13 +294,13 @@ describe('MassTransferTxs endpoint: ', () => {
       label: 'with all filters',
       params: [
         {
-          sender: 'sender',
-          recipient: 'recipient',
           assetId: 'assetId',
-          timeStart: '2016-02-01',
-          timeEnd: '2016-03-01',
           limit: 5,
+          recipient: 'recipient',
+          sender: 'sender',
           sort: 'asc',
+          timeEnd: '2016-03-01',
+          timeStart: '2016-02-01',
         },
       ],
     },
@@ -384,9 +384,9 @@ describe('Pagination: ', () => {
       Promise.resolve('{"__type": "list","lastCursor": "cursor", "data": [{ "data": 1 }]}'),
     );
     const customClient = new DataServiceClient({
-      rootUrl: 'http://localhost',
-      parse: parser,
       fetch: customFetch,
+      parse: parser,
+      rootUrl: 'http://localhost',
     });
 
     const result = await customClient.getAssets('test');
@@ -394,8 +394,8 @@ describe('Pagination: ', () => {
     expect(result).not.toHaveProperty('fetchMore');
 
     const result2 = await customClient.getExchangeTxs({
-      sort: 'asc',
       limit: 1,
+      sort: 'asc',
     });
     expect(result2).toHaveProperty('data');
     expect(result2).toHaveProperty('fetchMore');
@@ -421,19 +421,6 @@ describe('Custom transformer: ', () => {
         },
       ],
     }),
-    pairs: JSON.stringify({
-      __type: 'list',
-      data: [
-        {
-          __type: 'pair',
-          data: {},
-        },
-        {
-          __type: 'pair',
-          data: {},
-        },
-      ],
-    }),
     candles: JSON.stringify({
       __type: 'list',
       data: [
@@ -451,14 +438,27 @@ describe('Custom transformer: ', () => {
         },
       ],
     }),
+    pairs: JSON.stringify({
+      __type: 'list',
+      data: [
+        {
+          __type: 'pair',
+          data: {},
+        },
+        {
+          __type: 'pair',
+          data: {},
+        },
+      ],
+    }),
   };
   const customFetchMock = (type: keyof typeof fetchMocks) =>
     vi.fn(() => Promise.resolve(fetchMocks[type]));
 
   it('works for list of assets', async () => {
     const transformMocks = {
-      list: vi.fn((d) => d.map(customTransformer)),
       asset: vi.fn(),
+      list: vi.fn((d) => d.map(customTransformer)),
       pair: vi.fn(),
     };
 
@@ -472,9 +472,9 @@ describe('Custom transformer: ', () => {
     }) => transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
-      rootUrl: 'http://localhost',
-      parse: parser,
       fetch: customFetchMock('assets'),
+      parse: parser,
+      rootUrl: 'http://localhost',
       transform: customTransformer,
     });
     await customClient.getAssets('1', '2');
@@ -485,9 +485,9 @@ describe('Custom transformer: ', () => {
 
   it('works for list of candles', async () => {
     const transformMocks = {
+      candle: vi.fn(),
       list: vi.fn((d) => d.map(customTransformer)),
       pair: vi.fn(),
-      candle: vi.fn(),
     };
 
     const customTransformer = ({
@@ -500,16 +500,16 @@ describe('Custom transformer: ', () => {
     }) => transformMocks[__type](data);
 
     const customClient = new DataServiceClient({
-      rootUrl: 'http://localhost',
-      parse: parser,
       fetch: customFetchMock('candles'),
+      parse: parser,
+      rootUrl: 'http://localhost',
       transform: customTransformer,
     });
 
     await customClient.getCandles('DCC', 'BTC', {
-      timeStart: new Date(),
       interval: '1d',
       matcher: 'matcher',
+      timeStart: new Date(),
     });
     expect(transformMocks.list).toHaveBeenCalledTimes(1);
     expect(transformMocks.candle).toHaveBeenCalledTimes(3);
@@ -528,27 +528,27 @@ describe('Long params transforms into POST request', () => {
       () =>
         new AssetPair(
           new Asset({
+            description: '',
+            hasScript: false,
+            height: 0,
             id: 'DCC',
             name: 'DecentralChain',
             precision: 8,
-            description: '',
-            height: 0,
-            sender: '',
-            hasScript: false,
-            reissuable: false,
-            ticker: 'DCC',
             quantity: '10000000000000000',
+            reissuable: false,
+            sender: '',
+            ticker: 'DCC',
           } as any),
           new Asset({
+            description: '',
+            hasScript: false,
+            height: 0,
             id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
             name: 'Test',
             precision: 8,
-            description: '',
-            height: 0,
-            sender: '',
-            hasScript: false,
-            reissuable: false,
             quantity: '10000000000000000',
+            reissuable: false,
+            sender: '',
           } as any),
         ),
     );
@@ -705,9 +705,9 @@ describe('Security: empty input validation', () => {
 describe('Configuration error handling', () => {
   it('rejects when fetch option is not a function', async () => {
     const brokenClient = new DataServiceClient({
-      rootUrl: 'http://localhost:3000',
       fetch: 'not-a-function' as any,
       parse: parser,
+      rootUrl: 'http://localhost:3000',
     });
     await expect(brokenClient.getAssets('testId')).rejects.toThrow(
       'Configuration error: fetch option must be a function',
@@ -716,9 +716,9 @@ describe('Configuration error handling', () => {
 
   it('rejects when parse option is not a function', async () => {
     const brokenClient = new DataServiceClient({
-      rootUrl: 'http://localhost:3000',
       fetch: vi.fn(() => Promise.resolve('{"data":[]}')),
       parse: 'not-a-function' as any,
+      rootUrl: 'http://localhost:3000',
     });
     await expect(brokenClient.getAssets('testId')).rejects.toThrow(
       'Configuration error: parse option must be a function',
@@ -727,9 +727,9 @@ describe('Configuration error handling', () => {
 
   it('rejects when transform option is not a function', async () => {
     const brokenClient = new DataServiceClient({
-      rootUrl: 'http://localhost:3000',
       fetch: vi.fn(() => Promise.resolve('{"data":[]}')),
       parse: (text: string) => JSON.parse(text),
+      rootUrl: 'http://localhost:3000',
       transform: 'not-a-function' as any,
     });
     await expect(brokenClient.getAssets('testId')).rejects.toThrow(
@@ -752,9 +752,9 @@ describe('Candles validation edge cases', () => {
   it('rejects candles with empty asset IDs', async () => {
     await expect(
       client.getCandles('', 'priceAsset', {
-        timeStart: '2024-01-01',
         interval: '1d',
         matcher: 'matcher',
+        timeStart: '2024-01-01',
       }),
     ).rejects.toBeInstanceOf(Error);
   });
@@ -762,9 +762,9 @@ describe('Candles validation edge cases', () => {
   it('rejects candles with extra unknown properties', async () => {
     await expect(
       client.getCandles('amount', 'price', {
-        timeStart: '2024-01-01',
         interval: '1d',
         matcher: 'matcher',
+        timeStart: '2024-01-01',
         unknownProp: true,
       } as any),
     ).rejects.toBeInstanceOf(Error);

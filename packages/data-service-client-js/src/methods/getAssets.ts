@@ -31,9 +31,9 @@ const createRequestForMany =
 
 const createGetAssets: TCreateGetFn<TGetAssets> = (libOptions: ILibOptions) =>
   createMethod<Asset[]>({
-    validate: validateIds,
     generateRequest: createRequestForMany,
     libOptions,
+    validate: validateIds,
   });
 
 export default createGetAssets;
