@@ -9,18 +9,18 @@ export const createRequest = (methodUrl: string, params?: object): ILibRequest =
   }
 
   if (typeof params === 'undefined') {
-    return { url: methodUrl, method: HttpMethods.Get };
+    return { method: HttpMethods.Get, url: methodUrl };
   }
   const getUrl = `${methodUrl}${createQS(params)}`;
   return getUrl.length > URL_MAX_LENGTH
     ? {
-        url: methodUrl,
-        method: HttpMethods.Post,
         body: JSON.stringify(params),
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
         },
+        method: HttpMethods.Post,
+        url: methodUrl,
       }
-    : { url: getUrl, method: HttpMethods.Get };
+    : { method: HttpMethods.Get, url: getUrl };
 };
