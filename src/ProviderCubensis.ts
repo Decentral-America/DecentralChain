@@ -201,8 +201,8 @@ export class ProviderCubensis implements Provider {
     return withTimeout(
       this._api
         .signCustomData({
-          version: 1,
           binary: `base64:${base64Encode(stringToBytes(String(data)))}`,
+          version: 1,
         })
         .then((data: CubensisConnect.TSignCustomDataResponseV1) => data.signature),
       EXTENSION_TIMEOUT_MS,
@@ -221,24 +221,24 @@ export class ProviderCubensis implements Provider {
   public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
     return this._api
       .signOrder({
-        type: 1002,
         data: {
-          matcherPublicKey: data.matcherPublicKey,
-          orderType: data.orderType,
-          expiration: data.expiration,
           amount: {
             assetId: data.assetPair.amountAsset ?? 'DCC',
             coins: data.amount,
           },
-          price: {
-            assetId: data.assetPair.priceAsset ?? 'DCC',
-            coins: data.price,
-          },
+          expiration: data.expiration,
           matcherFee: {
             assetId: data.matcherFeeAssetId ?? 'DCC',
             coins: data.matcherFee,
           },
+          matcherPublicKey: data.matcherPublicKey,
+          orderType: data.orderType,
+          price: {
+            assetId: data.assetPair.priceAsset ?? 'DCC',
+            coins: data.price,
+          },
         },
+        type: 1002,
       })
       .then((signedStr: string) => {
         const parsed = JSON.parse(signedStr);
@@ -267,8 +267,8 @@ export class ProviderCubensis implements Provider {
     return withTimeout(
       this._api
         .signCustomData({
-          version: 2,
           data: data as CubensisConnect.TTypedData[],
+          version: 2,
         })
         .then((data: CubensisConnect.TSignCustomDataResponseV2) => data.signature),
       EXTENSION_TIMEOUT_MS,
