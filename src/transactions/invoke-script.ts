@@ -48,18 +48,18 @@ export function invokeScript(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: InvokeScriptTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
-    dApp: paramsOrTx.dApp,
     call: callField(paramsOrTx) as InvokeScriptTransaction['call'],
-    payment: mapPayment(paramsOrTx.payment),
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    dApp: paramsOrTx.dApp,
     fee: fee(paramsOrTx, 500000),
     feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    chainId: networkByte(paramsOrTx.chainId, 76),
-    proofs: paramsOrTx.proofs || [],
     id: '',
+    payment: mapPayment(paramsOrTx.payment),
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.invokeScript(tx as unknown as Record<string, unknown>);

@@ -29,16 +29,16 @@ export function burn(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: BurnTransaction & WithId & WithProofs = {
-    type,
-    version,
-    senderPublicKey,
-    assetId: paramsOrTx.assetId,
     amount: paramsOrTx.amount,
+    assetId: paramsOrTx.assetId,
     chainId: networkByte(paramsOrTx.chainId, 76),
     fee: fee(paramsOrTx, 100000),
-    timestamp: paramsOrTx.timestamp || Date.now(),
-    proofs: paramsOrTx.proofs || [],
     id: '',
+    proofs: paramsOrTx.proofs || [],
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
   };
 
   validate.burn(tx as unknown as Record<string, unknown>);

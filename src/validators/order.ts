@@ -18,20 +18,20 @@ import {
 } from './validators';
 
 const orderScheme = {
-  orderType: orEq(['sell', 'buy']),
-  matcherPublicKey: isPublicKey,
-  version: orEq([undefined, 1, 2, 3, 4]),
+  amount: isNaturalNumberLike,
   assetPair: validatePipe(
     isRequired(true),
     pipe(prop('amountAsset'), isDccOrAssetId),
     pipe(prop('priceAsset'), isDccOrAssetId),
   ),
-  price: isNaturalNumberLike,
-  amount: isNaturalNumberLike,
-  matcherFee: isNaturalNumberOrZeroLike,
   expiration: isNaturalNumberLike,
-  timestamp: isNumber,
+  matcherFee: isNaturalNumberOrZeroLike,
+  matcherPublicKey: isPublicKey,
+  orderType: orEq(['sell', 'buy']),
+  price: isNaturalNumberLike,
   proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  timestamp: isNumber,
+  version: orEq([undefined, 1, 2, 3, 4]),
 };
 
 const v1_2_OrderScheme = {

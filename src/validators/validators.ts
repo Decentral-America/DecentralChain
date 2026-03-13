@@ -7,18 +7,19 @@ import {
 } from '@decentralchain/ts-lib-crypto';
 
 const TX_DEFAULTS = {
-  MAX_ATTACHMENT: 140,
   ALIAS: {
+    // biome-ignore lint/security/noSecrets: valid alias character set, not a secret
     AVAILABLE_CHARS: '-.0123456789@_abcdefghijklmnopqrstuvwxyz',
     MAX_ALIAS_LENGTH: 30,
     MIN_ALIAS_LENGTH: 4,
   },
+  MAX_ATTACHMENT: 140,
 };
 
 const ASSETS = {
-  NAME_MIN_BYTES: 4,
-  NAME_MAX_BYTES: 16,
   DESCRIPTION_MAX_BYTES: 1000,
+  NAME_MAX_BYTES: 16,
+  NAME_MIN_BYTES: 4,
 };
 
 export const defaultValue = (value: unknown) => () => value;
@@ -350,11 +351,11 @@ export const isAttachment = ifElse(
 );
 
 const validateType = {
-  integer: isNumberLike,
-  boolean: isBoolean,
-  string: isString,
   binary: isBase64,
+  boolean: isBoolean,
+  integer: isNumberLike,
   list: isArray,
+  string: isString,
 };
 
 export const isValidDataPair = (data: { type: keyof typeof validateType; value: unknown }) =>

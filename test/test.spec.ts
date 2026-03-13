@@ -17,11 +17,11 @@ vi.setConfig({ testTimeout: 60000 });
 it('issue', async () => {
   const tx = issue(
     {
-      name: 'test',
-      description: 'test',
-      quantity: 1097654321,
       chainId: CHAIN_ID,
+      description: 'test',
       fee: 100000000,
+      name: 'test',
+      quantity: 1097654321,
     },
     MASTER_SEED,
   );
@@ -44,10 +44,10 @@ it('transfer', async () => {
   const recipient = address(randomSeed(), CHAIN_ID);
   const tx = transfer(
     {
-      recipient: recipient,
       amount: 1,
-      chainId: CHAIN_ID,
       attachment: '',
+      chainId: CHAIN_ID,
+      recipient: recipient,
     },
     MASTER_SEED,
   );
@@ -59,18 +59,18 @@ it('masstransfer', async () => {
   const r2 = address(randomSeed(), CHAIN_ID);
   const tx = massTransfer(
     {
+      attachment: '',
+      chainId: CHAIN_ID,
       transfers: [
         {
-          recipient: r1,
           amount: 1,
+          recipient: r1,
         },
         {
-          recipient: r2,
           amount: 1,
+          recipient: r2,
         },
       ],
-      chainId: CHAIN_ID,
-      attachment: '',
     },
     MASTER_SEED,
   );
@@ -80,8 +80,8 @@ it('masstransfer', async () => {
 it('set data', async () => {
   const tx = data(
     {
-      data: [{ key: 'foo', type: 'string', value: 'bar' }],
       chainId: CHAIN_ID,
+      data: [{ key: 'foo', type: 'string', value: 'bar' }],
     },
     MASTER_SEED,
   );
@@ -91,8 +91,8 @@ it('set data', async () => {
 it('drop data', async () => {
   const tx = data(
     {
-      data: [{ key: 'foo' }],
       chainId: CHAIN_ID,
+      data: [{ key: 'foo' }],
     },
     MASTER_SEED,
   );
@@ -116,18 +116,18 @@ it('setScriptTest', async () => {
 
   const tx = transfer(
     {
-      recipient: addr,
       amount: 0.05e8,
       chainId: CHAIN_ID,
+      recipient: addr,
     },
     MASTER_SEED,
   );
 
   const tx2 = transfer(
     {
-      recipient: addr2,
       amount: 0.05e8,
       chainId: CHAIN_ID,
+      recipient: addr2,
     },
     MASTER_SEED,
   );
@@ -138,16 +138,16 @@ it('setScriptTest', async () => {
 
   const setScriptTx = setScript(
     {
-      script,
       chainId: CHAIN_ID,
+      script,
     },
     seed,
   );
 
   const setScriptTx2 = setScript(
     {
-      script: script2,
       chainId: CHAIN_ID,
+      script: script2,
     },
     seed2,
   );
@@ -211,9 +211,9 @@ it('invoke test', async () => {
 
   const invokeTx = invokeScript(
     {
-      dApp: dappAddress1,
-      call: { function: 'foo', args: [] },
+      call: { args: [], function: 'foo' },
       chainId: CHAIN_ID,
+      dApp: dappAddress1,
       fee: 500000,
       feeAssetId: null,
     },
@@ -226,9 +226,7 @@ it('invoke test', async () => {
 it('invoke with list test', async () => {
   const invokeTx = invokeScript(
     {
-      dApp: dappAddress2,
       call: {
-        function: 'call',
         args: [
           {
             type: 'integer',
@@ -268,8 +266,12 @@ it('invoke with list test', async () => {
             ],
           },
         ],
+        function: 'call',
       },
       chainId: CHAIN_ID,
+      dApp: dappAddress2,
+      fee: 500000,
+      feeAssetId: null,
       payment: [
         { amount: 1, assetId: null },
         { amount: 2, assetId: null },
@@ -282,8 +284,6 @@ it('invoke with list test', async () => {
         { amount: 24, assetId: assetId },
         { amount: 25, assetId: assetId },
       ],
-      fee: 500000,
-      feeAssetId: null,
     },
     MASTER_SEED,
   );
@@ -303,8 +303,8 @@ it('transfer test', async () => {
     transfer(
       {
         ...cond,
-        chainId: CHAIN_ID,
         amount: 1,
+        chainId: CHAIN_ID,
         recipient: recipient,
       },
       MASTER_SEED,

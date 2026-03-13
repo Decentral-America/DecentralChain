@@ -6,7 +6,7 @@ describe('auth', () => {
   const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
 
   it('auth v1', () => {
-    const p = { host: 'test.hello.com', data: 'custom data' };
+    const p = { data: 'custom data', host: 'test.hello.com' };
     const d = auth(p, stringSeed);
     expect(d).toMatchObject(p);
     expect(d.hash).toEqual(base58Encode(blake2b(serializeAuthData(d))));
@@ -14,7 +14,7 @@ describe('auth', () => {
   });
 
   it('Wrong auth v1', () => {
-    const p = { host: 'test.hello.com', data: 'custom data' };
+    const p = { data: 'custom data', host: 'test.hello.com' };
     const d = auth(p, stringSeed);
     expect(d).toMatchObject(p);
     expect(d.hash).toEqual(base58Encode(blake2b(serializeAuthData(d))));

@@ -13,7 +13,7 @@ describe('setSponsorship', () => {
 
   it('Should create sponsorship transaction', () => {
     const tx = sponsorship({ ...sponsorshipMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...sponsorshipMinimalParams, fee: 100000, chainId: 76 });
+    expect(tx).toMatchObject({ ...sponsorshipMinimalParams, chainId: 76, fee: 100000 });
   });
 
   it('Should not create sponsorship transaction with zero sponsor fee', () => {
@@ -62,7 +62,7 @@ describe('setSponsorship', () => {
 describe('serialize/deserialize sponsorship tx', () => {
   Object.entries(sponsorshipTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkProtoSerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
@@ -70,7 +70,7 @@ describe('serialize/deserialize sponsorship tx', () => {
 describe('serialize/deserialize sponsorship binary tx', () => {
   Object.entries(sponsorshipBinaryTx).forEach(([name, { Bytes, Json }]) => {
     it(name, () => {
-      checkBinarySerializeDeserialize({ Json: Json, Bytes: Bytes });
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
   });
 });
