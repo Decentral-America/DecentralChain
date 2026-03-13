@@ -9,10 +9,20 @@ import {
   verifyAddress,
 } from '@decentralchain/crypto';
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
-// NOTE: 'waves' is the protobuf package namespace — wire-format, do not rename
-import { waves } from '@decentralchain/protobuf-serialization';
+import {
+  type Amount,
+  AmountSchema,
+  create,
+  DataEntrySchema,
+  Order_PriceMode,
+  Order_Side,
+  OrderSchema,
+  type Recipient,
+  RecipientSchema,
+  TransactionSchema,
+  toBinary,
+} from '@decentralchain/protobuf-serialization';
 import { type InvokeScriptCallArgument, TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import Long from 'long';
 
 import { JSONbn } from '../_core/jsonBn';
 import {
@@ -108,18 +118,19 @@ export function makeCustomDataBytes(data: MessageInputCustomData) {
   }
 }
 
-function amountToProto(amount: string | number, assetId?: string | null): waves.IAmount {
-  return {
-    amount: amount === 0 ? null : Long.fromValue(amount),
-    assetId: assetId == null ? null : base58Decode(assetId),
-  };
+function amountToProto(amount: string | number, assetId?: string | null): Amount {
+  return create(AmountSchema, {
+    amount: amount === 0 ? 0n : BigInt(amount),
+    assetId: assetId == null ? new Uint8Array() : base58Decode(assetId),
+  });
 }
 
-function recipientToProto(recipient: string): waves.IRecipient {
-  return {
-    alias: recipient.startsWith('alias') ? recipient.slice(8) : undefined,
-    publicKeyHash: recipient.startsWith('alias') ? undefined : base58Decode(recipient).slice(2, -4),
-  };
+function recipientToProto(recipient: string): Recipient {
+  return create(RecipientSchema, {
+    recipient: recipient.startsWith('alias')
+      ? { case: 'alias', value: recipient.slice(8) }
+      : { case: 'publicKeyHash', value: base58Decode(recipient).slice(2, -4) },
+  });
 }
 
 export function makeOrderBytes(
@@ -127,39 +138,42 @@ export function makeOrderBytes(
 ) {
   return order.version < 4
     ? binary.serializeOrder(order)
-    : waves.Order.encode({
-        ...order,
-        amount: Long.fromValue(order.amount),
-        assetPair: {
-          amountAssetId: order.assetPair.amountAsset
-            ? base58Decode(order.assetPair.amountAsset)
-            : null,
-          priceAssetId: order.assetPair.priceAsset
-            ? base58Decode(order.assetPair.priceAsset)
-            : null,
-        },
-        eip712Signature: order.eip712Signature
-          ? base16Decode(order.eip712Signature.slice(2))
-          : undefined,
-        expiration: Long.fromValue(order.expiration),
-        matcherFee: amountToProto(order.matcherFee, order.matcherFeeAssetId),
-        matcherPublicKey: base58Decode(order.matcherPublicKey),
-        orderSide: {
-          buy: undefined,
-          sell: waves.Order.Side.SELL,
-        }[order.orderType],
-        price: Long.fromValue(order.price),
-        priceMode:
-          order.version === 4
+    : toBinary(
+        OrderSchema,
+        create(OrderSchema, {
+          chainId: order.chainId,
+          amount: BigInt(order.amount),
+          assetPair: {
+            amountAssetId: order.assetPair.amountAsset
+              ? base58Decode(order.assetPair.amountAsset)
+              : new Uint8Array(),
+            priceAssetId: order.assetPair.priceAsset
+              ? base58Decode(order.assetPair.priceAsset)
+              : new Uint8Array(),
+          },
+          sender: order.eip712Signature
             ? {
-                assetDecimals: waves.Order.PriceMode.ASSET_DECIMALS,
-                fixedDecimals: waves.Order.PriceMode.FIXED_DECIMALS,
-              }[order.priceMode]
-            : undefined,
-        proofs: order.proofs?.map(base58Decode),
-        senderPublicKey: base58Decode(order.senderPublicKey),
-        timestamp: Long.fromValue(order.timestamp),
-      }).finish();
+                case: 'eip712Signature' as const,
+                value: base16Decode(order.eip712Signature.slice(2)),
+              }
+            : { case: 'senderPublicKey' as const, value: base58Decode(order.senderPublicKey) },
+          expiration: BigInt(order.expiration),
+          matcherFee: amountToProto(order.matcherFee, order.matcherFeeAssetId),
+          matcherPublicKey: base58Decode(order.matcherPublicKey),
+          orderSide: order.orderType === 'sell' ? Order_Side.SELL : Order_Side.BUY,
+          price: BigInt(order.price),
+          priceMode:
+            order.version === 4
+              ? ({
+                  assetDecimals: Order_PriceMode.ASSET_DECIMALS,
+                  fixedDecimals: Order_PriceMode.FIXED_DECIMALS,
+                }[order.priceMode] ?? Order_PriceMode.DEFAULT)
+              : Order_PriceMode.DEFAULT,
+          proofs: order.proofs?.map(base58Decode) ?? [],
+          timestamp: BigInt(order.timestamp),
+          version: order.version,
+        }),
+      );
 }
 
 export function makeRequestBytes(request: { senderPublicKey: string; timestamp: number }) {
@@ -196,7 +210,7 @@ export function makeTxBytes(
   const protobufCommon = {
     chainId: tx.chainId,
     senderPublicKey: base58Decode(tx.senderPublicKey),
-    timestamp: Long.fromValue(tx.timestamp),
+    timestamp: BigInt(tx.timestamp),
     version: tx.version,
   };
 
@@ -204,170 +218,267 @@ export function makeTxBytes(
     case TRANSACTION_TYPE.ISSUE:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            issue: {
-              amount: Long.fromValue(tx.quantity),
-              decimals: tx.decimals || null,
-              description: tx.description || null,
-              name: tx.name,
-              reissuable: tx.reissuable || undefined,
-              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'issue',
+                value: {
+                  amount: BigInt(tx.quantity),
+                  decimals: tx.decimals || 0,
+                  description: tx.description || '',
+                  name: tx.name,
+                  reissuable: tx.reissuable || false,
+                  script: tx.script
+                    ? base64Decode(tx.script.replace(/^base64:/, ''))
+                    : new Uint8Array(),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.TRANSFER:
       return tx.version < 3
         ? binary.serializeTx({ ...tx, attachment: tx.attachment ?? '' })
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee, tx.feeAssetId),
-            transfer: {
-              amount: amountToProto(tx.amount, tx.assetId),
-              attachment: tx.attachment ? base58Decode(tx.attachment) : undefined,
-              recipient: recipientToProto(tx.recipient),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee, tx.feeAssetId),
+              data: {
+                case: 'transfer',
+                value: {
+                  amount: amountToProto(tx.amount, tx.assetId),
+                  attachment: tx.attachment ? base58Decode(tx.attachment) : new Uint8Array(),
+                  recipient: recipientToProto(tx.recipient),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.REISSUE:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            reissue: {
-              assetAmount: amountToProto(tx.quantity, tx.assetId),
-              reissuable: tx.reissuable || undefined,
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'reissue',
+                value: {
+                  assetAmount: amountToProto(tx.quantity, tx.assetId),
+                  reissuable: tx.reissuable || false,
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.BURN:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            burn: {
-              assetAmount: amountToProto(tx.amount, tx.assetId),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'burn',
+                value: {
+                  assetAmount: amountToProto(tx.amount, tx.assetId),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.LEASE:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            lease: {
-              amount: Long.fromValue(tx.amount),
-              recipient: recipientToProto(tx.recipient),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'lease',
+                value: {
+                  amount: BigInt(tx.amount),
+                  recipient: recipientToProto(tx.recipient),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.CANCEL_LEASE:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            leaseCancel: {
-              leaseId: base58Decode(tx.leaseId),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'leaseCancel',
+                value: {
+                  leaseId: base58Decode(tx.leaseId),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.ALIAS:
       return tx.version < 3
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            createAlias: tx,
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: { case: 'createAlias', value: { alias: tx.alias } },
+            }),
+          );
     case TRANSACTION_TYPE.MASS_TRANSFER:
       return tx.version < 2
         ? binary.serializeTx({ ...tx, attachment: tx.attachment ?? '' })
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            massTransfer: {
-              assetId: tx.assetId == null ? null : base58Decode(tx.assetId),
-              attachment: !tx.attachment ? undefined : base58Decode(tx.attachment),
-              transfers: tx.transfers.map((transfer) => ({
-                recipient: recipientToProto(transfer.recipient),
-                amount: Long.fromValue(transfer.amount),
-              })),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'massTransfer',
+                value: {
+                  assetId: tx.assetId == null ? new Uint8Array() : base58Decode(tx.assetId),
+                  attachment: !tx.attachment ? new Uint8Array() : base58Decode(tx.attachment),
+                  transfers: tx.transfers.map((transfer) => ({
+                    recipient: recipientToProto(transfer.recipient),
+                    amount: BigInt(transfer.amount),
+                  })),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.DATA:
       return tx.version < 2
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            dataTransaction: {
-              data: tx.data.map((entry) => ({
-                binaryValue:
-                  entry.type === 'binary'
-                    ? base64Decode(entry.value.replace(/^base64:/, ''))
-                    : undefined,
-                boolValue: entry.type === 'boolean' ? entry.value : undefined,
-                intValue: entry.type === 'integer' ? Long.fromValue(entry.value) : undefined,
-                key: entry.key,
-                stringValue: entry.type === 'string' ? entry.value : undefined,
-              })),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'dataTransaction',
+                value: {
+                  data: tx.data.map((entry) =>
+                    create(DataEntrySchema, {
+                      key: entry.key,
+                      value:
+                        entry.type === 'integer'
+                          ? { case: 'intValue', value: BigInt(entry.value) }
+                          : entry.type === 'boolean'
+                            ? { case: 'boolValue', value: entry.value }
+                            : entry.type === 'binary'
+                              ? {
+                                  case: 'binaryValue',
+                                  value: base64Decode(entry.value.replace(/^base64:/, '')),
+                                }
+                              : entry.type === 'string'
+                                ? { case: 'stringValue', value: entry.value }
+                                : { case: undefined },
+                    }),
+                  ),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.SET_SCRIPT:
       return tx.version < 2
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            setScript: {
-              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'setScript',
+                value: {
+                  script: tx.script
+                    ? base64Decode(tx.script.replace(/^base64:/, ''))
+                    : new Uint8Array(),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
       return tx.version < 2
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            setAssetScript: {
-              assetId: base58Decode(tx.assetId),
-              script: tx.script ? base64Decode(tx.script.replace(/^base64:/, '')) : null,
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'setAssetScript',
+                value: {
+                  assetId: base58Decode(tx.assetId),
+                  script: tx.script
+                    ? base64Decode(tx.script.replace(/^base64:/, ''))
+                    : new Uint8Array(),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.SPONSORSHIP:
       return tx.version < 2
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee),
-            sponsorFee: {
-              minFee:
-                tx.minSponsoredAssetFee === null
-                  ? amountToProto(0, tx.assetId)
-                  : amountToProto(tx.minSponsoredAssetFee, tx.assetId),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee),
+              data: {
+                case: 'sponsorFee',
+                value: {
+                  minFee:
+                    tx.minSponsoredAssetFee === null
+                      ? amountToProto(0, tx.assetId)
+                      : amountToProto(tx.minSponsoredAssetFee, tx.assetId),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
       return tx.version < 2
         ? binary.serializeTx(tx)
-        : waves.Transaction.encode({
-            ...protobufCommon,
-            fee: amountToProto(tx.fee, tx.feeAssetId),
-            invokeScript: {
-              dApp: recipientToProto(tx.dApp),
-              functionCall: binary.serializerFromSchema(schemas.txFields.functionCall[1])(tx.call),
-              payments: tx.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
-            },
-          }).finish();
+        : toBinary(
+            TransactionSchema,
+            create(TransactionSchema, {
+              ...protobufCommon,
+              fee: amountToProto(tx.fee, tx.feeAssetId),
+              data: {
+                case: 'invokeScript',
+                value: {
+                  dApp: recipientToProto(tx.dApp),
+                  functionCall: binary.serializerFromSchema(schemas.txFields.functionCall[1])(
+                    tx.call,
+                  ),
+                  payments: tx.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
+                },
+              },
+            }),
+          );
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return waves.Transaction.encode({
-        ...protobufCommon,
-        fee: amountToProto(tx.fee),
-        updateAssetInfo: {
-          assetId: base58Decode(tx.assetId),
-          description: tx.description || null,
-          name: tx.name,
-        },
-      }).finish();
+      return toBinary(
+        TransactionSchema,
+        create(TransactionSchema, {
+          ...protobufCommon,
+          fee: amountToProto(tx.fee),
+          data: {
+            case: 'updateAssetInfo',
+            value: {
+              assetId: base58Decode(tx.assetId),
+              description: tx.description || '',
+              name: tx.name,
+            },
+          },
+        }),
+      );
   }
 }
 
