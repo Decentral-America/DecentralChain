@@ -15,7 +15,7 @@ export async function decryptMessage(sharedKey: Uint8Array, input: Uint8Array) {
       .importKey('raw', cek as Uint8Array<ArrayBuffer>, 'AES-CTR', false, ['decrypt'])
       .then((importedKey) =>
         crypto.subtle.decrypt(
-          { name: 'AES-CTR', counter: counter as Uint8Array<ArrayBuffer>, length: counter.length },
+          { counter: counter as Uint8Array<ArrayBuffer>, length: counter.length, name: 'AES-CTR' },
           importedKey,
           input.subarray(129) as Uint8Array<ArrayBuffer>,
         ),

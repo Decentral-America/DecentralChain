@@ -20,7 +20,7 @@ export async function encryptMessage(sharedKey: Uint8Array, message: Uint8Array)
       .importKey('raw', cek as Uint8Array<ArrayBuffer>, 'AES-CTR', false, ['encrypt'])
       .then((importedKey) =>
         crypto.subtle.encrypt(
-          { name: 'AES-CTR', counter: counter as Uint8Array<ArrayBuffer>, length: counter.length },
+          { counter: counter as Uint8Array<ArrayBuffer>, length: counter.length, name: 'AES-CTR' },
           importedKey,
           message as Uint8Array<ArrayBuffer>,
         ),
