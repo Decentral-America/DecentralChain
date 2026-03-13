@@ -1,7 +1,7 @@
 [
   {
     "name": "css",
-    "path": "dist/build/*.css",
+    "path": "dist/build/assets/*.css",
     "limit": "30 kB"
   },
   {
@@ -13,9 +13,9 @@
     "name": "ui",
     "path": [
       "dist/build/accounts.js",
-      "dist/build/common*.js",
+      "dist/build/notification.js",
       "dist/build/popup.js",
-      "dist/build/vendors*.js"
+      "dist/build/*-*.js"
     ],
     "limit": "530 kB"
   },
