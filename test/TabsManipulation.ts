@@ -12,7 +12,7 @@ import { NewWalletNameScreen } from './helpers/NewWalletNameScreen';
 import { Windows } from './helpers/Windows';
 import { DEFAULT_PASSWORD } from './utils/constants';
 
-describe('Tabs manipulation', function () {
+describe('Tabs manipulation', () => {
   let tabKeeper: string, tabAccounts: string;
 
   afterAll(async () => {
@@ -20,12 +20,12 @@ describe('Tabs manipulation', function () {
     await App.resetVault();
   });
 
-  describe('vault is empty', function () {
-    afterAll(async function () {
+  describe('vault is empty', () => {
+    afterAll(async () => {
       await App.closeBgTabs(tabKeeper);
     });
 
-    it('new "accounts" appears when opened "popup"', async function () {
+    it('new "accounts" appears when opened "popup"', async () => {
       tabKeeper = await browser.getWindowHandle();
       const { waitForNewWindows } = await Windows.captureNewWindows();
       await browser.openKeeperPopup();
@@ -35,7 +35,7 @@ describe('Tabs manipulation', function () {
       await browser.refresh();
     });
 
-    it('no more tabs appears when opened "popup" again', async function () {
+    it('no more tabs appears when opened "popup" again', async () => {
       await browser.switchToWindow(tabKeeper);
       await browser.refresh();
       await waitForExpect(async () => {
@@ -43,15 +43,13 @@ describe('Tabs manipulation', function () {
       });
     });
 
-    it('import form appears in "accounts" after password entered', async function () {
+    it('import form appears in "accounts" after password entered', async () => {
       await browser.switchToWindow(tabAccounts);
       await browser.refresh();
 
       await GetStartedScreen.getStartedButton.click();
       await NewAccountScreen.passwordInput.setValue(DEFAULT_PASSWORD);
-      await NewAccountScreen.passwordConfirmationInput.setValue(
-        DEFAULT_PASSWORD,
-      );
+      await NewAccountScreen.passwordConfirmationInput.setValue(DEFAULT_PASSWORD);
       await NewAccountScreen.privacyPolicyCheckbox.click();
       await NewAccountScreen.termsAndConditionsCheckbox.click();
       await NewAccountScreen.continueButton.click();
@@ -60,16 +58,16 @@ describe('Tabs manipulation', function () {
     });
   });
 
-  describe('vault initialized', function () {
-    afterAll(async function () {
+  describe('vault initialized', () => {
+    afterAll(async () => {
       await App.closeBgTabs(tabKeeper);
     });
 
-    it('"add account" button appears in "popup" when password entered', async function () {
+    it('"add account" button appears in "popup" when password entered', async () => {
       await expect(EmptyHomeScreen.addButton).toBeDisplayed();
     });
 
-    it('new "accounts" appears when click "add account" button in "popup"', async function () {
+    it('new "accounts" appears when click "add account" button in "popup"', async () => {
       const { waitForNewWindows } = await Windows.captureNewWindows();
       tabKeeper = await browser.getWindowHandle();
       await EmptyHomeScreen.addButton.click();
@@ -79,7 +77,7 @@ describe('Tabs manipulation', function () {
       await browser.refresh();
     });
 
-    it('no more tabs appears when click "add account" button in "popup" again', async function () {
+    it('no more tabs appears when click "add account" button in "popup" again', async () => {
       await browser.switchToWindow(tabKeeper);
       await browser.refresh();
 
@@ -95,30 +93,24 @@ describe('Tabs manipulation', function () {
       await NewWalletNameScreen.continueButton.click();
     }
 
-    it('success form displayed when import is done', async function () {
+    it('success form displayed when import is done', async () => {
       await browser.switchToWindow(tabAccounts);
       await browser.refresh();
 
       // TODO: Update seed phrase when DCC test node genesis config is set up
-      await importAccountUntilSuccess(
-        'rich',
-        'waves private node seed with waves tokens',
-      );
+      await importAccountUntilSuccess('rich', 'waves private node seed with waves tokens');
 
       await expect(ImportSuccessScreen.root).toBeDisplayed();
     });
 
-    it('import form displays after "add another account" button click', async function () {
+    it('import form displays after "add another account" button click', async () => {
       await ImportSuccessScreen.addAnotherAccountButton.click();
       await expect(ImportFormScreen.root).toBeDisplayed();
     });
 
-    it('"finish" button closes "accounts" tab', async function () {
+    it('"finish" button closes "accounts" tab', async () => {
       // TODO: Update seed phrase when DCC test node genesis config is set up
-      await importAccountUntilSuccess(
-        'poor',
-        'waves private node seed without waves tokens',
-      );
+      await importAccountUntilSuccess('poor', 'waves private node seed without waves tokens');
 
       await ImportSuccessScreen.finishButton.click();
       await waitForExpect(async () => {
@@ -126,7 +118,7 @@ describe('Tabs manipulation', function () {
       });
     });
 
-    it('"accounts" appears when add another account from "popup"', async function () {
+    it('"accounts" appears when add another account from "popup"', async () => {
       await browser.switchToWindow(tabKeeper);
 
       await PopupHome.addAccount();
@@ -136,7 +128,7 @@ describe('Tabs manipulation', function () {
       });
     });
 
-    it('no more tabs appears when add another account from "popup" again', async function () {
+    it('no more tabs appears when add another account from "popup" again', async () => {
       await browser.switchToWindow(tabKeeper);
 
       await PopupHome.addAccount();

@@ -36,9 +36,7 @@ describe('Update extension', () => {
     const activeAccountName = await HomeScreen.activeAccountName.getText();
     await HomeScreen.otherAccountsButton.click();
     const accounts = await OtherAccountsScreen.accounts;
-    const otherAccountNames = await Promise.all(
-      accounts.map(it => it.name.getText()),
-    );
+    const otherAccountNames = await Promise.all(accounts.map((it) => it.name.getText()));
     await TopMenu.backButton.click();
     return [activeAccountName, ...otherAccountNames];
   }
@@ -52,16 +50,10 @@ describe('Update extension', () => {
     await browser.pause(100);
     await ExtensionPage.updateButton.click();
     browser.waitUntil(async () => {
-      return (
-        (await ExtensionPage.enableToggle.getAttribute('aria-pressed')) ===
-        'false'
-      );
+      return (await ExtensionPage.enableToggle.getAttribute('aria-pressed')) === 'false';
     }, {});
     await browser.waitUntil(async () => {
-      return (
-        (await ExtensionPage.enableToggle.getAttribute('aria-pressed')) ===
-        'true'
-      );
+      return (await ExtensionPage.enableToggle.getAttribute('aria-pressed')) === 'true';
     }, {});
 
     await browser.openKeeperPopup();

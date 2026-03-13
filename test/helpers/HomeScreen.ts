@@ -11,10 +11,8 @@ const AssetCard = (wrapped: WebdriverIO.Element) => ({
 export const HomeScreen = {
   isDisplayed: async () => {
     try {
-      return await browser
-        .findByTestId$('assetsForm', {}, { timeout: 5000 })
-        .isDisplayed();
-    } catch (e) {
+      return await browser.findByTestId$('assetsForm', {}, { timeout: 5000 }).isDisplayed();
+    } catch {
       return false;
     }
   },
@@ -40,9 +38,7 @@ export const HomeScreen = {
   },
 
   get assets() {
-    return this.root
-      .$$("[class*='assetCard@assetItem']")
-      .map(it => AssetCard(it));
+    return this.root.$$("[class*='assetCard@assetItem']").map((it) => AssetCard(it));
   },
 
   async getAssetByName(name: string) {

@@ -22,8 +22,6 @@ export const MassTransferTransactionScreen = {
   },
 
   async getTransferItems() {
-    return (await this.root.findAllByTestId$('massTransferItem')).map(it =>
-      TransferItem(it),
-    );
+    return (await this.root.findAllByTestId$('massTransferItem')).map((it) => TransferItem(it));
   },
 };
