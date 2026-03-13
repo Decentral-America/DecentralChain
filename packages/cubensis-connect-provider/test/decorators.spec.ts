@@ -8,8 +8,8 @@ describe('ensureNetwork', () => {
     return {
       _api: { publicState: mockPublicState },
       _options: {
-        NODE_URL: nodeUrl,
         NETWORK_BYTE: networkByte,
+        NODE_URL: nodeUrl,
       },
     };
   }
@@ -23,7 +23,7 @@ describe('ensureNetwork', () => {
     const descriptor: PropertyDescriptor = { value: originalFn };
 
     mockPublicState.mockResolvedValue({
-      network: { server: 'https://mainnet-node.decentralchain.io', code: 'D' },
+      network: { code: 'D', server: 'https://mainnet-node.decentralchain.io' },
     });
 
     ensureNetwork(null, 'testMethod', descriptor);
@@ -40,7 +40,7 @@ describe('ensureNetwork', () => {
     const descriptor: PropertyDescriptor = { value: originalFn };
 
     mockPublicState.mockResolvedValue({
-      network: { server: 'https://testnet-node.decentralchain.io', code: 'D' },
+      network: { code: 'D', server: 'https://testnet-node.decentralchain.io' },
     });
 
     ensureNetwork(null, 'testMethod', descriptor);
@@ -56,7 +56,7 @@ describe('ensureNetwork', () => {
     const descriptor: PropertyDescriptor = { value: originalFn };
 
     mockPublicState.mockResolvedValue({
-      network: { server: 'https://mainnet-node.decentralchain.io', code: 'T' },
+      network: { code: 'T', server: 'https://mainnet-node.decentralchain.io' },
     });
 
     ensureNetwork(null, 'testMethod', descriptor);
@@ -72,7 +72,7 @@ describe('ensureNetwork', () => {
     const descriptor: PropertyDescriptor = { value: originalFn };
 
     mockPublicState.mockResolvedValue({
-      network: { server: 'https://mainnet-node.decentralchain.io/', code: 'D' },
+      network: { code: 'D', server: 'https://mainnet-node.decentralchain.io/' },
     });
 
     ensureNetwork(null, 'testMethod', descriptor);
