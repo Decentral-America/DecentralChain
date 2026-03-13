@@ -14,8 +14,8 @@ export const CHAIN_ID = process.env.DCC_CHAIN_ID ?? 'D';
 export const NETWORK_BYTE = CHAIN_ID.charCodeAt(0);
 
 export const MASTER_ACCOUNT = {
-  SEED: process.env.DCC_MASTER_SEED ?? '',
   ADDRESS: process.env.DCC_MASTER_ADDRESS ?? '',
+  SEED: process.env.DCC_MASTER_SEED ?? '',
 };
 
 /** Base64-encoded DApp script used in compile/decompile tests */
@@ -23,10 +23,11 @@ export const DAP_SCRIPT = process.env.DCC_DAP_SCRIPT ?? '';
 
 export const STATE = {
   ACCOUNTS: {
+    FOR_SCRIPT: {
+      address: process.env.DCC_FOR_SCRIPT_ADDRESS ?? '',
+    },
     SIMPLE: {
-      seed: process.env.DCC_SIMPLE_SEED ?? '',
       address: process.env.DCC_SIMPLE_ADDRESS ?? '',
-      publicKey: process.env.DCC_SIMPLE_PUBLIC_KEY ?? '',
       alias: process.env.DCC_SIMPLE_ALIAS ?? '',
       data: {
         key: {
@@ -34,14 +35,13 @@ export const STATE = {
           value: 'test',
         },
       },
+      publicKey: process.env.DCC_SIMPLE_PUBLIC_KEY ?? '',
+      seed: process.env.DCC_SIMPLE_SEED ?? '',
     },
     SMART: {
-      seed: process.env.DCC_SMART_SEED ?? '',
       address: process.env.DCC_SMART_ADDRESS ?? '',
       alias: process.env.DCC_SMART_ALIAS ?? '',
-    },
-    FOR_SCRIPT: {
-      address: process.env.DCC_FOR_SCRIPT_ADDRESS ?? '',
+      seed: process.env.DCC_SMART_SEED ?? '',
     },
   },
   ASSETS: {

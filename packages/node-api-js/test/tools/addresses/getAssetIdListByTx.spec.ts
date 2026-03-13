@@ -4,12 +4,12 @@ import getAssetIdListByTx from '../../../src/tools/adresses/getAssetIdListByTx';
 describe('getAssetIdListByTx – extract asset IDs from transactions', () => {
   it('extracts assetId and feeAssetId from a transfer transaction', () => {
     const tx = {
-      type: 4,
+      amount: '1000',
       assetId: 'asset-abc',
       feeAssetId: 'fee-asset-xyz',
-      sender: '3L...',
       recipient: '3M...',
-      amount: '1000',
+      sender: '3L...',
+      type: 4,
     };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toContain('asset-abc');
@@ -18,42 +18,42 @@ describe('getAssetIdListByTx – extract asset IDs from transactions', () => {
 
   it('filters out null asset IDs (native DCC)', () => {
     const tx = {
-      type: 4,
+      amount: '1000',
       assetId: null,
       feeAssetId: null,
-      sender: '3L...',
       recipient: '3M...',
-      amount: '1000',
+      sender: '3L...',
+      type: 4,
     };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual([]);
   });
 
   it('extracts assetId from a burn transaction', () => {
-    const tx = { type: 6, assetId: 'burn-asset', sender: '3L...', amount: '100' };
+    const tx = { amount: '100', assetId: 'burn-asset', sender: '3L...', type: 6 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['burn-asset']);
   });
 
   it('extracts assetId from a reissue transaction', () => {
-    const tx = { type: 5, assetId: 'reissue-asset', sender: '3L...', quantity: '500' };
+    const tx = { assetId: 'reissue-asset', quantity: '500', sender: '3L...', type: 5 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['reissue-asset']);
   });
 
   it('extracts assets from exchange transaction order pairs', () => {
     const tx = {
-      type: 7,
       order1: {
         assetPair: { amountAsset: 'asset-a', priceAsset: 'asset-b' },
-        version: 3,
         matcherFeeAssetId: 'fee-asset-1',
+        version: 3,
       },
       order2: {
         assetPair: { amountAsset: 'asset-a', priceAsset: 'asset-b' },
-        version: 3,
         matcherFeeAssetId: 'fee-asset-2',
+        version: 3,
       },
+      type: 7,
     };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toContain('asset-a');
@@ -63,28 +63,28 @@ describe('getAssetIdListByTx – extract asset IDs from transactions', () => {
   });
 
   it('extracts assetId from mass transfer transaction', () => {
-    const tx = { type: 11, assetId: 'mass-asset', transfers: [] };
+    const tx = { assetId: 'mass-asset', transfers: [], type: 11 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['mass-asset']);
   });
 
   it('extracts assetId from setAssetScript transaction', () => {
-    const tx = { type: 15, assetId: 'scripted-asset' };
+    const tx = { assetId: 'scripted-asset', type: 15 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['scripted-asset']);
   });
 
   it('extracts assetId from sponsorship transaction', () => {
-    const tx = { type: 14, assetId: 'sponsored-asset' };
+    const tx = { assetId: 'sponsored-asset', type: 14 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['sponsored-asset']);
   });
 
   it('extracts payment assetIds from invoke transaction', () => {
     const tx = {
-      type: 16,
-      payment: [{ assetId: 'pay-1' }, { assetId: 'pay-2' }],
       feeAssetId: 'fee-3',
+      payment: [{ assetId: 'pay-1' }, { assetId: 'pay-2' }],
+      type: 16,
     };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toContain('pay-1');
@@ -93,21 +93,21 @@ describe('getAssetIdListByTx – extract asset IDs from transactions', () => {
   });
 
   it('extracts assetId from updateAsset transaction', () => {
-    const tx = { type: 17, assetId: 'update-asset' };
+    const tx = { assetId: 'update-asset', type: 17 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual(['update-asset']);
   });
 
   it('returns empty array for transaction types without asset handling (e.g. alias)', () => {
-    const tx = { type: 10, alias: 'my-alias' };
+    const tx = { alias: 'my-alias', type: 10 };
     const result = getAssetIdListByTx(tx as any);
     expect(result).toEqual([]);
   });
 
   it('handles arrays of transactions', () => {
     const txList = [
-      { type: 4, assetId: 'asset-1', feeAssetId: null },
-      { type: 6, assetId: 'asset-2' },
+      { assetId: 'asset-1', feeAssetId: null, type: 4 },
+      { assetId: 'asset-2', type: 6 },
     ];
     const result = getAssetIdListByTx(txList as any);
     expect(result).toContain('asset-1');

@@ -21,14 +21,14 @@ export function fetchSeed(base: string, length?: number): Promise<{ seed: string
 export function fetchCompileCode(base: string, body: string): Promise<ICompileCode> {
   return request({
     base,
-    url: '/utils/script/compileCode',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/script/compileCode',
   });
 }
 
@@ -42,14 +42,14 @@ export function fetchCompileWithImports(
 ): Promise<ICompileCode> {
   return request({
     base,
-    url: '/utils/script/compileWithImports',
     options: {
-      method: 'POST',
       body: stringify(body),
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/script/compileWithImports',
   });
 }
 
@@ -60,14 +60,14 @@ export function fetchCompileWithImports(
 export function fetchEstimate(base: string, body: string): Promise<IEstimate> {
   return request({
     base,
-    url: '/utils/script/estimate',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/script/estimate',
   });
 }
 
@@ -78,14 +78,14 @@ export function fetchEstimate(base: string, body: string): Promise<IEstimate> {
 export function fetchEvaluate(base: string, address: string, expr: string): Promise<IEvaluate> {
   return request({
     base,
-    url: `/utils/script/evaluate/${address}`,
     options: {
-      method: 'POST',
       body: JSON.stringify({ expr }),
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: `/utils/script/evaluate/${address}`,
   });
 }
 
@@ -99,14 +99,14 @@ export function fetchTransactionSerialize(
 ): Promise<ITransactionSerialize> {
   return request({
     base,
-    url: '/utils/transactionSerialize',
     options: {
-      method: 'POST',
       body: stringify(body),
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/transactionSerialize',
   });
 }
 
@@ -117,14 +117,14 @@ export function fetchTransactionSerialize(
 export function fetchHashSecure(base: string, body: string): Promise<IHashSecure> {
   return request({
     base,
-    url: '/utils/hash/secure',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/hash/secure',
   });
 }
 
@@ -135,14 +135,14 @@ export function fetchHashSecure(base: string, body: string): Promise<IHashSecure
 export function fetchHashFast(base: string, body: string): Promise<IHashSecure> {
   return request({
     base,
-    url: '/utils/hash/fast',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/hash/fast',
   });
 }
 
@@ -153,14 +153,14 @@ export function fetchHashFast(base: string, body: string): Promise<IHashSecure> 
 export function fetchScriptMeta(base: string, body: string): Promise<IScriptMeta> {
   return request({
     base,
-    url: '/utils/script/meta',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/script/meta',
   });
 }
 
@@ -171,14 +171,14 @@ export function fetchScriptMeta(base: string, body: string): Promise<IScriptMeta
 export function fetchScriptDecompile(base: string, body: string): Promise<IScriptDecompile> {
   return request({
     base,
-    url: '/utils/script/decompile',
     options: {
-      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
       },
+      method: 'POST',
     },
+    url: '/utils/script/decompile',
   });
 }
 
