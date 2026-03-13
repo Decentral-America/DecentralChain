@@ -239,7 +239,7 @@ npm install
 
 | Command                 | Description                          |
 | ----------------------- | ------------------------------------ |
-| `npm run build`         | Build ESM + CJS + UMD via tsup       |
+| `npm run build`         | Build ESM + CJS + UMD via tsdown       |
 | `npm test`              | Run tests                            |
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |
