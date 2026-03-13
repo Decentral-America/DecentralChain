@@ -6,10 +6,10 @@ import { type IMockWindow, mockWindow } from './mock/Win.js';
 
 describe('Window adapter', () => {
   const eventData: IEventData = {
-    type: EventType.Event,
-    name: 'test',
-    data: 'some data for event',
     channelId: undefined,
+    data: 'some data for event',
+    name: 'test',
+    type: EventType.Event,
   };
 
   let listen: Array<WindowProtocol<TMessageContent>>;
@@ -31,9 +31,9 @@ describe('Window adapter', () => {
       let ok = false;
 
       adapter = new WindowAdapter(listen, dispatch, {
+        availableChannelId: [2],
         channelId: 1,
         origins: ['*'],
-        availableChannelId: [2],
       });
 
       adapter.addListener((event) => {
@@ -41,24 +41,24 @@ describe('Window adapter', () => {
       });
 
       listenWin.runEventListeners('message', {
-        origin: 'https://some-origin.com',
         data: {
-          type: EventType.Event,
           data: 1,
           name: 'test',
+          type: EventType.Event,
         },
+        origin: 'https://some-origin.com',
       });
 
       expect(ok).toBe(false);
 
       listenWin.runEventListeners('message', {
-        origin: 'https://some-origin.com',
         data: {
-          type: EventType.Event,
+          channelId: 2,
           data: 1,
           name: 'test',
-          channelId: 2,
+          type: EventType.Event,
         },
+        origin: 'https://some-origin.com',
       });
 
       expect(ok).toBe(true);
@@ -78,8 +78,8 @@ describe('Window adapter', () => {
     });
 
     listenWin.runEventListeners('message', {
-      origin: 'https://dispatch-origin.com',
       data: { ...eventData },
+      origin: 'https://dispatch-origin.com',
     });
 
     expect(count).toBe(1);
@@ -96,8 +96,8 @@ describe('Window adapter', () => {
     });
 
     listenWin.runEventListeners('message', {
-      origin: window.location.origin,
       data: { ...eventData },
+      origin: window.location.origin,
     });
     expect(ok).toBe(true);
   });
@@ -109,12 +109,12 @@ describe('Window adapter', () => {
     });
 
     listenWin.runEventListeners('message', {
-      origin: window.location.origin,
       data: null,
+      origin: window.location.origin,
     });
     listenWin.runEventListeners('message', {
-      origin: window.location.origin,
       data: {},
+      origin: window.location.origin,
     });
     expect(ok).toBe(true);
   });
@@ -147,18 +147,18 @@ describe('Window adapter', () => {
     });
 
     listenWin.runEventListeners('message', {
-      origin: window.location.origin,
       data: data[0],
-    });
-
-    listenWin.runEventListeners('message', {
       origin: window.location.origin,
-      data: data[1],
     });
 
     listenWin.runEventListeners('message', {
-      origin: 'some-origin',
+      data: data[1],
+      origin: window.location.origin,
+    });
+
+    listenWin.runEventListeners('message', {
       data: eventData,
+      origin: 'some-origin',
     });
 
     expect(addListenerResult).toBe(adapter);
@@ -182,8 +182,8 @@ describe('Window adapter', () => {
 
     adapter.send(eventData);
     listenWin.runEventListeners('message', {
-      origin: 'listen.origin',
       data: 'some data',
+      origin: 'listen.origin',
     });
 
     expect(destroyResult).toBe(undefined);
@@ -233,7 +233,7 @@ describe('Window adapter', () => {
             ok = true;
           });
 
-          window.postMessage({ type: EventType.Event, name: 'test' }, window.origin);
+          window.postMessage({ name: 'test', type: EventType.Event }, window.origin);
           expect(ok).toBe(true);
           done();
         });
@@ -256,11 +256,11 @@ describe('Window adapter', () => {
             listenerCount++;
           });
 
-          window.postMessage({ type: EventType.Event, name: 'test' }, window.origin);
-          adapter.send({ type: EventType.Event, data: '', name: 'test' });
+          window.postMessage({ name: 'test', type: EventType.Event }, window.origin);
+          adapter.send({ data: '', name: 'test', type: EventType.Event });
           adapter.destroy();
-          adapter.send({ type: EventType.Event, data: '', name: 'test' });
-          window.postMessage({ type: EventType.Event, name: 'test' }, window.origin);
+          adapter.send({ data: '', name: 'test', type: EventType.Event });
+          window.postMessage({ name: 'test', type: EventType.Event }, window.origin);
 
           expect(listenerCount).toBe(1);
           expect(sendCount).toBe(1);
@@ -279,13 +279,13 @@ describe('Window adapter', () => {
         callCount++;
       });
 
-      protocol.dispatch({ type: EventType.Event, name: 'pre', data: null });
+      protocol.dispatch({ data: null, name: 'pre', type: EventType.Event });
       expect(callCount).toBe(1);
 
       protocol.destroy();
 
       // After destroy, dispatch goes to fakeWin (no-op), original window not called
-      protocol.dispatch({ type: EventType.Event, name: 'post', data: null });
+      protocol.dispatch({ data: null, name: 'post', type: EventType.Event });
       expect(callCount).toBe(1);
     });
   });
@@ -297,8 +297,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
-        origin: window.location.origin,
         data: null,
+        origin: window.location.origin,
       });
       expect(count).toBe(0);
     });
@@ -309,8 +309,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
-        origin: window.location.origin,
         data: { name: 'test' },
+        origin: window.location.origin,
       });
       expect(count).toBe(0);
     });
@@ -325,17 +325,17 @@ describe('Window adapter', () => {
       });
 
       listenWin.runEventListeners('message', {
-        origin: 'https://malicious.com',
         data: { ...eventData },
+        origin: 'https://malicious.com',
       });
       expect(count).toBe(0);
     });
 
     it('allows events with matching channel id', () => {
       const channelAdapter = new WindowAdapter(listen, dispatch, {
+        availableChannelId: ['b'],
         channelId: 'a',
         origins: ['*'],
-        availableChannelId: ['b'],
       });
       let count = 0;
       channelAdapter.addListener(() => {
@@ -344,15 +344,15 @@ describe('Window adapter', () => {
 
       // Wrong channel id — blocked
       listenWin.runEventListeners('message', {
-        origin: 'https://any.com',
         data: { ...eventData, channelId: 'c' },
+        origin: 'https://any.com',
       });
       expect(count).toBe(0);
 
       // Correct channel id — allowed
       listenWin.runEventListeners('message', {
-        origin: 'https://any.com',
         data: { ...eventData, channelId: 'b' },
+        origin: 'https://any.com',
       });
       expect(count).toBe(1);
     });
@@ -365,8 +365,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { name: 'test', type: 99 },
         origin: window.location.origin,
-        data: { type: 99, name: 'test' },
       });
       expect(count).toBe(0);
     });
@@ -377,8 +377,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { name: 'test', type: 'Event' },
         origin: window.location.origin,
-        data: { type: 'Event', name: 'test' },
       });
       expect(count).toBe(0);
     });
@@ -389,8 +389,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
-        origin: window.location.origin,
         data: { type: 0 },
+        origin: window.location.origin,
       });
       expect(count).toBe(0);
     });
@@ -401,8 +401,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { name: 'test', type: 1 },
         origin: window.location.origin,
-        data: { type: 1, name: 'test' },
       });
       expect(count).toBe(0);
     });
@@ -413,8 +413,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { id: 'x', type: 2 },
         origin: window.location.origin,
-        data: { type: 2, id: 'x' },
       });
       expect(count).toBe(0);
     });
@@ -425,8 +425,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { id: 'x', status: 5, type: 2 },
         origin: window.location.origin,
-        data: { type: 2, id: 'x', status: 5 },
       });
       expect(count).toBe(0);
     });
@@ -437,8 +437,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { data: 'hello', name: 'test', type: 0 },
         origin: window.location.origin,
-        data: { type: 0, name: 'test', data: 'hello' },
       });
       expect(count).toBe(1);
     });
@@ -449,8 +449,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { id: 'req-1', name: 'doSomething', type: 1 },
         origin: window.location.origin,
-        data: { type: 1, id: 'req-1', name: 'doSomething' },
       });
       expect(count).toBe(1);
     });
@@ -461,8 +461,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { content: 'ok', id: 'req-1', status: 0, type: 2 },
         origin: window.location.origin,
-        data: { type: 2, id: 'req-1', status: 0, content: 'ok' },
       });
       expect(count).toBe(1);
     });
@@ -473,8 +473,8 @@ describe('Window adapter', () => {
         count++;
       });
       listenWin.runEventListeners('message', {
+        data: { name: 'test', type: -1 },
         origin: window.location.origin,
-        data: { type: -1, name: 'test' },
       });
       expect(count).toBe(0);
     });
@@ -516,7 +516,7 @@ describe('Window adapter', () => {
             callCount++;
           });
 
-          adapter.send({ type: EventType.Event, data: 'hello', name: 'ping' });
+          adapter.send({ data: 'hello', name: 'ping', type: EventType.Event });
           expect(callCount).toBe(1);
 
           adapter.destroy();

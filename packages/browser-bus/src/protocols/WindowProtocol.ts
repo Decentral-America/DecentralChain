@@ -1,8 +1,8 @@
 import { EventEmitter } from '../utils/EventEmitter.js';
 
 export const PROTOCOL_TYPES = {
-  LISTEN: 'listen' as const,
   DISPATCH: 'dispatch' as const,
+  LISTEN: 'listen' as const,
 };
 
 export interface IWindow {
@@ -84,8 +84,8 @@ export class WindowProtocol<T> extends EventEmitter<IEvents<T>> {
   private static readonly _fakeWin: IWindow = (() => {
     const empty = () => null;
     return {
-      postMessage: empty as unknown as IWindow['postMessage'],
       addEventListener: empty as unknown as IWindow['addEventListener'],
+      postMessage: empty as unknown as IWindow['postMessage'],
       removeEventListener: empty as unknown as IWindow['removeEventListener'],
     };
   })();

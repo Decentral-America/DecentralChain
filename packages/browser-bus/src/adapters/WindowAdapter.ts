@@ -20,8 +20,8 @@ type TOrList<T> = T | T[];
 type TContent = HTMLIFrameElement | IWindow;
 
 const EMPTY_OPTIONS: WindowAdapterIOptions<TOrList<string>, TOrList<TChannelId>> = {
-  origins: [],
   availableChannelId: [],
+  origins: [],
 };
 
 /**
@@ -237,7 +237,7 @@ export class WindowAdapter extends Adapter {
       new UniqPrimitiveCollection(),
     );
 
-    return { ...options, origins, availableChannelId: channelId };
+    return { ...options, availableChannelId: channelId, origins };
   }
 
   private static unPrepareOptions(
@@ -247,9 +247,9 @@ export class WindowAdapter extends Adapter {
     >,
   ): WindowAdapterIOptions<TOrList<string>, TOrList<TChannelId>> {
     return {
-      origins: options.origins.toArray(),
       availableChannelId: options.availableChannelId.toArray(),
       channelId: options.channelId,
+      origins: options.origins.toArray(),
     };
   }
 

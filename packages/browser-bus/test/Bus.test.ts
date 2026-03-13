@@ -173,7 +173,7 @@ describe('Bus', () => {
     const newAdapter = new MockAdapter();
     bus.changeAdapter(newAdapter);
 
-    newAdapter.dispatchAdapterEvent({ name: 'some-request', id: 0, type: EventType.Action });
+    newAdapter.dispatchAdapterEvent({ id: 0, name: 'some-request', type: EventType.Action });
     newAdapter.dispatchAdapterEvent({ name: 'some-event', type: EventType.Event });
 
     expect(count).toBe(3);
@@ -181,9 +181,9 @@ describe('Bus', () => {
 
   describe('event emitter', () => {
     const event = {
-      type: EventType.Event,
-      name: 'test-event',
       data: { someData: true },
+      name: 'test-event',
+      type: EventType.Event,
     } as const;
 
     it('on', () => {
@@ -277,8 +277,8 @@ describe('Bus', () => {
 
     it('response without request', () => {
       adapter.dispatchAdapterEvent({
-        type: EventType.Response,
         id: 'some',
+        type: EventType.Response,
       } as any);
     });
 
@@ -286,11 +286,11 @@ describe('Bus', () => {
       new Promise<void>((done) => {
         const requestData = {
           count: 0,
-          name: 'getRequestCount' as const,
           handler: (c: number) => {
             requestData.count++;
             return requestData.count + c;
           },
+          name: 'getRequestCount' as const,
         };
 
         const secondAdapter = new MockAdapter();
@@ -316,11 +316,11 @@ describe('Bus', () => {
       new Promise<void>((done) => {
         const requestData = {
           count: 0,
-          name: 'getRequestCount' as const,
           handler: (c: number) => {
             requestData.count++;
             return Promise.resolve(requestData.count + c);
           },
+          name: 'getRequestCount' as const,
         };
 
         const secondAdapter = new MockAdapter();
@@ -350,8 +350,8 @@ describe('Bus', () => {
     it('has no handler for request', () =>
       new Promise<void>((done) => {
         const requestData = {
-          name: 'getRequestCount',
           handler: () => null,
+          name: 'getRequestCount',
         };
 
         const secondAdapter = new MockAdapter();
@@ -372,10 +372,10 @@ describe('Bus', () => {
       new Promise<void>((done) => {
         const requestData = {
           count: 0,
-          name: 'getRequestCount',
           handler: () => {
             throw new Error('Test error!');
           },
+          name: 'getRequestCount',
         };
 
         const secondAdapter = new MockAdapter();
@@ -417,10 +417,10 @@ describe('Bus', () => {
           secondAdapter.onSend.once(() => {
             // Send response with primitive content (not IInternalMessage)
             adapter.dispatchAdapterEvent({
-              id: (data as any).id,
-              type: EventType.Response,
-              status: 0, // Success
               content: 'raw-string-content',
+              id: (data as any).id,
+              status: 0, // Success
+              type: EventType.Response,
             } as any);
           });
           secondAdapter.dispatchAdapterEvent(data);
@@ -438,16 +438,16 @@ describe('Bus', () => {
         adapter.onSend.once((data) => {
           // Send response with an object that has type/content but type is not 'error'/'data'
           adapter.dispatchAdapterEvent({
+            content: { content: 42, type: 'unknown-type' },
             id: (data as any).id,
-            type: EventType.Response,
             status: 0, // Success
-            content: { type: 'unknown-type', content: 42 },
+            type: EventType.Response,
           } as any);
         });
 
         bus.request('echo', null, 500).then((result) => {
           // When msg.type is not 'error' or 'data', returns the whole object
-          expect(result).toEqual({ type: 'unknown-type', content: 42 });
+          expect(result).toEqual({ content: 42, type: 'unknown-type' });
           done();
         });
       }));
@@ -455,10 +455,10 @@ describe('Bus', () => {
     it('response without active request is silently ignored', () => {
       // Dispatch a response for an ID that does not exist in _activeRequestHash
       adapter.dispatchAdapterEvent({
-        type: EventType.Response,
+        content: { content: null, type: 'data' },
         id: 'nonexistent-id',
         status: 0,
-        content: { type: 'data', content: null },
+        type: EventType.Response,
       } as any);
       // No error thrown — the method just returns
     });
