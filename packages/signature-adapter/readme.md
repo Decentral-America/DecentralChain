@@ -202,7 +202,7 @@ npm install
 
 | Command                 | Description                          |
 | ----------------------- | ------------------------------------ |
-| `npm run build`         | Build with tsup (ESM)                |
+| `npm run build`         | Build with tsdown (ESM)                |
 | `npm test`              | Run tests with Vitest                |
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |
