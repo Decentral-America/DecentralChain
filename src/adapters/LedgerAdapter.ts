@@ -3,6 +3,19 @@ import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
 import { Adapter } from './Adapter';
 
+interface LedgerPrecision {
+  amountPrecision: number;
+  amount2Precision: number;
+  feePrecision: number;
+  [key: string]: number;
+}
+
+interface LedgerSignData {
+  type: number;
+  data: { version: number; [key: string]: unknown };
+  [key: string]: unknown;
+}
+
 export class LedgerAdapter extends Adapter {
   private _currentUser: { id: number; address: string; publicKey: string };
   public static override type = AdapterType.Ledger;
@@ -73,37 +86,33 @@ export class LedgerAdapter extends Adapter {
 
   public signTransaction(
     bytes: Uint8Array,
-    precision: Record<string, number>,
+    precision: LedgerPrecision,
     signData: unknown,
   ): Promise<string> {
     if (bytes[0] === 15) {
       return this.signData(bytes);
     }
+    const sd = signData as LedgerSignData;
     return this._isMyLedger().then(() =>
       LedgerAdapter._ledger.signTransaction(this._currentUser.id, {
         amount2Precision: precision.amount2Precision,
         amountPrecision: precision.amountPrecision,
         feePrecision: precision.feePrecision,
-        dataType: (signData as Record<string, unknown>).type as number,
-        dataVersion: ((signData as Record<string, unknown>).data as Record<string, unknown>)
-          .version as number,
+        dataType: sd.type,
+        dataVersion: sd.data.version,
         dataBuffer: bytes,
       }),
     );
   }
 
-  public signOrder(
-    bytes: Uint8Array,
-    precision: Record<string, number>,
-    data: unknown,
-  ): Promise<string> {
+  public signOrder(bytes: Uint8Array, precision: LedgerPrecision, data: unknown): Promise<string> {
+    const sd = data as LedgerSignData;
     return this._isMyLedger().then(() =>
       LedgerAdapter._ledger.signOrder(this._currentUser.id, {
         dataBuffer: bytes,
         amountPrecision: precision.amountPrecision,
         feePrecision: precision.feePrecision,
-        dataVersion: ((data as Record<string, unknown>).data as Record<string, unknown>)
-          .version as number,
+        dataVersion: sd.data.version,
       }),
     );
   }
