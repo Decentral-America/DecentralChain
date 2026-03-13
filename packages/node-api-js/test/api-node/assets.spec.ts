@@ -15,36 +15,36 @@ const largeNumbeConvertHeader = {
 const checkAsset = (object: TAssetDetails) => {
   expect(object).toMatchObject({
     assetId: expect.any(String),
+    decimals: expect.any(Number),
+    description: expect.any(String),
     issueHeight: expect.any(Number),
-    issueTimestamp: expect.any(Number),
     issuer: expect.any(String),
     issuerPublicKey: expect.any(String),
-    name: expect.any(String),
-    description: expect.any(String),
-    decimals: expect.any(Number),
-    reissuable: expect.any(Boolean),
-    quantity: expect.isStringOrNumber(),
-    scripted: expect.any(Boolean),
+    issueTimestamp: expect.any(Number),
     minSponsoredAssetFee: expect.isNullableStringOrNumber(),
+    name: expect.any(String),
     originTransactionId: expect.any(String),
+    quantity: expect.isStringOrNumber(),
+    reissuable: expect.any(Boolean),
+    scripted: expect.any(Boolean),
   });
 };
 
 const checkAssetLongAsString = (object: TAssetDetails) => {
   expect(object).toMatchObject({
     assetId: expect.any(String),
+    decimals: expect.any(Number),
+    description: expect.any(String),
     issueHeight: expect.any(Number),
-    issueTimestamp: expect.any(Number),
     issuer: expect.any(String),
     issuerPublicKey: expect.any(String),
-    name: expect.any(String),
-    description: expect.any(String),
-    decimals: expect.any(Number),
-    reissuable: expect.any(Boolean),
-    quantity: expect.any(String),
-    scripted: expect.any(Boolean),
+    issueTimestamp: expect.any(Number),
     minSponsoredAssetFee: expect.isNullableString(),
+    name: expect.any(String),
     originTransactionId: expect.any(String),
+    quantity: expect.any(String),
+    reissuable: expect.any(Boolean),
+    scripted: expect.any(Boolean),
   });
 };
 
@@ -138,8 +138,8 @@ const checkBalances = (object: TAssetBalance) => {
   expect(object).toMatchObject({
     assetId: expect.any(String),
     balance: expect.isStringOrNumber(),
-    reissuable: expect.any(Boolean),
     quantity: expect.isStringOrNumber(),
+    reissuable: expect.any(Boolean),
   });
 };
 
@@ -147,8 +147,8 @@ const checkBalancesLongAsString = (object: TAssetBalance) => {
   expect(object).toMatchObject({
     assetId: expect.any(String),
     balance: expect.any(String),
-    reissuable: expect.any(Boolean),
     quantity: expect.any(String),
+    reissuable: expect.any(Boolean),
   });
 };
 

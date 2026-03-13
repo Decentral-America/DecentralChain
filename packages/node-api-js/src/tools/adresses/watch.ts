@@ -24,8 +24,8 @@ export class Watch extends EventEmitter<IEvents> {
     this._interval = interval ?? 1000;
     this._base = base;
     this._lastBlock = {
-      lastId: tx?.id ?? '',
       height: tx?.height ?? 0,
+      lastId: tx?.id ?? '',
       transactions: tx ? [tx] : [],
     };
 
@@ -67,6 +67,7 @@ export class Watch extends EventEmitter<IEvents> {
           return null;
         }
 
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: transaction polling with multi-conditional height filtering
         this.getTransactionsInHeight(tx, 310).then((list) => {
           const hash = Watch._groupByHeight(list);
           const heightList = keys(hash)
