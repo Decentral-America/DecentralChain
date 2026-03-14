@@ -139,4 +139,4 @@ export function strengthenPassword(password: string, rounds = 5000): string {
  * Will be removed in a future major version — migrate to `encryptSeedV2` when available.
  * @see https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
  */
-export { encryptSeed, decryptSeed };
+export { decryptSeed, encryptSeed };
