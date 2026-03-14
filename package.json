@@ -1,0 +1,34 @@
+{
+  "author": "DecentralChain",
+  "description": "DecentralChain SDK — Unified TypeScript monorepo for all @decentralchain packages",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.7",
+    "lefthook": "2.1.4",
+    "nx": "22.5.4",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "license": "MIT",
+  "name": "decentralchain-sdk",
+  "packageManager": "pnpm@10.32.1",
+  "private": true,
+  "scripts": {
+    "build": "nx run-many -t build",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "graph": "nx graph",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "prepare": "lefthook install",
+    "test": "nx run-many -t test",
+    "typecheck": "nx run-many -t typecheck"
+  },
+  "type": "module",
+  "version": "0.0.0"
+}
