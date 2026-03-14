@@ -1,0 +1,658 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LedgerAdapter } from '@decentralchain/signature-adapter';
+import { useAuth } from '../contexts/AuthContext';
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  LinearProgress,
+  Alert,
+  IconButton,
+  Skeleton,
+  Chip,
+  Fade,
+  Slide,
+  Grow,
+  CircularProgress,
+  Tooltip,
+} from '@mui/material';
+import { styled, keyframes } from '@mui/material/styles';
+import {
+  Usb as UsbIcon,
+  Smartphone as SmartphoneIcon,
+  CheckCircle as CheckCircleIcon,
+  AccountCircle as AccountCircleIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  ContentCopy as CopyIcon,
+  Error as ErrorIcon,
+  Refresh as RefreshIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+
+const USERS_COUNT = 5;
+const MAX_USER_COUNT = 2147483647;
+
+interface LedgerUser {
+  id: number;
+  path: string;
+  address: string;
+  publicKey: string;
+}
+
+const Container = styled.div`
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 20px;
+`;
+
+const Title = styled.h1`
+  font-size: 32px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
+  text-align: center;
+  margin-bottom: 12px;
+`;
+
+const Subtitle = styled.p`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.secondary};
+  text-align: center;
+  margin-bottom: 40px;
+`;
+
+const ImportCard = styled(Card)`
+  padding: 40px;
+`;
+
+const ErrorContainer = styled.div`
+  text-align: center;
+  padding: 40px 20px;
+`;
+
+const ErrorIcon = styled.div`
+  font-size: 64px;
+  margin-bottom: 20px;
+`;
+
+const ErrorTitle = styled.h3`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 12px;
+`;
+
+const ErrorText = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 8px;
+`;
+
+const ErrorLink = styled.a`
+  color: ${({ theme }) => theme.colors.primary};
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const SectionTitle = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 8px;
+`;
+
+const SectionSubtitle = styled.div`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 16px;
+`;
+
+const AvatarsContainer = styled.div`
+  position: relative;
+  margin: 24px 0;
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  right: -20px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const NavButton = styled.button<{ $disabled?: boolean }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.background};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ $disabled }) => ($disabled ? 0.4 : 1)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.2s;
+  pointer-events: all;
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.hover};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const AvatarList = styled.div`
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  min-height: 120px;
+  align-items: center;
+`;
+
+const AvatarWrapper = styled.div<{ $active: boolean; $disabled: boolean }>`
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ $disabled }) => ($disabled ? 0.4 : 1)};
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-4px);
+  }
+`;
+
+const AvatarCircle = styled.div<{ $active: boolean }>`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: ${({ theme, $active }) =>
+    $active ? theme.colors.primary : `${theme.colors.border}20`};
+  border: 3px solid
+    ${({ theme, $active }) => ($active ? theme.colors.primary : 'transparent')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: ${({ theme, $active }) => ($active ? '#ffffff' : theme.colors.text)};
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+`;
+
+const AddressDisplay = styled.div`
+  padding: 16px;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.background};
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};
+  word-break: break-all;
+  margin-bottom: 24px;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+`;
+
+const EmptyAddress = styled(AddressDisplay)`
+  color: ${({ theme }) => theme.colors.secondary};
+  font-style: italic;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 24px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 8px;
+`;
+
+const HelpIcon = styled.span`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid ${({ theme }) => theme.colors.secondary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.secondary};
+  cursor: help;
+`;
+
+const Input = styled.input<{ $disabled?: boolean }>`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 8px;
+  background: ${({ theme, $disabled }) =>
+    $disabled ? `${theme.colors.border}20` : theme.colors.background};
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};
+  transition: all 0.2s;
+  opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'text')};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const CheckboxGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+`;
+
+const Checkbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styled.label`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};
+  cursor: pointer;
+`;
+
+const WarningText = styled.div`
+  padding: 12px;
+  background: ${({ theme }) => `${theme.colors.error}15`};
+  border: 1px solid ${({ theme }) => theme.colors.error};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.colors.error};
+  font-size: 14px;
+  margin-bottom: 16px;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 32px;
+`;
+
+const BackLink = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 0;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const OrDivider = styled.div`
+  color: ${({ theme }) => theme.colors.secondary};
+  font-size: 14px;
+  margin: 8px 0;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 20px;
+`;
+
+export const LedgerImportPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { addAccount, accounts } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isInit, setIsInit] = useState(false);
+  const [users, setUsers] = useState<Record<number, LedgerUser>>({});
+  const [visibleUsers, setVisibleUsers] = useState<LedgerUser[]>([]);
+  const [selectedUser, setSelectedUser] = useState<LedgerUser | null>(null);
+  const [offset, setOffset] = useState(0);
+  const [userId, setUserId] = useState('0');
+  const [name, setName] = useState('');
+  const [selectDefault, setSelectDefault] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [addressExists, setAddressExists] = useState(false);
+
+  const adapter = LedgerAdapter;
+
+  // Check if address already exists in accounts
+  useEffect(() => {
+    if (selectedUser) {
+      const existingAccount = accounts.find((acc) => acc.address === selectedUser.address);
+      setAddressExists(!!existingAccount);
+    }
+  }, [selectedUser, accounts]);
+
+  // Check if name is unique
+  useEffect(() => {
+    if (name && selectedUser) {
+      const nameExists = accounts.some(
+        (acc) => acc.name === name && acc.address !== selectedUser.address
+      );
+      setNameError(nameExists ? 'An account with this name already exists' : '');
+    } else {
+      setNameError('');
+    }
+  }, [name, selectedUser, accounts]);
+
+  // Load users on mount
+  useEffect(() => {
+    getUsers(5);
+  }, []);
+
+  // Show visible users when offset changes
+  useEffect(() => {
+    showVisibleUsers();
+  }, [offset, users]);
+
+  // Auto-select first user
+  useEffect(() => {
+    if (Object.keys(users).length > 0 && !selectedUser) {
+      setSelectedUser(users[0]);
+      setUserId('0');
+    }
+  }, [users]);
+
+  const getUsers = async (count: number = USERS_COUNT) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const countUsers = count - 1;
+      const userList = await Promise.race([
+        adapter.getUserList(offset, countUsers),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Connection timeout')), 25000)
+        ),
+      ]);
+
+      setIsInit(true);
+      setLoading(false);
+
+      const newUsers = { ...users };
+      (userList || []).forEach((user: LedgerUser) => {
+        newUsers[user.id] = user;
+      });
+      setUsers(newUsers);
+    } catch (err) {
+      setLoading(false);
+      setError(err instanceof Error ? err.message : 'Failed to connect to Ledger device');
+      console.error('Ledger connection error:', err);
+    }
+  };
+
+  const showVisibleUsers = () => {
+    const tmp: LedgerUser[] = [];
+    for (let i = offset; i < offset + USERS_COUNT; i++) {
+      if (users[i]) {
+        tmp.push(users[i]);
+      }
+    }
+    setVisibleUsers(tmp);
+  };
+
+  const handleSelectUser = (user: LedgerUser) => {
+    if (selectDefault) return;
+    setSelectedUser(user);
+    setUserId(String(user.id));
+  };
+
+  const handleStepLeft = () => {
+    if (selectDefault || offset === 0 || loading) return;
+    const newOffset = Math.max(0, offset - USERS_COUNT);
+    setOffset(newOffset);
+  };
+
+  const handleStepRight = () => {
+    if (selectDefault || offset === MAX_USER_COUNT - (USERS_COUNT - 1) || loading) return;
+    const newOffset = Math.min(MAX_USER_COUNT - (USERS_COUNT - 1), offset + USERS_COUNT);
+    setOffset(newOffset);
+  };
+
+  const handleUserIdChange = (value: string) => {
+    let id = parseInt(value, 10);
+    if (isNaN(id) || id < 0) id = 0;
+    if (id > MAX_USER_COUNT) id = MAX_USER_COUNT;
+
+    setUserId(String(id));
+
+    const newOffset = Math.max(0, Math.min(id - Math.floor(USERS_COUNT / 2), MAX_USER_COUNT - (USERS_COUNT - 1)));
+    setOffset(newOffset);
+
+    if (users[id]) {
+      setSelectedUser(users[id]);
+    } else {
+      getUsers().then(() => {
+        if (users[id]) {
+          setSelectedUser(users[id]);
+        }
+      });
+    }
+  };
+
+  const handleSelectDefaultChange = (checked: boolean) => {
+    setSelectDefault(checked);
+    if (checked) {
+      setOffset(0);
+      setSelectedUser(users[0]);
+      setUserId('0');
+    }
+  };
+
+  const handleImport = async () => {
+    if (!selectedUser || !name || nameError || addressExists) return;
+
+    try {
+      setLoading(true);
+
+      await addAccount({
+        address: selectedUser.address,
+        publicKey: selectedUser.publicKey,
+        name: name,
+        userType: 'ledger',
+      });
+
+      // Navigate to wallet on success
+      navigate('/wallet');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to import account');
+      setLoading(false);
+    }
+  };
+
+  const isImportDisabled = !selectedUser || !name || !!nameError || addressExists || loading;
+
+  // Error state
+  if (error && !isInit) {
+    return (
+      <Container>
+        <Title>Import from Ledger</Title>
+        <ImportCard elevation="md">
+          <ErrorContainer>
+            <ErrorIcon>⚠️</ErrorIcon>
+            <ErrorTitle>Connection Error</ErrorTitle>
+            <ErrorText>Unable to connect to your Ledger device.</ErrorText>
+            <ErrorText>
+              Please make sure your device is connected and unlocked, then try again.
+            </ErrorText>
+            <ErrorText>
+              For help, refer to{' '}
+              <ErrorLink
+                href="https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                this article
+              </ErrorLink>
+              .
+            </ErrorText>
+            <Actions>
+              <Button onClick={() => getUsers(5)}>Retry Connection</Button>
+              <OrDivider>or</OrDivider>
+              <BackLink onClick={() => navigate('/auth/import')}>Back to Import Options</BackLink>
+            </Actions>
+          </ErrorContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Loading initial connection
+  if (!isInit) {
+    return (
+      <Container>
+        <Title>Import from Ledger</Title>
+        <ImportCard elevation="md">
+          <LoadingContainer>
+            <Spinner size="lg" />
+            <Subtitle>Connecting to Ledger device...</Subtitle>
+            <ErrorText>Please unlock your device and open the DecentralChain app</ErrorText>
+          </LoadingContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  return (
+    <Container>
+      <Title>Import from Ledger</Title>
+      <Subtitle>Choose an account to import from your Ledger hardware wallet</Subtitle>
+
+      <ImportCard elevation="md">
+        <SectionTitle>Choose Account</SectionTitle>
+        <SectionSubtitle>Each avatar represents a unique account derivation path</SectionSubtitle>
+
+        <AvatarsContainer>
+          <NavigationButtons>
+            <NavButton
+              onClick={handleStepLeft}
+              $disabled={selectDefault || offset === 0 || loading}
+              disabled={selectDefault || offset === 0 || loading}
+            >
+              ◀
+            </NavButton>
+            <NavButton
+              onClick={handleStepRight}
+              $disabled={selectDefault || offset === MAX_USER_COUNT - (USERS_COUNT - 1) || loading}
+              disabled={selectDefault || offset === MAX_USER_COUNT - (USERS_COUNT - 1) || loading}
+            >
+              ▶
+            </NavButton>
+          </NavigationButtons>
+
+          <AvatarList>
+            {loading ? (
+              <Spinner size="lg" />
+            ) : (
+              visibleUsers.map((user, index) => (
+                <AvatarWrapper
+                  key={user.id}
+                  $active={selectedUser?.id === user.id}
+                  $disabled={index !== 0 && selectDefault}
+                  onClick={() => !selectDefault && handleSelectUser(user)}
+                >
+                  <AvatarCircle $active={selectedUser?.id === user.id}>
+                    {user.id}
+                  </AvatarCircle>
+                </AvatarWrapper>
+              ))
+            )}
+          </AvatarList>
+        </AvatarsContainer>
+
+        <SectionTitle>Address</SectionTitle>
+        {selectedUser ? (
+          <AddressDisplay>{selectedUser.address}</AddressDisplay>
+        ) : (
+          <EmptyAddress>Select an account to view address</EmptyAddress>
+        )}
+
+        <FormGroup>
+          <Label>
+            Account ID
+            <HelpIcon title="Ledger hardware wallet derivation path index">?</HelpIcon>
+          </Label>
+          <Input
+            type="number"
+            value={userId}
+            onChange={(e) => handleUserIdChange(e.target.value)}
+            $disabled={selectDefault}
+            disabled={selectDefault}
+            min="0"
+            max={MAX_USER_COUNT}
+          />
+        </FormGroup>
+
+        <CheckboxGroup>
+          <Checkbox
+            type="checkbox"
+            id="selectDefault"
+            checked={selectDefault}
+            onChange={(e) => handleSelectDefaultChange(e.target.checked)}
+          />
+          <CheckboxLabel htmlFor="selectDefault">
+            Use default account (ID: 0)
+          </CheckboxLabel>
+        </CheckboxGroup>
+
+        <FormGroup>
+          <Label>Account Name</Label>
+          <Input
+            type="text"
+            placeholder="Enter a name for this account"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={24}
+          />
+          {nameError && <WarningText>{nameError}</WarningText>}
+        </FormGroup>
+
+        {addressExists && (
+          <WarningText>
+            This address is already saved in your wallet. Please choose a different account.
+          </WarningText>
+        )}
+
+        <Actions>
+          <Button onClick={handleImport} disabled={isImportDisabled} fullWidth>
+            {loading ? 'Importing...' : 'Import Account'}
+          </Button>
+          <OrDivider>or</OrDivider>
+          <BackLink onClick={() => navigate('/auth/import')}>
+            Back to Import Options
+          </BackLink>
+        </Actions>
+      </ImportCard>
+    </Container>
+  );
+};

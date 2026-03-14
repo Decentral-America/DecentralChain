@@ -1,0 +1,2780 @@
+{
+  "app.create": {
+    "backupSeed": {
+      "back": "mine tagasi",
+      "copySeed": "kopeerige need",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official Waves clients.",
+      "needConfirm": "Kinnitate selle fraasi järgmisel ekraanil.",
+      "ok": "Ma olen selle üles kirjutanud",
+      "or": "või",
+      "saveSecret": "Salvestage salafraas",
+      "seedPhrase": "Seed Phrase",
+      "warn": "Kuna ainult Teie kontrollite enda raha, peate salvestama salafraasi juhul kui see rakendus kustutatakse või",
+      "writeSeed": "Palun kirjutage hoolikalt üles need 15 sõna",
+      "yourSeed": "Your Seed phrase"
+    },
+    "confirmBackup": {
+      "again": "ja vajutage uuesti",
+      "back": "mine tagasi",
+      "clear": "Tühjenda",
+      "confirm": "Kinnitage salafraas",
+      "description": "Kinnitage oma salafraas või",
+      "enterCorrect": "Palun valige sõnad õiges järjekorras",
+      "error": "Vale järjekord, proovige uuesti.",
+      "ok": "Kinnita",
+      "tapAgain": "and tap again"
+    },
+    "createAccount": {
+      "address": "Konto aadress:",
+      "avatarUnique": "See turvapilt on ainulaadne. Te ei saa seda hiljem muuta.",
+      "choose": "Vali oma aadressi turvapilt",
+      "create": "Create account",
+      "createAccount": "Create a new account",
+      "createDescription": "Fast and free",
+      "createNewAccount": "Loo uus konto",
+      "description": {
+        "becomePart": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets",
+        "dex": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange",
+        "enterName": "Enter account name or",
+        "wallet": "Store, manage and receive interest on your digital assets balance, easily and securely"
+      },
+      "from": "salafraasiga",
+      "header": {
+        "accountName": "Account name",
+        "dex": "decentralized Exchange",
+        "wallet": "Wallet",
+        "withBlockchain": "Get Started with Blockchain"
+      },
+      "import": "Importige kontod",
+      "importDescription": "via Seed or private key, Ledger, Keystore File",
+      "protect": "Kaitske oma kontot parooliga või",
+      "protectYourAccount": "Kaitske Oma Kontot",
+      "restore": "taasta konto",
+      "saveUserData": "Hoian konto selles arvutis",
+      "signDescription": "to a saved account",
+      "signIn": "Logi sisse",
+      "signUp": "Registreerige tasuta konto allpool või",
+      "tosaved": "salvestatud kontole",
+      "toWalet": "rahakotti või"
+    },
+    "modal": {
+      "confirmBackupDescription": "Kontrollige salafraas",
+      "next": "Kinnitage",
+      "prev": "Mine tagasi",
+      "successContent": "Te ei saa oma salafraasi muuta. Kui saatsite selle kogemata kellelegi või kahtlustate, et petturid on selle üle võtnud, looge kohe uus Waves rahakott ja kandke oma raha/varad sinna üle.",
+      "successHeadline": "Hoidke oma salafraasi kaitstuna!",
+      "understand": "Ma mõistan"
+    },
+    "noBackupNoMoney": {
+      "backup": "Salvestage salafraas nüüd",
+      "description": "Salafraas tuleb salvestada. See on teie kontole ligipääsu jaoks äärmiselt oluline.",
+      "modal": {
+        "descriptionP1": "Waves Platform soovib Teid hoiatada kelmuse ja andmepüügi rünnakute sageduse üle viimase aja jooksul. Petturid peidavad oma pahavara oma Waves'i kliendi versioonides ning lubavad kasutajatele meelitavaid boonuseid ja allahindlusi.",
+        "descriptionP2": "Olge ettevaatlik ja ärge kunagi sisestage oma salafraasi nendesse „klientidesse”, sest Teie konto on kohe ohustatud ja te kaotate kõik oma rahalised vahendid.",
+        "descriptionP3": "Te peate kasutama AINULT ametlikku Waves klienti.",
+        "ok": "Saan aru",
+        "title": "Hoidke oma salafraasi kaitstuna!"
+      },
+      "or": "või",
+      "skip": "Teen seda hiljem",
+      "title": "Pole Salafraasi, Pole Raha"
+    },
+    "seed": {
+      "copyToClipboard": "Copy to clipboard",
+      "saveToFile": "Save as file"
+    }
+  },
+  "app.desktop": {
+    "back": "Back to main page",
+    "message": "Kui seda Teil ei ole, saate selle alla laadida [ametlikust saidist](https://wavesplatform.com). Kui Teil on Waves töölaua rakendus, kuid see ei avane, palun [saatke](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) vearaport.",
+    "title": "Liisingtehingud"
+  },
+  "app.dex": {
+    "create": {
+      "order": {
+        "failed": "Midagi läks valesti",
+        "success": "Order on loodud"
+      }
+    },
+    "dex": {
+      "contest": "Contest"
+    },
+    "directives": {
+      "balance": {
+        "assetId": "Vara ID",
+        "available": "Saadaval",
+        "inOrders": "Orderites",
+        "inOrdersFull": "Reserveeritud orderites",
+        "total": "Kokku"
+      },
+      "candleChart": {
+        "error": "{div} [Diagrammi ei õnnestunud alla laadida.] {div} [Kui soovite seda skeemi oma rakenduses kasutada, saatke palun oma päring [tradingview.com'le](https://tradingview.com)]"
+      },
+      "charts": "charts",
+      "createOrder": {
+        "1day": "1 päev",
+        "1hour": "1 tund",
+        "1week": "1 nädal",
+        "30day": "29 päeva",
+        "30min": "30 min",
+        "5min": "5 min",
+        "amountField": "Summa",
+        "ask": "Ask",
+        "bid": "Bid",
+        "buy": "Osta",
+        "createOrderNotPermitted": "Orderid ei ole ajutiselt saadaval",
+        "errors": {
+          "amountMax": "Max Amount - ",
+          "amountMin": "Min Amount - ",
+          "balance": "Pole piisavalt {{name}}",
+          "precision": "Ületati maksimaalselt kasutatava {{precision}} kümnendkoha",
+          "priceMax": "Max Price - ",
+          "priceMin": "Min Price - ",
+          "required": "Selle välja täitmine on kohustuslik"
+        },
+        "expiration": "Aegumine",
+        "fee": "Tasu {{fee}} DCC",
+        "hasScript": "Kauplemiseks tühista [script](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html)",
+        "last": "Viimane",
+        "limit": "Limit Order",
+        "market": "Market Order",
+        "marketPriceField": "Price",
+        "matcherFee": "Fee",
+        "notifications": {
+          "error": {
+            "3147520": "The account's script of {{address}} returned the error: {{scriptError}}",
+            "3147521": "The account's script of {{address}} rejected the order",
+            "3147522": "The account's script of {{address}} rejected the order",
+            "3147524": "The account's script of {{address}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "11536128": "The asset's script of {{assetId}} returned the error: {{scriptError}}",
+            "11536129": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned error is {{errorName}}, the text is: {{errorText}}",
+            "11536130": "The asset's script of {{assetId}} rejected the order",
+            "11536132": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "title": "Veateade"
+          },
+          "isCreated": "Order on loodud",
+          "notEnoughBalance": "Ei ole piisavalt kaubeldavat saldot",
+          "somethingWentWrong": "Midagi läks valesti"
+        },
+        "notPermitted": "Orderi loomine pole ajutiselt saadaval",
+        "placeBuyOrder": "Osta {{name}}",
+        "placeSellOrder": "Müü {{name}}",
+        "priceField": "Piirhind",
+        "sell": "Müü",
+        "spread": "hinnavahe",
+        "stopPriceField": "Stop price",
+        "stopPriceHelp": "This is an automatic buy or sell order at a predetermined price",
+        "total": "Kokku"
+      },
+      "createorder": {
+        "yourBalance": "Your balance"
+      },
+      "demo": {
+        "createAccount": "Loo uus konto",
+        "or": "või",
+        "signIn": "Logi sisse",
+        "to": {
+          "mybalance": "oma saldo vaatamiseks",
+          "openorders": "avatud orderite vaatamiseks",
+          "tradehistory": "oma kauplemisajaloo vaatamiseks"
+        }
+      },
+      "filter": "Otsi",
+      "marketDepth": "Turu sügavus",
+      "markets": {
+        "table": {
+          "price": "Hind",
+          "rate": "Muuda",
+          "unit": "Münt",
+          "volume": "Maht"
+        },
+        "title": "Turud"
+      },
+      "myOrders": {
+        "amount": "Summa",
+        "average": "Average",
+        "back": "Ei",
+        "cancel": "tühista",
+        "cancelAll": "tühista kõik",
+        "cancelAllConfirm": "Jah",
+        "canceled": "tühistatud",
+        "cancelled": "CANCELED",
+        "confirm": {
+          "header": "Kas olete kindel?",
+          "literalDescription": "Seda toimingut ei saa tagasi võtta"
+        },
+        "delete": "kustuta",
+        "detail": "üksikasi",
+        "fee": "tasu",
+        "filled": "Filled",
+        "filter": "Filter",
+        "noPermissionCancelOrder": "Orderi tühistamine pole ajutiselt saadaval",
+        "notifications": {
+          "canceledAll": "All orders have been canceled",
+          "isCanceled": "Order on tühistatud",
+          "somethingWentWrong": "Midagi läks valesti"
+        },
+        "opened": "avatud",
+        "orderType": {
+          "buy": "Osta",
+          "sell": "Müü"
+        },
+        "pair": "Paar",
+        "placeholders": {
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable. You can cancel the order"
+        },
+        "price": "Hind",
+        "status": "Staatus",
+        "tableTitle": {
+          "fee": "Tasu"
+        },
+        "time": "Aeg",
+        "total": "Kokku",
+        "type": "Tüüp",
+        "withScript": "Teie ei saa kasutada börsi, kui teie kontole on paigaldatud [skript](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html)"
+      },
+      "noChartDataMessage": "{div} [Pole piisavalt ask/bid ordereid] {div} [turu sügavuse diagrammi loomiseks]",
+      "noChartDataTitle": "Siin pole midagi…",
+      "orderBook": {
+        "amount": "Summa {{assetName}}",
+        "lastprice": "viimane hind",
+        "price": "Hind {{assetName}}",
+        "spread": "hinnavahe",
+        "sum": "Summa {{assetName}}",
+        "title": "Orderite raamat"
+      },
+      "orderbook": {
+        "errorBlock": {
+          "header": "Midagi läks valesti"
+        }
+      },
+      "orders": "orders",
+      "portfolio": {
+        "title": "Portfell"
+      },
+      "tradeHistory": {
+        "orderType": {
+          "buy": "Osta",
+          "sell": "Müü"
+        },
+        "search": "Otsi",
+        "tableTitle": {
+          "date": "Aeg",
+          "exchangeType": "Tüüp",
+          "fee": "Tasu",
+          "price": "Hind {{assetName}}",
+          "size": "Kogus {{assetName}}",
+          "total": "Kokku",
+          "type": "Tüüp"
+        },
+        "title": "Kauplemisajalugu"
+      },
+      "watchlist": {
+        "all": "KÕIK",
+        "change": "Muuda",
+        "chg": "Mda",
+        "coin": "Münt",
+        "helpIcon": {
+          "assetId": "Vara ID",
+          "AssetId1AssetId2": "Vara1 ID / Vara2 ID",
+          "description": "Lisateavet varade otsimise kohta leiate [siit](https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html)",
+          "header": "Võite otsida järgnevalt:",
+          "name": "Nimi",
+          "name1Name2": "Nimi1 / Nimi2"
+        },
+        "pair": "Paar",
+        "placeholders": {
+          "base": "Alusvara",
+          "coin": "Otsi",
+          "filter": "Filter",
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+          "noMarkets": "Teie filtritele vastavaid turge ei leitud"
+        },
+        "price": "Hind",
+        "vol": "Vol",
+        "volume": "Maht"
+      }
+    },
+    "emptyBlocks": {
+      "myOrders": {
+        "description": "Teil ei ole ordereid.",
+        "title": "Siin pole midagi…"
+      },
+      "orderBook": {
+        "description": "Orderite raamat on tühi.",
+        "error": {
+          "text": "Palun värskendage lehte või proovige hiljem uuesti",
+          "title": "Midagi läks valesti"
+        },
+        "title": "Siin pole midagi…"
+      },
+      "tradeHistory": {
+        "description": "Kauplemisajalugu on tühi.",
+        "title": "Siin pole midagi…"
+      }
+    },
+    "layout": {
+      "center": {
+        "bottom": "Minu orderid"
+      },
+      "right": {
+        "bottom": "Kauplemisajalugu",
+        "top": "Orderite raamat"
+      }
+    },
+    "orderbook": {
+      "ask": {
+        "tooltipText": "Osta {{amountAsset}} {{price}} {{priceAsset}} eest"
+      },
+      "bid": {
+        "tooltipText": "Müü {{amountAsset}}  {{price}} {{priceAsset}} eest"
+      }
+    },
+    "tabs": {
+      "title": {
+        "all": "Kõik",
+        "btc": "Btc",
+        "eth": "ETH",
+        "history": "history",
+        "myBalance": "Minu Saldod",
+        "myTradeHistory": "Minu Kauplemisajalugu",
+        "openOrders": "Minu Avatud Orderid",
+        "OrderHistory": "My Order History",
+        "trade": "Trade",
+        "tradeHistory": "Kauplemisajalugu",
+        "waves": "Waves"
+      }
+    }
+  },
+  "app.fag": {
+    "fag": {
+      "migration": {
+        "title1": "What’s going on?"
+      }
+    }
+  },
+  "app.import": {
+    "back": "Back to main page",
+    "backupFile": {
+      "back": "go back",
+      "enterPasswordDescription": "Please enter your password or",
+      "helper": "You need to enter the password, which you used for the accounts exporting",
+      "import": {
+        "accounts": "Accounts",
+        "emptyList": "There are no accounts for import in the uploaded file",
+        "importFailed": "Failed to import keystore file",
+        "noChosen": "No file chosen",
+        "selectAccount": "Choose accounts",
+        "selectAccountDesc": "Please select account or",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "wrongPassword": "Wrong password!"
+      },
+      "importFromFile": "Import account from Keystore File",
+      "importFromFileDescription": "Choose your JSON file and click Import or",
+      "name": "Keystore File",
+      "next": "Continue",
+      "password": "Password",
+      "selectFileBtn": "Choose file"
+    },
+    "backupFileDescription": "Import account from Keystore File",
+    "import": {
+      "signIn": "Sign in"
+    },
+    "importAccount": "Importige kontosid",
+    "importAccountInfo": "Valige, kust kontosid importida",
+    "KeeperClient": "Waves Keeper",
+    "keeperDescription": "Impordi konto Waves Keeper'ist",
+    "keeperForm": "Installige",
+    "LedgerClient": "Ledger Device",
+    "ledgerDescription": "Importige kontosid Teie Ledger Nano S'st",
+    "or": "VÕI",
+    "seedAndKey": {
+      "name": "Seed or Key"
+    },
+    "seedAndKeyDescription": "Import account from a SEED or Private key",
+    "selectButton": "Vali",
+    "wavesClient": "Waves Client",
+    "wavesClientDescription": "Import account from a Waves Client",
+    "wavesLiteClient": "Waves Lite klient",
+    "wavesLiteClientDescription": "Importige kontosid Waves Lite kliendist",
+    "wavesSeedClient": "Varundage salafraas",
+    "wavesSeedClientDescription": "Impordi konto salafraasiga"
+  },
+  "app": {
+    "back": "Mine tagasi",
+    "button": {
+      "cancel": "Tühista",
+      "continue": "Jätka",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Tokenite emiteerimine pole ajutiselt saadaval.",
+        "issue-title": "Tokeni loomine",
+        "massSendTitle": "Massülekanne",
+        "reissue": "Tokeni taasemiteerimine pole ajutiselt saadaval.",
+        "sendTitle": "Saada",
+        "set-script-title": "Skripti tehing"
+      },
+      "send": {
+        "errors": {
+          "fee": "Teil ei ole piisavalt vahendeid nõutavate tasude maksmiseks. Peate maksma  {{fee, money-currency}} tehingu tasu;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "jaan",
+        "veebr",
+        "märts",
+        "apr",
+        "mai",
+        "juuni",
+        "juuli",
+        "aug",
+        "sept",
+        "okt",
+        "nov",
+        "dets"
+      ]
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://wavesplatform.com/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Varad",
+      "dex": "DEX",
+      "leasing": "Liising",
+      "portfolio": "Portfell",
+      "tokens": "Tokenid",
+      "transactions": "Tehingud",
+      "wallet": "Rahakott"
+    },
+    "inputs": {
+      "errors": {
+        "required": "Selle välja täitmine on kohustuslik!"
+      }
+    },
+    "leftmenu": {
+      "login": "Logi sisse",
+      "logout": "Logi välja",
+      "settings": "Seaded"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Tühistatud",
+          "filled": "Täidetud ({{percent}}%)",
+          "opened": "Avatud"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "Okei",
+        "title": "Sisestage parool"
+      },
+      "pairing": {
+        "showQr": "Näita"
+      },
+      "tryDesktop": {
+        "cancel": "Jätka veebis",
+        "label": "Jäta mu valik meelde ja ära enam meelde tuleta",
+        "message": "Soovitame kasutada rakendust Waves desktop. Kui Teil seda ei ole, saate selle alla laadida ametlikust saidist.",
+        "title": "Kasutage rakendust Waves desktop",
+        "try": "Avage Waves desktop rakendus"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "Kahtlane"
+  },
+  "app.ledger": {
+    "ledger": {
+      "article": "see artikkel",
+      "connectionError": "Ledger Nano S'ga ei saa ühendust",
+      "connectionText": "Ühendus võib olla aegunud. Palun proovi uuesti.",
+      "referTo": "Kui viga püsib, vaadake palun"
+    },
+    "ledgerForm": {
+      "address": "Konto aadress:",
+      "addressSaved": "Address saved",
+      "avatarUnique": "See turvapilt on ainulaadne, te ei saa seda hiljem muuta.",
+      "back": "Mine tagasi",
+      "choose": "Valige oma konto",
+      "help": {
+        "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
+      },
+      "id": "Account ID",
+      "importAccount": "Importige Leder'i konto",
+      "ImportOrSignIn": "Importige konto või",
+      "login": "Jätka",
+      "name": "Kontonimi",
+      "nameExists": "That name is taken",
+      "or": "Või",
+      "retry": "Proovi uuesti",
+      "savedOne": "salvestatud kontole",
+      "saveUserData": "Hoia konto selles arvutis",
+      "selectDefault": "Kasutage vaikekontot",
+      "signIn": "logi sisse"
+    },
+    "modal": {
+      "sign": {
+        "confirmRequest": "Confirm request",
+        "confirmRequestMatcher": "Kinnitage päring Matcher'ile. Kui te seda ei kinnita, ei saa Te DEX-il kaubelda  Ledger-konto kaudu."
+      }
+    },
+    "or": "OR"
+  },
+  "app.migrate": {
+    "desktopUpdate": {
+      "almostThere": "Almost there...",
+      "backToPrevious": "Back to previous",
+      "barDone": "Done",
+      "barDownload": "Download",
+      "barInstall": "Install and run",
+      "barSuccess": "Success",
+      "cancelDownloading": "Cancel download",
+      "congratulations": "Congratulations!",
+      "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
+      "connectSupport": "If that did not help, then contact the Waves.Exchange [support](https://support.waves.exchange/).",
+      "download": "Download",
+      "downloaded": "yes",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "fail": "Fail",
+      "failText": "Please make sure that you have installed and run the new Waves.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Waves.Exchange desktop application?",
+      "install": "Install the application",
+      "installAndRun": "Install and run the application. Have you done it?",
+      "iUnderstand": "I understand",
+      "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
+      "lookAtFAQ2": "You might find the answer there.",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.wavesplatform.com).",
+      "oops": "Oops! Something went wrong...",
+      "password": "Password",
+      "passwordError": "Wrong Password!",
+      "pleaseWait": "Downloading...",
+      "return": "return",
+      "run": "Run the installed application",
+      "seconds": "seconds",
+      "seconds1": "second",
+      "seconds234": "seconds",
+      "signInAndMove": "Sign in & Start moving",
+      "toFinish": "To finish the migration of your accounts, you have to go to the new application and complete the authorization process.",
+      "tryAgain": "Try again"
+    },
+    "faq": {
+      "attention": {
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.wavesplatform.com](https://dex.wavesplatform.com/) and [https://client.wavesplatform.com](https://client.wavesplatform.com/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. Waves Platform or Waves.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "title": "ATTENTION!!! "
+      },
+      "goHome": "Go to HomePage",
+      "text1": "Decentral.Exchange is transforming into a new product, Waves.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Waves.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Waves.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on the Waves blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using Waves Explorer. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Waves.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
+      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Waves community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Waves trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "title1": "What’s going on?",
+      "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
+      "title11": "Will the new exchange have access to my seed phrases?",
+      "title12": "What will happen to my tokens?",
+      "title13": "What problems might users face due to the migration?",
+      "title14": "How long will technical work take on December 2?",
+      "title15": "How can I update my mobile app?",
+      "title16": "Do you plan on introducing KYC procedures? ",
+      "title17": "What changes will the matcher undergo?",
+      "title18": "What if I have any problems or questions during the migration process?",
+      "title19": "What will happen to gateway tokens?",
+      "title2": "What is Waves.Exchange?",
+      "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
+      "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
+      "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
+      "title23": "Why so complicated?",
+      "title24": "Are there plans to expand language support for the interface of the new exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Waves.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+    },
+    "migrate": {
+      "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
+      "achievementTitle": "Congratulations!",
+      "btn": {
+        "unlock": "Unlock"
+      },
+      "continue": "Continue",
+      "desc": {
+        "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
+        "enterPassword": "Enter your Waves.Exchange password to continue the migration.",
+        "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
+      },
+      "description": {
+        "enterPass": "Enter your account password or",
+        "goBack": "return back",
+        "goBackExchange": "go back",
+        "unlock": "Unlock your accounts. You can return to this step later",
+        "unlockExchange": "To finish the migration, complete the authorization process by unlocking an account from the old application and signing in, or creating a new account, or importing it."
+      },
+      "headers": {
+        "unlock": "Unlock your accounts",
+        "unlockAccount": "Unlock account",
+        "unlockAccountExchange": "Unlock your account",
+        "unlockExchange": "Unlock your accounts"
+      },
+      "modalButton": {
+        "cancel": "Cancel",
+        "moving": "Start moving"
+      },
+      "modalDesc": {
+        "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
+        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
+        "thirdPart": "The migration process is fast, easy and absolutely secure."
+      },
+      "modalTitle": {
+        "moving": "Save your Seed!",
+        "plate": "Don’t worry! All of your tokens, seed phrases and passwords are safe.",
+        "redirected": "You have been redirected to"
+      },
+      "signIn": "Sign in",
+      "subtitle": {
+        "account": "Account",
+        "pending": "Pending unlock",
+        "pendingExchange": "To unlock, select an account from the list",
+        "pendingUnlockingExchange": "Pending unlocking",
+        "unlocked": "Unlocked"
+      },
+      "title": {
+        "almostThere": "Almost there...",
+        "protectAccount": "Protect your accounts"
+      }
+    },
+    "modals": {
+      "shutdownNotificationFirst": {
+        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "One day left!"
+      },
+      "shutdownNotificationLast": {
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "submit": "I understand",
+        "title": "Time to move on!"
+      },
+      "shutdownNotificationSecond": {
+        "message1": "Decentral.Exchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "Two hours left!"
+      }
+    }
+  },
+  "app.restore": {
+    "encodedSeedForm": {
+      "placeholder": "Enter your encoded seed"
+    },
+    "encodedSeedTab": "Encoded seed",
+    "keyForm": {
+      "placeholder": "Enter your private key here"
+    },
+    "keyTab": "Private key",
+    "password": {
+      "error": "Wrong Password!"
+    },
+    "passwordForm": {
+      "back": "mine tagasi",
+      "description": "Kaitske oma kontot uue parooliga või",
+      "importAccounts": "Importige kontosid",
+      "login": "Logi sisse",
+      "title": "Kaitske Oma Kontot"
+    },
+    "restore": {
+      "beta": {
+        "accountTitle": "Aadressi / Konto nimi",
+        "buttons": {
+          "cancel": "Mine Tagasi",
+          "copy": "Kopeeri salafraas",
+          "restore": "Taasta salafraas"
+        },
+        "noUsers": {
+          "description": "{div} [Me pole leidnud ühtegi salvestatud kontot. Mine tagasi] {div} [[client.wavesplatform.com]](https://client.wavesplatform.com)",
+          "title": "Kontosid pole salvestatud"
+        },
+        "passwordTitle": "Parool",
+        "placeholders": {
+          "password": "Parool"
+        },
+        "step1Description": "Kui Teil on ainult oma parool, mitte salafraas, saate selle lehe salvestatud konto taastamiseks kasutada.",
+        "step2Description": "Salvestage salafraas hoolikalt. Kui Te kaotate selle, ei saa Te oma kontole ligi pääseda.",
+        "title": "Taasta salafraas"
+      }
+    },
+    "seedForm": {
+      "address": "Aadress",
+      "addressSaved": "Address saved",
+      "back": "Mine tagasi",
+      "continue": "Jätka",
+      "create": "Loo uus konto",
+      "description": "Logige sisse oma rahakoti all või",
+      "nameExists": "That name is taken",
+      "or": "või",
+      "placeholder": "Teie salafraas on teie konto loomisel genereeritud 15 sõna",
+      "saveUserData": "Hoidke konto selles arvutis",
+      "seedTitle": "Teie rahakoti salafraas",
+      "title": "Tere tulemast tagasi",
+      "tosaved": "salvestatud kontole"
+    },
+    "seedOrKeyForm": {
+      "description": "Enter your Seed phrase or private key to access your wallet",
+      "encodedSeed": "Encoded seed",
+      "keyTitle": "Private key",
+      "seedTitle": "Seed phrase",
+      "title": "Import from seed or key"
+    },
+    "seedTab": "Seed phrase",
+    "warningSeed": {
+      "message": "Make sure you do not confuse the phrase with a wallet address. Using an address as a SEED phrase can result in loss of funds. The SEED phrase must consist of 15 words with spaces between each word.",
+      "title": "The SEED phrase you entered is too short."
+    }
+  },
+  "app.saveSeed": {
+    "continue": "Jätka",
+    "copy": "Copy",
+    "copySeed": "Copy Seed phrase",
+    "createAccount": "Create account",
+    "goBack": "go back",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "Siin pole midagi…",
+    "password": {
+      "error": "Vale parool!"
+    },
+    "userList": {
+      "address": "Aadress / konto nimi",
+      "buttons": {
+        "login": "Logi sisse"
+      },
+      "exportUser": "Export your account",
+      "notHaveAccount": "Please sign in to continue",
+      "password": "Parool",
+      "placeholders": {
+        "password": "Parool"
+      },
+      "title": "Logi sisse"
+    },
+    "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or",
+    "yourSeed": "Your Seed phrase"
+  },
+  "app.sessions": {
+    "session": {
+      "headline": "Valige konto",
+      "or": "VÕI",
+      "signIn": "Logi kontosse sisse",
+      "signInNew": "Logige sisse uue sessiooniga"
+    }
+  },
+  "app.signIn": {
+    "createAccount": "Create account",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "Siin pole midagi…",
+    "password": {
+      "error": "Vale parool!"
+    },
+    "signIn": {
+      "btn": {
+        "cancel": "Cancel",
+        "overwrite": "Overwrite",
+        "restore": "Reset all"
+      },
+      "enterPass": "Please enter your password to continue",
+      "or": "OR",
+      "passForgot": {
+        "attention": "Attention!",
+        "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
+        "descriptionExchange": "You are about to delete all of your Waves.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts."
+      },
+      "password": {
+        "forgot": "Forgot your password?",
+        "overwrite": "Overwrite accounts",
+        "overwriteDescription": "Overwrite all Waves.Exchange accounts on this device"
+      },
+      "signIn": "Sign in",
+      "welcomeBack": "Welcome Back!"
+    },
+    "userList": {
+      "address": "Aadress / konto nimi",
+      "buttons": {
+        "login": "Logi sisse"
+      },
+      "notHaveAccount": "Please sign in to continue",
+      "password": "Parool",
+      "placeholders": {
+        "password": "Parool"
+      },
+      "title": "Logi sisse"
+    }
+  },
+  "app.signUp": {
+    "signUp": {
+      "headers": {
+        "onePassBtn": "Let’s start!",
+        "onePassDesc": "Local data storage, seed phrases and encryption make DCC DEX reliable. However, we are going further. It’s time to switch on a new security level. Log into your accounts and switch between them by a couple of taps.",
+        "onePassword": "One password for all your accounts",
+        "protect": "Protect Your Accounts",
+        "protectDesc": "Set a single password for all your accounts",
+        "protectPass": "Create password"
+      },
+      "password": {
+        "notMatch": "Password does not match"
+      },
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions), [Privacy Policy](https://decentralchain.io/privacy-policy)."
+    }
+  },
+  "app.tokens": {
+    "count": "Kokku tokeneid",
+    "create": "Loo",
+    "description": "Kirjeldus",
+    "directives": {
+      "sign": {
+        "confirmRequestLedger": {
+          "waiting": "Ootan kinnitust Ledger Nano S's…"
+        }
+      }
+    },
+    "fee": "Fee {{fee, money-currency}}",
+    "help": {
+      "name": "Palun kasutage ainult ladina tähti"
+    },
+    "helpIcon": {
+      "demicals": "See väli määratleb kümnendkohtade arvu, mida teie vara tokenid jagatakse.",
+      "scriptDescription": "Iga tehingu valideerimine Smart Asset'i skriptiga suurendab tehingutasu 0,004 DCC võrra. Näiteks, kui Smart Asset'le tehakse regulaarne tx, on maksumus 0,001 + 0,004 = 0,005 DCC. Börsi tehingu sooritamise korral on maksumus 0,003 + 0,004 = 0,007 DCC.",
+      "scriptHeader": "Smart Asset on vara, millel on lisatud skript, mis seab tingimused igale kõnealusele tokeniga tehtud tehingule.",
+      "scriptLearnMore": "Lisateave",
+      "totalTokens": {
+        "headline": "See väli määratleb teie vara tokenite kogu mahtu.",
+        "notReissuable": "Taasmitteemiteeritav vara on püsivalt limiteeritud tokenite maksimaalse mahuga mida määratakse järgnevate sammudega.",
+        "reissuable": "Taasemiteeritavus võimaldab täiendavate tokenite loomist, millega suurendatakse ka kogu tokenite maksimaalset mahtu."
+      }
+    },
+    "modal": {
+      "title": "{{name}} Loomine",
+      "titleSuccess": "{{name}} Loomine Lõpetatud"
+    },
+    "name": "Teie vara nimi",
+    "NFT": {
+      "description": "A non-fungible token (NFT) is a unique, individual token existing on the Waves blockchain. Currently, display of NFTs in Waves Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [Waves Explorer](https://wavesexplorer.com/)",
+      "title": "You are creating a non-fungible token."
+    },
+    "notifications": {
+      "isNotCreated": "Tokenit pole loodud"
+    },
+    "pageTitle": "Tokeni loomine",
+    "placeholders": {
+      "description": "Te ei saa kirjeldust hiljem muuta",
+      "precision": "0 kuni 8"
+    },
+    "precision": "Kümnendkohad",
+    "preview": "Eelvaade",
+    "reissuable": {
+      "false": "Taasmitteemiteeritav",
+      "true": "Taasemiteeritav"
+    },
+    "script": "Smart asset",
+    "success": {
+      "description": "Sa oled loonud {{amount}} {{name}}",
+      "done": "Avage Portfell",
+      "title": "Teie tehing on teostamisel!"
+    },
+    "switchScriptOff": "Keela skript",
+    "switchScriptOn": "Luba skript",
+    "tokens": {
+      "changeColorTooltip": "Change color",
+      "inputHelper": {
+        "description": "If you use this name, your token will be categorised as 'Suspicious' and will be searchable only by ID.",
+        "header": "This asset name has been taken"
+      },
+      "termsOfUse": {
+        "checkbox": "I understand that in the case of non-compliance with the rules, my token will be categorised as 'Suspicious', and will be available for search only by ID."
+      }
+    },
+    "validators": {
+      "byte": {
+        "gte": "Vara nimi peab olema 4 kuni 16 baiti pikk",
+        "lte": "Vara nimi peab olema 4 kuni 16 baiti pikk"
+      },
+      "descriptionLen": "Kirjeldus on liiga pikk. See ei tohi ületada 1000 baiti.",
+      "invalidScript": "Süntaksi viga",
+      "maxValueCount": "Sisestatud number on liiga suur",
+      "maxValuePrecision": "Vale number. Sisestage number vahemikus 0 kuni 8",
+      "minValueCount": "Sisestatud number peab olema suurem kui null",
+      "minValuePrecision": "Vale number. Sisestage number vahemikus 0 kuni 8",
+      "noMoney": "Teie saldost ei piisa tehingutasude maksmiseks",
+      "precisionCount": "Vara koguarvul ei saa olla rohkem kümnendkoha kui kümnendkohti määratud on",
+      "required": "See väli peab olema täidetud"
+    }
+  },
+  "app.ui": {
+    "active": "Active",
+    "all": "All",
+    "amount": "Kogus",
+    "balanceInput": {
+      "max": "Maks"
+    },
+    "confirmGatewayTransaction": {
+      "back": "Tagasi",
+      "confirm": "Kinnita",
+      "fieldAddress": "Siht-aadress",
+      "fieldAmount": "Kogus",
+      "fieldFee": "Tasu",
+      "fieldGatewayAddress": "Gateway aadress",
+      "fieldGatewayFee": "Gateway tasu",
+      "success": "Teie tehing on teostamisel!",
+      "warningText": "Sa kohe saadad raha {{name}} blockchainile.",
+      "warningTitle": "Välise blockchaini tehing"
+    },
+    "confirmTransaction": {
+      "back": "Mine Tagasi",
+      "confirm": "Saada",
+      "description": {
+        "burn": "Te olete ära põletanud {{quantityStr}} {{name}}",
+        "cancel-leasing": "Te olete liisingutehingu tühistanud",
+        "circular": "Te olete saatnud {{amount, money-currency}} endale",
+        "create-alias": "Olete loonud alias",
+        "data": "You have sent data transaction",
+        "data-vote": "{div.line}[You have voted for {{moneyCurrency}}.]\n{div.line}[Your score will be applied after 24 hours. Rating in processing.]",
+        "issue": "Token edukalt loodud",
+        "lease-out": "Olete rendile andnud {{amount, money-currency}}",
+        "mass-send": "Olete saatnud {{totalAmount, money-currency}}",
+        "reissue": "Olete loonud täiendavalt {{quantityStr}} {{name}}",
+        "send": "Olete saatnud {{amount, money-currency}}",
+        "set-asset-script": "Olete skripti värskendanud",
+        "set-script": "Olete loonud skripti tehingu",
+        "set-script-cancel": "Olete skripti tehing tühistanud",
+        "sponsorship-start": "Sponsorlus on loodud",
+        "sponsorship-stop": "Sponsorlus on tühistatud"
+      },
+      "details": "Vaata detaile",
+      "export": "Eksport",
+      "JSON": "JSON",
+      "ledgerUnconfirmed": {
+        "description": "Palun proovi uuesti. Kui viga püsib, vaadake palun [käesolev artikkel](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+        "header": "Te pole kinnitanud päringut enda Ledger'is"
+      },
+      "notPermited": {
+        "cancel-leasing": "Liisingu alustamine pole ajutiselt saadaval."
+      },
+      "notPermitted": {
+        "burn": "Tokenite põletamine pole ajutiselt saadaval.",
+        "burn-title": "Tokenite põletamine",
+        "cancel-leasing": "Liisingu alustamise funktsiooni ei ole ajutiselt saadaval.",
+        "cancel-leasing-title": "Tühista liising",
+        "data": "Andmetehingud ei ole ajutiselt saadaval.",
+        "data-title": "Andmetehing",
+        "reissue-title": "Tokeni  taasemiteeritavus",
+        "set-script": "Skripti tehingud ei ole ajutiselt saadaval.",
+        "sponsorship-start": "Sponsorlus pole ajutiselt saadaval.",
+        "sponsorship-start-title": "Muutke sponsorlust"
+      },
+      "orderSuccess": "Teie order on loodud!",
+      "redirect": "Teid suunatakse aadressile {{referrer}}",
+      "send": {
+        "errors": {
+          "balance": {
+            "invalid": "Ebapiisavad vahendid"
+          },
+          "recipient": {
+            "invalid": "Saaja aadress on vigane"
+          }
+        }
+      },
+      "sign": "Allkirjasta",
+      "success": "Teie tehing on teostamisel!",
+      "wavesKeeperUnconfirmed": {
+        "description": "Palun proovige uuesti. Kui viga püsib, saatke palun pilet [kasutajatoele](https://decentralchain.io/soporte)",
+        "header": "Te ei kinnitanud päringut Waves Keeperiga"
+      }
+    },
+    "copyError": "Ei saa kopeerida! Teie brauser võib olla aegunud",
+    "copySuccess": "Andmed kopeeritud",
+    "directives": {
+      "anyTransaction": {
+        "copy": "Kopeeri",
+        "textAreaTitle": "TX JSON"
+      },
+      "scriptForm": {
+        "placeholder": {
+          "change": "Sisestage uus skript või jätke väli tühjaks, et olemasolev skript tühistada",
+          "create": "Sisestage uus skript või jätke väli tühjaks, et olemasolev skript tühistada"
+        },
+        "textAreaTitle": "Skript"
+      },
+      "setAssetScriptForm": {
+        "ok": "Jätka"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "cancel": "Tühista",
+          "errorDescription": "Palun proovige uuesti. Kui viga püsib, saatke palun pilet [kasutajatoele](https://decentralchain.io/soporte)",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+          "errorHeader": "Te pole kinnitanud päringut Waves Keeperiga",
+          "sign": "Jätka",
+          "waiting": "Waves Keeperilt kinnituse ootel ..."
+        },
+        "confirmRequestLedger": {
+          "cancel": "Tühista",
+          "errorDescription": "Palun proovige uuesti. Kui viga püsib, vaadake palun [käesolev artikkel](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+          "errorHeader": "Te pole kinnitanud päringut Teie Ledger Nano S'is",
+          "sign": "Proovi kinnitada uuesti",
+          "waiting": "Ootan kinnitust Ledger Nano S's…"
+        },
+        "txId": "TXID"
+      },
+      "transactionExport": {
+        "linkTitle": "Jaga linki kinnitamiseks",
+        "or": "VÕI",
+        "qrZoomBtn": "Suurendamiseks / vähendamiseks klõpsake",
+        "scanQrCode": "Skaneeri QR-koodi"
+      }
+    },
+    "emptyBlocks": {
+      "title": "Siin pole midagi…"
+    },
+    "errorBlocks": {
+      "title": "Midagi läks valesti…"
+    },
+    "importSuccess": "Account Importing from the Keystore File was successful",
+    "modal": {
+      "assetInfo": {
+        "gateway_ui": "GATEWAY"
+      },
+      "sign": {
+        "signByLedger": "Ootan kinnitust Ledger Nano S-s"
+      },
+      "token": {
+        "warning": {
+          "header": "Te nõustute, et:",
+          "text": "{div.line} [I) Te ei kasuta tokeni pettuse eesmärgil;]\n{div.line} [II) Te ei kopeeri täielikult või osaliselt olemasoleva krüptovaluuta või tuntud ettevõtte nime/kaubemärki, eesmärgiga eksitada kasutajaid;]\n{div.line} [III) Te ei kasuta tokeni nimes kasutajate eksitamiseks riiki, teisi haldusüksusi või kohalikke asutusi nime.]\n{div.line} [IV) Te ei loo skripti Smart Asset'ile, mis piirab Decentral.Exchangei vahetustehinguid varade koguse järgi;]\n{div.line} [V) Te ei esitada Smart Asset'i kirjelduses valeandmeid, mis käsitlevad tokeni kasutamist reguleerivaid reegleid, mis ei vasta sellele paigaldatud skripti sisule;]",
+          "textWarning": "Nende punktide eiramine toob kaasa, et teie token klassifitseeritakse rämpsiks ja seda saab otsida ainult ID alusel."
+        }
+      }
+    },
+    "password": {
+      "btn": {
+        "confirm": "Confirm"
+      },
+      "minLength": "peab olema vähemalt {{minLength}} tähemärki",
+      "name": "Kontonimi",
+      "nameExists": "That name is taken",
+      "newPass": "New password",
+      "old": "Old password",
+      "oldWrong": "Old password is wrong",
+      "repeat": "Kinnita salasõna",
+      "secure": "turvaline parool",
+      "title": "Kaitsta oma kontot uue parooliga",
+      "warn": "ebaturvaline, palun lisage number ja/või sümbol"
+    },
+    "qrCodeRead": {
+      "closeRead": "Tühista"
+    },
+    "recipient": "Saaja",
+    "transaction": {
+      "actions": {
+        "cancelLeasing": "Tühista liising",
+        "copyTxData": "Kopeerige kõik TX andmed",
+        "copyTxId": "TX-ID kopeerimine",
+        "showTx": "TX info"
+      },
+      "amounts": {
+        "burn": "–{{amount}} {{name}}",
+        "cancel-leasing": "{{amount}} {{name}}",
+        "circular": "{{amount}} {{name}}",
+        "exchange-buy": "{{sign}}{{amount}} {{name}}",
+        "exchange-sell": "{{sign}}{{amount}} {{name}}",
+        "issue": "{{amount}} {{name}}",
+        "lease-in": "{{amount}} {{name}}",
+        "lease-out": "{{amount}} {{name}}",
+        "mass-receive": "+{{amount}} {{name}}",
+        "mass-send": "–{{amount}} {{name}}",
+        "perTransaction": "Kogus tehingu kohta",
+        "receive": "+{{amount}} {{name}}",
+        "reissue": "+{{amount}} {{name}}",
+        "script-invocation": "–{{amount}} {{name}}",
+        "send": "–{{amount}} {{name}}",
+        "set-script": "Loo skripti tehing",
+        "set-script-cancel": "Tühista skripti tehing",
+        "sponsorship-change": "Muuda sponsorlust",
+        "sponsorship-fee": "{{sign}}{{amount}} {{name}}",
+        "sponsorship-start": "Loo sponsorlus",
+        "sponsorship-stop": "Tühista sponsorlus"
+      },
+      "confirmed": {
+        "false": "KINNITAMATA",
+        "true": "TÄIDETUD"
+      },
+      "headers": {
+        "activeLeasing": "aktiivne praegu",
+        "burn": "{{name}} Token Hävitamine",
+        "cancel-leasing": "Tühistatud Liising",
+        "canceled": "Tühistatud",
+        "circular": "Iseülekantud {{name}}",
+        "create-alias": "Loodud Alias",
+        "data": "Andmetehing",
+        "data-vote": "Voted for {{assetName}}",
+        "exchange-amount": "{{amountAsset}}/{{priceAsset}}",
+        "exchange-buy": "Börsi Ost:",
+        "exchange-sell": "Börsi Müük:",
+        "issue": "{{name}} Tokeni Loomine",
+        "lease-in": "Sissetulev liising",
+        "lease-out": "Alustatud liising",
+        "mass-receive": "Saadud {{name}}",
+        "mass-send": "Saadetud {{name}}",
+        "receive": "Saadud {{name}}",
+        "reissue": "{{name}} Tokeni Taasemiteerimine",
+        "script-invocation": "Script Invocation",
+        "send": "Saadetud {{name}}",
+        "set-asset-script": "Loo vara skripti tehing",
+        "set-script": "Loo skripti tehing",
+        "set-script-cancel": "Tühista skripti tehing",
+        "spam": "kahtlane",
+        "sponsorship-fee": "Saadud {{name}}",
+        "sponsorship-start": "Seadke sponsorlus {{name}} jaoks",
+        "sponsorship-stop": "Tühistatud sponsorlus {{name}} jaoks",
+        "suspicious": "kahtlane",
+        "unknown": "Tundmatu tehing"
+      },
+      "modals": {
+        "assetId": "Vara ID",
+        "attachment": "Manuse Sõnum",
+        "cancelTx": "Liisingu TX",
+        "confirmations": "Kinnitused",
+        "copyCode": "Copy Code",
+        "data": "Andmed",
+        "dataKey": "Key",
+        "dataType": "Type",
+        "dataValue": "Value",
+        "description": "Kirjeldus",
+        "exchange": {
+          "buy": "Buy",
+          "buyMatcherFee": "Buy Matcher Fee",
+          "exchangeType": "Order type",
+          "matcherFee": "Matcher Fee",
+          "pair": "Pair",
+          "sell": "Sell"
+        },
+        "fee": "Tasu",
+        "from": "Alates",
+        "function": "Function",
+        "functionCall": "Function call",
+        "height": "Plokk",
+        "hide": "Hide",
+        "hideAll": "Hide all",
+        "leasingStatus": "Staatus",
+        "massSend": {
+          "showAll": {
+            "false": "Kuva kõik ({{count}})",
+            "true": "Kuva esimest 3 tehingut"
+          },
+          "totalAmount": "Kogu summa"
+        },
+        "numberOfRecipients": "Saajate arv",
+        "orderType": "Orderi tüüp",
+        "pair": "Paar",
+        "payment": "Payment",
+        "price": "{{name}} Hind",
+        "script": "Skript",
+        "scriptAddress": "Script address",
+        "seeAll": "See all",
+        "setAssetScript": {
+          "showScript-false": "Kuva",
+          "showScript-true": "Peida"
+        },
+        "show": "Show",
+        "showAll": "Show all ({{count}})",
+        "showFirstTree": "Show first 3 keys",
+        "status": "Status",
+        "timestamp": "Ajatempel",
+        "to": "Kuni",
+        "toBeReissued": "Taasemiteerimiseks",
+        "toRemainOnBalance": "Kontol jääb",
+        "totalAfterBurning": "Kokku pärast hävitamist",
+        "totalAfterReissue": "Kokku pärast taasemiteerimist",
+        "txId": "TXID",
+        "type": "Tüüp",
+        "viewTransactionKey": "Tehing",
+        "viewTransactionValue": "Vaadake tehingut"
+      },
+      "notifications": {
+        "closed": "Liising on juba tühistatud",
+        "closedSuccess": "Liisingu tühistamine lõpetatud"
+      },
+      "reissuable": {
+        "false": "Taasmitteemiteeritav",
+        "true": "Taasemiteeritav"
+      },
+      "set-asset-script": "Uuenda skripti",
+      "subheaders": {
+        "burn": "{{time}}",
+        "cancel-leasing": "{{time}}{span.locale-address}[, tehing {{transactionId}}]",
+        "circular": "{{time}}{span.locale-address}[, aadressil {{address}}]",
+        "create-alias": "{{time}}, {{alias}}",
+        "data": "{{time}}",
+        "exchange-buy": "{{time}}",
+        "exchange-sell": "{{time}}",
+        "issue": "{{time}}",
+        "lease-in": "{{time}}{span.locale-address}[, alates aadressist {{address}}]",
+        "lease-out": "{{time}}{span.locale-address}[, kuni aadressini {{address}}]",
+        "mass-receive": "{{time}}{span.locale-address}[, alates aadressist {{address}}]",
+        "mass-send": "{{time}}",
+        "receive": "{{time}}{span.locale-address}[, alates aadressist {{address}}]",
+        "reissue": "{{time}}",
+        "script-invocation": "{{time}}{span.locale-address}[, kuni aadressini {{address}}]",
+        "send": "{{time}}{span.locale-address}[, kuni aadressini {{address}}]",
+        "set-asset-script": "{{time}}, vara {{name}}",
+        "sponsorship-fee": "{{time}} alates aadressist {{address}}",
+        "unknown": "{{time}}"
+      }
+    },
+    "transactionList": {
+      "noTransactionsDescription": "Teil ei ole tehinguid",
+      "noTransactionsTitle": "Siin pole midagi…"
+    },
+    "transactions": {
+      "script": {
+        "txJson": "Uuenda skripti"
+      }
+    },
+    "whitespace": "&nbsp;"
+  },
+  "app.unavailable": {
+    "message": "The site is undergoing maintenance and will be back up soon. Thank you for your patience.",
+    "title": "We’ll Be Back Soon"
+  },
+  "app.utils": {
+    "confirmTransaction": {
+      "signLedger": "Ootan kinnitust Ledger Nano S's…"
+    },
+    "directives": {
+      "anyTransaction": {
+        "calculatingFee": "Tehingutasu: täida väli arvutamiseks",
+        "errors": {
+          "invalidScript": "Süntaksi viga",
+          "required": "Selle välja täitmine on kohustuslik!"
+        },
+        "fee": "Tasu {{fee, money-currency}}",
+        "ok": "Jätka",
+        "textAreaTitle": "TX JSON",
+        "warning": {
+          "body": "Me ei soovita kasutada JSON-i, kui te pole kogenud kasutaja. Vead võivad põhjustada rahaliste vahendite kaotsiminekut.",
+          "title": "Hoiatus: toimingud võivad põhjustada teie kontole juurdepääsu kaotuse"
+        }
+      },
+      "filter": {
+        "helpIcon": {
+          "assetId": "Vara ID",
+          "description": "Lisateavet varade otsimise kohta leiate [siit](https://docs.wavesplatform.com/en/waves-client/)",
+          "header": "Võite otsida järgnevalt:",
+          "name": "Nimi",
+          "ticker": "Ticker"
+        }
+      },
+      "scriptForm": {
+        "acceptAndContinue": "Kinnita ning jätka",
+        "changePlaceholder": "Sisestage uus skript või jätke väli tühjaks, et olemasolev skript tühistada",
+        "createPlaceholder": "Sisestage skript siia",
+        "errors": {
+          "fee": "Teil ei ole piisavalt vahendeid nõutavate tasude maksmiseks. Peate maksma tehingu tasu {{fee, money-currency}}.",
+          "invalidScript": "Süntaksi viga",
+          "required": "Selle välja täitmine on kohustuslik"
+        },
+        "fee": "Tasu {{fee, money-currency}}",
+        "ideLink": "Skripti saab arendada kasutade [Waves Ride IDE](https://waves-ide.com//)",
+        "ok": "Kinnita",
+        "textAreaTitle": "Base64 script",
+        "warning": {
+          "body": "Me ei soovita skripti tehingute kasutamist, kui te pole kogenud kasutaja. Vead võivad põhjustada teie kontole püsiva juurdepääsu kaotuse.",
+          "title": "Hoiatus: toimingud võivad põhjustada teie kontole juurdepääsu kaotuse"
+        },
+        "warningDescription": "Me ei soovita skripti tehingute kasutamist, kui te pole kogenud kasutaja. Vead võivad põhjustada teie kontole püsiva juurdepääsu kaotuse.",
+        "warningHeader": "Toimingud võivad põhjustada kontole juurdepääsu kaotuse"
+      },
+      "setAssetScriptForm": {
+        "fee": "Tasu {{fee, money-currency}}"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "sign_utils": "Retry"
+        }
+      }
+    },
+    "inputs": {
+      "errors": {
+        "gtGatewayMin": "Te ei saa üle kanda summa, mis on väiksem kui {{min}} {{assetName}}"
+      }
+    },
+    "keeperForm": {
+      "address": "Konto aadress",
+      "addressSaved": "Address saved",
+      "back": "Mine tagasi",
+      "error": {
+        "hasLockedKeeperDescription": "Waves Keeperiga töötamise jätkamiseks peate sisestama eelnevalt loodud salasõna või looma uue.",
+        "hasLockedKeeperHeader": "Sisestage salasõna Waves Keeperis",
+        "hasNoUsersDescription": "Logige olemasolevasse kontosse või looge uus, seejärel proovige uuesti.",
+        "hasNoUsersHeader": "Teil pole aktiivset kontot",
+        "install": "Installige",
+        "networkDescription": "Valitud konto on vales võrgus. Muutke võrku ja proovige uuesti.",
+        "networkHeader": "Võrgu muutmine",
+        "notInstalledDescription": "Pärast installimist looge konto, logige sisse ja värskendage leht jätkamiseks.",
+        "notInstalledHeader": "Teil pole Waves Keeperit?",
+        "refresh": "Uuesti proovima"
+      },
+      "heading": "Impordi konto Waves Keeperist",
+      "loading": "Import account from the Waves Keeper",
+      "login": "Jätka",
+      "name": "Kontonimi",
+      "nameExists": "That name is taken",
+      "or": "VÕI",
+      "retry": "Try again",
+      "saveUserData": "Hoia mind selles arvutis sisse logituna"
+    },
+    "LedgerClient_utils": "Ledger Device",
+    "LedgerClientDescription": "Impordi konto Waves Keeperist",
+    "modal": {
+      "acceptNewTerms": {
+        "title": "Terms of Use Agreement"
+      },
+      "account": {
+        "address": "Teie aadress",
+        "aliases": "Aliased",
+        "aliasesWarning": "Aliaste ​​funktsionaalsus pole ajutiselt saadaval",
+        "cancel": "Konto loomine",
+        "create": "Loo uus",
+        "createAliasNotPermitted": "Aliaste ​​loomine pole ajutiselt saadaval.",
+        "fee": "Tehingutasu {{price}} {{name}}",
+        "hasAlias": "See alias on juba kasutatud",
+        "hasScript": "Aliast ​​ei saa luua, kui teil on multi allkirjastamine kasutusel",
+        "invalidSymbols": "Olete kasutanud kehtetuid märke",
+        "maxLength": "Alias ​​ei tohi olla rohkem kui 30 tähemärki",
+        "message": "Kontoteabe vaatamiseks logige sisse või looge konto",
+        "minLength": "Alias ​​peab olema vähemalt 4 tähemärki",
+        "noMoney": "Ebapiisavad vahendid",
+        "notifications": {
+          "aliasCreated": "Alias ​​on loodud"
+        },
+        "ok": "Logi sisse",
+        "placeholder": "Teie aadressi sümboolne nimi",
+        "title": "Konto {{name}}",
+        "title_default_name": "teave"
+      },
+      "accountInfo": {
+        "alias": {
+          "helpIcon": {
+            "row1": "Aliase Kohta",
+            "row2": "Alias ​​on teie aadressi hüüdnimi. Tehingu tegemiseks saate aadressi asemel kasutada aliast.",
+            "row3": "Teie Alias peab olema vahemikus 4 kuni 30 tähemärki ning see peab sisaldama ainult väikseid ladina tähti, numbreid ja sümboleid (@, -, _) ning punkt."
+          }
+        }
+      },
+      "assetInfo": {
+        "available": "Saadaval",
+        "balance": "Saldo",
+        "contest": "CONTEST",
+        "date": "Emiteerimise kuupäev",
+        "decimals": "Kümnendpunktid",
+        "description": "Kirjeldus",
+        "details": "Detailid",
+        "email": "E-post",
+        "gateway": "GATEWAY",
+        "gatewaySoon": "GATEWAY SOON",
+        "identifier": "ID",
+        "inOrders": "Reserveeritud orderites",
+        "issuer": "Emitent",
+        "leased": "Renditud",
+        "name": "Nimi",
+        "pinned": "Kinnitatud vaatesse",
+        "qualified": "Kvalifitseeritud",
+        "quantity": "Kogus kokku",
+        "rating": {
+          "canVoteTip": "Click to rate token",
+          "tooltipLink": "More Details",
+          "tooltipNeedWAVES": "and 0.001 DCC",
+          "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
+          "tooltipTitle": "To rate a token, you must have at least 1 CRC in your wallet."
+        },
+        "reissue": {
+          "no": "Mittetaasemiteeritav",
+          "yes": "Taasemiteeritav"
+        },
+        "site": "Sait",
+        "sponsorshipFee": "Sponsorlusega vara tasu",
+        "suspicious": "Kahtlane",
+        "ticker": "Ticker",
+        "title": "Vara Info",
+        "tokenomica": "Tokenomica",
+        "total": "Kokku",
+        "transactions": "Tehingud",
+        "type": "Tüüp",
+        "unpinned": "Kinnita vaatesse",
+        "wsocRef": "WSOC"
+      },
+      "backup": {
+        "clearSeed": "{span.clear} [Tühjenda] ja vajutage uuesti",
+        "title": {
+          "title_0": "Salvestage salafraas",
+          "title_1": "Kinnitage salafraas",
+          "title_2": "Edu"
+        }
+      },
+      "confirm-correct-order": "Teie hind {price, money-currency} erineb turuhinnast rohkem kui 5%",
+      "confirmLogout": {
+        "goBack": "Go back",
+        "heading": "You’re about to leave",
+        "logout": "Log Out",
+        "text": "In order to prevent anyone else from accessing your funds without your permission, please log out from your account first."
+      },
+      "confirmOrder": {
+        "cancel": "Tühista",
+        "continue": "Esita Order",
+        "description": "Kas soovite jätkata?",
+        "headerBuy": "Orderi hind on {{orderLimit}}% suurem kui viimane turuhind",
+        "headerSell": "Orderi hind on {{orderLimit}}% väiksem kui viimane turuhind"
+      },
+      "createOrder": {
+        "cancel": "Loo Konto",
+        "message": "Kauplemise alustamiseks logige sisse või looge konto",
+        "ok": "Logi sisse"
+      },
+      "deleteAccount": {
+        "cancel": "Cancel",
+        "delete": "Remove",
+        "description": "{div}[Removing an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "header": "Remove account"
+      },
+      "deposit": {
+        "coinomatBCH": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway BCH tokeni ülekannet teie Waves kontole.",
+          "helpDescrTitle": "Sisestage see aadress oma Bitcoin Cash kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kadumise.",
+          "warningTitle": "Saatke selle deposiidi aadressile ainult BCH"
+        },
+        "coinomatBSV": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BSV to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your Bitcoin Satoshi Vision client or wallet",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kadumise.",
+          "warningTitle": "Saatke selle deposiidi aadressile ainult BSV"
+        },
+        "coinomatBTC": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway BTC tokeni ülekannet teie Waves kontole.",
+          "helpDescrTitle": "Sisestage see aadress oma Bitcoini kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kadumise.",
+          "warningTitle": "Saada selle deposiidi aadressile ainult BTC"
+        },
+        "coinomatDASH": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway DASH tokeni ülekannet teie Waves kontole.",
+          "helpDescrTitle": "Sisestage see aadress oma DASH kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate alla {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kadumise.",
+          "warningTitle": "Selle deposiidi aadressile saatke ainult DASH"
+        },
+        "coinomatETH": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway ETH tokeni ülekannet teie Waves kontole",
+          "helpDescrTitle": "Sisestage see aadress Ethereumi kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Kontrollige, kas teie rahakott või börs kasutab ETH-i väljavõtmiseks smart-kontrakte. Me ei aktsepteeri selliseid tehinguid ja ei saa neid tagasi maksta. Te kaotate selle raha.",
+          "warningTitle": "Palun ärge tehke sissemakset ETH smart-kontrakrtidelt! Ärge tehkse sissemakseid ERC20 tokenites! Ainult Ethereum on lubatud."
+        },
+        "coinomatLTC": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway LTC tokeni ülekannet teie Waves kontole",
+          "helpDescrTitle": "Sisestage see aadress oma Litecoini kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kaotuse.",
+          "warningTitle": "Saada selle deposiidi aadressile ainult LTC"
+        },
+        "coinomatXMR": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway XMR tokeni ülekannet teie Waves kontole",
+          "helpDescrTitle": "Sisestage see aadress oma Monero kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "{div} [Makse ID ei ole vajalik.] Teise vara saatmine sellele aadressile võib kaasa tuua teie deposiidi kaotuse.",
+          "warningTitle": "Saada selle deposiidi aadressile ainult XMR"
+        },
+        "coinomatZEC": {
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb gateway ZEC tokeni ülekannet teie Waves kontole",
+          "helpDescrTitle": "Sisestage see aadress Zcashi kliendisse või rahakoti",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kaotuse.",
+          "warningTitle": "Saada selle deposiidi aadressile ainult Zcash"
+        },
+        "copyAndShare": "Kopeeri ja Jaga Aadressi",
+        "currency": "Valuuta",
+        "or": "VÕI",
+        "pleaseNote": "Pange tähele, et gateway ei võta selle toimingu eest mingeid tasusid.",
+        "scanQrCode": "Skaneeri QR-koodi",
+        "title": "Sissemaksta {{assetName}}",
+        "wavesGatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
+        },
+        "wavesGatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your BTC client or wallet",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse summa on {{minAmount, BigNumber}} {{assetTicker}}",
+          "warningText": "Muude valuutade saatmine sellele aadressile võib kaasa tuua teie deposiidi kadumise.",
+          "warningTitle": "Saada selle deposiidi aadressile ainult BTC"
+        },
+        "wavesGatewayERGO": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ERGO to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ERGO client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only ERGO to this deposit address"
+        },
+        "wavesGatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ETH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Kontrollige, kas teie rahakott või börs kasutab ETH-i väljavõtmiseks smart-kontrakte. Me ei aktsepteeri selliseid tehinguid ja ei saa neid tagasi maksta. Te kaotate selle raha.",
+          "warningTitle": "Palun ärge tehke sissemakset ETH smart-kontrakrtidelt! Ärge tehkse sissemakseid ERC20 tokenites! Ainult Ethereum on lubatud."
+        },
+        "wavesGatewayUSDT": {
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
+          "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
+        },
+        "wavesGatewayVST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrText_copy": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "helpDescrTitle_copy": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+      },
+      "dexScriptedPair": {
+        "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
+        "heading": "Order placement for a pair that includes a Smart Asset"
+      },
+      "disabledFeature": {
+        "anyTransaction": "JSONi tehingud ei ole ajutiselt saadaval.",
+        "lease": "Liisingu alustamine pole ajutiselt saadaval."
+      },
+      "disabledFeatures": {
+        "default": "Kahjuks on see funktsioon praegu välja lülitatud.",
+        "massTransfer": "Massiülekanded ei ole ajutiselt saadaval.",
+        "transfer": "Krüptovaluuta saatmine pole ajutiselt saadaval."
+      },
+      "gatewaySign": {
+        "cancel": "Tühista",
+        "continue": "Luba",
+        "description": "{{name}} saab juurdepääsu teie Waves aadressile. See ei saa teie salafraasi või privaatvõtit. Ärge sisestage oma salafraasi veebisaitidel, millele teid suunatakse.",
+        "descriptionDesktop1": "Link avatakse teie vaikimisi veebibrauseris. Kui soovite kasutada teist veebibrauserit,",
+        "descriptionDesktop2": "koopeerige",
+        "descriptionDesktop3": "ja kleepige link oma aadressi ribale.",
+        "error": {
+          "button": "Tühista",
+          "headline": "Midagi läks valesti",
+          "title": "Viga"
+        },
+        "headline": "{span.link}[{{url}}] soovib juurdepääsu teie Waves Addressile",
+        "retrySign": "Proovi uuesti",
+        "title": "Logige sisse Waves'dega",
+        "txHash": "TXHASH",
+        "warning": "Ärge sisestage oma salafraasi veebisaitidel, millele teid suunatakse."
+      },
+      "import": {
+        "errorBeta": "Me ei saanud teie kontosid Waves Beta Kliendist alla laadida. Proovige importida Waves Lite kliendist.",
+        "errorHeader": "Kontosid ei leitud",
+        "errorLite": "Me ei saanud teie kontosid Waves Lite kliendist alla laadida. Proovige importida Waves Beta Kliendist.",
+        "errorUnable": "Me ei saanud teie kontosid alla laadida. Palun taastage need, kasutades oma salafraase.",
+        "fromBetaButton": "Impordi Beta kliendist",
+        "fromLiteButton": "Impordi Lite kliendist",
+        "helpIcon": {
+          "description": "Korrektse töö tagamiseks soovitame lubada hüpikaknad. Juhised veebilehitsejatele: [Chrome](https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&amp;hl=et), [Safari](https://discussions.apple.com/thread / 4271925), [Firefox](https://support.mozilla.org/en-US/kb/pop-blocker-settings-exceptions-troubleshooting), [Opera](https://help.opera.com/et / presto / kontroll-leheküljed /).",
+          "title": "Mõned veebilehitsejad blokeerivad vaikimisi hüpikaknad."
+        },
+        "importButton": "Impordi",
+        "importCancel": "Tühista",
+        "iUnderstandButton": "Ma saan aru",
+        "selectAccountDescription": "Peate oma veebilehitsejas lubama hüpikaknad",
+        "selectAccountToImport": "Valige, milliseid kontosid soovite importida",
+        "selectAccountToImportFrom": "Valige, kust kontosid importida",
+        "selectButton": "Vali",
+        "wavesBetaClient": "Waves Beta klient",
+        "wavesBetaClientDescription": "Importige kontosid Waves Beta kliendist",
+        "wavesLiteClient": "Waves Lite klient",
+        "wavesLiteClientDescription": "Importige kontosid Waves Lite kliendist"
+      },
+      "matcherChoice": {
+        "customMatcher": "Custom matcher address",
+        "matcher": "Matcher",
+        "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
+        "terms": "Terms",
+        "title": "Choose matcher",
+        "wavesTerms": "I am over 18 years old, and I agree to the Waves Terms of Use and Waves Privacy Policy."
+      },
+      "open-main": {
+        "dex": {
+          "cancel": "Loo konto",
+          "message": "Kauplemise alustamiseks logige sisse või looge konto",
+          "ok": "Logi sisse"
+        },
+        "tokens": {
+          "cancel": "Loo konto",
+          "message": "Tokeni emiteerimiseks logige sisse või looge konto",
+          "ok": "Logi sisse"
+        },
+        "wallet": {
+          "assets": {
+            "cancel": "Loo konto",
+            "message": "Rahakoti avamiseks logige sisse või looge konto",
+            "ok": "Logi sisse"
+          },
+          "cancel": "Loo konto",
+          "leasing": {
+            "cancel": "Loo konto",
+            "message": "Rahakoti avamiseks logige sisse või looge konto",
+            "ok": "Logi sisse"
+          },
+          "message": "Rahakoti avamiseks logige sisse või looge konto",
+          "ok": "Logi sisse",
+          "portfolio": {
+            "cancel": "Loo konto",
+            "message": "Rahakoti avamiseks logige sisse või looge konto",
+            "ok": "Logi sisse"
+          },
+          "transactions": {
+            "cancel": "Loo konto",
+            "message": "Rahakoti avamiseks logige sisse või looge konto",
+            "ok": "Logi sisse"
+          }
+        }
+      },
+      "pairing": {
+        "downloadAppDescription": "Laadige alla meie mobiilirakendused:",
+        "scanCodeDescription": "Skaneerige allolev kood oma iPhone'i või Android-seadmega, et see teie kontoga siduda."
+      },
+      "pinAsset": {
+        "cancel": "Tühista",
+        "nothing": "Pole midagi valitud",
+        "placeholder": "Sisestage vara nimi või ID",
+        "submit": "Kinnita vaatesse",
+        "title": "Valige vara, mida soovite vaatesse kinnitada"
+      },
+      "qr": {
+        "copyAndShare": "Kopeeri ja Jaga Aadressi",
+        "or": "VÕI",
+        "scanQrCode": "Skaneeri QR-koodi",
+        "title": "Jaga oma aadressi",
+        "warningText": "Mis tahes muu digitaalse vara saatmine sellele aadressile toob kaasa teie raha püsiva kaotsimineku.",
+        "warningTitle": "Saada sellele aadressile ainult DCC ja Waves tokenid"
+      },
+      "receive": {
+        "accountStatus": "Konto staatus",
+        "addressOrAlias": "Aadress / Alias",
+        "amount": "Kogus",
+        "amountYouPay": "Makstav summa",
+        "asset": "Vara",
+        "bank": {
+          "title": "Pank"
+        },
+        "bankSuccessHeader": "Verifitseerimiseks suunati teid IDNow.eu-sse.",
+        "bankSuccessText": "Pärast verifitseerimise läbimist saate e-kirja koos täiendavate juhistega.",
+        "bankVerifiedPlateDescription": "Enne raha väljavõtmist soovitame vaadata [juhiseid](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) ja [limiidid ning tehingutasusid](https://coinomat.com/limits.php).",
+        "bankVerifiedPlateHeader": "Teie raha on nüüd võimalik pangakontole ülekanda.",
+        "card": {
+          "continue": "Jätka",
+          "title": "Kaart"
+        },
+        "cardSuccessHeader": "Teid suunati Indacoin.com-i",
+        "cardSuccessText": "Pärast makse sooritamist uuendatakse teie saldot",
+        "coinomat": {
+          "serverError": "Coinomat Teenus ei ole ajutiselt saadaval. Proovige hiljem uuesti.",
+          "tryAgain": "Proovi uuesti"
+        },
+        "cryptocurrency": {
+          "title": "Krüptovaluuta"
+        },
+        "error": {
+          "cardAmount": {
+            "gte": "Minimaalne summa, mida saate sisse maksta, on {{gte}} {{currency}}",
+            "lte": "Maksimaalne summa, mida saate sisse maksta, on {{lte}} {{currency}}",
+            "precision": "Selles väljas olev number on vale. See võib sisaldada maksimaalselt kaks numbrit peale koma."
+          }
+        },
+        "errors": {
+          "required": "Selle välja täitmine on kohustuslik"
+        },
+        "gatewayError": "Service Gateway temporarily unavailable. Try again later.",
+        "invoice": {
+          "title": "Arve"
+        },
+        "ledger": {
+          "cancel": "Tühista",
+          "retry": "Proovi uuesti"
+        },
+        "maximumIs": "maksimaalne on",
+        "minimumIs": "Minimaalne on",
+        "providedByCoinomat": {
+          "descriprion": "{div}[Seda teenust osutab Coinomat Company (edasi Сoinomat). Waves Platform AG ei võta endale vastutust Coinomati tegevuse eest ega võta mingit osa suhetes, mis võivad tekkida Coinomati ja Waves Platformi kasutajate vahel.]{div}[Kasutades Coinomat'i teenuseid nõustute [Coinomat'i kasutustingimustega ning tehingute läbiviimise tingimustega](https://coinomat.com/terms.php). Kui te ei nõustu nende tingimustega, ärge kasutage Coinomat'i teenuseid.]",
+          "header": "Seda teenust osutab Coinomat Company (edasi Сoinomat).",
+          "termsReadedInputLabel": "Nõustun [Kasutustingimustega ning Tehingute Läbiviimise tingimustega](https://coinomat.com/terms.php), [Limiitidega](https://coinomat.com/limits.php) ja [Privaatsuspoliitikaga](https://coinomat.com/privacy.php).",
+          "warning": "Verifikatsiooni, maksete töötlemise või teie nõusoleku tühistamise probleemide korral võtke ühendust Coinomat'i tugimeeskonnaga — [support@coinomat.com](mailto:support@coinomat.com)"
+        },
+        "receive": "Sissemakse",
+        "serverAddressError": "Gateway address error",
+        "serverError": "Coinomat Teenus ei ole ajutiselt saadaval. Proovige hiljem uuesti.",
+        "serverWrongAddress": "Wrong address",
+        "shareInvoiceLink": "Jaga link arvele",
+        "verified": "Verifitseeritud",
+        "vostok": {
+          "serverError": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wavesEnterprise": {
+          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wtry": {
+          "info": "Makse töötlemisega seotud probleemide korral palun võtke ühendust Digilira tugimeeskonnaga — [support@digilira.com](mailto:support@digilira.com)"
+        },
+        "wtryPlate1Header": "Türgi liiri lüüsi saab kasutada ainult siis, kui teil on Türgi kodakondsus.",
+        "wtryPlate1Text": "Sissemakse tegemiseks suunatakse teid [digilira.com aadressile](https://digilira.com)",
+        "wtrySuccessHeader": "Teid suunati aadressile Digilira.com",
+        "youWillGet": "Umbes saate"
+      },
+      "removeAccount": {
+        "cancel": "Tühista",
+        "heading": "Eemalda konto",
+        "remove": "Eemalda",
+        "text": "{div} [Konto kustutamine toob kaasa pöördumatu kahju, kui te pole salvestanud salafraasi.]\n{div}[Vajutage nupule EEMALDA, et jätkata konto eemaldamist, või TÜHISTA, et naasta eelmisele ekraanile .]",
+        "warning": "Te pole salvestanud oma salafraasi",
+        "warningPlural": "You did not save your Seed phrases"
+      },
+      "removeKeeperAccount": {
+        "heading": "Eemalda Waves Keeper konto",
+        "text": "See kustutab ainult selle konto salvestatud tee. See ei kustuta kontot Waves Keeperist."
+      },
+      "removeLedgerAccount": {
+        "heading": "Eemalda Ledger'i konto",
+        "text": "See ei kustuta kontot teie Ledger'ist. See kustutab ainult teie kontole salvestatud tee."
+      },
+      "removePrivateKeyAccount": {
+        "text": "{div}[Deleting an account will lead to its irretrievable loss if you didn't save a Private key.]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]"
+      },
+      "script": {
+        "anyTx": "JSON",
+        "setScript": "Skripti tehing"
+      },
+      "send": {
+        "amount": "Kogus",
+        "attachmentLength": "Kirjeldus on liiga pikk",
+        "bankAccount": "Pangakonto",
+        "coinomat": {
+          "feeExplanation": "Me tuvastasime {{assetName}} aadressi ja saadame teie raha Coinomati lüüsi kaudu sellele aadressile. Minimaalne summa on {{min, BigNumber}} {{assetTicker}}, maksimaalne summa on {{max, BigNumber}} {{assetTicker}}.",
+          "feeTitle": "Lüüsi tasu on {{fee, BigNumber}} {{assetTicker}}"
+        },
+        "coinomatLimits": "Minimaalne 100 USD/EUR, maksimaalselt 50 000 USD/EUR",
+        "coinomatWarningHeader": "Me saadame teie raha Coinomati lüüsi kaudu.",
+        "coinomatWarningText": "Enne raha väljavõtmist kontrollige palun Сoinomat'i [limiidid ja tehingutasud](https://coinomat.com/limits.php).",
+        "compare": {
+          "description": "Saatsite {{amount}} {{currency}} ($ {{mirror}})",
+          "details": "Vaata detaile",
+          "title": "Teie tehing on teel!"
+        },
+        "confirm": {
+          "back": "Mine tagasi",
+          "confirm": "Kinnita",
+          "from": "Alates",
+          "title": "Tehingu üksikasjad",
+          "to": "Kuni",
+          "total": "Kokku"
+        },
+        "currency": "Vara",
+        "description": "Kirjeldus",
+        "descriptionPlaceholder": "Kirjutage valikuline teade",
+        "errors": {
+          "address": "Aadress pole kehtiv",
+          "allAddressesInvalid": "Kõik aadressid on kehtetud",
+          "button": "Tühista",
+          "headline": "Midagi läks valesti",
+          "invalidChars": "Väli võib sisaldada ainult numbreid",
+          "max": "Ebapiisavad vahendid",
+          "maxCoinomat": "Te ei saa üle kanda rohkem kui {{money, money-currency}}}",
+          "paymentIdLength": "Monero Makse ID peab olema 64-kohaline hex kujul rida",
+          "paymentIdPattern": "Hex rida peaks koosnema sümbolitest 0-9 ja A-Z (või a-z)",
+          "precision": "Sel väljal olev number on kehtetu. See võib sisaldada maksimaalselt {{precision}} numbrit pärast koma.",
+          "required": "Selle välja täitmine on kohustuslik",
+          "title": "Viga"
+        },
+        "fee": "Tehingutasu {{fee, money-currency}}",
+        "gateway": {
+          "feeExplanation": "We have detected a {{assetName}} address and will send your funds via a gateway to this address. The minimum amount is {{min, BigNumber}} {{assetTicker}}. The maximum amount is {{max, BigNumber}} {{assetTicker}}."
+        },
+        "gatewayTerms": {
+          "accept": "Accept and Continue",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.wavesplatform.com/) and [Conduction of Transactions](https://dex.wavesplatform.com/). If you do not agree to these terms, then do not use this Gateway service.",
+          "title": "Gateway service agreement"
+        },
+        "icoWarning": "Ärge saatke {{assetName}} ICO-le Waves rahakotist otse. Me ei saa teie kontole sellelt müügilt tokenid ülekanda.",
+        "idNumber": {
+          "helpIcon": {
+            "description": "Lisateavet raha väljavõtmise kohta pangakontole leiate [siin](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html).",
+            "title": "Teie ID number on unikaalne number, mis on määratud igale kasutajale pärast pangakonto kinnitamist Coinomat'is."
+          }
+        },
+        "idNumberTitle": "ID number",
+        "liraBankAccount": "Digilira konto",
+        "massSend": {
+          "clear": "Tühjenda",
+          "description": "Kirjeldus",
+          "errors": {
+            "invalidAddress": "Kehtetute aadresside loend:"
+          },
+          "importFile": "Importige CSV-fail",
+          "recipient": "Adressaadid, summad: {{count}}/{{max}}",
+          "recipientsAmountsPlaceholder": "Näide:\nAadress1, summa1\nAadress2, summa2",
+          "showAllErrors": {
+            "false": "Kuva kõik ({{count}})",
+            "true": "Kuva 2 esimest viga"
+          },
+          "totalAmount": "Kogu summa",
+          "warningPlate1Header": "Saate saata kuni 100 adressaadile",
+          "warningPlate1Text": "Kõik esimesele 100-le järgnevad saajad ignoreeritakse.",
+          "warningPlate2Header": "Kehtetud aadressid ei kuulu massiülekandesse.",
+          "warningPlate3Header": "Kasutage koma eraldajaks saaja ja saadetava summa vahel. Kasutage iga saaja jaoks uut rida.",
+          "warningPlate3Text": "[Lisateave CSV-faili standardi kohta](https://en.wikipedia.org/wiki/Comma-separated_values)."
+        },
+        "massSendTitle": "Massülekanne",
+        "moneroPaymentId": "Monero makse ID",
+        "moneroPaymentIdPlaceholder": "Kleebi või kirjuta oma Monero makse ID",
+        "notSponsorship": {
+          "fee": "Tehingutasu {{fee, money-currency}}"
+        },
+        "notVerifiedHeader": "Te ei ole verifitseeritud.",
+        "notVerifiedText": "Pangakontole raha väljavõtmine on saadaval ainult verifitseeritud kasutajatele. Fiat raha saatmise ja vastuvõtmise kohta saate rohkem teavet [siit](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html).",
+        "or": "või",
+        "placeholderRecipient": "Kleebi või skaneeri aadress",
+        "recipient": "Saaja",
+        "sendMax": "Maks",
+        "sendTitle": "Saada",
+        "title": "Saada {{assetName}}",
+        "titleComplete": "Saatmine on lõpetatud",
+        "toBank": "Võta raha välja pangakontole",
+        "total": "Kokku",
+        "toWaves": "Saada Waves aadressile",
+        "txFee": "Tehingutasu",
+        "validationError": {
+          "notEnoughFunds": "Teil ei ole piisavalt vahendeid nõutud tasude maksmiseks. Peate maksma {{fee, money-currency}} tehingutasu.",
+          "notEnoughFundsWithdraw": "Teil ei ole piisavalt vahendeid nõutud tasude maksmiseks. Peate maksma {{fee, money-currency}} tehingutasu ja {{getawayFee, BigNumber}} {{currency}} lüüsi tasu. Minimaalne raha ülekande summa on {{minGatewayAmount, BigNumber}} {{currency}}."
+        },
+        "withdrawTitle": "Withdraw"
+      },
+      "sepa": {
+        "countryList": "Abikõlblike riikide ja ID-de loend",
+        "proceed": "Ole verifitseeritud",
+        "step1": "Samm 1",
+        "step1Description": "Et {{assetName}} deponeerida otse oma pangakontolt SEPA ülekandega, peate olema meie partneri [IDNow.eu]({{url}}) poolt verifitseeritud.",
+        "step2": "Samm 2",
+        "step2Description": "Pärast verifitseerimise läbimist saate e-kirja koos täiendavate juhistega",
+        "title": "Deponeeri {{assetName}}",
+        "warning": "Verifitseerimise või maksete töötlemise probleemide korral võtke ühendust Coinomat'i tugimeeskonnaga - [support@coinomat.com](mailto: support@coinomat.com)",
+        "warningTitle": "Me ei aktsepteeri rahvusvahelisi ülekandeid USA kodanikelt või USA pankadelt"
+      },
+      "setAssetScript": {
+        "errorNoMoney": "Teil ei ole piisavalt vahendeid nõutud tasude maksmiseks. Peate maksma {{fee, money-currency}} tehingutasu.",
+        "script": "Skript",
+        "scripted": "Loo",
+        "title": "Uuenda skripti",
+        "unavailable": "Update Script functionality is temporarily unavailable",
+        "warningDescription": "{div} [Me ei soovita skripti tehinguid luua, kui te pole kogenud kasutaja. Vead võivad põhjustada vara püsiva kadumise.]",
+        "warningHeader": "Meetmed võivad põhjustada vara kaotsimineku."
+      },
+      "settings": {
+        "account": "Account",
+        "cancel": "Loo konto",
+        "changePass": "Change password",
+        "deleteAccount": "Remove account",
+        "exportAccounts": {
+          "accounts": "Accounts",
+          "export": "Export",
+          "selectAll": "Select all",
+          "title": "Please select account",
+          "unselectAll": "Unselect all"
+        },
+        "general": {
+          "auto": "Automaatne",
+          "blockHeight": "Praegune kõrgus",
+          "blue": "Waves",
+          "color": "Värv",
+          "dark": "Tume",
+          "green": "Klassikaline",
+          "hours": "{{hours}} tund",
+          "language": "Keel",
+          "minutes": "{{minutes}} min",
+          "openLinkViaWeb": "Tahaksin alati linke veebirakenduse kaudu avada",
+          "playSound": "Play user interface sound effects",
+          "theme": "Teema",
+          "timeout": "Sessioon aegub",
+          "title": "Üldine",
+          "white": "Valge"
+        },
+        "helperContent": "You can set a password for exported accounts",
+        "info": {
+          "legal": "Legal",
+          "privacyPolicy": "Privacy Policy",
+          "support": "Kasutajatugi",
+          "termsAndConditions": "Terms and Conditions",
+          "title": "Info",
+          "version": "Versioon"
+        },
+        "message": "Seadete avamiseks logige sisse või looge konto",
+        "network": {
+          "apiAddress": "Data service",
+          "apiAddressHelp": "The Data Service provides additional APIs for interacting with Waves blockchain data.",
+          "assetNameFilter": "Naming service",
+          "assetNameFilterHelp": "This service checks the name of the token with the Waves token library.\nFor completely disable it, clear the field.",
+          "copy": "koopeeri",
+          "dataProvider": "Andmepakkuja",
+          "dataProviderDescription": "{{dataProviderDescription}}",
+          "dataProviderId": "{{dataProviderId}}",
+          "dataProviderInvalid": "Teenusepakkuja teabe hankimine ebaõnnestus. Palun kontrollige aadressi ja proovige uuesti",
+          "dataProviderName": "{{dataProviderName}}",
+          "dontShowSpamCheckboxDescr": "Don't show suspicious tokens",
+          "edit": "Edit",
+          "forDisableClear": "For completely disable it, clear the field.",
+          "matcherAddress": "Matcher'i aadress",
+          "nodeAddress": "Sõlme aadress",
+          "showMore": "Kuva rohkem",
+          "spamFilter": "Token Filter",
+          "spamFilterInputDescr": "Lülitage rämpsposti filtreerimine välja",
+          "spamListHelp": "See filter eemaldab teie portfellist kahtlased tokenid.",
+          "title": "Võrk"
+        },
+        "ok": "Logi sisse",
+        "pairing": {
+          "devicePairing": "Ekspordi konto",
+          "header": "Ühildamiskoodi skaneerimine",
+          "showCodeLink": "Näita ühildamiskoodi",
+          "unavailable": {
+            "description": {
+              "ledger": "Eksport ei ole Ledger Nano S-s talletatud kontode jaoks saadaval",
+              "wavesKeeper": "Waves Keeperist imporditud kontode eksportimine on saadaval Waves Keeper seadetes"
+            },
+            "header": {
+              "ledger": "Eksport pole saadaval",
+              "wavesKeeper": "Eksport pole saadaval"
+            },
+            "ok": "Ma saan aru"
+          }
+        },
+        "passChanged": "Password was changed successfully",
+        "password": "Password",
+        "security": {
+          "address": "Aadress",
+          "backupPhrase": "Salafraas",
+          "base58Seed": "Encoded backup phrase",
+          "encodedSeed": "Kodeeritud salafraas",
+          "exportAccount": "Export account to file",
+          "id": "Account ID",
+          "privateKey": "Privaatne võti",
+          "publicKey": "Avalik võti",
+          "savejson": "Save as JSON file",
+          "script": "Skript",
+          "scriptButton": "Loo skript",
+          "scriptButtonUpdate": "Uuenda skripti",
+          "show": "Kuva",
+          "title": "Turvalisus"
+        },
+        "setDefault": "Määra vaikimisi",
+        "title": "Seaded"
+      },
+      "sign": {
+        "article": "artikkel",
+        "buy": "Buy",
+        "cancel": "Tühista",
+        "cancelOrder": "Tühista order",
+        "close": "Sulge",
+        "confirm": "Kinnita",
+        "confirmRequest": "Kinnita päring",
+        "confirmRequest_utils": "Confirm request",
+        "confirmRequestKeeper": "Waves Keeperilt kinnituse ootel ...",
+        "confirmRequestLedger": {
+          "cancel": "Tühista",
+          "errorDescription": "Palun proovige uuesti. Kui viga püsib, vaadake palun [käesolev artikkel](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+          "errorHeader": "Te pole kinnitanud päringut teie Ledger Nano S-s",
+          "sign": "Proovi uuesti kinnitada",
+          "waiting": "Ootan kinnitust Ledger Nano S-s"
+        },
+        "confirmRequestMatcher_utils": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account.",
+        "confirmRequestToMatcher": "Kinnitage päring Matcher'ile. Kui te seda ei kinnita, ei saa Te DEX-il kaubelda.",
+        "connecting": "Ühendamine ...",
+        "connectingKeeper": "Ühendamine Waves Keeper'iga...",
+        "connectionError": "Ledger'iga ei ole võimalik ühendust saada",
+        "connectionErrorKeeper": "Kontole ei ole võimalik pääseda",
+        "connectionText": "Ühendus võib olla aegunud. Palun proovi uuesti.",
+        "connectLedger": "Ühendage oma Ledger Nano S",
+        "enterPin": "Sisestage oma PIN-kood",
+        "fee": "Tasu",
+        "matcher": "Kinnitage orderite päringud",
+        "openApp": "Avage Waves rakendus",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "price": "Hind",
+        "refererTo": "Kui viga püsib, vaadake palun",
+        "referTo": "Kui viga püsib, vaadake palun",
+        "request": "päring",
+        "requestId": "Päringu hash",
+        "retry": "Proovi uuesti",
+        "sell": "Sell",
+        "signByKeeper": "Waves Keeperilt kinnituse ootel ...",
+        "signByLedger": "Waiting for confirmation on Ledger Device…",
+        "signError": "Päring ei olnud kinnitatud",
+        "signErrorKeeper": "Te ei kinnitanud päringut Waves Keeperiga",
+        "signErrorText": "Te ei kinnitanud päringut teie Ledger Nano S-s",
+        "signErrorTextImportKeeper": "Logige sisse Waves Keeperisse aadressiga {{address}} ja seejärel värskendage leht jätkamiseks.",
+        "signErrorTextKeeper": "Palun proovi uuesti. Kui viga püsib, looge pilet [kasutajatoele](https://decentralchain.io/soporte/)",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+        "timestamp": "Timestamp",
+        "txId": "TXID"
+      },
+      "sponsorship_edit": {
+        "title": "Muuda sponsorlust"
+      },
+      "sponsorship": {
+        "amountPerTx": "Summa tehingu kohta (0,001 DCC)",
+        "assetId": "ID",
+        "continue": "Jätka",
+        "errors": {
+          "feeRequired": "Selle välja täitmine on kohustuslik!",
+          "minSponsoredAssetFee": {
+            "precision": "Sel väljal on number kehtetu. See võib sisaldada maksimaalselt {{precision}} numbrit pärast koma."
+          },
+          "noMoney": "Teil ei ole piisavalt vahendeid nõutud tasude maksmiseks. Peate maksma {{fee, money-currency}} tehingutasu.",
+          "notZero": "Väärtus peab olema suurem kui 0"
+        },
+        "fee": "Tehingutasu {{fee, money-currency}}",
+        "title": "Luba Sponsorlus",
+        "warningHeader": "Kasutajad saavad maksta tehingutasusid {{name}}'des",
+        "warningText": "Iga tehingu puhul lahutatakse teie saldost 0,001 DCC ja teie kontole krediteeritakse {{name}}. Teie poolt tehingute eest tasumisele kuuluva {{name}} summa määrate teie, kui lubate sponsorluse (sisestage summa allolevas vormis). Sponsorlus toimib ainult siis, kui teil on vähemalt 1,005 WAVESi saldo. Kui teie saldo langeb alla selle summa, ei saa te tehinguid sponsoreerida."
+      },
+      "startLease": {
+        "amount": "Kogus",
+        "balance": "Saldo",
+        "fee": "Tasu {{fee, money-currency}}",
+        "nodeListLink": "Sõlmede nimekiri",
+        "nodeListLink_copy": "Sõlmede nimekiri",
+        "recipient": "Saaja",
+        "start": "Alusta liisingut",
+        "title": "Alusta liisingut"
+      },
+      "termsAccept": {
+        "body": {
+          "advancedMode": "Täiustatud funktsioonid",
+          "analytics": "Sooviksin parandada Waves platvormi, saates arendajatele anonüümset kasutusstatistikat.",
+          "backup": "Ma saan aru, et kui see rakendus teisaldatakse teise seadmesse või kustutatakse, saab minu Waves rahakottid taastada ainult salafraasiga.",
+          "ok": "Kinnita ja Alusta",
+          "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+          "read": "Olen lugenud, mõistnud ja nõustunud",
+          "readTermsAndConditions": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+          "security": "Ma saan aru, et minu raha hoitakse turvaliselt selles seadmes, mitte ettevõtte poolt",
+          "securityAndBackup": "I understand that my funds are held securely on this device, not by a company. If this app is moved to another device or deleted, my Waves can only be recovered with the backup phrase.",
+          "terms": "Kasutustingimused"
+        },
+        "header": {
+          "description": "Waves on erinev — rahakott on teie seadmes turvaliselt salvestatud",
+          "title": "Valmis! Vaatame üle",
+          "title2": "Kasutustingimused"
+        }
+      },
+      "token": {
+        "balance": "Saldo",
+        "burn": {
+          "label": "Hävitavate tokenite kogus",
+          "title": "{{name}} Token'i hävitamine"
+        },
+        "description": "Kirjeldus",
+        "fee": "Tehingutasu {{fee, money-currency}}",
+        "gt0": "Sisestatud number peab olema suurem kui null",
+        "id": "Vara ID",
+        "quantity": "Kogu summa",
+        "reissue": {
+          "label": "Taasemiteeritavate tokenite kogus",
+          "title": "{{name}} Tokeni Taasemiteerimine"
+        },
+        "validation": {
+          "gt0": "Selle välja täitmine on kohustuslik",
+          "invalidAsset": "Väli võib sisaldada ainult numbreid",
+          "invalidPrecision": "Ületati maksimaalse {{precision}} koma kohtade arvu",
+          "lteMaxBalance": "Kogus ei saa olla rohkem kui saldo",
+          "maxValueCount": "Sisestatud number on liiga suur",
+          "noMoney": "Teie saldost ei piisa tehingutasude maksmiseks",
+          "required": "Selle välja täitmine on kohustuslik"
+        }
+      },
+      "tryDesktop": {
+        "remember": "Remember my choice and do not remind me again"
+      },
+      "tutorialModals": {
+        "step1": {
+          "button": "Mida on vaja teada oma salafraasi kohta",
+          "buttonMobile": "Järgmine",
+          "buttonReadMore": "Read more",
+          "p1": "Palun võtke aega, et mõista teie jaoks olulisi asju. 🙏",
+          "p2": "Me ei saa teie raha tagasi saada ega teie kontot külmutada, kui külastate andmepüügisaite või kaotate varukoopia (salafraas).",
+          "p3": "Jätkates meie platvormi kasutamist, nõustute nõustuma kõigi riskidega, mis on seotud teie salafraasi kadumisega, sealhulgas, kuid mitte ainult, suutmatus teie raha saada ja neid käsutada. Kui te kaotate oma salafraasi, nõustute ja tunnistate, et Waves Platform ei vastuta selle negatiivsete tagajärgede eest.",
+          "title": "Tere tulemast Waves Platformi!"
+        },
+        "step2": {
+          "backButton": "Mine tagasi",
+          "cell1": "Kasutate oma rahakotti anonüümselt, mis tähendab, et teie kontot ei ole ühendatud e-posti kontoga või muude identifitseerimisandmetega.",
+          "cell2": "Teie parool kaitseb teie kontot teatud seadmes või brauseris töötades. See on vajalik, et tagada, et teie salafraas ei oleks otse salvestatud mällu.",
+          "cell3": "Kui unustate oma parooli, saate hõlpsasti luua uue, kasutades oma salafraasi kaudu konto taastamise võimalust. Kui te kaotate oma salafraasi, ei ole teil mingit võimalust oma kontole juurde pääseda.",
+          "cell4": "Sa ei saa oma salafraasi muuta. Kui saatsite selle kogemata kellelegi või kahtlustate, et petturid on selle üle võtnud, looge kohe uus Waves konto ja kandke oma raha üle.",
+          "nextButton": "Kaitske ennast",
+          "p1": "Konto registreerimisel palutakse teil salvestada teie salafraas ja kaitsta oma kontot parooliga. Tavalistes tsentraliseeritud serverites pööratakse erilist tähelepanu paroolile, mida saab vajadusel e-posti teel muuta ja lähtestada. Detsentraliseeritud platvormidel, nagu näiteks Waves, on kõik paigutatud erinevalt:",
+          "title": "Mida on vaja teada oma salafraasi kohta"
+        },
+        "step3": {
+          "backButton": "Mine tagasi",
+          "cell1": "Kontrollige alati URL-i: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell2": "Ärge kasutage brausereid, millel on laiendused või pluginad mis võivad pääseda teie kontole",
+          "cell3": "Ärge avage e-kirju või linke tundmatutelt saatjatelt.",
+          "cell4": "Värskendage oma operatsioonisüsteemi regulaarselt.",
+          "cell4Web": "Värskendage oma brauserit ja operatsioonisüsteemi regulaarselt.",
+          "cell5": "Kasutage ametlikku turvatarkvara. Ärge installige tundmatuid programme, mis võisid/võivad olla häkkitud.",
+          "cell6": "Ärge avage oma rahakotti, kui kasutate avalikku Wi-Fi't või kellegi teise seadet",
+          "nextButton": "Ma saan aru",
+          "p1": "Üks levinumaid pettuse vorme on andmepüük, mis on siis, kui petturid loovad Facebookis võltsitud kogukonnad või muud autentsete lehekülgedega sarnased veebilehed.",
+          "saveSeedButton": "Save the SEED phrase",
+          "title": "Kuidas Kaitsta End Andmepüüdjate Eest"
+        }
+      },
+      "unsuccessfulMigration": {
+        "checkbox": "Don't show this again",
+        "description": "You have started the account migration from Decentral.Exchange to this exchange, but it hasn't been finished. Your accounts haven't been moved. Go back to Decentral.Exchange and start the process from the beginning.",
+        "title": "Unfinished Migration",
+        "understand": "Ma saan aru"
+      }
+    },
+    "modals": {
+      "anyTx": {
+        "title": "JSON"
+      }
+    },
+    "notification": {
+      "backup": {
+        "action": "Salvesta",
+        "body": "Hoidke oma salafraas turvaliselt, see on ainus viis rahakoti taastamiseks.",
+        "title": "Salvestage oma salafraas"
+      }
+    },
+    "qualified": "qualified",
+    "transaction": {
+      "amounts": {
+        "create-order": "{{sign}}{{amount}} {{name}}"
+      }
+    },
+    "Unpin_utils": "Unpin",
+    "utils": {
+      "migrationError": "Oops! Your accounts are safe but haven't been moved. Please try again.",
+      "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+      "privacyPolicyText": "Privacy Policy",
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+      "termsAgreementText": "Terms and Conditions",
+      "termsAssign": "I have read and agree with the",
+      "whatsNew": {
+        "body": {
+          "1_0_0": "{span.line}[1. Waves Client on beetaversioonist välja tulnud.]{span.line}[2. Nüüd saate põhilehele lisada ja eemaldada kõik varad.]{span.line}[3. Lisati öörežiim.]{span.line}[4. Nüüd saate hõlpsasti importida kõik oma kontod vanast kliendist.]{span.line}[5. Väikesed veaparandused.]",
+          "1_0_0-beta_23": "{span.line}[1. Oleme lisanud 'Mis on uus' alamlehe!]{span.line}[2. Nüüd saate oma kontole nime lisada.]{span.line}[3. Mõned väikesed vead on parandatud.]",
+          "1_0_0-beta_25": "{span.line}[1. Nüüd saate muuta seansi aega seadetes.]{span.line}[2. Oleme parandanud DEXi ostu-müügi akent, et vältida selle väljumist vaateväljast.]{span.line}[3. Me nüüd tuletame teile meelde, kui te pole oma salafraasii salvestanud.]{span.line}[4. Mõned väikesed vead on parandatud.]",
+          "1_0_0-beta_26": "{span.line}[1. Mõned väikesed vead on parandatud.]",
+          "1_0_0-beta_27": "{span.line}[1. Lisatud Hiina keel.]{span.line}[2. Lisatud Türgi keel.]",
+          "1_0_0-beta_30": "{span.line}[1. Nüüd saate oma loodud tokenid hävitada ning uuesti emiteerida.]{span.line}[2. Lisatud Waves Auth API tugi.]{span.line}[3. Mõned väikesed vead on parandatud.]",
+          "1_0_0-beta_31": "{span.line}[1. Nüüd saate osta DCC ja BTC krediitkaardiga.]{span.line}[2. Parendatud kasutajaliidest ostu / müügi aknas.]{span.line}[3. Lisatud tugi 32-bitisele Windowsile.]{span.line}[4. Paljud muud vead parandatud.]",
+          "1_0_0-beta_32": "{span.line}[1. Nüüd saate Waves Kliendis massülekandeid teha.]{span.line}[2. Mõned väikesed vead on parandatud.]",
+          "1_0_0-beta_35": "{span.line}[1. Nüüd saate sorteerida, filtreerida ja peita tokeneid vahekaardil Portfolio.]{span.line}[2. DASH-lüüs on käivitatud.]{span.line}[3. Hindi keele tugi on lisatud.]{span.line}[4. Hollandi keele tugi on lisatud.]{span.line}[5. Saate nüüd teistele kasutajatele arveid esitada.]{span.line}[6. Väikesed vead on parandatud.]",
+          "1_0_0-beta_36": "{span.line}[1. Suurimad liisingusõlmed on liisingu leheküljel loetletud.]{span.line}[2. Mõned vead on parandatud.]",
+          "1_0_0-beta_39": "{span.line}[1. Spam-tokenite filter on lisatud menüüsse Seaded.]{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_0-beta_40": "{span.line}[1. Monero lüüs on käivitatud.]",
+          "1_0_0-beta_42": "{span.line}[1. Hispaania keele tugi on lisatud.]{span.line}[2. Waves Klienti saab vaikimisi kasutada ilma konto üksikasju salvestamata.]{span.line}[3. Spam-tokenid on nüüd identifitseeritud Transaktsioonide lehel.]{span.line}[4. Väikesed vead on parandatud.]",
+          "1_0_0-beta_47": "{span.line}[1. Täiesti uus DEX UI käivitatud.]{span.line}[2. Kiirem ja stabiilsem Waves Klient.]{span.line}[3. Aliase funktsionaalsus on taas saadaval.]{span.line}[4. Mõned väikesed vead on parandatud.]{span.line}[5. Osalege meie võistlustel, tehes [video](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) või kirjutades [artikli](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835).]",
+          "1_0_0-beta_50": "{span.line}[1. Nüüd saate hävitada kõik oma kontol olevad tokenid (va Waves).]{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_10": "{span.line}[1. Lisati sponsorluse transaktsioonide tugi. [Loe rohkem](https://docs.wavesplatform.com/et/waves-client/assets-management/sponsored-transaction.html)]{span.line}[2. Lisati Poola ja Portugali keelte tugi.]",
+          "1_0_14": "{span.line}[1. Parandatud viga, millega sai kasutada sponsorlusega tokenit ilma Waves tokenita sponsori kontol.]\n{span.line} [2. Parandatud viga 30-päevase orderi tähtaja kasutamisel.]\n{span.line} [3. Mõned teised väikesed vead on parandatud.]",
+          "1_0_15": "{span.line}[1. Ledger'il kinnitamisega seotud probleemid on lahendatud.]\n{span.line}[2. Suurendatud ooteaeg kinnituse saamiseks Ledger'ilt.]\n{span.line}[3. Üksikasjalik teave on lisatud veateadetele.]",
+          "1_0_18": "{span.line}[1. Nüüd saate oma kontole skripti määrata.]\n{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_21": "{span.line}[1. Ledgeri kaudu autoriseerimise kinnitamine parandatud.]{span.line}[2. Paljud väiksemad vead on parandatud.]",
+          "1_0_22": "{span.line}[1. Lisati täiustatud funktsioone skriptidega kontodega töötamiseks.]",
+          "1_0_25": "{span.line} [1. [Waves Keeper](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=et) tugi on lisatud.]",
+          "1_0_27": "{span.line}[1. Lisatud on \"Minu varad\" kategooria Portfolios.]\n{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_28": "{span.line}[1. Lisati sidumisfunktsioon olemasolevate kontode mobiilseadmetele importimiseks.]\n{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_29": "{span.line}[1. QR-koodi genereerimine kirillitsa tähtega on parandatud.]\n{span.line}[2. Lisatud on jälgimisnimekirja otsingu tööriistariba.]\n{span.line}[3. Kosmeetilised parandused. ]",
+          "1_0_3": "{span.line}[1. Nüüd saate portfoolios otsida varasid ID alusel.] {span.line}[2. Täiendavad väikesed vead on parandatud.]",
+          "1_0_30": "{span.line}[1. Loo skripti nupp on üle viidud alammenüüsse Turvalisus menüüs Seaded.\n{span.line}[2. Tulemuslikkuse parandamine ja kosmeetilised muudatused.]",
+          "1_0_32": "{span.line}[1. Integratsioon BetterTokens oraakliga.]\n{span.line}[2. Lisatud tokeni kinnitamise protokolli toetus.]\n{span.line}[3. Parandatud komisjonitasu tokeni väljavõtmise eest Coinomati kaudu.]",
+          "1_0_33": "{span.line}[1. Nüüd saate teate, kui üritate panna orderi hinnaga, mis erineb oluliselt praegusest turukursist.]\n{span.line}[2. Väikesed vead on parandatud.]",
+          "1_0_36": "{span.line}[1. Lisatud võime kaubelda DEX-il skriptidega kontodega.]\n{span.line}[2. Arve loomisel või vara saatmisel lisati varade otsimine.]\n{span.line}[3. Väikesed disaini muudatused.]",
+          "1_0_37": "{span.line}[1. Lisatud Smart Asset funktsionaalsus: emiteerimine, taasemiteerimine ja hävitamine]\n{span.line}[2. Lisatud itaalia, saksa ja indoneesia keeled]\n{span.line}[3. Väikesed veaparandused]",
+          "1_0_40": "{span.line}[1. DEX optimeerimine.]\n{span.line}[2. Lisatud vahetuskurss praeguse paari jaoks brauseri vahekaardi pealkirjale.]\n{span.line}[3. Parandatud väiksemad vead.]",
+          "1_0_41": "{span.line}[1. DEX optimeerimine.]\n{span.line}[2. Teavitamissüsteem lisatud.]\n{span.line}[3. Parandatud väiksemad vead.]",
+          "1_0_42": "{span.line}[1. Prandatud väiksemad vead.]",
+          "1_0_5": "{span.line}[1. Kauplemisskaala mahud on lisatud DEX-tabelitele.]\n{span.line}[2. Täiendavad väikesed vead on parandatud.]",
+          "1_0_6": "{span.line}[1. Waves Desktop Client'i kaudu on lisatud autoriseerimine.]",
+          "1_0_7": "{span.line}[1. Mõned töölaua-kliendi kokku-jooksud olid parandatud.]\n{span.line}[2. Optimeeritud üleminek TX- ja portfellilehekülgede vahel suure sisuga.]\n{span.line}[3. Rämps-tokenite nimed on TX-loendis peidetud.]\n{span.line}[4. Veateadete väljundid on ümber töötatud.]",
+          "1_0_8": "{span.line}[1. Lisatud on Ledger nano S tugi.]\n{span.line}[2. Lisati uus valik autoriseerimismeetodi valimiseks.]",
+          "1_1_0": "{span.line}[1. Orderi aegumise periood on nüüd vaikimisi salvestatud.]\n{span.line}[2. Parandatud väiksemad vead.]",
+          "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
+          "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
+          "1_2_2": "{span.line}[1. Security updates.]{span.line}[2. Fixed minor bugs.]",
+          "1_2_3": "{span.line}[1. Added support for Ledger Waves 1.0.0 app.]",
+          "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_0": "{span.line}[1. Improved app navigation and start page interface.]",
+          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
+          "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
+          "1_3_7": "{span.line}[1. Integration with [tokenrating.wavesexplorer.com](https://tokenrating.wavesexplorer.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
+          "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
+        },
+        "title": "Mis on {{version}} versioonis uut"
+      }
+    },
+    "validators": {
+      "byte": {
+        "help": "Baite vasakul: {{bytes}}"
+      }
+    },
+    "warningPlate": {
+      "day": "d",
+      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "hour": "h",
+      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "min": "m",
+      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "sec": "s",
+      "startMoving": "Safe moving"
+    }
+  },
+  "app.wallet.assets": {
+    "addAsset": "Lisa vara",
+    "chart": {
+      "intervals": {
+        "all": "Kõik",
+        "day": "1P",
+        "hour": "1T",
+        "month": "1K",
+        "week": "1N",
+        "year": "1A"
+      }
+    },
+    "directives": {
+      "asset": {
+        "anyTx": "JSON",
+        "deposit": "Sissemakse",
+        "ofTotalBalance": "kogu saldost {{totalBalance}}",
+        "receive": "Võta vastu",
+        "script": "Skript",
+        "send": "Saada"
+      },
+      "balance": {
+        "actions": {
+          "assetInfo": "Vara info",
+          "copyAssetId": "Kopeeri Vara ID"
+        }
+      }
+    },
+    "price": "HIND {{currency}}",
+    "qr": "Your Address",
+    "send": "Send",
+    "since": {
+      "day": "ALATES EELMISEST PÄEVAST",
+      "month": "ALATES EELMISEST KUUST",
+      "week": "ALATES EELMISEST NÄDALAST"
+    },
+    "suspicious": "Kahtlane - ({span}[{{count}}])",
+    "Unpin": "Tühista vaatest"
+  },
+  "app.wallet.leasing": {
+    "available": "Saadaval",
+    "chart": {
+      "available": "Saadaval",
+      "create": "Alusta liisingut",
+      "leased": "Renditud",
+      "title": "DCC Saldo"
+    },
+    "description": {
+      "text1": "Saate edastada või müüa ainult selliseid DCC, mis ei ole välja renditud. Teie või keegi teine ​​ei saa renditud summat üle kanda või sellega kaubelda.",
+      "text2": "Liisingutehingu saab tühistada niipea, kui see blokkahelas ilmub, mis tavaliselt toimub minuti jooksul või lühema aja jooksul.",
+      "text3": "Genereeriv saldo uuendatakse pärast 1000 plokki.",
+      "title": "Kiire märkus"
+    },
+    "leased": "Renditud",
+    "leasedIn": "Renditud",
+    "nodeListLink": "Sõlmede nimekiri",
+    "test": {
+      "test": "text test"
+    },
+    "title_leasing": "You have chosen to log into the Waves desktop app"
+  },
+  "app.wallet.portfolio": {
+    "allactive": "Kõik aktiivsed ({span}[{{count}}])",
+    "burn": "Tokenite Hävitamine",
+    "deposit": "Sissemakse",
+    "dex": "Ava DEX-is",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://wavesexplorer.com/address/{{address}}/nft)",
+    "info": "Vara info",
+    "list": {
+      "actions": "Toimingud",
+      "ask": "Ask",
+      "balance": "Saldo",
+      "bid": "Bid",
+      "change": "24t Muudatus",
+      "inOrders": "Reserveeritud",
+      "mirror": "Väärtus, {span.currency} [{{currency}}]",
+      "name": "Vara nimi",
+      "rate": "Hind, {span.currency} [{{currency}}]"
+    },
+    "myassets": "Minu varad ({span} [{{count}}])",
+    "pin": "Kinnita vaatesse",
+    "portfolio": {
+      "filter": "Otsing"
+    },
+    "qr": "Teie aadress",
+    "qualified": "kvalifitseeritud",
+    "qualifieds": "Kvalifitseeritud ({span}[{{count}}])",
+    "receive": "Võta vastu",
+    "reissue": "Tokeni taasemiteerimine",
+    "send": "Saada",
+    "setAssetScript": "Värskenda vara skripti",
+    "spam": "Spämm",
+    "spamAsset": "SPÄMM",
+    "spamselect": "Kahtlane ({span} [{{count}}])",
+    "sponsorship": "Aktiveerige sponsorlus",
+    "sponsorshipChange": "Muutke sponsorlust",
+    "sponsorshipStop": "Tühistage sponsorlus",
+    "tokenomica": "tokenomica",
+    "tospam": "Peida",
+    "unpin": "Eemalda vaatest",
+    "unspam": "Kuva"
+  },
+  "app.wallet.transactions": {
+    "all": "Kõik",
+    "confirmTransaction": {
+      "retrySign": "Proovi uuesti kinnitada"
+    },
+    "csv": {
+      "alias": "Aliase ​​nimi",
+      "amount": {
+        "id": "Koguse vara ID",
+        "name": "Koguse vara nimi",
+        "ticker": "Koguse vara ticker",
+        "value": "Koguse vara väärtus"
+      },
+      "attachment": "Tehingu manus",
+      "date": "Kuupäev",
+      "description": "Tokeni kirjeldus",
+      "fee": {
+        "id": "Tasu ID",
+        "name": "Tasu nimi",
+        "ticker": "Tasu ticker",
+        "value": "Tasu väärtus"
+      },
+      "height": "Tehingu plokki kõrgus",
+      "id": "Tehingu ID",
+      "name": "Tokeni nimi",
+      "precision": "Täpsusaste",
+      "price": {
+        "id": "Hinna vara ID",
+        "name": "Hinna vara nimi",
+        "ticker": "Hinna vara ticker",
+        "value": "Hinna vara väärtus"
+      },
+      "recipient": "Tehingu saaja",
+      "reissuable": {
+        "false": "Taasmitteemiteeriv",
+        "name": "Saab tokeni taasemiteerida",
+        "true": "Taasemiteeritav"
+      },
+      "sender": "Tehingu saatja",
+      "transactionType": "Plokkiahela tehingu tüüp",
+      "type": "Tehingu tüüp"
+    },
+    "errors": {
+      "complete": {
+        "body": "The list of transactions is not completely downloaded. Please retry later.",
+        "title": "Download is not complete."
+      },
+      "download": {
+        "body": "The list of transactions is not downloaded. Please retry later.",
+        "title": "Download error."
+      },
+      "empty": {
+        "body": "There are no transactions in your history",
+        "title": "Export error"
+      }
+    },
+    "exchanged": "Vahetatud",
+    "export": "Eksport",
+    "filter": {
+      "value1": "Viimased",
+      "value2": "500 txs",
+      "value3": "1000 txs"
+    },
+    "issued": "Emiteeritud",
+    "leased": "Leased",
+    "received": "Saadud",
+    "sent": "Saadetud",
+    "transactions": {
+      "script": {
+        "txJson_wallet": "Base64 script"
+      }
+    }
+  },
+  "app.welcome": {
+    "backupSeed": {
+      "copySeed": "Copy Seed phrase",
+      "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or"
+    },
+    "createAccount": {
+      "from": "createAccount"
+    },
+    "infoTooltip": "Oluline teave",
+    "loading": {
+      "volume": "VOLUME"
+    },
+    "modal": {
+      "lockPairWarning": {
+        "continue": "Jätka",
+        "heading": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+        "text": "Trading for the selected pair is temporarily unavailable. \nYou can still cancel orders if you wish"
+      }
+    },
+    "news": "News",
+    "newUser": {
+      "from": "salafraasist",
+      "getStarted": "Alustama",
+      "import": "Importige kontosid",
+      "or": "või",
+      "restore": "Konto taastamine",
+      "slides": [
+        {
+          "description": "Saa osa kiirelt kasvavast krüpto maailmast. Sa oled ainus inimene, kes pääseb enda krüptovahenditele juurde.",
+          "title": "Alusta Plokkiahelaga"
+        },
+        {
+          "description": "Hoidke, hallake ja saage intresse oma digitaalse varade eest kergesti ja turvaliselt.",
+          "title": "Rahakott"
+        },
+        {
+          "description": "Kaubelge kiiresti ja turvaliselt. Kauplemisel detsentraliseeritud börsil omate oma raha üle täieliku kontrolli.",
+          "title": "Detsentraliseeritud Börs"
+        },
+        {
+          "description": "Emiteerige oma tokenid. Neid on võimalik Teie enda äris ära kasutada nt sisemise rahana, detsentraliseeritud hääletamise tokenina, reitingu süsteemina või lojaalsusprogrammina.",
+          "title": "Tokenite Käivitaja"
+        }
+      ]
+    },
+    "openViaDesktop": "Tahaksin alati avada lingid Töölaua rakenduse kaudu",
+    "roadmap": {
+      "aug2019": {
+        "date": "Aug 2019",
+        "text": "Traders can sell tokens quickly at market price.",
+        "title": "Market order"
+      },
+      "dec2018": {
+        "date": "Dec 2018",
+        "text": "The new mobile app offers a fantastic DEX UI and gateway integration.",
+        "text_2": "Tickers and logos on DEX show approved assets, giving users a high degree of confidence.",
+        "title": "Mobile app 2.0",
+        "title_2": "BetterTokens Integration"
+      },
+      "feb2017": {
+        "date": "Dec 2017",
+        "text": "The first version of the flagship built-in exchange is launched.",
+        "title": "Decentral.Exchange Beta"
+      },
+      "feb2018": {
+        "date": "Feb 2018",
+        "text": "The standalone Client for macOS, Linux and Windows is released.",
+        "title": "Desktop app"
+      },
+      "jan2019": {
+        "date": "Jan 2019",
+        "text": "Support for trading on Decentral.Exchange with Smart Accounts is enabled.",
+        "text_2": "Launch of Bitcoin Satoshi Vision gateway",
+        "title": "Smart Account Trading",
+        "title_2": "BSV Gateway"
+      },
+      "jul2018": {
+        "date": "Jul 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "text_2": "The popular wallet comes out of beta with a major new release.",
+        "title": "New DEX",
+        "title_2": "Waves Wallet"
+      },
+      "jul2019": {
+        "date": "Jul 2019",
+        "text": "Addition of ERC20 token gateway to the Waves ecosystem, meaning that popular Ethereum tokens can be traded on the platform.",
+        "text_2": "Developers have simplified mobile development processes and gain comprehensive descriptions for means of interacting with the Waves blockchain.",
+        "text_3": "Users have the ability to switch easily between multiple accounts within one wallet app.",
+        "title": "ERC-20 Gateway",
+        "title_2": "Mobile SDK and JS library improvement",
+        "title_3": "Multiple Accounts"
+      },
+      "jun2019": {
+        "date": "Jun 2019",
+        "text": "Improvements in DEX speed and memory requirements to be implemented.",
+        "title": "DEX optimisation"
+      },
+      "may2018": {
+        "date": "May 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "title": "Dash & Bitcoin Cash gateways"
+      },
+      "nov2018": {
+        "date": "Nov 2018",
+        "text": "Users gain the ability to trade with multi-signature and scripted accounts.",
+        "title": "Smarts Account Support"
+      },
+      "sep2018": {
+        "date": "Sep 2018",
+        "text": "Integration with Decentral.Exchange enables users to trade with maximum security.",
+        "title": "Ledger Nano S"
+      },
+      "sep2019": {
+        "date": "Sep 2019",
+        "text": "Two factor authentication gives Decentral.Exchange users even greater security.",
+        "title": "2FA"
+      }
+    },
+    "userList": {
+      "addNew": "Lisa konto",
+      "back": "Back",
+      "create": "Looge uus konto",
+      "frombackup": "salafraasist",
+      "import": "Importige kontosid",
+      "restore": "Konto taastamine",
+      "subTitle": "Logige uuesti sisse või",
+      "subTitleSession": "Sessioon lõpetati automaatselt."
+    },
+    "welcome": {
+      "accountList": {
+        "locked": "Require unlocking"
+      },
+      "address": "Address",
+      "aliases": "Aliases",
+      "android": "Google Play",
+      "api": "API",
+      "apple": "App Store",
+      "blog": "Blog",
+      "broughtBy": "Brought to you by Waves Team",
+      "cancel": "Cancel",
+      "change": "CHANGE",
+      "changeName": "Change Name",
+      "chart": "CHART",
+      "comingSoon": "Coming soon",
+      "contestLinkDescription": "Win 5,000 DCC in a trading contest on Decentral.Exchange!",
+      "contestLinkLink": "Rules",
+      "controlAssets": "Control of assets is yours alone – funds do not leave your wallet and cannot be frozen",
+      "cookies": "Cookies",
+      "copyAddress": "Copy address",
+      "copyright": "© 2021 Blockchain Costa Rica",
+      "copyright-new": "© 2019 Waves.Exchange",
+      "copyrightVordex": "© 2019 VORDEX",
+      "createAccount": "Create account",
+      "createToken": "Create token",
+      "currentAccountName": "Current account name",
+      "dashboard": "Dashboard",
+      "decentralized": "decentralized",
+      "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
+      "dexWithHardware": "Use DEX with hardware wallets Ledger Nano S and Ledger Blue",
+      "documentation": "Documentation",
+      "download": "Download",
+      "downloadMobileApp": "Download the mobile app!",
+      "exchange": "Exchange",
+      "forDevelopers": "For developers",
+      "forum": "Forum",
+      "gateways": "Gateways to popular currencies (Coming Soon)",
+      "gdpr": "GDPR",
+      "getRealTimeAccess": "Get real-time access to market data and set up your trading bots via API",
+      "getStarted": "Get started",
+      "gitHub": "GitHub",
+      "help": "Help",
+      "high": "24 HIGH",
+      "inputErrorNameExists": "That name is taken. Try another",
+      "instantAccessWalletDex": "Instant access to your wallet and DEX",
+      "keeperAccount": "Keeper konto",
+      "lastPrice": "LAST PRICE",
+      "leasing": "Leasing",
+      "ledgerAccount": "Ledger'i konto",
+      "ledgerSupport": "Ledger support (Coming Soon)",
+      "legal": "Legal",
+      "linux": "Linux",
+      "linuxDescription": "Download Linux application",
+      "logout": "Log Out",
+      "logOut": "Log Out",
+      "low": "24 LOW",
+      "lowFixedFees": "Low, fixed fees",
+      "macOs": "MacOS",
+      "macOsDescription": "Download MacOS application",
+      "mailto": "support.wavesplatform.com",
+      "mailtoVordex": "support@vordex.com",
+      "mailtoWavesExchange": "support@waves.exchange",
+      "mainPage": "Main page",
+      "majorFiatCryptocurrencies": "Major fiat and cryptocurrencies supported: BTC, LTC, ETH, USD, and others",
+      "markets": "Markets",
+      "marketsDescription": "Decentral.Exchange allows you to execute trades swiftly and securely, regardless of whether you’re trading via mobile app, desktop client, web wallet or the Waves API.",
+      "marketsTableDescription": "To view more traded pairs click",
+      "marketsTableDescriptionLink": "View Exchange",
+      "menu": "Menu",
+      "name": "Name",
+      "nameSaved": "Account name changed",
+      "newAccountName": "New account name",
+      "news": "News",
+      "pair": "PAIR",
+      "portfolio": "Portfolio",
+      "privacyPolicy": "Privacy Policy",
+      "productsTools": "Products & tools",
+      "renameAccount": "Rename account",
+      "roadmap": "Roadmap",
+      "roadmapOpportunitiesAhead": "The future of Decentral.Exchange: our roadmap for the opportunities ahead.",
+      "save": "Save",
+      "scanQrCode": "Scan QR Code",
+      "scriptAccount": "Script account",
+      "scriptedAccount": "Script account",
+      "settings": "Settings",
+      "signIn": "Sign in",
+      "social": "Social",
+      "stackOverflow": "Stack Overflow",
+      "suitableTradingBots": "Suitable for trading bots",
+      "support": "Support",
+      "switchAccount": "Switch account",
+      "telegram": "Telegram",
+      "termsOfUse": "Terms of use",
+      "timerDays": "days",
+      "timerHours": "hours",
+      "timerMinutes": "minutes",
+      "timerSeconds": "seconds",
+      "tokenCreation": "Fast token creation",
+      "tokenCreationCosts": "Token creation costs just 1 DCC and takes 1 minute",
+      "tokenomicaToasterButton": "Lisateavet",
+      "tokenomicaToasterText": "Saage esimese digitaalne väärtpaberite universaalse platvormi aktsionäriks",
+      "tradeOnWaves": "Trade on the Waves decentralized Exchange",
+      "tradeOnWavesDescription": "Buy and sell tokens quickly and securely with all advantages of a centralised exchange, but retaining complete control of your funds.",
+      "transactions": "Transactions",
+      "twitter": "Twitter",
+      "volume": "VOLUME",
+      "wallet": "Wallet",
+      "wavesBlockchain": "Waves Blockchain",
+      "wavesDexWeb": "Decentral.Exchange Web",
+      "wavesExplorer": "Waves Explorer",
+      "wavesIde": "Waves IDE",
+      "wavesKeeper": "Waves Keeper",
+      "wavesLabs": "Waves Labs",
+      "wavesOrderFilled": "0.003 DCC per order filled",
+      "wavesWallet": "Waves Wallet",
+      "windows": "Windows",
+      "windowsDescription": "Download Windows application"
+    }
+  },
+  "electron": {
+    "menu": {
+      "copy": "Kopeeri",
+      "cut": "Lõika",
+      "dev_tools": "Arendaja tööriistad",
+      "paste": "Kleebi",
+      "quit": "Välju",
+      "title": {
+        "application": "Rakendus",
+        "edit": "Muuda",
+        "god_mode": "God Mode"
+      }
+    },
+    "modal": {
+      "set_protocol_error": {
+        "close": "Sulge",
+        "message": "Waves Kliendi käivituse vaikeprotokolli ei saa seadistada. Lingid brauserist ajutiselt ei toeta!",
+        "report": "Aruanne",
+        "title": "Määrake avatud protokolli viga"
+      }
+    },
+    "storage": {
+      "backup": {
+        "error": {
+          "body": "Failed to get accounts. Please contact the support service to restore the backup phrase (SEED phrase).",
+          "title": "Something went wrong!"
+        }
+      },
+      "read": {
+        "error": {
+          "body": "Teie võtmete laadimise ajal ilmnes viga. Me taastasime teie kontod varukoopiast.",
+          "title": "Kontod taastati varukoopiast edukalt"
+        }
+      }
+    }
+  }
+}

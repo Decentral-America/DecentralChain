@@ -1,0 +1,2780 @@
+{
+  "app.create": {
+    "backupSeed": {
+      "back": "वापस जाएं",
+      "copySeed": "इनको कॉपी करें",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official Waves clients.",
+      "needConfirm": "आप इस वाक्य की पुष्टि अगले स्क्रीन पर करेंगे ",
+      "ok": "मैने इनको लिख लिया है",
+      "or": "या",
+      "saveSecret": "बैकअप वाक्य सहेंजें",
+      "seedPhrase": "Seed Phrase",
+      "warn": "क्योंकि केवल आप अपना धन नियंत्रित करते हैं इसलिए इस ऐप के हटाएं जाने की स्थिति में आपको अपना बैकअप वाक्य सहेजना चाहिए या",
+      "writeSeed": "कृपया इन 15 शब्दों को सावधानीपूर्वक लिखें",
+      "yourSeed": "Your Seed phrase"
+    },
+    "confirmBackup": {
+      "again": "और पुनः टैप करें",
+      "back": "वापस जाएं",
+      "clear": "मिटाएँ",
+      "confirm": "बैकअप की पुष्टि करें",
+      "description": "अपना बैकअप वाक्य सत्यापित करें या",
+      "enterCorrect": "कृपया, प्रत्येक शब्द को सही क्रम में टैप करें",
+      "error": "गलत क्रम है, पुनः प्रयास करें।",
+      "ok": "पुष्टि करें",
+      "tapAgain": "and tap again"
+    },
+    "createAccount": {
+      "address": "खाता पता:",
+      "avatarUnique": "यह अवतार विशिष्ट है। आप बाद में इसे बदल नहीं सकते हैं।",
+      "choose": "किसी सहेजे खाते पर",
+      "create": "Create account",
+      "createAccount": "Create a new account",
+      "createDescription": "Fast and free",
+      "createNewAccount": "नया खाता बनाएं",
+      "description": {
+        "becomePart": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets",
+        "dex": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange",
+        "enterName": "Enter account name or",
+        "wallet": "Store, manage and receive interest on your digital assets balance, easily and securely"
+      },
+      "from": "डेस्कटॉप से",
+      "header": {
+        "accountName": "Account name",
+        "dex": "decentralized Exchange",
+        "wallet": "Wallet",
+        "withBlockchain": "Get Started with Blockchain"
+      },
+      "import": "इम्पोर्ट खाते",
+      "importDescription": "via Seed or private key, Ledger, Keystore File",
+      "protect": "अपने खाते को किसी पासवर्ड से सुरक्षित करें या",
+      "protectYourAccount": "अपना खाता सुरक्षित करें",
+      "restore": "कोई खाता रीस्टोर करें",
+      "saveUserData": "मुझे इस कम्प्यूटर पर साइन इन रखें",
+      "signDescription": "to a saved account",
+      "signIn": "साइन इन करें",
+      "signUp": "नीचे एक मुफ्त खाते के लिए साइन अप हों या",
+      "tosaved": "अपना पता अवतार चुनें",
+      "toWalet": "अपने बटुए में या"
+    },
+    "modal": {
+      "confirmBackupDescription": "अपना बैकअप वाक्य सत्यापित करें या",
+      "next": "पुष्टि करें",
+      "prev": "वापस जाएं",
+      "successContent": "आप अपना सीक्रेट वाक्य बदल नहीं सकते। यदि आप दुर्घटनावश इसे किसी को भेज दें या किसी स्कैमर द्वारा इसे हासिल किए जाने का शक हो तो फौरन नया Waves वॉलेट बना कर अपने फंड उसमें ट्रांसफर कर दें।",
+      "successHeadline": "अपने बैकअप वाक्य को सावधानी से संभालें!",
+      "understand": "मैं समझा"
+    },
+    "noBackupNoMoney": {
+      "backup": "अभी बैकअप लें",
+      "description": "आपको सीक्रेट वाक्य को सहेजना चाहिए। आपके खाते तक पहुंच के लिए यह महत्वपूर्ण है।",
+      "modal": {
+        "descriptionP1": "Waves प्लेटफार्म आपको पिछले महीने स्कैम और फिशिंग की बढ़ती गतिविधियों की चेतावनी देना चाहता है। धोखेबाज़ Waves क्लाइंट के अपने संस्करणों में उनके मैल्वेयर छिपा रहे हैं और उपयोगकर्ताओं को लालच देने के लिए बोनस व छूट का वादा कर रहे हैं।",
+        "descriptionP2": "कृपया सावधान रहें और अपना सीड इन ‘क्लाइंट’ में इनपुट ना करें, क्योंकि आपके खाते पर संकट आ जाएगा और आप अपना सारा फंड खो देंगे।",
+        "descriptionP3": "आपको केवल आधिकारिक Waves क्लाइंट का उपयोग करना चाहिए।",
+        "ok": "मैं समझा",
+        "title": "अपने बैकअप वाक्य को सावधानी से संभालें!"
+      },
+      "or": "या",
+      "skip": "इसे बाद में करें",
+      "title": "कोई बैकअप नहीं, कोई धन नहीं"
+    },
+    "seed": {
+      "copyToClipboard": "Copy to clipboard",
+      "saveToFile": "Save as file"
+    }
+  },
+  "app.desktop": {
+    "back": "मुख्य पेज पर वापस जाएं",
+    "message": "यदि आपके पास यह नहीं है, तो आप इसे [आधिकारिक साइट](https://wavesplatform.com) से डाउनलोड कर सकते हैं। यदि आपके पास वेव्स वाला डेस्कटॉप ऐप है, लेकिन खोला नहीं है, तो कृपया [भेजें](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) बग रिपोर्ट",
+    "title": "आपने वेव्स के डेस्कटॉप ऐप में लॉग इन करना चुना है"
+  },
+  "app.dex": {
+    "create": {
+      "order": {
+        "failed": "कुछ गलत हुआ",
+        "success": "यह ऑर्डर बन गया"
+      }
+    },
+    "dex": {
+      "contest": "Contest"
+    },
+    "directives": {
+      "balance": {
+        "assetId": "एसेट Id",
+        "available": "उपलब्ध",
+        "inOrders": "ऑर्डरों में",
+        "inOrdersFull": "ऑर्डरों में सुरक्षित",
+        "total": "कुल योग"
+      },
+      "candleChart": {
+        "error": "{div}[यह चार्ट डाउनलोड नहीं किया जा सका।]{div}[यदि आप इस चार्ट को अपेन ऐप्लिकेशन में उपयोग करना चाहतें हैं तो कृपया [tradingview.com](https://tradingview.com) को अनुरोध भेजें]"
+      },
+      "charts": "charts",
+      "createOrder": {
+        "1day": "1 दिन",
+        "1hour": "1 घंटे",
+        "1week": "1 सप्ताह",
+        "30day": "30 दिन",
+        "30min": "30 मिनट",
+        "5min": "5 मिनट",
+        "amountField": "राशि",
+        "ask": "पूछें",
+        "bid": "बोली",
+        "buy": "खरीदें",
+        "createOrderNotPermitted": "ओर्डर अस्थायी रूप से अनुपलब्ध हैं",
+        "errors": {
+          "amountMax": "Max Amount - ",
+          "amountMin": "Min Amount - ",
+          "balance": "पर्याप्त {{name}} नहीं",
+          "precision": "अधिकतम {{precision}} दशमलव स्थानों से अधिक है",
+          "priceMax": "Max Price - ",
+          "priceMin": "Min Price - ",
+          "required": "यह क्षेत्र जरूरी है"
+        },
+        "expiration": "अवसान",
+        "fee": "फीस {{fee}} DCC",
+        "hasScript": "रद्द करें [स्क्रिप्ट](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) व्यापार करने के लिए",
+        "last": "अंतिम",
+        "limit": "Limit Order",
+        "market": "Market Order",
+        "marketPriceField": "Price",
+        "matcherFee": "Fee",
+        "notifications": {
+          "error": {
+            "3147520": "The account's script of {{address}} returned the error: {{scriptError}}",
+            "3147521": "The account's script of {{address}} rejected the order",
+            "3147522": "The account's script of {{address}} rejected the order",
+            "3147524": "The account's script of {{address}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "11536128": "The asset's script of {{assetId}} returned the error: {{scriptError}}",
+            "11536129": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned error is {{errorName}}, the text is: {{errorText}}",
+            "11536130": "The asset's script of {{assetId}} rejected the order",
+            "11536132": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "title": "एरर संदेश"
+          },
+          "isCreated": "यह ऑर्डर बन गया",
+          "notEnoughBalance": "रेड करने योग्य बैलेंस नहीं",
+          "somethingWentWrong": "कुछ गलत हुआ"
+        },
+        "notPermitted": "ओर्डर निर्माण अस्थायी रूप से अनुपलब्ध है",
+        "placeBuyOrder": "खरीदें {{name}}",
+        "placeSellOrder": "बिक्री {{name}}",
+        "priceField": "मूल्य सीमित करें",
+        "sell": "बेचना",
+        "spread": "स्प्रेड",
+        "stopPriceField": "Stop price",
+        "stopPriceHelp": "This is an automatic buy or sell order at a predetermined price",
+        "total": "कुल योग"
+      },
+      "createorder": {
+        "yourBalance": "Your balance"
+      },
+      "demo": {
+        "createAccount": "एक नया खाता बनाएं",
+        "or": "या",
+        "signIn": "साइन इन करें",
+        "to": {
+          "mybalance": "अपना बैलेंस देखने के लिए",
+          "openorders": "अपने खुले ऑर्डर को देखने के लिए",
+          "tradehistory": "अपने ट्रेड इतिहास को देखने के लिए"
+        }
+      },
+      "filter": "खोजें",
+      "marketDepth": "मार्केट डेप्थ",
+      "markets": {
+        "table": {
+          "price": "मूल्य",
+          "rate": "परिवर्तन",
+          "unit": "वाइन",
+          "volume": "वॉल्यूम"
+        },
+        "title": "मार्केट"
+      },
+      "myOrders": {
+        "amount": "राशि",
+        "average": "Average",
+        "back": "नहीं",
+        "cancel": "रद्द करें",
+        "cancelAll": "सभी रद्द करें",
+        "cancelAllConfirm": "हाँ",
+        "canceled": "रद्द",
+        "cancelled": "CANCELED",
+        "confirm": {
+          "header": "क्या आपको विश्वास है?",
+          "literalDescription": "यह ऐक्शन वापस पलटा नहीं जा सकता"
+        },
+        "delete": "हटाएं",
+        "detail": "विवरण",
+        "fee": "फीस",
+        "filled": "Filled",
+        "filter": "फिल्टर",
+        "noPermissionCancelOrder": "ओर्डर रद्द करना अस्थायी रूप से अनुपलब्ध है",
+        "notifications": {
+          "canceledAll": "All orders have been canceled",
+          "isCanceled": "ये ऑर्डर निरस्त हो गया है",
+          "somethingWentWrong": "कुछ गलत हुआ"
+        },
+        "opened": "खोला गया",
+        "orderType": {
+          "buy": "खरीदें",
+          "sell": "बिक्री"
+        },
+        "pair": "जोड़ा",
+        "placeholders": {
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable. You can cancel the order"
+        },
+        "price": "मूल्य",
+        "status": "स्थिति",
+        "tableTitle": {
+          "fee": "फीस"
+        },
+        "time": "समय",
+        "total": "कुल योग",
+        "type": "टाइप करें",
+        "withScript": "[स्क्रिप्ट](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) आपके खाते में स्थापित होने पर आप एक्सचेंज का उपयोग नहीं कर सकते"
+      },
+      "noChartDataMessage": "{div}[Not enough bids and asks]{div}[to create market depth chart]",
+      "noChartDataTitle": "यहां कुछ नहीं...",
+      "orderBook": {
+        "amount": "राशि {{assetName}}",
+        "lastprice": "अंतिम दाम",
+        "price": "मूल्य {{assetName}}",
+        "spread": "फैलाएं",
+        "sum": "धनराशि {{assetName}}",
+        "title": "ऑर्डर बुक"
+      },
+      "orderbook": {
+        "errorBlock": {
+          "header": "कुछ गलत हुआ"
+        }
+      },
+      "orders": "orders",
+      "portfolio": {
+        "title": "पोर्टफोलियो"
+      },
+      "tradeHistory": {
+        "orderType": {
+          "buy": "खरीदें",
+          "sell": "बिक्री"
+        },
+        "search": "खोजें",
+        "tableTitle": {
+          "date": "समय",
+          "exchangeType": "प्रकार",
+          "fee": "फीस",
+          "price": "मूल्य {{assetName}}",
+          "size": "राशि {{assetName}}",
+          "total": "कुल योग",
+          "type": "प्रकार"
+        },
+        "title": "ट्रेड इतिहास"
+      },
+      "watchlist": {
+        "all": "सभी",
+        "change": "परिवर्तन",
+        "chg": "बदलें",
+        "coin": "वाइन",
+        "helpIcon": {
+          "assetId": "एसेट आईडी",
+          "AssetId1AssetId2": "एसेट1 आईडी / एसेट2 आईडी",
+          "description": "आप [यहाँ] संपत्ति (https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html) खोज के बारे में अधिक जानकारी प्राप्त कर सकते हैं",
+          "header": "आप द्वारा खोज सकते हैं:",
+          "name": "नाम",
+          "name1Name2": "नाम1 / नाम2"
+        },
+        "pair": "जोड़ा",
+        "placeholders": {
+          "base": "आधार क्वाइन",
+          "coin": "क्वाइन",
+          "filter": "फिल्टर",
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+          "noMarkets": "आपके फिल्टर से मैच करता कोई मार्केट नहीं"
+        },
+        "price": "मूल्य",
+        "vol": "Vol",
+        "volume": "वॉल्यूम"
+      }
+    },
+    "emptyBlocks": {
+      "myOrders": {
+        "description": "आपके पास कोई ऑर्डर नहीं हैं।",
+        "title": "यहां कुछ नहीं..."
+      },
+      "orderBook": {
+        "description": "ये ऑर्डर बुक खाली है।",
+        "error": {
+          "text": "कृपया पेज रीफ्रेश करें या बाद में पुनः प्रयास करें",
+          "title": "कुछ गलत हुआ"
+        },
+        "title": "यहां कुछ नहीं…"
+      },
+      "tradeHistory": {
+        "description": "ट्रेडिंग इतिहास खाली है।",
+        "title": "यहां कुछ नहीं…"
+      }
+    },
+    "layout": {
+      "center": {
+        "bottom": "मेरे ऑर्डर"
+      },
+      "right": {
+        "bottom": "ट्रेड इतिहास",
+        "top": "ऑर्डर बुक"
+      }
+    },
+    "orderbook": {
+      "ask": {
+        "tooltipText": "{{price}} {{priceAsset}} के लिए {{amountAsset}} खरीदें"
+      },
+      "bid": {
+        "tooltipText": "{{amountAsset}} के लिए {{price}}{{priceAsset}} बेचें"
+      }
+    },
+    "tabs": {
+      "title": {
+        "all": "सभी",
+        "btc": "Btc",
+        "eth": "ETH",
+        "history": "history",
+        "myBalance": "मेरा बैलेंस",
+        "myTradeHistory": "मेरा ट्रेड इतिहास",
+        "openOrders": "मेरे खुले ऑर्डर",
+        "OrderHistory": "My Order History",
+        "trade": "Trade",
+        "tradeHistory": "ट्रेड इतिहास",
+        "waves": "Waves"
+      }
+    }
+  },
+  "app.fag": {
+    "fag": {
+      "migration": {
+        "title1": "What’s going on?"
+      }
+    }
+  },
+  "app.import": {
+    "back": "मुख्य पेज पर वापस जाएं",
+    "backupFile": {
+      "back": "go back",
+      "enterPasswordDescription": "Please enter your password or",
+      "helper": "You need to enter the password, which you used for the accounts exporting",
+      "import": {
+        "accounts": "Accounts",
+        "emptyList": "There are no accounts for import in the uploaded file",
+        "importFailed": "Failed to import keystore file",
+        "noChosen": "No file chosen",
+        "selectAccount": "Choose accounts",
+        "selectAccountDesc": "Please select account or",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "wrongPassword": "Wrong password!"
+      },
+      "importFromFile": "Import account from Keystore File",
+      "importFromFileDescription": "Choose your JSON file and click Import or",
+      "name": "Keystore File",
+      "next": "Continue",
+      "password": "Password",
+      "selectFileBtn": "Choose file"
+    },
+    "backupFileDescription": "Import account from Keystore File",
+    "import": {
+      "signIn": "Sign in"
+    },
+    "importAccount": "इम्पोर्ट खाते",
+    "importAccountInfo": "यह चुनें कि खातों को कहां से आयात किया जाए",
+    "KeeperClient": "वेव्स कीपर",
+    "keeperDescription": "वेव्स कीपर से आयात खाता",
+    "keeperForm": "इंस्टॉल करें",
+    "LedgerClient": "Ledger Device",
+    "ledgerDescription": "अपने लेडजर नैनो एस से खाते आयात करें",
+    "or": "या",
+    "seedAndKey": {
+      "name": "Seed or Key"
+    },
+    "seedAndKeyDescription": "Import account from a SEED or Private key",
+    "selectButton": "चुने",
+    "wavesClient": "Waves Client",
+    "wavesClientDescription": "Import account from a Waves Client",
+    "wavesLiteClient": "वेव्स लाइट क्लाइंट",
+    "wavesLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें",
+    "wavesSeedClient": "बैकअप सीड वाक्यांश",
+    "wavesSeedClientDescription": "एक बैकअप सीड से खाता आयात करें"
+  },
+  "app": {
+    "back": "मुख्य पेज पर वापस जाएं",
+    "button": {
+      "cancel": "रद्द करें",
+      "continue": "जारी रखें",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
+        "issue-title": "टोकन जारी करना",
+        "massSendTitle": "मास्स ट्रान्सफर",
+        "reissue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
+        "sendTitle": "भेजना",
+        "set-script-title": "स्क्रिप्ट ट्रांसक्शन"
+      },
+      "send": {
+        "errors": {
+          "fee": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} ट्रांसक्शन शुल्क का भुगतान करना होगा;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "जन",
+        "फर",
+        "मार्च",
+        "अप्रैल",
+        "मई",
+        "जून",
+        "जुलाई",
+        "अगस्त",
+        "सित",
+        "अक्टू",
+        "नव",
+        "दिस"
+      ]
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://wavesplatform.com/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "अलोहा फंकी सिक्का, किन्ही अच्छे व बुरे प्रयोजनो के लिए ;)"
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "एसेट्स",
+      "dex": "DEX",
+      "leasing": "लीज़िंग",
+      "portfolio": "पोर्टफोलियो",
+      "tokens": "\"टोकन",
+      "transactions": "लेन-देन",
+      "wallet": "वॉलेट"
+    },
+    "inputs": {
+      "errors": {
+        "required": "यह क्षेत्र जरूरी है!"
+      }
+    },
+    "leftmenu": {
+      "login": "लॉगिन",
+      "logout": "लॉग आउट करें",
+      "settings": "सेटिंग्स"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "रद्द",
+          "filled": "भरा ({{percent}}%)",
+          "opened": "खोला गया"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "ठीक है",
+        "title": "पासवर्ड दर्ज करें"
+      },
+      "pairing": {
+        "showQr": "प्रदर्शन"
+      },
+      "tryDesktop": {
+        "cancel": "वेब के साथ जारी रखें",
+        "label": "मेरी पसंद को याद रखो और फिर से मुझे याद नहीं दिलाना",
+        "message": "हम आपको वेव्स डेस्कटॉप ऐप का उपयोग करने की सलाह देते हैं। यदि आपके पास यह नहीं है, तो आप इसे आधिकारिक साइट से डाउनलोड कर सकते हैं।",
+        "title": "वेव्स डेस्कटॉप एप्लिकेशन का उपयोग करें",
+        "try": "डेस्कटॉप ऐप खोलें"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k."
+      }
+    },
+    "Suspicious": "संदेहजनक"
+  },
+  "app.ledger": {
+    "ledger": {
+      "article": "यह लेख",
+      "connectionError": "लेजर नैनो एस कनेक्ट करने में असमर्थ",
+      "connectionText": "कनेक्शन का समय समाप्त हो सकता है। कृपया पुन: प्रयास करें।",
+      "referTo": "यदि एरर बनी रहती है, तो कृपया देखें"
+    },
+    "ledgerForm": {
+      "address": "खाता पता:",
+      "addressSaved": "Address saved",
+      "avatarUnique": "यह अवतार अनोखा है, आप इसे बाद में नहीं बदल सकते।",
+      "back": "वापस जाओ",
+      "choose": "अपना खाता चुनें",
+      "help": {
+        "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
+      },
+      "id": "Account ID",
+      "importAccount": "एक लेडजर खाता आयात करें",
+      "ImportOrSignIn": "इम्पोर्ट खाता या",
+      "login": "जारी रहना",
+      "name": "खाते का नाम",
+      "nameExists": "That name is taken",
+      "or": "या",
+      "retry": "पुन: प्रयास करें",
+      "savedOne": "एक सेव्ड खाते में",
+      "saveUserData": "इस कंप्यूटर पर खाता रखें",
+      "selectDefault": "डिफ़ॉल्ट खाते का उपयोग करें",
+      "signIn": "साइन इन"
+    },
+    "modal": {
+      "sign": {
+        "confirmRequest": "निवेदन स्वीकारें",
+        "confirmRequestMatcher": "माचर पर निवेदन साइन करें। यदि आप इस पर साइन नहीं करते हैं, तो आप लेडजर खाते से डेक्स पर व्यापार नहीं कर सकते।"
+      }
+    },
+    "or": "या"
+  },
+  "app.migrate": {
+    "desktopUpdate": {
+      "almostThere": "Almost there...",
+      "backToPrevious": "Back to previous",
+      "barDone": "Done",
+      "barDownload": "Download",
+      "barInstall": "Install and run",
+      "barSuccess": "Success",
+      "cancelDownloading": "Cancel download",
+      "congratulations": "Congratulations!",
+      "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
+      "connectSupport": "If that did not help, then contact the Waves.Exchange [support](https://support.waves.exchange/).",
+      "download": "Download",
+      "downloaded": "yes",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "fail": "Fail",
+      "failText": "Please make sure that you have installed and run the new Waves.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Waves.Exchange desktop application?",
+      "install": "Install the application",
+      "installAndRun": "Install and run the application. Have you done it?",
+      "iUnderstand": "I understand",
+      "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
+      "lookAtFAQ2": "You might find the answer there.",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.wavesplatform.com).",
+      "oops": "Oops! Something went wrong...",
+      "password": "Password",
+      "passwordError": "Wrong Password!",
+      "pleaseWait": "Downloading...",
+      "return": "return",
+      "run": "Run the installed application",
+      "seconds": "seconds",
+      "seconds1": "second",
+      "seconds234": "seconds",
+      "signInAndMove": "Sign in & Start moving",
+      "toFinish": "To finish the migration of your accounts, you have to go to the new application and complete the authorization process.",
+      "tryAgain": "Try again"
+    },
+    "faq": {
+      "attention": {
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.wavesplatform.com](https://dex.wavesplatform.com/) and [https://client.wavesplatform.com](https://client.wavesplatform.com/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. Waves Platform or Waves.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "title": "ATTENTION!!! "
+      },
+      "goHome": "Go to HomePage",
+      "text1": "Decentral.Exchange is transforming into a new product, Waves.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Waves.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Waves.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on the Waves blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using Waves Explorer. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Waves.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
+      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Waves community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Waves trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "title1": "What’s going on?",
+      "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
+      "title11": "Will the new exchange have access to my seed phrases?",
+      "title12": "What will happen to my tokens?",
+      "title13": "What problems might users face due to the migration?",
+      "title14": "How long will technical work take on December 2?",
+      "title15": "How can I update my mobile app?",
+      "title16": "Do you plan on introducing KYC procedures? ",
+      "title17": "What changes will the matcher undergo?",
+      "title18": "What if I have any problems or questions during the migration process?",
+      "title19": "What will happen to gateway tokens?",
+      "title2": "What is Waves.Exchange?",
+      "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
+      "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
+      "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
+      "title23": "Why so complicated?",
+      "title24": "Are there plans to expand language support for the interface of the new exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Waves.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+    },
+    "migrate": {
+      "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
+      "achievementTitle": "Congratulations!",
+      "btn": {
+        "unlock": "Unlock"
+      },
+      "continue": "Continue",
+      "desc": {
+        "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
+        "enterPassword": "Enter your Waves.Exchange password to continue the migration.",
+        "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
+      },
+      "description": {
+        "enterPass": "Enter your account password or",
+        "goBack": "return back",
+        "goBackExchange": "go back",
+        "unlock": "Unlock your accounts. You can return to this step later",
+        "unlockExchange": "To finish the migration, complete the authorization process by unlocking an account from the old application and signing in, or creating a new account, or importing it."
+      },
+      "headers": {
+        "unlock": "Unlock your accounts",
+        "unlockAccount": "Unlock account",
+        "unlockAccountExchange": "Unlock your account",
+        "unlockExchange": "Unlock your accounts"
+      },
+      "modalButton": {
+        "cancel": "Cancel",
+        "moving": "Start moving"
+      },
+      "modalDesc": {
+        "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
+        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
+        "thirdPart": "The migration process is fast, easy and absolutely secure."
+      },
+      "modalTitle": {
+        "moving": "Save your Seed!",
+        "plate": "Don’t worry! All of your tokens, seed phrases and passwords are safe.",
+        "redirected": "You have been redirected to"
+      },
+      "signIn": "Sign in",
+      "subtitle": {
+        "account": "Account",
+        "pending": "Pending unlock",
+        "pendingExchange": "To unlock, select an account from the list",
+        "pendingUnlockingExchange": "Pending unlocking",
+        "unlocked": "Unlocked"
+      },
+      "title": {
+        "almostThere": "Almost there...",
+        "protectAccount": "Protect your accounts"
+      }
+    },
+    "modals": {
+      "shutdownNotificationFirst": {
+        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "One day left!"
+      },
+      "shutdownNotificationLast": {
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "submit": "I understand",
+        "title": "Time to move on!"
+      },
+      "shutdownNotificationSecond": {
+        "message1": "Decentral.Exchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "Two hours left!"
+      }
+    }
+  },
+  "app.restore": {
+    "encodedSeedForm": {
+      "placeholder": "Enter your encoded seed"
+    },
+    "encodedSeedTab": "Encoded seed",
+    "keyForm": {
+      "placeholder": "Enter your private key here"
+    },
+    "keyTab": "Private key",
+    "password": {
+      "error": "गलत पासवर्ड!"
+    },
+    "passwordForm": {
+      "back": "वापस जाएं",
+      "description": "अपने खाते को नए पासवर्ड से सुरक्षित करें या",
+      "importAccounts": "खाता आयात करें",
+      "login": "साइन इन करें",
+      "title": "अपना खाता सुरक्षित करें"
+    },
+    "restore": {
+      "beta": {
+        "accountTitle": "एड्रेस/खाता नाम",
+        "buttons": {
+          "cancel": "वापस जाएं",
+          "copy": "सीड कॉपी करें",
+          "restore": "सीड रीस्टोर करें"
+        },
+        "noUsers": {
+          "description": "{div}[हमें सहेजा हुआ कोई भी खाता नहीं मिला। वापस जाएं]{div}[[client.wavesplatform.com](https://client.wavesplatform.com)]",
+          "title": "कोई खाता नहीं सहेजा"
+        },
+        "passwordTitle": "पासवर्ड",
+        "placeholders": {
+          "password": "पासवर्ड"
+        },
+        "step1Description": "यदि आपके पास केवल आपका पासवर्ड है और सीड नहीं हैं तो आप किसी सहेजे खाते को रीस्टोर करने के लिए इस पेज का उपयोग कर सकते हैं।",
+        "step2Description": "कृपया सीड को सावधानी से सहेजें। यदि आप इसे खो देते हैं तो आपके पास अपने खाते तक जाने का कोई भी तरीका नहीं होगा।",
+        "title": "सीड रीस्टोर करें"
+      }
+    },
+    "seedForm": {
+      "address": "पता",
+      "addressSaved": "Address saved",
+      "back": "वापस जाओ",
+      "continue": "जारी रखें",
+      "create": "एक नया खाता बनाएं",
+      "description": "नीचे अपने खाते में साइन इन हों या",
+      "nameExists": "That name is taken",
+      "or": "या",
+      "placeholder": "आपका सीड वे 15 शब्द हैं जिनको आपने अपना खाता बनाते समय सहेजा था",
+      "saveUserData": "मुझे इस कम्प्यूटर पर साइन इन रखें",
+      "seedTitle": "आपके वॉलेट की सीड",
+      "title": "पहले से सहेजे खाते में",
+      "tosaved": "वापसी पर स्वागत\""
+    },
+    "seedOrKeyForm": {
+      "description": "Enter your Seed phrase or private key to access your wallet",
+      "encodedSeed": "Encoded seed",
+      "keyTitle": "Private key",
+      "seedTitle": "Seed phrase",
+      "title": "Import from seed or key"
+    },
+    "seedTab": "Seed phrase",
+    "warningSeed": {
+      "message": "Make sure you do not confuse the phrase with a wallet address. Using an address as a SEED phrase can result in loss of funds. The SEED phrase must consist of 15 words with spaces between each word.",
+      "title": "The SEED phrase you entered is too short."
+    }
+  },
+  "app.saveSeed": {
+    "continue": "जारी रहना",
+    "copy": "Copy",
+    "copySeed": "Copy Seed phrase",
+    "createAccount": "Create account",
+    "goBack": "go back",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "यहां कुछ नहीं...",
+    "password": {
+      "error": "गलत पासवर्ड!"
+    },
+    "userList": {
+      "address": "एड्रेस/खाता नाम",
+      "buttons": {
+        "login": "लॉग इन"
+      },
+      "exportUser": "Export your account",
+      "notHaveAccount": "Please sign in to continue",
+      "password": "पासवर्ड",
+      "placeholders": {
+        "password": "पासवर्ड"
+      },
+      "title": "साइन इन करें"
+    },
+    "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or",
+    "yourSeed": "Your Seed phrase"
+  },
+  "app.sessions": {
+    "session": {
+      "headline": "खाता चुनें",
+      "or": "या",
+      "signIn": "खाते में साइन इन हों",
+      "signInNew": "नए सत्र में साइन इन हों"
+    }
+  },
+  "app.signIn": {
+    "createAccount": "Create account",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "यहां कुछ नहीं...",
+    "password": {
+      "error": "गलत पासवर्ड!"
+    },
+    "signIn": {
+      "btn": {
+        "cancel": "Cancel",
+        "overwrite": "Overwrite",
+        "restore": "Reset all"
+      },
+      "enterPass": "Please enter your password to continue",
+      "or": "OR",
+      "passForgot": {
+        "attention": "Attention!",
+        "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
+        "descriptionExchange": "You are about to delete all of your Waves.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts."
+      },
+      "password": {
+        "forgot": "Forgot your password?",
+        "overwrite": "Overwrite accounts",
+        "overwriteDescription": "Overwrite all Waves.Exchange accounts on this device"
+      },
+      "signIn": "Sign in",
+      "welcomeBack": "Welcome Back!"
+    },
+    "userList": {
+      "address": "एड्रेस/खाता नाम",
+      "buttons": {
+        "login": "लॉग इन"
+      },
+      "notHaveAccount": "Please sign in to continue",
+      "password": "पासवर्ड",
+      "placeholders": {
+        "password": "पासवर्ड"
+      },
+      "title": "साइन इन करें"
+    }
+  },
+  "app.signUp": {
+    "signUp": {
+      "headers": {
+        "onePassBtn": "Let’s start!",
+        "onePassDesc": "Local data storage, seed phrases and encryption make DCC DEX reliable. However, we are going further. It’s time to switch on a new security level. Log into your accounts and switch between them by a couple of taps.",
+        "onePassword": "One password for all your accounts",
+        "protect": "Protect Your Accounts",
+        "protectDesc": "Set a single password for all your accounts",
+        "protectPass": "Create password"
+      },
+      "password": {
+        "notMatch": "Password does not match"
+      },
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions), [Privacy Policy](https://decentralchain.io/privacy-policy)."
+    }
+  },
+  "app.tokens": {
+    "count": "कुल टोकन",
+    "create": "जनरेट करें",
+    "description": "विवरण",
+    "directives": {
+      "sign": {
+        "confirmRequestLedger": {
+          "waiting": "लेजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
+        }
+      }
+    },
+    "fee": "फीस {{fee, money-currency}}",
+    "help": {
+      "name": "कृपया केवल लातिन वर्ण उपयोग करें"
+    },
+    "helpIcon": {
+      "demicals": "यह क्षेत्र उन दशमलव अंकों को निर्धारित करती है जिसमें आपके एसेट टोकन विभाजित किए जाएंगे।",
+      "scriptDescription": "स्मार्ट एसेट की स्क्रिप्ट द्वारा हर बार पुष्टि के लिये लेनदेन शुल्क 0.004 DCC बढ़ जाता है। उदाहरण के लिए, यदि स्मार्ट एसेट के लिए एक नियमित tx बनाया जाता है, तो लागत 0.001 + 0.004 = 0.005 DCC है। यदि एक एक्सचेंज लेनदेन किया जाता है, तो लागत 0.003 + 0.004 = 0.007 DCC है।",
+      "scriptHeader": "एक स्मार्ट एसेट एक परिसंपत्ति है जो एक स्क्रिप्ट के साथ है जो कि टोकन में किए गए प्रत्येक लेनदेन पर शर्त डालता है।",
+      "scriptLearnMore": "और अधिक जानें",
+      "totalTokens": {
+        "headline": "ह क्षेत्र उस कुल टोकन सप्लाई को निर्धारित करती है जो आपकी एसेट में शामिल हैं।",
+        "notReissuable": "कोई जारी ना हो सकने योग्य एसेट, इन चरणों के दौरान निर्धारित कुल टोकन सप्लाई तक स्थायी रूप से सीमित होगी।",
+        "reissuable": "फिर से उपयोग किए जाने की क्षमता अतिरिक्त टोकन निर्माण संभव करता है जिनको एसेट की कुल टोकन सप्लाई से जोड़ा जाएगा।"
+      }
+    },
+    "modal": {
+      "title": "{{name}} जनरेशन",
+      "titleSuccess": "{{name}} जनरेशन पूर्ण"
+    },
+    "name": "आपकी एसेट का नाम",
+    "NFT": {
+      "description": "A non-fungible token (NFT) is a unique, individual token existing on the Waves blockchain. Currently, display of NFTs in Waves Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [Waves Explorer](https://wavesexplorer.com/)",
+      "title": "You are creating a non-fungible token."
+    },
+    "notifications": {
+      "isNotCreated": "टोकन नहीं बनाया गया"
+    },
+    "pageTitle": "टोकन जनरेशन",
+    "placeholders": {
+      "description": "आप बाद में विवऱण नहीं बदल सकते हैं",
+      "precision": "0 से 8 तक"
+    },
+    "precision": "दशमलव",
+    "preview": "पूर्वावलोकन",
+    "reissuable": {
+      "false": "फिर जारी ना करने योग्य",
+      "true": "फिर जारी करने योग्य"
+    },
+    "script": "स्मार्ट संपत्ति",
+    "success": {
+      "description": "आपने {{amount}} {{name}} जनरेट किए हैं",
+      "done": "पोर्टफोलियो खोलें",
+      "title": "आपका लेनदेन होने वाला है!"
+    },
+    "switchScriptOff": "स्क्रिप्ट को असमर्थ करें",
+    "switchScriptOn": "स्क्रिप्ट समर्थ करें",
+    "tokens": {
+      "changeColorTooltip": "Change color",
+      "inputHelper": {
+        "description": "If you use this name, your token will be categorised as 'Suspicious' and will be searchable only by ID.",
+        "header": "This asset name has been taken"
+      },
+      "termsOfUse": {
+        "checkbox": "I understand that in the case of non-compliance with the rules, my token will be categorised as 'Suspicious', and will be available for search only by ID."
+      }
+    },
+    "validators": {
+      "byte": {
+        "gte": "\"एसेट का नाम 4 से 16 bytes के बीच लंबा होना चाहिए",
+        "lte": "एसेट का नाम 4 से 16 bytes के बीच लंबा होना चाहिए"
+      },
+      "descriptionLen": "विवरण बहुत लंबा है। इसे 1,000 bytes से बड़ा नहीं होना चाहिए।",
+      "invalidScript": "सिंटेक्स एरर",
+      "maxValueCount": "दर्ज नंबर बहुत बड़ा है",
+      "maxValuePrecision": "अमान्य नंबर। 0 से 8 तक का नंबर दर्ज करें",
+      "minValueCount": "दर्ज की गयी संख्या शून्य से बड़ी होनी चाहिए",
+      "minValuePrecision": "अमान्य नंबर। 0 से 8 तक का नंबर दर्ज करें",
+      "noMoney": "आपका बैलेंस लेनदेन फीस के भुगतान के लिए पर्याप्त नहीं है",
+      "precisionCount": "कुल एसेट संख्या में निर्धारित दशमलव क्षेत्र से अधिक दशमलव स्थान नहीं हो सकते हैं",
+      "required": "प्रत्येक क्षेत्र भरा होना चाहिए"
+    }
+  },
+  "app.ui": {
+    "active": "Active",
+    "all": "सभी",
+    "amount": "राशि",
+    "balanceInput": {
+      "max": "अधि."
+    },
+    "confirmGatewayTransaction": {
+      "back": "वापस",
+      "confirm": "पुष्टि करें",
+      "fieldAddress": "लक्षित पता",
+      "fieldAmount": "राशि",
+      "fieldFee": "फीस",
+      "fieldGatewayAddress": "गेटवे पता",
+      "fieldGatewayFee": "गेटवे फीस",
+      "success": "आपका लेनदेन होने वाला है!",
+      "warningText": "आप {{name}} ब्लॉकचेन को धन भेजने वाले हैं।",
+      "warningTitle": "बाहरी ब्लॉकचेन लेनदेन"
+    },
+    "confirmTransaction": {
+      "back": "वापस जाएं",
+      "confirm": "पुष्टि करें",
+      "description": {
+        "burn": "आपने {{quantityStr}} {{name}} जला दिए",
+        "cancel-leasing": "आपने एक लीज़िंग लेनदेन रद्द किया",
+        "circular": "आपने {{amount, money-currency}} खुद को भेजे",
+        "create-alias": "आपने एक उपनाम बनाया",
+        "data": "You have sent data transaction",
+        "data-vote": "{div.line}[You have voted for {{moneyCurrency}}.]\n{div.line}[Your score will be applied after 24 hours. Rating in processing.]",
+        "issue": "आपने जनरेट किए",
+        "lease-out": "आपने {{amount, money-currency}} लीज़ की",
+        "mass-send": "आपने {{totalAmount, money-currency}} भेजे\"",
+        "reissue": "आपने अतिरिक्त {{quantityStr}} {{name}} जनरेट किए\"",
+        "send": "आपने {{amount, money-currency}} भेजे",
+        "set-asset-script": "आपने स्क्रिप्ट को अपडेट किया है",
+        "set-script": "आपने एक स्क्रिप्ट ट्रांजेक्शन बनाया है",
+        "set-script-cancel": "आपने एक स्क्रिप्ट ट्रांजेक्शन रद्द कर दिया है",
+        "sponsorship-start": "स्पॉन्सरशिप निर्धारित किया गया है",
+        "sponsorship-stop": "स्पॉन्सरशिप अक्षम कर दिया गया है"
+      },
+      "details": "विवरण देखें",
+      "export": "निर्यात",
+      "JSON": "JSON",
+      "ledgerUnconfirmed": {
+        "description": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया इस लेख को देखें (https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+        "header": "आपने अपने लेडजर पर अनुरोध की पुष्टि नहीं की"
+      },
+      "notPermited": {
+        "cancel-leasing": "लीजिंग अस्थायी रूप से अनुपलब्ध है।"
+      },
+      "notPermitted": {
+        "burn": "टोकन जलाना अस्थायी रूप से अनुपलब्ध है।",
+        "burn-title": "टोकन जलाना",
+        "cancel-leasing": "लीजिंग वाली कार्यक्षमता अस्थायी रूप से अनुपलब्ध है।",
+        "cancel-leasing-title": "लीजिंग रद्द करना",
+        "data": "डेटा ट्रांजेक्शन अस्थायी रूप से अनुपलब्ध हैं।",
+        "data-title": "डेटा ट्रांजेक्शन",
+        "reissue-title": "टोकन पुनः जारी किया",
+        "set-script": "स्क्रिप्ट ट्रांजेक्शन अस्थायी रूप से अनुपलब्ध हैं।",
+        "sponsorship-start": "स्पॉन्सरशिप अस्थायी रूप से अनुपलब्ध है।",
+        "sponsorship-start-title": "स्पॉन्सरशिप बदलें"
+      },
+      "orderSuccess": "आपका ओर्डर बन गया है!",
+      "redirect": "आपको {{referrer}} पर रीडायरेक्ट किया जाएगा",
+      "send": {
+        "errors": {
+          "balance": {
+            "invalid": "अपर्याप्त फंड"
+          },
+          "recipient": {
+            "invalid": "प्राप्तकर्ता पता अमान्य है"
+          }
+        }
+      },
+      "sign": "साइन",
+      "success": "आपका लेनदेन होने वाला है!",
+      "wavesKeeperUnconfirmed": {
+        "description": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
+        "header": "आपने वेव्स कीपर के उपयोग के अनुरोध की पुष्टि नहीं की"
+      }
+    },
+    "copyError": "कॉपी नहीं कर सकता! आपका ब्राउज़र पुराना हो सकता है",
+    "copySuccess": "ये डेटा कॉपी किया है",
+    "directives": {
+      "anyTransaction": {
+        "copy": "कापी",
+        "textAreaTitle": "TX JSON"
+      },
+      "scriptForm": {
+        "placeholder": {
+          "change": "एक नई स्क्रिप्ट दर्ज करें, या मौजूदा स्क्रिप्ट को रद्द करने के लिए फ़ील्ड को खाली छोड़ दें",
+          "create": "एक नई स्क्रिप्ट दर्ज करें, या मौजूदा स्क्रिप्ट को रद्द करने के लिए फ़ील्ड को खाली छोड़ दें"
+        },
+        "textAreaTitle": "Base64 स्क्रिप्ट"
+      },
+      "setAssetScriptForm": {
+        "ok": "जारी रहना"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "cancel": "रद्द करना",
+          "errorDescription": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+          "errorHeader": "आपने वेव्स कीपर के उपयोग के अनुरोध की पुष्टि नहीं की",
+          "sign": "पुन: प्रयास करें",
+          "waiting": "वेव्स कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ..."
+        },
+        "confirmRequestLedger": {
+          "cancel": "रद्द करना",
+          "errorDescription": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया इस लेख को देखें (https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+          "errorHeader": "आपने अपने लेडजर नैनो एस पर अनुरोध की पुष्टि नहीं की",
+          "sign": "फिर से साइन करें",
+          "waiting": "लेजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
+        },
+        "txId": "TXID"
+      },
+      "transactionExport": {
+        "linkTitle": "साइन करने के लिए लिंक साइन करें",
+        "or": "या",
+        "qrZoomBtn": "ज़ूम इन/आउट करने के लिए क्लिक करें",
+        "scanQrCode": "क्यू आर कोड स्कैन करें"
+      }
+    },
+    "emptyBlocks": {
+      "title": "यहां कुछ नहीं है..."
+    },
+    "errorBlocks": {
+      "title": "कुछ गलत हुआ..."
+    },
+    "importSuccess": "Account Importing from the Keystore File was successful",
+    "modal": {
+      "assetInfo": {
+        "gateway_ui": "गेटवे"
+      },
+      "sign": {
+        "signByLedger": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
+      },
+      "token": {
+        "warning": {
+          "header": "आप सहमत हैं कि:",
+          "text": "{div.line}[I) You will not use the token for fraudulent purposes;]\n{div.line}[II) You will not duplicate, fully or in part, the name of an existing cryptocurrency or a well-known company with the aim of misleading users;]\n{div.line}[III) You will not use names of states, other administrative units or municipal institutions for the token's name with the aim of misleading users;]\n{div.line}[IV) You will not set a script on a smart asset that limits exchange transactions on Decentral.Exchange by asset quantity;]\n{div.line}[V) You will not give false information in a smart asset's description concerning the rules governing the token's use, which do not correspond to those of the script installed on it;]",
+          "textWarning": "इन बिंदुओं का पालन करने में विफल रहने पर आपके टोकन को स्पैम के रूप में वर्गीकृत कर दिया जाएगा, और केवल ID की खोज के लिए ही उपलब्ध होगा।"
+        }
+      }
+    },
+    "password": {
+      "btn": {
+        "confirm": "Confirm"
+      },
+      "minLength": "कम से कम {{minLength}} वर्णों का होना चाहिए",
+      "name": "खाते का नाम",
+      "nameExists": "That name is taken",
+      "newPass": "New password",
+      "old": "Old password",
+      "oldWrong": "Old password is wrong",
+      "repeat": "पासवर्ड पुष्टि करें\"",
+      "secure": "सुरक्षित पासवर्ड",
+      "title": "अपने खाते को नए पासवर्ड से सुरक्षित करें",
+      "warn": "आसान, कोई अंक या चिंह्न जोड़ें"
+    },
+    "qrCodeRead": {
+      "closeRead": "रद्द करना"
+    },
+    "recipient": "प्राप्तकर्ता",
+    "transaction": {
+      "actions": {
+        "cancelLeasing": "लीज़िंग रद्द करें",
+        "copyTxData": "सारा TX डेटा कॉपी करें",
+        "copyTxId": "TX ID कॉपी करें",
+        "showTx": "TX जानकारी"
+      },
+      "amounts": {
+        "burn": "–{{amount}} {{name}}",
+        "cancel-leasing": "{{amount}} {{name}}",
+        "circular": "{{amount}} {{name}}",
+        "exchange-buy": "{{sign}}{{amount}} {{name}}",
+        "exchange-sell": "{{sign}}{{amount}} {{name}}",
+        "issue": "{{amount}} {{name}}",
+        "lease-in": "{{amount}} {{name}}",
+        "lease-out": "{{amount}} {{name}}",
+        "mass-receive": "+{{amount}} {{name}}",
+        "mass-send": "–{{amount}} {{name}}",
+        "perTransaction": "प्रति ट्रांजेक्शन राशि",
+        "receive": "+{{amount}} {{name}}",
+        "reissue": "+{{amount}} {{name}}",
+        "script-invocation": "–{{amount}} {{name}}",
+        "send": "–{{amount}} {{name}}",
+        "set-script": "स्क्रिप्ट ट्रांजेक्शन सेट करें",
+        "set-script-cancel": "स्क्रिप्ट ट्रांजेक्शन रद्द करें",
+        "sponsorship-change": "स्पॉन्सरशिप बदलें",
+        "sponsorship-fee": "{{sign}}{{amount}} {{name}}",
+        "sponsorship-start": "स्पॉन्सरशिप सेट करें",
+        "sponsorship-stop": "डिसेबल स्पॉन्सरशिप"
+      },
+      "confirmed": {
+        "false": "अपुष्ट",
+        "true": "पूर्ण"
+      },
+      "headers": {
+        "activeLeasing": "अब सक्रिय",
+        "burn": "{{name}} टोकन जलाना",
+        "cancel-leasing": "लीज़िंग रद्द की",
+        "canceled": "रद्द",
+        "circular": "स्वयं-ट्रांसफर किया {{name}}",
+        "create-alias": "उपनाम बनाया",
+        "data": "डेटा ट्रांजेक्शन",
+        "data-vote": "Voted for {{assetName}}",
+        "exchange-amount": "{{amountAsset}}/{{priceAsset}}",
+        "exchange-buy": "एक्सचेंज खरीद:",
+        "exchange-sell": "एक्सचेंज सेल:",
+        "issue": "{{name}} टोकन जनरेशन",
+        "lease-in": "आने वाली लीज़िंग",
+        "lease-out": "लीज़िंग शुरु की",
+        "mass-receive": "{{name}} प्राप्त किया",
+        "mass-send": "{{name}} भेजा",
+        "receive": "{{name}} प्राप्त किया",
+        "reissue": "{{name}} टोकन पुनः जारी करना",
+        "script-invocation": "Script Invocation",
+        "send": "{{name}} भेजा",
+        "set-asset-script": "एसेट स्क्रिप्ट ट्रांजेक्शन सेट करें",
+        "set-script": "स्क्रिप्ट ट्रांजेक्शन सेट करें",
+        "set-script-cancel": "स्क्रिप्ट ट्रांजेक्शन रद्द करें",
+        "spam": "संदेहजनक",
+        "sponsorship-fee": "{{name}} प्राप्त",
+        "sponsorship-start": "{{name}} के लिए स्पॉन्सरशिप सेट करें",
+        "sponsorship-stop": "{{name}} के लिए स्पॉन्सरशिप डिसेबल्ड",
+        "suspicious": "संदेहजनक",
+        "unknown": "अज्ञात लेनदेन"
+      },
+      "modals": {
+        "assetId": "ID",
+        "attachment": "संलग्न संदेश",
+        "cancelTx": "TX",
+        "confirmations": "पुष्टिकरण",
+        "copyCode": "Copy Code",
+        "data": "डेटा",
+        "dataKey": "Key",
+        "dataType": "Type",
+        "dataValue": "Value",
+        "description": "विवरण",
+        "exchange": {
+          "buy": "Buy",
+          "buyMatcherFee": "Buy Matcher Fee",
+          "exchangeType": "Order type",
+          "matcherFee": "Matcher Fee",
+          "pair": "Pair",
+          "sell": "Sell"
+        },
+        "fee": "फीस",
+        "from": "से",
+        "function": "Function",
+        "functionCall": "Function call",
+        "height": "लॉक करें",
+        "hide": "Hide",
+        "hideAll": "Hide all",
+        "leasingStatus": "स्थिति",
+        "massSend": {
+          "showAll": {
+            "false": "सभी ({{count}}) दिखाएं",
+            "true": "पहले 3 लेनदेन दिखाएं"
+          },
+          "totalAmount": "कुल राशि"
+        },
+        "numberOfRecipients": "राप्तकर्ताओं की संख्या",
+        "orderType": "ओर्डर प्रकार",
+        "pair": "जोड़ा",
+        "payment": "Payment",
+        "price": "{{name}} मूल्य",
+        "script": "स्क्रिप्ट",
+        "scriptAddress": "Script address",
+        "seeAll": "See all",
+        "setAssetScript": {
+          "showScript-false": "दिखाना",
+          "showScript-true": "छिपाना"
+        },
+        "show": "Show",
+        "showAll": "Show all ({{count}})",
+        "showFirstTree": "Show first 3 keys",
+        "status": "Status",
+        "timestamp": "समय-चिह्न",
+        "to": "को",
+        "toBeReissued": "पुनः जारी किया जाए",
+        "toRemainOnBalance": "बैलेंस पर बने रहना है",
+        "totalAfterBurning": "जलने के बाद कुल",
+        "totalAfterReissue": "पुनर्जन्म के बाद कुल",
+        "txId": "TXID",
+        "type": "प्रकार",
+        "viewTransactionKey": "लेनदेन",
+        "viewTransactionValue": "लेनदेन देखें"
+      },
+      "notifications": {
+        "closed": "लीज़िंग पहले पहले ही रद्द की गयी",
+        "closedSuccess": "लीज़िंग रद्द करना पूर्ण"
+      },
+      "reissuable": {
+        "false": "फिर जारी ना करने योग्य",
+        "true": "फिर जारी करने योग्य"
+      },
+      "set-asset-script": "अपडेट स्क्रिप्ट",
+      "subheaders": {
+        "burn": "{{time}}",
+        "cancel-leasing": "{{time}}{span.locale-address}[, लेनदेन {{transactionId}}]",
+        "circular": "{{time}}{span.locale-address}[, पते पर {{address}}]",
+        "create-alias": "{{time}}, {{alias}}",
+        "data": "{{time}}",
+        "exchange-buy": "{{time}}",
+        "exchange-sell": "{{time}}",
+        "issue": "{{time}}",
+        "lease-in": "{{time}}{span.locale-address}[, पते से {{address}}]",
+        "lease-out": "{{time}}{span.locale-address}[, पते को {{address}}]",
+        "mass-receive": "{{time}}{span.locale-address}[, पते से {{address}}]",
+        "mass-send": "{{time}}",
+        "receive": "{{time}}{span.locale-address}[, पते से {{address}}]",
+        "reissue": "{{time}}",
+        "script-invocation": "{{time}}{span.locale-address}[, पते को {{address}}]",
+        "send": "{{time}}{span.locale-address}[, पते को {{address}}]",
+        "set-asset-script": "{{time}}, संपत्ति {{name}} पर",
+        "sponsorship-fee": "{{time}} पते से {{address}}",
+        "unknown": "{{time}}"
+      }
+    },
+    "transactionList": {
+      "noTransactionsDescription": "आपके पास कोई लेनदेन नहीं हैं\"",
+      "noTransactionsTitle": "यहां कुछ नहीं..."
+    },
+    "transactions": {
+      "script": {
+        "txJson": "Base64 स्क्रिप्ट"
+      }
+    },
+    "whitespace": "&nbsp;"
+  },
+  "app.unavailable": {
+    "message": "The site is undergoing maintenance and will be back up soon. Thank you for your patience.",
+    "title": "We’ll Be Back Soon"
+  },
+  "app.utils": {
+    "confirmTransaction": {
+      "signLedger": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
+    },
+    "directives": {
+      "anyTransaction": {
+        "calculatingFee": "लेनदेन शुल्क: गणना के लिए क्षेत्र पूरा करे",
+        "errors": {
+          "invalidScript": "सिंटेक्स एरर",
+          "required": "यह फ़ील्ड आवश्यक है!"
+        },
+        "fee": "शुल्क {{fee, money-currency}}",
+        "ok": "जारी रहना",
+        "textAreaTitle": "TX JSON",
+        "warning": {
+          "body": "जब तक आप एक अनुभवी उपयोगकर्ता नहीं हैं, हम आपको JSON सबमिट करने की अनुशंसा नहीं करते हैं। एरर से धन की हानि हो सकती है।",
+          "title": "चेतावनी: आपके कार्रवाई से आपके खाते का नुकसान हो सकता है"
+        }
+      },
+      "filter": {
+        "helpIcon": {
+          "assetId": "एसेट आईडी",
+          "description": "आप [यहा](https://docs.wavesplatform.com/en/waves-client/) संपत्ति खोजने के बारे में और जानकारी प्राप्त कर सकते हैं",
+          "header": "आप द्वारा खोज सकते हैं:",
+          "name": "नाम",
+          "ticker": "टिकर"
+        }
+      },
+      "scriptForm": {
+        "acceptAndContinue": "स्वीकार करें और जारी रखें",
+        "changePlaceholder": "एक नई स्क्रिप्ट दर्ज करें, या किसी मौजूदा स्क्रिप्ट को रद्द करने के लिए फ़ील्ड को खाली छोड़ दें",
+        "createPlaceholder": "यहां स्क्रिप्ट दर्ज करें",
+        "errors": {
+          "fee": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} ट्रांजेक्शन शुल्क का भुगतान करना होगा।.",
+          "invalidScript": "सिंटेक्स एरर",
+          "required": "यह फ़ील्ड आवश्यक है"
+        },
+        "fee": "शुल्क {{fee, money-currency}}",
+        "ideLink": "स्क्रिप्ट को [वेव्स राइड आईडीई](https://waves-ide.com//) के साथ विकसित किया जा सकता है",
+        "ok": "साइन",
+        "textAreaTitle": "Base64 स्क्रिप्ट",
+        "warning": {
+          "body": "जब तक आप एक अनुभवी उपयोगकर्ता नहीं हैं, हम आपको स्क्रिप्ट ट्रांजेक्शन जमा करने की सलाह नहीं देते हैं। एरर स्थायी नुकसान का कारण बन सकती हैं।",
+          "title": "चेतावनी: आपके कार्रवाई से आपके खाते का नुकसान हो सकता है"
+        },
+        "warningDescription": "जब तक आप एक अनुभवी उपयोगकर्ता नहीं हैं, हम आपको स्क्रिप्ट ट्रांजेक्शन जमा करने की सलाह नहीं देते हैं। एरर स्थायी नुकसान का कारण बन सकती हैं।",
+        "warningHeader": "आपके कार्रवाई से आपके खाते का नुकसान हो सकता है"
+      },
+      "setAssetScriptForm": {
+        "fee": "शुल्क {{fee, money-currency}}"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "sign_utils": "पुन: प्रयास करें"
+        }
+      }
+    },
+    "inputs": {
+      "errors": {
+        "gtGatewayMin": "आप {{min}} {{assetName}} से कम राशि ट्रान्सफर नहीं कर सकते"
+      }
+    },
+    "keeperForm": {
+      "address": "खाता पता",
+      "addressSaved": "Address saved",
+      "back": "वापस जाओ",
+      "error": {
+        "hasLockedKeeperDescription": "वेव्स कीपर के साथ काम करना जारी रखने के लिए, आपको पहले से निर्मित पासवर्ड दर्ज करना होगा, या एक नया बनाना होगा।",
+        "hasLockedKeeperHeader": "वेव्स कीपर से पासवर्ड दर्ज करें",
+        "hasNoUsersDescription": "किसी मौजूदा खाते में प्रवेश करें, या एक नया बनाएं, फिर पुन: प्रयास करें।",
+        "hasNoUsersHeader": "आपका कोई एक्टिव खाता नहीं है",
+        "install": "इंस्टॉल करें",
+        "networkDescription": "आपके द्वारा चयनित खाता गलत नेटवर्क पर है। नेटवर्क बदलें, फिर प्रयास करें।",
+        "networkHeader": "नेटवर्क बदलें",
+        "notInstalledDescription": "इंस्टॉल करने के बाद, एक खाता बनाएं, साइन इन करें और फिर जारी रखने के लिए पृष्ठ को रीफ्रेश करें।",
+        "notInstalledHeader": "वेव्स कीपर नहीं है?",
+        "refresh": "पुन: प्रयास करें"
+      },
+      "heading": "वेव्स कीपर से खाता आयात करे",
+      "loading": "Import account from the Waves Keeper",
+      "login": "जारी रहना",
+      "name": "खाते का नाम",
+      "nameExists": "That name is taken",
+      "or": "या",
+      "retry": "Try again",
+      "saveUserData": "मुझे इसी कंप्यूटर पर साइन - इन रखें"
+    },
+    "LedgerClient_utils": "Ledger Device",
+    "LedgerClientDescription": "वेव्स कीपर से खाता इम्पोर्ट करे",
+    "modal": {
+      "acceptNewTerms": {
+        "title": "Terms of Use Agreement"
+      },
+      "account": {
+        "address": "आपका पता",
+        "aliases": "उपनाम",
+        "aliasesWarning": "उपनाम कार्यक्षमता अस्थायी रूप से अनुपलब्ध है",
+        "cancel": "खाता बनाएं",
+        "create": "नया बनाएं",
+        "createAliasNotPermitted": "उपनाम निर्माण अस्थायी रूप से अनुपलब्ध है।",
+        "fee": "लेनदेन फीस {{price}} {{name}}",
+        "hasAlias": "इस उपनाम का पहले ही उपयोग किया जा चुका है",
+        "hasScript": "यदि आपके पास मल्टीसिग है, तो आप एक उपनाम नहीं बना सकते",
+        "invalidSymbols": "आपने अमान्य वर्णों का उपयोग किया है",
+        "maxLength": "एलियास 30 से अधिक वर्णों का नहीं होना चाहिए",
+        "message": "खाता जानकारी देखने के लिए, साइन इन हों या खाता बनाएं",
+        "minLength": "उपनाम कम से कम 4 वर्ण लंबा होना चाहिए",
+        "noMoney": "अपर्याप्त फंड्स",
+        "notifications": {
+          "aliasCreated": "उपनाम बना दिया गया है"
+        },
+        "ok": "साइन इन करें",
+        "placeholder": "आपके पते का प्रतीक नाम",
+        "title": "खाता {{name}}",
+        "title_default_name": "सूचना"
+      },
+      "accountInfo": {
+        "alias": {
+          "helpIcon": {
+            "row1": "उपनाम के बारे में",
+            "row2": "एक उपनाम आपके पते के लिए एक उपनाम है। आप लेन-देन करने के लिए एक पते के बजाय एक उपनाम का उपयोग कर सकते हैं।",
+            "row3": "आपका उपनाम 4 और 30 वर्णों के बीच लंबा होना चाहिए और इसमें केवल लैटिन अक्षर, अंक और चिह्न (@, -, _) और डॉट होना चाहिए।"
+          }
+        }
+      },
+      "assetInfo": {
+        "available": "उपलब्ध",
+        "balance": "बैलेंस",
+        "contest": "CONTEST",
+        "date": "जारी तिथि",
+        "decimals": "दशमलव अंक",
+        "description": "विवरण",
+        "details": "विवरण",
+        "email": "ईमेल",
+        "gateway": "गेटवे",
+        "gatewaySoon": "GATEWAY SOON",
+        "identifier": "ID",
+        "inOrders": "ऑर्डरों में सुरक्षित",
+        "issuer": "जारीकर्ता",
+        "leased": "लीज़ किया",
+        "name": "नाम",
+        "pinned": "पिन किया हुआ",
+        "qualified": "योग्य",
+        "quantity": "कुल राशि",
+        "rating": {
+          "canVoteTip": "Click to rate token",
+          "tooltipLink": "More Details",
+          "tooltipNeedWAVES": "and 0.001 DCC",
+          "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
+          "tooltipTitle": "To rate a token, you must have at least 1 CRC in your wallet."
+        },
+        "reissue": {
+          "no": "फिर जारी ना करने योग्य",
+          "yes": "फिर जारी करने योग्य"
+        },
+        "site": "साइट",
+        "sponsorshipFee": "स्पॉन्सर्ड संपत्ति शुल्क",
+        "suspicious": "संदेहजनक",
+        "ticker": "टिकर",
+        "title": "एसेट जानकारी",
+        "tokenomica": "Tokenomica",
+        "total": "कुल योग",
+        "transactions": "लेन-देन",
+        "type": "प्रकार",
+        "unpinned": "पिन",
+        "wsocRef": "WSOC"
+      },
+      "backup": {
+        "clearSeed": "{span.clear}[मिटाएं] और फिर से टैप करें",
+        "title": {
+          "title_0": "बैकअप वाक्य सहेंजें",
+          "title_1": "बैकअप की पुष्टि करें",
+          "title_2": "सफलता"
+        }
+      },
+      "confirm-correct-order": "आपकी कीमत {price, money-currency} बाजार मूल्य के 5% से अधिक है",
+      "confirmLogout": {
+        "goBack": "Go back",
+        "heading": "You’re about to leave",
+        "logout": "Log Out",
+        "text": "In order to prevent anyone else from accessing your funds without your permission, please log out from your account first."
+      },
+      "confirmOrder": {
+        "cancel": "रद्द करना",
+        "continue": "आदेश देना",
+        "description": "क्या आप आगे बढ़ना चाहते हैं?",
+        "headerBuy": "आपके ऑर्डर का मूल्य नवीनतम बाजार मूल्य की तुलना में {{orderLimit}}% अधिक है",
+        "headerSell": "आपके ऑर्डर की कीमत नवीनतम बाजार मूल्य की तुलना में {{orderLimit}}% कम है"
+      },
+      "createOrder": {
+        "cancel": "खाता बनाएं",
+        "message": "ट्रेडिंग करने के लिए, कृपया साइन इन हों या खाता बनाएं",
+        "ok": "साइन इन करें"
+      },
+      "deleteAccount": {
+        "cancel": "Cancel",
+        "delete": "Remove",
+        "description": "{div}[Removing an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "header": "Remove account"
+      },
+      "deposit": {
+        "coinomatBCH": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे BCH के ट्रांसफर को आपके Waves खाते में एक टोकन में प्रोसेस करेगा।",
+          "helpDescrTitle": "अपने Bitcoin कैश क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "न्यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल BCH ही भेजें"
+        },
+        "coinomatBSV": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BSV to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your Bitcoin Satoshi Vision client or wallet",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम भेजेंगे, तो आप उस पैसे को खो देंगे।",
+          "warningMinAmountTitle": "जमा की न्यूनतम राशि {{minAmount, BigNumber}} {{assetTicker}} है",
+          "warningText": "इस पते पर कोई अन्य मुद्रा भेजने से आपकी जमा राशि का नुकसान हो सकता है।",
+          "warningTitle": "इस जमा पते पर केवल BSV भेजें"
+        },
+        "coinomatBTC": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे BTC के ट्रांसफर को आपके Waves खाते में एक टोकन में रोसेस करेगा।",
+          "helpDescrTitle": "अपने Bitcoin क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "न्यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है।",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल BTC ही भेजें"
+        },
+        "coinomatDASH": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे DASH के ट्रांसफर को आपके Waves खाते में एक टोकन में प्रोसेस करेगा। कृपया नोट करें कि यह गेटवे इस ऑपरेशन के लिए कोई फीस नहीं लगाता है।",
+          "helpDescrTitle": "अपने DASH क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम भेज देंगे, तो आप उस पैसे को खो देंगे।",
+          "warningMinAmountTitle": "जमा की न्यूनतम राशि {{minAmount, BigNumber}} {{assetTicker}} है",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल DASH ही भेजें"
+        },
+        "coinomatETH": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे ETH के ट्रांसफर को आपके Waves खाते में एक टोकन में रोसेस करेगा।",
+          "helpDescrTitle": "अपने Ethereum क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है।",
+          "warningText": "क करें किया क्या आपका वॉलेट या एक्सचेंज, ETH निकासी के लिए स्मार्ट-कॉन्ट्रैक्ट का उपयोग करता है।  हम ऐसे लेनेदेन स्वीकार नहीं करते हैं और उनको रिफंड नहीं कर सकते हैं। आपको उस धन की हानि हो जाएगी।",
+          "warningTitle": "कृपया स्मार्ट-कॉन्ट्रैक्ट से ETH जमा ना करें! ERC20 टोकन जमा ना करें! केवल Ethereum अनुमत है।"
+        },
+        "coinomatLTC": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे LTC के ट्रांसफर को आपके Waves खाते में एक टोकन में प्रोसेस करेगा।",
+          "helpDescrTitle": "अपने Litecoin क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल LTC ही भेजें"
+        },
+        "coinomatXMR": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे XMR के ट्रांसफर को आपके Waves खाते में एक टोकन में प्रोसेस करेगा।",
+          "helpDescrTitle": "अपने Monero क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "न्यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल XMR ही भेजें"
+        },
+        "coinomatZEC": {
+          "helpDescrText": "लेनदेन की पुष्टि हो जाने पर, यह गेटवे LTC के ट्रांसफर को आपके Waves खाते में एक टोकन में प्रोसेस करेगा।",
+          "helpDescrTitle": "अपने Litecoin क्लाइंट या वॉलेट में इस पते को दर्ज करें",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है।",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल Zcash ही भेजें"
+        },
+        "copyAndShare": "पते को कॉपी व साझा करें",
+        "currency": "करेंसी",
+        "or": "या",
+        "pleaseNote": "कृपया नोट करें कि यह गेटवे इस ऑपरेशन के लिए कोई फीस नहीं लगाता है।",
+        "scanQrCode": "QR कोड स्कैन करें",
+        "title": "{{assetName}} जमा करें",
+        "wavesGatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
+        },
+        "wavesGatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your BTC client or wallet",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम राशि भेजेंगे तो आप उस धन को खो देंगे।",
+          "warningMinAmountTitle": "न्यूनतम जमा राशि {{minAmount, BigNumber}} {{assetTicker}} है।",
+          "warningText": "इस पते पर कोई और करेंसी भेजने से आपकी जमा राशि की हानि हो सकती है।",
+          "warningTitle": "इस जमा पते पर केवल BTC ही भेजें"
+        },
+        "wavesGatewayERGO": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ERGO to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ERGO client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only ERGO to this deposit address"
+        },
+        "wavesGatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ETH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "क करें किया क्या आपका वॉलेट या एक्सचेंज, ETH निकासी के लिए स्मार्ट-कॉन्ट्रैक्ट का उपयोग करता है।  हम ऐसे लेनेदेन स्वीकार नहीं करते हैं और उनको रिफंड नहीं कर सकते हैं। आपको उस धन की हानि हो जाएगी।",
+          "warningTitle": "कृपया स्मार्ट-कॉन्ट्रैक्ट से ETH जमा ना करें! ERC20 टोकन जमा ना करें! केवल Ethereum अनुमत है।"
+        },
+        "wavesGatewayUSDT": {
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
+          "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
+        },
+        "wavesGatewayVST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrText_copy": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "helpDescrTitle_copy": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+      },
+      "dexScriptedPair": {
+        "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
+        "heading": "Order placement for a pair that includes a Smart Asset"
+      },
+      "disabledFeature": {
+        "anyTransaction": "JSON ट्रांजेक्शन अस्थायी रूप से अनुपलब्ध हैं।",
+        "lease": "लीजिंग पर लेना अस्थायी रूप से अनुपलब्ध है।"
+      },
+      "disabledFeatures": {
+        "default": "क्षमा करें, यह सुविधा वर्तमान में अक्षम है।",
+        "massTransfer": "मास ट्रांसफर अस्थायी रूप से अनुपलब्ध हैं।",
+        "transfer": "क्रिप्टोक्यूरेंसी भेजना अस्थायी रूप से अनुपलब्ध है।"
+      },
+      "gatewaySign": {
+        "cancel": "रद्द करें",
+        "continue": "जारी रखें",
+        "description": "{{name}} इस ऐप्लिकेशन के पास आपके Waves पते की पहुंच होगी। मैं आपका SEED या निजी कुंजी नहीं लूंगा।",
+        "descriptionDesktop1": "लिंक आपके डिफ़ॉल्ट वेब ब्राउज़र में खुल जाएगा। यदि आप किसी अन्य वेब ब्राउज़र का उपयोग करना चाहते हैं,",
+        "descriptionDesktop2": "कापी",
+        "descriptionDesktop3": "और उसके URL बार में लिंक पेस्ट करें।",
+        "error": {
+          "button": "रद्द करें",
+          "headline": "कुछ गलत हुआ",
+          "title": "त्रुटि"
+        },
+        "headline": "यह ऐप्लिकेशन {span.link}[{{url}}] आपका पता देखेगा। आपको पर रीडायरेक्ट किया जाएगा",
+        "retrySign": "पुन: प्रयास करें",
+        "title": "Waves के साथ साइन इन हों",
+        "txHash": "TXHASH",
+        "warning": "उन वेबसाइटों पर अपना गुप्त वाक्यांश (SEED) न डालें, जिन पर आपको पुनर्निर्देशित किया जाएगा।"
+      },
+      "import": {
+        "errorBeta": "हम वेव्स बीटा क्लाइंट से आपके खाते को पुनः प्राप्त करने में असमर्थ थे। वेव्स लाइट क्लाइंट से आयात करने का प्रयास करें।",
+        "errorHeader": "कोई खाता नहीं मिला",
+        "errorLite": "हम आपके खातों को वेव्स लाइट क्लाइंट से पुनर्प्राप्त करने में असमर्थ थे। वेव्स बीटा क्लाइंट से आयात करने का प्रयास करें।",
+        "errorUnable": "हम आपके खाते पुनर्प्राप्त करने में असमर्थ थे। कृपया उनके बैकअप सीड का उपयोग करके उन्हें पुनर्स्थापित करें।",
+        "fromBetaButton": "बीटा क्लाइंट से आयात करें",
+        "fromLiteButton": "लाइट क्लाइंट से आयात करें",
+        "helpIcon": {
+          "description": "सही संचालन के लिए, हम अनुशंसा करते हैं कि आप पॉप-अप की अनुमति दें। ब्राउज़रों के लिए निर्देश: [क्रोम](https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en), [सफारी](https://discussions.apple.com/thread/4271925),  [फ़ायरफ़ॉक्स](https://support.mozilla.org/en-US/kb/pop-blocker-settings-exceptions-troubleshooting), [ओपेरा](https://help.opera.com/en/presto/control-pages/).",
+          "title": "कुछ ब्राउज़र पॉप-अप विंडो को डिफ़ॉल्ट रूप से ब्लॉक करते हैं।"
+        },
+        "importButton": "इम्पोर्ट",
+        "importCancel": "रद्द करना",
+        "iUnderstandButton": "मै समझता हुँ",
+        "selectAccountDescription": "आपको अपने ब्राउज़र में पॉप-अप विंडो की अनुमति देनी होगी",
+        "selectAccountToImport": "चुनें कि आप किन खातों को आयात करना चाहते हैं",
+        "selectAccountToImportFrom": "यह चुनें कि खातों को कहां से आयात किया जाए",
+        "selectButton": "सेलेक्ट",
+        "wavesBetaClient": "वेव्स बीटा क्लाइंट",
+        "wavesBetaClientDescription": "वेव्स बीटा क्लाइंट से खाते आयात करें",
+        "wavesLiteClient": "वेव्स लाइट क्लाइंट",
+        "wavesLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें"
+      },
+      "matcherChoice": {
+        "customMatcher": "Custom matcher address",
+        "matcher": "Matcher",
+        "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
+        "terms": "Terms",
+        "title": "Choose matcher",
+        "wavesTerms": "I am over 18 years old, and I agree to the Waves Terms of Use and Waves Privacy Policy."
+      },
+      "open-main": {
+        "dex": {
+          "cancel": "खाता बनाएं",
+          "message": "ट्रेडिंग करने के लिए, कृपया साइन इन हों या खाता बनाएं",
+          "ok": "साइन इन करें"
+        },
+        "tokens": {
+          "cancel": "खाता बनाएं",
+          "message": "टोकन जारी करने के लिए, साइन इन हों या खाता बनाएं",
+          "ok": "साइन इन करें"
+        },
+        "wallet": {
+          "assets": {
+            "cancel": "खाता बनाएं",
+            "message": "अपना वॉलेट खोलने के लिए, साइन इन हों या खाता बनाएं",
+            "ok": "साइन इन करें"
+          },
+          "cancel": "खाता बनाएं",
+          "leasing": {
+            "cancel": "खाता बनाएं",
+            "message": "अपना वॉलेट खोलने के लिए, साइन इन हों या खाता बनाएं",
+            "ok": "साइन इन करें"
+          },
+          "message": "अपना वॉलेट खोलने के लिए, साइन इन हों या खाता बनाएं",
+          "ok": "साइन इन करें",
+          "portfolio": {
+            "cancel": "खाता बनाएं",
+            "message": "अपना वॉलेट खोलने के लिए, साइन इन हों या खाता बनाएं",
+            "ok": "साइन इन करें"
+          },
+          "transactions": {
+            "cancel": "खाता बनाएं",
+            "message": "अपना वॉलेट खोलने के लिए, साइन इन हों या खाता बनाएं",
+            "ok": "साइन इन करें"
+          }
+        }
+      },
+      "pairing": {
+        "downloadAppDescription": "हमारे मोबाइल एप्लिकेशन डाउनलोड करें नीचे से:",
+        "scanCodeDescription": "इसे अपने खाते से जोड़ने के लिए अपने आई - फ़ोन या एंड्रॉयड डिवाइस के साथ नीचे दिए गए कोड को स्कैन करें।"
+      },
+      "pinAsset": {
+        "cancel": "रद्द करना",
+        "nothing": "कुछ भी चुना नहीं",
+        "placeholder": "एसेट नाम या आईडी टाइप करें",
+        "submit": "पिन",
+        "title": "उन संपत्तियों का चुने जिन्हें आप पिन करना चाहते हैं"
+      },
+      "qr": {
+        "copyAndShare": "पते को कॉपी व साझा करें",
+        "or": "या",
+        "scanQrCode": "QR कोड स्कैन करें",
+        "title": "अपना पता साझा करें",
+        "warningText": "इस पते पर कोई और डिजिटल एसेट भेजने से आपके फंड की स्थायी हानि हो जाएगी।",
+        "warningTitle": "इस पते पर केवल DCC और Waves टोकन ही भेजें"
+      },
+      "receive": {
+        "accountStatus": "खाते की स्थिति",
+        "addressOrAlias": "पता / उपनाम",
+        "amount": "राशि",
+        "amountYouPay": "आपकी भुगतान राशि",
+        "asset": "एसेट",
+        "bank": {
+          "title": "बैंक"
+        },
+        "bankSuccessHeader": "सत्यापन के लिए आपको IDNow.eu पर रीडायरेक्ट किया गया था।",
+        "bankSuccessText": "आपका सत्यापन हो जाने के बाद आपको आगे के निर्देश मिलेंगे।",
+        "bankVerifiedPlateDescription": "इससे पहले कि आप अपना फंड निकालें, हम आपको [निर्देश](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) और [सीमाएँ  और लेनदेन शुल्क]](https://coinomat.com/limits.php) देखने की सलाह देते हैं।",
+        "bankVerifiedPlateHeader": "आपको निम्नलिखित जानकारी के साथ भुगतान विवरण क्षेत्र को भरना चाहिए:",
+        "card": {
+          "continue": "जारी रखें",
+          "title": "कार्ड"
+        },
+        "cardSuccessHeader": "आपको Indacoin.com पर रीडायरेक्ट किया गया है",
+        "cardSuccessText": "भुगतान किए जाने के बाद आपका बैलेंस अपडेट किया जाएगा",
+        "coinomat": {
+          "serverError": "कोइनोमाट सेवा संयोग अस्थायी रूप से अनुपलब्ध है। बाद में पुन: प्रयास करें।",
+          "tryAgain": "पुनः प्रयास करें"
+        },
+        "cryptocurrency": {
+          "title": "क्रिप्टो मुद्रा"
+        },
+        "error": {
+          "cardAmount": {
+            "gte": "आपके द्वारा जमा की जा सकने वाली न्यूनतम राशि {{gte}} {{currency}} है",
+            "lte": "अधिकतम राशि जो आप जमा कर सकते हैं {{lte}} {{currency}}",
+            "precision": "इस क्षेत्र में संख्या अमान्य है। इसमें दशमलव बिंदु के बाद अधिकतम 2 अंक शामिल हो सकते हैं।"
+          }
+        },
+        "errors": {
+          "required": "यह क्षेत्र जरूरी है"
+        },
+        "gatewayError": "Service Gateway temporarily unavailable. Try again later.",
+        "invoice": {
+          "title": "बीजक"
+        },
+        "ledger": {
+          "cancel": "रद्द करना",
+          "retry": "पुन: प्रयास करें"
+        },
+        "maximumIs": "अधिकतम",
+        "minimumIs": "यूनतम",
+        "providedByCoinomat": {
+          "descriprion": "{div}[यह सेवा कोइनोमाट कंपनी (कोइनोमाट) द्वारा प्रदान की गई है।\nवेव्स प्लेटफॉर्म एजी, कॉइनोमैट द्वारा की गई गतिविधियों के लिए कोई ज़िम्मेदारी नहीं लेती है और कॉइनसमैट और वेव्स प्लेटफ़ॉर्म के उपयोगकर्ताओं के बीच उत्पन्न होने वाले संबंधों में कोई भाग नहीं लेती है।] {div}[कॉइनोमैट सेवाओं का उपयोग करके, आप सहमत होते हैं। [लेनदेन की सेवा और चालन के संयोग नियम](https://coinomat.com/terms.php) द्वारा बाध्य। यदि आप इन शर्तों से सहमत नहीं हैं, तो कोइनोमाट सेवाओं का उपयोग न करें।]",
+          "header": "यह सेवा कोइनोमाट कंपनी (कोइनोमाट) द्वारा प्रदान की गई है।",
+          "termsReadedInputLabel": "मैं कोइनोमाट कंपनी का [लेनदेन की सेवा और आचरण की शर्तें](https://coinomat.com/terms.php), [सीमाएं](https://coinomat.com/limits.php) और [गोपनीयता नीति](https//coinomat.com/privacy.php) से सहमत हूं।",
+          "warning": "सत्यापन, भुगतान प्रसंस्करण या अपनी सहमति को रद्द करने की समस्याओं के मामले में, कृपया कोइनोमाट संयोग समर्थन टीम से संपर्क करें - [support@coinomat.com](mailto:support@coinomat.com)"
+        },
+        "receive": "जमा करें",
+        "serverAddressError": "Gateway address error",
+        "serverError": "कोइनोमाट सेवा संयोग अस्थायी रूप से अनुपलब्ध है। बाद में पुन: प्रयास करें।",
+        "serverWrongAddress": "Wrong address",
+        "shareInvoiceLink": "किसी इनवॉइस का लिंक साझा करें",
+        "verified": "सत्यापित",
+        "vostok": {
+          "serverError": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wavesEnterprise": {
+          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wtry": {
+          "info": "भुगतान प्रोसेसिंग की समस्याओं की स्थिति में, कृपया Digilira सपोर्टिंग टीम से संपर्क करें — [support@digilira.com](mailto:support@digilira.com)"
+        },
+        "wtryPlate1Header": "यदि आपके पास तुर्की की नागरिकता है तो आप केवल टर्किश लीरा गेटवे का ही उपयोग कर सकते हैं।",
+        "wtryPlate1Text": "जमा करने के लिए आपको [digilira.com](https://digilira.com)",
+        "wtrySuccessHeader": "आपको Digilira.com पर रीडायरेक्ट किया गया था",
+        "youWillGet": "आपको लगभग मिलेंगे"
+      },
+      "removeAccount": {
+        "cancel": "रद्द करें",
+        "heading": "खाता हटाएं",
+        "remove": "हटाएं",
+        "text": "{div}[यदि आपने बैकअप वाक्य नहीं सहेजा हो तो किसी खाते को हटाने से इसकी अपरिवर्तनीय हानि होगी (SEED).]\n{div}[खाते को हटाने के लिए “हटाएं” बटन या पिछले स्क्रीन पर जाने के लिए “रद्द करें” पर क्लिक करें।]",
+        "warning": "आपने अपना SEED नहीं सहेजा",
+        "warningPlural": "You did not save your Seed phrases"
+      },
+      "removeKeeperAccount": {
+        "heading": "वेव्स कीपर खाते निकालें",
+        "text": "यह इस खाते में सहेजे गए पथ को हटा देगा। यह वेव्स कीपर से खाता नहीं हटाएगा।"
+      },
+      "removeLedgerAccount": {
+        "heading": "लेडजर खाता निकालें",
+        "text": "यह आपके लेडजर से खाता नहीं हटाएगा। यह केवल आपके लेडजर पर इस खाते में सहेजे गए पथ को हटा देगा।"
+      },
+      "removePrivateKeyAccount": {
+        "text": "{div}[Deleting an account will lead to its irretrievable loss if you didn't save a Private key.]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]"
+      },
+      "script": {
+        "anyTx": "JSON",
+        "setScript": "स्क्रिप्ट लेनदेन"
+      },
+      "send": {
+        "amount": "राशि",
+        "attachmentLength": "विवरण बहुत लंबा है",
+        "bankAccount": "बैंक खाता",
+        "coinomat": {
+          "feeExplanation": "हमने {{assetName}} पते की पहचान कर ली है और आपके धन को उस पते पर Coinomat गेटवे पर भेजेंगे। न्यूनतम राशि {{min, BigNumber}} {{assetTicker}}, अधिकतम राशि {{max, BigNumber}} {{assetTicker}} है।",
+          "feeTitle": "गेटवे फीस {{fee, BigNumber}} {{assetTicker}} है"
+        },
+        "coinomatLimits": "न्यूनतम $ 100 USD/EUR, अधिकतम $ 50,000 USD/EUR",
+        "coinomatWarningHeader": "हम आपका पैसा कॉइनोमैट गेटवे के माध्यम से भेजेंगे।",
+        "coinomatWarningText": "विड्रॉ करने से पहले, कृपया कोइनोमाट [सीमा और लेनदेन शुल्क](https://coinomat.com/limits.php) की जाँच करें।",
+        "compare": {
+          "description": "आपने {{amount}} {{currency}} (${{mirror}}) भेजा",
+          "details": "विवरण देखें",
+          "title": "आपका लेनदेन होने वाला है!"
+        },
+        "confirm": {
+          "back": "वापस जाएं",
+          "confirm": "पुष्टि करें",
+          "from": "द्वारा",
+          "title": "लेनदेन विवरण",
+          "to": "को",
+          "total": "कुल योग"
+        },
+        "currency": "एसेट",
+        "description": "विवरण",
+        "descriptionPlaceholder": "एक वैकल्पिक संदेश लिखें",
+        "errors": {
+          "address": "यह पता मान्य नहीं है",
+          "allAddressesInvalid": "सभी पता अमान्य है",
+          "button": "रद्द करें",
+          "headline": "कुछ गलत हुआ",
+          "invalidChars": "इस क्षेत्र में केवल नंबर हो सकते हैं",
+          "max": "अपर्याप्त फंड",
+          "maxCoinomat": "आप {{money, money-currency}} से अधिक राशि ट्रांसफर नहीं कर सकते",
+          "paymentIdLength": "Monero Payment ID को 64-वर्ण की हेक्स स्ट्रिंग होना चाहिए",
+          "paymentIdPattern": "हेक्स स्ट्रिंग में 0-9 चिह्न और A-Z (या a-z) होना चाहिए",
+          "precision": "इस क्षेत्र में यह नंबर अमान्य है। दशमलव बिंदु के बाद इसमें अधिकतम {{precision}} वर्ण शामिल हो सकते हैं।",
+          "required": "यह क्षेत्र जरूरी है",
+          "title": "त्रुटि"
+        },
+        "fee": "लेनदेन फीस {{fee, money-currency}}",
+        "gateway": {
+          "feeExplanation": "We have detected a {{assetName}} address and will send your funds via a gateway to this address. The minimum amount is {{min, BigNumber}} {{assetTicker}}. The maximum amount is {{max, BigNumber}} {{assetTicker}}."
+        },
+        "gatewayTerms": {
+          "accept": "Accept and Continue",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.wavesplatform.com/) and [Conduction of Transactions](https://dex.wavesplatform.com/). If you do not agree to these terms, then do not use this Gateway service.",
+          "title": "Gateway service agreement"
+        },
+        "icoWarning": "मैं एक ICO पर {{assetName}} निकासी नहीं करता हूँ। हम इस सेल के टोक्नों को आपके खाते में क्रेडिट नहीं करेंगे।",
+        "idNumber": {
+          "helpIcon": {
+            "description": "आप बैंक खाते में पैसे निकालने के बारे में और जानकारी प्राप्त कर सकते हैं [यहां](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html)।",
+            "title": "कोइनोमाट के साथ बैंक खाते की पुष्टि के बाद आपका आईडी नंबर प्रत्येक उपयोगकर्ता को सौंपा गया एक अद्वितीय नंबर है।"
+          }
+        },
+        "idNumberTitle": "आईडी नंबर",
+        "liraBankAccount": "दिगिलीरा खाता",
+        "massSend": {
+          "clear": "साफ करें",
+          "description": "विवरण",
+          "errors": {
+            "invalidAddress": "अमान्य पते की सूची:"
+          },
+          "importFile": "एक CSV फाइल आयात करें",
+          "recipient": "प्राप्तकर्ता, राशियां: {{count}}/{{max}}",
+          "recipientsAmountsPlaceholder": "उदाहरण:\nपता 1, राशि 1\nपता 2, राशि 2",
+          "showAllErrors": {
+            "false": "सभी दिखाएं ({{count}})",
+            "true": "पहली 2 त्रुटियां दिखाएं"
+          },
+          "totalAmount": "कुल राशि",
+          "warningPlate1Header": "आप अधिकतम 100 प्राप्तकर्ताओं को भेज सकते हैं",
+          "warningPlate1Text": "पहले 100 के बाद किसी भी प्राप्तकर्ता को अनदेखा कर दिया जाएगा।",
+          "warningPlate2Header": "अमान्य पते को बड़े पैमाने पर हस्तांतरण में शामिल नहीं किया जाएगा।",
+          "warningPlate3Header": "प्राप्तकर्ता और भेजने की राशि को अलग करने के लिए अल्पविराम का उपयोग करें। प्रत्येक प्राप्तकर्ता के लिए एक नई लाइन का प्रयोग करें।",
+          "warningPlate3Text": "[सीएसवी फ़ाइल मानक के बारे में और जानें](https://en.wikipedia.org/wiki/Comma-separated_values)।"
+        },
+        "massSendTitle": "लेनदेन विवरण",
+        "moneroPaymentId": "Monero Payment ID",
+        "moneroPaymentIdPlaceholder": "अपनी Monero Payment ID पेस्ट या टाइप करें",
+        "notSponsorship": {
+          "fee": "लेनदेन शुल्क {{fee, money-currency}}"
+        },
+        "notVerifiedHeader": "आपका सत्यापन नहीं हुआ है।",
+        "notVerifiedText": "बैंक खाते से विड्रॉ केवल सत्यापित उपयोगकर्ताओं के लिए उपलब्ध है। आप फिएट मनी भेजने और प्राप्त करने के बारे में अधिक जानकारी [यहां](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) प्राप्त कर सकते हैं।",
+        "or": "या",
+        "placeholderRecipient": "कोई पता पेस्ट या स्कैन करें",
+        "recipient": "प्राप्तकर्ता",
+        "sendMax": "अपर्याप्त फंड",
+        "sendTitle": "भेजें",
+        "title": "भेजें {{assetName}}",
+        "titleComplete": "भेजना पूर्ण",
+        "toBank": "बैंक खाते से विड्रॉ",
+        "total": "कुल योग",
+        "toWaves": "वेव्स पते पर भेजें",
+        "txFee": "लेनदेन शुल्क",
+        "validationError": {
+          "notEnoughFunds": "जरूरी फीस के भुगतान के लिए आपके पास पर्याप्त फंड नहीं हैं। आपको {{fee, money-currency}} लेनदेन फीस का भुगतान करना चाहिए।",
+          "notEnoughFundsWithdraw": "जरूरी फीस के भुगतान के लिए आपके पास पर्याप्त फंड नहीं हैं। आपको {{fee, money-currency}}{{getawayFee, BigNumber}} {{currency}} लेनदेन फीस और {{minGatewayAmount, BigNumber}} {{currency}} गेटवे फीस फीस का भुगतान करना चाहिए।"
+        },
+        "withdrawTitle": "Withdraw"
+      },
+      "sepa": {
+        "countryList": "पात्र देशों की सूची व ID",
+        "proceed": "सत्यापित हों",
+        "step1": "चरण 1",
+        "step1Description": "{{assetName}} को SEPA ट्रांसफर के माध्यम से सीधे आपके बैंक खाते से जमा करने के लिए आपको हमारे पार्टनर [IDNow.eu]({{url}}) द्वारा सत्यापित करवाना जरूरी है।",
+        "step2": "चरण 2",
+        "step2Description": "आपका सत्यापन हो जाने के बाद आपको आगे के निर्देश मिलेंगे",
+        "title": "{{assetName}} जमा करें",
+        "warning": "सत्यापन या भुगतान प्रोसेसिंग में किसी समस्या की स्थिति में, कृपया Coinomat सपोर्टिंग टीम से संपर्क करें — [support@coinomat.com](mailto:support@coinomat.com)",
+        "warningTitle": "इस पते पर केवल DCC और Waves टोकन ही भेजें"
+      },
+      "setAssetScript": {
+        "errorNoMoney": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} लेन-देन शुल्क का भुगतान करना होगा।",
+        "script": "स्क्रिप्ट",
+        "scripted": "सेट",
+        "title": "अपडेट स्क्रिप्ट",
+        "unavailable": "Update Script functionality is temporarily unavailable",
+        "warningDescription": "{div}[हम आपको स्क्रिप्ट लेनदेन जमा करने की सलाह नहीं देते हैं जब तक कि आप एक अनुभवी उपयोगकर्ता न हों। एरर से संपत्ति को स्थायी नुकसान हो सकता है।]",
+        "warningHeader": "कार्रवाई से परिसंपत्ति को नुकसान हो सकता है।"
+      },
+      "settings": {
+        "account": "Account",
+        "cancel": "खाता बनाएं",
+        "changePass": "Change password",
+        "deleteAccount": "Remove account",
+        "exportAccounts": {
+          "accounts": "Accounts",
+          "export": "Export",
+          "selectAll": "Select all",
+          "title": "Please select account",
+          "unselectAll": "Unselect all"
+        },
+        "general": {
+          "auto": "ऑटो",
+          "blockHeight": "वर्तमान ऊंचाई",
+          "blue": "Waves",
+          "color": "रंग",
+          "dark": "गहरा",
+          "green": "क्लासिक",
+          "hours": "{{hours}} घंटा",
+          "language": "भाषा",
+          "minutes": "{{minutes}} मिनट",
+          "openLinkViaWeb": "मैं हमेशा वेब ऐप के माध्यम से लिंक खोलना चाहूंगा",
+          "playSound": "Play user interface sound effects",
+          "theme": "विषय",
+          "timeout": "में सत्र टाइमआउट",
+          "title": "सामान्य",
+          "white": "सफेद"
+        },
+        "helperContent": "You can set a password for exported accounts",
+        "info": {
+          "legal": "Legal",
+          "privacyPolicy": "Privacy Policy",
+          "support": "सपोर्ट",
+          "termsAndConditions": "Terms and Conditions",
+          "title": "सूचना",
+          "version": "संस्करण"
+        },
+        "message": "सेटिंग्स खोलने के लिए, साइन इन हों या खाता बनाएं",
+        "network": {
+          "apiAddress": "Data service",
+          "apiAddressHelp": "The Data Service provides additional APIs for interacting with Waves blockchain data.",
+          "assetNameFilter": "Naming service",
+          "assetNameFilterHelp": "This service checks the name of the token with the Waves token library.\nFor completely disable it, clear the field.",
+          "copy": "कॉपी करें",
+          "dataProvider": "डेटा प्रदान करने वाला",
+          "dataProviderDescription": "{{dataProviderDescription}}",
+          "dataProviderId": "{{dataProviderId}}",
+          "dataProviderInvalid": "प्रदाता की जानकारी प्राप्त करने में विफल। कृपया पते की जांच करें और पुनः प्रयास करें",
+          "dataProviderName": "{{dataProviderName}}",
+          "dontShowSpamCheckboxDescr": "Don't show suspicious tokens",
+          "edit": "Edit",
+          "forDisableClear": "For completely disable it, clear the field.",
+          "matcherAddress": "मैचर पता",
+          "nodeAddress": "नोड पता",
+          "showMore": "और दिखाओ",
+          "spamFilter": "स्पैम फिल्टर",
+          "spamFilterInputDescr": "स्पैम फिल्टरिंग बंद करें",
+          "spamListHelp": "यह फ़िल्टर आपके पोर्टफोलियो से संदिग्ध टोकन हटाता है।",
+          "title": "नेटवर्क"
+        },
+        "ok": "साइन इन करें",
+        "pairing": {
+          "devicePairing": "खाता निर्यात करें",
+          "header": "पेयरिंग कोड स्कैन करें",
+          "showCodeLink": "पेयरिंग कोड दिखाएं",
+          "unavailable": {
+            "description": {
+              "ledger": "लेडजर नैनो एस पर संग्रहीत खातों के लिए निर्यात उपलब्ध नहीं है",
+              "wavesKeeper": "वेव्स कीपर से आयातित खातों के लिए निर्यात वेव्स कीपर सेटिंग्स में उपलब्ध है"
+            },
+            "header": {
+              "ledger": "निर्यात अनुपलब्ध है",
+              "wavesKeeper": "निर्यात अनुपलब्ध है"
+            },
+            "ok": "मै समझता हुँ"
+          }
+        },
+        "passChanged": "Password was changed successfully",
+        "password": "Password",
+        "security": {
+          "address": "पता",
+          "backupPhrase": "बैकअप वाक्य",
+          "base58Seed": "Encoded backup phrase",
+          "encodedSeed": "इनकोडेड सीड",
+          "exportAccount": "Export account to file",
+          "id": "Account ID",
+          "privateKey": "निजी कुंजी",
+          "publicKey": "सार्वजनिक कुंजी",
+          "savejson": "Save as JSON file",
+          "script": "स्क्रिप्ट",
+          "scriptButton": "स्क्रिप्ट सेट करें",
+          "scriptButtonUpdate": "अपडेट स्क्रिप्ट",
+          "show": "दिखाएं",
+          "title": "सुरक्षा"
+        },
+        "setDefault": "डिफॉल्ट सेट करें",
+        "title": "सेटिंग्स"
+      },
+      "sign": {
+        "article": "लेख",
+        "buy": "Buy",
+        "cancel": "रद्द करना",
+        "cancelOrder": "आदेश रद्द करें",
+        "close": "बंद करे",
+        "confirm": "की पुष्टि करें",
+        "confirmRequest": "निवेदन स्वीकारें",
+        "confirmRequest_utils": "निवेदन स्वीकारें",
+        "confirmRequestKeeper": "लहरें कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
+        "confirmRequestLedger": {
+          "cancel": "रद्द करना",
+          "errorDescription": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [इस लेख](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues) को देखें",
+          "errorHeader": "आपने अपने लेडजर नैनो एस पर अनुरोध की पुष्टि नहीं की",
+          "sign": "फिर से साइन करें",
+          "waiting": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
+        },
+        "confirmRequestMatcher_utils": "माचर पर निवेदन साइन करें। यदि आप इस पर साइन नहीं करते हैं, तो आप लेडजर खाते से डेक्स पर व्यापार नहीं कर सकते।",
+        "confirmRequestToMatcher": "माचर पर निवेदन साइन करें। यदि आप इस पर साइन नहीं करते हैं, तो आप डेक्स पर व्यापार नहीं कर सकते।",
+        "connecting": "कनेक्टिंग ...",
+        "connectingKeeper": "वेव्स कीपर से कनेक्टिंग ...",
+        "connectionError": "लेडजर कनेक्ट करने में असमर्थ",
+        "connectionErrorKeeper": "खाते तक पहुंचने में असमर्थ",
+        "connectionText": "कनेक्शन का समय समाप्त हो सकता है। कृपया पुन: प्रयास करें।",
+        "connectLedger": "अपने लेडजर नैनो एस कनेक्ट करें",
+        "enterPin": "अपना पिन कोड डालें",
+        "fee": "शुल्क",
+        "matcher": "ओर्डर अनुरोध पर साइन करें",
+        "openApp": "वेव्स ऐप खोलें",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "price": "मूल्य",
+        "refererTo": "यदि एरर बनी रहती है, तो कृपया देखें",
+        "referTo": "यदि एरर बनी रहती है, तो कृपया देखें",
+        "request": "निवेदन",
+        "requestId": "अनुरोध हैश",
+        "retry": "पुन: प्रयास करें",
+        "sell": "Sell",
+        "signByKeeper": "वेव्स कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
+        "signByLedger": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…",
+        "signError": "अनुरोध की पुष्टि नहीं की गई है।",
+        "signErrorKeeper": "आपने वेव्स कीपर के उपयोग से अनुरोध की पुष्टि नहीं की",
+        "signErrorText": "आपने अपने लेजर नैनो एस पर अनुरोध की पुष्टि नहीं की",
+        "signErrorTextImportKeeper": "{{address}}, पते के साथ वेव्स कीपर के लिए साइन इन करें, और फिर जारी रखने के लिए पृष्ठ ताज़ा करें।",
+        "signErrorTextKeeper": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte/) का टिकट बनाएं",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+        "timestamp": "Timestamp",
+        "txId": "TXID"
+      },
+      "sponsorship_edit": {
+        "title": "स्पॉन्सरशिप बदलें"
+      },
+      "sponsorship": {
+        "amountPerTx": "प्रति लेन-देन की राशि (प्रति 0.001 DCC)",
+        "assetId": "आईडी",
+        "continue": "जारी रहना",
+        "errors": {
+          "feeRequired": "यह फ़ील्ड आवश्यक है!",
+          "minSponsoredAssetFee": {
+            "precision": "इस क्षेत्र की संख्या अमान्य है। इसमें दशमलव बिंदु के बाद अधिकतम {{precision}} अंक शामिल हो सकते हैं।"
+          },
+          "noMoney": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} लेन-देन शुल्क का भुगतान करना होगा।",
+          "notZero": "मूल्य 0 से अधिक होना चाहिए"
+        },
+        "fee": "लेनदेन शुल्क {{fee, money-currency}}",
+        "title": "स्पॉन्सरशिप सक्षम करें",
+        "warningHeader": "उपयोगकर्ता {{name}} में लेनदेन शुल्क का भुगतान करने में सक्षम होंगे",
+        "warningText": "प्रति लेनदेन के लिए, 0.001 DCC आपके शेष राशि से काट लिए जाएंगे और {{name}} आपके खाते में जमा कर दिए जाएंगे। जब आप स्पॉन्सरशिप सक्षम करते हैं, तो {{name}} की राशि का लेन-देन उपयोगकर्ताओं से किया जाता है, यह आपके द्वारा निर्धारित किया जाता है। स्पॉन्सरशिप केवल तभी काम करेगा जब आपके पास कम से कम 1.005 DCC का बैलेंस हो। यदि आपका शेष राशि इस राशि से कम हो जाती है, तो आप लेनदेन को स्पॉन्सरशिप नहीं कर पाएंगे।"
+      },
+      "startLease": {
+        "amount": "राशि",
+        "balance": "बैलेंस",
+        "fee": "फीस {{fee, money-currency}}",
+        "nodeListLink": "नोड्स की सूची",
+        "nodeListLink_copy": "नोड्स की सूची",
+        "recipient": "प्राप्तकर्ता",
+        "start": "लीज़ शुरु करें",
+        "title": "लीज़िंग शुरु करें"
+      },
+      "termsAccept": {
+        "body": {
+          "advancedMode": "उन्नत सुविधाओं",
+          "analytics": "डवलपरों को गुमनाम उपयोग आंकड़ें भेज कर Waves प्लेटफार्म को बेहतर करने में सहायता करना चाहूँगा।",
+          "backup": "मैं समझता हूँ कि यदि ये ऐप एक अन्य डिवाइस पर जाता है हट जाता है तो मेरा Waves केवल मेरे बैकअप वाक्य से ही रिकवर किया जा सकता है।",
+          "ok": "पुष्टि करें और शुरु करें",
+          "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+          "read": "मैने इसे पढ़, समझ लिया है और सहमतच हूँ",
+          "readTermsAndConditions": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+          "security": "मैं समझता हूँ कि मेरे फंड मेरी डिवाइस पर सुरक्षित रूप से रखे हैं, ना कि कंपनी के पास",
+          "securityAndBackup": "I understand that my funds are held securely on this device, not by a company. If this app is moved to another device or deleted, my Waves can only be recovered with the backup phrase.",
+          "terms": "उपयोग की शर्तें"
+        },
+        "header": {
+          "description": "Waves अलग है — यह वॉलेट आपकी डिवाइस पर सुरक्षित रूप से स्टोर रहती है",
+          "title": "हो गया! आइये समीक्षा करें",
+          "title2": "उपयोग की शर्तें"
+        }
+      },
+      "token": {
+        "balance": "बैलेंस",
+        "burn": {
+          "label": "जलाए जाने वाले टोकनों की मात्रा",
+          "title": "{{name}} टोकन जलाना"
+        },
+        "description": "विवरण",
+        "fee": "लेनदेन फीस {{fee, money-currency}}",
+        "gt0": "यह क्षेत्र जरूरी है",
+        "id": "ID",
+        "quantity": "\"टोकन जारी कर दिए गए हैं",
+        "reissue": {
+          "label": "जारी किए जाने वाले टोकनों की मात्रा",
+          "title": "{{name}} टोकन पुनः जारी करना"
+        },
+        "validation": {
+          "gt0": "\"यह क्षेत्र जरूरी है",
+          "invalidAsset": "इस क्षेत्र में केवल नंबर हो सकते हैं",
+          "invalidPrecision": "अधिकतम {{precision}} दशमलव स्थानों से अधिक है",
+          "lteMaxBalance": "मात्रा बैलेंस से अधिक नहीं हो सकती है",
+          "maxValueCount": "दर्ज नंबर बहुत बड़ा है",
+          "noMoney": "आपका बैलेंस लेनदेन फीस के भुगतान के लिए पर्याप्त नहीं है",
+          "required": "यह क्षेत्र जरूरी है"
+        }
+      },
+      "tryDesktop": {
+        "remember": "मेरी पसंद को याद रखो और फिर से मुझे याद नहीं दिलाना"
+      },
+      "tutorialModals": {
+        "step1": {
+          "button": "अपने SEED के बारे में आपको क्या जानना चाहिए",
+          "buttonMobile": "अगला",
+          "buttonReadMore": "Read more",
+          "p1": "अपनी खुद की सुरक्षा के लिए कुछ महत्वपूर्ण चीजों को समझने के लिए कृपया कुछ समय निकालें।",
+          "p2": "यदि आप किसी फिशिंग साइट पर जाते हैं या अपना बैकअप वाक्य खो देते हैं (उर्फ SEED वाक्य) हम आपके फंड को रिकवर या आपके खाते को फ्रीज़ नहीं कर सकते हैं।",
+          "p3": "हमारे प्लेटफार्म को उपयोग करना जारी रखते हुए, आप अपने SEED को होने वाली हानि से संबंधित जोखिमों को स्वीकार करने की सहमति देते हैं, जिसमें आपके फंड को हासिल करने या उनको निबटाने मे अक्षम रहना भी शामिल है लेकिन ये उन तक सीमित नहीं है। यदि आप अपना SEED खो देते हैं तो आप सहमत हैं व अभिस्वीकृति देते हैं कि Waves प्लेटफार्म इसके नकारात्मक परिणामों के लिए उत्तरदायी नहीं होगा।",
+          "title": "Waves प्लेटफार्म पर आपका स्वागत है!"
+        },
+        "step2": {
+          "backButton": "वापस जाएं",
+          "cell1": "आप अपने वॉलेट को गुमनाम तरीके से उपयोग करते हैं, जिसका अर्थ है कि आपका खाता किसी ईमेल खाते या पहचान वाले किसी अन्य डेटा से जुड़ा नहीं होता है।",
+          "cell2": "किसी डिवाइस या ब्राउज़र से काम करते समय आपका पासवर्ड आपके खाते को सुरक्षित रखता है। यह इस बात को सुनिश्चित करने के लिए चाहिए होता है जिससे कि आपका सीक्रेट वाक्य स्टोरेज में सहेजा ना जाए।",
+          "cell3": "यदि आप अपना पासवर्ड भूल गए हैं तो आप अपने सीक्रेट वाक्य के माध्यम से खाता रिकवरी फार्म का उपयोग करके आसानी से एक नया बना सकते हैं। यदि आप अपना सीक्रेट वाक्य खो देते हैं तो आपके पास अपने खाते तक जाने का कोई भी तरीका नहीं होगा।",
+          "cell4": "आप अपना सीक्रेट वाक्य बदल नहीं सकते। यदि आप दुर्घटनावश इसे किसी को भेज दें या किसी स्कैमर द्वारा इसे हासिल किए जाने का शक हो तो फौरन नया Waves वॉलेट बना कर अपने फंड उसमें ट्रांसफर कर दें।",
+          "nextButton": "खुद को सुरक्षित करें",
+          "p1": "अपना खाता पंजीकृत करते समय आपसे अपना सीक्रेट वाक्य (SEED) सहेजने को और अपने खाते को एक पासवर्ड से सुरक्षित करने को कहा जाएगा। सामान्य केन्द्रीकृत सर्वरों पर पासवर्ड पर विशेष ध्यान दिया जाता है, जिसे बदला जा सकता है और जरूरत पड़ने पर ईमेल के माध्यम से रीसेट किया जा सकता है। हालांकि, Waves जैसा विकेन्द्रित प्लेटफार्मों पर सभी कुछ अलग तरीके से व्यवस्थित किया जाता है:",
+          "title": "अपने SEED के बारे में आपको क्या जानना चाहिए"
+        },
+        "step3": {
+          "backButton": "वापस जाएं",
+          "cell1": "URL को हमेशा चेक करें: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell2": "उन ब्राउज़रों का उपयोग ना करें जिनमें एक्सटेंशन या प्लगइन हों, जो आपके खाते तक पहुंच सकें।",
+          "cell3": "अज्ञात प्रेषकों से भेजे गए ईमेल या लिंक ना खोलें।",
+          "cell4": "अपने ऑपरेटिंग सिस्टम को नियमित रूप से अपडेट करें।",
+          "cell4Web": "अपने ब्राउज़र व ऑपरेटिंग सिस्टम को नियमित रूप से अपडेट करें।",
+          "cell5": "आधिकारिक सिक्योरिटी सॉफ्टवेयर उपयोग करें। अज्ञात सॉफ्टवेयर इंस्टॉल ना करें जिनको हैक किया जा सकता हो।",
+          "cell6": "सार्वजनिक वाई-फाई या किसी और की डिवाइस का उपयोग करते समय अपने वॉलेट को एक्सेस ना करें।",
+          "nextButton": "मैं समझा",
+          "p1": "अपनी खुद की सुरक्षा के लिए कुछ महत्वपूर्ण चीजों को समझने के लिए कृपया कुछ समय निकालें।",
+          "saveSeedButton": "Save the SEED phrase",
+          "title": "फिशर्स से खुद की सुरक्षा कैसे करें"
+        }
+      },
+      "unsuccessfulMigration": {
+        "checkbox": "Don't show this again",
+        "description": "You have started the account migration from Decentral.Exchange to this exchange, but it hasn't been finished. Your accounts haven't been moved. Go back to Decentral.Exchange and start the process from the beginning.",
+        "title": "Unfinished Migration",
+        "understand": "मैं समझा"
+      }
+    },
+    "modals": {
+      "anyTx": {
+        "title": "JSON"
+      }
+    },
+    "notification": {
+      "backup": {
+        "action": "सहेजें",
+        "body": "अपने SEED को सुरक्षित रूप से स्टोर करें, आपके वॉलेट को रीस्टोर करने का यह एकमात्र तरीका है।",
+        "title": "अपना बैकअप वाक्य (SEED) सहेजें"
+      }
+    },
+    "qualified": "योग्य",
+    "transaction": {
+      "amounts": {
+        "create-order": "{{sign}}{{amount}} {{name}}"
+      }
+    },
+    "Unpin_utils": "अनपिन",
+    "utils": {
+      "migrationError": "Oops! Your accounts are safe but haven't been moved. Please try again.",
+      "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+      "privacyPolicyText": "Privacy Policy",
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+      "termsAgreementText": "Terms and Conditions",
+      "termsAssign": "I have read and agree with the",
+      "whatsNew": {
+        "body": {
+          "1_0_0": "{span.line} [1। वेव्स क्लाइंट बीटा से बाहर आ गया है।] {span.line} [2 अब आप किसी भी संपत्ति को मुख्य पृष्ठ पर पिन और अनपिन कर सकते हैं।] {span.line} [3 रात मोड जोड़ा गया।] {span.line} [4 अब आप अपने सभी खातों को पुराने ग्राहक से आसानी से आयात कर सकते हैं।] {span.line} [5 छोटे सुधार।]",
+          "1_0_0-beta_23": "{span.line}[1. हमने एक 'नया क्या है' सेक्शन जोड़ा!]{span.line}[2. अब आप अपने खाते से एक नया नाम जोड़ सकते हैं।]{span.line}[3. कुछ छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_25": "{span.line}[1. आप अब सेटिंग्स में सत्र समय बदल सकते हैं।]{span.line}[2. हमने DEX में खरीद/बिक्री विंडो के बग को ठीक कर दिया है जिससे इसे व्यूइंग क्षेत्र से बाहर जाने से रोका जा सके।]{span.line}[3. यदि आप अपना SEED नहीं सहेजेंगे तो अब हम आपको याद दिलाएंगे।]{span.line}[4. कुछ छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_26": "{span.line}[1. कुछ छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_27": "{span.line}[1. चीनी भाषा जोड़ी।]{span.line}[2. तुर्की भाषा जोड़ी।]",
+          "1_0_0-beta_30": "{span.line}[1. अब आप उन टोकन को जला या पुनः जारी कर सकते हैं जिनको आपने जनरेट किया है।]{span.line}[2. Waves Auth API सपोर्ट जोड़ा।]{span.line}[3. कुछ छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_31": "{span.line}[1। अब आप क्रेडिट कार्ड के साथ वेव्स और बीटीसी खरीद सकते हैं।]{span.line}[2। खरीदें / बेचें विंडो में बेहतर यूआई।]{span.line}[3। 32-बिट विंडोज़ के लिए समर्थन जोड़ा गया।]{span.line}[4। कई अन्य बग तय।]",
+          "1_0_0-beta_32": "{span.line}[1. You can now make mass transfers from the Client.]{span.line}[2. Some minor bugs have been fixed.]",
+          "1_0_0-beta_35": "{span.line}[1. अब आप पोर्टफोलियो टैब में टोकन छांट, फिल्टर या छिपा कर रख सकते हैं।]{span.line}[2. DASH गेटवे लॉन्च कर दिया गया है।]{span.line}[3. हिन्दी भाषा सपोर्ट जोड़ा गया।]{span.line}[4. डच भाषा सपोर्ट जोड़ा गया।]{span.line}[5. अब आप दूसरे प्रयोक्ताओं को इनवाइस कर सकते हैं।]{span.line}[6. कुछ अतिरिक्त छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_36": "{span.line}[1. प्रमुख लीज़िंग नोड्स लीज़िंग पेज पर सूचीबद्ध हैं।]{span.line}[2. कुछ बग्स ठीक किए हैं।]",
+          "1_0_0-beta_39": "{span.line}[1. एक स्पैम फिल्टर को सेटिंग्स पर जोड़ा गया है।]{span.line}[2. कुछ अतिरिक्त छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_40": "{span.line}[1. Monero गेटवे लॉन्च किया गया है।]",
+          "1_0_0-beta_42": "{span.line}[1. स्पेनी भाषा सपोर्ट जोड़ा गया।]{span.line}[2. आप क्लाइंट को खाता विवरणों को सहेजे बिना डिफॉल्ट रूप में उपयोग कर सकते हैं।]{span.line}[3. स्पैम टोकन अब लेनदेन पेज पर चिह्नित है।]{span.line}[4. कुछ अतिरिक्त छोटे बग्स ठीक किए गए हैं।]",
+          "1_0_0-beta_47": "{span.line}[1. नया डेक्स UI।]{span.line}[2. तेज़ और अधिक स्थिर क्लाइंट।] {span.line}[3. उपनाम की कार्यक्षमता फिर से उपलब्ध है।]{span.line}[4. कुछ मामूली बग्स सही किए गए हैं।]{span.line}[5. [वीडियो](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) बनाकर या एक [लेख](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835) लिखकर हमारी प्रतियोगिताओं में भाग लें।]",
+          "1_0_0-beta_50": "{span.line}[1. अब आप अपने खाते में रखे किसी भी टोकन को जला सकते हैं।]\n{span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
+          "1_0_10": "{span.line}[1. स्पॉन्सरशिप लेनदेन समर्थन जोड़ा गया। [और पढ़ें](https://docs.wavesplatform.com/en/waves-client/assets-management/spired-transaction.html)]\n{span.line}[2. पोलिश और पुर्तगाली भाषाओं का समर्थन जोड़ा गया है।]",
+          "1_0_14": "{span.line}[1. वेव्स बैलेंस के बिना स्पॉन्सरशिप एसेट का उपयोग करने वाला बग फिक्स्ड।]\n{span.line}[2. 30 दिनों ओर्डर समाप्ति वाला बग फिक्स्ड।]\n{span.line}[3. कुछ अन्य मामूली बग्स सही किए गए हैं।]",
+          "1_0_15": "{span.line}[1. लेडजर पर पुष्टि के साथ मुद्दे सही किए गए हैं।]\n{span.line}[2. लेडजर से पुष्टि के लिए प्रतीक्षा समय बढ़ा दिया गया है।]\n{span.line}[3. एरर संदेशों में विस्तृत जानकारी जोड़ी गई है।]",
+          "1_0_18": "{span.line}[1. अब आप अपने खाते में स्क्रिप्ट सेट कर सकते हैं।]\n{span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
+          "1_0_21": "{span.line}[1. लेडजर के माध्यम से प्राधिकरण की पुष्टि फिक्स्ड कि गई है।]\n{span.line}[2. कई मामूली बग्स सही किए गए हैं।]",
+          "1_0_22": "{span.line}[1. स्क्रिप्टेड खातों के साथ काम करने के लिए उन्नत सुविधाओं को जोड़ा गया।]",
+          "1_0_25": "{span.line}[1. [वेव्स कीपर](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) समर्थन जोड़ा गया है।]",
+          "1_0_27": "{span.line}[1. पोर्टफोलियो में \"मेरी संपत्ति\" श्रेणी को जोड़ा गया।]\n{span.line}[2. मामूली बग्स सही किए गए हैं।]",
+          "1_0_28": "{span.line}[1. मौजूदा खातों को मोबाइल में आयात करने के लिए फंक्शन जोड़ा गया।]\n{span.line}[2. मामूली बग्स सही किए गए हैं।]",
+          "1_0_29": "{span.line}[1. सिरिलिक वर्णमाला का उपयोग कर क्यूआर कोड उत्पन्न सही की गई है।]\n{span.line}[2. वॉचलिस्ट खोज का टूलटिप जोड़ा गया है।]\n{span.line}[3. इसके अलावा कॉस्मेटिक सुधार की गई है। ]",
+          "1_0_3": "{span.line}[1. अब आप पोर्टफोलियो पेज में आईडी द्वारा संपत्ति खोज सकते हैं।] {span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
+          "1_0_30": "{span.line}[1. सेट स्क्रिप्ट बटन को सेटिंग में सुरक्षा अनुभाग में ले जाया गया है।]\n{span.line}[2. प्रदर्शन में सुधार और कॉस्मेटिक परिवर्तन।]",
+          "1_0_32": "{span.line}[1. बेटरटोकन्स ऑर्केल के साथ एकीकरण।]\n{span.line}[2. टोकन सत्यापन प्रोटोकॉल के लिए अतिरिक्त समर्थन।]\n{span.line}[3. कोइनोमाट के माध्यम से टोकन वापसी के लिए फिक्स्ड कमीशन लेखांकन।]",
+          "1_0_33": "{span.line} [1. यदि आप वर्तमान बाजार दर से काफी भिन्न दर पर ऑर्डर देने का प्रयास करते हैं तो आपको एक सूचना प्राप्त होगी।] {span.line} [2. मामूली बग्स सही किए गए हैं।]",
+          "1_0_36": "{span.line}[1. डेक्स पर स्क्रिप्टेड खातों के साथ व्यापार करने की क्षमता जोड़ा गया।]\n{span.line}[2. चालान बनाते समय या संपत्ति भेजते समय संपत्ति की खोज करें।]\n{span.line}[3. माइनर लेआउट एडिट।]",
+          "1_0_37": "{span.line}[1. स्मार्ट एसेट कार्यक्षमता, जारी करना, पुनर्जागरण और जलाना जोड़ा गया]\n{span.line}[2. इतालवी, जर्मन और इंडोनेशियाई भाषाओं को जोड़ा गया]\n{span.line}[3.  मामूली बग्स सही किए गए हैं]",
+          "1_0_40": "{span.line}[1. डेक्स अनुकूलन।]\n{span.line}[1. ब्राउज़र टैब शीर्षक में वर्तमान जोड़ी के लिए विनिमय दर जोड़ा गया।]\n{span.line}[1. मामूली बग्स सही किए गए हैं।]",
+          "1_0_41": "{span.line}[1. डेक्स अनुकूलन।]\n{span.line}[1. सूचना प्रणाली जोड़ा गया।]\n{span.line}[1. मामूली बग्स सही किए गए हैं।]",
+          "1_0_42": "{span.line}[1. मामूली बग्स सुधार किए गए हैं।]",
+          "1_0_5": "{span.line}[1. डेक्स चार्ट्स पर ट्रेड वॉल्यूम स्केल जोड़ा गया है।]\n{span.line}[2. अतिरिक्त मामूली बग्स सुधार किए गए हैं।]",
+          "1_0_6": "{span.line}[1. वेव्स डेस्कटॉप क्लाइंट के माध्यम से प्राधिकरण जोड़ा गया है।]",
+          "1_0_7": "{span.line}[1. कुछ डेस्कटॉप-क्लाइंट क्रैश ठीक किए गए थे।]\n{span.line}[2. बड़ी कंटेंट के साथ TX और पोर्टफोलियो पृष्ठों के बीच अनुकूलित स्विचिंग।]\n{span.line}[3. स्पैम टोकन के नाम TX सूची में छिपे हुए हैं।]\n{span.line}[4. एरर संदेश आउटपुट पुन: प्रकाशित किया गया है।]",
+          "1_0_8": "{span.line}[1. लेडजर नैनो एस सपोर्ट को जोड़ा गया है।]\n{span.line}[2. अपनी पसंद की प्राधिकरण पद्धति को सहेजने का एक नया विकल्प जोड़ा गया है।]",
+          "1_1_0": "{span.line}[1. Order expiration period is now saved by default.]\n{span.line}[2. Fixed minor bugs.]",
+          "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
+          "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
+          "1_2_2": "{span.line}[1. Security updates.]{span.line}[2. Fixed minor bugs.]",
+          "1_2_3": "{span.line}[1. Added support for Ledger Waves 1.0.0 app.]",
+          "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_0": "{span.line}[1. Improved app navigation and start page interface.]",
+          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
+          "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
+          "1_3_7": "{span.line}[1. Integration with [tokenrating.wavesexplorer.com](https://tokenrating.wavesexplorer.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
+          "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
+        },
+        "title": "इस अपडेट में नया क्या है {{version}}"
+      }
+    },
+    "validators": {
+      "byte": {
+        "help": "शेष Bytes: {{bytes}}"
+      }
+    },
+    "warningPlate": {
+      "day": "d",
+      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "hour": "h",
+      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "min": "m",
+      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "sec": "s",
+      "startMoving": "Safe moving"
+    }
+  },
+  "app.wallet.assets": {
+    "addAsset": "एसेट जोड़ें",
+    "chart": {
+      "intervals": {
+        "all": "सभी",
+        "day": "1दि",
+        "hour": "1घं",
+        "month": "1मि",
+        "week": "1ह",
+        "year": "1सा"
+      }
+    },
+    "directives": {
+      "asset": {
+        "anyTx": "JSON",
+        "deposit": "जमा करें",
+        "ofTotalBalance": "कुल बैलेंस {{totalBalance}} का",
+        "receive": "जमा करें",
+        "script": "स्क्रिप्ट",
+        "send": "भेजें"
+      },
+      "balance": {
+        "actions": {
+          "assetInfo": "एसेट जानकारी",
+          "copyAssetId": "एसेट ID कॉपी करें"
+        }
+      }
+    },
+    "price": "मूल्य {{currency}}",
+    "qr": "आपका पता",
+    "send": "भेजें",
+    "since": {
+      "day": "पिछले दिन से",
+      "month": "पिछले माह से",
+      "week": "पिछले ह ते से"
+    },
+    "suspicious": "संदेहजनक - ({span}[{{count}}])",
+    "Unpin": "अनपिन"
+  },
+  "app.wallet.leasing": {
+    "available": "उपलब्ध",
+    "chart": {
+      "available": "उपलब्ध",
+      "create": "लीज़ शुरु करें",
+      "leased": "लीज़ किया",
+      "title": "DCC बैलेंस"
+    },
+    "description": {
+      "text1": "आप केवल उन DCC को ट्रांसफर कर सकते हैं जिनको लीज़ नहीं किया गया हो। लीज़ की गयी राशि को आप या कोई और ट्रांसफर या ट्रेड नहीं कर सकते हैं।",
+      "text2": "आप किसी लीज़िंग लेनदेन को ब्लॉकचेन में दिखते ही रद्द कर सकते हैं जो कि आम तौर पर एक मिनट या कम समय में होता है।",
+      "text3": "जनरेट किया बैलेंस 1000 लॉक्स के बाद अपडेट किया जाएगा।",
+      "title": "त्वरित नोट"
+    },
+    "leased": "लीज़ किया",
+    "leasedIn": "(0) में लीज़्ड",
+    "nodeListLink": "नोड्स की सूची",
+    "test": {
+      "test": "text test"
+    },
+    "title_leasing": "आपने वेव्स के डेस्कटॉप ऐप में लॉग इन करना चुना है"
+  },
+  "app.wallet.portfolio": {
+    "allactive": "सभी सक्रिय ({span}[{{count}}])",
+    "burn": "टोकन जलाना",
+    "deposit": "जमा करें",
+    "dex": "में खुलेगा DEX",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://wavesexplorer.com/address/{{address}}/nft)",
+    "info": "एसेट जानकारी",
+    "list": {
+      "actions": "कार्रवाइयां",
+      "ask": "पूछें",
+      "balance": "बैलेंस",
+      "bid": "बोली",
+      "change": "24घं बदलाव",
+      "inOrders": "आदेश में",
+      "mirror": "मूल्य, {span.currency}[{{currency}}]",
+      "name": "एसेट नाम",
+      "rate": "मूल्य, {span.currency}[{{currency}}]"
+    },
+    "myassets": "मेरी संपत्ति ({span}[{{count}}])",
+    "pin": "पिन",
+    "portfolio": {
+      "filter": "खोज"
+    },
+    "qr": "आपका पता",
+    "qualified": "योग्य",
+    "qualifieds": "योग्य ({span}[{{count}}])",
+    "receive": "राप्त करें",
+    "reissue": "टोकन फिर जारी होना",
+    "send": "भेजें",
+    "setAssetScript": "अपडेट एसेट स्क्रिप्ट",
+    "spam": "स्पैम",
+    "spamAsset": "स्पैम",
+    "spamselect": "स्पैम ({span}[{{count}}])",
+    "sponsorship": "स्पॉन्सरशिप सक्षम करें",
+    "sponsorshipChange": "स्पॉन्सरशिप बदलें",
+    "sponsorshipStop": "स्पॉन्सरशिप अक्षम करें",
+    "tokenomica": "tokenomica",
+    "tospam": "छुपाएं",
+    "unpin": "अनपिन करें",
+    "unspam": "दिखाओ"
+  },
+  "app.wallet.transactions": {
+    "all": "सभी",
+    "confirmTransaction": {
+      "retrySign": "फिर से साइन करें"
+    },
+    "csv": {
+      "alias": "उपनाम",
+      "amount": {
+        "id": "एसेट ID राशि",
+        "name": "एसेट नाम राशि",
+        "ticker": "एसेट टिकर राशि",
+        "value": "एसेट मूल्य राशि"
+      },
+      "attachment": "लेनदेन संलग्नक",
+      "date": "तारीख",
+      "description": "टोकन विवरण",
+      "fee": {
+        "id": "फीस ID",
+        "name": "फीस नाम",
+        "ticker": "फीस टिकर",
+        "value": "फीस मूल्य"
+      },
+      "height": "लेनदेन ऊंचाई",
+      "id": "लेनदेन ID",
+      "name": "टोकन नाम",
+      "precision": "सुनिश्चितता",
+      "price": {
+        "id": "एसेट ID दाम",
+        "name": "एसेट नाम दाम",
+        "ticker": "एसेट टिकर दाम",
+        "value": "एसेट मूल्य दाम"
+      },
+      "recipient": "लेनदेन प्राप्तकर्ता",
+      "reissuable": {
+        "false": "फिर जारी ना करने योग्य",
+        "name": "फिर से टोकन डारी कर सकता है",
+        "true": "फिर जारी करने योग्य"
+      },
+      "sender": "लेनदेन रेषक",
+      "transactionType": "लॉकचेन लेनदेन का प्रकार",
+      "type": "लेनदेन का प्रकार"
+    },
+    "errors": {
+      "complete": {
+        "body": "The list of transactions is not completely downloaded. Please retry later.",
+        "title": "Download is not complete."
+      },
+      "download": {
+        "body": "The list of transactions is not downloaded. Please retry later.",
+        "title": "Download error."
+      },
+      "empty": {
+        "body": "There are no transactions in your history",
+        "title": "Export error"
+      }
+    },
+    "exchanged": "ऐक्सचेंज किए गए",
+    "export": "एक्सपोर्ट",
+    "filter": {
+      "value1": "हाल का",
+      "value2": "500 txs",
+      "value3": "1000 txs"
+    },
+    "issued": "जारी किए गए",
+    "leased": "लीज़ किया",
+    "received": "प्राप्त",
+    "sent": "भेजे गये",
+    "transactions": {
+      "script": {
+        "txJson_wallet": "Base64 स्क्रिप्ट"
+      }
+    }
+  },
+  "app.welcome": {
+    "backupSeed": {
+      "copySeed": "Copy Seed phrase",
+      "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or"
+    },
+    "createAccount": {
+      "from": "createAccount"
+    },
+    "infoTooltip": "महत्वपूर्ण जानकारी",
+    "loading": {
+      "volume": "VOLUME"
+    },
+    "modal": {
+      "lockPairWarning": {
+        "continue": "जारी रहना",
+        "heading": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+        "text": "Trading for the selected pair is temporarily unavailable. \nYou can still cancel orders if you wish"
+      }
+    },
+    "news": "News",
+    "newUser": {
+      "from": "बैकअप से",
+      "getStarted": "शुरु करें",
+      "import": "इम्पोर्ट खाते",
+      "or": "या",
+      "restore": "खाता रीस्टोर करें",
+      "slides": [
+        {
+          "description": "क्रिप्टो दुनिया के सबसे तेज उभरते क्षेत्र का हिस्सा बनें, आप वे अकेले व्यक्ति होते हैं जो अपनी क्रिप्टो एसेट्स तक पहुंच सकता है।",
+          "title": "ब्लॉकचेन के साथ शुरुआत करना"
+        },
+        {
+          "description": "अपने डिजिटल एसेट बैलेंस को स्टोर व मैनेज करें और उस पर आसानी व सुरक्षा के साथ ब्याज कमाएं।",
+          "title": "वॉलेट"
+        },
+        {
+          "description": "तेज व सुरक्षित ट्रेड करें। हमारे विकेन्द्रित (डीसेन्ट्रलाइज़्ड) एक्सचेंज पर उनकी ट्रेडिंग करते समय आप अपने फंड पर पूरा नियंत्रण रख सकते हैं।",
+          "title": "विकेन्द्रित एक्सचेंज"
+        },
+        {
+          "description": "अपने खुद के टोकन जारी करें। ये टोकन ना केवल एक आंतरिक करेंसी के रूप में बल्कि विकेन्द्रित (डीसेन्ट्रलाइज़्ड) वोटिंग, रेटिंग सिस्टम, या लॉयलिटी कार्यक्रम की क्रियाविधि के रूप में भी आपके व्यापार के साथ एकीकृत किए जा सकते हैं।",
+          "title": "टोकन लॉन्चर"
+        }
+      ]
+    },
+    "openViaDesktop": "मैं हमेशा डेस्कटॉप ऐप के माध्यम से लिंक खोलना चाहूंगा",
+    "roadmap": {
+      "aug2019": {
+        "date": "Aug 2019",
+        "text": "Traders can sell tokens quickly at market price.",
+        "title": "Market order"
+      },
+      "dec2018": {
+        "date": "Dec 2018",
+        "text": "The new mobile app offers a fantastic DEX UI and gateway integration.",
+        "text_2": "Tickers and logos on DEX show approved assets, giving users a high degree of confidence.",
+        "title": "Mobile app 2.0",
+        "title_2": "BetterTokens Integration"
+      },
+      "feb2017": {
+        "date": "Dec 2017",
+        "text": "The first version of the flagship built-in exchange is launched.",
+        "title": "Decentral.Exchange Beta"
+      },
+      "feb2018": {
+        "date": "Feb 2018",
+        "text": "The standalone Client for macOS, Linux and Windows is released.",
+        "title": "Desktop app"
+      },
+      "jan2019": {
+        "date": "Jan 2019",
+        "text": "Support for trading on Decentral.Exchange with Smart Accounts is enabled.",
+        "text_2": "Launch of Bitcoin Satoshi Vision gateway",
+        "title": "Smart Account Trading",
+        "title_2": "BSV Gateway"
+      },
+      "jul2018": {
+        "date": "Jul 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "text_2": "The popular wallet comes out of beta with a major new release.",
+        "title": "New DEX",
+        "title_2": "Waves Wallet"
+      },
+      "jul2019": {
+        "date": "Jul 2019",
+        "text": "Addition of ERC20 token gateway to the Waves ecosystem, meaning that popular Ethereum tokens can be traded on the platform.",
+        "text_2": "Developers have simplified mobile development processes and gain comprehensive descriptions for means of interacting with the Waves blockchain.",
+        "text_3": "Users have the ability to switch easily between multiple accounts within one wallet app.",
+        "title": "ERC-20 Gateway",
+        "title_2": "Mobile SDK and JS library improvement",
+        "title_3": "Multiple Accounts"
+      },
+      "jun2019": {
+        "date": "Jun 2019",
+        "text": "Improvements in DEX speed and memory requirements to be implemented.",
+        "title": "DEX optimisation"
+      },
+      "may2018": {
+        "date": "May 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "title": "Dash & Bitcoin Cash gateways"
+      },
+      "nov2018": {
+        "date": "Nov 2018",
+        "text": "Users gain the ability to trade with multi-signature and scripted accounts.",
+        "title": "Smarts Account Support"
+      },
+      "sep2018": {
+        "date": "Sep 2018",
+        "text": "Integration with Decentral.Exchange enables users to trade with maximum security.",
+        "title": "Ledger Nano S"
+      },
+      "sep2019": {
+        "date": "Sep 2019",
+        "text": "Two factor authentication gives Decentral.Exchange users even greater security.",
+        "title": "2FA"
+      }
+    },
+    "userList": {
+      "addNew": "एक खाता जोड़ें",
+      "back": "Back",
+      "create": "एक नया खाता बनाएं",
+      "frombackup": "बैकअप से",
+      "import": "इम्पोर्ट खाते",
+      "restore": "खाता री टोर करें",
+      "subTitle": "फिर से साइन इन करें या",
+      "subTitleSession": "यह सेशन अपने आप समाप्त हो गया था।"
+    },
+    "welcome": {
+      "accountList": {
+        "locked": "Require unlocking"
+      },
+      "address": "Address",
+      "aliases": "Aliases",
+      "android": "Google Play",
+      "api": "API",
+      "apple": "App Store",
+      "blog": "Blog",
+      "broughtBy": "Brought to you by Waves Team",
+      "cancel": "Cancel",
+      "change": "CHANGE",
+      "changeName": "Change Name",
+      "chart": "CHART",
+      "comingSoon": "Coming soon",
+      "contestLinkDescription": "Win 5,000 DCC in a trading contest on Decentral.Exchange!",
+      "contestLinkLink": "Rules",
+      "controlAssets": "Control of assets is yours alone – funds do not leave your wallet and cannot be frozen",
+      "cookies": "Cookies",
+      "copyAddress": "Copy address",
+      "copyright": "© 2021 Blockchain Costa Rica",
+      "copyright-new": "© 2019 Waves.Exchange",
+      "copyrightVordex": "© 2019 VORDEX",
+      "createAccount": "Create account",
+      "createToken": "Create token",
+      "currentAccountName": "Current account name",
+      "dashboard": "Dashboard",
+      "decentralized": "decentralized",
+      "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
+      "dexWithHardware": "Use DEX with hardware wallets Ledger Nano S and Ledger Blue",
+      "documentation": "Documentation",
+      "download": "Download",
+      "downloadMobileApp": "Download the mobile app!",
+      "exchange": "Exchange",
+      "forDevelopers": "For developers",
+      "forum": "Forum",
+      "gateways": "Gateways to popular currencies (Coming Soon)",
+      "gdpr": "GDPR",
+      "getRealTimeAccess": "Get real-time access to market data and set up your trading bots via API",
+      "getStarted": "Get started",
+      "gitHub": "GitHub",
+      "help": "Help",
+      "high": "24 HIGH",
+      "inputErrorNameExists": "That name is taken. Try another",
+      "instantAccessWalletDex": "Instant access to your wallet and DEX",
+      "keeperAccount": "कीपर खाता",
+      "lastPrice": "LAST PRICE",
+      "leasing": "Leasing",
+      "ledgerAccount": "लेडजर खाता",
+      "ledgerSupport": "Ledger support (Coming Soon)",
+      "legal": "Legal",
+      "linux": "Linux",
+      "linuxDescription": "Download Linux application",
+      "logout": "Log Out",
+      "logOut": "Log Out",
+      "low": "24 LOW",
+      "lowFixedFees": "Low, fixed fees",
+      "macOs": "MacOS",
+      "macOsDescription": "Download MacOS application",
+      "mailto": "support.wavesplatform.com",
+      "mailtoVordex": "support@vordex.com",
+      "mailtoWavesExchange": "support@waves.exchange",
+      "mainPage": "Main page",
+      "majorFiatCryptocurrencies": "Major fiat and cryptocurrencies supported: BTC, LTC, ETH, USD, and others",
+      "markets": "Markets",
+      "marketsDescription": "Decentral.Exchange allows you to execute trades swiftly and securely, regardless of whether you’re trading via mobile app, desktop client, web wallet or the Waves API.",
+      "marketsTableDescription": "To view more traded pairs click",
+      "marketsTableDescriptionLink": "View Exchange",
+      "menu": "Menu",
+      "name": "Name",
+      "nameSaved": "Account name changed",
+      "newAccountName": "New account name",
+      "news": "News",
+      "pair": "PAIR",
+      "portfolio": "Portfolio",
+      "privacyPolicy": "Privacy Policy",
+      "productsTools": "Products & tools",
+      "renameAccount": "Rename account",
+      "roadmap": "Roadmap",
+      "roadmapOpportunitiesAhead": "The future of Decentral.Exchange: our roadmap for the opportunities ahead.",
+      "save": "Save",
+      "scanQrCode": "Scan QR Code",
+      "scriptAccount": "Script account",
+      "scriptedAccount": "Script account",
+      "settings": "Settings",
+      "signIn": "Sign in",
+      "social": "Social",
+      "stackOverflow": "Stack Overflow",
+      "suitableTradingBots": "Suitable for trading bots",
+      "support": "Support",
+      "switchAccount": "Switch account",
+      "telegram": "Telegram",
+      "termsOfUse": "Terms of use",
+      "timerDays": "days",
+      "timerHours": "hours",
+      "timerMinutes": "minutes",
+      "timerSeconds": "seconds",
+      "tokenCreation": "Fast token creation",
+      "tokenCreationCosts": "Token creation costs just 1 DCC and takes 1 minute",
+      "tokenomicaToasterButton": "और अधिक जानें",
+      "tokenomicaToasterText": "टोकेन अस्सेट्स के प्रकाशन और व्यापार के लिए पहले कभी ऑल-इन-वन प्लेटफॉर्म का हिस्सेदार बनो",
+      "tradeOnWaves": "Trade on the Waves decentralized Exchange",
+      "tradeOnWavesDescription": "Buy and sell tokens quickly and securely with all advantages of a centralised exchange, but retaining complete control of your funds.",
+      "transactions": "Transactions",
+      "twitter": "Twitter",
+      "volume": "VOLUME",
+      "wallet": "Wallet",
+      "wavesBlockchain": "Waves Blockchain",
+      "wavesDexWeb": "Decentral.Exchange Web",
+      "wavesExplorer": "Waves Explorer",
+      "wavesIde": "Waves IDE",
+      "wavesKeeper": "Waves Keeper",
+      "wavesLabs": "Waves Labs",
+      "wavesOrderFilled": "0.003 DCC per order filled",
+      "wavesWallet": "Waves Wallet",
+      "windows": "Windows",
+      "windowsDescription": "Download Windows application"
+    }
+  },
+  "electron": {
+    "menu": {
+      "copy": "कापी",
+      "cut": "कट",
+      "dev_tools": "डेवलपर उपकरण",
+      "paste": "चिपकाएं",
+      "quit": "छोड़ना",
+      "title": {
+        "application": "एप्लीकेशन",
+        "edit": "एडिट",
+        "god_mode": "गॉडमोड"
+      }
+    },
+    "modal": {
+      "set_protocol_error": {
+        "close": "बंद करे",
+        "message": "वेव्स क्लाइंट लॉन्च के लिए डिफ़ॉल्ट प्रोटोकॉल सेट नहीं किया जा सकता। ब्राउज़र से लिंक अस्थायी रूप से समर्थित नहीं हैं!",
+        "report": "रिपोर्ट",
+        "title": "ओपन प्रोटोकॉल एरर सेट करें"
+      }
+    },
+    "storage": {
+      "backup": {
+        "error": {
+          "body": "Failed to get accounts. Please contact the support service to restore the backup phrase (SEED phrase).",
+          "title": "Something went wrong!"
+        }
+      },
+      "read": {
+        "error": {
+          "body": "आपकी कीस लोड करने का प्रयास करते समय एक एरर हुई। हमने आपके खातों को बैकअप संग्रहण से पुनर्स्थापित किया है।",
+          "title": "बैकअप से खातों को सफलतापूर्वक लौटा दिया"
+        }
+      }
+    }
+  }
+}

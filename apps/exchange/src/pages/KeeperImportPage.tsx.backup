@@ -1,0 +1,596 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as signatureAdapter from '@decentralchain/signature-adapter';
+import { useAuth } from '../contexts/AuthContext';
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Grid,
+  Alert,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Chip,
+  CircularProgress,
+  Fade,
+  Slide,
+  Grow,
+  Snackbar,
+  Tooltip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
+import { styled, keyframes } from '@mui/material/styles';
+import {
+  Extension as ExtensionIcon,
+  CheckCircle as CheckCircleIcon,
+  Security as SecurityIcon,
+  AccountBalanceWallet as WalletIcon,
+  ContentCopy as CopyIcon,
+  Edit as EditIcon,
+  ExpandMore as ExpandMoreIcon,
+  Info as InfoIcon,
+  Refresh as RefreshIcon,
+  Error as ErrorIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+
+interface KeeperUser {
+  address: string;
+  publicKey: string;
+  name?: string;
+  network: string;
+}
+
+enum KeeperErrorCode {
+  NOT_INSTALLED = 0,
+  NO_PERMISSION = 1,
+  NO_ACCOUNTS = 2,
+  WRONG_NETWORK = 3,
+  LOCKED = 'locked',
+}
+
+// Animations
+const pulse = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+`;
+
+const shimmer = keyframes`
+  0% { backgroundPosition: -1000px 0; }
+  100% { backgroundPosition: 1000px 0; }
+`;
+
+// Styled Components
+const PageContainer = styled(Box)(({ theme }) => ({
+  minHeight: '100vh',
+  padding: theme.spacing(4),
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
+    : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
+  position: 'relative',
+  overflow: 'hidden',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const FloatingShape = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+  background: theme.palette.mode === 'dark'
+    ? 'radial-gradient(circle, rgba(31, 90, 246, 0.15) 0%, rgba(31, 90, 246, 0) 70%)'
+    : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
+  animation: `${float} 8s ease-in-out infinite`,
+  pointerEvents: 'none',
+}));
+
+const ContentWrapper = styled(Box)({
+  maxWidth: '700px',
+  margin: '0 auto',
+  position: 'relative',
+  zIndex: 1,
+}));
+
+const MainCard = styled(Paper)(({ theme }) => ({
+  background: theme.palette.mode === 'dark'
+    ? 'rgba(26, 31, 58, 0.9)'
+    : 'rgba(255, 255, 255, 0.9)',
+  backdropFilter: 'blur(20px)',
+  borderRadius: theme.spacing(3),
+  padding: theme.spacing(4),
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 8px 32px rgba(0, 0, 0, 0.4)'
+    : '0 8px 32px rgba(0, 0, 0, 0.06)'}`,
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3),
+  },
+}));
+
+const AccountCard = styled(Paper)<{ selected?: boolean }>(({ theme, selected }) => ({
+  background: theme.palette.mode === 'dark'
+    ? 'rgba(31, 90, 246, 0.1)'
+    : 'rgba(31, 90, 246, 0.05)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(3),
+  border: `2px solid ${selected ? theme.palette.primary.main : 'transparent'}`,
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  position: 'relative',
+  '&:hover': {
+    transform: 'translateY(-6px)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 12px 40px rgba(31, 90, 246, 0.3)'
+      : '0 12px 40px rgba(31, 90, 246, 0.2)',
+    borderColor: theme.palette.primary.main,
+  },
+}));
+
+const Title = styled.h1`
+  font-size: 32px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
+  text-align: center;
+  margin-bottom: 12px;
+`;
+
+const Subtitle = styled.p`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.secondary};
+  text-align: center;
+  margin-bottom: 40px;
+`;
+
+const ImportCard = styled(Card)`
+  padding: 40px;
+`;
+
+const ErrorContainer = styled.div`
+  text-align: center;
+  padding: 40px 20px;
+`;
+
+const ErrorIcon = styled.div`
+  font-size: 64px;
+  margin-bottom: 20px;
+`;
+
+const KeeperIcon = styled.div`
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 24px;
+  background: ${({ theme }) => theme.colors.primary}20;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+`;
+
+const ErrorTitle = styled.h3`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 12px;
+`;
+
+const ErrorText = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 16px;
+`;
+
+const InstallLink = styled.a`
+  display: inline-block;
+  padding: 12px 24px;
+  background: ${({ theme }) => theme.colors.primary};
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary}dd;
+    transform: translateY(-2px);
+  }
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 24px;
+`;
+
+const Label = styled.label`
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 8px;
+`;
+
+const AddressDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.background};
+  margin-bottom: 24px;
+`;
+
+const AddressText = styled.div`
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};
+  word-break: break-all;
+  flex: 1;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.background};
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const WarningText = styled.div`
+  padding: 12px;
+  background: ${({ theme }) => `${theme.colors.error}15`};
+  border: 1px solid ${({ theme }) => theme.colors.error};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.colors.error};
+  font-size: 14px;
+  margin-bottom: 16px;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 32px;
+`;
+
+const BackLink = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 0;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const OrDivider = styled.div`
+  color: ${({ theme }) => theme.colors.secondary};
+  font-size: 14px;
+  margin: 8px 0;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 20px;
+`;
+
+export const KeeperImportPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { addAccount, accounts } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [isInit, setIsInit] = useState(false);
+  const [errorCode, setErrorCode] = useState<KeeperErrorCode | null>(null);
+  const [selectedUser, setSelectedUser] = useState<KeeperUser | null>(null);
+  const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [addressExists, setAddressExists] = useState(false);
+
+  const adapter = (signatureAdapter as Record<string, unknown>).WavesKeeperAdapter as {
+    isAvailable: () => Promise<boolean>;
+    getUserList: () => Promise<KeeperUser[]>;
+    type: string;
+  };
+
+  // Check if address already exists
+  useEffect(() => {
+    if (selectedUser) {
+      const existingAccount = accounts.find((acc) => acc.address === selectedUser.address);
+      setAddressExists(!!existingAccount);
+    }
+  }, [selectedUser, accounts]);
+
+  // Check if name is unique
+  useEffect(() => {
+    if (name && selectedUser) {
+      const nameExists = accounts.some(
+        (acc) => acc.name === name && acc.address !== selectedUser.address
+      );
+      setNameError(nameExists ? 'An account with this name already exists' : '');
+    } else {
+      setNameError('');
+    }
+  }, [name, selectedUser, accounts]);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const isKeeperAvailable = async (): Promise<boolean> => {
+    try {
+      return await adapter.isAvailable();
+    } catch {
+      return false;
+    }
+  };
+
+  const getUsers = async () => {
+    setLoading(true);
+    setErrorCode(null);
+
+    try {
+      const available = await isKeeperAvailable();
+      if (!available) {
+        setErrorCode(KeeperErrorCode.NOT_INSTALLED);
+        setIsInit(true);
+        setLoading(false);
+        return;
+      }
+
+      const users = await adapter.getUserList();
+      if (!users || users.length === 0) {
+        setErrorCode(KeeperErrorCode.LOCKED);
+        setIsInit(true);
+        setLoading(false);
+        return;
+      }
+
+      const user = users[0] as KeeperUser;
+      setSelectedUser(user);
+      setName(user.name || '');
+      setIsInit(true);
+      setLoading(false);
+    } catch (error: unknown) {
+      const err = error as { code?: number | string };
+      setLoading(false);
+      setIsInit(true);
+
+      if (err && typeof err.code !== 'undefined') {
+        switch (err.code) {
+          case 0:
+            setErrorCode(KeeperErrorCode.NOT_INSTALLED);
+            break;
+          case 1:
+            setErrorCode(KeeperErrorCode.NO_PERMISSION);
+            break;
+          case 2:
+            setErrorCode(KeeperErrorCode.NO_ACCOUNTS);
+            break;
+          case 3:
+            setErrorCode(KeeperErrorCode.WRONG_NETWORK);
+            break;
+          case 'locked':
+            setErrorCode(KeeperErrorCode.LOCKED);
+            break;
+          default:
+            setErrorCode(KeeperErrorCode.NO_PERMISSION);
+        }
+      }
+    }
+  };
+
+  const handleImport = async () => {
+    if (!selectedUser || !name || nameError || addressExists) return;
+
+    try {
+      setLoading(true);
+
+      await addAccount({
+        address: selectedUser.address,
+        publicKey: selectedUser.publicKey,
+        name: name,
+        userType: 'keeper',
+      });
+
+      navigate('/wallet');
+    } catch (err) {
+      console.error('Failed to import account:', err);
+      setLoading(false);
+    }
+  };
+
+  const isImportDisabled = !selectedUser || !name || !!nameError || addressExists || loading;
+
+  // Error: Keeper not installed
+  if (errorCode === KeeperErrorCode.NOT_INSTALLED) {
+    return (
+      <Container>
+        <Title>Import from Waves Keeper</Title>
+        <ImportCard elevation="md">
+          <ErrorContainer>
+            <KeeperIcon>🔌</KeeperIcon>
+            <ErrorTitle>Waves Keeper Not Found</ErrorTitle>
+            <ErrorText>
+              Waves Keeper browser extension is not installed. Please install it to continue.
+            </ErrorText>
+            <InstallLink
+              href="https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Install Waves Keeper
+            </InstallLink>
+            <Actions>
+              <OrDivider>or</OrDivider>
+              <BackLink onClick={() => navigate('/auth/import')}>
+                Back to Import Options
+              </BackLink>
+            </Actions>
+          </ErrorContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Error: No permission
+  if (errorCode === KeeperErrorCode.NO_PERMISSION || errorCode === KeeperErrorCode.NO_ACCOUNTS) {
+    return (
+      <Container>
+        <Title>Import from Waves Keeper</Title>
+        <ImportCard elevation="md">
+          <ErrorContainer>
+            <ErrorIcon>⚠️</ErrorIcon>
+            <ErrorTitle>No Accounts Available</ErrorTitle>
+            <ErrorText>
+              {errorCode === KeeperErrorCode.NO_PERMISSION
+                ? 'Please grant permission to access your Waves Keeper accounts.'
+                : 'No accounts found in your Waves Keeper extension. Please create an account first.'}
+            </ErrorText>
+            <BackLink onClick={() => navigate('/auth/import')}>
+              Back to Import Options
+            </BackLink>
+          </ErrorContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Error: Keeper locked
+  if (errorCode === KeeperErrorCode.LOCKED) {
+    return (
+      <Container>
+        <Title>Import from Waves Keeper</Title>
+        <ImportCard elevation="md">
+          <ErrorContainer>
+            <ErrorIcon>🔒</ErrorIcon>
+            <ErrorTitle>Waves Keeper is Locked</ErrorTitle>
+            <ErrorText>
+              Please unlock your Waves Keeper extension and try again.
+            </ErrorText>
+            <Actions>
+              <Button onClick={getUsers}>Retry</Button>
+              <OrDivider>or</OrDivider>
+              <BackLink onClick={() => navigate('/auth/import')}>
+                Back to Import Options
+              </BackLink>
+            </Actions>
+          </ErrorContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Error: Wrong network
+  if (errorCode === KeeperErrorCode.WRONG_NETWORK) {
+    return (
+      <Container>
+        <Title>Import from Waves Keeper</Title>
+        <ImportCard elevation="md">
+          <ErrorContainer>
+            <ErrorIcon>🌐</ErrorIcon>
+            <ErrorTitle>Network Mismatch</ErrorTitle>
+            <ErrorText>
+              Your Waves Keeper is connected to a different network. Please switch to the correct
+              network and try again.
+            </ErrorText>
+            <BackLink onClick={() => navigate('/auth/import')}>
+              Back to Import Options
+            </BackLink>
+          </ErrorContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Loading initial connection
+  if (!isInit || loading && !selectedUser) {
+    return (
+      <Container>
+        <Title>Import from Waves Keeper</Title>
+        <ImportCard elevation="md">
+          <LoadingContainer>
+            <Spinner size="lg" />
+            <Subtitle>Connecting to Waves Keeper...</Subtitle>
+          </LoadingContainer>
+        </ImportCard>
+      </Container>
+    );
+  }
+
+  // Success - show import form
+  return (
+    <Container>
+      <Title>Import from Waves Keeper</Title>
+      <Subtitle>Import your account from the Waves Keeper browser extension</Subtitle>
+
+      <ImportCard elevation="md">
+        <FormGroup>
+          <Label>Address</Label>
+          <AddressDisplay>
+            <AddressText>{selectedUser?.address}</AddressText>
+          </AddressDisplay>
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Account Name</Label>
+          <Input
+            type="text"
+            placeholder="Enter a name for this account"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={24}
+          />
+          {nameError && <WarningText>{nameError}</WarningText>}
+        </FormGroup>
+
+        {addressExists && (
+          <WarningText>
+            This address is already saved in your wallet. Please use a different account.
+          </WarningText>
+        )}
+
+        <Actions>
+          <Button onClick={handleImport} disabled={isImportDisabled} fullWidth>
+            {loading ? 'Importing...' : 'Import Account'}
+          </Button>
+          <OrDivider>or</OrDivider>
+          <BackLink onClick={() => navigate('/auth/import')}>
+            Back to Import Options
+          </BackLink>
+        </Actions>
+      </ImportCard>
+    </Container>
+  );
+};

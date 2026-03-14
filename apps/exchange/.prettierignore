@@ -1,0 +1,11 @@
+dist
+node_modules
+*.config.js
+*.config.ts
+build
+coverage
+.vite
+.cache
+public
+*.min.js
+package-lock.json

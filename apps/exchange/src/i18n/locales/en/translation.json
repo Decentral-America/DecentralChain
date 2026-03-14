@@ -1,0 +1,2794 @@
+{
+  "app.create": {
+    "backupSeed": {
+      "back": "go back",
+      "copySeed": "copy them",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official DCC clients.",
+      "needConfirm": "You will confirm this phrase on the next screen.",
+      "ok": "I’ve written it down",
+      "or": "or",
+      "saveSecret": "Save backup phrase",
+      "seedPhrase": "Seed Phrase",
+      "warn": "Since only you control your money, you’ll need to save your backup phrase in case this app is deleted or",
+      "writeSeed": "Please carefully write down these 15 words",
+      "yourSeed": "Your Seed phrase"
+    },
+    "confirmBackup": {
+      "again": "and tap again",
+      "back": "go back",
+      "clear": "Clear",
+      "confirm": "Confirm Seed phrase",
+      "description": "Verify your Seed phrase or",
+      "enterCorrect": "Please, tap each word in the correct order",
+      "error": "Wrong order, try again.",
+      "ok": "Confirm",
+      "tapAgain": "and tap again"
+    },
+    "createAccount": {
+      "address": "Account address:",
+      "avatarUnique": "This avatar is unique. You cannot change it later.",
+      "choose": "Choose your address avatar",
+      "create": "Create account",
+      "createAccount": "Create a new account",
+      "createDescription": "Fast and free",
+      "createNewAccount": "Choose your Avatar",
+      "description": {
+        "becomePart": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets",
+        "dex": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange",
+        "enterName": "Enter account name or",
+        "wallet": "Store, manage and receive interest on your digital assets balance, easily and securely"
+      },
+      "from": "This avatar is visual representation, you can’t change it later",
+      "header": {
+        "accountName": "Account name",
+        "dex": "decentralized Exchange",
+        "wallet": "Wallet",
+        "withBlockchain": "Get Started with Blockchain"
+      },
+      "import": "Import accounts",
+      "importDescription": "via Seed or private key, Ledger, Keystore File",
+      "protect": "Protect your account with a password or",
+      "protectYourAccount": "Protect Your Account",
+      "restore": "restore an account",
+      "saveUserData": "Keep the account on this computer",
+      "signDescription": "to a saved account",
+      "signIn": "Sign in",
+      "signUp": "Sign up for a free account below or",
+      "tosaved": "to a saved account",
+      "toWalet": "to your wallet or"
+    },
+    "modal": {
+      "confirmBackupDescription": "Verify your backup phrase",
+      "next": "Confirm",
+      "prev": "Go back",
+      "successContent": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new DCC wallet immediately and transfer your funds to it.",
+      "successHeadline": "Treat your backup phrase with care!",
+      "understand": "I Understand"
+    },
+    "noBackupNoMoney": {
+      "backup": "Back Up Now",
+      "description": "You must save the Seed phrase. It is crucial for accessing your account",
+      "modal": {
+        "descriptionP1": "Blockchain Costa Rica would like to warn you about the increased frequency of scam and phishing attacks over the last month. Fraudsters are hiding their malware in their own versions of the DCC client and promising bonuses and discounts to lure in users.",
+        "descriptionP2": "Please be careful and never input your SEED into these 'clients', because your account will be compromised and you will lose all of your funds.",
+        "descriptionP3": "You should ONLY use the official DCC client.",
+        "ok": "I understand",
+        "title": "Treat your backup phrase with care!"
+      },
+      "or": "or",
+      "skip": "Do it later",
+      "title": "No Backup, No Money"
+    },
+    "seed": {
+      "copyToClipboard": "Copy to clipboard",
+      "saveToFile": "Save as file"
+    }
+  },
+  "app.desktop": {
+    "back": "Back to main page",
+    "message": "If you don't have this, you can download it from the [official site](https://decentralchain.io). If you have the DCC desktop app but it has not opened, please [send](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) a bug report.",
+    "title": "You have chosen to log into the DCC desktop app"
+  },
+  "app.dex": {
+    "create": {
+      "order": {
+        "failed": "Something went wrong",
+        "success": "The order is created"
+      }
+    },
+    "dex": {
+      "contest": "Contest"
+    },
+    "directives": {
+      "balance": {
+        "assetId": "Asset Id",
+        "available": "Available",
+        "inOrders": "In orders",
+        "inOrdersFull": "Reserved in orders",
+        "total": "Total"
+      },
+      "candleChart": {
+        "error": "{div}[The chart could not be downloaded.]{div}[If you want to use this chart in your application, please send a request to [tradingview.com](https://tradingview.com)]"
+      },
+      "charts": "charts",
+      "createOrder": {
+        "1day": "1 day",
+        "1hour": "1 hour",
+        "1week": "1 week",
+        "30day": "29 days",
+        "30min": "30 min",
+        "5min": "5 min",
+        "amountField": "Amount",
+        "ask": "Ask",
+        "bid": "Bid",
+        "buy": "Buy",
+        "createOrderNotPermitted": "Orders is temporarily unavailable",
+        "errors": {
+          "amountMax": "Max Amount - ",
+          "amountMin": "Min Amount - ",
+          "balance": "Not enough {{name}}",
+          "precision": "Exceeded maximum of {{precision}} decimal places",
+          "priceMax": "Max Price - ",
+          "priceMin": "Min Price - ",
+          "required": "This field is required"
+        },
+        "expiration": "Expiration",
+        "fee": "Fee {{fee}} DCC",
+        "hasScript": "Cancel [script](https://docs.decentralchain.io/) to trade",
+        "last": "Last",
+        "limit": "Limit Order",
+        "market": "Market Order",
+        "marketPriceField": "Price",
+        "matcherFee": "Fee",
+        "notifications": {
+          "error": {
+            "3147520": "The account's script of {{address}} returned the error: {{scriptError}}",
+            "3147521": "The account's script of {{address}} rejected the order",
+            "3147522": "The account's script of {{address}} rejected the order",
+            "3147524": "The account's script of {{address}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "11536128": "The asset's script of {{assetId}} returned the error: {{scriptError}}",
+            "11536129": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned error is {{errorName}}, the text is: {{errorText}}",
+            "11536130": "The asset's script of {{assetId}} rejected the order",
+            "11536132": "The asset's script of {{assetId}} is broken, please contact with the owner. The returned object is '{{returnedObject}}'",
+            "title": "Error message"
+          },
+          "isCreated": "The order is created",
+          "notEnoughBalance": "Not enough tradable balance",
+          "somethingWentWrong": "Something went wrong"
+        },
+        "notPermitted": "Order creation is temporarily unavailable",
+        "placeBuyOrder": "Buy {{name}}",
+        "placeSellOrder": "Sell {{name}}",
+        "priceField": "Limit price",
+        "sell": "Sell",
+        "spread": "spread",
+        "stopPriceField": "Stop price",
+        "stopPriceHelp": "This is an automatic buy or sell order at a predetermined price",
+        "total": "Total"
+      },
+      "createorder": {
+        "yourBalance": "Your balance"
+      },
+      "demo": {
+        "createAccount": "Create a new account",
+        "or": "or",
+        "signIn": "Sign in",
+        "to": {
+          "mybalance": "to see your balance",
+          "openorders": "to see your open orders",
+          "tradehistory": "to see your trade history"
+        }
+      },
+      "filter": "Search",
+      "marketDepth": "Market Depth",
+      "markets": {
+        "table": {
+          "price": "Price",
+          "rate": "Change",
+          "unit": "Coin",
+          "volume": "Volume"
+        },
+        "title": "Markets"
+      },
+      "myOrders": {
+        "amount": "Amount",
+        "average": "Average",
+        "back": "No",
+        "cancel": "cancel",
+        "cancelAll": "cancel all",
+        "cancelAllConfirm": "Yes",
+        "canceled": "canceled",
+        "cancelled": "CANCELED",
+        "confirm": {
+          "header": "Are you sure?",
+          "literalDescription": "This action cannot be undone"
+        },
+        "delete": "delete",
+        "detail": "detail",
+        "fee": "fee",
+        "filled": "Filled",
+        "filter": "Filter",
+        "noPermissionCancelOrder": "Order cancellation is temporarily unavailable",
+        "notifications": {
+          "canceledAll": "All orders have been canceled",
+          "isCanceled": "The order has been canceled",
+          "somethingWentWrong": "Something went wrong"
+        },
+        "opened": "opened",
+        "orderType": {
+          "buy": "Buy",
+          "sell": "Sell"
+        },
+        "pair": "Pair",
+        "placeholders": {
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable. You can cancel the order"
+        },
+        "price": "Price",
+        "status": "Status",
+        "tableTitle": {
+          "fee": "Fee"
+        },
+        "time": "Time",
+        "total": "Total",
+        "type": "Type",
+        "withScript": "You cannot use the exchange while a [script](https://docs.decentralchain.io) is installed on your account"
+      },
+      "noChartDataMessage": "{div}[Not enough bids and asks]{div}[to create market depth chart]",
+      "noChartDataTitle": "Nothing Here…",
+      "orderBook": {
+        "amount": "Amount {{assetName}}",
+        "lastprice": "last price",
+        "price": "Price {{assetName}}",
+        "spread": "spread",
+        "sum": "Sum {{assetName}}",
+        "title": "Order Book"
+      },
+      "orderbook": {
+        "errorBlock": {
+          "header": "Something went wrong"
+        }
+      },
+      "orders": "orders",
+      "portfolio": {
+        "title": "Portfolio"
+      },
+      "tradeHistory": {
+        "orderType": {
+          "buy": "Buy",
+          "sell": "Sell"
+        },
+        "search": "Search",
+        "tableTitle": {
+          "date": "Time",
+          "exchangeType": "Type",
+          "fee": "Fee",
+          "price": "Price {{assetName}}",
+          "size": "Amount {{assetName}}",
+          "total": "Total",
+          "type": "Type"
+        },
+        "title": "Trade History"
+      },
+      "watchlist": {
+        "all": "ALL",
+        "change": "Change",
+        "chg": "Chg",
+        "coin": "Coin",
+        "helpIcon": {
+          "assetId": "Asset ID",
+          "AssetId1AssetId2": "Asset1 ID / Asset2 ID",
+          "description": "You can find out more about searching assets [here](https://docs.decentralchain.io)",
+          "header": "You can search by:",
+          "name": "Name",
+          "name1Name2": "Name1 / Name2"
+        },
+        "pair": "Pair",
+        "placeholders": {
+          "base": "Base coin",
+          "coin": "Search",
+          "filter": "Filter",
+          "lockedPair": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+          "noMarkets": "No markets matching your filters"
+        },
+        "price": "Price",
+        "vol": "Vol",
+        "volume": "Volume"
+      }
+    },
+    "emptyBlocks": {
+      "myOrders": {
+        "description": "You do not have any orders.",
+        "title": "Nothing Here…"
+      },
+      "orderBook": {
+        "description": "The order book is empty.",
+        "error": {
+          "text": "Please refresh the page or try again later",
+          "title": "Something went wrong"
+        },
+        "title": "Nothing Here…"
+      },
+      "tradeHistory": {
+        "description": "The trading history is empty.",
+        "title": "Nothing Here…"
+      }
+    },
+    "layout": {
+      "center": {
+        "bottom": "My Orders"
+      },
+      "right": {
+        "bottom": "Trade history",
+        "top": "Order Book"
+      }
+    },
+    "orderbook": {
+      "ask": {
+        "tooltipText": "Buy {{amountAsset}} for {{price}} {{priceAsset}}"
+      },
+      "bid": {
+        "tooltipText": "Sell {{amountAsset}} for {{price}} {{priceAsset}}"
+      }
+    },
+    "tabs": {
+      "title": {
+        "all": "All",
+        "btc": "Btc",
+        "eth": "ETH",
+        "history": "history",
+        "myBalance": "My Balance",
+        "myTradeHistory": "My Trade History",
+        "openOrders": "My Open Orders",
+        "OrderHistory": "My Order History",
+        "trade": "Trade",
+        "tradeHistory": "Trade History",
+        "waves": "DCC"
+      }
+    }
+  },
+  "app.fag": {
+    "fag": {
+      "migration": {
+        "title1": "What’s going on?"
+      }
+    }
+  },
+  "app.import": {
+    "back": "Back to main page",
+    "backupFile": {
+      "back": "go back",
+      "enterPasswordDescription": "Please enter your password or",
+      "helper": "You need to enter the password, which you used for the accounts exporting",
+      "import": {
+        "accounts": "Accounts",
+        "emptyList": "There are no accounts for import in the uploaded file",
+        "importFailed": "Failed to import keystore file",
+        "noChosen": "No file chosen",
+        "selectAccount": "Choose accounts",
+        "selectAccountDesc": "Please select account or",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "wrongPassword": "Wrong password!"
+      },
+      "importFromFile": "Import account from Keystore File",
+      "importFromFileDescription": "Choose your JSON file and click Import or",
+      "name": "Keystore File",
+      "next": "Continue",
+      "password": "Password",
+      "selectFileBtn": "Choose file"
+    },
+    "backupFileDescription": "Import account from Keystore File",
+    "import": {
+      "signIn": "Sign in"
+    },
+    "importAccount": "Import accounts",
+    "importAccountInfo": "Select where to import accounts from",
+    "KeeperClient": "Cubensis Connect",
+    "keeperDescription": "Import account from the Cubensis Connect",
+    "keeperForm": "Install",
+    "LedgerClient": "Ledger Device",
+    "ledgerDescription": "Import accounts from your Ledger Device",
+    "or": "OR",
+    "seedAndKey": {
+      "name": "Seed or Key"
+    },
+    "seedAndKeyDescription": "Import account from a SEED or Private key",
+    "selectButton": "Select",
+    "wavesClient": "Cubensis Connect",
+    "wavesClientDescription": "Import account from a Cubensis Connect",
+    "wavesLiteClient": "DCC Lite Client",
+    "wavesLiteClientDescription": "Import accounts from the DCC Lite Client",
+    "wavesSeedClient": "Backup SEED Phrase",
+    "wavesSeedClientDescription": "Import account from a backup SEED"
+  },
+  "app": {
+    "back": "Back to main page",
+    "button": {
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Token issuance is temporarily unavailable.",
+        "issue-title": "Token generation",
+        "massSendTitle": "Mass Transfer",
+        "reissue": "Token reissuance is temporarily unavailable.",
+        "sendTitle": "Send",
+        "set-script-title": "Script transaction"
+      },
+      "send": {
+        "errors": {
+          "fee": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ]
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Assets",
+      "dex": "DEX",
+      "leasing": "Leasing",
+      "portfolio": "Portfolio",
+      "tokens": "Tokens",
+      "transactions": "Transactions",
+      "wallet": "Wallet"
+    },
+    "inputs": {
+      "errors": {
+        "required": "This field is required!"
+      }
+    },
+    "leftmenu": {
+      "login": "Log in",
+      "logout": "Log out",
+      "settings": "Settings"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Canceled",
+          "filled": "Filled ({{percent}}%)",
+          "opened": "Opened"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "Enter Password"
+      },
+      "pairing": {
+        "showQr": "Show"
+      },
+      "tryDesktop": {
+        "cancel": "Continue with web",
+        "label": "Remember my choice and do not remind me again",
+        "message": "We recommend you use the DCC desktop app. If you don't have this, you can download it from the official site.",
+        "title": "Use the DCC desktop app",
+        "try": "Open desktop app"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "Suspicious"
+  },
+  "app.ledger": {
+    "ledger": {
+      "article": "this article",
+      "connectionError": "Unable to Connect Ledger Device",
+      "connectionText": "The connection may have timed out. Please try again.",
+      "referTo": "If the error persists, please refer to"
+    },
+    "ledgerForm": {
+      "address": "Account address:",
+      "addressSaved": "Address saved",
+      "avatarUnique": "This avatar is unique, you can’t change it later.",
+      "back": "Go back",
+      "choose": "Choose your account",
+      "help": {
+        "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
+      },
+      "id": "Account ID",
+      "importAccount": "Import a Ledger account",
+      "ImportOrSignIn": "Import account or",
+      "login": "Continue",
+      "name": "Account name",
+      "nameExists": "That name is taken",
+      "or": "Or",
+      "retry": "Retry",
+      "savedOne": "to a saved account",
+      "saveUserData": "Keep the account on this computer",
+      "selectDefault": "Use default account",
+      "signIn": "sign in"
+    },
+    "modal": {
+      "sign": {
+        "confirmRequest": "Confirm request",
+        "confirmRequestMatcher": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account."
+      }
+    },
+    "or": "OR"
+  },
+  "app.migrate": {
+    "desktopUpdate": {
+      "almostThere": "Almost there...",
+      "backToPrevious": "Back to previous",
+      "barDone": "Done",
+      "barDownload": "Download",
+      "barInstall": "Install and run",
+      "barSuccess": "Success",
+      "cancelDownloading": "Cancel download",
+      "congratulations": "Congratulations!",
+      "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
+      "connectSupport": "If that did not help, then contact the Decentral.Exchange [support](https://decentralchain.io/soporte).",
+      "download": "Download",
+      "downloaded": "yes",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Decentral.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "fail": "Fail",
+      "failText": "Please make sure that you have installed and run the new Decentral.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Decentral.Exchange desktop application?",
+      "install": "Install the application",
+      "installAndRun": "Install and run the application. Have you done it?",
+      "iUnderstand": "I understand",
+      "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
+      "lookAtFAQ2": "You might find the answer there.",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Decentral.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://decentral.exchange).",
+      "oops": "Oops! Something went wrong...",
+      "password": "Password",
+      "passwordError": "Wrong Password!",
+      "pleaseWait": "Downloading...",
+      "return": "return",
+      "run": "Run the installed application",
+      "seconds": "seconds",
+      "seconds1": "second",
+      "seconds234": "seconds",
+      "signInAndMove": "Sign in & Start moving",
+      "toFinish": "To finish the migration of your accounts, you have to go to the new application and complete the authorization process.",
+      "tryAgain": "Try again"
+    },
+    "faq": {
+      "attention": {
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://decentral.exchange](https://decentral.exchange/) and [https://decentral.exchange](https://decentral.exchange/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. DecentralChain or Decentral.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "title": "ATTENTION!!! "
+      },
+      "goHome": "Go to HomePage",
+      "text1": "Decentral.Exchange is transforming into a new product, Decentral.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Decentral.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Decentral.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on DecentralChain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using DecentralScan. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Decentral.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
+      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Decentral community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update WavDecentrales DEX’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Decentral trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "title1": "What’s going on?",
+      "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
+      "title11": "Will the new exchange have access to my seed phrases?",
+      "title12": "What will happen to my tokens?",
+      "title13": "What problems might users face due to the migration?",
+      "title14": "How long will technical work take on December 2?",
+      "title15": "How can I update my mobile app?",
+      "title16": "Do you plan on introducing KYC procedures? ",
+      "title17": "What changes will the matcher undergo?",
+      "title18": "What if I have any problems or questions during the migration process?",
+      "title19": "What will happen to gateway tokens?",
+      "title2": "What is Waves.Exchange?",
+      "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
+      "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
+      "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
+      "title23": "Why so complicated?",
+      "title24": "Are there plans to expand language support for the interface of the new exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Waves.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+    },
+    "migrate": {
+      "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
+      "achievementTitle": "Congratulations!",
+      "btn": {
+        "unlock": "Unlock"
+      },
+      "continue": "Continue",
+      "desc": {
+        "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
+        "enterPassword": "Enter your Decentral.Exchange password to continue the migration.",
+        "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
+      },
+      "description": {
+        "enterPass": "Enter your account password or",
+        "goBack": "return back",
+        "goBackExchange": "go back",
+        "unlock": "Unlock your accounts. You can return to this step later",
+        "unlockExchange": "To finish the migration, complete the authorization process by unlocking an account from the old application and signing in, or creating a new account, or importing it."
+      },
+      "headers": {
+        "unlock": "Unlock your accounts",
+        "unlockAccount": "Unlock account",
+        "unlockAccountExchange": "Unlock your account",
+        "unlockExchange": "Unlock your accounts"
+      },
+      "modalButton": {
+        "cancel": "Cancel",
+        "moving": "Start moving"
+      },
+      "modalDesc": {
+        "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
+        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
+        "thirdPart": "The migration process is fast, easy and absolutely secure."
+      },
+      "modalTitle": {
+        "moving": "Save your Seed!",
+        "plate": "Don’t worry! All of your tokens, seed phrases and passwords are safe.",
+        "redirected": "You have been redirected to"
+      },
+      "signIn": "Sign in",
+      "subtitle": {
+        "account": "Account",
+        "pending": "Pending unlock",
+        "pendingExchange": "To unlock, select an account from the list",
+        "pendingUnlockingExchange": "Pending unlocking",
+        "unlocked": "Unlocked"
+      },
+      "title": {
+        "almostThere": "Almost there...",
+        "protectAccount": "Protect your accounts"
+      }
+    },
+    "modals": {
+      "shutdownNotificationFirst": {
+        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "One day left!"
+      },
+      "shutdownNotificationLast": {
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Decentral.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Decentral.Exchange. Thank you for the good times!",
+        "submit": "I understand",
+        "title": "Time to move on!"
+      },
+      "shutdownNotificationSecond": {
+        "message1": "Decentral.Exchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "Two hours left!"
+      }
+    }
+  },
+  "app.migration": {},
+  "app.restore": {
+    "encodedSeedForm": {
+      "placeholder": "Enter your encoded seed"
+    },
+    "encodedSeedTab": "Encoded seed",
+    "keyForm": {
+      "placeholder": "Enter your private key here"
+    },
+    "keyTab": "Private key",
+    "password": {
+      "error": "Wrong Password!"
+    },
+    "passwordForm": {
+      "back": "go back",
+      "description": "Protect your account with a new password or",
+      "importAccounts": "Import accounts",
+      "login": "Continue",
+      "title": "Protect Your Account"
+    },
+    "restore": {
+      "beta": {
+        "accountTitle": "Address / Account name",
+        "buttons": {
+          "cancel": "Go Back",
+          "copy": "Copy Seed",
+          "restore": "Restore Seed"
+        },
+        "noUsers": {
+          "description": "{div}[We have not found any saved accounts. Return to the] {div}[[decentral.exchange](https://decentral.exchange)]",
+          "title": "No accounts saved"
+        },
+        "passwordTitle": "Password",
+        "placeholders": {
+          "password": "Password"
+        },
+        "step1Description": "If you only have your password, not your SEED, you can use this page to restore a saved account.",
+        "step2Description": "Please, carefully save SEED. If you lose it, you will have no way to access your account.",
+        "title": "Restore Seed"
+      }
+    },
+    "seedForm": {
+      "address": "Address",
+      "addressSaved": "Address saved",
+      "back": "Go back",
+      "continue": "Continue",
+      "create": "Create a new account",
+      "description": "Your Seed the 15 words you saved when creating your account",
+      "nameExists": "That name is taken",
+      "or": "or",
+      "placeholder": "Your seed is the 15 words you saved when creating your account",
+      "saveUserData": "Keep the account on this computer",
+      "seedTitle": "Your wallet seed",
+      "title": "Import from Seed",
+      "tosaved": "to a saved account"
+    },
+    "seedOrKeyForm": {
+      "description": "Enter your Seed phrase or private key to access your wallet",
+      "encodedSeed": "Encoded seed",
+      "keyTitle": "Private key",
+      "seedTitle": "Seed phrase",
+      "title": "Import from seed or key"
+    },
+    "seedTab": "Seed phrase",
+    "warningSeed": {
+      "message": "Make sure you do not confuse the phrase with a wallet address. Using an address as a SEED phrase can result in loss of funds. The SEED phrase must consist of 15 words with spaces between each word.",
+      "title": "The SEED phrase you entered is too short."
+    }
+  },
+  "app.saveSeed": {
+    "continue": "Continue",
+    "copy": "Copy",
+    "copySeed": "Copy Seed phrase",
+    "createAccount": "Create account",
+    "goBack": "go back",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "Nothing Here…",
+    "password": {
+      "error": "Wrong Password!"
+    },
+    "userList": {
+      "address": "Address / Account name",
+      "buttons": {
+        "login": "Log in"
+      },
+      "exportUser": "Export your account",
+      "notHaveAccount": "Please sign in to continue",
+      "password": "Password",
+      "placeholders": {
+        "password": "Password"
+      },
+      "title": "Welcome Back"
+    },
+    "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or",
+    "yourSeed": "Your Seed phrase"
+  },
+  "app.sessions": {
+    "session": {
+      "headline": "Select account",
+      "or": "OR",
+      "signIn": "Sign into account",
+      "signInNew": "Sign into a new session"
+    }
+  },
+  "app.signIn": {
+    "createAccount": "Create account",
+    "notHaveAccounts": "You do not have saved accounts",
+    "nothingHere": "Nothing Here…",
+    "password": {
+      "error": "Wrong Password!"
+    },
+    "signIn": {
+      "btn": {
+        "cancel": "Cancel",
+        "overwrite": "Overwrite",
+        "restore": "Reset all"
+      },
+      "enterPass": "Please enter your password to continue",
+      "or": "OR",
+      "passForgot": {
+        "attention": "Attention!",
+        "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
+        "descriptionExchange": "You are about to delete all of your Decentral.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Decentral.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Decentral.Exchange accounts."
+      },
+      "password": {
+        "forgot": "Forgot your password?",
+        "overwrite": "Overwrite accounts",
+        "overwriteDescription": "Overwrite all Decentral.Exchange accounts on this device"
+      },
+      "signIn": "Sign in",
+      "welcomeBack": "Welcome Back!"
+    },
+    "userList": {
+      "address": "Address / Account name",
+      "buttons": {
+        "login": "Log in"
+      },
+      "notHaveAccount": "Please sign in to continue",
+      "password": "Password",
+      "placeholders": {
+        "password": "Password"
+      },
+      "title": "Welcome Back"
+    }
+  },
+  "app.signUp": {
+    "signUp": {
+      "headers": {
+        "onePassBtn": "Let’s start!",
+        "onePassDesc": "Local data storage, seed phrases and encryption make Decentral.Exchange reliable. However, we are going further. It’s time to switch on a new security level. Log into your accounts and switch between them by a couple of taps.",
+        "onePassword": "One password for all your accounts",
+        "protect": "Protect Your Accounts",
+        "protectDesc": "Set a single password for all your accounts",
+        "protectPass": "Create password"
+      },
+      "password": {
+        "notMatch": "Password does not match"
+      },
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions), [Privacy Policy](https://decentralchain.io/privacy-policy)."
+    }
+  },
+  "app.tokens": {
+    "count": "Total tokens",
+    "create": "Generate",
+    "description": "Description",
+    "directives": {
+      "sign": {
+        "confirmRequestLedger": {
+          "waiting": "Waiting for confirmation on Ledger Device…"
+        }
+      }
+    },
+    "fee": "Fee {{fee, money-currency}}",
+    "help": {
+      "name": "Please use only Latin letters"
+    },
+    "helpIcon": {
+      "demicals": "This field defines the number of decimals that your asset token will be divided in.",
+      "scriptDescription": "Each validation of a transaction by a Smart Asset’s script increases the transaction fee by 0.004 DCC. For example, if a regular tx is made for a Smart Asset, the cost is 0.001 + 0.004 = 0.005 DCC. If an exchange transaction is made, the cost is 0.003 + 0.004 = 0.007 DCC.",
+      "scriptHeader": "A Smart Asset is an asset with an attached script that places conditions on every transaction made for the token in question.",
+      "scriptLearnMore": "Learn more",
+      "totalTokens": {
+        "headline": "This field defines the total tokens supply that your asset will contain.",
+        "notReissuable": "A non-reissuable asset will be permanently limited to the total token supply defined during these steps.",
+        "reissuable": "Reissuability allows for additional tokens creation that will be added to the total token supply of asset."
+      }
+    },
+    "modal": {
+      "title": "{{name}} Generation",
+      "titleSuccess": "{{name}} Generation Complete"
+    },
+    "name": "Name of your asset",
+    "NFT": {
+      "description": "A non-fungible token (NFT) is a unique, individual token existing on DecentralChain. Currently, display of NFTs in DCC Wallet and on DCC DEX is not supported. You can see your NFTs in [DecentralScan](https://decentralScan.com/)",
+      "title": "You are creating a non-fungible token."
+    },
+    "notifications": {
+      "isNotCreated": "Token has not been created"
+    },
+    "pageTitle": "Token generation",
+    "placeholders": {
+      "description": "You can not change the description later",
+      "precision": "From 0 to 8"
+    },
+    "precision": "Decimals",
+    "preview": "Preview",
+    "reissuable": {
+      "false": "Not reissuable",
+      "true": "Reissuable"
+    },
+    "script": "Smart asset",
+    "success": {
+      "description": "You generated {{amount}} {{name}}",
+      "done": "Open Portfolio",
+      "title": "Your transaction is on the way!"
+    },
+    "switchScriptOff": "Disable script",
+    "switchScriptOn": "Enable script",
+    "tokens": {
+      "changeColorTooltip": "Change color",
+      "inputHelper": {
+        "description": "If you use this name, your token will be categorised as 'Suspicious' and will be searchable only by ID.",
+        "header": "This asset name has been taken"
+      },
+      "termsOfUse": {
+        "checkbox": "I understand that in the case of non-compliance with the rules, my token will be categorised as 'Suspicious', and will be available for search only by ID."
+      }
+    },
+    "validators": {
+      "byte": {
+        "gte": "Asset name must be between 4 and 16 bytes long",
+        "lte": "Asset name must be between 4 and 16 bytes long"
+      },
+      "descriptionLen": "The description is too long. It must be no more than 1,000 bytes.",
+      "invalidScript": "Syntax error",
+      "maxValueCount": "Entered number is too large",
+      "maxValuePrecision": "Invalid number. Enter number from 0 to 8",
+      "minValueCount": "Entered number must be greater than zero",
+      "minValuePrecision": "Invalid number. Enter number from 0 to 8",
+      "noMoney": "Your balance is not enough to pay transaction fees",
+      "precisionCount": "Total asset count cannot have more decimal places than specified in the Decimals field",
+      "required": "This field must be filled"
+    }
+  },
+  "app.ui": {
+    "active": "Active",
+    "all": "All",
+    "amount": "Amount",
+    "balanceInput": {
+      "max": "Max"
+    },
+    "confirmGatewayTransaction": {
+      "back": "Back",
+      "confirm": "Confirm",
+      "fieldAddress": "Target address",
+      "fieldAmount": "Amount",
+      "fieldFee": "Fee",
+      "fieldGatewayAddress": "Gateway address",
+      "fieldGatewayFee": "Gateway fee",
+      "success": "Your transaction is on the way!",
+      "warningText": "You're about to send money to {{name}} blockchain.",
+      "warningTitle": "External blockchain transaction"
+    },
+    "confirmTransaction": {
+      "back": "Go Back",
+      "confirm": "Send",
+      "description": {
+        "burn": "You have burned {{quantityStr}} {{name}}",
+        "cancel-leasing": "You have canceled a leasing transaction",
+        "circular": "You have sent {{amount, money-currency}} to yourself",
+        "create-alias": "You have created an alias",
+        "data": "You have sent data transaction",
+        "data-vote": "{div.line}[You have voted for {{moneyCurrency}}.]\n{div.line}[Your score will be applied after 24 hours. Rating in processing.]",
+        "issue": "Token successfully generated",
+        "lease-out": "You have leased {{amount, money-currency}}",
+        "mass-send": "You have sent {{totalAmount, money-currency}}",
+        "reissue": "You have generated additional {{quantityStr}} {{name}}",
+        "send": "You have sent {{amount, money-currency}}",
+        "set-asset-script": "You have updated the script",
+        "set-script": "You have created a script transaction",
+        "set-script-cancel": "You have cancelled a script transaction",
+        "sponsorship-start": "Sponsorship has been set",
+        "sponsorship-stop": "Sponsorship has been disabled"
+      },
+      "details": "View details",
+      "export": "Export",
+      "JSON": "JSON",
+      "ledgerUnconfirmed": {
+        "description": "Please try again. If the error persists, please refer to [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+        "header": "You did not confirm the request on your Ledger Device"
+      },
+      "notPermited": {
+        "cancel-leasing": "Starting leasing is temporarily unavailable."
+      },
+      "notPermitted": {
+        "burn": "Token burning is temporarily unavailable.",
+        "burn-title": "Token burn",
+        "cancel-leasing": "Start leasing functionality is temporarily unavailable.",
+        "cancel-leasing-title": "Cancel leasing",
+        "data": "Data transactions are temporarily unavailable.",
+        "data-title": "Data transaction",
+        "reissue-title": "Token reissue",
+        "set-script": "Script transactions are temporarily unavailable.",
+        "sponsorship-start": "Sponsoring is temporarily unavailable.",
+        "sponsorship-start-title": "Change sponsorship"
+      },
+      "orderSuccess": "Your order has been created!",
+      "redirect": "You will be redirected to {{referrer}}",
+      "send": {
+        "errors": {
+          "balance": {
+            "invalid": "Insufficient funds"
+          },
+          "recipient": {
+            "invalid": "Recipient address is invalid"
+          }
+        }
+      },
+      "sign": "Sign",
+      "success": "Your transaction is on the way!",
+      "wavesKeeperUnconfirmed": {
+        "description": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
+        "header": "You did not confirm the request using Cubensis Connect"
+      }
+    },
+    "copyError": "Cannot copy! Your browser may be outdated",
+    "copySuccess": "The data is copied",
+    "directives": {
+      "anyTransaction": {
+        "copy": "Copy",
+        "textAreaTitle": "TX JSON"
+      },
+      "scriptForm": {
+        "placeholder": {
+          "change": "Enter a new script, or leave the field blank to cancel an existing script",
+          "create": "Enter a new script, or leave the field blank to cancel an existing script"
+        },
+        "textAreaTitle": "Base64 script"
+      },
+      "setAssetScriptForm": {
+        "ok": "Continue"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "cancel": "Cancel",
+          "errorDescription": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+          "errorHeader": "You did not confirm the request using Cubensis Connect",
+          "sign": "Retry",
+          "waiting": "Waiting for confirmation from Cubensis Connect..."
+        },
+        "confirmRequestLedger": {
+          "cancel": "Cancel",
+          "errorDescription": "Please try again. If the error persists, please refer to [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+          "errorHeader": "You did not confirm the request on your Ledger Device",
+          "sign": "Retry sign",
+          "waiting": "Waiting for confirmation on Ledger Device…"
+        },
+        "txId": "TXID"
+      },
+      "transactionExport": {
+        "linkTitle": "Share the Link to Sign",
+        "or": "OR",
+        "qrZoomBtn": "Click to zoom in/out",
+        "scanQrCode": "Scan QR Code"
+      }
+    },
+    "emptyBlocks": {
+      "title": "Nothing here…"
+    },
+    "errorBlocks": {
+      "title": "Something went wrong…"
+    },
+    "importSuccess": "Account Importing from the Keystore File was successful",
+    "modal": {
+      "assetInfo": {
+        "gateway_ui": "GATEWAY"
+      },
+      "sign": {
+        "signByLedger": "Waiting for confirmation on Ledger Device…"
+      },
+      "token": {
+        "warning": {
+          "header": "You agree that:",
+          "text": "{div.line}[I) You will not use the token for fraudulent purposes;]\n{div.line}[II) You will not duplicate, fully or in part, the name of an existing cryptocurrency or a well-known company with the aim of misleading users;]\n{div.line}[III) You will not use names of states, other administrative units or municipal institutions for the token's name with the aim of misleading users;]\n{div.line}[IV) You will not set a script on a smart asset that limits exchange transactions on Decentral.Exchange by asset quantity;]\n{div.line}[V) You will not give false information in a smart asset's description concerning the rules governing the token's use, which do not correspond to those of the script installed on it;]",
+          "textWarning": "Failure to observe these points will lead to your token being classified as suspicious, and it will be available to search only by ID."
+        }
+      }
+    },
+    "password": {
+      "btn": {
+        "confirm": "Confirm"
+      },
+      "minLength": "must be at least {{minLength}} characters",
+      "name": "Account name",
+      "nameExists": "That name is taken",
+      "newPass": "New password",
+      "old": "Old password",
+      "oldWrong": "Old password is wrong",
+      "repeat": "Confirm password",
+      "secure": "secure password",
+      "title": "Protect Your Account with a New Password",
+      "warn": "easy, add a digit or symbol"
+    },
+    "qrCodeRead": {
+      "closeRead": "Cancel"
+    },
+    "recipient": "Recipient",
+    "transaction": {
+      "actions": {
+        "cancelLeasing": "Cancel Leasing",
+        "copyTxData": "Copy all TX data",
+        "copyTxId": "Copy TX ID",
+        "showTx": "TX info"
+      },
+      "amounts": {
+        "burn": "–{{amount}} {{name}}",
+        "cancel-leasing": "{{amount}} {{name}}",
+        "circular": "{{amount}} {{name}}",
+        "exchange-buy": "{{sign}}{{amount}} {{name}}",
+        "exchange-sell": "{{sign}}{{amount}} {{name}}",
+        "issue": "{{amount}} {{name}}",
+        "lease-in": "{{amount}} {{name}}",
+        "lease-out": "{{amount}} {{name}}",
+        "mass-receive": "+{{amount}} {{name}}",
+        "mass-send": "–{{amount}} {{name}}",
+        "perTransaction": "Amount per transaction",
+        "receive": "+{{amount}} {{name}}",
+        "reissue": "+{{amount}} {{name}}",
+        "script-invocation": "–{{amount}} {{name}}",
+        "send": "–{{amount}} {{name}}",
+        "set-script": "Set Script transaction",
+        "set-script-cancel": "Cancel script transaction",
+        "sponsorship-change": "Change Sponsorship",
+        "sponsorship-fee": "{{sign}}{{amount}} {{name}}",
+        "sponsorship-start": "Set Sponsorship",
+        "sponsorship-stop": "Disable Sponsorship"
+      },
+      "confirmed": {
+        "false": "UNCONFIRMED",
+        "true": "COMPLETED"
+      },
+      "headers": {
+        "activeLeasing": "Active now",
+        "burn": "{{name}} Token Burning",
+        "cancel-leasing": "Canceled Leasing",
+        "canceled": "Canceled",
+        "circular": "Self-transferred {{name}}",
+        "create-alias": "Created Alias",
+        "data": "Data Transaction",
+        "data-vote": "Voted for {{assetName}}",
+        "exchange-amount": "{{amountAsset}}/{{priceAsset}}",
+        "exchange-buy": "Exchange Buy:",
+        "exchange-sell": "Exchange Sell:",
+        "issue": "{{name}} Token Generation",
+        "lease-in": "Incoming Leasing",
+        "lease-out": "Started Leasing",
+        "mass-receive": "Received {{name}}",
+        "mass-send": "Sent {{name}}",
+        "receive": "Received {{name}}",
+        "reissue": "{{name}} Token Reissue",
+        "script-invocation": "Script Invocation",
+        "send": "Sent {{name}}",
+        "set-asset-script": "Set Asset Script Transaction",
+        "set-script": "Set Script Transaction",
+        "set-script-cancel": "Cancel Script Transaction",
+        "spam": "suspicious",
+        "sponsorship-fee": "Received {{name}}",
+        "sponsorship-start": "Set Sponsorship for {{name}}",
+        "sponsorship-stop": "Disabled Sponsorship for {{name}}",
+        "suspicious": "suspicious",
+        "unknown": "Unknown transaction"
+      },
+      "modals": {
+        "assetId": "Asset ID",
+        "attachment": "Attachment Message",
+        "cancelTx": "Leasing TX",
+        "confirmations": "Confirmations",
+        "copyCode": "Copy Code",
+        "data": "Data",
+        "dataKey": "Key",
+        "dataType": "Type",
+        "dataValue": "Value",
+        "description": "Description",
+        "exchange": {
+          "buy": "Buy",
+          "buyMatcherFee": "Buy Matcher Fee",
+          "exchangeType": "Order type",
+          "matcherFee": "Matcher Fee",
+          "pair": "Pair",
+          "sell": "Sell"
+        },
+        "fee": "Fee",
+        "from": "From",
+        "function": "Function",
+        "functionCall": "Function call",
+        "height": "Block",
+        "hide": "Hide",
+        "hideAll": "Hide all",
+        "leasingStatus": "Status",
+        "massSend": {
+          "showAll": {
+            "false": "Show all ({{count}})",
+            "true": "Show first 3 transaction"
+          },
+          "totalAmount": "Total amount"
+        },
+        "numberOfRecipients": "The Number of Recipients",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "payment": "Payment",
+        "price": "{{name}} Price",
+        "script": "Script",
+        "scriptAddress": "Script address",
+        "seeAll": "See all",
+        "setAssetScript": {
+          "showScript-false": "Show",
+          "showScript-true": "Hide"
+        },
+        "show": "Show",
+        "showAll": "Show all ({{count}})",
+        "showFirstTree": "Show first 3 keys",
+        "status": "Status",
+        "timestamp": "Timestamp",
+        "to": "To",
+        "toBeReissued": "To be reissued",
+        "toRemainOnBalance": "To remain on balance",
+        "totalAfterBurning": "Total after burning",
+        "totalAfterReissue": "Total after reissue",
+        "txId": "TXID",
+        "type": "Type",
+        "viewTransactionKey": "Transaction",
+        "viewTransactionValue": "View Transaction"
+      },
+      "notifications": {
+        "closed": "The leasing has been already canceled",
+        "closedSuccess": "The leasing canceled complete"
+      },
+      "reissuable": {
+        "false": "Not Reissuable",
+        "true": "Reissuable"
+      },
+      "set-asset-script": "Update script",
+      "subheaders": {
+        "burn": "{{time}}",
+        "cancel-leasing": "{{time}}{span.locale-address}[, transaction {{transactionId}}]",
+        "circular": "{{time}}{span.locale-address}[, at address {{address}}]",
+        "create-alias": "{{time}}, {{alias}}",
+        "data": "{{time}}",
+        "exchange-buy": "{{time}}",
+        "exchange-sell": "{{time}}",
+        "issue": "{{time}}",
+        "lease-in": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "lease-out": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "mass-receive": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "mass-send": "{{time}}",
+        "receive": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "reissue": "{{time}}",
+        "script-invocation": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "send": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "set-asset-script": "{{time}}, at asset {{name}}",
+        "sponsorship-fee": "{{time}} from address {{address}}",
+        "unknown": "{{time}}"
+      }
+    },
+    "transactionList": {
+      "noTransactionsDescription": "You do not have any transactions",
+      "noTransactionsTitle": "Nothing Here…"
+    },
+    "transactions": {
+      "script": {
+        "txJson": "Base64 script"
+      }
+    },
+    "whitespace": "&nbsp;"
+  },
+  "app.unavailable": {
+    "message": "The site is undergoing maintenance and will be back up soon. Thank you for your patience.",
+    "title": "We’ll Be Back Soon"
+  },
+  "app.utils": {
+    "confirmTransaction": {
+      "signLedger": "Waiting for confirmation on Ledger Device…"
+    },
+    "directives": {
+      "anyTransaction": {
+        "calculatingFee": "Transaction fee: complete field for calculation",
+        "errors": {
+          "invalidScript": "Syntax error",
+          "required": "This field is required!"
+        },
+        "fee": "Fee {{fee, money-currency}}",
+        "ok": "Continue",
+        "textAreaTitle": "TX JSON",
+        "warning": {
+          "body": "We do not recommend you submit JSON unless you are an experienced user. Errors may lead to loss of funds.",
+          "title": "Warning: actions can lead to loss of access to your account"
+        }
+      },
+      "filter": {
+        "helpIcon": {
+          "assetId": "Asset ID",
+          "description": "You can find out more about searching assets [here](https://docs.decentralchain.io)",
+          "header": "You can search by:",
+          "name": "Name",
+          "ticker": "Ticker"
+        }
+      },
+      "scriptForm": {
+        "acceptAndContinue": "Accept and continue",
+        "changePlaceholder": "Enter a new script, or leave the field blank to cancel an existing script",
+        "createPlaceholder": "Enter script here",
+        "errors": {
+          "fee": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee.",
+          "invalidScript": "Syntax error",
+          "required": "This field is required"
+        },
+        "fee": "Fee {{fee, money-currency}}",
+        "ideLink": "Script can be developed with [Ride IDE](https://waves-ide.com//)",
+        "ok": "Sign",
+        "textAreaTitle": "Base64 script",
+        "warning": {
+          "body": "We do not recommend you submit script transactions unless you are an experienced user. Errors can lead to permanent loss of access to your account.",
+          "title": "Warning: actions can lead to loss of access to your account"
+        },
+        "warningDescription": "We do not recommend you submit script transactions unless you are an experienced user. Errors can lead to permanent loss of access to your account.",
+        "warningHeader": "Actions can lead to loss of access to account"
+      },
+      "setAssetScriptForm": {
+        "fee": "Fee {{fee, money-currency}}"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "sign_utils": "Retry"
+        }
+      }
+    },
+    "inputs": {
+      "errors": {
+        "gtGatewayMin": "You can't transfer an amount less than {{min}} {{assetName}}"
+      }
+    },
+    "keeperForm": {
+      "address": "Account address",
+      "addressSaved": "Address saved",
+      "back": "Go back",
+      "error": {
+        "hasLockedKeeperDescription": "To continue working with Cubensis Connect, you must enter a previously-created password, or create a new one.",
+        "hasLockedKeeperHeader": "Enter password from Cubensis Connect",
+        "hasNoUsersDescription": "Log in to an existing account, or create a new one, then try again.",
+        "hasNoUsersHeader": "You do not have an active account",
+        "install": "Install",
+        "networkDescription": "The account you selected is on the wrong network. Change network, then try again.",
+        "networkHeader": "Change network",
+        "notInstalledDescription": "After installing, create an account, sign in, and then refresh the page to continue.",
+        "notInstalledHeader": "Don't have Cubensis Connect?",
+        "refresh": "Retry"
+      },
+      "heading": "Import account from the Cubensis Connect",
+      "loading": "Import account from the Cubensis Connect",
+      "login": "Continue",
+      "name": "Account name",
+      "nameExists": "That name is taken",
+      "or": "OR",
+      "retry": "Try again",
+      "saveUserData": "Keep me signed in on this computer"
+    },
+    "LedgerClient_utils": "Ledger Device",
+    "LedgerClientDescription": "Import account from the Cubensis Connect",
+    "modal": {
+      "acceptNewTerms": {
+        "title": "Terms of Use Agreement"
+      },
+      "account": {
+        "address": "Your address",
+        "aliases": "Aliases",
+        "aliasesWarning": "Alias functionality is temporarily unavailable",
+        "cancel": "Create an account",
+        "create": "Create new",
+        "createAliasNotPermitted": "Alias creation is temporarily unavailable.",
+        "fee": "Transaction Fee {{price}} {{name}}",
+        "hasAlias": "This alias has already been used",
+        "hasScript": "You cannot create an alias if you have multisig",
+        "invalidSymbols": "You have used invalid characters",
+        "maxLength": "Alias must be no more than 30 characters long",
+        "message": "To view account information, sign in or create an account",
+        "minLength": "Alias must be at least 4 characters long",
+        "noMoney": "Insufficient funds",
+        "notifications": {
+          "aliasCreated": "An alias has been created"
+        },
+        "ok": "Sign in",
+        "placeholder": "Symbolic name to your address",
+        "title": "Account {{name}}",
+        "title_default_name": "information"
+      },
+      "accountInfo": {
+        "alias": {
+          "helpIcon": {
+            "row1": "About Alias",
+            "row2": "An Alias is a nickname for your address. You can use an Alias instead of an address to make transactions.",
+            "row3": "Your Alias must be between 4 and 30 characters long and must contain only lowercase Latin letters, digits and symbols (@, -, _) and dot."
+          }
+        }
+      },
+      "assetInfo": {
+        "available": "Available",
+        "balance": "Balance",
+        "contest": "CONTEST",
+        "date": "Issue date",
+        "decimals": "Decimal points",
+        "description": "Description",
+        "details": "Details",
+        "email": "Email",
+        "gateway": "GATEWAY",
+        "gatewaySoon": "GATEWAY SOON",
+        "identifier": "ID",
+        "inOrders": "Reserved in orders",
+        "issuer": "Issuer",
+        "leased": "Leased",
+        "name": "Name",
+        "pinned": "Pinned",
+        "qualified": "Qualified",
+        "quantity": "Total amount",
+        "rating": {
+          "canVoteTip": "Click to rate token",
+          "tooltipLink": "More Details",
+          "tooltipNeedWAVES": "and 0.001 DCC",
+          "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
+          "tooltipTitle": "To rate a token, you must have at least 1 DCC in your wallet."
+        },
+        "reissue": {
+          "no": "Not reissuable",
+          "yes": "Reissuable"
+        },
+        "site": "Site",
+        "sponsorshipFee": "Sponsored asset fee",
+        "suspicious": "Suspicious",
+        "ticker": "Ticker",
+        "title": "Asset Info",
+        "tokenomica": "Tokenomica",
+        "total": "Total",
+        "transactions": "Transactions",
+        "type": "Type",
+        "unpinned": "Pin",
+        "wsocRef": "WSOC"
+      },
+      "backup": {
+        "clearSeed": "{span.clear}[Clear] and tap again",
+        "title": {
+          "title_0": "Save backup phrase",
+          "title_1": "Confirm backup",
+          "title_2": "Success"
+        }
+      },
+      "confirm-correct-order": "Your price {price, money-currency} is more than 5% different of market price",
+      "confirmLogout": {
+        "goBack": "Go back",
+        "heading": "You’re about to leave",
+        "logout": "Log Out",
+        "text": "In order to prevent anyone else from accessing your funds without your permission, please log out from your account first."
+      },
+      "confirmOrder": {
+        "cancel": "Cancel",
+        "continue": "Place Order",
+        "description": "Do you want to proceed?",
+        "headerBuy": "Your order price is {{orderLimit}}% higher than the latest market price",
+        "headerSell": "Your order price is {{orderLimit}}% lower than the latest market price"
+      },
+      "createOrder": {
+        "cancel": "Create an account",
+        "message": "To begin trading please sign in or create an account",
+        "ok": "Sign in"
+      },
+      "deleteAccount": {
+        "cancel": "Cancel",
+        "delete": "Remove",
+        "description": "{div}[Removing an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "header": "Remove account"
+      },
+      "deposit": {
+        "warningText": "Sending any other currency other than {{assetTicker}} to this address may result in the loss of your deposit.",
+        "warningTitle": "Send only {{assetTicker}} to this deposit address.",
+        "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of {{assetTicker}} to a token in your DCC account.",
+        "helpDescrTitle": "Enter this address into your {{assetTicker}} client or wallet",
+        "depositInstructionsTitle": "Important: This address is for one time use only and can only accept one deposit!",
+        "depositInstructionsText": "You must wait for your initial {{assetTicker}} deposit to be confirmed on DecentralChain before receiving another {{assetTicker}} deposit address for your DecentralChain wallet. If you make more than one {{assetTicker}} deposit to the same deposit address you will lose those deposits.",
+        "warningMinAmountText": "If you send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+        "warningMinAmountTitle": "The minimum deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum deposit is {{maxAmount}} {{assetTicker}}",
+        "totalFee": "{span.error-500}[Deposit Fee: {{totalFee}} {{assetTicker}}]",
+        "disclaimer": "By using this service you agree with the [disclaimer]({{disclaimerLink}}).",
+        "support": "For support please contact email [{{supportEmail}}](mailto:{{supportEmail}})",
+        "recoveryStatement": "I understand that I will lose my deposit if I don't save a backup phrase (SEED).",
+        "operator": "This Gateway is operated by {{operator}}.",
+        "coinomatBCH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BCH to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Bitcoin Cash client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only BCH to this deposit address"
+        },
+        "coinomatBSV": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BSV to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Bitcoin Satoshi Vision client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only BSV to this deposit address"
+        },
+        "coinomatBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Bitcoin client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only BTC to this deposit address"
+        },
+        "coinomatDASH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of DASH to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your DASH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only DASH to this deposit address"
+        },
+        "coinomatETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Ethereum client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw ETH. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit ETH from smart contracts! Do not deposit ERC20 tokens! Only Ethereum is allowed."
+        },
+        "coinomatLTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of LTC to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Litecoin client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only LTC to this deposit address"
+        },
+        "coinomatXMR": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of XMR to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Monero client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "{div}[Payment ID is not required.]Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only XMR to this deposit address"
+        },
+        "coinomatZEC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ZEC to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your Zcash client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only Zcash to this deposit address"
+        },
+        "copyAndShare": "Copy & Share Address",
+        "currency": "Currency",
+        "or": "OR",
+        "pleaseNote": "Please note that the gateway doesn't apply any fees for this operation.",
+        "scanQrCode": "Scan QR Code",
+        "title": "Deposit {{assetName}}",
+        "wavesGatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
+        },
+        "wavesGatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your BTC client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only BTC to this deposit address"
+        },
+        "wavesGatewayERGO": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ERGO to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your ERGO client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
+          "warningTitle": "Send only ERGO to this deposit address"
+        },
+        "wavesGatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your ETH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw ETH. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit ETH from smart contracts! Do not deposit ERC20 tokens! Only Ethereum is allowed."
+        },
+        "wavesGatewayUSDT": {
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
+          "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
+        },
+        "wavesGatewayVST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DCC account.",
+          "helpDescrText_copy": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DCC account.",
+          "helpDescrTitle": "Enter this address into your WEST client or wallet",
+          "helpDescrTitle_copy": "Enter this address into your WEST client or wallet",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        },
+        "wavesGatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+      },
+      "dexScriptedPair": {
+        "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
+        "heading": "Order placement for a pair that includes a Smart Asset"
+      },
+      "disabledFeature": {
+        "anyTransaction": "JSON transactions are temporarily unavailable.",
+        "lease": "Starting leasing is temporarily unavailable."
+      },
+      "disabledFeatures": {
+        "default": "Sorry, this feature is currently disabled.",
+        "massTransfer": "Mass Transfers are temporarily unavailable.",
+        "transfer": "Sending cryptocurrency is temporarily unavailable."
+      },
+      "gatewaySign": {
+        "cancel": "Cancel",
+        "continue": "Allow",
+        "description": "{{name}} will have access to your DCC address. It will not get your SEED or Private key. Don't enter your secret phrase (SEED) on websites you will be redirected on.",
+        "descriptionDesktop1": "The link will be opened in your default web browser. If you want to use another web browser,",
+        "descriptionDesktop2": "copy",
+        "descriptionDesktop3": "and paste the link into its URL bar.",
+        "error": {
+          "button": "Cancel",
+          "headline": "Something went wrong",
+          "title": "Error"
+        },
+        "headline": "{span.link}[{{url}}] wants to access your DCC Address",
+        "retrySign": "Retry",
+        "title": "Sign in with DCC",
+        "txHash": "TXHASH",
+        "warning": "Don't enter your secret phrase (SEED) on websites you will be redirected on."
+      },
+      "import": {
+        "errorBeta": "We were unable to retrieve your accounts from the DCC Beta Client. Try importing from the DCC Lite Client.",
+        "errorHeader": "No accounts found",
+        "errorLite": "We were unable to retrieve your accounts from the DCC Lite Client. Try importing from the DCC Beta Client.",
+        "errorUnable": "We were unable to retrieve your accounts. Please restore them by using their backup SEEDs.",
+        "fromBetaButton": "Import from Beta Client",
+        "fromLiteButton": "Import from Lite Client",
+        "helpIcon": {
+          "description": "For correct operation, we recommend that you allow pop-ups. Instructions for browsers: [Chrome](https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en), [Safari](https://discussions.apple.com/thread/4271925),  [Firefox](https://support.mozilla.org/en-US/kb/pop-blocker-settings-exceptions-troubleshooting), [Opera](https://help.opera.com/en/presto/control-pages/).",
+          "title": "Some browsers block pop-up windows by default."
+        },
+        "importButton": "Import",
+        "importCancel": "Cancel",
+        "iUnderstandButton": "I understand",
+        "selectAccountDescription": "You must allow pop-up windows in your browser",
+        "selectAccountToImport": "Select which accounts you want to import",
+        "selectAccountToImportFrom": "Select where to import accounts from",
+        "selectButton": "Select",
+        "wavesBetaClient": "DCC Beta Client",
+        "wavesBetaClientDescription": "Import accounts from DCC Beta Client",
+        "wavesLiteClient": "DCC Lite Client",
+        "wavesLiteClientDescription": "Import accounts from DCC Lite Client"
+      },
+      "matcherChoice": {
+        "customMatcher": "Custom matcher address",
+        "matcher": "Matcher",
+        "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
+        "terms": "Terms",
+        "title": "Choose matcher",
+        "wavesTerms": "I am over 18 years old, and I agree to the DCC Terms of Use and DCC Privacy Policy."
+      },
+      "open-main": {
+        "dex": {
+          "cancel": "Create an account",
+          "message": "To begin trading please sign in or create an account",
+          "ok": "Sign in"
+        },
+        "tokens": {
+          "cancel": "Create an account",
+          "message": "To issue a token, sign in or create an account",
+          "ok": "Sign in"
+        },
+        "wallet": {
+          "assets": {
+            "cancel": "Create an account",
+            "message": "To open your wallet, sign in or create an account",
+            "ok": "Sign in"
+          },
+          "cancel": "Create an account",
+          "leasing": {
+            "cancel": "Create an account",
+            "message": "To open your wallet, sign in or create an account",
+            "ok": "Sign in"
+          },
+          "message": "To open your wallet, sign in or create an account",
+          "ok": "Sign in",
+          "portfolio": {
+            "cancel": "Create an account",
+            "message": "To open your wallet, sign in or create an account",
+            "ok": "Sign in"
+          },
+          "transactions": {
+            "cancel": "Create an account",
+            "message": "To open your wallet, sign in or create an account",
+            "ok": "Sign in"
+          }
+        }
+      },
+      "pairing": {
+        "downloadAppDescription": "Download our mobile applications below:",
+        "scanCodeDescription": "Scan the code below with your iPhone or Android device to pair it with your account."
+      },
+      "pinAsset": {
+        "cancel": "Cancel",
+        "nothing": "Nothing selected",
+        "placeholder": "Type asset name or id",
+        "submit": "Pin",
+        "title": "Select the assets you want to pin"
+      },
+      "qr": {
+        "copyAndShare": "Copy & Share Address",
+        "or": "OR",
+        "scanQrCode": "Scan QR Code",
+        "title": "Share your address",
+        "warningText": "Sending any other digital asset to this address will result in the permanent loss of your funds.",
+        "warningTitle": "Send only DCC and DCC tokens to this address"
+      },
+      "receive": {
+        "accountStatus": "Account status",
+        "addressOrAlias": "Address / Alias",
+        "amount": "Amount",
+        "amountYouPay": "Amount you pay",
+        "asset": "Asset",
+        "bank": {
+          "title": "Bank"
+        },
+        "bankSuccessHeader": "You were redirected to the IDNow.eu for verification.",
+        "bankSuccessText": "After you go through the verification you will receive an email with further instructions.",
+        "bankVerifiedPlateDescription": "Before you withdraw your funds, we recommend you look at the [instructions](https://docs.decentralchain.io) and [limits and transaction fees](https://coinomat.com/limits.php).",
+        "bankVerifiedPlateHeader": "Your funds are now available for withdrawal to a bank account.",
+        "card": {
+          "continue": "Continue",
+          "title": "Card"
+        },
+        "cardSuccessHeader": "You have been redirected to Indacoin.com",
+        "cardSuccessText": "After payment has been made your balance will be updated",
+        "coinomat": {
+          "serverError": "Service Coinomat temporarily unavailable. Try again later.",
+          "tryAgain": "Try again"
+        },
+        "cryptocurrency": {
+          "title": "Cryptocurrency"
+        },
+        "error": {
+          "cardAmount": {
+            "gte": "The minimum amount you can deposit is {{gte}} {{currency}}",
+            "lte": "The maximum amount you can deposit is {{lte}} {{currency}}",
+            "precision": "The number in this field is invalid. It can include a maximum of 2 digits after the decimal point."
+          }
+        },
+        "errors": {
+          "required": "This field is required"
+        },
+        "gatewayError": "Service Gateway temporarily unavailable. Try again later.",
+        "invoice": {
+          "title": "My Address"
+        },
+        "ledger": {
+          "cancel": "Cancel",
+          "retry": "Retry"
+        },
+        "maximumIs": "the maximum is",
+        "minimumIs": "The minimum is",
+        "providedByCoinomat": {
+          "descriprion": "{div}[This service is provided by Coinomat Company (Сoinomat).\n DCC Platform AG does not undertake any responsibility for the activities carried out by Coinomat and does not take any part in the relationship that may arise between Coinomat and users of the DCC Platform.]{div}[By using Coinomat services, you agree to be bound by [Coinomat Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php). If you do not agree to these terms, then do not use Coinomat services.]",
+          "header": "This service is provided by Coinomat Company (Сoinomat).",
+          "termsReadedInputLabel": "I agree with the [Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php), [Limits](https://coinomat.com/limits.php) and [Privacy Policy](https://coinomat.com/privacy.php) of Coinomat Company.",
+          "warning": "In case of problems with verification, payment processing or revoke your consent, please contact the Coinomat support team — [support@coinomat.com](mailto:support@coinomat.com)"
+        },
+        "receive": "Deposit",
+        "serverAddressError": "Gateway address error",
+        "serverError": "Service Coinomat temporarily unavailable. Try again later.",
+        "serverWrongAddress": "Wrong address",
+        "shareInvoiceLink": "Share a Link to an Invoice",
+        "verified": "Verified",
+        "vostok": {
+          "serverError": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wavesEnterprise": {
+          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
+        },
+        "wtry": {
+          "info": "In case of problems with payment processing, please contact the Digilira support team — [support@digilira.com](mailto:support@digilira.com)"
+        },
+        "wtryPlate1Header": "You can only use Turkish Lira gateway if you have Turkish citizenship.",
+        "wtryPlate1Text": "For making a deposit you will be redirected to [digilira.com](https://digilira.com)",
+        "wtrySuccessHeader": "You were redirected to the Digilira.com",
+        "youWillGet": "Approximately you will get"
+      },
+      "removeAccount": {
+        "cancel": "Cancel",
+        "heading": "Remove account",
+        "remove": "Remove",
+        "text": "{div}[Deleting an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "warning": "You did not save your SEED",
+        "warningPlural": "You did not save your Seed phrases"
+      },
+      "removeKeeperAccount": {
+        "heading": "Remove Cubensis Connect account",
+        "text": "This will only delete the saved path to this account. It will not delete the account from Cubensis Connect."
+      },
+      "removeLedgerAccount": {
+        "heading": "Remove Ledger account",
+        "text": "This will not delete the account from your Ledger. It will only delete the saved path to this account on your Ledger."
+      },
+      "removePrivateKeyAccount": {
+        "text": "{div}[Deleting an account will lead to its irretrievable loss if you didn't save a Private key.]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]"
+      },
+      "script": {
+        "anyTx": "JSON",
+        "setScript": "Script transaction"
+      },
+      "send": {
+        "amount": "Amount",
+        "attachmentLength": "The description is too long",
+        "bankAccount": "Bank account",
+        "coinomat": {
+          "feeExplanation": "We detected {{assetName}} address and will send your money through Coinomat gateway to that address. Minimum amount is {{min, BigNumber}} {{assetTicker}}, maximum amount is {{max, BigNumber}} {{assetTicker}}.",
+          "feeTitle": "Gateway fee is {{fee, BigNumber}} {{assetTicker}}"
+        },
+        "coinomatLimits": "Minimum $100 USD/EUR, maximum $50,000 USD/EUR",
+        "coinomatWarningHeader": "We will send your money through Coinomat gateway.",
+        "coinomatWarningText": "Before making a withdrawal, please check Сoinomat [limits and transaction fees](https://coinomat.com/limits.php).",
+        "compare": {
+          "description": "You sent {{amount}} {{currency}} (${{mirror}})",
+          "details": "View Details",
+          "title": "Your transaction is on the way!"
+        },
+        "confirm": {
+          "back": "Go Back",
+          "confirm": "Confirm",
+          "from": "From",
+          "title": "Transaction Details",
+          "to": "To",
+          "total": "Total"
+        },
+        "currency": "Asset",
+        "description": "Description",
+        "descriptionPlaceholder": "Write an optional message",
+        "errors": {
+          "address": "The address is not valid",
+          "allAddressesInvalid": "All addresses are invalid",
+          "button": "Cancel",
+          "headline": "Something went wrong",
+          "invalidChars": "The field can only contain numbers",
+          "max": "Insufficient funds",
+          "maxCoinomat": "You can't transfer an amount more than {{money, money-currency}}",
+          "paymentIdLength": "Monero Payment ID must be a 64-character hex string",
+          "paymentIdPattern": "Hex string should consist of symbols 0-9 and A-Z (or a-z)",
+          "precision": "The number in this field is invalid. It can include a maximum of {{precision}} digits after the decimal point.",
+          "required": "This field is required",
+          "title": "Error"
+        },
+        "fee": "Transaction Fee {{fee, money-currency}}",
+        "gateway": {
+          "feeExplanation": "We have detected a {{assetName}} address and will send your funds via a gateway to this address. The minimum amount is {{min, BigNumber}} {{assetTicker}}. The maximum amount is {{max, BigNumber}} {{assetTicker}}."
+        },
+        "gatewayTerms": {
+          "accept": "Accept and Continue",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://decentral.exchange/) and [Conduction of Transactions](https://decentral.exchange/). If you do not agree to these terms, then do not use this Gateway service.",
+          "title": "Gateway service agreement"
+        },
+        "icoWarning": "Do not withdraw {{assetName}} to an ICO. We will not credit your account with tokens from that sale.",
+        "idNumber": {
+          "helpIcon": {
+            "description": "You can find out more about withdrawing money to a bank account [here](https://docs.decentralchain.io).",
+            "title": "Your ID number is a unique number assigned to each user after confirming a bank account with Coinomat."
+          }
+        },
+        "idNumberTitle": "ID Number",
+        "liraBankAccount": "Digilira account",
+        "massSend": {
+          "clear": "Clear",
+          "description": "Description",
+          "errors": {
+            "invalidAddress": "List of invalid addresses:"
+          },
+          "importFile": "Import a CSV File",
+          "recipient": "Recipients, Amounts: {{count}}/{{max}}",
+          "recipientsAmountsPlaceholder": "Example:\nAddress1,Amount\nAddress2,Amount2",
+          "showAllErrors": {
+            "false": "Show all ({{count}})",
+            "true": "Show first 2 errors"
+          },
+          "totalAmount": "Total Amount",
+          "warningPlate1Header": "You can send to a maximum of 100 recipients",
+          "warningPlate1Text": "Any recipients after the first 100 will be ignored.",
+          "warningPlate2Header": "Invalid addresses will not be included in the mass transfer.",
+          "warningPlate3Header": "Use a comma to separate recipient and the amount to send. Use a new line for each recipient.",
+          "warningPlate3Text": "[Learn more about the CSV file standard](https://en.wikipedia.org/wiki/Comma-separated_values)."
+        },
+        "massSendTitle": "Mass Transfer",
+        "moneroPaymentId": "Monero Payment ID",
+        "moneroPaymentIdPlaceholder": "Paste or type your Monero Payment ID",
+        "notSponsorship": {
+          "fee": "Transaction Fee {{fee, money-currency}}"
+        },
+        "notVerifiedHeader": "You have not been verified.",
+        "notVerifiedText": "Withdrawal to a bank account is only available to verified users. You can find out more about sending and receiving fiat money [here](https://docs.decentralchain.io).",
+        "or": "or",
+        "placeholderRecipient": "Paste or scan an address",
+        "recipient": "Recipient",
+        "sendMax": "Max",
+        "sendTitle": "Send",
+        "title": "Send {{assetName}}",
+        "titleComplete": "Sending Complete",
+        "toBank": "Withdraw to bank account",
+        "total": "Total",
+        "toWaves": "Send to DCC address",
+        "txFee": "Transaction Fee",
+        "validationError": {
+          "notEnoughFunds": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee.",
+          "notEnoughFundsWithdraw": "You don’t have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee and {{getawayFee, BigNumber}} {{currency}} gateway fee. The minimum amount for withdrawal is {{minGatewayAmount, BigNumber}} {{currency}}."
+        },
+        "withdrawTitle": "Withdraw"
+      },
+      "sepa": {
+        "countryList": "List of eligible countries and IDs",
+        "proceed": "Get verified",
+        "step1": "Step 1",
+        "step1Description": "In order to deposit {{assetName}} directly from your bank account through SEPA transfer you must get verified by our partner [IDNow.eu]({{url}})",
+        "step2": "Step 2",
+        "step2Description": "After you go through the verification you will receive an email with further instructions",
+        "title": "Deposit {{assetName}}",
+        "warning": "In case of problems with verification or payment processing, please contact the Coinomat support team — [support@coinomat.com](mailto:support@coinomat.com)",
+        "warningTitle": "We don't accept international wire transfers from US Citizens or from USA Banks"
+      },
+      "setAssetScript": {
+        "errorNoMoney": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee.",
+        "script": "Script",
+        "scripted": "Set",
+        "title": "Update Script",
+        "unavailable": "Update Script functionality is temporarily unavailable",
+        "warningDescription": "{div}[We do not recommend you submit script transactions unless you are an experienced user. Errors can lead to permanent loss the asset.]",
+        "warningHeader": "Actions can lead to loss the asset."
+      },
+      "settings": {
+        "account": "Account",
+        "cancel": "Create an account",
+        "changePass": "Change password",
+        "deleteAccount": "Remove account",
+        "exportAccounts": {
+          "accounts": "Accounts",
+          "export": "Export",
+          "selectAll": "Select all",
+          "title": "Please select account",
+          "unselectAll": "Unselect all"
+        },
+        "general": {
+          "auto": "Auto",
+          "blockHeight": "Current height",
+          "blue": "DCC",
+          "color": "Color",
+          "dark": "Dark",
+          "green": "Classic",
+          "hours": "{{hours}} hour",
+          "language": "Language",
+          "minutes": "{{minutes}} min",
+          "openLinkViaWeb": "I would like always to open links via the Web app",
+          "playSound": "Play user interface sound effects",
+          "theme": "Theme",
+          "timeout": "Session timeout in",
+          "title": "General",
+          "white": "White"
+        },
+        "helperContent": "You can set a password for exported accounts",
+        "info": {
+          "legal": "Legal",
+          "privacyPolicy": "Privacy Policy",
+          "support": "Support",
+          "termsAndConditions": "Terms and Conditions",
+          "title": "Info",
+          "version": "Version"
+        },
+        "message": "To open Settings, sign in or create an account",
+        "network": {
+          "apiAddress": "Data service",
+          "apiAddressHelp": "The Data Service provides additional APIs for interacting with DCC blockchain data.",
+          "assetNameFilter": "Naming service",
+          "assetNameFilterHelp": "This service checks the name of the token with the DCC token library.\nFor completely disable it, clear the field.",
+          "copy": "copy",
+          "dataProvider": "Data provider",
+          "dataProviderDescription": "{{dataProviderDescription}}",
+          "dataProviderId": "{{dataProviderId}}",
+          "dataProviderInvalid": "Failed to get provider information. Please check the address and try again",
+          "dataProviderName": "{{dataProviderName}}",
+          "dontShowSpamCheckboxDescr": "Don't show suspicious tokens",
+          "edit": "Edit",
+          "forDisableClear": "For completely disable it, clear the field.",
+          "matcherAddress": "Matcher address",
+          "nodeAddress": "Node address",
+          "showMore": "Show more",
+          "spamFilter": "Token Filter",
+          "spamFilterInputDescr": "Switch off spam filtering",
+          "spamListHelp": "This filter removes suspicious tokens from your portfolio.",
+          "title": "Network"
+        },
+        "ok": "Sign in",
+        "pairing": {
+          "devicePairing": "Export account to app",
+          "header": "Scan Pairing Code",
+          "showCodeLink": "Show Pairing Code",
+          "unavailable": {
+            "description": {
+              "ledger": "Export is not available for accounts stored on Ledger Device",
+              "wavesKeeper": "Export for accounts imported from Cubensis Connect is available in Cubensis Connect Settings"
+            },
+            "header": {
+              "ledger": "Export unavailable",
+              "wavesKeeper": "Export unavailable"
+            },
+            "ok": "I understand"
+          }
+        },
+        "passChanged": "Password was changed successfully",
+        "password": "Password",
+        "security": {
+          "address": "Address",
+          "backupPhrase": "Backup phrase",
+          "base58Seed": "Encoded backup phrase",
+          "encodedSeed": "Encoded seed",
+          "exportAccount": "Export account to file",
+          "id": "Account ID",
+          "privateKey": "Private key",
+          "publicKey": "Public Key",
+          "savejson": "Save as JSON file",
+          "script": "Script",
+          "scriptButton": "Set Script",
+          "scriptButtonUpdate": "Update Script",
+          "show": "Show",
+          "title": "Security"
+        },
+        "setDefault": "Set default",
+        "title": "Settings"
+      },
+      "sign": {
+        "article": "article",
+        "buy": "Buy",
+        "cancel": "Cancel",
+        "cancelOrder": "Cancel the order",
+        "close": "Close",
+        "confirm": "Confirm",
+        "confirmRequest": "Confirm request",
+        "confirmRequest_utils": "Confirm request",
+        "confirmRequestKeeper": "Waiting for confirmation from Cubensis Connect...",
+        "confirmRequestLedger": {
+          "cancel": "Cancel",
+          "errorDescription": "Please try again. If the error persists, please refer to [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+          "errorHeader": "You did not confirm the request on your Ledger Device",
+          "sign": "Retry sign",
+          "waiting": "Waiting for confirmation on Ledger Device…"
+        },
+        "confirmRequestMatcher_utils": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account.",
+        "confirmRequestToMatcher": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX.",
+        "connecting": "Connecting...",
+        "connectingKeeper": "Connecting to Cubensis Connect...",
+        "connectionError": "Unable to Connect Ledger Device",
+        "connectionErrorKeeper": "Unable to access account",
+        "connectionText": "The connection may have timed out. Please try again.",
+        "connectLedger": "Connect your Ledger Device",
+        "enterPin": "Enter your PIN code",
+        "fee": "Fee",
+        "matcher": "Sign orders requests",
+        "openApp": "Open the DCC App",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "price": "Price",
+        "refererTo": "If the error persists, please refer to",
+        "referTo": "If the error persists, please refer to",
+        "request": "request",
+        "requestId": "Request hash",
+        "retry": "Retry",
+        "sell": "Sell",
+        "signByKeeper": "Waiting for confirmation from Cubensis Connect...",
+        "signByLedger": "Waiting for confirmation on Ledger Device…",
+        "signError": "The request has not been confirmed.",
+        "signErrorKeeper": "You did not confirm the request using Cubensis Connect",
+        "signErrorText": "You did not confirm the request on your Ledger Device",
+        "signErrorTextImportKeeper": "Sign in to Cubensis Connect with address {{address}}, and then refresh page to continue.",
+        "signErrorTextKeeper": "Please try again. If the error persists, please create a ticket to [Support](https://decentralchain.io/soporte/)",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Waves Keeper and try again.",
+        "timestamp": "Timestamp",
+        "txId": "TXID"
+      },
+      "sponsorship_edit": {
+        "title": "Change sponsorship"
+      },
+      "sponsorship": {
+        "amountPerTx": "Amount per transaction (per 0.001 DCC)",
+        "assetId": "ID",
+        "continue": "Continue",
+        "errors": {
+          "feeRequired": "This field is required!",
+          "minSponsoredAssetFee": {
+            "precision": "The number in this field is invalid. It can include a maximum of {{precision}} digits after the decimal point."
+          },
+          "noMoney": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee.",
+          "notZero": "Value must be greater than 0"
+        },
+        "fee": "Transaction Fee {{fee, money-currency}}",
+        "title": "Enable Sponsorship",
+        "warningHeader": "Users will be able to pay transaction fees in {{name}}",
+        "warningText": "For each transaction, 0.001 DCC will be deducted from your balance and {{name}} will be credited to your account. The amount of {{name}} to be charged to users for transactions is set by you when you enable Sponsorship (enter the amount in the form below). Sponsorship will only work if you have a balance of at least 1.005 DCC. If your balance falls below this amount, you will be unable to sponsor transactions."
+      },
+      "startLease": {
+        "amount": "Amount",
+        "balance": "Balance",
+        "fee": "Fee {{fee, money-currency}}",
+        "nodeListLink": "List of nodes",
+        "nodeListLink_copy": "List of nodes",
+        "recipient": "Recipient",
+        "start": "Start Lease",
+        "title": "Start leasing"
+      },
+      "termsAccept": {
+        "body": {
+          "advancedMode": "Advanced features",
+          "analytics": "I would like to help improve DecentralChain by sending anonymous usage statistics to the developers.",
+          "backup": "I understand that if this app is moved to another device or deleted, my DCC can only be recovered with the backup phrase.",
+          "ok": "Confirm and Begin",
+          "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+          "read": "I have read, understood and agree to the",
+          "readTermsAndConditions": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+          "security": "I understand that my funds are held securely on this device, not by a company",
+          "securityAndBackup": "I understand that my funds are held securely on this device, not by a company. If this app is moved to another device or deleted, my DCC can only be recovered with the backup phrase.",
+          "terms": "Terms of Use"
+        },
+        "header": {
+          "description": "DCC is different — the wallet is stored safely on your device",
+          "title": "Done! Let’s review",
+          "title2": "Terms of Use"
+        }
+      },
+      "token": {
+        "balance": "Balance",
+        "burn": {
+          "label": "Quantity of tokens to be burned",
+          "title": "{{name}} Token Burn"
+        },
+        "description": "Description",
+        "fee": "Transaction Fee {{fee, money-currency}}",
+        "gt0": "Entered number must be greater than zero",
+        "id": "Asset ID",
+        "quantity": "Total amount",
+        "reissue": {
+          "label": "Quantity of tokens to be reissued",
+          "title": "{{name}} Token Reissue"
+        },
+        "validation": {
+          "gt0": "This field is required",
+          "invalidAsset": "The field can only contain numbers",
+          "invalidPrecision": "Exceeded maximum of {{precision}} decimal places",
+          "lteMaxBalance": "Quantity can't be more than balance",
+          "maxValueCount": "Entered number is too large",
+          "noMoney": "Your balance is not enough to pay transaction fees",
+          "required": "This field is required"
+        }
+      },
+      "tryDesktop": {
+        "remember": "Remember my choice and do not remind me again"
+      },
+      "tutorialModals": {
+        "step1": {
+          "button": "What you need to know about your SEED",
+          "buttonMobile": "Next",
+          "buttonReadMore": "Read more",
+          "p1": "Please take some time to understand some important things for your own safety. 🙏",
+          "p2": "We cannot recover your funds or freeze your account if you visit a phishing site or lose your backup phrase (aka SEED phrase).",
+          "p3": "By continuing to use our platform, you agree to accept all risks associated with the loss of your SEED, including but not limited to the inability to obtain your funds and dispose of them. In case you lose your SEED, you agree and acknowledge that the DCC Platform would not be responsible for the negative consequences of this.",
+          "title": "Welcome to the DCC Platform!"
+        },
+        "step2": {
+          "backButton": "Go Back",
+          "cell1": "You use your wallet anonymously, meaning your account is not connected to an email account or any other identifying data.",
+          "cell2": "Your password protects your account when working on a certain device or browser. It is needed in order to ensure that your secret phrase is not saved in storage.",
+          "cell3": "If you forget your password, you can easily create a new one by using the account recovery form via your secret phrase. If you lose your secret phrase, however, you will have no way to access your account.",
+          "cell4": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new DCC wallet immediately and transfer your funds to it.",
+          "nextButton": "Protect Yourself",
+          "p1": "When registering your account, you will be asked to save your secret phrase (SEED) and to protect your account with a password. On normal centralized servers, special attention is paid to the password, which can be changed and reset via email, if the need arises. However, on decentralized platforms such as DCC, everything is arranged differently:",
+          "title": "What you need to know about your SEED"
+        },
+        "step3": {
+          "backButton": "Go Back",
+          "cell1": "Always check the URL: [https://decentral.exchange](https://decentral.exchange)",
+          "cell2": "Do not use browsers that have extensions or plugins to access your account.",
+          "cell3": "Do not open emails or links from unknown senders.",
+          "cell4": "Regularly update your operating system.",
+          "cell4Web": "Regularly update your browser and operating system.",
+          "cell5": "Use official security software. Do not install unknown software which could be hacked.",
+          "cell6": "Do not access your wallet when using public Wi-Fi or someone else’s device.",
+          "nextButton": "I Understand",
+          "p1": "One of the most common forms of scamming is phishing, which is when scammers create fake communities on Facebook or other websites that look similar to the authentic ones.",
+          "saveSeedButton": "Save the SEED phrase",
+          "title": "How To Protect Yourself from Phishers"
+        }
+      },
+      "unsuccessfulMigration": {
+        "checkbox": "Don't show this again",
+        "description": "You have started the account migration from Decentral.Exchange to this exchange, but it hasn't been finished. Your accounts haven't been moved. Go back to Decentral.Exchange and start the process from the beginning.",
+        "title": "Unfinished Migration",
+        "understand": "I understand"
+      }
+    },
+    "modals": {
+      "anyTx": {
+        "title": "JSON"
+      }
+    },
+    "notification": {
+      "backup": {
+        "action": "Save",
+        "body": "Store your SEED safely, it is the only way to restore your wallet.",
+        "title": "Save your backup phrase (SEED)"
+      }
+    },
+    "qualified": "qualified",
+    "transaction": {
+      "amounts": {
+        "create-order": "{{sign}}{{amount}} {{name}}"
+      }
+    },
+    "Unpin_utils": "Unpin",
+    "utils": {
+      "migrationError": "Oops! Your accounts are safe but haven't been moved. Please try again.",
+      "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+      "privacyPolicyText": "Privacy Policy",
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+      "termsAgreementText": "Terms and Conditions",
+      "termsAssign": "I have read and agree with the",
+      "whatsNew": {
+        "body": {
+          "1_0_0": "{span.line}[1. The Waves Client has come out of beta.]{span.line}[2. You can now pin and unpin any assets to the main page.]{span.line}[3. Night mode added.]{span.line}[4. You can now import all your accounts from the old Client easily.]{span.line}[5. Minor bug fixes.]",
+          "1_0_0-beta_23": "{span.line}[1. We have added a 'What's new' section!]{span.line}[2. You can now add a name to your account.]{span.line}[3. Some minor bugs have been fixed.]",
+          "1_0_0-beta_25": "{span.line}[1. You can now change session time in Settings.]{span.line}[2. We have fixed the bug with the Buy/Sell window in DEX to prevent it being moved outside the viewing area.]{span.line}[3. We will now remind you if you have not saved your SEED.]{span.line}[4. Some minor bugs have been fixed.]",
+          "1_0_0-beta_26": "{span.line}[1. Some minor bugs have been fixed.]",
+          "1_0_0-beta_27": "{span.line}[1. Added Chinese language.]{span.line}[2. Added Turkish language.]",
+          "1_0_0-beta_30": "{span.line}[1. You can now burn and reissue tokens you have generated.]{span.line}[2. Added the Waves Auth API support.]{span.line}[3. Some minor bugs have been fixed.]",
+          "1_0_0-beta_31": "{span.line}[1. You can now buy DCC and BTC with a credit card.]{span.line}[2. Improved UI in the Buy/Sell window.]{span.line}[3. Support for 32-bit Windows added.]{span.line}[4. Numerous other bugs fixed.]",
+          "1_0_0-beta_32": "{span.line}[1. You can now make mass transfers from the Client.]{span.line}[2. Some minor bugs have been fixed.]",
+          "1_0_0-beta_35": "{span.line}[1. You can now sort, filter and hide tokens in the Portfolio tab.]{span.line}[2. DASH gateway has been launched.]{span.line}[3. Hindi language support added.]{span.line}[4. Dutch language support added.]{span.line}[5. You can now invoice other users.]{span.line}[6. Additional minor bugs have been fixed.]",
+          "1_0_0-beta_36": "{span.line}[1. Major leasing nodes are listed on the leasing page.]{span.line}[2. Some bugs are fixed.]",
+          "1_0_0-beta_39": "{span.line}[1. A spam filter has been added to Settings.]{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_0-beta_40": "{span.line}[1. Monero gateway has been launched.]",
+          "1_0_0-beta_42": "{span.line}[1. Spanish language support added.]{span.line}[2. You can use the Client without saving account details by default.]{span.line}[3. Spam tokens are now marked in the Transaction page.]{span.line}[4. Additional minor bugs have been fixed.]",
+          "1_0_0-beta_47": "{span.line}[1. Completely new DEX UI.]{span.line}[2. Faster and more stable Client.]{span.line}[3. Alias functionality is available again.]{span.line}[4. Some minor bugs have been fixed.]{span.line}[5. Take part in our competitions by making a [video](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) or writing an [article](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835).]",
+          "1_0_0-beta_50": "{span.line}[1. You can now burn any tokens you hold in your account.]{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_10": "{span.line}[1. Sponsorship transaction support added. [Read more](https://docs.wavesplatform.com/en/waves-client/assets-management/sponsored-transaction.html)]\n{span.line}[2. Polish and Portuguese languages support added.]",
+          "1_0_14": "{span.line}[1. Fixed bug with using Sponsored Asset without Waves balance.]\n{span.line}[2. Fixed bug with 30 days expiration orders.]\n{span.line}[3. Some other minor bugs.]",
+          "1_0_15": "{span.line}[1. Issues with confirmation on Ledger have been fixed.]\n{span.line}[2. Increased waiting time for confirmation from Ledger.]\n{span.line}[3. Detailed information has been added to Error messages.]",
+          "1_0_18": "{span.line}[1. You can now set a script for your account.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_21": "{span.line}[1. Fixed authorisation confirmation via Ledger.]\n{span.line}[2. Numerous minor bugs fixed.]",
+          "1_0_22": "{span.line}[1. Added advanced features to work with scripted accounts.]",
+          "1_0_25": "{span.line}[1. [Waves Keeper](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) support has been added.]",
+          "1_0_27": "{span.line}[1. Added \"My assets\" category in Portfolio.]\n{span.line}[2. Minor bugs have been fixed.]",
+          "1_0_28": "{span.line}[1. Added pairing function to import existing accounts to mobile.]\n{span.line}[2. Minor bugs have been fixed.]",
+          "1_0_29": "{span.line}[1. QR code generation using Cyrillic alphabet has been fixed.]\n{span.line}[2. Tooltip for watchlist search has been added.]\n{span.line}[3. Further cosmetic fixes. ]",
+          "1_0_3": "{span.line}[1. You can now search assets by ID in the Portfolio page.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_30": "{span.line}[1. Set Script button has been moved to Security section in Settings.]\n{span.line}[2. Performance improvements and cosmetic changes.]",
+          "1_0_32": "{span.line}[1. Integration with BetterTokens’ oracle.]\n{span.line}[2. Added support for token verification protocol.]\n{span.line}[3. Fixed commission accounting for token withdrawal via Coinomat.]",
+          "1_0_33": "{span.line} [1. Now you will receive a notification if you try to place an order at a rate significantly differing from the current market rate.] {span.line} [2. Minor bugs have been fixed.]",
+          "1_0_36": "{span.line}[1. Added ability to trade on DEX with scripted accounts.]\n{span.line}[2. Added search for assets when creating an invoice or sending an asset.]\n{span.line}[3. Minor layout edits.]",
+          "1_0_37": "{span.line}[1. Added Smart Asset functionality: issuance, reissuance and burning]\n{span.line}[2. Added Italian, German and Indonesian languages]\n{span.line}[3. Minor bug fixes]",
+          "1_0_40": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Added exchange rate for current pair in browser tab title.]\n{span.line}[3. Fixed minor bugs.]",
+          "1_0_41": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Notification system added.]\n{span.line}[3. Fixed minor bugs.]",
+          "1_0_42": "{span.line}[1. Fixed minor bugs.]",
+          "1_0_5": "{span.line}[1. Trade volume scale has been added on DEX charts.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_6": "{span.line}[1. Authorisation via Waves Desktop Client has been added.]",
+          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
+          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
+          "1_1_0": "{span.line}[1. Order expiration period is now saved by default.]\n{span.line}[2. Fixed minor bugs.]",
+          "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
+          "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
+          "1_2_2": "{span.line}[1. Security updates.]{span.line}[2. Fixed minor bugs.]",
+          "1_2_3": "{span.line}[1. Added support for Ledger Waves 1.0.0 app.]",
+          "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_0": "{span.line}[1. Improved app navigation and start page interface.]",
+          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
+          "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
+          "1_3_7": "{span.line}[1. Integration with [tokenrating.wavesexplorer.com](https://tokenrating.wavesexplorer.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
+          "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
+        },
+        "title": "What's new in this update {{version}}"
+      }
+    },
+    "validators": {
+      "byte": {
+        "help": "Bytes left: {{bytes}}"
+      }
+    },
+    "warningPlate": {
+      "day": "d",
+      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "hour": "h",
+      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "min": "m",
+      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "sec": "s",
+      "startMoving": "Safe moving"
+    }
+  },
+  "app.wallet.assets": {
+    "addAsset": "Add Asset",
+    "chart": {
+      "intervals": {
+        "all": "All",
+        "day": "1D",
+        "hour": "1H",
+        "month": "1M",
+        "week": "1W",
+        "year": "1Y"
+      }
+    },
+    "directives": {
+      "asset": {
+        "anyTx": "JSON",
+        "deposit": "Deposit",
+        "ofTotalBalance": "of total balance {{totalBalance}}",
+        "receive": "Receive",
+        "script": "Script",
+        "send": "Send"
+      },
+      "balance": {
+        "actions": {
+          "assetInfo": "Asset info",
+          "copyAssetId": "Copy Asset ID"
+        }
+      }
+    },
+    "price": "PRICE {{currency}}",
+    "qr": "Your Address",
+    "send": "Send",
+    "since": {
+      "day": "SINCE LAST DAY",
+      "month": "SINCE LAST MONTH",
+      "week": "SINCE LAST WEEK"
+    },
+    "suspicious": "Suspicious - ({span}[{{count}}])",
+    "Unpin": "Unpin"
+  },
+  "app.wallet.leasing": {
+    "available": "Available",
+    "chart": {
+      "available": "Available",
+      "create": "Start Lease",
+      "leased": "Leased",
+      "title": "DCC Balance"
+    },
+    "description": {
+      "text1": "You can only transfer or trade DCC that aren’t leased. The leased amount cannot be transferred or traded by you or anyone else.",
+      "text2": "You can cancel a leasing transaction as soon as it appears in the blockchain which usually occurs in a minute or less.",
+      "text3": "The generating balance will be updated after 1000 blocks.",
+      "title": "Quick note"
+    },
+    "leased": "Leased",
+    "leasedIn": "Leased in",
+    "nodeListLink": "List of nodes",
+    "test": {
+      "test": "text test"
+    },
+    "title_leasing": "You have chosen to log into the DCC desktop app"
+  },
+  "app.wallet.portfolio": {
+    "allactive": "All active ({span}[{{count}}])",
+    "burn": "Token Burn",
+    "deposit": "Deposit",
+    "dex": "Open in DEX",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://decentralscan.com/address/{{address}}/nft)",
+    "info": "Asset Info",
+    "list": {
+      "actions": "Actions",
+      "ask": "Ask",
+      "balance": "Balance",
+      "bid": "Bid",
+      "change": "24h Change",
+      "inOrders": "Reserved",
+      "mirror": "Value, {span.currency}[{{currency}}]",
+      "name": "Asset Name",
+      "rate": "Price, {span.currency}[{{currency}}]"
+    },
+    "myassets": "My assets ({span}[{{count}}])",
+    "pin": "Pin",
+    "portfolio": {
+      "filter": "Search"
+    },
+    "qr": "Your Address",
+    "qualified": "qualified",
+    "qualifieds": "Qualified ({span}[{{count}}])",
+    "receive": "Receive",
+    "reissue": "Token Reissue",
+    "send": "Send",
+    "setAssetScript": "Update Asset Script",
+    "spam": "Spam",
+    "spamAsset": "SPAM",
+    "spamselect": "Suspicious ({span}[{{count}}])",
+    "sponsorship": "Enable Sponsorship",
+    "sponsorshipChange": "Change Sponsorship",
+    "sponsorshipStop": "Disable Sponsorship",
+    "tokenomica": "tokenomica",
+    "tospam": "Hide",
+    "unpin": "Unpin",
+    "unspam": "Show"
+  },
+  "app.wallet.transactions": {
+    "all": "All",
+    "confirmTransaction": {
+      "retrySign": "Retry sign"
+    },
+    "csv": {
+      "alias": "Alias name",
+      "amount": {
+        "id": "Amount asset ID",
+        "name": "Amount asset name",
+        "ticker": "Amount asset ticker",
+        "value": "Amount asset value"
+      },
+      "attachment": "Transaction attachment",
+      "date": "Date",
+      "description": "Token description",
+      "fee": {
+        "id": "Fee ID",
+        "name": "Fee name",
+        "ticker": "Fee ticker",
+        "value": "Fee value"
+      },
+      "height": "Transaction height",
+      "id": "Transaction ID",
+      "name": "Token name",
+      "precision": "Precision",
+      "price": {
+        "id": "Price asset ID",
+        "name": "Price asset name",
+        "ticker": "Price asset ticker",
+        "value": "Price asset value"
+      },
+      "recipient": "Transaction recipient",
+      "reissuable": {
+        "false": "No reissuable",
+        "name": "Can reissue token",
+        "true": "Reissuable"
+      },
+      "sender": "Transaction sender",
+      "transactionType": "Blockchain transaction type",
+      "type": "Transaction type"
+    },
+    "errors": {
+      "complete": {
+        "body": "The list of transactions is not completely downloaded. Please retry later.",
+        "title": "Download is not complete."
+      },
+      "download": {
+        "body": "The list of transactions is not downloaded. Please retry later.",
+        "title": "Download error."
+      },
+      "empty": {
+        "body": "There are no transactions in your history",
+        "title": "Export error"
+      }
+    },
+    "exchanged": "Exchanged",
+    "export": "Export",
+    "filter": {
+      "value1": "Recent",
+      "value2": "500 txs",
+      "value3": "1000 txs"
+    },
+    "issued": "Issued",
+    "leased": "Leased",
+    "received": "Received",
+    "sent": "Sent",
+    "transactions": {
+      "script": {
+        "txJson_wallet": "Base64 script"
+      }
+    }
+  },
+  "app.welcome": {
+    "backupSeed": {
+      "copySeed": "Copy Seed phrase",
+      "warn": "Since only you control your money, you’ll need to save your Seed phrase in case this app is deleted or"
+    },
+    "createAccount": {
+      "from": "createAccount"
+    },
+    "infoTooltip": "Important information",
+    "loading": {
+      "volume": "VOLUME"
+    },
+    "modal": {
+      "lockPairWarning": {
+        "continue": "Continue",
+        "heading": "Trading in {{amountAssetTicker}} / {{priceAssetTicker}} is currently unavailable",
+        "text": "Trading for the selected pair is temporarily unavailable. \nYou can still cancel orders if you wish"
+      }
+    },
+    "news": "News",
+    "newUser": {
+      "from": "from backup",
+      "getStarted": "Get Started",
+      "import": "Import accounts",
+      "or": "or",
+      "restore": "Restore account",
+      "slides": [
+        {
+          "description": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets.",
+          "title": "Get Started with Blockchain"
+        },
+        {
+          "description": "Store, manage and receive interest on your digital assets balance, easily and securely.",
+          "title": "Wallet"
+        },
+        {
+          "description": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange.",
+          "title": "decentralized Exchange"
+        },
+        {
+          "description": "Issue your own tokens. These can be integrated into your business not only as an internal currency but also as a token for decentralized voting, as a rating system, or loyalty program.",
+          "title": "Token Launcher"
+        }
+      ]
+    },
+    "openViaDesktop": "I would like always to open links via Desktop app",
+    "roadmap": {
+      "aug2019": {
+        "date": "Aug 2019",
+        "text": "Traders can sell tokens quickly at market price.",
+        "title": "Market order"
+      },
+      "dec2018": {
+        "date": "Dec 2018",
+        "text": "The new mobile app offers a fantastic DEX UI and gateway integration.",
+        "text_2": "Tickers and logos on DEX show approved assets, giving users a high degree of confidence.",
+        "title": "Mobile app 2.0",
+        "title_2": "BetterTokens Integration"
+      },
+      "feb2017": {
+        "date": "Dec 2017",
+        "text": "The first version of the flagship built-in exchange is launched.",
+        "title": "Decentral.Exchange Beta"
+      },
+      "feb2018": {
+        "date": "Feb 2018",
+        "text": "The standalone Client for macOS, Linux and Windows is released.",
+        "title": "Desktop app"
+      },
+      "jan2019": {
+        "date": "Jan 2019",
+        "text": "Support for trading on Decentral.Exchange with Smart Accounts is enabled.",
+        "text_2": "Launch of Bitcoin Satoshi Vision gateway",
+        "title": "Smart Account Trading",
+        "title_2": "BSV Gateway"
+      },
+      "jul2018": {
+        "date": "Jul 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "text_2": "The popular wallet comes out of beta with a major new release.",
+        "title": "New DEX",
+        "title_2": "DCC Wallet"
+      },
+      "jul2019": {
+        "date": "Jul 2019",
+        "text": "Addition of ERC20 token gateway to the DecentralChain ecosystem, meaning that popular Ethereum tokens can be traded on the platform.",
+        "text_2": "Developers have simplified mobile development processes and gain comprehensive descriptions for means of interacting with DecentralChain.",
+        "text_3": "Users have the ability to switch easily between multiple accounts within one wallet app.",
+        "title": "ERC-20 Gateway",
+        "title_2": "Mobile SDK and JS library improvement",
+        "title_3": "Multiple Accounts"
+      },
+      "jun2019": {
+        "date": "Jun 2019",
+        "text": "Improvements in DEX speed and memory requirements to be implemented.",
+        "title": "DEX optimisation"
+      },
+      "may2018": {
+        "date": "May 2018",
+        "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
+        "title": "Dash & Bitcoin Cash gateways"
+      },
+      "nov2018": {
+        "date": "Nov 2018",
+        "text": "Users gain the ability to trade with multi-signature and scripted accounts.",
+        "title": "Smarts Account Support"
+      },
+      "sep2018": {
+        "date": "Sep 2018",
+        "text": "Integration with Decentral.Exchange enables users to trade with maximum security.",
+        "title": "Ledger Nano S"
+      },
+      "sep2019": {
+        "date": "Sep 2019",
+        "text": "Two factor authentication gives Decentral.Exchange users even greater security.",
+        "title": "2FA"
+      }
+    },
+    "userList": {
+      "addNew": "Add account",
+      "back": "Back",
+      "create": "Create a new account",
+      "frombackup": "from backup",
+      "import": "Import accounts",
+      "restore": "Restore account",
+      "subTitle": "Sign in again or",
+      "subTitleSession": "The session was automatically terminated."
+    },
+    "welcome": {
+      "accountList": {
+        "locked": "Require unlocking"
+      },
+      "address": "Address",
+      "aliases": "Aliases",
+      "android": "Google Play",
+      "api": "API",
+      "apple": "App Store",
+      "blog": "Blog",
+      "broughtBy": "Brought to you by Blockchain Costa Rica",
+      "cancel": "Cancel",
+      "change": "CHANGE",
+      "changeName": "Change Name",
+      "chart": "CHART",
+      "comingSoon": "Coming soon",
+      "contestLinkDescription": "Win 5,000 DCC in a trading contest on Decentral.Exchange!",
+      "contestLinkLink": "Rules",
+      "controlAssets": "Control of assets is yours alone – funds do not leave your wallet and cannot be frozen",
+      "cookies": "Cookies",
+      "copyAddress": "Copy address",
+      "copyright": "© 2021 Blockchain Costa Rica",
+      "copyright-new": "© 2021 DecentralChain",
+      "copyrightVordex": "© 2019 VORDEX",
+      "createAccount": "Create account",
+      "createToken": "Create token",
+      "currentAccountName": "Current account name",
+      "dashboard": "Dashboard",
+      "decentralized": "decentralized",
+      "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
+      "dexWithHardware": "Use DEX with hardware wallets Ledger Nano S and Ledger Blue",
+      "documentation": "Documentation",
+      "download": "Download",
+      "downloadMobileApp": "Download the mobile app!",
+      "exchange": "Exchange",
+      "forDevelopers": "For developers",
+      "forum": "Forum",
+      "gateways": "Gateways to popular currencies (Coming Soon)",
+      "gdpr": "GDPR",
+      "getRealTimeAccess": "Get real-time access to market data and set up your trading bots via API",
+      "getStarted": "Get started",
+      "gitHub": "GitHub",
+      "help": "Help",
+      "high": "24 HIGH",
+      "inputErrorNameExists": "That name is taken. Try another",
+      "instantAccessWalletDex": "Instant access to your wallet and DEX",
+      "keeperAccount": "Keeper account",
+      "lastPrice": "LAST PRICE",
+      "leasing": "Leasing",
+      "ledgerAccount": "Ledger account",
+      "ledgerSupport": "Ledger support (Coming Soon) (Coming Soon)",
+      "legal": "Legal",
+      "linux": "Linux",
+      "linuxDescription": "Download Linux application",
+      "logout": "Log Out",
+      "logOut": "Log Out",
+      "low": "24 LOW",
+      "lowFixedFees": "Low, fixed fees",
+      "macOs": "MacOS",
+      "macOsDescription": "Download MacOS application",
+      "mailto": "soporte@decentralchain.io",
+      "mailtoVordex": "support@vordex.com",
+      "mailtoWavesExchange": "soporte@decentralchain.io",
+      "mainPage": "Main page",
+      "majorFiatCryptocurrencies": "Major fiat and cryptocurrencies supported: BTC, LTC, ETH, USD, and others",
+      "markets": "Markets",
+      "marketsDescription": "Decentral.Exchange allows you to execute trades swiftly and securely, regardless of whether you’re trading via mobile app, desktop client, web wallet or the DCC API.",
+      "marketsTableDescription": "To view more traded pairs click",
+      "marketsTableDescriptionLink": "View Exchange",
+      "menu": "Menu",
+      "name": "Name",
+      "nameSaved": "Account name changed",
+      "newAccountName": "New account name",
+      "news": "News",
+      "pair": "PAIR",
+      "portfolio": "Portfolio",
+      "privacyPolicy": "Privacy Policy",
+      "productsTools": "Products & tools",
+      "renameAccount": "Rename account",
+      "roadmap": "Roadmap",
+      "roadmapOpportunitiesAhead": "The future of Decentral.Exchange: our roadmap for the opportunities ahead.",
+      "save": "Save",
+      "scanQrCode": "Scan QR Code",
+      "scriptAccount": "Script account",
+      "scriptedAccount": "Script account",
+      "settings": "Settings",
+      "signIn": "Sign in",
+      "social": "Social",
+      "stackOverflow": "Stack Overflow",
+      "suitableTradingBots": "Suitable for trading bots",
+      "support": "Support",
+      "switchAccount": "Switch account",
+      "telegram": "Telegram",
+      "termsOfUse": "Terms of use",
+      "timerDays": "days",
+      "timerHours": "hours",
+      "timerMinutes": "minutes",
+      "timerSeconds": "seconds",
+      "tokenCreation": "Fast token creation",
+      "tokenCreationCosts": "Token creation costs just 100 DCC and takes 1 minute",
+      "tokenomicaToasterButton": "Learn more",
+      "tokenomicaToasterText": "Become a shareholder of the first-ever all-in-one platform for issuance and trading of tokenized assets.",
+      "tradeOnWaves": "Create assets and tokenize in seconds, safe and easy",
+      "tradeOnWavesDescription": "Buy and sell tokens quickly and securely with all advantages of a centralised exchange, but retaining complete control of your funds.",
+      "transactions": "Transactions",
+      "twitter": "Twitter",
+      "volume": "VOLUME",
+      "wallet": "Wallet",
+      "wavesBlockchain": "DecentralChain",
+      "wavesDexWeb": "Decentral.Exchange Web",
+      "wavesExplorer": "DecentralScan",
+      "wavesIde": "DCC IDE",
+      "wavesKeeper": "Cubensis Connect",
+      "wavesLabs": "Blockchain Costa Rica",
+      "wavesOrderFilled": "0.003 DCC per order filled",
+      "wavesWallet": "DCC Wallet",
+      "windows": "Windows",
+      "windowsDescription": "Download Windows application"
+    }
+  },
+  "electron": {
+    "menu": {
+      "copy": "Copy",
+      "cut": "Cut",
+      "dev_tools": "Developer tools",
+      "paste": "Paste",
+      "quit": "Quit",
+      "title": {
+        "application": "Application",
+        "edit": "Edit",
+        "god_mode": "God Mode"
+      }
+    },
+    "modal": {
+      "set_protocol_error": {
+        "close": "Close",
+        "message": "Can't set default protocol for launch DCC client. Links from browser temporally not supported!",
+        "report": "Report",
+        "title": "Set open protocol error"
+      }
+    },
+    "storage": {
+      "backup": {
+        "error": {
+          "body": "Failed to get accounts. Please contact the support service to restore the backup phrase (SEED phrase).",
+          "title": "Something went wrong!"
+        }
+      },
+      "read": {
+        "error": {
+          "body": "An error occurred while trying to load your keys. We restored your accounts from backup storage.",
+          "title": "Accounts successfully restored from backup"
+        }
+      }
+    }
+  }
+}
