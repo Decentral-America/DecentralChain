@@ -1,26 +1,8 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-
-    /* Type Checking — maximum strictness */
-    "strict": true,
-    "target": "ES2024",
-    "verbatimModuleSyntax": true
+    "outDir": "./dist"
   },
-  "exclude": ["src/__tests__"],
+  "exclude": ["node_modules", "dist"],
+  "extends": "../../tsconfig.base.json",
   "include": ["src/**/*.ts"]
 }

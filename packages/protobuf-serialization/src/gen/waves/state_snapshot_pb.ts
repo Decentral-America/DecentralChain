@@ -2,22 +2,27 @@
 // @generated from file waves/state_snapshot.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import type { TransactionStateSnapshot } from "./transaction_state_snapshot_pb.js";
-import { file_waves_transaction_state_snapshot } from "./transaction_state_snapshot_pb.js";
-import type { Message } from "@bufbuild/protobuf";
+import { type Message } from '@bufbuild/protobuf';
+import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import {
+  file_waves_transaction_state_snapshot,
+  type TransactionStateSnapshot,
+} from './transaction_state_snapshot_pb.js';
 
 /**
  * Describes the file waves/state_snapshot.proto.
  */
-export const file_waves_state_snapshot: GenFile = /*@__PURE__*/
-  fileDesc("Chp3YXZlcy9zdGF0ZV9zbmFwc2hvdC5wcm90bxIFd2F2ZXMiVQoNQmxvY2tTbmFwc2hvdBIQCghibG9ja19pZBgBIAEoDBIyCglzbmFwc2hvdHMYAiADKAsyHy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QiYAoSTWljcm9CbG9ja1NuYXBzaG90EhYKDnRvdGFsX2Jsb2NrX2lkGAEgASgMEjIKCXNuYXBzaG90cxgCIAMoCzIfLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdEKEAQojaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWYuc25hcHNob3RaTGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXOqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z", [file_waves_transaction_state_snapshot]);
+export const file_waves_state_snapshot: GenFile =
+  /*@__PURE__*/
+  fileDesc(
+    'Chp3YXZlcy9zdGF0ZV9zbmFwc2hvdC5wcm90bxIFd2F2ZXMiVQoNQmxvY2tTbmFwc2hvdBIQCghibG9ja19pZBgBIAEoDBIyCglzbmFwc2hvdHMYAiADKAsyHy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QiYAoSTWljcm9CbG9ja1NuYXBzaG90EhYKDnRvdGFsX2Jsb2NrX2lkGAEgASgMEjIKCXNuYXBzaG90cxgCIAMoCzIfLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdEKEAQojaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWYuc25hcHNob3RaTGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXOqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z',
+    [file_waves_transaction_state_snapshot],
+  );
 
 /**
  * @generated from message waves.BlockSnapshot
  */
-export type BlockSnapshot = Message<"waves.BlockSnapshot"> & {
+export type BlockSnapshot = Message<'waves.BlockSnapshot'> & {
   /**
    * @generated from field: bytes block_id = 1;
    */
@@ -33,13 +38,14 @@ export type BlockSnapshot = Message<"waves.BlockSnapshot"> & {
  * Describes the message waves.BlockSnapshot.
  * Use `create(BlockSnapshotSchema)` to create a new message.
  */
-export const BlockSnapshotSchema: GenMessage<BlockSnapshot> = /*@__PURE__*/
+export const BlockSnapshotSchema: GenMessage<BlockSnapshot> =
+  /*@__PURE__*/
   messageDesc(file_waves_state_snapshot, 0);
 
 /**
  * @generated from message waves.MicroBlockSnapshot
  */
-export type MicroBlockSnapshot = Message<"waves.MicroBlockSnapshot"> & {
+export type MicroBlockSnapshot = Message<'waves.MicroBlockSnapshot'> & {
   /**
    * @generated from field: bytes total_block_id = 1;
    */
@@ -55,6 +61,6 @@ export type MicroBlockSnapshot = Message<"waves.MicroBlockSnapshot"> & {
  * Describes the message waves.MicroBlockSnapshot.
  * Use `create(MicroBlockSnapshotSchema)` to create a new message.
  */
-export const MicroBlockSnapshotSchema: GenMessage<MicroBlockSnapshot> = /*@__PURE__*/
+export const MicroBlockSnapshotSchema: GenMessage<MicroBlockSnapshot> =
+  /*@__PURE__*/
   messageDesc(file_waves_state_snapshot, 1);
-
