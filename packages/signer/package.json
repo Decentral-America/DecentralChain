@@ -4,15 +4,15 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
-    "@decentralchain/node-api-js": "^2.0.1",
-    "@decentralchain/ts-lib-crypto": "^2.0.1",
-    "@decentralchain/ts-types": "^2.0.1"
+    "@decentralchain/node-api-js": "workspace:*",
+    "@decentralchain/ts-lib-crypto": "workspace:*",
+    "@decentralchain/ts-types": "workspace:*"
   },
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@biomejs/biome": "2.4.6",
-    "@decentralchain/transactions": "^5.0.1",
+    "@decentralchain/transactions": "workspace:*",
     "@evilmartians/lefthook": "2.1.3",
     "@size-limit/preset-small-lib": "12.0.0",
     "@types/node": "25.3.3",

@@ -4,15 +4,15 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
-    "@decentralchain/cubensis-connect-types": "^1.0.1",
-    "@decentralchain/marshall": "^1.0.1",
+    "@decentralchain/cubensis-connect-types": "workspace:*",
+    "@decentralchain/marshall": "workspace:*",
     "typed-ts-events": "3.0.1"
   },
   "description": "CubensisConnect provider for DCC Signer — browser wallet integration for DecentralChain",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@biomejs/biome": "2.4.6",
-    "@decentralchain/signer": "^2.0.1",
+    "@decentralchain/signer": "workspace:*",
     "@evilmartians/lefthook": "2.1.3",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
@@ -55,7 +55,7 @@
   "module": "./dist/index.mjs",
   "name": "@decentralchain/cubensis-connect-provider",
   "peerDependencies": {
-    "@decentralchain/signer": "^2.0.1"
+    "@decentralchain/signer": "workspace:*"
   },
   "publishConfig": {
     "access": "public",

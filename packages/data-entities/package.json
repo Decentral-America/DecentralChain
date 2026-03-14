@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
-    "@decentralchain/bignumber": "^1.2.1"
+    "@decentralchain/bignumber": "workspace:*"
   },
   "description": "Domain model classes for DecentralChain blockchain entities",
   "devDependencies": {

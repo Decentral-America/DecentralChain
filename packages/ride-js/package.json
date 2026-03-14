@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
-    "@decentralchain/ts-lib-crypto": "^2.0.1",
+    "@decentralchain/ts-lib-crypto": "workspace:*",
     "@waves/ride-lang": "1.6.1",
     "@waves/ride-repl": "1.6.1"
   },
