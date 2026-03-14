@@ -1,0 +1,92 @@
+{
+  "author": "DecentralChain <https://github.com/Decentral-America>",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/crypto/issues"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.0.1",
+    "@scure/base": "^2.0.0"
+  },
+  "description": "Async WASM cryptographic library for DecentralChain — Ed25519/X25519 key generation, signing, AES encryption, seed management",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "2.1.3",
+    "@types/node": "25.3.3",
+    "@vitest/coverage-v8": "4.0.18",
+    "publint": "0.3.18",
+    "rimraf": "^6.0.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "pkg",
+    "src",
+    "!src/**/*.spec.ts"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/crypto#readme",
+  "keywords": [
+    "decentralchain",
+    "crypto",
+    "wasm",
+    "ed25519",
+    "x25519",
+    "aes",
+    "encryption",
+    "signing",
+    "blockchain",
+    "wallet"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.js",
+  "name": "@decentralchain/crypto",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/crypto.git"
+  },
+  "scripts": {
+    "build": "npm run build:wasm && npm run build:ts",
+    "build:ts": "tsc",
+    "build:wasm": "wasm-pack build --target web --release && rimraf pkg/package.json pkg/.gitignore",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "check:publint": "publint",
+    "dev:wasm": "wasm-pack build --target web --dev && rimraf pkg/package.json pkg/.gitignore",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepack": "npm run build",
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "1.0.2"
+}
