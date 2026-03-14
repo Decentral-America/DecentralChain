@@ -1,0 +1,112 @@
+import {
+  type SignedTransaction,
+  type Transaction,
+  type TransactionMap,
+  type WithApiMixin,
+} from '@decentralchain/ts-types';
+import { broadcast } from '../../api-node/transactions';
+import { type TLong } from '../../interface';
+import { head, toArray } from '../utils';
+import wait from './wait';
+
+const DEFAULT_BROADCAST_OPTIONS: IOptions = {
+  chain: false,
+  confirmations: -1,
+  maxWaitTime: 0,
+  requestInterval: 0,
+};
+
+export type TMap<MAP extends Record<string | number, unknown>, Key extends keyof MAP> = MAP[Key];
+export type TMapTuple<
+  T extends Record<string | number, unknown>[],
+  TO_MAP extends Record<string | number, Record<string | number, unknown>>,
+  KEY,
+> = {
+  [K in keyof T]: KEY extends keyof T[K]
+    ? T[K][KEY] extends infer R
+      ? R extends keyof TO_MAP
+        ? TO_MAP[R]
+        : never
+      : never
+    : never;
+};
+
+export default function <T extends SignedTransaction<Transaction<TLong>>[]>(
+  base: string,
+  list: T,
+): Promise<TMapTuple<T, TransactionMap, 'type'> & WithApiMixin>;
+export default function <T extends Transaction<TLong>>(
+  base: string,
+  tx: SignedTransaction<T>,
+  options?: Partial<IOptions>,
+): Promise<TMap<TransactionMap<TLong>, T['type']> & WithApiMixin>;
+export default function (
+  base: string,
+  list: SignedTransaction<Transaction<TLong>> | SignedTransaction<Transaction<TLong>>[],
+  options?: Partial<IOptions>,
+): Promise<unknown> {
+  const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options ?? {}) };
+  const isOnce = !Array.isArray(list);
+  const confirmations = opt.confirmations > 0 ? 1 : 0;
+
+  return (
+    opt.chain
+      ? chainBroadcast(base, toArray(list), { ...opt, confirmations })
+      : simpleBroadcast(base, toArray(list))
+  )
+    .then((list) => (opt.confirmations <= 0 ? list : wait(base, list, opt)))
+    .then((list) => {
+      if (isOnce) {
+        const first = head(list);
+        if (!first) throw new Error('Expected at least one broadcast result');
+        return first;
+      }
+      return list;
+    });
+}
+
+type TWithApiMixinList<T> = T extends Transaction<TLong>[]
+  ? { [Key in keyof T]: T[Key] & WithApiMixin }
+  : never;
+
+function simpleBroadcast<T extends SignedTransaction<Transaction<TLong>>[]>(
+  base: string,
+  list: T,
+): Promise<TWithApiMixinList<T>> {
+  return Promise.all(list.map((tx) => broadcast(base, tx))) as Promise<TWithApiMixinList<T>>;
+}
+
+function chainBroadcast(
+  base: string,
+  list: Transaction<TLong>[],
+  options: IOptions,
+): Promise<(Transaction & WithApiMixin)[]> {
+  return new Promise<(Transaction & WithApiMixin)[]>((resolve, reject) => {
+    const toBroadcast = list.slice().reverse();
+    const result: (Transaction & WithApiMixin)[] = [];
+
+    const loop = () => {
+      if (!toBroadcast.length) {
+        resolve(result);
+        return null;
+      }
+
+      const tx = toBroadcast.pop() as SignedTransaction<Transaction<TLong>>;
+      broadcast(base, tx)
+        .then((tx) => wait(base, tx, options))
+        .then((tx) => {
+          result.push(tx);
+          loop();
+        }, reject);
+    };
+
+    loop();
+  });
+}
+
+export interface IOptions {
+  chain: boolean;
+  confirmations: number;
+  maxWaitTime: number;
+  requestInterval: number;
+}
