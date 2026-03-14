@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["ES2024", "DOM"],
     "outDir": "./dist"
   },
   "exclude": ["node_modules", "dist"],

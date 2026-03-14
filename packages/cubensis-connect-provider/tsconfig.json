@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./dist"
+    "experimentalDecorators": true,
+    "lib": ["ES2024", "DOM"],
+    "outDir": "./dist",
+    "types": ["@decentralchain/cubensis-connect-types"]
   },
   "exclude": ["node_modules", "dist"],
   "extends": "../../tsconfig.base.json",
