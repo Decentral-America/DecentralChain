@@ -33,7 +33,6 @@ import {
   type ISponsorshipParams,
   type ITransferParams,
   type TTransaction as TTransactionBase,
-  type TTransactionType,
   type WithId,
   type WithSender,
 } from './transactions';
@@ -53,7 +52,9 @@ import { sponsorship } from './transactions/sponsorship';
 import { transfer } from './transactions/transfer';
 import { updateAssetInfo } from './transactions/update-asset-info';
 
-type TTransaction<T extends TTransactionType> = TxTypeMap[T];
+type SupportedTransactionType = keyof TxTypeMap;
+
+type TTransaction<T extends SupportedTransactionType> = TxTypeMap[T];
 
 type TxTypeMap = {
   [TRANSACTION_TYPE.ISSUE]: IssueTransaction;
@@ -72,7 +73,7 @@ type TxTypeMap = {
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction;
 };
-type TTxParamsWithType<T extends TTransactionType> = TxParamsTypeMap[T] & { type: T };
+type TTxParamsWithType<T extends SupportedTransactionType> = TxParamsTypeMap[T] & { type: T };
 
 type TxParamsTypeMap = {
   [TRANSACTION_TYPE.ISSUE]: IIssueParams;
@@ -95,7 +96,7 @@ type TxParamsTypeMap = {
 /**
  * Makes transaction from params. Validates all fields and calculates id
  */
-export function makeTx<T extends TTransactionType>(
+export function makeTx<T extends SupportedTransactionType>(
   params: TTxParamsWithType<T> & WithSender,
 ): TTransaction<T> & WithId {
   switch (params.type) {
@@ -163,7 +164,7 @@ export function makeTx<T extends TTransactionType>(
  * Makes transaction bytes from validated transaction
  */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: switch over 14 transaction types — inherent complexity
-export function makeTxBytes<T extends TTransactionType>(
+export function makeTxBytes<T extends SupportedTransactionType>(
   tx: TTxParamsWithType<T> & WithSender & { version: number },
 ): Uint8Array {
   switch (tx.type) {
