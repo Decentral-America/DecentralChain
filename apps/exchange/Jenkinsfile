@@ -1,0 +1,201 @@
+#!/usr/bin/env groovy
+
+/*
+ * Jenkins Pipeline for DCC React Wallet
+ * Mirrors the Angular version pipeline structure
+ * 
+ * Supports:
+ * - Building Docker images for mainnet/testnet/stagenet
+ * - Pushing to Docker registry
+ * - Deploying to staging/production
+ */
+
+pipeline {
+    agent any
+    
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['Build', 'Build and Deploy to stage', 'Deploy to stage', 'Deploy PROD mainnet', 'Deploy PROD testnet', 'Deploy PROD stagenet'],
+            description: 'Select the action to perform'
+        )
+        choice(
+            name: 'NETWORK',
+            choices: ['mainnet', 'testnet', 'stagenet'],
+            description: 'Network environment'
+        )
+        string(
+            name: 'TAG',
+            defaultValue: 'latest',
+            description: 'Docker image tag'
+        )
+        booleanParam(
+            name: 'CONFIRM_PROD',
+            defaultValue: false,
+            description: 'Confirm production deployment'
+        )
+    }
+
+    environment {
+        DOCKER_REGISTRY = credentials('docker-registry-url')
+        IMAGE_NAME = 'dcc-wallet-react'
+        REACT_DIR = 'dcc-react'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Validate') {
+            when {
+                expression { params.ACTION.contains('PROD') }
+            }
+            steps {
+                script {
+                    if (!params.CONFIRM_PROD) {
+                        error('Production deployment requires confirmation!')
+                    }
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            when {
+                expression { params.ACTION.contains('Build') }
+            }
+            steps {
+                dir("${REACT_DIR}") {
+                    sh 'npm ci --legacy-peer-deps'
+                }
+            }
+        }
+
+        stage('Lint & Type Check') {
+            when {
+                expression { params.ACTION.contains('Build') }
+            }
+            steps {
+                dir("${REACT_DIR}") {
+                    sh 'npm run lint || true'
+                    sh 'npm run build -- --mode production'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            when {
+                expression { params.ACTION.contains('Build') }
+            }
+            steps {
+                dir("${REACT_DIR}") {
+                    script {
+                        def tag = "${params.TAG}.${BUILD_NUMBER}"
+                        
+                        sh """
+                            docker build \
+                                -f Dockerfile.production \
+                                --build-arg web_environment=${params.NETWORK} \
+                                -t ${IMAGE_NAME}:${tag} \
+                                -t ${IMAGE_NAME}:${params.NETWORK}-latest \
+                                .
+                        """
+                        
+                        // Tag for registry
+                        sh """
+                            docker tag ${IMAGE_NAME}:${tag} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag}
+                            docker tag ${IMAGE_NAME}:${params.NETWORK}-latest ${DOCKER_REGISTRY}/${IMAGE_NAME}:${params.NETWORK}-latest
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Push to Registry') {
+            when {
+                expression { params.ACTION.contains('Build') }
+            }
+            steps {
+                script {
+                    def tag = "${params.TAG}.${BUILD_NUMBER}"
+                    
+                    withCredentials([usernamePassword(
+                        credentialsId: 'docker-registry-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )]) {
+                        sh """
+                            echo \$DOCKER_PASS | docker login ${DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin
+                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag}
+                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${params.NETWORK}-latest
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            when {
+                expression { params.ACTION.contains('stage') }
+            }
+            steps {
+                script {
+                    def tag = params.ACTION.contains('Build') ? "${params.TAG}.${BUILD_NUMBER}" : params.TAG
+                    
+                    // Deploy using kubectl or docker-compose
+                    sh """
+                        kubectl set image deployment/dcc-wallet-${params.NETWORK} \
+                            dcc-wallet=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
+                            --namespace=staging
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            when {
+                expression { params.ACTION.contains('PROD') }
+            }
+            steps {
+                script {
+                    def network = params.ACTION.replace('Deploy PROD ', '')
+                    def tag = params.TAG
+                    
+                    // Production deployment with rollout
+                    sh """
+                        kubectl set image deployment/dcc-wallet-${network} \
+                            dcc-wallet=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
+                            --namespace=production
+                        
+                        kubectl rollout status deployment/dcc-wallet-${network} \
+                            --namespace=production \
+                            --timeout=5m
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            slackSend(
+                channel: '#deployments',
+                color: 'good',
+                message: "✅ DCC React Wallet ${params.ACTION} succeeded - ${params.NETWORK} - Build #${BUILD_NUMBER}"
+            )
+        }
+        failure {
+            slackSend(
+                channel: '#deployments',
+                color: 'danger',
+                message: "❌ DCC React Wallet ${params.ACTION} failed - ${params.NETWORK} - Build #${BUILD_NUMBER}"
+            )
+        }
+        cleanup {
+            // Clean up Docker images
+            sh 'docker system prune -f || true'
+        }
+    }
+}
