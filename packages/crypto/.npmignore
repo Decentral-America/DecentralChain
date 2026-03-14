@@ -1,0 +1,12 @@
+# Dev-only artifacts — NOT published to npm
+/.vscode
+/Cargo.lock
+/node_modules
+/target
+/coverage
+*.tsbuildinfo
+*.tgz
+
+# NOTE: /pkg and /dist are INTENTIONALLY NOT listed here.
+# .gitignore excludes them (they're build outputs), but npm needs them.
+# The "files" field in package.json whitelists: dist, pkg, src.
