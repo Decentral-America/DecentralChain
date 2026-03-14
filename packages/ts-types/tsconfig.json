@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    /* ── Output ──────────────────────────────────────────────── */
+    "declaration": true,
+    "erasableSyntaxOnly": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": ["ES2024"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": false,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+
+    /* ── Interop ─────────────────────────────────────────────── */
+    "skipLibCheck": true,
+    "sourceMap": true,
+
+    /* ── Strict Checks (maximum) ─────────────────────────────── */
+    "strict": true,
+    /* ── Language & Modules ──────────────────────────────────── */
+    "target": "ES2024",
+    "verbatimModuleSyntax": true
+  },
+  "exclude": ["node_modules", "dist", "test", "**/*.test.ts"],
+  "include": ["src/**/*.ts"]
+}
