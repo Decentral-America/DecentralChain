@@ -14,9 +14,9 @@ import { Windows } from './helpers/Windows';
 
 describe('Password management', () => {
   const PASSWORD = {
-    SHORT: 'short',
     DEFAULT: 'strongpassword',
     NEW: 'verystrongpassword',
+    SHORT: 'short',
   };
   let tabKeeper: string, tabAccounts: string;
 

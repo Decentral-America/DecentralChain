@@ -11,15 +11,14 @@ const DataRow = (wrapped: WebdriverIO.Element) => ({
 });
 
 export const DataTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
+  get contentScript() {
+    return this.root.findByTestId$('customDataBinary');
   },
 
   async getDataRows() {
-    return this.root.findAllByTestId$('dataRow').map((it) => DataRow(it));
+    return this.root.findAllByTestId$('dataRow').map((it: any) => DataRow(it));
   },
-
-  get contentScript() {
-    return this.root.findByTestId$('customDataBinary');
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

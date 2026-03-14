@@ -16,7 +16,7 @@ export function Welcome({ isPopup }: Props) {
 
   return (
     <div className={styles.content}>
-      <BigLogo className={styles.logo} />
+      <BigLogo className={styles.logo ?? ''} />
       <Button
         className={styles.button}
         data-testid="getStartedBtn"

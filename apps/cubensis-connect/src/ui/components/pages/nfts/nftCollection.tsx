@@ -15,8 +15,8 @@ import * as styles from './nftCollection.module.css';
 const PLACEHOLDERS = [...Array(4).keys()].map<Nft>(
   (key) =>
     ({
-      id: `${key}`,
       creator: `${key}`,
+      id: `${key}`,
     }) as Nft,
 );
 
@@ -51,8 +51,8 @@ export function NftCollection() {
 
   const creatorNfts = myNfts
     ? sortAndFilterNfts(myNfts.map(getNftDetails), {
-        term,
         creator: params.creator,
+        term,
       })
     : PLACEHOLDERS;
 

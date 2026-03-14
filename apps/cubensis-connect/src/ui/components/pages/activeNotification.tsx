@@ -18,14 +18,17 @@ export function ActiveNotificationPage() {
   const activeNotification = usePopupSelector((state) => state.activePopup?.notify);
   invariant(activeNotification);
 
+  const firstNotification = activeNotification[0];
+  invariant(firstNotification);
+
   const messageCount = usePopupSelector((state) => state.messages.length);
   const notifications = usePopupSelector((state) => state.notifications);
 
   const otherOriginNotifications = notifications.filter(
-    ([item]) => item.origin !== activeNotification[0].origin,
+    ([item]) => item != null && item.origin !== firstNotification.origin,
   );
 
-  const permissions = usePopupSelector((state) => state.origins[activeNotification[0].origin]);
+  const permissions = usePopupSelector((state) => state.origins[firstNotification.origin]);
 
   const selectedAccount = usePopupSelector((state) => state.selectedAccount);
   invariant(selectedAccount);
@@ -63,15 +66,18 @@ export function ActiveNotificationPage() {
         <label htmlFor="allow-notifications" className={styles.allowNotification}>
           <Input
             id="allow-notifications"
-            checked={permissions?.some(
-              (item) => typeof item === 'object' && item.type === 'useNotifications' && item.canUse,
-            )}
+            checked={
+              permissions?.some(
+                (item) =>
+                  typeof item === 'object' && item.type === 'useNotifications' && item.canUse,
+              ) ?? false
+            }
             type="checkbox"
             onChange={(event) => {
               dispatch(
                 setShowNotification({
-                  origin: activeNotification[0].origin,
                   canUse: event.target.checked,
+                  origin: firstNotification.origin,
                 }),
               );
             }}
@@ -116,7 +122,9 @@ export function ActiveNotificationPage() {
               dispatch(
                 deleteNotifications(
                   activeNotification.map(({ id }) => id),
-                  notifications.find(([item]) => item.origin !== activeNotification[0].origin),
+                  notifications.find(
+                    ([item]) => item != null && item.origin !== firstNotification.origin,
+                  ),
                 ),
               );
             }}

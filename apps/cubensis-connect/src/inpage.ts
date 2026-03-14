@@ -82,10 +82,29 @@ const publicStateUpdates = make<PublicState>((observer) => {
 
 globalThis.CubensisConnect = {
   auth: proxy.auth,
+  dccAuth: proxy.dccAuth,
   decryptMessage: proxy.decryptMessage,
   encryptMessage: proxy.encryptMessage,
   getKEK: proxy.getKEK,
+  get initialPromise() {
+    console.warn(
+      "You don't need to use initialPromise anymore. If CubensisConnect variable is defined, you can call any api right away",
+    );
+    return Promise.resolve(globalThis.CubensisConnect);
+  },
   notification: proxy.notification,
+  on: (event, cb) => {
+    if (event !== 'update') {
+      return;
+    }
+
+    pipe(
+      publicStateUpdates,
+      subscribe((value) => {
+        cb(value);
+      }),
+    );
+  },
   publicState: proxy.publicState,
   resourceIsApproved: proxy.resourceIsApproved,
   resourceIsBlocked: proxy.resourceIsBlocked,
@@ -99,27 +118,8 @@ globalThis.CubensisConnect = {
   signTransaction: proxy.signTransaction,
   signTransactionPackage: proxy.signTransactionPackage,
   verifyCustomData: proxy.verifyCustomData,
-  dccAuth: proxy.dccAuth,
   // Backward-compatible alias for existing dApps still calling wavesAuth
   wavesAuth: proxy.dccAuth,
-  get initialPromise() {
-    console.warn(
-      "You don't need to use initialPromise anymore. If CubensisConnect variable is defined, you can call any api right away",
-    );
-    return Promise.resolve(globalThis.CubensisConnect);
-  },
-  on: (event, cb) => {
-    if (event !== 'update') {
-      return;
-    }
-
-    pipe(
-      publicStateUpdates,
-      subscribe((value) => {
-        cb(value);
-      }),
-    );
-  },
 };
 
 function defineDeprecatedName(name: string) {

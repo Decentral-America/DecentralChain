@@ -98,13 +98,11 @@ export function handleMethodCallRequests<K extends string>(
       const result = await api[method as K](...args);
 
       sendResponse({
-        keeperMethodCallResponse: { id, data: result },
+        keeperMethodCallResponse: { data: result, id },
       });
     } catch (err) {
       sendResponse({
         keeperMethodCallResponse: {
-          id,
-          isError: true,
           error:
             err instanceof Response
               ? { message: await err.text() }
@@ -114,6 +112,8 @@ export function handleMethodCallRequests<K extends string>(
                     message: String('message' in err ? err.message : err),
                   }
                 : { message: String(err) },
+          id,
+          isError: true,
         },
       });
     }
@@ -150,7 +150,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
       await ensureConnection();
 
       const id = nanoid();
-      const request = { keeperMethodCallRequest: { id, method, args } };
+      const request = { keeperMethodCallRequest: { args, id, method } };
 
       sendRequest(request);
 

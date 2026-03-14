@@ -1,6 +1,6 @@
 export const CustomNetworkModal = {
-  get root() {
-    return $('#customNetwork');
+  get addressError() {
+    return this.root.findByTestId$('nodeAddressError');
   },
 
   get addressInput() {
@@ -10,12 +10,11 @@ export const CustomNetworkModal = {
   get matcherAddressInput() {
     return this.root.$('#matcher_address');
   },
+  get root() {
+    return $('#customNetwork');
+  },
 
   get saveButton() {
     return this.root.$('#networkSettingsSave');
-  },
-
-  get addressError() {
-    return this.root.findByTestId$('nodeAddressError');
   },
 };

@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import * as styles from './DateFormat.module.css';
 
 const DEFAULT_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: '2-digit',
   day: '2-digit',
   hour: 'numeric',
   minute: 'numeric',
+  month: '2-digit',
+  year: 'numeric',
 };
 
 interface Props {

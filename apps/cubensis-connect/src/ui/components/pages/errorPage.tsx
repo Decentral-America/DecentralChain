@@ -43,7 +43,7 @@ export function ErrorPage() {
 
   return (
     <div className={styles.wrapper}>
-      <HeadLogo className={styles.logo} />
+      <HeadLogo className={styles.logo ?? ''} />
 
       <div className={styles.content}>
         <h2 className={styles.title}>{t('errorPage.title')}</h2>

@@ -1,4 +1,7 @@
 export const EmptyHomeScreen = {
+  get addButton() {
+    return this.root.findByText$('Add account');
+  },
   isDisplayed: async () => {
     try {
       return await browser.findByTestId$('importForm', {}, { timeout: 5000 }).isDisplayed();
@@ -9,9 +12,5 @@ export const EmptyHomeScreen = {
 
   get root() {
     return browser.findByTestId$('importForm');
-  },
-
-  get addButton() {
-    return this.root.findByText$('Add account');
   },
 };

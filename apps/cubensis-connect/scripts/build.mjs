@@ -26,78 +26,78 @@ console.log(`\n🔨 Building Cubensis Connect (${mode})...\n`);
 // ── Step 1: Build UI pages ────────────────────────────────────────
 console.log('  [1/4] Building UI pages...');
 await build({
-  configFile: resolve(root, 'vite.config.ts'),
-  mode,
   build: {
-    outDir: distBuild,
     emptyOutDir: true,
-    sourcemap: isDev ? 'inline' : 'hidden',
     minify: !isDev,
-    target: 'esnext',
+    outDir: distBuild,
     rollupOptions: {
       input: {
-        popup: resolve(root, 'popup.html'),
-        notification: resolve(root, 'notification.html'),
         accounts: resolve(root, 'accounts.html'),
+        notification: resolve(root, 'notification.html'),
+        popup: resolve(root, 'popup.html'),
       },
       output: {
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: '[name]-[hash].js',
+        entryFileNames: '[name].js',
       },
     },
+    sourcemap: isDev ? 'inline' : 'hidden',
+    target: 'esnext',
   },
+  configFile: resolve(root, 'vite.config.ts'),
+  mode,
 });
 
 // ── Step 2: Build background (service worker) ─────────────────────
 console.log('  [2/4] Building background script...');
 await build({
-  configFile: resolve(root, 'vite.config.ts'),
-  mode,
   build: {
-    outDir: distBuild,
     emptyOutDir: false,
-    sourcemap: isDev ? 'inline' : 'hidden',
-    minify: !isDev,
-    target: 'esnext',
     lib: {
       entry: resolve(root, 'src/background.ts'),
+      fileName: () => 'background.js',
       formats: ['iife'],
       name: 'CubensisBackground',
-      fileName: () => 'background.js',
     },
+    minify: !isDev,
+    outDir: distBuild,
     rollupOptions: {
       output: {
         inlineDynamicImports: true,
       },
     },
+    sourcemap: isDev ? 'inline' : 'hidden',
+    target: 'esnext',
   },
+  configFile: resolve(root, 'vite.config.ts'),
+  mode,
 });
 
 // ── Step 3: Build content scripts ─────────────────────────────────
 console.log('  [3/4] Building content scripts...');
 for (const entry of ['contentscript', 'inpage']) {
   await build({
-    configFile: resolve(root, 'vite.config.ts'),
-    mode,
     build: {
-      outDir: distBuild,
       emptyOutDir: false,
-      sourcemap: isDev ? 'inline' : 'hidden',
-      minify: !isDev,
-      target: 'esnext',
       lib: {
         entry: resolve(root, `src/${entry}.ts`),
+        fileName: () => `${entry}.js`,
         formats: ['iife'],
         name: `Cubensis_${entry}`,
-        fileName: () => `${entry}.js`,
       },
+      minify: !isDev,
+      outDir: distBuild,
       rollupOptions: {
         output: {
           inlineDynamicImports: true,
         },
       },
+      sourcemap: isDev ? 'inline' : 'hidden',
+      target: 'esnext',
     },
+    configFile: resolve(root, 'vite.config.ts'),
+    mode,
   });
 }
 
@@ -124,7 +124,7 @@ const { default: adaptManifestToPlatform } = await import(
 // Copy build dir to each platform dir with adapted manifest
 for (const platform of platforms) {
   const platformDir = join(distRoot, platform);
-  rmSync(platformDir, { recursive: true, force: true });
+  rmSync(platformDir, { force: true, recursive: true });
   cpSync(distBuild, platformDir, { recursive: true });
 
   // Write platform-adapted manifest

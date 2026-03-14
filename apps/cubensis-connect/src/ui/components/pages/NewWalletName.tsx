@@ -66,11 +66,11 @@ export function NewWalletName() {
           }
 
           const accountTypeToWalletType = {
-            seed: WalletTypes.Seed,
             encodedSeed: WalletTypes.EncodedSeed,
-            privateKey: WalletTypes.PrivateKey,
-            wx: WalletTypes.Wx,
             ledger: WalletTypes.Ledger,
+            privateKey: WalletTypes.PrivateKey,
+            seed: WalletTypes.Seed,
+            wx: WalletTypes.Wx,
           };
 
           await dispatch(createAccount(account, accountTypeToWalletType[account.type]));

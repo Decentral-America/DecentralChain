@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { isNotNull } from '_core/isNotNull';
 import { type MessageTx } from 'messages/types';
@@ -38,9 +38,9 @@ export class PermissionsController {
   }) {
     this.store = new ObservableStore(
       extensionStorage.getInitState({
+        inPending: {},
         origins: {},
         whitelist: [],
-        inPending: {},
       }),
     );
 
@@ -134,9 +134,9 @@ export class PermissionsController {
 
   setNotificationPermissions(origin: string, canUse: boolean | null, time = 0) {
     this.updatePermission(origin, {
-      type: PERMISSIONS.USE_NOTIFICATION,
-      time,
       canUse,
+      time,
+      type: PERMISSIONS.USE_NOTIFICATION,
     });
   }
 
@@ -153,10 +153,10 @@ export class PermissionsController {
 
     if (!autoSign) {
       this.updatePermission(origin, {
-        type: PERMISSIONS.AUTO_SIGN,
         approved: [],
-        totalAmount,
         interval,
+        totalAmount,
+        type: PERMISSIONS.AUTO_SIGN,
       });
 
       return null;
@@ -259,8 +259,8 @@ export class PermissionsController {
     this.updatePermission(origin, {
       ...(permission as PermissionObject),
       approved: approved.concat({
-        time: currentTime,
         amount: txAmount.toString(),
+        time: currentTime,
       }),
     });
 
@@ -289,9 +289,9 @@ export class PermissionsController {
     const newState = {
       ...oldState,
       ...state,
+      inPending,
       origins,
       whitelist,
-      inPending,
     };
 
     this.store.updateState(newState);

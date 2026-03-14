@@ -17,10 +17,10 @@ export type NewAccountState = {
 
 function newAccount(
   state: NewAccountState = {
-    name: '',
     address: '',
-    type: 'seed',
+    name: '',
     seed: '',
+    type: 'seed',
   },
   action: AppAction,
 ): NewAccountState {

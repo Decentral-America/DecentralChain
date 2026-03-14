@@ -32,11 +32,8 @@ import { Root } from '../ui/components/Root';
 
 export const routes: RouteObject[] = [
   {
-    element: <Root />,
-    errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
         element: (
           <>
             <Menu hasLogo hasSettings />
@@ -44,27 +41,27 @@ export const routes: RouteObject[] = [
             <BottomPanel allowChangingNetwork />
           </>
         ),
+        path: '/',
       },
       {
-        path: '/qr-code',
         element: (
           <>
             <Menu hasBack hasLogo />
             <SelectedAccountQr />
           </>
         ),
+        path: '/qr-code',
       },
       {
-        path: '/account-info/:address',
         element: (
           <>
             <Menu hasBack hasLogo />
             <AccountInfo />
           </>
         ),
+        path: '/account-info/:address',
       },
       {
-        path: '/change-account-name/:address',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -72,195 +69,198 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/change-account-name/:address',
       },
       {
-        path: '/delete-account/:address',
         element: (
           <>
             <Menu hasBack hasLogo />
             <DeleteAccount />
           </>
         ),
+        path: '/delete-account/:address',
       },
       {
-        path: '/other-accounts',
         element: (
           <>
             <Menu hasBack hasLogo />
             <OtherAccountsPage />
           </>
         ),
+        path: '/other-accounts',
       },
       {
-        path: '/send/:assetId',
         element: (
           <>
             <Menu hasBack hasLogo />
             <Send />
           </>
         ),
+        path: '/send/:assetId',
       },
       {
-        path: '/swap',
         element: (
           <>
             <Menu hasBack hasLogo />
             <Swap />
           </>
         ),
+        path: '/swap',
       },
       {
-        path: '/nft-collection/:creator',
         element: (
           <>
             <Menu hasBack hasLogo />
             <NftCollection />
           </>
         ),
+        path: '/nft-collection/:creator',
       },
       {
-        path: '/nft/:assetId',
         element: (
           <>
             <Menu hasBack hasLogo />
             <NftInfo />
           </>
         ),
+        path: '/nft/:assetId',
       },
       {
-        path: '/about',
         element: (
           <>
             <Menu hasBack />
             <Info />
           </>
         ),
+        path: '/about',
       },
       {
-        path: '/settings',
         element: (
           <>
             <Menu hasClose hasLogo />
             <Settings />
           </>
         ),
+        path: '/settings',
       },
       {
-        path: '/address-book',
         element: (
           <>
             <Menu hasBack hasLogo />
             <AddressBook />
           </>
         ),
+        path: '/address-book',
       },
       {
-        path: '/settings/general',
         element: (
           <>
             <Menu hasBack hasLogo />
             <SettingsGeneral />
           </>
         ),
+        path: '/settings/general',
       },
       {
-        path: '/change-password',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ChangePassword />
           </>
         ),
+        path: '/change-password',
       },
       {
-        path: '/settings/permissions',
         element: (
           <>
             <Menu hasBack hasLogo />
             <PermissionsSettings />
           </>
         ),
+        path: '/settings/permissions',
       },
       {
-        path: '/settings/language',
         element: (
           <>
             <Menu hasBack hasLogo />
             <LangsSettings />
           </>
         ),
+        path: '/settings/language',
       },
       {
-        path: '/settings/network',
         element: (
           <>
             <Menu hasBack hasLogo />
             <NetworkSettings />
           </>
         ),
+        path: '/settings/network',
       },
       {
-        path: '/settings/export-and-import',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ExportAndImport />
           </>
         ),
+        path: '/settings/export-and-import',
       },
       {
-        path: '/export-accounts',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ExportAccounts />
           </>
         ),
+        path: '/export-accounts',
       },
       {
-        path: '/export-address-book',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ExportAddressBook />
           </>
         ),
+        path: '/export-address-book',
       },
       {
-        path: '/delete-all-accounts',
         element: (
           <>
             <Menu hasBack hasLogo />
             <DeleteAllAccounts />
           </>
         ),
+        path: '/delete-all-accounts',
       },
       {
-        path: '/active-notification',
         element: (
           <>
             <Menu hasLogo />
             <ActiveNotificationPage />
           </>
         ),
+        path: '/active-notification',
       },
       {
-        path: '/active-message',
         element: (
           <>
             <Menu hasLogo />
             <ActiveMessagePage />
           </>
         ),
+        path: '/active-message',
       },
       {
-        path: '/messages-and-notifications',
         element: <MessagesAndNotificationsPage />,
+        path: '/messages-and-notifications',
       },
       {
-        path: '/forgot-password',
         element: <DeleteAllAccounts />,
+        path: '/forgot-password',
       },
     ],
+    element: <Root />,
+    errorElement: <ErrorPage />,
   },
 ];

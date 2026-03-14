@@ -9,14 +9,6 @@ const Argument = (wrapped: WebdriverIO.Element) => ({
 });
 
 export const InvokeScriptTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
-  },
-
-  get paymentsTitle() {
-    return this.root.findByTestId$('invokeScriptPaymentsTitle');
-  },
-
   get dApp() {
     return this.root.findByTestId$('invokeScriptDApp');
   },
@@ -27,11 +19,18 @@ export const InvokeScriptTransactionScreen = {
 
   async getArguments() {
     await this.root.waitForDisplayed();
-    return await this.root.queryAllByTestId$('invokeArgument').map((it) => Argument(it));
+    return await this.root.queryAllByTestId$('invokeArgument').map((it: any) => Argument(it));
   },
 
   async getPayments() {
     await this.root.waitForDisplayed();
     return await this.root.queryAllByTestId$('invokeScriptPaymentItem');
+  },
+
+  get paymentsTitle() {
+    return this.root.findByTestId$('invokeScriptPaymentsTitle');
+  },
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

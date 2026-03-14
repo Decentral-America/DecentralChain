@@ -38,9 +38,9 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
     const nftIds = nfts.map((nft) => nft.assetId);
 
     return fetchDataEntries({
-      nodeUrl,
       address: DUCKLINGS_DAPP,
       keys: nftIds.map(ducklingLevelKey),
+      nodeUrl,
     })
       .then(dataEntriesToRecord)
       .then((dataEntries) =>
@@ -63,7 +63,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
     );
 
     const ducklingNames = Object.keys(DUCKLING_DESCRIPTIONS);
-    const name = ducklingNames[nameIndex % ducklingNames.length];
+    const name = ducklingNames[nameIndex % ducklingNames.length]!;
 
     const adjectiveIndex = [16, 10, 1, 9, 9, 7].reduce(
       (acc, index) => acc + asset.id.charCodeAt(index),
@@ -77,7 +77,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       displayCreator: 'Ducklings',
 
       displayName: `${capitalize(
-        DUCKLING_ADJECTIVES[adjectiveIndex % DUCKLING_ADJECTIVES.length],
+        DUCKLING_ADJECTIVES[adjectiveIndex % DUCKLING_ADJECTIVES.length]!,
       )} ${capitalize(name)}`,
 
       foreground: info
@@ -222,6 +222,8 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   austin:
     'Wanda Austin - Wanda Austin is the President and CEO of The Aerospace Corporation, a leading architect for the US security space programs.',
   babbage: 'Charles Babbage invented the concept of a programmable computer.',
+  badrtdinov:
+    'Artem Badrtdinov – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
   banach:
     'Stefan Banach - Polish mathematician, was one of the founders of modern functional analysis.',
   banzai:
@@ -257,6 +259,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   buck: 'Linda Brown Buck - American biologist and Nobel laureate best known for her genetic and molecular analyses of the mechanisms of smell.',
   burnell:
     'Dame Susan Jocelyn Bell Burnell - Northern Irish astrophysicist who discovered radio pulsars and was the first to analyse them.',
+  buterin: 'Vitalik Buterin – Ethereum Co-founder',
   cannon:
     'Annie Jump Cannon - pioneering female astronomer who classified hundreds of thousands of stars and created the system we use to understand stars today.',
   carson:
@@ -285,11 +288,11 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   colden: 'Jane Colden - American botanist widely considered the first female American botanist.',
   cori: 'Gerty Theresa Cori - American biochemist who became the third woman—and first American woman—to win a Nobel Prize in science, and the first woman to be awarded the Nobel Prize in Physiology or Medicine. Cori was born in Prague.',
   cray: 'Seymour Roger Cray was an American electrical engineer and supercomputer architect who designed a series of computers that were the fastest in the world for decades.',
+  curie: 'Marie Curie discovered radioactivity.',
   curran:
     "Samuel Curran was an Irish physicist who worked alongside his wife during WWII and invented the proximity fuse. <a href='https://en.wikipedia.org/wiki/Samuel_Curran" +
     '    This entry reflects a husband and wife team who worked together:\n' +
     '    Joan Curran was a Welsh scientist who developed radar and invented chaff, a radar countermeasure.',
-  curie: 'Marie Curie discovered radioactivity.',
   darwin: 'Charles Darwin established the principles of natural evolution.',
   davinci: 'Leonardo Da Vinci invented too many things to list here.',
   dewdney:
@@ -357,6 +360,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Carolyn Widney Greider - American molecular biologist and joint winner of the 2009 Nobel Prize for Physiology or Medicine for the discovery of telomerase.',
   grothendieck:
     'Alexander Grothendieck - German-born French mathematician who became a leading figure in the creation of modern algebraic geometry.',
+  gun: 'Emin Gun Sirer – Avalanche Funder',
   haibt:
     'Lois Haibt - American computer scientist, part of the team at IBM that developed FORTRAN.',
   hamilton:
@@ -365,9 +369,9 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     "Caroline Harriet Haslett - English electrical engineer, electricity industry administrator and champion of women's rights. Co-author of British Standard 1363 that specifies AC power plugs and sockets used across the United Kingdom (which is widely considered as one of the safest designs).",
   hawking:
     'Stephen Hawking pioneered the field of cosmology by combining general relativity and quantum mechanics.',
+  heisenberg: 'Werner Heisenberg was a founding father of quantum mechanics.',
   hellman:
     'Martin Edward Hellman - American cryptologist, best known for his invention of public-key cryptography in co-operation with Whitfield Diffie and Ralph Merkle.',
-  heisenberg: 'Werner Heisenberg was a founding father of quantum mechanics.',
   hermann:
     'Grete Hermann was a German philosopher noted for her philosophical work on the foundations of quantum mechanics.',
   herschel: 'Caroline Lucretia Herschel - German astronomer and discoverer of several comets.',
@@ -389,6 +393,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Hypatia - Greek Alexandrine Neoplatonist philosopher in Egypt who was one of the earliest mothers of mathematics.',
   ishizaka:
     'Teruko Ishizaka - Japanese scientist and immunologist who co-discovered the antibody class Immunoglobulin E.',
+  ivanov: 'Sasha Ivanov – Waves Protocol Founder',
   jackson:
     "Mary Jackson, American mathematician and aerospace engineer who earned the highest title within NASA's engineering department.",
   jang: 'Yeong-Sil Jang was a Korean scientist and astronomer during the Joseon Dynasty; he invented the first metal printing press and water gauge.',
@@ -405,8 +410,10 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Karen Spärck Jones came up with the concept of inverse document frequency, which is used in most search engines today.',
   kalam:
     'A. P. J. Abdul Kalam - is an Indian scientist aka Missile Man of India for his work on the development of ballistic missile and launch vehicle technology.',
+  kaminskaia: 'Elena Kaminskaia – the best girlfriend who inspires creativity –.',
   kapitsa:
     'Sergey Petrovich Kapitsa (Russian: Серге́й Петро́вич Капи́ца; 14 February 1928 – 14 August 2012) was a Russian physicist and demographer. He was best known as host of the popular and long-running Russian scientific TV show, Evident, but Incredible. His father was the Nobel laureate Soviet-era physicist Pyotr Kapitsa, and his brother was the geographer and Antarctic explorer Andrey Kapitsa.',
+  kardan: 'Inal Kardan – Waves Ducks CTO',
   kare: 'Susan Kare, created the icons and many of the interface elements for the original Apple Macintosh in the 1980s, and was an original employee of NeXT, working as the Creative Director.',
   keldysh:
     'Mstislav Keldysh - a Soviet scientist in the field of mathematics and mechanics, academician of the USSR Academy of Sciences (1946), President of the USSR Academy of Sciences (1961–1975), three times Hero of Socialist Labor (1956, 1961, 1971), fellow of the Royal Society of Edinburgh (1968).',
@@ -415,6 +422,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   kepler: 'Johannes Kepler, German astronomer known for his three laws of planetary motion.',
   khayyam:
     "Omar Khayyam - Persian mathematician, astronomer and poet. Known for his work on the classification and solution of cubic equations, for his contribution to the understanding of Euclid's fifth postulate and for computing the length of a year very accurately.",
+  khomenko: 'Oleg Khomenko – Waves Ducks Community Member who helped with maths',
   khorana:
     'Har Gobind Khorana - Indian-American biochemist who shared the 1968 Nobel Prize for Physiology.',
   kilby: 'Jack Kilby invented silicon integrated circuits and gave Silicon Valley its name.',
@@ -434,9 +442,9 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Henrietta Swan Leavitt - she was an American astronomer who discovered the relation between the luminosity and the period of Cepheid variable stars.',
   lederberg:
     'Esther Miriam Zimmer Lederberg - American microbiologist and a pioneer of bacterial genetics.',
-  kaminskaia: 'Elena Kaminskaia – the best girlfriend who inspires creativity –.',
   lehmann:
     'Inge Lehmann - Danish seismologist and geophysicist. Known for discovering in 1936 that the Earth has a solid inner core inside a molten outer core.',
+  leonov: 'Waves Ducks Wars Developer',
   lewin:
     'Daniel Lewin - Mathematician, Akamai co-founder, soldier, 9/11 victim-- Developed optimization techniques for routing traffic on the internet. Died attempting to stop the 9-11 hijackers.',
   lichterman: 'Ruth Lichterman - one of the original programmers of the ENIAC.',
@@ -461,11 +469,11 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Anne Laura Dorinthea McLaren - British developmental biologist whose work helped lead to human in-vitro fertilisation.',
   mclean: 'Malcolm McLean invented the modern shipping container.',
   mcnulty: 'Kay McNulty - one of the original programmers of the ENIAC.',
+  meitner:
+    'Lise Meitner - Austrian/Swedish physicist who was involved in the discovery of nuclear fission. The element meitnerium is named after her.',
   mendel: 'Gregor Johann Mendel - Czech scientist and founder of genetics.',
   mendeleev:
     'Dmitri Mendeleev - a chemist and inventor. He formulated the Periodic Law, created a farsighted version of the periodic table of elements, and used it to correct the properties of some already discovered elements and also to predict the properties of eight elements yet to be discovered.',
-  meitner:
-    'Lise Meitner - Austrian/Swedish physicist who was involved in the discovery of nuclear fission. The element meitnerium is named after her.',
   meninsky:
     "Carla Meninsky, was the game designer and programmer for Atari 2600 games Dodge 'Em and Warlords.",
   merkle:
@@ -480,12 +488,14 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     "Gordon Earle Moore - American engineer, Silicon Valley founding father, author of Moore's law.",
   morse:
     'Samuel Morse - contributed to the invention of a single-wire telegraph system based on European telegraphs and was a co-developer of the Morse code.',
-  murdock: 'Ian Murdock - founder of the Debian project.',
   moser:
     'May-Britt Moser - Nobel prize winner neuroscientist who contributed to the discovery of grid cells in the brain.',
+  murdock: 'Ian Murdock - founder of the Debian project.',
+  nakamoto: 'Satoshi Nakamoto – Bitcoin Founder',
   napier:
     'John Napier of Merchiston - Scottish landowner known as an astronomer, mathematician and physicist. Best known for his discovery of logarithms.',
   nash: 'John Forbes Nash, Jr. - American mathematician who made fundamental contributions to game theory, differential geometry, and the study of partial differential equations.',
+  nazarov: 'Sergey Nazarov – ChainLink Founder',
   neumann:
     'John von Neumann - todays computer architectures are based on the von Neumann architecture.',
   newton: 'Isaac Newton invented classic mechanics and modern optics.',
@@ -506,6 +516,8 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'Cecilia Payne-Gaposchkin was an astronomer and astrophysicist who, in 1925, proposed in her Ph.D. thesis an explanation for the composition of stars in terms of the relative abundances of hydrogen and helium.',
   perlman:
     'Radia Perlman is a software designer and network engineer and most famous for her invention of the spanning-tree protocol (STP).',
+  pichulin:
+    'Dmitry Pichulin – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
   pike: 'Rob Pike was a key contributor to Unix, Plan 9, the X graphic system, utf-8, and the Go programming language.',
   poincare: 'Henri Poincaré made fundamental contributions in several fields of mathematics.',
   poitras:
@@ -518,10 +530,10 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
     'C. V. Raman - Indian physicist who won the Nobel Prize in 1930 for proposing the Raman effect.',
   ramanujan:
     'Srinivasa Ramanujan - Indian mathematician and autodidact who made extraordinary contributions to mathematical analysis, number theory, infinite series, and continued fractions.',
-  ride: 'Sally Kristen Ride was an American physicist and astronaut. She was the first American woman in space, and the youngest American astronaut.',
-  ritchie: 'Dennis Ritchie - co-creator of UNIX and the C programming language.',
   rhodes:
     'Ida Rhodes - American pioneer in computer programming, designed the first computer used for Social Security.',
+  ride: 'Sally Kristen Ride was an American physicist and astronaut. She was the first American woman in space, and the youngest American astronaut.',
+  ritchie: 'Dennis Ritchie - co-creator of UNIX and the C programming language.',
   robinson:
     'Julia Hall Bowman Robinson - American mathematician renowned for her contributions to the fields of computability theory and computational complexity theory.',
   roentgen:
@@ -572,6 +584,7 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   torvalds: 'Linus Torvalds invented Linux and Git.',
   tu: 'Youyou Tu - Chinese pharmaceutical chemist and educator known for discovering artemisinin and dihydroartemisinin, used to treat malaria, which has saved millions of lives. Joint winner of the 2015 Nobel Prize in Physiology or Medicine.',
   turing: 'Alan Turing was a founding father of computer science.',
+  'van de Camp': 'Rob van de Camp – Duxplorer.com Creator and WavesDucks Early Adopter',
   varahamihira:
     'Varahamihira - Ancient Indian mathematician who discovered trigonometric formulae during 505-587 CE.',
   vaughan:
@@ -598,26 +611,13 @@ const DUCKLING_DESCRIPTIONS: Partial<Record<string, string>> = {
   wright:
     "The Wright brothers, Orville and Wilbur - credited with inventing and building the world's first successful airplane and making the first controlled, powered and sustained heavier-than-air human flight.",
   wu: 'Chien-Shiung Wu - Chinese-American experimental physicist who made significant contributions to nuclear physics.',
+  yakovenko: 'Anatoly Yakovenko – Solana Founder',
   yalow:
     'Rosalyn Sussman Yalow - Rosalyn Sussman Yalow was an American medical physicist, and a co-winner of the 1977 Nobel Prize in Physiology or Medicine for development of the radioimmunoassay technique.',
   yonath:
     'Ada Yonath - an Israeli crystallographer, the first woman from the Middle East to win a Nobel prize in the sciences.',
+  zhao: 'CZ – Binance Founder',
   zhukovsky:
     'Nikolay Yegorovich Zhukovsky (Russian: Никола́й Его́рович Жуко́вский, January 17 1847 – March 17, 1921) was a Russian scientist, mathematician and engineer, and a founding father of modern aero- and hydrodynamics. Whereas contemporary scientists scoffed at the idea of human flight, Zhukovsky was the first to undertake the study of airflow. He is often called the Father of Russian Aviation.',
   zhuravlev: 'Vladimir Zhuravlev – WavesDucks Founder and Awesome Guy',
-  ivanov: 'Sasha Ivanov – Waves Protocol Founder',
-  leonov: 'Waves Ducks Wars Developer',
-  nakamoto: 'Satoshi Nakamoto – Bitcoin Founder',
-  buterin: 'Vitalik Buterin – Ethereum Co-founder',
-  nazarov: 'Sergey Nazarov – ChainLink Founder',
-  zhao: 'CZ – Binance Founder',
-  yakovenko: 'Anatoly Yakovenko – Solana Founder',
-  gun: 'Emin Gun Sirer – Avalanche Funder',
-  khomenko: 'Oleg Khomenko – Waves Ducks Community Member who helped with maths',
-  pichulin:
-    'Dmitry Pichulin – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
-  'van de Camp': 'Rob van de Camp – Duxplorer.com Creator and WavesDucks Early Adopter',
-  badrtdinov:
-    'Artem Badrtdinov – Waves Ducks Community Member and Security Researcher who reviewed WavesDucks smart contracts',
-  kardan: 'Inal Kardan – Waves Ducks CTO',
 };

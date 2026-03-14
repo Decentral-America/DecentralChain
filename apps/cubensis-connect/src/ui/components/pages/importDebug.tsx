@@ -72,9 +72,9 @@ export function ImportDebug() {
           await dispatch(
             createAccount(
               {
-                type: 'debug',
                 address,
                 name,
+                type: 'debug',
               },
               WalletTypes.Debug,
             ),
