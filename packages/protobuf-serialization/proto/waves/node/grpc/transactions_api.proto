@@ -1,0 +1,89 @@
+syntax = "proto3";
+package waves.node.grpc;
+option java_package = "io.decentralchain.api.grpc";
+option csharp_namespace = "DecentralChain.Node.Grpc";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves/node/grpc";
+
+import "waves/recipient.proto";
+import "waves/transaction.proto";
+import "waves/transaction_state_snapshot.proto";
+import "waves/invoke_script_result.proto";
+
+service TransactionsApi {
+    rpc GetTransactions (TransactionsRequest) returns (stream TransactionResponse);
+    rpc GetTransactionSnapshots (TransactionSnapshotsRequest) returns (stream TransactionSnapshotResponse);
+    rpc GetStateChanges (TransactionsRequest) returns (stream InvokeScriptResultResponse) {
+        option deprecated = true;
+    };
+    rpc GetStatuses (TransactionsByIdRequest) returns (stream TransactionStatus);
+    rpc GetUnconfirmed (TransactionsRequest) returns (stream TransactionResponse);
+
+    rpc Sign (SignRequest) returns (SignedTransaction);
+    rpc Broadcast (SignedTransaction) returns (SignedTransaction);
+}
+
+enum ApplicationStatus {
+    UNKNOWN = 0;
+    SUCCEEDED = 1;
+    SCRIPT_EXECUTION_FAILED = 2;
+    ELIDED = 3;
+}
+
+message TransactionStatus {
+    enum Status {
+        NOT_EXISTS = 0;
+        UNCONFIRMED = 1;
+        CONFIRMED = 2;
+    }
+
+    bytes id = 1;
+    Status status = 2;
+    int64 height = 3;
+    ApplicationStatus application_status = 4;
+}
+
+message TransactionResponse {
+    bytes id = 1;
+    int64 height = 2;
+    SignedTransaction transaction = 3;
+    ApplicationStatus application_status = 4;
+    InvokeScriptResult invoke_script_result = 5;
+}
+
+message TransactionsRequest {
+    bytes sender = 1;
+    Recipient recipient = 2;
+    repeated bytes transaction_ids = 3;
+}
+
+message TransactionSnapshotResponse {
+    bytes id = 1;
+    TransactionStateSnapshot snapshot = 2;
+}
+
+message TransactionSnapshotsRequest {
+    repeated bytes transaction_ids = 1;
+}
+
+message TransactionsByIdRequest {
+    repeated bytes transaction_ids = 3;
+}
+
+message CalculateFeeResponse {
+    bytes asset_id = 1;
+    // NOTE: This field uses uint64 while all other monetary fields in the
+    // protocol use int64. This is the upstream wire format and cannot be
+    // changed without breaking compatibility. Consumers should be aware
+    // of cross-language unsigned mapping differences (Java, C#).
+    uint64 amount = 2;
+}
+
+message SignRequest {
+    Transaction transaction = 1;
+    bytes signer_public_key = 2;
+}
+
+message InvokeScriptResultResponse {
+    SignedTransaction transaction = 1;
+    InvokeScriptResult result = 2;
+}
