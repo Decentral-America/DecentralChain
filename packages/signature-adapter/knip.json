@@ -1,8 +1,0 @@
-{
-  "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "ignoreExportsUsedInFile": true,
-  "project": ["src/**/*.ts"],
-  "rules": {
-    "enumMembers": "off"
-  }
-}

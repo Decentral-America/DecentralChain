@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/node-api-js/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
     "@decentralchain/bignumber": "^1.2.1",
@@ -30,52 +30,52 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     },
     "./api-node/addresses": {
-      "types": "./dist/api-node/addresses/index.d.mts",
-      "default": "./dist/api-node/addresses/index.mjs"
+      "default": "./dist/api-node/addresses/index.mjs",
+      "types": "./dist/api-node/addresses/index.d.mts"
     },
     "./api-node/alias": {
-      "types": "./dist/api-node/alias/index.d.mts",
-      "default": "./dist/api-node/alias/index.mjs"
+      "default": "./dist/api-node/alias/index.mjs",
+      "types": "./dist/api-node/alias/index.d.mts"
     },
     "./api-node/assets": {
-      "types": "./dist/api-node/assets/index.d.mts",
-      "default": "./dist/api-node/assets/index.mjs"
+      "default": "./dist/api-node/assets/index.mjs",
+      "types": "./dist/api-node/assets/index.d.mts"
     },
     "./api-node/blocks": {
-      "types": "./dist/api-node/blocks/index.d.mts",
-      "default": "./dist/api-node/blocks/index.mjs"
+      "default": "./dist/api-node/blocks/index.mjs",
+      "types": "./dist/api-node/blocks/index.d.mts"
     },
     "./api-node/debug": {
-      "types": "./dist/api-node/debug/index.d.mts",
-      "default": "./dist/api-node/debug/index.mjs"
+      "default": "./dist/api-node/debug/index.mjs",
+      "types": "./dist/api-node/debug/index.d.mts"
     },
     "./api-node/eth": {
-      "types": "./dist/api-node/eth/index.d.mts",
-      "default": "./dist/api-node/eth/index.mjs"
+      "default": "./dist/api-node/eth/index.mjs",
+      "types": "./dist/api-node/eth/index.d.mts"
     },
     "./api-node/leasing": {
-      "types": "./dist/api-node/leasing/index.d.mts",
-      "default": "./dist/api-node/leasing/index.mjs"
+      "default": "./dist/api-node/leasing/index.mjs",
+      "types": "./dist/api-node/leasing/index.d.mts"
     },
     "./api-node/node": {
-      "types": "./dist/api-node/node/index.d.mts",
-      "default": "./dist/api-node/node/index.mjs"
+      "default": "./dist/api-node/node/index.mjs",
+      "types": "./dist/api-node/node/index.d.mts"
     },
     "./api-node/peers": {
-      "types": "./dist/api-node/peers/index.d.mts",
-      "default": "./dist/api-node/peers/index.mjs"
+      "default": "./dist/api-node/peers/index.mjs",
+      "types": "./dist/api-node/peers/index.d.mts"
     },
     "./api-node/rewards": {
-      "types": "./dist/api-node/rewards/index.d.mts",
-      "default": "./dist/api-node/rewards/index.mjs"
+      "default": "./dist/api-node/rewards/index.mjs",
+      "types": "./dist/api-node/rewards/index.d.mts"
     },
     "./api-node/transactions": {
-      "types": "./dist/api-node/transactions/index.d.mts",
-      "default": "./dist/api-node/transactions/index.mjs"
+      "default": "./dist/api-node/transactions/index.mjs",
+      "types": "./dist/api-node/transactions/index.d.mts"
     }
   },
   "files": [
@@ -87,7 +87,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/node-api-js#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/node-api-js",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -100,37 +100,31 @@
   "license": "MIT",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/node-api-js",
-  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "repository": {
+    "directory": "packages/node-api-js",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/node-api-js.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
   "scripts": {
     "build": "tsdown",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "lint": "biome check --write .",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "postpublish": "git push",
     "postversion": "npm publish",
     "prepack": "npm run build",
-    "prepare": "lefthook install",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "size-limit": [
