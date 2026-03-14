@@ -4,7 +4,7 @@ import { toBigNumber } from '../utils';
 
 /** Raw asset information used to construct an Asset instance. */
 export interface IAssetInfo {
-  readonly ticker?: string | null;
+  readonly ticker?: string | null | undefined;
   readonly id: string;
   readonly name: string;
   readonly precision: number;
@@ -14,8 +14,8 @@ export interface IAssetInfo {
   readonly sender: string;
   readonly quantity: BigNumber | string | number;
   readonly reissuable: boolean;
-  readonly hasScript?: boolean;
-  readonly minSponsoredFee?: BigNumber | string | number | null;
+  readonly hasScript?: boolean | undefined;
+  readonly minSponsoredFee?: BigNumber | string | number | null | undefined;
 }
 
 /** Serialized representation of an Asset, returned by `Asset.toJSON()`. */
