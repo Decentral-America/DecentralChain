@@ -1,0 +1,243 @@
+import create from './libs/parseJsonBigNumber';
+
+const { parse } = create();
+
+import { convertLongFields, convertTxLongFields } from './convert';
+import { type TToLongConverter } from './parse';
+import { getTransactionSchema, orderVersionMap, type TRANSACTION_TYPE } from './schemas';
+import { type DATA_FIELD_TYPE, type TSchema } from './schemaTypes';
+import { type TFromLongConverter } from './serialize';
+import { LONG } from './serializePrimitives';
+
+function resolvePath(path: string[], obj: unknown): unknown {
+  if (path.length === 0) return obj;
+  if (typeof obj !== 'object' || obj === null) return undefined;
+
+  return resolvePath(path.slice(1), (obj as Record<string, unknown>)[path[0] as string]);
+}
+
+const isLongProp = (
+  fullPath: string[],
+  fullSchema: TSchema | undefined,
+  targetObject: unknown,
+): boolean => {
+  function go(path: string[], schema?: TSchema): boolean {
+    if (schema == null) return false;
+
+    if (path.length === 0 && (schema.type === 'primitive' || schema.type === undefined))
+      return schema.toBytes === LONG;
+
+    if (schema.type === 'object') {
+      const field = schema.schema.find(([name, _]) => name === path[0]);
+      return go(path.slice(1), field?.[1]);
+    }
+
+    if (schema.type === 'array') {
+      return go(path.slice(1), schema.items);
+    }
+
+    if (schema.type === 'dataTxField') {
+      if (path[0] !== 'value') return false;
+      const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as {
+        type: string;
+      };
+      const dataSchema = schema.items.get(dataObj.type as DATA_FIELD_TYPE);
+      return go(path.slice(1), dataSchema);
+    }
+
+    if (schema.type === 'anyOf') {
+      const obj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as Record<
+        string,
+        unknown
+      >;
+      const objType = obj[schema.discriminatorField] as string;
+      const objSchema = schema.itemByKey(objType);
+      if (!objSchema) return false;
+
+      // If valueField exists in schema we also check if value and not type field is currently processed. E.g:
+      // {type: 'integer', value: 1000}
+      if (schema.valueField != null && fullPath[fullPath.length - 1] === schema.valueField) {
+        return go(path.slice(1), objSchema.schema);
+      }
+      //  Otherwise whole object is used as value. E.g.: {type:14, sender: 'example', amount: 1000}
+      else {
+        return go(path, objSchema.schema);
+      }
+    }
+
+    return false;
+  }
+
+  return go(fullPath, fullSchema);
+};
+
+/**
+ * Converts object to JSON string using binary schema. For every string found, it checks if given string is LONG property.
+ * If true - function writes this string as number
+ * @param obj
+ * @param schema
+ */
+export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
+  const path: string[] = [];
+  const stack: unknown[] = [];
+
+  function stringifyValue(value: unknown): string | undefined {
+    if (typeof value === 'string') {
+      if (isLongProp(path, schema, obj)) {
+        return value;
+      }
+    }
+
+    if (
+      typeof value === 'boolean' ||
+      value instanceof Boolean ||
+      value === null ||
+      typeof value === 'number' ||
+      value instanceof Number ||
+      typeof value === 'string' ||
+      value instanceof String ||
+      value instanceof Date ||
+      typeof value === 'bigint'
+    ) {
+      // BigInt needs special handling - convert to string representation for JSON
+      if (typeof value === 'bigint') {
+        return value.toString();
+      }
+      return JSON.stringify(value);
+    }
+
+    if (Array.isArray(value)) {
+      return stringifyArray(value);
+    }
+
+    if (value && typeof value === 'object') {
+      return stringifyObject(value as Record<string, unknown>);
+    }
+
+    return undefined;
+  }
+
+  function stringifyArray(array: unknown[]): string {
+    let str = '[';
+
+    const stackIndex = stack.length;
+    stack[stackIndex] = array;
+
+    for (let i = 0; i < array.length; i++) {
+      const key = `${i}`;
+      const item = array[i];
+
+      if (typeof item !== 'undefined' && typeof item !== 'function' && typeof item !== 'symbol') {
+        path[stackIndex] = key;
+        str += stringifyValue(item);
+      } else {
+        str += 'null';
+      }
+
+      if (i < array.length - 1) {
+        str += ',';
+      }
+    }
+
+    stack.length = stackIndex;
+    path.length = stackIndex;
+
+    str += ']';
+    return str;
+  }
+
+  function stringifyObject(object: Record<string, unknown>): string {
+    let first = true;
+    let str = '{';
+
+    const stackIndex = stack.length;
+    stack[stackIndex] = object;
+
+    for (const key in object) {
+      if (Object.hasOwn(object, key)) {
+        const value = object[key];
+
+        if (includeProperty(value)) {
+          if (first) {
+            first = false;
+          } else {
+            str += ',';
+          }
+
+          str += `"${key}":`;
+
+          path[stackIndex] = key;
+          str += stringifyValue(value);
+        }
+      }
+    }
+
+    stack.length = stackIndex;
+    path.length = stackIndex;
+
+    str += '}';
+    return str;
+  }
+
+  function includeProperty(value: unknown) {
+    return typeof value !== 'undefined' && typeof value !== 'function' && typeof value !== 'symbol';
+  }
+
+  return stringifyValue(obj) || '';
+}
+
+/**
+ * Safe parse json string to TX. Converts unsafe numbers to strings. Converts all LONG fields with converter if provided
+ * @param str
+ * @param toLongConverter
+ */
+export function parseTx<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
+  const tx = parse(str) as Record<string, unknown>;
+  return toLongConverter ? convertTxLongFields(tx, toLongConverter) : tx;
+}
+
+/**
+ * Converts transaction to JSON string.
+ * If transaction contains custom LONG instances and this instances doesn't have toString method, you can provide converter as second param
+ * @param tx
+ * @param fromLongConverter
+ */
+export function stringifyTx<LONG>(
+  tx: Record<string, unknown>,
+  fromLongConverter?: TFromLongConverter<LONG>,
+): string {
+  const { type, version } = tx;
+  const schema = getTransactionSchema(type as TRANSACTION_TYPE, version as number);
+  const txWithStrings = convertLongFields(tx, schema, undefined, fromLongConverter);
+  return stringifyWithSchema(txWithStrings, schema);
+}
+
+/**
+ * Safe parse json string to order. Converts unsafe numbers to strings. Converts all LONG fields with converter if provided
+ * @param str
+ * @param toLongConverter
+ */
+export function parseOrder<LONG = string>(str: string, toLongConverter?: TToLongConverter<LONG>) {
+  const ord = parse(str) as { version?: number; [key: string]: unknown };
+  const version = ord.version || 1;
+  const schema = orderVersionMap[version];
+  if (schema == null) throw new Error(`Unknown order version: ${version}`);
+  return toLongConverter ? convertLongFields(ord, schema, toLongConverter) : ord;
+}
+
+/**
+ * Converts order to JSON string
+ * If order contains custom LONG instances and this instances doesn't have toString method, you can provide converter as second param
+ * @param ord
+ * @param fromLongConverter
+ */
+export function stringifyOrder<LONG>(
+  ord: { version?: number; [key: string]: unknown },
+  fromLongConverter?: TFromLongConverter<LONG>,
+): string {
+  const version = ord.version || 1;
+  const schema = orderVersionMap[version];
+  if (schema == null) throw new Error(`Unknown order version: ${version}`);
+  const ordWithStrings = convertLongFields(ord, schema, undefined, fromLongConverter);
+  return stringifyWithSchema(ordWithStrings, schema);
+}

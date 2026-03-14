@@ -1,0 +1,184 @@
+import { range } from './libs/utils';
+import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, type TParser } from './parsePrimitives';
+import { getTransactionSchema, orderSchemaV2 } from './schemas';
+import { type TSchema } from './schemaTypes';
+
+export type TToLongConverter<LONG> = (val: string) => LONG;
+
+/**
+ * Creates Uint8Array parser from object schema. If toLongConverter is provided it will be used for all LONG primitives found in schema
+ * @param schema
+ * @param toLongConverter
+ */
+export const parserFromSchema =
+  <LONG = string>(schema: TSchema, toLongConverter?: TToLongConverter<LONG>): TParser<unknown> =>
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: binary protocol parser with type discriminators
+  (bytes: Uint8Array, start = 0) => {
+    let cursor: number = start;
+
+    if (schema.type === 'array') {
+      const result: unknown[] = [];
+      const { value: len, shift } = (schema.fromBytes || P_SHORT)(bytes, start);
+      cursor += shift;
+
+      range(0, len).forEach((_) => {
+        const parser = parserFromSchema(schema.items, toLongConverter);
+        const { value, shift } = parser(bytes, cursor);
+        result.push(value);
+        cursor += shift;
+      });
+
+      return { shift: cursor - start, value: result };
+    } else if (schema.type === 'object') {
+      if (schema.optional) {
+        const exists = bytes[cursor] === 1;
+        cursor += 1;
+        if (!exists) return { shift: 1, value: undefined };
+      }
+
+      // skip object length, since we have schema of all its fields
+      if (schema.withLength) {
+        const lenInfo = schema.withLength.fromBytes(bytes, cursor);
+        cursor += lenInfo.shift;
+      }
+
+      const result: Record<string, unknown> = {};
+      schema.schema.forEach((field) => {
+        const [name, schema] = field;
+        const parser = parserFromSchema(schema, toLongConverter);
+        const { value, shift } = parser(bytes, cursor);
+        cursor += shift;
+        if (value !== undefined) {
+          // Name as array means than we need to save result to many object fields
+          if (Array.isArray(name)) {
+            Object.assign(result, value);
+          } else {
+            result[name] = value;
+          }
+        }
+      });
+
+      return { shift: cursor - start, value: result };
+    } else if (schema.type === 'anyOf') {
+      const typeInfo = (schema.fromBytes || P_BYTE)(bytes, cursor + schema.discriminatorBytePos);
+
+      // Do not advance cursor if the object is serialized with the discriminator or discriminator is not at position 0
+      if (schema.valueField && schema.discriminatorBytePos === 0) {
+        cursor += typeInfo.shift;
+      }
+
+      const item = schema.itemByByteKey(typeInfo.value);
+      if (item == null) {
+        throw new Error(`Failed to get schema for item with bytecode: ${typeInfo.value}`);
+      }
+      const parser = parserFromSchema(item.schema, toLongConverter);
+      const { value, shift } = parser(bytes, cursor);
+      cursor += shift;
+
+      return {
+        shift: cursor - start,
+        // Checks if value should be written inside object. Eg. { type: 'int', value: 20}. Otherwise writes object directly. Eg. {type: 4, recipient: 'foo', timestamp:10000}
+        value: schema.valueField
+          ? { [schema.discriminatorField]: item.strKey, [schema.valueField]: value }
+          : value,
+      };
+    } else if (schema.type === 'dataTxField') {
+      const key = byteToStringWithLength(bytes, cursor);
+      cursor += key.shift;
+      const dataType = P_BYTE(bytes, cursor);
+      cursor += dataType.shift;
+      const itemRecord = [...schema.items].find((_, i) => i === dataType.value);
+      if (!itemRecord) {
+        throw new Error(`Parser Error: Unknown dataTxField type: ${dataType.value}`);
+      }
+      const parser = parserFromSchema(itemRecord[1], toLongConverter);
+      const result = parser(bytes, cursor);
+      return {
+        shift: result.shift + key.shift + dataType.shift,
+        value: {
+          key: key.value,
+          type: itemRecord[0],
+          value: result.value,
+        },
+      };
+    } else if (schema.type === 'primitive' || schema.type === undefined) {
+      const parser = schema.fromBytes;
+      const { value: rawValue, shift } = parser(bytes, start);
+      let value = rawValue;
+
+      //Capture LONG Parser and convert strings desired instance if longFactory is present
+      if (parser === P_LONG && toLongConverter) {
+        value = toLongConverter(value as string);
+      }
+      return { shift: shift, value };
+    } /* v8 ignore next 3 - defensive guard for future schema types */ else {
+      throw new Error(`Parser Error: Unknown schema type: ${(schema as TSchema).type}`);
+    }
+  };
+
+/**
+ * Parses the type and version header from serialized transaction bytes.
+ * Handles the leading zero byte present in ExchangeTransactionV2.
+ *
+ * @param bytes - Raw transaction bytes
+ * @returns Object with `type` and `version` fields
+ */
+export const parseHeader = (bytes: Uint8Array): { type: number; version: number } => {
+  let shift = 0;
+  let typeInfo = P_BYTE(bytes, shift);
+  shift += typeInfo.shift;
+
+  // ExchangeTransactionV2 have leading 0 in bodybytes
+  if (typeInfo.value === 0) {
+    typeInfo = P_BYTE(bytes, shift);
+    shift += typeInfo.shift;
+  }
+  const versionInfo = P_BYTE(bytes, shift);
+
+  return {
+    type: typeInfo.value,
+    version: versionInfo.value,
+  };
+};
+
+/**
+ * Parses a serialized DecentralChain transaction from binary bytes.
+ * Automatically resolves the schema from the type/version header.
+ *
+ * **Note:** Cannot parse transactions without a version byte.
+ *
+ * @param bytes - Raw transaction bytes
+ * @param toLongConverter - Optional converter for LONG string values to a custom type
+ * @returns The parsed transaction object
+ *
+ * @example
+ * ```typescript
+ * const tx = parseTx(bytes);
+ * const txWithLong = parseTx(bytes, Long.fromString);
+ * ```
+ */
+export function parseTx<LONG = string>(
+  bytes: Uint8Array,
+  toLongConverter?: TToLongConverter<LONG>,
+) {
+  const { type, version } = parseHeader(bytes);
+  const schema = getTransactionSchema(type, version);
+
+  return parserFromSchema(schema, toLongConverter)(bytes).value;
+}
+
+/**
+ * Parses a serialized DEX order (v2+) from binary bytes.
+ *
+ * **Note:** Cannot parse OrderV1, which lacks a version field.
+ *
+ * @param bytes - Raw order bytes
+ * @param toLongConverter - Optional converter for LONG string values to a custom type
+ * @returns The parsed order object
+ */
+export function parseOrder<LONG = string>(
+  bytes: Uint8Array,
+  toLongConverter?: TToLongConverter<LONG>,
+) {
+  return parserFromSchema(orderSchemaV2, toLongConverter)(bytes).value;
+}
