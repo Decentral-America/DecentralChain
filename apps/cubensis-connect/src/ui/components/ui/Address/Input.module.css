@@ -1,0 +1,10 @@
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.error {
+  position: absolute;
+  bottom: -16px;
+  margin: 0;
+}

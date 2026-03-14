@@ -1,0 +1,80 @@
+.root
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0 0;
+  height: calc(100% - 48px);
+  overflow: hidden;
+
+.checkbox.checkbox // for increased specificity
+  margin-right: 0;
+
+.centered
+  margin-right: 48px;
+  margin-left: 48px;
+
+.accounts
+  flex: 1 1 0;
+  border-top: 1px solid #edf0f4;
+  background: #f8f9fb;
+  overflow: auto;
+
+.accountsGroup
+  position: relative;
+
+.accountsGroupHeader
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #edf0f4;
+  padding: 10px 50px;
+  background: #fff;
+
+.accountsGroupIcon
+  margin: 0 8px 2px 0;
+
+.accountsGroupLabel
+  margin-right: auto;
+  color: #9ba6b2;
+  font-size: 12px;
+  font-weight: 300;
+
+.accountList
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 48px;
+
+.accountListItem
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(155, 166, 178, 0.4);
+  background: #FFFFFF;
+  padding: 11px 16px 11px 14px;
+  min-height: 64px;
+
+.accountInfo
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+.accountInfoText
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+.accountName
+  font-size: 12px;
+  line-height: 14px;
+  word-break: break-word;
+
+.accountInfoNote
+  color: var(--color-disabled500);
+  margin-right: 24px;
+
+.buttons
+  border-top: 1px solid #edf0f4;
+  padding: 24px 48px;

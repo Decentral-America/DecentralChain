@@ -1,0 +1,33 @@
+.button {
+  padding: 6px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border-radius: 10px;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--color-basic100);
+}
+
+.logo {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+}
+
+.logo_img {
+  object-fit: contain;
+}
+
+.logo_placeholder {
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+}

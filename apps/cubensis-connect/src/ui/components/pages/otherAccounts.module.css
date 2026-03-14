@@ -1,0 +1,69 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 48px);
+  overflow: auto;
+}
+
+.header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.accounts {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  padding: 0 14px 14px;
+  background: #f8f9fb;
+}
+
+.noAccountsNote {
+  color: #9ba6b2;
+  font-size: 14px;
+  text-align: center;
+}
+
+.addAccount {
+  text-align: center;
+}
+
+.addAccountButton {
+  border: 1px dashed #dae1e9;
+  height: 32px;
+  border-radius: 4px;
+  color: #9ba6b2;
+  font: inherit;
+  font-size: 14px;
+  line-height: 32px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.addAccountButton:hover {
+  background-color: #edf0f4;
+}
+
+.addAccountButton_full {
+  margin: 20px 0 40px;
+  padding: 0 14px 0 34px;
+  background: url(../../assets/img/add-14-basic-500.svg) 13px center no-repeat;
+}
+
+.addAccountButton_small {
+  padding: 0;
+  width: 32px;
+  background: url(../../assets/img/add-14-basic-500.svg) center center no-repeat;
+}

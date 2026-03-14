@@ -1,0 +1,26 @@
+.content {
+  position: relative;
+  flex: 1;
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.greyLine {
+  margin: 0 -64px 40px;
+  font-size: 12px;
+}
+
+.error {
+  margin-bottom: 44px;
+}
+
+.errorButton {
+  color: var(--color-submit400);
+  cursor: pointer;
+}
+
+.errorButton:hover {
+  color: var(--color-submit300);
+}

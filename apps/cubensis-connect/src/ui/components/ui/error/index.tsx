@@ -1,0 +1,95 @@
+import clsx from 'clsx';
+import { PureComponent } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import * as styles from './error.module.styl';
+
+const Errors = ({
+  errors,
+  show,
+}: {
+  errors: Array<{ key: string; msg: string }> | undefined;
+  show: unknown;
+}) => {
+  const { t } = useTranslation();
+
+  if (!show || !errors || !errors.length) {
+    return null;
+  }
+
+  return (
+    <>
+      {errors.map(({ key, msg }) => {
+        key = key.replace(/\s/g, '');
+        return t(key, { defaultValue: msg, key });
+      })}
+    </>
+  );
+};
+
+interface Props {
+  type?: string | undefined;
+  show?: unknown | undefined;
+  children?: React.ReactNode | undefined;
+  className?: string | undefined;
+  hideByClick?: boolean | undefined;
+  onClick?: ((...args: unknown[]) => void) | undefined;
+  errors?: Array<{ code: number; key: string; msg: string }> | undefined;
+}
+
+interface State {
+  hidden?: boolean | undefined;
+  showed: unknown;
+}
+
+export class ErrorMessage extends PureComponent<Props, State> {
+  state: State = { showed: false };
+
+  static getDerivedStateFromProps(props: Props, state: State): State | null {
+    const { showed } = state;
+    const { show } = props;
+
+    if (!state || showed !== show) {
+      return { ...state, showed: show };
+    }
+
+    return null;
+  }
+
+  onClick = (e: unknown) => this._onClick(e);
+
+  render() {
+    const { showed } = this.state;
+
+    const { children, className = '', errors, type, show, ...otherProps } = this.props;
+
+    if (type === 'modal') {
+      return null;
+    }
+
+    return (
+      <button
+        type="button"
+        className={clsx(styles.error, className, {
+          [styles.modalError]: type && type === 'modal',
+        })}
+        onClick={this.onClick}
+        {...otherProps}
+      >
+        <Errors errors={errors} show={showed} />
+        {showed ? children : null}
+      </button>
+    );
+  }
+
+  _onClick(e: unknown) {
+    if (this.props.onClick) {
+      this.props.onClick(e);
+      return null;
+    }
+
+    if (this.props.hideByClick) {
+      this.setState({ hidden: true });
+    }
+  }
+}

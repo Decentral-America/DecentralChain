@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  align-items: center;
+}
+
+.item {
+  flex: 0 0 60px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid transparent;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.itemSelected {
+  border-color: var(--color-submit400);
+  background-color: rgba(31, 90, 246, 0.1);
+}
+
+.itemLabel {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-basic500);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
