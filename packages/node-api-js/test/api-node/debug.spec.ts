@@ -1,0 +1,55 @@
+import { broadcast, invokeScript, libs, transfer, waitForTx } from '@decentralchain/transactions';
+import { type InvokeScriptTransaction } from '@decentralchain/ts-types';
+import { create } from '../../src';
+import { type TLong } from '../../src/interface';
+import { type TWithState } from '../../src/tools/transactions/transactions';
+import { CHAIN_ID, NODE_URL, STATE } from '../_state';
+
+const api = create(NODE_URL);
+
+describe('State changes by transaction Id', () => {
+  it('gets state changes', async () => {
+    const itx = invokeScript(
+      {
+        call: {
+          function: 'call',
+        },
+        chainId: CHAIN_ID,
+        dApp: STATE.ACCOUNTS.FOR_SCRIPT.address,
+      },
+      STATE.ACCOUNTS.SIMPLE.seed,
+    );
+    await broadcast(itx, NODE_URL);
+    await waitForTx(itx.id, { apiBase: NODE_URL });
+
+    const stateChanges = (await api.debug.fetchStateChangesByTxId(itx.id)).stateChanges;
+    expect(stateChanges.data).toStrictEqual([]);
+    expect(stateChanges.transfers).toStrictEqual([]);
+  });
+
+  it('throws on not found tx', async () => {
+    const f = api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk');
+    expect(f).rejects.toMatchObject({ error: 311 });
+  });
+
+  it('throws on not invoke script tx', async () => {
+    const ttx = transfer(
+      {
+        amount: 1000,
+        recipient: libs.crypto.address(STATE.ACCOUNTS.SIMPLE.seed, CHAIN_ID),
+      },
+      STATE.ACCOUNTS.SIMPLE.seed,
+    );
+    await broadcast(ttx, NODE_URL);
+    await waitForTx(ttx.id, { apiBase: NODE_URL });
+    const f = api.debug.fetchStateChangesByTxId(ttx.id);
+    expect(f).rejects.toMatchObject({ error: 312 });
+  });
+
+  it('state schanges in stage', async () => {
+    const api2: ReturnType<typeof create> = create('https://nodes-stagenet.decentralchain.io/');
+    //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
+    const tx = await api2.transactions.fetchInfo('3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK');
+    const _txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges;
+  });
+});

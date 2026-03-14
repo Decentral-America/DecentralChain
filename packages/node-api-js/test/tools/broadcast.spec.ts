@@ -1,0 +1,73 @@
+import { libs, transfer } from '@decentralchain/transactions';
+import {
+  type SignedTransaction,
+  type TransferTransaction,
+  type WithId,
+} from '@decentralchain/ts-types';
+import { create } from '../../src';
+import { TRANSACTION_STATUSES } from '../../src/constants';
+import { type TLong } from '../../src/interface';
+import { wait } from '../../src/tools/utils';
+import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
+
+const api = create(NODE_URL);
+
+it('Broadcast 2 transactions', async () => {
+  const tx1 = transfer(
+    {
+      amount: 1,
+      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
+    },
+    MASTER_ACCOUNT.SEED,
+  ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
+
+  const tx2 = transfer(
+    {
+      amount: 2,
+      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
+    },
+    MASTER_ACCOUNT.SEED,
+  ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
+
+  await api.tools.transactions.broadcast([tx1, tx2]);
+  const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
+
+  expect(status.statuses.length).toBe(2);
+  expect(status.statuses[0].inUTX).toBe(true);
+  expect(status.statuses[0].id).toBe(tx1.id);
+  expect(status.statuses[1].inUTX).toBe(true);
+  expect(status.statuses[1].id).toBe(tx2.id);
+});
+
+test('Chain broadcast 2 transactions', async () => {
+  const tx1 = transfer(
+    {
+      amount: 1,
+      recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
+    },
+    MASTER_ACCOUNT.SEED,
+  ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
+
+  const tx2 = transfer(
+    {
+      amount: 2,
+      recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
+    },
+    MASTER_ACCOUNT.SEED,
+  ) as SignedTransaction<TransferTransaction<TLong>> & WithId;
+
+  const promise = api.tools.transactions
+    .broadcast([tx1, tx2], { chain: true, confirmations: 1 })
+    .catch(() => null);
+
+  await wait(10);
+  const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
+  expect(status.statuses[0].status).toBe(TRANSACTION_STATUSES.UNCONFIRMED);
+  expect(status.statuses[1].status).toBe(TRANSACTION_STATUSES.NOT_FOUND);
+
+  return promise.then(async () => {
+    const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
+    expect(status.statuses[0].confirmations >= 1).toBe(true);
+    expect(status.statuses[1].confirmations >= 1).toBe(true);
+  });
+}, 60000);
