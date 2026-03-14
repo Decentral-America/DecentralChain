@@ -1,0 +1,222 @@
+/** Length in bytes of a Curve25519 public key. */
+export const PUBLIC_KEY_LENGTH = 32 as const;
+/** Length in bytes of a Curve25519 private key. */
+export const PRIVATE_KEY_LENGTH = 32 as const;
+/** Length in bytes of an Ed25519/Curve25519 signature. */
+export const SIGNATURE_LENGTH = 64 as const;
+/** Length in bytes of a DecentralChain address. */
+export const ADDRESS_LENGTH = 26 as const;
+
+/** Chain ID for DecentralChain mainnet (character 'L'). */
+export const MAIN_NET_CHAIN_ID = 76 as const;
+/** Chain ID for DecentralChain testnet (character 'T'). */
+export const TEST_NET_CHAIN_ID = 84 as const;
+
+/** A seed combined with a nonce for deterministic key derivation. */
+export interface INonceSeed {
+  seed: TBytes;
+  nonce?: number | undefined;
+}
+
+/** AES cipher mode of operation. */
+export type AESMode = 'CBC' | 'CFB' | 'CTR' | 'OFB' | 'ECB' | 'GCM';
+
+/**
+ * Supported RSA digest algorithms for signing and verification.
+ *
+ * `'NONE'` performs raw PKCS#1 v1.5 without hashing or DigestInfo wrapping —
+ * the caller-supplied bytes are signed/verified as-is. This matches the
+ * Waves/DecentralChain VM semantics for `rsaVerify(NOALG, …)`.
+ */
+export type RSADigestAlgorithm =
+  | 'NONE'
+  | 'SHA224'
+  | 'SHA256'
+  | 'SHA384'
+  | 'SHA512'
+  | 'SHA3-224'
+  | 'SHA3-256'
+  | 'SHA3-384'
+  | 'SHA3-512';
+
+/**
+ * @deprecated MD5 and SHA1 are cryptographically broken and have been removed.
+ * Use SHA256 or stronger.
+ */
+export type RSADigestAlgorithmUnsafe = 'MD5' | 'SHA1';
+
+/** Map from typed array name to its concrete random output type. */
+export interface TRandomTypesMap {
+  Array8: number[];
+  Array16: number[];
+  Array32: number[];
+  Buffer: Buffer;
+  Uint8Array: Uint8Array;
+  Uint16Array: Uint16Array;
+  Uint32Array: Uint32Array;
+}
+
+/**
+ * Type aliases used to increase flexibility and be able
+ * to extend these types later on. Also type aliases allow
+ * names to be more self-explanatory like in BASE58 case.
+ */
+
+/** Byte array type — alias for `Uint8Array`. */
+export type TBytes = Uint8Array;
+
+/** Base64-encoded string. */
+export type TBase64 = string;
+/** Base58-encoded string. */
+export type TBase58 = string;
+/** Base16 (hex) encoded string. */
+export type TBase16 = string;
+
+/** Chain identifier — either a single-character string or numeric code. */
+export type TChainId = string | number;
+
+/** Binary input — accepts `Uint8Array`, `number[]`, or Base58 string. */
+export type TBinaryIn = TBytes | TBase58 | number[];
+
+/** @internal Discriminator interface for `TRawStringIn`. */
+export interface TRawStringInDiscriminator {
+  TRawStringIn: null;
+}
+
+/** Raw string input — accepts `Uint8Array`, `number[]`, plain string, or discriminator. */
+export type TRawStringIn = TBytes | string | number[] | TRawStringInDiscriminator;
+
+/** Binary output — either raw bytes or Base58 string. */
+export type TBinaryOut = TBytes | TBase58;
+
+/** Public key wrapper — defaults to Base58 representation. */
+export interface TPublicKey<T extends TBinaryIn = TBase58> {
+  publicKey: T;
+}
+
+/** Private key wrapper — defaults to Base58 representation. */
+export interface TPrivateKey<T extends TBinaryIn = TBase58> {
+  privateKey: T;
+}
+
+/** Key pair containing both public and private keys. */
+export type TKeyPair<T extends TBinaryIn = TBase58> = TPublicKey<T> & TPrivateKey<T>;
+
+/** Seed type — a raw string input or a seed-with-nonce pair. */
+export type TSeed = TRawStringIn | INonceSeed;
+
+/** RSA key pair containing X.509-encoded public and PKCS#1 private key bytes. */
+export interface TRSAKeyPair {
+  rsaPublic: TBytes;
+  rsaPrivate: TBytes;
+}
+
+/** BLS12-381 key pair containing secret and public key bytes. */
+export interface TBLSKeyPair {
+  blsSecret: TBytes;
+  blsPublic: TBytes;
+}
+
+/**
+ * DecentralChain Crypto is a collection of essential cryptography and hashing
+ * algorithms used by DecentralChain, protocol entities and binary structures.
+ */
+
+/** Methods that require a seed as the first argument. */
+export interface ISeedRelated<TDesiredOut extends TBinaryOut = TBase58> {
+  //Seeds, keys and addresses
+  seedWithNonce: (seed: TSeed, nonce: number) => INonceSeed;
+  keyPair: (seed: TSeed) => TKeyPair<TDesiredOut>;
+  publicKey: (seedOrPrivateKey: TSeed | TPrivateKey<TBinaryIn>) => TDesiredOut;
+  privateKey: (seed: TSeed) => TDesiredOut;
+  address: (seedOrPublicKey: TSeed | TPublicKey<TBinaryIn>, chainId?: TChainId) => TDesiredOut;
+
+  //Signature
+  signBytes: (
+    seedOrPrivateKey: TSeed | TPrivateKey<TBinaryIn>,
+    bytes: TBinaryIn,
+    random?: TBinaryIn,
+  ) => TDesiredOut;
+}
+
+/** Methods with seed pre-bound (OOP usage pattern). */
+export interface ISeedEmbeded<TDesiredOut extends TBinaryOut = TBase58> {
+  //Seeds, keys and addresses
+  seedWithNonce: (nonce: number) => INonceSeed;
+  keyPair: () => TKeyPair<TDesiredOut>;
+  publicKey: () => TDesiredOut;
+  privateKey: () => TDesiredOut;
+  address: (chainId?: TChainId) => TDesiredOut;
+
+  //Bytes hashing and signing
+  signBytes: (bytes: TBinaryIn, random?: TBinaryIn) => TDesiredOut;
+}
+
+/** Complete DecentralChain crypto API surface. */
+export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
+  //Hashing
+  blake2b: (input: TBinaryIn) => TBytes;
+  keccak: (input: TBinaryIn) => TBytes;
+  sha256: (input: TBinaryIn) => TBytes;
+
+  //Base encoding\decoding
+  base64Encode: (input: TBinaryIn) => TBase64;
+  base64Decode: (input: TBase64) => TBytes; //throws (invalid input)
+  base58Encode: (input: TBinaryIn) => TBase58;
+  base58Decode: (input: TBase58) => TBytes; //throws (invalid input)
+  base16Encode: (input: TBinaryIn) => TBase16;
+  base16Decode: (input: TBase16) => TBytes; //throws (invalid input)
+
+  //Utils
+  stringToBytes: (input: string, encoding?: 'utf8' | 'raw') => TBytes;
+  bytesToString: (input: TBinaryIn, encoding?: 'utf8' | 'raw') => string;
+  split: (binary: TBinaryIn, ...sizes: number[]) => TBytes[];
+  concat: (...binaries: TBinaryIn[]) => TBytes;
+  buildAddress: (publicKeyBytes: TBytes, chainId: TChainId) => TBytes;
+
+  //Random
+  random<T extends keyof TRandomTypesMap>(count: number, type: T): TRandomTypesMap[T];
+
+  randomBytes: (size: number) => TBytes;
+  randomSeed: (wordsCount?: number) => string;
+
+  //Verification
+  verifySignature: (publicKey: TBinaryIn, bytes: TBinaryIn, signature: TBinaryIn) => boolean;
+  verifyPublicKey: (publicKey: TBinaryIn) => boolean;
+  verifyAddress: (
+    address: TBinaryIn,
+    optional?: { chainId?: TChainId; publicKey?: TBinaryIn },
+  ) => boolean;
+
+  //Messaging
+  sharedKey: (
+    privateKeyFrom: TBinaryIn,
+    publicKeyTo: TBinaryIn,
+    prefix: TRawStringIn,
+  ) => TDesiredOut;
+  messageDecrypt: (sharedKey: TBinaryIn, encryptedMessage: TBinaryIn) => string;
+  messageEncrypt: (sharedKey: TBinaryIn, message: string) => TBytes;
+
+  //Encryption
+  aesEncrypt: (data: TBinaryIn, encryptionKey: TBinaryIn, mode?: AESMode, iv?: TBinaryIn) => TBytes;
+  aesDecrypt: (
+    encryptedData: TBinaryIn,
+    encryptionKey: TBinaryIn,
+    mode?: AESMode,
+    iv?: TBinaryIn,
+  ) => TBytes;
+
+  //Seed encryption (Same algorithm as in DecentralChain client and keeper).
+  //Uses EvpKDF to derive key and iv from password. Then outputs AES-CBC encrypted seed in OpenSSL format as Base64 string
+  encryptSeed: (seed: string, password: string, encryptionRounds?: number) => TBase64;
+  decryptSeed: (encryptedSeed: TBase64, password: string, encryptionRounds?: number) => string;
+
+  //Merkle
+  merkleVerify: (rootHash: Uint8Array, merkleProof: Uint8Array, leafData: Uint8Array) => boolean;
+
+  //BLS
+  blsKeyPair: (seed: TBinaryIn) => TBLSKeyPair;
+  blsPublicKey: (privateKey: TBinaryIn) => TBytes;
+  blsSign: (privateKey: TBinaryIn, message: TBinaryIn) => TBytes;
+  blsVerify: (publicKey: TBinaryIn, message: TBinaryIn, signature: TBinaryIn) => boolean;
+}
