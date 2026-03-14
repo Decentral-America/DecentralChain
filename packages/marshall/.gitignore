@@ -1,0 +1,22 @@
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Build output
+dist
+coverage
+*.tsbuildinfo
+
+# Dependencies
+node_modules
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.size-snapshot.json
+.rpt2_cache
+*.local
