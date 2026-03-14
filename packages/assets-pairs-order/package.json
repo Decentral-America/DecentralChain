@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/assets-pairs-order/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
     "bs58": "^6.0.0"
@@ -24,8 +24,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     }
   },
   "files": [
@@ -38,7 +38,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/assets-pairs-order#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/assets-pairs-order",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -62,35 +62,29 @@
   "overrides": {
     "serialize-javascript": "^7.0.3"
   },
-  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "repository": {
+    "directory": "packages/assets-pairs-order",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/assets-pairs-order.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
   "scripts": {
     "build": "tsdown",
     "build:browser": "tsdown",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "lint": "biome check --write .",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepack": "npm run build",
-    "prepare": "lefthook install",
     "prepublishOnly": "npm run validate",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "size-limit": [

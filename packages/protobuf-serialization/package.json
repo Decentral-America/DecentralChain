@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/protobuf-serialization/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.11.0"
@@ -26,8 +26,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     },
     "./proto/*": "./proto/*"
   },
@@ -41,7 +41,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/protobuf-serialization#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/protobuf-serialization",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -62,36 +62,30 @@
   "license": "MIT",
   "main": "./dist/index.mjs",
   "name": "@decentralchain/protobuf-serialization",
-  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "repository": {
+    "directory": "packages/protobuf-serialization",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/protobuf-serialization.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
   "scripts": {
     "build": "rm -rf dist && buf generate && tsdown",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "generate": "buf generate",
     "lint": "biome check --write .",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepack": "npm run build",
-    "prepare": "lefthook install",
     "prepublishOnly": "npm run validate",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run build && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "size-limit": [

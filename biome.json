@@ -80,7 +80,7 @@
   },
   "overrides": [
     {
-      "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
+      "includes": ["**/test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
           "security": {
@@ -88,6 +88,53 @@
           },
           "suspicious": {
             "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/crypto/src/aesCommon.ts",
+        "packages/crypto/src/decryptAesEcb.ts",
+        "packages/crypto/src/encryptAesEcb.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/protobuf-serialization/src/gen/**"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noSecrets": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/marshall/src/libs/parseJsonBigNumber.ts",
+        "packages/parse-json-bignumber/src/**"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noControlCharactersInRegex": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ts-lib-crypto/examples/**"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noSecrets": "off"
           }
         }
       }
