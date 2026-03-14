@@ -1,0 +1,29 @@
+import { Signal } from 'ts-utils';
+import { Adapter } from '../../src/adapters/Adapter.js';
+import { type IOneArgFunction, type TMessageContent } from '../../src/bus/Bus.js';
+
+export class MockAdapter extends Adapter {
+  public onSend: Signal<TMessageContent> = new Signal();
+  public onDestroy: Signal<Record<string, never>> = new Signal();
+  private listeners: Array<(data: TMessageContent) => void> = [];
+
+  public send(data: TMessageContent): this {
+    this.onSend.dispatch(data);
+    return this;
+  }
+
+  public addListener(cb: IOneArgFunction<TMessageContent, void>): this {
+    this.listeners.push(cb);
+    return this;
+  }
+
+  public dispatchAdapterEvent(e: TMessageContent): void {
+    this.listeners.forEach((cb) => {
+      cb(e);
+    });
+  }
+
+  public destroy(): void {
+    this.onDestroy.dispatch({});
+  }
+}
