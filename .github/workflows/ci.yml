@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+
+permissions:
+  contents: read
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version-file: .node-version
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive NX SHAs
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Check module boundaries
+        run: node scripts/check-boundaries.mjs
+
+      - name: Lint (affected)
+        run: npx nx affected -t lint
+
+      - name: Build (affected)
+        run: npx nx affected -t build
+
+      - name: Test (affected)
+        run: npx nx affected -t test
+
+      - name: Format check
+        run: npx biome format .
