@@ -13,7 +13,7 @@
   "description": "WebSocket client for DecentralChain token swap aggregation — get the best swap prices across multiple DEX vendors",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.6",
+    "@biomejs/biome": "2.4.7",
     "@bufbuild/buf": "1.66.1",
     "@bufbuild/protoc-gen-es": "2.11.0",
     "@evilmartians/lefthook": "2.1.3",
@@ -31,8 +31,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     }
   },
   "files": [
