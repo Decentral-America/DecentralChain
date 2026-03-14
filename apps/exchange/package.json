@@ -10,8 +10,6 @@
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
     "preview": "vite preview",
     "merge-locales": "node scripts/mergeLocales.js",
     "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
@@ -138,5 +136,14 @@
       ],
       "category": "Finance"
     }
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git",
+    "directory": "apps/exchange"
+  },
+  "bugs": {
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+  },
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/exchange"
 }

@@ -6,7 +6,8 @@
   "author": "Blockchain Costa Rica <soporte@decentralchain.io>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/cubensis-connect.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git",
+    "directory": "apps/cubensis-connect"
   },
   "engines": {
     "node": ">=22"
@@ -27,9 +28,7 @@
     "test": "vitest run",
     "test:update": "vitest run test/Update.ts",
     "build": "node scripts/build.mjs",
-    "bulletproof": "npm run lint:fix && npm run typecheck && npm run test",
-    "zip": "node scripts/zip.js",
-    "prepare": "lefthook install"
+    "zip": "node scripts/zip.js"
   },
   "overrides": {
     "@types/react": "^19.0.0"
@@ -115,5 +114,9 @@
     "webdriverio": "^9.25.0",
     "webextension-polyfill": "^0.12.0",
     "zip-a-folder": "^4.0.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+  },
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/cubensis-connect"
 }
