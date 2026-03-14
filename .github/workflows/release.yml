@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        default: false
+        description: Run without publishing
+        type: boolean
+
+concurrency:
+  cancel-in-progress: false
+  group: release
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: npx nx run-many -t build --projects='packages/*'
+
+      - name: Test
+        run: npx nx run-many -t test --projects='packages/*'
+
+      - name: Version
+        run: npx nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+
+      - name: Changelog
+        run: npx nx release changelog --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+
+      - name: Publish
+        if: ${{ !inputs.dry-run }}
+        run: npx nx release publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

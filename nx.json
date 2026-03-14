@@ -13,6 +13,23 @@
     "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/biome.json"]
   },
   "nxCloudAccessToken": "",
+  "release": {
+    "changelog": {
+      "projectChangelogs": true,
+      "workspaceChangelog": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      }
+    },
+    "projects": ["packages/*"],
+    "projectsRelationship": "independent",
+    "version": {
+      "conventionalCommits": true,
+      "generatorOptions": {
+        "fallbackCurrentVersionResolver": "disk"
+      }
+    }
+  },
   "targetDefaults": {
     "build": {
       "cache": true,
@@ -31,6 +48,12 @@
     "typecheck": {
       "cache": true,
       "inputs": ["default", "^production"]
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build"],
+      "options": {
+        "packageRoot": "{projectRoot}"
+      }
     }
   }
 }
