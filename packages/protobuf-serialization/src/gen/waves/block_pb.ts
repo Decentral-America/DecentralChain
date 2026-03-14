@@ -2,24 +2,22 @@
 // @generated from file waves/block.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
-import { file_waves_transaction, type SignedTransaction } from './transaction_pb.js';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { SignedTransaction } from "./transaction_pb.js";
+import { file_waves_transaction } from "./transaction_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/block.proto.
  */
-export const file_waves_block: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'ChF3YXZlcy9ibG9jay5wcm90bxIFd2F2ZXMi3QUKBUJsb2NrEiMKBmhlYWRlchgBIAEoCzITLndhdmVzLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLgoMdHJhbnNhY3Rpb25zGAMgAygLMhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb24a6wQKBkhlYWRlchIQCghjaGFpbl9pZBgBIAEoBRIRCglyZWZlcmVuY2UYAiABKAwSEwoLYmFzZV90YXJnZXQYAyABKAMSHAoUZ2VuZXJhdGlvbl9zaWduYXR1cmUYBCABKAwSFQoNZmVhdHVyZV92b3RlcxgFIAMoDRIRCgl0aW1lc3RhbXAYBiABKAMSDwoHdmVyc2lvbhgHIAEoBRIRCglnZW5lcmF0b3IYCCABKAwSEwoLcmV3YXJkX3ZvdGUYCSABKAMSGQoRdHJhbnNhY3Rpb25zX3Jvb3QYCiABKAwSEgoKc3RhdGVfaGFzaBgLIAEoDBI/ChFjaGFsbGVuZ2VkX2hlYWRlchgMIAEoCzIkLndhdmVzLkJsb2NrLkhlYWRlci5DaGFsbGVuZ2VkSGVhZGVyEjYKE2ZpbmFsaXphdGlvbl92b3RpbmcYDSABKAsyGS53YXZlcy5GaW5hbGl6YXRpb25Wb3Rpbmca/QEKEENoYWxsZW5nZWRIZWFkZXISEwoLYmFzZV90YXJnZXQYASABKAMSHAoUZ2VuZXJhdGlvbl9zaWduYXR1cmUYAiABKAwSFQoNZmVhdHVyZV92b3RlcxgDIAMoDRIRCgl0aW1lc3RhbXAYBCABKAMSEQoJZ2VuZXJhdG9yGAUgASgMEhMKC3Jld2FyZF92b3RlGAYgASgDEhIKCnN0YXRlX2hhc2gYByABKAwSGAoQaGVhZGVyX3NpZ25hdHVyZRgIIAEoDBI2ChNmaW5hbGl6YXRpb25fdm90aW5nGAkgASgLMhkud2F2ZXMuRmluYWxpemF0aW9uVm90aW5nIugBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEi4KDHRyYW5zYWN0aW9ucxgFIAMoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEhIKCnN0YXRlX2hhc2gYBiABKAwSNgoTZmluYWxpemF0aW9uX3ZvdGluZxgHIAEoCzIZLndhdmVzLkZpbmFsaXphdGlvblZvdGluZyJlChBTaWduZWRNaWNyb0Jsb2NrEiYKC21pY3JvX2Jsb2NrGAEgASgLMhEud2F2ZXMuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwirAEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMgoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhMud2F2ZXMuRW5kb3JzZUJsb2NrQoEBCiBpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5ibG9ja1pMZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC93YXZlc6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM',
-    [file_waves_transaction],
-  );
+export const file_waves_block: GenFile = /*@__PURE__*/
+  fileDesc("ChF3YXZlcy9ibG9jay5wcm90bxIFd2F2ZXMi3QUKBUJsb2NrEiMKBmhlYWRlchgBIAEoCzITLndhdmVzLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLgoMdHJhbnNhY3Rpb25zGAMgAygLMhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb24a6wQKBkhlYWRlchIQCghjaGFpbl9pZBgBIAEoBRIRCglyZWZlcmVuY2UYAiABKAwSEwoLYmFzZV90YXJnZXQYAyABKAMSHAoUZ2VuZXJhdGlvbl9zaWduYXR1cmUYBCABKAwSFQoNZmVhdHVyZV92b3RlcxgFIAMoDRIRCgl0aW1lc3RhbXAYBiABKAMSDwoHdmVyc2lvbhgHIAEoBRIRCglnZW5lcmF0b3IYCCABKAwSEwoLcmV3YXJkX3ZvdGUYCSABKAMSGQoRdHJhbnNhY3Rpb25zX3Jvb3QYCiABKAwSEgoKc3RhdGVfaGFzaBgLIAEoDBI/ChFjaGFsbGVuZ2VkX2hlYWRlchgMIAEoCzIkLndhdmVzLkJsb2NrLkhlYWRlci5DaGFsbGVuZ2VkSGVhZGVyEjYKE2ZpbmFsaXphdGlvbl92b3RpbmcYDSABKAsyGS53YXZlcy5GaW5hbGl6YXRpb25Wb3Rpbmca/QEKEENoYWxsZW5nZWRIZWFkZXISEwoLYmFzZV90YXJnZXQYASABKAMSHAoUZ2VuZXJhdGlvbl9zaWduYXR1cmUYAiABKAwSFQoNZmVhdHVyZV92b3RlcxgDIAMoDRIRCgl0aW1lc3RhbXAYBCABKAMSEQoJZ2VuZXJhdG9yGAUgASgMEhMKC3Jld2FyZF92b3RlGAYgASgDEhIKCnN0YXRlX2hhc2gYByABKAwSGAoQaGVhZGVyX3NpZ25hdHVyZRgIIAEoDBI2ChNmaW5hbGl6YXRpb25fdm90aW5nGAkgASgLMhkud2F2ZXMuRmluYWxpemF0aW9uVm90aW5nIugBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEi4KDHRyYW5zYWN0aW9ucxgFIAMoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEhIKCnN0YXRlX2hhc2gYBiABKAwSNgoTZmluYWxpemF0aW9uX3ZvdGluZxgHIAEoCzIZLndhdmVzLkZpbmFsaXphdGlvblZvdGluZyJlChBTaWduZWRNaWNyb0Jsb2NrEiYKC21pY3JvX2Jsb2NrGAEgASgLMhEud2F2ZXMuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwirAEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMgoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhMud2F2ZXMuRW5kb3JzZUJsb2NrQoEBCiBpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5ibG9ja1pMZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC93YXZlc6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM", [file_waves_transaction]);
 
 /**
  * @generated from message waves.Block
  */
-export type Block = Message<'waves.Block'> & {
+export type Block = Message<"waves.Block"> & {
   /**
    * @generated from field: waves.Block.Header header = 1;
    */
@@ -40,12 +38,13 @@ export type Block = Message<'waves.Block'> & {
  * Describes the message waves.Block.
  * Use `create(BlockSchema)` to create a new message.
  */
-export const BlockSchema: GenMessage<Block> = /*@__PURE__*/ messageDesc(file_waves_block, 0);
+export const BlockSchema: GenMessage<Block> = /*@__PURE__*/
+  messageDesc(file_waves_block, 0);
 
 /**
  * @generated from message waves.Block.Header
  */
-export type Block_Header = Message<'waves.Block.Header'> & {
+export type Block_Header = Message<"waves.Block.Header"> & {
   /**
    * @generated from field: int32 chain_id = 1;
    */
@@ -116,14 +115,13 @@ export type Block_Header = Message<'waves.Block.Header'> & {
  * Describes the message waves.Block.Header.
  * Use `create(Block_HeaderSchema)` to create a new message.
  */
-export const Block_HeaderSchema: GenMessage<Block_Header> =
-  /*@__PURE__*/
+export const Block_HeaderSchema: GenMessage<Block_Header> = /*@__PURE__*/
   messageDesc(file_waves_block, 0, 0);
 
 /**
  * @generated from message waves.Block.Header.ChallengedHeader
  */
-export type Block_Header_ChallengedHeader = Message<'waves.Block.Header.ChallengedHeader'> & {
+export type Block_Header_ChallengedHeader = Message<"waves.Block.Header.ChallengedHeader"> & {
   /**
    * @generated from field: int64 base_target = 1;
    */
@@ -174,14 +172,13 @@ export type Block_Header_ChallengedHeader = Message<'waves.Block.Header.Challeng
  * Describes the message waves.Block.Header.ChallengedHeader.
  * Use `create(Block_Header_ChallengedHeaderSchema)` to create a new message.
  */
-export const Block_Header_ChallengedHeaderSchema: GenMessage<Block_Header_ChallengedHeader> =
-  /*@__PURE__*/
+export const Block_Header_ChallengedHeaderSchema: GenMessage<Block_Header_ChallengedHeader> = /*@__PURE__*/
   messageDesc(file_waves_block, 0, 0, 0);
 
 /**
  * @generated from message waves.MicroBlock
  */
-export type MicroBlock = Message<'waves.MicroBlock'> & {
+export type MicroBlock = Message<"waves.MicroBlock"> & {
   /**
    * @generated from field: int32 version = 1;
    */
@@ -222,14 +219,13 @@ export type MicroBlock = Message<'waves.MicroBlock'> & {
  * Describes the message waves.MicroBlock.
  * Use `create(MicroBlockSchema)` to create a new message.
  */
-export const MicroBlockSchema: GenMessage<MicroBlock> =
-  /*@__PURE__*/
+export const MicroBlockSchema: GenMessage<MicroBlock> = /*@__PURE__*/
   messageDesc(file_waves_block, 1);
 
 /**
  * @generated from message waves.SignedMicroBlock
  */
-export type SignedMicroBlock = Message<'waves.SignedMicroBlock'> & {
+export type SignedMicroBlock = Message<"waves.SignedMicroBlock"> & {
   /**
    * @generated from field: waves.MicroBlock micro_block = 1;
    */
@@ -250,14 +246,13 @@ export type SignedMicroBlock = Message<'waves.SignedMicroBlock'> & {
  * Describes the message waves.SignedMicroBlock.
  * Use `create(SignedMicroBlockSchema)` to create a new message.
  */
-export const SignedMicroBlockSchema: GenMessage<SignedMicroBlock> =
-  /*@__PURE__*/
+export const SignedMicroBlockSchema: GenMessage<SignedMicroBlock> = /*@__PURE__*/
   messageDesc(file_waves_block, 2);
 
 /**
  * @generated from message waves.EndorseBlock
  */
-export type EndorseBlock = Message<'waves.EndorseBlock'> & {
+export type EndorseBlock = Message<"waves.EndorseBlock"> & {
   /**
    * @generated from field: int32 endorser_index = 1;
    */
@@ -290,14 +285,13 @@ export type EndorseBlock = Message<'waves.EndorseBlock'> & {
  * Describes the message waves.EndorseBlock.
  * Use `create(EndorseBlockSchema)` to create a new message.
  */
-export const EndorseBlockSchema: GenMessage<EndorseBlock> =
-  /*@__PURE__*/
+export const EndorseBlockSchema: GenMessage<EndorseBlock> = /*@__PURE__*/
   messageDesc(file_waves_block, 3);
 
 /**
  * @generated from message waves.FinalizationVoting
  */
-export type FinalizationVoting = Message<'waves.FinalizationVoting'> & {
+export type FinalizationVoting = Message<"waves.FinalizationVoting"> & {
   /**
    * @generated from field: repeated int32 endorser_indexes = 1;
    */
@@ -325,6 +319,6 @@ export type FinalizationVoting = Message<'waves.FinalizationVoting'> & {
  * Describes the message waves.FinalizationVoting.
  * Use `create(FinalizationVotingSchema)` to create a new message.
  */
-export const FinalizationVotingSchema: GenMessage<FinalizationVoting> =
-  /*@__PURE__*/
+export const FinalizationVotingSchema: GenMessage<FinalizationVoting> = /*@__PURE__*/
   messageDesc(file_waves_block, 4);
+

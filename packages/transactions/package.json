@@ -4,11 +4,10 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
-    "@decentralchain/marshall": "^1.0.1",
-    "@decentralchain/node-api-js": "^2.0.1",
-    "@decentralchain/protobuf-serialization": "^3.0.0",
-    "@decentralchain/ts-lib-crypto": "^2.0.1",
-    "@decentralchain/ts-types": "^2.0.1"
+    "@decentralchain/marshall": "workspace:*",
+    "@decentralchain/protobuf-serialization": "workspace:*",
+    "@decentralchain/ts-lib-crypto": "workspace:*",
+    "@decentralchain/ts-types": "workspace:*"
   },
   "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
   "devDependencies": {
@@ -57,6 +56,14 @@
   "license": "MIT",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/transactions",
+  "nx": {
+    "implicitDependencies": [
+      "!@decentralchain/node-api-js"
+    ]
+  },
+  "peerDependencies": {
+    "@decentralchain/node-api-js": "workspace:*"
+  },
   "publishConfig": {
     "access": "public",
     "provenance": true

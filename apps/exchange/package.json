@@ -19,9 +19,9 @@
     "electron:build:linux": "tsc -p electron && electron-builder --linux"
   },
   "dependencies": {
-    "@decentralchain/assets-pairs-order": "^4.0.0",
-    "@decentralchain/marshall": "^0.14.0",
-    "@decentralchain/signature-adapter": "^6.1.7",
+    "@decentralchain/assets-pairs-order": "workspace:*",
+    "@decentralchain/marshall": "workspace:*",
+    "@decentralchain/signature-adapter": "workspace:*",
     "@decentralchain/waves-transactions": "^4.2.6",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

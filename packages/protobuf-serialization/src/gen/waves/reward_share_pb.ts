@@ -2,22 +2,20 @@
 // @generated from file waves/reward_share.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/reward_share.proto.
  */
-export const file_waves_reward_share: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'Chh3YXZlcy9yZXdhcmRfc2hhcmUucHJvdG8SBXdhdmVzIi4KC1Jld2FyZFNoYXJlEg8KB2FkZHJlc3MYASABKAwSDgoGcmV3YXJkGAIgASgDQnsKGmlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw',
-  );
+export const file_waves_reward_share: GenFile = /*@__PURE__*/
+  fileDesc("Chh3YXZlcy9yZXdhcmRfc2hhcmUucHJvdG8SBXdhdmVzIi4KC1Jld2FyZFNoYXJlEg8KB2FkZHJlc3MYASABKAwSDgoGcmV3YXJkGAIgASgDQnsKGmlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw");
 
 /**
  * @generated from message waves.RewardShare
  */
-export type RewardShare = Message<'waves.RewardShare'> & {
+export type RewardShare = Message<"waves.RewardShare"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -33,6 +31,6 @@ export type RewardShare = Message<'waves.RewardShare'> & {
  * Describes the message waves.RewardShare.
  * Use `create(RewardShareSchema)` to create a new message.
  */
-export const RewardShareSchema: GenMessage<RewardShare> =
-  /*@__PURE__*/
+export const RewardShareSchema: GenMessage<RewardShare> = /*@__PURE__*/
   messageDesc(file_waves_reward_share, 0);
+

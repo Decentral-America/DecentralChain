@@ -2,22 +2,20 @@
 // @generated from file waves/amount.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/amount.proto.
  */
-export const file_waves_amount: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'ChJ3YXZlcy9hbW91bnQucHJvdG8SBXdhdmVzIioKBkFtb3VudBIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKANCewoaaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWZaTGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXOqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z',
-  );
+export const file_waves_amount: GenFile = /*@__PURE__*/
+  fileDesc("ChJ3YXZlcy9hbW91bnQucHJvdG8SBXdhdmVzIioKBkFtb3VudBIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKANCewoaaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWZaTGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXOqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z");
 
 /**
  * @generated from message waves.Amount
  */
-export type Amount = Message<'waves.Amount'> & {
+export type Amount = Message<"waves.Amount"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -33,4 +31,6 @@ export type Amount = Message<'waves.Amount'> & {
  * Describes the message waves.Amount.
  * Use `create(AmountSchema)` to create a new message.
  */
-export const AmountSchema: GenMessage<Amount> = /*@__PURE__*/ messageDesc(file_waves_amount, 0);
+export const AmountSchema: GenMessage<Amount> = /*@__PURE__*/
+  messageDesc(file_waves_amount, 0);
+

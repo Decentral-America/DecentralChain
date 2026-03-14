@@ -2,32 +2,24 @@
 // @generated from file waves/transaction_state_snapshot.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  enumDesc,
-  fileDesc,
-  type GenEnum,
-  type GenFile,
-  type GenMessage,
-  messageDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import { type Amount, file_waves_amount } from './amount_pb.js';
-import { type DataEntry, file_waves_transaction } from './transaction_pb.js';
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Amount } from "./amount_pb.js";
+import { file_waves_amount } from "./amount_pb.js";
+import type { DataEntry } from "./transaction_pb.js";
+import { file_waves_transaction } from "./transaction_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/transaction_state_snapshot.proto.
  */
-export const file_waves_transaction_state_snapshot: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiZ3YXZlcy90cmFuc2FjdGlvbl9zdGF0ZV9zbmFwc2hvdC5wcm90bxIFd2F2ZXMiug8KGFRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdBI5CghiYWxhbmNlcxgBIAMoCzInLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5CYWxhbmNlEkQKDmxlYXNlX2JhbGFuY2VzGAIgAygLMiwud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkxlYXNlQmFsYW5jZRI8CgpuZXdfbGVhc2VzGAMgAygLMigud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90Lk5ld0xlYXNlEkgKEGNhbmNlbGxlZF9sZWFzZXMYBCADKAsyLi53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQ2FuY2VsbGVkTGVhc2USPwoNYXNzZXRfc3RhdGljcxgFIAMoCzIoLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5OZXdBc3NldBJCCg1hc3NldF92b2x1bWVzGAYgAygLMisud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkFzc2V0Vm9sdW1lEl0KHGFzc2V0X25hbWVzX2FuZF9kZXNjcmlwdGlvbnMYByADKAsyNy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQXNzZXROYW1lQW5kRGVzY3JpcHRpb24SQgoNYXNzZXRfc2NyaXB0cxgIIAEoCzIrLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5Bc3NldFNjcmlwdBI2CgdhbGlhc2VzGAkgASgLMiUud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkFsaWFzEj4KC29yZGVyX2ZpbGxzGAogAygLMikud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90Lk9yZGVyRmlsbBJGCg9hY2NvdW50X3NjcmlwdHMYCyABKAsyLS53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQWNjb3VudFNjcmlwdBJBCgxhY2NvdW50X2RhdGEYDCADKAsyKy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQWNjb3VudERhdGESQQoMc3BvbnNvcnNoaXBzGA0gAygLMisud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LlNwb25zb3JzaGlwEjQKEnRyYW5zYWN0aW9uX3N0YXR1cxgOIAEoDjIYLndhdmVzLlRyYW5zYWN0aW9uU3RhdHVzElMKFWdlbmVyYXRpb25fY29tbWl0bWVudBgPIAEoCzI0LndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5HZW5lcmF0aW9uQ29tbWl0bWVudBo5CgdCYWxhbmNlEg8KB2FkZHJlc3MYASABKAwSHQoGYW1vdW50GAIgASgLMg0ud2F2ZXMuQW1vdW50GjgKDExlYXNlQmFsYW5jZRIPCgdhZGRyZXNzGAEgASgMEgoKAmluGAIgASgDEgsKA291dBgDIAEoAxpiCghOZXdMZWFzZRIQCghsZWFzZV9pZBgBIAEoDBIZChFzZW5kZXJfcHVibGljX2tleRgCIAEoDBIZChFyZWNpcGllbnRfYWRkcmVzcxgDIAEoDBIOCgZhbW91bnQYBCABKAMaIgoOQ2FuY2VsbGVkTGVhc2USEAoIbGVhc2VfaWQYASABKAwaVgoITmV3QXNzZXQSEAoIYXNzZXRfaWQYASABKAwSGQoRaXNzdWVyX3B1YmxpY19rZXkYAiABKAwSEAoIZGVjaW1hbHMYAyABKAUSCwoDbmZ0GAQgASgIGkMKC0Fzc2V0Vm9sdW1lEhAKCGFzc2V0X2lkGAEgASgMEhIKCnJlaXNzdWFibGUYAiABKAgSDgoGdm9sdW1lGAMgASgMGk4KF0Fzc2V0TmFtZUFuZERlc2NyaXB0aW9uEhAKCGFzc2V0X2lkGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkaLwoLQXNzZXRTY3JpcHQSEAoIYXNzZXRfaWQYASABKAwSDgoGc2NyaXB0GAIgASgMGicKBUFsaWFzEg8KB2FkZHJlc3MYASABKAwSDQoFYWxpYXMYAiABKAkaOgoJT3JkZXJGaWxsEhAKCG9yZGVyX2lkGAEgASgMEg4KBnZvbHVtZRgCIAEoAxILCgNmZWUYAyABKAMaVwoNQWNjb3VudFNjcmlwdBIZChFzZW5kZXJfcHVibGljX2tleRgBIAEoDBIOCgZzY3JpcHQYAiABKAwSGwoTdmVyaWZpZXJfY29tcGxleGl0eRgDIAEoAxpBCgtBY2NvdW50RGF0YRIPCgdhZGRyZXNzGAEgASgMEiEKB2VudHJpZXMYAiADKAsyEC53YXZlcy5EYXRhRW50cnkaMAoLU3BvbnNvcnNoaXASEAoIYXNzZXRfaWQYASABKAwSDwoHbWluX2ZlZRgCIAEoAxpOChRHZW5lcmF0aW9uQ29tbWl0bWVudBIZChFzZW5kZXJfcHVibGljX2tleRgBIAEoDBIbChNlbmRvcnNlcl9wdWJsaWNfa2V5GAIgASgMKjoKEVRyYW5zYWN0aW9uU3RhdHVzEg0KCVNVQ0NFRURFRBAAEgoKBkZBSUxFRBABEgoKBkVMSURFRBACQoQBCiNpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5zbmFwc2hvdFpMZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC93YXZlc6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM',
-    [file_waves_amount, file_waves_transaction],
-  );
+export const file_waves_transaction_state_snapshot: GenFile = /*@__PURE__*/
+  fileDesc("CiZ3YXZlcy90cmFuc2FjdGlvbl9zdGF0ZV9zbmFwc2hvdC5wcm90bxIFd2F2ZXMiug8KGFRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdBI5CghiYWxhbmNlcxgBIAMoCzInLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5CYWxhbmNlEkQKDmxlYXNlX2JhbGFuY2VzGAIgAygLMiwud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkxlYXNlQmFsYW5jZRI8CgpuZXdfbGVhc2VzGAMgAygLMigud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90Lk5ld0xlYXNlEkgKEGNhbmNlbGxlZF9sZWFzZXMYBCADKAsyLi53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQ2FuY2VsbGVkTGVhc2USPwoNYXNzZXRfc3RhdGljcxgFIAMoCzIoLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5OZXdBc3NldBJCCg1hc3NldF92b2x1bWVzGAYgAygLMisud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkFzc2V0Vm9sdW1lEl0KHGFzc2V0X25hbWVzX2FuZF9kZXNjcmlwdGlvbnMYByADKAsyNy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQXNzZXROYW1lQW5kRGVzY3JpcHRpb24SQgoNYXNzZXRfc2NyaXB0cxgIIAEoCzIrLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5Bc3NldFNjcmlwdBI2CgdhbGlhc2VzGAkgASgLMiUud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LkFsaWFzEj4KC29yZGVyX2ZpbGxzGAogAygLMikud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90Lk9yZGVyRmlsbBJGCg9hY2NvdW50X3NjcmlwdHMYCyABKAsyLS53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQWNjb3VudFNjcmlwdBJBCgxhY2NvdW50X2RhdGEYDCADKAsyKy53YXZlcy5UcmFuc2FjdGlvblN0YXRlU25hcHNob3QuQWNjb3VudERhdGESQQoMc3BvbnNvcnNoaXBzGA0gAygLMisud2F2ZXMuVHJhbnNhY3Rpb25TdGF0ZVNuYXBzaG90LlNwb25zb3JzaGlwEjQKEnRyYW5zYWN0aW9uX3N0YXR1cxgOIAEoDjIYLndhdmVzLlRyYW5zYWN0aW9uU3RhdHVzElMKFWdlbmVyYXRpb25fY29tbWl0bWVudBgPIAEoCzI0LndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdC5HZW5lcmF0aW9uQ29tbWl0bWVudBo5CgdCYWxhbmNlEg8KB2FkZHJlc3MYASABKAwSHQoGYW1vdW50GAIgASgLMg0ud2F2ZXMuQW1vdW50GjgKDExlYXNlQmFsYW5jZRIPCgdhZGRyZXNzGAEgASgMEgoKAmluGAIgASgDEgsKA291dBgDIAEoAxpiCghOZXdMZWFzZRIQCghsZWFzZV9pZBgBIAEoDBIZChFzZW5kZXJfcHVibGljX2tleRgCIAEoDBIZChFyZWNpcGllbnRfYWRkcmVzcxgDIAEoDBIOCgZhbW91bnQYBCABKAMaIgoOQ2FuY2VsbGVkTGVhc2USEAoIbGVhc2VfaWQYASABKAwaVgoITmV3QXNzZXQSEAoIYXNzZXRfaWQYASABKAwSGQoRaXNzdWVyX3B1YmxpY19rZXkYAiABKAwSEAoIZGVjaW1hbHMYAyABKAUSCwoDbmZ0GAQgASgIGkMKC0Fzc2V0Vm9sdW1lEhAKCGFzc2V0X2lkGAEgASgMEhIKCnJlaXNzdWFibGUYAiABKAgSDgoGdm9sdW1lGAMgASgMGk4KF0Fzc2V0TmFtZUFuZERlc2NyaXB0aW9uEhAKCGFzc2V0X2lkGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkaLwoLQXNzZXRTY3JpcHQSEAoIYXNzZXRfaWQYASABKAwSDgoGc2NyaXB0GAIgASgMGicKBUFsaWFzEg8KB2FkZHJlc3MYASABKAwSDQoFYWxpYXMYAiABKAkaOgoJT3JkZXJGaWxsEhAKCG9yZGVyX2lkGAEgASgMEg4KBnZvbHVtZRgCIAEoAxILCgNmZWUYAyABKAMaVwoNQWNjb3VudFNjcmlwdBIZChFzZW5kZXJfcHVibGljX2tleRgBIAEoDBIOCgZzY3JpcHQYAiABKAwSGwoTdmVyaWZpZXJfY29tcGxleGl0eRgDIAEoAxpBCgtBY2NvdW50RGF0YRIPCgdhZGRyZXNzGAEgASgMEiEKB2VudHJpZXMYAiADKAsyEC53YXZlcy5EYXRhRW50cnkaMAoLU3BvbnNvcnNoaXASEAoIYXNzZXRfaWQYASABKAwSDwoHbWluX2ZlZRgCIAEoAxpOChRHZW5lcmF0aW9uQ29tbWl0bWVudBIZChFzZW5kZXJfcHVibGljX2tleRgBIAEoDBIbChNlbmRvcnNlcl9wdWJsaWNfa2V5GAIgASgMKjoKEVRyYW5zYWN0aW9uU3RhdHVzEg0KCVNVQ0NFRURFRBAAEgoKBkZBSUxFRBABEgoKBkVMSURFRBACQoQBCiNpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5zbmFwc2hvdFpMZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC93YXZlc6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM", [file_waves_amount, file_waves_transaction]);
 
 /**
  * @generated from message waves.TransactionStateSnapshot
  */
-export type TransactionStateSnapshot = Message<'waves.TransactionStateSnapshot'> & {
+export type TransactionStateSnapshot = Message<"waves.TransactionStateSnapshot"> & {
   /**
    * @generated from field: repeated waves.TransactionStateSnapshot.Balance balances = 1;
    */
@@ -112,14 +104,13 @@ export type TransactionStateSnapshot = Message<'waves.TransactionStateSnapshot'>
  * Describes the message waves.TransactionStateSnapshot.
  * Use `create(TransactionStateSnapshotSchema)` to create a new message.
  */
-export const TransactionStateSnapshotSchema: GenMessage<TransactionStateSnapshot> =
-  /*@__PURE__*/
+export const TransactionStateSnapshotSchema: GenMessage<TransactionStateSnapshot> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.Balance
  */
-export type TransactionStateSnapshot_Balance = Message<'waves.TransactionStateSnapshot.Balance'> & {
+export type TransactionStateSnapshot_Balance = Message<"waves.TransactionStateSnapshot.Balance"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -135,212 +126,197 @@ export type TransactionStateSnapshot_Balance = Message<'waves.TransactionStateSn
  * Describes the message waves.TransactionStateSnapshot.Balance.
  * Use `create(TransactionStateSnapshot_BalanceSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_BalanceSchema: GenMessage<TransactionStateSnapshot_Balance> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_BalanceSchema: GenMessage<TransactionStateSnapshot_Balance> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 0);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.LeaseBalance
  */
-export type TransactionStateSnapshot_LeaseBalance =
-  Message<'waves.TransactionStateSnapshot.LeaseBalance'> & {
-    /**
-     * @generated from field: bytes address = 1;
-     */
-    address: Uint8Array;
+export type TransactionStateSnapshot_LeaseBalance = Message<"waves.TransactionStateSnapshot.LeaseBalance"> & {
+  /**
+   * @generated from field: bytes address = 1;
+   */
+  address: Uint8Array;
 
-    /**
-     * @generated from field: int64 in = 2;
-     */
-    in: bigint;
+  /**
+   * @generated from field: int64 in = 2;
+   */
+  in: bigint;
 
-    /**
-     * @generated from field: int64 out = 3;
-     */
-    out: bigint;
-  };
+  /**
+   * @generated from field: int64 out = 3;
+   */
+  out: bigint;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.LeaseBalance.
  * Use `create(TransactionStateSnapshot_LeaseBalanceSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_LeaseBalanceSchema: GenMessage<TransactionStateSnapshot_LeaseBalance> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_LeaseBalanceSchema: GenMessage<TransactionStateSnapshot_LeaseBalance> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 1);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.NewLease
  */
-export type TransactionStateSnapshot_NewLease =
-  Message<'waves.TransactionStateSnapshot.NewLease'> & {
-    /**
-     * @generated from field: bytes lease_id = 1;
-     */
-    leaseId: Uint8Array;
+export type TransactionStateSnapshot_NewLease = Message<"waves.TransactionStateSnapshot.NewLease"> & {
+  /**
+   * @generated from field: bytes lease_id = 1;
+   */
+  leaseId: Uint8Array;
 
-    /**
-     * @generated from field: bytes sender_public_key = 2;
-     */
-    senderPublicKey: Uint8Array;
+  /**
+   * @generated from field: bytes sender_public_key = 2;
+   */
+  senderPublicKey: Uint8Array;
 
-    /**
-     * @generated from field: bytes recipient_address = 3;
-     */
-    recipientAddress: Uint8Array;
+  /**
+   * @generated from field: bytes recipient_address = 3;
+   */
+  recipientAddress: Uint8Array;
 
-    /**
-     * @generated from field: int64 amount = 4;
-     */
-    amount: bigint;
-  };
+  /**
+   * @generated from field: int64 amount = 4;
+   */
+  amount: bigint;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.NewLease.
  * Use `create(TransactionStateSnapshot_NewLeaseSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_NewLeaseSchema: GenMessage<TransactionStateSnapshot_NewLease> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_NewLeaseSchema: GenMessage<TransactionStateSnapshot_NewLease> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 2);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.CancelledLease
  */
-export type TransactionStateSnapshot_CancelledLease =
-  Message<'waves.TransactionStateSnapshot.CancelledLease'> & {
-    /**
-     * @generated from field: bytes lease_id = 1;
-     */
-    leaseId: Uint8Array;
-  };
+export type TransactionStateSnapshot_CancelledLease = Message<"waves.TransactionStateSnapshot.CancelledLease"> & {
+  /**
+   * @generated from field: bytes lease_id = 1;
+   */
+  leaseId: Uint8Array;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.CancelledLease.
  * Use `create(TransactionStateSnapshot_CancelledLeaseSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_CancelledLeaseSchema: GenMessage<TransactionStateSnapshot_CancelledLease> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_CancelledLeaseSchema: GenMessage<TransactionStateSnapshot_CancelledLease> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 3);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.NewAsset
  */
-export type TransactionStateSnapshot_NewAsset =
-  Message<'waves.TransactionStateSnapshot.NewAsset'> & {
-    /**
-     * @generated from field: bytes asset_id = 1;
-     */
-    assetId: Uint8Array;
+export type TransactionStateSnapshot_NewAsset = Message<"waves.TransactionStateSnapshot.NewAsset"> & {
+  /**
+   * @generated from field: bytes asset_id = 1;
+   */
+  assetId: Uint8Array;
 
-    /**
-     * @generated from field: bytes issuer_public_key = 2;
-     */
-    issuerPublicKey: Uint8Array;
+  /**
+   * @generated from field: bytes issuer_public_key = 2;
+   */
+  issuerPublicKey: Uint8Array;
 
-    /**
-     * @generated from field: int32 decimals = 3;
-     */
-    decimals: number;
+  /**
+   * @generated from field: int32 decimals = 3;
+   */
+  decimals: number;
 
-    /**
-     * @generated from field: bool nft = 4;
-     */
-    nft: boolean;
-  };
+  /**
+   * @generated from field: bool nft = 4;
+   */
+  nft: boolean;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.NewAsset.
  * Use `create(TransactionStateSnapshot_NewAssetSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_NewAssetSchema: GenMessage<TransactionStateSnapshot_NewAsset> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_NewAssetSchema: GenMessage<TransactionStateSnapshot_NewAsset> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 4);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.AssetVolume
  */
-export type TransactionStateSnapshot_AssetVolume =
-  Message<'waves.TransactionStateSnapshot.AssetVolume'> & {
-    /**
-     * @generated from field: bytes asset_id = 1;
-     */
-    assetId: Uint8Array;
+export type TransactionStateSnapshot_AssetVolume = Message<"waves.TransactionStateSnapshot.AssetVolume"> & {
+  /**
+   * @generated from field: bytes asset_id = 1;
+   */
+  assetId: Uint8Array;
 
-    /**
-     * @generated from field: bool reissuable = 2;
-     */
-    reissuable: boolean;
+  /**
+   * @generated from field: bool reissuable = 2;
+   */
+  reissuable: boolean;
 
-    /**
-     * @generated from field: bytes volume = 3;
-     */
-    volume: Uint8Array;
-  };
+  /**
+   * @generated from field: bytes volume = 3;
+   */
+  volume: Uint8Array;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.AssetVolume.
  * Use `create(TransactionStateSnapshot_AssetVolumeSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AssetVolumeSchema: GenMessage<TransactionStateSnapshot_AssetVolume> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AssetVolumeSchema: GenMessage<TransactionStateSnapshot_AssetVolume> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 5);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.AssetNameAndDescription
  */
-export type TransactionStateSnapshot_AssetNameAndDescription =
-  Message<'waves.TransactionStateSnapshot.AssetNameAndDescription'> & {
-    /**
-     * @generated from field: bytes asset_id = 1;
-     */
-    assetId: Uint8Array;
+export type TransactionStateSnapshot_AssetNameAndDescription = Message<"waves.TransactionStateSnapshot.AssetNameAndDescription"> & {
+  /**
+   * @generated from field: bytes asset_id = 1;
+   */
+  assetId: Uint8Array;
 
-    /**
-     * @generated from field: string name = 2;
-     */
-    name: string;
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
 
-    /**
-     * @generated from field: string description = 3;
-     */
-    description: string;
-  };
+  /**
+   * @generated from field: string description = 3;
+   */
+  description: string;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.AssetNameAndDescription.
  * Use `create(TransactionStateSnapshot_AssetNameAndDescriptionSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AssetNameAndDescriptionSchema: GenMessage<TransactionStateSnapshot_AssetNameAndDescription> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AssetNameAndDescriptionSchema: GenMessage<TransactionStateSnapshot_AssetNameAndDescription> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 6);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.AssetScript
  */
-export type TransactionStateSnapshot_AssetScript =
-  Message<'waves.TransactionStateSnapshot.AssetScript'> & {
-    /**
-     * @generated from field: bytes asset_id = 1;
-     */
-    assetId: Uint8Array;
+export type TransactionStateSnapshot_AssetScript = Message<"waves.TransactionStateSnapshot.AssetScript"> & {
+  /**
+   * @generated from field: bytes asset_id = 1;
+   */
+  assetId: Uint8Array;
 
-    /**
-     * @generated from field: bytes script = 2;
-     */
-    script: Uint8Array;
-  };
+  /**
+   * @generated from field: bytes script = 2;
+   */
+  script: Uint8Array;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.AssetScript.
  * Use `create(TransactionStateSnapshot_AssetScriptSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AssetScriptSchema: GenMessage<TransactionStateSnapshot_AssetScript> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AssetScriptSchema: GenMessage<TransactionStateSnapshot_AssetScript> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 7);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.Alias
  */
-export type TransactionStateSnapshot_Alias = Message<'waves.TransactionStateSnapshot.Alias'> & {
+export type TransactionStateSnapshot_Alias = Message<"waves.TransactionStateSnapshot.Alias"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -356,138 +332,127 @@ export type TransactionStateSnapshot_Alias = Message<'waves.TransactionStateSnap
  * Describes the message waves.TransactionStateSnapshot.Alias.
  * Use `create(TransactionStateSnapshot_AliasSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AliasSchema: GenMessage<TransactionStateSnapshot_Alias> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AliasSchema: GenMessage<TransactionStateSnapshot_Alias> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 8);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.OrderFill
  */
-export type TransactionStateSnapshot_OrderFill =
-  Message<'waves.TransactionStateSnapshot.OrderFill'> & {
-    /**
-     * @generated from field: bytes order_id = 1;
-     */
-    orderId: Uint8Array;
+export type TransactionStateSnapshot_OrderFill = Message<"waves.TransactionStateSnapshot.OrderFill"> & {
+  /**
+   * @generated from field: bytes order_id = 1;
+   */
+  orderId: Uint8Array;
 
-    /**
-     * @generated from field: int64 volume = 2;
-     */
-    volume: bigint;
+  /**
+   * @generated from field: int64 volume = 2;
+   */
+  volume: bigint;
 
-    /**
-     * @generated from field: int64 fee = 3;
-     */
-    fee: bigint;
-  };
+  /**
+   * @generated from field: int64 fee = 3;
+   */
+  fee: bigint;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.OrderFill.
  * Use `create(TransactionStateSnapshot_OrderFillSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_OrderFillSchema: GenMessage<TransactionStateSnapshot_OrderFill> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_OrderFillSchema: GenMessage<TransactionStateSnapshot_OrderFill> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 9);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.AccountScript
  */
-export type TransactionStateSnapshot_AccountScript =
-  Message<'waves.TransactionStateSnapshot.AccountScript'> & {
-    /**
-     * @generated from field: bytes sender_public_key = 1;
-     */
-    senderPublicKey: Uint8Array;
+export type TransactionStateSnapshot_AccountScript = Message<"waves.TransactionStateSnapshot.AccountScript"> & {
+  /**
+   * @generated from field: bytes sender_public_key = 1;
+   */
+  senderPublicKey: Uint8Array;
 
-    /**
-     * @generated from field: bytes script = 2;
-     */
-    script: Uint8Array;
+  /**
+   * @generated from field: bytes script = 2;
+   */
+  script: Uint8Array;
 
-    /**
-     * @generated from field: int64 verifier_complexity = 3;
-     */
-    verifierComplexity: bigint;
-  };
+  /**
+   * @generated from field: int64 verifier_complexity = 3;
+   */
+  verifierComplexity: bigint;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.AccountScript.
  * Use `create(TransactionStateSnapshot_AccountScriptSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AccountScriptSchema: GenMessage<TransactionStateSnapshot_AccountScript> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AccountScriptSchema: GenMessage<TransactionStateSnapshot_AccountScript> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 10);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.AccountData
  */
-export type TransactionStateSnapshot_AccountData =
-  Message<'waves.TransactionStateSnapshot.AccountData'> & {
-    /**
-     * @generated from field: bytes address = 1;
-     */
-    address: Uint8Array;
+export type TransactionStateSnapshot_AccountData = Message<"waves.TransactionStateSnapshot.AccountData"> & {
+  /**
+   * @generated from field: bytes address = 1;
+   */
+  address: Uint8Array;
 
-    /**
-     * @generated from field: repeated waves.DataEntry entries = 2;
-     */
-    entries: DataEntry[];
-  };
+  /**
+   * @generated from field: repeated waves.DataEntry entries = 2;
+   */
+  entries: DataEntry[];
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.AccountData.
  * Use `create(TransactionStateSnapshot_AccountDataSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_AccountDataSchema: GenMessage<TransactionStateSnapshot_AccountData> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_AccountDataSchema: GenMessage<TransactionStateSnapshot_AccountData> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 11);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.Sponsorship
  */
-export type TransactionStateSnapshot_Sponsorship =
-  Message<'waves.TransactionStateSnapshot.Sponsorship'> & {
-    /**
-     * @generated from field: bytes asset_id = 1;
-     */
-    assetId: Uint8Array;
+export type TransactionStateSnapshot_Sponsorship = Message<"waves.TransactionStateSnapshot.Sponsorship"> & {
+  /**
+   * @generated from field: bytes asset_id = 1;
+   */
+  assetId: Uint8Array;
 
-    /**
-     * @generated from field: int64 min_fee = 2;
-     */
-    minFee: bigint;
-  };
+  /**
+   * @generated from field: int64 min_fee = 2;
+   */
+  minFee: bigint;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.Sponsorship.
  * Use `create(TransactionStateSnapshot_SponsorshipSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_SponsorshipSchema: GenMessage<TransactionStateSnapshot_Sponsorship> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_SponsorshipSchema: GenMessage<TransactionStateSnapshot_Sponsorship> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 12);
 
 /**
  * @generated from message waves.TransactionStateSnapshot.GenerationCommitment
  */
-export type TransactionStateSnapshot_GenerationCommitment =
-  Message<'waves.TransactionStateSnapshot.GenerationCommitment'> & {
-    /**
-     * @generated from field: bytes sender_public_key = 1;
-     */
-    senderPublicKey: Uint8Array;
+export type TransactionStateSnapshot_GenerationCommitment = Message<"waves.TransactionStateSnapshot.GenerationCommitment"> & {
+  /**
+   * @generated from field: bytes sender_public_key = 1;
+   */
+  senderPublicKey: Uint8Array;
 
-    /**
-     * @generated from field: bytes endorser_public_key = 2;
-     */
-    endorserPublicKey: Uint8Array;
-  };
+  /**
+   * @generated from field: bytes endorser_public_key = 2;
+   */
+  endorserPublicKey: Uint8Array;
+};
 
 /**
  * Describes the message waves.TransactionStateSnapshot.GenerationCommitment.
  * Use `create(TransactionStateSnapshot_GenerationCommitmentSchema)` to create a new message.
  */
-export const TransactionStateSnapshot_GenerationCommitmentSchema: GenMessage<TransactionStateSnapshot_GenerationCommitment> =
-  /*@__PURE__*/
+export const TransactionStateSnapshot_GenerationCommitmentSchema: GenMessage<TransactionStateSnapshot_GenerationCommitment> = /*@__PURE__*/
   messageDesc(file_waves_transaction_state_snapshot, 0, 13);
 
 /**
@@ -518,6 +483,6 @@ export enum TransactionStatus {
 /**
  * Describes the enum waves.TransactionStatus.
  */
-export const TransactionStatusSchema: GenEnum<TransactionStatus> =
-  /*@__PURE__*/
+export const TransactionStatusSchema: GenEnum<TransactionStatus> = /*@__PURE__*/
   enumDesc(file_waves_transaction_state_snapshot, 0);
+

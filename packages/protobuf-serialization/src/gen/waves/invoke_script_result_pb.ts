@@ -2,26 +2,26 @@
 // @generated from file waves/invoke_script_result.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import { fileDesc, type GenFile, type GenMessage, messageDesc } from '@bufbuild/protobuf/codegenv2';
-import { type Amount, file_waves_amount } from './amount_pb.js';
-import { file_waves_recipient, type Recipient } from './recipient_pb.js';
-import { type DataEntry, file_waves_transaction } from './transaction_pb.js';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { DataEntry } from "./transaction_pb.js";
+import { file_waves_transaction } from "./transaction_pb.js";
+import type { Amount } from "./amount_pb.js";
+import { file_waves_amount } from "./amount_pb.js";
+import type { Recipient } from "./recipient_pb.js";
+import { file_waves_recipient } from "./recipient_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/invoke_script_result.proto.
  */
-export const file_waves_invoke_script_result: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiB3YXZlcy9pbnZva2Vfc2NyaXB0X3Jlc3VsdC5wcm90bxIFd2F2ZXMiyAwKEkludm9rZVNjcmlwdFJlc3VsdBIeCgRkYXRhGAEgAygLMhAud2F2ZXMuRGF0YUVudHJ5EjQKCXRyYW5zZmVycxgCIAMoCzIhLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5QYXltZW50Ei8KBmlzc3VlcxgDIAMoCzIfLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5Jc3N1ZRIzCghyZWlzc3VlcxgEIAMoCzIhLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5SZWlzc3VlEi0KBWJ1cm5zGAUgAygLMh4ud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkJ1cm4SPQoNZXJyb3JfbWVzc2FnZRgGIAEoCzImLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5FcnJvck1lc3NhZ2USOgoMc3BvbnNvcl9mZWVzGAcgAygLMiQud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LlNwb25zb3JGZWUSLwoGbGVhc2VzGAggAygLMh8ud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkxlYXNlEjwKDWxlYXNlX2NhbmNlbHMYCSADKAsyJS53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuTGVhc2VDYW5jZWwSNQoHaW52b2tlcxgKIAMoCzIkLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5JbnZvY2F0aW9uGjkKB1BheW1lbnQSDwoHYWRkcmVzcxgBIAEoDBIdCgZhbW91bnQYAiABKAsyDS53YXZlcy5BbW91bnQakQEKBUlzc3VlEhAKCGFzc2V0X2lkGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSDgoGYW1vdW50GAQgASgDEhAKCGRlY2ltYWxzGAUgASgFEhIKCnJlaXNzdWFibGUYBiABKAgSDgoGc2NyaXB0GAcgASgMEg0KBW5vbmNlGAggASgDGkIKB1JlaXNzdWUSEAoIYXNzZXRfaWQYASABKAwSDgoGYW1vdW50GAIgASgDEhUKDWlzX3JlaXNzdWFibGUYAyABKAgaKAoEQnVybhIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKAMaLAoKU3BvbnNvckZlZRIeCgdtaW5fZmVlGAEgASgLMg0ud2F2ZXMuQW1vdW50Gl0KBUxlYXNlEiMKCXJlY2lwaWVudBgBIAEoCzIQLndhdmVzLlJlY2lwaWVudBIOCgZhbW91bnQYAiABKAMSDQoFbm9uY2UYAyABKAMSEAoIbGVhc2VfaWQYBCABKAwaHwoLTGVhc2VDYW5jZWwSEAoIbGVhc2VfaWQYASABKAwaKgoMRXJyb3JNZXNzYWdlEgwKBGNvZGUYASABKAUSDAoEdGV4dBgCIAEoCRrxAgoEQ2FsbBIQCghmdW5jdGlvbhgBIAEoCRIWCgphcmdzX2J5dGVzGAIgAygMQgIYARI1CgRhcmdzGAMgAygLMicud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkNhbGwuQXJndW1lbnQahwIKCEFyZ3VtZW50EhcKDWludGVnZXJfdmFsdWUYASABKANIABIWCgxiaW5hcnlfdmFsdWUYAiABKAxIABIWCgxzdHJpbmdfdmFsdWUYAyABKAlIABIXCg1ib29sZWFuX3ZhbHVlGAQgASgISAASEgoIY2FzZV9vYmoYBSABKAxIABI8CgRsaXN0GAogASgLMiwud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkNhbGwuQXJndW1lbnQuTGlzdEgAGj4KBExpc3QSNgoFaXRlbXMYASADKAsyJy53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuQ2FsbC5Bcmd1bWVudEIHCgV2YWx1ZRqaAQoKSW52b2NhdGlvbhIMCgRkQXBwGAEgASgMEiwKBGNhbGwYAiABKAsyHi53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuQ2FsbBIfCghwYXltZW50cxgDIAMoCzINLndhdmVzLkFtb3VudBIvCgxzdGF0ZUNoYW5nZXMYBCABKAsyGS53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHRChwEKJmlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLnRyYW5zYWN0aW9uWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw',
-    [file_waves_transaction, file_waves_amount, file_waves_recipient],
-  );
+export const file_waves_invoke_script_result: GenFile = /*@__PURE__*/
+  fileDesc("CiB3YXZlcy9pbnZva2Vfc2NyaXB0X3Jlc3VsdC5wcm90bxIFd2F2ZXMiyAwKEkludm9rZVNjcmlwdFJlc3VsdBIeCgRkYXRhGAEgAygLMhAud2F2ZXMuRGF0YUVudHJ5EjQKCXRyYW5zZmVycxgCIAMoCzIhLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5QYXltZW50Ei8KBmlzc3VlcxgDIAMoCzIfLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5Jc3N1ZRIzCghyZWlzc3VlcxgEIAMoCzIhLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5SZWlzc3VlEi0KBWJ1cm5zGAUgAygLMh4ud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkJ1cm4SPQoNZXJyb3JfbWVzc2FnZRgGIAEoCzImLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5FcnJvck1lc3NhZ2USOgoMc3BvbnNvcl9mZWVzGAcgAygLMiQud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LlNwb25zb3JGZWUSLwoGbGVhc2VzGAggAygLMh8ud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkxlYXNlEjwKDWxlYXNlX2NhbmNlbHMYCSADKAsyJS53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuTGVhc2VDYW5jZWwSNQoHaW52b2tlcxgKIAMoCzIkLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdC5JbnZvY2F0aW9uGjkKB1BheW1lbnQSDwoHYWRkcmVzcxgBIAEoDBIdCgZhbW91bnQYAiABKAsyDS53YXZlcy5BbW91bnQakQEKBUlzc3VlEhAKCGFzc2V0X2lkGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSDgoGYW1vdW50GAQgASgDEhAKCGRlY2ltYWxzGAUgASgFEhIKCnJlaXNzdWFibGUYBiABKAgSDgoGc2NyaXB0GAcgASgMEg0KBW5vbmNlGAggASgDGkIKB1JlaXNzdWUSEAoIYXNzZXRfaWQYASABKAwSDgoGYW1vdW50GAIgASgDEhUKDWlzX3JlaXNzdWFibGUYAyABKAgaKAoEQnVybhIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKAMaLAoKU3BvbnNvckZlZRIeCgdtaW5fZmVlGAEgASgLMg0ud2F2ZXMuQW1vdW50Gl0KBUxlYXNlEiMKCXJlY2lwaWVudBgBIAEoCzIQLndhdmVzLlJlY2lwaWVudBIOCgZhbW91bnQYAiABKAMSDQoFbm9uY2UYAyABKAMSEAoIbGVhc2VfaWQYBCABKAwaHwoLTGVhc2VDYW5jZWwSEAoIbGVhc2VfaWQYASABKAwaKgoMRXJyb3JNZXNzYWdlEgwKBGNvZGUYASABKAUSDAoEdGV4dBgCIAEoCRrxAgoEQ2FsbBIQCghmdW5jdGlvbhgBIAEoCRIWCgphcmdzX2J5dGVzGAIgAygMQgIYARI1CgRhcmdzGAMgAygLMicud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkNhbGwuQXJndW1lbnQahwIKCEFyZ3VtZW50EhcKDWludGVnZXJfdmFsdWUYASABKANIABIWCgxiaW5hcnlfdmFsdWUYAiABKAxIABIWCgxzdHJpbmdfdmFsdWUYAyABKAlIABIXCg1ib29sZWFuX3ZhbHVlGAQgASgISAASEgoIY2FzZV9vYmoYBSABKAxIABI8CgRsaXN0GAogASgLMiwud2F2ZXMuSW52b2tlU2NyaXB0UmVzdWx0LkNhbGwuQXJndW1lbnQuTGlzdEgAGj4KBExpc3QSNgoFaXRlbXMYASADKAsyJy53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuQ2FsbC5Bcmd1bWVudEIHCgV2YWx1ZRqaAQoKSW52b2NhdGlvbhIMCgRkQXBwGAEgASgMEiwKBGNhbGwYAiABKAsyHi53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHQuQ2FsbBIfCghwYXltZW50cxgDIAMoCzINLndhdmVzLkFtb3VudBIvCgxzdGF0ZUNoYW5nZXMYBCABKAsyGS53YXZlcy5JbnZva2VTY3JpcHRSZXN1bHRChwEKJmlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLnRyYW5zYWN0aW9uWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw", [file_waves_transaction, file_waves_amount, file_waves_recipient]);
 
 /**
  * @generated from message waves.InvokeScriptResult
  */
-export type InvokeScriptResult = Message<'waves.InvokeScriptResult'> & {
+export type InvokeScriptResult = Message<"waves.InvokeScriptResult"> & {
   /**
    * @generated from field: repeated waves.DataEntry data = 1;
    */
@@ -77,14 +77,13 @@ export type InvokeScriptResult = Message<'waves.InvokeScriptResult'> & {
  * Describes the message waves.InvokeScriptResult.
  * Use `create(InvokeScriptResultSchema)` to create a new message.
  */
-export const InvokeScriptResultSchema: GenMessage<InvokeScriptResult> =
-  /*@__PURE__*/
+export const InvokeScriptResultSchema: GenMessage<InvokeScriptResult> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0);
 
 /**
  * @generated from message waves.InvokeScriptResult.Payment
  */
-export type InvokeScriptResult_Payment = Message<'waves.InvokeScriptResult.Payment'> & {
+export type InvokeScriptResult_Payment = Message<"waves.InvokeScriptResult.Payment"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -100,14 +99,13 @@ export type InvokeScriptResult_Payment = Message<'waves.InvokeScriptResult.Payme
  * Describes the message waves.InvokeScriptResult.Payment.
  * Use `create(InvokeScriptResult_PaymentSchema)` to create a new message.
  */
-export const InvokeScriptResult_PaymentSchema: GenMessage<InvokeScriptResult_Payment> =
-  /*@__PURE__*/
+export const InvokeScriptResult_PaymentSchema: GenMessage<InvokeScriptResult_Payment> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 0);
 
 /**
  * @generated from message waves.InvokeScriptResult.Issue
  */
-export type InvokeScriptResult_Issue = Message<'waves.InvokeScriptResult.Issue'> & {
+export type InvokeScriptResult_Issue = Message<"waves.InvokeScriptResult.Issue"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -153,14 +151,13 @@ export type InvokeScriptResult_Issue = Message<'waves.InvokeScriptResult.Issue'>
  * Describes the message waves.InvokeScriptResult.Issue.
  * Use `create(InvokeScriptResult_IssueSchema)` to create a new message.
  */
-export const InvokeScriptResult_IssueSchema: GenMessage<InvokeScriptResult_Issue> =
-  /*@__PURE__*/
+export const InvokeScriptResult_IssueSchema: GenMessage<InvokeScriptResult_Issue> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 1);
 
 /**
  * @generated from message waves.InvokeScriptResult.Reissue
  */
-export type InvokeScriptResult_Reissue = Message<'waves.InvokeScriptResult.Reissue'> & {
+export type InvokeScriptResult_Reissue = Message<"waves.InvokeScriptResult.Reissue"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -181,14 +178,13 @@ export type InvokeScriptResult_Reissue = Message<'waves.InvokeScriptResult.Reiss
  * Describes the message waves.InvokeScriptResult.Reissue.
  * Use `create(InvokeScriptResult_ReissueSchema)` to create a new message.
  */
-export const InvokeScriptResult_ReissueSchema: GenMessage<InvokeScriptResult_Reissue> =
-  /*@__PURE__*/
+export const InvokeScriptResult_ReissueSchema: GenMessage<InvokeScriptResult_Reissue> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 2);
 
 /**
  * @generated from message waves.InvokeScriptResult.Burn
  */
-export type InvokeScriptResult_Burn = Message<'waves.InvokeScriptResult.Burn'> & {
+export type InvokeScriptResult_Burn = Message<"waves.InvokeScriptResult.Burn"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -204,14 +200,13 @@ export type InvokeScriptResult_Burn = Message<'waves.InvokeScriptResult.Burn'> &
  * Describes the message waves.InvokeScriptResult.Burn.
  * Use `create(InvokeScriptResult_BurnSchema)` to create a new message.
  */
-export const InvokeScriptResult_BurnSchema: GenMessage<InvokeScriptResult_Burn> =
-  /*@__PURE__*/
+export const InvokeScriptResult_BurnSchema: GenMessage<InvokeScriptResult_Burn> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 3);
 
 /**
  * @generated from message waves.InvokeScriptResult.SponsorFee
  */
-export type InvokeScriptResult_SponsorFee = Message<'waves.InvokeScriptResult.SponsorFee'> & {
+export type InvokeScriptResult_SponsorFee = Message<"waves.InvokeScriptResult.SponsorFee"> & {
   /**
    * @generated from field: waves.Amount min_fee = 1;
    */
@@ -222,14 +217,13 @@ export type InvokeScriptResult_SponsorFee = Message<'waves.InvokeScriptResult.Sp
  * Describes the message waves.InvokeScriptResult.SponsorFee.
  * Use `create(InvokeScriptResult_SponsorFeeSchema)` to create a new message.
  */
-export const InvokeScriptResult_SponsorFeeSchema: GenMessage<InvokeScriptResult_SponsorFee> =
-  /*@__PURE__*/
+export const InvokeScriptResult_SponsorFeeSchema: GenMessage<InvokeScriptResult_SponsorFee> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 4);
 
 /**
  * @generated from message waves.InvokeScriptResult.Lease
  */
-export type InvokeScriptResult_Lease = Message<'waves.InvokeScriptResult.Lease'> & {
+export type InvokeScriptResult_Lease = Message<"waves.InvokeScriptResult.Lease"> & {
   /**
    * @generated from field: waves.Recipient recipient = 1;
    */
@@ -255,14 +249,13 @@ export type InvokeScriptResult_Lease = Message<'waves.InvokeScriptResult.Lease'>
  * Describes the message waves.InvokeScriptResult.Lease.
  * Use `create(InvokeScriptResult_LeaseSchema)` to create a new message.
  */
-export const InvokeScriptResult_LeaseSchema: GenMessage<InvokeScriptResult_Lease> =
-  /*@__PURE__*/
+export const InvokeScriptResult_LeaseSchema: GenMessage<InvokeScriptResult_Lease> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 5);
 
 /**
  * @generated from message waves.InvokeScriptResult.LeaseCancel
  */
-export type InvokeScriptResult_LeaseCancel = Message<'waves.InvokeScriptResult.LeaseCancel'> & {
+export type InvokeScriptResult_LeaseCancel = Message<"waves.InvokeScriptResult.LeaseCancel"> & {
   /**
    * @generated from field: bytes lease_id = 1;
    */
@@ -273,14 +266,13 @@ export type InvokeScriptResult_LeaseCancel = Message<'waves.InvokeScriptResult.L
  * Describes the message waves.InvokeScriptResult.LeaseCancel.
  * Use `create(InvokeScriptResult_LeaseCancelSchema)` to create a new message.
  */
-export const InvokeScriptResult_LeaseCancelSchema: GenMessage<InvokeScriptResult_LeaseCancel> =
-  /*@__PURE__*/
+export const InvokeScriptResult_LeaseCancelSchema: GenMessage<InvokeScriptResult_LeaseCancel> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 6);
 
 /**
  * @generated from message waves.InvokeScriptResult.ErrorMessage
  */
-export type InvokeScriptResult_ErrorMessage = Message<'waves.InvokeScriptResult.ErrorMessage'> & {
+export type InvokeScriptResult_ErrorMessage = Message<"waves.InvokeScriptResult.ErrorMessage"> & {
   /**
    * @generated from field: int32 code = 1;
    */
@@ -296,14 +288,13 @@ export type InvokeScriptResult_ErrorMessage = Message<'waves.InvokeScriptResult.
  * Describes the message waves.InvokeScriptResult.ErrorMessage.
  * Use `create(InvokeScriptResult_ErrorMessageSchema)` to create a new message.
  */
-export const InvokeScriptResult_ErrorMessageSchema: GenMessage<InvokeScriptResult_ErrorMessage> =
-  /*@__PURE__*/
+export const InvokeScriptResult_ErrorMessageSchema: GenMessage<InvokeScriptResult_ErrorMessage> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 7);
 
 /**
  * @generated from message waves.InvokeScriptResult.Call
  */
-export type InvokeScriptResult_Call = Message<'waves.InvokeScriptResult.Call'> & {
+export type InvokeScriptResult_Call = Message<"waves.InvokeScriptResult.Call"> & {
   /**
    * @generated from field: string function = 1;
    */
@@ -325,94 +316,83 @@ export type InvokeScriptResult_Call = Message<'waves.InvokeScriptResult.Call'> &
  * Describes the message waves.InvokeScriptResult.Call.
  * Use `create(InvokeScriptResult_CallSchema)` to create a new message.
  */
-export const InvokeScriptResult_CallSchema: GenMessage<InvokeScriptResult_Call> =
-  /*@__PURE__*/
+export const InvokeScriptResult_CallSchema: GenMessage<InvokeScriptResult_Call> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 8);
 
 /**
  * @generated from message waves.InvokeScriptResult.Call.Argument
  */
-export type InvokeScriptResult_Call_Argument = Message<'waves.InvokeScriptResult.Call.Argument'> & {
+export type InvokeScriptResult_Call_Argument = Message<"waves.InvokeScriptResult.Call.Argument"> & {
   /**
    * @generated from oneof waves.InvokeScriptResult.Call.Argument.value
    */
-  value:
-    | {
-        /**
-         * @generated from field: int64 integer_value = 1;
-         */
-        value: bigint;
-        case: 'integerValue';
-      }
-    | {
-        /**
-         * @generated from field: bytes binary_value = 2;
-         */
-        value: Uint8Array;
-        case: 'binaryValue';
-      }
-    | {
-        /**
-         * @generated from field: string string_value = 3;
-         */
-        value: string;
-        case: 'stringValue';
-      }
-    | {
-        /**
-         * @generated from field: bool boolean_value = 4;
-         */
-        value: boolean;
-        case: 'booleanValue';
-      }
-    | {
-        /**
-         * @generated from field: bytes case_obj = 5;
-         */
-        value: Uint8Array;
-        case: 'caseObj';
-      }
-    | {
-        /**
-         * @generated from field: waves.InvokeScriptResult.Call.Argument.List list = 10;
-         */
-        value: InvokeScriptResult_Call_Argument_List;
-        case: 'list';
-      }
-    | { case: undefined; value?: undefined };
+  value: {
+    /**
+     * @generated from field: int64 integer_value = 1;
+     */
+    value: bigint;
+    case: "integerValue";
+  } | {
+    /**
+     * @generated from field: bytes binary_value = 2;
+     */
+    value: Uint8Array;
+    case: "binaryValue";
+  } | {
+    /**
+     * @generated from field: string string_value = 3;
+     */
+    value: string;
+    case: "stringValue";
+  } | {
+    /**
+     * @generated from field: bool boolean_value = 4;
+     */
+    value: boolean;
+    case: "booleanValue";
+  } | {
+    /**
+     * @generated from field: bytes case_obj = 5;
+     */
+    value: Uint8Array;
+    case: "caseObj";
+  } | {
+    /**
+     * @generated from field: waves.InvokeScriptResult.Call.Argument.List list = 10;
+     */
+    value: InvokeScriptResult_Call_Argument_List;
+    case: "list";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message waves.InvokeScriptResult.Call.Argument.
  * Use `create(InvokeScriptResult_Call_ArgumentSchema)` to create a new message.
  */
-export const InvokeScriptResult_Call_ArgumentSchema: GenMessage<InvokeScriptResult_Call_Argument> =
-  /*@__PURE__*/
+export const InvokeScriptResult_Call_ArgumentSchema: GenMessage<InvokeScriptResult_Call_Argument> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 8, 0);
 
 /**
  * @generated from message waves.InvokeScriptResult.Call.Argument.List
  */
-export type InvokeScriptResult_Call_Argument_List =
-  Message<'waves.InvokeScriptResult.Call.Argument.List'> & {
-    /**
-     * @generated from field: repeated waves.InvokeScriptResult.Call.Argument items = 1;
-     */
-    items: InvokeScriptResult_Call_Argument[];
-  };
+export type InvokeScriptResult_Call_Argument_List = Message<"waves.InvokeScriptResult.Call.Argument.List"> & {
+  /**
+   * @generated from field: repeated waves.InvokeScriptResult.Call.Argument items = 1;
+   */
+  items: InvokeScriptResult_Call_Argument[];
+};
 
 /**
  * Describes the message waves.InvokeScriptResult.Call.Argument.List.
  * Use `create(InvokeScriptResult_Call_Argument_ListSchema)` to create a new message.
  */
-export const InvokeScriptResult_Call_Argument_ListSchema: GenMessage<InvokeScriptResult_Call_Argument_List> =
-  /*@__PURE__*/
+export const InvokeScriptResult_Call_Argument_ListSchema: GenMessage<InvokeScriptResult_Call_Argument_List> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 8, 0, 0);
 
 /**
  * @generated from message waves.InvokeScriptResult.Invocation
  */
-export type InvokeScriptResult_Invocation = Message<'waves.InvokeScriptResult.Invocation'> & {
+export type InvokeScriptResult_Invocation = Message<"waves.InvokeScriptResult.Invocation"> & {
   /**
    * @generated from field: bytes dApp = 1;
    */
@@ -438,6 +418,6 @@ export type InvokeScriptResult_Invocation = Message<'waves.InvokeScriptResult.In
  * Describes the message waves.InvokeScriptResult.Invocation.
  * Use `create(InvokeScriptResult_InvocationSchema)` to create a new message.
  */
-export const InvokeScriptResult_InvocationSchema: GenMessage<InvokeScriptResult_Invocation> =
-  /*@__PURE__*/
+export const InvokeScriptResult_InvocationSchema: GenMessage<InvokeScriptResult_Invocation> = /*@__PURE__*/
   messageDesc(file_waves_invoke_script_result, 0, 9);
+
