@@ -1,0 +1,21 @@
+syntax = "proto3";
+package waves;
+option java_package = "io.decentralchain.protobuf.dapp";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/ride/meta/generated";
+option csharp_namespace = "DecentralChain";
+
+message DAppMeta {
+    int32 version = 1;
+    repeated CallableFuncSignature funcs = 2;
+    repeated CompactNameAndOriginalNamePair compactNameAndOriginalNamePairList = 3;
+    repeated string originalNames = 4;
+
+    message CallableFuncSignature {
+        bytes types = 1;
+    }
+
+    message CompactNameAndOriginalNamePair {
+        string compactName = 1;
+        string originalName = 2;
+    }
+}
