@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/swap-client/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.11.0",
@@ -31,8 +31,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
     }
   },
   "files": [
@@ -45,7 +45,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/swap-client#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/swap-client",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -62,24 +62,20 @@
   "license": "MIT",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/swap-client",
-  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "repository": {
+    "directory": "packages/swap-client",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/swap-client.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
   "scripts": {
     "build": "tsdown",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "generate": "buf generate",
     "lint": "biome check --write .",
     "lint:check": "biome check .",
@@ -87,12 +83,10 @@
     "postpublish": "git push",
     "postversion": "npm publish",
     "prepack": "npm run build",
-    "prepare": "lefthook install",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "size-limit": [
