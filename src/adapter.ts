@@ -256,5 +256,11 @@ export function signerTxFactory(signed: string): SignedTx<SignerTx> {
   if (typeof signed !== 'string' || signed.length === 0) {
     throw new Error('Expected a non-empty signed transaction string from CubensisConnect');
   }
-  return json.parseTx(signed);
+
+  const parsed = json.parseTx(signed);
+  if (typeof parsed !== 'object' || parsed == null || !('type' in parsed)) {
+    throw new Error('Invalid signed transaction payload from CubensisConnect');
+  }
+
+  return parsed as unknown as SignedTx<SignerTx>;
 }
