@@ -1,0 +1,8 @@
+# Default owners for everything
+* @Decentral-America/core-maintainers
+
+# Security-sensitive paths require security team review
+SECURITY.md @Decentral-America/security
+src/ @Decentral-America/core-maintainers
+package.json @Decentral-America/core-maintainers
+tsconfig.json @Decentral-America/core-maintainers
