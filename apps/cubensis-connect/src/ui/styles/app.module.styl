@@ -1,0 +1,379 @@
+@import "./colors.module.styl";
+
+:global .black
+  color: $black;
+
+:global .white
+  color: $white;
+
+:global .basic50
+  color: $basic50;
+
+:global .basic100
+  color: $basic100;
+
+:global .basic200
+  color: $basic200;
+
+:global .basic500
+  color: $basic500
+
+:global .accent50
+  color: $accent50;
+
+:global .disabled400
+  color: $disabled400;
+
+:global .disabled500
+  color: $disabled500;
+
+:global .info400
+  color: $info400;
+
+:global .submit200
+  color: $submit200;
+
+:global .submit400
+  color: $submit400;
+
+:global .success400
+  color: $success400;
+
+:global .error400
+  color: $error400;
+
+:global .error500
+  color: $error500;
+
+:global .left
+  text-align: left;
+
+:global .right
+  text-align: right;
+
+:global .center
+  text-align: center;
+
+:global .relative
+  position: relative;
+
+:global .absolute
+  position: absolute;
+
+:global .flex
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+:global .block
+  display: block;
+
+// typography
+:global .title1
+  font-size: 24px;
+  font-weight: normal;
+
+:global .headline1
+  font-size: 18px;
+
+:global .headline2
+  font-size: 18px;
+  font-weight: 500;
+
+:global .headline2Bold
+  font-size: 18px;
+  font-weight: bold;
+
+:global .headline3
+  font-size: 16px;
+
+:global .headline4
+  font-size: 16px;
+
+:global .body1
+  font-size: 14px;
+
+:global .body2
+  font-size: 16px;
+  font-weight: 500;
+
+:global .body3
+  font-size: 12px;
+
+:global .tag1
+  font-size: 11px;
+
+:global .link
+  text-decoration: underline;
+  font-weight: normal;
+  cursor: pointer;
+
+  &.blue
+    color: $submit400;
+  &:hover
+    text-decoration: none;
+
+:global .clean
+  text-decoration: none;
+
+:global .capitalize
+  text-transform: capitalize;
+
+// layout
+$layout-4 = 4px;
+$layout-10 = 10px;
+$layout-14 = 14px;
+$layout-24 = 24px;
+$layout-44 = 44px;
+
+:global .fullwidth
+  width: 100%;
+
+:global .centered
+  margin: 0 auto;
+
+:global .margin-min
+  margin-bottom: $layout-4;
+
+:global .margin-main
+  margin-bottom: $layout-14;
+
+:global .margin-main-big
+  margin-bottom: $layout-24;
+
+:global .margin-main-large
+  margin-bottom: $layout-44;
+
+:global .margin-min-top
+  margin-top: $layout-4;
+
+:global .margin-main-top
+  margin-top: $layout-14;
+
+:global .margin-main-big-top
+  margin-top: $layout-24;
+
+:global .margin-main-large-top
+  margin-top: $layout-44;
+
+:global .margin1
+  margin-bottom: $layout-10;
+
+:global .margin2
+  margin-bottom: $layout-10 * 2;
+
+:global .margin3
+  margin-bottom: $layout-10 * 3;
+
+:global .margin4
+  margin-bottom: $layout-10 * 4;
+
+:global .marginTop1
+  margin-top: $layout-10;
+
+:global .marginTop2
+  margin-top: $layout-10 * 2;
+
+:global .marginTop3
+  margin-top: $layout-10 * 3;
+
+:global .marginTop4
+  margin-top: $layout-10 * 4;
+
+// font-weights
+:global .font300
+  font-weight: 300;
+
+:global .font400
+  font-weight: normal;
+
+:global .font500
+  font-weight: 500;
+
+:global .font700
+  font-weight: bold;
+
+:global .break-all {
+  word-break: break-all;
+}
+
+:global .underline {
+  text-decoration: underline;
+}
+
+// misc
+:global .separator
+  height: 1px;
+  border-bottom: 1px dashed $basic200;
+
+:global .cant-select
+  user-select: none;
+
+:global .input-title
+  display: inline-block;
+  margin-bottom: 7px;
+
+:global .tx-title
+  display: inline-block;
+  margin-bottom: 4px;
+  &-black
+    color: $black;
+    margin-bottom: 4px;
+
+:global .border-bottom
+  border-bottom: 1px solid $accent50;
+
+:global .border-dashed
+  border: 1px dashed $basic200;
+
+:global .grey-line
+  background: $basic50;
+  border: 1px dashed $basic200;
+  display: flex;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+
+:global .origin-ellipsis
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+// blocks
+:global checkbox-row
+  display: flex;
+  align-items: center;
+  label
+    flex-grow: 1;
+
+:global .plate
+  background: $basic50;
+  border: 1px dashed $basic200;
+  padding: $layout-14;
+  border-radius: 2px;
+
+:global .transactionContent
+  height: calc(100% - 204px);
+  padding-bottom: 14px;
+
+:global .info-block //with icon
+  display: flex;
+  align-items: flex-start;
+
+  & > div:first-child
+    flex-grow: 0;
+    margin-right: 14px;
+
+    i
+      width: 18px;
+      height: 18px;
+      display: block;
+
+  & > div:last-child
+    flex-grow: 1;
+
+:global .grow
+  flex-grow: 1;
+
+:global .cover {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc((100vh - 420px) / 2) 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+:global .modal
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+:global .modal-form
+  display: block;
+  width: 280px;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  background: $white;
+  height: auto;
+  padding: 24px;
+  z-index: 100;
+  border-radius: 4px;
+
+:global .modal-close
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  &::after
+    content: '\2715';
+    line-height: 1rem;
+    font-size: 1rem;
+    color: $basic500;
+
+:global .notification
+  display: block;
+  width: auto;
+  height: 32px;
+  padding: 0 24px;
+  line-height: 32px;
+  position: fixed;
+  border-radius: 2px;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.8);
+  color: $white;
+  z-index: 1;
+  white-space: nowrap;
+  margin: auto;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% + 255px);
+
+  div {
+    max-width: 276px;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.error
+    background-color: $error400;
+    z-index: 2;
+
+:global .skeleton-glow
+  animation: skeleton-glow 1s linear infinite alternate;
+  background: rgba(206,217,224,.2);
+  background-clip: padding-box!important;
+  border-color: rgba(206,217,224,.2)!important;
+  border-radius: 4px;
+  box-shadow: none!important;
+  color: transparent!important;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+
+@keyframes :global(skeleton-glow)
+  0%
+    background: rgba(206,217,224,.2);
+    border-color: rgba(206,217,224,.2);
+
+  100%
+    background: rgba(92,112,128,.2);
+    border-color: rgba(92,112,128,.2);
+
+:global .sr-only
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;

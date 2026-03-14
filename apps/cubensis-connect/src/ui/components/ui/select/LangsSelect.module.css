@@ -1,0 +1,10 @@
+.flagIcon {
+  margin-left: auto;
+  width: 18px;
+  height: 16px;
+}
+
+.selected {
+  margin-right: 8px;
+  margin-left: 0;
+}

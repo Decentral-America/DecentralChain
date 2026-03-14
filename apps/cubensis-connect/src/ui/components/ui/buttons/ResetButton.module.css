@@ -1,0 +1,43 @@
+.reset {
+  margin-right: 14px;
+  background-color: transparent;
+}
+
+.resetModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resetModalContent {
+  position: relative;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 284px;
+  border-radius: 2px;
+  background: var(--color-white);
+}
+
+.resetModalTitle {
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+  text-align: center;
+}
+
+.resetModalDescription {
+  margin-bottom: 24px;
+  color: var(--color-basic500);
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.resetModalLoader {
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  background: url(../../../../ui/assets/img/loader.gif) center no-repeat;
+  background-size: 40px;
+}

@@ -1,0 +1,77 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.title {
+  margin: 64px 48px 30px;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 28px;
+}
+
+.name {
+  margin: 0 48px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+}
+
+.footer {
+  margin-top: auto;
+  background-color: var(--color-basic50);
+}
+
+.buttons {
+  padding: 14px;
+  display: flex;
+  border-top: 1px solid var(--color-basic100);
+}
+
+.reset {
+  margin-right: 14px;
+  background-color: var(--color-basic50);
+}
+
+.resetModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resetModalContent {
+  position: relative;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 284px;
+  border-radius: 2px;
+  background: var(--color-white);
+}
+
+.resetModalTitle {
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 21px;
+  text-align: center;
+}
+
+.resetModalDescription {
+  margin-bottom: 24px;
+  color: var(--color-basic500);
+  font-size: 14px;
+  line-height: 14px;
+}
