@@ -1,0 +1,25 @@
+@use "sass:map";
+@use "variables";
+@use "mixins.scss";
+
+table.nodes {
+    th.version {
+        @include mixins.responsive_styles(map.get(variables.$nodes_columns, 'version'))
+    }
+
+    th.height {
+        @include mixins.responsive_styles(map.get(variables.$nodes_columns, 'height'))
+    }
+
+    th.target {
+        @include mixins.responsive_styles(map.get(variables.$nodes_columns, 'target'))
+    }
+
+    th.utxs {
+        @include mixins.responsive_styles(map.get(variables.$nodes_columns, 'utxs'))
+    }
+
+    th.txs {
+        @include mixins.responsive_styles(map.get(variables.$nodes_columns, 'txs'))
+    }
+}

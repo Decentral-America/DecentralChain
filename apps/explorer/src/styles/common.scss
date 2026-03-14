@@ -1,0 +1,282 @@
+@use "sass:map";
+@use "sass:meta";
+@use "variables";
+@use "mixins";
+
+@import "reset.css";
+@include meta.load-css("grid.scss");
+@include meta.load-css("table.scss");
+@include meta.load-css("form.scss");
+@include meta.load-css("converters.scss");
+
+.basic50 {
+    color: #f8f9fb
+}
+
+.basic500 {
+    color: #9ba6b2
+}
+
+.basic700 {
+    color: #4e5c6e
+}
+
+.accent50 {
+    color: #e9e9eb
+}
+
+.disabled500 {
+    color: #999999
+}
+
+.black {
+    color: #000000
+}
+
+.white {
+    color: #ffffff
+}
+
+.submit200 {
+    color: #bacaf4
+}
+
+.submit400 {
+    color: #1f5af6
+}
+
+.success400 {
+    color: #4aad02
+}
+
+.error500 {
+    color: #ef4829
+}
+
+.info400 {
+    color: #8dabc4
+}
+
+.mixUnicorn {
+    color: #ab7df6
+}
+
+.iceBlue {
+    color: #eef0f3
+}
+
+.paleBlue {
+    color: #dee3ea
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.right {
+    flex-grow: 1;
+    text-align: right;
+}
+
+.width-25 {
+    width: 25%;
+}
+
+.width-30 {
+    width: 30%;
+}
+
+.margin4 {
+    margin-bottom: 4px;
+}
+
+.margin6 {
+    margin-bottom: 6px;
+}
+
+.margin34 {
+    margin-bottom: 34px;
+}
+
+.margin24 {
+    margin-bottom: 24px;
+}
+
+.fs14 {
+    font-size: 14px;
+}
+
+.fs12 {
+    font-size: 12px;
+}
+
+
+// **** link ****
+a {
+    font-weight: bold;
+    color: map.get(variables.$colors, white);
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.no-accent {
+        color: map.get(variables.$colors, white);
+        font-weight: normal;
+    }
+
+    &.fade {
+        color: map.get(variables.$colors, white);
+        font-weight: normal;
+    }
+
+    &.disabled {
+        pointer-events: none;
+    }
+
+    &.no-style {
+        font-weight: inherit;
+        color: inherit;
+        text-decoration: inherit;
+    }
+}
+
+// **** button ****
+.btn {
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background-color: map.get(variables.$colors, submit400);
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    @include mixins.font(body, white);
+    & {
+        cursor: pointer;
+        transition: .3s;
+    }
+    &:hover:not(.disabled) {
+        opacity: 0.7
+    }
+
+    &.disabled {
+        background-color: map.get(variables.$colors, accent50);
+    }
+
+    &.btn-copy {
+        min-width: 70px;
+        width: 70px;
+        height: 28px;
+        background-image: url('../images/copy-14-white.svg');
+        background-position: 8px center;
+        padding-left: 30px;
+        padding-top: 6px;
+    }
+
+    &.btn-open {
+        min-width: 107px;
+        width: 107px;
+        height: 28px;
+        background-image: url('../images/open-14-white.svg');
+        background-position: 93% center;
+        padding-left: 8px;
+        padding-top: 6px;
+    }
+
+    &.btn-prev {
+        width: 18px;
+        height: 24px;
+        background-image: url('../images/back-14-white.svg');
+        margin-right: 14px;
+    }
+
+    &.btn-next {
+        width: 18px;
+        height: 24px;
+        background-image: url('../images/next-14-white.svg');
+        margin-left: 14px;
+    }
+
+    &.btn-back {
+        width: 14px;
+        height: 14px;
+        background-image: url('../images/back-14-black.svg');
+        background-color: transparent;
+    }
+
+    &.btn-link {
+        width: auto;
+        min-width: 0;
+        padding-left: 0;
+        background: none;
+        color: map.get(variables.$colors, submit400);
+    }
+
+    &.btn-toggle {
+        min-width: 50px;
+        height: 28px;
+        padding-top: 6px;
+        text-align: center;
+    }
+}
+
+.copied {
+    display: inline-block;
+    padding: 0 16px;
+    @include mixins.font(body, success400);
+}
+
+.badge {
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background-color: map.get(variables.$colors, info400);
+    vertical-align: middle;
+    padding: 4px 4px 4px 6px;
+    @include mixins.font(body, white);
+
+    &.asset-burn, &.lease-cancel, &.asset-transfer.out, &.mass-payment.out {
+        background-color: map.get(variables.$colors, error500);
+    }
+    &.lease, &.asset-issue, &.asset-transfer.in, &.mass-payment.in {
+        background-color: map.get(variables.$colors, success400);
+    }
+    &.exchange {
+        background-color: map.get(variables.$colors, mixUnicorn);
+    }
+    &.create-alias, &.asset-reissue, &.data {
+        background-color: map.get(variables.$colors, info400);
+    }
+    &.dapp {
+        background-color: map.get(variables.$colors, deepViolet);
+        white-space: nowrap;
+
+        &-link {
+            border: 2px solid map.get(variables.$colors, deepViolet);
+            background: unset;
+            box-sizing: border-box;
+            padding: 3px 4px;
+        }
+    }
+    &.script-invocation {
+        margin-right: 10px;
+    }
+}
+
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.loading {
+    .loading-icon {
+        margin: 0 auto;
+        @include mixins.loading();
+    }
+}
