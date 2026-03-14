@@ -1,0 +1,101 @@
+{
+  "author": "DecentralChain",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/transactions/issues"
+  },
+  "dependencies": {
+    "@decentralchain/marshall": "^1.0.1",
+    "@decentralchain/node-api-js": "^2.0.1",
+    "@decentralchain/protobuf-serialization": "^3.0.0",
+    "@decentralchain/ts-lib-crypto": "^2.0.1",
+    "@decentralchain/ts-types": "^2.0.1"
+  },
+  "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.4.6",
+    "@evilmartians/lefthook": "2.1.3",
+    "@size-limit/preset-small-lib": "12.0.0",
+    "@types/node": "25.3.3",
+    "@vitest/coverage-v8": "4.0.18",
+    "publint": "0.3.18",
+    "size-limit": "12.0.0",
+    "tsdown": "0.21.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/transactions#readme",
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "transactions",
+    "crypto",
+    "blockchain",
+    "protocol",
+    "binary",
+    "cryptography",
+    "signature"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.mjs",
+  "name": "@decentralchain/transactions",
+  "packageManager": "npm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/transactions.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "postpublish": "git push",
+    "postversion": "npm publish",
+    "prepack": "npm run build",
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports && npm run check:size"
+  },
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "limit": "150 kB",
+      "path": "./dist/index.mjs"
+    }
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "5.0.1"
+}

@@ -1,0 +1,51 @@
+/**
+ * @module index
+ */
+
+import { binary } from '@decentralchain/marshall';
+import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
+import { type ExchangeTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { DEFAULT_VERSIONS } from '../defaultVersions';
+import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
+import { txToProtoBytes } from '../proto-serialize';
+import { type WithId, type WithProofs } from '../transactions';
+import { type TSeedTypes } from '../types';
+import { validate } from '../validators';
+
+/* @echo DOCS */
+export function exchange(
+  paramsOrTx: ExchangeTransaction & WithProofs,
+  seed?: TSeedTypes,
+): ExchangeTransaction & WithId & WithProofs {
+  const type = TRANSACTION_TYPE.EXCHANGE;
+  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.EXCHANGE;
+  const seedsAndIndexes = convertToPairs(seed);
+  const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
+
+  const tx: ExchangeTransaction & WithId & WithProofs = {
+    amount: paramsOrTx.amount,
+    buyMatcherFee: paramsOrTx.buyMatcherFee,
+    chainId: networkByte(paramsOrTx.chainId, 76),
+    fee: fee(paramsOrTx, 100000),
+    id: '',
+    order1: paramsOrTx.order1,
+    order2: paramsOrTx.order2,
+    price: paramsOrTx.price,
+    proofs: paramsOrTx.proofs || [],
+    sellMatcherFee: paramsOrTx.sellMatcherFee,
+    senderPublicKey,
+    timestamp: paramsOrTx.timestamp || Date.now(),
+    type,
+    version,
+  };
+
+  validate.exchange(tx as unknown as Record<string, unknown>);
+
+  const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
+
+  seedsAndIndexes.forEach(([s, i]) => {
+    addProof(tx, signBytes(s, bytes), i);
+  });
+
+  return { ...tx, id: base58Encode(blake2b(bytes)) };
+}
