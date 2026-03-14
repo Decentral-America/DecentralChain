@@ -1,10 +1,9 @@
 export const CUSTOM_DATA_V1 = {
-  version: 1 as const,
   binary: 'base64:AADDEE==',
+  version: 1 as const,
 };
 
 export const CUSTOM_DATA_V2 = {
-  version: 2 as const,
   data: [
     {
       key: 'stringValue',
@@ -19,4 +18,5 @@ export const CUSTOM_DATA_V2 = {
     { key: 'flagValue', type: 'boolean' as const, value: true },
     { key: 'base64', type: 'binary' as const, value: 'base64:BQbtKNoM' },
   ],
+  version: 2 as const,
 };

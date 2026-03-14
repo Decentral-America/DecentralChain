@@ -202,7 +202,7 @@ describe('Settings', () => {
 
       describe('Adding', () => {
         it('Origin added to custom list', async () => {
-          const origin = CUSTOMLIST[0];
+          const origin = CUSTOMLIST[0]!;
 
           const { waitForNewWindows } = await Windows.captureNewWindows();
           await publicStateFromOrigin(origin);
@@ -221,12 +221,12 @@ describe('Settings', () => {
           await SettingsMenuScreen.permissionsSectionLink.click();
 
           expect(
-            (await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[0])).root,
+            (await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[0]!)).root,
           ).toBeDisplayed();
         });
 
         it('Origin added to custom list with auto-limits', async () => {
-          const origin = CUSTOMLIST[1];
+          const origin = CUSTOMLIST[1]!;
 
           const { waitForNewWindows } = await Windows.captureNewWindows();
           await publicStateFromOrigin(origin);
@@ -270,9 +270,9 @@ describe('Settings', () => {
             (window.result as Promise<unknown>).then(done, done);
           });
           expect(response).toStrictEqual({
-            message: 'Api rejected by user',
             code: '12',
             data: null,
+            message: 'Api rejected by user',
           });
         });
       });

@@ -1,10 +1,9 @@
 export const SetScriptTransactionScreen = {
-  get root() {
-    return $("[class*='screen@']");
-  },
-
   get contentScript() {
     return this.root.findByTestId$('contentScript');
+  },
+  get root() {
+    return $("[class*='screen@']");
   },
 
   get scriptTitle() {

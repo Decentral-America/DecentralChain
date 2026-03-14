@@ -15,16 +15,18 @@ export function LangsSelect() {
       fill
       listPlacement="top"
       selectList={SUPPORTED_LANGUAGES.map(({ id, name }) => ({
-        id,
-        value: id,
-        text: name,
         icon: (
           <i
-            className={clsx(styles.flagIcon, `flag-${id}-icon`, {
-              [styles.selected]: currentLocale === id,
-            })}
+            className={clsx(
+              styles.flagIcon,
+              `flag-${id}-icon`,
+              currentLocale === id && styles.selected,
+            )}
           />
         ),
+        id,
+        text: name,
+        value: id,
       }))}
       selected={currentLocale}
       onSelectItem={(locale) => {

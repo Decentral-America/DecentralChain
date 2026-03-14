@@ -156,14 +156,14 @@ export class StatisticsController {
     }
 
     const response = await fetch('https://api2.amplitude.com/2/httpapi', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
       body: JSON.stringify({
         api_key: __AMPLITUDE_API_KEY__,
         events,
       }),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
     });
 
     if (!response.ok) {
@@ -186,10 +186,10 @@ export class StatisticsController {
     if (events.length === 0) return;
 
     const response = await fetch('https://api-js.mixpanel.com/track/?ip=1', {
-      method: 'POST',
       body: new URLSearchParams({
         data: JSON.stringify(events),
       }),
+      method: 'POST',
     });
 
     if (!response.ok) {

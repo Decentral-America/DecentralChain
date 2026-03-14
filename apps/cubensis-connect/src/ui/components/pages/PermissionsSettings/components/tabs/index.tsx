@@ -29,9 +29,7 @@ export class Tabs extends PureComponent<IProps> {
             }}
             role="tab"
             tabIndex={0}
-            className={clsx(styles.tab, {
-              [styles.selected]: selected === name,
-            })}
+            className={clsx(styles.tab, selected === name && styles.selected)}
           >
             <span>{item}</span>
           </div>

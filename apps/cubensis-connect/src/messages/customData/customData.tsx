@@ -104,9 +104,9 @@ export function CustomDataFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.customDataSent'),
         approve: t('sign.customDataConfirmed'),
         reject: t('sign.customDataFailed'),
+        send: t('sign.customDataSent'),
       }}
     />
   );

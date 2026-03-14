@@ -81,10 +81,10 @@ describe('Publish', () => {
       publicKey: base58Encode(user2PublicKeyBytes),
     };
     await faucet({
-      recipient: issuer.address,
       amount: 10 * DCC_TOKEN_SCALE,
-      nodeUrl,
       chainId,
+      nodeUrl,
+      recipient: issuer.address,
     });
     await App.initVault();
 
@@ -111,7 +111,7 @@ describe('Publish', () => {
 
     dAppTab = (await browser.createWindow('tab')).handle;
     await browser.switchToWindow(dAppTab);
-    await browser.navigateTo(`https://${WHITELIST[3]}`);
+    await browser.navigateTo(`https://${WHITELIST[3]!}`);
 
     await browser.switchToWindow(tabAccounts);
     await browser.closeWindow();
@@ -164,12 +164,12 @@ describe('Publish', () => {
   describe('Asset issue', () => {
     it('Asset with max values', async () => {
       const data = {
-        name: '16 characters :)',
         description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ${'Aenean commodo ligula eget dolor. Aenean'.repeat(
           10,
         )}`,
-        quantity: '9223372036854775807',
+        name: '16 characters :)',
         precision: 8 as const,
+        quantity: '9223372036854775807',
         reissuable: true,
       };
       await performSignAndPublishTransaction({ ...ISSUE, data });
@@ -178,18 +178,18 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        chainId,
+        decimals: data.precision,
+        description: data.description,
+        fee: '100000000',
+        name: data.name,
+        quantity: data.quantity,
+        reissuable: data.reissuable,
+        senderPublicKey: issuer.publicKey,
         type: ISSUE.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        name: data.name,
-        description: data.description,
-        quantity: data.quantity,
-        decimals: data.precision,
-        reissuable: data.reissuable,
-        fee: '100000000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -204,7 +204,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -215,10 +215,10 @@ describe('Publish', () => {
 
     it('Asset with min values', async () => {
       const data = {
-        name: 'Four',
         description: '',
-        quantity: '1',
+        name: 'Four',
         precision: 0 as const,
+        quantity: '1',
         reissuable: false,
       };
       await performSignAndPublishTransaction({ ...ISSUE, data });
@@ -227,18 +227,18 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        chainId,
+        decimals: data.precision,
+        description: data.description,
+        fee: '100000',
+        name: data.name,
+        quantity: data.quantity,
+        reissuable: data.reissuable,
+        senderPublicKey: issuer.publicKey,
         type: ISSUE.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        name: data.name,
-        description: data.description,
-        quantity: data.quantity,
-        decimals: data.precision,
-        reissuable: data.reissuable,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -253,7 +253,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -263,10 +263,10 @@ describe('Publish', () => {
 
     it('Smart asset', async () => {
       const data = {
-        name: 'Smart Asset',
         description: 'Asset with script',
-        quantity: '100000000000',
+        name: 'Smart Asset',
         precision: 8 as const,
+        quantity: '100000000000',
         reissuable: true,
         script: 'base64:BQbtKNoM',
       };
@@ -276,19 +276,19 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: ISSUE.type,
-        version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        name: data.name,
-        description: data.description,
-        quantity: data.quantity,
+        chainId,
         decimals: data.precision,
+        description: data.description,
+        fee: '100000000',
+        name: data.name,
+        quantity: data.quantity,
         reissuable: data.reissuable,
         script: data.script,
-        fee: '100000000',
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: ISSUE.type,
+        version: 3 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -302,7 +302,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
 
@@ -314,10 +314,10 @@ describe('Publish', () => {
 
     it('NFT', async () => {
       const data = {
-        name: 'Non-fungible',
         description: 'NFT is a non-reissuable asset with quantity 1 and decimals 0',
-        quantity: '1',
+        name: 'Non-fungible',
         precision: 0 as const,
+        quantity: '1',
         reissuable: false,
         script: 'base64:BQbtKNoM',
       };
@@ -327,19 +327,19 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: ISSUE.type,
-        version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        name: data.name,
-        description: data.description,
-        quantity: data.quantity,
+        chainId,
         decimals: data.precision,
+        description: data.description,
+        fee: '100000',
+        name: data.name,
+        quantity: data.quantity,
         reissuable: data.reissuable,
         script: data.script,
-        fee: '100000',
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: ISSUE.type,
+        version: 3 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -353,7 +353,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -365,8 +365,8 @@ describe('Publish', () => {
   describe('Editing an asset', () => {
     it('Reissue', async () => {
       const data = {
-        quantity: '777',
         assetId: smartAssetId,
+        quantity: '777',
         reissuable: false,
       };
       await performSignAndPublishTransaction({ ...REISSUE, data });
@@ -375,16 +375,16 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: REISSUE.type,
-        version: 3 as const,
-        senderPublicKey: issuer.publicKey,
         assetId: data.assetId,
+        chainId,
+        fee: '500000',
         quantity: data.quantity,
         reissuable: data.reissuable,
-        fee: '500000',
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: REISSUE.type,
+        version: 3 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -398,7 +398,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -408,8 +408,8 @@ describe('Publish', () => {
 
     it('Burn', async () => {
       const data = {
-        quantity: '100500',
         assetId: smartAssetId,
+        quantity: '100500',
       };
       await performSignAndPublishTransaction({ ...BURN, data });
       await approveTransaction();
@@ -417,15 +417,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        amount: data.quantity,
+        assetId: data.assetId,
+        chainId,
+        fee: '500000',
+        senderPublicKey: issuer.publicKey,
         type: BURN.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        assetId: data.assetId,
-        amount: data.quantity,
-        fee: '500000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -438,7 +438,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -457,15 +457,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: SET_ASSET_SCRIPT.type,
-        version: 2 as const,
-        senderPublicKey: issuer.publicKey,
         assetId: data.assetId,
+        chainId,
         fee: '100000000',
         script: data.script,
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: SET_ASSET_SCRIPT.type,
+        version: 2 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -478,7 +478,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -499,15 +499,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        assetId: data.minSponsoredAssetFee.assetId,
+        chainId,
+        fee: '100000',
+        minSponsoredAssetFee: data.minSponsoredAssetFee.amount,
+        senderPublicKey: issuer.publicKey,
         type: SPONSORSHIP.type,
         version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        minSponsoredAssetFee: data.minSponsoredAssetFee.amount,
-        assetId: data.minSponsoredAssetFee.assetId,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -520,7 +520,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -541,15 +541,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        assetId: data.minSponsoredAssetFee.assetId,
+        chainId,
+        fee: '100000',
+        minSponsoredAssetFee: null,
+        senderPublicKey: issuer.publicKey,
         type: SPONSORSHIP.type,
         version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        minSponsoredAssetFee: null,
-        assetId: data.minSponsoredAssetFee.assetId,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -562,7 +562,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -578,8 +578,8 @@ describe('Publish', () => {
           amount: '10050000000000',
           assetId: assetWithMaxValuesId,
         },
-        recipient: user1.address,
         attachment: 'base64:BQbtKNoM',
+        recipient: user1.address,
       };
       await performSignAndPublishTransaction({ ...TRANSFER, data });
       await approveTransaction();
@@ -587,18 +587,18 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: TRANSFER.type,
-        version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        assetId: data.amount.assetId,
-        recipient: data.recipient,
         amount: data.amount.amount,
+        assetId: data.amount.assetId,
         attachment: '3ke2ct1rnYr52Y1jQvzNG',
+        chainId,
         fee: '100000',
         feeAssetId: null,
-        chainId,
+        recipient: data.recipient,
+        senderPublicKey: issuer.publicKey,
+        type: TRANSFER.type,
+        version: 3 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -611,7 +611,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -621,14 +621,14 @@ describe('Publish', () => {
 
     it('Mass transfer', async () => {
       const data = {
+        attachment: 'base64:BQbtKNoM',
         totalAmount: {
           assetId: null,
         },
         transfers: [
-          { recipient: user1.address, amount: '10000000' },
-          { recipient: user2.address, amount: '10000000' },
+          { amount: '10000000', recipient: user1.address },
+          { amount: '10000000', recipient: user2.address },
         ],
-        attachment: 'base64:BQbtKNoM',
       };
       await performSignAndPublishTransaction({ ...MASS_TRANSFER, data });
       await approveTransaction();
@@ -636,15 +636,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: MASS_TRANSFER.type,
-        version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        transfers: data.transfers,
-        fee: '200000',
         attachment: '3ke2ct1rnYr52Y1jQvzNG',
         chainId,
+        fee: '200000',
+        senderPublicKey: issuer.publicKey,
+        transfers: data.transfers,
+        type: MASS_TRANSFER.type,
+        version: 2 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -658,7 +658,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -673,23 +673,23 @@ describe('Publish', () => {
         data: [
           {
             key: 'bool-entry',
-            value: false,
             type: 'boolean' as const,
+            value: false,
           },
           {
             key: 'str-entry',
-            value: 'Some string',
             type: 'string' as const,
+            value: 'Some string',
           },
           {
             key: 'binary',
-            value: 'base64:AbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCd',
             type: 'binary' as const,
+            value: 'base64:AbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCdAbCd',
           },
           {
             key: 'integer',
-            value: '20',
             type: 'integer' as const,
+            value: '20',
           },
         ],
       };
@@ -700,14 +700,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: DATA.type,
-        version: 2 as const,
-        senderPublicKey: issuer.publicKey,
+        chainId,
         data: data.data,
         fee: '100000',
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: DATA.type,
+        version: 2 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -720,7 +720,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -739,23 +739,23 @@ describe('Publish', () => {
         data: [
           {
             key: 'bool-entry',
-            value: true,
             type: 'boolean' as const,
+            value: true,
           },
           {
             key: 'str-entry',
-            value: strValueMax,
             type: 'string' as const,
+            value: strValueMax,
           },
           {
             key: 'bin-entry',
-            value: binValueMax,
             type: 'binary' as const,
+            value: binValueMax,
           },
           {
             key: 'int-entry',
-            value: '9223372036854775807',
             type: 'integer' as const,
+            value: '9223372036854775807',
           },
         ],
       };
@@ -766,14 +766,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
-        type: DATA.type,
-        version: 2 as const,
-        senderPublicKey: issuer.publicKey,
+        chainId,
         data: data.data,
         fee: '1500000',
-        chainId,
+        senderPublicKey: issuer.publicKey,
+        type: DATA.type,
+        version: 2 as const,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -786,7 +786,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -815,14 +815,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        chainId,
+        fee: '300000',
+        script: SET_SCRIPT_COMPILED.data.script,
+        senderPublicKey: user1.publicKey,
         type: SET_SCRIPT_COMPILED.type,
         version: 2 as const,
-        senderPublicKey: user1.publicKey,
-        script: SET_SCRIPT_COMPILED.data.script,
-        fee: '300000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -835,7 +835,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(user1.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -847,12 +847,12 @@ describe('Publish', () => {
       await changeKeeperAccountAndClose('issuer');
 
       const data = {
-        dApp: user1.address,
         call: {
-          function: 'deposit',
           args: [],
+          function: 'deposit',
         },
-        payment: [{ assetId: null, amount: '200000000' }],
+        dApp: user1.address,
+        payment: [{ amount: '200000000', assetId: null }],
       };
 
       await performSignAndPublishTransaction({ ...INVOKE_SCRIPT, data });
@@ -861,16 +861,16 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        call: data.call,
+        chainId,
+        dApp: data.dApp,
+        fee: '500000',
+        payment: data.payment,
+        senderPublicKey: issuer.publicKey,
         type: INVOKE_SCRIPT.type,
         version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        dApp: data.dApp,
-        call: data.call,
-        payment: data.payment,
-        fee: '500000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -884,7 +884,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -894,11 +894,11 @@ describe('Publish', () => {
 
     it('Invoke with argument', async () => {
       const data = {
-        dApp: user1.address,
         call: {
-          function: 'withdraw',
           args: [{ type: 'integer' as const, value: '100' }],
+          function: 'withdraw',
         },
+        dApp: user1.address,
         payment: [],
       };
 
@@ -908,16 +908,16 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        call: data.call,
+        chainId,
+        dApp: data.dApp,
+        fee: '500000',
+        payment: data.payment,
+        senderPublicKey: issuer.publicKey,
         type: INVOKE_SCRIPT.type,
         version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        dApp: data.dApp,
-        call: data.call,
-        payment: data.payment,
-        fee: '500000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -931,7 +931,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -945,9 +945,7 @@ describe('Publish', () => {
       )}`;
 
       const data = {
-        dApp: user1.address,
         call: {
-          function: 'allArgTypes',
           args: [
             { type: 'boolean' as const, value: true },
             { type: 'binary' as const, value: binLong },
@@ -973,18 +971,20 @@ describe('Publish', () => {
               ],
             },
           ],
+          function: 'allArgTypes',
         },
+        dApp: user1.address,
         payment: [
-          { assetId: null, amount: '27000000' },
-          { assetId: assetWithMaxValuesId, amount: '27000000' },
-          { assetId: smartAssetId, amount: '27000000' },
-          { assetId: null, amount: '200000' },
-          { assetId: assetWithMaxValuesId, amount: '150000' },
-          { assetId: smartAssetId, amount: '12222' },
-          { assetId: null, amount: '1212' },
-          { assetId: assetWithMaxValuesId, amount: '3434' },
-          { assetId: smartAssetId, amount: '5656' },
-          { assetId: null, amount: '50000000' },
+          { amount: '27000000', assetId: null },
+          { amount: '27000000', assetId: assetWithMaxValuesId },
+          { amount: '27000000', assetId: smartAssetId },
+          { amount: '200000', assetId: null },
+          { amount: '150000', assetId: assetWithMaxValuesId },
+          { amount: '12222', assetId: smartAssetId },
+          { amount: '1212', assetId: null },
+          { amount: '3434', assetId: assetWithMaxValuesId },
+          { amount: '5656', assetId: smartAssetId },
+          { amount: '50000000', assetId: null },
         ],
       };
 
@@ -994,16 +994,16 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        call: data.call,
+        chainId,
+        dApp: data.dApp,
+        fee: '500000',
+        payment: data.payment,
+        senderPublicKey: issuer.publicKey,
         type: INVOKE_SCRIPT.type,
         version: 2 as const,
-        senderPublicKey: issuer.publicKey,
-        dApp: data.dApp,
-        call: data.call,
-        payment: data.payment,
-        fee: '500000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -1017,7 +1017,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -1033,14 +1033,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        chainId,
+        fee: '100000',
+        script: null,
+        senderPublicKey: user1.publicKey,
         type: SET_SCRIPT_COMPILED.type,
         version: 2 as const,
-        senderPublicKey: user1.publicKey,
-        script: null,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -1053,7 +1053,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(user1.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -1078,15 +1078,15 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        amount: data.amount,
+        chainId,
+        fee: '100000',
+        recipient: data.recipient,
+        senderPublicKey: issuer.publicKey,
         type: LEASE.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        amount: data.amount,
-        recipient: data.recipient,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -1099,7 +1099,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -1116,14 +1116,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        chainId,
+        fee: '100000',
+        leaseId: data.leaseId,
+        senderPublicKey: issuer.publicKey,
         type: CANCEL_LEASE.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        leaseId: data.leaseId,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -1136,7 +1136,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {
@@ -1157,14 +1157,14 @@ describe('Publish', () => {
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
 
-      const parsedApproveResult = JSONbn.parse(result);
+      const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
       const expectedApproveResult = {
+        alias: data.alias,
+        chainId,
+        fee: '100000',
+        senderPublicKey: issuer.publicKey,
         type: ALIAS.type,
         version: 3 as const,
-        senderPublicKey: issuer.publicKey,
-        alias: data.alias,
-        fee: '100000',
-        chainId,
       };
       const bytes = makeTxBytes({
         ...expectedApproveResult,
@@ -1177,7 +1177,7 @@ describe('Publish', () => {
         await verifySignature(
           base58Decode(issuer.publicKey),
           bytes,
-          base58Decode(parsedApproveResult.proofs[0]),
+          base58Decode(parsedApproveResult.proofs[0]!),
         ),
       ).toBe(true);
       await waitForExpect(async () => {

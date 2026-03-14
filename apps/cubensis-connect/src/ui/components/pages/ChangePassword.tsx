@@ -25,16 +25,16 @@ interface State {
 
 class ChangePasswordComponent extends PureComponent<Props, State> {
   state: State = {
-    firstValue: '',
-    secondValue: '',
-    oldValue: '',
-    oldError: '',
-    firstError: '',
-    secondError: '',
     buttonDisabled: true,
-    passwordError: false,
-    showChanged: false,
+    firstError: '',
+    firstValue: '',
     oldEqualNewError: false,
+    oldError: '',
+    oldValue: '',
+    passwordError: false,
+    secondError: '',
+    secondValue: '',
+    showChanged: false,
   };
 
   onFirstBlur = () => this._onBlur();
@@ -132,16 +132,16 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
       background.newPassword(this.state.oldValue, this.state.firstValue).then(
         () => {
           this.setState({
-            firstValue: '',
-            secondValue: '',
-            oldValue: '',
-            oldError: null,
-            firstError: null,
-            secondError: null,
             buttonDisabled: true,
-            passwordError: false,
-            showChanged: true,
+            firstError: null,
+            firstValue: '',
             oldEqualNewError: false,
+            oldError: null,
+            oldValue: '',
+            passwordError: false,
+            secondError: null,
+            secondValue: '',
+            showChanged: true,
           });
 
           setTimeout(() => this.setState({ showChanged: false }), 1000);
@@ -157,7 +157,7 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
 
   _onChange(oldValue: string, firstValue: string, secondValue: string) {
     const buttonDisabled = this._isDisabledButton(oldValue, firstValue, secondValue);
-    this.setState({ oldValue, firstValue, secondValue, buttonDisabled });
+    this.setState({ buttonDisabled, firstValue, oldValue, secondValue });
   }
 
   _onChangeFist(e: React.ChangeEvent<HTMLInputElement>) {
@@ -205,12 +205,12 @@ class ChangePasswordComponent extends PureComponent<Props, State> {
     }
 
     this.setState({
+      buttonDisabled,
+      firstError,
       oldEqualNewError,
       oldError,
-      firstError,
       passwordError,
       secondError,
-      buttonDisabled,
     });
   }
 

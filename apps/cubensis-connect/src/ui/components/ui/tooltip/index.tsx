@@ -38,9 +38,9 @@ export function Tooltip({
   const [showPopper, setShowPopper] = useState(false);
 
   const { refs, floatingStyles, middlewareData } = useFloating({
+    middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
     placement,
     whileElementsMounted: autoUpdate,
-    middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
   });
 
   const setFloatingRef = useCallback(
@@ -55,7 +55,7 @@ export function Tooltip({
     if (!root) return;
 
     const child = document.createElement('div');
-    child.classList.add(modal.modalWrapper);
+    child.classList.add(modal.modalWrapper!);
     root.appendChild(child);
     setEl(child);
 
@@ -67,12 +67,12 @@ export function Tooltip({
   return (
     <>
       {children({
-        ref: elRef,
         onMouseEnter: () => {
           refs.setReference(elRef.current);
           setShowPopper(true);
         },
         onMouseLeave: () => setShowPopper(false),
+        ref: elRef,
       })}
 
       {el &&

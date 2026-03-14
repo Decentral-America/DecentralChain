@@ -27,16 +27,16 @@ export async function faucet({
   const minerPublicKey = base58Encode(minerPublicKeyBytes);
 
   const data = {
-    type: TRANSACTION_TYPE.TRANSFER,
-    senderPublicKey: minerPublicKey,
-    recipient,
     amount,
-    chainId,
-    version: 2 as const,
     assetId: null,
-    feeAssetId: null,
+    chainId,
     fee: 100000,
+    feeAssetId: null,
+    recipient,
+    senderPublicKey: minerPublicKey,
     timestamp: Date.now(),
+    type: TRANSACTION_TYPE.TRANSFER,
+    version: 2 as const,
   };
   const txBytes = makeTxBytes(data);
   const signature = await signBytes(minerPrivateKeyBytes, txBytes);
@@ -48,12 +48,12 @@ export async function faucet({
     proofs: [base58Encode(signature)],
   };
   await fetch(new URL('transactions/broadcast', nodeUrl), {
-    method: 'POST',
+    body: stringifyTransaction(signedTx),
     headers: {
       accept: 'application/json; large-significand-format=string',
       'content-type': 'application/json; charset=utf-8',
     },
-    body: stringifyTransaction(signedTx),
+    method: 'POST',
   });
 }
 

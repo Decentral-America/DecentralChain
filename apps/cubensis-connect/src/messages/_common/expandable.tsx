@@ -43,11 +43,7 @@ export function Expandable({
   }, [showCopiedNotification]);
 
   return (
-    <div
-      className={clsx(styles.expandable, {
-        [styles.expandable_isExpanded]: isExpanded,
-      })}
-    >
+    <div className={clsx(styles.expandable, isExpanded && styles.expandable_isExpanded)}>
       <div ref={contentRef} className={styles.expandableContent}>
         {children}
       </div>

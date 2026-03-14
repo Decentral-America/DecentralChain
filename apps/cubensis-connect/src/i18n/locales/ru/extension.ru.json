@@ -6,13 +6,13 @@
     "cancel": "Отмена",
     "copied": "Скопировано!",
     "copyToClipboard": "Скопировать в буфер обмена",
+    "email": "Email",
+    "emailNoBackupPhrase": "Невозможно скопировать фразу восстановления или приватный ключ, так как импорт аккаунта был произведен с помощью аккаунта DecentralChain Exchange",
     "encodedSeed": "Зашифрованная seed-фраза",
     "enter": "Войти",
-    "email": "Email",
     "password": "Пароль",
     "passwordError": "Неверный пароль",
     "privateKeyNoBackupPhrase": "Невозможно скопировать фразу восстановления, так как этот аккаунт был импортирован с помощью приватного ключа",
-    "emailNoBackupPhrase": "Невозможно скопировать фразу восстановления или приватный ключ, так как импорт аккаунта был произведен с помощью аккаунта DecentralChain Exchange",
     "privKey": "Приватный ключ",
     "pubKey": "Открытый ключ",
     "viewInExplorer": "Открыть в Explorer"
@@ -21,10 +21,10 @@
   "address": {
     "add": "Новый адрес",
     "addButton": "Добавить новый",
-    "addTooltip": "Добавить адрес в контакты",
     "added": "Адрес добавлен",
     "addressAlreadyExist": "Такой адрес уже существует",
     "addressInvalidError": "Адрес введен неверно",
+    "addTooltip": "Добавить адрес в контакты",
     "cancel": "Отмена",
     "copied": "Скопировано!",
     "copyToClipboard": "Скопировать в буфер обмена",
@@ -50,25 +50,25 @@
     "balanceLabel": "Баланс"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "Название",
-    "ticker": "Тикер",
-    "precision": "Знаков после запятой",
-    "quantity": "Общее предложение",
-    "type": "Тип",
-    "reissuable": "Перевыпускаемый",
-    "notReissuable": "Не перевыпускаемый",
-    "scripted": "Со скриптом",
-    "notScripted": "Без скрипта",
-    "minSponsoredFee": "Спонсорская комиссия",
-    "sender": "Эмитент",
-    "timestamp": "Дата эмиссии",
     "closeBtn": "Закрыть",
-    "infoTooltip": "Информация об активе",
     "favAddTooltip": "Добавить в избранное",
     "favRemoveTooltip": "Удалить из избранного",
+    "id": "ID",
+    "infoTooltip": "Информация об активе",
+    "minSponsoredFee": "Спонсорская комиссия",
+    "name": "Название",
+    "notReissuable": "Не перевыпускаемый",
+    "notScripted": "Без скрипта",
+    "precision": "Знаков после запятой",
+    "quantity": "Общее предложение",
+    "reissuable": "Перевыпускаемый",
+    "scripted": "Со скриптом",
     "sendAssetTooltip": "Отправить",
+    "sender": "Эмитент",
     "swapAssetTooltip": "Обменять",
+    "ticker": "Тикер",
+    "timestamp": "Дата эмиссии",
+    "type": "Тип",
     "viewDetailsInExplorer": "Подробные сведения в Explorer"
   },
   "assetSelectModal": {
@@ -111,14 +111,14 @@
     "saveBackup": "Сохранить фразу восстановления"
   },
   "bottom": {
-    "network": {
-      "edit": "Изменить",
-      "disabled": "Во время этой операции нельзя изменить настройки сети"
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "Во время этой операции нельзя изменить настройки сети",
+      "edit": "Изменить"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "Текущее имя аккаунта",
@@ -167,10 +167,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "Экспорт аккаунтов",
-    "importAccounts": "Импорт аккаунтов",
     "exportAddressBook": "Экспорт контактов",
-    "importAddressBook": "Импорт контактов",
-    "exportAll": "Экспортировать все"
+    "exportAll": "Экспортировать все",
+    "importAccounts": "Импорт аккаунтов",
+    "importAddressBook": "Импорт контактов"
   },
   "exportKeystore": {
     "cancelBtn": "Отмена",
@@ -196,13 +196,13 @@
   "forgotPassword": {
     "attention": "Внимание!",
     "attentionMessage": "Чтобы сбросить пароль, необходимо удалить все аккаунты из Cubensis Connect, установить новый пароль, а затем снова импортировать каждый аккаунт с помощью seed-фразы.",
-    "warningMessage": "Если вы не сохранили Seed-фразу или приватный ключ, то вы не сможете восстановить доступ к своему аккаунту.",
     "continueMessage": "Чтобы продолжить, введите следующее в поле ниже",
     "phrase": "УДАЛИТЬ ВСЕ АККАУНТЫ",
     "phraseError": "Фраза введена неверно",
     "placeholder": "Введите сюда...",
+    "resetCancel": "Отмена",
     "resetConfirm": "Удалить все",
-    "resetCancel": "Отмена"
+    "warningMessage": "Если вы не сохранили Seed-фразу или приватный ключ, то вы не сможете восстановить доступ к своему аккаунту."
   },
   "historyCard": {
     "burn": "Сжечь актив",
@@ -244,25 +244,25 @@
     "transferSelf": "Перевод себе"
   },
   "historyFilters": {
-    "all": "Все",
-    "incoming": "Только входящие",
-    "outgoing": "Только исходящие",
-    "issue": "Выпустить",
-    "transfer": "Перевести",
-    "reissue": "Перевыпустить",
-    "burn": "Сжечь",
-    "exchange": "Обменять",
-    "lease": "Предоставить в лизинг",
-    "cancelLease": "Отменить лизинг",
     "alias": "Псевдоним",
-    "massTransfer": "Массовый перевод",
+    "all": "Все",
+    "burn": "Сжечь",
+    "cancelLease": "Отменить лизинг",
     "data": "Данные",
+    "exchange": "Обменять",
+    "incoming": "Только входящие",
+    "invokeScript": "Вызвать скрипт",
+    "issue": "Выпустить",
+    "lease": "Предоставить в лизинг",
+    "massTransfer": "Массовый перевод",
+    "outgoing": "Только исходящие",
+    "reissue": "Перевыпустить",
+    "setAssetScript": "Установить скрипт актива",
     "setScript": "Установить скрипт",
     "sponsorship": "Спонсорство",
-    "setAssetScript": "Установить скрипт актива",
-    "invokeScript": "Вызвать скрипт",
-    "updateAssetInfo": "Обновить информацию об активе",
-    "type": "Тип транзакции"
+    "transfer": "Перевести",
+    "type": "Тип транзакции",
+    "updateAssetInfo": "Обновить информацию об активе"
   },
   "import": {
     "addAccount": "Добавить аккаунт",
@@ -284,25 +284,25 @@
     "viaSeed": "Seed-фраза или приватный ключ"
   },
   "importEmail": {
-    "importEmailTitle": "Импорт Email-аккаунта",
-    "importEmailDesc": "Подключите Email-аккаунт, созданный на DecentralChain Exchange",
-    "passwordLabel": "Пароль",
-    "passwordRequired": "Введите пароль",
-    "loginRequired": "Подтвердите Email-аккаунт",
+    "alreadyExists": "Аккаунт уже существует",
+    "continue": "Продолжить",
+    "credentialsError": "Неверное имя пользователя или пароль",
+    "dontHaveAccount": "Нет аккаунта?",
     "emailLabel": "Email",
     "emailRequired": "Введите корректный Email",
-    "credentialsError": "Неверное имя пользователя или пароль",
-    "continue": "Продолжить",
     "forgotPassword": "Забыли пароль?",
-    "dontHaveAccount": "Нет аккаунта?",
-    "signUp": "Зарегистрироваться",
-    "verifyAccountTitle": "Подтвердите свой аккаунт",
-    "verifyAccountDesc": "Пожалуйста, введите 6-значный проверочный код, отправленный на {{destination}}.",
+    "importEmailDesc": "Подключите Email-аккаунт, созданный на DecentralChain Exchange",
+    "importEmailTitle": "Импорт Email-аккаунта",
     "incorrectCode": "Неправильный код. Пожалуйста, попробуйте еще раз",
-    "userDoesNotExist": "Пользователь не существует.",
     "incorrectUsernameOrPassword": "Неверное имя пользователя или пароль.",
     "incorrectUsernameOrPasswordLimit": "Вы превысили лимит попыток ввода имени пользователя или пароля. Если у вас возникли какие-либо трудности, пожалуйста, свяжитесь со службой поддержки https://support.decentralchain.io/.",
-    "alreadyExists": "Аккаунт уже существует"
+    "loginRequired": "Подтвердите Email-аккаунт",
+    "passwordLabel": "Пароль",
+    "passwordRequired": "Введите пароль",
+    "signUp": "Зарегистрироваться",
+    "userDoesNotExist": "Пользователь не существует.",
+    "verifyAccountDesc": "Пожалуйста, введите 6-значный проверочный код, отправленный на {{destination}}.",
+    "verifyAccountTitle": "Подтвердите свой аккаунт"
   },
   "importKeystore": {
     "addressBookLabel": "Файл контактов",
@@ -333,11 +333,11 @@
     "connectInstructions": "Подключите устройство Ledger и откройте приложение DCC",
     "continueButton": "Продолжить",
     "couldNotGetUsersError": "Не удалось получить больше пользователей из Ledger. Убедитесь, что устройство Ledger подключено и разблокировано, а приложение DCC открыто, затем нажмите <retryButton>Retry</retryButton>.",
-    "userIdInputNumbersError": "Для ввода разрешены только цифры",
-    "userIdInputMaxValueError": "Account ID не может превышать значение {{ maxUserId }}",
     "selectAccountInstructions": "Выберите ваш адрес",
     "title": "Импортировать Ledger",
-    "tryAgainButton": "Попробуйте еще раз"
+    "tryAgainButton": "Попробуйте еще раз",
+    "userIdInputMaxValueError": "Account ID не может превышать значение {{ maxUserId }}",
+    "userIdInputNumbersError": "Для ввода разрешены только цифры"
   },
   "importSeed": {
     "accountExistsError": "Аккаунт уже зарегистрирован как '{{ name }}'",
@@ -364,14 +364,14 @@
     "keepUp": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в DecentralChain функциональностью или DApps. Используя Cubensis Connect, вы можете подписывать транзакции и оставаться в безопасности от вредоносных сайтов."
   },
   "langsSettings": { "confirm": "Подтвердить", "title": "Сменить язык" },
-  "ledgerErrors": {
-    "unknown": "Не удалось подключиться к Ledger. Пожалуйста, попробуйте еще раз",
-    "usedBySomeOtherApp": "Похоже, что Ledger уже используется другим приложением. Закройте все приложения, которые могут использовать Ledger, и повторите попытку."
-  },
   "ledgerConnectModal": {
     "instructions": "Подключите устройство Ledger и откройте приложение DCC",
     "title": "Подключение...",
     "tryAgainButton": "Попробуйте еще раз"
+  },
+  "ledgerErrors": {
+    "unknown": "Не удалось подключиться к Ledger. Пожалуйста, попробуйте еще раз",
+    "usedBySomeOtherApp": "Похоже, что Ledger уже используется другим приложением. Закройте все приложения, которые могут использовать Ledger, и повторите попытку."
   },
   "login": {
     "enter": "Войти",
@@ -441,18 +441,26 @@
     "backToNftBtn": "Вернуться к NFT"
   },
   "nftInfo": {
+    "backBtn": "Назад",
     "creator": "Автор",
     "creatorUrlTooltip": "Посетить страницу автора",
     "description": "Описание",
     "sendBtn": "Отправить",
-    "backBtn": "Назад",
     "viewInExplorer": "Посмотреть подробности в Explorer",
     "viewOnMarketplace": "Посмотреть на маркетплейсе"
   },
+  "notifications": {
+    "allowSending": "Разрешить отправку сообщений",
+    "closeBtn": "Закрыть",
+    "messages": "Сообщения",
+    "nextBtn": "Далее",
+    "time": "Время",
+    "toListBtn": "Уведомления"
+  },
   "otherAccounts": {
     "addAccount": "Добавить аккаунт",
-    "noAccountsNote": "У вас нет других аккаунтов в текущей сети",
     "noAccountsFound": "Для указанных фильтров не было найдено других аккаунтов",
+    "noAccountsNote": "У вас нет других аккаунтов в текущей сети",
     "title": "Другие аккаунты"
   },
   "permission": {
@@ -478,13 +486,13 @@
     "approvedOrigin": "Одобрено",
     "automaticOrigin": "Автоматическая подпись",
     "empty": "Здесь ничего нет...",
-    "rejectedOrigin": "Отказано",
-    "title": "Управление разрешениями",
     "notify": {
       "allowed": "Разрешено!",
       "deleted": "Удалено!",
       "disallowed": "Запрещено!"
-    }
+    },
+    "rejectedOrigin": "Отказано",
+    "title": "Управление разрешениями"
   },
   "qrCode": { "download": "Загрузить QR-код" },
   "send": {
@@ -518,11 +526,11 @@
     "settingsGeneral": "Общие",
     "suspiciousAssetsProtection": "Защита от подозрительных активов",
     "suspiciousAssetsTooltip": "Не показывать балансы и операции, связанные с подозрительными активами",
-    "time_10m": "10 минут",
     "time_1h": "1 час",
+    "time_5m": "5 минут",
+    "time_10m": "10 минут",
     "time_20m": "20 минут",
     "time_40m": "40 минут",
-    "time_5m": "5 минут",
     "time_idle": "Время ожидания браузера",
     "tooltipContent": "Защитите себя от угроз, связанных с троянами-кликерами"
   },
@@ -551,6 +559,7 @@
     "customDataFailed": "Ваши данные отклонены!",
     "customDataName": "Подписать пользовательские данные",
     "customDataSent": "Вашы данные подтверждены!",
+    "dccAuthConfirmed": "Подпишите запрос авторизации DCC!",
     "matcherConfirmed": "Подпишите заявку к матчеру!",
     "matcherRejected": "Заявка не была подписана.",
     "matcherSend": "Sign a request to the matcher!",
@@ -565,12 +574,11 @@
     "transactionFailed": "Ваша транзакция отклонена!",
     "transactionSend": "Вы отправили",
     "understand": "Я понимаю",
-    "viewTransaction": "Просмотреть транзакцию",
-    "dccAuthConfirmed": "Подпишите запрос авторизации DCC!"
+    "viewTransaction": "Просмотреть транзакцию"
   },
   "swap": {
-    "amountToSendError": "Не удалось выполнить обмен из-за состояния SwopFi dApp. Пожалуйста, попробуйте еще раз или немного увеличьте допуск проскальзывания, если это возможно",
     "amountDifferenceTooltip": "Некоторые вендоры кешируют свои результаты, поэтому Cubensis Connect скорректировал их, чтобы предоставить вам самое актуальное значение",
+    "amountToSendError": "Не удалось выполнить обмен из-за состояния SwopFi dApp. Пожалуйста, попробуйте еще раз или немного увеличьте допуск проскальзывания, если это возможно",
     "closeBtnText": "Закрыть",
     "exchangeChannelConnectionError": "Не удалось подключиться к сервису обмена. Пожалуйста, повторите попытку позже",
     "exchangeChannelInvalidAssetPairError": "Валютная пара недоступна",
@@ -588,8 +596,8 @@
     "priceLabel": "Цена",
     "primaryLabel": "Основной",
     "profitLabel": "Выгода",
-    "slippageToleranceModalTitle": "Допуск проскальзывания",
     "slippageToleranceModalDescription": "Транзакция обмена будет отменена, если цена изменится не в вашу пользу более, чем на указанный процент",
+    "slippageToleranceModalTitle": "Допуск проскальзывания",
     "statusFailed": "Сделка не удалась",
     "statusInProgress": "Ждем завершения сделки",
     "statusSucceeded": "Сделка успешна",
@@ -617,20 +625,26 @@
     "dataHash": "Хэширование данных",
     "dataTransaction": "Запись в блокчейне",
     "dataTransactionName": "Данные",
+    "dccAuthTimeStamp": "Временная метка",
     "decimalPoints": "Знаков после запятой",
     "description": "Описание",
     "details": "Подробности",
     "dex": "DEX",
     "expires": "Истекает",
     "fee": "Комиссия",
+    "hash": "Хэш",
     "hideTransactions": "Скрыть транзакции",
+    "issueNFT": "Выпустить NFT",
+    "issueSmartNFT": "Выпустить смарт-NFT",
+    "issueSmartToken": "Выпустить смарт-токен",
+    "issueToken": "Выпустить токен",
     "issueType": "Тип",
     "json": "JSON",
     "lease": "Лизинг",
     "leaseCancel": "Отмена лизинга",
     "massTransfer": "Массовый перевод",
-    "matcherTimeStamp": "Временная метка матчера",
     "matcherPublicKey": "Открытый ключ матчера",
+    "matcherTimeStamp": "Временная метка матчера",
     "name": "Название",
     "noReissuable": "Не перевыпускаемый",
     "orderBuy": "Купить",
@@ -652,6 +666,7 @@
     "recipient": "Получатель",
     "recipients": "Получатели",
     "reissuable": "Перевыпускаемый",
+    "reissue": "Перевыпустить",
     "script": "Скрипт",
     "scriptInvocation": "Вызов скрипта",
     "scriptInvocationFunction": "Функция",
@@ -662,31 +677,16 @@
     "setSponsored": "Установить спонсорство",
     "showAll": "Показать все",
     "showTransactions": "Показать транзакции",
-    "signRequestMatcher": "Подпишите заявку к матчеру",
     "signRequestDccAuth": "Подпишите запрос авторизации DCC",
-    "updateAssetInfo": "Обновить информацию об активе",
-    "issueToken": "Выпустить токен",
-    "issueSmartToken": "Выпустить смарт-токен",
-    "issueNFT": "Выпустить NFT",
-    "issueSmartNFT": "Выпустить смарт-NFT",
-    "reissue": "Перевыпустить",
+    "signRequestMatcher": "Подпишите заявку к матчеру",
     "transfer": "Перевести",
     "txid": "ID транзакции",
-    "hash": "Хэш",
     "txTime": "Время транзакции",
     "unknown": "Неизвестно",
-    "dccAuthTimeStamp": "Временная метка"
+    "updateAssetInfo": "Обновить информацию об активе"
   },
   "ui": {
     "logoTitle": "Обеспечьте безопасность своих ключей DCC онлайн"
-  },
-  "notifications": {
-    "allowSending": "Разрешить отправку сообщений",
-    "toListBtn": "Уведомления",
-    "nextBtn": "Далее",
-    "closeBtn": "Закрыть",
-    "time": "Время",
-    "messages": "Сообщения"
   },
   "wallet": { "lease": "В лизинге" },
   "welcome": {

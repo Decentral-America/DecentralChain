@@ -1,39 +1,5 @@
 {
-  "name": "cubensis-connect",
-  "private": true,
-  "type": "module",
-  "license": "SEE LICENSE IN LICENSE.md",
   "author": "Blockchain Costa Rica <soporte@decentralchain.io>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/cubensis-connect.git"
-  },
-  "engines": {
-    "node": ">=22"
-  },
-  "sideEffects": [
-    "src/fonts/_fonts.css",
-    "src/global.css",
-    "src/ui/styles/app.module.styl",
-    "src/ui/styles/icons.module.styl"
-  ],
-  "scripts": {
-    "cleanup": "rimraf dist",
-    "dev": "NODE_ENV=development node scripts/build.mjs",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
-    "typecheck": "tsc -p src",
-    "test:dev": "vitest --watch",
-    "test": "vitest run",
-    "test:update": "vitest run test/Update.ts",
-    "build": "node scripts/build.mjs",
-    "bulletproof": "npm run lint:fix && npm run typecheck && npm run test",
-    "zip": "node scripts/zip.js",
-    "prepare": "lefthook install"
-  },
-  "overrides": {
-    "@types/react": "^19.0.0"
-  },
   "dependencies": {
     "@decentralchain/bignumber": "^1.2.1",
     "@decentralchain/crypto": "^1.0.2",
@@ -78,7 +44,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
-    "@biomejs/biome": "^2.4.6",
+    "@biomejs/biome": "2.4.7",
     "@decentralchain/ledger": "^5.1.1",
     "@decentralchain/swap-client": "^2.0.0",
     "@ledgerhq/hw-transport-webusb": "^6.30.0",
@@ -115,5 +81,39 @@
     "webdriverio": "^9.25.0",
     "webextension-polyfill": "^0.12.0",
     "zip-a-folder": "^4.0.4"
-  }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "name": "cubensis-connect",
+  "overrides": {
+    "@types/react": "^19.0.0"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/cubensis-connect.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "bulletproof": "npm run lint:fix && npm run typecheck && npm run test",
+    "cleanup": "rimraf dist",
+    "dev": "NODE_ENV=development node scripts/build.mjs",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:dev": "vitest --watch",
+    "test:update": "vitest run test/Update.ts",
+    "typecheck": "tsc -p src",
+    "zip": "node scripts/zip.js"
+  },
+  "sideEffects": [
+    "src/fonts/_fonts.css",
+    "src/global.css",
+    "src/ui/styles/app.module.styl",
+    "src/ui/styles/icons.module.styl"
+  ],
+  "type": "module"
 }

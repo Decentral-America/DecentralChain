@@ -1,18 +1,14 @@
 export const CommonTransaction = {
-  get root() {
-    return $("[class*='transaction@'], [class*='screen@']");
+  get accountName() {
+    return this.root.$("[class*='name@wallet']");
   },
 
-  get transactionFee() {
-    return this.root.findByTestId$('txFee');
+  get approveButton() {
+    return this.root.$('#approve');
   },
 
   get originAddress() {
     return this.root.$("[class*='originAddress@transactions']");
-  },
-
-  get accountName() {
-    return this.root.$("[class*='name@wallet']");
   },
 
   get originNetwork() {
@@ -22,8 +18,11 @@ export const CommonTransaction = {
   get rejectButton() {
     return this.root.$('#reject');
   },
+  get root() {
+    return $("[class*='transaction@'], [class*='screen@']");
+  },
 
-  get approveButton() {
-    return this.root.$('#approve');
+  get transactionFee() {
+    return this.root.findByTestId$('txFee');
   },
 };

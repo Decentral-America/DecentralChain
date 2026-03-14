@@ -25,12 +25,12 @@ interface State {
 
 class ConfirmBackupComponent extends Component<Props, State> {
   state: State = {
-    seed: null,
-    list: [],
-    selectedList: [],
-    wrongSeed: false,
     complete: false,
     disabled: false,
+    list: [],
+    seed: null,
+    selectedList: [],
+    wrongSeed: false,
   };
 
   static getDerivedStateFromProps(props: Readonly<Props>, state: State): Partial<State> | null {
@@ -40,14 +40,14 @@ class ConfirmBackupComponent extends Component<Props, State> {
       return null;
     }
 
-    const list = seed.split(' ').map((text, id) => ({ text, id, selected: true, hidden: false }));
+    const list = seed.split(' ').map((text, id) => ({ hidden: false, id, selected: true, text }));
 
     // Fisher-Yates shuffle using CSPRNG — seed words must never use Math.random()
     for (let i = list.length - 1; i > 0; i--) {
       const rand = new Uint32Array(1);
       crypto.getRandomValues(rand);
-      const j = rand[0] % (i + 1);
-      [list[i], list[j]] = [list[j], list[i]];
+      const j = rand[0]! % (i + 1);
+      [list[i], list[j]] = [list[j]!, list[i]!];
     }
 
     return { ...state, list, seed };
@@ -119,7 +119,7 @@ class ConfirmBackupComponent extends Component<Props, State> {
   }
 
   private _onSelect({ text, id }: PillsListItem) {
-    const selected = [...this.state.selectedList, { text, id }];
+    const selected = [...this.state.selectedList, { id, text }];
     this._setSelected(selected);
   }
 
@@ -134,13 +134,13 @@ class ConfirmBackupComponent extends Component<Props, State> {
     const selectedIdsList = selected.map((item) => item.id);
 
     const state = {
-      selectedList: selected,
-      wrongSeed: this.state.seed !== selectedTextsList.join(' '),
       complete: selected.length === list.length,
       list: this.state.list.map((item) => {
         item.hidden = selectedIdsList.includes(item.id);
         return item;
       }),
+      selectedList: selected,
+      wrongSeed: this.state.seed !== selectedTextsList.join(' '),
     };
 
     this.setState(state);

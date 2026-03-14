@@ -8,15 +8,6 @@ export function initSentry({
   source: 'background' | 'popup' | 'accounts';
 }) {
   return init({
-    dsn: __SENTRY_DSN__,
-    environment: __SENTRY_ENVIRONMENT__,
-    release: __SENTRY_RELEASE__,
-    initialScope: {
-      tags: {
-        source,
-      },
-    },
-    integrations: [breadcrumbsIntegration({ dom: false })],
     beforeSend: async (event, hint) => {
       const message =
         hint?.originalException &&
@@ -33,5 +24,14 @@ export function initSentry({
 
       return event;
     },
+    dsn: __SENTRY_DSN__,
+    environment: __SENTRY_ENVIRONMENT__,
+    initialScope: {
+      tags: {
+        source,
+      },
+    },
+    integrations: [breadcrumbsIntegration({ dom: false })],
+    release: __SENTRY_RELEASE__,
   });
 }

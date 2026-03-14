@@ -36,7 +36,7 @@ export class Modal extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
     this.el = document.createElement('div');
-    this.el.classList.add(styles.modalWrapper);
+    this.el.classList.add(styles.modalWrapper!);
     Modal.modalRoot = Modal.modalRoot || document.getElementById('app-modal');
   }
 

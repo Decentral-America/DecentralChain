@@ -1,32 +1,4 @@
 export const SettingsMenuScreen = {
-  get root() {
-    return $("[class*='content@settings']");
-  },
-
-  get generalSectionLink() {
-    return this.root.findByText$('General');
-  },
-
-  get permissionsSectionLink() {
-    return this.root.findByText$('Permissions control');
-  },
-
-  get exportAndImportSectionLink() {
-    return this.root.findByText$('Export and import');
-  },
-
-  get deleteAccountsButton() {
-    return this.root.findByText$('Delete accounts');
-  },
-
-  get logoutButton() {
-    return this.root.findByText$('Log out');
-  },
-
-  get networkSectionLink() {
-    return this.root.findByText$('Network');
-  },
-
   get clickProtectionButton() {
     return this.root.findByTestId$('clickProtectionBtn');
   },
@@ -39,6 +11,37 @@ export const SettingsMenuScreen = {
     return this.root.findByTestId$('clickProtectionStatus');
   },
 
+  get deleteAccountsButton() {
+    return this.root.findByText$('Delete accounts');
+  },
+
+  get exportAndImportSectionLink() {
+    return this.root.findByText$('Export and import');
+  },
+
+  get generalSectionLink() {
+    return this.root.findByText$('General');
+  },
+
+  get helpTooltip() {
+    return $("[class*='helpTooltip@settings']");
+  },
+
+  get logoutButton() {
+    return this.root.findByText$('Log out');
+  },
+
+  get networkSectionLink() {
+    return this.root.findByText$('Network');
+  },
+
+  get permissionsSectionLink() {
+    return this.root.findByText$('Permissions control');
+  },
+  get root() {
+    return $("[class*='content@settings']");
+  },
+
   get suspiciousAssetsProtectionButton() {
     return this.root.findByTestId$('showSuspiciousAssetsBtn');
   },
@@ -49,9 +52,5 @@ export const SettingsMenuScreen = {
 
   get suspiciousAssetsProtectionStatus() {
     return this.root.findByTestId$('showSuspiciousAssetsStatus');
-  },
-
-  get helpTooltip() {
-    return $("[class*='helpTooltip@settings']");
   },
 };

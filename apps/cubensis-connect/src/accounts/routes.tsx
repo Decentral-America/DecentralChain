@@ -21,11 +21,8 @@ import { NewWalletName } from '../ui/components/pages/NewWalletName';
 
 export const routes: RouteObject[] = [
   {
-    element: <RootAccounts />,
-    errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
         element: (
           <>
             <Menu hasLogo />
@@ -33,9 +30,9 @@ export const routes: RouteObject[] = [
             <BottomPanel allowChangingNetwork />
           </>
         ),
+        path: '/',
       },
       {
-        path: '/create-account',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -43,9 +40,9 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/create-account',
       },
       {
-        path: '/create-account/save-backup',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -53,9 +50,9 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/create-account/save-backup',
       },
       {
-        path: '/create-account/confirm-backup',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -63,9 +60,9 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/create-account/confirm-backup',
       },
       {
-        path: '/import-debug',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -73,9 +70,9 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/import-debug',
       },
       {
-        path: '/import-seed',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -83,27 +80,27 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/import-seed',
       },
       {
-        path: '/import-ledger',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ImportLedger />
           </>
         ),
+        path: '/import-ledger',
       },
       {
-        path: '/import-keystore',
         element: (
           <>
             <Menu hasBack hasLogo />
             <ImportKeystore />
           </>
         ),
+        path: '/import-keystore',
       },
       {
-        path: '/import-email',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -111,9 +108,9 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/import-email',
       },
       {
-        path: '/account-name',
         element: (
           <>
             <Menu hasBack hasLogo />
@@ -121,56 +118,59 @@ export const routes: RouteObject[] = [
             <BottomPanel />
           </>
         ),
+        path: '/account-name',
       },
       {
-        path: '/import-success',
         element: (
           <>
             <Menu hasLogo />
             <ImportSuccess />
           </>
         ),
+        path: '/import-success',
       },
       {
-        path: '/import-keystore/success',
         element: (
           <>
             <Menu hasLogo />
             <ImportSuccess isKeystoreImport />
           </>
         ),
+        path: '/import-keystore/success',
       },
       {
-        path: '/import-address-book',
         element: (
           <>
             <Menu hasLogo />
             <ImportAddressBook />
           </>
         ),
+        path: '/import-address-book',
       },
       {
-        path: '/import-address-book/success',
         element: (
           <>
             <Menu hasLogo />
             <ImportSuccessAddressBook />
           </>
         ),
+        path: '/import-address-book/success',
       },
       {
-        path: '/init-vault',
         element: (
           <>
             <Menu hasLogo />
             <NewAccount />
           </>
         ),
+        path: '/init-vault',
       },
       {
-        path: '/forgot-password',
         element: <DeleteAllAccounts />,
+        path: '/forgot-password',
       },
     ],
+    element: <RootAccounts />,
+    errorElement: <ErrorPage />,
   },
 ];

@@ -99,9 +99,9 @@ export function RequestFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.matcherSend'),
         approve: t('sign.matcherConfirmed'),
         reject: t('sign.matcherRejected'),
+        send: t('sign.matcherSend'),
       }}
     />
   );

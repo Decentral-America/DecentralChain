@@ -19,8 +19,8 @@ export function ExportAddressBook() {
         items={Object.entries(addresses)
           .sort(([, firstName], [, secondName]) => firstName.localeCompare(secondName))
           .map(([address, name]) => ({
-            name,
             address,
+            name,
             network: getNetworkByAddress(address),
           }))}
         type="contacts"
