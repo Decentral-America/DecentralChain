@@ -11,7 +11,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!*.d.ts", "!.nx"]
+    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts", "!.nx"]
   },
   "formatter": {
     "enabled": true,
@@ -107,7 +107,7 @@
       }
     },
     {
-      "includes": ["packages/protobuf-serialization/src/gen/**"],
+      "includes": ["packages/protobuf-serialization/src/gen/**", "packages/swap-client/src/gen/**"],
       "linter": {
         "rules": {
           "security": {
