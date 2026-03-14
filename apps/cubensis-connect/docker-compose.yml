@@ -1,0 +1,42 @@
+services:
+  dcc-private-node:
+    image: wavesplatform/waves-private-node
+    # TODO(DCC-59): Replace with DCC private node image when available
+    platform: linux/amd64
+    ports:
+      - '6869:6869'
+  hub:
+    image: selenium/hub
+    platform: linux/amd64
+    ports:
+      - '4442:4442'
+      - '4443:4443'
+      - '4444:4444'
+    healthcheck:
+      test: curl --fail http://localhost:4444/wd/hub/status
+      interval: 3s
+      retries: 10
+  chrome:
+    image: selenium/node-chrome:112.0
+    shm_size: 2gb
+    depends_on:
+      - hub
+    ports:
+      - '5900:5900'
+      - '7900:7900'
+    volumes:
+      - .:/app:ro
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  chrome-video:
+    depends_on:
+      - chrome
+    environment:
+      - DISPLAY_CONTAINER_NAME=chrome
+      - FILE_NAME=chrome_video.mp4
+    image: selenium/video:ffmpeg-4.3.1-20221202
+    platform: linux/amd64
+    volumes:
+      - ./test/videos:/videos

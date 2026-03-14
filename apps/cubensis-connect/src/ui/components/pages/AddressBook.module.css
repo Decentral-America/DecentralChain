@@ -1,0 +1,142 @@
+.content {
+  position: relative;
+  padding: 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100% - 48px);
+  overflow: auto;
+}
+
+.head {
+  margin-bottom: 16px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addButtonIcon {
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-white);
+  background-image: url(../../assets/img/add-user.svg);
+  background-size: cover;
+  cursor: pointer;
+}
+
+.empty {
+  position: relative;
+  padding: 220px 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty::before {
+  content: "";
+  position: absolute;
+  top: 124px;
+  width: 80px;
+  height: 80px;
+  background-image: url(../../assets/img/users.svg);
+  background-size: cover;
+}
+
+.emptyTitle {
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.emptyDescription {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.addButton {
+  padding: 0 40px;
+  width: auto;
+}
+
+.serp {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchInput {
+  flex-grow: 0;
+  margin: 0 14px 10px;
+}
+
+.notFound {
+  margin: 24px;
+  color: var(--color-basic500);
+  text-align: center;
+}
+
+.cardList {
+  flex-grow: 1;
+  padding-bottom: 14px;
+  background-color: var(--color-basic50);
+}
+
+.card {
+  position: relative;
+  margin: 14px 14px 0;
+  padding: 8px 14px;
+  padding-right: 0;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(155, 166, 178, 0.4);
+  background-color: var(--color-white);
+}
+
+.cardContent {
+  margin-right: auto;
+}
+
+.cardAvatar {
+  margin-right: 14px;
+}
+
+.cardName {
+  margin-bottom: 6px;
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardAddress {
+  color: var(--color-basic500);
+  font-size: 12px;
+}
+
+.copyButton,
+.editButton,
+.deleteButton {
+  margin: 0 8px;
+  background: none;
+  cursor: pointer;
+}
+
+.copyIcon,
+.editIcon,
+.deleteIcon {
+  width: 18px;
+  height: 18px;
+  fill: var(--color-basic200);
+}
+
+.copyIcon:hover,
+.editIcon:hover,
+.deleteIcon:hover {
+  fill: var(--color-basic500);
+}

@@ -1,0 +1,15 @@
+.address {
+  padding: 2px;
+  border-radius: 2px;
+  background-color: var(--color-basic50);
+  color: #c5d0de;
+  font-size: 11px;
+  line-height: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copy {
+  font-size: 12px;
+  text-align: right;
+}

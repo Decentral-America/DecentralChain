@@ -1,0 +1,80 @@
+.root {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px var(--color-basic100);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.head {
+  display: flex;
+  gap: 8px;
+}
+
+.label {
+  overflow: hidden;
+  color: var(--color-basic500);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.balance {
+  flex-shrink: 0;
+  margin-left: auto;
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.balanceValue {
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.balanceValue:not(:disabled) {
+  cursor: pointer;
+}
+
+.balanceValue:not(:disabled):hover {
+  color: var(--color-submit400);
+}
+
+.main {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.assetSelect {
+  flex: 0 0 auto;
+  margin-left: -6px;
+}
+
+.inputWrapper {
+  flex: 1 1 0;
+}
+
+.input {
+  width: 100%;
+  background: none;
+  font-size: 14px;
+  text-align: right;
+}
+
+.input:focus {
+  outline: 0;
+}
+
+.usdAmount {
+  position: absolute;
+  right: 0;
+  bottom: -6px;
+  color: var(--color-basic500);
+  font-size: 11px;
+  font-weight: 500;
+}

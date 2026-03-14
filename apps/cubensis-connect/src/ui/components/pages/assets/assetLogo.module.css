@@ -1,0 +1,38 @@
+.assetLogo {
+  margin-right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #edf0f4;
+  font-size: 1.25rem;
+  font-weight: bold;
+  line-height: 40px;
+  text-align: center;
+  cursor: default;
+  object-fit: contain;
+}
+
+.assetSubIconContainer {
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.assetSubIcon {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #292f3c;
+  color: #edf0f4;
+  font-size: 0.75rem;
+  line-height: 18px;
+  text-align: center;
+}
+
+.assetSubIconSvg {
+  width: 8px;
+  height: 8px;
+}

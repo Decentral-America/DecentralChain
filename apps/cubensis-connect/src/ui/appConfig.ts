@@ -1,0 +1,4 @@
+export const CONFIG = {
+  NAME_MIN_LENGTH: 1,
+  PASSWORD_MIN_LENGTH: 8,
+};

@@ -1,0 +1,146 @@
+@import '../../../styles/colors.module.styl';
+
+.assets
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 14px;
+  height: 552px;
+  background: $basic50;
+  padding-bottom: 5px;
+  overflow: hidden;
+
+  &::before
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 112px;
+    background: linear-gradient(to right, #6b94ff 0%, #1f5af6 100%);
+
+.activeAccount
+  position: relative;
+  z-index: 1;
+
+.tabs
+  margin-top: 24px;
+
+.addAccount
+  display: flex;
+  justify-content: center;
+  padding: 0 14px 0 34px;
+  white-space: nowrap;
+  height: 32px;
+  width: 148px;
+  margin: 20px auto 60px auto;
+  line-height: 32px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: url(../../../assets/img/add-14-basic-500.svg) 13px center no-repeat;
+
+  &:hover
+    background-color: $basic100;
+
+  i
+    margin-right: 10px;
+
+.logoMargin
+  margin-top: 100px;
+  margin-bottom: 44px;
+
+.tabItem
+  flex-grow: 1;
+  padding: 1rem 0.7rem 0.7rem;
+  margin: 0;
+  text-align: center;
+  user-select: none;
+
+
+.tabPanels
+  flex: 1 1 0;
+  overflow: hidden;
+  margin: 0 -14px;
+
+.notifier
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 4px 6px 0 #9ba6b266;
+  background: $white;
+  position: absolute;
+  bottom: 38px;
+  right: 14px;
+  border-radius: 50%;
+  z-index: 20;
+  transition: 0.25s;
+  cursor: pointer;
+  background: url(../../../assets/img/waitinglist-18-black.svg) center 22px no-repeat $white;
+
+  &:hover
+    bottom: 44px;
+
+  .counter
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $submit400;
+    position: absolute;
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    color: $white;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    font-size: 10px;
+
+.filterContainer
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width 325px;
+  margin: 8px 14px;
+
+.filterBtn
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  cursor: pointer;
+
+  &:hover
+    background-color: #edf0f4;
+
+.filterBtnIcon
+  width: 26px;
+
+.filterTxSelect
+  width: 96px;
+  margin: 0 3px 0 6px;
+
+.assetsPanel
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+.assetList
+  flex-grow: 1;
+
+.historyList,
+.nftList
+  flex-grow: 1;
+  margin-left: 14px;
+
+.tabInfo
+  margin: 8px 14px
+
+.nftListMore
+  padding: 6px 0 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
