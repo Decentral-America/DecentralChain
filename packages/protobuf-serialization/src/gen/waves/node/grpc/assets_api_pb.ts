@@ -2,24 +2,32 @@
 // @generated from file waves/node/grpc/assets_api.proto (package waves.node.grpc, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { SignedTransaction } from "../../transaction_pb.js";
-import { file_waves_transaction } from "../../transaction_pb.js";
-import type { ScriptData } from "./accounts_api_pb.js";
-import { file_waves_node_grpc_accounts_api } from "./accounts_api_pb.js";
-import type { Message } from "@bufbuild/protobuf";
+import { type Message } from '@bufbuild/protobuf';
+import {
+  fileDesc,
+  type GenFile,
+  type GenMessage,
+  type GenService,
+  messageDesc,
+  serviceDesc,
+} from '@bufbuild/protobuf/codegenv2';
+import { file_waves_transaction, type SignedTransaction } from '../../transaction_pb.js';
+import { file_waves_node_grpc_accounts_api, type ScriptData } from './accounts_api_pb.js';
 
 /**
  * Describes the file waves/node/grpc/assets_api.proto.
  */
-export const file_waves_node_grpc_assets_api: GenFile = /*@__PURE__*/
-  fileDesc("CiB3YXZlcy9ub2RlL2dycGMvYXNzZXRzX2FwaS5wcm90bxIPd2F2ZXMubm9kZS5ncnBjIiAKDEFzc2V0UmVxdWVzdBIQCghhc3NldF9pZBgBIAEoDCJECgpORlRSZXF1ZXN0Eg8KB2FkZHJlc3MYASABKAwSDQoFbGltaXQYAiABKAUSFgoOYWZ0ZXJfYXNzZXRfaWQYAyABKAwiVwoLTkZUUmVzcG9uc2USEAoIYXNzZXRfaWQYASABKAwSNgoKYXNzZXRfaW5mbxgCIAEoCzIiLndhdmVzLm5vZGUuZ3JwYy5Bc3NldEluZm9SZXNwb25zZSLJAgoRQXNzZXRJbmZvUmVzcG9uc2USDgoGaXNzdWVyGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSEAoIZGVjaW1hbHMYBCABKAUSEgoKcmVpc3N1YWJsZRgFIAEoCBIUCgx0b3RhbF92b2x1bWUYBiABKAMSKwoGc2NyaXB0GAcgASgLMhsud2F2ZXMubm9kZS5ncnBjLlNjcmlwdERhdGESEwoLc3BvbnNvcnNoaXAYCCABKAMSFwoPc3BvbnNvcl9iYWxhbmNlGAogASgDEjMKEWlzc3VlX3RyYW5zYWN0aW9uGAsgASgLMhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb24SGQoRc2VxdWVuY2VfaW5fYmxvY2sYDCABKAUSFAoMaXNzdWVfaGVpZ2h0GA0gASgFSgQICRAKMqQBCglBc3NldHNBcGkSTAoHR2V0SW5mbxIdLndhdmVzLm5vZGUuZ3JwYy5Bc3NldFJlcXVlc3QaIi53YXZlcy5ub2RlLmdycGMuQXNzZXRJbmZvUmVzcG9uc2USSQoKR2V0TkZUTGlzdBIbLndhdmVzLm5vZGUuZ3JwYy5ORlRSZXF1ZXN0Ghwud2F2ZXMubm9kZS5ncnBjLk5GVFJlc3BvbnNlMAFCjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z", [file_waves_transaction, file_waves_node_grpc_accounts_api]);
+export const file_waves_node_grpc_assets_api: GenFile =
+  /*@__PURE__*/
+  fileDesc(
+    'CiB3YXZlcy9ub2RlL2dycGMvYXNzZXRzX2FwaS5wcm90bxIPd2F2ZXMubm9kZS5ncnBjIiAKDEFzc2V0UmVxdWVzdBIQCghhc3NldF9pZBgBIAEoDCJECgpORlRSZXF1ZXN0Eg8KB2FkZHJlc3MYASABKAwSDQoFbGltaXQYAiABKAUSFgoOYWZ0ZXJfYXNzZXRfaWQYAyABKAwiVwoLTkZUUmVzcG9uc2USEAoIYXNzZXRfaWQYASABKAwSNgoKYXNzZXRfaW5mbxgCIAEoCzIiLndhdmVzLm5vZGUuZ3JwYy5Bc3NldEluZm9SZXNwb25zZSLJAgoRQXNzZXRJbmZvUmVzcG9uc2USDgoGaXNzdWVyGAEgASgMEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSEAoIZGVjaW1hbHMYBCABKAUSEgoKcmVpc3N1YWJsZRgFIAEoCBIUCgx0b3RhbF92b2x1bWUYBiABKAMSKwoGc2NyaXB0GAcgASgLMhsud2F2ZXMubm9kZS5ncnBjLlNjcmlwdERhdGESEwoLc3BvbnNvcnNoaXAYCCABKAMSFwoPc3BvbnNvcl9iYWxhbmNlGAogASgDEjMKEWlzc3VlX3RyYW5zYWN0aW9uGAsgASgLMhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb24SGQoRc2VxdWVuY2VfaW5fYmxvY2sYDCABKAUSFAoMaXNzdWVfaGVpZ2h0GA0gASgFSgQICRAKMqQBCglBc3NldHNBcGkSTAoHR2V0SW5mbxIdLndhdmVzLm5vZGUuZ3JwYy5Bc3NldFJlcXVlc3QaIi53YXZlcy5ub2RlLmdycGMuQXNzZXRJbmZvUmVzcG9uc2USSQoKR2V0TkZUTGlzdBIbLndhdmVzLm5vZGUuZ3JwYy5ORlRSZXF1ZXN0Ghwud2F2ZXMubm9kZS5ncnBjLk5GVFJlc3BvbnNlMAFCjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z',
+    [file_waves_transaction, file_waves_node_grpc_accounts_api],
+  );
 
 /**
  * @generated from message waves.node.grpc.AssetRequest
  */
-export type AssetRequest = Message<"waves.node.grpc.AssetRequest"> & {
+export type AssetRequest = Message<'waves.node.grpc.AssetRequest'> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -30,13 +38,14 @@ export type AssetRequest = Message<"waves.node.grpc.AssetRequest"> & {
  * Describes the message waves.node.grpc.AssetRequest.
  * Use `create(AssetRequestSchema)` to create a new message.
  */
-export const AssetRequestSchema: GenMessage<AssetRequest> = /*@__PURE__*/
+export const AssetRequestSchema: GenMessage<AssetRequest> =
+  /*@__PURE__*/
   messageDesc(file_waves_node_grpc_assets_api, 0);
 
 /**
  * @generated from message waves.node.grpc.NFTRequest
  */
-export type NFTRequest = Message<"waves.node.grpc.NFTRequest"> & {
+export type NFTRequest = Message<'waves.node.grpc.NFTRequest'> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -57,13 +66,14 @@ export type NFTRequest = Message<"waves.node.grpc.NFTRequest"> & {
  * Describes the message waves.node.grpc.NFTRequest.
  * Use `create(NFTRequestSchema)` to create a new message.
  */
-export const NFTRequestSchema: GenMessage<NFTRequest> = /*@__PURE__*/
+export const NFTRequestSchema: GenMessage<NFTRequest> =
+  /*@__PURE__*/
   messageDesc(file_waves_node_grpc_assets_api, 1);
 
 /**
  * @generated from message waves.node.grpc.NFTResponse
  */
-export type NFTResponse = Message<"waves.node.grpc.NFTResponse"> & {
+export type NFTResponse = Message<'waves.node.grpc.NFTResponse'> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -79,13 +89,14 @@ export type NFTResponse = Message<"waves.node.grpc.NFTResponse"> & {
  * Describes the message waves.node.grpc.NFTResponse.
  * Use `create(NFTResponseSchema)` to create a new message.
  */
-export const NFTResponseSchema: GenMessage<NFTResponse> = /*@__PURE__*/
+export const NFTResponseSchema: GenMessage<NFTResponse> =
+  /*@__PURE__*/
   messageDesc(file_waves_node_grpc_assets_api, 2);
 
 /**
  * @generated from message waves.node.grpc.AssetInfoResponse
  */
-export type AssetInfoResponse = Message<"waves.node.grpc.AssetInfoResponse"> & {
+export type AssetInfoResponse = Message<'waves.node.grpc.AssetInfoResponse'> & {
   /**
    * @generated from field: bytes issuer = 1;
    */
@@ -151,7 +162,8 @@ export type AssetInfoResponse = Message<"waves.node.grpc.AssetInfoResponse"> & {
  * Describes the message waves.node.grpc.AssetInfoResponse.
  * Use `create(AssetInfoResponseSchema)` to create a new message.
  */
-export const AssetInfoResponseSchema: GenMessage<AssetInfoResponse> = /*@__PURE__*/
+export const AssetInfoResponseSchema: GenMessage<AssetInfoResponse> =
+  /*@__PURE__*/
   messageDesc(file_waves_node_grpc_assets_api, 3);
 
 /**
@@ -162,18 +174,16 @@ export const AssetsApi: GenService<{
    * @generated from rpc waves.node.grpc.AssetsApi.GetInfo
    */
   getInfo: {
-    methodKind: "unary";
+    methodKind: 'unary';
     input: typeof AssetRequestSchema;
     output: typeof AssetInfoResponseSchema;
-  },
+  };
   /**
    * @generated from rpc waves.node.grpc.AssetsApi.GetNFTList
    */
   getNFTList: {
-    methodKind: "server_streaming";
+    methodKind: 'server_streaming';
     input: typeof NFTRequestSchema;
     output: typeof NFTResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_waves_node_grpc_assets_api, 0);
-
+  };
+}> = /*@__PURE__*/ serviceDesc(file_waves_node_grpc_assets_api, 0);

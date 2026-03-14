@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain <https://github.com/Decentral-America>",
   "bugs": {
-    "url": "https://github.com/Decentral-America/crypto/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
@@ -24,8 +24,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -38,7 +38,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/crypto#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/crypto",
   "keywords": [
     "decentralchain",
     "crypto",
@@ -54,36 +54,30 @@
   "license": "MIT",
   "module": "./dist/index.js",
   "name": "@decentralchain/crypto",
-  "packageManager": "npm@11.9.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "repository": {
+    "directory": "packages/crypto",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/crypto.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
   "scripts": {
     "build": "npm run build:wasm && npm run build:ts",
     "build:ts": "tsc",
     "build:wasm": "wasm-pack build --target web --release && rimraf pkg/package.json pkg/.gitignore",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
     "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
     "check:publint": "publint",
     "dev:wasm": "wasm-pack build --target web --dev && rimraf pkg/package.json pkg/.gitignore",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "lint": "biome check --write .",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepack": "npm run build",
-    "prepare": "lefthook install",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build && npm run check:publint && npm run check:exports"
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "type": "module",
