@@ -31,11 +31,11 @@ export type { TToLongConverter } from './parse';
 export type { TFromLongConverter } from './serialize';
 
 export {
-  json,
   binary,
-  schemas,
-  serializePrimitives,
-  parsePrimitives,
   convertLongFields,
   convertTxLongFields,
+  json,
+  parsePrimitives,
+  schemas,
+  serializePrimitives,
 };
