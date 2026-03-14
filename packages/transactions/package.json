@@ -59,6 +59,10 @@
   "nx": {
     "implicitDependencies": [
       "!@decentralchain/node-api-js"
+    ],
+    "tags": [
+      "scope:sdk",
+      "layer:2"
     ]
   },
   "peerDependencies": {

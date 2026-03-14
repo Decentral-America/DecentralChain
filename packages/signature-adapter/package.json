@@ -93,5 +93,11 @@
   ],
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "7.0.1"
+  "version": "7.0.1",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:4"
+    ]
+  }
 }

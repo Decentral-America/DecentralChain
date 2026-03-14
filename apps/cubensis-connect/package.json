@@ -118,5 +118,11 @@
   "bugs": {
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/cubensis-connect"
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/cubensis-connect",
+  "nx": {
+    "tags": [
+      "scope:app",
+      "layer:5"
+    ]
+  }
 }
