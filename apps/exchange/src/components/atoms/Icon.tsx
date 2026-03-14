@@ -1,0 +1,100 @@
+/**
+ * Icon Component System
+ * Wrapper for react-icons with consistent styling
+ * Compatible with Material-UI
+ */
+import React from 'react';
+import { styled } from '@mui/material/styles';
+import * as MdIcons from 'react-icons/md'; // Material Design
+import * as FaIcons from 'react-icons/fa'; // Font Awesome
+import * as FiIcons from 'react-icons/fi'; // Feather Icons
+
+type MaterialIcons = keyof typeof MdIcons;
+type FontAwesomeIcons = keyof typeof FaIcons;
+type FeatherIcons = keyof typeof FiIcons;
+
+export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  name: MaterialIcons | FontAwesomeIcons | FeatherIcons;
+  size?: number | string;
+  color?: string;
+  library?: 'md' | 'fa' | 'fi';
+}
+
+const IconWrapper = styled('span', {
+  shouldForwardProp: (prop) => !['size', 'color'].includes(prop as string),
+})<{ size: string; color?: string }>(({ size, color }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: size,
+  color: color || 'currentColor',
+  lineHeight: 1,
+  flexShrink: 0,
+  '& svg': {
+    width: '1em',
+    height: '1em',
+  },
+}));
+
+const getIconLibrary = (library: 'md' | 'fa' | 'fi') => {
+  switch (library) {
+    case 'md':
+      return MdIcons;
+    case 'fa':
+      return FaIcons;
+    case 'fi':
+      return FiIcons;
+    default:
+      return MdIcons;
+  }
+};
+
+export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
+  ({ name, size = 24, color, library = 'md', ...props }, ref) => {
+    const icons = getIconLibrary(library);
+    const IconComponent = icons[name as keyof typeof icons] as React.ComponentType;
+
+    if (!IconComponent) {
+      console.warn(`Icon "${name}" not found in library "${library}"`);
+      return null;
+    }
+
+    const sizeValue = typeof size === 'number' ? `${size}px` : size;
+
+    return (
+      <IconWrapper ref={ref} size={sizeValue} color={color} {...props}>
+        <IconComponent />
+      </IconWrapper>
+    );
+  }
+);
+
+Icon.displayName = 'Icon';
+
+// Common icon name exports for convenience
+export const CommonIcons = {
+  // Navigation
+  Home: 'MdHome' as MaterialIcons,
+  Menu: 'MdMenu' as MaterialIcons,
+  Close: 'MdClose' as MaterialIcons,
+  ArrowBack: 'MdArrowBack' as MaterialIcons,
+  ArrowForward: 'MdArrowForward' as MaterialIcons,
+  // Actions
+  Add: 'MdAdd' as MaterialIcons,
+  Remove: 'MdRemove' as MaterialIcons,
+  Edit: 'MdEdit' as MaterialIcons,
+  Delete: 'MdDelete' as MaterialIcons,
+  Save: 'MdSave' as MaterialIcons,
+  Search: 'MdSearch' as MaterialIcons,
+  // Status
+  Check: 'MdCheck' as MaterialIcons,
+  Error: 'MdError' as MaterialIcons,
+  Warning: 'MdWarning' as MaterialIcons,
+  Info: 'MdInfo' as MaterialIcons,
+  // User
+  Person: 'MdPerson' as MaterialIcons,
+  Settings: 'MdSettings' as MaterialIcons,
+  // Wallet
+  AccountBalanceWallet: 'MdAccountBalanceWallet' as MaterialIcons,
+  Send: 'MdSend' as MaterialIcons,
+};

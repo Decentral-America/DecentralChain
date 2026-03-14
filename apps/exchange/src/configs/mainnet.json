@@ -1,0 +1,49 @@
+{
+  "tradingPairs": [
+    ["DCC", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
+    ["DCC", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
+    ["DCC", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"],
+    ["25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
+    ["25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"],
+    ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"]
+  ],
+  "oracles": {
+      "waves": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
+      "tokenomica": ""
+  },
+  "apiVersion": "v0",
+  "code": "?",
+  "node": "https://mainnet-node.decentralchain.io",
+  "matcher": "https://mainnet-matcher.decentralchain.io/matcher",
+  "api": "https://data-service.decentralchain.io",
+  "explorer": "https://decentralscan.com",
+  "coinomat": "",
+  "wavesGateway": {
+      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
+          "url": "https://btc.decentralchain.io",
+          "isThirdParty": false,
+          "regex": "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$"
+      }
+  },
+  "support": "https://decentralchain.io/soporte",
+  "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
+  "privacyPolicy": "https://decentralchain.io/privacy-policy",
+  "nodeList": "https://decentralscan.com/peers",
+  "tokensNameListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/Prominent%20token%20name%20list.csv",
+  "scamListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/scam-v1.csv",
+  "origin": "https://decentral.exchange",
+  "featuresConfigUrl": "https://raw.githubusercontent.com/Decentral-America/waves-client-config/master/config.json",
+  "feeConfigUrl": "https://raw.githubusercontent.com/Decentral-America/waves-client-config/master/fee.json",
+  "tokenrating": "",
+  "assets": {
+      "DCC": "DCC",
+      "CRC": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
+      "BTC": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
+      "DGFTHR": "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
+  },
+  "matcherPriorityList": [
+      { "ticker": "DCC", "id": "DCC" },
+      { "ticker": "CRC", "id": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"},
+      { "ticker": "BTC", "id": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK" }
+  ]
+}

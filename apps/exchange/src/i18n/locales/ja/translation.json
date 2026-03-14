@@ -1,0 +1,2780 @@
+{
+  "app.create": {
+    "backupSeed": {
+      "back": "戻る",
+      "copySeed": "コピー",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official Waves clients.",
+      "needConfirm": "あなたは次の画面でこのフレーズの入力を求められます。",
+      "ok": "書き留めました",
+      "or": "または",
+      "saveSecret": "バックアップフレーズを保存",
+      "seedPhrase": "Seed Phrase",
+      "warn": "あなたのお金を管理できるのはあなただけです。このアプリが削除された場合に備え、バックアップフレーズを保存してください。または",
+      "writeSeed": "これらの15単語を慎重に書き留めてください",
+      "yourSeed": "あなたのシードフレーズ"
+    },
+    "confirmBackup": {
+      "again": "そして、もう一度タップする",
+      "back": "戻る",
+      "clear": "クリア",
+      "confirm": "バックアップを確定",
+      "description": "バックアップフレーズを確認、または",
+      "enterCorrect": "それぞれの単語を正しい順番で選択して下さい",
+      "error": "順番が間違っています、再度選択して下さい。",
+      "ok": "確定",
+      "tapAgain": "そして、もう一度タップしてください"
+    },
+    "createAccount": {
+      "address": "アカウントアドレス:",
+      "avatarUnique": "このアバターはユニークです。あとで変更することはできません。",
+      "choose": "アドレスのアバターを選択してください",
+      "create": "新しいアカウントを作成",
+      "createAccount": "Create a new account",
+      "createDescription": "高速かつ無料",
+      "createNewAccount": "あなたのアバターを選択",
+      "description": {
+        "becomePart": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets",
+        "dex": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange",
+        "enterName": "Enter account name or",
+        "wallet": "Store, manage and receive interest on your digital assets balance, easily and securely"
+      },
+      "from": "このアバターは視覚的存在です。あとで変更することはできません。",
+      "header": {
+        "accountName": "Account name",
+        "dex": "decentralized Exchange",
+        "wallet": "Wallet",
+        "withBlockchain": "Get Started with Blockchain"
+      },
+      "import": "アカウントをインポート",
+      "importDescription": "シードフレーズ、またはLedger、Keeperから",
+      "protect": "アカウントを新しいパスワードで保護。または",
+      "protectYourAccount": "あなたのアカウントを保護する",
+      "restore": "アカウントを復元",
+      "saveUserData": "アカウントをこのコンピューターに保存",
+      "signDescription": "(保存されたアカウントへ)",
+      "signIn": "サインイン",
+      "signUp": "以下から無料のアカウントを作成。または",
+      "tosaved": "(保存されたアカウントへ)",
+      "toWalet": "(ウォレットへ)"
+    },
+    "modal": {
+      "confirmBackupDescription": "バックアップフレーズを確認",
+      "next": "確定",
+      "prev": "戻る",
+      "successContent": "秘密のフレーズを変更することはできません。誤って他人に送信した場合や、詐欺師に侵入された疑いがある場合は、直ちに新しいWavesウォレットを作成して資金を移してください。",
+      "successHeadline": "バックアップフレーズの取扱には注意して下さい！",
+      "understand": "理解しました"
+    },
+    "noBackupNoMoney": {
+      "backup": "今すぐバックアップ",
+      "description": "秘密のフレーズを必ず保存してください。あなたのアカウントにアクセスするためにとても重要です。",
+      "modal": {
+        "descriptionP1": "Waves Platformは、増加している詐欺とフィッシング攻撃に対して注意を換気します。攻撃者は偽バージョンのWavesクライアントにマルウェアを隠し、ユーザを誘い込むために配当や割引などを約束します。ご注意ください。",
+        "descriptionP2": "決してこれらのクライアントにあなたのSEEDを入力しないよう注意してください。あなたのアカウントに侵入され、すべての資産を失います。",
+        "descriptionP3": "公式のWavesクライアントのみを利用して下さい。",
+        "ok": "理解しました",
+        "title": "バックアップフレーズの取扱には注意して下さい！"
+      },
+      "or": "または",
+      "skip": "あとで",
+      "title": "バックアップなしでは、あなたの資産は守られません"
+    },
+    "seed": {
+      "copyToClipboard": "Copy to clipboard",
+      "saveToFile": "Save as file"
+    }
+  },
+  "app.desktop": {
+    "back": "メインページに戻る",
+    "message": "Wavesのデスクトップアプリのダウンロードは [公式サイト](https://wavesplatform.com)より可能です。もしインストール済で、アプリが開かない場合は、こちらから (https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) バグを報告して下さい。",
+    "title": "リーストランザクション"
+  },
+  "app.dex": {
+    "create": {
+      "order": {
+        "failed": "何かがおかしいようです",
+        "success": "注文が作成されました"
+      }
+    },
+    "dex": {
+      "contest": "コンテスト"
+    },
+    "directives": {
+      "balance": {
+        "assetId": "アセットID",
+        "available": "使用可能",
+        "inOrders": "注文中",
+        "inOrdersFull": "注文中数量",
+        "total": "合計"
+      },
+      "candleChart": {
+        "error": "{div}[チャートをダウンロードできません。]{div}[アプリケーション内でチャートの利用を希望する場合 [tradingview.com](https://tradingview.com)にリクエストを送信して下さい。]"
+      },
+      "charts": "charts",
+      "createOrder": {
+        "1day": "1日",
+        "1hour": "1時間",
+        "1week": "1週間",
+        "30day": "29日間",
+        "30min": "30分間",
+        "5min": "5分間",
+        "amountField": "数量",
+        "ask": "Ask",
+        "bid": "Bid",
+        "buy": "購入",
+        "createOrderNotPermitted": "現在、注文することができません",
+        "errors": {
+          "amountMax": "Max Amount - ",
+          "amountMin": "Min Amount - ",
+          "balance": "{{name}} が足りません",
+          "precision": "小数点数の最大は {{precision}} 桁です",
+          "priceMax": "Max Price - ",
+          "priceMin": "Min Price - ",
+          "required": "この項目は必須です"
+        },
+        "expiration": "有効期限",
+        "fee": "手数料  {{fee}} DCC",
+        "hasScript": "トレードの為にスクリプト(https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) をキャンセル",
+        "last": "最終",
+        "limit": "Limit Order",
+        "market": "Market Order",
+        "marketPriceField": "Price",
+        "matcherFee": "手数料",
+        "notifications": {
+          "error": {
+            "3147520": "{{address}}のアカウントスクリプトがエラーを返しました：{{scriptError}}",
+            "3147521": "{{address}} のアカウントに付加されたスクリプトが注文を拒否しました",
+            "3147522": "{{address}} のアカウントに付加されたスクリプトが注文を拒否しました",
+            "3147524": "{{address}}のアカウントスクリプトが不正です。所有者に連絡してください。返されたオブジェクトは次の通りです：{{returnedObject}}",
+            "11536128": "{{assetId}}のアセットスクリプトが不正です。所有者に連絡してください。返されたオブジェクトは次の通りです：{{returnedObject}}",
+            "11536129": "{{assetId}}のアセットスクリプトが不正です。所有者に連絡してください。返されたエラーは{{errorName}}、メッセージは：{{errorText}}です",
+            "11536130": "{{assetId}}のアセットスクリプトが注文を拒否しました",
+            "11536132": "{{assetId}}のアセットスクリプトが不正です。所有者に連絡してください。返されたオブジェクトは次の通りです：{{returnedObject}}",
+            "title": "エラーメッセージ"
+          },
+          "isCreated": "注文が作成されました",
+          "notEnoughBalance": "トレード可能な残高がありません",
+          "somethingWentWrong": "何かがおかしいようです"
+        },
+        "notPermitted": "現在、注文の作成はできません",
+        "placeBuyOrder": "{{name}} を購入",
+        "placeSellOrder": "{{name}} を売却",
+        "priceField": "指値",
+        "sell": "売却",
+        "spread": "スプレッド",
+        "stopPriceField": "Stop price",
+        "stopPriceHelp": "This is an automatic buy or sell order at a predetermined price",
+        "total": "合計"
+      },
+      "createorder": {
+        "yourBalance": "Your balance"
+      },
+      "demo": {
+        "createAccount": "新しいアカウントを作成",
+        "or": "または",
+        "signIn": "サインイン",
+        "to": {
+          "mybalance": "(残高の確認)",
+          "openorders": "(注文の確認)",
+          "tradehistory": "(トレード履歴の確認)"
+        }
+      },
+      "filter": "検索",
+      "marketDepth": "市場の厚み",
+      "markets": {
+        "table": {
+          "price": "価格",
+          "rate": "変化",
+          "unit": "通貨",
+          "volume": "ボリューム"
+        },
+        "title": "マーケット"
+      },
+      "myOrders": {
+        "amount": "数量",
+        "average": "平均",
+        "back": "いいえ",
+        "cancel": "キャンセル",
+        "cancelAll": "すべてキャンセル",
+        "cancelAllConfirm": "はい",
+        "canceled": "キャンセル済",
+        "cancelled": "キャンセル",
+        "confirm": {
+          "header": "本当によろしいですか？",
+          "literalDescription": "このアクションは取り消すことができません"
+        },
+        "delete": "削除",
+        "detail": "詳細",
+        "fee": "手数料",
+        "filled": "約定",
+        "filter": "フィルター",
+        "noPermissionCancelOrder": "現在、注文のキャンセルはできません",
+        "notifications": {
+          "canceledAll": "すべての注文がキャンセルされました",
+          "isCanceled": "注文がキャンセルされました",
+          "somethingWentWrong": "何かがおかしいようです"
+        },
+        "opened": "注文中",
+        "orderType": {
+          "buy": "購入",
+          "sell": "売却"
+        },
+        "pair": "ペア",
+        "placeholders": {
+          "lockedPair": "{{amountAssetTicker}} / {{priceAssetTicker}} ペアは現在ご利用できません。注文をキャンセル可能です"
+        },
+        "price": "価格",
+        "status": "ステータス",
+        "tableTitle": {
+          "fee": "手数料"
+        },
+        "time": "時間",
+        "total": "合計",
+        "type": "タイプ",
+        "withScript": "[スクリプト](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) をあなたのアカウントにインストールしている最中は、トレード機能を使用することは出来ません"
+      },
+      "noChartDataMessage": "{div}[市場の厚みチャートを作成するための]{div}[十分な注文量がありません]",
+      "noChartDataTitle": "表示するデータがありません",
+      "orderBook": {
+        "amount": "注文数量 {{assetName}}",
+        "lastprice": "最終価格",
+        "price": "価格 {{assetName}}",
+        "spread": "スプレッド",
+        "sum": "合計 {{assetName}}",
+        "title": "オーダーブック"
+      },
+      "orderbook": {
+        "errorBlock": {
+          "header": "何かがおかしいようです"
+        }
+      },
+      "orders": "orders",
+      "portfolio": {
+        "title": "ポートフォリオ"
+      },
+      "tradeHistory": {
+        "orderType": {
+          "buy": "購入",
+          "sell": "売却"
+        },
+        "search": "検索",
+        "tableTitle": {
+          "date": "時間",
+          "exchangeType": "タイプ",
+          "fee": "手数料",
+          "price": "価格 {{assetName}}",
+          "size": "注文数量 {{assetName}}",
+          "total": "合計",
+          "type": "タイプ"
+        },
+        "title": "トレード履歴"
+      },
+      "watchlist": {
+        "all": "すべて",
+        "change": "変化",
+        "chg": "変化",
+        "coin": "通貨",
+        "helpIcon": {
+          "assetId": "アセット ID",
+          "AssetId1AssetId2": "アセット1 ID / アセット2 ID",
+          "description": "アセットの検索の詳細については [コチラ](https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html)からご覧頂けます",
+          "header": "以下のように検索が可能です：",
+          "name": "名前",
+          "name1Name2": "名前1 / 名前2"
+        },
+        "pair": "ペア",
+        "placeholders": {
+          "base": "ベース通貨",
+          "coin": "検索",
+          "filter": "フィルター",
+          "lockedPair": "{{amountAssetTicker}} / {{priceAssetTicker}} ペアは現在ご利用できません",
+          "noMarkets": "指定されたフィルターに合致するペアはありません"
+        },
+        "price": "価格",
+        "vol": "Vol",
+        "volume": "ボリューム"
+      }
+    },
+    "emptyBlocks": {
+      "myOrders": {
+        "description": "注文はありません",
+        "title": "表示するデータがありません"
+      },
+      "orderBook": {
+        "description": "オーダーブックは空です。",
+        "error": {
+          "text": "ページを再読み込みして再度お試して下さい",
+          "title": "何かがおかしいようです"
+        },
+        "title": "表示するデータがありません…"
+      },
+      "tradeHistory": {
+        "description": "トレード履歴は空です。",
+        "title": "表示するデータがありません…"
+      }
+    },
+    "layout": {
+      "center": {
+        "bottom": "自分の注文"
+      },
+      "right": {
+        "bottom": "トレード履歴",
+        "top": "オーダーブック"
+      }
+    },
+    "orderbook": {
+      "ask": {
+        "tooltipText": "{{amountAsset}} を{{price}} {{priceAsset}}で購入"
+      },
+      "bid": {
+        "tooltipText": "{{amountAsset}} を{{price}} {{priceAsset}}で売却する"
+      }
+    },
+    "tabs": {
+      "title": {
+        "all": "すべて",
+        "btc": "Btc",
+        "eth": "ETH",
+        "history": "history",
+        "myBalance": "自分の残高",
+        "myTradeHistory": "自分のトレード履歴",
+        "openOrders": "自分の未約定注文",
+        "OrderHistory": "自分のトレード履歴",
+        "trade": "Trade",
+        "tradeHistory": "トレード履歴",
+        "waves": "Waves"
+      }
+    }
+  },
+  "app.fag": {
+    "fag": {
+      "migration": {
+        "title1": "What’s going on?"
+      }
+    }
+  },
+  "app.import": {
+    "back": "メインページに戻る",
+    "backupFile": {
+      "back": "go back",
+      "enterPasswordDescription": "Please enter your password or",
+      "helper": "You need to enter the password, which you used for the accounts exporting",
+      "import": {
+        "accounts": "Accounts",
+        "emptyList": "There are no accounts for import in the uploaded file",
+        "importFailed": "Failed to import keystore file",
+        "noChosen": "No file chosen",
+        "selectAccount": "Choose accounts",
+        "selectAccountDesc": "Please select account or",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "wrongPassword": "Wrong password!"
+      },
+      "importFromFile": "Import account from Keystore File",
+      "importFromFileDescription": "Choose your JSON file and click Import or",
+      "name": "Keystore File",
+      "next": "Continue",
+      "password": "Password",
+      "selectFileBtn": "Choose file"
+    },
+    "backupFileDescription": "Import account from Keystore File",
+    "import": {
+      "signIn": "サインイン"
+    },
+    "importAccount": "アカウントをインポート",
+    "importAccountInfo": "アカウントのインポート元を選択する",
+    "KeeperClient": "Waves Keeper",
+    "keeperDescription": "Waves Keeperからアカウントをインポート",
+    "keeperForm": "インストール",
+    "LedgerClient": "Ledgerデバイス",
+    "ledgerDescription": "Ledger デバイスからアカウントをインポート",
+    "or": "または",
+    "seedAndKey": {
+      "name": "シードまたはキー"
+    },
+    "seedAndKeyDescription": "バックアップシードフレーズか秘密鍵からアカウントをインポート",
+    "selectButton": "選択",
+    "wavesClient": "Waves クライアント",
+    "wavesClientDescription": "Waves クライアントからアカウントをインポート",
+    "wavesLiteClient": "Waves Lite クライアント",
+    "wavesLiteClientDescription": "Waves ライトクライアントからアカウントをインポート",
+    "wavesSeedClient": "バックアップシードフレーズ",
+    "wavesSeedClientDescription": "バックアップシードフレーズからアカウントをインポート"
+  },
+  "app": {
+    "back": "戻る",
+    "button": {
+      "cancel": "キャンセル",
+      "continue": "次へ",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "現在、トークン発行機能は利用できません",
+        "issue-title": "トークンを発行",
+        "massSendTitle": "マストランスファー",
+        "reissue": "現在、トークン追加発行機能は利用できません",
+        "sendTitle": "送信",
+        "set-script-title": "スクリプトトランザクション"
+      },
+      "send": {
+        "errors": {
+          "fee": "要求された手数料を支払う為に必要な資金を持っていません。{{fee, money-currency}} をトランザクション手数料として支払う必要があります:"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "1月",
+        "2月",
+        "3月",
+        "4月",
+        "5月",
+        "6月",
+        "7月",
+        "8月",
+        "9月",
+        "10月",
+        "11月",
+        "12月"
+      ]
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://wavesplatform.com/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "アセット",
+      "dex": "DEX",
+      "leasing": "リース",
+      "portfolio": "ポートフォリオ",
+      "tokens": "トークン",
+      "transactions": "トランザクション",
+      "wallet": "ウォレット"
+    },
+    "inputs": {
+      "errors": {
+        "required": "この項目は必須です！"
+      }
+    },
+    "leftmenu": {
+      "login": "ログイン",
+      "logout": "ログアウト",
+      "settings": "設定"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "キャンセル済",
+          "filled": "約定済 ({{percent}}%)",
+          "opened": "未約定"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "パスワードを入力"
+      },
+      "pairing": {
+        "showQr": "表示"
+      },
+      "tryDesktop": {
+        "cancel": "ウェブ版で続ける",
+        "label": "設定を保存し、次回は表示しない",
+        "message": "Wavesのデスクトップアプリを利用することを推奨します。ダウンロードは 公式サイトより可能です。",
+        "title": "Wavesのデスクトップアプリを利用",
+        "try": "デスクトップアプリを開く"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "注意"
+  },
+  "app.ledger": {
+    "ledger": {
+      "article": "リンク",
+      "connectionError": "Ledger デバイスに接続することが出来ません",
+      "connectionText": "接続がタイムアウトしたかもしれません。再度お試し下さい。",
+      "referTo": "エラーを解決できない場合、こちらを参照ください。"
+    },
+    "ledgerForm": {
+      "address": "アカウントアドレス:",
+      "addressSaved": "保存されたアドレス",
+      "avatarUnique": "このアバターはユニークです。あとで変更することはできません。",
+      "back": "戻る",
+      "choose": "アカウントを選択",
+      "help": {
+        "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
+      },
+      "id": "Account ID",
+      "importAccount": "Ledgerアカウントをインポート",
+      "ImportOrSignIn": "アカウントをインポート。または、",
+      "login": "次へ",
+      "name": "アカウント名",
+      "nameExists": "その名前はすでに使用されています",
+      "or": "または",
+      "retry": "リトライ",
+      "savedOne": "(保存されたアカウントへ)",
+      "saveUserData": "アカウントをこのコンピューターに保存",
+      "selectDefault": "デフォルトアカウントを使用",
+      "signIn": "サインイン"
+    },
+    "modal": {
+      "sign": {
+        "confirmRequest": "リクエストを承認",
+        "confirmRequestMatcher": "Matcherのリクエストに署名してください。署名をしない場合、LedgerからDEXでトレードすることはできません。"
+      }
+    },
+    "or": "または"
+  },
+  "app.migrate": {
+    "desktopUpdate": {
+      "almostThere": "Almost there...",
+      "backToPrevious": "Back to previous",
+      "barDone": "Done",
+      "barDownload": "Download",
+      "barInstall": "Install and run",
+      "barSuccess": "Success",
+      "cancelDownloading": "Cancel download",
+      "congratulations": "Congratulations!",
+      "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
+      "connectSupport": "If that did not help, then contact the Waves.Exchange [support](https://support.waves.exchange/).",
+      "download": "Download",
+      "downloaded": "yes",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "fail": "Fail",
+      "failText": "Please make sure that you have installed and run the new Waves.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Waves.Exchange desktop application?",
+      "install": "Install the application",
+      "installAndRun": "Install and run the application. Have you done it?",
+      "iUnderstand": "I understand",
+      "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
+      "lookAtFAQ2": "You might find the answer there.",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.wavesplatform.com).",
+      "oops": "Oops! Something went wrong...",
+      "password": "Password",
+      "passwordError": "Wrong Password!",
+      "pleaseWait": "Downloading...",
+      "return": "return",
+      "run": "Run the installed application",
+      "seconds": "seconds",
+      "seconds1": "second",
+      "seconds234": "seconds",
+      "signInAndMove": "Sign in & Start moving",
+      "toFinish": "To finish the migration of your accounts, you have to go to the new application and complete the authorization process.",
+      "tryAgain": "Try again"
+    },
+    "faq": {
+      "attention": {
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.wavesplatform.com](https://dex.wavesplatform.com/) and [https://client.wavesplatform.com](https://client.wavesplatform.com/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. Waves Platform or Waves.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "title": "ATTENTION!!! "
+      },
+      "goHome": "Go to HomePage",
+      "text1": "Decentral.Exchange is transforming into a new product, Waves.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Waves.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Waves.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on the Waves blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using Waves Explorer. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Waves.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
+      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Waves community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Waves trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "title1": "What’s going on?",
+      "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
+      "title11": "Will the new exchange have access to my seed phrases?",
+      "title12": "What will happen to my tokens?",
+      "title13": "What problems might users face due to the migration?",
+      "title14": "How long will technical work take on December 2?",
+      "title15": "How can I update my mobile app?",
+      "title16": "Do you plan on introducing KYC procedures? ",
+      "title17": "What changes will the matcher undergo?",
+      "title18": "What if I have any problems or questions during the migration process?",
+      "title19": "What will happen to gateway tokens?",
+      "title2": "What is Waves.Exchange?",
+      "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
+      "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
+      "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
+      "title23": "Why so complicated?",
+      "title24": "Are there plans to expand language support for the interface of the new exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Waves.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+    },
+    "migrate": {
+      "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
+      "achievementTitle": "Congratulations!",
+      "btn": {
+        "unlock": "Unlock"
+      },
+      "continue": "Continue",
+      "desc": {
+        "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
+        "enterPassword": "Enter your Waves.Exchange password to continue the migration.",
+        "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
+      },
+      "description": {
+        "enterPass": "Enter your account password or",
+        "goBack": "return back",
+        "goBackExchange": "go back",
+        "unlock": "Unlock your accounts. You can return to this step later",
+        "unlockExchange": "To finish the migration, complete the authorization process by unlocking an account from the old application and signing in, or creating a new account, or importing it."
+      },
+      "headers": {
+        "unlock": "Unlock your accounts",
+        "unlockAccount": "Unlock account",
+        "unlockAccountExchange": "Unlock your account",
+        "unlockExchange": "Unlock your accounts"
+      },
+      "modalButton": {
+        "cancel": "Cancel",
+        "moving": "Start moving"
+      },
+      "modalDesc": {
+        "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
+        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
+        "thirdPart": "The migration process is fast, easy and absolutely secure."
+      },
+      "modalTitle": {
+        "moving": "Save your Seed!",
+        "plate": "Don’t worry! All of your tokens, seed phrases and passwords are safe.",
+        "redirected": "You have been redirected to"
+      },
+      "signIn": "Sign in",
+      "subtitle": {
+        "account": "Account",
+        "pending": "Pending unlock",
+        "pendingExchange": "To unlock, select an account from the list",
+        "pendingUnlockingExchange": "Pending unlocking",
+        "unlocked": "Unlocked"
+      },
+      "title": {
+        "almostThere": "Almost there...",
+        "protectAccount": "Protect your accounts"
+      }
+    },
+    "modals": {
+      "shutdownNotificationFirst": {
+        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "One day left!"
+      },
+      "shutdownNotificationLast": {
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "submit": "I understand",
+        "title": "Time to move on!"
+      },
+      "shutdownNotificationSecond": {
+        "message1": "Decentral.Exchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "Two hours left!"
+      }
+    }
+  },
+  "app.restore": {
+    "encodedSeedForm": {
+      "placeholder": "Enter your encoded seed"
+    },
+    "encodedSeedTab": "Encoded seed",
+    "keyForm": {
+      "placeholder": "秘密鍵をこちらに入力してください"
+    },
+    "keyTab": "秘密鍵",
+    "password": {
+      "error": "パスワードが間違っています！"
+    },
+    "passwordForm": {
+      "back": "戻る",
+      "description": "アカウントを新しいパスワードで保護。または",
+      "importAccounts": "アカウントをインポート",
+      "login": "次へ",
+      "title": "あなたのアカウントを保護する"
+    },
+    "restore": {
+      "beta": {
+        "accountTitle": "アドレス / アカウント名",
+        "buttons": {
+          "cancel": "戻る",
+          "copy": "シードをコピー",
+          "restore": "シードを復元"
+        },
+        "noUsers": {
+          "description": "{div}[保存されたアカウントは見つかりませんでした。]{div}[[client.wavesplatform.com](https://client.wavesplatform.com)]へ戻る",
+          "title": "保存されたアカウントはありません"
+        },
+        "passwordTitle": "パスワード",
+        "placeholders": {
+          "password": "パスワード"
+        },
+        "step1Description": "あなたがSEEDではなくパスワードのみ分かる場合、こちらのページから保存されたアカウントを復元することが出来ます。",
+        "step2Description": "慎重にSEEDを保管して下さい。紛失した場合、あなたのアカウントにアクセスする方法はありません。",
+        "title": "シードを復元"
+      }
+    },
+    "seedForm": {
+      "address": "アドレス",
+      "addressSaved": "保存されたアドレス",
+      "back": "戻る",
+      "continue": "次へ",
+      "create": "新しいアカウントを作成",
+      "description": "あなたのシードはアカウントの作成時に保存した15の単語です",
+      "nameExists": "その名前はすでに使用されています",
+      "or": "または",
+      "placeholder": "あなたのシードはアカウントの作成時に保存した15の単語です",
+      "saveUserData": "アカウントをこのコンピューターに保存",
+      "seedTitle": "あなたのウォレットシード",
+      "title": "シードからインポート",
+      "tosaved": "(保存されたアカウントへ)"
+    },
+    "seedOrKeyForm": {
+      "description": "シードフレーズまたは秘密鍵を入力してウォレットにアクセス",
+      "encodedSeed": "Encoded seed",
+      "keyTitle": "秘密鍵",
+      "seedTitle": "シードフレーズ",
+      "title": "シードかキーからインポート"
+    },
+    "seedTab": "シードフレーズ",
+    "warningSeed": {
+      "message": "フレーズをウォレットアドレスと混同しないようにしてください。 アドレスをシードフレーズ（SEED）として使用すると、資金を失う可能性があります。 SEEDは15語で構成され、各語間にスペースが必要です。",
+      "title": "入力されたシードフレーズは短すぎます。"
+    }
+  },
+  "app.saveSeed": {
+    "continue": "次へ",
+    "copy": "コピー",
+    "copySeed": "シードをコピー",
+    "createAccount": "アカウントを作成",
+    "goBack": "戻る",
+    "notHaveAccounts": "保存したアカウントがありません",
+    "nothingHere": "表示するデータがありません",
+    "password": {
+      "error": "パスワードが間違っています！"
+    },
+    "userList": {
+      "address": "アドレス / アカウント名",
+      "buttons": {
+        "login": "ログイン"
+      },
+      "exportUser": "アカウントをエクスポート",
+      "notHaveAccount": "サインインして続行",
+      "password": "パスワード",
+      "placeholders": {
+        "password": "パスワード"
+      },
+      "title": "おかえりなさい"
+    },
+    "warn": "あなたのお金を管理できるのはあなただけです。このアプリが削除された場合に備え、バックアップフレーズを保存してください。または",
+    "yourSeed": "あなたのシードフレーズ"
+  },
+  "app.sessions": {
+    "session": {
+      "headline": "アカウントを選択",
+      "or": "または",
+      "signIn": "アカウントにサインイン",
+      "signInNew": "新しいセッションにサインイン"
+    }
+  },
+  "app.signIn": {
+    "createAccount": "アカウントを作成",
+    "notHaveAccounts": "保存したアカウントがありません",
+    "nothingHere": "表示するデータがありません",
+    "password": {
+      "error": "パスワードが間違っています！"
+    },
+    "signIn": {
+      "btn": {
+        "cancel": "Cancel",
+        "overwrite": "Overwrite",
+        "restore": "Reset all"
+      },
+      "enterPass": "Please enter your password to continue",
+      "or": "OR",
+      "passForgot": {
+        "attention": "Attention!",
+        "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
+        "descriptionExchange": "You are about to delete all of your Waves.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts."
+      },
+      "password": {
+        "forgot": "Forgot your password?",
+        "overwrite": "Overwrite accounts",
+        "overwriteDescription": "Overwrite all Waves.Exchange accounts on this device"
+      },
+      "signIn": "Sign in",
+      "welcomeBack": "Welcome Back!"
+    },
+    "userList": {
+      "address": "アドレス / アカウント名",
+      "buttons": {
+        "login": "ログイン"
+      },
+      "notHaveAccount": "サインインして続行",
+      "password": "パスワード",
+      "placeholders": {
+        "password": "パスワード"
+      },
+      "title": "おかえりなさい"
+    }
+  },
+  "app.signUp": {
+    "signUp": {
+      "headers": {
+        "onePassBtn": "Let’s start!",
+        "onePassDesc": "Local data storage, seed phrases and encryption make DCC DEX reliable. However, we are going further. It’s time to switch on a new security level. Log into your accounts and switch between them by a couple of taps.",
+        "onePassword": "One password for all your accounts",
+        "protect": "Protect Your Accounts",
+        "protectDesc": "Set a single password for all your accounts",
+        "protectPass": "Create password"
+      },
+      "password": {
+        "notMatch": "Password does not match"
+      },
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions), [Privacy Policy](https://decentralchain.io/privacy-policy)."
+    }
+  },
+  "app.tokens": {
+    "count": "総発行トークン数",
+    "create": "発行",
+    "description": "概要",
+    "directives": {
+      "sign": {
+        "confirmRequestLedger": {
+          "waiting": "Ledger デバイスからの承認を待っています..."
+        }
+      }
+    },
+    "fee": "手数料 {{fee, money-currency}}",
+    "help": {
+      "name": "ラテン文字のみを使用して下さい"
+    },
+    "helpIcon": {
+      "demicals": "このフィールドはあなたが発行するトークンが分割可能な小数点の最大値を定義します。",
+      "scriptDescription": "スマートアセットのスクリプトによるトランザクションの認証は、トランザクション手数料として0.004WAVESが追加で必要です。例えば、通常のトランザクションをスマートアセットに設定する場合、費用は0.001 + 0.004 = 0.005 DCC です。もし、エクスチェンジトランザクションが設定された場合の費用は0.003 + 0.004 = 0.007 DCC です。",
+      "scriptHeader": "スマートアセットは、スクリプトを添付し、トランザクションの発生の度に設定された条件を確認させ、トークンの挙動を制御することができるアセットです。",
+      "scriptLearnMore": "詳細を学ぶ",
+      "totalTokens": {
+        "headline": "このフィールドはあなたが発行するトークンの総発行数量を定義します。",
+        "notReissuable": "追加発行ができないアセットの発行数量の上限は、この手続きで設定された総発行数に永久に固定されます。",
+        "reissuable": "追加発行を可能にすることで、新たな数量のトークンの発行を可能にし、その分がトークンの総発行数量に加えられます。"
+      }
+    },
+    "modal": {
+      "title": "{{name}} の発行",
+      "titleSuccess": "{{name}} の発行が完了"
+    },
+    "name": "あなたのアセットの名称",
+    "NFT": {
+      "description": "Non-fungibleトークン（NFT）は、Wavesブロックチェーンに存在する一意かつ個別のトークンです。現在、Waves WalletおよびDecentral.ExchangeでのNFTの表示はサポートされていません。 NFTは[Waves Explorer]（https://wavesexplorer.com/）で確認可能です。",
+      "title": "あなたはNFTを作成しています。"
+    },
+    "notifications": {
+      "isNotCreated": "トークンはまだ発行されていません"
+    },
+    "pageTitle": "トークンを発行",
+    "placeholders": {
+      "description": "概要は後から変更することはできません",
+      "precision": "0から8"
+    },
+    "precision": "小数点",
+    "preview": "プレビュー",
+    "reissuable": {
+      "false": "追加発行不可",
+      "true": "追加発行可"
+    },
+    "script": "スマートアセット",
+    "success": {
+      "description": "あなたは {{amount}} {{name}} を発行しました",
+      "done": "ポートフォリオを開く",
+      "title": "トランザクションを処理中です！"
+    },
+    "switchScriptOff": "スクリプトを無効化",
+    "switchScriptOn": "スクリプトを有効化",
+    "tokens": {
+      "changeColorTooltip": "色の変更",
+      "inputHelper": {
+        "description": "この名前を使用すると、トークンは「注意」として分類され、IDでのみ検索可能になります。",
+        "header": "このアセット名はすでに使用されています"
+      },
+      "termsOfUse": {
+        "checkbox": "規則を遵守しない場合には、あなたのトークンが「注意」と分類される可能性があり、その場合にあなたのトークンはIDによる検索のみで発見されるようになることを理解します。"
+      }
+    },
+    "validators": {
+      "byte": {
+        "gte": "アセットの名前は4から16バイト長でなければいけません",
+        "lte": "アセットの名前は4から16バイト長でなければいけません"
+      },
+      "descriptionLen": "概要が長すぎます。1000バイト以下に設定してください",
+      "invalidScript": "構文エラー",
+      "maxValueCount": "入力された数字が大きすぎます",
+      "maxValuePrecision": "不正な数字です。0から8の数字を入力して下さい",
+      "minValueCount": "入力される数字は0以上の値でなければいけません",
+      "minValuePrecision": "不正な数字です。0から8の数字を入力して下さい",
+      "noMoney": "必要なトランザクション手数料を支払うための資金が足りません",
+      "precisionCount": "総資産数には、小数点の桁数欄で指定した数よりも大きい小数点を含めることはできません。",
+      "required": "この項目は必須です"
+    }
+  },
+  "app.ui": {
+    "active": "Active",
+    "all": "すべて",
+    "amount": "数量",
+    "balanceInput": {
+      "max": "最大"
+    },
+    "confirmGatewayTransaction": {
+      "back": "戻る",
+      "confirm": "承認",
+      "fieldAddress": "ターゲットアドレス",
+      "fieldAmount": "数量",
+      "fieldFee": "手数料",
+      "fieldGatewayAddress": "ゲートウェイアドレス",
+      "fieldGatewayFee": "ゲートウェイ手数料",
+      "success": "トランザクションを処理中です！",
+      "warningText": "あなたは {{name}} のブロックチェーンに送金しようとしています。",
+      "warningTitle": "外部のブロックチェーントランザクション"
+    },
+    "confirmTransaction": {
+      "back": "戻る",
+      "confirm": "送信",
+      "description": {
+        "burn": "あなたは {{quantityStr}} {{name}} をバーンしました",
+        "cancel-leasing": "あなたはリーストランザクションをキャンセルしました",
+        "circular": "あなたは {{amount, money-currency}} をあなた自身に送信しました",
+        "create-alias": "あなたはエイリアスを作成しました",
+        "data": "あなたはデータトランザクションを送信しました",
+        "data-vote": "{div.line} [あなたは{{moneyCurrency}}投票しました。]\n {div.line} [あなたのスコアは24時間後に適用されます。評価は処理中です。]",
+        "issue": "トークンの発行に成功しました",
+        "lease-out": "あなたは {{amount, money-currency}} をリースしました",
+        "mass-send": "あなたは {{totalAmount, money-currency}} を送信しました",
+        "reissue": "あなたは追加の {{quantityStr}} {{name}} を発行しました",
+        "send": "あなたは {{amount, money-currency}} を送信しました",
+        "set-asset-script": "あなたはスクリプトをアップデートしました",
+        "set-script": "あなたはスクリプトトランザクションを作成しました",
+        "set-script-cancel": "あなたはスクリプトトランザクションをキャンセルしました",
+        "sponsorship-start": "スポンサーシップが設定されました",
+        "sponsorship-stop": "スポンサーシップが無効になりました"
+      },
+      "details": "詳細を表示",
+      "export": "エクスポート",
+      "JSON": "JSON",
+      "ledgerUnconfirmed": {
+        "description": "再度お試し下さい。問題が継続する場合、 [こちらの記事](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)をご参照下さい。",
+        "header": "あなたはLedger上でリクエストを承認しませんでした"
+      },
+      "notPermited": {
+        "cancel-leasing": "現在、リースを開始することができません。"
+      },
+      "notPermitted": {
+        "burn": "現在、トークンをバーンすることができません。",
+        "burn-title": "トークンをバーン",
+        "cancel-leasing": "現在、リースの開始機能は利用することができません。",
+        "cancel-leasing-title": "リースをキャンセル",
+        "data": "現在、データトランザクションを利用することができません。",
+        "data-title": "データトランザクション",
+        "reissue-title": "トークンの追加発行",
+        "set-script": "現在、スクリプトトランザクションは利用することができません。",
+        "sponsorship-start": "現在、スポンサーシップはできません。",
+        "sponsorship-start-title": "スポンサーシップを変更"
+      },
+      "orderSuccess": "注文が作成されました！",
+      "redirect": "あなたは {{referrer}} へリダイレクトされます",
+      "send": {
+        "errors": {
+          "balance": {
+            "invalid": "資金が不足しています"
+          },
+          "recipient": {
+            "invalid": "受信者のアドレスが正しくありません"
+          }
+        }
+      },
+      "sign": "署名",
+      "success": "トランザクションを処理中です！",
+      "wavesKeeperUnconfirmed": {
+        "description": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
+        "header": "あなたはWaves Keeper上でリクエストを承認しませんでした"
+      }
+    },
+    "copyError": "コピーすることができません。ブラウザが古い可能性があります",
+    "copySuccess": "データがコピーされました",
+    "directives": {
+      "anyTransaction": {
+        "copy": "コピー",
+        "textAreaTitle": "TX JSON"
+      },
+      "scriptForm": {
+        "placeholder": {
+          "change": "新しいスクリプトを入力するか、空欄にして現在のスクリプトをキャンセルしてください",
+          "create": "新しいスクリプトを入力するか、空欄にして現在のスクリプトをキャンセルしてください"
+        },
+        "textAreaTitle": "スクリプト"
+      },
+      "setAssetScriptForm": {
+        "ok": "次へ"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "cancel": "キャンセル",
+          "errorDescription": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+          "errorHeader": "あなたはWaves Keeper上でリクエストを承認しませんでした",
+          "sign": "次へ",
+          "waiting": "Waves Keeperからの承認を待っています..."
+        },
+        "confirmRequestLedger": {
+          "cancel": "キャンセル",
+          "errorDescription": "再度お試し下さい。問題が継続する場合、 [こちらの記事](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)をご参照下さい。",
+          "errorHeader": "あなたはLedgerデバイスでリクエストを承認しませんでした",
+          "sign": "署名をリトライ",
+          "waiting": "Ledger デバイスからの承認を待っています..."
+        },
+        "txId": "TXID"
+      },
+      "transactionExport": {
+        "linkTitle": "署名用リンクを共有",
+        "or": "または",
+        "qrZoomBtn": "クリックしてズームイン/アウトする",
+        "scanQrCode": "QRコードをスキャン"
+      }
+    },
+    "emptyBlocks": {
+      "title": "表示するデータがありません"
+    },
+    "errorBlocks": {
+      "title": "何かがおかしいようです"
+    },
+    "importSuccess": "Account Importing from the Keystore File was successful",
+    "modal": {
+      "assetInfo": {
+        "gateway_ui": "ゲートウェイ"
+      },
+      "sign": {
+        "signByLedger": "Ledgerデバイスからの承認を待っています"
+      },
+      "token": {
+        "warning": {
+          "header": "あなたは次の内容に同意します:",
+          "text": "{div.line}[I) トークンを詐欺などの目的で利用しないこと;]\r\n {div.line}[II) 利用者を欺くことを目的として、既に存在する有名企業や暗号通貨の名前の一部もしくは全部を使用しないこと;]\r\n {div.line}[III) 利用者を欺くことを目的に地方自治体や自治州などの名前を用いないこと;]\r\n {div.line}[IV) 資産数量によってWavesDEX上のトランザクションを制限するスクリプトをスマートアセットにセットしないこと;]\r\n {div.line}[V) スマートアセットの概要欄に、実際に設定されたスクリプトに対応しないトークンの利用ルールに関する虚偽の説明をしないこと;]",
+          "textWarning": "これらの点が守られない場合には、あなたのトークンが「注意」と分類される可能性があり、その場合にあなたのトークンはIDによる検索のみで発見されます"
+        }
+      }
+    },
+    "password": {
+      "btn": {
+        "confirm": "Confirm"
+      },
+      "minLength": "最低 {{minLength}} 文字",
+      "name": "アカウント名",
+      "nameExists": "この名前はすでに使用されています",
+      "newPass": "New password",
+      "old": "Old password",
+      "oldWrong": "Old password is wrong",
+      "repeat": "パスワードを再入力して確認",
+      "secure": "パスワードを強化",
+      "title": "アカウントを新しいパスワードで保護",
+      "warn": "簡単すぎます。数字やシンボルを追加して下さい"
+    },
+    "qrCodeRead": {
+      "closeRead": "キャンセル"
+    },
+    "recipient": "受信者",
+    "transaction": {
+      "actions": {
+        "cancelLeasing": "リースをキャンセル",
+        "copyTxData": "すべてのトランザクションデータをコピー",
+        "copyTxId": "トランザクションIDをコピー",
+        "showTx": "トランザクション情報"
+      },
+      "amounts": {
+        "burn": "–{{amount}} {{name}}",
+        "cancel-leasing": "{{amount}} {{name}}",
+        "circular": "{{amount}} {{name}}",
+        "exchange-buy": "{{sign}}{{amount}} {{name}}",
+        "exchange-sell": "{{sign}}{{amount}} {{name}}",
+        "issue": "{{amount}} {{name}}",
+        "lease-in": "{{amount}} {{name}}",
+        "lease-out": "{{amount}} {{name}}",
+        "mass-receive": "+{{amount}} {{name}}",
+        "mass-send": "–{{amount}} {{name}}",
+        "perTransaction": "トランザクションあたりの数量",
+        "receive": "+{{amount}} {{name}}",
+        "reissue": "+{{amount}} {{name}}",
+        "script-invocation": "–{{amount}} {{name}}",
+        "send": "–{{amount}} {{name}}",
+        "set-script": "スクリプトトランザクションをセット",
+        "set-script-cancel": "スクリプトトランザクションをキャンセル",
+        "sponsorship-change": "スポンサーシップを変更",
+        "sponsorship-fee": "{{sign}}{{amount}} {{name}}",
+        "sponsorship-start": "スポンサーシップをセット",
+        "sponsorship-stop": "スポンサーシップを無効化"
+      },
+      "confirmed": {
+        "false": "未承認",
+        "true": "完了"
+      },
+      "headers": {
+        "activeLeasing": "有効",
+        "burn": "{{name}} トークンをバーン",
+        "cancel-leasing": "リースをキャンセル",
+        "canceled": "キャンセル済",
+        "circular": "セルフトランスファー {{name}}",
+        "create-alias": "作成済みのエイリアス",
+        "data": "データトランザクション",
+        "data-vote": "{{assetName}}の投票しました",
+        "exchange-amount": "{{amountAsset}}/{{priceAsset}}",
+        "exchange-buy": "取引所 購入:",
+        "exchange-sell": "取引所 売却:",
+        "issue": "{{name}} トークンを発行",
+        "lease-in": "受信したリース",
+        "lease-out": "開始されたリース",
+        "mass-receive": "受信 {{name}}",
+        "mass-send": "送信 {{name}}",
+        "receive": "受信 {{name}}",
+        "reissue": "{{name}} トークンを追加発行",
+        "script-invocation": "スクリプトを呼出し",
+        "send": "送信 {{name}}",
+        "set-asset-script": "アセットスクリプトトランザクションをセット",
+        "set-script": "スクリプトトランザクションをセット",
+        "set-script-cancel": "スクリプトトランザクションをキャンセル",
+        "spam": "注意",
+        "sponsorship-fee": "受信 {{name}}",
+        "sponsorship-start": "{{name}} スポンサーシップを設定",
+        "sponsorship-stop": "{{name}} のスポンサーシップを無効化",
+        "suspicious": "注意",
+        "unknown": "不明なトランザクション"
+      },
+      "modals": {
+        "assetId": "アセットID",
+        "attachment": "添付メッセージ",
+        "cancelTx": "リーストランザクション",
+        "confirmations": "承認数",
+        "copyCode": "コードをコピー",
+        "data": "データ",
+        "dataKey": "Key",
+        "dataType": "Type",
+        "dataValue": "Value",
+        "description": "概要",
+        "exchange": {
+          "buy": "購入",
+          "buyMatcherFee": "マッチャーフィーを購入",
+          "exchangeType": "注文タイプ",
+          "matcherFee": "マッチャーフィー",
+          "pair": "ペア",
+          "sell": "売却"
+        },
+        "fee": "手数料",
+        "from": "受信元",
+        "function": "関数",
+        "functionCall": "関数呼出し",
+        "height": "ブロック",
+        "hide": "非表示",
+        "hideAll": "すべて非表示",
+        "leasingStatus": "ステータス",
+        "massSend": {
+          "showAll": {
+            "false": "すべて表示 ({{count}})",
+            "true": "最初の3トランザクションを表示"
+          },
+          "totalAmount": "合計数量"
+        },
+        "numberOfRecipients": "受信者数",
+        "orderType": "注文タイプ",
+        "pair": "ペア",
+        "payment": "支払",
+        "price": "{{name}} 価格",
+        "script": "スクリプト",
+        "scriptAddress": "スクリプトアドレス",
+        "seeAll": "すべて表示",
+        "setAssetScript": {
+          "showScript-false": "表示",
+          "showScript-true": "非表示にする"
+        },
+        "show": "表示",
+        "showAll": "すべて表示 ({{count}})",
+        "showFirstTree": "最初の3つのキーを表示",
+        "status": "ステータス",
+        "timestamp": "タイムスタンプ",
+        "to": "送信先",
+        "toBeReissued": "追加発行数量",
+        "toRemainOnBalance": "追加発行後残高",
+        "totalAfterBurning": "合計",
+        "totalAfterReissue": "追加発行後の総トークン数",
+        "txId": "TXID",
+        "type": "タイプ",
+        "viewTransactionKey": "トランザクション",
+        "viewTransactionValue": "トランザクションを表示"
+      },
+      "notifications": {
+        "closed": "リースは既にキャンセルされました",
+        "closedSuccess": "リースのキャンセルが完了"
+      },
+      "reissuable": {
+        "false": "追加発行不可",
+        "true": "追加発行可"
+      },
+      "set-asset-script": "スクリプトをアップデート",
+      "subheaders": {
+        "burn": "{{time}}",
+        "cancel-leasing": "{{time}}{span.locale-address}[, トランザクション {{transactionId}}]",
+        "circular": "{{time}}{span.locale-address}[,アドレス {{address}} に]",
+        "create-alias": "{{time}}, {{alias}}",
+        "data": "{{time}}",
+        "exchange-buy": "{{time}}",
+        "exchange-sell": "{{time}}",
+        "issue": "{{time}}",
+        "lease-in": "{{time}}{span.locale-address}[,アドレス {{address}} から]",
+        "lease-out": "{{time}}{span.locale-address}[,アドレス {{address}} へ]",
+        "mass-receive": "{{time}}{span.locale-address}[,アドレス {{address}} から]",
+        "mass-send": "{{time}}",
+        "receive": "{{time}}{span.locale-address}[,アドレス {{address}} から]",
+        "reissue": "{{time}}",
+        "script-invocation": "{{time}}{span.locale-address}[,アドレス {{address}} へ]",
+        "send": "{{time}}{span.locale-address}[,アドレス {{address}} へ]",
+        "set-asset-script": "{{time}}, アセット {{name}} に",
+        "sponsorship-fee": "{{time}}  アドレス {{address}} から",
+        "unknown": "{{time}}"
+      }
+    },
+    "transactionList": {
+      "noTransactionsDescription": "表示するトランザクションがありません",
+      "noTransactionsTitle": "表示するデータがありません"
+    },
+    "transactions": {
+      "script": {
+        "txJson": "スクリプトをアップデート"
+      }
+    },
+    "whitespace": "&nbsp;"
+  },
+  "app.unavailable": {
+    "message": "このサイトはメンテナンス中で、近日中に再開される予定です。ご迷惑をお掛けいたしますが、何卒ご協力のほどよろしくお願いいたします。",
+    "title": "再開までしばらくお待ちください。"
+  },
+  "app.utils": {
+    "confirmTransaction": {
+      "signLedger": "Ledgerデバイスからの承認を待っています"
+    },
+    "directives": {
+      "anyTransaction": {
+        "calculatingFee": "トランザクション手数料 : 計算の為に項目を埋めてください",
+        "errors": {
+          "invalidScript": "構文エラー",
+          "required": "この項目は必須です！"
+        },
+        "fee": "手数料 {{fee, money-currency}}",
+        "ok": "次へ",
+        "textAreaTitle": "TX JSON",
+        "warning": {
+          "body": "あなたが十分な経験を有しない場合、JSONの利用は推奨しません。エラーが生じた場合、資金の消失に繋がる可能性があります。",
+          "title": "警告 : アクションがアカウントへのアクセスの消失に繋がる可能性があります"
+        }
+      },
+      "filter": {
+        "helpIcon": {
+          "assetId": "アセット ID",
+          "description": "アセットの検索についての情報は [コチラ](https://docs.wavesplatform.com/en/waves-client/)からご覧頂けます",
+          "header": "以下のクエリーで検索が可能です:",
+          "name": "名前",
+          "ticker": "ティッカー"
+        }
+      },
+      "scriptForm": {
+        "acceptAndContinue": "同意して続ける",
+        "changePlaceholder": "新しいスクリプトを入力するか、空欄にして現在のスクリプトをキャンセルしてください",
+        "createPlaceholder": "ここにスクリプトを入力して下さい",
+        "errors": {
+          "fee": "あなたは必要な手数料を支払う資金を保有していません。 {{fee, money-currency}} をトランザクション手数料として支払う必要があります。",
+          "invalidScript": "構文エラー",
+          "required": "この項目は必須です"
+        },
+        "fee": "手数料 {{fee, money-currency}}",
+        "ideLink": "スクリプトの開発は [Waves Ride IDE](https://waves-ide.com//)で可能です",
+        "ok": "署名",
+        "textAreaTitle": "Base64 スクリプト",
+        "warning": {
+          "body": "あなたが十分な経験を有しない場合、スクリプトの利用は推奨しません。エラーが生じた場合、アカウントへのアクセスを永久に失う可能性があります。",
+          "title": "警告 : アクションがアカウントへのアクセスの消失に繋がる可能性があります"
+        },
+        "warningDescription": "あなたが十分な経験を有しない場合、スクリプトの利用は推奨しません。エラーが生じた場合、アカウントへのアクセスを永久に失う可能性があります。",
+        "warningHeader": "アクションがアカウントへのアクセスの消失に繋がる可能性があります"
+      },
+      "setAssetScriptForm": {
+        "fee": "手数料 {{fee, money-currency}}"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "sign_utils": "リトライ"
+        }
+      }
+    },
+    "inputs": {
+      "errors": {
+        "gtGatewayMin": "{{min}} {{assetName}} 以下の数量を送信することはできません"
+      }
+    },
+    "keeperForm": {
+      "address": "アカウントアドレス",
+      "addressSaved": "保存されたアドレス",
+      "back": "戻る",
+      "error": {
+        "hasLockedKeeperDescription": "Waves Keeperの利用を続けるには、過去に作成したパスワードを入力するか、新しいパスワードを作成してください。",
+        "hasLockedKeeperHeader": "Waves Keeperからパスワードを入力してください",
+        "hasNoUsersDescription": "作成済みのアカウントにログインするか、新しいアカウントを作成し、再度お試しください。",
+        "hasNoUsersHeader": "あなたは有効なアカウントを持っていません",
+        "install": "インストール",
+        "networkDescription": "あなたが選択したアカウントは間違ったネットワークに接続しています。ネットワークを変更して再度お試しください。",
+        "networkHeader": "ネットワークを変更",
+        "notInstalledDescription": "インストール後、アカウントを作成し、サインイン後にページを再読み込みして続けてください",
+        "notInstalledHeader": "Waves Keeperを持っていないですか？",
+        "refresh": "リトライ"
+      },
+      "heading": "Waves Keeperからアカウントをインポート",
+      "loading": "Waves Keeperからアカウントをインポート",
+      "login": "次へ",
+      "name": "アカウント名",
+      "nameExists": "その名前はすでに使用されています",
+      "or": "または",
+      "retry": "再度お試し下さい",
+      "saveUserData": "ログイン状態を保持"
+    },
+    "LedgerClient_utils": "Ledgerデバイス",
+    "LedgerClientDescription": "Waves Keeperからアカウントをインポート",
+    "modal": {
+      "acceptNewTerms": {
+        "title": "利用規約"
+      },
+      "account": {
+        "address": "あなたのアドレス",
+        "aliases": "エイリアス",
+        "aliasesWarning": "現在、エイリアス機能は利用できません",
+        "cancel": "アカウントを作成",
+        "create": "新規作成",
+        "createAliasNotPermitted": "現在、エイリアスは作成できません",
+        "fee": "トランザクション手数料 {{price}} {{name}}",
+        "hasAlias": "このエイリアスは既に利用されています",
+        "hasScript": "マルチシグを利用中はエイリアスは作成できません",
+        "invalidSymbols": "不正な文字が使われています",
+        "maxLength": "エイリアスは30文字以下でなければいけません",
+        "message": "アカウント情報を見るには、サインインするか、アカウントを作成してください",
+        "minLength": "エイリアスは4文字以上でなければいけません",
+        "noMoney": "資金が不足しています",
+        "notifications": {
+          "aliasCreated": "エイリアスが作成されました"
+        },
+        "ok": "サインイン",
+        "placeholder": "あなたのアドレスに付けるシンボリックな名前",
+        "title": "アカウント {{name}}",
+        "title_default_name": "情報"
+      },
+      "accountInfo": {
+        "alias": {
+          "helpIcon": {
+            "row1": "エイリアスについて",
+            "row2": "エイリアスはあなたのアドレスのニックネームです。アドレスの代わりにエイリアスを用いてトランザクションを作成することができます。",
+            "row3": "あなたのエイリアスは4文字以上30文字以下でなければいけません。小文字のローマ字、数字、シンボル（@, -, _）とドットのみ使用可能です。"
+          }
+        }
+      },
+      "assetInfo": {
+        "available": "使用可能",
+        "balance": "残高",
+        "contest": "コンテスト",
+        "date": "発行日",
+        "decimals": "小数点",
+        "description": "概要",
+        "details": "詳細",
+        "email": "メール",
+        "gateway": "ゲートウェイ",
+        "gatewaySoon": "ゲートウェイは準備中です",
+        "identifier": "ID",
+        "inOrders": "注文中数量",
+        "issuer": "発行者",
+        "leased": "リース済",
+        "name": "名前",
+        "pinned": "ピンされた",
+        "qualified": "認証済",
+        "quantity": "合計数量",
+        "rating": {
+          "canVoteTip": "クリックしてトークンを評価",
+          "tooltipLink": "詳細を表示",
+          "tooltipNeedWAVES": "0.001 DCC",
+          "tooltipNeedCRC": "トークンを評価するには、最低1 CRCが必要です。",
+          "tooltipText": "評価に際してトークンは転送されません。投票には規定の残高のみが必要です。スコアは24時間後に反映されます。その間は残高を維持してください。手数料は0.001WAVESです。",
+          "tooltipTitle": "トークンを評価するには、ウォレットに最低1 CRCが必要です。"
+        },
+        "reissue": {
+          "no": "追加発行不可",
+          "yes": "追加発行可"
+        },
+        "site": "サイト",
+        "sponsorshipFee": "スポンサードアセット手数料",
+        "suspicious": "注意",
+        "ticker": "ティッカー",
+        "title": "アセット情報",
+        "tokenomica": "Tokenomica",
+        "total": "合計",
+        "transactions": "トランザクション",
+        "type": "タイプ",
+        "unpinned": "ピン",
+        "wsocRef": "WSOC"
+      },
+      "backup": {
+        "clearSeed": "{span.clear}[クリア] 後、再度タップしてください",
+        "title": {
+          "title_0": "バックアップフレーズを保存",
+          "title_1": "バックアップを確定",
+          "title_2": "成功"
+        }
+      },
+      "confirm-correct-order": "あなたの注文価格 {price, money-currency} は市場価格よりも5%以上高いです",
+      "confirmLogout": {
+        "goBack": "戻る",
+        "heading": "あなたは離脱しようとしています",
+        "logout": "ログアウト",
+        "text": "他人があなたの許可なくあなたの資金にアクセスするのを防ぐためには、まずあなたのアカウントからログアウトしてください。"
+      },
+      "confirmOrder": {
+        "cancel": "キャンセル",
+        "continue": "注文する",
+        "description": "次へ進みますか？",
+        "headerBuy": "あなたの注文価格は {{orderLimit}}% 市場価格よりも高いです",
+        "headerSell": "あなたの注文価格は {{orderLimit}}% 市場価格よりも安いです"
+      },
+      "createOrder": {
+        "cancel": "アカウントを作成",
+        "message": "トレードを開始するには、サインインまたはアカウントを作成してください",
+        "ok": "サインイン"
+      },
+      "deleteAccount": {
+        "cancel": "Cancel",
+        "delete": "Remove",
+        "description": "{div}[Removing an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "header": "Remove account"
+      },
+      "deposit": {
+        "coinomatBCH": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはBCHの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをBitcoin Cashクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはBCHのみ送信してください"
+        },
+        "coinomatBSV": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはBSVの送信を進め、完了するとあなたのWavesアカウントにトークンを反映します。",
+          "helpDescrTitle": "このアドレスをBitcoin  Satoshi Visionクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはBSVのみ送信してください"
+        },
+        "coinomatBTC": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはBTCの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをBitcoinクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の {{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはBTCのみ送信してください"
+        },
+        "coinomatDASH": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはBSVの送信を進め、あなたのWavesアカウントにトークンが反映します。",
+          "helpDescrTitle": "このアドレスをDASHクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはDASHのみ送信してください"
+        },
+        "coinomatETH": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはETHの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをEthereumクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "あなたのウォレットと取引所がスマートコントラクトを用いて、ETHを引出していないか、確認してください。私たちはそのような形式のトランザクションを受け入れておらず、返金することもできません。あなたはあなたの資金を失います。",
+          "warningTitle": "ETHをスマートコントラクトからデポジットしないでください。また、ERC20トークンもデポジットしないでください。"
+        },
+        "coinomatLTC": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはLTCの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをLitecoinクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはLTCのみ送信してください"
+        },
+        "coinomatXMR": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはXMRの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをMoneroクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "{div}[支払IDは必要ありません。]このアドレスに他の通貨を送金した場合、預金が失われる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはXMRのみ送信してください"
+        },
+        "coinomatZEC": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはZECの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをZcashクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}} 以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはZcashのみ送信してください"
+        },
+        "copyAndShare": "アドレスをコピーして共有",
+        "currency": "通貨",
+        "or": "または",
+        "pleaseNote": "ゲートウェイはこの作業のために如何なる手数料も徴収しません。",
+        "scanQrCode": "QRコードをスキャン",
+        "title": "デポジット {{assetName}}",
+        "wavesGatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
+        },
+        "wavesGatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+          "helpDescrTitle": "このアドレスをBTCクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の {{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジットは {{minAmount, BigNumber}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはBTCのみ送信してください"
+        },
+        "wavesGatewayERGO": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはERGOの送信を進め、完了するとあなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをERGOクライアント、またはウォレットに入力してください",
+          "warningMinAmountText": "{{minAmount, BigNumber}}以下の{{assetTicker}}を送金した場合、資産を紛失します。",
+          "warningMinAmountTitle": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です",
+          "warningText": "このアドレスに他の通貨を送信した場合、資産の消失につながる可能性があります。",
+          "warningTitle": "このデポジットアドレスにはERGOのみ送信してください"
+        },
+        "wavesGatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ETH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "あなたのウォレットと取引所がスマートコントラクトを用いて、ETHを引出していないか、確認してください。私たちはそのような形式のトランザクションを受け入れておらず、返金することもできません。あなたはあなたの資金を失います。",
+          "warningTitle": "ETHをスマートコントラクトからデポジットしないでください。また、ERC20トークンもデポジットしないでください。"
+        },
+        "wavesGatewayUSDT": {
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
+          "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
+        },
+        "wavesGatewayVST": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはWESTの送信を進め、あなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをWESTクライアント、またはウォレットに入力してください",
+          "warningMinAmountTitle": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です"
+        },
+        "wavesGatewayWEST": {
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイはWESTの送信を進め、あなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrText_copy": "トランザクションが承認されると、ゲートウェイはWESTの送信を進め、あなたのWavesアカウントにトークンが反映されます。",
+          "helpDescrTitle": "このアドレスをWESTクライアント、またはウォレットに入力してください",
+          "helpDescrTitle_copy": "このアドレスをWESTクライアント、またはウォレットに入力してください",
+          "warningMinAmountTitle": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です"
+        },
+        "wavesGatewayWEST:warningMinAmountTitle_copy": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です"
+      },
+      "dexScriptedPair": {
+        "body": "スマートアセットはトークンの流通に対して条件を設定できるスクリプトを含むアセットです。{div}[もし、あなたが十分な知識を有していない場合、スマートアセットを利用することは推奨しません。トランザクションを作成する前に、アセットとスクリプトに関する情報を慎重に読んでください。]",
+        "heading": "スマートアセット機能を含むペアでの注文実行"
+      },
+      "disabledFeature": {
+        "anyTransaction": "現在、JSONによるトランザクションは利用できません。",
+        "lease": "現在、リースを開始することができません"
+      },
+      "disabledFeatures": {
+        "default": "申し訳ございません。この機能は現在利用できません。",
+        "massTransfer": "現在、マストランスファーは利用できません。",
+        "transfer": "現在、暗号通貨の送信はできません。"
+      },
+      "gatewaySign": {
+        "cancel": "キャンセル",
+        "continue": "許可",
+        "description": "{{name}} はあなたのWaves アドレスにアクセスが、SEEDや秘密鍵を知ることはありません。あなたの秘密のフレーズ（SEED）をあなたがリダイレクトされるウェブサイトで、決して入力しないでください。",
+        "descriptionDesktop1": "このリンクはあなたが既定としているブラウザで開かれます。もし、別のウェブブラウザーで開きたい場合は、",
+        "descriptionDesktop2": "コピー",
+        "descriptionDesktop3": "そして、URLバーにリンクを貼り付けてください。",
+        "error": {
+          "button": "キャンセル",
+          "headline": "何かがおかしいようです",
+          "title": "エラー"
+        },
+        "headline": "{span.link}[{{url}}] があなたのWaves アドレスにアクセスを要求しています",
+        "retrySign": "リトライ",
+        "title": "Wavesにサインイン",
+        "txHash": "TXHASH",
+        "warning": "あなたの秘密のフレーズ（SEED）をリダイレクトされるウェブサイトで決して入力しないでください。"
+      },
+      "import": {
+        "errorBeta": "あなたのアカウントをWaves Liteクライアントから読み込めませんでした。Waves Betaクライアントからインポートしてください。",
+        "errorHeader": "アカウントが見つかりませんでした",
+        "errorLite": "あなたのアカウントをWaves Liteクライアントから読み込めませんでした。Waves Betaクライアントからインポートしてください。",
+        "errorUnable": "あなたのアカウントを読み込めませんでした。アカウントのバックアップSEEDから復元してください。",
+        "fromBetaButton": "ベータクライアントからインポート",
+        "fromLiteButton": "ライトクライアントからインポート",
+        "helpIcon": {
+          "description": "正しい動作のため、私たちはポップアップを有効にすることを推奨します。それぞれのブラウザにおけるガイドは:  [Chrome](https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en)、 [Safari](https://discussions.apple.com/thread/4271925)、 [Firefox](https://support.mozilla.org/en-US/kb/pop-blocker-settings-exceptions-troubleshooting)、[Opera](https://help.opera.com/en/presto/control-pages/)",
+          "title": "いくつかのブラウザはデフォルトでポップアップをブロックします"
+        },
+        "importButton": "インポート",
+        "importCancel": "キャンセル",
+        "iUnderstandButton": "理解しました",
+        "selectAccountDescription": "ブラウザでポップアップを許可してください",
+        "selectAccountToImport": "アカウントのインポート元を選択する",
+        "selectAccountToImportFrom": "アカウントのインポート元を選択する",
+        "selectButton": "選択",
+        "wavesBetaClient": "Waves Beta クライアント",
+        "wavesBetaClientDescription": "Wavesのベータクライアントからアカウントをインポート",
+        "wavesLiteClient": "Waves Lite クライアント",
+        "wavesLiteClientDescription": "Wavesのライトクライアントからアカウントをインポート"
+      },
+      "matcherChoice": {
+        "customMatcher": "Custom matcher address",
+        "matcher": "Matcher",
+        "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
+        "terms": "Terms",
+        "title": "Choose matcher",
+        "wavesTerms": "I am over 18 years old, and I agree to the Waves Terms of Use and Waves Privacy Policy."
+      },
+      "open-main": {
+        "dex": {
+          "cancel": "アカウントを作成",
+          "message": "トレードを開始するには、サインインまたはアカウントを作成してください",
+          "ok": "サインイン"
+        },
+        "tokens": {
+          "cancel": "アカウントを作成",
+          "message": "トークンを発行するには、サインインまたはアカウントを作成してください",
+          "ok": "サインイン"
+        },
+        "wallet": {
+          "assets": {
+            "cancel": "アカウントを作成",
+            "message": "あなたのウォレットを開くには、サインインまたはアカウントを作成してください",
+            "ok": "サインイン"
+          },
+          "cancel": "アカウントを作成",
+          "leasing": {
+            "cancel": "アカウントを作成",
+            "message": "あなたのウォレットを開くには、サインインまたはアカウントを作成してください",
+            "ok": "サインイン"
+          },
+          "message": "あなたのウォレットを開くには、サインインまたはアカウントを作成してください",
+          "ok": "サインイン",
+          "portfolio": {
+            "cancel": "アカウントを作成",
+            "message": "あなたのウォレットを開くには、サインインまたはアカウントを作成してください",
+            "ok": "サインイン"
+          },
+          "transactions": {
+            "cancel": "アカウントを作成",
+            "message": "あなたのウォレットを開くには、サインインまたはアカウントを作成してください",
+            "ok": "サインイン"
+          }
+        }
+      },
+      "pairing": {
+        "downloadAppDescription": "Wavesのモバイルアプリケーションをダウンロードする:",
+        "scanCodeDescription": "以下のコードをiPhoneまたはAndroidデバイスでスキャンしてあなたのアカウントをペアリングしてください。"
+      },
+      "pinAsset": {
+        "cancel": "キャンセル",
+        "nothing": "何も選択されていません",
+        "placeholder": "アセット名かIDを入力してください",
+        "submit": "ピン",
+        "title": "ピンしたいアセットを選択してください"
+      },
+      "qr": {
+        "copyAndShare": "アドレスをコピーして共有",
+        "or": "または",
+        "scanQrCode": "QRコードをスキャン",
+        "title": "あなたのアドレスを共有",
+        "warningText": "このアドレスに他のデジタルアセットを送信した場合、資産の消失につながる可能性があります。",
+        "warningTitle": "このアドレスにはWavesかWavesトークンのみ送信してください"
+      },
+      "receive": {
+        "accountStatus": "アカウントステータス",
+        "addressOrAlias": "アドレス / エイリアス",
+        "amount": "数量",
+        "amountYouPay": "支払数量",
+        "asset": "アセット",
+        "bank": {
+          "title": "銀行"
+        },
+        "bankSuccessHeader": "あなたは認証のためにIDNow.euにリダイレクトされました。",
+        "bankSuccessText": "認証後にあなたは案内が記載されたメールを受信します",
+        "bankVerifiedPlateDescription": "あなたの資金を引き出す前に、引き出し手順を確認する事を推奨します。[手順](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) / [制限事項とトランザクション手数料](https://coinomat.com/limits.php)",
+        "bankVerifiedPlateHeader": "あなたの資金は銀行口座に引き出し可能になりました。",
+        "card": {
+          "continue": "次へ",
+          "title": "カード"
+        },
+        "cardSuccessHeader": "あなたはIndacoin.comにリダイレクトされました",
+        "cardSuccessText": "支払完了後、あなたの残高がアップデートされます",
+        "coinomat": {
+          "serverError": "現在、Coinomatのサービスはご利用いただけません。再度お試しください。",
+          "tryAgain": "再度お試し下さい"
+        },
+        "cryptocurrency": {
+          "title": "暗号通貨"
+        },
+        "error": {
+          "cardAmount": {
+            "gte": "デポジット可能な最小数量は {{gte}} {{currency}} です",
+            "lte": "デポジット可能な最大数量は {{lte}} {{currency}} です",
+            "precision": "入力された数字が不正です。小数点以下は最大で2桁まで入力可能です。"
+          }
+        },
+        "errors": {
+          "required": "この項目は必須です"
+        },
+        "gatewayError": "現在、一時的にゲートウェイサービスがご利用いただけません。再度お試しください。",
+        "invoice": {
+          "title": "請求書"
+        },
+        "ledger": {
+          "cancel": "キャンセル",
+          "retry": "リトライ"
+        },
+        "maximumIs": "最大:",
+        "minimumIs": "最小:",
+        "providedByCoinomat": {
+          "descriprion": "{div}[このサービスはCoinomat 社 (Coinomat)により提供されています。Waves Platform AGは、Coinomatの行動に対して一切の責任を負うものではなく、CoinmatとWaves Platformのユーザー間で生じた関係に関与しません。{div}[あなたは[Coinomatの利用規則と取引行為](https://coinomat.com/terms.php)に同意したものとみなされます。本利用条件に同意しない場合は、Coinomatのサービスの利用をお控えください。]",
+          "header": "このサービスはCoinomat社の提供です。",
+          "termsReadedInputLabel": "私はCoinomat社の [利用及び取引執行規約](https://coinomat.com/terms.php)および、[制限事項](https://coinomat.com/limits.php)、 [プライバシーポリシー](https://coinomat.com/privacy.php) に同意します。",
+          "warning": "認証、送金処理に問題が生じた場合、または同意を取消す場合、Coinomatのサポートチームに連絡してください。 — [support@coinomat.com](mailto:support@coinomat.com)"
+        },
+        "receive": "デポジット",
+        "serverAddressError": "ゲートウェイアドレスが不正です",
+        "serverError": "現在、一時的にCoinomatのサービスはご利用いただけません。再度お試しください。",
+        "serverWrongAddress": "アドレスが不正です",
+        "shareInvoiceLink": "請求書リンクを共有",
+        "verified": "承認済",
+        "vostok": {
+          "serverError": "現在、一時的に、WESTのサービスがご利用いただけません。再度お試しください。"
+        },
+        "wavesEnterprise": {
+          "serverError_copy": "現在、一時的に、WESTのサービスがご利用いただけません。再度お試しください。"
+        },
+        "wtry": {
+          "info": "送金処理に問題が生じた場合、Digiliraのサポートチームに連絡してください。— [support@digilira.com](mailto:support@digilira.com)"
+        },
+        "wtryPlate1Header": "トルコの市民権を持っている人のみトルコリラのゲートウェイを利用可能です。",
+        "wtryPlate1Text": "デポジットのために、あなたは [digilira.com](https://digilira.com)にリダイレクトされます。",
+        "wtrySuccessHeader": "あなたはDigilira.comにリダイレクトされました。",
+        "youWillGet": "あなたはおおよそ次の数量を入手します"
+      },
+      "removeAccount": {
+        "cancel": "キャンセル",
+        "heading": "アカウントを除去",
+        "remove": "除去",
+        "text": "{div}[あなたがバックアップフレーズ（SEED）を保存していない場合、アカウントの削除が復元不可能な損失につながります。]\r\n {div}[除去ボタンを押してアカウントの除去に進んでください。または、キャンセルを押して前の画面に戻ってください。]",
+        "warning": "あなたはまだシードを保存していません",
+        "warningPlural": "You did not save your Seed phrases"
+      },
+      "removeKeeperAccount": {
+        "heading": "Waves Keeperアカウントを除去",
+        "text": "これは保存済みのアカウントへの経路を除去するのみで、Waves Keeperからアカウントを削除するわけではありません。"
+      },
+      "removeLedgerAccount": {
+        "heading": "Ledgerアカウントを除去",
+        "text": "これはLedgerに保存済みのアカウントへの経路を除去するのみで、Ledgerからアカウントを削除するわけではありません。"
+      },
+      "removePrivateKeyAccount": {
+        "text": "{div}[あなたが秘密鍵を保存していない場合、アカウントの除去が復元不可能な損失につながる可能性があります。]\n {div}[除去ボタンを押してアカウントの除去に進んでください。または、キャンセルを押して前の画面に戻ってください。]"
+      },
+      "script": {
+        "anyTx": "JSON",
+        "setScript": "スクリプトトランザクション"
+      },
+      "send": {
+        "amount": "数量",
+        "attachmentLength": "概要が長すぎます",
+        "bankAccount": "銀行口座",
+        "coinomat": {
+          "feeExplanation": "私たちは {{assetName}} アドレスを検知しました。Coinomat ゲートウェイを通じてそのアドレスに送金します。最小数量は {{min, BigNumber}} {{assetTicker}}、最大数量は {{max, BigNumber}} {{assetTicker}}です。",
+          "feeTitle": "Gateway 手数料は {{fee, BigNumber}} {{assetTicker}} です"
+        },
+        "coinomatLimits": "最低 $100 USD/EUR, 最高 $50,000 USD/EUR",
+        "coinomatWarningHeader": "Coinomatゲートウェイを通じてあなたの資金を送金します。",
+        "coinomatWarningText": "引出を行う前に、Coinomatの[制限事項とトランザクション手数料](https://coinomat.com/limits.php)を確認してください。",
+        "compare": {
+          "description": "あなたは {{amount}} {{currency}} (${{mirror}})を送信しました",
+          "details": "詳細を表示",
+          "title": "トランザクションは処理中です！"
+        },
+        "confirm": {
+          "back": "戻る",
+          "confirm": "承認",
+          "from": "受信元",
+          "title": "トランザクション詳細",
+          "to": "送信先",
+          "total": "合計"
+        },
+        "currency": "アセット",
+        "description": "概要",
+        "descriptionPlaceholder": "任意のメッセージを書いてください",
+        "errors": {
+          "address": "アドレスが不正です",
+          "allAddressesInvalid": "すべてのアドレスが有効ではありません",
+          "button": "キャンセル",
+          "headline": "何かがおかしいようです",
+          "invalidChars": "この項目は数字のみ含むことができます",
+          "max": "資金が不足しています",
+          "maxCoinomat": "{{money, money-currency}} 以上の数量を送信することはできません",
+          "paymentIdLength": "MoneroペイメントIDは64文字の16進数文字でなければいけません",
+          "paymentIdPattern": "16進文字列は0-9、A-Z (または a-z)から構成されます",
+          "precision": "入力された数字が不正です。小数点以下は最大で {{precision}} 桁まで入力可能です。",
+          "required": "この項目は必須です",
+          "title": "エラー"
+        },
+        "fee": "トランザクション手数料 {{fee, money-currency}}",
+        "gateway": {
+          "feeExplanation": "私たちは {{assetName}} アドレスを検知しました。ゲートウェイを通じてそのアドレスに送金します。最小数量は {{min, BigNumber}} {{assetTicker}}、最大数量は {{max, BigNumber}} {{assetTicker}}です。"
+        },
+        "gatewayTerms": {
+          "accept": "Accept and Continue",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.wavesplatform.com/) and [Conduction of Transactions](https://dex.wavesplatform.com/). If you do not agree to these terms, then do not use this Gateway service.",
+          "title": "Gateway service agreement"
+        },
+        "icoWarning": "{{assetName}} をICOに向けて引き出さないでください。私たちはそのトークンセールから受け取るトークンをあなたのアカウントに反映しません。",
+        "idNumber": {
+          "helpIcon": {
+            "description": "銀行口座への資金の引出しについての情報は [コチラ](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html)からご覧いただけます。",
+            "title": "あなたのIDナンバーはユニークな数字で、Coinomatで銀行口座を確認後、それぞれのユーザーに割り当てられます。"
+          }
+        },
+        "idNumberTitle": "ID番号",
+        "liraBankAccount": "Digilira アカウント",
+        "massSend": {
+          "clear": "クリア",
+          "description": "概要",
+          "errors": {
+            "invalidAddress": "無効なアドレスのリスト"
+          },
+          "importFile": "CSVファイルをインポート",
+          "recipient": "受信者、数量: {{count}}/{{max}}",
+          "recipientsAmountsPlaceholder": "例:\r\n アドレス1,数量1\r\n アドレス2,数量2",
+          "showAllErrors": {
+            "false": "すべて表示 ({{count}})",
+            "true": "最初の2つのエラーを表示"
+          },
+          "totalAmount": "合計数量",
+          "warningPlate1Header": "最大100人に送信することができます",
+          "warningPlate1Text": "100人目以降の受信者は無視されます。",
+          "warningPlate2Header": "無効なアドレスはマストランスファーには含まれません。",
+          "warningPlate3Header": "受信者と送信数量の間にはコンマを入力してください。それぞれの受信者ごとに新しい行で作成してください。",
+          "warningPlate3Text": "[CSVファイルについて学ぶ](https://en.wikipedia.org/wiki/Comma-separated_values)。"
+        },
+        "massSendTitle": "マストランスファー",
+        "moneroPaymentId": "MoneroペイメントID",
+        "moneroPaymentIdPlaceholder": "MoneroペイメントIDをペーストするか記入してください",
+        "notSponsorship": {
+          "fee": "トランザクション手数料 {{fee, money-currency}}"
+        },
+        "notVerifiedHeader": "あなたはまだ認証されていません。",
+        "notVerifiedText": "銀行口座への引出しは認証されたユーザーのみが利用可能です。法定通貨の送受信についての情報は [コチラ](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html)からご覧いただけます。",
+        "or": "または",
+        "placeholderRecipient": "アドレスをスキャンもしくはペーストしてください",
+        "recipient": "受信者",
+        "sendMax": "最大",
+        "sendTitle": "送信",
+        "title": "{{assetName}}の送信",
+        "titleComplete": "送信完了",
+        "toBank": "銀行口座へ引き出す",
+        "total": "合計",
+        "toWaves": "Wavesアドレスに送信",
+        "txFee": "トランザクション手数料",
+        "validationError": {
+          "notEnoughFunds": "あなたは必要な手数料を支払う資金を保有していません。 {{fee, money-currency}} をトランザクション手数料として支払う必要があります。",
+          "notEnoughFundsWithdraw": "あなたは必要な手数料を支払う資金を保有していません。トランザクション手数料 {{fee, money-currency}} として、ゲートウェイ手数料{{getawayFee, BigNumber}} {{currency}} を支払う必要があります。最低引出し可能額は {{minGatewayAmount, BigNumber}} {{currency}}です。"
+        },
+        "withdrawTitle": "Withdraw"
+      },
+      "sepa": {
+        "countryList": "適格な国とIDのリスト",
+        "proceed": "認証する",
+        "step1": "ステップ1",
+        "step1Description": "{{assetName}} をあなたの銀行口座からSEPA送金を通じて直接デポジットする場合は、私たちのパートナーである [IDNow.eu]({{url}})から認証を受ける必要があります",
+        "step2": "ステップ2",
+        "step2Description": "認証後にあなたは案内が記載されたメールを受信します",
+        "title": "デポジット {{assetName}}",
+        "warning": "認証、送金処理に問題が生じた場合、または同意を取消す場合、Coinomatのサポートチームに連絡してください。 — [support@coinomat.com](mailto:support@coinomat.com)",
+        "warningTitle": "私たちはアメリカ市民もしくはアメリカの銀行からの国際送金を受け付けることができません。"
+      },
+      "setAssetScript": {
+        "errorNoMoney": "あなたは必要な手数料を支払う資金を保有していません。 {{fee, money-currency}} をトランザクション手数料として支払う必要があります。",
+        "script": "スクリプト",
+        "scripted": "設定",
+        "title": "スクリプトをアップデート",
+        "unavailable": "現在、スクリプトをアップデートすることはできません",
+        "warningDescription": "{div}[十分な知見があるユーザーでない限り、スクリプトによるトランザクションの使用はお勧めしません。発生するエラーが資産の永久的な消失に繫がる可能性があります。]",
+        "warningHeader": "アクションが資産の消失に繋がる可能性があります。"
+      },
+      "settings": {
+        "account": "Account",
+        "cancel": "アカウントを作成",
+        "changePass": "Change password",
+        "deleteAccount": "Remove account",
+        "exportAccounts": {
+          "accounts": "Accounts",
+          "export": "Export",
+          "selectAll": "Select all",
+          "title": "Please select account",
+          "unselectAll": "Unselect all"
+        },
+        "general": {
+          "auto": "自動",
+          "blockHeight": "現在のブロック",
+          "blue": "Waves",
+          "color": "カラー",
+          "dark": "ダーク",
+          "green": "クラシック",
+          "hours": "{{hours}} 時間",
+          "language": "言語",
+          "minutes": "{{minutes}} 分",
+          "openLinkViaWeb": "ウェブ版クライアントからは常にリンクを開く",
+          "playSound": "ユーザーインターフェイスの効果音を再生",
+          "theme": "テーマ",
+          "timeout": "セッションタイムアップ",
+          "title": "一般",
+          "white": "ホワイト"
+        },
+        "helperContent": "You can set a password for exported accounts",
+        "info": {
+          "legal": "リーガル",
+          "privacyPolicy": "プライバシーポリシー",
+          "support": "サポート",
+          "termsAndConditions": "利用規約",
+          "title": "情報",
+          "version": "バージョン"
+        },
+        "message": "設定を開くには、サインインまたはアカウントを作成してください",
+        "network": {
+          "apiAddress": "データサービス",
+          "apiAddressHelp": "データサービスは、Wavesブロックチェーン上のデータと通信するための追加のAPIを提供します。",
+          "assetNameFilter": "ネーミングサービス",
+          "assetNameFilterHelp": "このサービスは、Wavesトークンライブラリを使ってトークンの名前を確認します。 \n完全に無効にするには、このフィールドをクリアします。",
+          "copy": "コピー",
+          "dataProvider": "データプロバイダー",
+          "dataProviderDescription": "{{dataProviderDescription}}",
+          "dataProviderId": "{{dataProviderId}}",
+          "dataProviderInvalid": "プロバイダー情報の取得に失敗しました。アドレスを確認して再度お試しください。",
+          "dataProviderName": "{{dataProviderName}}",
+          "dontShowSpamCheckboxDescr": "不審なトークンを表示しない",
+          "edit": "Edit",
+          "forDisableClear": "完全に無効にするには、このフィールドをクリアします。",
+          "matcherAddress": "Matcher アドレス",
+          "nodeAddress": "ノードアドレス",
+          "showMore": "さらに表示",
+          "spamFilter": "トークンフィルター",
+          "spamFilterInputDescr": "スパムフィルタをオフ",
+          "spamListHelp": "このフィルターは注意が必要なトークンをあなたのポートフォリオから除外します。",
+          "title": "ネットワーク"
+        },
+        "ok": "サインイン",
+        "pairing": {
+          "devicePairing": "アカウントをエクスポート",
+          "header": "ペアリングコードをスキャン",
+          "showCodeLink": "ペアリングコードを表示",
+          "unavailable": {
+            "description": {
+              "ledger": "Ledgerデバイスに保存されているアカウントはエクスポートに対応していません",
+              "wavesKeeper": "Waves KeeperからインポートされたアカウントのエクスポートはWaves Keeperの設定から利用可能です"
+            },
+            "header": {
+              "ledger": "エクスポートできません",
+              "wavesKeeper": "エクスポートできません"
+            },
+            "ok": "理解しました"
+          }
+        },
+        "passChanged": "Password was changed successfully",
+        "password": "Password",
+        "security": {
+          "address": "アドレス",
+          "backupPhrase": "バックアップフレーズ",
+          "base58Seed": "Encoded backup phrase",
+          "encodedSeed": "エンコードされたシード",
+          "exportAccount": "Export account to file",
+          "id": "Account ID",
+          "privateKey": "秘密鍵",
+          "publicKey": "公開鍵",
+          "savejson": "Save as JSON file",
+          "script": "スクリプト",
+          "scriptButton": "スクリプトを設定",
+          "scriptButtonUpdate": "スクリプトをアップデート",
+          "show": "表示",
+          "title": "セキュリティ"
+        },
+        "setDefault": "デフォルトに設定",
+        "title": "設定"
+      },
+      "sign": {
+        "article": "記事",
+        "buy": "Buy",
+        "cancel": "キャンセル",
+        "cancelOrder": "注文をキャンセル",
+        "close": "閉じる",
+        "confirm": "承認",
+        "confirmRequest": "リクエストを承認",
+        "confirmRequest_utils": "リクエストを承認",
+        "confirmRequestKeeper": "Waves Keeperからの承認を待っています",
+        "confirmRequestLedger": {
+          "cancel": "キャンセル",
+          "errorDescription": "再度お試し下さい。問題が継続する場合、 [こちらの記事](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)をご参照下さい。",
+          "errorHeader": "あなたはLedgerデバイスでリクエストを承認しませんでした",
+          "sign": "署名をリトライ",
+          "waiting": "Ledgerデバイスからの承認を待っています"
+        },
+        "confirmRequestMatcher_utils": "Matcherのリクエストに署名してください。署名をしない場合、LedgerからDEXでトレードすることはできません。",
+        "confirmRequestToMatcher": "Matcherのリクエストに署名してください。署名をしない場合、からDEXでトレードすることはできません。",
+        "connecting": "接続しています...",
+        "connectingKeeper": "Waves Keeperに接続しています...",
+        "connectionError": "Ledgerに接続することができません",
+        "connectionErrorKeeper": "アカウントにアクセスすることができません",
+        "connectionText": "接続がタイムアウトしました。再度お試しください。",
+        "connectLedger": "あなたのLedger デバイスに接続",
+        "enterPin": "PINコードを入力してください",
+        "fee": "手数料",
+        "matcher": "注文リクエストに署名",
+        "openApp": "Waves Appを開く",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "price": "価格",
+        "refererTo": "エラーを解決できない場合、こちらを参照ください。",
+        "referTo": "エラーを解決できない場合、こちらを参照ください。",
+        "request": "リクエスト",
+        "requestId": "ハッシュをリクエスト",
+        "retry": "リトライ",
+        "sell": "Sell",
+        "signByKeeper": "Waves Keeperからの承認を待っています",
+        "signByLedger": "Ledgerデバイスからの承認を待っています",
+        "signError": "リクエストは未承認です。",
+        "signErrorKeeper": "あなたはWaves Keeper上でリクエストを承認しませんでした",
+        "signErrorText": "あなたはLedgerデバイスでリクエストを承認しませんでした",
+        "signErrorTextImportKeeper": "Waves Keeperに、アドレス : {{address}}でサインインし、\r\nページを再読込みして続ける。",
+        "signErrorTextKeeper": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+        "timestamp": "Timestamp",
+        "txId": "TXID"
+      },
+      "sponsorship_edit": {
+        "title": "スポンサーシップを変更"
+      },
+      "sponsorship": {
+        "amountPerTx": "トランザクションごとの数量 (単位: 0.001 DCC)",
+        "assetId": "ID",
+        "continue": "次へ",
+        "errors": {
+          "feeRequired": "この項目は必須です！",
+          "minSponsoredAssetFee": {
+            "precision": "入力された数字が不正です。小数点以下は最大で {{precision}} 桁まで入力可能です。"
+          },
+          "noMoney": "あなたは必要な手数料を支払う資金を保有していません。 {{fee, money-currency}} をトランザクション手数料として支払う必要があります。",
+          "notZero": "値は0以上でなければいけません"
+        },
+        "fee": "トランザクション手数料 {{fee, money-currency}}",
+        "title": "スポンサーシップを有効化",
+        "warningHeader": "ユーザーはトランザクション手数料を {{name}} で支払い可能になります",
+        "warningText": "それぞれのトランザクションで0.001 WAVESがあなたの残高から差し引かれ、{{name}} があなたのアカウントに与えられます。{{name}} の数量が、トランザクションを実行するユーザーに請求されます。これは、あなたがスポンサーシップを有効にした時に設定されます。（請求する数量を以下のフォームから入力してください）スポンサーシップはあなたが最低でも1.005 WAVESを保有していないと機能しません。残高がこの数量を下回った時、スポンサーシップトランザクションを実行することはできません。"
+      },
+      "startLease": {
+        "amount": "数量",
+        "balance": "残高",
+        "fee": "手数料 {{fee, money-currency}}",
+        "nodeListLink": "ノードリスト",
+        "nodeListLink_copy": "ノードリスト",
+        "recipient": "受信者",
+        "start": "リースを開始",
+        "title": "リースを開始"
+      },
+      "termsAccept": {
+        "body": {
+          "advancedMode": "高度な機能",
+          "analytics": "開発者に匿名の使用統計を送信することで、Wavesプラットフォームの改善に協力します。",
+          "backup": "私は、アプリを他のデバイスに移動するまたは削除した場合、私のWavesはバックアップフレーズのみから復元できることを理解しています。",
+          "ok": "承認して始める",
+          "privacyPolicy": "[プライバシーポリシー](https://decentralchain.io/privacy-policy)の内容を確認し、同意します。",
+          "read": "私は規約を読み、十分に理解し、同意します。",
+          "readTermsAndConditions": "私は[利用規則](https://decentralchain.io/terms-and-conditions)を読み、十分に理解し、その内容に同意します。",
+          "security": "私の資金は企業ではなく、デバイス上に安全に保管されていることを理解しています。",
+          "securityAndBackup": "私の資金が企業ではなく、私のデバイスに安全に保管されていることを理解します。また、アプリを他のデバイスに移動、または削除した場合、私のWavesはバックアップフレーズのみから復元できることを理解しています。",
+          "terms": "利用規約"
+        },
+        "header": {
+          "description": "Wavesの特性について — ウォレットは安全にデバイスに保管されます",
+          "title": "完了しました！レビューしましょう",
+          "title2": "利用規約"
+        }
+      },
+      "token": {
+        "balance": "残高",
+        "burn": {
+          "label": "バーンされるトークン数",
+          "title": "{{name}} トークンをバーン"
+        },
+        "description": "概要",
+        "fee": "トランザクション手数料 {{fee, money-currency}}",
+        "gt0": "入力された数字は0以上である必要があります",
+        "id": "アセット ID",
+        "quantity": "合計数量",
+        "reissue": {
+          "label": "追加発行されるトークン数",
+          "title": "{{name}} トークンを追加発行"
+        },
+        "validation": {
+          "gt0": "この項目は必須です",
+          "invalidAsset": "この項目は数字のみ含むことができます",
+          "invalidPrecision": "小数点数の最大は {{precision}} 桁です",
+          "lteMaxBalance": "数量は残高以下でなければいけません",
+          "maxValueCount": "入力された数字が大きすぎます",
+          "noMoney": "必要なトランザクション手数料を支払うための資金が足りません",
+          "required": "この項目は必須です"
+        }
+      },
+      "tryDesktop": {
+        "remember": "設定を保存し、次回は表示しない"
+      },
+      "tutorialModals": {
+        "step1": {
+          "button": "あなたがSEEDについて知る必要があること",
+          "buttonMobile": "次へ",
+          "buttonReadMore": "Read more",
+          "p1": "ご自身の安全のため、重要事項を把握してください🙏",
+          "p2": "もし、フィッシングサイトを訪問してしまった場合や、バックアップフレーズ（SEEDフレーズ）を紛失した場合、私たちはあなたの資金を元に戻すことはできません。",
+          "p3": "私たちのプラットフォームを使い続けることで、シードの損失に関わるすべてのリスク（資金を入手し入金することができなくなることを含むが、これに限定されない）を受け入れることにあなたは同意するものとします。あなたがシードを紛失した場合、Wavesプラットフォームはこの結果責任を負わないことに、あなたは同意し承認するものとします。",
+          "title": "ようこそ！Waves Platformへ！"
+        },
+        "step2": {
+          "backButton": "戻る",
+          "cell1": "あなたは匿名でウォレットを利用することができます。つまり、あなたのアカウントはあなたのメールアドレスやその他の個人を特定するデータに紐付いていません。",
+          "cell2": "あなたのパスワードは特定のデバイスやブラウザでアカウントを使用する際に保護します。これは、あなたの秘密のフレーズがストレージに保存されていないことを確かにするために必要です。",
+          "cell3": "パスワードをお忘れになった場合、シークレットフレーズを使用してアカウント復元フォームからパスワードを再発行できます。但し、シークレットフレーズを紛失した場合、アカウントにアクセスできなくなります。",
+          "cell4": "秘密のフレーズを変更することはできません。誤って他人に送信した場合や、詐欺師に侵入された疑いがある場合は、直ちに新しいWavesウォレットを作成して資金を移してください。",
+          "nextButton": "あなたご自身を守る",
+          "p1": "アカウントの登録の際に、あなたはアカウントを保護するために、パスワードと秘密のフレーズ（SEED）を保存するように求められます。一般的に、集中型サーバーの場合、特別な注目はパスワードに向き、これは必要に応じてメールを通じて変更したりリセットすることが可能です。一方で、 Wavesのような分散型プラットフォームの場合、全く異なる仕組みが採用されています：",
+          "title": "あなたがSEEDについて知る必要があること"
+        },
+        "step3": {
+          "backButton": "戻る",
+          "cell1": "常にこのURLであるかを確認して下さい: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell2": "ブラウザの拡張機能やプラグインを使用しているブラウザを用いてあなたのアカウントにアクセスしないでください。",
+          "cell3": "見知らぬ送信者から受信したメールやリンクを開かないでください。",
+          "cell4": "定期的にオペレーティングシステムをアップデートしてください。",
+          "cell4Web": "定期的にブラウザとオペレーティングシステムをアップデートしてください。",
+          "cell5": "公式のセキュリティソフトを利用してください。決して、ハッキングされた可能性がある未知のソフトウェアをインストールしないでください。",
+          "cell6": "公共のWi-Fiに接続している時、または自分以外のデバイスを使用する際、あなたのウォレットにはアクセスしないでください。",
+          "nextButton": "理解しました",
+          "p1": "最も一般的な詐欺の方法の一つがフィッシングです。Facebookやウェブサイト上で公式に似たページを偽造するケースが多いです。",
+          "saveSeedButton": "Save the SEED phrase",
+          "title": "あなたを詐欺師から守る方法"
+        }
+      },
+      "unsuccessfulMigration": {
+        "checkbox": "Don't show this again",
+        "description": "You have started the account migration from Decentral.Exchange to this exchange, but it hasn't been finished. Your accounts haven't been moved. Go back to Decentral.Exchange and start the process from the beginning.",
+        "title": "Unfinished Migration",
+        "understand": "理解しました"
+      }
+    },
+    "modals": {
+      "anyTx": {
+        "title": "JSON"
+      }
+    },
+    "notification": {
+      "backup": {
+        "action": "保存",
+        "body": "あなたのSEEDは安全に保管してください。あなたのウォレットを復元するための唯一の方法です。",
+        "title": "バックアップフレーズ（SEED）を保存"
+      }
+    },
+    "qualified": "認証済",
+    "transaction": {
+      "amounts": {
+        "create-order": "{{sign}}{{amount}} {{name}}"
+      }
+    },
+    "Unpin_utils": "ピン留めをやめる",
+    "utils": {
+      "migrationError": "Oops! Your accounts are safe but haven't been moved. Please try again.",
+      "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+      "privacyPolicyText": "Privacy Policy",
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+      "termsAgreementText": "Terms and Conditions",
+      "termsAssign": "I have read and agree with the",
+      "whatsNew": {
+        "body": {
+          "1_0_0": "{span.line}[1. Wavesクライアントはベータ版から卒業しました。]{span.line}[2. メインページにアセットをピンできるようになりました。]{span.line}[3. 夜モードが追加されました。]{span.line}[4. 旧クライアントから全てのアカウント情報を簡単にインポートできるようになりました。]{span.line}[5. マイナーバグを修正しました。]",
+          "1_0_0-beta_23": "{span.line}[1. 「新機能」欄を追加しました。]{span.line}[2. アカウントに名前を追加できるようになりました。]{span.line}[3. 一部のマイナーバグを修正しました。]",
+          "1_0_0-beta_25": "{span.line}[1. 設定からセッションタイムを変更できるようになりました。]{span.line}[2. DEXの購入・売却画面が正しく表示されないバグを修正しました。]{span.line}[3. シードを保存してない場合リマインドします。{span.line}[4. 一部のマイナーバグは修正されました。]",
+          "1_0_0-beta_26": "{span.line}[1. いくつかのマイナーなバグを修正しました。]",
+          "1_0_0-beta_27": "{span.line}[1. 中国語を追加しました。]{span.line}[2. トルコ語を追加しました。]",
+          "1_0_0-beta_30": "{span.line}[1. 生成したトークンをバーン、または追加発行できるようになりました。]{span.line}[2. Waves Auth APIサポートを追加しました。]{span.line}[3. 一部のマイナーバグを修正しました。]",
+          "1_0_0-beta_31": "{span.line}[1. クレジットカードでWAVESとBTCを購入できるようになりました。]{span.line}[2. 購入・売却画面のUIを改善しました。]{span.line}[3. Windows 32-bit版対応を追加しました。]{span.line}[4. 複数のその他バグを修正しました。]",
+          "1_0_0-beta_32": "{span.line}[1. クライアントからマストランスファーができるようになりました。]{span.line}[2. 一部のマイナーバグを修正しました。]",
+          "1_0_0-beta_35": "{span.line}[1. ポートフォリオタブからトークンをソート、フィルター、隠すことができるようになりました。]{span.line}[2. DASH ゲートウェイがローンチされました。]{span.line}[3. ヒンズー語のサポートが追加されました。]{span.line}[4. オランダ語のサポートが追加されました。]{span.line}[5. 他のユーザーに請求ができるようになりました。]{span.line}[6. 追加のマイナーバグを修正しました。]",
+          "1_0_0-beta_36": "{span.line}[1. 大規模リースノードがリースページに掲載されるようになりました。]{span.line}[2. いくつかのバグを修正しました。]",
+          "1_0_0-beta_39": "{span.line}[1. スパムフィルタが設定に追加されました。]{span.line}[2. いくつかのマイナーなバグを修正しました。]",
+          "1_0_0-beta_40": "{span.line}[1. Monero ゲートウェイがローンチされました。]",
+          "1_0_0-beta_42": "{span.line}[1. スペイン語のサポートが追加されました。]{span.line}[2. デフォルトでアカウント情報を保存しなくてもクライアントを使えるようになりました。]{span.line}[3. スパムトークンがトランザクション画面でマークされるようになりました。]{span.line}[4. 追加のマイナーバグを修正しました。]",
+          "1_0_0-beta_47": "{span.line}[1. DEXのユーザーインターフェース完全に新しくなりました。]{span.line}[2. より高速でより安定したクライアントになりました。]{span.line}[3. エイリアス機能が再び使用可能になりました。]{span.line}[4. いくつかのマイナーなバグを修正しました。]{span.line}[5. [ビデオ](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822)を作成、または[記事](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835)を執筆して、私たちのコンテストに参加しよう。]",
+          "1_0_0-beta_50": "{span.line}[1.アカウント内のトークンをバーンできるようになりました。]{span.line}[2. 追加のマイナーバグを修正しました。]",
+          "1_0_10": "{span.line}[1. スポンサーシップトランザクションサポートを追加しました。 [更に読む](https://docs.wavesplatform.com/en/waves-client/assets-management/sponsored-transaction.html)]\r\n {span.line}[2. ポーランド語とポルトガル語のサポートが追加されました。]",
+          "1_0_14": "{span.line}[1. Wavesの残高なしでスポンサーアセットを使用できるバグを修正しました。]\r\n {span.line}[2. 30日の有効期限が設定された注文のバグを修正しました。]\r\n {span.line}[3. その他のマイナーなバグを修正しました。]",
+          "1_0_15": "{span.line}[1. Ledger上の認証の問題を修正しました。]\r\n {span.line}[2. Ledgerからの認証の待機時間を延長しました。]\r\n {span.line}[3. エラーメッセージに詳細情報を追加しました。]",
+          "1_0_18": "{span.line}[1. アカウントにスクリプトを設定できるようになりました。]\r\n {span.line}[2. 追加のマイナーバグを修正しました。]",
+          "1_0_21": "{span.line}[1. Ledgerを通じて認証ができる機能を修正しました。]\r\n {span.line}[2. いくつかのマイナーなバグを修正しました。]",
+          "1_0_22": "{span.line}[1. スクリプトを設定したアカウントで動作する高度な機能を追加しました。]",
+          "1_0_25": "{span.line}[1. [Waves Keeper](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) のサポートが追加されました。]",
+          "1_0_27": "{span.line}[1. ポートフォリオに「My Assets」カテゴリーを追加しました。]\n{span.line}[2. マイナーなバグを修正しました。]",
+          "1_0_28": "{span.line}[1. モバイル版に既存のアカウントをインポートできるペアリング機能を追加しました。]\r\n {span.line}[2. マイナーなバグを修正しました。]",
+          "1_0_29": "{span.line}[1. Cyrillic アルファベットを用いたQR コード生成の問題を解決しました。]\n{span.line}[2. ウォッチリストの検索にチューリップ機能を追加しました。]\n{span.line}[3. 一部UIを修正しました。 ]",
+          "1_0_3": "{span.line}[1. ポートフォリオページからID別にアセットを検索できるようになりました。]{span.line}[2. 追加のマイナーバグを修正しました。]",
+          "1_0_30": "{span.line}[1. スクリプト設定ボタンを設定のセキュリティ欄に移動しました。]\n{span.line}[2. パフォーマンスの改善とUIの変更を行いました。]",
+          "1_0_32": "{span.line}[1. BetterTokensのoracleとの統合を行いました。]\r\n {span.line}[2. トークンの認証プロトコル用のサポートを追加しました。]\r\n {span.line}[3. Coinomatからのトークンの出金に係る手数料を修正しました。]",
+          "1_0_33": "{span.line}[1. 現在の市場価格と大幅に異なる価格で注文をしようとした場合に通知を受けられるようになりました。]\r\n {span.line}[2. マイナーバグを修正しました。]",
+          "1_0_36": "{span.line}[1. スクリプトアカウントでDEX上で取引できる機能を追加しました。]\r\n {span.line}[2. アセットの送信時や請求書の作成時にアセットを検索できる機能を追加しました。]\r\n {span.line}[3. レイアウトのマイナーな変更を行いました。]",
+          "1_0_37": "{span.line}[1. スマートアセット機能（発行、追加発行、バーン）を追加しました。]\r\n {span.line}[2. イタリア語、ドイツ語、インドネシア語を追加しました。]\r\n {span.line}[3. マイナーなバグを修正しました。]",
+          "1_0_40": "{span.line}[1. DEXを最適化しました。]\r\n {span.line}[2.ブラウザタブのタイトルに選択中の通貨ペアの為替レートを追加しました。]\r\n {span.line}[3. マイナーなバグを修正しました。]",
+          "1_0_41": "{span.line}[1. DEXを最適化しました。]\r\n {span.line}[2. 通知システムを追加しました。]\r\n {span.line}[3. マイナーなバグを修正しました。]",
+          "1_0_42": "{span.line}[1. マイナーなバグを修正しました。]",
+          "1_0_5": "{span.line}[1. DEXのチャートに取引ボリューム計が追加されました。]\r\n {span.line}[2. 追加のマイナーバグを修正しました。]",
+          "1_0_6": "{span.line}[1. Wavesのデスクトップクライアントを通じて認証ができる機能を追加しました。]",
+          "1_0_7": "{span.line}[1. デスクトップクライアントの強制終了事象を修正しました。]\r\n {span.line}[2. 大きなコンテンツを扱う際のトランザクションページとポートフォリオページ間の移動時の挙動の最適化しました。]\r\n {span.line}[3. スマプトークンの名前がトランザクションリスト内で隠されるようになりました。]\r\n {span.line}[4. エラーメッセージのアウトプットが手直しされました。 ]",
+          "1_0_8": "{span.line}[1. Ledger Nano S に対応しました。]\r\n {span.line}[2. 選択した認証方法を保存するための新しいオプションが追加されました。]",
+          "1_1_0": "{span.line}[1. 注文の有効期間がデフォルトで保存されるようになりました。]{span.line}[2. マイナーなバグを修正しました。]",
+          "1_2_0": "{span.line}[1. 日本語とエストニア語を追加しました。]\n{span.line}[2. 購入売却画面におけるUIを改善しました。]\n{span.line}[3. マイナーなバグを修正しました。]",
+          "1_2_1": "{span.line}[1. タイムインターバルに加えてチャートのサイズとスケール設定を保存できるようになりました。]\n{span.line}[2. マイナーなバグを修正しました。]",
+          "1_2_2": "{span.line}[1. セキュリティのアップデートを実施。]{span.line}[2. マイナーなバグを修正しました。]",
+          "1_2_3": "{span.line} [1. Ledger Waves 1.0.0アプリをサポートしました。]",
+          "1_2_6": "{span.line} [1. InvokeScriptTransactionをサポート。 [もっと読む](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n {span.line} [2. UIの改善と、いくつかのマイナーバグを修正しました。]",
+          "1_2_8": "{span.line}[1. スパムトークンとトランザクションが非表示になりました。]{span.line}[2. UIの改善と、いくつかのマイナーなバグを修正しました。]",
+          "1_3_0": "{span.line} [1. アプリのナビゲーションとスタートページのインターフェースが改善されました。]",
+          "1_3_18": "{span.line}[1. 秘密鍵によるログインが可能になりました。]{span.line}[2. 24時間以内のトークン価格の変化がトークン/WAVESペアに対応しました。]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_2": "{span.line} [1. WESTのゲートウェイが追加されました。 \n{span.line} [2. UIの改善と、いくつかのマイナーなバグを修正しました。]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
+          "1_3_5": "{span.line}[1. [wsoc.io](https://wsoc.io) コンテスト用のトークンタブが追加されました。]{span.line}[2. フランス語に対応しました。]{span.line}[3. 一部のマイナーバグを修正しました。]",
+          "1_3_7": "{span.line}[1.[tokenrating.wavesexplorer.com](https://tokenrating.wavesexplorer.com) に対応。アプリから直接トークンのレーティングが可能に。]{span.line}[2. 追加のマイナーバグを修正しました。]",
+          "1_3_9": "{span.line}[1. 交換とウォレットセクションにおけるUIと機能の改善。]\n {span.line}[2. マイナーバグを修正。]",
+          "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
+          "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
+        },
+        "title": "このアップデート {{version}} の新機能"
+      }
+    },
+    "validators": {
+      "byte": {
+        "help": "Bytes 残 : {{bytes}}"
+      }
+    },
+    "warningPlate": {
+      "day": "d",
+      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "hour": "h",
+      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "min": "m",
+      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "sec": "s",
+      "startMoving": "Safe moving"
+    }
+  },
+  "app.wallet.assets": {
+    "addAsset": "アセットを追加",
+    "chart": {
+      "intervals": {
+        "all": "すべて",
+        "day": "1日",
+        "hour": "1時間",
+        "month": "1ヶ月",
+        "week": "1週間",
+        "year": "1年間"
+      }
+    },
+    "directives": {
+      "asset": {
+        "anyTx": "JSON",
+        "deposit": "デポジット",
+        "ofTotalBalance": "合計残高 {{totalBalance}}",
+        "receive": "受信",
+        "script": "スクリプト",
+        "send": "送信"
+      },
+      "balance": {
+        "actions": {
+          "assetInfo": "アセット情報",
+          "copyAssetId": "アセットIDをコピー"
+        }
+      }
+    },
+    "price": "価格 {{currency}}",
+    "qr": "あなたのアドレス",
+    "send": "送信",
+    "since": {
+      "day": "1日の変化率",
+      "month": "1ヶ月の変化率",
+      "week": "1週間の変化率"
+    },
+    "suspicious": "注意 - ({span}[{{count}}])",
+    "Unpin": "ピン留めを外す"
+  },
+  "app.wallet.leasing": {
+    "available": "リース可能",
+    "chart": {
+      "available": "リース可能",
+      "create": "リースを開始",
+      "leased": "リース中",
+      "title": "WAVESの残高"
+    },
+    "description": {
+      "text1": "リースされていないWAVESのみトレードや送信することができます。リースされたトークンは誰もトレードや送信はできません。",
+      "text2": "リーストランザクションは通常1分弱でブロックチェーン上に表示され、その後キャンセルすることができます。",
+      "text3": "生成中の残高は1000ブロック後に更新されます。",
+      "title": "お知らせ"
+    },
+    "leased": "リース済",
+    "leasedIn": "でリース",
+    "nodeListLink": "ノードリスト",
+    "test": {
+      "test": "テキストテスト"
+    },
+    "title_leasing": "Wavesのデスクトップアプリへのログインを選択しました"
+  },
+  "app.wallet.portfolio": {
+    "allactive": "アクティブなトークン ({span}[{{count}}])",
+    "burn": "トークンをバーン",
+    "deposit": "デポジット",
+    "dex": "DEXで開く",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://wavesexplorer.com/address/{{address}}/nft)",
+    "info": "アセット情報",
+    "list": {
+      "actions": "アクション",
+      "ask": "Ask",
+      "balance": "残高",
+      "bid": "Bid",
+      "change": "24時間の変化",
+      "inOrders": "注文中",
+      "mirror": "数量, {span.currency}[{{currency}}]",
+      "name": "アセット名",
+      "rate": "価格, {span.currency}[{{currency}}]"
+    },
+    "myassets": "私のアセット ({span}[{{count}}])",
+    "pin": "ピン",
+    "portfolio": {
+      "filter": "検索"
+    },
+    "qr": "あなたのアドレス",
+    "qualified": "認証済",
+    "qualifieds": "認証済のアセット ({span}[{{count}}])",
+    "receive": "受信",
+    "reissue": "トークンの追加発行",
+    "send": "送信",
+    "setAssetScript": "アセットのスクリプトを更新",
+    "spam": "スパム",
+    "spamAsset": "スパム",
+    "spamselect": "注意が必要なアセット ({span}[{{count}}])",
+    "sponsorship": "スポンサーシップを有効化",
+    "sponsorshipChange": "スポンサーシップを変更",
+    "sponsorshipStop": "スポンサーシップを無効化",
+    "tokenomica": "tokenomica",
+    "tospam": "非表示にする",
+    "unpin": "ピン留めを外す",
+    "unspam": "表示"
+  },
+  "app.wallet.transactions": {
+    "all": "すべて",
+    "confirmTransaction": {
+      "retrySign": "もう一度署名"
+    },
+    "csv": {
+      "alias": "Alias name",
+      "amount": {
+        "id": "Amount asset ID",
+        "name": "Amount asset name",
+        "ticker": "Amount asset ticker",
+        "value": "Amount asset value"
+      },
+      "attachment": "Transaction attachment",
+      "date": "Date",
+      "description": "Token description",
+      "fee": {
+        "id": "Fee ID",
+        "name": "Fee name",
+        "ticker": "Fee ticker",
+        "value": "Fee value"
+      },
+      "height": "Transaction height",
+      "id": "Transaction ID",
+      "name": "Token name",
+      "precision": "Precision",
+      "price": {
+        "id": "Price asset ID",
+        "name": "Price asset name",
+        "ticker": "Price asset ticker",
+        "value": "Price asset value"
+      },
+      "recipient": "Transaction recipient",
+      "reissuable": {
+        "false": "No reissuable",
+        "name": "Can reissue token",
+        "true": "Reissuable"
+      },
+      "sender": "Transaction sender",
+      "transactionType": "Blockchain transaction type",
+      "type": "Transaction type"
+    },
+    "errors": {
+      "complete": {
+        "body": "トランザクションのリストが完全にダウンロードされていません。後で再試行してください。",
+        "title": "ダウンロードは完了していません。"
+      },
+      "download": {
+        "body": "トランザクションのリストが完全にダウンロードされていません。後で再試行してください。",
+        "title": "ダウンロードエラー"
+      },
+      "empty": {
+        "body": "トランザクション履歴がありません",
+        "title": "エクスポートエラー"
+      }
+    },
+    "exchanged": "取引済",
+    "export": "エクスポート",
+    "filter": {
+      "value1": "最新",
+      "value2": "500 txs",
+      "value3": "1000 txs"
+    },
+    "issued": "発行済",
+    "leased": "リース済",
+    "received": "受信済",
+    "sent": "送信済",
+    "transactions": {
+      "script": {
+        "txJson_wallet": "Base64 スクリプト"
+      }
+    }
+  },
+  "app.welcome": {
+    "backupSeed": {
+      "copySeed": "シードをコピー",
+      "warn": "あなたのお金を管理できるのはあなただけです。このアプリが削除された場合に備え、バックアップフレーズを保存してください。または"
+    },
+    "createAccount": {
+      "from": "アカウントを作成"
+    },
+    "infoTooltip": "重要なお知らせ",
+    "loading": {
+      "volume": "ボリューム"
+    },
+    "modal": {
+      "lockPairWarning": {
+        "continue": "次へ",
+        "heading": "{{amountAssetTicker}} / {{priceAssetTicker}} ペアは現在ご利用できません",
+        "text": "選択した取引ペアは現在ご利用できません。注文をキャンセル可能です"
+      }
+    },
+    "news": "ニュース",
+    "newUser": {
+      "from": "(バックアップから)",
+      "getStarted": "始める",
+      "import": "アカウントをインポート",
+      "or": "または",
+      "restore": "アカウントを復元",
+      "slides": [
+        {
+          "description": "急速に成長する暗号通貨の世界の一員になりましょう！あなたの暗号資産にアクセスできるのはあなただけです。",
+          "title": "ブロックチェーンと始める"
+        },
+        {
+          "description": "簡単かつ安全に、デジタル資産を保管・管理し、残高に対して利息を得ることができます。",
+          "title": "ウォレット"
+        },
+        {
+          "description": "迅速で安全なトレードが可能です。分散型取引所において、あなたの資産は完全にあなたの管理下にあります。",
+          "title": "分散型取引所"
+        },
+        {
+          "description": "独自のトークンを発行しましょう！これらは、内部通貨としてだけではなく、あなたのビジネスに導入することができます。また、トークンは分散型投票や、評価システム、ロイヤリティプログラムなどにも利用可能です。",
+          "title": "トークンラウンチャー"
+        }
+      ]
+    },
+    "openViaDesktop": "デスクトップ版クライアントからは常にリンクを開く",
+    "roadmap": {
+      "aug2019": {
+        "date": "2019年8月",
+        "text": "トレーダーはトークンを市場価格で素早く売ることができます。",
+        "title": "成行注文"
+      },
+      "dec2018": {
+        "date": "2018年12月",
+        "text": "新しいモバイルアプリは素晴らしいDEX UIとゲートウェイ統合を提供します。",
+        "text_2": "DEXのティッカーとロゴは承認されたアセットを表し、ユーザーに高い信頼性を与えます。",
+        "title": "モバイルアプリ2.0",
+        "title_2": "BetterTokensの統合"
+      },
+      "feb2017": {
+        "date": "2017年12月",
+        "text": "フラッグシップとなるビルトイン取引所の最初のバージョンが発表。",
+        "title": "Decentral.Exchangeベータ"
+      },
+      "feb2018": {
+        "date": "2018年2月",
+        "text": "macOS、LinuxおよびWindowsでスタンドアロンのクライアントがリリース。",
+        "title": "デスクトップアプリ"
+      },
+      "jan2019": {
+        "date": "2019年1月",
+        "text": "スマートアカウントによるDecentral.Exchangeでの取引がサポート。",
+        "text_2": "ビットコインSVゲートウェイのローンチ。",
+        "title": "スマートアカウントトレード",
+        "title_2": "BSV ゲートウェイ"
+      },
+      "jul2018": {
+        "date": "2018年7月",
+        "text": "リニューアルされた取引所は、どのDEXよりも優れたUXとパフォーマンスを提供します。",
+        "text_2": "Wavesの人気のウォレットは主要なリリースでベータ版として登場します。",
+        "title": "新しいDEX",
+        "title_2": "Wavesウォレット"
+      },
+      "jul2019": {
+        "date": "2019年7月",
+        "text": "ERC20トークンのゲートウェイをWavesのエコシステムに追加することは、人気の EthereumトークンがWavesのプラットフォームでトレード可能になることを意味します。",
+        "text_2": "開発者はモバイル開発プロセスを簡素化し、Wavesブロックチェーンと通信するための手段について包括的な説明を得ることができます。",
+        "text_3": "ユーザーは、1つのウォレットアプリ内で複数のアカウントを簡単に切り替えることができます。",
+        "title": "ERC-20 ゲートウェイ",
+        "title_2": "モバイルSDKとJSライブラリの改良",
+        "title_3": "複数アカウント"
+      },
+      "jun2019": {
+        "date": "2019年6月",
+        "text": "DEXの速度とメモリ要件の改善が実装されます。",
+        "title": "DEXの最適化"
+      },
+      "may2018": {
+        "date": "2018年5月",
+        "text": "リニューアルされた取引所は、どのDEXよりも優れたUXとパフォーマンスを提供します。",
+        "title": "DASHとBitcoin Cashのゲートウェイ"
+      },
+      "nov2018": {
+        "date": "2018年11月",
+        "text": "ユーザーは、マルチシグネチャアカウントとスクリプトアカウントを使って取引することが可能になります。",
+        "title": "スマートアカウントをサポート"
+      },
+      "sep2018": {
+        "date": "2018年9月",
+        "text": "Decentral.Exchangeとの統合により、ユーザーは最高のセキュリティで取引することができます。",
+        "title": "Ledger Nano S"
+      },
+      "sep2019": {
+        "date": "2019年9月",
+        "text": "二段階認証は、Decentral.Exchangeユーザーにさらに高いセキュリティを提供します。",
+        "title": "2FA"
+      }
+    },
+    "userList": {
+      "addNew": "アカウントを追加",
+      "back": "Back",
+      "create": "新しいアカウントを作成",
+      "frombackup": "(バックアップから)",
+      "import": "アカウントをインポート",
+      "restore": "アカウントを復元",
+      "subTitle": "再度サインイン。または、",
+      "subTitleSession": "このセッションは自動的に終了しました。"
+    },
+    "welcome": {
+      "accountList": {
+        "locked": "Require unlocking"
+      },
+      "address": "アドレス",
+      "aliases": "エイリアス",
+      "android": "Google Play",
+      "api": "API",
+      "apple": "App Store",
+      "blog": "ブログ",
+      "broughtBy": "Wavesチームからあなたへ",
+      "cancel": "キャンセル",
+      "change": "変化",
+      "changeName": "名前を変更",
+      "chart": "チャート",
+      "comingSoon": "Coming soon",
+      "contestLinkDescription": "Decentral.Exchangeのトレーディングコンテストで5,000WAVESを勝ち取ろう！",
+      "contestLinkLink": "ルール",
+      "controlAssets": "資産の管理はあなたの責任です - 資金はあなたのウォレットに管理されています。そして、資産を凍結することはできません",
+      "cookies": "Cookies",
+      "copyAddress": "アドレスをコピー",
+      "copyright": "©2021 Blockchain Costa Rica",
+      "copyright-new": "© 2019 Waves.Exchange",
+      "copyrightVordex": "© 2019 VORDEX",
+      "createAccount": "Create account",
+      "createToken": "トークンを作成",
+      "currentAccountName": "現在のアカウント名",
+      "dashboard": "ダッシュボード",
+      "decentralized": "分散された",
+      "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
+      "dexWithHardware": "ハードウェアウォレットLedger Nano SおよびLedger BlueでDEXを使用",
+      "documentation": "ドキュメント",
+      "download": "ダウンロード",
+      "downloadMobileApp": "モバイルアプリをダウンロード!",
+      "exchange": "トレード",
+      "forDevelopers": "開発者向け",
+      "forum": "フォーラム",
+      "gateways": "人気通貨のゲートウェイ",
+      "gdpr": "GDPR",
+      "getRealTimeAccess": "市場データへのリアルタイムアクセスを取得し、API取引ボットを設定する",
+      "getStarted": "始める",
+      "gitHub": "GitHub",
+      "help": "ヘルプ",
+      "high": "24 HIGH",
+      "inputErrorNameExists": "その名前はすでに使用されています。別の名前をお試しください",
+      "instantAccessWalletDex": "あなたのウォレットとDEXへの即時アクセス",
+      "keeperAccount": "Keeper アカウント",
+      "lastPrice": "最終価格",
+      "leasing": "リース",
+      "ledgerAccount": "Ledger アカウント",
+      "ledgerSupport": "Ledger 対応",
+      "legal": "リーガル",
+      "linux": "Linux",
+      "linuxDescription": "Linuxアプリケーションをダウンロード",
+      "logout": "ログアウト",
+      "logOut": "ログアウト",
+      "low": "24 LOW",
+      "lowFixedFees": "低固定料金",
+      "macOs": "MacOS",
+      "macOsDescription": "MacOSアプリケーションをダウンロード",
+      "mailto": "support.wavesplatform.com",
+      "mailtoVordex": "support@vordex.com",
+      "mailtoWavesExchange": "support@waves.exchange",
+      "mainPage": "メインページ",
+      "majorFiatCryptocurrencies": "対応する主要な法定通貨と暗号通貨：BTC、LTC、ETH、USDなど",
+      "markets": "マーケット",
+      "marketsDescription": "Decentral.Exchangeを使用すると、モバイルアプリ、デスクトップクライアント、Web ウォレット、またはWaves APIのいずれを使用して取引しているかに関係なく、取引を迅速かつ安全に実行できます。",
+      "marketsTableDescription": "もっと取引ペアを見るためにクリック",
+      "marketsTableDescriptionLink": "取引所を見る",
+      "menu": "メニュー",
+      "name": "名前",
+      "nameSaved": "アカウント名が変更されました",
+      "newAccountName": "新しいアカウント名",
+      "news": "ニュース",
+      "pair": "ペア",
+      "portfolio": "ポートフォリオ",
+      "privacyPolicy": "プライバシーポリシー",
+      "productsTools": "製品とツール",
+      "renameAccount": "アカウント名を変更",
+      "roadmap": "ロードマップ",
+      "roadmapOpportunitiesAhead": "Decentral.Exchangeの将来：将来の機会に向けたWavesのロードマップ",
+      "save": "保存",
+      "scanQrCode": "QRコードをスキャン",
+      "scriptAccount": "スクリプトアカウント",
+      "scriptedAccount": "スクリプトアカウント",
+      "settings": "設定",
+      "signIn": "サインイン",
+      "social": "ソーシャル",
+      "stackOverflow": "Stack Overflow",
+      "suitableTradingBots": "ボット取引に最適",
+      "support": "サポート",
+      "switchAccount": "Switch account",
+      "telegram": "Telegram",
+      "termsOfUse": "利用規約",
+      "timerDays": "days",
+      "timerHours": "hours",
+      "timerMinutes": "minutes",
+      "timerSeconds": "seconds",
+      "tokenCreation": "高速なトークン生成",
+      "tokenCreationCosts": "トークン生成にかかる費用はわずか1 WAVESで、わずか1分で完了",
+      "tokenomicaToasterButton": "もっと詳しく知る",
+      "tokenomicaToasterText": "トークン化された資産の発行と取引のための史上初のオールインワンプラットフォームの株主になる",
+      "tradeOnWaves": "Wavesの分散型取引所でトレード",
+      "tradeOnWavesDescription": "中央型取引所のすべての利点をすべて提供しつつ、資金を完全に管理しながらトークンを迅速かつ安全に売買できます。",
+      "transactions": "トランザクション",
+      "twitter": "Twitter",
+      "volume": "ボリューム",
+      "wallet": "ウォレット",
+      "wavesBlockchain": "Waves ブロックチェーン",
+      "wavesDexWeb": "Decentral.Exchange ウェブ",
+      "wavesExplorer": "Waves エクスプローラー",
+      "wavesIde": "Waves IDE",
+      "wavesKeeper": "Waves Keeper",
+      "wavesLabs": "Waves Labs",
+      "wavesOrderFilled": "約定毎に0.003 DCC",
+      "wavesWallet": "Waves ウォレット",
+      "windows": "Windows",
+      "windowsDescription": "Windowsアプリケーションをダウンロード"
+    }
+  },
+  "electron": {
+    "menu": {
+      "copy": "コピー",
+      "cut": "カット",
+      "dev_tools": "開発ツール",
+      "paste": "ペースト",
+      "quit": "終了",
+      "title": {
+        "application": "アプリケーション",
+        "edit": "編集",
+        "god_mode": "Godモード"
+      }
+    },
+    "modal": {
+      "set_protocol_error": {
+        "close": "閉じる",
+        "message": "Wavesクライアントを開始するためのデフォルトプロトコルをセットすることができません。ブラウザからのリンクは現在サポートされていません。",
+        "report": "報告",
+        "title": "オープンプロトコルの設定エラー"
+      }
+    },
+    "storage": {
+      "backup": {
+        "error": {
+          "body": "Failed to get accounts. Please contact the support service to restore the backup phrase (SEED phrase).",
+          "title": "Something went wrong!"
+        }
+      },
+      "read": {
+        "error": {
+          "body": "あなたのキーを読み込む途中でエラーが発生しました。あなたのアカウントをバックアップストレージから復元しました。",
+          "title": "アカウントをバックアップから復元することに成功しました"
+        }
+      }
+    }
+  }
+}

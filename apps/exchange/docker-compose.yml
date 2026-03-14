@@ -1,0 +1,91 @@
+# Docker Compose for DCC React Wallet
+# Supports all three network environments
+
+version: '3.8'
+
+services:
+  # ================================================================
+  # Mainnet deployment
+  # ================================================================
+  dcc-wallet-mainnet:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        web_environment: mainnet
+    image: dcc-wallet-react:mainnet
+    container_name: dcc-wallet-mainnet
+    environment:
+      - WEB_ENVIRONMENT=mainnet
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ================================================================
+  # Testnet deployment
+  # ================================================================
+  dcc-wallet-testnet:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        web_environment: testnet
+    image: dcc-wallet-react:testnet
+    container_name: dcc-wallet-testnet
+    environment:
+      - WEB_ENVIRONMENT=testnet
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ================================================================
+  # Stagenet deployment
+  # ================================================================
+  dcc-wallet-stagenet:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        web_environment: stagenet
+    image: dcc-wallet-react:stagenet
+    container_name: dcc-wallet-stagenet
+    environment:
+      - WEB_ENVIRONMENT=stagenet
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+# Usage:
+# ------
+# Build and run mainnet:
+#   docker-compose up -d dcc-wallet-mainnet
+#
+# Build and run all networks:
+#   docker-compose up -d
+#
+# Build only (no run):
+#   docker-compose build
+#
+# View logs:
+#   docker-compose logs -f dcc-wallet-mainnet
+#
+# Stop all:
+#   docker-compose down

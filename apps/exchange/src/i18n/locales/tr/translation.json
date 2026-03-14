@@ -1,0 +1,2780 @@
+{
+  "app.create": {
+    "backupSeed": {
+      "back": "Geri git",
+      "copySeed": "kelimeleri kopyalayın",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official Waves clients.",
+      "needConfirm": "Bu kelimeleri bir sonraki ekranda doğrulayacaksınız",
+      "ok": "Hepsini bir kenera yazdım",
+      "or": "veya",
+      "saveSecret": "Geri yükleme kelimelerini kaydedin",
+      "seedPhrase": "Seed Phrase",
+      "warn": "Kripto paralarınızın kontrolü sizdedir. Uygulamanın silinmesi durumunda geri yükleme kelimelerine ihtiyaç duyacaksınız.",
+      "writeSeed": "15 kelimeyi eksiksiz ve hatasız olarak saklayın",
+      "yourSeed": "Anahtar kelimeleriniz"
+    },
+    "confirmBackup": {
+      "again": "ve tekrar basın",
+      "back": "Geri dön",
+      "clear": "Temizle",
+      "confirm": "Anahtar kelimelerini doğrula",
+      "description": "Anahtar kelimelerini doğrula veya",
+      "enterCorrect": "Lüften kelimeleri doğru sıra ile tıklayın",
+      "error": "hatalı sıralama, tekrar deneyin.",
+      "ok": "Doğrula",
+      "tapAgain": "ve tekrar basın"
+    },
+    "createAccount": {
+      "address": "Hesap adresi:",
+      "avatarUnique": "Avatarlar kişiye özeldir. Sonradan değiştiremezsiniz.",
+      "choose": "Adresiniz için bir avatar seçin",
+      "create": "Yeni bir hesap oluştur",
+      "createAccount": "Create a new account",
+      "createDescription": "Hızlı ve ücretsiz",
+      "createNewAccount": "Avatarınızı seçin",
+      "description": {
+        "becomePart": "Become part of a fast-growing area of the crypto world. You are the only person who can access your crypto assets",
+        "dex": "Trade quickly and securely. You retain complete control over your funds when trading them on our decentralized exchange",
+        "enterName": "Enter account name or",
+        "wallet": "Store, manage and receive interest on your digital assets balance, easily and securely"
+      },
+      "from": "Avatarlar kişiye özeldir. Sonradan değiştiremezsiniz.",
+      "header": {
+        "accountName": "Account name",
+        "dex": "decentralized Exchange",
+        "wallet": "Wallet",
+        "withBlockchain": "Get Started with Blockchain"
+      },
+      "import": "Hesapları içeri aktar",
+      "importDescription": "Anahtar kelimelerle, Ledger veya Keeper ile",
+      "protect": "Hesabınızı bir şifre ile koruyun veya",
+      "protectYourAccount": "Hesabınızı koruyun",
+      "restore": "Yedekten geri yükleyin",
+      "saveUserData": "Bu bilgisayarda otomatik çıkış yapma",
+      "signDescription": "kayıtlı bir hesaba",
+      "signIn": "Giriş yapın",
+      "signUp": "Ücretsiz bir hesap oluşturun veya",
+      "tosaved": "kaydedilmiş hesaba",
+      "toWalet": "cüzdanına veya"
+    },
+    "modal": {
+      "confirmBackupDescription": "Yedek kelimelerinizi doğrulayın",
+      "next": "Doğrula",
+      "prev": "Geri git",
+      "successContent": "Anahtar kelimelerinizi sonradan değiştiremezsiniz! Eğer bu kelimeleri yanlışlıkla bir yere gönderirseniz veya dolandırıcılara kaptırdığınızı düşünürseniz en kısa sürede yeni bir Waves cüzdanı oluşturun ve varlıklarınızı yeni cüzdana taşıyın!",
+      "successHeadline": "Yedek kelimelerinizi güvenli bir yerde saklayın",
+      "understand": "Anladım"
+    },
+    "noBackupNoMoney": {
+      "backup": "Şimdi yedekleyin",
+      "description": "Anahtar kelimelerinizi mutlaka kaydedin! Hesabınıza erişim için ihtiyacınız olacak. ",
+      "modal": {
+        "descriptionP1": "Son zamanlarda Waves Platform adını kullanarak sahte uygulamar ile sizleri tuzağa düşürmeye çalışmaktadırlar.",
+        "descriptionP2": "Lütfen dikkatli olunuz ve SEED (anahtar) kelimelerinizi bu tip uygulamalara girmeyiniz. Hesabınızdaki bütün kripto paralarınızı çalabilirler. ",
+        "descriptionP3": "Sadece RESMİ Waves uygulamasını kullanınız.",
+        "ok": "Okudum, Anladım",
+        "title": "Yedek kelimelerinizi dikkatli bir şekilde saklayın!"
+      },
+      "or": "veya",
+      "skip": "Daha sonra yapacağım",
+      "title": "Yedek yoksa cüzdan da yok!"
+    },
+    "seed": {
+      "copyToClipboard": "Copy to clipboard",
+      "saveToFile": "Save as file"
+    }
+  },
+  "app.desktop": {
+    "back": "Ana sayfaya dön",
+    "message": "Eğer sizde yüklü değil ise [Waves Platform resmi web](https://wavesplatform.com) sitesinden indirebilirsiniz. Eğer masaüstü uygulaması yüklü ise fakat açılmamış ise lütfen [hata formu](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) nu doldurun.",
+    "title": "Giriş yapmak için Waves masaüstü uygulamasını seçtiniz."
+  },
+  "app.dex": {
+    "create": {
+      "order": {
+        "failed": "Bir şeyler ters gitti",
+        "success": "Emir yaratıldı"
+      }
+    },
+    "dex": {
+      "contest": "Yarışma"
+    },
+    "directives": {
+      "balance": {
+        "assetId": "Kripto para ID",
+        "available": "Kullanılabilir",
+        "inOrders": "Emirlere ayrılmış",
+        "inOrdersFull": "Emirlere ayrılmış",
+        "total": "Toplam"
+      },
+      "candleChart": {
+        "error": "{div}[grafikler indirilememektedir.]{div}[Eğer uygulamanızda grafikleri kullanmak istiyorsanız [tradingview.com] a mesaj atın(https://tradingview.com)]"
+      },
+      "charts": "charts",
+      "createOrder": {
+        "1day": "1 gün",
+        "1hour": "1 saat",
+        "1week": "1 Hafta",
+        "30day": "30 gün",
+        "30min": "30 dakika",
+        "5min": "5 dakika",
+        "amountField": "Miktar",
+        "ask": "Satış",
+        "bid": "Alış",
+        "buy": "Al",
+        "createOrderNotPermitted": "Emirler geçici olarak devre dışı",
+        "errors": {
+          "amountMax": "Max Amount - ",
+          "amountMin": "Min Amount - ",
+          "balance": "Yetersiz {{name}} bakiyesi",
+          "precision": "Maksimum ondalık sayısını {{precision}} aştınız",
+          "priceMax": "Max Price - ",
+          "priceMin": "Min Price - ",
+          "required": "Bu alanın doldurulması zorunludur"
+        },
+        "expiration": "Geçerlilik tarihi",
+        "fee": "Komisyon {{fee}} DCC",
+        "hasScript": "Takas yapabilmek için [script]'i(https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) iptal edin",
+        "last": "Son",
+        "limit": "Limit Order",
+        "market": "Market Order",
+        "marketPriceField": "Price",
+        "matcherFee": "Komisyon",
+        "notifications": {
+          "error": {
+            "3147520": "{{address}} Adresi bu hatayı döndürüyor: {{scriptError}}",
+            "3147521": "{{address}} Hesabının script'i emri iptal etti.",
+            "3147522": "{{address}} Hesabının script'i emri iptal etti.",
+            "3147524": "{{address}} adresinin script'i bozulmuş, lütfen sahibi ile iletişime geçin. Dönen değer: '{{returnedObject}}'",
+            "11536128": "{{assetId}} varlığının script'i bu hatayı döndürüyor: {{scriptError}}",
+            "11536129": "{{assetId}} varlığının script'i bozulmuş. Lütfen sahibi ile iletişime geçin. Geri dönen hata: {{errorName}}, mesaj: {{errorText}}",
+            "11536130": "{{assetId}} varlığının script'i emri reddetti.",
+            "11536132": "{{assetId}} varlığının scripti bozulmuş, Lütfen sahibi ile iletişime geçin. Geri dönen değer: '{{returnedObject}}'",
+            "title": "Hata mesajı"
+          },
+          "isCreated": "Emir girildi",
+          "notEnoughBalance": "Takas için yeterli bakiye bulunmamaktadır",
+          "somethingWentWrong": "Bir şeyler ters gitti"
+        },
+        "notPermitted": "Emir girişleri geçici olarak devre dışı",
+        "placeBuyOrder": "{{name}} al",
+        "placeSellOrder": "{{name}} sat",
+        "priceField": "Limit fiyat",
+        "sell": "Sat",
+        "spread": "Makas",
+        "stopPriceField": "Stop price",
+        "stopPriceHelp": "This is an automatic buy or sell order at a predetermined price",
+        "total": "Toplam"
+      },
+      "createorder": {
+        "yourBalance": "Your balance"
+      },
+      "demo": {
+        "createAccount": "Yeni bir hesap oluştur",
+        "or": "veya",
+        "signIn": "Giriş yap",
+        "to": {
+          "mybalance": "Bakiyeni görmek için",
+          "openorders": "Açık emirlerini görmek için",
+          "tradehistory": "takas geçmişini görmek için"
+        }
+      },
+      "filter": "Ara",
+      "marketDepth": "Derinlik",
+      "markets": {
+        "table": {
+          "price": "Fiyat",
+          "rate": "Değişim",
+          "unit": "Kripto para",
+          "volume": "Hacim"
+        },
+        "title": "Pazar alanı"
+      },
+      "myOrders": {
+        "amount": "Miktar",
+        "average": "Ortalama",
+        "back": "Hayır",
+        "cancel": "iptal",
+        "cancelAll": "hepsini iptal et",
+        "cancelAllConfirm": "Evet",
+        "canceled": "iptal edilen",
+        "cancelled": "İPTAL EDİLDİ",
+        "confirm": {
+          "header": "Emin misin?",
+          "literalDescription": "Bu işlem geri alınamaz"
+        },
+        "delete": "sil",
+        "detail": "detay",
+        "fee": "komisyon",
+        "filled": "Doldurulmuş",
+        "filter": "Filtrele",
+        "noPermissionCancelOrder": "Emir iptali geçici olarak devre dışı",
+        "notifications": {
+          "canceledAll": "Tüm emirler iptal edildi",
+          "isCanceled": "Emir iptal edildi",
+          "somethingWentWrong": "Birşeyler ters gitti"
+        },
+        "opened": "açılmış",
+        "orderType": {
+          "buy": "Al",
+          "sell": "Sat"
+        },
+        "pair": "Takas çifti",
+        "placeholders": {
+          "lockedPair": "{{amountAssetTicker}} / {{priceAssetTicker}} kripto paraları arasında takas mümkün değiş. Emri iptal edebilirsiniz."
+        },
+        "price": "Fiyat",
+        "status": "Durum",
+        "tableTitle": {
+          "fee": "Komisyon"
+        },
+        "time": "Zaman",
+        "total": "Toplam",
+        "type": "Tip",
+        "withScript": "Hesabınızda [script](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) varken takas yapamazsınız"
+      },
+      "noChartDataMessage": "{div}[grafik derinliği oluşturmak için]{div}[yeterli emir yok]",
+      "noChartDataTitle": "Burada hiçbir şey yok...",
+      "orderBook": {
+        "amount": "Miktar {{assetName}}",
+        "lastprice": "son fiyat",
+        "price": "Fiyat {{assetName}}",
+        "spread": "spread",
+        "sum": "Toplam {{assetName}}",
+        "title": "Emir tahtası"
+      },
+      "orderbook": {
+        "errorBlock": {
+          "header": "Bir şeyler ters gitti"
+        }
+      },
+      "orders": "orders",
+      "portfolio": {
+        "title": "Portföy"
+      },
+      "tradeHistory": {
+        "orderType": {
+          "buy": "Al",
+          "sell": "Sat"
+        },
+        "search": "Ara",
+        "tableTitle": {
+          "date": "Zaman",
+          "exchangeType": "Tip",
+          "fee": "Komisyon",
+          "price": "Fiyat {{assetName}}",
+          "size": "Miktar {{assetName}}",
+          "total": "toplam",
+          "type": "tip"
+        },
+        "title": "Takas geçmişi"
+      },
+      "watchlist": {
+        "all": "HEPSİ",
+        "change": "Değişim",
+        "chg": "Değişim",
+        "coin": "Kripto para",
+        "helpIcon": {
+          "assetId": "Kripto para ID",
+          "AssetId1AssetId2": "Kripto para 1 ID / Kripto para 2 ID",
+          "description": "Kripto paraları arama hakkında detaylı bilgiye [buradan](https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html) ulaşabilirsiniz.",
+          "header": "İle arayabilirsin:",
+          "name": "İsim",
+          "name1Name2": "İsim1 / İsim2"
+        },
+        "pair": "Eş",
+        "placeholders": {
+          "base": "Temel kripto para",
+          "coin": "Kripto para ekle",
+          "filter": "Filtrele",
+          "lockedPair": "{{amountAssetTicker}} / {{priceAssetTicker}} takası şu anda mümkün değil.",
+          "noMarkets": "Filtrelerinize uygun bir pazar bulunamadı"
+        },
+        "price": "Fiyat",
+        "vol": "Vol",
+        "volume": "Hacim"
+      }
+    },
+    "emptyBlocks": {
+      "myOrders": {
+        "description": "Herhangi bir emriniz bulunmamaktadır.",
+        "title": "Burada hiçbir şey yok..."
+      },
+      "orderBook": {
+        "description": "Emir tahtası boş.",
+        "error": {
+          "text": "Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin",
+          "title": "Bir şeyler ters gitti"
+        },
+        "title": "Burada hiçbir şey yok..."
+      },
+      "tradeHistory": {
+        "description": "İşlem geçmişi yok.",
+        "title": "Burada hiçbir şey yok…"
+      }
+    },
+    "layout": {
+      "center": {
+        "bottom": "Emirlerim"
+      },
+      "right": {
+        "bottom": "Takas geçmişi",
+        "top": "Emir tahtası"
+      }
+    },
+    "orderbook": {
+      "ask": {
+        "tooltipText": "{{price}} {{priceAsset}} için {{amountAsset}} al"
+      },
+      "bid": {
+        "tooltipText": "{{price}} {{priceAsset}} için {{amountAsset}} sat"
+      }
+    },
+    "tabs": {
+      "title": {
+        "all": "Hepsi",
+        "btc": "Btc",
+        "eth": "ETH",
+        "history": "history",
+        "myBalance": "Bakiyem",
+        "myTradeHistory": "Takas geçmişim",
+        "openOrders": "Açık emirlerim",
+        "OrderHistory": "Takas geçmişim",
+        "trade": "Trade",
+        "tradeHistory": "Takas geçmişi",
+        "waves": "Waves"
+      }
+    }
+  },
+  "app.fag": {
+    "fag": {
+      "migration": {
+        "title1": "What’s going on?"
+      }
+    }
+  },
+  "app.import": {
+    "back": "Ana sayfaya dön",
+    "backupFile": {
+      "back": "go back",
+      "enterPasswordDescription": "Please enter your password or",
+      "helper": "You need to enter the password, which you used for the accounts exporting",
+      "import": {
+        "accounts": "Accounts",
+        "emptyList": "There are no accounts for import in the uploaded file",
+        "importFailed": "Failed to import keystore file",
+        "noChosen": "No file chosen",
+        "selectAccount": "Choose accounts",
+        "selectAccountDesc": "Please select account or",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "wrongPassword": "Wrong password!"
+      },
+      "importFromFile": "Import account from Keystore File",
+      "importFromFileDescription": "Choose your JSON file and click Import or",
+      "name": "Keystore File",
+      "next": "Continue",
+      "password": "Password",
+      "selectFileBtn": "Choose file"
+    },
+    "backupFileDescription": "Import account from Keystore File",
+    "import": {
+      "signIn": "Giriş yap"
+    },
+    "importAccount": "Hesapları içeri aktar",
+    "importAccountInfo": "Hesapların nereden aktarılacağını seçiniz",
+    "KeeperClient": "Waves Keeper",
+    "keeperDescription": "Hesabı Waves Keeper'dan içeri aktar",
+    "keeperForm": "Yükle",
+    "LedgerClient": "Ledger cihazı",
+    "ledgerDescription": "Hesapları Ledger Nano S'den içeri aktar",
+    "or": "Veya",
+    "seedAndKey": {
+      "name": "Anahtar kelimeler veya özel anahtar"
+    },
+    "seedAndKeyDescription": "Hesabı anahtar kelimelerden veya özel anahtardan içeri aktar",
+    "selectButton": "Seç",
+    "wavesClient": "Waves Uygulaması",
+    "wavesClientDescription": "Waves Uygulamasından hesabı içe aktar",
+    "wavesLiteClient": "Waves Lite Client",
+    "wavesLiteClientDescription": "Hesapları Waves Lite Client'ten içeri aktar",
+    "wavesSeedClient": "Anahtar kelimeleri yedekle",
+    "wavesSeedClientDescription": "Hesapları anahtar kelimelerden içeri aktar"
+  },
+  "app": {
+    "back": "Ana sayfaya dön",
+    "button": {
+      "cancel": "İptal",
+      "continue": "Devam",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Kripto para oluşturma geçici olarak kapalı",
+        "issue-title": "Kripto para oluşturma",
+        "massSendTitle": "Toplu transfer",
+        "reissue": "Tekrar kripto para oluşturma geçici olarak kapalı",
+        "sendTitle": "Gönder",
+        "set-script-title": "Script işlemi"
+      },
+      "send": {
+        "errors": {
+          "fee": "Gerekli olan komisyonu ödemek için yeterli bakiyeniz bulunmamaktadır. İşlem komisyonu için {{fee, money-currency}} ödemeniz gerekmektedir;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "Ocak",
+        "Şubat",
+        "Mart",
+        "Nisan",
+        "Mayıs",
+        "Haziran",
+        "Temmuz",
+        "Ağustos",
+        "Eylül",
+        "Ekim",
+        "Kasım",
+        "Aralık"
+      ]
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://wavesplatform.com/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Selam harika para, her ne amaçla karşıma çıkıyorsan ;)"
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Varlıklar",
+      "dex": "DEX",
+      "leasing": "Kiralama",
+      "portfolio": "Portföy",
+      "tokens": "Kripto Paralar",
+      "transactions": "İşlemler",
+      "wallet": "Cüzdan"
+    },
+    "inputs": {
+      "errors": {
+        "required": "Bu alanın doldurulması zorunludur!"
+      }
+    },
+    "leftmenu": {
+      "login": "Giriş yap",
+      "logout": "Çıkış Yap",
+      "settings": "Ayarlar"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "İptal edildi",
+          "filled": "Gerçekleşti ({{percent}}%)",
+          "opened": "Açıldı"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "TAMAM",
+        "title": "Parolanızı Girin"
+      },
+      "pairing": {
+        "showQr": "Göster"
+      },
+      "tryDesktop": {
+        "cancel": "Web ile devam et",
+        "label": "Seçimimi hatırla ve beni tekrar uyarma",
+        "message": "Waves masaüstü uygulamasını kullanmanızı öneriyoruz. Eğer sizde yüklü değil ise Waves Platform resmi web sitesinden indirebilirsiniz.",
+        "title": "Waves masaüstü uygulamasını kullanın",
+        "try": "Waves masaüstü uygulamasını açın"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "Bin"
+      }
+    },
+    "Suspicious": "Şüpheli"
+  },
+  "app.ledger": {
+    "ledger": {
+      "article": "bu makale",
+      "connectionError": "Ledger Nano S'e bağlanılamadı..",
+      "connectionText": "Bağlantı zaman aşımına uğramış olabilir. Lütfen tekrar deneyin.",
+      "referTo": "Eğer hata devam ederse lütfen"
+    },
+    "ledgerForm": {
+      "address": "Hesap adresi:",
+      "addressSaved": "Adres kaydedildi",
+      "avatarUnique": "Avatarınız size özeldir. Sonradan değiştirilemez.",
+      "back": "Geri dön",
+      "choose": "Hesabınızı seçin",
+      "help": {
+        "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
+      },
+      "id": "Account ID",
+      "importAccount": "Ledger hesabını içe aktarın",
+      "ImportOrSignIn": "Hesapları içeri aktar veya",
+      "login": "Devam",
+      "name": "Hesap adı",
+      "nameExists": "Bu isim alınmış",
+      "or": "veya",
+      "retry": "Tekrar deneyin",
+      "savedOne": "kaydedilmiş hesaba",
+      "saveUserData": "Hesabı bu bilgisayarda tut",
+      "selectDefault": "varsayılan hesaba",
+      "signIn": "giriş yap"
+    },
+    "modal": {
+      "sign": {
+        "confirmRequest": "talebi onayla",
+        "confirmRequestMatcher": "Giriş yapın. Eğer Ledger hesabınızdan giriş yapmazsanız merkezsiz borsada takas işlemleri yapamazsınız."
+      }
+    },
+    "or": "Veya"
+  },
+  "app.migrate": {
+    "desktopUpdate": {
+      "almostThere": "Almost there...",
+      "backToPrevious": "Back to previous",
+      "barDone": "Done",
+      "barDownload": "Download",
+      "barInstall": "Install and run",
+      "barSuccess": "Success",
+      "cancelDownloading": "Cancel download",
+      "congratulations": "Congratulations!",
+      "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
+      "connectSupport": "If that did not help, then contact the Waves.Exchange [support](https://support.waves.exchange/).",
+      "download": "Download",
+      "downloaded": "yes",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "fail": "Fail",
+      "failText": "Please make sure that you have installed and run the new Waves.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Waves.Exchange desktop application?",
+      "install": "Install the application",
+      "installAndRun": "Install and run the application. Have you done it?",
+      "iUnderstand": "I understand",
+      "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
+      "lookAtFAQ2": "You might find the answer there.",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.wavesplatform.com).",
+      "oops": "Oops! Something went wrong...",
+      "password": "Password",
+      "passwordError": "Wrong Password!",
+      "pleaseWait": "Downloading...",
+      "return": "return",
+      "run": "Run the installed application",
+      "seconds": "seconds",
+      "seconds1": "second",
+      "seconds234": "seconds",
+      "signInAndMove": "Sign in & Start moving",
+      "toFinish": "To finish the migration of your accounts, you have to go to the new application and complete the authorization process.",
+      "tryAgain": "Try again"
+    },
+    "faq": {
+      "attention": {
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.wavesplatform.com](https://dex.wavesplatform.com/) and [https://client.wavesplatform.com](https://client.wavesplatform.com/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. Waves Platform or Waves.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "title": "ATTENTION!!! "
+      },
+      "goHome": "Go to HomePage",
+      "text1": "Decentral.Exchange is transforming into a new product, Waves.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Waves.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Waves.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on the Waves blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using Waves Explorer. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Waves.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
+      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Waves community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Waves trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "title1": "What’s going on?",
+      "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
+      "title11": "Will the new exchange have access to my seed phrases?",
+      "title12": "What will happen to my tokens?",
+      "title13": "What problems might users face due to the migration?",
+      "title14": "How long will technical work take on December 2?",
+      "title15": "How can I update my mobile app?",
+      "title16": "Do you plan on introducing KYC procedures? ",
+      "title17": "What changes will the matcher undergo?",
+      "title18": "What if I have any problems or questions during the migration process?",
+      "title19": "What will happen to gateway tokens?",
+      "title2": "What is Waves.Exchange?",
+      "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
+      "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
+      "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
+      "title23": "Why so complicated?",
+      "title24": "Are there plans to expand language support for the interface of the new exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Waves.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+    },
+    "migrate": {
+      "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
+      "achievementTitle": "Congratulations!",
+      "btn": {
+        "unlock": "Unlock"
+      },
+      "continue": "Continue",
+      "desc": {
+        "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
+        "enterPassword": "Enter your Waves.Exchange password to continue the migration.",
+        "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
+      },
+      "description": {
+        "enterPass": "Enter your account password or",
+        "goBack": "return back",
+        "goBackExchange": "go back",
+        "unlock": "Unlock your accounts. You can return to this step later",
+        "unlockExchange": "To finish the migration, complete the authorization process by unlocking an account from the old application and signing in, or creating a new account, or importing it."
+      },
+      "headers": {
+        "unlock": "Unlock your accounts",
+        "unlockAccount": "Unlock account",
+        "unlockAccountExchange": "Unlock your account",
+        "unlockExchange": "Unlock your accounts"
+      },
+      "modalButton": {
+        "cancel": "Cancel",
+        "moving": "Start moving"
+      },
+      "modalDesc": {
+        "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
+        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
+        "thirdPart": "The migration process is fast, easy and absolutely secure."
+      },
+      "modalTitle": {
+        "moving": "Save your Seed!",
+        "plate": "Don’t worry! All of your tokens, seed phrases and passwords are safe.",
+        "redirected": "You have been redirected to"
+      },
+      "signIn": "Sign in",
+      "subtitle": {
+        "account": "Account",
+        "pending": "Pending unlock",
+        "pendingExchange": "To unlock, select an account from the list",
+        "pendingUnlockingExchange": "Pending unlocking",
+        "unlocked": "Unlocked"
+      },
+      "title": {
+        "almostThere": "Almost there...",
+        "protectAccount": "Protect your accounts"
+      }
+    },
+    "modals": {
+      "shutdownNotificationFirst": {
+        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "One day left!"
+      },
+      "shutdownNotificationLast": {
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "submit": "I understand",
+        "title": "Time to move on!"
+      },
+      "shutdownNotificationSecond": {
+        "message1": "Decentral.Exchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "submit": "I understand",
+        "title": "Two hours left!"
+      }
+    }
+  },
+  "app.restore": {
+    "encodedSeedForm": {
+      "placeholder": "Введите вашу закодированную секретную фразу"
+    },
+    "encodedSeedTab": "Encoded seed",
+    "keyForm": {
+      "placeholder": "Özel anahtarınızı buraya girin"
+    },
+    "keyTab": "Özel Anahtar",
+    "password": {
+      "error": "Hatalı Parola!"
+    },
+    "passwordForm": {
+      "back": "geri gidin",
+      "description": "Hesabınızı bir parola ile koruyun veya",
+      "importAccounts": "Hesapları aktar",
+      "login": "Devam",
+      "title": "Hesabınızı Koruyun"
+    },
+    "restore": {
+      "beta": {
+        "accountTitle": "Adres / Hesap adı",
+        "buttons": {
+          "cancel": "Geri",
+          "copy": "Seed'i kopyala",
+          "restore": "Seed'i geri yükle"
+        },
+        "noUsers": {
+          "description": "{div}[Kayıtlı bir hesap bulunamadı. Şu adrese geri dönün]{div}[[client.wavesplatform.com](https://client.wavesplatform.com)]",
+          "title": "Hesap kaydedilmedi"
+        },
+        "passwordTitle": "Parola",
+        "placeholders": {
+          "password": "Parola"
+        },
+        "step1Description": "SEED'inize değil yalnızca parolanıza sahipseniz kayıtlı bir hesabı geri yüklemek için bu sayfayı kullanabilirsiniz.",
+        "step2Description": "Lütfen SEED'i dikkatlice kaydedin. Kaybettiğiniz takdirde hesabınıza hiçbir şekilde erişemezsiniz.",
+        "title": "Seed'i geri yükle"
+      }
+    },
+    "seedForm": {
+      "address": "Adres",
+      "addressSaved": "Adres kaydedildi",
+      "back": "Geri dön",
+      "continue": "Devam",
+      "create": "Yeni bir hesap oluşturun",
+      "description": "Anahtar kelimeleriniz cüzdanınızı oluştururken size verilen 15 kelimeden oluşmaktadır",
+      "nameExists": "Bu isim alınmış",
+      "or": "veya",
+      "placeholder": "Anahtar kelimeleriniz cüzdanınızı oluştururken size verilen 15 kelimeden oluşmaktadır",
+      "saveUserData": "Bu bilgisayarda otomatik çıkış yapma",
+      "seedTitle": "Anahtar kelimeleriniz",
+      "title": "Anahtar kelimelerden içeri aktar",
+      "tosaved": "kaydedilmiş hesaba"
+    },
+    "seedOrKeyForm": {
+      "description": "Cüzdanınıza erişmek için Anahtar kelimeleri veya özel anahtarınızı girin.",
+      "encodedSeed": "Encoded seed",
+      "keyTitle": "Özel Anahtar",
+      "seedTitle": "Anahtar kelimeler",
+      "title": "Anahtar kelimelerden içeri aktar"
+    },
+    "seedTab": "Anahtar kelimeler",
+    "warningSeed": {
+      "message": "Bir adresin anahtar kelime (SEED) yerine kullanılmasını önermiyoruz. Bu yöntem güvenli değil! Devam etmek istediğinizden emin misiniz?",
+      "title": "Anahtar kelimeleri (SEED) değil, bir adres girdiniz."
+    }
+  },
+  "app.saveSeed": {
+    "continue": "Devam",
+    "copy": "Kopyala",
+    "copySeed": "Anahtar Kelimeleri Kopyala",
+    "createAccount": "Hesap oluştur",
+    "goBack": "Geri dön",
+    "notHaveAccounts": "Kayıtlı hesabınız yok",
+    "nothingHere": "Burada hiçbir şey yok!",
+    "password": {
+      "error": "Hatalı Parola!"
+    },
+    "userList": {
+      "address": "Adres / hesap adı",
+      "buttons": {
+        "login": "Giriş Yap"
+      },
+      "exportUser": "Hesabı dışa aktar",
+      "notHaveAccount": "Devam etmek için giriş yapın",
+      "password": "Parola",
+      "placeholders": {
+        "password": "Parola"
+      },
+      "title": "Hoşgeldiniz"
+    },
+    "warn": "Hesabınızı sadece siz kontrol edersiniz. Uygulamanın silinmesi durumuna karşı Anahtar kelimelerinizi mutlaka kaydedin.",
+    "yourSeed": "Anahtar kelimeleriniz"
+  },
+  "app.sessions": {
+    "session": {
+      "headline": "Hesabınızı seçin",
+      "or": "veya",
+      "signIn": "Bir hesaba giriş yapın",
+      "signInNew": "Yeni bir oturum başlatın"
+    }
+  },
+  "app.signIn": {
+    "createAccount": "Hesap oluştur",
+    "notHaveAccounts": "Kayıtlı hesabınız yok",
+    "nothingHere": "Burada hiçbir şey yok!",
+    "password": {
+      "error": "Hatalı Parola!"
+    },
+    "signIn": {
+      "btn": {
+        "cancel": "Cancel",
+        "overwrite": "Overwrite",
+        "restore": "Reset all"
+      },
+      "enterPass": "Please enter your password to continue",
+      "or": "OR",
+      "passForgot": {
+        "attention": "Attention!",
+        "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
+        "descriptionExchange": "You are about to delete all of your Waves.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts."
+      },
+      "password": {
+        "forgot": "Forgot your password?",
+        "overwrite": "Overwrite accounts",
+        "overwriteDescription": "Overwrite all Waves.Exchange accounts on this device"
+      },
+      "signIn": "Sign in",
+      "welcomeBack": "Welcome Back!"
+    },
+    "userList": {
+      "address": "Adres / hesap adı",
+      "buttons": {
+        "login": "Giriş Yap"
+      },
+      "notHaveAccount": "Devam etmek için giriş yapın",
+      "password": "Parola",
+      "placeholders": {
+        "password": "Parola"
+      },
+      "title": "Hoşgeldiniz"
+    }
+  },
+  "app.signUp": {
+    "signUp": {
+      "headers": {
+        "onePassBtn": "Let’s start!",
+        "onePassDesc": "Local data storage, seed phrases and encryption make DCC DEX reliable. However, we are going further. It’s time to switch on a new security level. Log into your accounts and switch between them by a couple of taps.",
+        "onePassword": "One password for all your accounts",
+        "protect": "Protect Your Accounts",
+        "protectDesc": "Set a single password for all your accounts",
+        "protectPass": "Create password"
+      },
+      "password": {
+        "notMatch": "Password does not match"
+      },
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions), [Privacy Policy](https://decentralchain.io/privacy-policy)."
+    }
+  },
+  "app.tokens": {
+    "count": "Toplam Kripto para",
+    "create": "Kripto parayı oluştur",
+    "description": "Açıklama",
+    "directives": {
+      "sign": {
+        "confirmRequestLedger": {
+          "waiting": "Ledger Nano S'den onay bekleniyor..."
+        }
+      }
+    },
+    "fee": "Komisyon {{fee, money-currency}}",
+    "help": {
+      "name": "Sadece Latin harflerini kullanın"
+    },
+    "helpIcon": {
+      "demicals": "Bu alan kripto paranızın kaç basamağa bölüneceğini belirtmektedir.",
+      "scriptDescription": "Akıllı kripto para işlemleri işlem ücreti 0.004 DCC arttırır. Örneğin akıllı kripto para için bir işlem yaptığınızda 0.001 + 0.004 = 0.005 DCC komisyon ödersiniz. Eğer takas işlemi yaparsanız 0.003 + 0.004 = 0.007 DCC komisyon ödersiniz.",
+      "scriptHeader": "Akıllı kripto para, her işlemde belirli koşulları kontrol eden script'lerden oluşur.",
+      "scriptLearnMore": "Daha fazla bilgi edin",
+      "totalTokens": {
+        "headline": "Bu alan toplam üretilecek olan kripto para adedini belirtmektedir.",
+        "notReissuable": "\"Sınırlı\" olarak seçilen kripto paralar kalıcı olarak sınırlandırılacaktır ve tekrar üretilemezler.",
+        "reissuable": "\"Tekrar üretilebilir\" olarak seçilen kripto paralar her hangi bir limite bağlı olmadan daha sonra tekrar üretilebilir."
+      }
+    },
+    "modal": {
+      "title": "{{name}} Üretim",
+      "titleSuccess": "{{name}} Üretim tamamlandı"
+    },
+    "name": "Kripto paranızın adı",
+    "NFT": {
+      "description": "A non-fungible token (NFT) is a unique, individual token existing on the Waves blockchain. Currently, display of NFTs in Waves Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [Waves Explorer](https://wavesexplorer.com/)",
+      "title": "non-fungible token oluşturuyorsunuz."
+    },
+    "notifications": {
+      "isNotCreated": "Kripto para oluşturulamadı"
+    },
+    "pageTitle": "Kripto para üretimi",
+    "placeholders": {
+      "description": "Açıklamayı daha sonra değiştiremezsiniz.",
+      "precision": "0 ile 8 arasında bir değer girin"
+    },
+    "precision": "Basamak",
+    "preview": "Ön izleme",
+    "reissuable": {
+      "false": "Sınırlı",
+      "true": "Tekrar üretilebilir"
+    },
+    "script": "Akıllı kripto para",
+    "success": {
+      "description": "{{amount}} {{name}} ürettin",
+      "done": "Portföyü aç",
+      "title": "Transfer yolda!"
+    },
+    "switchScriptOff": "Script'i devre dışı bırak",
+    "switchScriptOn": "Script'i etkinleştir",
+    "tokens": {
+      "changeColorTooltip": "Rengi değiştir",
+      "inputHelper": {
+        "description": "Bu adı kullanırsanız, kripto paranız 'Şüpheli' olarak sınıflandırılır ve yalnızca kimlik numarası ile aranır.",
+        "header": "Bu varlık adı önceden alınmış"
+      },
+      "termsOfUse": {
+        "checkbox": "Kurallara uymama durumunda kripto paramın 'Şüpheli' olarak sınıflandırılacağını ve yalnızca kimlik numarasıyla aranabileceğini biliyorum."
+      }
+    },
+    "validators": {
+      "byte": {
+        "gte": "Kripto para adının 4 ve 16 byte uzunluğunluğu arasında olması zorunludur",
+        "lte": "Kripto para adının 4 ve 16 byte arasında olması zorunludur."
+      },
+      "descriptionLen": "Açıklama çok uzun! 1,000 byte'tan daha fazla olamaz.",
+      "invalidScript": "Syntax hatası",
+      "maxValueCount": "Girilen rakam çok büyük!",
+      "maxValuePrecision": "Hatalı rakam! 0 ile 8 arasında bir değer girin.",
+      "minValueCount": "Girilen rakam 0'dan büyük olmalıdır.",
+      "minValuePrecision": "Hatalı rakam! 0 ile 8 arasında bir değer girin.",
+      "noMoney": "İşlem komisyonunu ödemek için yeterli bakiyeniz bulunmamaktadır.",
+      "precisionCount": "Basamak alanında belirtilen basamaklardan daha fazla basamak giremezsiniz.",
+      "required": "Bu alanın doldurulması zorunludur."
+    }
+  },
+  "app.ui": {
+    "active": "Active",
+    "all": "Tamamı",
+    "amount": "Miktar",
+    "balanceInput": {
+      "max": "Maksimum"
+    },
+    "confirmGatewayTransaction": {
+      "back": "Geri",
+      "confirm": "Onayla",
+      "fieldAddress": "Hedef adresi",
+      "fieldAmount": "Miktar",
+      "fieldFee": "Komisyon",
+      "fieldGatewayAddress": "Geçit adresi",
+      "fieldGatewayFee": "Geçit komisyonu",
+      "success": "Transferiniz yolda!",
+      "warningText": "{{name}} blok zincirine kripto para göndermek üzeresiniz.",
+      "warningTitle": "Harici blok zinciri transferi"
+    },
+    "confirmTransaction": {
+      "back": "Geri dön",
+      "confirm": "Onayla",
+      "description": {
+        "burn": "{{quantityStr}} {{name}} yaktınız",
+        "cancel-leasing": "Kiralama transferini iptal ettiniz",
+        "circular": "Kendinize {{amount, money-currency}} gönderdiniz",
+        "create-alias": "Takma isim oluşturdunuz",
+        "data": "Veri işlemi gönderdiniz",
+        "data-vote": "{div.line}[{{moneyCurrency}} için oy kullandınız.]\n{div.line}[Puanınız 24 saat sonra uygulanacaktır. Derecelendirmeniz işlemde.]",
+        "issue": "Oluşturdunuz",
+        "lease-out": "{{amount, money-currency}} kiraladınız",
+        "mass-send": "Gönderdiğiniz miktar {{totalAmount, money-currency}}",
+        "reissue": "{{quantityStr}} {{name}} oluşturdunuz",
+        "send": "{{amount, money-currency}} gönderdiniz",
+        "set-asset-script": "Script'i güncellediniz.",
+        "set-script": "Script işlemi oluşturdunuz.",
+        "set-script-cancel": "Script işlemini iptal ettiniz.",
+        "sponsorship-start": "Sponsorluk etkinleştirildi",
+        "sponsorship-stop": "Sponsorluk iptal edildi"
+      },
+      "details": "Detayları görüntüle",
+      "export": "Dışa aktar",
+      "JSON": "JSON",
+      "ledgerUnconfirmed": {
+        "description": "Lütfen tekrar deneyin. Eğer hata almaya devam ederseniz [hata formu]nu doldurabilirsiniz. (https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
+        "header": "Ledger'da talebi onaylamadınız."
+      },
+      "notPermited": {
+        "cancel-leasing": "Kiralama geçici olarak devre dışı"
+      },
+      "notPermitted": {
+        "burn": "Kripto para yakma geçici olarak devre dışı",
+        "burn-title": "Kripto para yak",
+        "cancel-leasing": "Kiralamayı başlatma işlemi geçici olarak devre dışı",
+        "cancel-leasing-title": "Kiralamayı iptal et",
+        "data": "Veri işlemleri geçici olarak devre dışı",
+        "data-title": "Veri işlemi",
+        "reissue-title": "Tekrar kripto para oluştur",
+        "set-script": "Script işlemi geçici olarak devre dışı",
+        "sponsorship-start": "Sponsorluk işlemi geçici olarak devre dışı",
+        "sponsorship-start-title": "Sponsorluğu değiştir."
+      },
+      "orderSuccess": "Emriniz oluşturuldu.",
+      "redirect": "{{referrer}} sitesine yönlendirileceksiniz",
+      "send": {
+        "errors": {
+          "balance": {
+            "invalid": "Yetersiz bakiye"
+          },
+          "recipient": {
+            "invalid": "Alıcı adresi hatalı"
+          }
+        }
+      },
+      "sign": "İmzala",
+      "success": "Transferiniz yolda!",
+      "wavesKeeperUnconfirmed": {
+        "description": "Lütfen tekrar deneyin. Eğer hata devam ederse lütfen [destek] ile iletişime geçin. (https://decentralchain.io/soporte)",
+        "header": "Talebi Waves Keeper'dan onaylamadınız"
+      }
+    },
+    "copyError": "Kopyalanamıyor. Tarayıcınızı güncellemeyi deneyin",
+    "copySuccess": "Veri kopyalandı",
+    "directives": {
+      "anyTransaction": {
+        "copy": "Kopyala",
+        "textAreaTitle": "TX JSON"
+      },
+      "scriptForm": {
+        "placeholder": {
+          "change": "Yeni bir script girin veya mevcut script'in iptali için boş bırakın",
+          "create": "Yeni bir script girin veya mevcut script'in iptali için boş bırakın"
+        },
+        "textAreaTitle": "Base64 script"
+      },
+      "setAssetScriptForm": {
+        "ok": "Devam"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "cancel": "İptal",
+          "errorDescription": "Lütfen tekrar deneyin. Eğer hata devam ederse lütfen [destek] ile iletişime geçin. (https://decentralchain.io/soporte)",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+          "errorHeader": "Talebi Waves Keeper'dan onaylamadınız",
+          "sign": "Tekrar deneyin",
+          "waiting": "Waves Keeper'dan onay bekleniyor..."
+        },
+        "confirmRequestLedger": {
+          "cancel": "İptal",
+          "errorDescription": "Lütfen tekrar deneyin. Eğer hata devam ederse [bu makale](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)'den destek alabilirsiniz.",
+          "errorHeader": "Talebi Ledger Nano S'den onaylamadınız",
+          "sign": "Tekrar imzala",
+          "waiting": "Ledger Nano S'den onay bekleniyor..."
+        },
+        "txId": "TXID"
+      },
+      "transactionExport": {
+        "linkTitle": "Giriş için bu link'i paylaşın",
+        "or": "VEYA",
+        "qrZoomBtn": "Yakınlaştırma veya uzaklaştırma için tıklayın",
+        "scanQrCode": "QR kodu taratın"
+      }
+    },
+    "emptyBlocks": {
+      "title": "Burada hiçbir şey"
+    },
+    "errorBlocks": {
+      "title": "Bir şeyler ters gitti.."
+    },
+    "importSuccess": "Account Importing from the Keystore File was successful",
+    "modal": {
+      "assetInfo": {
+        "gateway_ui": "GEÇİT"
+      },
+      "sign": {
+        "signByLedger": "Ledger Nano S'den onay bekleniyor..."
+      },
+      "token": {
+        "warning": {
+          "header": "Kabul ederim:",
+          "text": "{div.line}[I) kripto paraları sahte işlemler için kullanmayacağım;]\n{div.line}[II) kullanıcıları yanlış yönlendirmek için başka bir kripto parayı kopyalamayacağım, bilinen bir şirketin ismini kullanmayacağım;]\n{div.line}[III) Şehirlerin, şirketlerin, devlet dairelerinin isimlerini kullanmayacağım;]\n{div.line}[IV) takas işlemlerini varlık miktarı ile sınırlayan scriptler oluşturmayacağım;]\n{div.line}[V)  insanları yanıltmak amacı ile oluşturduğum kripto para hakkındaki bilgiler ile yazmış olduğum script'leri birbirinden farklı yapmayacağım.;]",
+          "textWarning": "Bu tarzda işlem yapanların kripto paraları Spam olarak işaretlenir ve sadece kripto para ID'si aratılarak bulunabilir."
+        }
+      }
+    },
+    "password": {
+      "btn": {
+        "confirm": "Confirm"
+      },
+      "minLength": "En az {{minLength}} karaktere sahip olmalıdır",
+      "name": "Hesap adı",
+      "nameExists": "Bu isim alınmış",
+      "newPass": "New password",
+      "old": "Old password",
+      "oldWrong": "Old password is wrong",
+      "repeat": "Parolayı doğrula",
+      "secure": "Parola güçlü!",
+      "title": "Hesabınızı bir parola ile koruyun",
+      "warn": "Parola basit! rakam veya sembol ekleyin"
+    },
+    "qrCodeRead": {
+      "closeRead": "İptal"
+    },
+    "recipient": "Alıcı",
+    "transaction": {
+      "actions": {
+        "cancelLeasing": "Kiralamayı İptal Et",
+        "copyTxData": "Tüm işlem verilerini kopyala",
+        "copyTxId": "İşlem bilgisini kopyala",
+        "showTx": "İşlem bilgisi"
+      },
+      "amounts": {
+        "burn": "–{{amount}} {{name}}",
+        "cancel-leasing": "{{amount}} {{name}}",
+        "circular": "{{amount}} {{name}}",
+        "exchange-buy": "{{sign}}{{amount}} {{name}}",
+        "exchange-sell": "{{sign}}{{amount}} {{name}}",
+        "issue": "{{amount}} {{name}}",
+        "lease-in": "{{amount}} {{name}}",
+        "lease-out": "{{amount}} {{name}}",
+        "mass-receive": "+{{amount}} {{name}}",
+        "mass-send": "–{{amount}} {{name}}",
+        "perTransaction": "işlem başına düşen miktar",
+        "receive": "+{{amount}} {{name}}",
+        "reissue": "+{{amount}} {{name}}",
+        "script-invocation": "–{{amount}} {{name}}",
+        "send": "–{{amount}} {{name}}",
+        "set-script": "Script işlemi ayarla",
+        "set-script-cancel": "Script işlemini iptal et",
+        "sponsorship-change": "Sponsorluğu değiştir",
+        "sponsorship-fee": "{{sign}}{{amount}} {{name}}",
+        "sponsorship-start": "Sponsorluk ayarla",
+        "sponsorship-stop": "Sponsorluğu iptal et"
+      },
+      "confirmed": {
+        "false": "ONAYLANMADI",
+        "true": "TAMAMLANDI"
+      },
+      "headers": {
+        "activeLeasing": "şu anda aktif",
+        "burn": "{{name}} Kripto Para Yakma",
+        "cancel-leasing": "Kiralama iptal edildi",
+        "canceled": "İptal edildi",
+        "circular": "{{name}} transfer edildi",
+        "create-alias": "Takma Ad Oluşturuldu",
+        "data": "Veri işlemi",
+        "data-vote": "{{assetName}} için oy kullanıldı",
+        "exchange-amount": "{{amountAsset}}/{{priceAsset}}",
+        "exchange-buy": "Borsa Alış:",
+        "exchange-sell": "Borsa Satış:",
+        "issue": "{{name}} Kripto para yaratımı",
+        "lease-in": "Gelen Kiralama",
+        "lease-out": "Kiralama Başlangıcı",
+        "mass-receive": "{{name}} alındı",
+        "mass-send": "{{name}} gönderildi",
+        "receive": "{{name}} Alındı",
+        "reissue": "{{name}} yeniden üretimi",
+        "script-invocation": "Script çağırma",
+        "send": "{{name}} gönderildi",
+        "set-asset-script": "Script işlemi ayarla",
+        "set-script": "Script işlemi ayarla",
+        "set-script-cancel": "Script işlemini iptal et",
+        "spam": "şüpheli",
+        "sponsorship-fee": "{{name}} Alındı.",
+        "sponsorship-start": "{{name}} için sponsorluk ayarla",
+        "sponsorship-stop": "{{name}} Sponsorluğunu iptal et.",
+        "suspicious": "şüpheli",
+        "unknown": "Bilinmeyen işlem"
+      },
+      "modals": {
+        "assetId": "Kimlik",
+        "attachment": "Ek Mesajı",
+        "cancelTx": "İŞLEM",
+        "confirmations": "Onaylar",
+        "copyCode": "Kodu kopyala",
+        "data": "Veri",
+        "dataKey": "Anahtar",
+        "dataType": "Tip",
+        "dataValue": "Değer",
+        "description": "Açıklama",
+        "exchange": {
+          "buy": "Al",
+          "buyMatcherFee": "Eşleştirici komisyonu",
+          "exchangeType": "Emir tipi",
+          "matcherFee": "Eşleştirici komisyonu",
+          "pair": "Eş",
+          "sell": "Sat"
+        },
+        "fee": "Komisyon",
+        "from": "Kimden",
+        "function": "Fonksiyon",
+        "functionCall": "Fonksiyon çağrısı",
+        "height": "Blok",
+        "hide": "Gizle",
+        "hideAll": "Hepsini gizle",
+        "leasingStatus": "Durum",
+        "massSend": {
+          "showAll": {
+            "false": "Hepsini göster ({{count}})",
+            "true": "İlk 3 işlemi göster"
+          },
+          "totalAmount": "Toplam miktar"
+        },
+        "numberOfRecipients": "Alıcıların adedi",
+        "orderType": "Emir tipi",
+        "pair": "Eş",
+        "payment": "Ödeme",
+        "price": "{{name}} Fiyat",
+        "script": "Script",
+        "scriptAddress": "Script adresi",
+        "seeAll": "Tümünü gör",
+        "setAssetScript": {
+          "showScript-false": "Göster",
+          "showScript-true": "Gizle"
+        },
+        "show": "Göster",
+        "showAll": "Hepsini göster ({{count}})",
+        "showFirstTree": "İlk 3 anahtarı göster",
+        "status": "Durum",
+        "timestamp": "Zaman damgası",
+        "to": "Kime",
+        "toBeReissued": "Tekrar oluşturulacak",
+        "toRemainOnBalance": "Kalan bakiye",
+        "totalAfterBurning": "Yakılmadan sonraki toplam",
+        "totalAfterReissue": "Tekrar oluşturmadan sonraki toplam",
+        "txId": "TXID",
+        "type": "Tip",
+        "viewTransactionKey": "İşlem",
+        "viewTransactionValue": "İşlemi Görüntüle"
+      },
+      "notifications": {
+        "closed": "Kiralama daha önceden iptal edildi",
+        "closedSuccess": "Kiralama iptali tamamlandı"
+      },
+      "reissuable": {
+        "false": "Sınırlı",
+        "true": "Tekrar üretilebilir"
+      },
+      "set-asset-script": "Script'i güncelle",
+      "subheaders": {
+        "burn": "{{time}}",
+        "cancel-leasing": "{{time}}{span.locale-address}[, transaction {{transactionId}}]",
+        "circular": "{{time}}{span.locale-address}[, at address {{address}}]",
+        "create-alias": "{{time}}, {{alias}}",
+        "data": "{{time}}",
+        "exchange-buy": "{{time}}",
+        "exchange-sell": "{{time}}",
+        "issue": "{{time}}",
+        "lease-in": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "lease-out": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "mass-receive": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "mass-send": "{{time}}",
+        "receive": "{{time}}{span.locale-address}[, from address {{address}}]",
+        "reissue": "{{time}}",
+        "script-invocation": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "send": "{{time}}{span.locale-address}[, to address {{address}}]",
+        "set-asset-script": "{{time}}, at asset {{name}}",
+        "sponsorship-fee": "{{time}} adres {{address}}",
+        "unknown": "{{time}}"
+      }
+    },
+    "transactionList": {
+      "noTransactionsDescription": "Hiçbir işlem geçmişiniz yok",
+      "noTransactionsTitle": "Burada hiçbir şey yok!"
+    },
+    "transactions": {
+      "script": {
+        "txJson": "Base64 script"
+      }
+    },
+    "whitespace": "&nbsp;"
+  },
+  "app.unavailable": {
+    "message": "Site bakıma girdi ve yakında tekrar hizmete girecek. Anlayışınız için teşekkürler",
+    "title": "Yakında Geri Döneceğiz"
+  },
+  "app.utils": {
+    "confirmTransaction": {
+      "signLedger": "Ledger Nano S'den onay bekleniyor..."
+    },
+    "directives": {
+      "anyTransaction": {
+        "calculatingFee": "İşlem komisyonu: hesaplama için boşluğu doldurun",
+        "errors": {
+          "invalidScript": "Syntax hatası",
+          "required": "Bu alan zorunludur!"
+        },
+        "fee": "Komisyon {{fee, money-currency}}",
+        "ok": "Devam",
+        "textAreaTitle": "TX JSON",
+        "warning": {
+          "body": "Deneyimli bir kullanıcı değilseniz JSON dosyasını yüklemeyiniz. Hatalar bakiye kaybına neden olabilir.",
+          "title": "Dikkat: Bu işlem hesabınızı erişilemez hale getirebilir."
+        }
+      },
+      "filter": {
+        "helpIcon": {
+          "assetId": "Kripto para ID",
+          "description": "Kripto para arama hakkında detaylı bilgiye [buradan](https://docs.wavesplatform.com/en/waves-client/) ulaşabilirsiniz.",
+          "header": "Arama:",
+          "name": "İsim",
+          "ticker": "Ticker"
+        }
+      },
+      "scriptForm": {
+        "acceptAndContinue": "Kabul et ve devam et",
+        "changePlaceholder": "Yeni bir script girin veya mevcut script'in iptali için boş bırakın",
+        "createPlaceholder": "Buraya script girin",
+        "errors": {
+          "fee": "Gerekli olan komisyonu ödemek için yeterli bakiyeniz bulunmamaktadır. İşlem komisyonu olarak {{fee, money-currency}} ödemeniz gerekmektedir.",
+          "invalidScript": "Syntax hatası",
+          "required": "Bu alan zorunludur"
+        },
+        "fee": "Komisyon {{fee, money-currency}}",
+        "ideLink": "Scriptler [Waves Ride IDE](https://waves-ide.com//) ile geliştirilir.",
+        "ok": "Giriş",
+        "textAreaTitle": "Base64 script",
+        "warning": {
+          "body": "Deneyimli bir kullanıcı değilseniz Script işlemi yapmayınız. Hatalar hesabınızı erişilemez hale getirebilir.",
+          "title": "Dikkat: Bu işlem hesabınızı erişilemez hale getirebilir."
+        },
+        "warningDescription": "Deneyimli bir kullanıcı değilseniz Script işlemi yapmayınız. Hatalar hesabınızı erişilemez hale getirebilir.",
+        "warningHeader": "Bu işlem hesabınızı erişilemez hale getirebilir."
+      },
+      "setAssetScriptForm": {
+        "fee": "Komisyon {{fee, money-currency}}"
+      },
+      "sign": {
+        "confirmRequestKeeper": {
+          "sign_utils": "Tekrar deneyin"
+        }
+      }
+    },
+    "inputs": {
+      "errors": {
+        "gtGatewayMin": "{{assetName}} kripto parasını {{min}} miktardan daha az transfer edemezsiniz."
+      }
+    },
+    "keeperForm": {
+      "address": "Hesap adresi",
+      "addressSaved": "Adres kaydedildi",
+      "back": "Geri dön",
+      "error": {
+        "hasLockedKeeperDescription": "Waves Keeper ile devam edebilmek için önceden oluşturmuş olduğunuz parolayı girmeniz veya yeni bir parola oluşturmanız gerekmektedir.",
+        "hasLockedKeeperHeader": "Waves Keeper'dan parolayı girin",
+        "hasNoUsersDescription": "Mevcut hesabınıza giriş yapın veya yeni bir hesap oluşturun ve tekrar deneyin.",
+        "hasNoUsersHeader": "Aktif bir hesabınız bulunmamaktadır.",
+        "install": "Yükle",
+        "networkDescription": "Seçmiş olduğunuz hesap hatalı ağda bulunmaktadır. Ağı değiştirin ve tekrar deneyin",
+        "networkHeader": "Ağı değiştir",
+        "notInstalledDescription": "Yükledikten sonra bir hesap oluşturun, giriş yapın ve devam etmek için sayfayı yenileyin.",
+        "notInstalledHeader": "Waves Keeper'ınız yok mu?",
+        "refresh": "Tekrar dene"
+      },
+      "heading": "Hesabı Waves Keeper'dan içeri aktar",
+      "loading": "Hesabı Waves Keeper'dan içeri aktar",
+      "login": "Devam",
+      "name": "Hesap adı",
+      "nameExists": "Bu isim alınmış",
+      "or": "VEYA",
+      "retry": "Tekrar deneyin",
+      "saveUserData": "Bu bilgisayardan çıkış yapma"
+    },
+    "LedgerClient_utils": "Ledger cihazı",
+    "LedgerClientDescription": "Hesabı Waves Keeper'dan içeri aktar",
+    "modal": {
+      "acceptNewTerms": {
+        "title": "Kullanım koşulları ve şartları"
+      },
+      "account": {
+        "address": "Adresiniz",
+        "aliases": "Takma ad",
+        "aliasesWarning": "Takma ad özelliği geçici olarak devre dışı",
+        "cancel": "Hesap oluştur",
+        "create": "Yeni oluştur",
+        "createAliasNotPermitted": "Takma ad oluşturma geçici olarak devre dışı",
+        "fee": "İşlem komisyonu {{price}} {{name}}",
+        "hasAlias": "Bu takma ad daha önceden kullanılmış",
+        "hasScript": "Eğer çoklu imzanız varsa takma ad oluşturamazsınız",
+        "invalidSymbols": "Geçersiz karakter kullandınız",
+        "maxLength": "Takma ad 30 karakterden fazla olamaz.",
+        "message": "Hesap bilgisini görüntülemek için giriş yap veya yeni hesap oluştur",
+        "minLength": "Takma ad en az 4 karakterden oluşmalıdır.",
+        "noMoney": "Yetersiz bakiye",
+        "notifications": {
+          "aliasCreated": "Takma ad oluşturuldu"
+        },
+        "ok": "Giriş yap",
+        "placeholder": "adresiniz için sembolik bir ad",
+        "title": "Hesap Bilgileri: {{name}}",
+        "title_default_name": "Bilgi"
+      },
+      "accountInfo": {
+        "alias": {
+          "helpIcon": {
+            "row1": "Takma Ad Hakkında",
+            "row2": "Takma ad sizin adresiniz için lakap olarak kullanılır. Kripto para transferlerinde adresi yazmak yerine bu lakapları kullanarak transferi gerçekleştirebilirsiniz.",
+            "row3": "Takma adınız 4 ve 30 karakter arasında olmalı ve sadece küçük Latin harflerinden, rakamlarından ve sembollerinden oluşmalıdır. (@ , - , _ vb.)"
+          }
+        }
+      },
+      "assetInfo": {
+        "available": "Kullanılabilir",
+        "balance": "Bakiye",
+        "contest": "YARIŞMA",
+        "date": "Oluşturulma zamanı",
+        "decimals": "Decimal points",
+        "description": "Açıklama",
+        "details": "Detaylar",
+        "email": "E-Posta",
+        "gateway": "GEÇİT",
+        "gatewaySoon": "GEÇİT YAKINDA",
+        "identifier": "Kimlik",
+        "inOrders": "Emirlere ayrıldı",
+        "issuer": "Oluşturan",
+        "leased": "Kiralandı",
+        "name": "İsim",
+        "pinned": "Tutturuldu",
+        "qualified": "Onaylı",
+        "quantity": "Toplam miktar",
+        "rating": {
+          "canVoteTip": "Kripto parayı değerlendirmek için tıklayın",
+          "tooltipLink": "Daha fazla",
+          "tooltipNeedWAVES": "ve 0.001 DCC",
+          "tooltipNeedCRC": "Oy vermek için en az 1 CRC'niz olması gerekmektedir.",
+          "tooltipText": "İşlem komisyon ücreti 0.001 DCC'dir. Kripto paralarınız cüzdanınızı terketmez. Oylama için bakiyeniz olması gerekmektedir. Puanlar 24 saat sonra işlenir. Bu süre zarfında mevcut bakiyenizi koruyun.",
+          "tooltipTitle": "Oy vermek için en az 1 CRC'niz olması gerekmektedir."
+        },
+        "reissue": {
+          "no": "Sınırlı",
+          "yes": "Tekrar üretilebilir"
+        },
+        "site": "Site",
+        "sponsorshipFee": "Sponsorlu kripto para komisyonu",
+        "suspicious": "Şüpheli",
+        "ticker": "Ticker",
+        "title": "Kripto para bilgisi",
+        "tokenomica": "Tokenomica",
+        "total": "Toplam",
+        "transactions": "İşlemler",
+        "type": "Tip",
+        "unpinned": "Ana sayfaya tuttur",
+        "wsocRef": "WSOC"
+      },
+      "backup": {
+        "clearSeed": "{span.clear}[Clear] ve tekrar tıklayın",
+        "title": {
+          "title_0": "Yedek kelimelerini bir yere kaydedin",
+          "title_1": "Yedeği doğrula",
+          "title_2": "Başarılı"
+        }
+      },
+      "confirm-correct-order": "Fiyatınız {price, money-currency} pazar fiyatından %5 daha yukarıda",
+      "confirmLogout": {
+        "goBack": "Geri dön",
+        "heading": "Ayrılmak üzeresin",
+        "logout": "Çıkış Yap",
+        "text": "İzniniz olmadan başkalarının fonlarınıza erişmesini önlemek için, lütfen hesabınızdan çıkış yapın."
+      },
+      "confirmOrder": {
+        "cancel": "İptal",
+        "continue": "Emri gir",
+        "description": "Devam etmek istiyor musunuz?",
+        "headerBuy": "Emriniz pazar fiyatından {{orderLimit}}% daha yukarıda",
+        "headerSell": "Emriniz pazar fiyatından {{orderLimit}}% daha aşağıda"
+      },
+      "createOrder": {
+        "cancel": "Hesap oluştur",
+        "message": "Takas işlemleri için giriş yap veya hesap oluştur",
+        "ok": "Giriş yap"
+      },
+      "deleteAccount": {
+        "cancel": "Cancel",
+        "delete": "Remove",
+        "description": "{div}[Removing an account will lead to its irretrievable loss if you didn't save a backup phrase (SEED).]\n{div}[Click on the REMOVE button to proceed with account removal, or CANCEL to return to the previous screen.]",
+        "header": "Remove account"
+      },
+      "deposit": {
+        "coinomatBCH": {
+          "helpDescrText": "İşlemler onaylandıktan sonra BCH geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Bitcoin Cash cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'ın altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dır",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese sadece BCH gönderin"
+        },
+        "coinomatBSV": {
+          "helpDescrText": "İşlemler onaylandıktan sonra BCH geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Bitcoin Satoshi Vision cüzdanına veya uygulamasına giriniz.",
+          "warningMinAmountText": "Eğer {{minAmount, BigNumber}} {{assetTicker}}'den daha az gönderirseniz, paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma miktarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Bu adrese başka bir kripto para gönderimi kayıpla sonuçlanabilir.",
+          "warningTitle": "Bu adrese sadece BSV gönderin"
+        },
+        "coinomatBTC": {
+          "helpDescrText": "İşlemler onaylandıktan sonra Bitcoin geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Bitcoin cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'nin altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese sadece BTC gönderin"
+        },
+        "coinomatDASH": {
+          "helpDescrText": "İşlemler onaylandıktan sonra DASH geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi DASH cüzdanınıza girin",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'in altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese sadece DASH gönderin"
+        },
+        "coinomatETH": {
+          "helpDescrText": "İşlemler onaylandıktan sonra Ethereum geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Ethereum cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'nin altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Cüzdanınızın veya Kripto para borsasının ETH çekimlerinde akıllı kontrat kullanıp kullanmadığını kontrol edin. Akıllı kontratlar tarafından gelen transferleri kabul edemiyoruz. Paranızı kaybedersiniz.",
+          "warningTitle": "ETH akıllı kontratlarından yatırma işlemi yapmayınız. ERC20 tokenleri yatırmayınız! Sadece Ethereum transferleri kabul edilir."
+        },
+        "coinomatLTC": {
+          "helpDescrText": "İşlemler onaylandıktan sonra Litecoin geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Litecoin cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'nin altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese LTC dışında bir kripto para göndermeyin"
+        },
+        "coinomatXMR": {
+          "helpDescrText": "İşlemler onaylandıktan sonra Monero geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi Monero cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'ın altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dır.",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese XMR dışında bir kripto para göndermeyin"
+        },
+        "coinomatZEC": {
+          "helpDescrText": "İşlemler onaylandıktan sonra ZCash geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi ZCash cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} Zcash'in altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir.",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese ZCash dışında bir kripto para göndermeyin"
+        },
+        "copyAndShare": "Adresi kopyala ve paylaş",
+        "currency": "para birimi",
+        "or": "VEYA",
+        "pleaseNote": "Bu işlem için geçit herhangi bir komisyon almamaktadır.",
+        "scanQrCode": "QR kodu tara",
+        "title": "Yatır {{assetName}}",
+        "wavesGatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
+          "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
+        },
+        "wavesGatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+          "helpDescrTitle": "Bu adresi BTC cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'nin altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir",
+          "warningText": "Bu adrese başka bir kripto para gönderilmesi kayıplara yol açabilir.",
+          "warningTitle": "Bu adrese sadece BTC gönderin"
+        },
+        "wavesGatewayERGO": {
+          "helpDescrText": "İşlemler onaylandıktan sonra ERGO geçidi tarafından Waves adresinize transfer gerçekleştirilecektir.",
+          "helpDescrTitle": "Bu adresi ERGO cüzdanınıza girin",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}'nun altında gönderim yaparsanız paranızı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dur. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dur.",
+          "warningText": "Bu adrese başka bir kripto para gönderimi kayıpla sonuçlanabilir.",
+          "warningTitle": "Bu adrese ERGO dışında bir kripto para göndermeyin"
+        },
+        "wavesGatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+          "helpDescrTitle": "Enter this address into your ETH client or wallet",
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Cüzdanınızın veya Kripto para borsasının ETH çekimlerinde akıllı kontrat kullanıp kullanmadığını kontrol edin. Akıllı kontratlar tarafından gelen transferleri kabul edemiyoruz. Paranızı kaybedersiniz.",
+          "warningTitle": "ETH akıllı kontratlarından yatırma işlemi yapmayınız. ERC20 tokenleri yatırmayınız! Sadece Ethereum transferleri kabul edilir."
+        },
+        "wavesGatewayUSDT": {
+          "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
+          "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
+          "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
+        },
+        "wavesGatewayVST": {
+          "helpDescrText": "İşlem onaylandıktan sonra WESTlar Waves adresinize geçit tarafından gönderilir.",
+          "helpDescrTitle": "Bu adresi WEST cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dir."
+        },
+        "wavesGatewayWEST": {
+          "helpDescrText": "İşlem onaylandıktan sonra WESTlar Waves adresinize geçit tarafından gönderilir.",
+          "helpDescrText_copy": "İşlem onaylandıktan sonra WESTlar Waves adresinize geçit tarafından gönderilir.",
+          "helpDescrTitle": "Bu adresi WEST cüzdanına ya da uygulamasına giriniz.",
+          "helpDescrTitle_copy": "Bu adresi WEST cüzdanına ya da uygulamasına giriniz.",
+          "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dir."
+        },
+        "wavesGatewayWEST:warningMinAmountTitle_copy": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dir."
+      },
+      "dexScriptedPair": {
+        "body": "Akıllı kripto paralar, kripto paraların dolaşım standartlarını belirleryen scriptlerden oluşur. {div}[Deneyimsiz bir kullanıcı iseniz akıllı kripto paralar ile işlem yapmanızı önermiyoruz. Bir işlem yapmadan önce akıllı kripto paralar ve Script'ler ile ilgili bilgileri dikkatlice okuyunuz.]",
+        "heading": "Akıllı kripto para içeren bir takas çifti için emir girme"
+      },
+      "disabledFeature": {
+        "anyTransaction": "JSON işlemleri geçici olarak devre dışı",
+        "lease": "Kiralamayı başlatmak geçici olarak devre dışı"
+      },
+      "disabledFeatures": {
+        "default": "Bu özellik geçici olarak devre dışı",
+        "massTransfer": "Çoklu işlemler geçici olarak devre dışı",
+        "transfer": "Kripto para gönderimi geçici olarak devre dışı"
+      },
+      "gatewaySign": {
+        "cancel": "İptal",
+        "continue": "Devam",
+        "description": "{{name}} Bu uygulama sizin Waves adresinize erişecek ancak sizin Anahtar kelimelerinize veya özel anahtarınıza erişemez.",
+        "descriptionDesktop1": "Linkler varsayılan tarayıcınızda açılacaktır. Eğer başka bir tarayıcı kullanmak istiyorsanız,",
+        "descriptionDesktop2": "kopyalayın",
+        "descriptionDesktop3": "ve linki tarayıcınıza yapıştırın.",
+        "error": {
+          "button": "İptal",
+          "headline": "Bir şeyler ters gitti",
+          "title": "Hata"
+        },
+        "headline": "{span.link}[{{url}}] Waves adresinize ulaşmak istiyor",
+        "retrySign": "Tekrar dene",
+        "title": "Waves ile giriş yap",
+        "txHash": "TXHASH",
+        "warning": "Yönlendirileceğiniz sayfalarda Anahtar Kelimelerinizi GİRMEYİNİZ!"
+      },
+      "import": {
+        "errorBeta": "Waves Beta Client üzerinden hesabınızı aktarmayı başaramadık. Waves Lite Client üzerinden aktarmayı deneyin.",
+        "errorHeader": "Hesap bulunamadı.",
+        "errorLite": "Waves Lite Client üzerinden hesabınızı aktarmayı başaramadık. Waves Beta Client üzerinden aktarmayı deneyin.",
+        "errorUnable": "Hesabınızı aktarmayı başaramadık. Lütfen anahtar kelimelerinizi kullanarak hesabınızı oluşturun.",
+        "fromBetaButton": "Beta Client'ten aktar",
+        "fromLiteButton": "Lite Client'ten aktar",
+        "helpIcon": {
+          "description": "Sistemin verimli çalışabilmesi için pop-up'lara izin veriniz. Nasıl yapılacağını bilmiyorsanız: [Chrome](https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en), [Safari](https://discussions.apple.com/thread/4271925),  [Firefox](https://support.mozilla.org/en-US/kb/pop-blocker-settings-exceptions-troubleshooting), [Opera](https://help.opera.com/en/presto/control-pages/).",
+          "title": "Bazı tarayıcılar pop-up pencerelerini otomatik olarak engellerler."
+        },
+        "importButton": "İçe aktar",
+        "importCancel": "İptal",
+        "iUnderstandButton": "Anladım",
+        "selectAccountDescription": "Pop-up pencerelerine izin vermeniz gerekmektedir.",
+        "selectAccountToImport": "İçe aktarılacak olan hesapları seçiniz",
+        "selectAccountToImportFrom": "Hesapların nereden aktarılacağını seçiniz",
+        "selectButton": "Seç",
+        "wavesBetaClient": "Waves Beta Client",
+        "wavesBetaClientDescription": "Hesapları Waves Beta Client'ten aktar",
+        "wavesLiteClient": "Waves Lite Client",
+        "wavesLiteClientDescription": "Hesapları Waves Lite Client'ten aktar"
+      },
+      "matcherChoice": {
+        "customMatcher": "Custom matcher address",
+        "matcher": "Matcher",
+        "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
+        "terms": "Terms",
+        "title": "Choose matcher",
+        "wavesTerms": "I am over 18 years old, and I agree to the Waves Terms of Use and Waves Privacy Policy."
+      },
+      "open-main": {
+        "dex": {
+          "cancel": "Hesap oluştur",
+          "message": "Takas işlemleri için giriş yap veya hesap oluştur",
+          "ok": "Giriş yap"
+        },
+        "tokens": {
+          "cancel": "Hesap oluştur",
+          "message": "Kripto para yaratmak için giriş yap veya hesap oluştur",
+          "ok": "Giriş yap"
+        },
+        "wallet": {
+          "assets": {
+            "cancel": "Hesap oluştur",
+            "message": "Cüzdan açmak için giriş yap veya hesap oluştur",
+            "ok": "Giriş yap"
+          },
+          "cancel": "Hesap oluştur",
+          "leasing": {
+            "cancel": "Hesap oluştur",
+            "message": "Cüzdan açmak için giriş yap veya hesap oluştur",
+            "ok": "Giriş yap"
+          },
+          "message": "Cüzdan açmak için giriş yap veya hesap oluştur",
+          "ok": "Giriş yap",
+          "portfolio": {
+            "cancel": "Hesap oluştur",
+            "message": "Cüzdan açmak için giriş yap veya hesap oluştur",
+            "ok": "Giriş yap"
+          },
+          "transactions": {
+            "cancel": "Hesap oluştur",
+            "message": "Cüzdan açmak için giriş yap veya hesap oluştur",
+            "ok": "Giriş yap"
+          }
+        }
+      },
+      "pairing": {
+        "downloadAppDescription": "Mobil uygulamalarımızı aşağıdan indirebilirsiniz:",
+        "scanCodeDescription": "Iphone veya Android cihazınız ile kodu tarayın ve hesabınızla eşleştirin"
+      },
+      "pinAsset": {
+        "cancel": "İptal",
+        "nothing": "Hiçbir şey seçilmedi",
+        "placeholder": "Kripto para adını veya kimlik bilgisini yazın",
+        "submit": "Pin'le",
+        "title": "Pin'lemek istediğiniz kripto paraları seçin"
+      },
+      "qr": {
+        "copyAndShare": "Adresi kopyala ve paylaş",
+        "or": "VEYA",
+        "scanQrCode": "QR kodu tara",
+        "title": "Adresi kopyala ve paylaş",
+        "warningText": "Bu adrese başka bir kripto para gönderimi fonlarınızın kaybına yol açar",
+        "warningTitle": "Bu adrese sadece DCC ve Waves Platform üzerinde üretilmiş kripto para gönderin"
+      },
+      "receive": {
+        "accountStatus": "Hesap durumu",
+        "addressOrAlias": "Adres / Takma ad",
+        "amount": "Miktar",
+        "amountYouPay": "Ödenen miktar",
+        "asset": "Kripto para",
+        "bank": {
+          "title": "Kasa"
+        },
+        "bankSuccessHeader": "Doğrulama için IDNow.eu'a yönlendirildiniz.",
+        "bankSuccessText": "Doğrulamadan geçtikten sonra talimatları içeren bir e-posta alacaksınız.",
+        "bankVerifiedPlateDescription": "Paranızı çekmeden önce,  [talimatlar](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) ve [limitler ve komisyonlar](https://coinomat.com/limits.php)'a bakmanızı öneriyoruz.",
+        "bankVerifiedPlateHeader": "Ödeme detayları kutucuğunu verilen talimatlar doğrultusunda doldurunuz:",
+        "card": {
+          "continue": "Devam",
+          "title": "Kart"
+        },
+        "cardSuccessHeader": "Indacoin.com sitesine yönlendiriliyorsunuz.",
+        "cardSuccessText": "Ödeme gerçekleştirildikten sonra bakiyeniz güncellenecektir.",
+        "coinomat": {
+          "serverError": "Coinomat hizmeti geçici olarak durdurulmuştur. Lütfen tekrar deneyin",
+          "tryAgain": "Tekrar deneyin"
+        },
+        "cryptocurrency": {
+          "title": "Kripto para"
+        },
+        "error": {
+          "cardAmount": {
+            "gte": "Yatırabileceğiniz minimum tutar: {{gte}} {{currency}}",
+            "lte": "Yatırabileceğiniz maksimum tutar: {{lte}} {{currency}}",
+            "precision": "Rakamlar geçersiz! noktadan sonra maksimum 2 basamak olabilir."
+          }
+        },
+        "errors": {
+          "required": "Bu alan zorunludur"
+        },
+        "gatewayError": "Geçit hizmeti geçici olarak servis dışıdır. Lütfen daha sonra tekrar deneyiniz.",
+        "invoice": {
+          "title": "Fatura"
+        },
+        "ledger": {
+          "cancel": "İptal",
+          "retry": "Tekrar deneyin"
+        },
+        "maximumIs": "Maksimum",
+        "minimumIs": "minimum",
+        "providedByCoinomat": {
+          "descriprion": "{div}[Bu hizmet Coinomat Şirketi tarafından verilmektedir (Сoinomat).\nWaves Platform AG, Coinomat tarafından verilen bu hizmetlerden sorumlu tutulamaz.]{div}[Coinomat hizmetlerini kullanarak, [Coinomat kullanım sözlemesini](https://coinomat.com/terms.php) kabul etmiş olursunuz. Eğer bu sözleşmeyi kabul etmiyorsanız Coinomat hizmetlerini kullanmayınız.]",
+          "header": "Bu hizmet Coinomat tarafından verilmektedir. (Сoinomat).",
+          "termsReadedInputLabel": "[Kullanım koşullarını](https://coinomat.com/terms.php) kabul ediyorum, [Limitler](https://coinomat.com/limits.php) ve [Gizlilik](https://coinomat.com/privacy.php).",
+          "warning": "Eğer doğrumala veya ödeme geçitleri ile ilgili bir sorununuz varsa, Coinomat destek ekibi ile irtibata geçiniz. — [support@coinomat.com](mailto:support@coinomat.com)"
+        },
+        "receive": "Yatır",
+        "serverAddressError": "Geçit adresi hatası",
+        "serverError": "Coinomat hizmeti geçici olarak durdurulmuştur. Lütfen tekrar deneyin",
+        "serverWrongAddress": "Hatalı adres",
+        "shareInvoiceLink": "Faturanın bir kopyasını paylaş",
+        "verified": "Doğrulandı",
+        "vostok": {
+          "serverError": "WEST geçici olarak hizmet dışıdır. Daha sonra tekrar deneyiniz."
+        },
+        "wavesEnterprise": {
+          "serverError_copy": "WEST geçici olarak hizmet dışıdır. Daha sonra tekrar deneyiniz."
+        },
+        "wtry": {
+          "info": "Ödemeler konusunda herhangi bir problem yaşarsanız — [destek@digilira.com](mailto:destek@digilira.com) 'a e-posta gönderebilirsiniz."
+        },
+        "wtryPlate1Header": "Türk Lirası geçidini sadece Türk vatandaşları kullanabilir.",
+        "wtryPlate1Text": "Para yatırma işlemleri için [digilira.com](https://digilira.com) sitesine yönlendirileceksiniz.",
+        "wtrySuccessHeader": "Digilira.com sitesine yönlendirildiniz.",
+        "youWillGet": "Yaklaşık olarak"
+      },
+      "removeAccount": {
+        "cancel": "İptal",
+        "heading": "Hesabı kaldır",
+        "remove": "Kaldır",
+        "text": "{div}[Eğer anahtar kelimelerinizi kaydetmediyseniz, hesabınızın kaldırılması ile birlikte bir daha bu hesaba ulaşamazsınız.]\n{div}[Kaldır butonuna basarak hesabı kaldırabilir veya iptal butonuna basarak işlemi iptal edebilirsiniz.]",
+        "warning": "Anahtar kelimelerinizi kaydetmediniz!",
+        "warningPlural": "You did not save your Seed phrases"
+      },
+      "removeKeeperAccount": {
+        "heading": "Waves Keeper Hesabımı kaldır",
+        "text": "Bu işlem sadece hesabınıza erişim yollarını siler, Waves Keeper içerisinden hesabınızı silmez."
+      },
+      "removeLedgerAccount": {
+        "heading": "Ledger hesabını çıkart",
+        "text": "Bu işlem sadece hesabınıza erişim yollarını siler. Ledger içerisindeki hesabınızı silmez."
+      },
+      "removePrivateKeyAccount": {
+        "text": "{div}[Eğer özel anahtarınızı kaydetmediyseniz hesabınızın kaldırılması ile birlikte bir daha bu hesaba erişemezsiniz.]\n{div}[KALDIR butonuna basarak bu hesabı kaldırabilir veya İPTAL butonuna basarak işlemi iptal edebilirsiniz.]"
+      },
+      "script": {
+        "anyTx": "JSON",
+        "setScript": "Script işlemi"
+      },
+      "send": {
+        "amount": "Miktar",
+        "attachmentLength": "Açıklama çok uzun",
+        "bankAccount": "Banka hesabı",
+        "coinomat": {
+          "feeExplanation": "We detected {{assetName}} address and will send your money through Coinomat gateway to that address. Minimum amount is {{min, BigNumber}} {{assetTicker}}, maximum amount is {{max, BigNumber}} {{assetTicker}}.",
+          "feeTitle": "Geçit komisyonu {{fee, BigNumber}} {{assetTicker}}"
+        },
+        "coinomatLimits": "Minimum $100 USD/EUR, Maksimum $50,000 USD/EUR",
+        "coinomatWarningHeader": "Paranızı Coinomat geçidi aracılığı ile göndereceğiz.",
+        "coinomatWarningText": "Para Çekme işlemi yapmadan önce, lütfen [limitler ve komisyonlar](https://coinomat.com/limits.php)'ı gözden geçirin.",
+        "compare": {
+          "description": "{{amount}} {{currency}} (${{mirror}}) gönderdiniz",
+          "details": "Detayları görüntüle",
+          "title": "Transferiniz yolda!"
+        },
+        "confirm": {
+          "back": "Geri dön",
+          "confirm": "Onayla",
+          "from": "Kimden",
+          "title": "İşlem Detayları",
+          "to": "Kime",
+          "total": "Toplam"
+        },
+        "currency": "Kripto varlık",
+        "description": "Açıklama",
+        "descriptionPlaceholder": "İsteğe bağlı bir mesaj yazın",
+        "errors": {
+          "address": "Adres geçerli bir adres değil",
+          "allAddressesInvalid": "Bütün adresler geçersiz",
+          "button": "İptal",
+          "headline": "Bir şeyler ters gitti",
+          "invalidChars": "Bu alana sadece rakam girebilirsiniz",
+          "max": "Yetersiz bakiye",
+          "maxCoinomat": "{{money, money-currency}} 'den daha fazla parayı transfer edemezsiniz",
+          "paymentIdLength": "Monero Ödeme ID'si 64 - karakter hex string olmalıdır.",
+          "paymentIdPattern": "Hex string 0-9 arası rakamlardan ve A-Z arası harflerden oluşmaktadır.",
+          "precision": "Bu alanda hata algılandı. Virgülden sonra en fazla {{precision}} basamak olabilir.",
+          "required": "Bu alanın doldurulması zorunludur",
+          "title": "Hata"
+        },
+        "fee": "İşlem komisyonu {{fee, money-currency}}",
+        "gateway": {
+          "feeExplanation": "{{assetName}} adresi tespit ettik ve bu adrese geçit tarafından transfer gerçekleştirilecektir. Gönderilecek minimum miktar {{min, BigNumber}} {{assetTicker}}. Maksimum miktar ise {{max, BigNumber}} {{assetTicker}} 'dır."
+        },
+        "gatewayTerms": {
+          "accept": "Accept and Continue",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.wavesplatform.com/) and [Conduction of Transactions](https://dex.wavesplatform.com/). If you do not agree to these terms, then do not use this Gateway service.",
+          "title": "Gateway service agreement"
+        },
+        "icoWarning": "Do not withdraw {{assetName}} to an ICO. We will not credit your account with tokens from that sale.",
+        "idNumber": {
+          "helpIcon": {
+            "description": "Banka hesabınıza para çekme ile ilgili detaylı bilgiye [buradan](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) ulaşabilirsiniz.",
+            "title": "ID numaranız size özeldir ve banka hesaplarını doğrulayan kullanıcılara Coinomat tarafından atanır."
+          }
+        },
+        "idNumberTitle": "ID numaranız",
+        "liraBankAccount": "Digilira Hesabı",
+        "massSend": {
+          "clear": "Temizle",
+          "description": "Açıklama",
+          "errors": {
+            "invalidAddress": "Geçersiz adreslerin listesi:"
+          },
+          "importFile": "CSV dosyası aktar",
+          "recipient": "Alıcılar, miktarlar: {{count}}/{{max}}",
+          "recipientsAmountsPlaceholder": "Örnek:\nAdres1,Miktar1\nAdres2,Miktar2",
+          "showAllErrors": {
+            "false": "Hepsini göster ({{count}})",
+            "true": "İlk 2 hatayı göster"
+          },
+          "totalAmount": "Toplam miktar",
+          "warningPlate1Header": "En fazla 100 alıcıya gönderim yapabilirsiniz.",
+          "warningPlate1Text": "İlk 100'den sonraki alıcılar iptal edilecektir.",
+          "warningPlate2Header": "Toplu gönderimler içerisinde geçersiz adresler yer alamaz.",
+          "warningPlate3Header": "Alıcı ile miktar arasını , (virgül) ile ayırın. Her bir alıcı için satır başı yapın",
+          "warningPlate3Text": "[CSV dosya formatı hakkında daha fazla bilgi edinin.](https://en.wikipedia.org/wiki/Comma-separated_values)."
+        },
+        "massSendTitle": "Toplu gönderim",
+        "moneroPaymentId": "Monero Ödeme ID'si",
+        "moneroPaymentIdPlaceholder": "Monero Ödeme ID'nizi yazın veya yapıştırın",
+        "notSponsorship": {
+          "fee": "{{fee, money-currency}} işlem komisyonu"
+        },
+        "notVerifiedHeader": "Onaylı değilsiniz.",
+        "notVerifiedText": "Sadece onaylı kullanıcılar banka hesaplarına para çekebilirler. Para yatırma ve çekme ile ilgili detaylı bilgiye [buradan](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) ulaşabilirsiniz.",
+        "or": "veya",
+        "placeholderRecipient": "Bir adres yapıştır veya tara",
+        "recipient": "Alıcı",
+        "sendMax": "Maksimum",
+        "sendTitle": "Gönder",
+        "title": "{{assetName}} gönder",
+        "titleComplete": "Gönderim tamamlandı",
+        "toBank": "Banka hesabına para çek",
+        "total": "Toplam",
+        "toWaves": "Waves adresine gönder",
+        "txFee": "İşlem komisyonu",
+        "validationError": {
+          "notEnoughFunds": "Gerekli olan komisyon için yeterli bakiyeniz bulunmamaktadır. İşlem için {{fee, money-currency}} ödemeniz gerekmektedir.",
+          "notEnoughFundsWithdraw": "Gerekli olan komisyon için yeterli bakiyeniz bulunmamaktadır. İşlem için {{fee, money-currency}} {{getawayFee, BigNumber}} {{currency}} ödemeniz ve geçit için {{minGatewayAmount, BigNumber}} {{currency}} komisyon ödemeniz gerekmektedir."
+        },
+        "withdrawTitle": "Withdraw"
+      },
+      "sepa": {
+        "countryList": "Uygun ülkelerin ve geçerli kimliklerin listesi",
+        "proceed": "Hesabını onaylat",
+        "step1": "Aşama 1",
+        "step1Description": "SEPA transferleri ile birlikte bankanız aracılığı ile {{assetName}} yatırabilmek için ortağımız [IDNow.eu]({{url}}) tarafından hesabınızı onaylatmanız gerekmektedir.",
+        "step2": "Aşama 2",
+        "step2Description": "Onay sürecinden geçtikten sonra talimatları içeren bir elektronik posta alacaksınız.",
+        "title": "Yatır {{assetName}}",
+        "warning": "Doğrulama süreci ile veya ödemeler ile ilgili bir problem yaşamanız durumunda Coinomat destek ekibi ile irtibata geçebilirsiniz. — [support@coinomat.com](mailto:support@coinomat.com)",
+        "warningTitle": "Amerikan Vatandaşlarından veya Amerikan bankalarından havale kabul edilmemektedir."
+      },
+      "setAssetScript": {
+        "errorNoMoney": "Komisyon için yeterli bakiyeniz bulunmamaktadır. İşlem komisyonu için {{fee, money-currency}} ödemeniz gerekmektedir.",
+        "script": "Script",
+        "scripted": "Ayarla",
+        "title": "Script'i güncelle",
+        "unavailable": "Script güncelleme özelliği geçici olarak devre dışı",
+        "warningDescription": "{div}[Deneyimli bir kullanıcı değilseniz Script işlemi yapmanızı önermiyoruz. Hatalar kripto paraya erişimi engelleyebilir.]",
+        "warningHeader": "İşlemler kripto paraya erişimi engelleyebilir."
+      },
+      "settings": {
+        "account": "Account",
+        "cancel": "Hesap oluştur",
+        "changePass": "Change password",
+        "deleteAccount": "Remove account",
+        "exportAccounts": {
+          "accounts": "Accounts",
+          "export": "Export",
+          "selectAll": "Select all",
+          "title": "Please select account",
+          "unselectAll": "Unselect all"
+        },
+        "general": {
+          "auto": "Otomatik",
+          "blockHeight": "Şu anki blok",
+          "blue": "Waves",
+          "color": "Renk",
+          "dark": "Koyu",
+          "green": "Klasik",
+          "hours": "{{hours}} saat",
+          "language": "Dil",
+          "minutes": "{{minutes}} dakika",
+          "openLinkViaWeb": "Linkleri Web uygulaması aracılığı ile açmak istiyorum.",
+          "playSound": "Kullanıcı arayüzü ses efektlerini çal",
+          "theme": "Şema",
+          "timeout": "Oturum zaman aşımına uğradı",
+          "title": "Genel",
+          "white": "Beyaz"
+        },
+        "helperContent": "You can set a password for exported accounts",
+        "info": {
+          "legal": "Yasal",
+          "privacyPolicy": "Gizlilik Politikası",
+          "support": "Destek",
+          "termsAndConditions": "Koşullar ve Şartlar",
+          "title": "Bilgi",
+          "version": "Sürüm"
+        },
+        "message": "Ayarları açmak için giriş yap veya hesap oluştur",
+        "network": {
+          "apiAddress": "Veri hizmeti",
+          "apiAddressHelp": "Veri hizmeti, Waves blok zinciri ile etkileşimde bulunmak için API hizmeti sağlar",
+          "assetNameFilter": "Adlandırma hizmeti",
+          "assetNameFilterHelp": "Bu hizmet Waves veritabanından isim kontrolü yapmaktadır. Devre dışı bırakmak için alanı temizleyin.",
+          "copy": "kopyala",
+          "dataProvider": "Veri sağlayıcı",
+          "dataProviderDescription": "{{dataProviderDescription}}",
+          "dataProviderId": "{{dataProviderId}}",
+          "dataProviderInvalid": "Sağlayıcı bilgisine ulaşılamadı. Lütfen adresi kontrol edin ve tekrar deneyin.",
+          "dataProviderName": "{{dataProviderName}}",
+          "dontShowSpamCheckboxDescr": "Şüheli tokenleri gösterme",
+          "edit": "Edit",
+          "forDisableClear": "Tamamen devre dışı bırakmak için alanı temizleyin.",
+          "matcherAddress": "Eşleştirici adresi",
+          "nodeAddress": "Tam düğüm adresi",
+          "showMore": "Saha fazla göster",
+          "spamFilter": "Kripto para filtresi",
+          "spamFilterInputDescr": "Spam filtresini kapat",
+          "spamListHelp": "Bu filtre şüpheli tokenleri portföyünüzden çıkartır",
+          "title": "Ağ"
+        },
+        "ok": "Giriş yap",
+        "pairing": {
+          "devicePairing": "Hesabı dışa aktar",
+          "header": "Eşleşme kodunu tara",
+          "showCodeLink": "Eşleşme kodunu göster",
+          "unavailable": {
+            "description": {
+              "ledger": "Ledger Nano S'deki hesapları dışa aktarmak mümkün değildir.",
+              "wavesKeeper": "Waves Keeper'dan içe aktarılmış hesapların dışa aktarılması Waves Keeper ayarlarından yapılabilir."
+            },
+            "header": {
+              "ledger": "Dışa aktarma devre dışı",
+              "wavesKeeper": "Dışa aktarma devre dışı"
+            },
+            "ok": "Anladım"
+          }
+        },
+        "passChanged": "Password was changed successfully",
+        "password": "Password",
+        "security": {
+          "address": "Adres",
+          "backupPhrase": "Anahtar (Yedek) kelimeler",
+          "base58Seed": "Encoded backup phrase",
+          "encodedSeed": "Encoded Anahtar kelimeler",
+          "exportAccount": "Export account to file",
+          "id": "Account ID",
+          "privateKey": "Özel Anahtar",
+          "publicKey": "Açık Anahtar",
+          "savejson": "Save as JSON file",
+          "script": "Script",
+          "scriptButton": "Script ayarla",
+          "scriptButtonUpdate": "Script'i güncelle",
+          "show": "Göster",
+          "title": "Güvenlik"
+        },
+        "setDefault": "Varsayılana dön",
+        "title": "Ayarlar"
+      },
+      "sign": {
+        "article": "makale",
+        "buy": "Buy",
+        "cancel": "İptal",
+        "cancelOrder": "Emri iptal et",
+        "close": "Kapat",
+        "confirm": "Onayla",
+        "confirmRequest": "Talebi onayla",
+        "confirmRequest_utils": "talebi onayla",
+        "confirmRequestKeeper": "Waves Keeper'dan onay bekleniyor..",
+        "confirmRequestLedger": {
+          "cancel": "İptal",
+          "errorDescription": "Lütfen daha sonra tekrar deneyin. Eğer hata devam ederse [bu makale](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)'yi inceleyebilirsiniz.",
+          "errorHeader": "Talebi Ledger Nano S'den onaylamadınız.",
+          "sign": "Tekrar giriş yapın",
+          "waiting": "Ledger Nano S'den onay bekleniyor..."
+        },
+        "confirmRequestMatcher_utils": "Giriş yapın. Eğer Ledger hesabınızdan giriş yapmazsanız merkezsiz borsada takas işlemleri yapamazsınız.",
+        "confirmRequestToMatcher": "Eşleştirici onayını verin. Eğer onay vermezseniz borsada takas yapamazsınız.",
+        "connecting": "Bağlanıyor...",
+        "connectingKeeper": "Waves Keeper'a bağlanıyor...",
+        "connectionError": "Ledger'a bağlanılamadı..",
+        "connectionErrorKeeper": "Hesaba erişim sağlanamadı...",
+        "connectionText": "Bağlantı zaman aşımına uğradı. Lütfen tekrar deneyin..",
+        "connectLedger": "Ledger Nano S'inizi bağlayın",
+        "enterPin": "PIN kodunuzu girin",
+        "fee": "Komisyon",
+        "matcher": "Emri imzalayın",
+        "openApp": "Waves uygulamasını aç",
+        "orderType": "Order type",
+        "pair": "Pair",
+        "price": "Fiyat",
+        "refererTo": "Eğer hatalar devam ederse:",
+        "referTo": "Eğer hatalar devam ederse:",
+        "request": "talep",
+        "requestId": "Talep Hash'ı",
+        "retry": "Tekrar dene",
+        "sell": "Sell",
+        "signByKeeper": "Waves Keeper'dan doğrulama bekleniyor",
+        "signByLedger": "Ledger onay bekleniyor...",
+        "signError": "Talep doğrulanmadı",
+        "signErrorKeeper": "Talebi Waves Keeper'ı kullanarak doğrulamadın",
+        "signErrorText": "Talebi Ledger Nano S'i kullanarak doğrulamadın",
+        "signErrorTextImportKeeper": "Waves Keeper'a  {{address}} adresinizle giriş yapın, ve devam etmek için sayfayı yenileyin.",
+        "signErrorTextKeeper": "Lütfen tekrar deneyin. Eğer hatalar devam ederse [destek](https://decentralchain.io/soporte/) ile iletişime geçin",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+        "timestamp": "Timestamp",
+        "txId": "TXID"
+      },
+      "sponsorship_edit": {
+        "title": "Sponsorluğu değiştir."
+      },
+      "sponsorship": {
+        "amountPerTx": "İşlem başı miktar (0.001 DCC)",
+        "assetId": "ID",
+        "continue": "Devam",
+        "errors": {
+          "feeRequired": "Bu alan zorunludur!",
+          "minSponsoredAssetFee": {
+            "precision": "Bu alandaki rakamlar geçersizdir. Virgülden sonra maksimum {{precision}} basamak olabilir."
+          },
+          "noMoney": "Komisyonu ödemek için yeterli bakiyeniz bulunmamaktadır. İşlem komisyonu için {{fee, money-currency}} ödemeniz gerekmektedir.",
+          "notZero": "Değer 0'dan büyük olmalıdır"
+        },
+        "fee": "İşlem komisyonu {{fee, money-currency}}",
+        "title": "Sponsorluğu aktifleştir",
+        "warningHeader": "Kullanıcılar işlem ücretlerini {{name}} ile ödeyebilirler",
+        "warningText": "Her bir işlemde hesabınızdan 0.001 DCC düşecektir ve {{name}} bakiyenize eklenecektir. Kullanıcılardan düşecek olan {{name}} sponsorluğu ayarlarken  sizin tarafınızdan belirlenecektir. (aşağıdaki forma miktarı girin). Sponsorluk için en az 1.005 DCC bakiyeniz olması gerekmektedir. Eğer bakiyeniz bunun altına düşerse sponsorluk iptal olur."
+      },
+      "startLease": {
+        "amount": "Miktar",
+        "balance": "Bakiye",
+        "fee": "Komisyon {{fee, money-currency}}",
+        "nodeListLink": "Node'ların listesi",
+        "nodeListLink_copy": "Node'ların listesi",
+        "recipient": "Alıcı",
+        "start": "Kiralamayı Başlat",
+        "title": "Kiralamayı Başlat"
+      },
+      "termsAccept": {
+        "body": {
+          "advancedMode": "Gelişmiş ayarlar",
+          "analytics": "Waves Platform'un gelişimine katkı sağlamak adına kullanım istatistiklerimin anonim olarak geliştiriciler ile paylaşılmasına onay veriyorum",
+          "backup": "Eğer uygulamayı başka bir cihaza taşımam gerekirse veya uygulama silinirse cüzdanıma erişmemin tek yolunun Anahtar (yedek) kelimeler olduğunu ve başka hiç bir şekilde erişemeyeceğimi biliyorum.",
+          "ok": "Onayla ve Başla",
+          "privacyPolicy": "[Gizlilik politikası](https://decentralchain.io/privacy-policy)'nı okudum ve anladım.",
+          "read": "Okudum, anladım ve onaylıyorum",
+          "readTermsAndConditions": "[Koşullar ve Şartlar](https://decentralchain.io/terms-and-conditions)'ı okudum ve anladım.",
+          "security": "Kripto varlıklarımın herhangi bir şirket tarafından saklanmadığını ve bu cihazda güvenle benim tarafımdan saklandığını anladım.",
+          "securityAndBackup": "Varlıklarımın bir şirket tarafından değil, bu cihazda güvenle tutulduğunu anladım. Bu uygulama taşınırsa veya silinirse kripto paralarımı kurtarmanın tek yolunun Anahtar kelimeler (SEED) olduğunu biliyorum.",
+          "terms": "Kullanım koşulları"
+        },
+        "header": {
+          "description": "Cüzdanınız bilgisayarınızda güvenle oluşturuldu",
+          "title": "Bitti! Hadi gözden geçirelim",
+          "title2": "Kullanım koşulları"
+        }
+      },
+      "token": {
+        "balance": "Bakiye",
+        "burn": {
+          "label": "Yakılacak kripto para miktarı",
+          "title": "{{name}} yak"
+        },
+        "description": "Tanım",
+        "fee": "İşlem komisyonu {{fee, money-currency}}",
+        "gt0": "Girilen değer 0'dan büyük olmalıdır.",
+        "id": "ID",
+        "quantity": "Kripto para oluşturuldu.",
+        "reissue": {
+          "label": "Kripto para yeniden oluşturuldu.",
+          "title": "{{name}} kripto para yeniden oluştur."
+        },
+        "validation": {
+          "gt0": "Bu alan zorunludur",
+          "invalidAsset": "Bu alana sadece rakam yazılabilir",
+          "invalidPrecision": "Maksimum ondalık sayısı {{precision}} aşıldı",
+          "lteMaxBalance": "Miktar bakiyeden büyük olamaz",
+          "maxValueCount": "Girilen rakam çok büyük",
+          "noMoney": "İşlem komisyonunu ödeyebilmek için yeterli bakiye yok",
+          "required": "Bu alan zorunludur."
+        }
+      },
+      "tryDesktop": {
+        "remember": "Seçimimi hatırla ve beni tekrar uyarma"
+      },
+      "tutorialModals": {
+        "step1": {
+          "button": "Anahtar kelimeleriniz hakkında bilmeniz gerekenler",
+          "buttonMobile": "Sonraki",
+          "buttonReadMore": "Read more",
+          "p1": "Lütfen kendi güvenliğiniz için önemli bilgileri içeren bu bilgilendirmeyi okuyunuz. 🙏",
+          "p2": "Eğer anahtar kelimelerinizi kaybederseniz veya çaldırırsanız hesabınızı donduramayız ve varlıklarınızı tekrar alamayız.",
+          "p3": "Waves Platform'u kullanmaya devam ederek, anahtar kelimelerinizi kaybettiğinizde veya çaldırdığınızda Waves Platform'un sorumlu olmadığını kabul etmiş olursunuz.",
+          "title": "Waves Platform'a hoş geldiniz!"
+        },
+        "step2": {
+          "backButton": "Geri dön",
+          "cell1": "Hesabınızı anonim olarak kullanırsınız. Hesabınız herhangi bir e-posta adresine veya kimliğiniz ile eşleşen bir hizmet sağlayıcıya bağlı değildir.",
+          "cell2": "Bağlı bulunduğunuz cihazdan veya tarayıcıdan cüzdanınıza erişim için parolanızı kullanırsınız.",
+          "cell3": "Eğer parolanızı kaybederseniz anahtar kelimeleriniz ile yeni bir parola oluşturabilirsiniz. Ancak anahtar kelimelerinizi kaybederseniz bir daha hesabınıza erişemezsiniz.",
+          "cell4": "Anahtar kelimelerinizi değiştiremezsiniz. Eğer yanlışlıkla birine gönderirseniz veya çaldırırsanız en kısa sürede yeni bir cüzdan oluşturarak tüm varlıklarınızı bu yeni cüzdanınıza aktarın.",
+          "nextButton": "Kendinizi koruyun",
+          "p1": "Hesabınızı oluştururken sizden anahtar kelimelerinizi saklamanız ve bir parola ile korumanız istenecektir. Merkezi sunucularda parolanız e-posta adresinize gönderilen bir link ile sıfırlanabilir ancak Waves Platform gibi merkezsiz borsalarda bu durum daha farklıdır:",
+          "title": "Anahtar kelimeleriniz hakkında bilmeniz gerekenler"
+        },
+        "step3": {
+          "backButton": "Geri dön",
+          "cell1": "Her zaman linki kontrol edin: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell2": "Hesabınıza erişmek için eklentileri olan tarayıcıları kullanmayın.",
+          "cell3": "Bilinmeyen kişilerden gelen e-postaları açmayın ve linklere tıklamayın.",
+          "cell4": "İşletim sisteminizi düzenli olarak güncelleyin.",
+          "cell4Web": "Tarayıcınızı ve işletim sisteminizi düzenli olarak güncelleyin.",
+          "cell5": "Lisanslı güvenlik yazılımları kullanın. Bilinmeyen yazılımları yüklemeyin.",
+          "cell6": "Başka birisinin cihazından veya halka açık alanlardaki Wİ-Fİ hizmetlerinden cüzdanınıza erişim sağlamayın.",
+          "nextButton": "Anladım",
+          "p1": "En sık karşılaşılan dolandırıcılık yöntemi Waves Platform'a benzeyen sahte web siteleri, Facebook sayfaları olarak karşımıza çıkmaktadır.",
+          "saveSeedButton": "Save the SEED phrase",
+          "title": "Kendinizi nasıl koruyacaksınız?"
+        }
+      },
+      "unsuccessfulMigration": {
+        "checkbox": "Don't show this again",
+        "description": "You have started the account migration from Decentral.Exchange to this exchange, but it hasn't been finished. Your accounts haven't been moved. Go back to Decentral.Exchange and start the process from the beginning.",
+        "title": "Unfinished Migration",
+        "understand": "Anladım"
+      }
+    },
+    "modals": {
+      "anyTx": {
+        "title": "JSON"
+      }
+    },
+    "notification": {
+      "backup": {
+        "action": "Kaydet",
+        "body": "Anahtar kelimelerinizi kaydedin, hesabına erişmeniz için ihtiyacınız olacak.",
+        "title": "Anahtar kelimelerinizin yedeğini alın"
+      }
+    },
+    "qualified": "Yetkin",
+    "transaction": {
+      "amounts": {
+        "create-order": "{{sign}}{{amount}} {{name}}"
+      }
+    },
+    "Unpin_utils": "Pini kaldır",
+    "utils": {
+      "migrationError": "Oops! Your accounts are safe but haven't been moved. Please try again.",
+      "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
+      "privacyPolicyText": "Privacy Policy",
+      "termsAgreement": "I have read and agree with the [Terms and Conditions](https://decentralchain.io/terms-and-conditions).",
+      "termsAgreementText": "Terms and Conditions",
+      "termsAssign": "I have read and agree with the",
+      "whatsNew": {
+        "body": {
+          "1_0_0": "{span.line}[1. The Waves Client has come out of beta.]{span.line}[2. You can now pin and unpin any assets to the main page.]{span.line}[3. Night mode added.]{span.line}[4. You can now import all your accounts from the old Client easily.]{span.line}[5. Minor bug fixes.]",
+          "1_0_0-beta_23": "{span.line}[1. We have added a 'What's new' section!]{span.line}[2. You can now add a name to your account.]{span.line}[3. Some minor bugs have been fixed.]",
+          "1_0_0-beta_25": "{span.line}[1. You can now change session time in Settings.]{span.line}[2. We have fixed the bug with the Buy/Sell window in DEX to prevent it being moved outside the viewing area.]{span.line}[3. We will now remind you if you have not saved your SEED.]{span.line}[4. Some minor bugs have been fixed.]",
+          "1_0_0-beta_26": "{span.line}[1. Bir takım küçük bug'lar düzeltildi.]",
+          "1_0_0-beta_27": "{span.line}[1. Çince dil seçeneği eklendi.]{span.line}[2. Türkçe dil seçeneği eklendi.]",
+          "1_0_0-beta_30": "{span.line}[1. Oluşturmuş olduğunuz kripto paraları yakabilir veya tekrar oluşturabilirsiniz..]{span.line}[2. Waves doğrulama API desteği eklendi.]{span.line}[3. Bir takım küçük hatalar düzeltildi.]",
+          "1_0_0-beta_31": "{span.line}[1. Artık Waves ve Bitcoin'i kredi kartınız ile alabilirsiniz.]{span.line}[2. Alım satım ekranları geliştirildi.]{span.line}[3. Windows 32 Bit desteklenmeye başlandı.]{span.line}[4. Numerous other bugs fixed.]",
+          "1_0_0-beta_32": "{span.line}[1. Artık toplu gönderimleri yapabilirsiniz.]{span.line}[2. Bazı küçük hatalar giderildi.]",
+          "1_0_0-beta_35": "{span.line}[1. Portföyünüzdeki kripto paraları artık sıralayabilecek, filtreleyebilecek ve gizleyebileceksiniz.]{span.line}[2. DASH geçidi açıldı!.]{span.line}[3. Hintçe dil desteği eklendi.]{span.line}[4. Flemenkçe dil desteği eklendi.]{span.line}[5. Fatura sistemi eklendi.]{span.line}[6. Ufak hatalar giderildi.]",
+          "1_0_0-beta_36": "{span.line}[1. Kiralama sayfasına büyük node'lar eklendi.]{span.line}[2. Bazı hatalar giderildi.]",
+          "1_0_0-beta_39": "{span.line}[1. Ayarlara spam filtresi eklendi.]{span.line}[2. Bazı küçük hatalar giderildi.]",
+          "1_0_0-beta_40": "{span.line}[1. Monero geçidi açıldı.]",
+          "1_0_0-beta_42": "{span.line}[1. İspanyolca dil seçeneği eklendi.]{span.line}[2. Hesap bilgilerinizi kaydetmeden uygulamayı kullanabilirsiniz.]{span.line}[3. İşlemler sayfasında Spam kripto paralar işaretlendi.]{span.line}[4. Birçok hata giderildi.]",
+          "1_0_0-beta_47": "{span.line}[1. Completely new DEX UI.]{span.line}[2. Faster and more stable Client.]{span.line}[3. Alias functionality is available again.]{span.line}[4. Some minor bugs have been fixed.]{span.line}[5. Take part in our competitions by making a [video](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) or writing an [article](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835).]",
+          "1_0_0-beta_50": "{span.line}[1. You can now burn any tokens you hold in your account.]{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_10": "{span.line}[1. Sponsorship transaction support added. [Read more](https://docs.wavesplatform.com/en/waves-client/assets-management/sponsored-transaction.html)]\n{span.line}[2. Polish and Portuguese languages support added.]",
+          "1_0_14": "{span.line}[1. Fixed bug with using Sponsored Asset without Waves balance.]\n{span.line}[2. Fixed bug with 30 days expiration orders.]\n{span.line}[3. Some other minor bugs.]",
+          "1_0_15": "{span.line}[1. Issues with confirmation on Ledger have been fixed.]\n{span.line}[2. Increased waiting time for confirmation from Ledger.]\n{span.line}[3. Detailed information has been added to Error messages.]",
+          "1_0_18": "{span.line}[1. You can now set a script for your account.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_21": "{span.line}[1. Fixed authorisation confirmation via Ledger.]\n{span.line}[2. Numerous minor bugs fixed.]",
+          "1_0_22": "{span.line}[1. Added advanced features to work with scripted accounts.]",
+          "1_0_25": "{span.line}[1. [Waves Keeper](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) support has been added.]",
+          "1_0_27": "{span.line}[1. Added \"My assets\" category in Portfolio.]\n{span.line}[2. Minor bugs have been fixed.]",
+          "1_0_28": "{span.line}[1. Added pairing function to import existing accounts to mobile.]\n{span.line}[2. Minor bugs have been fixed.]",
+          "1_0_29": "{span.line}[1. QR code generation using Cyrillic alphabet has been fixed.]\n{span.line}[2. Tooltip for watchlist search has been added.]\n{span.line}[3. Further cosmetic fixes. ]",
+          "1_0_3": "{span.line}[1. You can now search assets by ID in the Portfolio page.]{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_30": "{span.line}[1. Set Script button has been moved to Security section in Settings.]\n{span.line}[2. Performance improvements and cosmetic changes.]",
+          "1_0_32": "{span.line}[1. Integration with BetterTokens’ oracle.]\n{span.line}[2. Added support for token verification protocol.]\n{span.line}[3. Fixed commission accounting for token withdrawal via Coinomat.]",
+          "1_0_33": "{span.line} [1. Now you will receive a notification if you try to place an order at a rate significantly differing from the current market rate.] {span.line} [2. Minor bugs have been fixed.]",
+          "1_0_36": "{span.line}[1. Scriptli hesaplarla takas imkanı sağlandı] {span.line}[2. kripto paralar için arama aktif edildi.] {span.line}[3. Küçük görsel düzenlemeler yapıldı.]",
+          "1_0_37": "{span.line}[1. Added Smart Asset functionality: issuance, reissuance and burning]\n{span.line}[2. Added Italian, German and Indonesian languages]\n{span.line}[3. Minor bug fixes]",
+          "1_0_40": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Added exchange rate for current pair in browser tab title.]\n{span.line}[3. Fixed minor bugs.]",
+          "1_0_41": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Notification system added.]\n{span.line}[3. Fixed minor bugs.]",
+          "1_0_42": "{span.line}[1. Fixed minor bugs.]",
+          "1_0_5": "{span.line}[1. Trade volume scale has been added on DEX charts.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_6": "{span.line}[1. Authorisation via Waves Desktop Client has been added.]",
+          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
+          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
+          "1_1_0": "{span.line}[1. Emir iptal periyot seçimleri varsayılan olarak kaydedilmeye başlandı.]\n{span.line}[2. Küçük hatalar giderildi.]",
+          "1_2_0": "{span.line}[1. Japonca ve Estonca dil destekleri eklendi.]\n{span.line}[2. Alış-Satış ekranında iyileştirmeler yapıldı.]\n{span.line}[3. Bir çok hata giderildi.]",
+          "1_2_1": "{span.line}[1. Uygulama şimdi grafik boyutunu, ölçek ayarlarını ve zaman aralığını kaydeder.]\n{span.line}[2. Ufak hatalar giderildi.]",
+          "1_2_2": "{span.line}[1. Güvenlik güncellemesi.]\n{span.line}[2. Ufak hatalar giderildi.]",
+          "1_2_3": "{span.line}[1. Ledger için Waves 1.0.0 desteği eklendi.]",
+          "1_2_6": "{span.line}[1. Çağırma scripti ile işlem desteği eklendi. [Daha Fazla](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n{span.line}[2. Görsel tasarım geliştirildi ve ufak hatalar giderildi.]",
+          "1_2_8": "{span.line}[1. Spam kripto paralar ve işlemler gizlendi.]\n{span.line}[2. Görsel tasarım geliştirildi ve ufak hatalar giderildi.]",
+          "1_3_0": "{span.line}[1. Açılış sayfası güncellendi ve sayfalar arası dolaşım geliştirildi.]",
+          "1_3_18": "{span.line}[1. Özel anahtar ile giriş eklendi]\n{span.line}[2. Bir token'in 24 saatlik değişimi token/DCC olarak ayarlandı.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_2": "{span.line}[1. WEST geçidi faaliyete alındı.]\n{span.line}[2. Görsel tasarım geliştirildi ve ufak hatalar giderildi.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
+          "1_3_5": "{span.line}[1. [wsoc.io](https://wsoc.io) Yarışma kripto paraları eklendi.]\n{span.line}[2. Fransızca desteği eklendi.]\n{span.line}[3. Ufak hatalar giderildi.]",
+          "1_3_7": "{span.line}[1. [tokenrating.wavesexplorer.com] entegrasyonu (https://tokenrating.wavesexplorer.com) Artık uygulamadan kripto paralar için derecelendirme puanı verebilirsiniz.]\n{span.line}[2. Ufak hatalar giderildi.]",
+          "1_3_9": "{span.line}[1. Görsel tasarım iyileştirildi. Borsa ve cüzdan geliştirmeleri yapıldı.]\n{span.line}[2. Ufak hatalar giderildi.]",
+          "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
+          "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
+        },
+        "title": "Güncelleme ile birlikte gelen yenilikler {{version}}"
+      }
+    },
+    "validators": {
+      "byte": {
+        "help": "Byte kaldı: {{bytes}}"
+      }
+    },
+    "warningPlate": {
+      "day": "d",
+      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "hour": "h",
+      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "min": "m",
+      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "sec": "s",
+      "startMoving": "Safe moving"
+    }
+  },
+  "app.wallet.assets": {
+    "addAsset": "Kripto para ekle",
+    "chart": {
+      "intervals": {
+        "all": "Tümü",
+        "day": "1 Gün",
+        "hour": "1 Saat",
+        "month": "1 Ay",
+        "week": "1 Hafta",
+        "year": "1 Sene"
+      }
+    },
+    "directives": {
+      "asset": {
+        "anyTx": "JSON",
+        "deposit": "Yatır",
+        "ofTotalBalance": "toplam bakiye {{totalBalance}}",
+        "receive": "Al",
+        "script": "Script",
+        "send": "Gönder"
+      },
+      "balance": {
+        "actions": {
+          "assetInfo": "Kripto para bilgisi",
+          "copyAssetId": "Kripto para ID'sini kopyala"
+        }
+      }
+    },
+    "price": "{{currency}} FİYATI",
+    "qr": "Adresiniz",
+    "send": "Gönder",
+    "since": {
+      "day": "DÜNDEN BERİ",
+      "month": "GEÇEN AYDAN BERİ",
+      "week": "GEÇEN HAFTADAN BERİ"
+    },
+    "suspicious": "şüpheli - ({span}[{{count}}])",
+    "Unpin": "Pini kaldır"
+  },
+  "app.wallet.leasing": {
+    "available": "Kullanılabilir",
+    "chart": {
+      "available": "Kullanılabilir",
+      "create": "Kiralamaya başla",
+      "leased": "Kiralanmış",
+      "title": "DCC Bakiyesi"
+    },
+    "description": {
+      "text1": "Sadece kiralanmamış DCC'lerinizi transfer veya takas edebilirsiniz. Kiralanmış miktarlar başka bir adrese gönderilemez veya takas amacı ile kullanılamaz.",
+      "text2": "Kiralama işlemini dilediğiniz zaman iptal edebilirsiniz. İptal işlemi saniyeler içerisinde gerçekleşir.",
+      "text3": "Üretim bakiyesi 1000 Blok sonra güncellenecektir.",
+      "title": "Kiralamadan Önce"
+    },
+    "leased": "Kiralanmış",
+    "leasedIn": "Kiralanmış",
+    "nodeListLink": "Node’ların listesi",
+    "test": {
+      "test": "Metin testi"
+    },
+    "title_leasing": "Giriş yapmak için Waves masaüstü uygulamasını seçtiniz"
+  },
+  "app.wallet.portfolio": {
+    "allactive": "Aktifler ({span}[{{count}}])",
+    "burn": "Kripto para yak",
+    "deposit": "Yatır",
+    "dex": "DEX'te aç",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://wavesexplorer.com/address/{{address}}/nft)",
+    "info": "Bilgi",
+    "list": {
+      "actions": "İşlemler",
+      "ask": "Alış",
+      "balance": "Bakiye",
+      "bid": "Satış",
+      "change": "24 Saatlik Değişim",
+      "inOrders": "Açık emirler",
+      "mirror": "Değer, {span.currency}[{{currency}}]",
+      "name": "Kripto para adı",
+      "rate": "Fiyat, {span.currency}[{{currency}}]"
+    },
+    "myassets": "Kripto paralarım ({span}[{{count}}])",
+    "pin": "Ana Sayfaya Tuttur",
+    "portfolio": {
+      "filter": "Ara"
+    },
+    "qr": "Adresiniz",
+    "qualified": "Yetkin",
+    "qualifieds": "Yetkin ({span}[{{count}}])",
+    "receive": "Al",
+    "reissue": "tekrar oluştur (kripto para)",
+    "send": "Gönder",
+    "setAssetScript": "Kripto para Script'ini güncelle",
+    "spam": "Şüpheli",
+    "spamAsset": "Şüpheli",
+    "spamselect": "Şüpheli ({span}[{{count}}])",
+    "sponsorship": "Sponsorluğu aktif et",
+    "sponsorshipChange": "Sponsorluğu değiştir",
+    "sponsorshipStop": "Sponsorluğu iptal et",
+    "tokenomica": "tokenomica",
+    "tospam": "Gizle",
+    "unpin": "Kaldır",
+    "unspam": "Göster"
+  },
+  "app.wallet.transactions": {
+    "all": "Tamamı",
+    "confirmTransaction": {
+      "retrySign": "Tekrar dene"
+    },
+    "csv": {
+      "alias": "Takma isim",
+      "amount": {
+        "id": "Amount asset ID",
+        "name": "Amount asset name",
+        "ticker": "Amount asset ticker",
+        "value": "Amount asset value"
+      },
+      "attachment": "İşlem eki",
+      "date": "Gün",
+      "description": "Kripto para açıklaması",
+      "fee": {
+        "id": "Komisyon Kimliği",
+        "name": "Komisyon adı",
+        "ticker": "Komisyon ticker'ı",
+        "value": "Komisyon değeri"
+      },
+      "height": "işlemin bloğu",
+      "id": "İşlemin tanımı",
+      "name": "Kripto para adı",
+      "precision": "Hassas",
+      "price": {
+        "id": "Price asset ID",
+        "name": "Price asset name",
+        "ticker": "Price asset ticker",
+        "value": "Price asset value"
+      },
+      "recipient": "İşlemin alıcısı",
+      "reissuable": {
+        "false": "Tekrar üretilemez",
+        "name": "Tekrar üretilebilir",
+        "true": "Tekrar üretilebilir"
+      },
+      "sender": "İşlemin göndericisi",
+      "transactionType": "Blok zinciri işlem tipi",
+      "type": "İşlem tipi"
+    },
+    "errors": {
+      "complete": {
+        "body": "İşlemlerin listesi tamamen indirilemedi. Lütfen daha sonra tekrar deneyiniz.",
+        "title": "İndirme tamamlanmadı."
+      },
+      "download": {
+        "body": "İşlemlerin listesi indirilemedi. Lütfen daha sonra tekrar deneyiniz.",
+        "title": "İndirme hatası."
+      },
+      "empty": {
+        "body": "Geçmişinde hiçbir hareket yok",
+        "title": "Dışa aktarma hatası"
+      }
+    },
+    "exchanged": "Takas Edilen",
+    "export": "Dışa aktar",
+    "filter": {
+      "value1": "Güncel",
+      "value2": "500 İşlem",
+      "value3": "1000 İşlem"
+    },
+    "issued": "Oluşturulan",
+    "leased": "Kiralanmış",
+    "received": "Alınan",
+    "sent": "Gönderilen",
+    "transactions": {
+      "script": {
+        "txJson_wallet": "Base64 script"
+      }
+    }
+  },
+  "app.welcome": {
+    "backupSeed": {
+      "copySeed": "Anahtar Kelimeleri Kopyala",
+      "warn": "Hesabınızı sadece siz kontrol edersiniz. Uygulamanın silinmesi durumuna karşı Anahtar kelimelerinizi mutlaka kaydedin."
+    },
+    "createAccount": {
+      "from": "Hesap Oluştur"
+    },
+    "infoTooltip": "Önemli bilgilendirme",
+    "loading": {
+      "volume": "HACİM"
+    },
+    "modal": {
+      "lockPairWarning": {
+        "continue": "Devam",
+        "heading": "{{amountAssetTicker}} / {{priceAssetTicker}} arasında takas şu anda mümkün değil",
+        "text": "Seçilen takas çifti için alım satım şu anda mümkün değil. İsterseniz emri iptal edebilirsiniz."
+      }
+    },
+    "news": "Haberler",
+    "newUser": {
+      "from": "yedekten",
+      "getStarted": "Haydi başlayalım!",
+      "import": "Hesapları içe aktar",
+      "or": "veya",
+      "restore": "Hesabı geri yükle",
+      "slides": [
+        {
+          "description": "Kripto para dünyasının hızla büyüyen alanına hoşgeldiniz. Kripto paralarınıza erişebilecek tek kişi sizsiniz.",
+          "title": "Blok zincirinin bir parçası olun"
+        },
+        {
+          "description": "Dijital varlıklarınızı kolay ve güvenli bir şekilde saklayın, yönetin veya kiralayın!",
+          "title": "Cüzdan"
+        },
+        {
+          "description": "Hızlı ve güvenli bir şekilde takas yapın! Waves Platform merkezsiz borsasında işlem yaparak kripto paralarınız üzerinde tam hakimiyete sahip olursunuz.",
+          "title": "Merkezsiz Borsa"
+        },
+        {
+          "description": "Üreteceğiniz kripto paralarınızı merkezsiz oylamalar, derecelendirme sistemleri veya sadakat programları gibi amaçlar için de kullanabilirsiniz.",
+          "title": "Kendi Kripto Paranızı Yaratın"
+        }
+      ]
+    },
+    "openViaDesktop": "Linkleri masaüstü uygulaması ile açmak istiyorum",
+    "roadmap": {
+      "aug2019": {
+        "date": "Ağustos 2019",
+        "text": "Piyasa fiyatından kripto paralarınızı hızlıca satabilirsiniz.",
+        "title": "Pazar emri"
+      },
+      "dec2018": {
+        "date": "Aralık 2018",
+        "text": "Yeni mobil uygulama fantastik DEX UI ve Geçit entegrasyonu sunuyor.",
+        "text_2": "DEX'te gördüğünüz Ticker'lar ve Logo'lar kullanıcılara yüksek güven veren onaylanmış kripto paralara aittir.",
+        "title": "Mobil uygulama 2.0",
+        "title_2": "BetterTokens Entegrasyonu"
+      },
+      "feb2017": {
+        "date": "Aralık 2017",
+        "text": "Yerleşik borsaya sahip amiral gemisinin ilk sürümü hayata geçirildi.",
+        "title": "Decentral.Exchange Beta"
+      },
+      "feb2018": {
+        "date": "Şubat 2018",
+        "text": "MacOS, Linux ve Windows için uygulama yayınlandı.",
+        "title": "Masaüstü Uygulaması"
+      },
+      "jan2019": {
+        "date": "Ocak 2019",
+        "text": "Akıllı Hesaplarla Decentral.Exchange'te alım satım desteği etkinleştirildi.",
+        "text_2": "Bitcoin Satoshi Vision Geçidi'nin faaliyete başlaması",
+        "title": "Akıllı Hesap Takası",
+        "title_2": "BSV Geçidi"
+      },
+      "jul2018": {
+        "date": "Temmuz 2018",
+        "text": "Piyasadaki tüm DEX'lerden daha iyi performans ve kullanıcı deneyimi sunan merkezsiz borsa yenilendi.",
+        "text_2": "Popüler cüzdan büyük bir sürümle Beta'dan çıktı.",
+        "title": "Yeni DEX",
+        "title_2": "DCC Cüzdanı"
+      },
+      "jul2019": {
+        "date": "Temmuz 2019",
+        "text": "DCC ekosistemine ERC20 kripto paralarının eklenmesi ile birlikte Ethereum üzerindeki kripto paralar borsada alınıp satılabilecektir.",
+        "text_2": "Geliştiriciler, mobil geliştirme işlemlerini basitleştirdi ve DCC blok zinciri ile etkileşimde bulunma araçları için kapsamlı açıklamalar edindi.",
+        "text_3": "Kullanıcılar bir cüzdan uygulaması içindeki birden fazla hesap arasında kolayca geçiş yapabilir.",
+        "title": "ERC-20 Geçidi",
+        "title_2": "Mobil SDK ve JS kütüphanesi geliştirme",
+        "title_3": "Çoklu hesaplar"
+      },
+      "jun2019": {
+        "date": "Haziran 2019",
+        "text": "DEX hızındaki ve bellek gereksinimlerindeki iyileştirmeler uygulanacak.",
+        "title": "DEX optimizasyonu"
+      },
+      "may2018": {
+        "date": "Mayıs 2018",
+        "text": "Yenilenen DEX, piyasadaki diğer DEX’lerden daha iyi bir kullanıcı deneyimi ve performans sunar.",
+        "title": "Dash ve Bitcoin Cash geçitleri"
+      },
+      "nov2018": {
+        "date": "Kasım 2018",
+        "text": "Kullanıcılar, çoklu imza ve scriptli hesaplarla işlem yapma yeteneği kazanır.",
+        "title": "Akıllı Hesap Desteği"
+      },
+      "sep2018": {
+        "date": "Eylül 2018",
+        "text": "DCC DEX ile entegrasyon, kullanıcıların maksimum güvenlikle takas yapmalarını sağlar.",
+        "title": "Ledger Nano S"
+      },
+      "sep2019": {
+        "date": "Eylül 2019",
+        "text": "İki faktörlü doğrulama, DCC DEX kullanıcılarına daha fazla güvenlik sağlar.",
+        "title": "2FA"
+      }
+    },
+    "userList": {
+      "addNew": "Hesap ekle",
+      "back": "Back",
+      "create": "Yeni bir hesap oluşturun",
+      "frombackup": "yedekten",
+      "import": "Hesapları içeri aktar",
+      "restore": "Hesabı geri yükle",
+      "subTitle": "Tekrar giriş yapın veya",
+      "subTitleSession": "Oturum otomatik olarak sonlandırıldı."
+    },
+    "welcome": {
+      "accountList": {
+        "locked": "Require unlocking"
+      },
+      "address": "Adres",
+      "aliases": "Takma adlar",
+      "android": "Google Play",
+      "api": "API",
+      "apple": "App Store",
+      "blog": "Blog",
+      "broughtBy": "Size DCC Takımı tarafından sunuldu",
+      "cancel": "İptal",
+      "change": "DEĞİŞİM",
+      "changeName": "İsmi değiştir",
+      "chart": "GRAFİK",
+      "comingSoon": "Coming soon",
+      "contestLinkDescription": "DCC DEX'teki takas yarışmasından 5,000 DCC kazan!",
+      "contestLinkLink": "Kurallar",
+      "controlAssets": "Varlıkların kontrolü yalnızca sizindir - varlıklarınız sizden habersiz cüzdanınızdan çıkmaz ve dondurulamaz.",
+      "cookies": "Cookies",
+      "copyAddress": "Adresi kopyala",
+      "copyright": "© 2019 DCC Platform",
+      "copyright-new": "© 2019 DCC.Exchange",
+      "copyrightVordex": "© 2019 VORDEX",
+      "createAccount": "Create account",
+      "createToken": "Kripto para oluştur",
+      "currentAccountName": "Şu anki hesap adı",
+      "dashboard": "Panel",
+      "decentralized": "Merkezsiz",
+      "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
+      "dexWithHardware": "DEX'i donanım cüzdanları Ledger Nano S ve Ledger Blue ile birlikte kullanın",
+      "documentation": "Dokümantasyon",
+      "download": "İndir",
+      "downloadMobileApp": "Mobil uygulamayı indir!",
+      "exchange": "Takas",
+      "forDevelopers": "Geliştiriciler için ",
+      "forum": "Forum",
+      "gateways": "Popüler kripto paralar için geçitler",
+      "gdpr": "GDPR",
+      "getRealTimeAccess": "Piyasa verilerine gerçek zamanlı erişim sağlayın ve takas botlarınızı API üzerinden ayarlayın",
+      "getStarted": "Haydi başlayalım!",
+      "gitHub": "GitHub",
+      "help": "Yardım",
+      "high": "24 Saatlik en yüksek",
+      "inputErrorNameExists": "Bu isim alınmış. Başka bir isim deneyin",
+      "instantAccessWalletDex": "Cüzdanınıza ve DEX'e anında erişim",
+      "keeperAccount": "Keeper hesabı",
+      "lastPrice": "SON FİYAT",
+      "leasing": "Kiralama",
+      "ledgerAccount": "Ledger hesabı",
+      "ledgerSupport": "Ledger desteği",
+      "legal": "Yasal",
+      "linux": "Linux",
+      "linuxDescription": "Linux uygulamasını indir",
+      "logout": "Çıkış Yap",
+      "logOut": "Çıkış Yap",
+      "low": "24 Saatlik en düşük",
+      "lowFixedFees": "Düşük, sabit ücretler",
+      "macOs": "MacOS",
+      "macOsDescription": "MacOS uygulamasını indir",
+      "mailto": "support.DCCplatform.com",
+      "mailtoVordex": "support@vordex.com",
+      "mailtoWavesExchange": "support@waves.exchange",
+      "mainPage": "Ana Sayfa",
+      "majorFiatCryptocurrencies": "Başlıca fiat ve kripto para birimleri desteklenir: BTC, LTC, ETH, USD, TRY ve diğerleri",
+      "markets": "Pazarlar",
+      "marketsDescription": "DCC DEX, mobil ve masaüstü uygulama, web cüzdanı veya DCC API üzerinden hızlı ve güvenli bir şekilde alım satım yapmanıza olanak sağlar.",
+      "marketsTableDescription": "Daha fazla takas çiftleri görüntülemek için tıklayın",
+      "marketsTableDescriptionLink": "Borsayı Gör",
+      "menu": "Menü",
+      "name": "İsim",
+      "nameSaved": "Hesap adı değişti",
+      "newAccountName": "Yeni hesap adı",
+      "news": "Haberler",
+      "pair": "ÇİFT",
+      "portfolio": "Portföy",
+      "privacyPolicy": "Gizlilik Politikası",
+      "productsTools": "Ürünler ve araçlar",
+      "renameAccount": "Hesabı yeniden adlandır",
+      "roadmap": "Yol Haritası",
+      "roadmapOpportunitiesAhead": "DCC DEX'in geleceği: Önümüzdeki yol haritamız",
+      "save": "Kaydet",
+      "scanQrCode": "QR kodu tara",
+      "scriptAccount": "Script hesabı",
+      "scriptedAccount": "Script hesabı",
+      "settings": "Ayarlar",
+      "signIn": "Giriş Yap",
+      "social": "Sosyal",
+      "stackOverflow": "Stack Overflow",
+      "suitableTradingBots": "Takas botlarına uygun",
+      "support": "Destek",
+      "switchAccount": "Switch account",
+      "telegram": "Telegram",
+      "termsOfUse": "Kullanım koşulları",
+      "timerDays": "days",
+      "timerHours": "hours",
+      "timerMinutes": "minutes",
+      "timerSeconds": "seconds",
+      "tokenCreation": "Hızlı kripto para oluşturma",
+      "tokenCreationCosts": "Kripto para oluşturma maliyeti yalnızca 1 DCC ve 1 dakika sürer",
+      "tokenomicaToasterButton": "Daha fazla bilgi",
+      "tokenomicaToasterText": "Tokenlenmiş assetlerin çıkarmasi ve alım satımı için ilk bir hepsi bir arada platformun hissedarı olun.",
+      "tradeOnWaves": "DCC Merkezsiz Kripto Para Borsasında Kripto Para Alın ve Satın",
+      "tradeOnWavesDescription": "Merkezi bir borsanın tüm avantajları ile birlikte kripto paralarınızı hızlı ve güvenli bir şekilde alın ve satın, bu esnada varlıklarınızın kontrolünü elinizde tutun.",
+      "transactions": "İşlemler",
+      "twitter": "Twitter",
+      "volume": "HACİM",
+      "wallet": "Cüzdan",
+      "wavesBlockchain": "DCC Blok Zinciri",
+      "wavesDexWeb": "DCC DEX Web",
+      "wavesExplorer": "DCC Gezgini",
+      "wavesIde": "DCC IDE",
+      "wavesKeeper": "Cubensis Connect",
+      "wavesLabs": "DCC Labs",
+      "wavesOrderFilled": "Doldurulan her bir emir için 0.003 DCC",
+      "wavesWallet": "DCC Cüzdanı",
+      "windows": "Windows",
+      "windowsDescription": "Windows uygulamasını indir"
+    }
+  },
+  "electron": {
+    "menu": {
+      "copy": "Kopyala",
+      "cut": "Kes",
+      "dev_tools": "Geliştiricilere özel",
+      "paste": "Yapıştır",
+      "quit": "Çık",
+      "title": {
+        "application": "Uygulama",
+        "edit": "Düzenle",
+        "god_mode": "Tanrı Modu"
+      }
+    },
+    "modal": {
+      "set_protocol_error": {
+        "close": "Kapat",
+        "message": "Tarayıcı linkleri geçici olarak desteklenmiyor!! Waves uygulaması için varsayılan olarak ayarlanamaz.",
+        "report": "Raporla",
+        "title": "Açık protokol hatası"
+      }
+    },
+    "storage": {
+      "backup": {
+        "error": {
+          "body": "Failed to get accounts. Please contact the support service to restore the backup phrase (SEED phrase).",
+          "title": "Something went wrong!"
+        }
+      },
+      "read": {
+        "error": {
+          "body": "Anahtarlarınızı yüklerken bir hata oluştu. Hesabınızı yedeklerden tekrar yükledik.",
+          "title": "Hesaplar yedekten başarı ile yüklendi"
+        }
+      }
+    }
+  }
+}

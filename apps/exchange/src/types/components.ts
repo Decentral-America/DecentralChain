@@ -1,0 +1,2 @@
+// Component prop types
+export {};
