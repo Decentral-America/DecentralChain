@@ -1,0 +1,117 @@
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { massTransfer } from '../../src';
+import {
+  checkBinarySerializeDeserialize,
+  checkProtoSerializeDeserialize,
+  validateTxSignature,
+} from '../../test/utils';
+import { massTransferMinimalParams } from '../minimalParams';
+import { massTransferBinaryTx } from './expected/binary/mass-transfer.tx';
+import { massTransferTx } from './expected/proto/mass-transfer.tx';
+
+describe('massTransfer', () => {
+  const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
+
+  it('should create tx from minimal set of params', () => {
+    const tx = massTransfer({ ...massTransferMinimalParams }, stringSeed);
+    expect(tx).toMatchObject({ ...massTransferMinimalParams, fee: 200000 });
+  });
+
+  it('Should throw on transfers not being array', () => {
+    const tx = () =>
+      massTransfer({ ...massTransferMinimalParams, transfers: null } as any, stringSeed);
+    expect(tx).toThrow('Should contain at least one transfer');
+  });
+
+  it('Should get correct signature', () => {
+    const tx = massTransfer({ ...massTransferMinimalParams }, stringSeed);
+    expect(validateTxSignature(tx, 1)).toBe(true);
+  });
+
+  it('Should get correct multiSignature', () => {
+    const stringSeed2 = 'example seed 2';
+    const tx = massTransfer({ ...massTransferMinimalParams }, [
+      null,
+      stringSeed,
+      null,
+      stringSeed2,
+    ]);
+    expect(validateTxSignature(tx, 1, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 1, 3, publicKey(stringSeed2))).toBe(true);
+  });
+
+  it('Should throw on transfers with minimal quantity of receivers', () => {
+    const transfersList = [];
+    const t = { amount: 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
+    transfersList.push(t);
+    const tx = massTransfer({ transfers: transfersList }, stringSeed);
+    expect(tx.transfers).toMatchObject({ ...transfersList });
+  });
+
+  it('Should throw on transfers with zero quantity of receivers', () => {
+    const transfersList = [];
+    const t = { amount: 0, recipient: '' };
+    transfersList.push(t);
+    expect(() => massTransfer({ transfers: transfersList }, stringSeed)).toThrowError(
+      'tx "chainId" has invalid data. Check tx data.',
+    );
+  });
+
+  it('Should throw on transfers with maximal quantity of receivers', () => {
+    const transfersList = [];
+    for (let i = 0; i < 100; i++) {
+      const t = { amount: i + 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
+      transfersList.push(t);
+    }
+    const tx = massTransfer({ transfers: transfersList }, stringSeed);
+    expect(tx.transfers).toMatchObject({ ...transfersList });
+  });
+
+  it('Should throw on transfers with extra maximal quantity of receivers', () => {
+    const transfersList = [];
+    for (let i = 0; i < 101; i++) {
+      const t = { amount: i + 1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
+      transfersList.push(t);
+    }
+    expect(() =>
+      massTransfer({ ...massTransferMinimalParams, transfers: transfersList }, stringSeed),
+    ).toThrowError('tx "transfers" has invalid data. Check tx data.');
+
+    //    const tx =  massTransfer({ transfers: transfersList}, stringSeed)
+    //    expect(tx.transfers).toMatchObject({ ...transfersList })
+  });
+
+  it('Should throw on transfers with zero amount', () => {
+    const transfersList = [];
+    const t = { amount: 0, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
+    transfersList.push(t);
+    expect(() => massTransfer({ transfers: transfersList }, stringSeed)).toThrowError(
+      'tx "transfers" has invalid data. Check tx data.',
+    );
+  });
+
+  it('Should throw on transfers with negative amount', () => {
+    const transfersList = [];
+    const t = { amount: -1, recipient: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' };
+    transfersList.push(t);
+    expect(() =>
+      massTransfer({ ...massTransferMinimalParams, transfers: transfersList }, stringSeed),
+    ).toThrowError('tx "transfers" has invalid data. Check tx data.');
+  });
+});
+
+describe('serialize/deserialize mass transfer tx', () => {
+  Object.entries(massTransferTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});
+
+describe('serialize/deserialize mass transfer binary tx', () => {
+  Object.entries(massTransferBinaryTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});

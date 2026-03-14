@@ -1,0 +1,324 @@
+import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
+import { broadcast, waitForTx } from '../src';
+import { waitForTxWithNConfirmations } from '../src/nodeInteraction';
+import { data } from '../src/transactions/data';
+import { invokeScript } from '../src/transactions/invoke-script';
+import { issue } from '../src/transactions/issue';
+import { massTransfer } from '../src/transactions/mass-transfer';
+import { setScript } from '../src/transactions/set-script';
+import { transfer } from '../src/transactions/transfer';
+import { API_BASE, CHAIN_ID, MASTER_SEED, TIMEOUT } from './integration/config';
+
+let dappAddress1 = '';
+let dappAddress2 = '';
+let assetId = '';
+vi.setConfig({ testTimeout: 60000 });
+
+it('issue', async () => {
+  const tx = issue(
+    {
+      chainId: CHAIN_ID,
+      description: 'test',
+      fee: 100000000,
+      name: 'test',
+      quantity: 1097654321,
+    },
+    MASTER_SEED,
+  );
+  const { id } = await broadcast(tx, API_BASE);
+  assetId = id;
+});
+
+// it('updateAssetInfo', async () => {
+//     const tx = updateAssetInfo({
+//         name: 'myCoin',
+//         description: 'description for myCoin',
+//         assetId: '9Qkr6cBZmfPZosCwbnHKVHciEJgFSzahe4H9HL6avmT9',
+//         chainId: CHAIN_ID,
+//     }, masterSeed)
+//     console.log(JSON.stringify(tx, null, 4))
+//     console.log(await broadcast(tx, nodeUrl))
+// })
+
+it('transfer', async () => {
+  const recipient = address(randomSeed(), CHAIN_ID);
+  const tx = transfer(
+    {
+      amount: 1,
+      attachment: '',
+      chainId: CHAIN_ID,
+      recipient: recipient,
+    },
+    MASTER_SEED,
+  );
+  await broadcast(tx, API_BASE);
+});
+
+it('masstransfer', async () => {
+  const r1 = address(randomSeed(), CHAIN_ID);
+  const r2 = address(randomSeed(), CHAIN_ID);
+  const tx = massTransfer(
+    {
+      attachment: '',
+      chainId: CHAIN_ID,
+      transfers: [
+        {
+          amount: 1,
+          recipient: r1,
+        },
+        {
+          amount: 1,
+          recipient: r2,
+        },
+      ],
+    },
+    MASTER_SEED,
+  );
+  await broadcast(tx, API_BASE);
+});
+
+it('set data', async () => {
+  const tx = data(
+    {
+      chainId: CHAIN_ID,
+      data: [{ key: 'foo', type: 'string', value: 'bar' }],
+    },
+    MASTER_SEED,
+  );
+  await broadcast(tx, API_BASE);
+});
+
+it('drop data', async () => {
+  const tx = data(
+    {
+      chainId: CHAIN_ID,
+      data: [{ key: 'foo' }],
+    },
+    MASTER_SEED,
+  );
+  await broadcast(tx, API_BASE);
+});
+
+it('setScriptTest', async () => {
+  const script =
+    'AAIEAAAAAAAAAAQIAhIAAAAAAAAAAAEAAAABaQEAAAADZm9vAAAAAAkABEwAAAACCQEAAAAMSW50ZWdlckVudHJ5AAAAAgIAAAADa2V5AAAAAAAAAAABCQAETAAAAAIJAQAAAAxCb29sZWFuRW50cnkAAAACAgAAAANrZXkGCQAETAAAAAIJAQAAAAtTdHJpbmdFbnRyeQAAAAICAAAAA2tleQIAAAADc3RyBQAAAANuaWwAAAAAl/lsvw==';
+
+  const script2 =
+    'base64:AAIFAAAAAAAAAAsIAhIHCgUBAgQIHwAAAAAAAAABAAAAAWkBAAAABGNhbGwAAAAFAAAAAWEAAAABYgAAAAFjAAAAAWQAAAABZgQAAAAEaW50VgQAAAAHJG1hdGNoMAkAAZEAAAACBQAAAAFmAAAAAAAAAAAAAwkAAAEAAAACBQAAAAckbWF0Y2gwAgAAAANJbnQEAAAAAXQFAAAAByRtYXRjaDAFAAAAAXQJAAACAAAAAQIAAAAOd3JvbmcgYXJnIHR5cGUEAAAABWJ5dGVWBAAAAAckbWF0Y2gwCQABkQAAAAIFAAAAAWYAAAAAAAAAAAEDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAACkJ5dGVWZWN0b3IEAAAAAXQFAAAAByRtYXRjaDAFAAAAAXQJAAACAAAAAQIAAAAOd3JvbmcgYXJnIHR5cGUEAAAABWJvb2xWBAAAAAckbWF0Y2gwCQABkQAAAAIFAAAAAWYAAAAAAAAAAAIDCQAAAQAAAAIFAAAAByRtYXRjaDACAAAAB0Jvb2xlYW4EAAAAAXQFAAAAByRtYXRjaDAFAAAAAXQJAAACAAAAAQIAAAAOd3JvbmcgYXJnIHR5cGUEAAAABHN0clYEAAAAByRtYXRjaDAJAAGRAAAAAgUAAAABZgAAAAAAAAAAAwMJAAABAAAAAgUAAAAHJG1hdGNoMAIAAAAGU3RyaW5nBAAAAAF0BQAAAAckbWF0Y2gwBQAAAAF0CQAAAgAAAAECAAAADndyb25nIGFyZyB0eXBlCQAETAAAAAIJAQAAAAtCaW5hcnlFbnRyeQAAAAICAAAAA2JpbgUAAAABYgkABEwAAAACCQEAAAALQmluYXJ5RW50cnkAAAACAgAAAARib29sBQAAAAVieXRlVgkABEwAAAACCQEAAAAMSW50ZWdlckVudHJ5AAAAAgIAAAAEaW50MQUAAAABYQkABEwAAAACCQEAAAAMSW50ZWdlckVudHJ5AAAAAgIAAAAEaW50MgUAAAAEaW50VgkABEwAAAACCQEAAAALU3RyaW5nRW50cnkAAAACAgAAAARzdHIxBQAAAAFkCQAETAAAAAIJAQAAAAtTdHJpbmdFbnRyeQAAAAICAAAABHN0cjIFAAAABHN0clYJAARMAAAAAgkBAAAADEJvb2xlYW5FbnRyeQAAAAICAAAABWJvb2wxBQAAAAFjCQAETAAAAAIJAQAAAAxCb29sZWFuRW50cnkAAAACAgAAAAVib29sMgUAAAAFYm9vbFYFAAAAA25pbAAAAAEAAAACdHgBAAAABnZlcmlmeQAAAAAGaGqCnQ==';
+  const seed = randomSeed();
+  const addr = address(seed, CHAIN_ID);
+
+  const seed2 = randomSeed();
+  const addr2 = address(seed2, CHAIN_ID);
+
+  dappAddress1 = addr;
+  dappAddress2 = addr2;
+
+  const tx = transfer(
+    {
+      amount: 0.05e8,
+      chainId: CHAIN_ID,
+      recipient: addr,
+    },
+    MASTER_SEED,
+  );
+
+  const tx2 = transfer(
+    {
+      amount: 0.05e8,
+      chainId: CHAIN_ID,
+      recipient: addr2,
+    },
+    MASTER_SEED,
+  );
+
+  await broadcast(tx, API_BASE);
+  await broadcast(tx2, API_BASE);
+  await waitForTx(tx.id, { apiBase: API_BASE, timeout: 10000 });
+
+  const setScriptTx = setScript(
+    {
+      chainId: CHAIN_ID,
+      script,
+    },
+    seed,
+  );
+
+  const setScriptTx2 = setScript(
+    {
+      chainId: CHAIN_ID,
+      script: script2,
+    },
+    seed2,
+  );
+
+  await broadcast(setScriptTx2, API_BASE);
+  await broadcast(setScriptTx, API_BASE);
+  await waitForTx(setScriptTx.id, { apiBase: API_BASE, timeout: 10000 });
+  // await sleep(15000);
+  // try {
+  //     const invokeTx = invokeScript({
+  //         dApp: addr,
+  //         call: {function: 'foo', args: []},
+  //         chainId: chainId,
+  //         fee: 500000,
+  //         payment: [{assetId: null, amount: 1}],
+  //         feeAssetId: null
+  //     }, masterSeed);
+  //     console.log(await broadcast(invokeTx, nodeUrl));
+  //     await sleep(15000);
+  // } catch (e) {
+  //     'tx' in e && console.log(JSON.stringify(e.tx, null, 4));
+  //     'message' in e && console.log(e.message);
+  // }
+  //
+  // try {
+  //     const invokeTx1pay = invokeScript({
+  //         dApp: addr,
+  //         call: {function: 'foo', args: []},
+  //         chainId: chainId,
+  //         fee: 500000,
+  //         payment: [{amount: 1, assetId: null}],
+  //         feeAssetId: null
+  //     }, masterSeed);
+  //     console.log(await broadcast(invokeTx1pay, nodeUrl));
+  //     await sleep(15000);
+  // } catch (e) {
+  //     'tx' in e && console.log(JSON.stringify(e.tx, null, 4));
+  //     'message' in e && console.log(e.message);
+  // }
+
+  // try {
+  //     const invokeTx2pay = invokeScript({
+  //         // dApp: addr,
+  //         dApp: '3HaN7nm7LuC7bDpgiG917VdJ1mmJE3iXMPM',
+  //         call: {function: 'foo', args: []},
+  //         chainId: chainId,
+  //         fee: 500000,
+  //         payment: [{amount: 1, assetId: null}, {amount: 1, assetId: null}],
+  //     }, masterSeed)
+  //     console.log(await broadcast(invokeTx2pay, nodeUrl))
+  // } catch (e) {
+  //     'tx' in e && console.log(JSON.stringify(e.tx, null, 4))
+  //     'message' in e && console.log(e.message)
+  // }
+}, 1000000000);
+
+it('invoke test', async () => {
+  if (dappAddress1 === '') {
+    dappAddress1 = '3MJ2PHxU4Vsf5HfLzuYrRTP3imrQVvhkWyk';
+  }
+
+  const invokeTx = invokeScript(
+    {
+      call: { args: [], function: 'foo' },
+      chainId: CHAIN_ID,
+      dApp: dappAddress1,
+      fee: 500000,
+      feeAssetId: null,
+    },
+    MASTER_SEED,
+  );
+  const { id } = await broadcast(invokeTx, API_BASE);
+  const _tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
+}, 100000);
+
+it('invoke with list test', async () => {
+  const invokeTx = invokeScript(
+    {
+      call: {
+        args: [
+          {
+            type: 'integer',
+            value: 1,
+          },
+          {
+            type: 'binary',
+            value: 'base64:YWJj',
+          },
+          {
+            type: 'boolean',
+            value: true,
+          },
+          {
+            type: 'string',
+            value: 'abc',
+          },
+          {
+            type: 'list',
+            value: [
+              {
+                type: 'integer',
+                value: 2,
+              },
+              {
+                type: 'binary',
+                value: 'base64:YWJjZA==',
+              },
+              {
+                type: 'boolean',
+                value: false,
+              },
+              {
+                type: 'string',
+                value: 'abcd',
+              },
+            ],
+          },
+        ],
+        function: 'call',
+      },
+      chainId: CHAIN_ID,
+      dApp: dappAddress2,
+      fee: 500000,
+      feeAssetId: null,
+      payment: [
+        { amount: 1, assetId: null },
+        { amount: 2, assetId: null },
+        { amount: 3, assetId: null },
+        { amount: 4, assetId: null },
+        { amount: 5, assetId: null },
+        { amount: 21, assetId: assetId },
+        { amount: 22, assetId: assetId },
+        { amount: 23, assetId: assetId },
+        { amount: 24, assetId: assetId },
+        { amount: 25, assetId: assetId },
+      ],
+    },
+    MASTER_SEED,
+  );
+  const { id } = await broadcast(invokeTx, API_BASE);
+  const _tx = await waitForTxWithNConfirmations(id, 0, { apiBase: API_BASE, timeout: TIMEOUT });
+}, 100000);
+
+it('transfer test', async () => {
+  const conditions = [
+    { attachment: 'StV1DL6CwTryKyV' },
+    { attachment: '' },
+    { attachment: null },
+    { attachment: undefined },
+  ];
+  const recipient = address(randomSeed(), CHAIN_ID);
+  const makeTx = (cond: any) =>
+    transfer(
+      {
+        ...cond,
+        amount: 1,
+        chainId: CHAIN_ID,
+        recipient: recipient,
+      },
+      MASTER_SEED,
+    );
+
+  for (const i in conditions) {
+    try {
+      await broadcast(makeTx(conditions[i]), API_BASE);
+    } catch (e) {
+      console.error(JSON.stringify(e, null, 4));
+    }
+  }
+});
+
+function _sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
