@@ -1,0 +1,15 @@
+.nftList {
+  flex-grow: 1;
+  margin-left: 14px;
+}
+
+.nftRow {
+  flex-basis: 50%;
+  margin-right: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.nftRow.noScroll {
+  margin-right: 14px;
+}

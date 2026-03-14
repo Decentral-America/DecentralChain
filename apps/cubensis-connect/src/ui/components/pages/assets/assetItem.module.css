@@ -1,0 +1,78 @@
+.assetCard {
+  position: relative;
+  z-index: 1;
+  margin: 0 14px 8px 14px;
+  padding: 8px 14px;
+  padding-right: 0;
+  display: flex;
+  width: 325px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(155, 166, 178, 0.4);
+  background: #fff;
+}
+
+.assetIcon {
+  flex-shrink: 0;
+}
+
+.assetData {
+  flex-grow: 1;
+  margin-bottom: auto;
+  overflow: hidden;
+  text-align: left;
+}
+
+.assetTitle {
+  margin-bottom: 4px;
+  display: flex;
+  gap: 4px;
+  line-height: 17px;
+}
+
+.assetName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assetStatusIcon {
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.swapBtn,
+.favBtn,
+.sendBtn,
+.infoBtn {
+  background: none;
+  cursor: pointer;
+}
+
+.swapIcon,
+.favIcon,
+.sendIcon,
+.infoIcon {
+  width: 28px;
+  height: 28px;
+}
+
+.favIcon {
+  stroke: var(--color-basic200);
+}
+
+.swapIcon,
+.sendIcon,
+.infoIcon {
+  fill: var(--color-basic200);
+}
+
+.swapIcon:hover,
+.sendIcon:hover,
+.infoIcon:hover {
+  fill: var(--color-basic500);
+}
+
+.favIcon:hover {
+  stroke: var(--color-basic500);
+}

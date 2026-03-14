@@ -1,0 +1,130 @@
+.root {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.suggest {
+  position: absolute;
+  z-index: 1;
+  top: 41px;
+  right: 0;
+  left: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgb(155, 166, 178, 0.4);
+  background: var(--color-white);
+}
+
+.title {
+  padding: 8px 14px 0;
+  color: #c5d0de;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
+  text-transform: uppercase;
+}
+
+.item {
+  margin: 4px 0;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.item:hover {
+  background-color: var(--color-basic50);
+}
+
+.name {
+  margin-right: 8px;
+  font-size: 14px;
+  line-height: 17px;
+  word-break: break-all;
+}
+
+.tooltip {
+  position: absolute;
+  top: 12px;
+  right: 44px;
+  cursor: default;
+}
+
+.buttonIcon {
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-white);
+  background-image: url(../../../assets/img/search-user.svg);
+  background-size: cover;
+  cursor: pointer;
+}
+
+.modalContent {
+  position: relative;
+  padding: 24px 0 4px;
+  display: flex;
+  flex-direction: column;
+  width: 284px;
+  border-radius: 2px;
+  background: var(--color-white);
+}
+
+.modalTitle {
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.modalSearchInput {
+  flex-grow: 0;
+  margin: 0 24px 0;
+}
+
+.modalSuggest {
+  position: static;
+  box-shadow: none;
+}
+
+.notFound {
+  margin: 28px;
+  color: var(--color-basic500);
+  text-align: center;
+}
+
+.inputWithOverlaidText {
+  position: relative;
+  flex: 1 1 0;
+  font-size: 14px;
+}
+
+.addressInput {
+  color: transparent;
+  caret-color: #000;
+  font: inherit;
+}
+
+.overlaidText {
+  position: absolute;
+  inset: 12px 15px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.overlaidText > mark {
+  background-color: transparent;
+}
+
+.aliasMark {
+  color: #ffaf00;
+}
+
+.warningAlias {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border: 1px dashed #ffaf00;
+  border-radius: 2px;
+  color: #9ba6b2;
+  font-size: 11px;
+}

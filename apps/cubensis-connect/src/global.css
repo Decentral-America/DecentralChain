@@ -1,0 +1,108 @@
+@import "normalize.css";
+@import "./fonts/_fonts.css";
+
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-accent50: #e9e9eb;
+  --color-basic50: #f8f9fb;
+  --color-basic100: #edf0f4;
+  --color-basic200: #dae1e9;
+  --color-basic500: #9ba6b2;
+  --color-info400: #8dabc4;
+  --color-disabled500: #999;
+  --color-submit200: #bacaf4;
+  --color-submit300: #5a81ea;
+  --color-submit400: #1f5af6;
+  --color-success400: #4aad02;
+  --color-error400: #e5494d;
+  --color-warning400: #e5be4d;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-black) var(--color-white);
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: var(--color-white);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: var(--color-black);
+}
+
+html {
+  display: flex;
+  height: 100%;
+  background: var(--color-accent50);
+}
+
+body {
+  position: relative;
+  margin: auto;
+  width: 357px;
+  height: 600px;
+  overflow: auto;
+  background: var(--color-white);
+  font:
+    300 12px Roboto,
+    Noto-Sans-Th,
+    Noto-Sans-Zh,
+    Noto-Sans-Ja,
+    system-ui,
+    sans-serif;
+}
+
+#app-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#app-modal {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  width: 100%;
+}
+
+img,
+svg {
+  vertical-align: middle;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul {
+  list-style-type: none;
+}
+
+button,
+label,
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+label:disabled,
+select:disabled,
+summary:disabled {
+  cursor: not-allowed;
+}

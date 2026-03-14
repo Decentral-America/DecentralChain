@@ -1,0 +1,136 @@
+import clsx from 'clsx';
+import { isAddressString, isAlias, processAliasOrAddress } from 'messages/utils';
+import { usePopupSelector } from 'popup/store/react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  fromDccToEthereumAddress,
+  fromEthereumToDccAddress,
+  isEthereumAddress,
+  isValidEthereumAddress,
+} from 'ui/utils/ethereum';
+
+import { Ellipsis } from '../../ui';
+import { Tooltip } from '../tooltip';
+import { AddModal } from './AddModal';
+import * as styles from './Recipient.module.css';
+import { AddressTooltip } from './Tooltip';
+
+interface Props {
+  className?: string | undefined;
+  recipient: string;
+  chainId: number;
+  showAliasWarning?: boolean | undefined;
+  showMirrorAddress?: boolean | undefined;
+  testid?: string | undefined;
+}
+
+export function AddressRecipient({
+  className,
+  recipient,
+  chainId,
+  showAliasWarning = true,
+  showMirrorAddress,
+  testid,
+}: Props) {
+  const { t } = useTranslation();
+  const address = isEthereumAddress(recipient)
+    ? recipient
+    : processAliasOrAddress(recipient, chainId);
+
+  const accounts = usePopupSelector((state) => state.accounts);
+  const addresses = usePopupSelector((state) => state.addresses);
+
+  const name = accounts.find((account) => account.address === address)?.name || addresses[address];
+
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [type, mirrorAddress] = useMemo(() => {
+    switch (true) {
+      case isValidEthereumAddress(address):
+        return ['ethereum', fromEthereumToDccAddress(address, chainId)];
+      case isAddressString(address):
+        return ['dcc', fromDccToEthereumAddress(address)];
+      default:
+        return [];
+    }
+  }, [address, chainId]);
+
+  if (isAlias(address)) {
+    const aliasMatch = address.match(/^(alias:\w:)(.*)/i);
+
+    return (
+      <div className={className}>
+        <p className={styles.name} data-testid={testid}>
+          {aliasMatch ? (
+            <>
+              <mark>{aliasMatch[1]}</mark>
+              {aliasMatch[2]}
+            </>
+          ) : (
+            address
+          )}
+        </p>
+        {showAliasWarning && <p className={styles.warningAlias}>{t('address.warningAlias')}</p>}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {name ? (
+        <div className={clsx(styles.content, className)} data-testid={testid}>
+          <div className={styles.name}>{name}</div>
+          <AddressTooltip address={address} />
+        </div>
+      ) : (
+        <div className={clsx(styles.content, className)} data-testid={testid}>
+          {showMirrorAddress ? (
+            <Tooltip
+              className={clsx(styles.mirrorAddress, {
+                [styles.ethereum]: type === 'ethereum',
+                [styles.dcc]: type === 'dcc',
+              })}
+              content={mirrorAddress}
+              placement="top-end"
+            >
+              {(props) => (
+                <div className={styles.recipientWrapper} {...props}>
+                  <Ellipsis
+                    text={address}
+                    size={12}
+                    className={clsx(styles.recipient, {
+                      [styles.ethereum]: type === 'ethereum',
+                      [styles.dcc]: type === 'dcc',
+                    })}
+                  />
+                </div>
+              )}
+            </Tooltip>
+          ) : (
+            <Tooltip content={address} placement="top-end">
+              {(props) => (
+                <div className={styles.recipientWrapper} {...props}>
+                  <Ellipsis text={address} size={12} className={styles.recipient} />
+                </div>
+              )}
+            </Tooltip>
+          )}
+          <Tooltip content={t('address.addTooltip')} placement="top-end">
+            {(props) => (
+              <button
+                type="button"
+                className={styles.addButtonIcon}
+                onClick={() => {
+                  setShowAddModal(true);
+                }}
+                {...props}
+              />
+            )}
+          </Tooltip>
+        </div>
+      )}
+      <AddModal showModal={showAddModal} setShowModal={setShowAddModal} address={address} />
+    </>
+  );
+}

@@ -1,0 +1,342 @@
+.root {
+  position: relative;
+  flex: 1 0 auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.swapDirectionBtnWrapper {
+  position: relative;
+  z-index: 1;
+  margin: -11px 14px;
+}
+
+.swapDirectionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  color: #edf0f4;
+  cursor: pointer;
+}
+
+.swapDirectionBtn:not(:disabled):hover {
+  background: #edf0f4;
+}
+
+.swapDirectionBtn:disabled {
+  background: #f8f9fb;
+}
+
+.swapDirectionBtnIcon {
+  color: #9ba6b2;
+}
+
+.toAmount {
+  position: relative;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px var(--color-basic100);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.toAmountHead {
+  display: flex;
+}
+
+.toAmountLabel {
+  flex: 1 1 0;
+  overflow: hidden;
+  color: var(--color-basic500);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toAmountBalance {
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toAmountSelect {
+  margin-left: -6px;
+}
+
+.toAmountCards {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toAmountCard {
+  position: relative;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  border: solid 1px var(--color-basic100);
+  width: 100%;
+  border-radius: 5px;
+  background: none;
+  cursor: pointer;
+}
+
+.toAmountCard:hover {
+  border-color: var(--color-submit200);
+}
+
+.toAmountCard.toAmountCardSelected {
+  border-color: var(--color-submit400);
+}
+
+.toAmountCardVendor {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.toAmountCardVendorLogo {
+  margin: 4px 0;
+  width: 24px;
+  height: 24px;
+}
+
+.toAmountCardVendorLabel {
+  font-weight: bold;
+}
+
+.toAmountCardValue {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.toAmountCardValueRow {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.toAmountCardFormattedValue {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toAmountInfoIcon {
+  width: 16px;
+  height: 16px;
+  fill: var(--color-black);
+}
+
+.toAmountCardUsdAmount {
+  color: var(--color-basic500);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.toAmountCardError {
+  color: var(--color-basic500);
+}
+
+.toAmountCardBadge {
+  position: absolute;
+  top: -8px;
+  left: -1px;
+  padding: 1px 22px 1px 8px;
+  border-radius: 4px;
+  border-bottom-left-radius: 0;
+  background: #0155ff;
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.profitInfoIcon {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  display: flex;
+  width: 14px;
+  fill: currentColor;
+}
+
+.slippageToleranceBtn {
+  margin-right: 8px;
+  vertical-align: bottom;
+  background: none;
+  color: var(--color-basic500);
+  cursor: pointer;
+}
+
+.slippageToleranceBtn:hover {
+  color: #000;
+}
+
+.slippageToleranceBtnIcon {
+  vertical-align: middle;
+}
+
+.swapPriceDirectionBtn {
+  margin-right: 8px;
+  background: none;
+  color: var(--color-basic500);
+  cursor: pointer;
+}
+
+.swapPriceDirectionBtn:hover {
+  color: #000;
+}
+
+.swapPriceDirectionBtnIcon {
+  vertical-align: middle;
+}
+
+.error {
+  margin-top: 8px;
+  overflow: auto;
+  color: #e5494d;
+  font-size: 12px;
+}
+
+.summary {
+  font-size: 12px;
+}
+
+.summary:not(:first-child) {
+  margin-top: 1em;
+}
+
+.summary:not(:last-child) {
+  margin-bottom: 1em;
+}
+
+.summaryRow {
+  display: flex;
+  gap: 1em;
+  white-space: nowrap;
+}
+
+.summaryRow + .summaryRow {
+  margin-top: 1em;
+}
+
+.summaryRowCenter {
+  align-items: center;
+}
+
+.summaryLabel {
+  flex: 0 0 auto;
+  padding-left: 0;
+  color: #9ba6b2;
+  font-weight: 300;
+}
+
+.summaryValue {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: right;
+}
+
+.summaryValueText {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryTooltipTarget {
+  display: inline-block;
+  border-bottom: 1px dotted;
+}
+
+.tooltipContent {
+  max-width: calc(100vw - 14px * 2);
+}
+
+.slippageToleranceModalTitle {
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.slippageToleranceModalDescription {
+  margin-bottom: 10px;
+}
+
+.slippageToleranceControl {
+  display: inline-flex;
+  border: 1px solid var(--color-submit400);
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slippageToleranceInput {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.slippageToleranceLabel {
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.slippageToleranceLabel:not(:first-of-type) {
+  border-left: 1px solid var(--color-submit400);
+}
+
+.slippageToleranceInput:hover + .slippageToleranceLabel {
+  background-color: var(--color-basic100);
+}
+
+.slippageToleranceInput:checked + .slippageToleranceLabel {
+  background-color: var(--color-submit400);
+  color: var(--color-white);
+}
+
+.route {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.routeItemArrow,
+.routeItemName {
+  flex: 0 0 auto;
+}
+
+.routeItemArrow {
+  width: 7px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.stickyBottomPanel {
+  position: sticky;
+  z-index: 1;
+  bottom: 0;
+  padding: 14px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.stickyBottomPanelError {
+  margin-bottom: 8px;
+  overflow: auto;
+  color: #e5494d;
+  font-size: 12px;
+}

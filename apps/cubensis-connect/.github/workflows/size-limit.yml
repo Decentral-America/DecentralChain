@@ -1,0 +1,17 @@
+name: Size Limit
+on: [pull_request]
+jobs:
+  size-limit:
+    runs-on: ubuntu-latest
+    env:
+      CI_JOB_NUMBER: 1
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - uses: andresz1/size-limit-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clean_script: cleanup

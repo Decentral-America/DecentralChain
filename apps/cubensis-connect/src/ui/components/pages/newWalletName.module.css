@@ -1,0 +1,14 @@
+.content {
+  position: relative;
+  margin: 84px 60px 0;
+  display: block;
+  height: calc(100% - 180px);
+}
+
+.greyLine {
+  margin: 0 -64px 20px;
+}
+
+.footer {
+  margin-top: auto;
+}

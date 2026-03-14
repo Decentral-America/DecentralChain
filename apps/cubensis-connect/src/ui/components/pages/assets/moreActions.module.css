@@ -1,0 +1,32 @@
+.root {
+  position: relative;
+  padding: 0 8px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  border-radius: 4px;
+  background: var(--color-white);
+}
+
+.content {
+  position: absolute;
+  right: 100%;
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  box-shadow: -4px 0px 4px rgba(0, 0, 0, 0.07);
+  background: inherit;
+}
+
+.root:not(:hover) .content {
+  display: none;
+}
+
+.moreIcon {
+  height: 28px;
+  fill: var(--color-basic200);
+}

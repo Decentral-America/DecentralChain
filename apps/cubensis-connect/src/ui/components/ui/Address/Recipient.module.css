@@ -1,0 +1,84 @@
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recipientWrapper {
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+}
+
+.recipient {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.ethereum.mirrorAddress,
+.dcc.mirrorAddress {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.recipient::before,
+.mirrorAddress::before {
+  content: "";
+  flex-shrink: 0;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.ethereum.recipient::before,
+.dcc.mirrorAddress::before {
+  margin-right: 5px;
+  width: 14px;
+  height: 14px;
+  background-image: url(../../../assets/img/ethereum.svg);
+}
+
+.dcc.recipient::before,
+.ehereum.mirrorAddress::before {
+  margin-right: 5px;
+  width: 12px;
+  height: 12px;
+  background-image: url(../../../assets/img/waves.svg);
+}
+
+.addButtonIcon {
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-white);
+  background-image: url(../../../assets/img/add-user.svg);
+  background-size: cover;
+  cursor: pointer;
+}
+
+.name {
+  margin-right: 8px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name > mark {
+  background-color: transparent;
+  color: #ffaf00;
+}
+
+.warningAlias {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border: 1px dashed #ffaf00;
+  border-radius: 2px;
+  color: #9ba6b2;
+  font-size: 11px;
+}
