@@ -1,0 +1,68 @@
+import {
+  defaultValue,
+  getError,
+  ifElse,
+  isArray,
+  isDccOrAssetId,
+  isNaturalNumberLike,
+  isNaturalNumberOrZeroLike,
+  isNumber,
+  isPublicKey,
+  isPublicKeyForEthSuppTx,
+  isRequired,
+  orEq,
+  pipe,
+  prop,
+  validateByShema,
+  validatePipe,
+} from './validators';
+
+const orderScheme = {
+  amount: isNaturalNumberLike,
+  assetPair: validatePipe(
+    isRequired(true),
+    pipe(prop('amountAsset'), isDccOrAssetId),
+    pipe(prop('priceAsset'), isDccOrAssetId),
+  ),
+  expiration: isNaturalNumberLike,
+  matcherFee: isNaturalNumberOrZeroLike,
+  matcherPublicKey: isPublicKey,
+  orderType: orEq(['sell', 'buy']),
+  price: isNaturalNumberLike,
+  proofs: ifElse(isArray, defaultValue(true), orEq([undefined])),
+  timestamp: isNumber,
+  version: orEq([undefined, 1, 2, 3, 4]),
+};
+
+const v1_2_OrderScheme = {
+  matcherFeeAssetId: orEq([undefined, null, 'DCC']),
+  senderPublicKey: isPublicKey,
+};
+
+const v3_OrderScheme = {
+  matcherFeeAssetId: isDccOrAssetId,
+  senderPublicKey: isPublicKey,
+};
+
+const v4_OrderScheme = {
+  matcherFeeAssetId: isDccOrAssetId,
+  senderPublicKey: isPublicKeyForEthSuppTx,
+};
+
+const validateOrder = validateByShema(orderScheme, getError);
+const validateOrderV2 = validateByShema(v1_2_OrderScheme, getError);
+const validateOrderV3 = validateByShema(v3_OrderScheme, getError);
+const validateOrderV4 = validateByShema(v4_OrderScheme, getError);
+
+export const orderValidator = validatePipe(
+  validateOrder,
+  ifElse(
+    pipe(prop('version'), (v: number) => v >= 3),
+    ifElse(
+      pipe(prop('version'), (v: number) => v >= 4),
+      validateOrderV4,
+      validateOrderV3,
+    ),
+    validateOrderV2,
+  ),
+);

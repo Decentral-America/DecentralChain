@@ -1,0 +1,76 @@
+import { sponsorship } from '../../src/transactions/sponsorship';
+import {
+  checkBinarySerializeDeserialize,
+  checkProtoSerializeDeserialize,
+  errorMessageByTemplate,
+} from '../../test/utils';
+import { sponsorshipMinimalParams } from '../minimalParams';
+import { sponsorshipBinaryTx } from './expected/binary/sponsorship.tx';
+import { sponsorshipTx } from './expected/proto/sponsorship.tx';
+
+describe('setSponsorship', () => {
+  const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
+
+  it('Should create sponsorship transaction', () => {
+    const tx = sponsorship({ ...sponsorshipMinimalParams }, stringSeed);
+    expect(tx).toMatchObject({ ...sponsorshipMinimalParams, chainId: 76, fee: 100000 });
+  });
+
+  it('Should not create sponsorship transaction with zero sponsor fee', () => {
+    expect(() => {
+      const spTx = sponsorship(
+        { ...sponsorshipMinimalParams, minSponsoredAssetFee: 0 },
+        stringSeed,
+      );
+      return spTx;
+    }).toThrowError(errorMessageByTemplate('minSponsoredAssetFee', 0));
+  });
+
+  it('Should create sponsorship transaction with null sponsor fee', () => {
+    const tx = sponsorship({ ...sponsorshipMinimalParams, minSponsoredAssetFee: null }, stringSeed);
+    expect(tx).toMatchObject({ ...sponsorshipMinimalParams, minSponsoredAssetFee: null });
+
+    //       expect(() =>sponsorship({ ...sponsorshipMinimalParams, minSponsoredAssetFee: null }, stringSeed))
+    //          .toThrowError(errorMessageByTemplate('minSponsoredAssetFee', 0))
+  });
+
+  it('Should not create sponsorship transaction with negative sponsor fee', () => {
+    expect(() =>
+      sponsorship({ ...sponsorshipMinimalParams, minSponsoredAssetFee: -1 }, stringSeed),
+    ).toThrowError(errorMessageByTemplate('minSponsoredAssetFee', -1));
+  });
+
+  it('Should not create sponsorship transaction empty assetId', () => {
+    expect(() =>
+      sponsorship({ ...sponsorshipMinimalParams, assetId: '' }, stringSeed),
+    ).toThrowError(errorMessageByTemplate('assetId', ''));
+  });
+
+  it('Should not create sponsorship transaction with zero fee', () => {
+    expect(() => sponsorship({ ...sponsorshipMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
+  });
+
+  it('Should not create sponsorship transaction with negative fee', () => {
+    expect(() => sponsorship({ ...sponsorshipMinimalParams, fee: -1 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', -1),
+    );
+  });
+});
+
+describe('serialize/deserialize sponsorship tx', () => {
+  Object.entries(sponsorshipTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});
+
+describe('serialize/deserialize sponsorship binary tx', () => {
+  Object.entries(sponsorshipBinaryTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});

@@ -1,0 +1,100 @@
+import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { burn } from '../../src';
+import {
+  checkBinarySerializeDeserialize,
+  checkProtoSerializeDeserialize,
+  errorMessageByTemplate,
+  validateTxSignature,
+} from '../../test/utils';
+import { burnMinimalParams } from '../minimalParams';
+import { burnBinaryTx } from './expected/binary/burn.tx';
+import { burnTx } from './expected/proto/burn.tx';
+
+describe('burn', () => {
+  const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
+
+  it('should build from minimal set of params', () => {
+    const tx = burn({ ...burnMinimalParams } as any, stringSeed);
+    expect(tx).toMatchObject({ ...burnMinimalParams, chainId: 76, fee: 100000, version: 3 });
+  });
+
+  it('Should get correct signature', () => {
+    const tx = burn({ ...burnMinimalParams }, stringSeed);
+    expect(validateTxSignature(tx, 2)).toBe(true);
+  });
+
+  it('Should sign already signed', () => {
+    let tx = burn({ ...burnMinimalParams }, stringSeed);
+    tx = burn(tx, stringSeed);
+    expect(validateTxSignature(tx, 2, 1)).toBe(true);
+  });
+
+  it('Should get correct multiSignature', () => {
+    const stringSeed2 = 'example seed 2';
+    const tx = burn({ ...burnMinimalParams }, [null, stringSeed, null, stringSeed2]);
+    expect(validateTxSignature(tx, 2, 1, publicKey(stringSeed))).toBe(true);
+    expect(validateTxSignature(tx, 2, 3, publicKey(stringSeed2))).toBe(true);
+  });
+
+  it('Should not create with zero amount', () => {
+    expect(() =>
+      burn(
+        {
+          ...burnMinimalParams,
+          amount: 0,
+        },
+        stringSeed,
+      ),
+    ).toThrowError('tx "amount" has invalid data. Check tx data.');
+  });
+
+  it('Should create with custom amount', () => {
+    const tx = burn({ ...burnMinimalParams, amount: 50000 }, stringSeed);
+    expect(tx.amount).toEqual(50000);
+  });
+
+  it('Should not create with negative amount', () => {
+    expect(() => burn({ ...burnMinimalParams, amount: -1 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('amount', -1),
+    );
+  });
+
+  it('Should create with custom fee', () => {
+    const tx = burn({ ...burnMinimalParams, fee: 12345 }, stringSeed);
+    expect(tx.fee).toEqual(12345);
+  });
+
+  it('Should not create with zero fee', () => {
+    expect(() => burn({ ...burnMinimalParams, fee: 0 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', 0),
+    );
+  });
+
+  it('Should not create with negative fee', () => {
+    expect(() => burn({ ...burnMinimalParams, fee: -1 }, stringSeed)).toThrowError(
+      errorMessageByTemplate('fee', -1),
+    );
+  });
+
+  it('Should not create with empty assetid', () => {
+    expect(() => burn({ ...burnMinimalParams, assetId: '' }, stringSeed)).toThrowError(
+      errorMessageByTemplate('assetId', ''),
+    );
+  });
+});
+
+describe('serialize/deserialize burn tx', () => {
+  Object.entries(burnTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkProtoSerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});
+
+describe('serialize/deserialize binary burn tx', () => {
+  Object.entries(burnBinaryTx).forEach(([name, { Bytes, Json }]) => {
+    it(name, () => {
+      checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
+    });
+  });
+});
