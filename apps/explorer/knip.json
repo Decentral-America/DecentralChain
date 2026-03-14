@@ -1,9 +1,0 @@
-{
-  "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "project": ["src/**/*.{js,jsx}"],
-  "ignoreDependencies": [
-    "@decentralchain/node-api-js",
-    "@decentralchain/ride-js",
-    "@decentralchain/ts-lib-crypto"
-  ]
-}

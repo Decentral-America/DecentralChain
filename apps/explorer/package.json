@@ -7,18 +7,18 @@
   "author": "DecentralChain",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/explorer.git"
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git",
+    "directory": "apps/explorer"
   },
-  "homepage": "https://github.com/Decentral-America/explorer#readme",
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/explorer",
   "bugs": {
-    "url": "https://github.com/Decentral-America/explorer/issues"
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "license": "MIT",
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "packageManager": "npm@11.9.0",
   "engines": {
     "node": ">=24"
   },
@@ -34,13 +34,7 @@
     "test:coverage": "vitest run --coverage",
     "lint": "biome check --write .",
     "lint:fix": "biome check --write .",
-    "lint:check": "biome check .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "bulletproof": "npm run lint:fix && npm run test",
-    "bulletproof:check": "npm run lint:check && npm run test",
-    "prepare": "lefthook install",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run test && npm run build"
+    "lint:check": "biome check ."
   },
   "dependencies": {
     "@decentralchain/node-api-js": "^2.0.1",
