@@ -4,6 +4,7 @@ export const TYPES: typeof TRANSACTION_TYPE = Object.freeze({
   ALIAS: 10 as const,
   BURN: 6 as const,
   CANCEL_LEASE: 9 as const,
+  COMMIT_TO_GENERATION: 19 as const,
   DATA: 12 as const,
   ETHEREUM: 18 as const,
   EXCHANGE: 7 as const,
