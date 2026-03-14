@@ -1,0 +1,22 @@
+min_version: 1.11.0
+
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: '*.{ts,tsx,js,jsx,json,css}'
+      run: npx biome check --staged --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+    typecheck:
+      run: pnpm typecheck
+      skip:
+        - merge
+        - rebase
+
+commit-msg:
+  commands:
+    conventional:
+      run: >-
+        grep -qE
+        '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?: .+'
+        {1}
