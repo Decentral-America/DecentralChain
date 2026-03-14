@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>DecentralChain</RootNamespace>
+    <AssemblyName>DecentralChain.Protobuf</AssemblyName>
+
+    <!-- NuGet package metadata -->
+    <PackageId>DecentralChain.Protobuf</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>DecentralChain</Authors>
+    <Description>Protobuf-generated C# classes for DecentralChain blockchain transactions, blocks, events, and gRPC APIs.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Decentral-America/protobuf-serialization</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Decentral-America/protobuf-serialization.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>decentralchain;protobuf;grpc;blockchain;serialization</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.34.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.78.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      All 17 proto files across 5 directories.
+      ProtoRoot ensures import paths like "waves/amount.proto" resolve correctly.
+      GrpcServices=Both on service-containing directories generates client + server stubs.
+    -->
+    <Protobuf Include="proto/waves/*.proto" ProtoRoot="proto" GrpcServices="None" />
+    <Protobuf Include="proto/waves/lang/*.proto" ProtoRoot="proto" GrpcServices="None" />
+    <Protobuf Include="proto/waves/events/*.proto" ProtoRoot="proto" GrpcServices="None" />
+    <Protobuf Include="proto/waves/events/grpc/*.proto" ProtoRoot="proto" GrpcServices="Both" />
+    <Protobuf Include="proto/waves/node/grpc/*.proto" ProtoRoot="proto" GrpcServices="Both" />
+  </ItemGroup>
+
+</Project>

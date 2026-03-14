@@ -1,0 +1,10 @@
+syntax = "proto3";
+package waves;
+option java_package = "io.decentralchain.protobuf";
+option csharp_namespace = "DecentralChain";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves";
+
+message Amount {
+    bytes asset_id = 1;
+    int64 amount = 2;
+};

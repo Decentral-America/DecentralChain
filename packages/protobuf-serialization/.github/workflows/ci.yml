@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# SECURITY: For production use, pin all actions to full-length commit SHAs
+# instead of tags (e.g., actions/checkout@<sha>) to prevent supply-chain attacks.
+# See: https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions
+# Dependabot will automatically propose SHA updates for pinned actions.
+jobs:
+  quality:
+    name: Quality Gate (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [24]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Formatting check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (generate from proto)
+        run: npm run build
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Validate package exports (publint)
+        run: npm run check:publint
+
+      - name: Validate type exports (attw)
+        run: npm run check:exports
+
+      - name: Check bundle size
+        run: npm run check:size
+
+      - name: Check package contents
+        run: |
+          npm pack --dry-run 2>&1 | tail -5
+          echo "---"
+          du -sh dist/
+
+      - name: Upload coverage
+        if: matrix.node-version == 24
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  release-dry-run:
+    name: Release Dry Run
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm pack --dry-run

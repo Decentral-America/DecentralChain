@@ -1,0 +1,45 @@
+syntax = "proto3";
+package waves.node.grpc;
+option java_package = "io.decentralchain.api.grpc";
+option csharp_namespace = "DecentralChain.Node.Grpc";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves/node/grpc";
+
+import "waves/transaction.proto";
+import "waves/node/grpc/accounts_api.proto";
+
+service AssetsApi {
+    rpc GetInfo (AssetRequest) returns (AssetInfoResponse);
+    rpc GetNFTList (NFTRequest) returns (stream NFTResponse);
+}
+
+message AssetRequest {
+    bytes asset_id = 1;
+}
+
+message NFTRequest {
+    bytes address = 1;
+    int32 limit = 2;
+    bytes after_asset_id = 3;
+}
+
+message NFTResponse {
+    bytes asset_id = 1;
+    AssetInfoResponse asset_info = 2;
+}
+
+message AssetInfoResponse {
+    bytes issuer = 1;
+    string name = 2;
+    string description = 3;
+    int32 decimals = 4;
+    bool reissuable = 5;
+    int64 total_volume = 6;
+    ScriptData script = 7;
+    int64 sponsorship = 8;
+    // Field 9 was removed. Reserved to prevent accidental reuse.
+    reserved 9;
+    int64 sponsor_balance = 10;
+    SignedTransaction issue_transaction = 11;
+    int32 sequence_in_block = 12;
+    int32 issue_height = 13;
+}

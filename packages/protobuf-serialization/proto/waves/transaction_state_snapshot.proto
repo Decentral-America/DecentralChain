@@ -1,0 +1,117 @@
+syntax = "proto3";
+package waves;
+option java_package = "io.decentralchain.protobuf.snapshot";
+option csharp_namespace = "DecentralChain";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves";
+
+import "waves/amount.proto";
+import "waves/transaction.proto";
+
+message TransactionStateSnapshot {
+  repeated Balance balances = 1;
+  repeated LeaseBalance lease_balances = 2;
+  repeated NewLease new_leases = 3;
+  repeated CancelledLease cancelled_leases = 4;
+  repeated NewAsset asset_statics = 5;
+  repeated AssetVolume asset_volumes = 6;
+  repeated AssetNameAndDescription asset_names_and_descriptions = 7;
+  // NOTE: These fields are intentionally singular (not repeated) per the
+  // upstream protocol specification. A snapshot applies to at most one
+  // asset script and one alias per transaction.
+  AssetScript asset_scripts = 8;
+  Alias aliases = 9;
+  repeated OrderFill order_fills = 10;
+  AccountScript account_scripts = 11;
+  repeated AccountData account_data = 12;
+  repeated Sponsorship sponsorships = 13;
+  TransactionStatus transaction_status = 14;
+  GenerationCommitment generation_commitment = 15;
+
+  message Balance {
+    bytes address = 1;
+    Amount amount = 2;
+  }
+
+  message LeaseBalance {
+    bytes address = 1;
+    int64 in = 2;
+    int64 out = 3;
+  }
+
+  message NewLease {
+    bytes lease_id = 1;
+    bytes sender_public_key = 2;
+    bytes recipient_address = 3;
+    int64 amount = 4;
+  }
+
+  message CancelledLease {
+    bytes lease_id = 1;
+  }
+
+  message NewAsset {
+    bytes asset_id = 1;
+    bytes issuer_public_key = 2;
+    int32 decimals = 3;
+    bool nft = 4;
+  }
+
+  message AssetVolume {
+    bytes asset_id = 1;
+    bool reissuable = 2;
+    bytes volume = 3;
+  }
+
+  message AssetNameAndDescription {
+    bytes asset_id = 1;
+    string name = 2;
+    string description = 3;
+  }
+
+  message AssetScript {
+    bytes asset_id = 1;
+    bytes script = 2;
+  }
+
+  message Alias {
+    bytes address = 1;
+    string alias = 2;
+  }
+
+  message OrderFill {
+    bytes order_id = 1;
+    int64 volume = 2;
+    int64 fee = 3;
+  }
+
+  message AccountScript {
+    bytes sender_public_key = 1;
+    bytes script = 2;
+    int64 verifier_complexity = 3;
+  }
+
+  message AccountData {
+    bytes address = 1;
+    repeated DataEntry entries = 2;
+  }
+
+  message Sponsorship {
+    bytes asset_id = 1;
+    int64 min_fee = 2;
+  }
+
+  message GenerationCommitment {
+    bytes sender_public_key = 1;
+    bytes endorser_public_key = 2;
+  }
+}
+
+// SAFETY NOTE: SUCCEEDED = 0 is the proto3 default value. Any uninitialized or
+// missing TransactionStatus field will silently resolve to SUCCEEDED. Consumers
+// MUST explicitly check that this field was set before trusting the status.
+// Changing the zero value would break wire compatibility with existing nodes.
+enum TransactionStatus {
+  SUCCEEDED = 0;
+  FAILED = 1;
+  ELIDED = 2;
+}

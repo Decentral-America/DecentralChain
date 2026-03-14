@@ -1,0 +1,72 @@
+syntax = "proto3";
+package waves;
+option java_package = "io.decentralchain.protobuf.block";
+option csharp_namespace = "DecentralChain";
+option go_package = "github.com/Decentral-America/protobuf-serialization/pkg/grpc/generated/waves";
+
+import "waves/transaction.proto";
+
+message Block {
+    message Header {
+        message ChallengedHeader {
+            int64 base_target = 1;
+            bytes generation_signature = 2;
+            repeated uint32 feature_votes = 3;
+            int64 timestamp = 4;
+            bytes generator = 5;
+            int64 reward_vote = 6;
+            bytes state_hash = 7;
+            bytes header_signature = 8;
+            FinalizationVoting finalization_voting = 9;
+        }
+
+        int32 chain_id = 1;
+        bytes reference = 2;
+        int64 base_target = 3;
+        bytes generation_signature = 4;
+        repeated uint32 feature_votes = 5;
+        int64 timestamp = 6;
+        int32 version = 7;
+        bytes generator = 8;
+        int64 reward_vote = 9;
+        bytes transactions_root = 10;
+        bytes state_hash = 11;
+        ChallengedHeader challenged_header = 12;
+        FinalizationVoting finalization_voting = 13;
+    }
+
+    Header header = 1;
+    bytes signature = 2;
+    repeated SignedTransaction transactions = 3;
+}
+
+message MicroBlock {
+    int32 version = 1;
+    bytes reference = 2;
+    bytes updated_block_signature = 3;
+    bytes sender_public_key = 4;
+    repeated SignedTransaction transactions = 5;
+    bytes state_hash = 6;
+    FinalizationVoting finalization_voting = 7;
+}
+
+message SignedMicroBlock {
+    MicroBlock micro_block = 1;
+    bytes signature = 2;
+    bytes total_block_id = 3;
+}
+
+message EndorseBlock {
+    int32 endorser_index = 1;
+    bytes finalized_block_id = 2;
+    uint32 finalized_block_height = 3;
+    bytes endorsed_block_id = 4;
+    bytes signature = 5; // BLS
+}
+
+message FinalizationVoting {
+    repeated int32 endorser_indexes = 1;
+    int32 finalized_block_height = 2;
+    bytes aggregated_endorsement_signature = 3; // BLS
+    repeated EndorseBlock conflict_endorsements = 4;
+}
