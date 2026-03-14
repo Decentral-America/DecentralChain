@@ -20,6 +20,7 @@
   "private": true,
   "scripts": {
     "build": "nx run-many -t build",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "graph": "nx graph",

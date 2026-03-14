@@ -82,5 +82,11 @@
   "sideEffects": false,
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "1.0.2"
+  "version": "1.0.2",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:0"
+    ]
+  }
 }
