@@ -80,4 +80,4 @@ import * as protoSerialize from './proto-serialize';
 import * as seedUtils from './seedUtils';
 import * as validators from './validators';
 
-export { libs, seedUtils, nodeInteraction, validators, protoSerialize };
+export { libs, nodeInteraction, protoSerialize, seedUtils, validators };
