@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -83,14 +83,14 @@
       "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
+          "security": {
+            "noSecrets": "off"
+          },
           "style": {
             "useConst": "warn"
           },
           "suspicious": {
             "noExplicitAny": "off"
-          },
-          "security": {
-            "noSecrets": "off"
           }
         }
       }
