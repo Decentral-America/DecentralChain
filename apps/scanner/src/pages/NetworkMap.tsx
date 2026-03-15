@@ -12,11 +12,11 @@ import { useLanguage } from '../components/contexts/LanguageContext';
 // Mock geolocation data for demonstration
 // In production, this would come from a geolocation API
 const MOCK_GEO_DATA = {
+  asia: { city: 'Tokyo', lat: 35.6762, lng: 139.6503 },
+  aus: { city: 'Sydney', lat: -33.8688, lng: 151.2093 },
   // Some example coordinates for major cities
-  default: { lat: 40.7128, lng: -74.006, city: 'New York' },
-  eu: { lat: 51.5074, lng: -0.1278, city: 'London' },
-  asia: { lat: 35.6762, lng: 139.6503, city: 'Tokyo' },
-  aus: { lat: -33.8688, lng: 151.2093, city: 'Sydney' },
+  default: { city: 'New York', lat: 40.7128, lng: -74.006 },
+  eu: { city: 'London', lat: 51.5074, lng: -0.1278 },
 };
 
 function getRegionFromIP(ip: string): 'eu' | 'asia' | 'aus' | 'default' {
@@ -31,13 +31,13 @@ export default function NetworkMap() {
   const { t } = useLanguage();
 
   const { data: connectedPeers, isLoading } = useQuery({
-    queryKey: ['peers', 'connected'],
     queryFn: () => fetchConnectedPeers(),
+    queryKey: ['peers', 'connected'],
   });
 
   const { data: allPeers } = useQuery({
-    queryKey: ['peers', 'all'],
     queryFn: () => fetchAllPeers(),
+    queryKey: ['peers', 'all'],
   });
 
   const geolocatedPeers = useMemo(() => {
@@ -58,9 +58,9 @@ export default function NetworkMap() {
 
       return {
         ...peer,
+        city: location.city,
         lat: location.lat + latOffset,
         lng: location.lng + lngOffset,
-        city: location.city,
       };
     });
   }, [connectedPeers]);

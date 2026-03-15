@@ -28,8 +28,8 @@ export default function DexPairsWidget() {
 
   // Fetch trading pairs
   const { data: orderbook } = useQuery<OrderbookResponse>({
-    queryKey: ['matcherOrderbook'],
     queryFn: () => fetchMatcherOrderbook(),
+    queryKey: ['matcherOrderbook'],
     staleTime: 60000, // Cache for 1 minute
   });
 
@@ -56,7 +56,7 @@ export default function DexPairsWidget() {
             await new Promise((resolve) => setTimeout(resolve, 150));
             const pairInfo = await fetchPairInfo(market.amountAsset, market.priceAsset);
             if (pairInfo?.data) {
-              marketPairInfo.push({ market, data: pairInfo.data });
+              marketPairInfo.push({ data: pairInfo.data, market });
             }
           } catch (_error) {}
         }
@@ -85,16 +85,16 @@ export default function DexPairsWidget() {
 
           pairs.push({
             amountAsset: market.amountAsset,
-            priceAsset: market.priceAsset,
             amountAssetName,
-            priceAssetName,
-            pairName: `${amountAssetName}/${priceAssetName}`,
-            lastPrice: data.lastPrice,
-            volume: data.volume,
             change24h,
             high: data.high || 0,
+            lastPrice: data.lastPrice,
             low: data.low || 0,
+            pairName: `${amountAssetName}/${priceAssetName}`,
+            priceAsset: market.priceAsset,
+            priceAssetName,
             txsCount: data.txsCount,
+            volume: data.volume,
           });
         }
 

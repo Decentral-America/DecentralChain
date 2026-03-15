@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { LucideIcon } from 'lucide-react';
-import { Activity, Database, Server, Zap } from 'lucide-react';
+import { Activity, Database, type LucideIcon, Server, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,13 +10,13 @@ export default function Node() {
   const { t } = useLanguage();
 
   const { data: status, isLoading: statusLoading } = useQuery<INodeStatus>({
-    queryKey: ['nodeStatus'],
     queryFn: () => fetchNodeStatus(),
+    queryKey: ['nodeStatus'],
   });
 
   const { data: version, isLoading: versionLoading } = useQuery<INodeVersion>({
-    queryKey: ['nodeVersion'],
     queryFn: () => fetchNodeVersion(),
+    queryKey: ['nodeVersion'],
   });
 
   const InfoCard = ({

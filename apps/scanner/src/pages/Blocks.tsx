@@ -23,8 +23,8 @@ export default function Blocks() {
   const { t } = useLanguage();
 
   const { data: height } = useQuery({
-    queryKey: ['height'],
     queryFn: () => fetchHeight(),
+    queryKey: ['height'],
   });
 
   const currentHeight = height?.height || 0;
@@ -34,9 +34,9 @@ export default function Blocks() {
   const toHeight = Math.min(currentHeight, fromHeight + pageSize - 1);
 
   const { data: blocks, isLoading } = useQuery({
-    queryKey: ['blockHeaders', fromHeight, toHeight],
-    queryFn: () => fetchBlockHeadersSeq(fromHeight, toHeight),
     enabled: currentHeight > 0,
+    queryFn: () => fetchBlockHeadersSeq(fromHeight, toHeight),
+    queryKey: ['blockHeaders', fromHeight, toHeight],
   });
 
   const goToPage = (direction: 'first' | 'prev' | 'next' | 'last') => {

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Coins } from 'lucide-react';
 import { AssetLogoRequest } from '@/api/entities';
-import type { AssetLogoRequestRecord, EntityRecord } from '@/types';
+import { type AssetLogoRequestRecord, type EntityRecord } from '@/types';
 
 interface AssetLogoProps {
   assetId: string;
@@ -21,19 +21,19 @@ export default function AssetLogo({
   className = '',
 }: AssetLogoProps): React.ReactElement {
   const sizeClasses = {
-    xs: 'w-6 h-6',
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
     lg: 'w-16 h-16',
+    md: 'w-12 h-12',
+    sm: 'w-8 h-8',
     xl: 'w-24 h-24',
+    xs: 'w-6 h-6',
   };
 
   const iconSizes = {
-    xs: 'w-3 h-3',
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
     lg: 'w-8 h-8',
+    md: 'w-6 h-6',
+    sm: 'w-4 h-4',
     xl: 'w-12 h-12',
+    xs: 'w-3 h-3',
   };
 
   const sizeClass = sizeClasses[size] || sizeClasses.md;
@@ -41,7 +41,7 @@ export default function AssetLogo({
 
   // Fetch approved logo for this asset
   const { data: logoRequests } = useQuery<AssetLogoRequestRecord[]>({
-    queryKey: ['assetLogo', assetId],
+    enabled: !!assetId && assetId !== CR_COIN_ASSET_ID && assetId !== DCC_TOKEN_ASSET_ID,
     queryFn: async () => {
       const requests = (await AssetLogoRequest.filter({
         asset_id: assetId,
@@ -49,7 +49,7 @@ export default function AssetLogo({
       })) as EntityRecord[];
       return requests as AssetLogoRequestRecord[];
     },
-    enabled: !!assetId && assetId !== CR_COIN_ASSET_ID && assetId !== DCC_TOKEN_ASSET_ID,
+    queryKey: ['assetLogo', assetId],
   });
 
   // Check if this is DCC token (hardcoded)

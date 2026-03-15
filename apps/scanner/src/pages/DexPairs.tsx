@@ -40,14 +40,14 @@ export default function DexPairs() {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortConfig, setSortConfig] = useState<{ key: DexSortKey; direction: 'asc' | 'desc' }>({
-    key: 'volume',
     direction: 'desc',
+    key: 'volume',
   });
 
   // Fetch trading pairs
   const { data: orderbook, refetch: refetchOrderbook } = useQuery<OrderbookResponse>({
-    queryKey: ['matcherOrderbook'],
     queryFn: () => fetchMatcherOrderbook(),
+    queryKey: ['matcherOrderbook'],
     staleTime: 60000,
   });
 
@@ -70,7 +70,7 @@ export default function DexPairs() {
             await new Promise((resolve) => setTimeout(resolve, 100));
             const pairInfo = await fetchPairInfo(market.amountAsset, market.priceAsset);
             if (pairInfo?.data) {
-              marketPairInfo.push({ market, data: pairInfo.data });
+              marketPairInfo.push({ data: pairInfo.data, market });
             }
           } catch (_error) {}
         }
@@ -99,18 +99,18 @@ export default function DexPairs() {
 
           pairs.push({
             amountAsset: market.amountAsset,
-            priceAsset: market.priceAsset,
             amountAssetName,
-            priceAssetName,
-            pairName: `${amountAssetName}/${priceAssetName}`,
-            lastPrice: data.lastPrice,
-            firstPrice: data.firstPrice,
-            volume: data.volume,
-            quoteVolume: data.quoteVolume || 0,
             change24h,
+            firstPrice: data.firstPrice,
             high: data.high || 0,
+            lastPrice: data.lastPrice,
             low: data.low || 0,
+            pairName: `${amountAssetName}/${priceAssetName}`,
+            priceAsset: market.priceAsset,
+            priceAssetName,
+            quoteVolume: data.quoteVolume || 0,
             txsCount: data.txsCount,
+            volume: data.volume,
             weightedAveragePrice: data.weightedAveragePrice || 0,
           });
         }
@@ -128,8 +128,8 @@ export default function DexPairs() {
 
   const handleSort = (key: DexSortKey): void => {
     setSortConfig((prev) => ({
-      key,
       direction: prev.key === key && prev.direction === 'desc' ? 'asc' : 'desc',
+      key,
     }));
   };
 

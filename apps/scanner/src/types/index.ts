@@ -1,7 +1,7 @@
-import type { ILeaseInfo } from '@decentralchain/node-api-js/api-node/leasing';
-import type {
-  IPeerAllResponse,
-  IPeerConnectedResponse,
+import { type ILeaseInfo } from '@decentralchain/node-api-js/api-node/leasing';
+import {
+  type IPeerAllResponse,
+  type IPeerConnectedResponse,
 } from '@decentralchain/node-api-js/api-node/peers';
 
 // ─── Transaction ─────────────────────────────────────────────────

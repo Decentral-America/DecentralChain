@@ -1,4 +1,3 @@
-import type { LucideIcon } from 'lucide-react';
 import {
   Activity,
   ArrowUpDown,
@@ -10,6 +9,7 @@ import {
   Languages,
   LayoutDashboard,
   Leaf,
+  type LucideIcon,
   Menu,
   Moon,
   Network,
@@ -21,8 +21,7 @@ import {
   X,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -52,21 +51,21 @@ function LayoutContent({ children }: { children: ReactNode }) {
   const { theme, setTheme } = useTheme();
 
   const navigationItems: NavigationItem[] = [
-    { title: t('dashboard'), url: createPageUrl('Dashboard'), icon: LayoutDashboard },
-    { title: t('blocks'), url: createPageUrl('Blocks'), icon: Box },
-    { title: t('blockFeed'), url: createPageUrl('BlockFeed'), icon: Activity },
-    { title: t('transactions'), url: createPageUrl('Transaction'), icon: Receipt },
-    { title: t('dexPairs'), url: createPageUrl('DexPairs'), icon: ArrowUpDown },
-    { title: t('unconfirmed'), url: createPageUrl('UnconfirmedTransactions'), icon: Clock },
-    { title: t('address'), url: createPageUrl('Address'), icon: Wallet },
-    { title: t('assets'), url: createPageUrl('Asset'), icon: Coins },
-    { title: t('distribution'), url: createPageUrl('DistributionTool'), icon: Users },
-    { title: t('transactionMap'), url: createPageUrl('TransactionMap'), icon: Network },
-    { title: t('networkStats'), url: createPageUrl('NetworkStatistics'), icon: BarChart3 },
-    { title: t('networkMap'), url: createPageUrl('NetworkMap'), icon: Globe },
-    { title: t('peers'), url: createPageUrl('Peers'), icon: Network },
-    { title: 'Sustainability', url: createPageUrl('Sustainability'), icon: Leaf },
-    { title: t('node'), url: createPageUrl('Node'), icon: Server },
+    { icon: LayoutDashboard, title: t('dashboard'), url: createPageUrl('Dashboard') },
+    { icon: Box, title: t('blocks'), url: createPageUrl('Blocks') },
+    { icon: Activity, title: t('blockFeed'), url: createPageUrl('BlockFeed') },
+    { icon: Receipt, title: t('transactions'), url: createPageUrl('Transaction') },
+    { icon: ArrowUpDown, title: t('dexPairs'), url: createPageUrl('DexPairs') },
+    { icon: Clock, title: t('unconfirmed'), url: createPageUrl('UnconfirmedTransactions') },
+    { icon: Wallet, title: t('address'), url: createPageUrl('Address') },
+    { icon: Coins, title: t('assets'), url: createPageUrl('Asset') },
+    { icon: Users, title: t('distribution'), url: createPageUrl('DistributionTool') },
+    { icon: Network, title: t('transactionMap'), url: createPageUrl('TransactionMap') },
+    { icon: BarChart3, title: t('networkStats'), url: createPageUrl('NetworkStatistics') },
+    { icon: Globe, title: t('networkMap'), url: createPageUrl('NetworkMap') },
+    { icon: Network, title: t('peers'), url: createPageUrl('Peers') },
+    { icon: Leaf, title: 'Sustainability', url: createPageUrl('Sustainability') },
+    { icon: Server, title: t('node'), url: createPageUrl('Node') },
   ];
 
   useEffect(() => {

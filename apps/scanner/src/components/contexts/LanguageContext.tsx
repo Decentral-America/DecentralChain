@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { Language, LanguageContextValue } from '@/types';
+import { type Language, type LanguageContextValue } from '@/types';
 import { translations } from '../utils/translations';
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
@@ -45,7 +45,7 @@ export const LanguageProvider = ({
   };
 
   return (
-    <LanguageContext.Provider value={{ language, changeLanguage, t }}>
+    <LanguageContext.Provider value={{ changeLanguage, language, t }}>
       {children}
     </LanguageContext.Provider>
   );

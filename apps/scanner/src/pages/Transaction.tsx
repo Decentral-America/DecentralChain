@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, ArrowLeft, CheckCircle, Clock, Receipt, Search } from 'lucide-react';
-import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -29,7 +28,7 @@ export default function Transaction() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['transaction', txId],
+    enabled: !!txId,
     queryFn: async () => {
       if (!txId) return null;
       try {
@@ -46,7 +45,7 @@ export default function Transaction() {
       }
       return null;
     },
-    enabled: !!txId,
+    queryKey: ['transaction', txId],
   });
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {

@@ -1,16 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true,
-    "defaultBranch": "main"
-  },
-  "files": {
-    "includes": ["src/**/*.{ts,tsx}", "e2e/**/*.ts", "*.{ts,json}"],
-    "ignoreUnknown": true,
-    "maxSize": 1048576
-  },
   "assist": {
     "actions": {
       "source": {
@@ -18,57 +7,67 @@
       }
     }
   },
+  "css": {
+    "formatter": { "enabled": false },
+    "linter": { "enabled": false },
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "extends": "//",
+  "files": {
+    "ignoreUnknown": true,
+    "includes": ["src/**/*.{ts,tsx}", "e2e/**/*.ts", "*.{ts,json}"],
+    "maxSize": 1048576
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100,
-    "lineEnding": "lf"
+    "lineEnding": "lf",
+    "lineWidth": 100
   },
   "javascript": {
     "formatter": {
+      "arrowParentheses": "always",
       "quoteStyle": "single",
       "semicolons": "always",
-      "trailingCommas": "all",
-      "arrowParentheses": "always"
+      "trailingCommas": "all"
     }
   },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
-    },
-    "formatter": { "enabled": false },
-    "linter": { "enabled": false }
-  },
   "linter": {
-    "enabled": true,
     "domains": {
       "react": "recommended"
     },
+    "enabled": true,
     "rules": {
-      "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off"
+      },
       "correctness": {
-        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error",
-        "noUnusedFunctionParameters": "error"
+        "noUnusedVariables": "error"
+      },
+      "recommended": true,
+      "security": {
+        "noDangerouslySetInnerHtml": "error",
+        "noGlobalEval": "error",
+        "noSecrets": "off"
       },
       "style": {
         "useConst": "error",
-        "useTemplate": "error",
-        "useImportType": "error"
+        "useImportType": "error",
+        "useTemplate": "error"
       },
       "suspicious": {
-        "noExplicitAny": "error",
-        "noDoubleEquals": "error",
         "noArrayIndexKey": "error",
         "noConsole": {
           "level": "warn",
           "options": { "allow": ["warn", "error"] }
-        }
-      },
-      "security": {
-        "noGlobalEval": "error",
-        "noDangerouslySetInnerHtml": "error"
+        },
+        "noDoubleEquals": "error",
+        "noExplicitAny": "error"
       }
     }
   },
@@ -93,5 +92,12 @@
         }
       }
     }
-  ]
+  ],
+  "root": false,
+  "vcs": {
+    "clientKind": "git",
+    "defaultBranch": "main",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
 }
