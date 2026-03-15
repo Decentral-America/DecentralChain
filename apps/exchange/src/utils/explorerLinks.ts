@@ -81,8 +81,8 @@ export interface ExplorerConfig {
  */
 const EXPLORER_BASE_URLS: Record<Exclude<NetworkType, 'custom'>, string> = {
   mainnet: 'https://decentralscan.com',
-  testnet: 'https://testnet.decentralscan.com',
   stagenet: 'https://stagenet.decentralscan.com',
+  testnet: 'https://testnet.decentralscan.com',
 };
 
 /**
@@ -104,36 +104,12 @@ export const getExplorerLinks = (
       : EXPLORER_BASE_URLS[network as Exclude<NetworkType, 'custom'>] || EXPLORER_BASE_URLS.mainnet;
 
   return {
-    transaction: (txId: string): string => {
-      if (!txId) {
-        logger.warn('Transaction ID is required');
-        return baseUrl;
-      }
-      return `${baseUrl}/tx/${txId}`;
-    },
-
     address: (address: string): string => {
       if (!address) {
         logger.warn('Address is required');
         return baseUrl;
       }
       return `${baseUrl}/address/${address}`;
-    },
-
-    block: (height: number): string => {
-      if (height < 0) {
-        logger.warn('Block height must be non-negative');
-        return baseUrl;
-      }
-      return `${baseUrl}/blocks/${height}`;
-    },
-
-    asset: (assetId: string): string => {
-      if (!assetId) {
-        logger.warn('Asset ID is required');
-        return baseUrl;
-      }
-      return `${baseUrl}/assets/${assetId}`;
     },
 
     alias: (alias: string): string => {
@@ -146,6 +122,22 @@ export const getExplorerLinks = (
       return `${baseUrl}/alias/${cleanAlias}`;
     },
 
+    asset: (assetId: string): string => {
+      if (!assetId) {
+        logger.warn('Asset ID is required');
+        return baseUrl;
+      }
+      return `${baseUrl}/assets/${assetId}`;
+    },
+
+    block: (height: number): string => {
+      if (height < 0) {
+        logger.warn('Block height must be non-negative');
+        return baseUrl;
+      }
+      return `${baseUrl}/blocks/${height}`;
+    },
+
     data: (address: string): string => {
       if (!address) {
         logger.warn('Address is required');
@@ -154,6 +146,8 @@ export const getExplorerLinks = (
       return `${baseUrl}/address/${address}/data`;
     },
 
+    getBaseUrl: (): string => baseUrl,
+
     leasing: (address: string): string => {
       if (!address) {
         logger.warn('Address is required');
@@ -161,8 +155,13 @@ export const getExplorerLinks = (
       }
       return `${baseUrl}/address/${address}/leasing`;
     },
-
-    getBaseUrl: (): string => baseUrl,
+    transaction: (txId: string): string => {
+      if (!txId) {
+        logger.warn('Transaction ID is required');
+        return baseUrl;
+      }
+      return `${baseUrl}/tx/${txId}`;
+    },
   };
 };
 
@@ -297,7 +296,7 @@ export const parseExplorerUrl = (
     const [type, id] = pathParts;
     if (!type || !id) return null;
 
-    return { type, id, network };
+    return { id, network, type };
   } catch (error) {
     logger.error('Failed to parse explorer URL:', error);
     return null;
@@ -356,20 +355,20 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
  * Export all utilities as namespace
  */
 export const explorerUtils = {
+  copyToClipboard,
   getExplorerLinks,
-  openInExplorer,
-  openTransaction,
-  openAddress,
-  openBlock,
-  openAsset,
-  isValidTxId,
+  getShortAddress,
+  getShortTxId,
   isValidAddress,
   isValidAssetId,
-  parseExplorerUrl,
-  getShortTxId,
-  getShortAddress,
-  copyToClipboard,
+  isValidTxId,
   mainnetExplorer,
-  testnetExplorer,
+  openAddress,
+  openAsset,
+  openBlock,
+  openInExplorer,
+  openTransaction,
+  parseExplorerUrl,
   stagenetExplorer,
+  testnetExplorer,
 };

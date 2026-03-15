@@ -82,11 +82,11 @@ export const createTransferTransaction = async (
 
   // Create transaction data object (simplified version without dcc.node.transactions)
   const txData = {
-    recipient: params.recipient,
     amount: amountMoney,
     assetId: params.assetId || null,
     attachment: attachmentBytes,
     fee: feeMoney,
+    recipient: params.recipient,
     timestamp: params.timestamp || Date.now(),
   };
 
@@ -94,8 +94,8 @@ export const createTransferTransaction = async (
 
   // Create a signable transaction using the signature adapter
   const signable = signApi.makeSignable({
-    type: SIGN_TYPE.TRANSFER,
     data: txData,
+    type: SIGN_TYPE.TRANSFER,
   });
 
   // Get the transaction ID (this signs it)
@@ -134,13 +134,13 @@ export const createLeaseTransaction = async (
   const fee = await ds.moneyFromCoins(params.fee || 100000, 'DCC');
 
   const signable = signApi.makeSignable({
-    type: SIGN_TYPE.LEASE,
     data: {
-      recipient: params.recipient,
       amount: amount,
       fee: fee,
+      recipient: params.recipient,
       timestamp: Date.now(),
     },
+    type: SIGN_TYPE.LEASE,
   });
 
   await signable.getId();
@@ -163,12 +163,12 @@ export const createCancelLeaseTransaction = async (
   }
 
   const signable = signApi.makeSignable({
-    type: SIGN_TYPE.CANCEL_LEASING,
     data: {
-      leaseId,
       fee: 100000, // Default fee 0.001 DCC
+      leaseId,
       timestamp: Date.now(),
     },
+    type: SIGN_TYPE.CANCEL_LEASING,
   });
 
   await signable.getId();
@@ -191,12 +191,12 @@ export const createAliasTransaction = async (
   }
 
   const signable = signApi.makeSignable({
-    type: SIGN_TYPE.CREATE_ALIAS,
     data: {
       alias: params.alias,
       fee: params.fee,
       timestamp: Date.now(),
     },
+    type: SIGN_TYPE.CREATE_ALIAS,
   });
 
   await signable.getId();
@@ -215,8 +215,13 @@ export const createAliasTransaction = async (
     feeValue = parseInt(preparedTx.fee, 10);
   } else if (preparedTx.fee && typeof preparedTx.fee === 'object') {
     // Fee is a Money/BigNumber object - try to extract numeric value
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped fee object from signable API
-    const feeObj = preparedTx.fee as any;
+    interface FeeObject {
+      bn?: { toNumber?: () => number; toString?: () => string };
+      getCoins?: () => number;
+      toCoins?: () => number;
+      toString?: () => string;
+    }
+    const feeObj = preparedTx.fee as FeeObject;
     if (feeObj.bn && typeof feeObj.bn.toNumber === 'function') {
       // Fee has bn.toNumber() method (most common case)
       feeValue = feeObj.bn.toNumber();
@@ -279,12 +284,12 @@ export const broadcastTransaction = async (
 
     // Use native fetch to broadcast the transaction
     const response = await fetch(`${nodeUrl}/transactions/broadcast`, {
-      method: 'POST',
+      body: requestBody,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      body: requestBody,
+      method: 'POST',
     });
 
     if (!response.ok) {

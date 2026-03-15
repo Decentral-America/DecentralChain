@@ -54,20 +54,6 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
   // Navigation shortcuts
   useKeyboardShortcuts(
     {
-      // Primary navigation
-      'ctrl+k': () => {
-        navigate('/desktop/dex');
-        onShortcutTriggered?.('Navigate to DEX');
-      },
-      'ctrl+w': () => {
-        navigate('/desktop/wallet');
-        onShortcutTriggered?.('Navigate to Wallet');
-      },
-      'ctrl+s': () => {
-        navigate('/desktop/settings');
-        onShortcutTriggered?.('Navigate to Settings');
-      },
-
       // Alternative settings shortcut (Mac standard)
       'ctrl+,': () => {
         navigate('/desktop/settings');
@@ -78,6 +64,30 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       'ctrl+/': () => {
         setHelpModalOpen((prev) => !prev);
         onShortcutTriggered?.('Toggle Help');
+      },
+
+      // Search functionality
+      'ctrl+f': () => {
+        // Focus search input if exists
+        const searchInput = document.querySelector<HTMLInputElement>(
+          'input[type="search"], input[placeholder*="Search"]',
+        );
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+        onShortcutTriggered?.('Focus Search');
+      },
+      // Primary navigation
+      'ctrl+k': () => {
+        navigate('/desktop/dex');
+        onShortcutTriggered?.('Navigate to DEX');
+      },
+
+      'ctrl+l': () => {
+        // Navigate to leasing
+        navigate('/desktop/wallet/leasing');
+        onShortcutTriggered?.('View Leasing');
       },
 
       // Quick actions
@@ -97,35 +107,24 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
         navigate('/desktop/wallet/portfolio');
         onShortcutTriggered?.('View Portfolio');
       },
+      'ctrl+s': () => {
+        navigate('/desktop/settings');
+        onShortcutTriggered?.('Navigate to Settings');
+      },
 
       'ctrl+t': () => {
         // Navigate to transaction history
         navigate('/desktop/wallet/transactions');
         onShortcutTriggered?.('View Transactions');
       },
-
-      'ctrl+l': () => {
-        // Navigate to leasing
-        navigate('/desktop/wallet/leasing');
-        onShortcutTriggered?.('View Leasing');
-      },
-
-      // Search functionality
-      'ctrl+f': () => {
-        // Focus search input if exists
-        const searchInput = document.querySelector<HTMLInputElement>(
-          'input[type="search"], input[placeholder*="Search"]',
-        );
-        if (searchInput) {
-          searchInput.focus();
-          searchInput.select();
-        }
-        onShortcutTriggered?.('Focus Search');
+      'ctrl+w': () => {
+        navigate('/desktop/wallet');
+        onShortcutTriggered?.('Navigate to Wallet');
       },
     },
     {
-      enabled: isEnabled,
       allowInInputs: false,
+      enabled: isEnabled,
       preventDefault: true,
     },
   );
@@ -157,8 +156,8 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       }
     },
     {
-      enabled: isEnabled,
       allowInInputs: false,
+      enabled: isEnabled,
       preventDefault: false, // Allow escape to work in inputs too
     },
   );
@@ -210,21 +209,21 @@ export function useKeyboardShortcutsInfo() {
   const shiftKey = isMac ? '⇧' : 'Shift';
 
   return {
+    altKey,
     isEnabled: !!user,
     modifierKey,
-    altKey,
     shiftKey,
     shortcuts: {
       dex: `${modifierKey} + K`,
-      wallet: `${modifierKey} + W`,
-      settings: `${modifierKey} + S`,
+      escape: 'Esc',
       help: `${modifierKey} + /`,
-      search: `${modifierKey} + F`,
+      leasing: `${modifierKey} + L`,
       newAction: `${modifierKey} + N`,
       portfolio: `${modifierKey} + P`,
+      search: `${modifierKey} + F`,
+      settings: `${modifierKey} + S`,
       transactions: `${modifierKey} + T`,
-      leasing: `${modifierKey} + L`,
-      escape: 'Esc',
+      wallet: `${modifierKey} + W`,
     },
   };
 }
@@ -251,14 +250,14 @@ export function KeyboardShortcutBadge({ shortcut, className = '' }: KeyboardShor
     <kbd
       className={`keyboard-shortcut-badge ${className}`}
       style={{
-        display: 'inline-block',
-        padding: '2px 6px',
-        fontSize: '0.75rem',
-        fontFamily: 'monospace',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         border: '1px solid rgba(0, 0, 0, 0.2)',
         borderRadius: '4px',
+        display: 'inline-block',
+        fontFamily: 'monospace',
+        fontSize: '0.75rem',
         marginLeft: '8px',
+        padding: '2px 6px',
       }}
     >
       {shortcut}

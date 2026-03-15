@@ -87,44 +87,44 @@ const EventContext = createContext<EventContextValue | null>(null);
  * Provides type-safe event name constants
  */
 export const EventNames = {
-  // Wallet events
-  WALLET_BALANCE_UPDATED: 'wallet:balance:updated',
-  WALLET_ACCOUNT_CHANGED: 'wallet:account:changed',
-  WALLET_CONNECTED: 'wallet:connected',
-  WALLET_DISCONNECTED: 'wallet:disconnected',
+  ASSET_BURNED: 'asset:burned',
 
-  // Transaction events
-  TRANSACTION_CREATED: 'transaction:created',
-  TRANSACTION_SIGNED: 'transaction:signed',
-  TRANSACTION_BROADCAST: 'transaction:broadcast',
-  TRANSACTION_CONFIRMED: 'transaction:confirmed',
-  TRANSACTION_FAILED: 'transaction:failed',
+  // Asset events
+  ASSET_ISSUED: 'asset:issued',
+  ASSET_REISSUED: 'asset:reissued',
+  DATA_ERROR: 'data:error',
+
+  // Data events
+  DATA_REFRESHED: 'data:refreshed',
+  DEX_ORDER_CANCELLED: 'dex:order:cancelled',
 
   // DEX events
   DEX_ORDER_CREATED: 'dex:order:created',
-  DEX_ORDER_CANCELLED: 'dex:order:cancelled',
   DEX_ORDER_FILLED: 'dex:order:filled',
   DEX_PAIR_CHANGED: 'dex:pair:changed',
-
-  // UI events
-  UI_MODAL_OPENED: 'ui:modal:opened',
-  UI_MODAL_CLOSED: 'ui:modal:closed',
-  UI_THEME_CHANGED: 'ui:theme:changed',
-  UI_LANGUAGE_CHANGED: 'ui:language:changed',
 
   // Network events
   NETWORK_CHANGED: 'network:changed',
   NETWORK_CONNECTION_LOST: 'network:connection:lost',
   NETWORK_CONNECTION_RESTORED: 'network:connection:restored',
+  TRANSACTION_BROADCAST: 'transaction:broadcast',
+  TRANSACTION_CONFIRMED: 'transaction:confirmed',
 
-  // Asset events
-  ASSET_ISSUED: 'asset:issued',
-  ASSET_REISSUED: 'asset:reissued',
-  ASSET_BURNED: 'asset:burned',
+  // Transaction events
+  TRANSACTION_CREATED: 'transaction:created',
+  TRANSACTION_FAILED: 'transaction:failed',
+  TRANSACTION_SIGNED: 'transaction:signed',
+  UI_LANGUAGE_CHANGED: 'ui:language:changed',
+  UI_MODAL_CLOSED: 'ui:modal:closed',
 
-  // Data events
-  DATA_REFRESHED: 'data:refreshed',
-  DATA_ERROR: 'data:error',
+  // UI events
+  UI_MODAL_OPENED: 'ui:modal:opened',
+  UI_THEME_CHANGED: 'ui:theme:changed',
+  WALLET_ACCOUNT_CHANGED: 'wallet:account:changed',
+  // Wallet events
+  WALLET_BALANCE_UPDATED: 'wallet:balance:updated',
+  WALLET_CONNECTED: 'wallet:connected',
+  WALLET_DISCONNECTED: 'wallet:disconnected',
 } as const;
 
 /**
@@ -221,13 +221,13 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   const value: EventContextValue = {
+    clearAllEvents,
+    clearEvent,
     emit,
+    getEventNames,
+    getListenerCount,
     subscribe,
     unsubscribe,
-    clearEvent,
-    clearAllEvents,
-    getListenerCount,
-    getEventNames,
   };
 
   return <EventContext.Provider value={value}>{children}</EventContext.Provider>;
@@ -338,11 +338,10 @@ export const useTypedEmit = <T = unknown>() => {
 };
 
 /**
+ * Export types for external usage
+ */
+export type { EventContextValue, EventHandler, EventSubscription };
+/**
  * Export EventContext for advanced usage
  */
 export { EventContext };
-
-/**
- * Export types for external usage
- */
-export type { EventHandler, EventSubscription, EventContextValue };

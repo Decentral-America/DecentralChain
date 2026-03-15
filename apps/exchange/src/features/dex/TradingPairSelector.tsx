@@ -4,7 +4,7 @@
  * Updates Zustand DEX store when pair changes
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import styled from 'styled-components';
@@ -48,8 +48,8 @@ const loadTradingPairs = (): TradingPair[] => {
 
   return rawPairs.map(([amountAsset, priceAsset]) => ({
     amountAsset,
-    priceAsset,
     amountAssetName: getAssetDisplayName(amountAsset),
+    priceAsset,
     priceAssetName: getAssetDisplayName(priceAsset),
   }));
 };
@@ -68,17 +68,16 @@ const useAssetNameFetcher = (assetIds: string[]) => {
     });
   }, [assetIds]);
 
-  // Fetch all unknown assets
-  const queries = unknownAssetIds.map((assetId) =>
-    // biome-ignore lint/correctness/useHookAtTopLevel: suppressed
-    useQuery({
-      queryKey: ['asset-details', assetId],
-      queryFn: () => fetchAssetDetails(assetId),
+  // Fetch all unknown assets using useQueries (avoids calling hooks in a loop)
+  const queries = useQueries({
+    queries: unknownAssetIds.map((assetId) => ({
       enabled: !!assetId,
-      staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 60 * 60 * 1000, // 1 hour
-    }),
-  );
+      queryFn: () => fetchAssetDetails(assetId),
+      queryKey: ['asset-details', assetId] as const,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    })),
+  });
 
   // Update cache when asset details are loaded
   useEffect(() => {
@@ -116,8 +115,8 @@ const getDefaultPair = (): TradingPair => {
     dccCrcPair ||
     AVAILABLE_PAIRS[0] || {
       amountAsset: '',
-      priceAsset: '',
       amountAssetName: 'DCC',
+      priceAsset: '',
       priceAssetName: 'CRC',
     }
   );
