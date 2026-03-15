@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project uses VS Code Dev Containers to provide a consistent development environment for the DCC Wallet React application.
+This project uses VS Code Dev Containers to provide a consistent development environment for the DecentralExchange React application.
 
 ## What's Included
 

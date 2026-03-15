@@ -1,4 +1,4 @@
-# Multi-stage Docker build for DCC Wallet React App
+# Multi-stage Docker build for DecentralExchange React App
 # Simple single-network build (for development/testing)
 # For production multi-network builds, use Dockerfile.production
 

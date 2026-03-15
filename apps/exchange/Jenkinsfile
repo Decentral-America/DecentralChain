@@ -38,7 +38,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = credentials('docker-registry-url')
-        IMAGE_NAME = 'dcc-wallet-react'
+        IMAGE_NAME = 'dcc-exchange-react'
         REACT_DIR = 'dcc-react'
     }
 
@@ -146,8 +146,8 @@ pipeline {
                     
                     // Deploy using kubectl or docker-compose
                     sh """
-                        kubectl set image deployment/dcc-wallet-${params.NETWORK} \
-                            dcc-wallet=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
+                        kubectl set image deployment/dcc-exchange-${params.NETWORK} \
+                            dcc-exchange=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
                             --namespace=staging
                     """
                 }
@@ -165,11 +165,11 @@ pipeline {
                     
                     // Production deployment with rollout
                     sh """
-                        kubectl set image deployment/dcc-wallet-${network} \
-                            dcc-wallet=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
+                        kubectl set image deployment/dcc-exchange-${network} \
+                            dcc-exchange=${DOCKER_REGISTRY}/${IMAGE_NAME}:${tag} \
                             --namespace=production
                         
-                        kubectl rollout status deployment/dcc-wallet-${network} \
+                        kubectl rollout status deployment/dcc-exchange-${network} \
                             --namespace=production \
                             --timeout=5m
                     """
