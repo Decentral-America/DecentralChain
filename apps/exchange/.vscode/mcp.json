@@ -1,0 +1,28 @@
+{
+  "inputs": [],
+  "servers": {
+    "chrome-devtools": {
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--executablePath=/usr/lib/chromium/chromium",
+        "--headless",
+        "--chromeArg=--no-sandbox",
+        "--chromeArg=--disable-setuid-sandbox"
+      ],
+      "command": "npx"
+    },
+    "context7": {
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "command": "npx",
+      "type": "stdio"
+    },
+    "smart-tree": {
+      "args": ["--mcp"],
+      "command": "st",
+      "env": {
+        "AI_TOOLS": "1"
+      },
+      "type": "stdio"
+    }
+  }
+}
