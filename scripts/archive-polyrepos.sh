@@ -25,7 +25,7 @@ REPOS=(
   data-entities
   data-service-client-js
   exchange
-  explorer
+  scanner
   ledger
   marshall
   money-like-to-node
@@ -34,7 +34,6 @@ REPOS=(
   parse-json-bignumber
   protobuf-serialization
   ride-js
-  scanner
   signature-adapter
   signer
   swap-client
