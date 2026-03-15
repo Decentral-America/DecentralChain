@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "sdk-package": {
+      "factory": "./index",
+      "schema": "./schema.json",
+      "description": "Generate a new @decentralchain/* SDK package with all required configs"
+    }
+  }
+}

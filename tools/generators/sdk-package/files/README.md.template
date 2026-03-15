@@ -1,0 +1,19 @@
+# <%= npmName %>
+
+> <%= description %>
+
+## Installation
+
+```bash
+pnpm add <%= npmName %>
+```
+
+## Usage
+
+```typescript
+import { } from '<%= npmName %>';
+```
+
+## License
+
+MIT
