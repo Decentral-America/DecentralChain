@@ -1,12 +1,4 @@
-const {
-  addProjectConfiguration,
-  formatFiles,
-  generateFiles,
-  joinPathFragments,
-  names,
-  Tree,
-} = require('@nx/devkit');
-const path = require('node:path');
+const { formatFiles, generateFiles, joinPathFragments, names } = require('@nx/devkit');
 
 /** @param {import("@nx/devkit").Tree} tree */
 async function generator(tree, options) {
@@ -15,20 +7,15 @@ async function generator(tree, options) {
   const layer = options.layer ?? 0;
 
   const templateVars = {
-    name: n.fileName,
-    npmName: `@decentralchain/${n.fileName}`,
     description: options.description,
     layer,
+    name: n.fileName,
+    npmName: `@decentralchain/${n.fileName}`,
     tmpl: '',
   };
 
   // Scaffold from template files
-  generateFiles(
-    tree,
-    joinPathFragments(__dirname, 'files'),
-    projectRoot,
-    templateVars,
-  );
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), projectRoot, templateVars);
 
   await formatFiles(tree);
 }

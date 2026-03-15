@@ -1,5 +1,26 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
   "extends": "//",
+  "overrides": [
+    {
+      "assist": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": false
+      },
+      "includes": ["src/gen/**"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noSecrets": "off"
+          },
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ],
   "root": false
 }
