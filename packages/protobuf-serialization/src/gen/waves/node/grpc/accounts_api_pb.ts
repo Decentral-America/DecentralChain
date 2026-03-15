@@ -2,43 +2,28 @@
 // @generated from file waves/node/grpc/accounts_api.proto (package waves.node.grpc, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  fileDesc,
-  type GenFile,
-  type GenMessage,
-  type GenService,
-  messageDesc,
-  serviceDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import {
-  type BytesValueSchema,
-  file_google_protobuf_wrappers,
-  type StringValueSchema,
-} from '@bufbuild/protobuf/wkt';
-import { type Amount, file_waves_amount } from '../../amount_pb.js';
-import { file_waves_recipient, type Recipient } from '../../recipient_pb.js';
-import { type DataEntry, file_waves_transaction } from '../../transaction_pb.js';
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Amount } from "../../amount_pb.js";
+import { file_waves_amount } from "../../amount_pb.js";
+import type { DataEntry } from "../../transaction_pb.js";
+import { file_waves_transaction } from "../../transaction_pb.js";
+import type { Recipient } from "../../recipient_pb.js";
+import { file_waves_recipient } from "../../recipient_pb.js";
+import type { BytesValueSchema, StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_wrappers } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/node/grpc/accounts_api.proto.
  */
-export const file_waves_node_grpc_accounts_api: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiJ3YXZlcy9ub2RlL2dycGMvYWNjb3VudHNfYXBpLnByb3RvEg93YXZlcy5ub2RlLmdycGMiIQoOQWNjb3VudFJlcXVlc3QSDwoHYWRkcmVzcxgBIAEoDCIrCgtEYXRhUmVxdWVzdBIPCgdhZGRyZXNzGAEgASgMEgsKA2tleRgCIAEoCSIyCg9CYWxhbmNlc1JlcXVlc3QSDwoHYWRkcmVzcxgBIAEoDBIOCgZhc3NldHMYBCADKAwi/gEKD0JhbGFuY2VSZXNwb25zZRI/CgV3YXZlcxgBIAEoCzIuLndhdmVzLm5vZGUuZ3JwYy5CYWxhbmNlUmVzcG9uc2UuV2F2ZXNCYWxhbmNlc0gAEh4KBWFzc2V0GAIgASgLMg0ud2F2ZXMuQW1vdW50SAAafwoNV2F2ZXNCYWxhbmNlcxIPCgdyZWd1bGFyGAEgASgDEhIKCmdlbmVyYXRpbmcYAiABKAMSEQoJYXZhaWxhYmxlGAMgASgDEhEKCWVmZmVjdGl2ZRgEIAEoAxIQCghsZWFzZV9pbhgFIAEoAxIRCglsZWFzZV9vdXQYBiABKANCCQoHYmFsYW5jZSJFChFEYXRhRW50cnlSZXNwb25zZRIPCgdhZGRyZXNzGAEgASgMEh8KBWVudHJ5GAIgASgLMhAud2F2ZXMuRGF0YUVudHJ5IksKClNjcmlwdERhdGESFAoMc2NyaXB0X2J5dGVzGAEgASgMEhMKC3NjcmlwdF90ZXh0GAIgASgJEhIKCmNvbXBsZXhpdHkYAyABKAMiYwoOU2NyaXB0UmVzcG9uc2USFAoMc2NyaXB0X2J5dGVzGAEgASgMEhMKC3NjcmlwdF90ZXh0GAIgASgJEhIKCmNvbXBsZXhpdHkYAyABKAMSEgoKcHVibGljX2tleRgEIAEoDCKSAQoNTGVhc2VSZXNwb25zZRIPCgdsZWFzZUlkGAEgASgMEhsKE29yaWdpblRyYW5zYWN0aW9uSWQYAiABKAwSDgoGc2VuZGVyGAMgASgMEiMKCXJlY2lwaWVudBgEIAEoCzIQLndhdmVzLlJlY2lwaWVudBIOCgZhbW91bnQYBSABKAMSDgoGaGVpZ2h0GAYgASgDMqgDCgtBY2NvdW50c0FwaRJTCgtHZXRCYWxhbmNlcxIgLndhdmVzLm5vZGUuZ3JwYy5CYWxhbmNlc1JlcXVlc3QaIC53YXZlcy5ub2RlLmdycGMuQmFsYW5jZVJlc3BvbnNlMAESTQoJR2V0U2NyaXB0Eh8ud2F2ZXMubm9kZS5ncnBjLkFjY291bnRSZXF1ZXN0Gh8ud2F2ZXMubm9kZS5ncnBjLlNjcmlwdFJlc3BvbnNlElQKD0dldEFjdGl2ZUxlYXNlcxIfLndhdmVzLm5vZGUuZ3JwYy5BY2NvdW50UmVxdWVzdBoeLndhdmVzLm5vZGUuZ3JwYy5MZWFzZVJlc3BvbnNlMAESVAoOR2V0RGF0YUVudHJpZXMSHC53YXZlcy5ub2RlLmdycGMuRGF0YVJlcXVlc3QaIi53YXZlcy5ub2RlLmdycGMuRGF0YUVudHJ5UmVzcG9uc2UwARJJCgxSZXNvbHZlQWxpYXMSHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUaGy5nb29nbGUucHJvdG9idWYuQnl0ZXNWYWx1ZUKPAQoaaW8uZGVjZW50cmFsY2hhaW4uYXBpLmdycGNaVmdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvbm9kZS9ncnBjqgIYRGVjZW50cmFsQ2hhaW4uTm9kZS5HcnBjYgZwcm90bzM',
-    [
-      file_waves_amount,
-      file_waves_transaction,
-      file_waves_recipient,
-      file_google_protobuf_wrappers,
-    ],
-  );
+export const file_waves_node_grpc_accounts_api: GenFile = /*@__PURE__*/
+  fileDesc("CiJ3YXZlcy9ub2RlL2dycGMvYWNjb3VudHNfYXBpLnByb3RvEg93YXZlcy5ub2RlLmdycGMiIQoOQWNjb3VudFJlcXVlc3QSDwoHYWRkcmVzcxgBIAEoDCIrCgtEYXRhUmVxdWVzdBIPCgdhZGRyZXNzGAEgASgMEgsKA2tleRgCIAEoCSIyCg9CYWxhbmNlc1JlcXVlc3QSDwoHYWRkcmVzcxgBIAEoDBIOCgZhc3NldHMYBCADKAwi/gEKD0JhbGFuY2VSZXNwb25zZRI/CgV3YXZlcxgBIAEoCzIuLndhdmVzLm5vZGUuZ3JwYy5CYWxhbmNlUmVzcG9uc2UuV2F2ZXNCYWxhbmNlc0gAEh4KBWFzc2V0GAIgASgLMg0ud2F2ZXMuQW1vdW50SAAafwoNV2F2ZXNCYWxhbmNlcxIPCgdyZWd1bGFyGAEgASgDEhIKCmdlbmVyYXRpbmcYAiABKAMSEQoJYXZhaWxhYmxlGAMgASgDEhEKCWVmZmVjdGl2ZRgEIAEoAxIQCghsZWFzZV9pbhgFIAEoAxIRCglsZWFzZV9vdXQYBiABKANCCQoHYmFsYW5jZSJFChFEYXRhRW50cnlSZXNwb25zZRIPCgdhZGRyZXNzGAEgASgMEh8KBWVudHJ5GAIgASgLMhAud2F2ZXMuRGF0YUVudHJ5IksKClNjcmlwdERhdGESFAoMc2NyaXB0X2J5dGVzGAEgASgMEhMKC3NjcmlwdF90ZXh0GAIgASgJEhIKCmNvbXBsZXhpdHkYAyABKAMiYwoOU2NyaXB0UmVzcG9uc2USFAoMc2NyaXB0X2J5dGVzGAEgASgMEhMKC3NjcmlwdF90ZXh0GAIgASgJEhIKCmNvbXBsZXhpdHkYAyABKAMSEgoKcHVibGljX2tleRgEIAEoDCKSAQoNTGVhc2VSZXNwb25zZRIPCgdsZWFzZUlkGAEgASgMEhsKE29yaWdpblRyYW5zYWN0aW9uSWQYAiABKAwSDgoGc2VuZGVyGAMgASgMEiMKCXJlY2lwaWVudBgEIAEoCzIQLndhdmVzLlJlY2lwaWVudBIOCgZhbW91bnQYBSABKAMSDgoGaGVpZ2h0GAYgASgDMqgDCgtBY2NvdW50c0FwaRJTCgtHZXRCYWxhbmNlcxIgLndhdmVzLm5vZGUuZ3JwYy5CYWxhbmNlc1JlcXVlc3QaIC53YXZlcy5ub2RlLmdycGMuQmFsYW5jZVJlc3BvbnNlMAESTQoJR2V0U2NyaXB0Eh8ud2F2ZXMubm9kZS5ncnBjLkFjY291bnRSZXF1ZXN0Gh8ud2F2ZXMubm9kZS5ncnBjLlNjcmlwdFJlc3BvbnNlElQKD0dldEFjdGl2ZUxlYXNlcxIfLndhdmVzLm5vZGUuZ3JwYy5BY2NvdW50UmVxdWVzdBoeLndhdmVzLm5vZGUuZ3JwYy5MZWFzZVJlc3BvbnNlMAESVAoOR2V0RGF0YUVudHJpZXMSHC53YXZlcy5ub2RlLmdycGMuRGF0YVJlcXVlc3QaIi53YXZlcy5ub2RlLmdycGMuRGF0YUVudHJ5UmVzcG9uc2UwARJJCgxSZXNvbHZlQWxpYXMSHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUaGy5nb29nbGUucHJvdG9idWYuQnl0ZXNWYWx1ZUKPAQoaaW8uZGVjZW50cmFsY2hhaW4uYXBpLmdycGNaVmdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvd2F2ZXMvbm9kZS9ncnBjqgIYRGVjZW50cmFsQ2hhaW4uTm9kZS5HcnBjYgZwcm90bzM", [file_waves_amount, file_waves_transaction, file_waves_recipient, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message waves.node.grpc.AccountRequest
  */
-export type AccountRequest = Message<'waves.node.grpc.AccountRequest'> & {
+export type AccountRequest = Message<"waves.node.grpc.AccountRequest"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -49,14 +34,13 @@ export type AccountRequest = Message<'waves.node.grpc.AccountRequest'> & {
  * Describes the message waves.node.grpc.AccountRequest.
  * Use `create(AccountRequestSchema)` to create a new message.
  */
-export const AccountRequestSchema: GenMessage<AccountRequest> =
-  /*@__PURE__*/
+export const AccountRequestSchema: GenMessage<AccountRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 0);
 
 /**
  * @generated from message waves.node.grpc.DataRequest
  */
-export type DataRequest = Message<'waves.node.grpc.DataRequest'> & {
+export type DataRequest = Message<"waves.node.grpc.DataRequest"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -72,14 +56,13 @@ export type DataRequest = Message<'waves.node.grpc.DataRequest'> & {
  * Describes the message waves.node.grpc.DataRequest.
  * Use `create(DataRequestSchema)` to create a new message.
  */
-export const DataRequestSchema: GenMessage<DataRequest> =
-  /*@__PURE__*/
+export const DataRequestSchema: GenMessage<DataRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 1);
 
 /**
  * @generated from message waves.node.grpc.BalancesRequest
  */
-export type BalancesRequest = Message<'waves.node.grpc.BalancesRequest'> & {
+export type BalancesRequest = Message<"waves.node.grpc.BalancesRequest"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -95,91 +78,84 @@ export type BalancesRequest = Message<'waves.node.grpc.BalancesRequest'> & {
  * Describes the message waves.node.grpc.BalancesRequest.
  * Use `create(BalancesRequestSchema)` to create a new message.
  */
-export const BalancesRequestSchema: GenMessage<BalancesRequest> =
-  /*@__PURE__*/
+export const BalancesRequestSchema: GenMessage<BalancesRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 2);
 
 /**
  * @generated from message waves.node.grpc.BalanceResponse
  */
-export type BalanceResponse = Message<'waves.node.grpc.BalanceResponse'> & {
+export type BalanceResponse = Message<"waves.node.grpc.BalanceResponse"> & {
   /**
    * @generated from oneof waves.node.grpc.BalanceResponse.balance
    */
-  balance:
-    | {
-        /**
-         * @generated from field: waves.node.grpc.BalanceResponse.WavesBalances waves = 1;
-         */
-        value: BalanceResponse_WavesBalances;
-        case: 'waves';
-      }
-    | {
-        /**
-         * @generated from field: waves.Amount asset = 2;
-         */
-        value: Amount;
-        case: 'asset';
-      }
-    | { case: undefined; value?: undefined };
+  balance: {
+    /**
+     * @generated from field: waves.node.grpc.BalanceResponse.WavesBalances waves = 1;
+     */
+    value: BalanceResponse_WavesBalances;
+    case: "waves";
+  } | {
+    /**
+     * @generated from field: waves.Amount asset = 2;
+     */
+    value: Amount;
+    case: "asset";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message waves.node.grpc.BalanceResponse.
  * Use `create(BalanceResponseSchema)` to create a new message.
  */
-export const BalanceResponseSchema: GenMessage<BalanceResponse> =
-  /*@__PURE__*/
+export const BalanceResponseSchema: GenMessage<BalanceResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 3);
 
 /**
  * @generated from message waves.node.grpc.BalanceResponse.WavesBalances
  */
-export type BalanceResponse_WavesBalances =
-  Message<'waves.node.grpc.BalanceResponse.WavesBalances'> & {
-    /**
-     * @generated from field: int64 regular = 1;
-     */
-    regular: bigint;
+export type BalanceResponse_WavesBalances = Message<"waves.node.grpc.BalanceResponse.WavesBalances"> & {
+  /**
+   * @generated from field: int64 regular = 1;
+   */
+  regular: bigint;
 
-    /**
-     * @generated from field: int64 generating = 2;
-     */
-    generating: bigint;
+  /**
+   * @generated from field: int64 generating = 2;
+   */
+  generating: bigint;
 
-    /**
-     * @generated from field: int64 available = 3;
-     */
-    available: bigint;
+  /**
+   * @generated from field: int64 available = 3;
+   */
+  available: bigint;
 
-    /**
-     * @generated from field: int64 effective = 4;
-     */
-    effective: bigint;
+  /**
+   * @generated from field: int64 effective = 4;
+   */
+  effective: bigint;
 
-    /**
-     * @generated from field: int64 lease_in = 5;
-     */
-    leaseIn: bigint;
+  /**
+   * @generated from field: int64 lease_in = 5;
+   */
+  leaseIn: bigint;
 
-    /**
-     * @generated from field: int64 lease_out = 6;
-     */
-    leaseOut: bigint;
-  };
+  /**
+   * @generated from field: int64 lease_out = 6;
+   */
+  leaseOut: bigint;
+};
 
 /**
  * Describes the message waves.node.grpc.BalanceResponse.WavesBalances.
  * Use `create(BalanceResponse_WavesBalancesSchema)` to create a new message.
  */
-export const BalanceResponse_WavesBalancesSchema: GenMessage<BalanceResponse_WavesBalances> =
-  /*@__PURE__*/
+export const BalanceResponse_WavesBalancesSchema: GenMessage<BalanceResponse_WavesBalances> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 3, 0);
 
 /**
  * @generated from message waves.node.grpc.DataEntryResponse
  */
-export type DataEntryResponse = Message<'waves.node.grpc.DataEntryResponse'> & {
+export type DataEntryResponse = Message<"waves.node.grpc.DataEntryResponse"> & {
   /**
    * @generated from field: bytes address = 1;
    */
@@ -195,14 +171,13 @@ export type DataEntryResponse = Message<'waves.node.grpc.DataEntryResponse'> & {
  * Describes the message waves.node.grpc.DataEntryResponse.
  * Use `create(DataEntryResponseSchema)` to create a new message.
  */
-export const DataEntryResponseSchema: GenMessage<DataEntryResponse> =
-  /*@__PURE__*/
+export const DataEntryResponseSchema: GenMessage<DataEntryResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 4);
 
 /**
  * @generated from message waves.node.grpc.ScriptData
  */
-export type ScriptData = Message<'waves.node.grpc.ScriptData'> & {
+export type ScriptData = Message<"waves.node.grpc.ScriptData"> & {
   /**
    * @generated from field: bytes script_bytes = 1;
    */
@@ -223,14 +198,13 @@ export type ScriptData = Message<'waves.node.grpc.ScriptData'> & {
  * Describes the message waves.node.grpc.ScriptData.
  * Use `create(ScriptDataSchema)` to create a new message.
  */
-export const ScriptDataSchema: GenMessage<ScriptData> =
-  /*@__PURE__*/
+export const ScriptDataSchema: GenMessage<ScriptData> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 5);
 
 /**
  * @generated from message waves.node.grpc.ScriptResponse
  */
-export type ScriptResponse = Message<'waves.node.grpc.ScriptResponse'> & {
+export type ScriptResponse = Message<"waves.node.grpc.ScriptResponse"> & {
   /**
    * @generated from field: bytes script_bytes = 1;
    */
@@ -256,14 +230,13 @@ export type ScriptResponse = Message<'waves.node.grpc.ScriptResponse'> & {
  * Describes the message waves.node.grpc.ScriptResponse.
  * Use `create(ScriptResponseSchema)` to create a new message.
  */
-export const ScriptResponseSchema: GenMessage<ScriptResponse> =
-  /*@__PURE__*/
+export const ScriptResponseSchema: GenMessage<ScriptResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 6);
 
 /**
  * @generated from message waves.node.grpc.LeaseResponse
  */
-export type LeaseResponse = Message<'waves.node.grpc.LeaseResponse'> & {
+export type LeaseResponse = Message<"waves.node.grpc.LeaseResponse"> & {
   /**
    * @generated from field: bytes leaseId = 1;
    */
@@ -299,8 +272,7 @@ export type LeaseResponse = Message<'waves.node.grpc.LeaseResponse'> & {
  * Describes the message waves.node.grpc.LeaseResponse.
  * Use `create(LeaseResponseSchema)` to create a new message.
  */
-export const LeaseResponseSchema: GenMessage<LeaseResponse> =
-  /*@__PURE__*/
+export const LeaseResponseSchema: GenMessage<LeaseResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_accounts_api, 7);
 
 /**
@@ -311,40 +283,42 @@ export const AccountsApi: GenService<{
    * @generated from rpc waves.node.grpc.AccountsApi.GetBalances
    */
   getBalances: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof BalancesRequestSchema;
     output: typeof BalanceResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.AccountsApi.GetScript
    */
   getScript: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof AccountRequestSchema;
     output: typeof ScriptResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.AccountsApi.GetActiveLeases
    */
   getActiveLeases: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof AccountRequestSchema;
     output: typeof LeaseResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.AccountsApi.GetDataEntries
    */
   getDataEntries: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof DataRequestSchema;
     output: typeof DataEntryResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.AccountsApi.ResolveAlias
    */
   resolveAlias: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof StringValueSchema;
     output: typeof BytesValueSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_waves_node_grpc_accounts_api, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_waves_node_grpc_accounts_api, 0);
+
