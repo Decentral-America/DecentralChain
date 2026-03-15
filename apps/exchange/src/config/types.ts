@@ -1,6 +1,6 @@
 /**
  * TypeScript interfaces for mainnet.json configuration
- * These types ensure type safety across the entire DCC Wallet application
+ * These types ensure type safety across the entire DecentralExchange application
  * and match the exact structure of /configs/mainnet.json
  */
 

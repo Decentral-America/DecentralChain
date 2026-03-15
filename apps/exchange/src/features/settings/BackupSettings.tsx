@@ -170,7 +170,7 @@ export const BackupSettings: React.FC = () => {
       const a = document.createElement('a');
       const timestamp = new Date().toISOString().split('T')[0];
       a.href = url;
-      a.download = `dcc-wallet-backup-${timestamp}.json`;
+      a.download = `dcc-exchange-backup-${timestamp}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -327,7 +327,7 @@ export const BackupSettings: React.FC = () => {
         color="text.secondary"
         sx={{ display: 'block', textAlign: 'center' }}
       >
-        File will be saved as: dcc-wallet-backup-{new Date().toISOString().split('T')[0]}.json
+        File will be saved as: dcc-exchange-backup-{new Date().toISOString().split('T')[0]}.json
       </Typography>
     </Box>
   );

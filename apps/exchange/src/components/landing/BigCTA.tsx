@@ -20,7 +20,7 @@ export default function BigCTA() {
           }}
         >
           <Typography variant="h2" fontWeight={800} sx={{ mb: 3 }}>
-            Start trading on Decentral.Exchange
+            Start trading on DecentralExchange
           </Typography>
           <Typography variant="body1" sx={{ maxWidth: 600, mb: 4, mx: 'auto', opacity: 0.95 }}>
             Experience the future of decentralized trading with secure swaps, advanced trading

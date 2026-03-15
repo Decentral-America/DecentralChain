@@ -7,10 +7,10 @@ This guide explains how to build and deploy the DCC React Wallet using Docker, m
 ### Simple Development Build
 ```bash
 # Build for mainnet (default)
-docker build -t dcc-wallet-react .
+docker build -t dcc-exchange-react .
 
 # Run locally
-docker run -p 8080:80 dcc-wallet-react
+docker run -p 8080:80 dcc-exchange-react
 
 # Access at http://localhost:8080
 ```
@@ -18,12 +18,12 @@ docker run -p 8080:80 dcc-wallet-react
 ### Production Multi-Network Build
 ```bash
 # Build with multi-network support
-docker build -f Dockerfile.production -t dcc-wallet-react:prod .
+docker build -f Dockerfile.production -t dcc-exchange-react:prod .
 
 # Run for specific network
-docker run -p 8080:80 -e WEB_ENVIRONMENT=mainnet dcc-wallet-react:prod
-docker run -p 8080:80 -e WEB_ENVIRONMENT=testnet dcc-wallet-react:prod
-docker run -p 8080:80 -e WEB_ENVIRONMENT=stagenet dcc-wallet-react:prod
+docker run -p 8080:80 -e WEB_ENVIRONMENT=mainnet dcc-exchange-react:prod
+docker run -p 8080:80 -e WEB_ENVIRONMENT=testnet dcc-exchange-react:prod
+docker run -p 8080:80 -e WEB_ENVIRONMENT=stagenet dcc-exchange-react:prod
 ```
 
 ## Docker Files Overview
@@ -44,14 +44,14 @@ Best for quick testing with a single network:
 
 ```bash
 # Default (mainnet)
-docker build -t dcc-wallet-react .
+docker build -t dcc-exchange-react .
 
 # With specific network
 docker build \
   --build-arg VITE_NETWORK=testnet \
   --build-arg VITE_NODE_URL=https://testnet-node.decentralchain.io \
   --build-arg VITE_MATCHER_URL=https://testnet-matcher.decentralchain.io \
-  -t dcc-wallet-react:testnet .
+  -t dcc-exchange-react:testnet .
 ```
 
 ### 2. Production Build (Recommended)
@@ -65,7 +65,7 @@ Builds all three networks in one image:
 docker build \
   -f Dockerfile.production \
   --build-arg web_environment=mainnet \
-  -t dcc-wallet-react:latest .
+  -t dcc-exchange-react:latest .
 ```
 
 ### 3. Using Docker Compose
@@ -76,7 +76,7 @@ Run all networks simultaneously:
 docker-compose up -d
 
 # Run specific network
-docker-compose up -d dcc-wallet-mainnet
+docker-compose up -d dcc-exchange-mainnet
 
 # View logs
 docker-compose logs -f
@@ -125,14 +125,14 @@ docker-compose down
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dcc-wallet-mainnet
+  name: dcc-exchange-mainnet
 spec:
   replicas: 3
   template:
     spec:
       containers:
-      - name: dcc-wallet
-        image: your-registry/dcc-wallet-react:latest
+      - name: dcc-exchange
+        image: your-registry/dcc-exchange-react:latest
         env:
         - name: WEB_ENVIRONMENT
           value: "mainnet"
@@ -148,8 +148,8 @@ spec:
 ```json
 {
   "containerDefinitions": [{
-    "name": "dcc-wallet",
-    "image": "your-registry/dcc-wallet-react:latest",
+    "name": "dcc-exchange",
+    "image": "your-registry/dcc-exchange-react:latest",
     "environment": [
       { "name": "WEB_ENVIRONMENT", "value": "mainnet" }
     ],
@@ -166,11 +166,11 @@ spec:
 ### Deploy with Docker Swarm
 ```bash
 docker service create \
-  --name dcc-wallet \
+  --name dcc-exchange \
   --replicas 3 \
   -p 80:80 \
   -e WEB_ENVIRONMENT=mainnet \
-  dcc-wallet-react:latest
+  dcc-exchange-react:latest
 ```
 
 ## Comparison with Angular Version
@@ -190,13 +190,13 @@ docker service create \
 ### Build fails with npm error
 ```bash
 # Clear npm cache and retry
-docker build --no-cache -t dcc-wallet-react .
+docker build --no-cache -t dcc-exchange-react .
 ```
 
 ### Network environment not changing
 ```bash
 # Ensure WEB_ENVIRONMENT is set correctly
-docker run -e WEB_ENVIRONMENT=testnet -p 8080:80 dcc-wallet-react:prod
+docker run -e WEB_ENVIRONMENT=testnet -p 8080:80 dcc-exchange-react:prod
 
 # Verify inside container
 docker exec <container_id> echo $WEB_ENVIRONMENT

@@ -42,7 +42,7 @@
     },
     "error": {
       "updateClient": {
-        "body": "我们一直在努力使Decentral.Exchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://decentralchain.io/technology/wallet）下载该应用程序！",
+        "body": "我们一直在努力使DecentralExchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://decentralchain.io/technology/wallet）下载该应用程序！",
         "title": "现在该更新您的应用了！"
       }
     },
@@ -550,20 +550,20 @@
       "cancelDownloading": "取消下载",
       "congratulations": "恭喜你！",
       "congratulationsText": "您已经成功下载了新应用程序。要开始使用该应用程序，只需执行以下操作：",
-      "connectSupport": "如果这样做没有帮助，请联系Decentral.Exchange [support]（https://support.decentral.exchange/）。",
+      "connectSupport": "如果这样做没有帮助，请联系DecentralExchange [support]（https://support.decentral.exchange/）。",
       "download": "Download",
       "downloaded": "是",
-      "downloadText": "{div} [为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Decentral.Exchange。] \n {div.margin-top} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须下载新的桌面应用程序。]",
+      "downloadText": "{div} [为了向用户提供更好的体验和更广泛的工具，该交易所正从DecentralExchange转向DecentralExchange。] \n {div.margin-top} [DecentralExchange将于2019年12月2日停止运行。要继续交易，您必须下载新的桌面应用程序。]",
       "fail": "失败",
-      "failText": "请确保您已经安装并运行新的Decentral.Exchange应用程序。",
-      "haveYouDownloaded": "您是否已经下载了新的Decentral.Exchange桌面应用程序？",
+      "failText": "请确保您已经安装并运行新的DecentralExchange应用程序。",
+      "haveYouDownloaded": "您是否已经下载了新的DecentralExchange桌面应用程序？",
       "install": "安装应用程序",
       "installAndRun": "安装并运行该应用程序。你做完了吗？",
       "iUnderstand": "我明白",
       "lookAtFAQ1": "如果您正确执行了所有操作并继续获得失败结果，请查看",
       "lookAtFAQ2": "您可能在那里找到答案。",
-      "movingText": "{div.margin-bottom} [为了向用户提供更好的体验和更广泛的工具，该交易所正在从Decentral.Exchange转向Decentral.Exchange。] \n {div.margin-bottom} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须将帐户移至新交易所。我们强烈建议您提前进行此操作。] \n {div.margin-bottom} [这种移动是快速，容易且绝对安全的。]",
-      "oldApplication": "您当前的应用程序太旧了。如果您想立即交易（2019年12月2日之前），则可以从[官方网站]（https://dex.decentralchain.io）下载我们最新的Decentral.Exchange桌面应用程序。",
+      "movingText": "{div.margin-bottom} [为了向用户提供更好的体验和更广泛的工具，该交易所正在从DecentralExchange转向DecentralExchange。] \n {div.margin-bottom} [DecentralExchange将于2019年12月2日停止运行。要继续交易，您必须将帐户移至新交易所。我们强烈建议您提前进行此操作。] \n {div.margin-bottom} [这种移动是快速，容易且绝对安全的。]",
+      "oldApplication": "您当前的应用程序太旧了。如果您想立即交易（2019年12月2日之前），则可以从[官方网站]（https://dex.decentralchain.io）下载我们最新的DecentralExchange桌面应用程序。",
       "oops": "糟糕！出问题了...",
       "password": "Password",
       "passwordError": "Wrong Password!",
@@ -579,20 +579,20 @@
     },
     "faq": {
       "attention": {
-        "text": "{div.margin-top-1} [仅可从网络域[https://dex.decentralchain.io]（https://dex.decentralchain.io/）和[https： //client.decentralchain.io](https://client.decentralchain.io/）。要完成桌面客户端的迁移，您必须使用已经安装的Decentral.Exchange桌面应用程序。] \n\n {div.margin-top-1} [请勿使用任何其他域进行迁移，请勿在任何地方输入您的种子短语和/或私钥，也不要从您的迁移过程中指定的软件中下载任何其他客户端当前的Decentral.Exchange客户端。迁移过程不需要您在任何地方输入种子短语和/或私钥。 DecentralChain Platform或Decentral.Exchange员工绝不会要求您提供任何类型的个人信息，包括私钥和/或种子短语。] \n\n {div.margin-top-1} [迁移过程是完全免费的，并且不会影响任何网关，因为网关将正常处理所有事务。您无需支付任何费用或将令牌发送给任何人即可完成迁移。]",
+        "text": "{div.margin-top-1} [仅可从网络域[https://dex.decentralchain.io]（https://dex.decentralchain.io/）和[https： //client.decentralchain.io](https://client.decentralchain.io/）。要完成桌面客户端的迁移，您必须使用已经安装的DecentralExchange桌面应用程序。] \n\n {div.margin-top-1} [请勿使用任何其他域进行迁移，请勿在任何地方输入您的种子短语和/或私钥，也不要从您的迁移过程中指定的软件中下载任何其他客户端当前的DecentralExchange客户端。迁移过程不需要您在任何地方输入种子短语和/或私钥。 DecentralChain Platform或DecentralExchange员工绝不会要求您提供任何类型的个人信息，包括私钥和/或种子短语。] \n\n {div.margin-top-1} [迁移过程是完全免费的，并且不会影响任何网关，因为网关将正常处理所有事务。您无需支付任何费用或将令牌发送给任何人即可完成迁移。]",
         "title": "注意！！！"
       },
       "goHome": "去首页",
-      "text1": "Decentral.Exchange正在转变为新产品Decentral.Exchange。不用担心您所有的令牌，种子短语和密码都是完全安全的。",
-      "text2": "这是基于Decentral.Exchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91）。",
-      "text3": "Decentral.Exchange由Decentral.Exchange团队的一部分开发和运行，与DecentralChain社区的新开发人员合作。",
+      "text1": "DecentralExchange正在转变为新产品DecentralExchange。不用担心您所有的令牌，种子短语和密码都是完全安全的。",
+      "text2": "这是基于DecentralExchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91）。",
+      "text3": "DecentralExchange由DecentralExchange团队的一部分开发和运行，与DecentralChain社区的新开发人员合作。",
       "text4": "迁移标志着交易所发展的一个新阶段，现在的主要重点是用户体验。除了关注社区的要求外，新团队还将专注于构建新的交易工具和产品的全面推广，而这在以前的安排中是困难的。",
-      "text5": "迁移已经开始。自2019年11月18日起，您可以将帐户移至新服务。为此，您需要更新Decentral.Exchange的网络版本和/或运行桌面应用程序，登录到您的帐户并按照说明进行操作。",
+      "text5": "迁移已经开始。自2019年11月18日起，您可以将帐户移至新服务。为此，您需要更新DecentralExchange的网络版本和/或运行桌面应用程序，登录到您的帐户并按照说明进行操作。",
       "text6": "是。这将是访问DecentralChain交易生态系统中所有熟悉且方便的工具（包括Web和桌面应用程序，移动应用程序和交易所）以及新功能和服务升级的新方法。",
       "text7": "新交易所将于2019年12月2日启动。",
-      "text8": "我们希望给Decentral.Exchange用户足够的时间为使用新的交换做准备，以使他们对服务的访问不中断。我们希望两周的时间足以使大多数用户完成迁移过程。",
-      "text9": "是的，在Decentral.Exchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于Decentral.Exchange的旧应用程序。",
-      "text10": "{div.margin-bottom} [如果您使用的是旧版应用，则将无法再进行以下操作：] \n {div.line} [-创建帐户] \n {div.line} [-可以访问Decentral.Exchange界面] \n {div.line} [-查看您的投资组合] \n {div.line} [-进行任何类型的交易：转让，发行或刻录令牌，租赁DCC或取消租赁] \n {div.line} [-使用任何网关] \n\n {div.margin-bottom} [自2019年12月2日起，您将可以使用Decentral.Exchange应用程序享受此功能。] \n\n {div.margin-bottom} [但是，使用旧版应用程序，您仍然可以：] \n\n {div.line} [-登录您的帐户] \n {div.line}[-启动向Decentral.Exchange的迁移过程] \n {div.line} [-为种子词组创建本地备份] \n\n {div.margin-top} [如果仍有疑问，您可以将消息发送到我们的[官方电报组]（https://t.me/decentralexchange）或在支持页面上创建{div.margin-top} ：[https：/ /support.decentral.exchange/](https://support.decentral.exchange/）]",
+      "text8": "我们希望给DecentralExchange用户足够的时间为使用新的交换做准备，以使他们对服务的访问不中断。我们希望两周的时间足以使大多数用户完成迁移过程。",
+      "text9": "是的，在DecentralExchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于DecentralExchange的旧应用程序。",
+      "text10": "{div.margin-bottom} [如果您使用的是旧版应用，则将无法再进行以下操作：] \n {div.line} [-创建帐户] \n {div.line} [-可以访问DecentralExchange界面] \n {div.line} [-查看您的投资组合] \n {div.line} [-进行任何类型的交易：转让，发行或刻录令牌，租赁DCC或取消租赁] \n {div.line} [-使用任何网关] \n\n {div.margin-bottom} [自2019年12月2日起，您将可以使用DecentralExchange应用程序享受此功能。] \n\n {div.margin-bottom} [但是，使用旧版应用程序，您仍然可以：] \n\n {div.line} [-登录您的帐户] \n {div.line}[-启动向DecentralExchange的迁移过程] \n {div.line} [-为种子词组创建本地备份] \n\n {div.margin-top} [如果仍有疑问，您可以将消息发送到我们的[官方电报组]（https://t.me/decentralexchange）或在支持页面上创建{div.margin-top} ：[https：/ /support.decentral.exchange/](https://support.decentral.exchange/）]",
       "text11": "没有,永不！在任何情况下都不会发生这种情况。所有种子短语仍将存储在本地设备上。交易所不可能访问该存储。",
       "text12": "您的代币的所有权记录在DecentralChain区块链上。只能使用种子短语或私钥访问存储在您帐户中的令牌，这些种子短语或私钥在迁移后不会更改并且不会离开您的设备。您的资产是完全安全的！",
       "text13": "{div.margin-bottom}[我们将尽最大努力确保迁移过程对用户来说尽可能顺利。由于匹配者地址和私钥的更改，我们将无法将您的订单移至新匹配者。因此，您的整个订单历史记录将不再可用。您仍然可以使用DecentralScan查看所有已完成的交易。 ] \n\n {div.margin-bottom}[除了您的订单历史记录之外，所有有效订单都会在12月2日被取消。这是由于切换到新匹配器而引起的必要措施。在成功迁移的情况下，您仍将保留：] \n {div.line}[–仪表板上的一组固定资产] \n {div.line}[–在交易所保存的对] \n {div.line}[–“隐藏”资产列表] \n {div.line}[–语言首选项] \n {div.line}[–帐户信息（种子短语，帐户名）] \n\n {div.margin-bottom.margin-top}[请注意，技术工作将于12月2日进行，届时将限制对旧应用程序的访问，并准备启动新应用程序。 ] \n\n {div.margin-bottom}[在此过程中，网关将正常处理所有交易（存款和取款），这将确保完全的安全性和对您资金的访问。] \n\n {div.margin-top}[您将不会失去支持！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
@@ -601,22 +601,22 @@
       "text16": "目前，只有在您的银行帐户中存入/提取wUSD和wEUR时才需要KYC。目前，该团队尚无计划引入KYC进行交易或加密货币交易。",
       "text17": "匹配器将获得一个新的地址和URL，并且其私钥将更改。由于这些更改，更新时用户的未结订单将自动取消，并且交易历史记录将变得不可用。不幸的是，没有将订单和交易历史记录转移到新匹配器的技术手段，因为每个订单都是在用户使用其私钥对其进行签名后发送给匹配器的。由于旧匹配者或新匹配者都无法访问用户的私钥，因此无法转移订单。我们知道这可能令人沮丧，但是这种方法是匹配器设计的一个功能，它是维护用户资金安全所必需的。很抱歉给您带来不便。",
       "text18": "{div.margin-bottom} [我们已尽力确保迁移过程对用户来说尽可能顺利。如果您在移动帐户时遇到问题，请重新开始。为此，请返回旧的Web或桌面客户端，使用密码登录并按照说明进行操作。] \n\n {div.margin-bottom} [针对浏览器用户的建议：在迁移期间，请关闭所有浏览器扩展，因为它们可能会施加限制，从而干扰迁移。] \n\n {div.margin-bottom} [针对桌面客户端用户的建议：关闭防火墙或防病毒软件，因为它们可能会限制端口操作，从而干扰迁移。] \n\n {div.margin-top} [在任何情况下，您都会得到支持！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
-      "text19": "{div.margin-bottom}[某些网关由Decentral.Exchange团队操作，特别是：$ BTC，$ ETH，$ WEST，$ ERGO，$ BNT和$ USDT。] \n {div.margin-bottom}[同时，$ LTC，$ XMR，$ DASH，$ BCH，$ BSV，$ Zcash，wUSD和wEUR由Coinomat临时运营。] \n {div.margin-top}[在2019年12月2日的技术工作期间，网关将正常处理所有交易，这将确保完全的安全性和对您资金的访问。]",
-      "text20": "在迁移过程中，您的租约不会被取消。和以前一样，用户将能够使用Decentral.Exchange的租赁界面将其DCC租赁到他们选择的节点上，并每年收取高达7％的利息。",
+      "text19": "{div.margin-bottom}[某些网关由DecentralExchange团队操作，特别是：$ BTC，$ ETH，$ WEST，$ ERGO，$ BNT和$ USDT。] \n {div.margin-bottom}[同时，$ LTC，$ XMR，$ DASH，$ BCH，$ BSV，$ Zcash，wUSD和wEUR由Coinomat临时运营。] \n {div.margin-top}[在2019年12月2日的技术工作期间，网关将正常处理所有交易，这将确保完全的安全性和对您资金的访问。]",
+      "text20": "在迁移过程中，您的租约不会被取消。和以前一样，用户将能够使用DecentralExchange的租赁界面将其DCC租赁到他们选择的节点上，并每年收取高达7％的利息。",
       "text21": "USDT（ERC-20）网关的启动不会对wUSD和wEUR的运行产生影响。用户将能够继续根据需要进行交易。",
       "text22": "新地址属于DecentralChain网关（不是Coinomat）。我们将不断改进这些网关，使用户传输更快，更方便。",
-      "text23": "我们了解迁移过程可能给用户带来一些不便，因此我们准备了一个惊喜！成功将其帐户移至新交易所的所有用户都将收到一个闪烁的头像，显示在应用程序中。为此，您需要在12月2日之前完成从Decentral.Exchange到Decentral.Exchange的帐户迁移，并且每个帐户中至少有一个任何类型的支出交易都符合资格。",
-      "text24": "我们计划很快增加对Decentral.Exchange先前可用的所有语言的支持。",
+      "text23": "我们了解迁移过程可能给用户带来一些不便，因此我们准备了一个惊喜！成功将其帐户移至新交易所的所有用户都将收到一个闪烁的头像，显示在应用程序中。为此，您需要在12月2日之前完成从DecentralExchange到DecentralExchange的帐户迁移，并且每个帐户中至少有一个任何类型的支出交易都符合资格。",
+      "text24": "我们计划很快增加对DecentralExchange先前可用的所有语言的支持。",
       "title1": "这是怎么回事？",
-      "title2": "什么是Decentral.Exchange？",
+      "title2": "什么是DecentralExchange？",
       "title3": "谁负责开发新交易所？",
-      "title4": "Decentral.Exchange为什么要迁移到Decentral.Exchange？",
+      "title4": "DecentralExchange为什么要迁移到DecentralExchange？",
       "title5": "何时开始迁移？",
       "title6": "迁移是强制性的吗？",
-      "title7": "Decentral.Exchange何时启动？",
+      "title7": "DecentralExchange何时启动？",
       "title8": "为什么迁移过程要在启动前两周开始？",
-      "title9": "Decentral.Exchange启动后是否可以移动帐户？",
-      "title10": "自2019年12月2日起，Decentral.Exchange应用程序将受到哪些限制？",
+      "title9": "DecentralExchange启动后是否可以移动帐户？",
+      "title10": "自2019年12月2日起，DecentralExchange应用程序将受到哪些限制？",
       "title11": "新交易所可以访问我的种子短语吗？",
       "title12": "我的代币将如何处理？",
       "title13": "由于迁移，用户可能会遇到什么问题？",
@@ -641,7 +641,7 @@
       "continue": "继续",
       "desc": {
         "almostFinish": "要完成帐户的迁移，请接受新的条款和条件以及隐私权政策。",
-        "enterPassword": "输入您的Decentral.Exchange密码以继续迁移。",
+        "enterPassword": "输入您的DecentralExchange密码以继续迁移。",
         "onePassword": "为您的所有帐户创建一个密码。登录帐户并轻松切换。"
       },
       "description": {
@@ -662,9 +662,9 @@
         "moving": "开始移动"
       },
       "modalDesc": {
-        "firstPart": "为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Decentral.Exchange。",
-        "redirected": "确保您已成功完成Decentral.Exchange的迁移过程。完成后，您将看到相应的消息。",
-        "secondPart": "Decentral.Exchange将于2019年12月2日停止运营。要继续交易，您应该将帐户移至新交易所。强烈建议您提前进行此操作。",
+        "firstPart": "为了向用户提供更好的体验和更广泛的工具，该交易所正从DecentralExchange转向DecentralExchange。",
+        "redirected": "确保您已成功完成DecentralExchange的迁移过程。完成后，您将看到相应的消息。",
+        "secondPart": "DecentralExchange将于2019年12月2日停止运营。要继续交易，您应该将帐户移至新交易所。强烈建议您提前进行此操作。",
         "thirdPart": "迁移过程快速，轻松且绝对安全。"
       },
       "modalTitle": {
@@ -687,19 +687,19 @@
     },
     "modals": {
       "shutdownNotificationFirst": {
-        "message1": "Decentral.Exchange will stop operating on December 2, 2019",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message1": "DecentralExchange will stop operating on December 2, 2019",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new DecentralExchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "One day left!"
       },
       "shutdownNotificationLast": {
-        "message1": "Decentral.Exchange is no longer working. The exchange moved to Decentral.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Decentral.Exchange. Thank you for the good times!",
+        "message1": "DecentralExchange is no longer working. The exchange moved to DecentralExchange. Don't worry! You are still able to move your accounts from DecentralExchange to DecentralExchange. Thank you for the good times!",
         "submit": "I understand",
         "title": "Time to move on!"
       },
       "shutdownNotificationSecond": {
-        "message1": "Decentral.Exchange will stop operating in two hours.",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message1": "DecentralExchange will stop operating in two hours.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new DecentralExchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "Two hours left!"
       }
@@ -826,15 +826,15 @@
       "passForgot": {
         "attention": "注意！",
         "description": "要恢复密码，您需要重置所有帐户，设置新密码，从种子短语或私钥导入每个帐户。",
-        "descriptionExchange": "您将要从此设备删除所有Decentral.Exchange帐户。此操作不会影响您的Decentral.Exchange帐户。",
+        "descriptionExchange": "您将要从此设备删除所有DecentralExchange帐户。此操作不会影响您的DecentralExchange帐户。",
         "importantDesc": "如果您尚未保存种子短语或私钥，则您将无法恢复对帐户的访问权限。",
-        "importantDescEx": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Decentral.Exchange帐户的访问。",
-        "importantDescExchange": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Decentral.Exchange帐户的访问。"
+        "importantDescEx": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对DecentralExchange帐户的访问。",
+        "importantDescExchange": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对DecentralExchange帐户的访问。"
       },
       "password": {
         "forgot": "忘记密码了？",
         "overwrite": "覆写帐户",
-        "overwriteDescription": "覆盖此设备上的所有Decentral.Exchange帐户"
+        "overwriteDescription": "覆盖此设备上的所有DecentralExchange帐户"
       },
       "signIn": "登录",
       "welcomeBack": "欢迎回来"
@@ -856,7 +856,7 @@
     "signUp": {
       "headers": {
         "onePassBtn": "开始吧！",
-        "onePassDesc": "本地数据存储，种子短语和加密使Decentral.Exchange可靠。但是，我们正在走得更远。是时候开启新的安全级别了。登录您的帐户并通过几次点击在它们之间切换。",
+        "onePassDesc": "本地数据存储，种子短语和加密使DecentralExchange可靠。但是，我们正在走得更远。是时候开启新的安全级别了。登录您的帐户并通过几次点击在它们之间切换。",
         "onePassword": "为您的所有帐户设置一个密码",
         "protect": "保护您的帐户",
         "protectDesc": "为您的所有帐户设置一个密码",
@@ -899,7 +899,7 @@
       "titleSuccess": "完成{{name}}生成"
     },
     "NFT": {
-      "description": "不可互换代币（NFT）是DecentralChain区块链中存在的唯一个人令牌。目前，不支持在DCC Wallet和Decentral.Exchange中显示NFT。您可以在[DecentralScan]（https://decentralscan.com/）中查看您的NFT",
+      "description": "不可互换代币（NFT）是DecentralChain区块链中存在的唯一个人令牌。目前，不支持在DecentralExchange和DecentralExchange中显示NFT。您可以在[DecentralScan]（https://decentralscan.com/）中查看您的NFT",
       "title": "您正在创建一个不可替代的代币。"
     },
     "name": "您的资产名称",
@@ -1091,7 +1091,7 @@
       "token": {
         "warning": {
           "header": "您同意：",
-          "text": "{div.line}[I]您不会将该代币用于欺诈目的;] \n {div.line}[II]您不会完全或部分复制现有加密货币或知名公司的名称，以误导用户;] \n {div.line}[III]您不会使用国家，其他行政单位或市政机构的名称作为代币的名称，以误导用户;] \n {div.line}[IV]您不会在智能资产上设置脚本，以按资产数量限制Decentral.Exchange上的交易所交易;] \n {div.line}[V]您不会在智能资产的描述中提供有关管理代币使用规则的虚假信息，这些规则与安装在其上的脚本的规则不对应;]",
+          "text": "{div.line}[I]您不会将该代币用于欺诈目的;] \n {div.line}[II]您不会完全或部分复制现有加密货币或知名公司的名称，以误导用户;] \n {div.line}[III]您不会使用国家，其他行政单位或市政机构的名称作为代币的名称，以误导用户;] \n {div.line}[IV]您不会在智能资产上设置脚本，以按资产数量限制DecentralExchange上的交易所交易;] \n {div.line}[V]您不会在智能资产的描述中提供有关管理代币使用规则的虚假信息，这些规则与安装在其上的脚本的规则不对应;]",
           "textWarning": "不遵守所列的某一项将导致您的代币被分类为垃圾代币，并且您的代币只能通过ID进行搜索。"
         }
       }
@@ -2210,7 +2210,7 @@
       },
       "unsuccessfulMigration": {
         "checkbox": "不再显示",
-        "description": "您已开始将帐户从Decentral.Exchange迁移到此交换，但尚未完成。您的帐户尚未移动。返回Decentral.Exchange并从头开始该过程。",
+        "description": "您已开始将帐户从DecentralExchange迁移到此交换，但尚未完成。您的帐户尚未移动。返回DecentralExchange并从头开始该过程。",
         "title": "未完成的迁移",
         "understand": "我明白"
       }
@@ -2309,11 +2309,11 @@
     },
     "warningPlate": {
       "day": "d",
-      "dexMoves": "我们即将搬家！和我们一起在[Decentral.Exchange]（https://decentral.exchange）",
+      "dexMoves": "我们即将搬家！和我们一起在[DecentralExchange]（https://decentral.exchange）",
       "hour": "h",
-      "info": "我们正在从Decentral.Exchange迁移到Decentral.Exchange。您是否要再次移动帐户？",
+      "info": "我们正在从DecentralExchange迁移到DecentralExchange。您是否要再次移动帐户？",
       "min": "m",
-      "notification": "我们正在从Decentral.Exchange迁移到Decentral.Exchange。不要忘记移动您的帐户！",
+      "notification": "我们正在从DecentralExchange迁移到DecentralExchange。不要忘记移动您的帐户！",
       "sec": "s",
       "startMoving": "安全移动"
     }
@@ -2555,7 +2555,7 @@
       "feb2017": {
         "date": "2017年12月",
         "text": "推出旗舰内置交换的第一个版本。",
-        "title": "Decentral.Exchange Beta"
+        "title": "DecentralExchange Beta"
       },
       "feb2018": {
         "date": "2018年2月",
@@ -2564,7 +2564,7 @@
       },
       "jan2019": {
         "date": "2019年1月",
-        "text": "支持使用智能帐户进行Decentral.Exchange交易。",
+        "text": "支持使用智能帐户进行DecentralExchange交易。",
         "text_2": "推出比特币Satoshi Vision网关",
         "title": "智能账户交易",
         "title_2": "BSV网关"
@@ -2607,7 +2607,7 @@
       },
       "sep2019": {
         "date": "2019年9月",
-        "text": "双因素身份验证为Decentral.Exchange用户提供了更高的安全性。",
+        "text": "双因素身份验证为DecentralExchange用户提供了更高的安全性。",
         "title": "2FA"
       }
     },
@@ -2637,13 +2637,13 @@
       "changeName": "更换名字",
       "chart": "图表",
       "comingSoon": "快来了",
-      "contestLinkDescription": "在Decentral.Exchange的交易竞赛中赢得5,000个DCC！",
+      "contestLinkDescription": "在DecentralExchange的交易竞赛中赢得5,000个DCC！",
       "contestLinkLink": "规则",
       "controlAssets": "资产控制权是你自己的 - 资金不会留下你的钱包，也不能冻结",
       "cookies": "Cookies",
       "copyAddress": "复制地址",
       "copyright": "©2019年波浪幣平台",
-      "copyright-new": "© 2019 Decentral.Exchange",
+      "copyright-new": "© 2019 DecentralExchange",
       "copyrightVordex": "©2019 VORDEX",
       "createAccount": "创建帐号",
       "createToken": "创建令牌",
@@ -2651,7 +2651,7 @@
       "dashboard": "仪表板",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "波浪幣区块链",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
       "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
@@ -2695,7 +2695,7 @@
       "mainPage": "主页",
       "majorFiatCryptocurrencies": "支持的主要法定货币和加密货币：BTC，LTC，ETH，USD等",
       "markets": "市场",
-      "marketsDescription": "Decentral.Exchange允许您快速安全地执行交易，无论您是通过移动应用程序，桌面客户端，网络钱包还是DecentralChain API进行交易。",
+      "marketsDescription": "DecentralExchange允许您快速安全地执行交易，无论您是通过移动应用程序，桌面客户端，网络钱包还是DecentralChain API进行交易。",
       "marketsTableDescription": "要查看更多交易对，请单击",
       "marketsTableDescriptionLink": "查看Exchange",
       "menu": "菜单",
@@ -2709,7 +2709,7 @@
       "productsTools": "产品和工具",
       "renameAccount": "重命名帐户",
       "roadmap": "路线图",
-      "roadmapOpportunitiesAhead": "Decentral.Exchange的未来：我们未来机遇的路线图。",
+      "roadmapOpportunitiesAhead": "DecentralExchange的未来：我们未来机遇的路线图。",
       "save": "保存",
       "scanQrCode": "扫描二维码",
       "scriptAccount": "脚本帐户",

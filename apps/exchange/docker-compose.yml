@@ -7,14 +7,14 @@ services:
   # ================================================================
   # Mainnet deployment
   # ================================================================
-  dcc-wallet-mainnet:
+  dcc-exchange-mainnet:
     build:
       context: .
       dockerfile: Dockerfile.production
       args:
         web_environment: mainnet
-    image: dcc-wallet-react:mainnet
-    container_name: dcc-wallet-mainnet
+    image: dcc-exchange-react:mainnet
+    container_name: dcc-exchange-mainnet
     environment:
       - WEB_ENVIRONMENT=mainnet
     ports:
@@ -30,14 +30,14 @@ services:
   # ================================================================
   # Testnet deployment
   # ================================================================
-  dcc-wallet-testnet:
+  dcc-exchange-testnet:
     build:
       context: .
       dockerfile: Dockerfile.production
       args:
         web_environment: testnet
-    image: dcc-wallet-react:testnet
-    container_name: dcc-wallet-testnet
+    image: dcc-exchange-react:testnet
+    container_name: dcc-exchange-testnet
     environment:
       - WEB_ENVIRONMENT=testnet
     ports:
@@ -53,14 +53,14 @@ services:
   # ================================================================
   # Stagenet deployment
   # ================================================================
-  dcc-wallet-stagenet:
+  dcc-exchange-stagenet:
     build:
       context: .
       dockerfile: Dockerfile.production
       args:
         web_environment: stagenet
-    image: dcc-wallet-react:stagenet
-    container_name: dcc-wallet-stagenet
+    image: dcc-exchange-react:stagenet
+    container_name: dcc-exchange-stagenet
     environment:
       - WEB_ENVIRONMENT=stagenet
     ports:
@@ -76,7 +76,7 @@ services:
 # Usage:
 # ------
 # Build and run mainnet:
-#   docker-compose up -d dcc-wallet-mainnet
+#   docker-compose up -d dcc-exchange-mainnet
 #
 # Build and run all networks:
 #   docker-compose up -d
@@ -85,7 +85,7 @@ services:
 #   docker-compose build
 #
 # View logs:
-#   docker-compose logs -f dcc-wallet-mainnet
+#   docker-compose logs -f dcc-exchange-mainnet
 #
 # Stop all:
 #   docker-compose down

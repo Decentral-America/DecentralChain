@@ -3,7 +3,7 @@
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
   },
   "build": {
-    "appId": "com.decentralchain.wallet",
+    "appId": "com.decentralchain.exchange",
     "directories": {
       "buildResources": "public",
       "output": "release"
@@ -31,11 +31,11 @@
         "zip"
       ]
     },
-    "productName": "DCC Wallet",
+    "productName": "DecentralExchange",
     "publish": {
       "owner": "decentralchain",
       "provider": "github",
-      "repo": "dcc-wallet"
+      "repo": "dcc-exchange"
     },
     "win": {
       "certificateFile": null,
@@ -102,7 +102,7 @@
   },
   "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/exchange",
   "main": "electron/main.js",
-  "name": "dcc-react",
+  "name": "exchange",
   "nx": {
     "tags": [
       "scope:app",

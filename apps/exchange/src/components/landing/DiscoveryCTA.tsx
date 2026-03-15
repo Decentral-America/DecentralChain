@@ -50,7 +50,7 @@ export default function DiscoveryCTA() {
               Your gateway to decentralized finance
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-              Join thousands of traders who trust Decentral.Exchange for secure, fast, and
+              Join thousands of traders who trust DecentralExchange for secure, fast, and
               decentralized trading.
             </Typography>
             <Button

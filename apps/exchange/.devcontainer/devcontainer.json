@@ -37,7 +37,7 @@
   // VS Code forwards ports via its built-in tunnel, making them appear as localhost
   // to both the container app and your host machine.
   "forwardPorts": [3333],
-  "name": "DCC Wallet React Dev Environment",
+  "name": "DecentralExchange React Dev Environment",
 
   "portsAttributes": {
     "3333": {
