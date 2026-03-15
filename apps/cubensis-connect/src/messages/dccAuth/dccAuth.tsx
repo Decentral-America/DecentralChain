@@ -116,9 +116,9 @@ export function DccAuthFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.dccAuthConfirmed'),
         approve: t('sign.dccAuthConfirmed'),
         reject: t('sign.authRejected'),
+        send: t('sign.dccAuthConfirmed'),
       }}
     />
   );

@@ -3,11 +3,14 @@
  * Full TradingView charting library implementation matching Angular version
  * Uses custom DecentralChain datafeed for real-time candle data
  */
-import React, { useEffect, useRef, useState } from 'react';
+
+import { Alert, Box, CircularProgress, Typography } from '@mui/material';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useDexStore } from '@/stores/dexStore';
+import { logger } from '@/lib/logger';
 import { candlesService } from '@/services/candlesService';
-import { Alert, CircularProgress, Box, Typography } from '@mui/material';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Chart container
@@ -24,8 +27,14 @@ const ChartContainer = styled.div`
 `;
 
 // TradingView widget type (loaded dynamically)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const TradingView: any;
+declare const TradingView: {
+  widget: new (config: Record<string, unknown>) => TradingViewWidget;
+};
+
+interface TradingViewWidget {
+  onChartReady(callback: () => void): void;
+  remove(): void;
+}
 
 let counter = 0;
 let loadPromise: Promise<void> | null = null;
@@ -51,11 +60,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = '/trading-view/charting_library.min.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from public folder');
+          logger.debug('[TradingView] Loaded from public folder');
           resolvePublic();
         };
         script.onerror = () => {
-          console.warn('[TradingView] Failed to load from public folder, trying proxy...');
+          logger.warn('[TradingView] Failed to load from public folder, trying proxy...');
           rejectPublic(new Error('public folder load failed'));
         };
         document.head.appendChild(script);
@@ -69,11 +78,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = '/trading-view/charting_library.standalone.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from proxy');
+          logger.debug('[TradingView] Loaded from proxy');
           resolveProxy();
         };
         script.onerror = () => {
-          console.warn('[TradingView] Failed to load from proxy, trying external CDN...');
+          logger.warn('[TradingView] Failed to load from proxy, trying external CDN...');
           rejectProxy(new Error('proxy load failed'));
         };
         document.head.appendChild(script);
@@ -87,11 +96,11 @@ const loadTradingViewLibrary = (): Promise<void> => {
         script.src = 'https://charts.decentral.exchange/charting_library.min.js';
         script.async = true;
         script.onload = () => {
-          console.log('[TradingView] Loaded from external CDN');
+          logger.debug('[TradingView] Loaded from external CDN');
           resolveCDN();
         };
         script.onerror = () => {
-          console.error('[TradingView] All loading attempts failed');
+          logger.error('[TradingView] All loading attempts failed');
           rejectCDN(new Error('All TradingView loading sources failed'));
         };
         document.head.appendChild(script);
@@ -104,7 +113,7 @@ const loadTradingViewLibrary = (): Promise<void> => {
       .catch(() =>
         tryLoadFromProxy()
           .then(resolve)
-          .catch(() => tryLoadFromCDN().then(resolve).catch(reject))
+          .catch(() => tryLoadFromCDN().then(resolve).catch(reject)),
       );
   });
 
@@ -116,8 +125,7 @@ const loadTradingViewLibrary = (): Promise<void> => {
  */
 export const TradingViewChart: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<TradingViewWidget | null>(null);
   const elementIdRef = useRef(`tradingview${counter++}`);
   const { selectedPair } = useDexStore();
   const [loadingState, setLoadingState] = useState<'loading' | 'success' | 'error'>('loading');
@@ -129,7 +137,7 @@ export const TradingViewChart: React.FC = () => {
     const initChart = async () => {
       try {
         setLoadingState('loading');
-        
+
         // Load library
         await loadTradingViewLibrary();
 
@@ -140,14 +148,9 @@ export const TradingViewChart: React.FC = () => {
 
         // Create TradingView widget
         chartRef.current = new TradingView.widget({
-          symbol,
-          interval: 'D',
+          autosize: true,
           container: elementIdRef.current, // Changed from container_id (deprecated)
           datafeed: candlesService,
-          library_path: '/trading-view/',
-          locale: 'en',
-          autosize: true,
-          toolbar_bg: '#ffffff',
           disabled_features: [
             'header_screenshot',
             'header_symbol_search',
@@ -158,12 +161,15 @@ export const TradingViewChart: React.FC = () => {
             'volume_force_overlay',
             'header_compare',
           ],
+          interval: 'D',
+          library_path: '/trading-view/',
+          locale: 'en',
           overrides: {
-            'mainSeriesProperties.candleStyle.upColor': '#10B981',
             'mainSeriesProperties.candleStyle.downColor': '#EF4444',
             'mainSeriesProperties.candleStyle.drawBorder': false,
-            'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
+            'mainSeriesProperties.candleStyle.upColor': '#10B981',
             'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+            'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
             'paneProperties.background': '#ffffff',
             // Grid color removed - path doesn't exist in this version
             volumePaneSize: 'medium',
@@ -172,17 +178,19 @@ export const TradingViewChart: React.FC = () => {
             'volume.volume.color.0': '#EF4444',
             'volume.volume.color.1': '#10B981',
           },
+          symbol,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          toolbar_bg: '#ffffff',
         });
 
         chartRef.current.onChartReady(() => {
-          console.log('[TradingView] Chart ready for:', symbol);
+          logger.debug('[TradingView] Chart ready for:', symbol);
           if (isMounted) {
             setLoadingState('success');
           }
         });
       } catch (error) {
-        console.error('[TradingView] Failed to initialize:', error);
+        logger.error('[TradingView] Failed to initialize:', error);
         if (isMounted) {
           setLoadingState('error');
           setErrorMessage(error instanceof Error ? error.message : 'Failed to load chart');
@@ -216,9 +224,9 @@ export const TradingViewChart: React.FC = () => {
           </Typography>
         </Box>
       )}
-      
+
       {loadingState === 'error' && (
-        <Alert severity="error" sx={{ width: '100%', maxWidth: 400 }}>
+        <Alert severity="error" sx={{ maxWidth: 400, width: '100%' }}>
           <Typography variant="subtitle2" fontWeight={600} gutterBottom>
             Chart Load Failed
           </Typography>
@@ -229,9 +237,9 @@ export const TradingViewChart: React.FC = () => {
       <div
         id={elementIdRef.current}
         style={{
-          width: '100%',
-          height: '100%',
           display: loadingState === 'success' ? 'block' : 'none',
+          height: '100%',
+          width: '100%',
         }}
         ref={containerRef}
       />

@@ -2,26 +2,28 @@
  * Alias Management Page
  * View and manage all aliases for the user's address
  */
-import { useState } from 'react';
+
+import AddIcon from '@mui/icons-material/Add';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
+  Alert,
   Box,
-  Container,
-  Typography,
   Button,
   Card,
   CardContent,
-  Stack,
-  IconButton,
-  Alert,
   Chip,
   CircularProgress,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
 } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AddIcon from '@mui/icons-material/Add';
+import { useState } from 'react';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAliases } from '@/hooks/useAliases';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { logger } from '@/lib/logger';
 
 export const AliasManagement = () => {
   const { user } = useAuth();
@@ -37,7 +39,7 @@ export const AliasManagement = () => {
       setCopiedAlias(alias);
       setTimeout(() => setCopiedAlias(null), 2000);
     } catch (err) {
-      console.error('Failed to copy alias:', err);
+      logger.error('Failed to copy alias:', err);
     }
   };
 
@@ -46,7 +48,7 @@ export const AliasManagement = () => {
     try {
       await navigator.clipboard.writeText(user.address);
     } catch (err) {
-      console.error('Failed to copy address:', err);
+      logger.error('Failed to copy address:', err);
     }
   };
 
@@ -90,9 +92,9 @@ export const AliasManagement = () => {
                   variant="body1"
                   fontFamily="monospace"
                   sx={{
+                    flex: 1,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    flex: 1,
                   }}
                 >
                   {user?.address}
@@ -123,7 +125,7 @@ export const AliasManagement = () => {
               </Box>
             ) : aliases.length === 0 ? (
               <Card>
-                <CardContent sx={{ textAlign: 'center', py: 8 }}>
+                <CardContent sx={{ py: 8, textAlign: 'center' }}>
                   <Typography variant="body1" color="text.secondary" gutterBottom>
                     You don&apos;t have any aliases yet
                   </Typography>

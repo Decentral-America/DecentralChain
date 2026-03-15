@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 // Styled Components
@@ -136,7 +137,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       setCurrentIndex(newIndex);
       onChange?.(newIndex);
     },
-    [maxIndex, loop, onChange]
+    [maxIndex, loop, onChange],
   );
 
   // Navigation functions
@@ -186,7 +187,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       setIsDragging(true);
       setStartX(clientX);
     },
-    [enableDrag, pauseAutoPlay]
+    [enableDrag, pauseAutoPlay],
   );
 
   const handleDragMove = useCallback(
@@ -196,7 +197,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       const trackWidth = trackRef.current.offsetWidth;
       setDragOffset((diff / trackWidth) * 100);
     },
-    [isDragging, startX]
+    [isDragging, startX],
   );
 
   const handleDragEnd = useCallback(() => {
@@ -236,11 +237,11 @@ export const Carousel: React.FC<CarouselProps> = ({
 
   // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientX);
+    handleDragStart(e.touches[0]?.clientX ?? 0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    handleDragMove(e.touches[0].clientX);
+    handleDragMove(e.touches[0]?.clientX ?? 0);
   };
 
   const handleTouchEnd = () => {
@@ -263,6 +264,7 @@ export const Carousel: React.FC<CarouselProps> = ({
       >
         <Track ref={trackRef} $offset={offset} $isDragging={isDragging}>
           {items.map((item, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: carousel items are ReactNodes without intrinsic keys
             <Item key={index} $width={itemWidth}>
               {item}
             </Item>
@@ -283,12 +285,12 @@ export const Carousel: React.FC<CarouselProps> = ({
 
       {showIndicators && items.length > itemsPerView && (
         <Indicators>
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+          {Array.from({ length: maxIndex + 1 }, (_, i) => i).map((slideIndex) => (
             <Indicator
-              key={index}
-              $active={index === currentIndex}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
+              key={`indicator-${slideIndex}`}
+              $active={slideIndex === currentIndex}
+              onClick={() => goToSlide(slideIndex)}
+              aria-label={`Go to slide ${slideIndex + 1}`}
             />
           ))}
         </Indicators>

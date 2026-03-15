@@ -3,44 +3,53 @@
  * Export wallet as encrypted backup file
  * Matches Angular backup export functionality
  */
-import React, { useState } from 'react';
+
+import { AccountCircle, CheckCircle, Download } from '@mui/icons-material';
 import {
-  Box,
-  Typography,
-  TextField,
-  Paper,
   Alert,
   AlertTitle,
+  Box,
+  Divider,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
+  Paper,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { Download, CheckCircle, AccountCircle } from '@mui/icons-material';
+import type React from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
+
+interface BackupAccountEntry {
+  address: string;
+  name?: string;
+  [key: string]: unknown;
+}
 
 interface WalletBackup {
   version: string;
   encrypted: boolean;
   timestamp: number;
   data: {
-    accounts: any[];
-    settings?: any;
+    accounts: BackupAccountEntry[];
+    settings?: Record<string, unknown>;
     checksum: string;
   };
 }
 
 export const BackupSettings: React.FC = () => {
-  const { user: _user } = useAuth();
+  useAuth(); // ensure auth context is available
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const encryptBackup = async (data: any, password: string): Promise<string> => {
+  const encryptBackup = async (data: WalletBackup['data'], password: string): Promise<string> => {
     try {
       // Match Angular's encryption exactly: PBKDF2 + AES-GCM
       const encoder = new TextEncoder();
@@ -53,23 +62,23 @@ export const BackupSettings: React.FC = () => {
 
       const key = await crypto.subtle.deriveKey(
         {
+          hash: 'SHA-256',
+          iterations: 100000,
           name: 'PBKDF2',
           salt: encoder.encode('dcc-salt'), // Must match Angular
-          iterations: 100000,
-          hash: 'SHA-256',
         },
         keyMaterial,
-        { name: 'AES-GCM', length: 256 },
+        { length: 256, name: 'AES-GCM' },
         false,
-        ['encrypt']
+        ['encrypt'],
       );
 
       // Encrypt data with AES-GCM
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const encrypted = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
+        { iv, name: 'AES-GCM' },
         key,
-        encoder.encode(JSON.stringify(data))
+        encoder.encode(JSON.stringify(data)),
       );
 
       // Combine IV and encrypted data
@@ -79,7 +88,7 @@ export const BackupSettings: React.FC = () => {
 
       return btoa(String.fromCharCode(...combined));
     } catch (error) {
-      console.error('Encryption error:', error);
+      logger.error('Encryption error:', error);
       throw new Error('Failed to encrypt backup');
     }
   };
@@ -101,8 +110,8 @@ export const BackupSettings: React.FC = () => {
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password.length < 12) {
+      setError('Password must be at least 12 characters');
       return;
     }
 
@@ -135,14 +144,14 @@ export const BackupSettings: React.FC = () => {
       const checksum = await generateChecksum(JSON.stringify(dataToBackup));
 
       const backupData: WalletBackup = {
-        version: '3.0',
-        encrypted: true,
-        timestamp: Date.now(),
         data: {
           accounts,
-          settings,
           checksum,
+          settings,
         },
+        encrypted: true,
+        timestamp: Date.now(),
+        version: '3.0',
       };
 
       // Encrypt if password provided
@@ -176,7 +185,7 @@ export const BackupSettings: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create backup';
       setError(errorMessage);
-      console.error('Backup export error:', err);
+      logger.error('Backup export error:', err);
     } finally {
       setIsExporting(false);
     }
@@ -188,7 +197,7 @@ export const BackupSettings: React.FC = () => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: 700 }}>
+      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
         Export Wallet Backup
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -216,19 +225,19 @@ export const BackupSettings: React.FC = () => {
 
       <Paper
         sx={{
-          p: 2.5,
-          mb: 3,
           background: (theme) =>
             theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
           border: (theme) => `1px solid ${theme.palette.divider}`,
+          mb: 3,
+          p: 2.5,
         }}
       >
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
           Accounts to be backed up:
         </Typography>
         {accounts.length > 0 ? (
           <List dense>
-            {accounts.map((account: any) => (
+            {accounts.map((account: BackupAccountEntry) => (
               <ListItem key={account.address} sx={{ py: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   <AccountCircle fontSize="small" color="primary" />
@@ -236,7 +245,7 @@ export const BackupSettings: React.FC = () => {
                 <ListItemText
                   primary={account.name || 'Unnamed Account'}
                   secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 600 }}
+                  primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
                   secondaryTypographyProps={{ variant: 'caption' }}
                 />
               </ListItem>
@@ -289,10 +298,8 @@ export const BackupSettings: React.FC = () => {
         </Typography>
         <Typography variant="body2" component="div">
           • All account addresses and encrypted seeds
-          <br />
-          • Wallet settings and preferences
-          <br />
-          • Account names and metadata
+          <br />• Wallet settings and preferences
+          <br />• Account names and metadata
           <br />• AES-256 encryption with your password
         </Typography>
       </Alert>

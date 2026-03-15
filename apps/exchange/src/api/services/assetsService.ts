@@ -2,7 +2,7 @@
  * Assets API Service
  * Handles asset-related API calls with React Query
  */
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { nodeClient } from '../client';
 
 /**
@@ -66,15 +66,15 @@ export const useAssetDetails = (
   assetId: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDetails, Error> => {
   return useQuery({
-    queryKey: ['asset', 'details', assetId],
+    enabled: !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AssetDetails>(`/assets/details/${assetId}`);
       return data;
     },
-    enabled: !!assetId && options?.enabled !== false,
+    queryKey: ['asset', 'details', assetId],
     staleTime: 300000, // 5 minutes - asset details rarely change
   });
 };
@@ -90,16 +90,16 @@ export const useMultipleAssetDetails = (
   assetIds: string[],
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDetails[], Error> => {
   return useQuery({
-    queryKey: ['assets', 'details', assetIds.sort().join(',')],
+    enabled: assetIds.length > 0 && options?.enabled !== false,
     queryFn: async () => {
       const requests = assetIds.map((id) => nodeClient.get<AssetDetails>(`/assets/details/${id}`));
       const responses = await Promise.all(requests);
       return responses.map((res) => res.data);
     },
-    enabled: assetIds.length > 0 && options?.enabled !== false,
+    queryKey: ['assets', 'details', assetIds.sort().join(',')],
     staleTime: 300000, // 5 minutes
   });
 };
@@ -108,7 +108,7 @@ export const useMultipleAssetDetails = (
  * Fetch Asset Balance for Address
  * Returns the balance of a specific asset for an address
  *
- * @param address - Waves address to query
+ * @param address - DCC address to query
  * @param assetId - Asset ID to query
  * @param options - React Query options
  */
@@ -118,16 +118,16 @@ export const useAssetBalance = (
   options?: {
     enabled?: boolean;
     refetchInterval?: number;
-  }
+  },
 ): UseQueryResult<AssetBalance, Error> => {
   return useQuery({
-    queryKey: ['asset', 'balance', address, assetId],
+    enabled: !!address && !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AssetBalance>(`/assets/balance/${address}/${assetId}`);
       return data;
     },
-    enabled: !!address && !!assetId && options?.enabled !== false,
-    refetchInterval: options?.refetchInterval,
+    queryKey: ['asset', 'balance', address, assetId],
+    ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 30000, // 30 seconds - balances change frequently
   });
 };
@@ -147,10 +147,10 @@ export const useAssetDistribution = (
   after?: string,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<AssetDistribution, Error> => {
   return useQuery({
-    queryKey: ['asset', 'distribution', assetId, limit, after],
+    enabled: !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const url = after
         ? `/assets/${assetId}/distribution/${limit}/after/${after}`
@@ -158,7 +158,7 @@ export const useAssetDistribution = (
       const { data } = await nodeClient.get<AssetDistribution>(url);
       return data;
     },
-    enabled: !!assetId && options?.enabled !== false,
+    queryKey: ['asset', 'distribution', assetId, limit, after],
     staleTime: 300000, // 5 minutes - distribution changes slowly
   });
 };
@@ -176,27 +176,27 @@ export const useNFTsByIssuer = (
   limit = 100,
   options?: {
     enabled?: boolean;
-  }
+  },
 ): UseQueryResult<NFTCollection[], Error> => {
   return useQuery({
-    queryKey: ['nft', 'issuer', issuer, limit],
+    enabled: !!issuer && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<NFTCollection[]>(
-        `/assets/nft/${issuer}/limit/${limit}`
+        `/assets/nft/${issuer}/limit/${limit}`,
       );
       return data;
     },
-    enabled: !!issuer && options?.enabled !== false,
+    queryKey: ['nft', 'issuer', issuer, limit],
     staleTime: 60000, // 1 minute
   });
 };
 
 /**
- * Utility: Check if an asset is WAVES (null assetId)
+ * Utility: Check if an asset is DCC (null assetId)
  * @param assetId - Asset ID to check
  */
-export const isWaves = (assetId: string | null | undefined): boolean => {
-  return !assetId || assetId === 'WAVES';
+export const isDCC = (assetId: string | null | undefined): boolean => {
+  return !assetId || assetId === 'DCC';
 };
 
 /**
@@ -205,7 +205,7 @@ export const isWaves = (assetId: string | null | undefined): boolean => {
  * @param decimals - Number of decimals for the asset
  */
 export const formatAssetAmount = (amount: number, decimals: number): number => {
-  return amount / Math.pow(10, decimals);
+  return amount / 10 ** decimals;
 };
 
 /**
@@ -214,7 +214,7 @@ export const formatAssetAmount = (amount: number, decimals: number): number => {
  * @param decimals - Number of decimals for the asset
  */
 export const parseAssetAmount = (amount: number, decimals: number): number => {
-  return Math.floor(amount * Math.pow(10, decimals));
+  return Math.floor(amount * 10 ** decimals);
 };
 
 /**
@@ -223,7 +223,7 @@ export const parseAssetAmount = (amount: number, decimals: number): number => {
  * @param asset - Asset details or partial asset info
  */
 export const getAssetDisplayName = (
-  asset: Pick<AssetDetails, 'name' | 'assetId'> | null | undefined
+  asset: Pick<AssetDetails, 'name' | 'assetId'> | null | undefined,
 ): string => {
   if (!asset) return 'Unknown Asset';
   if (asset.name) return asset.name;

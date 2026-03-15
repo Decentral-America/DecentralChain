@@ -4,13 +4,14 @@
  */
 
 import {
-  ComponentType,
-  lazy,
-  LazyExoticComponent,
-  ReactNode,
-  Suspense,
+  type ComponentType,
   createElement,
+  type LazyExoticComponent,
+  lazy,
+  type ReactNode,
+  Suspense,
 } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Component metadata
@@ -44,7 +45,7 @@ export interface ComponentMetadata {
   /**
    * Component props type
    */
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
 
   /**
    * Whether component is lazy-loaded
@@ -60,7 +61,7 @@ export interface ComponentMetadata {
 /**
  * Registered component entry
  */
-export interface ComponentEntry<P = any> {
+export interface ComponentEntry<P = unknown> {
   /**
    * Component metadata
    */
@@ -148,24 +149,24 @@ class ComponentListManager {
    * @param metadata - Component metadata
    * @param component - Component reference
    */
-  register<P = any>(
+  register<P = unknown>(
     metadata: ComponentMetadata,
-    component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>
+    component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   ): void {
     const entry: ComponentEntry<P> = {
-      metadata,
       component,
+      metadata,
       timestamp: Date.now(),
     };
 
     // Update component registry
-    this.components.set(metadata.id, entry);
+    this.components.set(metadata.id, entry as ComponentEntry);
 
     // Update category index
     if (!this.categories.has(metadata.category)) {
       this.categories.set(metadata.category, new Set());
     }
-    this.categories.get(metadata.category)!.add(metadata.id);
+    this.categories.get(metadata.category)?.add(metadata.id);
 
     // Update tag index
     if (metadata.tags) {
@@ -173,14 +174,14 @@ class ComponentListManager {
         if (!this.tags.has(tag)) {
           this.tags.set(tag, new Set());
         }
-        this.tags.get(tag)!.add(metadata.id);
+        this.tags.get(tag)?.add(metadata.id);
       }
     }
 
     // Emit event
-    this.emit('add', entry);
+    this.emit('add', entry as ComponentEntry);
 
-    console.log(`Component registered: ${metadata.id} (${metadata.name})`);
+    logger.debug(`Component registered: ${metadata.id} (${metadata.name})`);
   }
 
   /**
@@ -191,7 +192,7 @@ class ComponentListManager {
   unregister(id: string): boolean {
     const entry = this.components.get(id);
     if (!entry) {
-      console.warn(`Component not found: ${id}`);
+      logger.warn(`Component not found: ${id}`);
       return false;
     }
 
@@ -223,7 +224,7 @@ class ComponentListManager {
     // Emit event
     this.emit('remove', entry);
 
-    console.log(`Component unregistered: ${id}`);
+    logger.debug(`Component unregistered: ${id}`);
     return true;
   }
 
@@ -241,11 +242,13 @@ class ComponentListManager {
    * @param id - Component ID
    * @returns Component reference or null
    */
-  getComponent<P = any>(
-    id: string
+  getComponent<P = unknown>(
+    id: string,
   ): ComponentType<P> | LazyExoticComponent<ComponentType<P>> | null {
     const entry = this.components.get(id);
-    return entry ? entry.component : null;
+    return entry
+      ? (entry.component as ComponentType<P> | LazyExoticComponent<ComponentType<P>>)
+      : null;
   }
 
   /**
@@ -353,7 +356,7 @@ class ComponentListManager {
     this.components.clear();
     this.categories.clear();
     this.tags.clear();
-    console.log('All components cleared');
+    logger.debug('All components cleared');
   }
 
   /**
@@ -398,7 +401,7 @@ class ComponentListManager {
         try {
           handler(entry);
         } catch (error) {
-          console.error(`Error in ${event} handler:`, error);
+          logger.error(`Error in ${event} handler:`, error);
         }
       });
     }
@@ -415,10 +418,10 @@ class ComponentListManager {
     lazy: number;
   } {
     const stats = {
-      total: this.components.size,
       categories: {} as Record<string, number>,
-      tags: {} as Record<string, number>,
       lazy: 0,
+      tags: {} as Record<string, number>,
+      total: this.components.size,
     };
 
     this.categories.forEach((ids, category) => {
@@ -445,9 +448,9 @@ class ComponentListManager {
  * @param fallback - Loading fallback
  * @returns Wrapped lazy component
  */
-export const createLazyComponent = <P = any>(
+export const createLazyComponent = <P = unknown>(
   importer: () => Promise<{ default: ComponentType<P> }>,
-  fallback?: ReactNode
+  _fallback?: ReactNode,
 ): LazyExoticComponent<ComponentType<P>> => {
   return lazy(importer);
 };
@@ -459,15 +462,18 @@ export const createLazyComponent = <P = any>(
  * @param fallback - Loading fallback
  * @returns React element
  */
-export const renderWithSuspense = <P = any>(
+export const renderWithSuspense = <P = unknown>(
   Component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   props: P,
-  fallback?: ReactNode
+  fallback?: ReactNode,
 ): ReactNode => {
   return createElement(
     Suspense,
     { fallback: fallback || createElement('div', null, 'Loading...') },
-    createElement(Component as ComponentType<any>, props)
+    createElement(
+      Component as ComponentType<Record<string, unknown>>,
+      props as Record<string, unknown>,
+    ),
   );
 };
 

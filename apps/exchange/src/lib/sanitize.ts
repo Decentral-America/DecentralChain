@@ -11,12 +11,12 @@
  * HTML Entity Map for escaping dangerous characters
  */
 const HTML_ENTITIES: Record<string, string> = {
+  "'": '&#x27;',
+  '"': '&quot;',
+  '/': '&#x2F;',
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#x27;',
-  '/': '&#x2F;',
 };
 
 /**
@@ -67,7 +67,7 @@ const DANGEROUS_PROTOCOLS = ['javascript:', 'data:', 'vbscript:', 'file:', 'abou
 export const sanitizeText = (input: string): string => {
   if (!input || typeof input !== 'string') return '';
 
-  return input.replace(/[&<>"'\/]/g, (char) => HTML_ENTITIES[char] || char);
+  return input.replace(/[&<>"'/]/g, (char) => HTML_ENTITIES[char] || char);
 };
 
 /**
@@ -81,11 +81,11 @@ export const sanitizeHtml = (html: string): string => {
 
   // Remove dangerous tags with their content
   DANGEROUS_TAGS.forEach((tag) => {
-    const regex = new RegExp(`<${tag}[^>]*>.*?<\/${tag}>`, 'gi');
+    const regex = new RegExp(`<${tag}[^>]*>.*?</${tag}>`, 'gi');
     sanitized = sanitized.replace(regex, '');
 
     // Also remove self-closing dangerous tags
-    const selfClosingRegex = new RegExp(`<${tag}[^>]*\/>`, 'gi');
+    const selfClosingRegex = new RegExp(`<${tag}[^>]*/>`, 'gi');
     sanitized = sanitized.replace(selfClosingRegex, '');
   });
 
@@ -140,7 +140,7 @@ export const sanitizeFilename = (filename: string): string => {
   return (
     filename
       // Remove path separators
-      .replace(/[\/\\]/g, '')
+      .replace(/[/\\]/g, '')
       // Remove null bytes
       .replace(/\0/g, '')
       // Remove control characters
@@ -178,12 +178,12 @@ export const sanitizeEmail = (email: string): string => {
  */
 export const sanitizeNumber = (input: string | number, defaultValue: number = 0): number => {
   if (typeof input === 'number') {
-    return isFinite(input) ? input : defaultValue;
+    return Number.isFinite(input) ? input : defaultValue;
   }
 
   if (typeof input === 'string') {
     const parsed = parseFloat(input);
-    return isFinite(parsed) ? parsed : defaultValue;
+    return Number.isFinite(parsed) ? parsed : defaultValue;
   }
 
   return defaultValue;
@@ -212,7 +212,7 @@ export const sanitizeInteger = (input: string | number, defaultValue: number = 0
  */
 export const sanitizeBoolean = (
   input: string | boolean | number,
-  defaultValue: boolean = false
+  defaultValue: boolean = false,
 ): boolean => {
   if (typeof input === 'boolean') return input;
 
@@ -239,7 +239,7 @@ export const sanitizeAddress = (address: string): string => {
   // Trim whitespace
   const trimmed = address.trim();
 
-  // DCC/Waves addresses are typically 35 characters starting with '3'
+  // DCC/DCC addresses are typically 35 characters starting with '3'
   // Also support alias format (alias:chain:name)
   const addressRegex = /^(3[a-zA-Z0-9]{34}|alias:[a-zA-Z]:[a-zA-Z0-9._-]+)$/;
 
@@ -252,7 +252,7 @@ export const sanitizeAddress = (address: string): string => {
 
 /**
  * Sanitize asset ID (transaction hash, asset ID, etc.)
- * Validates base58 format used by DCC/Waves blockchain
+ * Validates base58 format used by DCC blockchain
  */
 export const sanitizeAssetId = (assetId: string): string => {
   if (!assetId || typeof assetId !== 'string') return '';
@@ -291,18 +291,37 @@ export const sanitizeSearchQuery = (query: string): string => {
 /**
  * Combined sanitizer object for convenient access
  */
+/**
+ * Sanitize and validate a transaction amount string.
+ * SECURITY: Prevents negative, zero, NaN, and Infinity amounts in financial transactions.
+ * Returns the sanitized string or null if invalid.
+ */
+export const sanitizeTransactionAmount = (amount: string): string | null => {
+  if (!amount || typeof amount !== 'string') return null;
+
+  const trimmed = amount.trim();
+  const num = Number(trimmed);
+
+  if (Number.isNaN(num) || !Number.isFinite(num) || num <= 0) {
+    return null;
+  }
+
+  return trimmed;
+};
+
 export const sanitize = {
-  text: sanitizeText,
-  html: sanitizeHtml,
-  url: sanitizeUrl,
-  filename: sanitizeFilename,
-  email: sanitizeEmail,
-  number: sanitizeNumber,
-  integer: sanitizeInteger,
-  boolean: sanitizeBoolean,
   address: sanitizeAddress,
   assetId: sanitizeAssetId,
+  boolean: sanitizeBoolean,
+  email: sanitizeEmail,
+  filename: sanitizeFilename,
+  html: sanitizeHtml,
+  integer: sanitizeInteger,
+  number: sanitizeNumber,
   searchQuery: sanitizeSearchQuery,
+  text: sanitizeText,
+  transactionAmount: sanitizeTransactionAmount,
+  url: sanitizeUrl,
 };
 
 /**

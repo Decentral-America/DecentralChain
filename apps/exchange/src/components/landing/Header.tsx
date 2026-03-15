@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Box, Button, Stack, Container, useScrollTrigger } from '@mui/material';
+import { AppBar, Box, Button, Container, Stack, Toolbar, useScrollTrigger } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Logo from '@/components/atoms/Logo';
 
@@ -21,20 +21,20 @@ export default function Header() {
       sx={{
         bgcolor: trigger ? 'background.paper' : 'transparent',
         color: trigger ? 'text.primary' : '#fff',
-        transition: 'all 0.3s ease',
         position: 'fixed',
         top: 0,
+        transition: 'all 0.3s ease',
       }}
     >
       <Container maxWidth="lg">
         <Toolbar
           sx={{
-            height: { xs: 64, md: 72 },
+            height: { md: 72, xs: 64 },
             px: { xs: 0 },
           }}
         >
           {/* Logo */}
-          <Logo sx={{ height: { xs: 32, md: 36 } }} />
+          <Logo sx={{ height: { md: 36, xs: 32 } }} />
 
           {/* Spacer */}
           <Box sx={{ flexGrow: 1 }} />
@@ -44,7 +44,7 @@ export default function Header() {
             direction="row"
             spacing={3}
             sx={{
-              display: { xs: 'none', md: 'flex' },
+              display: { md: 'flex', xs: 'none' },
             }}
           >
             {navLinks.map((link) => (
@@ -52,12 +52,12 @@ export default function Header() {
                 key={link}
                 color="inherit"
                 sx={{
-                  fontWeight: 500,
-                  fontSize: 15,
-                  opacity: trigger ? 1 : 0.95,
                   '&:hover': {
                     opacity: 1,
                   },
+                  fontSize: 15,
+                  fontWeight: 500,
+                  opacity: trigger ? 1 : 0.95,
                 }}
               >
                 {link}
@@ -66,17 +66,17 @@ export default function Header() {
           </Stack>
 
           {/* Auth Buttons */}
-          <Stack direction="row" spacing={1.5} sx={{ ml: { xs: 0, md: 3 } }}>
+          <Stack direction="row" spacing={1.5} sx={{ ml: { md: 3, xs: 0 } }}>
             {/* Login Button */}
             <Button
               color="inherit"
               onClick={() => navigate('/sign-in')}
               sx={{
-                fontWeight: 500,
-                opacity: trigger ? 1 : 0.95,
                 '&:hover': {
                   opacity: 1,
                 },
+                fontWeight: 500,
+                opacity: trigger ? 1 : 0.95,
               }}
             >
               Sign in
@@ -87,15 +87,15 @@ export default function Header() {
               variant="contained"
               onClick={() => navigate('/create-account')}
               sx={{
-                borderRadius: 999,
-                px: 2.5,
-                py: 1,
-                fontWeight: 500,
-                bgcolor: trigger ? 'primary.main' : 'rgba(255, 255, 255, 0.95)',
-                color: trigger ? '#fff' : 'primary.main',
                 '&:hover': {
                   bgcolor: trigger ? 'primary.dark' : '#fff',
                 },
+                bgcolor: trigger ? 'primary.main' : 'rgba(255, 255, 255, 0.95)',
+                borderRadius: 999,
+                color: trigger ? '#fff' : 'primary.main',
+                fontWeight: 500,
+                px: 2.5,
+                py: 1,
               }}
             >
               Sign up

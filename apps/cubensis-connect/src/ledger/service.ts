@@ -39,10 +39,10 @@ class LedgerService {
 
     this._ledger = new DccLedger({
       debug: true,
-      openTimeout: 3000,
-      listenTimeout: 30000,
       exchangeTimeout: 30000,
+      listenTimeout: 30000,
       networkCode: networkCode.charCodeAt(0),
+      openTimeout: 3000,
       transport: TransportWebUSB,
     });
 

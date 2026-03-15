@@ -4,15 +4,16 @@
  * Allows users to specify price, amount, and automatically calculates total
  * Mirrors SellOrderForm structure for consistency
  */
-import React, { useState, useEffect, useMemo } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Input } from '@/components/atoms/Input';
-import { Button } from '@/components/atoms/Button';
-import { useDexStore } from '@/stores/dexStore';
-import { useAuth } from '@/contexts/AuthContext';
-import { usePlaceOrder, useMatcherSettings } from '@/api/services/matcherService';
 import { useAssetBalance } from '@/api/services/assetsService';
+import { useMatcherSettings, usePlaceOrder } from '@/api/services/matcherService';
+import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
+import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Form container
@@ -168,7 +169,7 @@ const PercentageButton = styled.button<{ $isActive?: boolean }>`
   transition: all 0.2s;
 
   &:hover {
-    background: ${(p) => (p.$isActive ? p.theme.colors.success : p.theme.colors.success + '20')};
+    background: ${(p) => (p.$isActive ? p.theme.colors.success : `${p.theme.colors.success}20`)};
     border-color: ${(p) => p.theme.colors.success};
   }
 
@@ -206,7 +207,7 @@ export const BuyOrderForm: React.FC = () => {
    * Fetch user balance for price asset (the asset used to buy)
    * Use different hooks depending on whether it's DCC (native) or custom token
    */
-  const isDccPriceAsset = !selectedPair?.priceAsset || selectedPair.priceAsset === 'WAVES';
+  const isDccPriceAsset = !selectedPair?.priceAsset || selectedPair.priceAsset === 'DCC';
 
   // For DCC (native token), use useBalanceWatcher
   const { balances: dccBalances } = useBalanceWatcher({
@@ -219,7 +220,7 @@ export const BuyOrderForm: React.FC = () => {
     selectedPair?.priceAsset || '',
     {
       enabled: isAuthenticated && !isDccPriceAsset && !!selectedPair?.priceAsset && !!user?.address,
-    }
+    },
   );
 
   // Determine available balance based on asset type
@@ -283,12 +284,12 @@ export const BuyOrderForm: React.FC = () => {
     const priceNum = parseFloat(price);
     const amountNum = parseFloat(amount);
 
-    if (!price || isNaN(priceNum) || priceNum <= 0) {
+    if (!price || Number.isNaN(priceNum) || priceNum <= 0) {
       setError('Please enter a valid price');
       return false;
     }
 
-    if (!amount || isNaN(amountNum) || amountNum <= 0) {
+    if (!amount || Number.isNaN(amountNum) || amountNum <= 0) {
       setError('Please enter a valid amount');
       return false;
     }
@@ -321,20 +322,20 @@ export const BuyOrderForm: React.FC = () => {
     try {
       // Create order parameters for the matcher
       const orderData = {
-        orderType: 'limit' as const, // Use 'limit' for buy orders
         amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
-        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
-        matcherPublicKey: matcherSettings.matcherPublicKey,
-        matcherFee: matcherSettings.orderFee.dynamic.baseFee,
         assetPair: {
           amountAsset: selectedPair?.amountAsset || '',
           priceAsset: selectedPair?.priceAsset || '',
         },
-        timestamp: Date.now(),
         expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
-        senderPublicKey: user?.publicKey || '',
-        version: 3,
+        matcherFee: matcherSettings.orderFee.dynamic.baseFee,
+        matcherPublicKey: matcherSettings.matcherPublicKey,
+        orderType: 'limit' as const, // Use 'limit' for buy orders
+        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
         proofs: [], // Will be signed by user's wallet
+        senderPublicKey: user?.publicKey || '',
+        timestamp: Date.now(),
+        version: 3,
       };
 
       // Place order via matcher API
@@ -343,13 +344,13 @@ export const BuyOrderForm: React.FC = () => {
       // Success handling
       if (result?.id) {
         addUserOrder({
-          id: result.id,
-          type: 'buy',
-          price: price,
           amount: amount,
           filled: '0',
-          timestamp: Date.now(),
+          id: result.id,
+          price: price,
           status: 'pending',
+          timestamp: Date.now(),
+          type: 'buy',
         });
       }
 
@@ -366,8 +367,8 @@ export const BuyOrderForm: React.FC = () => {
 
   // Create a mutation-like object for consistency with the component's API
   const buyMutation = {
-    mutate: handleBuyOrder,
     isPending: placeOrderMutation.isPending,
+    mutate: handleBuyOrder,
   };
 
   /**

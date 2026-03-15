@@ -3,14 +3,15 @@
  * Form input for external blockchain addresses with real-time validation
  * Uses gateway regex patterns for address format validation
  */
-import { useState, useEffect } from 'react';
-import { TextField, InputAdornment, Box, Typography } from '@mui/material';
-import { CheckCircle, Error } from '@mui/icons-material';
+
+import { CheckCircle, Error as ErrorIcon } from '@mui/icons-material';
+import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useConfig } from '@/contexts/ConfigContext';
 import {
-  validateGatewayAddress,
-  getGatewayConfig,
   getAddressFormatHint,
+  getGatewayConfig,
+  validateGatewayAddress,
 } from '@/services/gateway/utils';
 
 interface AddressInputProps {
@@ -40,7 +41,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   placeholder = 'Enter blockchain address',
   disabled = false,
 }) => {
-  const { wavesGateway } = useConfig();
+  const { gateway } = useConfig();
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState<string>('');
   const [formatHint, setFormatHint] = useState<string>('');
@@ -49,14 +50,14 @@ export const AddressInput: React.FC<AddressInputProps> = ({
    * Get format hint from gateway config
    */
   useEffect(() => {
-    const config = getGatewayConfig(assetId, wavesGateway || {});
+    const config = getGatewayConfig(assetId, gateway || {});
     if (config?.regex) {
       const hint = getAddressFormatHint(config.regex);
       setFormatHint(hint);
     } else {
       setFormatHint('');
     }
-  }, [assetId, wavesGateway]);
+  }, [assetId, gateway]);
 
   /**
    * Validate address on every change
@@ -70,7 +71,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     }
 
     // Validate address
-    const valid = validateGatewayAddress(value, assetId, wavesGateway || {});
+    const valid = validateGatewayAddress(value, assetId, gateway || {});
     setIsValid(valid);
 
     if (!valid) {
@@ -78,20 +79,18 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     } else {
       setError('');
     }
-  }, [value, assetId, wavesGateway]);
+  }, [value, assetId, gateway]);
 
   /**
    * Handle input change
    */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value.trim();
-    
+
     // Update parent with new value and current validation state
     // Validation will be updated in the next effect cycle
-    const valid = newValue
-      ? validateGatewayAddress(newValue, assetId, wavesGateway || {})
-      : false;
-    
+    const valid = newValue ? validateGatewayAddress(newValue, assetId, gateway || {}) : false;
+
     onChange(newValue, valid);
   };
 
@@ -112,7 +111,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               {isValid ? (
                 <CheckCircle color="success" sx={{ fontSize: 24 }} />
               ) : (
-                <Error color="error" sx={{ fontSize: 24 }} />
+                <ErrorIcon color="error" sx={{ fontSize: 24 }} />
               )}
             </InputAdornment>
           ),
@@ -132,13 +131,13 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           },
         }}
       />
-      
+
       {/* Format Hint */}
       {formatHint && !error && (
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ mt: 0.5, display: 'block', ml: 1.5 }}
+          sx={{ display: 'block', ml: 1.5, mt: 0.5 }}
         >
           Expected format: {formatHint}
         </Typography>

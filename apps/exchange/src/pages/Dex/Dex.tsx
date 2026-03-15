@@ -3,40 +3,39 @@
  * Modern crypto trading interface with advanced features
  * 3-column layout: OrderBook | Chart+Forms | Markets+Trades
  */
-import { useState, useEffect } from 'react';
+
+import { Fullscreen, Receipt, ShowChart, TrendingDown, TrendingUp } from '@mui/icons-material';
 import {
   Box,
   Grid,
-  Paper,
-  Typography,
-  Tabs,
-  Tab,
   IconButton,
-  ToggleButtonGroup,
+  Paper,
+  Tab,
+  Tabs,
   ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import { ShowChart, TrendingUp, TrendingDown, Fullscreen, Receipt } from '@mui/icons-material';
-
+import { styled, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { useOrderBook } from '@/api/services/matcherService';
+import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
+import { OrderBook } from '@/features/dex/OrderBook';
+import { SellOrderForm } from '@/features/dex/SellOrderForm';
+import { TradeHistory } from '@/features/dex/TradeHistory';
+import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 // Import DEX components
 import { TradingViewChart } from '@/features/dex/TradingViewChart';
-import { OrderBook } from '@/features/dex/OrderBook';
-import { TradeHistory } from '@/features/dex/TradeHistory';
-import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
-import { SellOrderForm } from '@/features/dex/SellOrderForm';
-import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 import { UserOrders } from '@/features/dex/UserOrders';
 import { useDexStore } from '@/stores/dexStore';
-import { useOrderBook } from '@/api/services/matcherService';
+import { landingTheme } from '@/theme/landingTheme';
 
 /**
  * Main container with clean light theme like Swap page
  */
 const DEXContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
   background: 'transparent',
+  minHeight: '100vh',
   padding: theme.spacing(4),
   [theme.breakpoints.down('md')]: {
     padding: theme.spacing(2),
@@ -47,50 +46,50 @@ const DEXContainer = styled(Box)(({ theme }) => ({
  * Clean white card panel like Swap page
  */
 const TradingPanel = styled(Paper)(({ theme }) => ({
-  background: '#FFFFFF',
-  borderRadius: theme.spacing(2),
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  overflow: 'hidden',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'all 0.2s ease',
   '&:hover': {
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
   },
+  background: '#FFFFFF',
+  borderRadius: theme.spacing(2),
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  overflow: 'hidden',
+  transition: 'all 0.2s ease',
 }));
 
 /**
  * Panel header with clean styling
  */
 const PanelHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
+  alignItems: 'center',
   borderBottom: `1px solid ${theme.palette.divider}`,
   display: 'flex',
-  alignItems: 'center',
   justifyContent: 'space-between',
+  padding: theme.spacing(2),
 }));
 
 /**
  * Panel content area
  */
 const PanelContent = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  flex: 1,
-  overflow: 'auto',
   '&::-webkit-scrollbar': {
     width: '6px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    '&:hover': {
+      background: theme.palette.grey[400],
+    },
+    background: theme.palette.grey[300],
+    borderRadius: '3px',
   },
   '&::-webkit-scrollbar-track': {
     background: 'transparent',
   },
-  '&::-webkit-scrollbar-thumb': {
-    background: theme.palette.grey[300],
-    borderRadius: '3px',
-    '&:hover': {
-      background: theme.palette.grey[400],
-    },
-  },
+  flex: 1,
+  overflow: 'auto',
+  padding: theme.spacing(2),
 }));
 
 /**
@@ -99,8 +98,7 @@ const PanelContent = styled(Box)(({ theme }) => ({
 const PriceDisplay = styled(Typography, {
   shouldForwardProp: (prop) => prop !== 'trend',
 })<{ trend?: 'up' | 'down' }>(({ theme, trend }) => ({
-  fontSize: '2rem',
-  fontWeight: 700,
+  alignItems: 'center',
   color:
     trend === 'up'
       ? theme.palette.success.main
@@ -108,7 +106,8 @@ const PriceDisplay = styled(Typography, {
         ? theme.palette.error.main
         : theme.palette.text.primary,
   display: 'flex',
-  alignItems: 'center',
+  fontSize: '2rem',
+  fontWeight: 700,
   gap: theme.spacing(1),
 }));
 
@@ -129,7 +128,7 @@ export const Dex = () => {
     {
       enabled: !!selectedPair,
       refetchInterval: 5000, // Poll every 5 seconds like Angular (1000ms)
-    }
+    },
   );
 
   // Update store when order book data changes
@@ -137,19 +136,19 @@ export const Dex = () => {
     if (orderBookData) {
       // Transform API data to store format
       const transformedOrderBook = {
-        bids: orderBookData.bids.map((bid, idx) => ({
-          id: `bid-${idx}`,
-          type: 'buy' as const,
-          price: bid.price.toString(),
-          amount: bid.amount.toString(),
-          timestamp: orderBookData.timestamp,
-        })),
         asks: orderBookData.asks.map((ask, idx) => ({
-          id: `ask-${idx}`,
-          type: 'sell' as const,
-          price: ask.price.toString(),
           amount: ask.amount.toString(),
+          id: `ask-${idx}`,
+          price: ask.price.toString(),
           timestamp: orderBookData.timestamp,
+          type: 'sell' as const,
+        })),
+        bids: orderBookData.bids.map((bid, idx) => ({
+          amount: bid.amount.toString(),
+          id: `bid-${idx}`,
+          price: bid.price.toString(),
+          timestamp: orderBookData.timestamp,
+          type: 'buy' as const,
         })),
       };
       updateOrderBook(transformedOrderBook);
@@ -172,8 +171,8 @@ export const Dex = () => {
   // Format current price for display
   const formattedPrice = marketData.currentPrice
     ? marketData.currentPrice.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
         maximumFractionDigits: 8,
+        minimumFractionDigits: 2,
       })
     : '0.00';
 
@@ -186,17 +185,31 @@ export const Dex = () => {
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} alignItems="center">
                 {/* Pair Selector */}
-                <Grid item xs={12} md={2.5} sx={{ overflow: 'visible', zIndex: 1000 }}>
+                <Grid
+                  sx={{ overflow: 'visible', zIndex: 1000 }}
+                  size={{
+                    md: 2.5,
+                    xs: 12,
+                  }}
+                >
                   <TradingPairSelector />
                 </Grid>
 
                 {/* Price Display */}
-                <Grid item xs={6} md={2}>
+                <Grid
+                  size={{
+                    md: 2,
+                    xs: 6,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       Last Price
                     </Typography>
-                    <PriceDisplay trend={priceTrend} sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
+                    <PriceDisplay
+                      trend={priceTrend}
+                      sx={{ fontSize: { sm: '1.5rem', xs: '1.2rem' } }}
+                    >
                       {formattedPrice}
                       {priceTrend === 'up' ? (
                         <TrendingUp sx={{ fontSize: '1.5rem' }} />
@@ -208,7 +221,12 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Change */}
-                <Grid item xs={6} md={1.5}>
+                <Grid
+                  size={{
+                    md: 1.5,
+                    xs: 6,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Change
@@ -225,7 +243,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h High - hidden on xs */}
-                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Grid
+                  sx={{ display: { sm: 'block', xs: 'none' } }}
+                  size={{
+                    md: 2,
+                    xs: 4,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h High
@@ -233,8 +257,8 @@ export const Dex = () => {
                     <Typography variant="body1" fontWeight={600}>
                       {marketData.high24h > 0
                         ? marketData.high24h.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
                             maximumFractionDigits: 8,
+                            minimumFractionDigits: 2,
                           })
                         : '--'}
                     </Typography>
@@ -242,7 +266,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Low - hidden on xs */}
-                <Grid item xs={4} md={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Grid
+                  sx={{ display: { sm: 'block', xs: 'none' } }}
+                  size={{
+                    md: 2,
+                    xs: 4,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Low
@@ -250,8 +280,8 @@ export const Dex = () => {
                     <Typography variant="body1" fontWeight={600}>
                       {marketData.low24h > 0
                         ? marketData.low24h.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
                             maximumFractionDigits: 8,
+                            minimumFractionDigits: 2,
                           })
                         : '--'}
                     </Typography>
@@ -259,7 +289,13 @@ export const Dex = () => {
                 </Grid>
 
                 {/* 24h Volume */}
-                <Grid item xs={12} sm={4} md={2}>
+                <Grid
+                  size={{
+                    md: 2,
+                    sm: 4,
+                    xs: 12,
+                  }}
+                >
                   <Box>
                     <Typography variant="caption" color="primary.main" fontWeight={700}>
                       24h Volume
@@ -267,8 +303,8 @@ export const Dex = () => {
                     <Typography variant="body1" fontWeight={600}>
                       {marketData.volume24h > 0
                         ? marketData.volume24h.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
+                            minimumFractionDigits: 2,
                           })
                         : '--'}
                     </Typography>
@@ -282,12 +318,20 @@ export const Dex = () => {
         {/* Main Trading Area - 2 Column Layout */}
         <Grid container spacing={2}>
           {/* LEFT - Chart takes 70% width for prominence */}
-          <Grid item xs={12} lg={8.5}>
+          <Grid
+            size={{
+              lg: 8.5,
+              xs: 12,
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
               {/* Large Chart Section */}
-              <TradingPanel elevation={0} sx={{ flex: 1, minHeight: { xs: 300, sm: 400, md: 550 } }}>
+              <TradingPanel
+                elevation={0}
+                sx={{ flex: 1, minHeight: { md: 550, sm: 400, xs: 300 } }}
+              >
                 <PanelHeader>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
                     <Typography variant="h6" fontWeight={700}>
                       Price Chart
@@ -296,8 +340,8 @@ export const Dex = () => {
                   <IconButton
                     size="small"
                     sx={{
-                      color: 'primary.main',
                       '&:hover': { bgcolor: 'primary.light', color: 'white' },
+                      color: 'primary.main',
                     }}
                   >
                     <Fullscreen />
@@ -309,9 +353,9 @@ export const Dex = () => {
               </TradingPanel>
 
               {/* Order Book - Now in main area */}
-              <TradingPanel elevation={0} sx={{ minHeight: { xs: 250, md: 400 } }}>
+              <TradingPanel elevation={0} sx={{ minHeight: { md: 400, xs: 250 } }}>
                 <PanelHeader>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     <Receipt sx={{ color: 'primary.main', fontSize: 24 }} />
                     <Typography variant="h6" fontWeight={700}>
                       Order Book
@@ -335,20 +379,20 @@ export const Dex = () => {
                     value={bottomTab}
                     onChange={(_, v) => setBottomTab(v)}
                     sx={{
-                      minHeight: 40,
-                      '& .MuiTab-root': {
-                        minHeight: 40,
-                        fontWeight: 600,
-                        color: 'text.secondary',
-                      },
                       '& .Mui-selected': {
                         color: 'primary.main',
                       },
+                      '& .MuiTab-root': {
+                        color: 'text.secondary',
+                        fontWeight: 600,
+                        minHeight: 40,
+                      },
                       '& .MuiTabs-indicator': {
                         backgroundColor: 'primary.main',
-                        height: 3,
                         borderRadius: '3px 3px 0 0',
+                        height: 3,
                       },
+                      minHeight: 40,
                     }}
                   >
                     <Tab label="Open Orders (0)" />
@@ -363,16 +407,21 @@ export const Dex = () => {
           </Grid>
 
           {/* RIGHT - Buy/Sell & Trades Sidebar */}
-          <Grid item xs={12} lg={3.5}>
+          <Grid
+            size={{
+              lg: 3.5,
+              xs: 12,
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {/* Buy/Sell Card with Toggle */}
-              <TradingPanel elevation={0} sx={{ minHeight: { xs: 'auto', md: 560 } }}>
+              <TradingPanel elevation={0} sx={{ minHeight: { md: 560, xs: 'auto' } }}>
                 <PanelHeader
                   sx={{
+                    alignItems: 'stretch',
                     background:
                       'linear-gradient(90deg, rgba(61, 38, 190, 0.05) 0%, rgba(89, 64, 212, 0.05) 100%)',
                     flexDirection: 'column',
-                    alignItems: 'stretch',
                     gap: 2,
                   }}
                 >
@@ -381,21 +430,21 @@ export const Dex = () => {
                     value={orderFormTab}
                     onChange={(_, v) => setOrderFormTab(v)}
                     sx={{
-                      minHeight: 40,
-                      '& .MuiTab-root': {
-                        minHeight: 40,
-                        fontWeight: 600,
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                      },
                       '& .Mui-selected': {
                         color: 'primary.main',
                       },
+                      '& .MuiTab-root': {
+                        color: 'text.secondary',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        minHeight: 40,
+                      },
                       '& .MuiTabs-indicator': {
                         backgroundColor: 'primary.main',
-                        height: 3,
                         borderRadius: '3px 3px 0 0',
+                        height: 3,
                       },
+                      minHeight: 40,
                     }}
                   >
                     <Tab label="Limit" />
@@ -412,13 +461,13 @@ export const Dex = () => {
                     fullWidth
                     sx={{
                       '& .MuiToggleButton-root': {
-                        py: 1.5,
-                        fontWeight: 700,
-                        fontSize: '1rem',
-                        border: 'none',
                         '&.Mui-selected': {
                           color: 'white',
                         },
+                        border: 'none',
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        py: 1.5,
                       },
                     }}
                   >
@@ -426,10 +475,10 @@ export const Dex = () => {
                       value="buy"
                       sx={{
                         '&.Mui-selected': {
-                          bgcolor: 'success.main',
                           '&:hover': {
                             bgcolor: 'success.dark',
                           },
+                          bgcolor: 'success.main',
                         },
                         color: 'success.main',
                       }}
@@ -440,10 +489,10 @@ export const Dex = () => {
                       value="sell"
                       sx={{
                         '&.Mui-selected': {
-                          bgcolor: 'error.main',
                           '&:hover': {
                             bgcolor: 'error.dark',
                           },
+                          bgcolor: 'error.main',
                         },
                         color: 'error.main',
                       }}
@@ -452,7 +501,7 @@ export const Dex = () => {
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </PanelHeader>
-                <PanelContent sx={{ minHeight: { xs: 'auto', md: 500 } }}>
+                <PanelContent sx={{ minHeight: { md: 500, xs: 'auto' } }}>
                   {buySellMode === 'buy' ? <BuyOrderForm /> : <SellOrderForm />}
                 </PanelContent>
               </TradingPanel>
@@ -469,22 +518,22 @@ export const Dex = () => {
                     value={tradesTab}
                     onChange={(_, v) => setTradesTab(v)}
                     sx={{
-                      minHeight: 40,
-                      '& .MuiTab-root': {
-                        minHeight: 40,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        padding: '8px 12px',
-                        color: 'text.secondary',
-                      },
                       '& .Mui-selected': {
                         color: 'primary.main',
                       },
+                      '& .MuiTab-root': {
+                        color: 'text.secondary',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        minHeight: 40,
+                        padding: '8px 12px',
+                      },
                       '& .MuiTabs-indicator': {
                         backgroundColor: 'primary.main',
-                        height: 3,
                         borderRadius: '3px 3px 0 0',
+                        height: 3,
                       },
+                      minHeight: 40,
                     }}
                   >
                     <Tab label="Market Trades" />

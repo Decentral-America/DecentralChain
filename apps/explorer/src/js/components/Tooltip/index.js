@@ -1,1 +1,1 @@
-export { TooltipView as default } from './Tooltip.view';
+export {TooltipView as default} from './Tooltip.view';

@@ -1,34 +1,34 @@
 // Export all UI components from this directory
+
+export { Accordion, MultipleAccordion, SingleAccordion } from './Accordion';
+export type { AssetLogoProps } from './AssetLogo';
+export {
+  AssetLogo,
+  AssetLogoLarge,
+  AssetLogoMedium,
+  AssetLogoSmall,
+  AssetLogoXLarge,
+} from './AssetLogo';
+export type { CarouselProps } from './Carousel';
+export {
+  Carousel,
+  CarouselAutoPlay,
+  CarouselDouble,
+  CarouselSingle,
+  CarouselTriple,
+} from './Carousel';
 export { Radio, RadioGroup } from './Radio';
 export { RangeSlider } from './RangeSlider';
-export { Slider, SliderWithLabels, SliderNoValue } from './Slider';
-export { Tabs, LineTabs, EnclosedTabs, PillTabs } from './Tabs';
-export { Accordion, SingleAccordion, MultipleAccordion } from './Accordion';
-export { Table } from './Table';
+export type { SliderProps } from './Slider';
+export { Slider, SliderNoValue, SliderWithLabels } from './Slider';
+export type { SmartTableProps } from './SmartTable';
 export {
   SmartTable,
-  SmartTableSmall,
   SmartTableLarge,
   SmartTableNoFilters,
   SmartTableNoPagination,
+  SmartTableSmall,
 } from './SmartTable';
-export {
-  AssetLogo,
-  AssetLogoSmall,
-  AssetLogoMedium,
-  AssetLogoLarge,
-  AssetLogoXLarge,
-} from './AssetLogo';
-export {
-  Carousel,
-  CarouselSingle,
-  CarouselDouble,
-  CarouselTriple,
-  CarouselAutoPlay,
-} from './Carousel';
-
 export type { Column, TableProps } from './Table';
-export type { SmartTableProps } from './SmartTable';
-export type { AssetLogoProps } from './AssetLogo';
-export type { CarouselProps } from './Carousel';
-export type { SliderProps } from './Slider';
+export { Table } from './Table';
+export { EnclosedTabs, LineTabs, PillTabs, Tabs } from './Tabs';

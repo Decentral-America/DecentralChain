@@ -1,1 +1,1 @@
-export { DictionaryItem as default } from './DictionaryItem.view';
+export {DictionaryItem as default} from './DictionaryItem.view';

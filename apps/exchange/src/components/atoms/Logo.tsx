@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { SxProps, Theme } from '@mui/material/styles';
+import { type SxProps, type Theme } from '@mui/material/styles';
 
 interface LogoProps {
   sx?: SxProps<Theme>;
@@ -10,12 +10,12 @@ interface LogoProps {
  */
 export default function Logo({ sx }: LogoProps) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
+    <Box sx={{ alignItems: 'center', display: 'flex', ...sx }}>
       <Typography
         variant="h6"
         sx={{
+          fontSize: { md: 24, xs: 20 },
           fontWeight: 700,
-          fontSize: { xs: 20, md: 24 },
           letterSpacing: '-0.5px',
         }}
       >

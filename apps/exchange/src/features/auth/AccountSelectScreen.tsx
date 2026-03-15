@@ -7,17 +7,18 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
-import { Stack } from '@/components/atoms/Stack';
 import { Card } from '@/components/atoms/Card';
+import { Stack } from '@/components/atoms/Stack';
+import { logger } from '@/lib/logger';
 
 // Account type - matches User from AuthContext
 interface Account {
   hash: string;
-  name?: string;
+  name?: string | undefined;
   address: string;
-  lastLogin?: number;
-  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper'; // Account type
-  settings?: Record<string, unknown>;
+  lastLogin?: number | undefined;
+  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper' | undefined; // Account type
+  settings?: Record<string, unknown> | undefined;
 }
 
 interface AccountSelectScreenProps {
@@ -80,7 +81,10 @@ const AccountList = styled.div`
   gap: ${(p) => p.theme.spacing.md};
 `;
 
-const AccountCard = styled(Card).attrs<{ $isSelected: boolean; $disabled?: boolean }>(() => ({}))<{
+const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>).attrs<{
+  $isSelected: boolean;
+  $disabled?: boolean;
+}>(() => ({}))<{
   $isSelected: boolean;
   $disabled?: boolean;
 }>`
@@ -240,7 +244,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
     try {
       await onSelect(userHash);
     } catch (error) {
-      console.error('[AccountSelect] Login failed:', error);
+      logger.error('[AccountSelect] Login failed:', error);
       setIsLoading(false);
       setSelectedHash(null);
     }
@@ -278,11 +282,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
                   {account.address.substring(0, 10)}...
                   {account.address.substring(account.address.length - 8)}
                 </AccountAddress>
-                {account.userType === 'ledger' && (
-                  <LedgerBadge>
-                    🔐 Ledger
-                  </LedgerBadge>
-                )}
+                {account.userType === 'ledger' && <LedgerBadge>🔐 Ledger</LedgerBadge>}
                 {account.lastLogin && (
                   <LastLogin>Last login: {formatLastLogin(account.lastLogin)}</LastLogin>
                 )}
@@ -296,7 +296,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
 
       {sortedAccounts.length === 0 && (
         <Stack gap="16px">
-          <p style={{ textAlign: 'center', opacity: 0.6 }}>No accounts found in vault</p>
+          <p style={{ opacity: 0.6, textAlign: 'center' }}>No accounts found in vault</p>
           {onBack && (
             <Button onClick={onBack} variant="secondary" fullWidth>
               Go Back

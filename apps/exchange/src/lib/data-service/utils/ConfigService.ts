@@ -1,115 +1,133 @@
-import {fetch} from '../'
-import {Signal, getPaths, get, clone} from 'ts-utils';
-import {BigNumber} from '@waves/bignumber';
-
+import { BigNumber } from '@decentralchain/bignumber';
+import { clone, get, getPaths, Signal } from 'ts-utils';
+import { fetch } from '../';
 
 interface IFeeItem<T> {
-    add_smart_asset_fee: boolean;
-    add_smart_account_fee: boolean;
-    min_price_step: T | BigNumber;
-    fee: T | BigNumber;
+  add_smart_asset_fee: boolean;
+  add_smart_account_fee: boolean;
+  min_price_step: T | BigNumber;
+  fee: T | BigNumber;
 }
 
 interface IFeeConfig<T> {
-    smart_asset_extra_fee: T | BigNumber;
-    smart_account_extra_fee: T | BigNumber;
-    calculate_fee_rules: Record<number, Partial<IFeeItem<T>> & { default: IFeeItem<T> }>;
+  smart_asset_extra_fee: T | BigNumber;
+  smart_account_extra_fee: T | BigNumber;
+  calculate_fee_rules: Record<number, Partial<IFeeItem<T>> & { default: IFeeItem<T> }>;
 }
 
 interface IConfig {
-    PERMISSIONS: Record<any, any>;
-    SETTINGS: Record<any, any> & { DEX: Record<any, any> & { WATCH_LIST_PAIRS: Array<string> } } & {};
-    SERVICE_TEMPORARILY_UNAVAILABLE: boolean;
+  PERMISSIONS: Record<string, unknown>;
+  SETTINGS: Record<string, unknown> & {
+    DEX: Record<string, unknown> & { WATCH_LIST_PAIRS: Array<string> };
+  } & {};
+  SERVICE_TEMPORARILY_UNAVAILABLE: boolean;
+}
+
+interface IDCCApp {
+  network: {
+    featuresConfigUrl: string;
+    featuresConfig: IConfig;
+    feeConfigUrl: string;
+    feeConfig: IFeeConfig<BigNumber>;
+  };
+  parseJSON: (data: unknown) => unknown;
 }
 
 export class ConfigService {
+  protected config = Object.create(null) as IConfig;
 
-    protected config = Object.create(null) as IConfig;
+  protected feeConfig = Object.create(null) as IFeeItem<BigNumber>;
 
-    protected feeConfig = Object.create(null) as IFeeItem<BigNumber>;
+  protected dccApp: IDCCApp;
 
-    protected wavesApp: any;
+  protected static _instance: ConfigService | undefined;
 
-    protected static _instance: ConfigService | void;
+  public change = new Signal() as Signal<string>;
 
-    public change = new Signal() as Signal<string>;
+  public configReady: Promise<unknown>;
 
-    public configReady: Promise<any>;
+  constructor(dccApp: IDCCApp) {
+    if (ConfigService._instance) {
+      this.dccApp = ConfigService._instance.dccApp;
+      this.config = ConfigService._instance.config;
+      this.feeConfig = ConfigService._instance.feeConfig;
+      this.change = ConfigService._instance.change;
+      this.configReady = ConfigService._instance.configReady;
+      return;
+    }
+    ConfigService._instance = this;
+    this.dccApp = dccApp;
+    this.configReady = this.fetchConfig();
+  }
 
-    constructor(wavesApp: any) {
-        if (ConfigService._instance) {
-            return ConfigService._instance;
+  public getConfig(path: string) {
+    const config = path ? get(this.config, path) : this.config;
+    return clone(config);
+  }
+
+  public getFeeConfig() {
+    return clone(this.feeConfig);
+  }
+
+  public fetchConfig(): Promise<unknown> {
+    return Promise.all([
+      this._getConfig().then((config) => this._setConfig(config)),
+      this._getFeeConfig().then((config) => this._setFeeConfig(config)),
+    ]);
+  }
+
+  protected _getConfig(): Promise<IConfig> {
+    return fetch(this.dccApp.network.featuresConfigUrl)
+      .then((data) => {
+        if (typeof data === 'string') {
+          return JSON.parse(data);
         }
-        ConfigService._instance = this;
-        this.wavesApp = wavesApp;
-        this.configReady = this.fetchConfig();
-    }
+        return data;
+      })
+      .catch(() => Promise.resolve(this.dccApp.network.featuresConfig));
+  }
 
-    public getConfig(path: string) {
-        const config = path ? get(this.config, path) : this.config;
-        return clone(config);
-    }
+  protected _getFeeConfig(): Promise<IFeeConfig<BigNumber>> {
+    return fetch(this.dccApp.network.feeConfigUrl)
+      .then(this.dccApp.parseJSON)
+      .then(ConfigService.parseFeeConfig)
+      .catch(() => Promise.resolve(this.dccApp.network.feeConfig));
+  }
 
-    public getFeeConfig() {
-        return clone(this.feeConfig);
-    }
+  protected _setFeeConfig(config: IFeeItem<BigNumber>) {
+    this.feeConfig = config;
+  }
 
-    public fetchConfig(): Promise<any> {
-        return Promise.all([
-            this._getConfig().then(config => this._setConfig(config)),
-            this._getFeeConfig().then(config => this._setFeeConfig(config))
-        ]);
-    }
+  protected _setConfig(config: IConfig) {
+    const myConfig = this.config;
+    this.config = config;
 
-    protected _getConfig(): Promise<IConfig> {
-        return fetch(this.wavesApp.network.featuresConfigUrl)
-            .then(data => {
-                if (typeof data === 'string') {
-                    return JSON.parse(data);
-                }
-                return data;
-            })
-            .catch(() => Promise.resolve(this.wavesApp.network.featuresConfig));
-    }
+    ConfigService.getDifferencePaths(myConfig, config).forEach((path) => {
+      this.change.dispatch(String(path));
+    });
+  }
 
-    protected _getFeeConfig(): Promise<IFeeConfig<BigNumber>> {
-        return fetch(this.wavesApp.network.feeConfigUrl)
-            .then(this.wavesApp.parseJSON)
-            .then(ConfigService.parseFeeConfig)
-            .catch(() => Promise.resolve(this.wavesApp.network.feeConfig));
-    }
+  protected static getDifferencePaths(previous: IConfig, next: IConfig) {
+    const paths = getPaths(next);
+    return paths.filter((path) => get(previous, path) !== get(next, path)).map(String);
+  }
 
-    protected _setFeeConfig(config) {
-        this.feeConfig = config;
-    }
-
-    protected _setConfig(config) {
-        const myConfig = this.config;
-        this.config = config;
-
-        ConfigService.getDifferencePaths(myConfig, config)
-            .forEach(path => this.change.dispatch(String(path)));
-    }
-
-    protected static getDifferencePaths(previous, next) {
-        const paths = getPaths(next);
-        return paths
-            .filter(path => get(previous, path) !== get(next, path))
-            .map(String);
-    }
-
-    protected static parseFeeConfig(data) {
-        switch (typeof data) {
-            case 'number':
-            case 'string':
-                return new BigNumber(data);
-            case 'object':
-                Object.entries(data).forEach(([key, value]) => {
-                    data[key] = ConfigService.parseFeeConfig(value);
-                });
-                return data;
-            default:
-                return data;
+  protected static parseFeeConfig(data: unknown): unknown {
+    switch (typeof data) {
+      case 'number':
+      case 'string':
+        return new BigNumber(data);
+      case 'object': {
+        if (data !== null) {
+          const record = data as Record<string, unknown>;
+          Object.entries(record).forEach(([key, value]) => {
+            record[key] = ConfigService.parseFeeConfig(value);
+          });
         }
+        return data;
+      }
+      default:
+        return data;
     }
+  }
 }

@@ -1,1 +1,1 @@
-export { RoutedBlockRef as default } from './BlockRef.view';
+export {RoutedBlockRef as default} from './BlockRef.view';

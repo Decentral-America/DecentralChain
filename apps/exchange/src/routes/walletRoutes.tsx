@@ -2,13 +2,13 @@
  * Wallet Module Routes
  * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases
  */
-import { RouteObject } from 'react-router-dom';
-import { Wallet } from '@/pages/Wallet';
-import { Dashboard } from '@/pages/Dashboard';
+import { type RouteObject } from 'react-router-dom';
 import { Portfolio } from '@/features/wallet';
-import { TransactionsModern } from '@/features/wallet/TransactionsModern';
 import { LeasingModern } from '@/features/wallet/LeasingModern';
+import { TransactionsModern } from '@/features/wallet/TransactionsModern';
 import { AliasManagement } from '@/pages/AliasManagement';
+import { Dashboard } from '@/pages/Dashboard';
+import { Wallet } from '@/pages/Wallet';
 
 /**
  * Wallet routes structure:
@@ -16,33 +16,31 @@ import { AliasManagement } from '@/pages/AliasManagement';
  *   - /desktop/wallet/portfolio : Portfolio overview with asset balances
  *   - /desktop/wallet/transactions : Transaction history and details
  *   - /desktop/wallet/assets/:assetId : Individual asset details
- *   - /desktop/wallet/leasing : Leasing management (stake/lease WAVES)
+ *   - /desktop/wallet/leasing : Leasing management (stake/lease DCC)
  *   - /desktop/wallet/aliases : Alias management (create and view aliases)
  */
 export const walletRoutes: RouteObject = {
-  path: 'wallet',
-  element: <Wallet />,
   children: [
     // Dashboard overview at /desktop/wallet
     {
-      index: true,
       element: <Dashboard />,
+      index: true,
     },
     {
-      path: 'portfolio',
       element: <Portfolio />,
+      path: 'portfolio',
     },
     {
-      path: 'transactions',
       element: <TransactionsModern />,
+      path: 'transactions',
     },
     {
-      path: 'leasing',
       element: <LeasingModern />,
+      path: 'leasing',
     },
     {
-      path: 'aliases',
       element: <AliasManagement />,
+      path: 'aliases',
     },
     // Future child routes:
     // {
@@ -50,4 +48,6 @@ export const walletRoutes: RouteObject = {
     //   element: <AssetDetails />,
     // },
   ],
+  element: <Wallet />,
+  path: 'wallet',
 };

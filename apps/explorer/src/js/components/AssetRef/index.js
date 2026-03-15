@@ -1,1 +1,1 @@
-export { RoutedAssetRef as default } from './AssetRef.view';
+export {RoutedAssetRef as default} from './AssetRef.view';

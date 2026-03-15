@@ -16,15 +16,19 @@ import { useAssetDetails } from '@/api/services/assetsService';
 export const useAssetName = (assetId: string | null | undefined) => {
   const isDCC = !assetId || assetId === 'DCC' || assetId === '';
 
-  const { data: assetDetails, isLoading, error } = useAssetDetails(assetId || '', {
+  const {
+    data: assetDetails,
+    isLoading,
+    error,
+  } = useAssetDetails(assetId || '', {
     enabled: !isDCC,
   });
 
   return {
+    decimals: isDCC ? 8 : assetDetails?.decimals || 8,
+    error,
+    isLoading,
     name: isDCC ? 'DCC' : assetDetails?.name || assetId || 'Unknown',
     ticker: isDCC ? 'DCC' : assetDetails?.name || assetId || '???',
-    decimals: isDCC ? 8 : assetDetails?.decimals || 8,
-    isLoading,
-    error,
   };
 };

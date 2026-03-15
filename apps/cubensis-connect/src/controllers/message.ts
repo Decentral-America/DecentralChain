@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import {
   base58Decode,
   base58Encode,
@@ -402,8 +402,8 @@ export class MessageController extends EventEmitter {
           : String(err);
 
       Object.assign(message, {
-        status: MessageStatus.Failed,
         err: errorMessage,
+        status: MessageStatus.Failed,
       });
 
       this.#updateMessage(message);
@@ -909,8 +909,8 @@ export class MessageController extends EventEmitter {
         }
 
         const txParams = {
-          assetId,
           amount,
+          assetId,
           chainId,
           initialFee:
             messageInputTx.data.initialFee &&
@@ -969,7 +969,7 @@ export class MessageController extends EventEmitter {
         const amount = moneyLikeToMoney(
           typeof messageInputTx.data.amount === 'object'
             ? messageInputTx.data.amount
-            : { coins: messageInputTx.data.amount, assetId: 'WAVES' },
+            : { assetId: 'WAVES', coins: messageInputTx.data.amount },
           assets,
         ).toCoins();
 
@@ -1617,8 +1617,8 @@ export class MessageController extends EventEmitter {
         return {
           ...messageInput,
           data: {
-            referrer: messageInput.data.referrer,
             data: { data, host, icon, name, prefix },
+            referrer: messageInput.data.referrer,
           },
           ext_uuid: messageInput.options?.uid,
           id: nanoid(),
@@ -1631,8 +1631,8 @@ export class MessageController extends EventEmitter {
       case 'authOrigin':
         return {
           ...messageInput,
-          id: nanoid(),
           ext_uuid: messageInput.options?.uid,
+          id: nanoid(),
           status: MessageStatus.UnApproved,
           timestamp: Date.now(),
         };
@@ -1775,8 +1775,8 @@ export class MessageController extends EventEmitter {
       }
       case 'request': {
         const data = {
-          timestamp: Date.now(),
           senderPublicKey: messageInput.account.publicKey,
+          timestamp: Date.now(),
           ...messageInput.data.data,
         } as { senderPublicKey: string; timestamp: number };
 

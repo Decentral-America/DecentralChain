@@ -2,11 +2,12 @@
  * Transaction Notification Monitor
  * Listens for incoming transactions and displays toast notifications
  */
-import { useEffect, useCallback } from 'react';
-import { useIncomingTransactions, TransactionNotification } from '@/features/wallet';
-import { useToast } from '@/contexts/ToastContext';
-import { useAssetDetails } from '@/hooks/useAssetDetails';
+import { useCallback, useEffect } from 'react';
 import { config } from '@/config';
+import { useToast } from '@/contexts/ToastContext';
+import { type TransactionNotification, useIncomingTransactions } from '@/features/wallet';
+import { useAssetDetails } from '@/hooks/useAssetDetails';
+import { logger } from '@/lib/logger';
 
 /**
  * Format amount for notification display
@@ -14,7 +15,7 @@ import { config } from '@/config';
 const formatNotificationAmount = (amount: number | undefined, decimals: number): string => {
   if (!amount) return '0';
 
-  const divisor = Math.pow(10, decimals);
+  const divisor = 10 ** decimals;
   const value = amount / divisor;
 
   // Show up to 8 decimal places, but remove trailing zeros
@@ -76,7 +77,7 @@ const TransactionNotificationItem: React.FC<TransactionNotificationItemProps> = 
         From: {shortenAddress(transaction.sender)}
       </div>
       {transaction.confirmations < 1 && (
-        <div style={{ fontSize: '0.75em', opacity: 0.6, marginTop: '4px' }}>
+        <div style={{ fontSize: '0.75em', marginTop: '4px', opacity: 0.6 }}>
           Pending confirmation...
         </div>
       )}
@@ -115,7 +116,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
         // Show toast notification
         toast.showSuccess(
           (<TransactionNotificationItem transaction={tx} />) as unknown as string,
-          8000 // Show for 8 seconds
+          8000, // Show for 8 seconds
         );
 
         // Play a subtle notification sound if enabled
@@ -131,7 +132,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
         }
       }
     },
-    [toast]
+    [toast],
   );
 
   // Subscribe to incoming transactions
@@ -140,7 +141,7 @@ export const TransactionNotificationsMonitor: React.FC = () => {
   // Log listening status in development
   useEffect(() => {
     if (config.enableDebug) {
-      console.log('[TransactionNotifications] Listening:', isListening);
+      logger.debug('[TransactionNotifications] Listening:', isListening);
     }
   }, [isListening]);
 

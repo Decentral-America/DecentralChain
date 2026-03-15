@@ -1,1 +1,1 @@
-export { CopyButtonContainer as default } from './CopyButton.container';
+export {CopyButtonContainer as default} from './CopyButton.container';

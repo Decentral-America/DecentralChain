@@ -86,15 +86,15 @@ export function TxInfo({ message }: Props) {
                 selectList={feeOptions.map(
                   (option): SelectItem<string> => ({
                     id: option.money.asset.id,
-                    value: option.money.getTokens().toFixed(),
                     text: `${option.money.toFormat()} ${option.money.asset.displayName}`,
+                    value: option.money.getTokens().toFixed(),
                   }),
                 )}
                 selected={feeAsset.id}
                 onSelectItem={(id, tokens) => {
                   Background.updateTransactionFee(message.id, {
-                    tokens,
                     assetId: id as string,
+                    tokens,
                   });
                 }}
               />

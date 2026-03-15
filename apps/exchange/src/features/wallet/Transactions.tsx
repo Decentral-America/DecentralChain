@@ -2,15 +2,18 @@
  * Transactions Component
  * Transaction history table with filtering and pagination
  */
-import { useState, useCallback } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/contexts/AuthContext';
+import * as ds from 'data-service';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Card } from '@/components/atoms/Card';
-import { Spinner } from '@/components/atoms/Spinner';
-import { Select } from '@/components/atoms/Select';
 import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
+import { Select } from '@/components/atoms/Select';
+import { Spinner } from '@/components/atoms/Spinner';
 import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 const TransactionsContainer = styled.div`
   width: 100%;
@@ -87,16 +90,16 @@ const TransactionType = styled.span<{ $type: string }>`
     switch (p.$type) {
       case 'transfer':
       case 'send':
-        return p.theme.colors.error + '20';
+        return `${p.theme.colors.error}20`;
       case 'receive':
-        return p.theme.colors.success + '20';
+        return `${p.theme.colors.success}20`;
       case 'exchange':
       case 'swap':
-        return p.theme.colors.info + '20';
+        return `${p.theme.colors.info}20`;
       case 'lease':
-        return p.theme.colors.secondary + '20';
+        return `${p.theme.colors.secondary}20`;
       default:
-        return p.theme.colors.disabled + '20';
+        return `${p.theme.colors.disabled}20`;
     }
   }};
   color: ${(p) => {
@@ -186,6 +189,54 @@ export interface Transaction {
 
 const ITEMS_PER_PAGE = 10;
 
+interface RawTxData {
+  id: string;
+  type: number;
+  typeName: string;
+  sender: string;
+  recipient?: string;
+  amount?: { getTokens: () => { toNumber: () => number } };
+  totalAmount?: { getTokens: () => { toNumber: () => number } };
+  fee: { getTokens: () => { toNumber: () => number } };
+  timestamp: number;
+  assetId?: string;
+  status: string;
+}
+
+const TX_TYPE_MAP: Record<string, Transaction['type']> = {
+  cancelLeasing: 'cancel_lease',
+  exchange: 'exchange',
+  lease: 'lease',
+};
+
+function mapBlockchainTransaction(tx: unknown, userAddress: string): Transaction {
+  const d = tx as RawTxData;
+  let amount = d.amount?.getTokens?.().toNumber() ?? d.totalAmount?.getTokens?.().toNumber() ?? 0;
+  const isIncoming = d.recipient === userAddress;
+  let txType: Transaction['type'] = TX_TYPE_MAP[d.typeName] ?? 'transfer';
+
+  if (d.typeName === 'transfer') {
+    txType = isIncoming ? 'receive' : 'send';
+    amount = isIncoming ? Math.abs(amount) : -Math.abs(amount);
+  } else if (d.typeName === 'lease') {
+    amount = -Math.abs(amount);
+  }
+
+  const assetId = d.assetId || 'DCC';
+  return {
+    amount,
+    asset: assetId === 'DCC' ? 'DCC' : assetId,
+    assetId,
+    fee: d.fee.getTokens().toNumber(),
+    id: d.id,
+    recipient: d.recipient ?? '',
+    sender: d.sender,
+    status: d.status === 'confirmed' ? 'confirmed' : 'pending',
+    timestamp: d.timestamp,
+    type: txType,
+  };
+}
+
 export const Transactions = () => {
   const { user } = useAuth();
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -200,80 +251,20 @@ export const Transactions = () => {
     isLoading,
     error,
   } = useQuery<Transaction[]>({
-    queryKey: ['transactions', user?.address, limit],
+    enabled: !!user?.address,
     queryFn: async () => {
       if (!user?.address) return [];
-
-      // Import ds dynamically to avoid circular dependencies
-      const ds = await import('data-service');
 
       // Fetch transactions from blockchain (ds.api.transactions.list)
       // after parameter is optional - empty string for first page
       const txList = await ds.api.transactions.list(user.address, limit, '');
 
       // Map blockchain transactions to our Transaction interface
-      return txList.map((tx: unknown) => {
-        const txData = tx as {
-          id: string;
-          type: number;
-          typeName: string;
-          sender: string;
-          recipient?: string;
-          amount?: { getTokens: () => { toNumber: () => number } };
-          totalAmount?: { getTokens: () => { toNumber: () => number } };
-          fee: { getTokens: () => { toNumber: () => number } };
-          timestamp: number;
-          assetId?: string;
-          status: string;
-        };
-
-        // Determine transaction type
-        let txType: Transaction['type'] = 'transfer';
-        let amount = 0;
-        let assetId = 'DCC';
-
-        if (txData.amount?.getTokens) {
-          amount = txData.amount.getTokens().toNumber();
-        } else if (txData.totalAmount?.getTokens) {
-          amount = txData.totalAmount.getTokens().toNumber();
-        }
-
-        // Check if transaction is incoming or outgoing
-        const isIncoming = txData.recipient === user.address;
-
-        if (txData.typeName === 'transfer') {
-          txType = isIncoming ? 'receive' : 'send';
-          amount = isIncoming ? Math.abs(amount) : -Math.abs(amount);
-        } else if (txData.typeName === 'exchange') {
-          txType = 'exchange';
-        } else if (txData.typeName === 'lease') {
-          txType = 'lease';
-          amount = -Math.abs(amount);
-        } else if (txData.typeName === 'cancelLeasing') {
-          txType = 'cancel_lease';
-        }
-
-        if (txData.assetId) {
-          assetId = txData.assetId;
-        }
-
-        return {
-          id: txData.id,
-          type: txType,
-          amount,
-          asset: assetId === 'DCC' ? 'DCC' : assetId,
-          assetId,
-          timestamp: txData.timestamp,
-          fee: txData.fee.getTokens().toNumber(),
-          recipient: txData.recipient,
-          sender: txData.sender,
-          status: txData.status === 'confirmed' ? 'confirmed' : 'pending',
-        } as Transaction;
-      });
+      return txList.map((tx: unknown) => mapBlockchainTransaction(tx, user.address));
     },
-    enabled: !!user?.address,
-    staleTime: 3000, // Consider data fresh for 3 seconds
+    queryKey: ['transactions', user?.address, limit],
     refetchInterval: 4000, // Refetch every 4 seconds (matches Angular)
+    staleTime: 3000, // Consider data fresh for 3 seconds
   });
 
   // Filter transactions
@@ -287,7 +278,7 @@ export const Transactions = () => {
   const totalPages = Math.ceil((filteredTransactions?.length || 0) / ITEMS_PER_PAGE);
   const paginatedTransactions = filteredTransactions?.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   // Get unique assets for filter
@@ -300,7 +291,6 @@ export const Transactions = () => {
     setIsExporting(true);
 
     try {
-      const ds = await import('data-service');
       const allTransactions: Array<{
         id: string;
         typeName: string;
@@ -340,21 +330,21 @@ export const Transactions = () => {
           }
 
           return {
-            id: txData.id,
-            typeName: txData.typeName,
             amount,
             assetId: txData.assetId || 'DCC',
             fee: txData.fee.getTokens().toNumber(),
-            timestamp: txData.timestamp,
+            id: txData.id,
             sender: txData.sender,
-            recipient: txData.recipient,
+            timestamp: txData.timestamp,
+            typeName: txData.typeName,
+            ...(txData.recipient != null && { recipient: txData.recipient }),
           };
         });
 
         allTransactions.push(...mapped);
 
         if (txList.length < MAX_LIMIT) break;
-        after = txList[txList.length - 1].id;
+        after = (txList[txList.length - 1] as { id: string }).id;
       }
 
       if (allTransactions.length === 0) {
@@ -391,7 +381,7 @@ export const Transactions = () => {
 
       alert(`Exported ${allTransactions.length} transactions`);
     } catch (error) {
-      console.error('[Transactions] Export failed:', error);
+      logger.error('[Transactions] Export failed:', error);
       alert('Failed to export transactions. Please try again.');
     } finally {
       setIsExporting(false);
@@ -441,9 +431,9 @@ export const Transactions = () => {
               setCurrentPage(1);
             }}
             options={[
-              { value: '50', label: 'Last 50' },
-              { value: '100', label: 'Last 100' },
-              { value: '500', label: 'Last 500' },
+              { label: 'Last 50', value: '50' },
+              { label: 'Last 100', value: '100' },
+              { label: 'Last 500', value: '500' },
             ]}
           />
 
@@ -454,11 +444,11 @@ export const Transactions = () => {
               setCurrentPage(1);
             }}
             options={[
-              { value: 'all', label: 'All Types' },
-              { value: 'send', label: 'Send' },
-              { value: 'receive', label: 'Receive' },
-              { value: 'exchange', label: 'Exchange' },
-              { value: 'lease', label: 'Lease' },
+              { label: 'All Types', value: 'all' },
+              { label: 'Send', value: 'send' },
+              { label: 'Receive', value: 'receive' },
+              { label: 'Exchange', value: 'exchange' },
+              { label: 'Lease', value: 'lease' },
             ]}
           />
 
@@ -469,10 +459,10 @@ export const Transactions = () => {
               setCurrentPage(1);
             }}
             options={[
-              { value: 'all', label: 'All Assets' },
+              { label: 'All Assets', value: 'all' },
               ...uniqueAssets.map((asset) => ({
-                value: asset,
                 label: asset,
+                value: asset,
               })),
             ]}
           />
@@ -485,41 +475,41 @@ export const Transactions = () => {
         {/* Transactions Table */}
         <Card>
           <TableWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Asset</th>
-                <th>Fee</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedTransactions?.map((tx) => (
-                <tr key={tx.id}>
-                  <td>
-                    <TransactionType $type={tx.type}>
-                      {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-                    </TransactionType>
-                  </td>
-                  <td>
-                    <Amount $positive={tx.amount >= 0}>
-                      {tx.amount >= 0 ? '+' : ''}
-                      {tx.amount.toFixed(8)}
-                    </Amount>
-                  </td>
-                  <td>{tx.asset}</td>
-                  <td>{tx.fee.toFixed(8)}</td>
-                  <td>{new Date(tx.timestamp).toLocaleString()}</td>
-                  <td>
-                    <span style={{ textTransform: 'capitalize' }}>{tx.status}</span>
-                  </td>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Asset</th>
+                  <th>Fee</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {paginatedTransactions?.map((tx) => (
+                  <tr key={tx.id}>
+                    <td>
+                      <TransactionType $type={tx.type}>
+                        {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                      </TransactionType>
+                    </td>
+                    <td>
+                      <Amount $positive={tx.amount >= 0}>
+                        {tx.amount >= 0 ? '+' : ''}
+                        {tx.amount.toFixed(8)}
+                      </Amount>
+                    </td>
+                    <td>{tx.asset}</td>
+                    <td>{tx.fee.toFixed(8)}</td>
+                    <td>{new Date(tx.timestamp).toLocaleString()}</td>
+                    <td>
+                      <span style={{ textTransform: 'capitalize' }}>{tx.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </TableWrapper>
 
           {/* Pagination */}

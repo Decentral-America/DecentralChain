@@ -1,4 +1,5 @@
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Timer task data structure
@@ -122,7 +123,7 @@ const generateTaskId = (): string => {
  *
  * // Schedule a callback
  * const taskId = timeline.schedule(() => {
- *   console.log('Executed after 2 seconds');
+ *   logger.debug('Executed after 2 seconds');
  * }, 2000);
  *
  * // Wait without callback
@@ -158,8 +159,8 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
 
           if (debug) {
             const elapsed = Date.now() - startTime;
-            console.log(
-              `[Timeline] Task executed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`
+            logger.debug(
+              `[Timeline] Task executed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`,
             );
           }
         } catch (error) {
@@ -168,7 +169,7 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
           onTaskError?.(id, err);
 
           if (debug) {
-            console.error(`[Timeline] Task error: ${id}`, err);
+            logger.error(`[Timeline] Task error: ${id}`, err);
           }
         } finally {
           tasksRef.current.delete(id);
@@ -176,26 +177,43 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       }, delay);
 
       const task: TimelineTask = {
-        id,
         callback,
         delay,
+        id,
+        reject: reject,
+        resolve: resolve,
         startTime,
         timeout,
-        resolve: resolve!,
-        reject: reject!,
       };
 
       tasksRef.current.set(id, task);
 
       if (debug) {
-        console.log(
-          `[Timeline] Task scheduled: ${id} (delay: ${delay}ms, active tasks: ${tasksRef.current.size})`
+        logger.debug(
+          `[Timeline] Task scheduled: ${id} (delay: ${delay}ms, active tasks: ${tasksRef.current.size})`,
         );
       }
 
       return id;
     },
-    [debug, onTaskExecuted, onTaskError]
+    [debug, onTaskExecuted, onTaskError],
+  );
+
+  const cancel = useCallback(
+    (id: string) => {
+      const task = tasksRef.current.get(id);
+      if (task) {
+        clearTimeout(task.timeout);
+        task.reject(new Error('Task cancelled'));
+        tasksRef.current.delete(id);
+        onTaskCancelled?.(id);
+
+        if (debug) {
+          logger.debug(`[Timeline] Task cancelled: ${id}`);
+        }
+      }
+    },
+    [debug, onTaskCancelled],
   );
 
   const scheduleWithId = useCallback(
@@ -220,8 +238,8 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
 
           if (debug) {
             const elapsed = Date.now() - startTime;
-            console.log(
-              `[Timeline] Task executed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`
+            logger.debug(
+              `[Timeline] Task executed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`,
             );
           }
         } catch (error) {
@@ -230,7 +248,7 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
           onTaskError?.(id, err);
 
           if (debug) {
-            console.error(`[Timeline] Task error: ${id}`, err);
+            logger.error(`[Timeline] Task error: ${id}`, err);
           }
         } finally {
           tasksRef.current.delete(id);
@@ -238,26 +256,26 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       }, delay);
 
       const task: TimelineTask = {
-        id,
         callback,
         delay,
+        id,
+        reject: reject,
+        resolve: resolve,
         startTime,
         timeout,
-        resolve: resolve!,
-        reject: reject!,
       };
 
       tasksRef.current.set(id, task);
 
       if (debug) {
-        console.log(
-          `[Timeline] Task scheduled with ID: ${id} (delay: ${delay}ms, active tasks: ${tasksRef.current.size})`
+        logger.debug(
+          `[Timeline] Task scheduled with ID: ${id} (delay: ${delay}ms, active tasks: ${tasksRef.current.size})`,
         );
       }
 
       return id;
     },
-    [debug, onTaskExecuted, onTaskError]
+    [debug, onTaskExecuted, onTaskError, cancel],
   );
 
   const wait = useCallback(
@@ -277,47 +295,30 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
 
           if (debug) {
             const elapsed = Date.now() - startTime;
-            console.log(
-              `[Timeline] Wait completed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`
+            logger.debug(
+              `[Timeline] Wait completed: ${id} (scheduled: ${delay}ms, actual: ${elapsed}ms)`,
             );
           }
         }, delay);
 
         const task: TimelineTask = {
-          id,
           callback: () => {}, // Empty callback for wait
           delay,
+          id,
+          reject,
+          resolve,
           startTime,
           timeout,
-          resolve,
-          reject,
         };
 
         tasksRef.current.set(id, task);
 
         if (debug) {
-          console.log(`[Timeline] Wait scheduled: ${id} (delay: ${delay}ms)`);
+          logger.debug(`[Timeline] Wait scheduled: ${id} (delay: ${delay}ms)`);
         }
       });
     },
-    [debug]
-  );
-
-  const cancel = useCallback(
-    (id: string) => {
-      const task = tasksRef.current.get(id);
-      if (task) {
-        clearTimeout(task.timeout);
-        task.reject(new Error('Task cancelled'));
-        tasksRef.current.delete(id);
-        onTaskCancelled?.(id);
-
-        if (debug) {
-          console.log(`[Timeline] Task cancelled: ${id}`);
-        }
-      }
-    },
-    [debug, onTaskCancelled]
+    [debug],
   );
 
   const cancelAll = useCallback(() => {
@@ -329,7 +330,7 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
     tasksRef.current.clear();
 
     if (debug) {
-      console.log(`[Timeline] All tasks cancelled (${count} tasks)`);
+      logger.debug(`[Timeline] All tasks cancelled (${count} tasks)`);
     }
   }, [debug]);
 
@@ -363,14 +364,14 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
   }, []);
 
   return {
-    schedule,
-    scheduleWithId,
-    wait,
     cancel,
     cancelAll,
     getActiveCount,
-    hasTask,
     getRemainingTime,
+    hasTask,
+    schedule,
+    scheduleWithId,
+    wait,
   };
 };
 
@@ -390,7 +391,7 @@ export const useTimelineWithDebounce = () => {
     (id: string, callback: () => void, delay: number) => {
       timeline.scheduleWithId(id, callback, delay);
     },
-    [timeline]
+    [timeline],
   );
 
   return debounce;
@@ -402,13 +403,13 @@ export const useTimelineWithDebounce = () => {
  *
  * @example
  * const { start, stop } = useInterval(() => {
- *   console.log('Every 2 seconds');
+ *   logger.debug('Every 2 seconds');
  * }, 2000);
  */
 export const useInterval = (
   callback: () => void,
   delay: number,
-  options: { autoStart?: boolean } = {}
+  options: { autoStart?: boolean } = {},
 ) => {
   const { autoStart = true } = options;
   const timeline = useTimeline();
@@ -453,4 +454,4 @@ export const useInterval = (
 /**
  * Export types for external usage
  */
-export type { TimelineTask, UseTimelineReturn, UseTimelineOptions };
+export type { TimelineTask, UseTimelineOptions, UseTimelineReturn };

@@ -1,6 +1,5 @@
-@use "sass:map";
-@use "variables";
-@use "mixins.scss";
+@import "variables";
+@import "mixins.scss";
 
 table {
     width: 100%;
@@ -8,17 +7,17 @@ table {
 
     &.table-hide {
         display: block;
-        border-bottom: 1px dashed map.get(variables.$colors, accent50);
+        border-bottom: 1px dashed map-get($colors, accent50);
         > thead, tbody {
             display: none;
         }
     }
 
     tr {
-        border-bottom: 1px dashed map.get(variables.$colors, accent50);
+        border-bottom: 1px dashed map-get($colors, accent50);
 
         &.spam {
-            background-color: map.get(variables.$colors, basic50);
+            background-color: map-get($colors, basic50);
 
             > td {
                 opacity: 0.3;
@@ -27,13 +26,12 @@ table {
     }
 
     td {
-        max-width: 380px;
         padding: 24px;
     }
 
     > thead {
-        background-color: map.get(variables.$colors, basic50);
-        @include mixins.font(body, white);
+        background-color: map-get($colors, basic50);
+        @include font(body, white);
 
         tr {
             border: none;
@@ -43,13 +41,12 @@ table {
             padding: 14px 24px;
             text-align: left;
             box-sizing: border-box;
-            max-width: 380px;
         }
     }
 
-    @each $size in map.keys(variables.$breakpoints) {
+    @each $size in map-keys($breakpoints) {
         &.table-#{$size}-transform {
-            @include mixins.breakpoint($size) {
+            @include breakpoint($size) {
                 > thead {
                     border: none;
                     clip: rect(0 0 0 0);
@@ -83,15 +80,15 @@ table {
                         top: 0;
 
                         //Todo: the same style as dictionary-pair-key
-                        @include mixins.responsive_styles(variables.$card_inner, padding-right, padding-left);
-                        @include mixins.responsive_styles(variables.$card_column);
+                        @include responsive_styles($card_inner, padding-right, padding-left);
+                        @include responsive_styles($card_column);
                         display: flex;
                         flex: 0 0 auto;
                         align-items: center;
                         height: 100%;
                         box-sizing: border-box;
-                        background-color: map.get(variables.$colors, basic50);
-                        @include mixins.font(body, white);
+                        background-color: map-get($colors, basic50);
+                        @include font(body, white);
                     }
                 }
             }

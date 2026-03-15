@@ -2,7 +2,7 @@
  * Breadcrumbs Component
  * Shows current route path and allows navigation back to parent routes
  */
-import { useLocation, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const BreadcrumbNav = styled.nav`
@@ -13,7 +13,9 @@ const BreadcrumbNav = styled.nav`
   font-size: 0.875rem;
 `;
 
-const BreadcrumbLink = styled(Link)`
+const BreadcrumbLink = styled(
+  Link as React.ComponentType<React.AnchorHTMLAttributes<HTMLAnchorElement> & { to: string }>,
+)`
   color: ${(props) => props.theme.colors.text};
   text-decoration: none;
   text-transform: capitalize;
@@ -48,7 +50,7 @@ export const Breadcrumbs = () => {
     <BreadcrumbNav aria-label="Breadcrumb">
       <BreadcrumbLink to="/">Home</BreadcrumbLink>
       {paths.map((path, index) => {
-        const to = '/' + paths.slice(0, index + 1).join('/');
+        const to = `/${paths.slice(0, index + 1).join('/')}`;
         const isLast = index === paths.length - 1;
 
         // Format path name (e.g., 'my-wallet' -> 'My Wallet')

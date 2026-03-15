@@ -1,9 +1,10 @@
 /**
  * Auth Feature Exports
  */
-export { LoginForm } from './LoginForm';
+
+export { AccountSwitcher } from './AccountSwitcher';
 export { CreateAccount } from './CreateAccount';
 export { ImportAccount } from './ImportAccount';
-export { AccountSwitcher } from './AccountSwitcher';
-export { SeedBackup } from './SeedBackup';
+export { LoginForm } from './LoginForm';
 export { PasswordProtection } from './PasswordProtection';
+export { SeedBackup } from './SeedBackup';

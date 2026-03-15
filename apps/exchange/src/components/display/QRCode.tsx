@@ -1,6 +1,10 @@
+import { QRCodeCanvas as QRCodeCanvasBase, QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
 import React from 'react';
-import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 import styled from 'styled-components';
+
+// React 19 type compatibility casts
+const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
+const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 /**
  * QRCode Component
@@ -162,13 +166,13 @@ export const QRCode: React.FC<QRCodeProps> = ({
   };
 
   const qrProps = {
-    value,
-    size,
     bgColor,
     fgColor,
-    level,
-    includeMargin,
     imageSettings,
+    includeMargin,
+    level,
+    size,
+    value,
   };
 
   const qrElement =

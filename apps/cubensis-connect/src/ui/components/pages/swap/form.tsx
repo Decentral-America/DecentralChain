@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import {
   SwapClient,
@@ -91,16 +91,16 @@ const swapInfoLoadingState: SwapInfoState = {
 
 const swapInfoErrorState: SwapInfoState = {
   [SwapVendor.Keeper]: {
-    type: 'error',
     code: SwapClientErrorCode.UNEXPECTED,
+    type: 'error',
   },
   [SwapVendor.Puzzle]: {
-    type: 'error',
     code: SwapClientErrorCode.UNEXPECTED,
+    type: 'error',
   },
   [SwapVendor.Swopfi]: {
-    type: 'error',
     code: SwapClientErrorCode.UNEXPECTED,
+    type: 'error',
   },
 };
 
@@ -201,7 +201,7 @@ export function SwapForm({
     dispatch(setUiState({ slippageToleranceIndex: index }));
   }
 
-  const slippageTolerance = SLIPPAGE_TOLERANCE_OPTIONS[slippageToleranceIndex];
+  const slippageTolerance = SLIPPAGE_TOLERANCE_OPTIONS[slippageToleranceIndex]!;
 
   const [swapInfo, setSwapInfo] = useState(swapInfoLoadingState);
 
@@ -245,7 +245,7 @@ export function SwapForm({
     }
 
     return {
-      address: accountAddress,
+      ...(accountAddress != null && { address: accountAddress }),
       amountCoins: fromAmount.toCoins(),
       fromAssetId: fromAsset.id,
       slippageTolerance,
@@ -286,10 +286,6 @@ export function SwapForm({
     }
 
     return swapClient.subscribe({
-      onError: () => {
-        setSwapInfo(swapInfoLoadingState);
-        setSwapClientError(t('swap.exchangeChannelConnectionError'));
-      },
       onData: (vendor, response) => {
         setSwapClientError(null);
 
@@ -303,12 +299,11 @@ export function SwapForm({
 
         if (response.type === 'error') {
           vendorState = {
-            type: 'error',
             code: response.code,
+            type: 'error',
           };
         } else {
           vendorState = {
-            type: 'data',
             minimumReceivedTokens: new Money(response.minimumReceivedCoins, toAsset).getTokens(),
             originalMinimumReceivedTokens: new Money(
               response.originalMinimumReceivedCoins,
@@ -317,6 +312,7 @@ export function SwapForm({
             priceImpact: response.priceImpact,
             toAmountTokens: new Money(response.amountCoins, toAsset).getTokens(),
             tx: response.tx,
+            type: 'data',
           };
         }
 
@@ -324,6 +320,10 @@ export function SwapForm({
           ...prevState,
           [typedVendor]: vendorState,
         }));
+      },
+      onError: () => {
+        setSwapInfo(swapInfoLoadingState);
+        setSwapClientError(t('swap.exchangeChannelConnectionError'));
       },
     });
   }, [swapClient, swapParams, t, toAsset]);
@@ -593,9 +593,9 @@ export function SwapForm({
                     toAssetBalance.asset.precision,
                     BigNumber.ROUND_MODE.ROUND_FLOOR,
                     {
+                      decimalSeparator: '.',
                       fractionGroupSeparator: '',
                       fractionGroupSize: 0,
-                      decimalSeparator: '.',
                       groupSeparator: ' ',
                       groupSize: 3,
                       prefix: '',
@@ -619,9 +619,10 @@ export function SwapForm({
                   return (
                     <button
                       key={vendor}
-                      className={clsx(styles.toAmountCard, {
-                        [styles.toAmountCardSelected]: swapVendor === vendor,
-                      })}
+                      className={clsx(
+                        styles.toAmountCard,
+                        swapVendor === vendor && styles.toAmountCardSelected,
+                      )}
                       type="button"
                       onClick={() => {
                         setSwapVendorTouched(true);
@@ -880,7 +881,7 @@ export function SwapForm({
                   />
                 ) : (
                   <span className={styles.summaryValueText}>
-                    {formatFeeOption(finalFeeOptions[0])}
+                    {formatFeeOption(finalFeeOptions[0]!)}
                   </span>
                 )}
               </div>

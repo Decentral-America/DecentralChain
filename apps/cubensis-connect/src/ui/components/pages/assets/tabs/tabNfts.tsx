@@ -16,8 +16,8 @@ import { sortAndFilterNfts, useUiState } from './helpers';
 const PLACEHOLDERS = [...Array(4).keys()].map<Nft>(
   (key) =>
     ({
-      id: `${key}`,
       creator: `${key}`,
+      id: `${key}`,
     }) as Nft,
 );
 
@@ -66,7 +66,7 @@ export function TabNfts() {
           if (!creator) return [creatorNfts, creatorCounts];
 
           if (Object.hasOwn(creatorCounts, creator)) {
-            creatorCounts[creator] += 1;
+            creatorCounts[creator] = creatorCounts[creator]! + 1;
             return [creatorNfts, creatorCounts];
           }
 

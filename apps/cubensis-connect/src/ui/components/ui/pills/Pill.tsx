@@ -14,10 +14,12 @@ interface Props {
 }
 
 export function Pill({ id, text, selected, hidden, className, onSelect }: Props) {
-  const newClassName = clsx(styles.pill, className, {
-    [styles.selectedPill]: selected,
-    [styles.hiddenPill]: hidden,
-  });
+  const newClassName = clsx(
+    styles.pill,
+    className,
+    selected && styles.selectedPill,
+    hidden && styles.hiddenPill,
+  );
 
   const onClick = _onClick(onSelect);
   return (

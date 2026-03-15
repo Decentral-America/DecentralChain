@@ -24,7 +24,7 @@ export function AssetLogo({ className, assetId, name, hasSponsorship, hasScript 
   if (!logoSrc) {
     return (
       <div className={clsx(styles.assetLogo, className)} style={style}>
-        <div>{name?.[0].toUpperCase()}</div>
+        <div>{name?.[0]?.toUpperCase()}</div>
         {(hasSponsorship || hasScript) && (
           <div className={styles.assetSubIconContainer}>
             <div className={styles.assetSubIcon}>

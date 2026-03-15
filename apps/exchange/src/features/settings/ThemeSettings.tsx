@@ -3,15 +3,15 @@
  * Allows users to toggle between light and dark themes
  * Persists theme choice to localStorage
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@/contexts/ThemeContext';
 import { Card } from '@/components/atoms/Card';
+import { useTheme } from '@/contexts/ThemeContext';
 
 /**
  * Styled Components
  */
-const SettingsCard = styled(Card)`
+const SettingsCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 
@@ -121,16 +121,16 @@ const InfoBox = styled.div`
  */
 const themeOptions = [
   {
-    value: 'light' as const,
-    name: 'Light Theme',
     description: 'Bright and clean interface ideal for daytime use',
     icon: '☀️',
+    name: 'Light Theme',
+    value: 'light' as const,
   },
   {
-    value: 'dark' as const,
-    name: 'Dark Theme',
     description: 'Reduced eye strain and better battery life',
     icon: '🌙',
+    name: 'Dark Theme',
+    value: 'dark' as const,
   },
 ];
 

@@ -6,8 +6,8 @@ import { setActiveMessage, setActiveNotification } from './notifications';
 
 function createMVAction<TActionType extends AppAction['type']>(type: TActionType) {
   return (payload: AppActionPayload<TActionType>) => ({
-    type,
     payload,
+    type,
   });
 }
 

@@ -3,8 +3,9 @@
  * Contextual information on hover
  * Migrated to Material-UI Tooltip
  */
-import { ReactNode } from 'react';
-import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip';
+
+import MuiTooltip, { type TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip';
+import { type ReactNode } from 'react';
 
 export interface TooltipProps
   extends Omit<MuiTooltipProps, 'title' | 'placement' | 'children' | 'content'> {
@@ -31,14 +32,14 @@ export const Tooltip = ({
       slotProps={{
         tooltip: {
           sx: {
-            maxWidth: maxWidth,
             fontSize: '0.75rem',
+            maxWidth: maxWidth,
           },
         },
       }}
       {...props}
     >
-      <span style={{ display: 'inline-flex', alignItems: 'center' }}>{children}</span>
+      <span style={{ alignItems: 'center', display: 'inline-flex' }}>{children}</span>
     </MuiTooltip>
   );
 };

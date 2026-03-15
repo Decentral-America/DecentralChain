@@ -4,11 +4,12 @@
  * Switch between accounts without re-entering password (vault remains unlocked)
  * Matches Angular's account management functionality
  */
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 
 const PageContainer = styled.div`
@@ -192,7 +193,7 @@ export const AccountManagerPage = () => {
   useEffect(() => {
     if (!multiAccount.isSignedIn) {
       // Vault locked, need password
-      console.log('[AccountManager] Vault locked, redirecting to login');
+      logger.debug('[AccountManager] Vault locked, redirecting to login');
       navigate('/auth/login');
     }
   }, [navigate]);
@@ -209,7 +210,7 @@ export const AccountManagerPage = () => {
       const targetRoute = getActiveState('wallet');
       navigate(targetRoute);
     } catch (error) {
-      console.error('[AccountManager] Switch failed:', error);
+      logger.error('[AccountManager] Switch failed:', error);
       setIsLoading(false);
     }
   };
@@ -222,7 +223,7 @@ export const AccountManagerPage = () => {
   const handleLogoutAll = async () => {
     if (
       !confirm(
-        'This will lock your vault and you will need your password to access any account. Continue?'
+        'This will lock your vault and you will need your password to access any account. Continue?',
       )
     ) {
       return;

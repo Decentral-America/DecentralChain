@@ -1,1 +1,1 @@
-export { EmptyData as default } from './EmptyData.view';
+export {EmptyData as default} from './EmptyData.view';

@@ -2,30 +2,36 @@
  * ImportLedger Page
  * Modern Ledger import page with 2-column layout matching signup/signin theme
  */
-import React from 'react';
-import { Box, Container, Grid, Typography, Stack } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import { landingTheme } from '@/theme/landingTheme';
-import { ImportLedger as ImportLedgerForm } from '@/features/auth/ImportLedger';
+
 import SecurityIcon from '@mui/icons-material/Security';
 import UsbIcon from '@mui/icons-material/Usb';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import { Box, Container, Grid, Stack, Typography } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import type React from 'react';
+import { ImportLedger as ImportLedgerForm } from '@/features/auth/ImportLedger';
+import { landingTheme } from '@/theme/landingTheme';
 
 export const ImportLedger: React.FC = () => {
   return (
     <ThemeProvider theme={landingTheme}>
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
           alignItems: 'center',
           bgcolor: 'background.default',
+          display: 'flex',
+          minHeight: '100vh',
         }}
       >
         <Container maxWidth="xl" sx={{ py: 8 }}>
           <Grid container spacing={6} alignItems="center">
             {/* Left Column - Branding & Features */}
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                md: 5,
+                xs: 12,
+              }}
+            >
               <Box sx={{ pr: { md: 4 } }}>
                 {/* Logo/Title */}
                 <Box sx={{ mb: 3 }}>
@@ -45,15 +51,15 @@ export const ImportLedger: React.FC = () => {
                   variant="h2"
                   fontWeight={800}
                   sx={{
-                    mb: 2,
-                    fontSize: { xs: '2rem', md: '2.5rem' },
+                    fontSize: { md: '2.5rem', xs: '2rem' },
                     lineHeight: 1.2,
+                    mb: 2,
                   }}
                 >
                   Maximum security with Ledger
                 </Typography>
 
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: 18 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
                   Import your wallet using a Ledger hardware device for bank-grade security. Your
                   private keys never leave the device.
                 </Typography>
@@ -63,15 +69,15 @@ export const ImportLedger: React.FC = () => {
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: 'primary.main',
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         flexShrink: 0,
+                        height: 40,
+                        justifyContent: 'center',
+                        width: 40,
                       }}
                     >
                       <SecurityIcon sx={{ fontSize: 20 }} />
@@ -81,8 +87,8 @@ export const ImportLedger: React.FC = () => {
                         Hardware Security
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Private keys stored in secure element chip, never exposed to the internet
-                        or your computer.
+                        Private keys stored in secure element chip, never exposed to the internet or
+                        your computer.
                       </Typography>
                     </Box>
                   </Stack>
@@ -90,15 +96,15 @@ export const ImportLedger: React.FC = () => {
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: 'secondary.main',
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         flexShrink: 0,
+                        height: 40,
+                        justifyContent: 'center',
+                        width: 40,
                       }}
                     >
                       <UsbIcon sx={{ fontSize: 20 }} />
@@ -117,15 +123,15 @@ export const ImportLedger: React.FC = () => {
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: 'primary.main',
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         flexShrink: 0,
+                        height: 40,
+                        justifyContent: 'center',
+                        width: 40,
                       }}
                     >
                       <VerifiedUserIcon sx={{ fontSize: 20 }} />
@@ -145,12 +151,12 @@ export const ImportLedger: React.FC = () => {
                 {/* Device requirements */}
                 <Box
                   sx={{
-                    mt: 4,
-                    p: 2,
                     bgcolor: 'background.paper',
                     border: '1px solid',
                     borderColor: 'divider',
                     borderRadius: 2,
+                    mt: 4,
+                    p: 2,
                   }}
                 >
                   <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
@@ -170,13 +176,18 @@ export const ImportLedger: React.FC = () => {
             </Grid>
 
             {/* Right Column - Import Form */}
-            <Grid item xs={12} md={7}>
+            <Grid
+              size={{
+                md: 7,
+                xs: 12,
+              }}
+            >
               <Box
                 sx={{
                   bgcolor: 'background.paper',
                   borderRadius: 3,
-                  p: 4,
                   boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+                  p: 4,
                 }}
               >
                 <ImportLedgerForm />

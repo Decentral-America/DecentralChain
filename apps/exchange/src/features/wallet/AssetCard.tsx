@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 
-const AssetCardContainer = styled(Card)`
+const AssetCardContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   display: flex;
   align-items: center;
   gap: ${(p) => p.theme.spacing.md};
@@ -98,8 +98,8 @@ interface AssetCardProps {
  */
 const formatBalance = (balance: number, decimals: number = 8): string => {
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
+    minimumFractionDigits: 0,
   }).format(balance);
 };
 
@@ -108,10 +108,10 @@ const formatBalance = (balance: number, decimals: number = 8): string => {
  */
 const formatUSD = (value: number): string => {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+    style: 'currency',
   }).format(value);
 };
 

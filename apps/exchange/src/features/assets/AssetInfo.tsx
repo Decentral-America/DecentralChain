@@ -3,11 +3,11 @@
  * Displays comprehensive asset information and metadata
  * Shows all asset details including name, description, supply, and properties
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
+import { useAssetDetails } from '@/api/services/assetsService';
 import { Card } from '@/components/atoms/Card';
 import { Spinner } from '@/components/atoms/Spinner';
-import { useAssetDetails } from '@/api/services/assetsService';
 
 /**
  * Component Props
@@ -22,7 +22,7 @@ export interface AssetInfoProps {
 /**
  * Styled Components
  */
-const Container = styled(Card)`
+const Container = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
 `;
 
@@ -95,11 +95,11 @@ const Badge = styled.span<{ variant: 'success' | 'warning' | 'info' }>`
   background-color: ${({ theme, variant }) => {
     switch (variant) {
       case 'success':
-        return theme.colors.success + '20';
+        return `${theme.colors.success}20`;
       case 'warning':
-        return theme.colors.warning + '20';
+        return `${theme.colors.warning}20`;
       case 'info':
-        return theme.colors.info + '20';
+        return `${theme.colors.info}20`;
     }
   }};
   color: ${({ theme, variant }) => {
@@ -141,11 +141,11 @@ const formatNumber = (num: number): string => {
  */
 const formatTimestamp = (timestamp: number): string => {
   return new Date(timestamp).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    month: 'long',
+    year: 'numeric',
   });
 };
 
@@ -153,7 +153,7 @@ const formatTimestamp = (timestamp: number): string => {
  * Calculate actual quantity with decimals
  */
 const formatQuantity = (quantity: number, decimals: number): string => {
-  const actualQuantity = quantity / Math.pow(10, decimals);
+  const actualQuantity = quantity / 10 ** decimals;
   return formatNumber(actualQuantity);
 };
 
@@ -249,7 +249,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
         {showIssuer && (
           <InfoItem>
             <InfoLabel>Issuer</InfoLabel>
-            <InfoValue style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+            <InfoValue style={{ fontFamily: 'monospace', fontSize: '12px' }}>
               {asset.issuer}
             </InfoValue>
           </InfoItem>
@@ -282,7 +282,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
       {!compact && (
         <InfoItem style={{ marginTop: '16px' }}>
           <InfoLabel>Origin Transaction</InfoLabel>
-          <InfoValue style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+          <InfoValue style={{ fontFamily: 'monospace', fontSize: '12px' }}>
             {asset.originTransactionId}
           </InfoValue>
         </InfoItem>

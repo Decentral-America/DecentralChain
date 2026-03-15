@@ -1,11 +1,9 @@
-"use strict";
 /**
  * Electron Preload Script
  *
  * Safely exposes Electron APIs to the renderer process
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-const electron_1 = require("electron");
+import { contextBridge, ipcRenderer } from 'electron';
 /**
  * Exposed Electron API
  *
@@ -37,7 +35,7 @@ const electronAPI = {
             'window:close',
         ];
         if (validChannels.includes(channel)) {
-            electron_1.ipcRenderer.send(channel, ...args);
+            ipcRenderer.send(channel, ...args);
         }
         else {
             console.warn('Invalid IPC channel:', channel);
@@ -56,10 +54,10 @@ const electronAPI = {
         ];
         if (validChannels.includes(channel)) {
             const subscription = (_event, ...args) => callback(...args);
-            electron_1.ipcRenderer.on(channel, subscription);
+            ipcRenderer.on(channel, subscription);
             // Return unsubscribe function
             return () => {
-                electron_1.ipcRenderer.removeListener(channel, subscription);
+                ipcRenderer.removeListener(channel, subscription);
             };
         }
         else {
@@ -79,7 +77,7 @@ const electronAPI = {
             'app:install-update',
         ];
         if (validChannels.includes(channel)) {
-            return await electron_1.ipcRenderer.invoke(channel, ...args);
+            return await ipcRenderer.invoke(channel, ...args);
         }
         else {
             console.warn('Invalid IPC channel:', channel);
@@ -89,5 +87,5 @@ const electronAPI = {
 };
 // Expose protected methods that allow the renderer process
 // to use ipcRenderer without exposing the entire object
-electron_1.contextBridge.exposeInMainWorld('electron', electronAPI);
+contextBridge.exposeInMainWorld('electron', electronAPI);
 //# sourceMappingURL=preload.js.map

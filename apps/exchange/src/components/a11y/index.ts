@@ -5,9 +5,9 @@
  */
 
 export {
-  LiveRegion,
   AnnouncementProvider,
+  LiveRegion,
+  type LiveRegionProps,
   useAnnounce,
   useAnnouncement,
-  type LiveRegionProps,
 } from './LiveRegion';

@@ -4,11 +4,13 @@
  * Provides accessible keyboard navigation and active state styling
  * Migrated to Material-UI Tabs
  */
-import React, { useState } from 'react';
-import MuiTabs from '@mui/material/Tabs';
-import MuiTab from '@mui/material/Tab';
+
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import MuiTab from '@mui/material/Tab';
+import MuiTabs from '@mui/material/Tabs';
+import type React from 'react';
+import { useState } from 'react';
 
 export interface Tab {
   id: string;
@@ -27,33 +29,33 @@ export interface TabsProps {
 const StyledTabs = styled(MuiTabs, {
   shouldForwardProp: (prop) => prop !== 'tabVariant',
 })<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
-  borderBottom: tabVariant === 'underline' ? `2px solid ${theme.palette.divider}` : 'none',
   backgroundColor: tabVariant === 'default' ? theme.palette.background.paper : 'transparent',
+  borderBottom: tabVariant === 'underline' ? `2px solid ${theme.palette.divider}` : 'none',
   borderRadius: tabVariant === 'default' ? theme.shape.borderRadius : 0,
-  padding: tabVariant === 'default' ? theme.spacing(0.5) : 0,
   marginBottom: theme.spacing(3),
   minHeight: tabVariant === 'pills' ? 40 : 48,
+  padding: tabVariant === 'default' ? theme.spacing(0.5) : 0,
 }));
 
 const StyledTab = styled(MuiTab, {
   shouldForwardProp: (prop) => prop !== 'tabVariant',
 })<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
-  padding: tabVariant === 'pills' ? '10px 20px' : '12px 16px',
-  minHeight: tabVariant === 'pills' ? 40 : 48,
+  '&.Mui-selected': {
+    backgroundColor: tabVariant === 'pills' ? theme.palette.primary.main : 'transparent',
+    color: tabVariant === 'pills' ? 'white' : theme.palette.primary.main,
+    fontWeight: 600,
+  },
   borderRadius:
     tabVariant === 'pills'
-      ? theme.shape.borderRadius * 4
+      ? Number(theme.shape.borderRadius) * 4
       : tabVariant === 'default'
-        ? theme.shape.borderRadius
+        ? Number(theme.shape.borderRadius)
         : 0,
   fontSize: '0.875rem',
   fontWeight: 500,
+  minHeight: tabVariant === 'pills' ? 40 : 48,
+  padding: tabVariant === 'pills' ? '10px 20px' : '12px 16px',
   textTransform: 'none',
-  '&.Mui-selected': {
-    fontWeight: 600,
-    backgroundColor: tabVariant === 'pills' ? theme.palette.primary.main : 'transparent',
-    color: tabVariant === 'pills' ? 'white' : theme.palette.primary.main,
-  },
 }));
 
 interface TabPanelProps {

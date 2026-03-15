@@ -4,15 +4,16 @@
  * Replaces Angular w-input directive
  * Migrated to Material-UI TextField
  */
-import React from 'react';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+
 import InputAdornment from '@mui/material/InputAdornment';
 import { styled } from '@mui/material/styles';
+import TextField, { type TextFieldProps } from '@mui/material/TextField';
+import React from 'react';
 
 export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'error'> {
   label?: string;
-  error?: string;
-  helperText?: string;
+  error?: string | undefined;
+  helperText?: string | undefined;
   step?: string;
   min?: string | number;
   max?: string | number;
@@ -33,9 +34,6 @@ export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'e
 const StyledTextField = styled(TextField, {
   shouldForwardProp: (prop) => !['inputSize', 'leftIcon', 'rightIcon'].includes(prop as string),
 })<{ inputSize?: string }>(({ theme, inputSize }) => ({
-  '& .MuiInputBase-root': {
-    fontSize: inputSize === 'small' ? '0.875rem' : inputSize === 'large' ? '1.125rem' : '1rem',
-  },
   '& .MuiInputBase-input': {
     padding:
       inputSize === 'small'
@@ -43,6 +41,9 @@ const StyledTextField = styled(TextField, {
         : inputSize === 'large'
           ? theme.spacing(2, 3)
           : theme.spacing(1.5, 2),
+  },
+  '& .MuiInputBase-root': {
+    fontSize: inputSize === 'small' ? '0.875rem' : inputSize === 'large' ? '1.125rem' : '1rem',
   },
 }));
 
@@ -62,7 +63,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       required,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = React.useId();
     const inputId = id || `input-${generatedId}`;
@@ -80,22 +81,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         variant="outlined"
         required={required}
         InputProps={{
-          startAdornment: leftIcon ? (
-            <InputAdornment position="start">{leftIcon}</InputAdornment>
-          ) : undefined,
           endAdornment: rightIcon ? (
             <InputAdornment position="end">{rightIcon}</InputAdornment>
           ) : undefined,
+          startAdornment: leftIcon ? (
+            <InputAdornment position="start">{leftIcon}</InputAdornment>
+          ) : undefined,
         }}
         inputProps={{
-          'aria-required': ariaRequired || required,
-          'aria-label': ariaLabel,
           'aria-invalid': !!error,
+          'aria-label': ariaLabel,
+          'aria-required': ariaRequired || required,
         }}
         {...props}
       />
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

@@ -3,12 +3,14 @@
  * Displays detailed asset information including blockchain metadata
  * Matches Angular modalManager.showAssetInfo functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
-import styled from 'styled-components';
+
 import { useQuery } from '@tanstack/react-query';
 import * as ds from 'data-service';
+import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
 import { useClipboard } from '@/hooks/useClipboard';
+import { logger } from '@/lib/logger';
 
 interface AssetInfoModalProps {
   isOpen: boolean;
@@ -16,22 +18,35 @@ interface AssetInfoModalProps {
   assetId: string;
 }
 
+interface AssetInfoData {
+  name?: string;
+  description?: string;
+  quantity?: number | string;
+  precision?: number;
+  reissuable?: boolean;
+  sender?: string;
+  height?: number;
+  timestamp?: number;
+  hasScript?: boolean;
+  minSponsoredFee?: number | string;
+}
+
 export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps) {
   const { copyToClipboard } = useClipboard();
 
   // Fetch full asset details from blockchain
   const { data: assetInfo, isLoading } = useQuery({
-    queryKey: ['asset-info', assetId],
-    queryFn: async () => {
-      return await ds.api.assets.get(assetId);
-    },
     enabled: isOpen && !!assetId,
+    queryFn: async () => {
+      return (await ds.api.assets.get(assetId)) as AssetInfoData;
+    },
+    queryKey: ['asset-info', assetId],
     staleTime: 60000, // Cache for 1 minute
   });
 
   const handleCopy = (text: string, label: string) => {
     copyToClipboard(text);
-    console.log(`Copied ${label}: ${text}`);
+    logger.debug(`Copied ${label}: ${text}`);
   };
 
   return (
@@ -63,12 +78,12 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Total Supply:</Label>
             <Value>
-              {(Number(assetInfo.quantity) / Math.pow(10, assetInfo.precision)).toLocaleString(
+              {(Number(assetInfo.quantity) / 10 ** (assetInfo.precision ?? 0)).toLocaleString(
                 undefined,
                 {
+                  maximumFractionDigits: assetInfo.precision ?? 0,
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: assetInfo.precision,
-                }
+                },
               )}
             </Value>
           </InfoRow>
@@ -86,7 +101,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
           <InfoRow>
             <Label>Issuer:</Label>
             <CopyableValue
-              onClick={() => handleCopy(assetInfo.sender, 'Issuer')}
+              onClick={() => handleCopy(assetInfo.sender ?? '', 'Issuer')}
               title="Click to copy"
             >
               {assetInfo.sender}
@@ -116,8 +131,8 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
             <InfoRow>
               <Label>Min Sponsored Fee:</Label>
               <Value>
-                {(Number(assetInfo.minSponsoredFee) / Math.pow(10, assetInfo.precision)).toFixed(
-                  assetInfo.precision
+                {(Number(assetInfo.minSponsoredFee) / 10 ** (assetInfo.precision ?? 0)).toFixed(
+                  assetInfo.precision ?? 0,
                 )}{' '}
                 {assetInfo.name}
               </Value>

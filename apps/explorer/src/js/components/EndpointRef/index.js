@@ -1,1 +1,1 @@
-export { RoutedEndpointRef as default } from './EndpointRef.view';
+export {RoutedEndpointRef as default} from './EndpointRef.view';

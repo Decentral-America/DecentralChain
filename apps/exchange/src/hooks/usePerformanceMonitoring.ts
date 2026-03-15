@@ -6,9 +6,9 @@
 
 import { useEffect, useRef } from 'react';
 import {
+  clearPerformance,
   markPerformance,
   measurePerformance,
-  clearPerformance,
   performance as perfTracking,
 } from '@/lib/performanceMonitoring';
 
@@ -211,5 +211,5 @@ export function usePerformanceMetric(name: string) {
     return duration;
   };
 
-  return { start, end };
+  return { end, start };
 }

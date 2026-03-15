@@ -4,8 +4,8 @@
  */
 
 declare module 'data-service' {
-  import type { Money, AssetPair, OrderPrice } from '@waves/data-entities';
-  import type { BigNumber } from '@waves/bignumber';
+  import type { Money, AssetPair } from '@decentralchain/data-entities';
+  import type { BigNumber } from '@decentralchain/bignumber';
 
   // ========== Config ==========
   export interface IConfigParams {
@@ -20,7 +20,7 @@ declare module 'data-service' {
     assets: Record<string, string>;
     minimalSeedLength: number;
     remappedAssetNames: Record<string, string>;
-    oracleWaves: string;
+    oracleDCC: string;
     oracleTokenomica: string;
     tokenrating: string;
     rewriteAssets: Record<string, unknown>;
@@ -28,17 +28,29 @@ declare module 'data-service' {
 
   export const config: {
     get<K extends keyof IConfigParams>(key: K): IConfigParams[K];
-    get(key: string): any;
+    get(key: string): unknown;
     set<K extends keyof IConfigParams>(key: K, value: IConfigParams[K]): void;
-    set(key: string, value: any): void;
+    set(key: string, value: unknown): void;
     setConfig(props: Partial<IConfigParams>): void;
-    getDataService(): { getCandles(amountId: string, priceId: string, options: any): Promise<any>; [key: string]: any };
+    getDataService(): {
+      getCandles(
+        amountId: string,
+        priceId: string,
+        options: Record<string, unknown>,
+      ): Promise<unknown>;
+      [key: string]: unknown;
+    };
     timeDiff: number;
     matcherSettingsPromise: Promise<string[]>;
     change: { dispatch(key: keyof IConfigParams): void };
   };
 
   // ========== Signature API ==========
+  export interface ISignable {
+    getId(): Promise<string>;
+    getDataForApi(): Promise<Record<string, unknown>>;
+  }
+
   export interface ISignatureApi {
     isAvailable(force?: boolean): Promise<boolean>;
     getAddress(): Promise<string>;
@@ -46,39 +58,40 @@ declare module 'data-service' {
     getPrivateKey(): Promise<string>;
     getPublicKey(): Promise<string>;
     getEncodedSeed(): Promise<string>;
-    [key: string]: any;
+    makeSignable(data: { type: unknown; data: Record<string, unknown> }): ISignable;
+    [key: string]: unknown;
   }
 
   // ========== API ==========
   export const api: {
     transactions: {
-      list(address: string, limit: number, after: string): Promise<any[]>;
-      [key: string]: any;
+      list(address: string, limit: number, after: string): Promise<unknown[]>;
+      [key: string]: unknown;
     };
     aliases: {
-      getByAddress(address: string): Promise<any[]>;
+      getByAddress(address: string): Promise<unknown[]>;
       getAddressByAlias(alias: string): Promise<{ address: string } | null>;
       getAliasesByAddress(address: string): Promise<string[]>;
-      [key: string]: any;
+      [key: string]: unknown;
     };
     matcher: {
       addSignature(signature: string, publicKey: string, timestamp: number): void;
-      getOrderBook(amountAsset: string, priceAsset: string): Promise<any>;
-      [key: string]: any;
+      getOrderBook(amountAsset: string, priceAsset: string): Promise<unknown>;
+      [key: string]: unknown;
     };
     pairs: {
-      get(asset1: any, asset2: any): Promise<AssetPair>;
-      [key: string]: any;
+      get(asset1: string, asset2: string): Promise<AssetPair>;
+      [key: string]: unknown;
     };
     node: {
       height(): Promise<number>;
-      [key: string]: any;
+      [key: string]: unknown;
     };
     assets: {
-      get(assetId: string): Promise<any>;
-      [key: string]: any;
+      get(assetId: string): Promise<unknown>;
+      [key: string]: unknown;
     };
-    [key: string]: any;
+    [key: string]: unknown;
   };
 
   // ========== App ==========
@@ -109,31 +122,45 @@ declare module 'data-service' {
   // ========== Broadcast ==========
   export function broadcast(tx: unknown): Promise<unknown>;
   export function createOrder(orderData: unknown): Promise<unknown>;
-  export function cancelOrder(orderId: string, senderPublicKey: string, signature: string): Promise<unknown>;
-  export function cancelAllOrders(senderPublicKey: string, signature: string, timestamp: number): Promise<unknown>;
+  export function cancelOrder(
+    orderId: string,
+    senderPublicKey: string,
+    signature: string,
+  ): Promise<unknown>;
+  export function cancelAllOrders(
+    senderPublicKey: string,
+    signature: string,
+    timestamp: number,
+  ): Promise<unknown>;
 
   // ========== Signature ==========
   export const signature: {
     getSignatureApi(): ISignatureApi;
-    getDefaultSignatureApi(userData: any): ISignatureApi;
+    getDefaultSignatureApi(userData: { address: string; publicKey: string }): ISignatureApi;
     getUserAddress(): string;
     setUserData(data: { address: string; publicKey: string }): void;
     dropSignatureApi(): void;
     dropUserData(): void;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 
   // ========== Utils ==========
   export function fetch<T>(url: string, options?: unknown): Promise<T>;
 
-  export function moneyFromTokens(tokens: string | number | BigNumber, assetData: any): Promise<Money>;
-  export function moneyFromCoins(coins: string | number | BigNumber, assetData: any): Promise<Money>;
+  export function moneyFromTokens(
+    tokens: string | number | BigNumber,
+    assetData: string | Record<string, unknown>,
+  ): Promise<Money>;
+  export function moneyFromCoins(
+    coins: string | number | BigNumber,
+    assetData: string | Record<string, unknown>,
+  ): Promise<Money>;
 
   // ========== Re-exports ==========
   export const signAdapters: typeof import('@decentralchain/signature-adapter');
   export const isValidAddress: (address: string) => boolean;
   export const assetStorage: unknown;
-  export const wavesDataEntities: Record<string, unknown>;
+  export const dccDataEntities: Record<string, unknown>;
   export const dataManager: {
     dropAddress(): void;
     applyAddress(address: string): void;

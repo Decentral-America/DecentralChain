@@ -3,11 +3,13 @@
  * Download encrypted wallet backup as JSON file
  * Matches Angular ExportAccounts functionality
  */
-import React, { useState, useEffect } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -74,7 +76,7 @@ export interface ExportAccountModalProps {
 export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [selectedAddresses, setSelectedAddresses] = useState<Set<string>>(new Set());
-  const [userList, setUserList] = useState<any[]>([]);
+  const [userList, setUserList] = useState<{ address: string; [key: string]: unknown }[]>([]);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -87,7 +89,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
           // Pre-select current user
           setSelectedAddresses(new Set([user.address]));
         } catch (error) {
-          console.error('Failed to parse multi-account users:', error);
+          logger.error('Failed to parse multi-account users:', error);
           setUserList([]);
         }
       }
@@ -125,10 +127,10 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
       // Create backup data matching Angular format
       const backupData = {
-        type: 'wavesBackup',
-        lastOpenVersion: settings.lastOpenVersion,
         data: selectedUsers,
+        lastOpenVersion: settings.lastOpenVersion,
         time: Date.now(),
+        type: 'dccBackup',
       };
 
       // Download as JSON file
@@ -144,7 +146,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
       onClose();
     } catch (error) {
-      console.error('Export failed:', error);
+      logger.error('Export failed:', error);
     }
   };
 
@@ -164,32 +166,50 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
         {userList.length > 0 && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 500, color: '#757575' }}>
+              <span style={{ color: '#757575', fontSize: '13px', fontWeight: 500 }}>
                 Select Accounts ({selectedAddresses.size} of {userList.length})
               </span>
               <div style={{ display: 'flex', gap: '12px' }}>
                 {selectedAddresses.size !== userList.length && (
-                  <a
+                  <button
+                    type="button"
                     onClick={selectAll}
-                    style={{ fontSize: '13px', color: '#2196f3', cursor: 'pointer' }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#2196f3',
+                      cursor: 'pointer',
+                      font: 'inherit',
+                      fontSize: '13px',
+                      padding: 0,
+                    }}
                   >
                     Select All
-                  </a>
+                  </button>
                 )}
                 {selectedAddresses.size > 0 && (
-                  <a
+                  <button
+                    type="button"
                     onClick={unselectAll}
-                    style={{ fontSize: '13px', color: '#2196f3', cursor: 'pointer' }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#2196f3',
+                      cursor: 'pointer',
+                      font: 'inherit',
+                      fontSize: '13px',
+                      padding: 0,
+                    }}
                   >
                     Unselect All
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
 
             <UserList>
-              {userList.map((userItem, index) => (
-                <UserItem key={index} onClick={() => toggleSelect(userItem.address)}>
+              {userList.map((userItem) => (
+                <UserItem key={userItem.address} onClick={() => toggleSelect(userItem.address)}>
                   <Checkbox
                     type="checkbox"
                     checked={selectedAddresses.has(userItem.address)}
@@ -209,11 +229,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
           <Button variant="text" onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleExport}
-            disabled={selectedAddresses.size === 0}
-          >
+          <Button variant="primary" onClick={handleExport} disabled={selectedAddresses.size === 0}>
             Download Backup
           </Button>
         </ButtonGroup>

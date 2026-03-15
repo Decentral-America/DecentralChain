@@ -1,6 +1,6 @@
 export const NetworksMenu = {
-  get root() {
-    return $("[class*='network@bottomPanel']");
+  get editButton() {
+    return this.root.$("[class*='editButton@bottomPanel']");
   },
 
   networkByName(network: string) {
@@ -9,11 +9,10 @@ export const NetworksMenu = {
     });
   },
 
-  get editButton() {
-    return this.root.$("[class*='editButton@bottomPanel']");
-  },
-
   get networkMenuButton() {
     return this.root.$("[class*='dropdownButton@bottomPanel']");
+  },
+  get root() {
+    return $("[class*='network@bottomPanel']");
   },
 };

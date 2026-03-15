@@ -1,1 +1,1 @@
-export { RoutedSingleAssetPage as default } from './SingleAssetPage.container';
+export {SingleAssetPage as default} from './SingleAssetPage.container';

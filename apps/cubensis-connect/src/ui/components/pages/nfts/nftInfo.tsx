@@ -45,7 +45,7 @@ export function NftInfo() {
       </div>
 
       <div className={styles.content}>
-        <NftCover className={styles.cover} nft={nft} />
+        <NftCover className={styles.cover ?? ''} nft={nft} />
 
         <div className={styles.links}>
           <a rel="noopener noreferrer" target="_blank" href={nftUrl} className="link blue clean">

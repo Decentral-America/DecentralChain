@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { base58Encode } from '@decentralchain/crypto';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
@@ -34,9 +34,9 @@ export function Swap() {
 
   const usdnAssetId = useAssetIdByTicker(currentNetwork, 'USDN');
 
-  const initialFromAssetId = searchParams.get('fromAssetId') || usdnAssetId;
+  const initialFromAssetId = searchParams.get('fromAssetId') ?? usdnAssetId ?? 'WAVES';
 
-  const initialToAssetId = initialFromAssetId === usdnAssetId ? 'WAVES' : usdnAssetId;
+  const initialToAssetId = initialFromAssetId === usdnAssetId ? 'WAVES' : (usdnAssetId ?? 'WAVES');
 
   const [isSwapInProgress, setIsSwapInProgress] = useState(false);
   const [swapErrorMessage, setSwapErrorMessage] = useState<string | null>(null);
@@ -112,7 +112,6 @@ export function Swap() {
 
         const fullSwapTx = {
           ...tx,
-          type: TRANSACTION_TYPE.INVOKE_SCRIPT,
           chainId: selectedAccount.networkCode.charCodeAt(0),
           fee,
           feeAssetId: feeAssetId === 'WAVES' ? null : feeAssetId,
@@ -121,6 +120,7 @@ export function Swap() {
           proofs: [],
           senderPublicKey: selectedAccount.publicKey,
           timestamp: Date.now(),
+          type: TRANSACTION_TYPE.INVOKE_SCRIPT,
           version: 2 as const,
         };
 
@@ -170,6 +170,7 @@ export function Swap() {
 
         if (match) {
           let [, msg] = match;
+          invariant(msg);
 
           if (/something\s+went\s+wrong\s+while\s+working\s+with\s+amountToSend/i.test(msg)) {
             msg = t('swap.amountToSendError');
@@ -192,6 +193,7 @@ export function Swap() {
 
         if (match) {
           const [, msg] = match;
+          invariant(msg);
 
           setSwapErrorMessage(msg);
           setIsSwapInProgress(false);
@@ -201,14 +203,14 @@ export function Swap() {
           if (match) {
             capture = false;
 
-            const actualAmountCoins = new BigNumber(match[1]);
-            const expectedAmountCoins = new BigNumber(match[2]);
+            const actualAmountCoins = new BigNumber(match[1]!);
+            const expectedAmountCoins = new BigNumber(match[2]!);
 
             background.track({
-              eventType: 'swapAssets',
               actualAmountCoins: actualAmountCoins.toFixed(),
-              expectedAmountCoins: expectedAmountCoins.toFixed(),
+              eventType: 'swapAssets',
               expectedActualDelta: expectedAmountCoins.sub(actualAmountCoins).toFixed(),
+              expectedAmountCoins: expectedAmountCoins.toFixed(),
               fromAssetId,
               fromCoins: fromCoins.toFixed(),
               minReceivedCoins: minReceivedCoins.toFixed(),
@@ -225,7 +227,7 @@ export function Swap() {
           if (match) {
             capture = false;
 
-            const expectedAmountCoins = new BigNumber(match[1]);
+            const expectedAmountCoins = new BigNumber(match[1]!);
 
             background.track({
               eventType: 'swapAssets',

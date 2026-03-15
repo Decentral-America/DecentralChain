@@ -10,7 +10,7 @@ export interface UserSettings {
   logoutAfterMin?: number; // Auto-logout timer in minutes (0 = disabled, default: 15)
   pinnedAssetIdList?: string[]; // Pinned assets for portfolio
   'wallet.portfolio.spam'?: string[]; // Spam assets to hide
-  [key: string]: any; // Allow other settings
+  [key: string]: unknown; // Allow other settings
 }
 
 /**
@@ -35,7 +35,7 @@ export interface User {
   };
   lastLogin?: number;
   hasScript?: boolean;
-  
+
   // Ledger-specific fields
   ledgerPath?: string; // BIP44 derivation path (e.g., "44'/5741564'/0'/0'/0'")
   ledgerId?: string; // Address index on Ledger device
@@ -46,7 +46,7 @@ export interface User {
  */
 export interface ScriptInfo {
   hasScript: boolean;
-  extraFee: unknown | null; // Money type from @waves/data-entities
+  extraFee: unknown | null; // Money type from @decentralchain/data-entities
   networkError: boolean;
 }
 
@@ -79,7 +79,7 @@ export interface AuthContextType {
     seedPhrase: string,
     password: string,
     name?: string,
-    hasBackup?: boolean
+    hasBackup?: boolean,
   ) => Promise<void>; // Create new account
   login: (userHash: string, password: string) => Promise<void>; // Login with password
   logout: () => Promise<void>;
@@ -94,7 +94,7 @@ export interface AuthContextType {
       id: string;
     },
     name: string,
-    networkByte: number
+    networkByte: number,
   ) => Promise<User>; // Import Ledger hardware wallet
   removeAccount: (userHash: string) => Promise<void>; // Remove account
 }

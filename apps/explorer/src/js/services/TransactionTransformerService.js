@@ -1,670 +1,461 @@
-import { base58Decode, bytesToString } from '@decentralchain/ts-lib-crypto';
 import Currency from '../shared/Currency';
-import DateTime from '../shared/DateTime';
 import Money from '../shared/Money';
 import OrderPrice from '../shared/OrderPrice';
-import { convertEthTx } from '../shared/utils';
+import DateTime from '../shared/DateTime';
+import {libs} from '@waves/signature-generator';
 
-const transformSingle = async (currencyService, spamDetectionService, assetService, tx) => {
-  return transform(currencyService, spamDetectionService, assetService, tx, true);
-};
+const transformSingle = async (currencyService, spamDetectionService, stateChangeService, assetService, tx) => {
 
-const transformMultiple = async (
-  currencyService,
-  spamDetectionService,
-  assetService,
-  transactions,
-) => {
-  const transactionsWithAssetDetails = [2, 4, 14];
+    const info = (await currencyService.getApi().transactions.status([tx.id]))[0];
 
-  const assetsIds = [
-    ...new Set(
-      transactions
-        .filter((tx) => transactionsWithAssetDetails.includes(tx.type))
-        .map((tx) => tx.assetId)
-        .filter((id) => id !== null && id !== undefined),
-    ),
-  ];
-
-  const assetsDetails = Object.fromEntries(
-    (await assetService.loadDetails(assetsIds)).map((d) => [d.assetId, d]),
-  );
-
-  const promises = transactions.map((item) => {
-    item.details = transactionsWithAssetDetails.includes(item.type)
-      ? assetsDetails[item.assetId]
-      : undefined;
-    return transform(currencyService, spamDetectionService, assetService, item, false);
-  });
-
-  return Promise.all(promises);
-};
-
-const transform = (currencyService, spamDetectionService, assetService, tx, shouldLoadDetails) => {
-  switch (tx.type) {
-    case 1:
-      return transformGenesis(currencyService, tx);
-
-    case 2:
-    case 4:
-      return transformTransfer(currencyService, assetService, spamDetectionService, tx);
-
-    case 3:
-      return transformIssue(currencyService, tx);
-
-    case 5:
-      return transformReissue(currencyService, tx);
-
-    case 6:
-      return transformBurn(currencyService, tx);
-
-    case 7:
-      return transformExchange(currencyService, tx);
-
-    case 8:
-      return transformLease(currencyService, tx);
-
-    case 9:
-      return transformLeaseCancel(currencyService, tx);
-
-    case 10:
-      return transformAlias(currencyService, tx);
-
-    case 11:
-      return transformMassTransfer(currencyService, spamDetectionService, tx);
-
-    case 12:
-      return transformData(currencyService, tx);
-
-    case 13:
-      return transformScript(currencyService, tx);
-
-    case 14:
-      return transformSponsorship(currencyService, assetService, tx);
-
-    case 15:
-      return transformAssetScript(currencyService, tx);
-
-    case 16:
-      return transformScriptInvocation(currencyService, assetService, tx, shouldLoadDetails);
-
-    case 17:
-      return transformUpdateAssetInfo(currencyService, tx);
-
-    // case 18:
-    //     return transformInvokeExpression(currencyService, assetService, tx, shouldLoadDetails);
-
-    case 18:
-      return transformEthereumTransaction(
+    return transform(
         currencyService,
-        assetService,
         spamDetectionService,
-        tx,
-        shouldLoadDetails,
-      );
+        stateChangeService,
+        assetService,
+        {...tx, applicationStatus: info && info.applicationStatus},
+        true
+    );
+};
 
-    default:
-      return Promise.resolve(Object.assign({}, tx));
-  }
+const transformMultiple = async (currencyService, spamDetectionService, stateChangeService, assetService, transactions) => {
+    const transactionsWithAssetDetails = [2, 4, 14]
+
+    const infoMap = (await currencyService.getApi().transactions.status(transactions.map(({id}) => id)))
+        .reduce((acc, val) => ({...acc, [val.id]: val}), {});
+
+    const assetsIds = transactions
+        .filter(tx => transactionsWithAssetDetails.includes(tx.type))
+        .reduce((acc, tx) => {
+                return (tx.assetId !== null && tx.assetId !== undefined && !acc.includes(tx.assetId))
+                    ? [...acc, tx.assetId]
+                    : acc
+            }, []
+        )
+
+    const assetsDetails = (await assetService.loadDetails(assetsIds))
+        .reduce((acc, assetDetail) => ({
+            ...acc,
+            [assetDetail.assetId]: assetDetail
+        }), {});
+
+    const promises = transactions.map(item =>
+        transform(currencyService,
+            spamDetectionService,
+            stateChangeService,
+            assetService,
+            {
+                ...item,
+                applicationStatus: infoMap[item.id] && infoMap[item.id].applicationStatus,
+                details: transactionsWithAssetDetails.includes(item.type)
+                    ? assetsDetails[item.assetId]
+                    : undefined
+            },
+            false
+        )
+    );
+
+    return Promise.all(promises);
+};
+
+const transform = (currencyService, spamDetectionService, stateChangeService, assetService, tx, shouldLoadDetails) => {
+    switch (tx.type) {
+        case 1:
+            return transformGenesis(currencyService, tx);
+
+        case 2:
+        case 4:
+            return transformTransfer(currencyService, assetService, spamDetectionService, tx);
+
+        case 3:
+            return transformIssue(currencyService, tx);
+
+        case 5:
+            return transformReissue(currencyService, tx);
+
+        case 6:
+            return transformBurn(currencyService, tx);
+
+        case 7:
+            return transformExchange(currencyService, tx);
+
+        case 8:
+            return transformLease(currencyService, tx);
+
+        case 9:
+            return transformLeaseCancel(currencyService, tx);
+
+        case 10:
+            return transformAlias(currencyService, tx);
+
+        case 11:
+            return transformMassTransfer(currencyService, spamDetectionService, tx);
+
+        case 12:
+            return transformData(currencyService, tx);
+
+        case 13:
+            return transformScript(currencyService, tx);
+
+        case 14:
+            return transformSponsorship(currencyService, assetService, tx);
+
+        case 15:
+            return transformAssetScript(currencyService, tx);
+
+        case 16:
+            return transformScriptInvocation(currencyService, stateChangeService, assetService, tx, shouldLoadDetails);
+
+        case 17:
+            return transformUpdateAssetInfo(currencyService, tx);
+
+        default:
+            return Promise.resolve(Object.assign({}, tx));
+    }
 };
 
 const DEFAULT_FUNCTION_CALL = {
-  function: 'default',
-  args: [],
-};
-
-const dccDetail = { name: 'DCC', assetId: null, decimals: 8, description: 'DCC' };
-
-const appendAssetData = async (currencyService, data, assetKey) => {
-  if (Array.isArray(data)) {
-    const detailsArray = data
-      ? await currencyService
-          .getApi()
-          .assets.detailsMultiple(data.map((v) => v[assetKey]).filter((v) => v != null))
-      : [];
-
-    return data?.length
-      ? Promise.all(
-          data.map(async (item) => {
-            const {
-              assetId: id,
-              name,
-              decimals,
-              description,
-            } = detailsArray.find(({ assetId }) => assetId === item[assetKey]) || dccDetail;
-            const currency = id
-              ? new Currency({ id, displayName: name, precision: decimals })
-              : Currency.DCC;
-            return {
-              ...item,
-              money: Money.fromCoins(
-                item.amount || item.quantity || item.minSponsoredAssetFee || 0,
-                currency,
-              ),
-              name,
-              decimals,
-              description,
-            };
-          }),
-        )
-      : [];
-  } else {
-    const detailsArray = data[assetKey]
-      ? await currencyService.getApi().assets.details(data[assetKey])
-      : [dccDetail];
-
-    const { assetId: id, name, decimals, description } = detailsArray;
-    const currency = id
-      ? new Currency({ id, displayName: name, precision: decimals })
-      : Currency.DCC;
-
-    return {
-      ...data,
-      money: Money.fromCoins(
-        data.amount || data.quantity || data.minSponsoredAssetFee || 0,
-        currency,
-      ),
-      name,
-      decimals,
-      description,
-    };
-  }
+    function: 'default',
+    args: []
 };
 
 const attachmentToString = (attachment) => {
-  if (!attachment) return '';
-  if (attachment.value) return attachment.value.toString();
-  const bytes = base58Decode(attachment);
-  let result = '';
-  try {
-    result = bytesToString(bytes);
-  } catch (_e) {
-    // do nothing
-  }
+    if (!attachment) return '';
+    if (attachment.value) return attachment.value.toString();
+    const bytes = libs.base58.decode(attachment);
+    let result = '';
+    try {
+        result = libs.converters.byteArrayToString(bytes);
+    } catch (e) {
+        // do nothing
+    }
 
-  return result;
+    return result;
 };
 
-const copyMandatoryAttributes = (tx) => {
-  let proofs = tx.proofs;
+const copyMandatoryAttributes = tx => {
+    let proofs = tx.proofs;
 
-  if (!proofs || proofs.length === 0) {
-    proofs = [tx.signature];
-  }
+    if (!proofs || proofs.length === 0) {
+        proofs = [tx.signature];
+    }
 
-  return {
-    id: tx.id,
-    type: tx.type,
-    version: tx.version,
-    timestamp: new DateTime(tx.timestamp),
-    sender: tx.sender,
-    senderPublicKey: tx.senderPublicKey,
-    height: tx.height,
-    proofs,
-  };
+    return {
+        id: tx.id,
+        type: tx.type,
+        version: tx.version,
+        timestamp: new DateTime(tx.timestamp),
+        sender: tx.sender,
+        senderPublicKey: tx.senderPublicKey,
+        height: tx.height,
+        proofs
+    };
 };
 
 const loadAmountAndFeeCurrencies = (currencyService, amountAssetId, feeAssetId) => {
-  return Promise.all([currencyService.get(amountAssetId), currencyService.get(feeAssetId)]);
+    return Promise.all([
+        currencyService.get(amountAssetId),
+        currencyService.get(feeAssetId)
+    ]);
 };
+
 
 const transformUpdateAssetInfo = (currencyService, tx) => {
-  return currencyService.get(tx.assetId).then((asset) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      asset,
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
-      timestamp: new DateTime(tx.timestamp),
-      assetName: tx.name,
-      description: tx.description,
-      assetId: tx.assetId,
+    return currencyService.get(tx.assetId).then(asset => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            asset,
+            fee: Money.fromCoins(tx.fee, Currency.WAVES),
+            timestamp: new DateTime(tx.timestamp),
+            assetName: tx.name,
+            description: tx.description,
+            assetId: tx.assetId,
+        })
     });
-  });
+}
+
+
+const transformScriptInvocation = (currencyService, stateChangeService, assetService, tx, shouldLoadDetails) => {
+
+    const wavesDetail = {name: "DCC", assetId: null, decimals: 8, description: "DCC"}
+
+    return currencyService.get(tx.feeAssetId).then(async (feeCurrency) => {
+        let payment = [];
+        if (tx.payment && tx.payment.length > 0) {
+            payment = (await Promise.all(tx.payment.map(async ({amount, assetId}) => {
+                const currency = await currencyService.get(assetId)
+                return Money.fromCoins(amount, currency)
+            })))
+        }
+
+        const result = Object.assign(copyMandatoryAttributes(tx), {
+            applicationStatus: tx.applicationStatus,
+            dappAddress: tx.dApp,
+            call: tx.call || DEFAULT_FUNCTION_CALL,
+            payment,
+            fee: Money.fromCoins(tx.fee, feeCurrency)
+
+        });
+
+        const appendAssetData = async (data, assetKey) => {
+            const detailsArray = data
+                ? await currencyService.getApi().assets.detailsMultiple(data.map(v => v[assetKey]).filter(v => v != null))
+                : [];
+            return data && data.length
+                ? Promise.all(data.map(async (item) => {
+                    const {assetId: id, name, decimals, description} = detailsArray
+                        .find(({assetId}) => assetId === item[assetKey]) || wavesDetail
+                    const currency = id ? new Currency({id, displayName: name, precision: decimals}) : Currency.WAVES;
+                    return {
+                        ...item,
+                        money: Money.fromCoins(item.amount || item.quantity || 0, currency),
+                        name,
+                        decimals,
+                        description
+                    }
+                }))
+                : []
+        }
+
+        if (!shouldLoadDetails)
+            return result;
+        const changes = await stateChangeService.loadStateChanges(tx.id)
+        if (changes && changes.stateChanges) {
+            result.stateChanges = changes.stateChanges;
+            result.stateChanges.transfers = await appendAssetData(result.stateChanges.transfers, 'asset')
+            result.stateChanges.issues = await appendAssetData(result.stateChanges.issues, 'assetId')
+            result.stateChanges.reissues = await appendAssetData(result.stateChanges.reissues, 'assetId')
+            result.stateChanges.burns = await appendAssetData(result.stateChanges.burns, 'assetId')
+        }
+        return result;
+    });
 };
 
-const transformScriptInvocation = (currencyService, _assetService, tx, shouldLoadDetails) => {
-  return currencyService.get(tx.feeAssetId).then(async (feeCurrency) => {
-    let payment = [];
-    if (tx.payment && tx.payment.length > 0) {
-      payment = await Promise.all(
-        tx.payment.map(async ({ amount, assetId }) => {
-          const currency = await currencyService.get(assetId);
-          return Money.fromCoins(amount, currency);
-        }),
-      );
-    }
-
-    const result = {
-      ...copyMandatoryAttributes(tx),
-      applicationStatus: tx.applicationStatus,
-      dappAddress: tx.dApp,
-      call: tx.call || DEFAULT_FUNCTION_CALL,
-      payment,
-      fee: Money.fromCoins(tx.fee, feeCurrency),
-      stateUpdate: tx.stateUpdate,
-      isEthereum: tx.isEthereum,
-      bytes: tx.bytes,
-    };
-
-    if (!shouldLoadDetails) return result;
-
-    if (tx.stateChanges) {
-      result.rawStateChanges = tx.stateChanges;
-      result.stateChanges = { ...tx.stateChanges };
-      result.stateChanges.transfers = await appendAssetData(
-        currencyService,
-        result.stateChanges.transfers,
-        'asset',
-      );
-      result.stateChanges.issues = await appendAssetData(
-        currencyService,
-        result.stateChanges.issues,
-        'assetId',
-      );
-      result.stateChanges.reissues = await appendAssetData(
-        currencyService,
-        result.stateChanges.reissues,
-        'assetId',
-      );
-      result.stateChanges.burns = await appendAssetData(
-        currencyService,
-        result.stateChanges.burns,
-        'assetId',
-      );
-      result.stateChanges.sponsorFees = await appendAssetData(
-        currencyService,
-        tx.stateChanges.sponsorFees,
-        'assetId',
-      );
-      result.stateChanges.leases = await appendAssetData(
-        currencyService,
-        tx.stateChanges.leases,
-        'assetId',
-      );
-    }
-
-    if (tx.stateUpdate) {
-      result.stateUpdate = tx.stateUpdate;
-      result.stateUpdate.payments = await Promise.all(
-        tx.stateUpdate.payments.map(async (x) => ({
-          sender: x.sender,
-          dApp: x.dApp,
-          payment: await appendAssetData(currencyService, x.payment, 'assetId'),
-        })),
-      );
-      result.stateUpdate.transfers = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.transfers,
-        'asset',
-      );
-      result.stateUpdate.issues = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.issues,
-        'assetId',
-      );
-      result.stateUpdate.reissues = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.reissues,
-        'assetId',
-      );
-      result.stateUpdate.burns = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.burns,
-        'assetId',
-      );
-      result.stateUpdate.sponsorFees = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.sponsorFees,
-        'assetId',
-      );
-      result.stateUpdate.leases = await appendAssetData(
-        currencyService,
-        tx.stateUpdate.leases,
-        'assetId',
-      );
-    }
-    return result;
-  });
-};
-
-const _transformInvokeExpression = async (
-  currencyService,
-  _assetService,
-  tx,
-  shouldLoadDetails,
-) => {
-  const feeCurrency = await currencyService.get(tx.feeAssetId);
-
-  const result = {
-    ...copyMandatoryAttributes(tx),
-    applicationStatus: tx.applicationStatus,
-    expression: tx.expression,
-    fee: Money.fromCoins(tx.fee, feeCurrency),
-    stateUpdate: tx.stateUpdate,
-  };
-
-  if (!shouldLoadDetails) return result;
-
-  if (tx.stateChanges) {
-    result.rawStateChanges = tx.stateChanges;
-    result.stateChanges = { ...tx.stateChanges };
-    result.stateChanges.transfers = await appendAssetData(
-      currencyService,
-      result.stateChanges.transfers,
-      'asset',
-    );
-    result.stateChanges.issues = await appendAssetData(
-      currencyService,
-      result.stateChanges.issues,
-      'assetId',
-    );
-    result.stateChanges.reissues = await appendAssetData(
-      currencyService,
-      result.stateChanges.reissues,
-      'assetId',
-    );
-    result.stateChanges.burns = await appendAssetData(
-      currencyService,
-      result.stateChanges.burns,
-      'assetId',
-    );
-    result.stateChanges.sponsorFees = await appendAssetData(
-      currencyService,
-      tx.stateChanges.sponsorFees,
-      'assetId',
-    );
-    result.stateChanges.leases = await appendAssetData(
-      currencyService,
-      tx.stateChanges.leases,
-      'assetId',
-    );
-  }
-
-  if (tx.stateUpdate) {
-    result.stateUpdate = tx.stateUpdate;
-    result.stateUpdate.payments = await Promise.all(
-      tx.stateUpdate.payments.map(async (x) => ({
-        sender: x.sender,
-        dApp: x.dApp,
-        payment: await appendAssetData(currencyService, x.payment, 'assetId'),
-      })),
-    );
-    result.stateUpdate.transfers = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.transfers,
-      'asset',
-    );
-    result.stateUpdate.issues = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.issues,
-      'assetId',
-    );
-    result.stateUpdate.reissues = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.reissues,
-      'assetId',
-    );
-    result.stateUpdate.burns = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.burns,
-      'assetId',
-    );
-    result.stateUpdate.sponsorFees = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.sponsorFees,
-      'assetId',
-    );
-    result.stateUpdate.leases = await appendAssetData(
-      currencyService,
-      tx.stateUpdate.leases,
-      'assetId',
-    );
-  }
-
-  return result;
-};
 
 const transformAssetScript = (currencyService, tx) => {
-  return currencyService.get(tx.assetId).then((asset) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      script: tx.script,
-      asset,
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
+    return currencyService.get(tx.assetId).then(asset => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            script: tx.script,
+            asset,
+            fee: Money.fromCoins(tx.fee, Currency.WAVES)
+        })
     });
-  });
 };
 
 const transformData = (currencyService, tx) => {
-  return currencyService.get(tx.feeAssetId).then((feeCurrency) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      data: tx.data,
-      fee: Money.fromCoins(tx.fee, feeCurrency),
+    return currencyService.get(tx.feeAssetId).then(feeCurrency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            data: tx.data,
+            fee: Money.fromCoins(tx.fee, feeCurrency)
+        })
     });
-  });
 };
 
 const transformScript = (currencyService, tx) => {
-  return currencyService.get(tx.feeAssetId).then((feeCurrency) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      script: tx.script,
-      fee: Money.fromCoins(tx.fee, feeCurrency),
+    return currencyService.get(tx.feeAssetId).then(feeCurrency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            script: tx.script,
+            fee: Money.fromCoins(tx.fee, feeCurrency)
+        })
     });
-  });
 };
 
-const transformSponsorship = async (currencyService, _assetService, tx) => {
-  const pair = await loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId);
-  const sponsoredCurrency = pair[0];
-  const feeCurrency = pair[1];
+const transformSponsorship = async (currencyService, assetService, tx) => {
+    const pair = await loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId)
+    const sponsoredCurrency = pair[0];
+    const feeCurrency = pair[1];
 
-  const sponsoredFee = tx.minSponsoredAssetFee
-    ? Money.fromCoins(tx.minSponsoredAssetFee, sponsoredCurrency)
-    : null;
+    const sponsoredFee = tx.minSponsoredAssetFee ?
+        Money.fromCoins(tx.minSponsoredAssetFee, sponsoredCurrency) :
+        null;
 
-  return Object.assign(copyMandatoryAttributes(tx), {
-    fee: Money.fromCoins(tx.fee, feeCurrency),
-    sponsoredFee,
-  });
+    return Object.assign(copyMandatoryAttributes(tx), {
+        fee: Money.fromCoins(tx.fee, feeCurrency),
+        sponsoredFee
+    });
 };
 
 const transformMassTransfer = (currencyService, spamDetectionService, tx) => {
-  return loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId).then((pair) => {
-    const amountCurrency = pair[0];
-    const feeCurrency = pair[1];
+    return loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId).then(pair => {
+        const amountCurrency = pair[0];
+        const feeCurrency = pair[1];
 
-    const transfers = tx.transfers.map((item) => ({
-      recipient: item.recipient,
-      amount: Money.fromCoins(item.amount, amountCurrency),
-    }));
+        const transfers = tx.transfers.map(item => ({
+            recipient: item.recipient,
+            amount: Money.fromCoins(item.amount, amountCurrency)
+        }));
 
-    return Object.assign(copyMandatoryAttributes(tx), {
-      fee: Money.fromCoins(tx.fee, feeCurrency),
-      attachment: attachmentToString(tx.attachment),
-      totalAmount: Money.fromCoins(tx.totalAmount, amountCurrency),
-      transferCount: tx.transferCount,
-      isSpam: spamDetectionService.isSpam(tx.assetId),
-      transfers,
+        return Object.assign(copyMandatoryAttributes(tx), {
+            fee: Money.fromCoins(tx.fee, feeCurrency),
+            attachment: attachmentToString(tx.attachment),
+            totalAmount: Money.fromCoins(tx.totalAmount, amountCurrency),
+            transferCount: tx.transferCount,
+            isSpam: spamDetectionService.isSpam(tx.assetId),
+            transfers
+        });
     });
-  });
 };
 
-const transformAlias = (_currencyService, tx) => {
-  return Promise.resolve(
-    Object.assign(copyMandatoryAttributes(tx), {
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
-      alias: tx.alias,
-    }),
-  );
+const transformAlias = (currencyService, tx) => {
+    return Promise.resolve(
+        Object.assign(copyMandatoryAttributes(tx), {
+            fee: Money.fromCoins(tx.fee, Currency.WAVES),
+            alias: tx.alias
+        })
+    );
 };
 
 const transformLease = (currencyService, tx) => {
-  return currencyService.get(tx.feeAssetId).then((feeCurrency) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      recipient: tx.recipient,
-      fee: Money.fromCoins(tx.fee, feeCurrency),
-      amount: Money.fromCoins(tx.amount, Currency.DCC),
-      status: tx.status,
+    return currencyService.get(tx.feeAssetId).then(feeCurrency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            recipient: tx.recipient,
+            fee: Money.fromCoins(tx.fee, feeCurrency),
+            amount: Money.fromCoins(tx.amount, Currency.WAVES),
+            status: tx.status
+        })
     });
-  });
 };
 
 const transformLeaseCancel = async (currencyService, tx) => {
-  const feeCurrency = await currencyService.get(tx.feeAssetId);
-  return Object.assign(copyMandatoryAttributes(tx), {
-    amount: Money.fromCoins(tx.lease.amount, Currency.DCC),
-    fee: Money.fromCoins(tx.fee, feeCurrency),
-    leaseId: tx.leaseId,
-    recipient: tx.lease.recipient,
-    originTransactionId: tx.lease.originTransactionId,
-  });
+    const {amount} = (await currencyService.getApi().transactions.info(tx.leaseId)).data;
+    const feeCurrency = await currencyService.get(tx.feeAssetId)
+    return Object.assign(copyMandatoryAttributes(tx), {
+        amount: Money.fromCoins(amount, Currency.WAVES),
+        fee: Money.fromCoins(tx.fee, feeCurrency),
+        leaseId: tx.leaseId,
+        recipient: tx.lease ? tx.lease.recipient : null
+    });
 };
 
 const transformExchange = (currencyService, tx) => {
-  const buyOrder = tx.order1.orderType === 'buy' ? tx.order1 : tx.order2;
-  const sellOrder = tx.order2.orderType === 'sell' ? tx.order2 : tx.order1;
-  const assetPair = buyOrder.assetPair;
+    const buyOrder = tx.order1.orderType === 'buy' ? tx.order1 : tx.order2;
+    const sellOrder = tx.order2.orderType === 'sell' ? tx.order2 : tx.order1;
+    const assetPair = buyOrder.assetPair;
 
-  return Promise.all([
-    currencyService.get(assetPair.amountAsset),
-    currencyService.get(assetPair.priceAsset),
-    currencyService.get(tx.feeAssetId),
-    currencyService.get(buyOrder.matcherFeeAssetId),
-    currencyService.get(sellOrder.matcherFeeAssetId),
-  ]).then((tuple) => {
-    const currencyPair = {
-      amountAsset: tuple[0],
-      priceAsset: tuple[1],
-    };
+    return Promise.all([
+        currencyService.get(assetPair.amountAsset),
+        currencyService.get(assetPair.priceAsset),
+        currencyService.get(tx.feeAssetId),
+        currencyService.get(buyOrder.matcherFeeAssetId),
+        currencyService.get(sellOrder.matcherFeeAssetId),
+    ]).then(tuple => {
+        const currencyPair = {
+            amountAsset: tuple[0],
+            priceAsset: tuple[1]
+        };
 
-    const feeAsset = tuple[2];
-    const buyFeeAsset = tuple[3];
-    const sellFeeAsset = tuple[4];
-    const price = OrderPrice.fromBackendExchangePrice(tx.price, currencyPair, tx.version);
-    const amount = Money.fromCoins(tx.amount, currencyPair.amountAsset);
+        const feeAsset = tuple[2];
+        const buyFeeAsset = tuple[3];
+        const sellFeeAsset = tuple[4];
+        const price = OrderPrice.fromBackendPrice(tx.price, currencyPair);
+        const amount = Money.fromCoins(tx.amount, currencyPair.amountAsset);
 
-    return Object.assign(copyMandatoryAttributes(tx), {
-      fee: Money.fromCoins(tx.fee, feeAsset),
-      buyFee: Money.fromCoins(tx.buyMatcherFee, buyFeeAsset),
-      sellFee: Money.fromCoins(tx.sellMatcherFee, sellFeeAsset),
-      price,
-      amount,
-      total: price.volume(amount),
-      buyOrder: transformOrder(buyOrder, currencyPair, buyFeeAsset),
-      sellOrder: transformOrder(sellOrder, currencyPair, sellFeeAsset),
-      seller: sellOrder.sender,
-      buyer: buyOrder.sender,
-      applicationStatus: tx.applicationStatus,
+        return Object.assign(copyMandatoryAttributes(tx), {
+            fee: Money.fromCoins(tx.fee, feeAsset),
+            buyFee: Money.fromCoins(tx.buyMatcherFee, buyFeeAsset),
+            sellFee: Money.fromCoins(tx.sellMatcherFee, sellFeeAsset),
+            price,
+            amount,
+            total: price.volume(amount),
+            buyOrder: transformOrder(buyOrder, currencyPair, buyFeeAsset),
+            sellOrder: transformOrder(sellOrder, currencyPair, sellFeeAsset),
+            seller: sellOrder.sender,
+            buyer: buyOrder.sender,
+            applicationStatus: tx.applicationStatus,
+        });
     });
-  });
 };
 
 const transformOrder = (order, assetPair, feeAsset) => {
-  return {
-    id: order.id,
-    sender: order.sender,
-    assetPair,
-    orderType: order.orderType,
-    amount: Money.fromCoins(order.amount, assetPair.amountAsset),
-    price: OrderPrice.fromBackendOrderPrice(order.price, assetPair, order.version),
-    timestamp: new DateTime(order.timestamp),
-    expiration: new DateTime(order.expiration),
-    fee: Money.fromCoins(order.matcherFee, feeAsset),
-  };
+    return {
+        id: order.id,
+        sender: order.sender,
+        assetPair,
+        orderType: order.orderType,
+        amount: Money.fromCoins(order.amount, assetPair.amountAsset),
+        price: OrderPrice.fromBackendPrice(order.price, assetPair),
+        timestamp: new DateTime(order.timestamp),
+        expiration: new DateTime(order.expiration),
+        fee: Money.fromCoins(order.matcherFee, feeAsset)
+    };
 };
 
 const transformBurn = (currencyService, tx) => {
-  return currencyService.get(tx.assetId).then((currency) => {
-    const amount = tx.amount != null ? tx.amount : tx.quantity;
-    return Object.assign(copyMandatoryAttributes(tx), {
-      amount: Money.fromCoins(amount, currency),
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
+    return currencyService.get(tx.assetId).then(currency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            amount: Money.fromCoins(tx.amount || tx.quantity, currency),
+            fee: Money.fromCoins(tx.fee, Currency.WAVES)
+        });
     });
-  });
 };
 
 const transformReissue = (currencyService, tx) => {
-  return currencyService.get(tx.assetId).then((currency) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      amount: Money.fromCoins(tx.quantity, currency),
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
-      reissuable: tx.reissuable,
+    return currencyService.get(tx.assetId).then(currency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            amount: Money.fromCoins(tx.quantity, currency),
+            fee: Money.fromCoins(tx.fee, Currency.WAVES),
+            reissuable: tx.reissuable,
+
+        });
     });
-  });
 };
 
 const transformIssue = (currencyService, tx) => {
-  const c = Currency.fromIssueTransaction(tx);
-  currencyService.put(c);
+    const c = Currency.fromIssueTransaction(tx);
+    currencyService.put(c);
 
-  return currencyService.get(c.id).then((currency) => {
-    return Object.assign(copyMandatoryAttributes(tx), {
-      amount: Money.fromCoins(tx.quantity, currency),
-      fee: Money.fromCoins(tx.fee, Currency.DCC),
-      name: tx.name,
-      reissuable: tx.reissuable,
-      decimals: tx.decimals,
-      description: tx.description,
-      script: tx.script,
-      assetId: tx.assetId,
+    return currencyService.get(c.id).then(currency => {
+        return Object.assign(copyMandatoryAttributes(tx), {
+            amount: Money.fromCoins(tx.quantity, currency),
+            fee: Money.fromCoins(tx.fee, Currency.WAVES),
+            name: tx.name,
+            reissuable: tx.reissuable,
+            decimals: tx.decimals,
+            description: tx.description,
+            script: tx.script,
+            assetId: tx.assetId
+        });
     });
-  });
 };
 
-const transformTransfer = async (currencyService, _assetService, spamDetectionService, tx) => {
-  const pair = await loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId);
-  const amountCurrency = pair[0];
-  const feeCurrency = pair[1];
+const transformTransfer = async (currencyService, assetService, spamDetectionService, tx) => {
+    const pair = await loadAmountAndFeeCurrencies(currencyService, tx.assetId, tx.feeAssetId)
+    const amountCurrency = pair[0];
+    const feeCurrency = pair[1];
 
-  return Object.assign(copyMandatoryAttributes(tx), {
-    amount: Money.fromCoins(tx.amount, amountCurrency),
-    fee: Money.fromCoins(tx.fee, feeCurrency),
-    attachment: attachmentToString(tx.attachment),
-    recipient: tx.recipient,
-    isSpam: spamDetectionService.isSpam(tx.assetId),
-    isEthereum: tx.isEthereum,
-    bytes: tx.bytes,
-  });
+    return Object.assign(copyMandatoryAttributes(tx), {
+        amount: Money.fromCoins(tx.amount, amountCurrency),
+        fee: Money.fromCoins(tx.fee, feeCurrency),
+        attachment: attachmentToString(tx.attachment),
+        recipient: tx.recipient,
+        isSpam: spamDetectionService.isSpam(tx.assetId)
+    });
 };
 
-const transformGenesis = (_currencyService, tx) => {
-  const amount = Money.fromCoins(tx.amount, Currency.DCC);
-  const fee = Money.fromCoins(tx.fee, Currency.DCC);
+const transformGenesis = (currencyService, tx) => {
+    const amount = Money.fromCoins(tx.amount, Currency.WAVES);
+    const fee = Money.fromCoins(tx.fee, Currency.WAVES);
 
-  return Object.assign(copyMandatoryAttributes(tx), {
-    amount,
-    fee,
-    recipient: tx.recipient,
-    height: 1,
-  });
-};
-
-const transformEthereumTransaction = (
-  currencyService,
-  assetService,
-  spamDetectionService,
-  tx,
-  shouldLoadDetails,
-) => {
-  const transaction = convertEthTx(tx);
-
-  if (transaction.type === 4) {
-    return transformTransfer(currencyService, assetService, spamDetectionService, transaction);
-  }
-
-  if (transaction.type === 16) {
-    return transformScriptInvocation(currencyService, assetService, transaction, shouldLoadDetails);
-  }
+    return Object.assign(copyMandatoryAttributes(tx), {
+        amount,
+        fee,
+        recipient: tx.recipient,
+        height: 1
+    });
 };
 
 export class TransactionTransformerService {
-  constructor(currencyService, spamDetectionService, assetService) {
-    this.currencyService = currencyService;
-    this.spamDetectionService = spamDetectionService;
-    this.assetService = assetService;
-  }
+    constructor(currencyService, spamDetectionService, stateChangeService, assetService) {
+        this.currencyService = currencyService;
+        this.spamDetectionService = spamDetectionService;
+        this.stateChangeService = stateChangeService;
+        this.assetService = assetService;
+    }
 
-  transform = (input) => {
-    return Array.isArray(input)
-      ? transformMultiple(this.currencyService, this.spamDetectionService, this.assetService, input)
-      : transformSingle(this.currencyService, this.spamDetectionService, this.assetService, input);
-  };
+    transform = (input) => {
+        return Array.isArray(input)
+            ? transformMultiple(this.currencyService,
+                this.spamDetectionService, this.stateChangeService, this.assetService, input)
+            : transformSingle(this.currencyService,
+                this.spamDetectionService, this.stateChangeService, this.assetService, input)
+    };
 }

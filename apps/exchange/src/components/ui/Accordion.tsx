@@ -10,16 +10,16 @@
  *
  * Migrated to Material-UI
  */
-import React, { useState, useCallback, ReactNode } from 'react';
-import { Accordion as MuiAccordion, AccordionSummary, AccordionDetails, Box } from '@mui/material';
+
+import { AccordionDetails, AccordionSummary, Box, Accordion as MuiAccordion } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FiChevronDown } from 'react-icons/fi';
+import React, { type ReactNode, useCallback, useState } from 'react';
+import { FiChevronDown as FiChevronDownBase } from 'react-icons/fi';
+
+// React 19 type compatibility cast
+const FiChevronDown = FiChevronDownBase as React.ComponentType<Record<string, unknown>>;
 
 const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0,
-  },
   '&:before': {
     display: 'none',
   },
@@ -31,23 +31,16 @@ const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
   },
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  border: `1px solid ${theme.palette.divider}`,
 }));
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(2, 2.5),
-  minHeight: 56,
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  '&.Mui-expanded': {
-    backgroundColor: `${theme.palette.primary.main}10`,
-    color: theme.palette.primary.main,
-  },
   '& .MuiAccordionSummary-content': {
-    margin: 0,
     fontWeight: 600,
+    margin: 0,
   },
   '& .MuiAccordionSummary-expandIconWrapper': {
     color: theme.palette.primary.main,
@@ -58,12 +51,23 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(180deg)',
   },
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&.Mui-expanded': {
+    backgroundColor: `${theme.palette.primary.main}10`,
+    color: theme.palette.primary.main,
+  },
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  minHeight: 56,
+  padding: theme.spacing(2, 2.5),
 }));
 
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2, 2.5),
   color: theme.palette.text.primary,
   lineHeight: 1.6,
+  padding: theme.spacing(2, 2.5),
 }));
 
 // Interfaces
@@ -130,7 +134,7 @@ export const Accordion: React.FC<AccordionProps> = ({
   collapseAll = false,
 }) => {
   const [internalOpenItems, setInternalOpenItems] = useState<number[]>(
-    collapseAll ? [] : defaultOpen
+    collapseAll ? [] : defaultOpen,
   );
 
   // Determine if controlled or uncontrolled
@@ -162,7 +166,7 @@ export const Accordion: React.FC<AccordionProps> = ({
 
       onChange?.(newOpenItems);
     },
-    [allowMultiple, openItems, isControlled, onChange, items]
+    [allowMultiple, openItems, isControlled, onChange, items],
   );
 
   return (

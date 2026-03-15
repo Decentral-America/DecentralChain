@@ -8,6 +8,16 @@ import { TopMenu } from '../TopMenu';
 import { Windows } from '../Windows';
 
 export const App = {
+  closeBgTabs: async (foreground: string) => {
+    for (const handle of await browser.getWindowHandles()) {
+      if (handle !== foreground) {
+        await browser.switchToWindow(handle);
+        await browser.closeWindow();
+      }
+    }
+
+    await browser.switchToWindow(foreground);
+  },
   initVault: async (password = DEFAULT_PASSWORD) => {
     const tabKeeper = await browser.getWindowHandle();
 
@@ -38,16 +48,5 @@ export const App = {
     await ConfirmDeleteAccountsScreen.deleteAllButton.click();
 
     await expect(GetStartedScreen.getStartedButton).toBeDisplayed();
-  },
-
-  closeBgTabs: async (foreground: string) => {
-    for (const handle of await browser.getWindowHandles()) {
-      if (handle !== foreground) {
-        await browser.switchToWindow(handle);
-        await browser.closeWindow();
-      }
-    }
-
-    await browser.switchToWindow(foreground);
   },
 };

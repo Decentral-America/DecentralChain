@@ -11,18 +11,18 @@ import { type RemoteConfigController } from './remoteConfig';
 
 // 'WAVES' is the protocol-level native asset ID — do not rename.
 const NATIVE_ASSET: AssetDetail = {
-  quantity: '10000000000000000',
-  ticker: 'DCC',
+  description: '',
+  displayName: 'DCC',
+  height: 0,
   id: 'WAVES',
+  issuer: '',
   name: 'DecentralChain',
   precision: 8,
-  description: '',
-  height: 0,
-  issuer: '',
-  timestamp: '2016-04-11T21:00:00.000Z' as any,
-  sender: '',
+  quantity: '10000000000000000',
   reissuable: false,
-  displayName: 'DCC',
+  sender: '',
+  ticker: 'DCC',
+  timestamp: '2016-04-11T21:00:00.000Z' as any,
 };
 
 // TODO: Migrate repo from waves-community to dcc-community and update path
@@ -46,7 +46,7 @@ function binarySearch<T>(sortedArray: T[], key: T) {
 
     if (sortedArray[middle] === key) {
       return middle;
-    } else if (sortedArray[middle] < key) {
+    } else if (sortedArray[middle]! < key) {
       start = middle + 1;
     } else {
       end = middle - 1;
@@ -89,6 +89,7 @@ export class AssetInfoController {
     remoteConfig: RemoteConfigController;
   }) {
     const initState = extensionStorage.getInitState({
+      assetLogos: {},
       assets: {
         [NetworkName.Mainnet]: {
           WAVES: NATIVE_ASSET,
@@ -103,11 +104,10 @@ export class AssetInfoController {
           WAVES: NATIVE_ASSET,
         },
       },
-      swappableAssetIdsByVendor: {},
-      suspiciousAssets: [],
-      usdPrices: {},
-      assetLogos: {},
       assetTickers: defaultAssetTickers,
+      suspiciousAssets: [],
+      swappableAssetIdsByVendor: {},
+      usdPrices: {},
     });
     this.store = new ObservableStore(initState);
     extensionStorage.subscribe(this.store);
@@ -165,6 +165,7 @@ export class AssetInfoController {
         const asset = assets.mainnet[assetId];
         if (!asset) return;
         const ticker = assetTickers[assetId];
+        if (!ticker) return;
 
         asset.displayName = asset.ticker = ticker;
       });
@@ -248,23 +249,23 @@ export class AssetInfoController {
     const { assetTickers } = this.store.getState();
 
     return {
-      id: info.assetId,
-      name: info.name,
-      precision: info.decimals,
       description: info.description,
+      displayName: assetTickers[info.assetId] || info.name,
+      hasScript: info.scripted,
       height: info.issueHeight,
-      timestamp: new Date(parseInt(info.issueTimestamp, 10)).toJSON(),
-      sender: info.issuer,
+      id: info.assetId,
+      isSuspicious: this.isSuspiciousAsset(info.assetId),
+      issuer: info.issuer,
+      lastUpdated: Date.now(),
+      minSponsoredFee: info.minSponsoredAssetFee,
+      name: info.name,
+      originTransactionId: info.originTransactionId,
+      precision: info.decimals,
       quantity: info.quantity,
       reissuable: info.reissuable,
-      hasScript: info.scripted,
+      sender: info.issuer,
       ticker: assetTickers[info.assetId],
-      displayName: assetTickers[info.assetId] || info.name,
-      minSponsoredFee: info.minSponsoredAssetFee,
-      originTransactionId: info.originTransactionId,
-      issuer: info.issuer,
-      isSuspicious: this.isSuspiciousAsset(info.assetId),
-      lastUpdated: Date.now(),
+      timestamp: new Date(parseInt(info.issueTimestamp, 10)).toJSON(),
     };
   }
 
@@ -283,12 +284,12 @@ export class AssetInfoController {
 
   async #fetchAssetsBatch(nodeUrl: string, assetIds: string[]) {
     const response = await fetch(new URL('assets/details', nodeUrl), {
-      method: 'POST',
+      body: JSON.stringify({ ids: assetIds }),
       headers: {
         Accept: 'application/json;large-significand-format=string',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ids: assetIds }),
+      method: 'POST',
     });
 
     if (!response.ok) {
@@ -377,8 +378,8 @@ export class AssetInfoController {
     const { usdPrices } = this.store.getState();
 
     const response = await fetch(new URL('/api/v1/rates', DATA_SERVICE_URL), {
-      method: 'POST',
       body: JSON.stringify({ ids: assetIds }),
+      method: 'POST',
     });
 
     if (!response.ok) {

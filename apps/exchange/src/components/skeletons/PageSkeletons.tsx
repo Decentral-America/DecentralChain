@@ -4,13 +4,13 @@
  */
 import styled from 'styled-components';
 import {
-  SkeletonContainer,
-  SkeletonText,
+  AssetSkeleton,
+  ChartSkeleton,
   Skeleton,
   SkeletonCircle,
-  AssetSkeleton,
+  SkeletonContainer,
+  SkeletonText,
   TransactionSkeleton,
-  ChartSkeleton,
 } from './index';
 
 const PageContainer = styled.div`
@@ -48,6 +48,7 @@ export const DashboardSkeleton = () => (
     {/* Stats cards */}
     <Grid columns={3}>
       {Array.from({ length: 3 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <div key={i}>
           <SkeletonText width="40%" height="14px" spacing="8px" />
           <SkeletonText width="60%" height="24px" />
@@ -65,6 +66,7 @@ export const DashboardSkeleton = () => (
       <SkeletonText width="200px" height="20px" spacing="16px" />
       <SkeletonContainer>
         {Array.from({ length: 5 }, (_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
           <TransactionSkeleton key={i} />
         ))}
       </SkeletonContainer>
@@ -87,6 +89,7 @@ export const WalletSkeleton = () => (
       <SkeletonText width="150px" height="20px" spacing="16px" />
       <SkeletonContainer>
         {Array.from({ length: 5 }, (_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
           <AssetSkeleton key={i} />
         ))}
       </SkeletonContainer>
@@ -112,13 +115,15 @@ export const TransactionHistorySkeleton = () => (
     {/* Transaction list */}
     <SkeletonContainer>
       {Array.from({ length: 10 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <TransactionSkeleton key={i} />
       ))}
     </SkeletonContainer>
 
     {/* Pagination */}
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '24px' }}>
       {Array.from({ length: 5 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <Skeleton key={i} width="32px" height="32px" borderRadius="50%" />
       ))}
     </div>
@@ -136,6 +141,7 @@ export const DexSkeleton = () => (
         <SkeletonText width="120px" height="20px" spacing="16px" />
         <SkeletonContainer>
           {Array.from({ length: 10 }, (_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
               <SkeletonText width="30%" height="14px" />
               <SkeletonText width="30%" height="14px" />
@@ -173,6 +179,7 @@ export const DexSkeleton = () => (
       <SkeletonText width="120px" height="20px" spacing="16px" />
       <SkeletonContainer>
         {Array.from({ length: 3 }, (_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
           <TransactionSkeleton key={i} />
         ))}
       </SkeletonContainer>
@@ -190,13 +197,14 @@ export const SettingsSkeleton = () => (
     </Header>
 
     {Array.from({ length: 4 }, (_, sectionIndex) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <Section key={sectionIndex}>
         <SkeletonText width="200px" height="20px" spacing="12px" />
         <SkeletonContainer>
-          {Array.from({ length: 3 }, (_, i) => (
+          {Array.from({ length: 3 }, (_, i) => `setting-${i}`).map((key) => (
             <div
-              key={i}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              key={key}
+              style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}
             >
               <div style={{ flex: 1 }}>
                 <SkeletonText width="40%" />
@@ -218,7 +226,7 @@ export const ProfileSkeleton = () => (
   <PageContainer>
     {/* Profile header */}
     <Header>
-      <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '24px' }}>
         <SkeletonCircle width="120px" height="120px" />
         <div style={{ flex: 1 }}>
           <SkeletonText width="250px" height="28px" spacing="8px" />
@@ -231,6 +239,7 @@ export const ProfileSkeleton = () => (
     {/* Stats */}
     <Grid columns={3}>
       {Array.from({ length: 3 }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <div key={i}>
           <SkeletonText width="50%" height="14px" spacing="8px" />
           <SkeletonText width="70%" height="24px" />
@@ -240,6 +249,7 @@ export const ProfileSkeleton = () => (
 
     {/* Content sections */}
     {Array.from({ length: 2 }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <Section key={i}>
         <SkeletonText width="180px" height="20px" spacing="16px" />
         <Skeleton height="150px" />
@@ -283,6 +293,7 @@ export const PageSkeleton = ({
         <div>
           <SkeletonContainer>
             {Array.from({ length: 5 }, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
               <Skeleton key={i} height="40px" />
             ))}
           </SkeletonContainer>
@@ -292,6 +303,7 @@ export const PageSkeleton = ({
       <div style={{ gridColumn: hasSidebar ? 'span 2' : 'auto' }}>
         <SkeletonContainer>
           {Array.from({ length: itemCount }, (_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
             <Skeleton key={i} height="100px" />
           ))}
         </SkeletonContainer>

@@ -4,9 +4,9 @@
  * Main entry point for Electron desktop application
  */
 
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
+import { join } from 'node:path';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import { join } from 'path';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -26,20 +26,20 @@ function getWindowOptions(): Electron.BrowserWindowConstructorOptions {
   const y = Math.floor((screenHeight - height) / 2);
 
   return {
-    width,
+    backgroundColor: '#ffffff',
     height,
+    minHeight: 768,
+    minWidth: 1024,
+    show: false, // Don't show until ready-to-show
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      preload: join(import.meta.dirname, 'preload.js'),
+      sandbox: true,
+    },
+    width,
     x,
     y,
-    minWidth: 1024,
-    minHeight: 768,
-    show: false, // Don't show until ready-to-show
-    backgroundColor: '#ffffff',
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-      preload: join(__dirname, 'preload.js'),
-    },
   };
 }
 
@@ -58,7 +58,7 @@ function createWindow(): void {
     mainWindow.webContents.openDevTools();
   } else {
     // Production mode: Load from built files
-    mainWindow.loadFile(join(__dirname, '../dist/index.html'));
+    mainWindow.loadFile(join(import.meta.dirname, '../dist/index.html'));
   }
 
   // Show window when ready to prevent flash
@@ -122,7 +122,7 @@ app.on('window-all-closed', () => {
  * Handle certificate errors for self-signed certificates (development only)
  */
 if (process.env.NODE_ENV === 'development') {
-  app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+  app.on('certificate-error', (event, _webContents, url, _error, _certificate, callback) => {
     // Allow localhost certificates in development
     if (url.startsWith('https://localhost')) {
       event.preventDefault();
@@ -137,41 +137,36 @@ if (process.env.NODE_ENV === 'development') {
  * Auto-Updater Configuration
  */
 
-// Configure auto-updater
-autoUpdater.autoDownload = true; // Automatically download updates
-autoUpdater.autoInstallOnAppQuit = true; // Install on quit
+// Configure auto-updater — prompt user before downloading (security best practice)
+autoUpdater.autoDownload = false; // Require user consent before downloading
+autoUpdater.autoInstallOnAppQuit = true; // Install on quit after user-approved download
 
 // Update available
 autoUpdater.on('update-available', (info) => {
-  console.log('Update available:', info);
   mainWindow?.webContents.send('app:update-available', {
-    version: info.version,
     releaseDate: info.releaseDate,
     releaseNotes: info.releaseNotes,
+    version: info.version,
   });
 });
 
 // Update not available
-autoUpdater.on('update-not-available', (info) => {
-  console.log('Update not available:', info);
-});
+autoUpdater.on('update-not-available', (_info) => {});
 
 // Download progress
 autoUpdater.on('download-progress', (progress) => {
-  console.log(`Download progress: ${progress.percent}%`);
   mainWindow?.webContents.send('app:update-progress', {
     percent: Math.round(progress.percent),
-    transferred: progress.transferred,
     total: progress.total,
+    transferred: progress.transferred,
   });
 });
 
 // Update downloaded
 autoUpdater.on('update-downloaded', (info) => {
-  console.log('Update downloaded:', info);
   mainWindow?.webContents.send('app:update-downloaded', {
-    version: info.version,
     releaseDate: info.releaseDate,
+    version: info.version,
   });
 });
 
@@ -198,8 +193,8 @@ ipcMain.handle('app:check-for-updates', async () => {
   } catch (error) {
     console.error('Check for updates failed:', error);
     return {
-      success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
+      success: false,
     };
   }
 });
@@ -208,7 +203,7 @@ ipcMain.handle('app:check-for-updates', async () => {
 ipcMain.handle('app:install-update', () => {
   autoUpdater.quitAndInstall(
     false, // isSilent
-    true // isForceRunAfter
+    true, // isForceRunAfter
   );
 });
 
@@ -221,9 +216,9 @@ ipcMain.handle('app:get-version', () => {
 ipcMain.handle(
   'app:get-path',
   (
-    event,
-    name: 'home' | 'appData' | 'userData' | 'temp' | 'exe' | 'desktop' | 'documents' | 'downloads'
+    _event,
+    name: 'home' | 'appData' | 'userData' | 'temp' | 'exe' | 'desktop' | 'documents' | 'downloads',
   ) => {
     return app.getPath(name);
-  }
+  },
 );

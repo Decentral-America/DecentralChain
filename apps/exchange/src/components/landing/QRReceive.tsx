@@ -1,23 +1,27 @@
+import { ContentCopy as CopyIcon, Send as SendIcon } from '@mui/icons-material';
 import {
+  Alert,
   Box,
-  Container,
+  Button,
   Card,
   CardContent,
-  Typography,
-  Tabs,
-  Tab,
-  Button,
-  Stack,
-  Alert,
+  Container,
   IconButton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
+import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
 import { useState } from 'react';
-import { ContentCopy as CopyIcon, Send as SendIcon } from '@mui/icons-material';
-import { QRCodeSVG } from 'qrcode.react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useClipboard } from '@/hooks/useClipboard';
-import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+
+// React 19 type compatibility cast
+const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
+
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+import { useClipboard } from '@/hooks/useClipboard';
 
 /**
  * QRReceive Component
@@ -73,13 +77,13 @@ export default function QRReceive() {
                 startIcon={<SendIcon />}
                 onClick={handleSendClick}
                 sx={{
-                  borderRadius: 2,
-                  py: 1.5,
-                  px: 4,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #5568d3 0%, #66407d 100%)',
                   },
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: 2,
+                  px: 4,
+                  py: 1.5,
                 }}
                 fullWidth
               >
@@ -114,10 +118,10 @@ export default function QRReceive() {
             {/* QR Code */}
             <Box
               sx={{
-                p: 2,
                 bgcolor: 'white',
                 borderRadius: 2,
                 display: 'inline-block',
+                p: 2,
               }}
             >
               <QRCodeSVG value={user.address || ''} size={160} level="H" includeMargin={false} />
@@ -127,9 +131,9 @@ export default function QRReceive() {
             <Card
               variant="outlined"
               sx={{
-                width: '100%',
                 bgcolor: '#f5f5f5',
                 borderRadius: 2,
+                width: '100%',
               }}
             >
               <CardContent sx={{ p: 2 }}>
@@ -177,9 +181,9 @@ export default function QRReceive() {
   };
 
   return (
-    <Box component="section" sx={{ py: { xs: 6, md: 8 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 8, xs: 6 } }}>
       <Container maxWidth="sm">
-        <Card sx={{ maxWidth: 400, mx: 'auto', borderRadius: 3 }}>
+        <Card sx={{ borderRadius: 3, maxWidth: 400, mx: 'auto' }}>
           <CardContent sx={{ p: 3 }}>
             <Tabs
               value={tab}
@@ -187,8 +191,8 @@ export default function QRReceive() {
               centered
               sx={{
                 '& .MuiTab-root': {
-                  minWidth: 120,
                   fontWeight: 600,
+                  minWidth: 120,
                 },
               }}
             >
@@ -207,7 +211,7 @@ export default function QRReceive() {
         <SendAssetModalModern
           isOpen={sendModalOpen}
           onClose={() => setSendModalOpen(false)}
-          assetId="WAVES"
+          assetId="DCC"
           assetName="DCC"
           assetDecimals={8}
           availableBalance="0"

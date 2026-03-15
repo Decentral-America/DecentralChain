@@ -1,53 +1,57 @@
+import { BigNumber } from '@decentralchain/bignumber';
+import { type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { get as getConfig } from '../../config';
-import { get as getAssetPair } from '../pairs/pairs';
-import { addParam } from '../../utils/utils';
-import { AssetPair, Money, OrderPrice } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
 import { request } from '../../utils/request';
-
+import { addParam } from '../../utils/utils';
+import { get as getAssetPair } from '../pairs/pairs';
 
 export function get(asset1: string, asset2: string): Promise<IOrderBook> {
-    let timer;
-    const timeout = new Promise<IOrderBook>((_, reject) => {
-        timer = setTimeout(() => reject(new Error('Request timeout!')), 3000);
-    });
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<IOrderBook>((_, reject) => {
+    timer = setTimeout(() => reject(new Error('Request timeout!')), 3000);
+  });
 
-    const promise = getAssetPair(asset1, asset2)
-        .then((pair) => {
-            clearTimeout(timer);
-            return request({ url: `${getConfig('matcher')}/orderbook/${pair.toString()}` })
-                .then(addParam(remapOrderBook, pair));
-        });
+  const promise = getAssetPair(asset1, asset2).then((pair) => {
+    clearTimeout(timer);
+    return request({ url: `${getConfig('matcher')}/orderbook/${pair.toString()}` }).then(
+      addParam(remapOrderBook, pair),
+    );
+  });
 
-    return Promise.race([promise, timeout]);
+  return Promise.race([promise, timeout]);
 }
 
 function remapOrderBook(orderBook, pair: AssetPair): IOrderBook {
-    const remap = remapOrder(pair);
-    return {
-        pair,
-        bids: orderBook.bids.map(remap),
-        asks: orderBook.asks.map(remap)
-    };
+  const remap = remapOrder(pair);
+  return {
+    asks: orderBook.asks.map(remap),
+    bids: orderBook.bids.map(remap),
+    pair,
+  };
 }
 
-const remapOrder = (pair: AssetPair) => (order: IApiOrder): IOrder => ({
+const remapOrder =
+  (pair: AssetPair) =>
+  (order: IApiOrder): IOrder => ({
     amount: new Money(order.amount, pair.amountAsset),
-    price: Money.fromTokens(OrderPrice.fromMatcherCoins(new BigNumber(order.price), pair).getTokens(), pair.priceAsset)
-});
+    price: Money.fromTokens(
+      OrderPrice.fromMatcherCoins(new BigNumber(order.price), pair).getTokens(),
+      pair.priceAsset,
+    ),
+  });
 
 export interface IOrderBook {
-    pair: AssetPair;
-    bids: Array<IOrder>;
-    asks: Array<IOrder>;
+  pair: AssetPair;
+  bids: Array<IOrder>;
+  asks: Array<IOrder>;
 }
 
 export interface IOrder {
-    amount: Money;
-    price: Money;
+  amount: Money;
+  price: Money;
 }
 
 interface IApiOrder {
-    amount: string;
-    price: string;
+  amount: string;
+  price: string;
 }

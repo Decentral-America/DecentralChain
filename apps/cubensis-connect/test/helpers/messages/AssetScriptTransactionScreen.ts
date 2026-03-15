@@ -1,10 +1,9 @@
 export const AssetScriptTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
-  },
-
   get asset() {
     return this.root.findByTestId$('setAssetScriptAsset');
+  },
+  get root() {
+    return $("[class*='transaction@']");
   },
 
   get script() {

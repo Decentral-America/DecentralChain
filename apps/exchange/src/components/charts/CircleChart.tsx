@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 
 /**
@@ -159,7 +159,7 @@ export const CircleChart: React.FC<CircleChartProps> = ({
   const center = size / 2;
 
   return (
-    <Container className={className} style={{ width: size, height: size }}>
+    <Container className={className} style={{ height: size, width: size }}>
       <Svg width={size} height={size} role="img" aria-label={`Progress: ${clampedValue}%`}>
         {/* Background circle */}
         <Circle
@@ -203,21 +203,21 @@ export const CircleChart: React.FC<CircleChartProps> = ({
  * Small size preset
  */
 export const CircleChartSmall: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={60} strokeWidth={6} />;
 
 /**
  * Medium size preset (default)
  */
 export const CircleChartMedium: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={100} strokeWidth={8} />;
 
 /**
  * Large size preset
  */
 export const CircleChartLarge: React.FC<Omit<CircleChartProps, 'size' | 'strokeWidth'>> = (
-  props
+  props,
 ) => <CircleChart {...props} size={160} strokeWidth={12} />;
 
 /**
@@ -268,7 +268,7 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
   const totalLayers = values.length;
 
   return (
-    <Container style={{ width: size, height: size }}>
+    <Container style={{ height: size, width: size }}>
       {values.map((item, index) => {
         const layerSize = size - (totalLayers - index - 1) * (strokeWidth + gap) * 2;
         const radius = (layerSize - strokeWidth) / 2;
@@ -279,7 +279,7 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
 
         return (
           <Svg
-            key={index}
+            key={radius}
             width={size}
             height={size}
             style={{ position: 'absolute' }}

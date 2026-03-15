@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
+import { BigNumber } from '@decentralchain/bignumber';
+import type React from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import BigNumber from '@waves/bignumber';
+import { logger } from '@/lib/logger';
 
 /**
  * Balance Component
@@ -41,7 +43,7 @@ const DecimalPart = styled.span`
   font-size: 0.9em;
 `;
 
-const Symbol = styled.span`
+const SymbolText = styled.span`
   margin-left: 4px;
   font-weight: 500;
   color: ${({ theme }) => `${theme.colors.text}80`};
@@ -59,7 +61,7 @@ export interface BalanceProps {
   /** Number of decimal places (default: 8) */
   decimals?: number;
 
-  /** Asset symbol to display (e.g., "DCC", "WAVES") */
+  /** Asset symbol to display (e.g., "DCC", "DCC") */
   symbol?: string;
 
   /** Show full precision without rounding */
@@ -91,7 +93,7 @@ const parseNumber = (value: string | number | BigNumber): BigNumber => {
 
 const formatWithSeparator = (value: string, separator: string = ','): string => {
   const parts = value.split('.');
-  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+  const integerPart = parts[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, separator) ?? '';
   return parts[1] ? `${integerPart}.${parts[1]}` : integerPart;
 };
 
@@ -99,26 +101,26 @@ const getShortFormat = (bn: BigNumber): { value: string; suffix: string } => {
   if (bn.gte(1000000000)) {
     // Billions
     return {
-      value: bn.div(1000000000).toFixed(1),
       suffix: 'B',
+      value: bn.div(1000000000).toFixed(1),
     };
   } else if (bn.gte(1000000)) {
     // Millions
     return {
-      value: bn.div(1000000).toFixed(1),
       suffix: 'M',
+      value: bn.div(1000000).toFixed(1),
     };
   } else if (bn.gte(1000)) {
     // Thousands
     return {
-      value: bn.div(1000).toFixed(1),
       suffix: 'K',
+      value: bn.div(1000).toFixed(1),
     };
   }
 
   return {
-    value: bn.toFixed(0),
     suffix: '',
+    value: bn.toFixed(0),
   };
 };
 
@@ -149,9 +151,9 @@ export const Balance: React.FC<BalanceProps> = ({
       // Handle zero or very small numbers
       if (bn.isZero()) {
         return {
-          type: 'normal' as const,
-          integer: '0',
           decimal: '',
+          integer: '0',
+          type: 'normal' as const,
         };
       }
 
@@ -163,9 +165,9 @@ export const Balance: React.FC<BalanceProps> = ({
         const { value, suffix } = getShortFormat(bn.abs());
         const sign = bn.isNegative() ? '-' : '';
         return {
+          suffix,
           type: 'short' as const,
           value: `${sign}${value}`,
-          suffix,
         };
       }
 
@@ -177,22 +179,22 @@ export const Balance: React.FC<BalanceProps> = ({
       const [integer, decimal] = fixed.split('.');
 
       // Format with separator if enabled
-      const formattedInteger = showSeparator ? formatWithSeparator(integer) : integer;
+      const formattedInteger = showSeparator ? formatWithSeparator(integer ?? '') : (integer ?? '');
 
       // Trim trailing zeros from decimal part
       const trimmedDecimal = decimal ? trimTrailingZeros(decimal) : '';
 
       return {
-        type: 'normal' as const,
-        integer: formattedInteger,
         decimal: trimmedDecimal ? `.${trimmedDecimal}` : '',
+        integer: formattedInteger,
+        type: 'normal' as const,
       };
     } catch (error) {
-      console.error('Error formatting balance:', error);
+      logger.error('Error formatting balance:', error);
       return {
-        type: 'normal' as const,
-        integer: '0',
         decimal: '',
+        integer: '0',
+        type: 'normal' as const,
       };
     }
   }, [amount, decimals, showFullPrecision, shortMode, shortModeThreshold, showSeparator]);
@@ -204,7 +206,7 @@ export const Balance: React.FC<BalanceProps> = ({
           {formatted.value}
           {formatted.suffix}
         </ShortNumber>
-        {symbol && <Symbol>{symbol}</Symbol>}
+        {symbol && <SymbolText>{symbol}</SymbolText>}
       </BalanceWrapper>
     );
   }
@@ -213,7 +215,7 @@ export const Balance: React.FC<BalanceProps> = ({
     <BalanceWrapper size={size} className={className}>
       <IntegerPart>{formatted.integer}</IntegerPart>
       {formatted.decimal && <DecimalPart>{formatted.decimal}</DecimalPart>}
-      {symbol && <Symbol>{symbol}</Symbol>}
+      {symbol && <SymbolText>{symbol}</SymbolText>}
     </BalanceWrapper>
   );
 };

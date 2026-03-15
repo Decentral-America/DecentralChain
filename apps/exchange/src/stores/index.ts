@@ -2,12 +2,13 @@
  * Zustand Stores
  * Export all application stores
  */
+
+export type { MarketData, Order, OrderBook, TradingPair } from './dexStore';
 export {
-  useDexStore,
-  selectSelectedPair,
-  selectOrderBook,
-  selectUserOrders,
-  selectMarketData,
   selectIsLoading,
+  selectMarketData,
+  selectOrderBook,
+  selectSelectedPair,
+  selectUserOrders,
+  useDexStore,
 } from './dexStore';
-export type { TradingPair, Order, OrderBook, MarketData } from './dexStore';

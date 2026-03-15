@@ -16,7 +16,7 @@ export function Tab({ className, children, isActive, onActivate }: TabProps) {
     <li
       // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: li with role="tab" is a standard tabs pattern
       role="tab"
-      className={clsx(styles.tabListItem, { [styles.tabListActive]: isActive }, className)}
+      className={clsx(styles.tabListItem, isActive && styles.tabListActive, className)}
       onClick={onActivate}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {

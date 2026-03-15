@@ -3,8 +3,10 @@
  * Cached polling hook with smart cache invalidation using React Query
  * Provides automatic caching, stale-time management, and background refetching
  */
+
+import { type UseQueryResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query';
+import { logger } from '@/lib/logger';
 
 /**
  * Poll Cache Configuration Options
@@ -142,7 +144,7 @@ export interface UsePollCacheReturn<T> {
 export const usePollCache = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   const {
     interval = 30000, // Default: 30 seconds
@@ -164,14 +166,16 @@ export const usePollCache = <T>(
    * React Query integration for cached polling
    */
   const { data, isLoading, isFetching, error, isStale, refetch } = useQuery<T, Error>({
-    queryKey,
-    queryFn: fetchFn,
-    refetchInterval: enabled ? interval : false,
-    gcTime: cacheTime,
-    staleTime,
     enabled,
+    gcTime: cacheTime,
+    queryFn: fetchFn,
+    queryKey,
+    refetchInterval: enabled ? interval : false,
     refetchOnWindowFocus,
-    placeholderData: keepPreviousData ? (previousData) => previousData : undefined,
+    staleTime,
+    ...(keepPreviousData && {
+      placeholderData: ((previousData: T | undefined) => previousData) as never,
+    }),
     retry,
     retryDelay,
   }) as UseQueryResult<T, Error>;
@@ -212,7 +216,7 @@ export const usePollCache = <T>(
     (data: T | ((old: T | undefined) => T)) => {
       queryClient.setQueryData<T>(queryKey, data);
     },
-    [queryClient, queryKey]
+    [queryClient, queryKey],
   );
 
   /**
@@ -227,22 +231,22 @@ export const usePollCache = <T>(
    */
   useCallback(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[usePollCache]', {
-        key: queryKey,
-        isStale,
-        isFetching,
+      logger.debug('[usePollCache]', {
         hasData: !!data,
+        isFetching,
+        isStale,
+        key: queryKey,
       });
     }
   }, [queryKey, isStale, isFetching, data]);
 
   return {
     data,
-    isLoading,
-    isFetching,
     error: error as Error | null,
-    isStale,
     invalidate,
+    isFetching,
+    isLoading,
+    isStale,
     refetch: manualRefetch,
     remove,
     setData,
@@ -256,7 +260,7 @@ export const usePollCache = <T>(
 export const usePollCacheFresh = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   const result = usePollCache(key, fetchFn, {
     ...options,
@@ -273,7 +277,7 @@ export const usePollCacheFresh = <T>(
 export const usePollCachePersistent = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
@@ -289,14 +293,14 @@ export const usePollCachePersistent = <T>(
 export const usePollCacheAggressive = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
-    interval: 60000, // 1 minute
-    staleTime: 30000, // 30 seconds
     cacheTime: 600000, // 10 minutes
+    interval: 60000, // 1 minute
     refetchOnWindowFocus: false,
+    staleTime: 30000, // 30 seconds
   });
 };
 
@@ -307,13 +311,13 @@ export const usePollCacheAggressive = <T>(
 export const usePollCacheRealtime = <T>(
   key: string | string[],
   fetchFn: () => Promise<T>,
-  options: PollCacheOptions = {}
+  options: PollCacheOptions = {},
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
-    interval: 5000, // 5 seconds
-    staleTime: 2000, // 2 seconds
     cacheTime: 30000, // 30 seconds
+    interval: 5000, // 5 seconds
     refetchOnWindowFocus: true,
+    staleTime: 2000, // 2 seconds
   });
 };

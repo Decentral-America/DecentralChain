@@ -1,4 +1,5 @@
 // Export all layout components from this directory
-export { ProtectedRoute } from './ProtectedRoute';
+
 export { Header } from './Header';
+export { ProtectedRoute } from './ProtectedRoute';
 export { Sidebar } from './Sidebar';

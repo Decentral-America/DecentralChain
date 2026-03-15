@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 
 /**
@@ -112,7 +112,7 @@ export const Change24: React.FC<Change24Props> = ({
   neutralThreshold = 0,
 }) => {
   // Handle null/undefined
-  if (change === null || change === undefined || isNaN(change)) {
+  if (change === null || change === undefined || Number.isNaN(change)) {
     return (
       <ChangeWrapper variant="neutral" size={size} className={className}>
         <ChangeValue>{emptyValue}</ChangeValue>

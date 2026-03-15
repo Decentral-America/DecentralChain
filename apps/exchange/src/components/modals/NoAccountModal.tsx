@@ -4,7 +4,8 @@
  * Offers options to create a new wallet or import an existing one
  * via seed phrase or private key.
  */
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Modal } from './Modal';
 
@@ -186,10 +187,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
           </Description>
 
           <Actions>
-            <OptionCard
-              onClick={onCreateWallet}
-              data-testid="no-account-create"
-            >
+            <OptionCard onClick={onCreateWallet} data-testid="no-account-create">
               <OptionIcon>✨</OptionIcon>
               <OptionText>
                 <OptionTitle>Create New Wallet</OptionTitle>
@@ -197,10 +195,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
               </OptionText>
             </OptionCard>
 
-            <OptionCard
-              onClick={() => setView('import')}
-              data-testid="no-account-import"
-            >
+            <OptionCard onClick={() => setView('import')} data-testid="no-account-import">
               <OptionIcon>📥</OptionIcon>
               <OptionText>
                 <OptionTitle>Import Existing Wallet</OptionTitle>
@@ -213,15 +208,10 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
         <Content>
           <IconCircle>📥</IconCircle>
           <Title>Import Wallet</Title>
-          <Description>
-            Choose how you&apos;d like to import your existing wallet.
-          </Description>
+          <Description>Choose how you&apos;d like to import your existing wallet.</Description>
 
           <Actions>
-            <OptionCard
-              onClick={onImportSeedPhrase}
-              data-testid="no-account-import-seed"
-            >
+            <OptionCard onClick={onImportSeedPhrase} data-testid="no-account-import-seed">
               <OptionIcon>📝</OptionIcon>
               <OptionText>
                 <OptionTitle>Secret Phrase</OptionTitle>
@@ -229,10 +219,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
               </OptionText>
             </OptionCard>
 
-            <OptionCard
-              onClick={onImportPrivateKey}
-              data-testid="no-account-import-key"
-            >
+            <OptionCard onClick={onImportPrivateKey} data-testid="no-account-import-key">
               <OptionIcon>🔑</OptionIcon>
               <OptionText>
                 <OptionTitle>Private Key</OptionTitle>
@@ -240,9 +227,7 @@ export const NoAccountModal: React.FC<NoAccountModalProps> = ({
               </OptionText>
             </OptionCard>
 
-            <BackButton onClick={handleBack}>
-              ← Back to options
-            </BackButton>
+            <BackButton onClick={handleBack}>← Back to options</BackButton>
           </Actions>
         </Content>
       )}

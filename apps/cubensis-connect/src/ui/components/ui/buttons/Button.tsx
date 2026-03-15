@@ -18,16 +18,18 @@ export function Button({
 }: Props) {
   return (
     <button
-      className={clsx(className, styles.button, {
-        [styles.custom]: view === 'custom',
-        [styles.defaultView]: !view,
-        [styles.icon]: view === 'icon',
-        [styles.loading]: loading,
-        [styles.submitTiny]: view === 'submitTiny',
-        [styles.submit]: view === 'submit',
-        [styles.transparent]: view === 'transparent',
-        [styles.warning]: view === 'warning',
-      })}
+      className={clsx(
+        className,
+        styles.button,
+        view === 'custom' && styles.custom,
+        !view && styles.defaultView,
+        view === 'icon' && styles.icon,
+        loading && styles.loading,
+        view === 'submitTiny' && styles.submitTiny,
+        view === 'submit' && styles.submit,
+        view === 'transparent' && styles.transparent,
+        view === 'warning' && styles.warning,
+      )}
       type={type}
       {...otherProps}
     >

@@ -72,6 +72,11 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
         return;
       }
 
+      if (!txStatus) {
+        timeout = window.setTimeout(() => updateStatus(prevTxStatus), 5000);
+        return;
+      }
+
       if (txStatus.status === 'confirmed') {
         if (txStatus.applicationStatus === 'succeeded') {
           const txInfoUrl = new URL(`/transactions/info/${transactionId}`, nodeBaseUrl);
