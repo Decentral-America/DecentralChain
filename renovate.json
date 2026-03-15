@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "group:monorepos",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 5,
+  "schedule": ["before 4am on monday"],
+  "postUpdateOptions": ["pnpmDedupe"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Group all Nx packages together",
+      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"],
+      "groupName": "Nx monorepo",
+      "automerge": false
+    },
+    {
+      "description": "Group Biome updates",
+      "matchPackageNames": ["@biomejs/biome"],
+      "groupName": "Biome",
+      "automerge": false
+    },
+    {
+      "description": "Automerge non-major devDependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Automerge patch-level production dependencies",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Group tsdown updates",
+      "matchPackageNames": ["tsdown"],
+      "groupName": "tsdown"
+    },
+    {
+      "description": "Group Vitest ecosystem",
+      "matchPackageNames": ["vitest", "@vitest/**"],
+      "groupName": "Vitest"
+    },
+    {
+      "description": "Group Vite ecosystem",
+      "matchPackageNames": ["vite", "@vitejs/**"],
+      "groupName": "Vite"
+    },
+    {
+      "description": "Prevent npm unpublish risk",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "3 days"
+    }
+  ]
+}

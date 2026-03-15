@@ -1,0 +1,16 @@
+# CODEOWNERS — Default code reviewers for pull requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: all PRs require review from the maintainer
+# Replace with @Decentral-America/core once a GitHub team is created
+* @jourlez
+
+# CI / Release infrastructure
+.github/ @jourlez
+nx.json @jourlez
+pnpm-workspace.yaml @jourlez
+tsconfig.base.json @jourlez
+biome.json @jourlez
+
+# Module boundary enforcement
+scripts/ @jourlez
