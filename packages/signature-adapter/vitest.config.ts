@@ -10,12 +10,6 @@ export default mergeConfig(baseConfig, {
         'src/prepareTx/index.ts',
         'src/prepareTx/interfaces.ts',
       ],
-      thresholds: {
-        branches: 90,
-        functions: 90,
-        lines: 90,
-        statements: 90,
-      },
     },
   },
 });

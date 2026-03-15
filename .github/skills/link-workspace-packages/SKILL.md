@@ -1,127 +1,73 @@
 ---
 name: link-workspace-packages
-description: 'Link workspace packages in monorepos (npm, yarn, pnpm, bun). USE WHEN: (1) you just created or generated new packages and need to wire up their dependencies, (2) user imports from a sibling package and needs to add it as a dependency, (3) you get resolution errors for workspace packages (@org/*) like "cannot find module", "failed to resolve import", "TS2307", or "cannot resolve". DO NOT patch around with tsconfig paths or manual package.json edits - use the package manager''s workspace commands to fix actual linking.'
+description: 'Add dependencies between @decentralchain/* packages. USE WHEN: (1) you created a new package and need to wire up its dependencies, (2) user imports from a sibling package, (3) you get resolution errors like "cannot find module", "TS2307", or "cannot resolve". CRITICAL: always validate layer boundaries before adding — packages may only depend on same or lower layers.'
 ---
 
 # Link Workspace Packages
 
-Add dependencies between packages in a monorepo. All package managers support workspaces but with different syntax.
+Add `@decentralchain/*` dependencies between packages in this pnpm monorepo.
 
-## Detect Package Manager
+## Layer Boundary Rules (MUST CHECK FIRST)
 
-Check whether there's a `packageManager` field in the root-level `package.json`.
+Before adding any workspace dependency, validate the layer constraint:
 
-Alternatively check lockfile in repo root:
+| Layer | Packages |
+|-------|----------|
+| **0 — Primitives** | ts-types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
+| **1 — Domain** | data-entities, money-like-to-node, ride-js, swap-client |
+| **2 — Services** | transactions, node-api-js, data-service-client-js |
+| **3 — Integration** | signer |
+| **4 — Adapter** | signature-adapter, cubensis-connect-provider |
 
-- `pnpm-lock.yaml` → pnpm
-- `yarn.lock` → yarn
-- `bun.lock` / `bun.lockb` → bun
-- `package-lock.json` → npm
+**Rule:** A package at layer N may only depend on packages at layer ≤ N. Apps (`scope:app`) can depend on any SDK package.
 
-## Workflow
-
-1. Identify consumer package (the one importing)
-2. Identify provider package(s) (being imported)
-3. Add dependency using package manager's workspace syntax
-4. Verify symlinks created in consumer's `node_modules/`
-
----
-
-## pnpm
-
-Uses `workspace:` protocol - symlinks only created when explicitly declared.
+### Check Layers
 
 ```bash
-# From consumer directory
-pnpm add @org/ui --workspace
+# Find a package's layer from its nx.tags
+cat packages/<consumer>/package.json | grep -A5 '"tags"'
+cat packages/<provider>/package.json | grep -A5 '"tags"'
+```
 
-# Or with --filter from anywhere
-pnpm add @org/ui --filter @org/app --workspace
+If the provider's layer > consumer's layer, **STOP — this dependency violates module boundaries**.
+
+## Adding a Dependency
+
+This workspace uses **pnpm** with `workspace:*` protocol.
+
+```bash
+# From workspace root (preferred)
+pnpm add @decentralchain/<provider> --filter @decentralchain/<consumer> --workspace
+
+# Or from the consumer directory
+cd packages/<consumer>
+pnpm add @decentralchain/<provider> --workspace
 ```
 
 Result in `package.json`:
-
 ```json
-{ "dependencies": { "@org/ui": "workspace:*" } }
+{ "dependencies": { "@decentralchain/<provider>": "workspace:*" } }
 ```
 
----
-
-## yarn (v2+/berry)
-
-Also uses `workspace:` protocol.
-
+After adding, run the boundary check:
 ```bash
-yarn workspace @org/app add @org/ui
+node scripts/check-boundaries.mjs
 ```
 
-Result in `package.json`:
+## Troubleshooting
 
-```json
-{ "dependencies": { "@org/ui": "workspace:^" } }
-```
-
----
-
-## npm
-
-No `workspace:` protocol. npm auto-symlinks workspace packages.
-
-```bash
-npm install @org/ui --workspace @org/app
-```
-
-Result in `package.json`:
-
-```json
-{ "dependencies": { "@org/ui": "*" } }
-```
-
-npm resolves to local workspace automatically during install.
-
----
-
-## bun
-
-Supports `workspace:` protocol (pnpm-compatible).
-
-```bash
-cd packages/app && bun add @org/ui
-```
-
-Result in `package.json`:
-
-```json
-{ "dependencies": { "@org/ui": "workspace:*" } }
-```
-
----
-
-## Examples
-
-**Example 1: pnpm - link ui lib to app**
-
-```bash
-pnpm add @org/ui --filter @org/app --workspace
-```
-
-**Example 2: npm - link multiple packages**
-
-```bash
-npm install @org/data-access @org/ui --workspace @org/dashboard
-```
-
-**Example 3: Debug "Cannot find module"**
-
+**"Cannot find module @decentralchain/..."**
 1. Check if dependency is declared in consumer's `package.json`
-2. If not, add it using appropriate command above
-3. Run install (`pnpm install`, `npm install`, etc.)
+2. If not: `pnpm add @decentralchain/<pkg> --filter @decentralchain/<consumer> --workspace`
+3. Run `pnpm install`
+
+**"TS2307: Cannot find module"**
+1. Verify the provider package is built: `pnpm nx run @decentralchain/<provider>:build`
+2. Check the provider's `package.json` has correct `exports` field
+3. Check `verbatimModuleSyntax` — use `import type` for type-only imports
 
 ## Notes
 
-- Symlinks appear in `<consumer>/node_modules/@org/<package>`
-- **Hoisting differs by manager:**
-  - npm/bun: hoist shared deps to root `node_modules`
-  - pnpm: no hoisting (strict isolation, prevents phantom deps)
-  - yarn berry: uses Plug'n'Play by default (no `node_modules`)
-- Root `package.json` should have `"private": true` to prevent accidental publish
+- All workspace deps use `workspace:*` (resolved to exact version at publish time)
+- pnpm uses strict isolation — no phantom deps allowed
+- Shared devDependencies use the **pnpm catalog** (defined in `pnpm-workspace.yaml`)
