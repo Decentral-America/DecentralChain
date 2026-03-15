@@ -21,7 +21,7 @@ export default function BlockDetail() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['block', height, id],
+    enabled: !!(height || id),
     queryFn: async () => {
       if (height) {
         return fetchBlockAt(parseInt(height, 10));
@@ -30,7 +30,7 @@ export default function BlockDetail() {
       }
       throw new Error('No block identifier provided');
     },
-    enabled: !!(height || id),
+    queryKey: ['block', height, id],
   });
 
   if (error) {

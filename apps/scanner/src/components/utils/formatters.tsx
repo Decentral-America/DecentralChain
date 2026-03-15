@@ -15,8 +15,8 @@ export function formatAmount(
   if (!amount && amount !== 0) return '0';
   const value = Number(amount) / 10 ** decimals;
   return value.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
+    minimumFractionDigits: 0,
   });
 }
 

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Activity, ChevronDown, ChevronUp, Pause, Play } from 'lucide-react';
-import type { ReactElement } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { type ReactElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,7 +30,7 @@ export default function BlockFeed() {
 
   // Initial load - fetch last 20 blocks
   const { data: initialBlocks, isLoading } = useQuery<IBlockHeader[] | null>({
-    queryKey: ['initialBlocks', currentHeight?.height],
+    enabled: !!currentHeight?.height && blocks.length === 0,
     queryFn: async () => {
       if (!currentHeight?.height) return null;
       const from = Math.max(1, currentHeight.height - (INITIAL_BLOCKS_TO_FETCH - 1));
@@ -45,7 +44,7 @@ export default function BlockFeed() {
 
       return fetchBlockHeadersSeq(from, to);
     },
-    enabled: !!currentHeight?.height && blocks.length === 0,
+    queryKey: ['initialBlocks', currentHeight?.height],
   });
 
   // Set initial blocks
@@ -241,8 +240,8 @@ export default function BlockFeed() {
 function TransactionList({ blockHeight }: { blockHeight: number }): ReactElement {
   const { t } = useLanguage(); // Added useLanguage hook
   const { data: block, isLoading } = useQuery<IBlock>({
-    queryKey: ['blockTxs', blockHeight],
     queryFn: () => fetchBlockAt(blockHeight),
+    queryKey: ['blockTxs', blockHeight],
   });
 
   if (isLoading) {

@@ -2,12 +2,6 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@/': '/src/',
-    },
-  },
   build: {
     chunkSizeWarningLimit: 600,
     rolldownOptions: {
@@ -16,49 +10,50 @@ export default defineConfig({
           groups: [
             {
               name: 'react-vendor',
-              test: /[\\/]node_modules[\\/](react|react-dom|react-router)[\\/]/,
               priority: 20,
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router)[\\/]/,
             },
             {
               name: 'recharts-vendor',
-              test: /[\\/]node_modules[\\/]recharts[\\/]/,
               priority: 15,
+              test: /[\\/]node_modules[\\/]recharts[\\/]/,
             },
             {
               name: 'radix-vendor',
-              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
               priority: 15,
+              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
             },
             {
               name: 'query-vendor',
-              test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
               priority: 15,
+              test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
             },
             {
               name: 'map-vendor',
-              test: /[\\/]node_modules[\\/](leaflet|react-leaflet)[\\/]/,
               priority: 15,
+              test: /[\\/]node_modules[\\/](leaflet|react-leaflet)[\\/]/,
             },
             {
               name: 'sentry-vendor',
-              test: /[\\/]node_modules[\\/]@sentry[\\/]/,
               priority: 10,
+              test: /[\\/]node_modules[\\/]@sentry[\\/]/,
             },
           ],
         },
       },
     },
   },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@/': '/src/',
+    },
+  },
   test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.js',
-    css: true,
-    exclude: ['e2e/**', 'node_modules/**'],
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/**/*.d.ts', 'src/test/**'],
+      include: ['src/**/*.{ts,tsx}'],
+      provider: 'v8',
       thresholds: {
         branches: 70,
         functions: 70,
@@ -66,5 +61,10 @@ export default defineConfig({
         statements: 70,
       },
     },
+    css: true,
+    environment: 'jsdom',
+    exclude: ['e2e/**', 'node_modules/**'],
+    globals: true,
+    setupFiles: './src/test/setup.js',
   },
 });

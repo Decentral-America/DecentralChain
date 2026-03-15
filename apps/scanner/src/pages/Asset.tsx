@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, BarChart3, Coins, Search, TrendingUp, Users } from 'lucide-react';
-import type { FormEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
   Bar,
@@ -29,7 +28,7 @@ import {
   type IBlockHeader,
   type TAssetDetails,
 } from '@/lib/api';
-import type { TokenAssetStat } from '@/types';
+import { type TokenAssetStat } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
@@ -62,9 +61,9 @@ export default function Asset() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['asset', assetId],
-    queryFn: () => fetchAssetDetailsById(assetId),
     enabled: !!assetId,
+    queryFn: () => fetchAssetDetailsById(assetId),
+    queryKey: ['asset', assetId],
   });
 
   const handleSearch = (e: FormEvent<HTMLFormElement>): void => {
@@ -247,8 +246,8 @@ function AssetActivityWidget() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const { data: height } = useQuery({
-    queryKey: ['height'],
     queryFn: () => fetchHeight(),
+    queryKey: ['height'],
   });
 
   const currentHeight = height?.height || 0;
@@ -284,9 +283,9 @@ function AssetActivityWidget() {
                 if ([4, 11].includes(tx.type) && tx.assetId) {
                   if (!assetStats[tx.assetId]) {
                     assetStats[tx.assetId] = {
-                      txCount: 0,
-                      totalAmount: 0,
                       assetId: tx.assetId,
+                      totalAmount: 0,
+                      txCount: 0,
                     };
                   }
                   const stat = assetStats[tx.assetId];
@@ -389,16 +388,16 @@ function AssetActivityWidget() {
   }
 
   const pieData = assetActivity.assets.map((asset, index) => ({
+    fill: COLORS[index % COLORS.length],
     name: asset.name,
     value: asset.txCount,
-    fill: COLORS[index % COLORS.length],
   }));
 
   const barData = assetActivity.assets.map((asset, index) => ({
-    name: asset.name,
-    transactions: asset.txCount,
     amount: formatAmount(asset.totalAmount, asset.decimals),
     fill: COLORS[index % COLORS.length],
+    name: asset.name,
+    transactions: asset.txCount,
   }));
 
   return (

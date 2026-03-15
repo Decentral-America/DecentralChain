@@ -33,7 +33,7 @@ import {
   fetchHeight,
   type TAssetDetails,
 } from '@/lib/api';
-import type { SortConfig as BaseSortConfig } from '@/types';
+import { type SortConfig as BaseSortConfig } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
@@ -43,10 +43,10 @@ import { formatAmount, truncate } from '../components/utils/formatters';
 
 // Holder Tiers with emojis
 const TIERS = {
-  WHALE: { threshold: 0.01, name: 'Whale', emoji: '🐋', color: 'text-blue-600' },
-  SHARK: { threshold: 0.001, name: 'Shark', emoji: '🦈', color: 'text-indigo-600' },
-  DOLPHIN: { threshold: 0.0001, name: 'Dolphin', emoji: '🐬', color: 'text-sky-600' },
-  SHRIMP: { threshold: 0, name: 'Shrimp', emoji: '🦐', color: 'text-gray-500' },
+  DOLPHIN: { color: 'text-sky-600', emoji: '🐬', name: 'Dolphin', threshold: 0.0001 },
+  SHARK: { color: 'text-indigo-600', emoji: '🦈', name: 'Shark', threshold: 0.001 },
+  SHRIMP: { color: 'text-gray-500', emoji: '🦐', name: 'Shrimp', threshold: 0 },
+  WHALE: { color: 'text-blue-600', emoji: '🐋', name: 'Whale', threshold: 0.01 },
 };
 
 const PAGE_SIZE = 25;
@@ -90,18 +90,18 @@ export default function DistributionTool() {
     pages: number;
     holders: number;
     hasMore: boolean;
-  }>({ pages: 0, holders: 0, hasMore: false });
+  }>({ hasMore: false, holders: 0, pages: 0 });
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortConfig, setSortConfig] = useState<HolderSortConfig>({
-    key: 'balance',
     direction: 'desc',
+    key: 'balance',
   });
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data: latestHeightData, isLoading: heightLoading } = useQuery({
-    queryKey: ['height'],
     queryFn: () => fetchHeight(),
+    queryKey: ['height'],
   });
   const latestHeight = latestHeightData?.height || 0;
 
@@ -110,9 +110,9 @@ export default function DistributionTool() {
     isLoading: assetLoading,
     error: assetError,
   } = useQuery<TAssetDetails>({
-    queryKey: ['asset', submittedAssetId],
-    queryFn: () => fetchAssetDetailsById(submittedAssetId as string),
     enabled: !!submittedAssetId,
+    queryFn: () => fetchAssetDetailsById(submittedAssetId as string),
+    queryKey: ['asset', submittedAssetId],
   });
 
   const {
@@ -120,16 +120,16 @@ export default function DistributionTool() {
     isLoading: distributionLoading,
     error: distributionError,
   } = useQuery<FullDistribution>({
-    queryKey: ['distribution', submittedAssetId, submittedHeight],
+    enabled: !!submittedAssetId && !!submittedHeight,
     queryFn: () =>
       fetchFullAssetDistribution(
         submittedAssetId as string,
         submittedHeight as number,
         (pages, holders, hasMore) => {
-          setFetchProgress({ pages, holders, hasMore });
+          setFetchProgress({ hasMore, holders, pages });
         },
       ),
-    enabled: !!submittedAssetId && !!submittedHeight,
+    queryKey: ['distribution', submittedAssetId, submittedHeight],
     retry: false,
   });
 
@@ -179,7 +179,7 @@ export default function DistributionTool() {
     setSubmittedHeight(heightToUse);
     setSubmittedAssetId(assetId);
     setCurrentPage(1);
-    setFetchProgress({ pages: 0, holders: 0, hasMore: false });
+    setFetchProgress({ hasMore: false, holders: 0, pages: 0 });
   };
 
   const processedData = useMemo<ProcessedDistributionData | null>(() => {
@@ -190,7 +190,7 @@ export default function DistributionTool() {
       const totalSupplyBigInt = BigInt(assetData.quantity);
       const percentage =
         totalSupplyBigInt > 0 ? Number((balanceBigInt * 1000000n) / totalSupplyBigInt) / 10000 : 0;
-      return { rank: index + 1, address, balance: balanceBigInt, percentage };
+      return { address, balance: balanceBigInt, percentage, rank: index + 1 };
     });
 
     holders.sort((a, b) => (b.balance > a.balance ? 1 : -1));
@@ -198,15 +198,15 @@ export default function DistributionTool() {
     let cumulative = 0;
     const rankedHolders = holders.map((holder, index) => {
       cumulative += holder.percentage;
-      return { ...holder, rank: index + 1, cumulative: cumulative };
+      return { ...holder, cumulative: cumulative, rank: index + 1 };
     });
 
     // Tier analysis
     const tierCounts: Record<'WHALE' | 'SHARK' | 'DOLPHIN' | 'SHRIMP', number> = {
-      WHALE: 0,
-      SHARK: 0,
       DOLPHIN: 0,
+      SHARK: 0,
       SHRIMP: 0,
+      WHALE: 0,
     };
     rankedHolders.forEach((h) => {
       if (h.percentage >= TIERS.WHALE.threshold) tierCounts.WHALE++;
@@ -232,10 +232,10 @@ export default function DistributionTool() {
     return {
       holders: rankedHolders,
       stats: {
-        holderCount: rankedHolders.length,
-        top10Ownership: rankedHolders.slice(0, 10).reduce((acc, h) => acc + h.percentage, 0),
-        tierCounts,
         gini,
+        holderCount: rankedHolders.length,
+        tierCounts,
+        top10Ownership: rankedHolders.slice(0, 10).reduce((acc, h) => acc + h.percentage, 0),
       },
     };
   }, [distributionData, assetData]);
@@ -272,7 +272,7 @@ export default function DistributionTool() {
     if (sortConfig.key === key && sortConfig.direction === 'desc') {
       direction = 'asc';
     }
-    setSortConfig({ key, direction });
+    setSortConfig({ direction, key });
     setCurrentPage(1);
   };
 

@@ -31,7 +31,7 @@ import {
   type TAssetDetails,
   type TAssetsBalance,
 } from '@/lib/api';
-import type { Lease, Transaction } from '@/types';
+import { type Lease, type Transaction } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo'; // New import
@@ -56,34 +56,34 @@ export default function Address() {
   const [address, setAddress] = useState(initialAddress);
 
   const { data: balances, isLoading: balancesLoading } = useQuery<TAssetsBalance>({
-    queryKey: ['balances', address],
-    queryFn: () => fetchAssetsBalance(address),
     enabled: !!address,
+    queryFn: () => fetchAssetsBalance(address),
+    queryKey: ['balances', address],
   });
 
   const { data: transactions, isLoading: txLoading } = useQuery<Transaction[]>({
-    queryKey: ['transactions', address],
-    queryFn: () => fetchAddressTransactions(address, 50),
     enabled: !!address,
+    queryFn: () => fetchAddressTransactions(address, 50),
+    queryKey: ['transactions', address],
   });
 
   const { data: nfts, isLoading: nftsLoading } = useQuery<TAssetDetails[]>({
-    queryKey: ['nfts', address],
-    queryFn: () => fetchAddressNFTs(address, 100),
     enabled: !!address,
+    queryFn: () => fetchAddressNFTs(address, 100),
+    queryKey: ['nfts', address],
   });
 
   const { data: leases, isLoading: leasesLoading } = useQuery<Lease[]>({
-    queryKey: ['leases', address],
-    queryFn: () => fetchActiveLeases(address),
     enabled: !!address,
+    queryFn: () => fetchActiveLeases(address),
+    queryKey: ['leases', address],
   });
 
   const [txSearchTerm, setTxSearchTerm] = useState('');
   const [txTypeFilter, setTxTypeFilter] = useState('all');
   const [txSortConfig, setTxSortConfig] = useState<TxSortConfig>({
-    key: 'timestamp',
     direction: 'desc',
+    key: 'timestamp',
   });
 
   const addressTransactions = useMemo<Transaction[]>(() => {
@@ -147,8 +147,8 @@ export default function Address() {
 
   const handleSort = (key: TxSortKey) => {
     setTxSortConfig((prev) => ({
-      key,
       direction: prev.key === key && prev.direction === 'desc' ? 'asc' : 'desc',
+      key,
     }));
   };
 

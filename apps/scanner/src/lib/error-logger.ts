@@ -13,9 +13,9 @@ if (SENTRY_DSN) {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: import.meta.env?.MODE || 'production',
-    tracesSampleRate: 0.2,
-    replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
+    replaysSessionSampleRate: 0,
+    tracesSampleRate: 0.2,
   });
 }
 
@@ -64,9 +64,9 @@ export function getErrorLog(): Array<{
 if (typeof window !== 'undefined') {
   window.addEventListener('error', (event) => {
     logError(event.error || event.message, {
-      type: 'unhandled_error',
       filename: event.filename,
       lineno: event.lineno,
+      type: 'unhandled_error',
     });
   });
 
@@ -79,6 +79,6 @@ if (typeof window !== 'undefined') {
     error: unknown,
     errorInfo: { componentStack?: string },
   ) => {
-    logError(error, { type: 'react_error_boundary', componentStack: errorInfo?.componentStack });
+    logError(error, { componentStack: errorInfo?.componentStack, type: 'react_error_boundary' });
   };
 }

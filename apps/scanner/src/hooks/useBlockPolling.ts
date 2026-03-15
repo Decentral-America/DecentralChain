@@ -1,5 +1,4 @@
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { fetchHeight, fetchLastBlock, type IBlock } from '@/lib/api';
 
 const POLL_INTERVAL = 5_000; // 5 seconds
@@ -10,8 +9,8 @@ const POLL_INTERVAL = 5_000; // 5 seconds
  */
 export function useBlockHeight(enabled = true): UseQueryResult<{ height: number }> {
   return useQuery({
-    queryKey: ['height'],
     queryFn: () => fetchHeight(),
+    queryKey: ['height'],
     refetchInterval: enabled ? POLL_INTERVAL : false,
     staleTime: POLL_INTERVAL - 1_000,
   });
@@ -22,8 +21,8 @@ export function useBlockHeight(enabled = true): UseQueryResult<{ height: number 
  */
 export function useLatestBlock(enabled = true): UseQueryResult<IBlock> {
   return useQuery({
-    queryKey: ['lastBlock'],
     queryFn: () => fetchLastBlock(),
+    queryKey: ['lastBlock'],
     refetchInterval: enabled ? POLL_INTERVAL : false,
     staleTime: POLL_INTERVAL - 1_000,
   });

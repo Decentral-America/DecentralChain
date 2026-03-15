@@ -1,9 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
+  retries: 1,
   testDir: './e2e',
   timeout: 30_000,
-  retries: 1,
   use: {
     baseURL: 'http://localhost:5173',
     headless: true,
@@ -15,5 +16,4 @@ export default defineConfig({
     reuseExistingServer: true,
     timeout: 30_000,
   },
-  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
 });

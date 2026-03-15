@@ -5,7 +5,7 @@
  * Each entity type gets its own localStorage key: `dccscan_entity_{name}`
  */
 
-import type { EntityAccessor, EntityRecord } from '@/types';
+import { type EntityAccessor, type EntityRecord } from '@/types';
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -49,11 +49,25 @@ function sortRecords(records: EntityRecord[], sortStr?: string): EntityRecord[] 
  */
 export function createEntity(entityName: string): EntityAccessor {
   return {
-    async list(sort?: string, limit?: number): Promise<EntityRecord[]> {
-      let records = getEntityStore(entityName);
-      if (sort) records = sortRecords(records, sort);
-      if (limit) records = records.slice(0, limit);
-      return records;
+    async create(data: Partial<EntityRecord>): Promise<EntityRecord> {
+      const records = getEntityStore(entityName);
+      const record = {
+        ...data,
+        created_date: new Date().toISOString(),
+        id: generateId(),
+        updated_date: new Date().toISOString(),
+      } as EntityRecord;
+      records.push(record);
+      saveEntityStore(entityName, records);
+      return record;
+    },
+
+    async delete(id: string): Promise<void> {
+      const records = getEntityStore(entityName);
+      const idx = records.findIndex((r) => r.id === id);
+      if (idx === -1) throw new Error(`${entityName} not found: ${id}`);
+      records.splice(idx, 1);
+      saveEntityStore(entityName, records);
     },
 
     async filter(
@@ -76,18 +90,11 @@ export function createEntity(entityName: string): EntityAccessor {
       if (!record) throw new Error(`${entityName} not found: ${id}`);
       return record;
     },
-
-    async create(data: Partial<EntityRecord>): Promise<EntityRecord> {
-      const records = getEntityStore(entityName);
-      const record = {
-        ...data,
-        id: generateId(),
-        created_date: new Date().toISOString(),
-        updated_date: new Date().toISOString(),
-      } as EntityRecord;
-      records.push(record);
-      saveEntityStore(entityName, records);
-      return record;
+    async list(sort?: string, limit?: number): Promise<EntityRecord[]> {
+      let records = getEntityStore(entityName);
+      if (sort) records = sortRecords(records, sort);
+      if (limit) records = records.slice(0, limit);
+      return records;
     },
 
     async update(id: string, data: Partial<EntityRecord>): Promise<EntityRecord> {
@@ -103,14 +110,6 @@ export function createEntity(entityName: string): EntityAccessor {
       } as EntityRecord;
       saveEntityStore(entityName, records);
       return records[idx] as EntityRecord;
-    },
-
-    async delete(id: string): Promise<void> {
-      const records = getEntityStore(entityName);
-      const idx = records.findIndex((r) => r.id === id);
-      if (idx === -1) throw new Error(`${entityName} not found: ${id}`);
-      records.splice(idx, 1);
-      saveEntityStore(entityName, records);
     },
   };
 }

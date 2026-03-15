@@ -47,8 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import type { ComponentType, LazyExoticComponent, ReactNode } from 'react';
-import { lazy } from 'react';
+import { type ComponentType, type LazyExoticComponent, lazy, type ReactNode } from 'react';
 import __Layout from './Layout';
 
 const Address = lazy(() => import('./pages/Address'));
@@ -100,7 +99,7 @@ export interface PagesConfig {
 }
 
 export const pagesConfig: PagesConfig = {
+  Layout: __Layout,
   mainPage: 'Dashboard',
   Pages: PAGES,
-  Layout: __Layout,
 };

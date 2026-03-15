@@ -1,15 +1,15 @@
 // Inspired by react-hot-toast library
 import { useEffect, useState } from 'react';
-import type { ToastAction, ToastData, ToastState } from '@/types';
+import { type ToastAction, type ToastData, type ToastState } from '@/types';
 
 const TOAST_LIMIT = 20;
 const TOAST_REMOVE_DELAY = 1000000;
 
 const actionTypes = {
   ADD_TOAST: 'ADD_TOAST',
-  UPDATE_TOAST: 'UPDATE_TOAST',
   DISMISS_TOAST: 'DISMISS_TOAST',
   REMOVE_TOAST: 'REMOVE_TOAST',
+  UPDATE_TOAST: 'UPDATE_TOAST',
 } as const;
 
 type ActionType = (typeof actionTypes)[keyof typeof actionTypes];
@@ -33,8 +33,8 @@ const addToRemoveQueue = (toastId: string): void => {
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId);
     dispatch({
-      type: actionTypes.REMOVE_TOAST,
       toastId,
+      type: actionTypes.REMOVE_TOAST,
     });
   }, TOAST_REMOVE_DELAY);
 
@@ -133,27 +133,27 @@ function toast({ ...props }: ToastInput): {
 
   const update = (props: Partial<ToastData>) =>
     dispatch({
-      type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
+      type: actionTypes.UPDATE_TOAST,
     });
 
-  const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
+  const dismiss = () => dispatch({ toastId: id, type: actionTypes.DISMISS_TOAST });
 
   dispatch({
-    type: actionTypes.ADD_TOAST,
     toast: {
       ...props,
       id,
-      open: true,
       onOpenChange: (open) => {
         if (!open) dismiss();
       },
+      open: true,
     },
+    type: actionTypes.ADD_TOAST,
   });
 
   return {
-    id,
     dismiss,
+    id,
     update,
   };
 }
@@ -176,8 +176,8 @@ function useToast(): ToastState & {
 
   return {
     ...state,
+    dismiss: (toastId?: string) => dispatch({ toastId, type: actionTypes.DISMISS_TOAST }),
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
   };
 }
 
