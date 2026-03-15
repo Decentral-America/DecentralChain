@@ -384,8 +384,9 @@ export const RestoreFromBackupPage: React.FC = () => {
 
           <Alert severity="info" sx={{ mt: 3 }}>
             <AlertTitle>Backup File Location</AlertTitle>
-            Your backup file is named something like <code>dcc-exchange-backup-2025-10-17.json</code>.
-            It was created when you exported your wallet from Settings.
+            Your backup file is named something like{' '}
+            <code>dcc-exchange-backup-2025-10-17.json</code>. It was created when you exported your
+            wallet from Settings.
           </Alert>
         </Box>
       ),
