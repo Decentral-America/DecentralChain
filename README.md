@@ -51,7 +51,7 @@
 | App | Description |
 |-----|-------------|
 | `@decentralchain/exchange` | DEX trading interface |
-| `@decentralchain/explorer` | Blockchain explorer |
+| `@decentralchain/scanner` | DecentralScan blockchain explorer |
 | `@decentralchain/cubensis-connect` | Wallet extension |
 
 ## Development
