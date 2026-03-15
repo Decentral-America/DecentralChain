@@ -58,10 +58,10 @@ try {
     JSON.stringify({
       action: 'done',
       code: 'error',
+      envRerunCount,
       message: 'Failed to parse ci_information JSON',
       noProgressCount: inputNoProgressCount + 1,
-      envRerunCount,
-    })
+    }),
   );
   process.exit(0);
 }
@@ -113,13 +113,8 @@ function backoff(count) {
 function hasStateChanged() {
   if (prevCipeStatus && cipeStatus !== prevCipeStatus) return true;
   if (prevShStatus && selfHealingStatus !== prevShStatus) return true;
-  if (prevVerificationStatus && verificationStatus !== prevVerificationStatus)
-    return true;
-  if (
-    prevFailureClassification &&
-    failureClassification !== prevFailureClassification
-  )
-    return true;
+  if (prevVerificationStatus && verificationStatus !== prevVerificationStatus) return true;
+  if (prevFailureClassification && failureClassification !== prevFailureClassification) return true;
   return false;
 }
 
@@ -189,23 +184,16 @@ function classify() {
 
   // --- Terminal CI states ---
   if (cipeStatus === 'SUCCEEDED') return { action: 'done', code: 'ci_success' };
-  if (cipeStatus === 'CANCELED')
-    return { action: 'done', code: 'cipe_canceled' };
-  if (cipeStatus === 'TIMED_OUT')
-    return { action: 'done', code: 'cipe_timed_out' };
+  if (cipeStatus === 'CANCELED') return { action: 'done', code: 'cipe_canceled' };
+  if (cipeStatus === 'TIMED_OUT') return { action: 'done', code: 'cipe_timed_out' };
 
   // --- CI failed, no tasks ---
-  if (
-    cipeStatus === 'FAILED' &&
-    failedTaskIds.length === 0 &&
-    selfHealingStatus == null
-  )
+  if (cipeStatus === 'FAILED' && failedTaskIds.length === 0 && selfHealingStatus == null)
     return { action: 'done', code: 'cipe_no_tasks' };
 
   // --- Environment failure ---
   if (failureClassification === 'environment_state') {
-    if (envRerunCount >= 2)
-      return { action: 'done', code: 'environment_rerun_cap' };
+    if (envRerunCount >= 2) return { action: 'done', code: 'environment_rerun_cap' };
     return { action: 'done', code: 'environment_issue' };
   }
 
@@ -219,19 +207,16 @@ function classify() {
 
   // --- Still running: self-healing ---
   if (
-    (selfHealingStatus === 'IN_PROGRESS' ||
-      selfHealingStatus === 'NOT_STARTED') &&
+    (selfHealingStatus === 'IN_PROGRESS' || selfHealingStatus === 'NOT_STARTED') &&
     !selfHealingSkippedReason
   )
     return { action: 'poll', code: 'sh_running' };
 
   // --- Still running: flaky rerun ---
-  if (failureClassification === 'flaky_task')
-    return { action: 'poll', code: 'flaky_rerun' };
+  if (failureClassification === 'flaky_task') return { action: 'poll', code: 'flaky_rerun' };
 
   // --- Fix auto-applied, waiting for new CI Attempt ---
-  if (userAction === 'APPLIED_AUTOMATICALLY')
-    return { action: 'poll', code: 'fix_auto_applied' };
+  if (userAction === 'APPLIED_AUTOMATICALLY') return { action: 'poll', code: 'fix_auto_applied' };
 
   // --- Auto-apply path (couldAutoApplyTasks) ---
   if (couldAutoApplyTasks === true) {
@@ -241,13 +226,9 @@ function classify() {
         code: 'fix_auto_apply_skipped',
         extra: { autoApplySkipReason },
       };
-    if (
-      verificationStatus === 'NOT_STARTED' ||
-      verificationStatus === 'IN_PROGRESS'
-    )
+    if (verificationStatus === 'NOT_STARTED' || verificationStatus === 'IN_PROGRESS')
       return { action: 'poll', code: 'verification_pending' };
-    if (verificationStatus === 'COMPLETED')
-      return { action: 'done', code: 'fix_auto_applying' };
+    if (verificationStatus === 'COMPLETED') return { action: 'done', code: 'fix_auto_applying' };
     // verification FAILED or NOT_EXECUTABLE → falls through to fix_needs_review
   }
 
@@ -271,8 +252,7 @@ function classify() {
   }
 
   // --- Fix failed ---
-  if (selfHealingStatus === 'FAILED')
-    return { action: 'done', code: 'fix_failed' };
+  if (selfHealingStatus === 'FAILED') return { action: 'done', code: 'fix_failed' };
 
   // --- No fix available ---
   if (
@@ -291,64 +271,56 @@ function classify() {
 
 // Message templates keyed by status or key
 const messages = {
-  // wait mode
-  new_cipe_detected: () =>
-    `New CI Attempt detected! CI: ${cipeStatus || 'N/A'}`,
-  no_new_cipe: () =>
-    'New CI Attempt timeout exceeded. No new CI Attempt detected.',
-  waiting_for_cipe: () => 'Waiting for new CI Attempt...',
-
-  // guards
-  polling_timeout: () => 'Polling timeout exceeded.',
-  circuit_breaker: () => 'No progress after 5 consecutive polls. Stopping.',
+  // polling
+  ci_running: () => `CI: ${cipeStatus}`,
 
   // terminal
   ci_success: () => 'CI passed successfully!',
   cipe_canceled: () => 'CI Attempt was canceled.',
-  cipe_timed_out: () => 'CI Attempt timed out.',
   cipe_no_tasks: () => 'CI failed but no Nx tasks were recorded.',
+  cipe_timed_out: () => 'CI Attempt timed out.',
+  circuit_breaker: () => 'No progress after 5 consecutive polls. Stopping.',
+  environment_issue: () => 'CI: FAILED | Classification: ENVIRONMENT_STATE',
 
   // environment
   environment_rerun_cap: () => 'Environment rerun cap (2) exceeded. Bailing.',
-  environment_issue: () => 'CI: FAILED | Classification: ENVIRONMENT_STATE',
-
-  // throttled
-  self_healing_throttled: () =>
-    'Self-healing throttled \u2014 too many unapplied fixes.',
-
-  // polling
-  ci_running: () => `CI: ${cipeStatus}`,
-  sh_running: () => `CI: ${cipeStatus} | Self-healing: ${selfHealingStatus}`,
-  flaky_rerun: () =>
-    'CI: FAILED | Classification: FLAKY_TASK (auto-rerun in progress)',
-  fix_auto_applied: () =>
-    'CI: FAILED | Fix auto-applied, new CI Attempt spawning',
-  verification_pending: () =>
-    `CI: FAILED | Self-healing: COMPLETED | Verification: ${verificationStatus}`,
-
-  // actionable
-  fix_auto_applying: () => 'Fix verified! Auto-applying...',
-  fix_auto_apply_skipped: (extra) =>
-    `Fix verified but auto-apply was skipped. ${
-      extra?.autoApplySkipReason
-        ? `Reason: ${extra.autoApplySkipReason}`
-        : 'Offer to apply manually.'
-    }`,
-  fix_needs_review: () =>
-    `Fix available but needs review. Verification: ${
-      verificationStatus || 'N/A'
-    }`,
-  fix_apply_ready: () => 'Fix available and verified. Ready to apply.',
-  fix_needs_local_verify: (extra) =>
-    `Fix available. ${extra.verifiableTaskIds.length} task(s) need local verification.`,
-  fix_failed: () => 'Self-healing failed to generate a fix.',
-  no_fix: () => 'CI failed, no fix available.',
 
   // fallback
   fallback: () =>
     `CI: ${cipeStatus || 'N/A'} | Self-healing: ${
       selfHealingStatus || 'N/A'
     } | Verification: ${verificationStatus || 'N/A'}`,
+  fix_apply_ready: () => 'Fix available and verified. Ready to apply.',
+  fix_auto_applied: () => 'CI: FAILED | Fix auto-applied, new CI Attempt spawning',
+  fix_auto_apply_skipped: (extra) =>
+    `Fix verified but auto-apply was skipped. ${
+      extra?.autoApplySkipReason
+        ? `Reason: ${extra.autoApplySkipReason}`
+        : 'Offer to apply manually.'
+    }`,
+
+  // actionable
+  fix_auto_applying: () => 'Fix verified! Auto-applying...',
+  fix_failed: () => 'Self-healing failed to generate a fix.',
+  fix_needs_local_verify: (extra) =>
+    `Fix available. ${extra.verifiableTaskIds.length} task(s) need local verification.`,
+  fix_needs_review: () =>
+    `Fix available but needs review. Verification: ${verificationStatus || 'N/A'}`,
+  flaky_rerun: () => 'CI: FAILED | Classification: FLAKY_TASK (auto-rerun in progress)',
+  // wait mode
+  new_cipe_detected: () => `New CI Attempt detected! CI: ${cipeStatus || 'N/A'}`,
+  no_fix: () => 'CI failed, no fix available.',
+  no_new_cipe: () => 'New CI Attempt timeout exceeded. No new CI Attempt detected.',
+
+  // guards
+  polling_timeout: () => 'Polling timeout exceeded.',
+
+  // throttled
+  self_healing_throttled: () => 'Self-healing throttled \u2014 too many unapplied fixes.',
+  sh_running: () => `CI: ${cipeStatus} | Self-healing: ${selfHealingStatus}`,
+  verification_pending: () =>
+    `CI: FAILED | Self-healing: COMPLETED | Verification: ${verificationStatus}`,
+  waiting_for_cipe: () => 'Waiting for new CI Attempt...',
 };
 
 // Codes where noProgressCount resets to 0 (genuine progress occurred)
@@ -391,9 +363,9 @@ function buildOutput(decision) {
   const result = {
     action,
     code,
+    envRerunCount,
     message,
     noProgressCount: resetProgressCodes.has(code) ? 0 : noProgressCount,
-    envRerunCount,
   };
 
   // Add delay
@@ -406,10 +378,8 @@ function buildOutput(decision) {
 
   // Add extras
   if (code === 'new_cipe_detected') result.newCipeDetected = true;
-  if (extra?.verifiableTaskIds)
-    result.verifiableTaskIds = extra.verifiableTaskIds;
-  if (extra?.autoApplySkipReason)
-    result.autoApplySkipReason = extra.autoApplySkipReason;
+  if (extra?.verifiableTaskIds) result.verifiableTaskIds = extra.verifiableTaskIds;
+  if (extra?.autoApplySkipReason) result.autoApplySkipReason = extra.autoApplySkipReason;
 
   console.log(JSON.stringify(result));
 }

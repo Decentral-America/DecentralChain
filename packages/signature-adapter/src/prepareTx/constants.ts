@@ -1,4 +1,4 @@
-import { toNode as mlToNode, type TDCCGuiEntity } from '@decentralchain/money-like-to-node';
+import { toNode as mlToNode, type TClientEntity } from '@decentralchain/money-like-to-node';
 import * as dccTransactions from '@decentralchain/transactions';
 import { libs, protoSerialize } from '@decentralchain/transactions';
 import { type IAdapterSignMethods } from './interfaces';
@@ -82,13 +82,13 @@ const txInvokeScript = dccTransactions.invokeScript as unknown as TTxBridgeFn;
 const txUpdateAssetInfo = dccTransactions.updateAssetInfo as unknown as TTxBridgeFn;
 
 const toNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
-  const r = mlToNode(data as unknown as TDCCGuiEntity);
+  const r = mlToNode(data as unknown as TClientEntity);
   const result: TxRecord = { ...r, timestamp: new Date(r.timestamp).getTime() };
   return convert ? convert(result) : result;
 };
 
 const burnToNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
-  const r = mlToNode(data as unknown as TDCCGuiEntity);
+  const r = mlToNode(data as unknown as TClientEntity);
   const withAmount: TxRecord = {
     ...r,
     amount: (r as { quantity?: unknown }).quantity,
