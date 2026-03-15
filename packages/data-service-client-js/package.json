@@ -10,15 +10,12 @@
   "description": "Data service client for DecentralChain blockchain",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.6",
     "@decentralchain/parse-json-bignumber": "workspace:*",
-    "@evilmartians/lefthook": "2.1.3",
     "@size-limit/preset-small-lib": "12.0.0",
     "@vitest/coverage-v8": "4.0.18",
     "publint": "0.3.18",
     "size-limit": "12.0.0",
     "tsdown": "0.21.2",
-    "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
   "engines": {
@@ -51,6 +48,12 @@
   "license": "MIT",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/data-service-client-js",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:2"
+    ]
+  },
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -85,11 +88,5 @@
   ],
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "4.2.1",
-  "nx": {
-    "tags": [
-      "scope:sdk",
-      "layer:2"
-    ]
-  }
+  "version": "4.2.1"
 }
