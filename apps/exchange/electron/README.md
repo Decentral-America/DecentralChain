@@ -1,6 +1,6 @@
 # Electron Desktop Application
 
-This directory contains the Electron main process and configuration for packaging the DCC Wallet as a desktop application.
+This directory contains the Electron main process and configuration for packaging the DecentralExchange as a desktop application.
 
 ## Files
 
@@ -76,8 +76,8 @@ Built applications will be in the `release/` directory.
 {
   "main": "electron/main.js",
   "build": {
-    "appId": "com.decentralchain.wallet",
-    "productName": "DCC Wallet",
+    "appId": "com.decentralchain.exchange",
+    "productName": "DecentralExchange",
     "files": ["dist/**/*", "electron/**/*"],
     "mac": { "category": "public.app-category.finance" },
     "win": { "target": ["nsis", "portable"] },
@@ -126,16 +126,16 @@ if (window.electron) {
 After building, you'll find installers in `release/`:
 
 ### macOS
-- `DCC Wallet-x.x.x.dmg` - Disk image installer
-- `DCC Wallet-x.x.x-mac.zip` - Zipped application
+- `DecentralExchange-x.x.x.dmg` - Disk image installer
+- `DecentralExchange-x.x.x-mac.zip` - Zipped application
 
 ### Windows
-- `DCC Wallet Setup x.x.x.exe` - NSIS installer
-- `DCC Wallet x.x.x.exe` - Portable executable
+- `DecentralExchange Setup x.x.x.exe` - NSIS installer
+- `DecentralExchange x.x.x.exe` - Portable executable
 
 ### Linux
-- `dcc-wallet-x.x.x.AppImage` - AppImage bundle
-- `dcc-wallet_x.x.x_amd64.deb` - Debian package
+- `dcc-exchange-x.x.x.AppImage` - AppImage bundle
+- `dcc-exchange_x.x.x_amd64.deb` - Debian package
 
 ## Troubleshooting
 

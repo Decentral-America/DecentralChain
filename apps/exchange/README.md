@@ -176,13 +176,13 @@ npm run preview
 
 ```bash
 # Build Docker image
-docker build -t dcc-wallet:latest .
+docker build -t dcc-exchange:latest .
 
 # Run container
-docker run -d -p 8080:80 --name dcc-wallet dcc-wallet:latest
+docker run -d -p 8080:80 --name dcc-exchange dcc-exchange:latest
 
 # Health check
-docker inspect --format='{{.State.Health.Status}}' dcc-wallet
+docker inspect --format='{{.State.Health.Status}}' dcc-exchange
 ```
 
 ## 📁 Project Structure
@@ -344,8 +344,8 @@ git push origin main
 **2. Docker + Kubernetes/ECS**
 ```bash
 # Build and push
-docker build -t dcc-wallet:v1.0.0 .
-docker push ghcr.io/decentralchain/dcc-wallet:v1.0.0
+docker build -t dcc-exchange:v1.0.0 .
+docker push ghcr.io/decentralchain/dcc-exchange:v1.0.0
 
 # Deploy to Kubernetes
 kubectl apply -f k8s/deployment.yml
@@ -368,7 +368,7 @@ vercel --prod
 ### Environment URLs
 
 - **Production**: https://wallet.decentralchain.io
-- **Staging**: https://staging.dcc-wallet.example.com
+- **Staging**: https://staging.dcc-exchange.example.com
 - **Docker**: `http://localhost:8080`
 
 ## 📊 Performance
@@ -447,7 +447,7 @@ server: { port: 3001 }
 ```bash
 # Clear Docker cache
 docker system prune -a
-docker build --no-cache -t dcc-wallet .
+docker build --no-cache -t dcc-exchange .
 ```
 
 ## 🤝 Contributing

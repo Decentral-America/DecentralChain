@@ -1,6 +1,6 @@
 # Production Readiness Review
 
-**Project:** DCC Exchange (React Wallet)
+**Project:** DecentralExchange (React Wallet)
 **Version:** 0.0.0 (pre-release)
 **Date:** 2026-03-14
 **Verdict:** **NO-GO** — 2 blockers, 19 gaps (14 code-only, 5 infra-blocked)
@@ -333,7 +333,7 @@ export const router = createBrowserRouter([
 **`public/site.webmanifest`:**
 ```json
 {
-  "name": "DCC Exchange",
+  "name": "DecentralExchange",
   "short_name": "DCC",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
@@ -362,15 +362,15 @@ export const router = createBrowserRouter([
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="DCC Exchange — Decentralized Wallet & DEX" />
+<meta property="og:title" content="DecentralExchange — Decentralized Wallet & DEX" />
 <meta property="og:description" content="Secure non-custodial cryptocurrency wallet and decentralized exchange for DecentralChain." />
 <meta property="og:image" content="https://exchange.decentralchain.io/og-image.png" />
 <meta property="og:url" content="https://exchange.decentralchain.io" />
-<meta property="og:site_name" content="DCC Exchange" />
+<meta property="og:site_name" content="DecentralExchange" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="DCC Exchange — Decentralized Wallet & DEX" />
+<meta name="twitter:title" content="DecentralExchange — Decentralized Wallet & DEX" />
 <meta name="twitter:description" content="Secure non-custodial cryptocurrency wallet and decentralized exchange for DecentralChain." />
 <meta name="twitter:image" content="https://exchange.decentralchain.io/og-image.png" />
 ```
@@ -414,7 +414,7 @@ export function useDocumentTitle() {
   useEffect(() => {
     const match = [...matches].reverse().find(m => (m.handle as RouteHandle)?.title);
     const title = (match?.handle as RouteHandle)?.title;
-    document.title = title ? `${title} — DCC Exchange` : 'DCC Exchange';
+    document.title = title ? `${title} — DecentralExchange` : 'DecentralExchange';
   }, [matches]);
 }
 ```
