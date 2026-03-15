@@ -57,5 +57,11 @@ jobs:
       - name: Test (affected)
         run: npx nx affected -t test
 
+      - name: Verify package exports (affected)
+        run: npx nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
+
+      - name: Verify package publishing (affected)
+        run: npx nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,ts-types
+
       - name: Format check
         run: npx biome format .

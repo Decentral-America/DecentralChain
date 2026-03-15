@@ -1,6 +1,12 @@
 {
   "$schema": "https://cdn.jsdelivr.net/npm/nx@22.5.4/schemas/nx-schema.json",
   "defaultBase": "main",
+  "generators": {
+    "sdk-package": {
+      "factory": "./tools/generators/sdk-package",
+      "schema": "./tools/generators/sdk-package/schema.json"
+    }
+  },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -64,20 +70,20 @@
       "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/dist"]
     },
-    "lint": {
+    "check:exports": {
       "cache": true,
-      "inputs": ["default"]
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
     },
-    "lint:check": {
+    "check:publint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^default",
-        "{workspaceRoot}/biome.json",
-        {
-          "externalDependencies": ["@biomejs/biome"]
-        }
-      ]
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
+    },
+    "check:size": {
+      "cache": true,
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
     },
     "nx-release-publish": {
       "dependsOn": ["build"],
