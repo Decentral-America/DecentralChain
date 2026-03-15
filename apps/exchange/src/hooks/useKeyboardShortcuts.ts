@@ -64,11 +64,11 @@ function parseShortcut(shortcutString: string): KeyboardShortcut {
   const key = parts[parts.length - 1] ?? '';
 
   return {
-    key,
-    ctrlKey: parts.includes('ctrl') || parts.includes('cmd'),
     altKey: parts.includes('alt'),
-    shiftKey: parts.includes('shift'),
+    ctrlKey: parts.includes('ctrl') || parts.includes('cmd'),
+    key,
     metaKey: parts.includes('meta') || parts.includes('cmd'),
+    shiftKey: parts.includes('shift'),
   };
 }
 
@@ -169,31 +169,18 @@ export function useKeyboardShortcuts(
     if (!enabled) return;
 
     const handleKeyDown = (event: KeyboardEvent): void => {
-      // Skip if shortcuts should be disabled in inputs
-      if (!allowInInputs && isInputElement(document.activeElement)) {
-        return;
-      }
+      if (!allowInInputs && isInputElement(document.activeElement)) return;
 
-      // Check each registered shortcut
       for (const [shortcutString, parsedShortcut] of parsedShortcutsRef.current.entries()) {
-        if (matchesShortcut(event, parsedShortcut)) {
-          const handler = shortcuts[shortcutString];
+        if (!matchesShortcut(event, parsedShortcut)) continue;
 
-          if (handler) {
-            if (preventDefault) {
-              event.preventDefault();
-            }
-            if (stopPropagation) {
-              event.stopPropagation();
-            }
+        const handler = shortcuts[shortcutString];
+        if (!handler) continue;
 
-            // Call the handler
-            handler();
-
-            // Only handle one shortcut per keystroke
-            break;
-          }
-        }
+        if (preventDefault) event.preventDefault();
+        if (stopPropagation) event.stopPropagation();
+        handler();
+        break;
       }
     };
 
@@ -356,50 +343,29 @@ export function useArrowNavigation(
   useEffect(() => {
     if (!enabled || itemCount === 0) return;
 
+    const KEY_DELTAS: Record<string, Record<string, number>> = {
+      both: { ArrowDown: 1, ArrowLeft: -1, ArrowRight: 1, ArrowUp: -1 },
+      horizontal: { ArrowLeft: -1, ArrowRight: 1 },
+      vertical: { ArrowDown: 1, ArrowUp: -1 },
+    };
+
+    const deltas = KEY_DELTAS[orientation] ?? {};
+
     const handleKeyDown = (event: KeyboardEvent): void => {
-      let handled = false;
-      let delta = 0;
+      const delta = deltas[event.key];
+      if (delta === undefined) return;
 
-      // Vertical navigation
-      if (orientation === 'vertical' || orientation === 'both') {
-        if (event.key === 'ArrowDown') {
-          delta = 1;
-          handled = true;
-        } else if (event.key === 'ArrowUp') {
-          delta = -1;
-          handled = true;
-        }
+      event.preventDefault();
+      let newIndex = delta;
+
+      if (loop) {
+        if (newIndex < 0) newIndex = itemCount - 1;
+        if (newIndex >= itemCount) newIndex = 0;
+      } else {
+        newIndex = Math.max(0, Math.min(itemCount - 1, newIndex));
       }
 
-      // Horizontal navigation
-      if (orientation === 'horizontal' || orientation === 'both') {
-        if (event.key === 'ArrowRight') {
-          delta = 1;
-          handled = true;
-        } else if (event.key === 'ArrowLeft') {
-          delta = -1;
-          handled = true;
-        }
-      }
-
-      if (handled) {
-        event.preventDefault();
-
-        // Calculate new index
-        const currentIndex = 0; // Note: Would need to track current index in real implementation
-        let newIndex = currentIndex + delta;
-
-        if (loop) {
-          // Wrap around
-          if (newIndex < 0) newIndex = itemCount - 1;
-          if (newIndex >= itemCount) newIndex = 0;
-        } else {
-          // Clamp to bounds
-          newIndex = Math.max(0, Math.min(itemCount - 1, newIndex));
-        }
-
-        onIndexChange(newIndex);
-      }
+      onIndexChange(newIndex);
     };
 
     window.addEventListener('keydown', handleKeyDown);

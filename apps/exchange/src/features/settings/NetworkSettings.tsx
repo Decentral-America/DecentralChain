@@ -2,6 +2,8 @@
  * Network Settings Component
  * Configures network endpoints matching Angular Network tab
  */
+
+import * as ds from 'data-service';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -105,8 +107,7 @@ export const NetworkSettings: React.FC = () => {
 
   useEffect(() => {
     const updateDS = async () => {
-      const ds = await import('data-service');
-      await ds.config.setConfig({ node, matcher, api });
+      await ds.config.setConfig({ api, matcher, node });
     };
     updateDS();
   }, [node, matcher, api]);
@@ -119,18 +120,18 @@ export const NetworkSettings: React.FC = () => {
 
   const resetToDefaults = () => {
     const defaults = {
-      server: networkConfig.node,
-      matcher: networkConfig.matcher,
       api: networkConfig.api,
+      matcher: networkConfig.matcher,
+      server: networkConfig.node,
     };
     setNode(defaults.server);
     setMatcher(defaults.matcher);
     setApi(defaults.api);
     setCommonSetting('network', {
       ...commonSettings.network,
-      server: defaults.server,
-      matcher: defaults.matcher,
       api: defaults.api,
+      matcher: defaults.matcher,
+      server: defaults.server,
     });
   };
 

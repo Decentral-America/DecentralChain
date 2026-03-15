@@ -6,6 +6,7 @@
  * with localStorage persistence and change notifications.
  */
 
+import * as ds from 'data-service';
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { NetworkConfig } from '../config/networkConfig';
@@ -146,36 +147,36 @@ const getDefaultCommonSettings = (): CommonSettings => {
   const dccAssetId = assets.DCC || 'DCC';
 
   return {
-    lng: 'en',
-    theme: 'default',
     advancedMode: false,
-    lastOpenVersion: '',
-    whatsNewList: [],
-    logoutAfterMin: 5,
-    termsAccepted: true,
-    needReadNewTerms: false,
-    closedNotification: [],
-    withScam: false,
-    dontShowSpam: true,
-    tradeWithScriptAssets: false,
     baseAssetId: dccAssetId,
+    closedNotification: [],
+    dontShowSpam: true,
     events: {},
+    lastOpenVersion: '',
+    lng: 'en',
+    logoutAfterMin: 5,
+    needReadNewTerms: false,
     network: {
-      code: (NetworkConfig.get('code') as string) || '?',
-      server: NetworkConfig.node,
-      matcher: NetworkConfig.matcher,
       api: NetworkConfig.api,
-      coinomat: (NetworkConfig.get('coinomat') as string) || '',
-      nodeList: (NetworkConfig.get('nodeList') as string) || '',
-      dataServicesVersions: (NetworkConfig.get('featuresConfigUrl') as string) || '',
-      support: (NetworkConfig.get('support') as string) || '',
-      scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
-      tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
       blockHeight: '', // This would be fetched dynamically
+      code: (NetworkConfig.get('code') as string) || '?',
+      coinomat: (NetworkConfig.get('coinomat') as string) || '',
+      dataServicesVersions: (NetworkConfig.get('featuresConfigUrl') as string) || '',
+      matcher: NetworkConfig.matcher,
+      nodeList: (NetworkConfig.get('nodeList') as string) || '',
+      scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
+      server: NetworkConfig.node,
+      support: (NetworkConfig.get('support') as string) || '',
+      tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
     },
     oracleDCC: NetworkConfig.oracleDCC,
     scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
+    termsAccepted: true,
+    theme: 'default',
     tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
+    tradeWithScriptAssets: false,
+    whatsNewList: [],
+    withScam: false,
   };
 };
 
@@ -194,50 +195,50 @@ const getDefaultUserSettings = (): UserSettings => {
   const crcAssetId = assets.CRC || 'CRC';
 
   return {
+    dex: {
+      assetIdPair: {
+        amount: dccAssetId,
+        price: crcAssetId,
+      },
+      chartCropRate: 1.5,
+      createOrder: {
+        expirationName: '30day',
+      },
+      layout: {
+        orderbook: { collapsed: false },
+        tradevolume: { collapsed: true },
+        watchlist: { collapsed: false },
+      },
+      watchlist: {
+        activeTab: 'all',
+        favourite: [[crcAssetId]],
+        showOnlyFavorite: false,
+      },
+    },
     encryptionRounds: 5000,
     hasBackup: true,
     lastInterval: '30', // Default chart interval
+    orderLimit: 0.05,
+    pinnedAssetIdList: [dccAssetId, crcAssetId],
     send: {
       defaultTab: 'singleSend',
     },
-    orderLimit: 0.05,
-    pinnedAssetIdList: [dccAssetId, crcAssetId],
     wallet: {
       activeState: 'assets',
       assets: {
-        chartMode: 'month',
         activeChartAssetId: dccAssetId,
         chartAssetIdList: [crcAssetId],
-      },
-      transactions: {
-        filter: 'all',
+        chartMode: 'month',
       },
       leasing: {
         filter: 'all',
       },
       portfolio: {
-        spam: [],
         filter: 'active',
+        spam: [],
       },
-    },
-    dex: {
-      chartCropRate: 1.5,
-      assetIdPair: {
-        amount: dccAssetId,
-        price: crcAssetId,
-      },
-      createOrder: {
-        expirationName: '30day',
-      },
-      watchlist: {
-        showOnlyFavorite: false,
-        favourite: [[crcAssetId]],
-        activeTab: 'all',
-      },
-      layout: {
-        watchlist: { collapsed: false },
-        orderbook: { collapsed: false },
-        tradevolume: { collapsed: true },
+      transactions: {
+        filter: 'all',
       },
     },
   };
@@ -266,7 +267,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         case 'scamListUrl':
         case 'tokensNameListUrl': {
           // Update data-service config
-          const ds = await import('data-service');
+
           const setConfig = ds.config.setConfig as
             | ((config: Record<string, unknown>) => void)
             | undefined;
@@ -275,8 +276,8 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
               const network = value as { server: string; matcher: string };
               setConfig({
                 servers: {
-                  nodeAddress: network.server,
                   matcherAddress: network.matcher,
+                  nodeAddress: network.server,
                 },
               });
             } else {
@@ -451,12 +452,12 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const value: SettingsContextType = {
     commonSettings,
     getCommonSetting,
-    setCommonSetting,
-    userSettings,
     getUserSetting,
-    setUserSetting,
-    resetToDefaults,
     isLoading,
+    resetToDefaults,
+    setCommonSetting,
+    setUserSetting,
+    userSettings,
   };
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

@@ -47,6 +47,59 @@ import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { landingTheme } from '@/theme/landingTheme';
 import { formatAmount } from '@/utils/formatters';
 
+interface DashboardTx {
+  type?: number;
+  recipient?: string;
+  amount?: number;
+  assetId?: string | null;
+  timestamp?: number;
+  id?: string;
+  [key: string]: unknown;
+}
+
+const TX_DISPLAY: Record<
+  number,
+  { type: string; getAmount: (tx: DashboardTx, received: boolean) => string }
+> = {
+  4: {
+    getAmount: (tx, received) =>
+      `${received ? '+' : '-'}${formatAmount(tx.amount ? tx.amount / 10 ** 8 : 0)}`,
+    type: 'transfer',
+  },
+  7: { getAmount: () => 'Token Exchange', type: 'Swap' },
+  8: {
+    getAmount: (tx) => `${formatAmount(tx.amount ? tx.amount / 10 ** 8 : 0)} DCC`,
+    type: 'Leased',
+  },
+  9: { getAmount: () => 'Lease Return', type: 'Lease Cancelled' },
+};
+
+function mapTxToActivity(tx: DashboardTx, userAddress: string) {
+  const isReceived = tx.recipient === userAddress;
+  const display = TX_DISPLAY[tx.type ?? 0];
+  const type = display
+    ? tx.type === 4
+      ? isReceived
+        ? 'Received'
+        : 'Sent'
+      : display.type
+    : 'Transaction';
+  const amount = display?.getAmount(tx, isReceived) ?? '';
+  const time = tx.timestamp
+    ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
+    : 'Unknown time';
+
+  return {
+    amount,
+    assetId: tx.assetId || null,
+    isReceived,
+    status: 'completed',
+    time,
+    txId: tx.id as string,
+    type,
+  };
+}
+
 export const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -111,11 +164,11 @@ export const Dashboard = () => {
     // Add DCC as the first asset if there's a balance
     if (balances?.available && balances.available > 0) {
       assets.push({
-        assetId: 'DCC',
         amount: balances.available,
-        name: 'DecentralChain',
+        assetId: 'DCC',
         decimals: 8,
         isBaseAsset: true,
+        name: 'DecentralChain',
       });
     }
 
@@ -124,11 +177,11 @@ export const Dashboard = () => {
       const tokenAssets = Object.entries(balances.assets).map(([assetId, amount]) => {
         const details = assetDetails.find((d) => d.assetId === assetId);
         return {
-          assetId,
           amount: amount as number,
-          name: details?.name || `${assetId.substring(0, 8)}...`,
+          assetId,
           decimals: details?.decimals || 8,
           isBaseAsset: false,
+          name: details?.name || `${assetId.substring(0, 8)}...`,
         };
       });
 
@@ -167,9 +220,9 @@ export const Dashboard = () => {
   const handleSendAsset = (asset: (typeof allAssets)[0]) => {
     const amount = asset.amount / 10 ** asset.decimals;
     setSelectedAsset({
+      assetDecimals: asset.decimals,
       assetId: asset.assetId === 'DCC' ? 'DCC' : asset.assetId,
       assetName: asset.name,
-      assetDecimals: asset.decimals,
       availableBalance: amount.toString(),
     });
     setSendModalOpen(true);
@@ -178,11 +231,8 @@ export const Dashboard = () => {
   // Process recent transactions
   const recentActivity = useMemo(() => {
     if (!transactionsData || !user?.address) return [];
-
-    // Flatten the nested array structure
-    const flatTransactions = transactionsData.flat();
-
-    return flatTransactions
+    return transactionsData
+      .flat()
       .slice(0, 3)
       .map(
         (tx: {
@@ -193,99 +243,55 @@ export const Dashboard = () => {
           timestamp?: number;
           id?: string;
           [key: string]: unknown;
-        }) => {
-          const isReceived = tx.recipient === user.address;
-
-          let type = 'Transaction';
-          let amount = '';
-          let assetId: string | null = null;
-          const status = 'completed';
-
-          // Determine transaction type and amount
-          if (tx.type === 4) {
-            // Transfer
-            type = isReceived ? 'Received' : 'Sent';
-            const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
-            assetId = tx.assetId || null;
-            amount = `${isReceived ? '+' : '-'}${formatAmount(txAmount)}`;
-          } else if (tx.type === 7) {
-            // Exchange (Swap)
-            type = 'Swap';
-            amount = 'Token Exchange';
-          } else if (tx.type === 8) {
-            // Lease
-            type = 'Leased';
-            const txAmount = tx.amount ? tx.amount / 10 ** 8 : 0;
-            amount = `${formatAmount(txAmount)} DCC`;
-          } else if (tx.type === 9) {
-            // Lease Cancel
-            type = 'Lease Cancelled';
-            amount = 'Lease Return';
-          }
-
-          // Calculate time ago
-          const time = tx.timestamp
-            ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
-            : 'Unknown time';
-
-          return {
-            type,
-            amount,
-            assetId,
-            time,
-            status,
-            isReceived,
-            txId: tx.id as string,
-          };
-        },
+        }) => mapTxToActivity(tx, user.address),
       );
   }, [transactionsData, user?.address]);
 
   // Quick action cards
   const quickActions = [
     {
+      action: () => navigate('/desktop/wallet/portfolio'),
+      description: 'Transfer assets',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       icon: <SendIcon sx={{ fontSize: 32 }} />,
       title: 'Send',
-      description: 'Transfer assets',
-      action: () => navigate('/desktop/wallet/portfolio'),
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
     {
+      action: () => navigate('/desktop/dex'),
+      description: 'Exchange tokens',
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       icon: <SwapHorizIcon sx={{ fontSize: 32 }} />,
       title: 'Swap',
-      description: 'Exchange tokens',
-      action: () => navigate('/desktop/dex'),
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
     },
     {
+      action: () => setCreateAliasOpen(true),
+      description: `${aliases.length} ${aliases.length === 1 ? 'alias' : 'aliases'}`,
+      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       icon: <BadgeIcon sx={{ fontSize: 32 }} />,
       title: 'Create Alias',
-      description: `${aliases.length} ${aliases.length === 1 ? 'alias' : 'aliases'}`,
-      action: () => setCreateAliasOpen(true),
-      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     },
     {
+      action: () => navigate('/desktop/create-token'),
+      description: 'Issue new asset',
+      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       icon: <TokenIcon sx={{ fontSize: 32 }} />,
       title: 'Create Token',
-      description: 'Issue new asset',
-      action: () => navigate('/desktop/create-token'),
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     },
     {
+      action: () => navigate('/desktop/analytics'),
+      description: 'View insights',
+      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
       icon: <ShowChartIcon sx={{ fontSize: 32 }} />,
       title: 'Analytics',
-      description: 'View insights',
-      action: () => navigate('/desktop/analytics'),
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
     },
   ];
 
   return (
     <ThemeProvider theme={landingTheme}>
-      <Box sx={{ py: 3, px: { xs: 2, sm: 3, md: 4 } }}>
+      <Box sx={{ px: { md: 4, sm: 3, xs: 2 }, py: 3 }}>
         {/* Welcome Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight={700} sx={{ mb: 1, color: 'text.primary' }}>
+          <Typography variant="h4" fontWeight={700} sx={{ color: 'text.primary', mb: 1 }}>
             Welcome back, {user?.name || 'Trader'}! 👋
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -298,20 +304,20 @@ export const Dashboard = () => {
           {/* Total Balance Card */}
           <Grid
             size={{
-              xs: 12,
               md: 4,
+              xs: 12,
             }}
           >
             <Card
               sx={{
                 background: 'white',
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                height: '100%',
+                overflow: 'hidden',
+                position: 'relative',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -331,10 +337,10 @@ export const Dashboard = () => {
                         onChange={(e) => setDisplayCurrency(e.target.value)}
                         size="small"
                         sx={{
-                          fontSize: '0.75rem',
                           '& .MuiOutlinedInput-notchedOutline': {
                             borderColor: 'divider',
                           },
+                          fontSize: '0.75rem',
                         }}
                       >
                         {availableCurrencies.map((currency) => (
@@ -352,7 +358,7 @@ export const Dashboard = () => {
                     </Typography>
                   </Box>
                   <AccountBalanceWalletIcon
-                    sx={{ fontSize: 40, color: 'primary.main', opacity: 0.2 }}
+                    sx={{ color: 'primary.main', fontSize: 40, opacity: 0.2 }}
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2 }}>
@@ -374,18 +380,18 @@ export const Dashboard = () => {
           {/* Assets Count Card */}
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 4,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card
               sx={{
-                height: '100%',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                height: '100%',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -402,7 +408,7 @@ export const Dashboard = () => {
                   variant="text"
                   size="small"
                   onClick={() => navigate('/desktop/wallet/portfolio')}
-                  sx={{ mt: 2, px: 0, color: 'primary.main', fontWeight: 600 }}
+                  sx={{ color: 'primary.main', fontWeight: 600, mt: 2, px: 0 }}
                 >
                   View Portfolio →
                 </Button>
@@ -413,18 +419,18 @@ export const Dashboard = () => {
           {/* Recent Transactions Card */}
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 4,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card
               sx={{
-                height: '100%',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                height: '100%',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -441,7 +447,7 @@ export const Dashboard = () => {
                   variant="text"
                   size="small"
                   onClick={() => navigate('/desktop/wallet/transactions')}
-                  sx={{ mt: 2, px: 0, color: 'primary.main', fontWeight: 600 }}
+                  sx={{ color: 'primary.main', fontWeight: 600, mt: 2, px: 0 }}
                 >
                   View All →
                 </Button>
@@ -454,22 +460,22 @@ export const Dashboard = () => {
           {/* Left Column - Quick Actions & Top Assets */}
           <Grid
             size={{
-              xs: 12,
               lg: 8,
+              xs: 12,
             }}
           >
             {/* Quick Actions */}
             <Card
               sx={{
-                mb: 3,
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                mb: 3,
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 3, color: 'text.primary' }}>
+                <Typography variant="h6" fontWeight={700} sx={{ color: 'text.primary', mb: 3 }}>
                   Quick Actions
                 </Typography>
                 <Grid container spacing={2}>
@@ -477,27 +483,27 @@ export const Dashboard = () => {
                     <Grid
                       key={action.title}
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <Card
                         sx={{
+                          '&:hover': {
+                            borderColor: 'primary.main',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                            transform: 'translateY(-2px)',
+                          },
                           background: 'white',
                           border: '1px solid',
                           borderColor: 'divider',
                           borderRadius: '10px',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                            borderColor: 'primary.main',
-                          },
                         }}
                         onClick={action.action}
                       >
-                        <CardContent sx={{ textAlign: 'center', py: 3 }}>
+                        <CardContent sx={{ py: 3, textAlign: 'center' }}>
                           <Box sx={{ color: 'primary.main', mb: 1 }}>{action.icon}</Box>
                           <Typography
                             variant="subtitle2"
@@ -520,10 +526,10 @@ export const Dashboard = () => {
             {/* All Assets with Filters */}
             <Card
               sx={{
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -553,7 +559,7 @@ export const Dashboard = () => {
                 <Tabs
                   value={tokenFilter}
                   onChange={(_, newValue) => setTokenFilter(newValue)}
-                  sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
+                  sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
                 >
                   <Tab label={`All (${allAssets.length})`} value="all" sx={{ fontWeight: 600 }} />
                   <Tab
@@ -579,26 +585,26 @@ export const Dashboard = () => {
                       <Box
                         key={asset.assetId}
                         sx={{
-                          p: 2,
-                          borderRadius: 2,
-                          bgcolor: 'background.default',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          transition: 'all 0.2s',
                           '&:hover': {
                             bgcolor: 'action.hover',
                             transform: 'translateX(4px)',
                           },
+                          alignItems: 'center',
+                          bgcolor: 'background.default',
+                          borderRadius: 2,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          p: 2,
+                          transition: 'all 0.2s',
                         }}
                       >
                         <Stack direction="row" alignItems="center" spacing={2} sx={{ flex: 1 }}>
                           <Avatar
                             sx={{
-                              width: 40,
-                              height: 40,
                               bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
                               color: 'white',
+                              height: 40,
+                              width: 40,
                             }}
                           >
                             {asset.name.charAt(0)}
@@ -629,11 +635,11 @@ export const Dashboard = () => {
                               color="primary"
                               onClick={() => handleSendAsset(asset)}
                               sx={{
-                                bgcolor: 'primary.main',
-                                color: 'white',
                                 '&:hover': {
                                   bgcolor: 'primary.dark',
                                 },
+                                bgcolor: 'primary.main',
+                                color: 'white',
                               }}
                             >
                               <SendIcon fontSize="small" />
@@ -644,7 +650,7 @@ export const Dashboard = () => {
                     );
                   })}
                   {allAssets.length === 0 && (
-                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Box sx={{ py: 4, textAlign: 'center' }}>
                       <Typography color="text.secondary">No assets found</Typography>
                       <Button
                         variant="contained"
@@ -663,20 +669,20 @@ export const Dashboard = () => {
           {/* Right Column - Recent Activity */}
           <Grid
             size={{
-              xs: 12,
               lg: 4,
+              xs: 12,
             }}
           >
             <Card
               sx={{
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 border: '1px solid',
                 borderColor: 'divider',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 3, color: 'text.primary' }}>
+                <Typography variant="h6" fontWeight={700} sx={{ color: 'text.primary', mb: 3 }}>
                   Recent Activity
                 </Typography>
                 <Stack spacing={2}>
@@ -684,11 +690,11 @@ export const Dashboard = () => {
                     <Box
                       key={activity.txId}
                       sx={{
-                        p: 2,
-                        borderRadius: '10px',
                         bgcolor: '#F9FAFB',
-                        borderLeft: '3px solid',
                         borderColor: activity.type === 'Received' ? 'success.main' : 'primary.main',
+                        borderLeft: '3px solid',
+                        borderRadius: '10px',
+                        p: 2,
                       }}
                     >
                       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
@@ -714,7 +720,7 @@ export const Dashboard = () => {
                       <Typography
                         variant="caption"
                         color="text.secondary"
-                        sx={{ mt: 1, display: 'block' }}
+                        sx={{ display: 'block', mt: 1 }}
                       >
                         {activity.time}
                       </Typography>
@@ -722,7 +728,7 @@ export const Dashboard = () => {
                         label={activity.status}
                         size="small"
                         color="success"
-                        sx={{ mt: 1, height: 20, fontSize: 10 }}
+                        sx={{ fontSize: 10, height: 20, mt: 1 }}
                       />
                     </Box>
                   ))}
@@ -750,11 +756,11 @@ export const Dashboard = () => {
                 {/* Total Portfolio Value */}
                 <Box
                   sx={{
-                    p: 2,
-                    mb: 2,
-                    borderRadius: 2,
                     bgcolor: 'primary.main',
+                    borderRadius: 2,
                     color: 'white',
+                    mb: 2,
+                    p: 2,
                   }}
                 >
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -775,21 +781,21 @@ export const Dashboard = () => {
                       <Box
                         key={asset.assetId}
                         sx={{
-                          p: 1.5,
-                          borderRadius: 1.5,
-                          bgcolor: 'background.default',
-                          display: 'flex',
                           alignItems: 'center',
+                          bgcolor: 'background.default',
+                          borderRadius: 1.5,
+                          display: 'flex',
                           justifyContent: 'space-between',
+                          p: 1.5,
                         }}
                       >
                         <Stack direction="row" alignItems="center" spacing={1.5}>
                           <Avatar
                             sx={{
-                              width: 32,
-                              height: 32,
                               bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
                               fontSize: '0.875rem',
+                              height: 32,
+                              width: 32,
                             }}
                           >
                             {asset.name.charAt(0)}

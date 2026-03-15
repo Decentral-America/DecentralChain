@@ -119,79 +119,53 @@ export const useAliases = () => {
 
       logger.debug(`[useAliases] Starting confirmation polling for alias: ${aliasName}`);
       setIsConfirmingAlias(true);
-
-      // Add to local state immediately for optimistic UI
       addAlias(aliasName);
+
+      const cleanupPolling = () => {
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+        }
+        if (pollingTimeoutRef.current) {
+          clearTimeout(pollingTimeoutRef.current);
+          pollingTimeoutRef.current = null;
+        }
+      };
 
       return new Promise((resolve) => {
         const startTime = Date.now();
-        let pollCount = 0;
 
         const checkAlias = async () => {
-          pollCount++;
           const elapsed = Date.now() - startTime;
 
-          logger.debug(`[useAliases] Poll #${pollCount} for ${aliasName} (elapsed: ${elapsed}ms)`);
-
           try {
-            // Fetch updated alias list from blockchain
             const updatedAliases = await getAliasesByAddress(user.address ?? '');
 
-            // Check if new alias is in the list
             if (updatedAliases.includes(aliasName)) {
-              logger.debug(`[useAliases] ✅ Alias ${aliasName} confirmed on blockchain!`);
               setAliases(updatedAliases);
               setIsConfirmingAlias(false);
-
-              // Clear polling intervals
-              if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-              }
-              if (pollingTimeoutRef.current) {
-                clearTimeout(pollingTimeoutRef.current);
-                pollingTimeoutRef.current = null;
-              }
-
+              cleanupPolling();
               resolve(true);
               return;
             }
 
-            // Check timeout
             if (elapsed >= maxWaitTime) {
-              logger.warn(`[useAliases] ⏱️ Timeout waiting for ${aliasName} (${elapsed}ms)`);
               setIsConfirmingAlias(false);
-
-              // Clear polling
-              if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-              }
-
-              // Do one final fetch to make sure we have latest state
+              cleanupPolling();
               await fetchAliases();
               resolve(false);
             }
           } catch (err) {
             logger.error(`[useAliases] Error during confirmation polling:`, err);
-            // Continue polling despite errors
           }
         };
 
-        // Start polling immediately
         checkAlias();
-
-        // Set up interval for subsequent polls
         pollingIntervalRef.current = setInterval(checkAlias, pollInterval);
 
-        // Set up timeout to stop polling
         pollingTimeoutRef.current = setTimeout(() => {
-          if (pollingIntervalRef.current) {
-            clearInterval(pollingIntervalRef.current);
-            pollingIntervalRef.current = null;
-          }
+          cleanupPolling();
           setIsConfirmingAlias(false);
-          logger.warn(`[useAliases] Polling timeout reached for ${aliasName}`);
           resolve(false);
         }, maxWaitTime);
       });
@@ -200,13 +174,13 @@ export const useAliases = () => {
   );
 
   return {
-    aliases,
-    isLoading,
-    error,
-    isConfirmingAlias,
-    fetchAliases,
-    checkAvailability,
     addAlias,
+    aliases,
+    checkAvailability,
+    error,
+    fetchAliases,
+    isConfirmingAlias,
+    isLoading,
     waitForAliasConfirmation,
   };
 };

@@ -4,6 +4,8 @@
  * Accounts with scripts require extra fees for transactions
  * Matches Angular: src/modules/app/services/User.js lines 415-427
  */
+
+import * as ds from 'data-service';
 import { useEffect, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { type ScriptInfo } from '@/types/auth';
@@ -22,8 +24,8 @@ export const useScriptInfoPolling = (
   isAuthenticated: boolean,
 ): ScriptInfo => {
   const [scriptInfo, setScriptInfo] = useState<ScriptInfo>({
-    hasScript: false,
     extraFee: null,
+    hasScript: false,
     networkError: false,
   });
 
@@ -31,8 +33,8 @@ export const useScriptInfoPolling = (
     if (!address || !isAuthenticated) {
       // Reset state when logged out
       setScriptInfo({
-        hasScript: false,
         extraFee: null,
+        hasScript: false,
         networkError: false,
       });
       return;
@@ -43,7 +45,6 @@ export const useScriptInfoPolling = (
 
     const fetchScriptInfo = async () => {
       try {
-        const ds = await import('data-service');
         const nodeUrl = ds.config.get('node');
         const response = (await ds.fetch(`${nodeUrl}/addresses/scriptInfo/${address}`)) as {
           extraFee?: unknown;
@@ -54,16 +55,16 @@ export const useScriptInfoPolling = (
           // Account has a script
           const extraFee = response.extraFee;
           setScriptInfo({
-            hasScript: true,
             extraFee: extraFee || null,
+            hasScript: true,
             networkError: false,
           });
           logger.debug('[ScriptInfo] Account has script, extraFee:', extraFee);
         } else {
           // No script
           setScriptInfo({
-            hasScript: false,
             extraFee: null,
+            hasScript: false,
             networkError: false,
           });
         }

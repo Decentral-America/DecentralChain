@@ -170,7 +170,9 @@ export const LoginForm = () => {
 
       if (accountList.length === 1) {
         // Auto-login with single account
-        await login(accountList[0]!.hash, password);
+        const firstAccount = accountList[0];
+        if (!firstAccount) throw new Error('No accounts found in vault');
+        await login(firstAccount.hash, password);
 
         // Navigate via effect once user state propagates
         navigationTarget.current = getActiveState('wallet');
@@ -275,13 +277,13 @@ export const LoginForm = () => {
                 <button
                   type="button"
                   style={{
-                    color: 'inherit',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
                     background: 'none',
                     border: 'none',
-                    padding: 0,
+                    color: 'inherit',
+                    cursor: 'pointer',
                     font: 'inherit',
+                    padding: 0,
+                    textDecoration: 'underline',
                   }}
                   onClick={() => {
                     setShowNoAccountModal(true);

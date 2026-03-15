@@ -12,6 +12,7 @@ export interface GatewayConfig {
   isThirdParty: boolean;
   regex: string;
   otherNetwork?: string;
+  ticker?: string;
 }
 
 /**

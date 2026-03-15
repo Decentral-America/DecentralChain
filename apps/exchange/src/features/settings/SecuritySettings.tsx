@@ -14,6 +14,8 @@
  *
  * Matches Angular's settings.html Security tab exactly
  */
+
+import * as ds from 'data-service';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -194,7 +196,6 @@ export const SecuritySettings: React.FC = () => {
   useEffect(() => {
     const loadSecretData = async () => {
       try {
-        const ds = await import('data-service');
         const api = ds.signature.getSignatureApi();
 
         // Helper to catch errors and return null

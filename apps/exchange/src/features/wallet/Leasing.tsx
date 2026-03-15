@@ -40,6 +40,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as ds from 'data-service';
 import { type MouseEvent, useMemo, useState } from 'react';
+import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { formatDcc, shortenAddress, toTimestamp } from '@/utils/formatters';
@@ -87,6 +88,7 @@ export const Leasing = () => {
   const [recipientError, setRecipientError] = useState<string | null>(null);
   const [amountError, setAmountError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'canceled'>('all');
+  const [cancelLeaseId, setCancelLeaseId] = useState<string | null>(null);
 
   // Use balance watcher hook for real-time balance updates
   const {
@@ -96,8 +98,8 @@ export const Leasing = () => {
     error: balanceError,
     forceRefresh: refetchBalance,
   } = useBalanceWatcher({
-    interval: 3000, // Poll every 3 seconds
     enabled: Boolean(user?.address),
+    interval: 3000, // Poll every 3 seconds
   });
 
   const {
@@ -107,10 +109,7 @@ export const Leasing = () => {
     error: activeError,
     refetch: refetchActiveLeases,
   } = useQuery<Lease[], Error>({
-    queryKey: ['active-leases', user?.address],
     enabled: Boolean(user?.address),
-    refetchInterval: 3000,
-    staleTime: 1000,
     queryFn: async () => {
       if (!user?.address) throw new Error('No address');
       const response = await fetch(`${ds.config.get('node')}/leasing/active/${user.address}`);
@@ -118,6 +117,9 @@ export const Leasing = () => {
       const data = await response.json();
       return data.map((lease: Lease) => ({ ...lease, status: 'active' as const }));
     },
+    queryKey: ['active-leases', user?.address],
+    refetchInterval: 3000,
+    staleTime: 1000,
   });
 
   const {
@@ -127,14 +129,14 @@ export const Leasing = () => {
     error: historyError,
     refetch: refetchHistory,
   } = useQuery<unknown[], Error>({
-    queryKey: ['lease-transactions', user?.address],
     enabled: Boolean(user?.address),
-    refetchInterval: 3000,
-    staleTime: 1000,
     queryFn: async () => {
       if (!user?.address) throw new Error('No address');
       return ds.api.transactions.list(user.address, 500, '');
     },
+    queryKey: ['lease-transactions', user?.address],
+    refetchInterval: 3000,
+    staleTime: 1000,
   });
 
   const leaseMutation = useMutation<{ id: string }, Error>({
@@ -143,9 +145,12 @@ export const Leasing = () => {
       if (!user?.seed) throw new Error('Seed not available. Please log in again.');
 
       const amountInWavelets = Math.floor(parseFloat(amount) * DCC_DECIMALS);
-      const tx = await createLeaseTransaction({ recipient, amount: amountInWavelets }, user.seed);
+      const tx = await createLeaseTransaction({ amount: amountInWavelets, recipient }, user.seed);
 
       return broadcastTransaction(tx);
+    },
+    onError: (error) => {
+      alert(`Lease failed: ${error.message}`);
     },
     onSuccess: () => {
       setRecipient('');
@@ -157,9 +162,6 @@ export const Leasing = () => {
       queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
       queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
     },
-    onError: (error) => {
-      alert(`Lease failed: ${error.message}`);
-    },
   });
 
   const cancelLeaseMutation = useMutation<{ id: string }, Error, string>({
@@ -169,13 +171,13 @@ export const Leasing = () => {
       const tx = await createCancelLeaseTransaction(leaseId, user.seed);
       return broadcastTransaction(tx);
     },
+    onError: (error) => {
+      alert(`Cancel lease failed: ${error.message}`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['balances', user?.address] });
       queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
       queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
-    },
-    onError: (error) => {
-      alert(`Cancel lease failed: ${error.message}`);
     },
   });
 
@@ -195,8 +197,7 @@ export const Leasing = () => {
     if (!recentTxs) return [];
 
     const LEASE_TYPES = ['lease-in', 'lease-out', 'cancel-leasing'];
-    // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-    const filtered = (recentTxs as any[]).filter((tx) => LEASE_TYPES.includes(tx.typeName));
+    const filtered = (recentTxs as Lease[]).filter((tx) => LEASE_TYPES.includes(tx.typeName ?? ''));
 
     if (!activeLeases?.length) return filtered;
 
@@ -237,20 +238,18 @@ export const Leasing = () => {
 
   const tableRows = useMemo(() => {
     return (leases as Lease[]).map((lease) => {
+      const transfer = lease['transfer'] as
+        | { amount?: { getTokens?: () => { toNumber?: () => number } }; recipient?: string }
+        | undefined;
       const rawAmount = (() => {
         if (typeof lease.amount === 'number') {
           return lease.amount;
         }
 
-        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-        const tokens = (lease as any).transfer?.amount?.getTokens?.()?.toNumber?.();
+        const tokens = transfer?.amount?.getTokens?.()?.toNumber?.();
         return (tokens as number | undefined) ?? 0;
       })();
-      const recipientValue =
-        lease.recipient ||
-        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-        ((lease as any).transfer?.recipient as string | undefined) ||
-        '';
+      const recipientValue = lease.recipient || (transfer?.recipient as string | undefined) || '';
       const status: 'active' | 'cancelled' | 'pending' = (():
         | 'active'
         | 'cancelled'
@@ -267,13 +266,13 @@ export const Leasing = () => {
       })();
 
       return {
-        id: lease.id,
-        type: lease.typeName || 'lease',
         amount: rawAmount,
-        recipient: recipientValue,
-        timestamp: toTimestamp(lease.timestamp),
-        status,
         canCancel: status === 'active' && lease.typeName !== 'cancel-leasing',
+        id: lease.id,
+        recipient: recipientValue,
+        status,
+        timestamp: toTimestamp(lease.timestamp),
+        type: lease.typeName || 'lease',
       };
     });
   }, [leases]);
@@ -376,9 +375,14 @@ export const Leasing = () => {
    * Handle cancel lease
    */
   const handleCancelLease = (leaseId: string) => {
-    if (window.confirm('Are you sure you want to cancel this lease?')) {
-      cancelLeaseMutation.mutate(leaseId);
+    setCancelLeaseId(leaseId);
+  };
+
+  const handleConfirmCancel = () => {
+    if (cancelLeaseId) {
+      cancelLeaseMutation.mutate(cancelLeaseId);
     }
+    setCancelLeaseId(null);
   };
 
   /**
@@ -408,12 +412,12 @@ export const Leasing = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+    <Container maxWidth="lg" sx={{ py: { md: 6, xs: 4 } }}>
       <Stack spacing={4}>
         <Stack
-          direction={{ xs: 'column', md: 'row' }}
+          direction={{ md: 'row', xs: 'column' }}
           justifyContent="space-between"
-          alignItems={{ xs: 'flex-start', md: 'center' }}
+          alignItems={{ md: 'center', xs: 'flex-start' }}
           spacing={2}
         >
           <div>
@@ -444,9 +448,9 @@ export const Leasing = () => {
         <Grid container spacing={2.5}>
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 3,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -454,14 +458,14 @@ export const Leasing = () => {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
                       bgcolor: 'primary.main',
+                      borderRadius: 2,
                       color: 'primary.contrastText',
+                      display: 'flex',
+                      height: 44,
+                      justifyContent: 'center',
+                      width: 44,
                     }}
                   >
                     <ShieldOutlined />
@@ -483,9 +487,9 @@ export const Leasing = () => {
           </Grid>
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 3,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -493,14 +497,14 @@ export const Leasing = () => {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
                       bgcolor: 'success.main',
+                      borderRadius: 2,
                       color: 'success.contrastText',
+                      display: 'flex',
+                      height: 44,
+                      justifyContent: 'center',
+                      width: 44,
                     }}
                   >
                     <TrendingUpOutlined />
@@ -522,9 +526,9 @@ export const Leasing = () => {
           </Grid>
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 3,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -532,14 +536,14 @@ export const Leasing = () => {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
                       bgcolor: 'info.main',
+                      borderRadius: 2,
                       color: 'info.contrastText',
+                      display: 'flex',
+                      height: 44,
+                      justifyContent: 'center',
+                      width: 44,
                     }}
                   >
                     <ShieldOutlined />
@@ -561,9 +565,9 @@ export const Leasing = () => {
           </Grid>
           <Grid
             size={{
-              xs: 12,
-              sm: 6,
               md: 3,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -571,14 +575,14 @@ export const Leasing = () => {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
                       bgcolor: 'warning.main',
+                      borderRadius: 2,
                       color: 'warning.contrastText',
+                      display: 'flex',
+                      height: 44,
+                      justifyContent: 'center',
+                      width: 44,
                     }}
                   >
                     <HistoryOutlined />
@@ -600,8 +604,8 @@ export const Leasing = () => {
         <Grid container spacing={2.5}>
           <Grid
             size={{
-              xs: 12,
               md: 5,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -611,7 +615,7 @@ export const Leasing = () => {
               />
               <Divider />
               <CardContent>
-                <Box sx={{ height: { xs: 320, md: 360 } }}>
+                <Box sx={{ height: { md: 360, xs: 320 } }}>
                   <LeasingChart available={regularBalance} leasedOut={leasedBalance} leasedIn={0} />
                 </Box>
               </CardContent>
@@ -620,8 +624,8 @@ export const Leasing = () => {
 
           <Grid
             size={{
-              xs: 12,
               md: 7,
+              xs: 12,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
@@ -794,10 +798,10 @@ export const Leasing = () => {
                         <TableCell>
                           <Typography variant="body2" color="text.secondary">
                             {new Date(lease.timestamp).toLocaleString(undefined, {
-                              month: 'short',
                               day: 'numeric',
                               hour: '2-digit',
                               minute: '2-digit',
+                              month: 'short',
                             })}
                           </Typography>
                         </TableCell>
@@ -842,6 +846,16 @@ export const Leasing = () => {
           </CardContent>
         </Card>
       </Stack>
+
+      <ConfirmDialog
+        open={!!cancelLeaseId}
+        onClose={() => setCancelLeaseId(null)}
+        onConfirm={handleConfirmCancel}
+        title="Cancel Lease"
+        message="Are you sure you want to cancel this lease?"
+        confirmText="Cancel Lease"
+        destructive
+      />
     </Container>
   );
 };

@@ -15,8 +15,8 @@ export interface RetryConfig {
  * Default retry configuration
  */
 const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
-  maxRetries: 3,
   baseDelay: 1000,
+  maxRetries: 3,
   onRetry: () => {},
 };
 
@@ -49,7 +49,7 @@ async function fetchWithRetry<T = unknown>(
     }
 
     const data = (await res.json()) as T;
-    return { data, status: res.status, statusText: res.statusText, headers: res.headers };
+    return { data, headers: res.headers, status: res.status, statusText: res.statusText };
   } catch (error) {
     if (shouldRetry(error, retryCount, config.maxRetries)) {
       const nextCount = retryCount + 1;
@@ -107,8 +107,8 @@ export const makeRequest = async <T = unknown>(
   };
 
   const init: RequestInit & { timeout?: number } = {
-    method,
     headers,
+    method,
     timeout: config.timeout ?? 30000,
   };
 
@@ -124,30 +124,29 @@ export const makeRequest = async <T = unknown>(
  * Convenience methods with retry support
  */
 export const api = {
+  delete: <T = unknown>(url: string, config?: RequestConfig, retryConfig?: RetryConfig) =>
+    makeRequest<T>({ ...config, method: 'DELETE', url }, retryConfig),
   get: <T = unknown>(url: string, config?: RequestConfig, retryConfig?: RetryConfig) =>
     makeRequest<T>({ ...config, method: 'GET', url }, retryConfig),
-
-  post: <T = unknown>(
-    url: string,
-    data?: unknown,
-    config?: RequestConfig,
-    retryConfig?: RetryConfig,
-  ) => makeRequest<T>({ ...config, method: 'POST', url, data }, retryConfig),
-
-  put: <T = unknown>(
-    url: string,
-    data?: unknown,
-    config?: RequestConfig,
-    retryConfig?: RetryConfig,
-  ) => makeRequest<T>({ ...config, method: 'PUT', url, data }, retryConfig),
 
   patch: <T = unknown>(
     url: string,
     data?: unknown,
     config?: RequestConfig,
     retryConfig?: RetryConfig,
-  ) => makeRequest<T>({ ...config, method: 'PATCH', url, data }, retryConfig),
+  ) => makeRequest<T>({ ...config, data, method: 'PATCH', url }, retryConfig),
 
-  delete: <T = unknown>(url: string, config?: RequestConfig, retryConfig?: RetryConfig) =>
-    makeRequest<T>({ ...config, method: 'DELETE', url }, retryConfig),
+  post: <T = unknown>(
+    url: string,
+    data?: unknown,
+    config?: RequestConfig,
+    retryConfig?: RetryConfig,
+  ) => makeRequest<T>({ ...config, data, method: 'POST', url }, retryConfig),
+
+  put: <T = unknown>(
+    url: string,
+    data?: unknown,
+    config?: RequestConfig,
+    retryConfig?: RetryConfig,
+  ) => makeRequest<T>({ ...config, data, method: 'PUT', url }, retryConfig),
 };

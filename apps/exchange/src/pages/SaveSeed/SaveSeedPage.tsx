@@ -19,6 +19,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import * as ds from 'data-service';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,19 +47,19 @@ const pulse = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  overflow: 'hidden',
+  animation: `${gradientShift} 15s ease infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%)'
       : 'linear-gradient(135deg, #e8f0fe 0%, #f5f7fa 50%, #e3f2fd 100%)',
   backgroundSize: '200% 200%',
-  animation: `${gradientShift} 15s ease infinite`,
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  overflow: 'hidden',
   padding: theme.spacing(3),
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
@@ -68,22 +69,22 @@ const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'size', 'top', 'left'].includes(prop as string),
 })<{ delay: number; size: number; top: string; left: string }>(
   ({ theme, delay, size, top, left }) => ({
-    position: 'absolute',
-    width: size,
-    height: size,
-    top,
-    left,
-    borderRadius: '30%',
+    animation: `${float} ${6 + delay}s ease-in-out infinite`,
+    animationDelay: `${delay}s`,
+    backdropFilter: 'blur(10px)',
     background:
       theme.palette.mode === 'dark'
         ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.1), rgba(90, 129, 255, 0.1))'
         : 'linear-gradient(135deg, rgba(31, 90, 246, 0.05), rgba(90, 129, 255, 0.05))',
-    backdropFilter: 'blur(10px)',
     border: `1px solid ${
       theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(31, 90, 246, 0.1)'
     }`,
-    animation: `${float} ${6 + delay}s ease-in-out infinite`,
-    animationDelay: `${delay}s`,
+    borderRadius: '30%',
+    height: size,
+    left,
+    position: 'absolute',
+    top,
+    width: size,
     zIndex: 0,
   }),
 );
@@ -91,63 +92,63 @@ const FloatingShape = styled(Box, {
 const GlowOrb = styled(Box, {
   shouldForwardProp: (prop) => !['color', 'top', 'left', 'size'].includes(prop as string),
 })<{ color: string; top: string; left: string; size: number }>(({ color, top, left, size }) => ({
-  position: 'absolute',
-  width: size,
-  height: size,
-  top,
-  left,
-  borderRadius: '50%',
-  background: `radial-gradient(circle, ${color}40 0%, ${color}00 70%)`,
-  filter: 'blur(40px)',
   animation: `${pulse} 4s ease-in-out infinite`,
+  background: `radial-gradient(circle, ${color}40 0%, ${color}00 70%)`,
+  borderRadius: '50%',
+  filter: 'blur(40px)',
+  height: size,
+  left,
+  position: 'absolute',
+  top,
+  width: size,
   zIndex: 0,
 }));
 
 const ContentWrapper = styled(Container)(({ theme }) => ({
-  position: 'relative',
-  zIndex: 1,
-  maxWidth: '800px !important',
+  backdropFilter: 'blur(20px)',
   background:
     theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.85)' : 'rgba(255, 255, 255, 0.85)',
-  backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(4),
   border: `1px solid ${
     theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
   }`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(31, 90, 246, 0.2)'
       : '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(31, 90, 246, 0.1)',
+  maxWidth: '800px !important',
+  padding: theme.spacing(4),
+  position: 'relative',
+  zIndex: 1,
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(3),
     borderRadius: theme.spacing(2),
+    padding: theme.spacing(3),
   },
 }));
 
 const AccountCard = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  borderRadius: theme.spacing(2),
+  alignItems: 'center',
   background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
   border: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(2),
+  borderRadius: theme.spacing(2),
   display: 'flex',
-  alignItems: 'center',
   gap: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  padding: theme.spacing(2.5),
 }));
 
 const AccountAvatar = styled(Box)(({ theme: _theme }) => ({
-  width: 48,
-  height: 48,
-  borderRadius: '50%',
-  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+  borderRadius: '50%',
   color: '#fff',
-  fontWeight: 700,
-  fontSize: '1.25rem',
+  display: 'flex',
   flexShrink: 0,
+  fontSize: '1.25rem',
+  fontWeight: 700,
+  height: 48,
+  justifyContent: 'center',
+  width: 48,
 }));
 
 interface User {
@@ -218,16 +219,15 @@ export const SaveSeedPage: React.FC = () => {
     try {
       // Import data-service for seed decryption
       // This matches the Angular implementation exactly
-      const ds = await import('data-service');
 
       const userSettings = {}; // Get from storage if needed
       const activeUser = {
         ...selectedUser,
-        password,
-        settings: userSettings,
         networkByte: NetworkConfig.networkByte, // Computed from mainnet.json code
-        userType: selectedUser.userType || 'seed', // Default to seed
+        password,
         publicKey: selectedUser.publicKey || '',
+        settings: userSettings,
+        userType: selectedUser.userType || 'seed', // Default to seed
       };
 
       // Get signature API (same as Angular)
@@ -273,9 +273,7 @@ export const SaveSeedPage: React.FC = () => {
     setIsRevealed(false);
     setSeed('');
     // Logout
-    import('data-service').then((ds) => {
-      ds.app.logOut();
-    });
+    ds.app.logOut();
   };
 
   const handleComplete = () => {
@@ -306,9 +304,9 @@ export const SaveSeedPage: React.FC = () => {
         <Fade in={isVisible} timeout={600}>
           <Slide direction="up" in={isVisible} timeout={800}>
             <ContentWrapper>
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Lock sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-                <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
+              <Box sx={{ py: 4, textAlign: 'center' }}>
+                <Lock sx={{ color: 'text.secondary', fontSize: 64, mb: 2 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
                   No Accounts Found
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
@@ -378,7 +376,7 @@ export const SaveSeedPage: React.FC = () => {
         <Slide direction="up" in={isVisible} timeout={800}>
           <ContentWrapper>
             <Box>
-              <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, color: 'text.primary' }}>
+              <Typography variant="h4" sx={{ color: 'text.primary', fontWeight: 700, mb: 1 }}>
                 Backup Seed Phrase
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
@@ -407,18 +405,18 @@ export const SaveSeedPage: React.FC = () => {
                 >
                   {userList.map((user) => (
                     <MenuItem key={user.address} value={user.address}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ alignItems: 'center', display: 'flex', gap: 2 }}>
                         <Box
                           sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #1f5af6, #5a81ff)',
-                            display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
+                            background: 'linear-gradient(135deg, #1f5af6, #5a81ff)',
+                            borderRadius: '50%',
                             color: '#fff',
+                            display: 'flex',
                             fontWeight: 700,
+                            height: 32,
+                            justifyContent: 'center',
+                            width: 32,
                           }}
                         >
                           {user.name?.[0]?.toUpperCase() || user.address[0]?.toUpperCase()}
@@ -476,7 +474,7 @@ export const SaveSeedPage: React.FC = () => {
                     InputProps={{
                       endAdornment: (
                         <Box
-                          sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                          sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}

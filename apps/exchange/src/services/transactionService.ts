@@ -84,68 +84,6 @@ export interface BroadcastResult {
  */
 export const transactionService = {
   /**
-   * Get transaction history for an address
-   * @param address - DCC address
-   * @param limit - Number of transactions to fetch (default: 100)
-   */
-  getHistory: async (address: string, limit = 100): Promise<Transaction[]> => {
-    try {
-      const { data } = await nodeClient.get<Transaction[][]>(
-        `/transactions/address/${address}/limit/${limit}`,
-      );
-      // API returns array of arrays, take first element
-      return data[0] || [];
-    } catch (error) {
-      logger.error('Failed to fetch transaction history:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Get transaction by ID
-   * @param txId - Transaction ID
-   */
-  getById: async (txId: string): Promise<Transaction> => {
-    try {
-      const { data } = await nodeClient.get<Transaction>(`/transactions/info/${txId}`);
-      return data;
-    } catch {
-      logger.error('Failed to fetch transaction');
-      throw new Error('Failed to fetch transaction');
-    }
-  },
-
-  /**
-   * Get unconfirmed transactions
-   */
-  getUnconfirmed: async (): Promise<Transaction[]> => {
-    try {
-      const { data } = await nodeClient.get<Transaction[]>('/transactions/unconfirmed');
-      return data;
-    } catch (error) {
-      logger.error('Failed to fetch unconfirmed transactions:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Get transaction status
-   * @param txId - Transaction ID
-   */
-  getStatus: async (txId: string): Promise<TransactionStatus> => {
-    try {
-      const tx = await transactionService.getById(txId);
-      if (tx.height && tx.height > 0) {
-        return tx.applicationStatus === 'script_execution_failed' ? 'failed' : 'confirmed';
-      }
-      return 'unconfirmed';
-    } catch {
-      // If transaction not found in confirmed or unconfirmed, it may have failed
-      return 'failed';
-    }
-  },
-
-  /**
    * Broadcast a signed transaction
    * @param signedTx - Signed transaction object
    * @param nodeUrl - Optional custom node URL
@@ -161,8 +99,8 @@ export const transactionService = {
 
       return {
         id: result.id,
-        timestamp: result.timestamp,
         status: 'success',
+        timestamp: result.timestamp,
       };
     } catch (error: unknown) {
       logger.error('Failed to broadcast transaction:', error);
@@ -187,38 +125,6 @@ export const transactionService = {
       // This ensures proper error handling in the calling code
       throw new Error(errorMessage);
     }
-  },
-
-  /**
-   * Wait for transaction confirmation
-   * @param txId - Transaction ID
-   * @param timeout - Timeout in milliseconds (default: 60000)
-   * @param interval - Poll interval in milliseconds (default: 1000)
-   */
-  waitForConfirmation: async (
-    txId: string,
-    timeout = 60000,
-    interval = 1000,
-  ): Promise<Transaction> => {
-    const startTime = Date.now();
-
-    while (Date.now() - startTime < timeout) {
-      try {
-        const tx = await transactionService.getById(txId);
-        if (tx.height && tx.height > 0) {
-          if (tx.applicationStatus === 'script_execution_failed') {
-            throw new Error('Transaction execution failed');
-          }
-          return tx;
-        }
-      } catch {
-        // Transaction not found yet, continue polling
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, interval));
-    }
-
-    throw new Error('Transaction confirmation timeout');
   },
 
   /**
@@ -259,6 +165,66 @@ export const transactionService = {
   },
 
   /**
+   * Format transaction for display
+   * @param tx - Transaction
+   */
+  formatTransaction: (tx: Transaction): string => {
+    const type = transactionService.getTypeName(tx.type);
+    const date = new Date(tx.timestamp).toLocaleString();
+    const fee = (tx.fee / 100000000).toFixed(8);
+
+    return `${type} | ${date} | Fee: ${fee} DCC`;
+  },
+
+  /**
+   * Get transaction by ID
+   * @param txId - Transaction ID
+   */
+  getById: async (txId: string): Promise<Transaction> => {
+    try {
+      const { data } = await nodeClient.get<Transaction>(`/transactions/info/${txId}`);
+      return data;
+    } catch {
+      logger.error('Failed to fetch transaction');
+      throw new Error('Failed to fetch transaction');
+    }
+  },
+  /**
+   * Get transaction history for an address
+   * @param address - DCC address
+   * @param limit - Number of transactions to fetch (default: 100)
+   */
+  getHistory: async (address: string, limit = 100): Promise<Transaction[]> => {
+    try {
+      const { data } = await nodeClient.get<Transaction[][]>(
+        `/transactions/address/${address}/limit/${limit}`,
+      );
+      // API returns array of arrays, take first element
+      return data[0] || [];
+    } catch (error) {
+      logger.error('Failed to fetch transaction history:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get transaction status
+   * @param txId - Transaction ID
+   */
+  getStatus: async (txId: string): Promise<TransactionStatus> => {
+    try {
+      const tx = await transactionService.getById(txId);
+      if (tx.height && tx.height > 0) {
+        return tx.applicationStatus === 'script_execution_failed' ? 'failed' : 'confirmed';
+      }
+      return 'unconfirmed';
+    } catch {
+      // If transaction not found in confirmed or unconfirmed, it may have failed
+      return 'failed';
+    }
+  },
+
+  /**
    * Get transaction type name
    * @param type - Transaction type number
    */
@@ -287,6 +253,19 @@ export const transactionService = {
   },
 
   /**
+   * Get unconfirmed transactions
+   */
+  getUnconfirmed: async (): Promise<Transaction[]> => {
+    try {
+      const { data } = await nodeClient.get<Transaction[]>('/transactions/unconfirmed');
+      return data;
+    } catch (error) {
+      logger.error('Failed to fetch unconfirmed transactions:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Validate transaction signature
    * @param tx - Transaction to validate
    */
@@ -296,15 +275,35 @@ export const transactionService = {
   },
 
   /**
-   * Format transaction for display
-   * @param tx - Transaction
+   * Wait for transaction confirmation
+   * @param txId - Transaction ID
+   * @param timeout - Timeout in milliseconds (default: 60000)
+   * @param interval - Poll interval in milliseconds (default: 1000)
    */
-  formatTransaction: (tx: Transaction): string => {
-    const type = transactionService.getTypeName(tx.type);
-    const date = new Date(tx.timestamp).toLocaleString();
-    const fee = (tx.fee / 100000000).toFixed(8);
+  waitForConfirmation: async (
+    txId: string,
+    timeout = 60000,
+    interval = 1000,
+  ): Promise<Transaction> => {
+    const startTime = Date.now();
 
-    return `${type} | ${date} | Fee: ${fee} DCC`;
+    while (Date.now() - startTime < timeout) {
+      try {
+        const tx = await transactionService.getById(txId);
+        if (tx.height && tx.height > 0) {
+          if (tx.applicationStatus === 'script_execution_failed') {
+            throw new Error('Transaction execution failed');
+          }
+          return tx;
+        }
+      } catch {
+        // Transaction not found yet, continue polling
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+
+    throw new Error('Transaction confirmation timeout');
   },
 };
 

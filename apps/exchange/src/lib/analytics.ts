@@ -138,8 +138,8 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
     try {
       if (window.amplitudeInit) {
         window.amplitudeInit(config.amplitudeKey, {
-          includeUtm: true,
           includeReferrer: true,
+          includeUtm: true,
           saveEvents: true,
         });
 
@@ -246,8 +246,8 @@ export const trackEvent = (
   try {
     // Google Analytics
     ReactGA.event({
-      category,
       action,
+      category,
       ...(label != null && { label }),
       ...(value != null && { value }),
       ...params,
@@ -256,8 +256,8 @@ export const trackEvent = (
     // Amplitude
     if (typeof window !== 'undefined' && window.amplitudePushEvent) {
       window.amplitudePushEvent(`${category}_${action}`, {
-        category,
         action,
+        category,
         label,
         value,
         ...params,
@@ -265,7 +265,7 @@ export const trackEvent = (
     }
 
     if (config.debug) {
-      logger.debug('[Analytics] Event tracked:', { category, action, label, value, params });
+      logger.debug('[Analytics] Event tracked:', { action, category, label, params, value });
     }
   } catch (error) {
     logger.error('[Analytics] Failed to track event:', error);
@@ -371,8 +371,8 @@ export const trackTransaction = (
   params?: EventParams,
 ): void => {
   trackEvent('Transaction', 'complete', currency, value, {
-    transaction_id: transactionId,
     currency,
+    transaction_id: transactionId,
     ...params,
   });
 };
@@ -409,14 +409,14 @@ export const trackPurchase = (
 
   try {
     ReactGA.event('purchase', {
-      transaction_id: transactionId,
-      value,
       currency,
       items,
+      transaction_id: transactionId,
+      value,
     });
 
     if (config.debug) {
-      logger.debug('[Analytics] Purchase tracked:', { transactionId, value, currency, items });
+      logger.debug('[Analytics] Purchase tracked:', { currency, items, transactionId, value });
     }
   } catch (error) {
     logger.error('[Analytics] Failed to track purchase:', error);
@@ -529,42 +529,41 @@ export const clearUser = (): void => {
  */
 
 export const analytics = {
-  // Wallet events
-  walletCreated: () => trackEvent('Wallet', 'created'),
-  walletImported: () => trackEvent('Wallet', 'imported'),
-  walletBackedUp: () => trackEvent('Wallet', 'backed_up'),
+  // Feature usage
+  featureUsed: (feature: string) => trackEvent('Feature', 'used', feature),
 
-  // Transaction events
-  transactionSent: (amount: number, asset: string) =>
-    trackEvent('Transaction', 'send', asset, amount),
-  transactionReceived: (amount: number, asset: string) =>
-    trackEvent('Transaction', 'receive', asset, amount),
+  // Help events
+  helpViewed: (topic: string) => trackEvent('Help', 'viewed', topic),
+  languageChanged: (language: string) => trackEvent('Settings', 'language_changed', language),
+  leasingCancelled: () => trackEvent('Leasing', 'cancelled'),
+
+  // Leasing events
+  leasingStarted: (amount: number) => trackEvent('Leasing', 'started', undefined, amount),
+  orderCancelled: (pair: string) => trackEvent('DEX', 'order_cancelled', pair),
 
   // DEX events
   orderPlaced: (pair: string, side: 'buy' | 'sell', amount: number) =>
     trackEvent('DEX', 'order_placed', pair, amount, { side }),
-  orderCancelled: (pair: string) => trackEvent('DEX', 'order_cancelled', pair),
-  tradeExecuted: (pair: string, amount: number, price: number) =>
-    trackEvent('DEX', 'trade_executed', pair, amount, { price }),
-
-  // Leasing events
-  leasingStarted: (amount: number) => trackEvent('Leasing', 'started', undefined, amount),
-  leasingCancelled: () => trackEvent('Leasing', 'cancelled'),
-
-  // Settings events
-  themeChanged: (theme: string) => trackEvent('Settings', 'theme_changed', theme),
-  languageChanged: (language: string) => trackEvent('Settings', 'language_changed', language),
-
-  // Feature usage
-  featureUsed: (feature: string) => trackEvent('Feature', 'used', feature),
 
   // Search events
   searchPerformed: (query: string, resultsCount: number) =>
     trackEvent('Search', 'performed', query, resultsCount),
-
-  // Help events
-  helpViewed: (topic: string) => trackEvent('Help', 'viewed', topic),
   supportContacted: (method: string) => trackEvent('Support', 'contacted', method),
+
+  // Settings events
+  themeChanged: (theme: string) => trackEvent('Settings', 'theme_changed', theme),
+  tradeExecuted: (pair: string, amount: number, price: number) =>
+    trackEvent('DEX', 'trade_executed', pair, amount, { price }),
+  transactionReceived: (amount: number, asset: string) =>
+    trackEvent('Transaction', 'receive', asset, amount),
+
+  // Transaction events
+  transactionSent: (amount: number, asset: string) =>
+    trackEvent('Transaction', 'send', asset, amount),
+  walletBackedUp: () => trackEvent('Wallet', 'backed_up'),
+  // Wallet events
+  walletCreated: () => trackEvent('Wallet', 'created'),
+  walletImported: () => trackEvent('Wallet', 'imported'),
 };
 
 // Type declarations for window.amplitude and window.amplitudeInit
@@ -585,15 +584,15 @@ declare global {
 }
 
 export default {
+  analytics,
+  clearUser,
   initAnalytics,
-  trackPageView,
-  trackEvent,
   setUserId,
   setUserProperties,
-  trackTransaction,
+  trackEvent,
+  trackException,
+  trackPageView,
   trackPurchase,
   trackTiming,
-  trackException,
-  clearUser,
-  analytics,
+  trackTransaction,
 };

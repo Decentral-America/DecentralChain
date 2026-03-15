@@ -58,36 +58,36 @@ const pulse = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  overflow: 'hidden',
+  animation: `${gradientShift} 15s ease infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%)'
       : 'linear-gradient(135deg, #e8f0fe 0%, #f5f7fa 50%, #e3f2fd 100%)',
   backgroundSize: '200% 200%',
-  animation: `${gradientShift} 15s ease infinite`,
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  overflow: 'hidden',
   padding: theme.spacing(3),
+  position: 'relative',
 }));
 
 const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'size', 'top', 'left'].includes(prop as string),
 })<{ delay: number; size: number; top: string; left: string }>(
   ({ theme, delay, size, top, left }) => ({
-    position: 'absolute',
-    width: size,
-    height: size,
-    top,
-    left,
-    borderRadius: '30%',
-    background:
-      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
-    backdropFilter: 'blur(10px)',
     animation: `${float} ${6 + delay}s ease-in-out infinite`,
     animationDelay: `${delay}s`,
+    backdropFilter: 'blur(10px)',
+    background:
+      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
+    borderRadius: '30%',
+    height: size,
+    left,
+    position: 'absolute',
+    top,
+    width: size,
     zIndex: 0,
   }),
 );
@@ -95,54 +95,54 @@ const FloatingShape = styled(Box, {
 const GlowOrb = styled(Box, {
   shouldForwardProp: (prop) => !['color', 'top', 'left', 'size'].includes(prop as string),
 })<{ color: string; top: string; left: string; size: number }>(({ color, top, left, size }) => ({
-  position: 'absolute',
-  width: size,
-  height: size,
-  top,
-  left,
-  borderRadius: '50%',
-  background: `radial-gradient(circle, ${color}30 0%, ${color}00 70%)`,
-  filter: 'blur(40px)',
   animation: `${pulse} 4s ease-in-out infinite`,
+  background: `radial-gradient(circle, ${color}30 0%, ${color}00 70%)`,
+  borderRadius: '50%',
+  filter: 'blur(40px)',
+  height: size,
+  left,
+  position: 'absolute',
+  top,
+  width: size,
   zIndex: 0,
 }));
 
 const ContentWrapper = styled(Container)(({ theme }) => ({
-  position: 'relative',
-  zIndex: 1,
-  maxWidth: '700px !important',
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(5),
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   border: `1px solid ${
     theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
   }`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 12px 40px rgba(0, 0, 0, 0.5)'
       : '0 12px 40px rgba(0, 0, 0, 0.1)',
+  maxWidth: '700px !important',
+  padding: theme.spacing(5),
+  position: 'relative',
+  zIndex: 1,
 }));
 
 const DropZone = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isDragActive',
 })<{ isDragActive?: boolean }>(({ theme, isDragActive }) => ({
-  padding: theme.spacing(6),
-  textAlign: 'center',
-  border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.divider}`,
-  borderRadius: theme.spacing(2),
+  '&:hover': {
+    background:
+      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.03)',
+    borderColor: theme.palette.primary.main,
+  },
   background: isDragActive
     ? theme.palette.mode === 'dark'
       ? 'rgba(31, 90, 246, 0.1)'
       : 'rgba(31, 90, 246, 0.05)'
     : 'transparent',
+  border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.divider}`,
+  borderRadius: theme.spacing(2),
   cursor: 'pointer',
+  padding: theme.spacing(6),
+  textAlign: 'center',
   transition: 'all 0.3s ease',
-  '&:hover': {
-    borderColor: theme.palette.primary.main,
-    background:
-      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.03)',
-  },
 }));
 
 interface WalletBackup {
@@ -163,6 +163,22 @@ interface WalletBackup {
 }
 
 const steps = ['Upload Backup', 'Enter Password', 'Restore Accounts'];
+
+function mergeAccounts(incoming: Array<{ address: string; [key: string]: unknown }>): {
+  merged: unknown[];
+  newCount: number;
+} {
+  const existing = JSON.parse(localStorage.getItem('dcc_users') || '[]') as unknown[];
+  const merged = [...existing];
+  let newCount = 0;
+  for (const account of incoming) {
+    if (!merged.some((a: unknown) => (a as { address: string }).address === account.address)) {
+      merged.push(account);
+      newCount++;
+    }
+  }
+  return { merged, newCount };
+}
 
 export const RestoreFromBackupPage: React.FC = () => {
   const theme = useTheme();
@@ -265,13 +281,13 @@ export const RestoreFromBackupPage: React.FC = () => {
 
       const key = await crypto.subtle.deriveKey(
         {
+          hash: 'SHA-256',
+          iterations: 100000,
           name: 'PBKDF2',
           salt: encoder.encode('dcc-salt'), // Must match Angular
-          iterations: 100000,
-          hash: 'SHA-256',
         },
         keyMaterial,
-        { name: 'AES-GCM', length: 256 },
+        { length: 256, name: 'AES-GCM' },
         false,
         ['decrypt'],
       );
@@ -281,7 +297,7 @@ export const RestoreFromBackupPage: React.FC = () => {
       const iv = encryptedBuffer.slice(0, 12);
       const encrypted = encryptedBuffer.slice(12);
 
-      const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
+      const decrypted = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, encrypted);
 
       return JSON.parse(decoder.decode(decrypted));
     } catch {
@@ -297,48 +313,19 @@ export const RestoreFromBackupPage: React.FC = () => {
 
     try {
       let accountsData = backupData.data.accounts;
-
-      // If encrypted, decrypt first
       if (backupData.encrypted) {
         const decryptedData = await decryptBackup(JSON.stringify(backupData.data), password);
         accountsData = (decryptedData as { accounts: typeof accountsData }).accounts;
       }
 
-      // Verify checksum
-      // In production, verify SHA-256 checksum matches
-
-      // Import accounts to localStorage (matching Angular storage structure)
-      const existingAccounts = localStorage.getItem('dcc_users');
-      const existingAccountsList = existingAccounts ? JSON.parse(existingAccounts) : [];
-
-      // Merge accounts (avoid duplicates)
-      const mergedAccounts = [...existingAccountsList];
-      let newAccountCount = 0;
-
-      for (const account of accountsData) {
-        const exists = mergedAccounts.find((a) => a.address === account.address);
-        if (!exists) {
-          mergedAccounts.push(account);
-          newAccountCount++;
-        }
-      }
-
-      // Save to storage
-      localStorage.setItem('dcc_users', JSON.stringify(mergedAccounts));
-
-      // Restore settings if present
-      if (backupData.data.settings) {
+      const { merged, newCount } = mergeAccounts(accountsData);
+      localStorage.setItem('dcc_users', JSON.stringify(merged));
+      if (backupData.data.settings)
         localStorage.setItem('dcc_settings', JSON.stringify(backupData.data.settings));
-      }
 
-      setRestoredAccounts(newAccountCount);
+      setRestoredAccounts(newCount);
       setActiveStep(2);
-
-      // Auto-redirect after success
-      setTimeout(() => {
-        const targetRoute = getActiveState('wallet');
-        navigate(targetRoute);
-      }, 3000);
+      setTimeout(() => navigate(getActiveState('wallet')), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to restore backup';
       setError(errorMessage);
@@ -348,239 +335,225 @@ export const RestoreFromBackupPage: React.FC = () => {
     }
   };
 
-  const renderStepContent = () => {
-    switch (activeStep) {
-      case 0:
-        return (
-          <Box>
-            <Typography variant="h5" sx={{ mb: 1, fontWeight: 700 }}>
-              Upload Backup File
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-              Select your wallet backup file (.json)
-            </Typography>
+  const renderStepContent = () =>
+    [
+      () => (
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+            Upload Backup File
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+            Select your wallet backup file (.json)
+          </Typography>
 
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleFileInputChange}
-              style={{ display: 'none' }}
-              id="backup-file-input"
-            />
+          <input
+            type="file"
+            accept=".json"
+            onChange={handleFileInputChange}
+            style={{ display: 'none' }}
+            id="backup-file-input"
+          />
 
-            <label htmlFor="backup-file-input">
-              <DropZone
-                isDragActive={isDragActive}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                elevation={0}
-              >
-                <CloudUpload
-                  sx={{
-                    fontSize: 64,
-                    color: isDragActive ? 'primary.main' : 'text.secondary',
-                    mb: 2,
-                  }}
-                />
-                <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                  {isDragActive ? 'Drop backup file here' : 'Drag & drop your backup file'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  or click to browse files
-                </Typography>
-                <Button variant="secondary" component="span">
-                  Select Backup File
-                </Button>
-              </DropZone>
-            </label>
-
-            <Alert severity="info" sx={{ mt: 3 }}>
-              <AlertTitle>Backup File Location</AlertTitle>
-              Your backup file is named something like{' '}
-              <code>dcc-wallet-backup-2025-10-17.json</code>. It was created when you exported your
-              wallet from Settings.
-            </Alert>
-          </Box>
-        );
-
-      case 1:
-        return (
-          <Box>
-            <Typography variant="h5" sx={{ mb: 1, fontWeight: 700 }}>
-              Enter Password
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-              {backupData?.encrypted
-                ? 'Enter the password used to encrypt this backup'
-                : 'Backup file is not encrypted'}
-            </Typography>
-
-            {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {error}
-              </Alert>
-            )}
-
-            {backupData && (
-              <Paper
+          <label htmlFor="backup-file-input">
+            <DropZone
+              isDragActive={isDragActive}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              elevation={0}
+            >
+              <CloudUpload
                 sx={{
-                  p: 2.5,
-                  mb: 3,
-                  background:
-                    theme.palette.mode === 'dark'
-                      ? 'rgba(255, 255, 255, 0.05)'
-                      : 'rgba(0, 0, 0, 0.02)',
-                  border: `1px solid ${theme.palette.divider}`,
-                }}
-              >
-                <Typography variant="caption" color="text.secondary" display="block">
-                  Backup Information
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  <strong>Version:</strong> {backupData.version}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Accounts:</strong> {backupData.data.accounts.length}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Encrypted:</strong> {backupData.encrypted ? 'Yes' : 'No'}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Date:</strong> {new Date(backupData.timestamp).toLocaleString()}
-                </Typography>
-              </Paper>
-            )}
-
-            {backupData?.encrypted && (
-              <TextField
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                label="Backup Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter backup password"
-                sx={{ mb: 3 }}
-                InputProps={{
-                  endAdornment: (
-                    <Box
-                      sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </Box>
-                  ),
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter' && password) {
-                    handleRestore();
-                  }
+                  color: isDragActive ? 'primary.main' : 'text.secondary',
+                  fontSize: 64,
+                  mb: 2,
                 }}
               />
-            )}
-
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button variant="secondary" onClick={() => setActiveStep(0)} fullWidth>
-                Back
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                {isDragActive ? 'Drop backup file here' : 'Drag & drop your backup file'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                or click to browse files
+              </Typography>
+              <Button variant="secondary" component="span">
+                Select Backup File
               </Button>
-              <Button
-                variant="primary"
-                onClick={handleRestore}
-                disabled={backupData?.encrypted && !password}
-                fullWidth
-              >
-                {isProcessing ? 'Restoring...' : 'Restore Wallet'}
-              </Button>
-            </Box>
+            </DropZone>
+          </label>
 
-            {isProcessing && <LinearProgress sx={{ mt: 2 }} />}
-          </Box>
-        );
+          <Alert severity="info" sx={{ mt: 3 }}>
+            <AlertTitle>Backup File Location</AlertTitle>
+            Your backup file is named something like <code>dcc-wallet-backup-2025-10-17.json</code>.
+            It was created when you exported your wallet from Settings.
+          </Alert>
+        </Box>
+      ),
+      () => (
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+            Enter Password
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+            {backupData?.encrypted
+              ? 'Enter the password used to encrypt this backup'
+              : 'Backup file is not encrypted'}
+          </Typography>
 
-      case 2:
-        return (
-          <Box sx={{ textAlign: 'center' }}>
-            <CheckCircle
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          {backupData && (
+            <Paper
               sx={{
-                fontSize: 80,
-                color: 'success.main',
+                background:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.05)'
+                    : 'rgba(0, 0, 0, 0.02)',
+                border: `1px solid ${theme.palette.divider}`,
                 mb: 3,
+                p: 2.5,
+              }}
+            >
+              <Typography variant="caption" color="text.secondary" display="block">
+                Backup Information
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                <strong>Version:</strong> {backupData.version}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Accounts:</strong> {backupData.data.accounts.length}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Encrypted:</strong> {backupData.encrypted ? 'Yes' : 'No'}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Date:</strong> {new Date(backupData.timestamp).toLocaleString()}
+              </Typography>
+            </Paper>
+          )}
+
+          {backupData?.encrypted && (
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              label="Backup Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter backup password"
+              sx={{ mb: 3 }}
+              InputProps={{
+                endAdornment: (
+                  <Box
+                    sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </Box>
+                ),
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && password) {
+                  handleRestore();
+                }
               }}
             />
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
-              Wallet Restored Successfully!
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-              {restoredAccounts} account{restoredAccounts !== 1 ? 's' : ''} restored from backup
-            </Typography>
+          )}
 
-            {backupData && backupData.data.accounts.length > 0 && (
-              <Paper
-                sx={{
-                  p: 2,
-                  mb: 3,
-                  textAlign: 'left',
-                  background:
-                    theme.palette.mode === 'dark'
-                      ? 'rgba(255, 255, 255, 0.05)'
-                      : 'rgba(0, 0, 0, 0.02)',
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mb: 1, display: 'block' }}
-                >
-                  Restored Accounts:
-                </Typography>
-                <List dense>
-                  {backupData.data.accounts.slice(0, 5).map((account) => (
-                    <ListItem key={account.address} sx={{ py: 0.5 }}>
-                      <ListItemIcon sx={{ minWidth: 36 }}>
-                        <AccountCircle fontSize="small" color="primary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={account.name || 'Unnamed Account'}
-                        secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
-                        primaryTypographyProps={{ variant: 'body2', fontWeight: 600 }}
-                        secondaryTypographyProps={{ variant: 'caption' }}
-                      />
-                    </ListItem>
-                  ))}
-                  {backupData.data.accounts.length > 5 && (
-                    <ListItem>
-                      <ListItemText
-                        primary={`... and ${backupData.data.accounts.length - 5} more`}
-                        primaryTypographyProps={{ variant: 'caption', color: 'text.secondary' }}
-                      />
-                    </ListItem>
-                  )}
-                </List>
-              </Paper>
-            )}
-
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Redirecting to wallet in 3 seconds...
-            </Typography>
-
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button variant="secondary" onClick={() => setActiveStep(0)} fullWidth>
+              Back
+            </Button>
             <Button
               variant="primary"
-              onClick={() => {
-                const targetRoute = getActiveState('wallet');
-                navigate(targetRoute);
-              }}
+              onClick={handleRestore}
+              disabled={backupData?.encrypted && !password}
               fullWidth
             >
-              Go to Wallet
+              {isProcessing ? 'Restoring...' : 'Restore Wallet'}
             </Button>
           </Box>
-        );
 
-      default:
-        return null;
-    }
-  };
+          {isProcessing && <LinearProgress sx={{ mt: 2 }} />}
+        </Box>
+      ),
+      () => (
+        <Box sx={{ textAlign: 'center' }}>
+          <CheckCircle
+            sx={{
+              color: 'success.main',
+              fontSize: 80,
+              mb: 3,
+            }}
+          />
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+            Wallet Restored Successfully!
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            {restoredAccounts} account{restoredAccounts !== 1 ? 's' : ''} restored from backup
+          </Typography>
+
+          {backupData && backupData.data.accounts.length > 0 && (
+            <Paper
+              sx={{
+                background:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.05)'
+                    : 'rgba(0, 0, 0, 0.02)',
+                mb: 3,
+                p: 2,
+                textAlign: 'left',
+              }}
+            >
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                Restored Accounts:
+              </Typography>
+              <List dense>
+                {backupData.data.accounts.slice(0, 5).map((account) => (
+                  <ListItem key={account.address} sx={{ py: 0.5 }}>
+                    <ListItemIcon sx={{ minWidth: 36 }}>
+                      <AccountCircle fontSize="small" color="primary" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={account.name || 'Unnamed Account'}
+                      secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
+                      primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
+                      secondaryTypographyProps={{ variant: 'caption' }}
+                    />
+                  </ListItem>
+                ))}
+                {backupData.data.accounts.length > 5 && (
+                  <ListItem>
+                    <ListItemText
+                      primary={`... and ${backupData.data.accounts.length - 5} more`}
+                      primaryTypographyProps={{ color: 'text.secondary', variant: 'caption' }}
+                    />
+                  </ListItem>
+                )}
+              </List>
+            </Paper>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Redirecting to wallet in 3 seconds...
+          </Typography>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              const targetRoute = getActiveState('wallet');
+              navigate(targetRoute);
+            }}
+            fullWidth
+          >
+            Go to Wallet
+          </Button>
+        </Box>
+      ),
+    ][activeStep]?.() ?? null;
 
   return (
     <PageContainer>
@@ -608,9 +581,9 @@ export const RestoreFromBackupPage: React.FC = () => {
               <Typography
                 variant="h4"
                 sx={{
+                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                   fontWeight: 800,
                   mb: 1,
-                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -645,7 +618,7 @@ export const RestoreFromBackupPage: React.FC = () => {
                   <Button
                     variant="text"
                     onClick={() => navigate('/signin')}
-                    sx={{ textTransform: 'none', fontWeight: 600 }}
+                    sx={{ fontWeight: 600, textTransform: 'none' }}
                   >
                     Sign in with seed phrase
                   </Button>

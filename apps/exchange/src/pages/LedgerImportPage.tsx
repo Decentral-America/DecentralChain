@@ -81,19 +81,19 @@ const shimmer = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  padding: theme.spacing(4),
-  display: 'flex',
   alignItems: 'center',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  display: 'flex',
   justifyContent: 'center',
+  minHeight: '100vh',
+  padding: theme.spacing(4),
 }));
 
 const ContentCard = styled(Paper)(({ theme }) => ({
-  maxWidth: 800,
-  width: '100%',
-  padding: theme.spacing(4),
   borderRadius: theme.spacing(2),
+  maxWidth: 800,
+  padding: theme.spacing(4),
+  width: '100%',
 }));
 
 const PulsingIcon = styled(Box)({
@@ -101,9 +101,9 @@ const PulsingIcon = styled(Box)({
 });
 
 const ShimmerIcon = styled(Box)({
+  animation: `${shimmer} 2s infinite`,
   background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
   backgroundSize: '1000px 100%',
-  animation: `${shimmer} 2s infinite`,
   borderRadius: '50%',
 });
 
@@ -176,14 +176,18 @@ export const LedgerImportPage: React.FC = () => {
       ]);
 
       const newUsers: Record<number, LedgerUser> = {};
-      (userList || []).forEach((user: LedgerUser) => {
+      const userArray = (userList || []) as LedgerUser[];
+      for (const user of userArray) {
         newUsers[user.id] = user;
-      });
+      }
       setUsers(newUsers);
 
-      if (userList && userList.length > 0) {
-        setSelectedUser(userList[0]);
-        setAccountName(`Ledger ${userList[0]?.id}`);
+      if (userArray.length > 0) {
+        const firstUser = userArray[0];
+        if (firstUser) {
+          setSelectedUser(firstUser);
+          setAccountName(`Ledger ${firstUser.id}`);
+        }
         setActiveStep(Step.SELECT_ACCOUNT);
       }
     } catch (err) {
@@ -310,12 +314,12 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.CONNECT_DEVICE && (
           <Box textAlign="center" py={4}>
             <PulsingIcon mb={3}>
-              <UsbIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <UsbIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </PulsingIcon>
             <Typography variant="h6" gutterBottom>
               Connect Your Ledger Device
             </Typography>
-            <List sx={{ maxWidth: 400, mx: 'auto', mb: 3 }}>
+            <List sx={{ maxWidth: 400, mb: 3, mx: 'auto' }}>
               <ListItem>
                 <ListItemIcon>
                   <CheckCircleIcon color="primary" />
@@ -350,7 +354,7 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.OPEN_APP && (
           <Box textAlign="center" py={4}>
             <ShimmerIcon mb={3}>
-              <SmartphoneIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <SmartphoneIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </ShimmerIcon>
             <Typography variant="h6" gutterBottom>
               Open the DCC App
@@ -358,7 +362,7 @@ export const LedgerImportPage: React.FC = () => {
             <Typography variant="body2" color="text.secondary" mb={3}>
               On your Ledger device, navigate to and open the DCC application
             </Typography>
-            <List sx={{ maxWidth: 400, mx: 'auto', mb: 3 }}>
+            <List sx={{ maxWidth: 400, mb: 3, mx: 'auto' }}>
               <ListItem>
                 <ListItemIcon>
                   <CheckCircleIcon color="success" />
@@ -409,29 +413,29 @@ export const LedgerImportPage: React.FC = () => {
                     key={user.id}
                     onClick={() => handleAccountSelect(user)}
                     sx={{
-                      width: 140,
-                      cursor: 'pointer',
+                      '&:hover': {
+                        boxShadow: 3,
+                        transform: 'translateY(-4px)',
+                      },
                       border: selectedUser?.id === user.id ? 2 : 1,
                       borderColor: selectedUser?.id === user.id ? 'primary.main' : 'divider',
+                      cursor: 'pointer',
                       transition: 'all 0.3s',
-                      '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: 3,
-                      },
+                      width: 140,
                     }}
                   >
-                    <CardContent sx={{ textAlign: 'center', p: 2 }}>
+                    <CardContent sx={{ p: 2, textAlign: 'center' }}>
                       <Avatar
                         sx={{
-                          width: 60,
-                          height: 60,
-                          mx: 'auto',
-                          mb: 1,
-                          bgcolor: selectedUser?.id === user.id ? 'primary.main' : 'grey.300',
                           background:
                             selectedUser?.id === user.id
                               ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                               : undefined,
+                          bgcolor: selectedUser?.id === user.id ? 'primary.main' : 'grey.300',
+                          height: 60,
+                          mb: 1,
+                          mx: 'auto',
+                          width: 60,
                         }}
                       >
                         <AccountCircleIcon fontSize="large" />
@@ -460,7 +464,7 @@ export const LedgerImportPage: React.FC = () => {
                 top="50%"
                 left={-20}
                 right={-20}
-                sx={{ transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                sx={{ pointerEvents: 'none', transform: 'translateY(-50%)' }}
               >
                 <IconButton
                   onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))}
@@ -535,7 +539,7 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.CONFIRM && (
           <Box textAlign="center" py={4}>
             <Box mb={3}>
-              <AccountCircleIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <AccountCircleIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </Box>
             <Typography variant="h6" gutterBottom>
               Confirm on Your Ledger
@@ -545,7 +549,7 @@ export const LedgerImportPage: React.FC = () => {
             </Typography>
 
             {selectedUser && (
-              <Paper variant="outlined" sx={{ p: 3, mb: 3, maxWidth: 500, mx: 'auto' }}>
+              <Paper variant="outlined" sx={{ maxWidth: 500, mb: 3, mx: 'auto', p: 3 }}>
                 <Typography variant="subtitle2" gutterBottom>
                   Account: {accountName}
                 </Typography>
@@ -560,7 +564,7 @@ export const LedgerImportPage: React.FC = () => {
             )}
 
             {timeoutWarning && (
-              <Alert severity="warning" sx={{ mb: 2, maxWidth: 500, mx: 'auto' }}>
+              <Alert severity="warning" sx={{ maxWidth: 500, mb: 2, mx: 'auto' }}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <WarningIcon />
                   <Typography variant="body2">

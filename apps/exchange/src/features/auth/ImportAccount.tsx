@@ -13,6 +13,21 @@ import { Stack } from '@/components/atoms/Stack';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
+function validateSecret(mode: string, privateKey: string, seedPhrase: string): string {
+  if (mode === 'privatekey') {
+    const trimmed = privateKey.trim();
+    if (!trimmed) throw new Error('Please enter your private key');
+    if (trimmed.length < 32 || trimmed.length > 64)
+      throw new Error('Invalid private key format. Please check and try again.');
+    return trimmed;
+  }
+  const trimmed = seedPhrase.trim();
+  if (!trimmed) throw new Error('Please enter your seed phrase');
+  if (trimmed.split(/\s+/).length !== 15)
+    throw new Error('Seed phrase must contain exactly 15 words');
+  return trimmed;
+}
+
 const FormContainer = styled.div`
   width: 100%;
 `;
@@ -173,63 +188,20 @@ export const ImportAccount = () => {
     setIsLoading(true);
 
     try {
-      // Determine the secret input based on mode
-      let secretInput: string;
-
-      if (importMode === 'privatekey') {
-        const trimmedKey = privateKey.trim();
-        if (!trimmedKey) {
-          throw new Error('Please enter your private key');
-        }
-        // Basic base58 validation (44 chars typical for DecentralChain private keys)
-        if (trimmedKey.length < 32 || trimmedKey.length > 64) {
-          throw new Error('Invalid private key format. Please check and try again.');
-        }
-        secretInput = trimmedKey;
-      } else {
-        const trimmedSeed = seedPhrase.trim();
-        if (!trimmedSeed) {
-          throw new Error('Please enter your seed phrase');
-        }
-        const words = trimmedSeed.split(/\s+/);
-        if (words.length !== 15) {
-          throw new Error('Seed phrase must contain exactly 15 words');
-        }
-        secretInput = trimmedSeed;
-      }
-
-      // Validate password
-      if (!password.trim()) {
-        throw new Error('Please enter a password');
-      }
+      const secretInput = validateSecret(importMode, privateKey, seedPhrase);
+      if (!password.trim()) throw new Error('Please enter a password');
 
       if (isFirstAccount) {
-        // Validate account name for first account
-        if (!accountName.trim()) {
-          throw new Error('Please enter an account name');
-        }
-
-        // FIRST ACCOUNT: Use create() to initialize vault
+        if (!accountName.trim()) throw new Error('Please enter an account name');
         await create(secretInput, password, accountName.trim(), true);
-
-        // create() sets user state; navigate via effect once state propagates
-        navigationTarget.current = getActiveState('wallet');
-        setPendingNavigation(true);
       } else {
-        // ADDITIONAL ACCOUNT: Use addAccount() to add to existing vault
         const addedUser = await addAccount(secretInput, accountName.trim() || 'Imported Account');
-
-        if (!addedUser) {
-          throw new Error('Failed to add account');
-        }
-
-        // Login with the newly added account
+        if (!addedUser) throw new Error('Failed to add account');
         await login(addedUser.hash, password);
-
-        // login() sets user state; navigate via effect once state propagates
-        navigationTarget.current = getActiveState('wallet');
-        setPendingNavigation(true);
       }
+
+      navigationTarget.current = getActiveState('wallet');
+      setPendingNavigation(true);
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -286,7 +258,7 @@ export const ImportAccount = () => {
                     Using a Ledger hardware wallet?{' '}
                     <a
                       href="/import/ledger"
-                      style={{ color: 'white', textDecoration: 'underline', fontWeight: 600 }}
+                      style={{ color: 'white', fontWeight: 600, textDecoration: 'underline' }}
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/import/ledger');
@@ -372,7 +344,7 @@ export const ImportAccount = () => {
                 Don&apos;t have a wallet?{' '}
                 <a
                   href="/signup"
-                  style={{ color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}
+                  style={{ color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/signup');

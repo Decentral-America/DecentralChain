@@ -88,13 +88,13 @@ class FetchClient {
     this.baseURL = validateBaseURL(baseURL);
     this.timeout = options?.timeout ?? 30000;
     this.defaultHeaders = {
-      'Content-Type': 'application/json',
       Accept: 'application/json',
+      'Content-Type': 'application/json',
       ...options?.headers,
     };
   }
 
-  async request<T = unknown>(reqConfig: RequestConfig): Promise<HttpResponse<T>> {
+  private buildUrl(reqConfig: RequestConfig): string {
     let url = reqConfig.url ?? '';
     if (!url.startsWith('http')) {
       url = this.baseURL + url;
@@ -111,12 +111,49 @@ class FetchClient {
       if (qs) url += `${url.includes('?') ? '&' : '?'}${qs}`;
     }
 
+    return url;
+  }
+
+  private async handleErrorResponse(res: Response, url: string): Promise<never> {
+    let errorData: unknown;
+    try {
+      errorData = await res.json();
+    } catch {
+      errorData = await res.text();
+    }
+
+    const apiError: ApiError = {
+      details: errorData,
+      message: (errorData as { message?: string })?.message || res.statusText,
+      status: res.status,
+    };
+
+    if (res.status !== 404) {
+      logger.error('[API Error]', {
+        details: apiError.details,
+        message: apiError.message,
+        status: res.status,
+        url,
+      });
+    }
+
+    if (res.status === 401) {
+      logger.warn('Unauthorized request - authentication required');
+    } else if (res.status === 500) {
+      logger.error('Server error:', url);
+    }
+
+    throw new HttpError(res.status, res.statusText, errorData);
+  }
+
+  async request<T = unknown>(reqConfig: RequestConfig): Promise<HttpResponse<T>> {
+    const url = this.buildUrl(reqConfig);
     const headers = { ...this.defaultHeaders, ...reqConfig.headers };
     const method = reqConfig.method ?? 'GET';
 
     const init: RequestInit = {
-      method,
       headers,
+      method,
       signal: AbortSignal.timeout(reqConfig.timeout ?? this.timeout),
     };
 
@@ -132,35 +169,7 @@ class FetchClient {
     const res = await fetch(url, init);
 
     if (!res.ok) {
-      let errorData: unknown;
-      try {
-        errorData = await res.json();
-      } catch {
-        errorData = await res.text();
-      }
-
-      const apiError: ApiError = {
-        message: (errorData as { message?: string })?.message || res.statusText,
-        status: res.status,
-        details: errorData,
-      };
-
-      if (res.status !== 404) {
-        logger.error('[API Error]', {
-          url,
-          status: res.status,
-          message: apiError.message,
-          details: apiError.details,
-        });
-      }
-
-      if (res.status === 401) {
-        logger.warn('Unauthorized request - authentication required');
-      } else if (res.status === 500) {
-        logger.error('Server error:', url);
-      }
-
-      throw new HttpError(res.status, res.statusText, errorData);
+      await this.handleErrorResponse(res, url);
     }
 
     if (process.env.NODE_ENV === 'development') {
@@ -168,7 +177,7 @@ class FetchClient {
     }
 
     const data = (await res.json()) as T;
-    return { data, status: res.status, statusText: res.statusText, headers: res.headers };
+    return { data, headers: res.headers, status: res.status, statusText: res.statusText };
   }
 
   get<T = unknown>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
@@ -176,11 +185,11 @@ class FetchClient {
   }
 
   post<T = unknown>(url: string, data?: unknown, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, method: 'POST', url, data });
+    return this.request<T>({ ...config, data, method: 'POST', url });
   }
 
   put<T = unknown>(url: string, data?: unknown, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, method: 'PUT', url, data });
+    return this.request<T>({ ...config, data, method: 'PUT', url });
   }
 }
 
@@ -239,7 +248,7 @@ export async function apiPost<T = unknown>(
   endpoint: string,
   data?: unknown,
 ): Promise<T> {
-  return apiRequest<T>(client, endpoint, { method: 'POST', data });
+  return apiRequest<T>(client, endpoint, { data, method: 'POST' });
 }
 
 /**
@@ -250,7 +259,7 @@ export async function apiPut<T = unknown>(
   endpoint: string,
   data?: unknown,
 ): Promise<T> {
-  return apiRequest<T>(client, endpoint, { method: 'PUT', data });
+  return apiRequest<T>(client, endpoint, { data, method: 'PUT' });
 }
 
 /**

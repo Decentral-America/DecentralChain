@@ -93,9 +93,10 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
    */
   useEffect(() => {
     if (depositDetails?.gatewayType === 'round-robin' && depositDetails.expiry) {
+      const expiryTime = depositDetails.expiry;
       // Initial calculation
       const calculateRemaining = () => {
-        const remaining = depositDetails.expiry!.getTime() - Date.now();
+        const remaining = expiryTime.getTime() - Date.now();
         return Math.max(0, remaining);
       };
 
@@ -134,7 +135,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
       }}
     >
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
           <Typography variant="h6" component="span">
             Deposit {asset.name}
           </Typography>
@@ -152,12 +153,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
         {loading && (
           <Box
             sx={{
+              alignItems: 'center',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              gap: 2,
               justifyContent: 'center',
               py: 4,
-              gap: 2,
             }}
           >
             <CircularProgress />

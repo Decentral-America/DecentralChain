@@ -29,8 +29,8 @@ interface DecentralChainCandle {
  * Configuration for supported resolutions
  */
 const configurationData = {
+  exchanges: [{ desc: 'DecentralChain DEX', name: 'DecentralChain', value: 'DecentralChain' }],
   supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'] as ResolutionString[],
-  exchanges: [{ value: 'DecentralChain', name: 'DecentralChain', desc: 'DecentralChain DEX' }],
   symbols_types: [{ name: 'crypto', value: 'crypto' }],
 };
 
@@ -46,8 +46,8 @@ const resolutionToInterval = (resolution: string): string => {
     '60': '1h',
     '240': '4h',
     D: '1d',
-    W: '1w',
     M: '1M',
+    W: '1w',
   };
   return map[resolution] || '1h';
 };
@@ -68,8 +68,8 @@ const fetchCandles = async (
 
     const url = `${matcher}/matcher/orderbook/${amountAsset}/${priceAsset}/candlestick/${interval}`;
     const params = new URLSearchParams({
-      timeStart: from.toString(),
       timeEnd: to.toString(),
+      timeStart: from.toString(),
     });
 
     const response = await fetch(`${url}?${params}`);
@@ -93,51 +93,6 @@ export const createDatafeed = (
   priceAssetName: string,
 ): IBasicDataFeed => {
   return {
-    onReady: (callback: OnReadyCallback) => {
-      setTimeout(() => callback(configurationData), 0);
-    },
-
-    searchSymbols: (
-      _userInput: string,
-      _exchange: string,
-      _symbolType: string,
-      onResult: SearchSymbolsCallback,
-    ) => {
-      onResult([
-        {
-          symbol: `${amountAssetName}/${priceAssetName}`,
-          full_name: `DecentralChain:${amountAssetName}/${priceAssetName}`,
-          description: `${amountAssetName}/${priceAssetName}`,
-          exchange: 'DecentralChain',
-          ticker: `${amountAssetName}/${priceAssetName}`,
-          type: 'crypto',
-        },
-      ]);
-    },
-
-    resolveSymbol: (symbolName: string, onResolve: ResolveCallback, _onError: ErrorCallback) => {
-      const symbolInfo: LibrarySymbolInfo = {
-        name: symbolName,
-        ticker: symbolName,
-        description: `${amountAssetName}/${priceAssetName}`,
-        type: 'crypto',
-        session: '24x7',
-        timezone: 'Etc/UTC',
-        exchange: 'DecentralChain',
-        minmov: 1,
-        pricescale: 100000000,
-        has_intraday: true,
-        has_daily: true,
-        has_weekly_and_monthly: true,
-        supported_resolutions: configurationData.supported_resolutions,
-        volume_precision: 8,
-        data_status: 'streaming',
-        format: 'price',
-      };
-
-      setTimeout(() => onResolve(symbolInfo), 0);
-    },
-
     getBars: async (
       _symbolInfo: LibrarySymbolInfo,
       resolution: ResolutionString,
@@ -168,11 +123,11 @@ export const createDatafeed = (
         }
 
         const bars: Bar[] = candles.map((candle) => ({
-          time: candle.time,
-          open: candle.open,
+          close: candle.close,
           high: candle.high,
           low: candle.low,
-          close: candle.close,
+          open: candle.open,
+          time: candle.time,
           volume: candle.volume,
         }));
 
@@ -184,6 +139,50 @@ export const createDatafeed = (
         logger.error('Error in getBars:', error);
         onError(error instanceof Error ? error.message : String(error));
       }
+    },
+    onReady: (callback: OnReadyCallback) => {
+      setTimeout(() => callback(configurationData), 0);
+    },
+
+    resolveSymbol: (symbolName: string, onResolve: ResolveCallback, _onError: ErrorCallback) => {
+      const symbolInfo: LibrarySymbolInfo = {
+        data_status: 'streaming',
+        description: `${amountAssetName}/${priceAssetName}`,
+        exchange: 'DecentralChain',
+        format: 'price',
+        has_daily: true,
+        has_intraday: true,
+        has_weekly_and_monthly: true,
+        minmov: 1,
+        name: symbolName,
+        pricescale: 100000000,
+        session: '24x7',
+        supported_resolutions: configurationData.supported_resolutions,
+        ticker: symbolName,
+        timezone: 'Etc/UTC',
+        type: 'crypto',
+        volume_precision: 8,
+      };
+
+      setTimeout(() => onResolve(symbolInfo), 0);
+    },
+
+    searchSymbols: (
+      _userInput: string,
+      _exchange: string,
+      _symbolType: string,
+      onResult: SearchSymbolsCallback,
+    ) => {
+      onResult([
+        {
+          description: `${amountAssetName}/${priceAssetName}`,
+          exchange: 'DecentralChain',
+          full_name: `DecentralChain:${amountAssetName}/${priceAssetName}`,
+          symbol: `${amountAssetName}/${priceAssetName}`,
+          ticker: `${amountAssetName}/${priceAssetName}`,
+          type: 'crypto',
+        },
+      ]);
     },
 
     subscribeBars: (

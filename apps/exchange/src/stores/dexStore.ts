@@ -89,12 +89,12 @@ interface DexState {
  */
 const initialMarketData: MarketData = {
   currentPrice: 0,
-  lastPrice: 0,
-  volume24h: 0,
   high24h: 0,
+  lastPrice: 0,
   low24h: 0,
   priceChange24h: 0,
   priceChangePercent24h: 0,
+  volume24h: 0,
 };
 
 /**
@@ -103,21 +103,6 @@ const initialMarketData: MarketData = {
 export const useDexStore = create<DexState>()(
   devtools(
     (set) => ({
-      // Initial state
-      selectedPair: null,
-      orderBook: { bids: [], asks: [] },
-      userOrders: [],
-      marketData: initialMarketData,
-      isOrderBookLoading: false,
-      isMarketDataLoading: false,
-
-      // Trading pair actions
-      setSelectedPair: (pair) => set({ selectedPair: pair }, false, 'dex/setSelectedPair'),
-
-      // Order book actions
-      updateOrderBook: (orderBook) =>
-        set({ orderBook: { ...orderBook, lastUpdate: Date.now() } }, false, 'dex/updateOrderBook'),
-
       // User order actions
       addUserOrder: (order) =>
         set(
@@ -128,6 +113,12 @@ export const useDexStore = create<DexState>()(
           'dex/addUserOrder',
         ),
 
+      clearUserOrders: () => set({ userOrders: [] }, false, 'dex/clearUserOrders'),
+      isMarketDataLoading: false,
+      isOrderBookLoading: false,
+      marketData: initialMarketData,
+      orderBook: { asks: [], bids: [] },
+
       removeUserOrder: (orderId) =>
         set(
           (state) => ({
@@ -137,18 +128,32 @@ export const useDexStore = create<DexState>()(
           'dex/removeUserOrder',
         ),
 
-      updateUserOrder: (orderId, updates) =>
+      // Reset store
+      reset: () =>
         set(
-          (state) => ({
-            userOrders: state.userOrders.map((order) =>
-              order.id === orderId ? { ...order, ...updates } : order,
-            ),
-          }),
+          {
+            isMarketDataLoading: false,
+            isOrderBookLoading: false,
+            marketData: initialMarketData,
+            orderBook: { asks: [], bids: [] },
+            selectedPair: null,
+            userOrders: [],
+          },
           false,
-          'dex/updateUserOrder',
+          'dex/reset',
         ),
+      // Initial state
+      selectedPair: null,
 
-      clearUserOrders: () => set({ userOrders: [] }, false, 'dex/clearUserOrders'),
+      setMarketDataLoading: (loading) =>
+        set({ isMarketDataLoading: loading }, false, 'dex/setMarketDataLoading'),
+
+      // Loading state actions
+      setOrderBookLoading: (loading) =>
+        set({ isOrderBookLoading: loading }, false, 'dex/setOrderBookLoading'),
+
+      // Trading pair actions
+      setSelectedPair: (pair) => set({ selectedPair: pair }, false, 'dex/setSelectedPair'),
 
       // Market data actions
       updateMarketData: (data) =>
@@ -160,27 +165,21 @@ export const useDexStore = create<DexState>()(
           'dex/updateMarketData',
         ),
 
-      // Loading state actions
-      setOrderBookLoading: (loading) =>
-        set({ isOrderBookLoading: loading }, false, 'dex/setOrderBookLoading'),
+      // Order book actions
+      updateOrderBook: (orderBook) =>
+        set({ orderBook: { ...orderBook, lastUpdate: Date.now() } }, false, 'dex/updateOrderBook'),
 
-      setMarketDataLoading: (loading) =>
-        set({ isMarketDataLoading: loading }, false, 'dex/setMarketDataLoading'),
-
-      // Reset store
-      reset: () =>
+      updateUserOrder: (orderId, updates) =>
         set(
-          {
-            selectedPair: null,
-            orderBook: { bids: [], asks: [] },
-            userOrders: [],
-            marketData: initialMarketData,
-            isOrderBookLoading: false,
-            isMarketDataLoading: false,
-          },
+          (state) => ({
+            userOrders: state.userOrders.map((order) =>
+              order.id === orderId ? { ...order, ...updates } : order,
+            ),
+          }),
           false,
-          'dex/reset',
+          'dex/updateUserOrder',
         ),
+      userOrders: [],
     }),
     { name: 'DEX Store' },
   ),

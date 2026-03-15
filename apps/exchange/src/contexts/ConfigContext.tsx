@@ -15,8 +15,8 @@ const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
  */
 const networkConfigs = {
   mainnet: mainnetConfig,
-  testnet: testnetConfig,
   stagenet: stagenetConfig,
+  testnet: testnetConfig,
 } as const;
 
 /**
@@ -42,56 +42,55 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     const networkByte = networkConfig.code.charCodeAt(0);
 
     return {
+      // Service URLs from network config
+      apiUrl: networkConfig.api,
+      apiVersion: networkConfig.apiVersion,
+
+      // Assets from network config
+      assets: networkConfig.assets || {},
+      coinomatUrl: networkConfig.coinomat || '',
+      dataServiceUrl: networkConfig.api,
+      enableDebug: config.enableDebug,
+      enableMocks: config.enableMocks,
+      explorerUrl: networkConfig.explorer,
+      featuresConfigUrl: networkConfig.featuresConfigUrl,
+      feeConfigUrl: networkConfig.feeConfigUrl,
+
+      // DCC Gateway configuration from network config
+      gateway: networkConfig.gateway || {},
       // Environment configuration from src/config
       isDevelopment: config.isDevelopment,
       isProduction: config.isProduction,
       isStaging: config.isStaging,
-      enableMocks: config.enableMocks,
-      enableDebug: config.enableDebug,
+
+      // Matcher priority list from network config
+      matcherPriorityList: networkConfig.matcherPriorityList || [],
+      matcherUrl: networkConfig.matcher,
 
       // Network configuration
       network: currentNetwork,
-      networkCode: networkConfig.code,
       networkByte,
-      apiVersion: networkConfig.apiVersion,
+      networkCode: networkConfig.code,
+      nodeListUrl: networkConfig.nodeList,
+      nodeUrl: networkConfig.node,
+
+      // Oracle addresses from network config
+      oracles: networkConfig.oracles,
+      originUrl: networkConfig.origin,
+      privacyUrl: networkConfig.privacyPolicy,
+      scamListUrl: networkConfig.scamListUrl,
 
       // Network switching function
       setNetwork: handleSetNetwork,
 
-      // Service URLs from network config
-      apiUrl: networkConfig.api,
-      nodeUrl: networkConfig.node,
-      matcherUrl: networkConfig.matcher,
-      explorerUrl: networkConfig.explorer,
-      dataServiceUrl: networkConfig.api,
-      coinomatUrl: networkConfig.coinomat || '',
-
       // Application URLs from network config
       supportUrl: networkConfig.support,
       termsUrl: networkConfig.termsAndConditions,
-      privacyUrl: networkConfig.privacyPolicy,
-      originUrl: networkConfig.origin,
-      nodeListUrl: networkConfig.nodeList,
-      featuresConfigUrl: networkConfig.featuresConfigUrl,
-      feeConfigUrl: networkConfig.feeConfigUrl,
-      tokensNameListUrl: networkConfig.tokensNameListUrl,
-      scamListUrl: networkConfig.scamListUrl,
       tokenRatingUrl: networkConfig.tokenrating || '',
-
-      // Assets from network config
-      assets: networkConfig.assets || {},
+      tokensNameListUrl: networkConfig.tokensNameListUrl,
 
       // Trading pairs from network config
       tradingPairs: (networkConfig.tradingPairs || []) as [string, string][],
-
-      // Matcher priority list from network config
-      matcherPriorityList: networkConfig.matcherPriorityList || [],
-
-      // DCC Gateway configuration from network config
-      gateway: networkConfig.gateway || {},
-
-      // Oracle addresses from network config
-      oracles: networkConfig.oracles,
     };
   }, [currentNetwork, networkConfig, handleSetNetwork]);
 

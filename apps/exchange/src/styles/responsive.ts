@@ -10,87 +10,6 @@ import { css, type RuleSet } from 'styled-components';
  */
 export const media = {
   /**
-   * Mobile devices (max-width: 768px)
-   */
-  mobile: (styles: RuleSet | string) => css`
-    @media (max-width: ${(props) => props.theme.breakpoints.mobile}px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Tablet devices (max-width: 1024px)
-   */
-  tablet: (styles: RuleSet | string) => css`
-    @media (max-width: ${(props) => props.theme.breakpoints.tablet}px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Desktop devices (min-width: 1280px)
-   */
-  desktop: (styles: RuleSet | string) => css`
-    @media (min-width: ${(props) => props.theme.breakpoints.desktop}px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Wide screens (min-width: 1536px)
-   */
-  wide: (styles: RuleSet | string) => css`
-    @media (min-width: ${(props) => props.theme.breakpoints.wide}px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Mobile-only (max-width: 767px)
-   */
-  mobileOnly: (styles: RuleSet | string) => css`
-    @media (max-width: 767px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Tablet-only (768px - 1023px)
-   */
-  tabletOnly: (styles: RuleSet | string) => css`
-    @media (min-width: 768px) and (max-width: 1023px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Desktop-only (1024px - 1279px)
-   */
-  desktopOnly: (styles: RuleSet | string) => css`
-    @media (min-width: 1024px) and (max-width: 1279px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Not mobile (min-width: 768px)
-   */
-  notMobile: (styles: RuleSet | string) => css`
-    @media (min-width: 768px) {
-      ${styles}
-    }
-  `,
-
-  /**
-   * Not desktop (max-width: 1279px)
-   */
-  notDesktop: (styles: RuleSet | string) => css`
-    @media (max-width: 1279px) {
-      ${styles}
-    }
-  `,
-
-  /**
    * Custom breakpoint helper
    * @param minWidth - Minimum width in pixels
    * @param maxWidth - Optional maximum width in pixels
@@ -119,6 +38,86 @@ export const media = {
       ${styles}
     `;
   },
+
+  /**
+   * Desktop devices (min-width: 1280px)
+   */
+  desktop: (styles: RuleSet | string) => css`
+    @media (min-width: ${(props) => props.theme.breakpoints.desktop}px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Desktop-only (1024px - 1279px)
+   */
+  desktopOnly: (styles: RuleSet | string) => css`
+    @media (min-width: 1024px) and (max-width: 1279px) {
+      ${styles}
+    }
+  `,
+  /**
+   * Mobile devices (max-width: 768px)
+   */
+  mobile: (styles: RuleSet | string) => css`
+    @media (max-width: ${(props) => props.theme.breakpoints.mobile}px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Mobile-only (max-width: 767px)
+   */
+  mobileOnly: (styles: RuleSet | string) => css`
+    @media (max-width: 767px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Not desktop (max-width: 1279px)
+   */
+  notDesktop: (styles: RuleSet | string) => css`
+    @media (max-width: 1279px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Not mobile (min-width: 768px)
+   */
+  notMobile: (styles: RuleSet | string) => css`
+    @media (min-width: 768px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Tablet devices (max-width: 1024px)
+   */
+  tablet: (styles: RuleSet | string) => css`
+    @media (max-width: ${(props) => props.theme.breakpoints.tablet}px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Tablet-only (768px - 1023px)
+   */
+  tabletOnly: (styles: RuleSet | string) => css`
+    @media (min-width: 768px) and (max-width: 1023px) {
+      ${styles}
+    }
+  `,
+
+  /**
+   * Wide screens (min-width: 1536px)
+   */
+  wide: (styles: RuleSet | string) => css`
+    @media (min-width: ${(props) => props.theme.breakpoints.wide}px) {
+      ${styles}
+    }
+  `,
 };
 
 /**
@@ -225,6 +224,12 @@ export const responsiveGrid = (minColumnWidth: number = 250) => css`
  * Show/hide utilities for different breakpoints
  */
 export const show = {
+  desktop: css`
+    display: none;
+    ${media.desktop(css`
+      display: block;
+    `)}
+  `,
   mobile: css`
     display: none;
     ${media.mobile(css`
@@ -234,18 +239,17 @@ export const show = {
   tablet: css`
     display: none;
     ${media.tablet(css`
-      display: block;
-    `)}
-  `,
-  desktop: css`
-    display: none;
-    ${media.desktop(css`
       display: block;
     `)}
   `,
 };
 
 export const hide = {
+  desktop: css`
+    ${media.desktop(css`
+      display: none;
+    `)}
+  `,
   mobile: css`
     ${media.mobile(css`
       display: none;
@@ -253,11 +257,6 @@ export const hide = {
   `,
   tablet: css`
     ${media.tablet(css`
-      display: none;
-    `)}
-  `,
-  desktop: css`
-    ${media.desktop(css`
       display: none;
     `)}
   `,
