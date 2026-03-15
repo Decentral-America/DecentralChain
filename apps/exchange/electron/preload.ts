@@ -13,36 +13,22 @@ import { contextBridge, ipcRenderer } from 'electron';
  */
 const electronAPI = {
   /**
-   * Get platform information
+   * Invoke main process function (with response)
    */
-  platform: process.platform,
-
-  /**
-   * Get Node.js version
-   */
-  versions: {
-    node: process.versions.node,
-    chrome: process.versions.chrome,
-    electron: process.versions.electron,
-  },
-
-  /**
-   * Send message to main process
-   */
-  send: (channel: string, ...args: unknown[]) => {
+  invoke: async (channel: string, ...args: unknown[]) => {
     // Whitelist channels
     const validChannels = [
-      'app:quit',
-      'app:reload',
-      'window:minimize',
-      'window:maximize',
-      'window:close',
+      'app:get-version',
+      'app:get-path',
+      'app:check-for-updates',
+      'app:install-update',
     ];
 
     if (validChannels.includes(channel)) {
-      ipcRenderer.send(channel, ...args);
+      return await ipcRenderer.invoke(channel, ...args);
     } else {
       console.warn('Invalid IPC channel:', channel);
+      throw new Error(`Invalid IPC channel: ${channel}`);
     }
   },
 
@@ -72,25 +58,38 @@ const electronAPI = {
       return () => {};
     }
   },
+  /**
+   * Get platform information
+   */
+  platform: process.platform,
 
   /**
-   * Invoke main process function (with response)
+   * Send message to main process
    */
-  invoke: async (channel: string, ...args: unknown[]) => {
+  send: (channel: string, ...args: unknown[]) => {
     // Whitelist channels
     const validChannels = [
-      'app:get-version',
-      'app:get-path',
-      'app:check-for-updates',
-      'app:install-update',
+      'app:quit',
+      'app:reload',
+      'window:minimize',
+      'window:maximize',
+      'window:close',
     ];
 
     if (validChannels.includes(channel)) {
-      return await ipcRenderer.invoke(channel, ...args);
+      ipcRenderer.send(channel, ...args);
     } else {
       console.warn('Invalid IPC channel:', channel);
-      throw new Error(`Invalid IPC channel: ${channel}`);
     }
+  },
+
+  /**
+   * Get Node.js version
+   */
+  versions: {
+    chrome: process.versions.chrome,
+    electron: process.versions.electron,
+    node: process.versions.node,
   },
 };
 

@@ -1,18 +1,18 @@
-# DecentralChain Wallet - React Edition# React + TypeScript + Vite
+# DecentralChain Wallet - React Edition
 
-
-
-[![CI/CD](https://github.com/decentralchain/wallet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/decentralchain/wallet/actions)This template provides a minimal setup to get React working in Vite with HMR and some Biome rules.
-
+[![CI/CD](https://github.com/decentralchain/wallet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/decentralchain/wallet/actions)
 [![Docker](https://img.shields.io/docker/v/decentralchain/wallet?label=docker)](https://github.com/decentralchain/wallet/pkgs/container/wallet)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)Currently, two official plugins are available:
+Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with React + TypeScript + Vite.
 
+## 📚 Documentation Canonical Sources
 
+- **Project status and priorities:** `SINGLE_SOURCE_OF_TRUTH.md`
+- **Documentation policy:** `docs/DOCUMENTATION_GOVERNANCE.md`
+- **Enterprise governance docs:** `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `CHANGELOG.md`
 
-Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with cutting-edge web technologies.- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Root migration/status/plan/report sprawl has been consolidated into `SINGLE_SOURCE_OF_TRUTH.md`.
 
 ## ✨ Features
 
