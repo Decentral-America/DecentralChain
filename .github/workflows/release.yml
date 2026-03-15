@@ -58,6 +58,15 @@ jobs:
       - name: Test
         run: npx nx run-many -t test --projects='packages/*'
 
+      - name: Verify package exports
+        run: npx nx run-many -t check:exports --projects='packages/*'
+
+      - name: Verify package publishing
+        run: npx nx run-many -t check:publint --projects='packages/*' --exclude=ts-types
+
+      - name: Verify bundle size
+        run: npx nx run-many -t check:size --projects='packages/*'
+
       - name: Version
         run: npx nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
 

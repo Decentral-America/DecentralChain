@@ -63,5 +63,8 @@ jobs:
       - name: Verify package publishing (affected)
         run: npx nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,ts-types
 
+      - name: Verify bundle size (affected)
+        run: npx nx affected -t check:size --exclude=cubensis-connect,exchange,scanner
+
       - name: Format check
         run: npx biome format .
