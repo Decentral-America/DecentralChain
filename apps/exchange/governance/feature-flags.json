@@ -1,0 +1,31 @@
+{
+  "flags": [
+    {
+      "approvedEnvironments": ["development", "test", "staging"],
+      "default": "false",
+      "name": "VITE_ENABLE_MOCKS",
+      "owner": "Platform Engineering",
+      "rationale": "Mocks are allowed only in controlled non-production environments.",
+      "risk": "high",
+      "rollback": "Set VITE_ENABLE_MOCKS=false and redeploy."
+    },
+    {
+      "approvedEnvironments": ["development", "test", "staging"],
+      "default": "false",
+      "name": "VITE_DEBUG",
+      "owner": "Platform Engineering",
+      "rationale": "Debug output should never be enabled in production by default.",
+      "risk": "medium",
+      "rollback": "Set VITE_DEBUG=false and redeploy."
+    },
+    {
+      "approvedEnvironments": ["development", "test", "staging", "production"],
+      "default": "true",
+      "name": "VITE_SENTRY_ENABLED",
+      "owner": "SRE",
+      "rationale": "Error monitoring is required in production and should remain on unless incident response requires temporary disablement.",
+      "risk": "low",
+      "rollback": "Set VITE_SENTRY_ENABLED=true and redeploy."
+    }
+  ]
+}
