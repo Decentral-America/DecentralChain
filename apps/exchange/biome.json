@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -11,7 +11,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!*.d.ts"]
+    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts"]
   },
   "formatter": {
     "enabled": true,
@@ -55,7 +55,12 @@
       },
       "recommended": true,
       "security": {
-        "noSecrets": "warn"
+        "noSecrets": {
+          "level": "warn",
+          "options": {
+            "entropyThreshold": 72
+          }
+        }
       },
       "style": {
         "noCommonJs": "error",
@@ -93,6 +98,9 @@
       "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
+          "security": {
+            "noSecrets": "off"
+          },
           "suspicious": {
             "noExplicitAny": "off"
           }

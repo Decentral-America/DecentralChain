@@ -29,3 +29,9 @@ Email **info@decentralchain.io** with:
 - Use the latest supported version
 - Pin dependencies with lockfiles
 - Run `npm audit` regularly
+
+## Enterprise Security Controls
+
+- Dependency changes are restricted by `governance/dependency-allowlist.json` and enforced via `npm run policy:deps`.
+- Runtime feature enablement is controlled by `governance/feature-flags.json` and enforced via `npm run policy:flags`.
+- CI and local release validation enforce both controls through `npm run policy:all`.

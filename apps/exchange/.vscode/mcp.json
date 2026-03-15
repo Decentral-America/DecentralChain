@@ -1,38 +1,28 @@
 {
+  "inputs": [],
   "servers": {
-    "smart-tree": {
-      "type": "stdio",
-      "command": "st",
-      "args": ["--mcp"],
-      "env": {
-        "AI_TOOLS": "1"
-      }
-    },
-    "shrimp-task-manager": {
-      "command": "node",
-      "args": ["/opt/mcp-tools/mcp-shrimp-task-manager/dist/index.js"],
-      "env": {
-        "DATA_DIR": "/workspace/.shrimp-data",
-        "TEMPLATES_USE": "en",
-        "ENABLE_GUI": "true",
-        "WEB_PORT": "3033"
-      }
-    },
     "chrome-devtools": {
-      "command": "npx",
       "args": [
         "chrome-devtools-mcp@latest",
         "--executablePath=/usr/lib/chromium/chromium",
         "--headless",
         "--chromeArg=--no-sandbox",
         "--chromeArg=--disable-setuid-sandbox"
-      ]
+      ],
+      "command": "npx"
     },
     "context7": {
-      "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],
+      "command": "npx",
+      "type": "stdio"
+    },
+    "smart-tree": {
+      "args": ["--mcp"],
+      "command": "st",
+      "env": {
+        "AI_TOOLS": "1"
+      },
       "type": "stdio"
     }
-  },
-  "inputs": []
+  }
 }

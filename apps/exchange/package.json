@@ -1,35 +1,51 @@
 {
-  "name": "exchange",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "packageManager": "npm@11.9.0",
-  "main": "electron/main.js",
-  "engines": {
-    "node": ">=24"
+  "author": "DecentralChain",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/exchange/issues"
   },
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "typecheck": "tsc -b --noEmit",
-    "lint": "biome check --write .",
-    "lint:check": "biome check .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
-    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
-    "preview": "vite preview",
-    "merge-locales": "node scripts/mergeLocales.js",
-    "prepare": "lefthook install",
-    "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
-    "electron:build": "tsc -p electron && electron-builder",
-    "electron:build:mac": "tsc -p electron && electron-builder --mac",
-    "electron:build:win": "tsc -p electron && electron-builder --win",
-    "electron:build:linux": "tsc -p electron && electron-builder --linux",
-    "lint:fix": "biome check --write .",
-    "validate": "npm audit --audit-level=high && npm run lint:check && npm run typecheck && npm run test && npm run build"
+  "build": {
+    "appId": "com.decentralchain.wallet",
+    "directories": {
+      "buildResources": "public",
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "category": "Finance",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.finance",
+      "entitlements": "electron/entitlements.mac.plist",
+      "entitlementsInherit": "electron/entitlements.mac.plist",
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true,
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "productName": "DCC Wallet",
+    "publish": {
+      "owner": "decentralchain",
+      "provider": "github",
+      "repo": "dcc-wallet"
+    },
+    "win": {
+      "certificateFile": null,
+      "certificatePassword": null,
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
   },
   "dependencies": {
     "@decentralchain/assets-pairs-order": "^5.0.2",
@@ -37,122 +53,101 @@
     "@decentralchain/browser-bus": "^1.0.1",
     "@decentralchain/data-entities": "^3.0.1",
     "@decentralchain/data-service-client-js": "^4.2.1",
-    "@decentralchain/ledger": "^5.1.1",
-    "@decentralchain/marshall": "^1.0.1",
     "@decentralchain/oracle-data": "^1.0.1",
     "@decentralchain/signature-adapter": "^7.0.1",
-    "@decentralchain/transactions": "^5.0.1",
     "@decentralchain/ts-lib-crypto": "^2.0.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
-    "@mui/icons-material": "^7.3.8",
-    "@mui/material": "^7.3.8",
-    "@sentry/react": "^10.20.0",
-    "@tanstack/react-query": "^5.90.4",
-    "classnames": "^2.5.1",
+    "@mui/icons-material": "^7.3.9",
+    "@mui/material": "^7.3.9",
+    "@sentry/react": "^10.43.0",
+    "@tanstack/react-query": "^5.90.21",
+    "bignumber.js": "^10.0.2",
     "cryptocurrency-icons": "^0.18.1",
     "date-fns": "^4.1.0",
-    "framer-motion": "^12.23.24",
-    "i18next": "^25.6.0",
-    "i18next-browser-languagedetector": "^8.2.0",
-    "lightweight-charts": "^5.0.9",
-    "lodash-es": "^4.17.21",
+    "i18next": "^25.8.18",
     "qrcode.react": "^4.2.0",
     "ramda": "^0.32.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-ga4": "^2.1.0",
-    "react-hook-form": "^7.65.0",
-    "react-i18next": "^16.0.1",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.9.4",
-    "styled-components": "^6.1.19",
+    "react-hook-form": "^7.71.2",
+    "react-i18next": "^16.5.8",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.13.1",
+    "styled-components": "^6.3.11",
     "ts-utils": "^6.1.0",
     "victory": "^37.3.6",
     "web-vitals": "^5.1.0",
-    "zod": "^4.1.12",
-    "zustand": "^5.0.8"
+    "zod": "^4.3.6",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.6",
-    "@evilmartians/lefthook": "2.1.3",
-    "@tanstack/react-query-devtools": "^5.90.2",
+    "@biomejs/biome": "2.4.7",
+    "@evilmartians/lefthook": "2.1.4",
+    "@tanstack/react-query-devtools": "^5.91.3",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/lodash-es": "^4.17.12",
-    "@types/node": "^25.3.3",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
-    "@types/styled-components": "^5.1.34",
-    "@vitejs/plugin-react": "^5.0.4",
-    "@vitest/coverage-v8": "4.0.18",
-    "charting_library": "^1.0.2",
-    "electron": "^40.6.1",
-    "electron-builder": "^26.0.12",
-    "electron-updater": "^6.6.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "4.1.0",
+    "electron": "^41.0.2",
+    "electron-builder": "^26.8.1",
+    "electron-updater": "^6.8.3",
     "jsdom": "^28.1.0",
+    "knip": "^5.86.0",
     "typescript": "5.9.3",
-    "vite": "^7.1.7",
-    "vitest": "4.0.18"
+    "vite": "^8.0.0",
+    "vitest": "4.1.0"
   },
-  "build": {
-    "appId": "com.decentralchain.wallet",
-    "productName": "DCC Wallet",
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "package.json"
-    ],
-    "directories": {
-      "buildResources": "public",
-      "output": "release"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "decentralchain",
-      "repo": "dcc-wallet"
-    },
-    "mac": {
-      "category": "public.app-category.finance",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "electron/entitlements.mac.plist",
-      "entitlementsInherit": "electron/entitlements.mac.plist"
-    },
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
-      "certificateFile": null,
-      "certificatePassword": null
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "category": "Finance"
-    }
+  "engines": {
+    "node": ">=24"
   },
-  "author": "DecentralChain",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/exchange#readme",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "name": "exchange",
+  "packageManager": "npm@11.9.0",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Decentral-America/exchange.git"
   },
-  "homepage": "https://github.com/Decentral-America/exchange#readme",
-  "bugs": {
-    "url": "https://github.com/Decentral-America/exchange/issues"
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "bulletproof": "biome check --write . && npm run typecheck && npm run test",
+    "bulletproof:check": "biome check . && npm run typecheck && npm run test",
+    "deps:audit": "npm audit --audit-level=high",
+    "deps:outdated": "npm outdated",
+    "deps:unused": "knip",
+    "dev": "vite",
+    "electron:build": "tsc -p electron && electron-builder",
+    "electron:build:linux": "tsc -p electron && electron-builder --linux",
+    "electron:build:mac": "tsc -p electron && electron-builder --mac",
+    "electron:build:win": "tsc -p electron && electron-builder --win",
+    "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "merge-locales": "node scripts/mergeLocales.js",
+    "policy:all": "npm run policy:deps && npm run policy:flags",
+    "policy:deps": "node scripts/checkDependencyAllowlist.js",
+    "policy:flags": "node scripts/checkFeatureFlagPolicy.js",
+    "prepare": "lefthook install",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -b --noEmit",
+    "validate": "npm run policy:all && npm run deps:audit && npm run lint:check && npm run typecheck && npm run test && npm run build"
   },
-  "license": "MIT",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
-  }
+  "type": "module",
+  "version": "0.0.0"
 }

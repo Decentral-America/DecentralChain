@@ -26,20 +26,20 @@ function getWindowOptions(): Electron.BrowserWindowConstructorOptions {
   const y = Math.floor((screenHeight - height) / 2);
 
   return {
-    width,
+    backgroundColor: '#ffffff',
     height,
+    minHeight: 768,
+    minWidth: 1024,
+    show: false, // Don't show until ready-to-show
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      preload: join(import.meta.dirname, 'preload.js'),
+      sandbox: true,
+    },
+    width,
     x,
     y,
-    minWidth: 1024,
-    minHeight: 768,
-    show: false, // Don't show until ready-to-show
-    backgroundColor: '#ffffff',
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-      preload: join(import.meta.dirname, 'preload.js'),
-    },
   };
 }
 
@@ -144,9 +144,9 @@ autoUpdater.autoInstallOnAppQuit = true; // Install on quit after user-approved 
 // Update available
 autoUpdater.on('update-available', (info) => {
   mainWindow?.webContents.send('app:update-available', {
-    version: info.version,
     releaseDate: info.releaseDate,
     releaseNotes: info.releaseNotes,
+    version: info.version,
   });
 });
 
@@ -157,16 +157,16 @@ autoUpdater.on('update-not-available', (_info) => {});
 autoUpdater.on('download-progress', (progress) => {
   mainWindow?.webContents.send('app:update-progress', {
     percent: Math.round(progress.percent),
-    transferred: progress.transferred,
     total: progress.total,
+    transferred: progress.transferred,
   });
 });
 
 // Update downloaded
 autoUpdater.on('update-downloaded', (info) => {
   mainWindow?.webContents.send('app:update-downloaded', {
-    version: info.version,
     releaseDate: info.releaseDate,
+    version: info.version,
   });
 });
 
@@ -193,8 +193,8 @@ ipcMain.handle('app:check-for-updates', async () => {
   } catch (error) {
     console.error('Check for updates failed:', error);
     return {
-      success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
+      success: false,
     };
   }
 });

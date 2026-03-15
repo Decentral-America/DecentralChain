@@ -2,17 +2,17 @@ import '@testing-library/jest-dom';
 
 // Mock browser APIs not available in jsdom
 Object.defineProperty(window, 'matchMedia', {
-  writable: true,
   value: (query: string) => ({
+    addEventListener: () => {},
+    addListener: () => {},
+    dispatchEvent: () => false,
     matches: false,
     media: query,
     onchange: null,
-    addListener: () => {},
-    removeListener: () => {},
-    addEventListener: () => {},
     removeEventListener: () => {},
-    dispatchEvent: () => false,
+    removeListener: () => {},
   }),
+  writable: true,
 });
 
 // Mock IntersectionObserver
@@ -48,10 +48,10 @@ if (!window.crypto?.subtle) {
       },
       randomUUID: () => '00000000-0000-4000-8000-000000000000',
       subtle: {
-        importKey: async () => ({}) as CryptoKey,
+        decrypt: async () => new TextEncoder().encode('{}').buffer,
         deriveKey: async () => ({}) as CryptoKey,
         encrypt: async () => new ArrayBuffer(32),
-        decrypt: async () => new TextEncoder().encode('{}').buffer,
+        importKey: async () => ({}) as CryptoKey,
       },
     },
   });

@@ -4,19 +4,40 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      'data-service': path.resolve(__dirname, './src/lib/data-service'),
+  build: {
+    chunkSizeWarningLimit: 1000,
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) {
+            return;
+          }
+
+          if (/node_modules\/(react|react-dom)\//.test(id)) {
+            return 'vendor';
+          }
+
+          if (id.includes('node_modules/react-router')) {
+            return 'router';
+          }
+
+          if (id.includes('node_modules/styled-components')) {
+            return 'ui';
+          }
+
+          if (/node_modules\/(@mui|@emotion)\//.test(id)) {
+            return 'mui-core';
+          }
+
+          return;
+        },
+      },
     },
-    // Preserve symlinks to ensure dependencies are resolved correctly
-    preserveSymlinks: false,
+    sourcemap: process.env['NODE_ENV'] !== 'production',
   },
   optimizeDeps: {
-    // Exclude data-service from dependency pre-bundling to avoid resolution issues
     exclude: ['data-service'],
-    // Force pre-bundle MUI + Emotion so CJS→ESM interop works correctly
     include: [
       '@mui/material',
       '@mui/material/styles',
@@ -25,12 +46,16 @@ export default defineConfig({
       '@emotion/react',
       '@emotion/styled',
     ],
-    // Note: @decentralchain/transactions has issues with Vite and is currently excluded
+  },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(import.meta.dirname, './src'),
+      'data-service': path.resolve(import.meta.dirname, './src/lib/data-service'),
+    },
+    preserveSymlinks: false,
   },
   server: {
-    host: true, // Expose on local network
-    port: 3333,
-    allowedHosts: ['cf4a81d5458a.ngrok-free.app'],
     headers: {
       'Content-Security-Policy': [
         "default-src 'self'",
@@ -46,45 +71,24 @@ export default defineConfig({
         "frame-src 'self' https://s3.tradingview.com https://*.tradingview.com https://www.tradingview-widget.com https://s.tradingview.com",
       ].join('; '),
     },
+    host: true,
+    port: 3333,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://mainnet-node.decentralchain.io',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
+        target: process.env['VITE_API_URL'] || 'https://mainnet-node.decentralchain.io',
       },
       '/matcher': {
-        target: 'https://mainnet-matcher.decentralchain.io',
         changeOrigin: true,
+        rewrite: (reqPath) => reqPath.replace(/^\/matcher/, '/matcher'),
         secure: false,
-        rewrite: (path) => path.replace(/^\/matcher/, '/matcher'),
+        target: 'https://mainnet-matcher.decentralchain.io',
       },
       '/trading-view': {
-        target: 'https://charts.decentral.exchange',
         changeOrigin: true,
         secure: false,
-      },
-    },
-  },
-  build: {
-    outDir: 'dist',
-    // Disable sourcemaps in production for smaller bundle size
-    sourcemap: process.env.NODE_ENV !== 'production',
-    // Use esbuild for fast minification (default, faster than terser)
-    minify: 'esbuild',
-    // Optimize chunk size
-    chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Vendor chunk: Core React libraries
-          vendor: ['react', 'react-dom'],
-          // Router chunk: React Router
-          router: ['react-router-dom'],
-          // UI chunk: styled-components and theme (will be removed after migration)
-          ui: ['styled-components'],
-          // MUI chunk: Material UI core + Emotion (must be in same chunk to avoid circular dep)
-          'mui-core': ['@mui/material', '@mui/system', '@emotion/react', '@emotion/styled'],
-        },
+        target: 'https://charts.decentral.exchange',
       },
     },
   },
