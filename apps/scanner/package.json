@@ -32,7 +32,6 @@
   },
   "description": "A modern, full-featured blockchain explorer for the DecentralChain (DCC) network. Explore blocks, transactions, addresses, assets, and network health in real time.",
   "devDependencies": {
-    "@biomejs/biome": "2.4.7",
     "@evilmartians/lefthook": "^2.1.4",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.2.1",
