@@ -6,8 +6,6 @@
  * Inlined to remove external dependency on third-party npm scope.
  */
 
-// @ts-nocheck — inlined third-party library, original JS code not strict-TS compatible
-
 interface Options {
   strict?: boolean;
   parse?: (s: string) => unknown;
@@ -60,6 +58,9 @@ const create = (options?: Options) => {
     return ch;
   };
 
+  /** Read current char without type narrowing (ch is mutated by next()). */
+  const peek = (): string => ch;
+
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON number parser — inherent complexity
   const number = (): string | number => {
     let string = '';
@@ -81,7 +82,7 @@ const create = (options?: Options) => {
     if (ch === 'e' || ch === 'E') {
       string += ch;
       next();
-      if (ch === '-' || ch === '+') {
+      if (peek() === '-' || peek() === '+') {
         string += ch;
         next();
       }
@@ -94,18 +95,13 @@ const create = (options?: Options) => {
     const num = +string;
 
     if (options?.parse) {
-      return options.parse(string);
+      return options.parse(string) as string | number;
     }
 
     if (!Number.isFinite(num)) {
-      error('Bad number');
-    } else {
-      if (string.length > 15) {
-        return string;
-      } else {
-        return num;
-      }
+      return error('Bad number');
     }
+    return string.length > 15 ? string : num;
   };
 
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON string parser with escape handling
@@ -117,13 +113,13 @@ const create = (options?: Options) => {
 
     if (ch === '"') {
       while (next()) {
-        if (ch === '"') {
+        if (peek() === '"') {
           next();
           return str;
         }
-        if (ch === '\\') {
+        if (peek() === '\\') {
           next();
-          if (ch === 'u') {
+          if (peek() === 'u') {
             uffff = 0;
             for (i = 0; i < 4; i += 1) {
               hex = parseInt(next(), 16);
@@ -144,7 +140,7 @@ const create = (options?: Options) => {
       }
     }
 
-    error('Bad string');
+    return error('Bad string');
   };
 
   const white = (): void => {
@@ -175,7 +171,7 @@ const create = (options?: Options) => {
         next('l');
         return null;
     }
-    error(`Unexpected '${ch}'`);
+    return error(`Unexpected '${ch}'`);
   };
 
   let value: () => unknown; // Place holder for the value function.
@@ -186,14 +182,14 @@ const create = (options?: Options) => {
     if (ch === '[') {
       next('[');
       white();
-      if (ch === ']') {
+      if (peek() === ']') {
         next(']');
         return arr; // empty array
       }
       while (ch) {
         arr.push(value());
         white();
-        if (ch === ']') {
+        if (peek() === ']') {
           next(']');
           return arr;
         }
@@ -202,7 +198,7 @@ const create = (options?: Options) => {
       }
     }
 
-    error('Bad array');
+    return error('Bad array');
   };
 
   const object = (): Record<string, unknown> => {
@@ -212,7 +208,7 @@ const create = (options?: Options) => {
     if (ch === '{') {
       next('{');
       white();
-      if (ch === '}') {
+      if (peek() === '}') {
         next('}');
         return obj; // empty object
       }
@@ -225,7 +221,7 @@ const create = (options?: Options) => {
         }
         obj[key] = value();
         white();
-        if (ch === '}') {
+        if (peek() === '}') {
           next('}');
           return obj;
         }
@@ -234,7 +230,7 @@ const create = (options?: Options) => {
       }
     }
 
-    error('Bad object');
+    return error('Bad object');
   };
 
   value = (): unknown => {
@@ -305,7 +301,7 @@ const create = (options?: Options) => {
 
     // If the value has a toJSON method, call it to obtain a replacement value.
     if (isBigNumber) {
-      val = options.stringify?.(val);
+      val = options?.stringify?.(val);
     } else if (val && typeof val === 'object' && typeof val.toJSON === 'function') {
       val = val.toJSON(key);
     }
@@ -361,10 +357,11 @@ const create = (options?: Options) => {
 
         // If the replacer is an array, use it to select the members to be stringified.
         if (rep && typeof rep === 'object') {
-          length = rep.length;
+          const repArr = rep as unknown[];
+          length = repArr.length;
           for (i = 0; i < length; i += 1) {
-            if (typeof rep[i] === 'string') {
-              k = rep[i];
+            if (typeof repArr[i] === 'string') {
+              k = repArr[i] as string;
               v = str(k, val);
               if (v) {
                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
@@ -413,7 +410,8 @@ const create = (options?: Options) => {
     if (
       replacer &&
       typeof replacer !== 'function' &&
-      (typeof replacer !== 'object' || typeof replacer.length !== 'number')
+      (typeof replacer !== 'object' ||
+        typeof (replacer as { length?: unknown }).length !== 'number')
     ) {
       throw new Error('JSON.stringify');
     }

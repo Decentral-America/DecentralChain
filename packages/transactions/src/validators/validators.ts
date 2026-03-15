@@ -27,13 +27,13 @@ export const defaultValue = (value: unknown) => () => value;
 export const nope = (value: unknown) => value;
 
 export const pipe =
-  // biome-ignore lint/suspicious/noExplicitAny: Generic pipeline combinator — callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+  // biome-ignore lint/suspicious/noExplicitAny: pipeline callbacks narrow their input (e.g. string → bytes → number); unknown breaks contravariance
     (...args: Array<(value: any) => any>) =>
     (value: unknown) =>
       args.reduce((acc: unknown, cb) => cb(acc), value);
 
 export const validatePipe =
-  // biome-ignore lint/suspicious/noExplicitAny: Generic pipeline combinator — callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+  // biome-ignore lint/suspicious/noExplicitAny: pipeline callbacks narrow their input; unknown breaks contravariance
     (...args: Array<(value: any) => any>) =>
     (value: unknown) => {
       let isValid = true;
@@ -100,7 +100,7 @@ export const gte = (ref: unknown) => (value: unknown) => {
 };
 
 export const ifElse =
-  // biome-ignore lint/suspicious/noExplicitAny: Generic branching combinator — condition/branch callbacks have heterogeneous signatures that can't be unified under unknown due to contravariance
+  // biome-ignore lint/suspicious/noExplicitAny: branching callbacks narrow their input; unknown breaks contravariance
     (condition: (value: any) => any, a: (value: any) => any, b: (value: any) => any) =>
     (value: unknown) =>
       condition(value) ? a(value) : b(value);
@@ -403,7 +403,7 @@ export const isRecipient = ifElse(isValidAddress, defaultValue(true), isValidAli
 
 export const validateByShema =
   (
-    // biome-ignore lint/suspicious/noExplicitAny: Schema validators have heterogeneous signatures per field that can't be unified under unknown due to contravariance
+    // biome-ignore lint/suspicious/noExplicitAny: schema validators narrow their input per field; unknown breaks contravariance
     shema: Record<string, (value: any) => any>,
     errorTpl: (key: string, value?: unknown) => string,
   ) =>
