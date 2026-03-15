@@ -5,13 +5,13 @@ import { type TLong, type TWithPartialFee } from '../types/index.js';
 import { getCoins, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-export const issue = factory<IDCCGuiIssue, TWithPartialFee<IssueTransaction<string>>>({
+export const issue = factory<IClientIssue, TWithPartialFee<IssueTransaction<string>>>({
   ...getDefaultTransform(),
   chainId: prop('chainId'),
   decimals: (data) => prop('decimals', data) ?? prop('precision', data) ?? 0,
   description: prop('description'),
   name: prop('name'),
-  quantity: pipe<IDCCGuiIssue, TLong, string>(prop('quantity'), getCoins),
+  quantity: pipe<IClientIssue, TLong, string>(prop('quantity'), getCoins),
   reissuable: prop('reissuable'),
   script: prop('script'),
 });
@@ -27,4 +27,4 @@ interface IIssue extends IDefaultGuiTx<typeof TYPES.ISSUE> {
   script?: string | null | undefined;
 }
 
-export type IDCCGuiIssue = (IIssue & { decimals: number }) | (IIssue & { precision: number });
+export type IClientIssue = (IIssue & { decimals: number }) | (IIssue & { precision: number });

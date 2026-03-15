@@ -56,7 +56,7 @@ const nodeTransaction = toNode({
 
 Converts a single GUI transaction entity or exchange order into the node API format.
 
-- **Parameters**: `item` — A `TDCCGuiEntity` (transaction) or `IDCCGuiExchangeOrder` (order)
+- **Parameters**: `item` — A `TClientEntity` (transaction) or `IClientExchangeOrder` (order)
 - **Returns**: The transaction/order in node format with all monetary values as strings
 
 Supported transaction types:

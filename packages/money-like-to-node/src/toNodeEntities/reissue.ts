@@ -5,35 +5,35 @@ import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js
 import { emptyError, getAssetId, getCoins, has, ifElse, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-export const reissue = factory<TDCCGuiReissue, TWithPartialFee<ReissueTransaction<string>>>({
+export const reissue = factory<TClientReissue, TWithPartialFee<ReissueTransaction<string>>>({
   ...getDefaultTransform(),
-  assetId: pipe<TDCCGuiReissue, string, string>(
-    ifElse<TDCCGuiReissue, string, string>(
+  assetId: pipe<TClientReissue, string, string>(
+    ifElse<TClientReissue, string, string>(
       has('assetId'),
       // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
-      ((data: IDCCGuiReissueMoney) => getAssetId(data.quantity)) as (
-        data: TDCCGuiReissue,
+      ((data: IClientReissueMoney) => getAssetId(data.quantity)) as (
+        data: TClientReissue,
       ) => string,
     ),
     emptyError('Has no assetId!'),
   ),
   chainId: prop('chainId'),
-  quantity: pipe<TDCCGuiReissue, TMoney | TLong, string>(prop('quantity'), getCoins),
+  quantity: pipe<TClientReissue, TMoney | TLong, string>(prop('quantity'), getCoins),
   reissuable: prop('reissuable'),
 });
 
-export interface IDCCGuiReissueMoney extends IDefaultGuiTx<typeof TYPES.REISSUE> {
+export interface IClientReissueMoney extends IDefaultGuiTx<typeof TYPES.REISSUE> {
   quantity: TMoney;
   reissuable: boolean;
   chainId: number;
 }
 
-export interface IDCCGuiReissueLong extends IDefaultGuiTx<typeof TYPES.REISSUE> {
+export interface IClientReissueLong extends IDefaultGuiTx<typeof TYPES.REISSUE> {
   assetId: string;
   quantity: TLong;
   reissuable: boolean;
   chainId: number;
 }
 
-export type TDCCGuiReissue = IDCCGuiReissueMoney | IDCCGuiReissueLong;
+export type TClientReissue = IClientReissueMoney | IClientReissueLong;
